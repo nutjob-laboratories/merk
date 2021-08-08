@@ -38,9 +38,9 @@ Several tools are included in [the official **mƏrk** repository](https://github
 	 - Executes either `compile_resources.bat` (if the host system is Windows) or `compile_resources.sh` (if the host system is Linux); if the host system is not running either Windows or Linux, `build_dist.py` will exit with an error
 	 - Increments the **mƏrk**'s minor version (which is stored in `merk/data/minor.txt`) and saves it
 	 - Reads`README.txt` into memory and replaces several symbols in it:
-		 - `!_VERSION_!` is replaced with **mƏrk**'s major version
-		 - `!_MINOR_!` is replaced with **mƏrk**'s minor version
-		 - `!_FULL_VERSION_!` is replaced with **mƏrk**'s major and minor version, with a period in between them.
+		 - `! _VERSION_ !` (without spaces) is replaced with **mƏrk**'s major version
+		 - `! _MINOR_ !` (without spaces) is replaced with **mƏrk**'s minor version
+		 - `! _FULL_VERSION_ !` (without spaces) is replaced with **mƏrk**'s major and minor version, with a period in between them.
 	 - Overwrites `README.md` with the edited contents of `README.txt`
 	 - Creates a new directory named `dist`, and copies into it:
 		 - `merk.py`
