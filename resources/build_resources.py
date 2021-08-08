@@ -7,7 +7,7 @@ fl = []
 target = os.path.join("icons", "*.png")
 for file in glob.glob(target):
 	b = os.path.basename(file)
-	fl.append(f"<file alias=\"{b}\">{file}</file>")
+	fl.append(f"<file alias=\"icon-{b}\">{file}</file>")
 
 target = os.path.join("gui", "*.png")
 for file in glob.glob(target):

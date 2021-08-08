@@ -37,6 +37,10 @@ class Merk(QMainWindow):
 		backgroundBrush = QBrush(backgroundPix)
 		self.MDI.setBackground(backgroundBrush)
 
+		# Set the window title
+		self.setWindowTitle(APPLICATION_NAME)
+		self.setWindowIcon(QIcon(APPLICATION_ICON))
+
 		
 
 
