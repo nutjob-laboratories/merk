@@ -1,5 +1,5 @@
 
-rm ./erk/resources/resources.py
+rm ./merk/resources/resources.py
 
 cd resources
 
