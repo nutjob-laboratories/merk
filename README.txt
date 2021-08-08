@@ -27,3 +27,32 @@ If you're running Windows, and you're getting errors when trying to run **mƏrk*
 First, make sure that all the requirements are installed. Next, [download **mƏrk**](https://github.com/nutjob-laboratories/merk/raw/master/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **mƏrk** to, and type:
 
     python merk.py
+
+# Developing mƏrk
+
+Several tools are included in [the official **mƏrk** repository](https://github.com/nutjob-laboratories/merk) for developing **mƏrk**. The [`pyrcc5` utility](https://manpages.ubuntu.com/manpages/xenial/man1/pyrcc5.1.html) is required, and should be installed automatically when you install PyQt. These are only needed if you're developing **mƏrk**, and can be ignored if you're only using the **mƏrk** IRC client.
+
+ - ***compile_resources.bat*** - This batch file compiles the miscellaneous resources (graphics, fonts, etc) required by **mƏrk** into a single file, `resources.py`, and inserts the file into the mƏrk source code. This is for development on the Windows platform.
+ - ***compile_resources.sh*** - This shell script basically does the same thing that `compile_resources.bat` does, only it's for development on the Linux platform.
+ - ***build_dist.py*** - This is a Python 3 script that, when executed, does several things:
+	 - Executes either `compile_resources.bat` (if the host system is Windows) or `compile_resources.sh` (if the host system is Linux); if the host system is not running either Windows or Linux, `build_dist.py` will exit with an error
+	 - Increments the **mƏrk**'s minor version (which is stored in `merk/data/minor.txt`) and saves it
+	 - Reads`README.txt` into memory and replaces several symbols in it:
+		 - `!_VERSION_!` is replaced with **mƏrk**'s major version
+		 - `!_MINOR_!` is replaced with **mƏrk**'s minor version
+		 - `!_FULL_VERSION_!` is replaced with **mƏrk**'s major and minor version, with a period in between them.
+	 - Overwrites `README.md` with the edited contents of `README.txt`
+	 - Creates a new directory named `dist`, and copies into it:
+		 - `merk.py`
+		 - `LICENSE`
+		 - `README.md`
+		 - The `merk` directory and its contents
+		 - The `qt5reactor` directory and its contents
+	 - Zips up the `dist` directory either using [PowerShell](https://en.wikipedia.org/wiki/PowerShell) (if the host system is Windows) or the [zip](https://linux.die.net/man/1/zip) utility (if the host system is Linux) into a file named `dist.zip`
+	 - Deletes the `dist` directory and its contents
+	 - Renames `dist.zip` to "merk-*MAJOR VERSION*.zip", referred to as `merk.zip` in this description.
+	 - If `merk.zip` exists in the `downloads` directory, the version in the `downloads` directory is deleted
+	 - If `merk-latest.zip` exists in the `downloads` directory, it is deleted
+	 - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
+
+[//]: # (End of document)
