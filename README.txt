@@ -26,7 +26,7 @@ If you're running Windows, and you're getting errors when trying to run **mƏrk*
 
 # Running mƏrk
 
-First, make sure that all the requirements are installed. Next, [download **mƏrk**](https://github.com/nutjob-laboratories/merk/raw/master/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **mƏrk** to, and type:
+First, make sure that all the requirements are installed. Next, [download **mƏrk**](https://github.com/nutjob-laboratories/merk/blob/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **mƏrk** to, and type:
 
     python merk.py
 

@@ -1,6 +1,6 @@
 # mƏrk IRC Client
 
-**mƏrk** is a graphical open source [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **001.002**. It uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **mƏrk** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**mƏrk** is a graphical open source [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **001.003**. It uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **mƏrk** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **mƏrk** is *extremely* alpha, and is not currently usable for chatting on IRC.
 
@@ -26,7 +26,7 @@ If you're running Windows, and you're getting errors when trying to run **mƏrk*
 
 # Running mƏrk
 
-First, make sure that all the requirements are installed. Next, [download **mƏrk**](https://github.com/nutjob-laboratories/merk/raw/master/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **mƏrk** to, and type:
+First, make sure that all the requirements are installed. Next, [download **mƏrk**](https://github.com/nutjob-laboratories/merk/blob/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **mƏrk** to, and type:
 
     python merk.py
 
