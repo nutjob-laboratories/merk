@@ -1,3 +1,28 @@
+#
+# ███╗   ███╗██████╗ ██████╗ ██╗  ██╗
+# ████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝
+# ██╔████╔██║███████║██████╔╝█████╔╝
+# ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
+# ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
+# ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+# Copyright (C) 2021  Daniel Hetrick
+# https://github.com/nutjob-laboratories/merk
+# https://github.com/nutjob-laboratories
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
 import sys
 import os
 import json
@@ -74,7 +99,7 @@ def check_settings(filename):
 
 	return True
 
-def initialize(directory):
+def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
 	global CONFIG_FILE
 
@@ -84,7 +109,7 @@ def initialize(directory):
 	if directory==None:
 		directory = str(Path.home())
 
-	CONFIG_DIRECTORY = os.path.join(directory, ".merk")
+	CONFIG_DIRECTORY = os.path.join(directory,directory_name)
 	if not os.path.isdir(CONFIG_DIRECTORY): os.mkdir(CONFIG_DIRECTORY)
 
 	CONFIG_FILE = os.path.join(CONFIG_DIRECTORY, "config.json")

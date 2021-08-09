@@ -1,3 +1,27 @@
+#
+# ███╗   ███╗██████╗ ██████╗ ██╗  ██╗
+# ████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝
+# ██╔████╔██║███████║██████╔╝█████╔╝
+# ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
+# ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
+# ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+# Copyright (C) 2021  Daniel Hetrick
+# https://github.com/nutjob-laboratories/merk
+# https://github.com/nutjob-laboratories
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 
 import os
 
@@ -18,6 +42,7 @@ class Merk(QMainWindow):
 	# Arguments:
 	# 	app (QApplication)
 	#	configuration_location (string: config directory path, default: none)
+	#	configuration_directory_name (string: config directory name, default: .merk)
 	#	configuration_file (string: config filename, default: none)
 	# 	parent (parent window, default: None)
 
@@ -25,6 +50,7 @@ class Merk(QMainWindow):
 			self,
 			app,
 			configuration_location=None,
+			configuration_directory_name=".merk",
 			configuration_file=None,
 			parent=None,
 		):
@@ -34,9 +60,10 @@ class Merk(QMainWindow):
 		self.app = app
 		self.parent = parent
 		self.configuration_location = configuration_location
+		self.configuration_directory_name = configuration_directory_name
 
 		# Initialize the config system
-		config.initialize(self.configuration_location)
+		config.initialize(self.configuration_location,self.configuration_directory_name)
 
 		# Set and save the configuration filename
 		if configuration_file==None:
