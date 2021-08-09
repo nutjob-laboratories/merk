@@ -12,6 +12,7 @@ from twisted.internet import reactor
 
 from merk.main import Merk
 from merk.resources import *
+import merk.config as config
 
 if __name__ == '__main__':
 
@@ -29,8 +30,10 @@ if __name__ == '__main__':
 	app.setFont(font)
 
 	GUI = Merk(
-			app,		# Application
-			None,		# Parent
+			app,						# Application
+			config.INSTALL_DIRECTORY,	# Config directory, default None for home directory storage
+			None,						# Config filename, default None for default config file
+			None,						# Parent
 		)
 
 	GUI.show()
