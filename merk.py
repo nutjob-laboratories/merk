@@ -49,14 +49,17 @@ parser = argparse.ArgumentParser(
 	formatter_class=argparse.RawDescriptionHelpFormatter,
 	description=f'''
 ███╗   ███╗██████╗ ██████╗ ██╗  ██╗
-████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝	╔══════════════╗
-██╔████╔██║███████║██████╔╝█████╔╝	║ {APPLICATION_NAME} {APPLICATION_VERSION} ║
-██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗	╚══════════════╝
+████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝
+██╔████╔██║███████║██████╔╝█████╔╝
+██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+Version {APPLICATION_VERSION}
 
 An open source, cross-platform IRC client
 https://github.com/nutjob-laboratories/merk
+
+Available Qt widget styles: {", ".join(QStyleFactory.keys())}
 ''',
 )
 
@@ -66,6 +69,7 @@ miscgroup.add_argument("-C","--config", type=str,help="Use an alternate configur
 # Change the below default to None to store files in the home directory
 miscgroup.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=config.INSTALL_DIRECTORY)
 miscgroup.add_argument("--config-name",dest="configname",type=str,help="Name of the config file directory (default: .merk)", metavar="NAME", default=".merk")
+miscgroup.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
 
 args = parser.parse_args()
 
@@ -73,25 +77,49 @@ if __name__ == '__main__':
 
 	app = QApplication([])
 
+	# Initialize the config system
+	config.initialize(args.configdir,args.configname)
+
+	# Set the configuration file name
+	if args.config==None:
+		configuration_file = config.CONFIG_FILE
+	else:
+		configuration_file = args.config
+
+	# Load the config file
+	config.load_settings(configuration_file)
+
 	# Load in fonts from the resources file
 	fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
 	for f in OTHER_BUNDLED_FONTS:
 		QFontDatabase.addApplicationFont(f)
 
-	# Set the default font
-	_fontstr = QFontDatabase.applicationFontFamilies(fid)[0]
-	font = QFont(_fontstr,BUNDLED_FONT_SIZE)
+	# Set the application font
+	if config.APPLICATION_FONT!=None:
+		# Set the font set in the config file
+		f = QFont()
+		f.fromString(config.APPLICATION_FONT)
+		app.setFont(f)
+	else:
+		# Set the default font
+		_fontstr = QFontDatabase.applicationFontFamilies(fid)[0]
+		font = QFont(_fontstr,BUNDLED_FONT_SIZE)
 
 	app.setFont(font)
 
+	# Set Qt widget style
+	app.setStyle(args.qtstyle)
+
+	# Create the main GUI and show it
 	GUI = Merk(
 			app,				# Application
 			args.configdir,		# Config directory, default None for home directory storage
 			args.configname,	# Config directory name, default ".merk"
-			args.config,		# Config filename, default None for default config file
+			configuration_file,	# Config filename, default None for default config file
 			None,				# Parent
 		)
 
 	GUI.show()
 
+	# Start the reactor!
 	reactor.run()

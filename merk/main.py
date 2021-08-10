@@ -61,25 +61,7 @@ class Merk(QMainWindow):
 		self.parent = parent
 		self.configuration_location = configuration_location
 		self.configuration_directory_name = configuration_directory_name
-
-		# Initialize the config system
-		config.initialize(self.configuration_location,self.configuration_directory_name)
-
-		# Set and save the configuration filename
-		if configuration_file==None:
-			self.configuration_file = config.CONFIG_FILE
-		else:
-			self.configuration_file = configuration_file
-
-		# Load the config file
-		config.load_settings(self.configuration_file)
-
-		# Set the application font, if the user has
-		# set a one that differs from the default
-		if config.APPLICATION_FONT!=None:
-			f = QFont()
-			f.fromString(config.APPLICATION_FONT)
-			self.app.setFont(f)
+		self.configuration_file = configuration_file
 
 		# Create the central object of the client,
 		# the MDI widget
@@ -97,7 +79,6 @@ class Merk(QMainWindow):
 		# Set the window title
 		self.setWindowTitle(config.DISPLAY_NAME)
 		self.setWindowIcon(QIcon(config.DISPLAY_ICON))
-
 
 	# |---------------|
 	# | EVENT METHODS |
