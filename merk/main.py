@@ -32,6 +32,7 @@ from PyQt5 import QtCore
 
 from .resources import *
 from . import config
+from . import widgets
 
 class Merk(QMainWindow):
 
@@ -79,6 +80,23 @@ class Merk(QMainWindow):
 		# Set the window title
 		self.setWindowTitle(config.DISPLAY_NAME)
 		self.setWindowIcon(QIcon(config.DISPLAY_ICON))
+
+		self.newChannelWindow("#flarp",None)
+		self.newServerWindow("localhost",None)
+
+	def newChannelWindow(self,name,client):
+		w = QMdiSubWindow()
+		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		self.MDI.addSubWindow(w)
+		w.show()
+
+	def newServerWindow(self,name,client):
+		w = QMdiSubWindow()
+		w.setWidget(widgets.Window(name,client,SERVER_WINDOW,self.app,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		self.MDI.addSubWindow(w)
+		w.show()
 
 	# |---------------|
 	# | EVENT METHODS |

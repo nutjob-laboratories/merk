@@ -1,6 +1,6 @@
 # mƏrk IRC Client
 
-**mƏrk** is a graphical open source [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **001.007**. It uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **mƏrk** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**mƏrk** is a graphical open source [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **001.009**. It uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **mƏrk** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **mƏrk** is *extremely* alpha, and is not currently usable for chatting on IRC.
 
@@ -23,6 +23,7 @@ If you're running Windows, and you're getting errors when trying to run **mƏrk*
     pip install pywin32
  To run properly on Linux, the latest version of all required software is recommended.  There is one library that comes bundled with **mƏrk**:
  - [qt5reactor](https://github.com/twisted/qt5reactor)
+ - [pyspellchecker](https://github.com/barrust/pyspellchecker)
 
 # Running mƏrk
 

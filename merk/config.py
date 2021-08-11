@@ -42,6 +42,9 @@ APPLICATION_FONT = None
 DISPLAY_NAME = APPLICATION_NAME
 DISPLAY_ICON = APPLICATION_ICON
 
+DEFAULT_SUBWINDOW_WIDTH = 640
+DEFAULT_SUBWINDOW_HEIGHT = 480
+
 def save_settings(filename):
 
 	settings = {
@@ -49,6 +52,8 @@ def save_settings(filename):
 		"application_font": APPLICATION_FONT,
 		"display_name": DISPLAY_NAME,
 		"display_icon": DISPLAY_ICON,
+		"default_subwindow_width": DEFAULT_SUBWINDOW_WIDTH,
+		"default_subwindow_height": DEFAULT_SUBWINDOW_HEIGHT,
 	}
 
 	with open(filename, "w") as write_data:
@@ -63,6 +68,10 @@ def patch_settings(settings):
 		settings["display_name"] = DISPLAY_NAME
 	if not "display_icon" in settings:
 		settings["display_icon"] = DISPLAY_ICON
+	if not "default_subwindow_width" in settings:
+		settings["default_subwindow_width"] = DEFAULT_SUBWINDOW_WIDTH
+	if not "default_subwindow_height" in settings:
+		settings["default_subwindow_height"] = DEFAULT_SUBWINDOW_HEIGHT
 
 	return settings
 
@@ -71,6 +80,8 @@ def load_settings(filename):
 	global APPLICATION_FONT
 	global DISPLAY_NAME
 	global DISPLAY_ICON
+	global DEFAULT_SUBWINDOW_WIDTH
+	global DEFAULT_SUBWINDOW_HEIGHT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -82,6 +93,8 @@ def load_settings(filename):
 			APPLICATION_FONT = settings["application_font"]
 			DISPLAY_NAME = settings["display_name"]
 			DISPLAY_ICON = settings["display_icon"]
+			DEFAULT_SUBWINDOW_WIDTH = settings["default_subwindow_width"]
+			DEFAULT_SUBWINDOW_HEIGHT = settings["default_subwindow_height"]
 	else:
 		save_settings(filename)
 
@@ -94,6 +107,8 @@ def check_settings(filename):
 			if not "application_font" in settings: return False
 			if not "display_name" in settings: return False
 			if not "display_icon" in settings: return False
+			if not "default_subwindow_width" in settings: return False
+			if not "default_subwindow_height" in settings: return False
 	else:
 		return False
 

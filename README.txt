@@ -23,6 +23,7 @@ If you're running Windows, and you're getting errors when trying to run **mƏrk*
     pip install pywin32
  To run properly on Linux, the latest version of all required software is recommended.  There is one library that comes bundled with **mƏrk**:
  - [qt5reactor](https://github.com/twisted/qt5reactor)
+ - [pyspellchecker](https://github.com/barrust/pyspellchecker)
 
 # Running mƏrk
 
