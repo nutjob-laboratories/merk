@@ -41,9 +41,14 @@ MDI_BACKGROUND_IMAGE = None
 APPLICATION_FONT = None
 DISPLAY_NAME = APPLICATION_NAME
 DISPLAY_ICON = APPLICATION_ICON
-
 DEFAULT_SUBWINDOW_WIDTH = 640
 DEFAULT_SUBWINDOW_HEIGHT = 480
+COMMAND_HISTORY_LENGTH = 20
+DICTIONARY = [
+	"merk",
+	"mƏrk",
+	"Merk",
+]
 
 def save_settings(filename):
 
@@ -54,6 +59,8 @@ def save_settings(filename):
 		"display_icon": DISPLAY_ICON,
 		"default_subwindow_width": DEFAULT_SUBWINDOW_WIDTH,
 		"default_subwindow_height": DEFAULT_SUBWINDOW_HEIGHT,
+		"command_history_length": COMMAND_HISTORY_LENGTH,
+		"dictionary": DICTIONARY,
 	}
 
 	with open(filename, "w") as write_data:
@@ -72,6 +79,10 @@ def patch_settings(settings):
 		settings["default_subwindow_width"] = DEFAULT_SUBWINDOW_WIDTH
 	if not "default_subwindow_height" in settings:
 		settings["default_subwindow_height"] = DEFAULT_SUBWINDOW_HEIGHT
+	if not "command_history_length" in settings:
+		settings["command_history_length"] = COMMAND_HISTORY_LENGTH
+	if not "dictionary" in settings:
+		settings["dictionary"] = DICTIONARY
 
 	return settings
 
@@ -82,6 +93,8 @@ def load_settings(filename):
 	global DISPLAY_ICON
 	global DEFAULT_SUBWINDOW_WIDTH
 	global DEFAULT_SUBWINDOW_HEIGHT
+	global COMMAND_HISTORY_LENGTH
+	global DICTIONARY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -95,6 +108,8 @@ def load_settings(filename):
 			DISPLAY_ICON = settings["display_icon"]
 			DEFAULT_SUBWINDOW_WIDTH = settings["default_subwindow_width"]
 			DEFAULT_SUBWINDOW_HEIGHT = settings["default_subwindow_height"]
+			COMMAND_HISTORY_LENGTH = settings["command_history_length"]
+			DICTIONARY = settings["dictionary"]
 	else:
 		save_settings(filename)
 
@@ -109,6 +124,8 @@ def check_settings(filename):
 			if not "display_icon" in settings: return False
 			if not "default_subwindow_width" in settings: return False
 			if not "default_subwindow_height" in settings: return False
+			if not "command_history_length" in settings: return False
+			if not "dictionary" in settings: return False
 	else:
 		return False
 

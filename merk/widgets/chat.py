@@ -29,10 +29,13 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 import re
+import random
+import string
 
 from spellchecker import SpellChecker
 
 from ..resources import *
+from .. import config
 
 class Window(QMainWindow):
 
@@ -45,6 +48,8 @@ class Window(QMainWindow):
 		self.app = app
 		self.parent = parent
 
+		self.subwindow_id = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(32))
+
 		self.channel_topic = ""		# Channel topic
 		self.userlist_width = 0		# Userlist width
 
@@ -53,8 +58,37 @@ class Window(QMainWindow):
 		self.history_buffer = ['']
 		self.history_buffer_pointer = 0
 
+		self.spellcheck_enabled = True
+
 		self.setWindowTitle(" "+self.name)
 		#self.setWindowIcon(QIcon(config.DISPLAY_ICON))
+
+		# Menubar
+		self.menubar = self.menuBar()
+
+		self.spellcheckMenu = self.menubar.addMenu("Spellcheck")
+
+		self.languageEnabled = QAction("Disable",self)
+		self.languageEnabled.triggered.connect(self.setSpellcheckEnabled)
+		self.spellcheckMenu.addAction(self.languageEnabled)
+
+		self.spellcheckMenu.addSeparator()
+
+		self.languageEnglish = QAction("English",self)
+		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageEnglish)
+
+		self.languageFrench = QAction("French",self)
+		self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageFrench)
+
+		self.languageSpanish = QAction("Spanish",self)
+		self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageSpanish)
+
+		self.languageGerman = QAction("German",self)
+		self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageGerman)
 
 		if self.window_type==CHANNEL_WINDOW:
 			
@@ -98,11 +132,17 @@ class Window(QMainWindow):
 		# Set input language for spell checker
 		self.input.changeLanguage(self.language)
 
+		# Nickname display
+		self.nick_display = QLabel(" <b>USER</b> ")
+
 		inputLayout = QHBoxLayout()
+		inputLayout.addWidget(self.nick_display)
 		inputLayout.addWidget(self.input)
 
 		if self.window_type==CHANNEL_WINDOW:
 
+			# Channel windows will have the chat display split with
+			# the user list display
 			self.horizontalSplitter = QSplitter(Qt.Horizontal)
 			self.horizontalSplitter.addWidget(self.chat)
 			self.horizontalSplitter.addWidget(self.userlist)
@@ -142,6 +182,31 @@ class Window(QMainWindow):
 
 		self.input.setFocus()
 
+	def closeEvent(self, event):
+		# Let the parent know that this subwindow
+		# has been closed by the user
+		self.parent.closeSubWindow(self.subwindow_id)
+
+	def setSpellcheckEnabled(self):
+		if self.spellcheck_enabled:
+			self.spellcheck_enabled = False
+			self.languageEnabled.setText("Enable")
+		else:
+			self.spellcheck_enabled = True
+			self.languageEnabled.setText("Disable")
+
+		# Rewrite whatever is in the input widget
+		cursor = self.input.textCursor()
+		user_input = self.input.text()
+		self.input.setText('')
+		self.input.setText(user_input)
+		self.input.moveCursor(cursor.position())
+
+	def menuSetLanguage(self,language):
+		self.changeSpellcheckLanguage(language)
+
+		# TO DO: Mark which language is active
+
 	def linkClicked(self,url):
 		if url.host():
 
@@ -156,8 +221,68 @@ class Window(QMainWindow):
 		user_input = self.input.text()
 		self.input.setText('')
 
+		# ================================
+		# BEGIN COMMAND HISTORY MANAGEMENT
+		# ================================
+
+		# Remove blank entries from history
+		clean = []
+		for c in self.history_buffer:
+			if c=='': continue
+			clean.append(c)
+		self.history_buffer = clean
+
+		# Insert current input into the history,
+		# right at the beginning
+		self.history_buffer.insert(0,user_input)
+
+		# If history is larger than it's supposed to be,
+		# remove the last entry
+		if len(self.history_buffer)>config.COMMAND_HISTORY_LENGTH:
+			self.history_buffer.pop()
+
+		# "Zero" the history buffer pointer
+		self.history_buffer_pointer = -1
+
+		# Add a blank entry to the history;
+		# this represents (to the user) the current
+		# "blank" input
+		self.history_buffer.append('')
+
+		# Remove consecutive repeated commands
+		self.history_buffer = [self.history_buffer[i] for i in range(len(self.history_buffer)) if (i==0) or self.history_buffer[i] != self.history_buffer[i-1]]
+
+		# ==============================
+		# END COMMAND HISTORY MANAGEMENT
+		# ==============================
+
+		# Move chat display to the bottom
+		self.moveChatToBottom(True)
+
+	def changeSpellcheckLanguage(self,lang):
+
+		# Set the new language
+		self.language = lang
+		self.input.changeLanguage(lang)
+
+		# Rewrite whatever is in the input widget
+		# so that it's spellchecked
+		cursor = self.input.textCursor()
+		user_input = self.input.text()
+		self.input.setText('')
+		self.input.setText(user_input)
+		self.input.moveCursor(cursor.position())
+
 	def handleTopicInput(self):
 		entered_topic = self.topic.text()
+
+	def setTopic(self,topic):
+
+		if not hasattr(self,"topic"): return
+
+		self.channel_topic = topic
+		self.topic.setText(topic)
+		self.topic.setCursorPosition(0)
 
 	def _handleDoubleClick(self,item):
 		item.setSelected(False)
@@ -180,6 +305,23 @@ class Window(QMainWindow):
 			self.history_buffer_pointer = 0
 		self.input.setText(self.history_buffer[self.history_buffer_pointer])
 		self.input.moveCursor(QTextCursor.End)
+
+	def moveChatToBottom(self,force=False):
+
+		if force:
+			sb = self.chat.verticalScrollBar()
+			sb.setValue(sb.maximum())
+			self.chat.ensureCursorVisible()
+
+		fm = QFontMetrics(self.chat.font())
+		fheight = fm.height() * 2
+		sb = self.chat.verticalScrollBar()
+		is_at_bottom = False
+		if sb.value()>=sb.maximum()-fheight: is_at_bottom = True
+
+		if is_at_bottom:
+			sb.setValue(sb.maximum())
+			self.chat.ensureCursorVisible()
 
 	def splitterResize(self,position,index):
 		# Save the width of the userlist for the resize event
@@ -348,16 +490,21 @@ class SpellTextEdit(QPlainTextEdit):
 		if self.textCursor().hasSelection():
 			text = self.textCursor().selectedText()
 
-			misspelled = self.dict.unknown([text])
-			if len(misspelled)>0:
-				
-				for word in self.dict.candidates(text):
-					action = SpellAction(word, popup_menu)
-					action.correct.connect(self.correctWord)
-					popup_menu.insertAction(popup_menu.actions()[0],action)
-					counter = counter + 1
-				if counter != 0:
-					popup_menu.insertSeparator(popup_menu.actions()[counter])
+			# Make sure that words in the custom dictionary aren't flagged as misspelled
+			if not text in config.DICTIONARY:
+
+				if self.parent.spellcheck_enabled:
+
+					misspelled = self.dict.unknown([text])
+					if len(misspelled)>0:
+						
+						for word in self.dict.candidates(text):
+							action = SpellAction(word, popup_menu)
+							action.correct.connect(self.correctWord)
+							popup_menu.insertAction(popup_menu.actions()[0],action)
+							counter = counter + 1
+						if counter != 0:
+							popup_menu.insertSeparator(popup_menu.actions()[counter])
 
 			popup_menu.insertSeparator(popup_menu.actions()[counter])
 			counter = counter + 1
@@ -403,9 +550,13 @@ class Highlighter(QSyntaxHighlighter):
 
 		for word_object in re.finditer(self.WORDS, text):
 
-			misspelled = self.dict.unknown([word_object.group()])
-			if len(misspelled)>0:
-				self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
+			if self.parent.spellcheck_enabled:
+
+				misspelled = self.dict.unknown([word_object.group()])
+				if len(misspelled)>0:
+					# Make sure that words in the custom dictionary aren't flagged as misspelled
+					if not word_object.group() in config.DICTIONARY:
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
 
 class SpellAction(QAction):
 	correct = pyqtSignal(str)
