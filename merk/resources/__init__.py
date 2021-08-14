@@ -65,3 +65,14 @@ CHAT_WINDOW_WIDGET_SPACING = 5
 # Icons
 
 APPLICATION_ICON = ":/icon-app.png"
+CASCADE_ICON = ":/icon-cascade.png"
+TILE_ICON = ":/icon-tile.png"
+NEXT_ICON = ":/icon-next.png"
+PREVIOUS_ICON = ":/icon-previous.png"
+CONSOLE_ICON = ":/icon-console.png"
+PRIVATE_ICON = ":/icon-private.png"
+CHANNEL_ICON = ":/icon-channel.png"
+QUIT_ICON = ":/icon-quit.png"
+
+ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
+ROUND_CHECKED_ICON = ":/icon-rchecked.png"

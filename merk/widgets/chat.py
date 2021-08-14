@@ -63,6 +63,14 @@ class Window(QMainWindow):
 		self.setWindowTitle(" "+self.name)
 		#self.setWindowIcon(QIcon(config.DISPLAY_ICON))
 
+		if self.window_type==CHANNEL_WINDOW:
+			icon = CHANNEL_ICON
+		elif self.window_type==SERVER_WINDOW:
+			icon = CONSOLE_ICON
+		elif self.window_type==PRIVATE_WINDOW:
+			icon = PRIVATE_ICON
+		self.setWindowIcon(QIcon(icon))
+
 		# Menubar
 		self.menubar = self.menuBar()
 
@@ -74,21 +82,26 @@ class Window(QMainWindow):
 
 		self.spellcheckMenu.addSeparator()
 
-		self.languageEnglish = QAction("English",self)
+		self.languageEnglish = QAction(QIcon(ROUND_UNCHECKED_ICON),"English",self)
 		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
 		self.spellcheckMenu.addAction(self.languageEnglish)
 
-		self.languageFrench = QAction("French",self)
+		self.languageFrench = QAction(QIcon(ROUND_UNCHECKED_ICON),"French",self)
 		self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
 		self.spellcheckMenu.addAction(self.languageFrench)
 
-		self.languageSpanish = QAction("Spanish",self)
+		self.languageSpanish = QAction(QIcon(ROUND_UNCHECKED_ICON),"Spanish",self)
 		self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
 		self.spellcheckMenu.addAction(self.languageSpanish)
 
-		self.languageGerman = QAction("German",self)
+		self.languageGerman = QAction(QIcon(ROUND_UNCHECKED_ICON),"German",self)
 		self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
 		self.spellcheckMenu.addAction(self.languageGerman)
+
+		if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
 
 		if self.window_type==CHANNEL_WINDOW:
 			
@@ -205,7 +218,15 @@ class Window(QMainWindow):
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)
 
-		# TO DO: Mark which language is active
+		self.languageEnglish.setIcon(QIcon(ROUND_UNCHECKED_ICON))
+		self.languageFrench.setIcon(QIcon(ROUND_UNCHECKED_ICON))
+		self.languageSpanish.setIcon(QIcon(ROUND_UNCHECKED_ICON))
+		self.languageGerman.setIcon(QIcon(ROUND_UNCHECKED_ICON))
+
+		if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
 
 	def linkClicked(self,url):
 		if url.host():

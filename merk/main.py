@@ -89,7 +89,7 @@ class Merk(QMainWindow):
 		# Main menu
 		self.mainMenu = self.menubar.addMenu(config.DISPLAY_NAME)
 
-		entry = QAction("Quit",self)
+		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
 		entry.setShortcut('Ctrl+Q')
 		entry.triggered.connect(self.close)
 		self.mainMenu.addAction(entry)
@@ -108,24 +108,24 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.clear()
 
-		entry = QAction("Next window",self)
-		entry.setShortcut('Ctrl++')
-		entry.triggered.connect(self.MDI.activateNextSubWindow)
+		entry = QAction(QIcon(CASCADE_ICON),"Cascade",self)
+		entry.triggered.connect(self.MDI.cascadeSubWindows)
 		self.windowsMenu.addAction(entry)
 
-		entry = QAction("Previous window",self)
-		entry.setShortcut('Ctrl+-')
-		entry.triggered.connect(self.MDI.activatePreviousSubWindow)
+		entry = QAction(QIcon(TILE_ICON),"Tile",self)
+		entry.triggered.connect(self.MDI.tileSubWindows)
 		self.windowsMenu.addAction(entry)
 
 		self.windowsMenu.addSeparator()
 
-		entry = QAction("Cascade",self)
-		entry.triggered.connect(self.MDI.cascadeSubWindows)
+		entry = QAction(QIcon(NEXT_ICON),"Next window",self)
+		entry.setShortcut('Ctrl++')
+		entry.triggered.connect(self.MDI.activateNextSubWindow)
 		self.windowsMenu.addAction(entry)
 
-		entry = QAction("Tile",self)
-		entry.triggered.connect(self.MDI.tileSubWindows)
+		entry = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+		entry.setShortcut('Ctrl+-')
+		entry.triggered.connect(self.MDI.activatePreviousSubWindow)
 		self.windowsMenu.addAction(entry)
 
 		self.windowsMenu.addSeparator()
@@ -133,7 +133,15 @@ class Merk(QMainWindow):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"subwindow_id"):
-				entry = QAction(c.name,self)
+
+				if c.window_type==CHANNEL_WINDOW:
+					icon = CHANNEL_ICON
+				elif c.window_type==SERVER_WINDOW:
+					icon = CONSOLE_ICON
+				elif c.window_type==PRIVATE_WINDOW:
+					icon = PRIVATE_ICON
+
+				entry = QAction(QIcon(icon),c.name,self)
 				entry.triggered.connect(lambda state,u=window: self.MDI.setActiveSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
