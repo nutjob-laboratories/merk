@@ -90,17 +90,31 @@ class Merk(QMainWindow):
 		self.mainMenu = self.menubar.addMenu(config.DISPLAY_NAME)
 
 		entry = QAction("Quit",self)
+		entry.setShortcut('Ctrl+Q')
 		entry.triggered.connect(self.close)
 		self.mainMenu.addAction(entry)
 
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")
 
-		entry = QAction("Next",self)
+		self.buildWindowsMenu()
+
+		self.newChannelWindow("#flarp",None)
+		self.newPrivateWindow("Bob",None)
+		self.newPrivateWindow("Joe",None)
+		self.newServerWindow("Bob",None)
+
+	def buildWindowsMenu(self):
+
+		self.windowsMenu.clear()
+
+		entry = QAction("Next window",self)
+		entry.setShortcut('Ctrl++')
 		entry.triggered.connect(self.MDI.activateNextSubWindow)
 		self.windowsMenu.addAction(entry)
 
-		entry = QAction("Previous",self)
+		entry = QAction("Previous window",self)
+		entry.setShortcut('Ctrl+-')
 		entry.triggered.connect(self.MDI.activatePreviousSubWindow)
 		self.windowsMenu.addAction(entry)
 
@@ -114,16 +128,23 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.MDI.tileSubWindows)
 		self.windowsMenu.addAction(entry)
 
-		self.newChannelWindow("#flarp",None)
-		self.newPrivateWindow("Bob",None)
-		self.newPrivateWindow("Joe",None)
-		self.newServerWindow("Bob",None)
+		self.windowsMenu.addSeparator()
+
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"subwindow_id"):
+				entry = QAction(c.name,self)
+				entry.triggered.connect(lambda state,u=window: self.MDI.setActiveSubWindow(u))
+				self.windowsMenu.addAction(entry)
+
 
 	def subWindowActivated(self,subwindow):
 		if subwindow==None: return
-		
+
 		w = subwindow.widget()
-		if hasattr(w,"name"): print(w.name)
+		if hasattr(w,"name"):
+			# It's a named subwindow
+			pass
 
 	def closeSubWindow(self,subwindow_id):
 		# Step through the list of MDI windows
@@ -142,6 +163,7 @@ class Merk(QMainWindow):
 					# Pass the *SUBWINDOW* widget to actually
 					# delete it from the MDI area
 					self.MDI.removeSubWindow(window)
+					self.buildWindowsMenu()
 
 	def newChannelWindow(self,name,client):
 		w = QMdiSubWindow()
@@ -149,6 +171,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		self.MDI.addSubWindow(w)
 		w.show()
+		self.buildWindowsMenu()
 
 	def newServerWindow(self,name,client):
 		w = QMdiSubWindow()
@@ -156,6 +179,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		self.MDI.addSubWindow(w)
 		w.show()
+		self.buildWindowsMenu()
 
 	def newPrivateWindow(self,name,client):
 		w = QMdiSubWindow()
@@ -163,6 +187,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		self.MDI.addSubWindow(w)
 		w.show()
+		self.buildWindowsMenu()
 
 	# |---------------|
 	# | EVENT METHODS |
