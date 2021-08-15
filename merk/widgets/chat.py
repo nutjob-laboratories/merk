@@ -29,8 +29,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 import re
-import random
-import string
+import uuid
 
 from spellchecker import SpellChecker
 
@@ -48,7 +47,7 @@ class Window(QMainWindow):
 		self.app = app
 		self.parent = parent
 
-		self.subwindow_id = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(32))
+		self.subwindow_id = str(uuid.uuid4())
 
 		self.channel_topic = ""		# Channel topic
 		self.userlist_width = 0		# Userlist width
@@ -60,8 +59,16 @@ class Window(QMainWindow):
 
 		self.spellcheck_enabled = True
 
+		self.users = []
+		self.nicks = []
+		self.hostmasks = {}
+		self.operator = False
+		self.voiced = False
+		self.owner = False
+		self.admin = False
+		self.halfop = False
+
 		self.setWindowTitle(" "+self.name)
-		#self.setWindowIcon(QIcon(config.DISPLAY_ICON))
 
 		if self.window_type==CHANNEL_WINDOW:
 			icon = CHANNEL_ICON
@@ -71,9 +78,12 @@ class Window(QMainWindow):
 			icon = PRIVATE_ICON
 		self.setWindowIcon(QIcon(icon))
 
+		f = self.parent.app.font()
+		self.setFont(f)
+
 		# Menubar
 		self.menubar = self.menuBar()
-
+		
 		self.spellcheckMenu = self.menubar.addMenu("Spellcheck")
 
 		self.languageEnabled = QAction("Disable",self)
@@ -195,7 +205,131 @@ class Window(QMainWindow):
 
 		self.input.setFocus()
 
+	def writeUserlist(self,users):
+
+		if not hasattr(self,"userlist"): return
+
+		self.users = []
+		self.operator = False
+		self.voiced = False
+		self.owner = False
+		self.admin = False
+		self.halfop = False
+
+		self.userlist.clear()
+
+		# Sort the user list
+		owners = []
+		admins = []
+		ops = []
+		halfops = []
+		voiced = []
+		normal = []
+
+		for u in users:
+			if len(u)<1: continue
+			self.users.append(u)
+			p = u.split("!")
+			if len(p)==2:
+				nickname = p[0]
+				hostmask = p[1]
+				self.hostmasks[nickname] = hostmask
+			else:
+				nickname = u
+				hostmask = None
+
+			if '@' in nickname:
+				ops.append(nickname.replace('@',''))
+				#if nickname.replace('@','')==self.client.nickname: self.operator = True
+			elif '+' in nickname:
+				voiced.append(nickname.replace('+',''))
+				#if nickname.replace('+','')==self.client.nickname: self.voiced = True
+			elif '~' in nickname:
+				owners.append(nickname.replace('~',''))
+				#if nickname.replace('~','')==self.client.nickname: self.owner = True
+			elif '&' in nickname:
+				admins.append(nickname.replace('&',''))
+				#if nickname.replace('&','')==self.client.nickname: self.admin = True
+			elif '%' in nickname:
+				halfops.append(nickname.replace('%',''))
+				#if nickname.replace('%','')==self.client.nickname: self.halfop = True
+			else:
+				normal.append(nickname)
+
+		# Store a list of the nicks in this channel
+		self.nicks = owners + admins + halfops + ops + voiced + normal
+
+		# Alphabetize
+		owners.sort()
+		admins.sort()
+		halfops.sort()
+		ops.sort()
+		voiced.sort()
+		normal.sort()
+
+		# Add owners
+		for u in owners:
+			ui = QListWidgetItem()
+			ui.setIcon(QIcon(OWNER_USER))
+			ui.setText(u)
+
+			self.userlist.addItem(ui)
+
+		# Add admins
+		for u in admins:
+			ui = QListWidgetItem()
+			ui.setIcon(QIcon(ADMIN_USER))
+			ui.setText(u)
+
+			self.userlist.addItem(ui)
+
+		# Add halfops
+		for u in halfops:
+			ui = QListWidgetItem()
+			ui.setIcon(QIcon(HALFOP_USER))
+			ui.setText(u)
+
+			self.userlist.addItem(ui)
+
+		# Add ops
+		for u in ops:
+			ui = QListWidgetItem()
+			ui.setIcon(QIcon(OP_USER))
+			ui.setText(u)
+
+			self.userlist.addItem(ui)
+
+		# Add voiced
+		for u in voiced:
+			ui = QListWidgetItem()
+			ui.setIcon(QIcon(VOICE_USER))
+			ui.setText(u)
+
+			self.userlist.addItem(ui)
+
+		# Add normal
+		for u in normal:
+			ui = QListWidgetItem()
+			ui.setIcon(QIcon(NORMAL_USER))
+			ui.setText(u)
+
+			self.userlist.addItem(ui)
+
+		self.userlist.update()
+
+	def writeText(self,text):
+
+		self.chat.append(text)
+		self.moveChatToBottom()
+
 	def closeEvent(self, event):
+
+		# Server windows are never closed unless
+		# the server has been disconnected
+		if self.window_type==SERVER_WINDOW:
+			event.ignore()
+			return
+
 		# Let the parent know that this subwindow
 		# has been closed by the user
 		self.parent.closeSubWindow(self.subwindow_id)

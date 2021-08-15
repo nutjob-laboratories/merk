@@ -76,3 +76,10 @@ QUIT_ICON = ":/icon-quit.png"
 
 ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
 ROUND_CHECKED_ICON = ":/icon-rchecked.png"
+
+ADMIN_USER = ":/gui-admin.png"
+HALFOP_USER = ":/gui-halfop.png"
+OP_USER = ":/gui-op.png"
+OWNER_USER = ":/gui-owner.png"
+VOICE_USER = ":/gui-voice.png"
+NORMAL_USER = ":/gui-normal.png"

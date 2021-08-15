@@ -34,6 +34,13 @@ from .resources import *
 from . import config
 from . import widgets
 
+from .irc import(
+	connect,
+	connectSSL,
+	reconnect,
+	reconnectSSL
+)
+
 class Merk(QMainWindow):
 
 	# ===========
@@ -99,10 +106,80 @@ class Merk(QMainWindow):
 
 		self.buildWindowsMenu()
 
-		self.newChannelWindow("#flarp",None)
-		self.newPrivateWindow("Bob",None)
-		self.newPrivateWindow("Joe",None)
-		self.newServerWindow("Bob",None)
+		# c = self.newChannelWindow("#flarp",None)
+		# self.newPrivateWindow("Bob",None)
+		# self.newPrivateWindow("Joe",None)
+		# self.newServerWindow("Bob",None)
+
+		# w = c.widget()
+		# w.writeUserlist(
+		# 		[
+		# 			"@flarple",
+		# 			"joe",
+		# 			"alfie",
+		# 			"+sn00g",
+		# 			"+clark",
+		# 			"herb",
+		# 			"@argyle"
+		# 		]
+		# 	)
+
+		connect(
+			nickname="bob",
+			server="localhost",
+			port=6667,
+			alternate="bobo",
+			password=None,
+			username="merk_test",
+			realname="The Merk Test",
+			ssl=False,
+			gui=self,
+			reconnect=False,
+			failreconnect=True,
+		)
+
+	# BEGIN IRC EVENTS
+
+	def connectionMade(self,client):
+		self.newServerWindow(client.server+":"+str(client.port),client)
+
+	def connectionLost(self,client):
+		pass
+
+	def signedOn(self,client):
+		
+		client.join("#themaxx")
+
+	def joined(self,client,channel):
+		
+		self.newChannelWindow(channel,client)
+
+	def left(self,client,channel):
+		pass
+
+	def privmsg(self,client,user,target,msg):
+		pass
+
+	def noticed(self,client,user,target,msg):
+		pass
+
+	def names(self,client,channel,users):
+		
+		w = self.getChannelWindow(channel,client)
+		if w:
+			w.writeUserlist(users)
+
+	# END IRC EVENTS
+
+	def getChannelWindow(self,channel,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"name"):
+				if c.name.lower() == channel.lower():
+					if hasattr(c,"client"):
+						if c.client.client_id == client.client_id:
+							return c
+		return None
 
 	def buildWindowsMenu(self):
 
@@ -181,6 +258,8 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
+		return w
+
 	def newServerWindow(self,name,client):
 		w = QMdiSubWindow()
 		w.setWidget(widgets.Window(name,client,SERVER_WINDOW,self.app,self))
@@ -189,6 +268,8 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
+		return w
+
 	def newPrivateWindow(self,name,client):
 		w = QMdiSubWindow()
 		w.setWidget(widgets.Window(name,client,PRIVATE_WINDOW,self.app,self))
@@ -196,6 +277,8 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
+
+		return w
 
 	# |---------------|
 	# | EVENT METHODS |
