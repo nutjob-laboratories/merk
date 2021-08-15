@@ -156,7 +156,7 @@ class Window(QMainWindow):
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel(" <b>USER</b> ")
+		self.nick_display = QLabel("<b>"+self.client.nickname+"</b>")
 
 		inputLayout = QHBoxLayout()
 		inputLayout.addWidget(self.nick_display)
@@ -325,9 +325,11 @@ class Window(QMainWindow):
 	def closeEvent(self, event):
 
 		# Server windows are never closed unless
-		# the server has been disconnected
+		# the server has been disconnected; they
+		# are only hidden
 		if self.window_type==SERVER_WINDOW:
 			event.ignore()
+			self.parent.hideSubWindow(self.subwindow_id)
 			return
 
 		# Let the parent know that this subwindow
@@ -410,6 +412,10 @@ class Window(QMainWindow):
 		# ==============================
 		# END COMMAND HISTORY MANAGEMENT
 		# ==============================
+
+		if self.window_type!=SERVER_WINDOW:
+			self.writeText(self.client.nickname+": "+user_input)
+			self.client.msg(self.name,user_input)
 
 		# Move chat display to the bottom
 		self.moveChatToBottom(True)

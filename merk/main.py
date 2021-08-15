@@ -158,20 +158,44 @@ class Merk(QMainWindow):
 		pass
 
 	def privmsg(self,client,user,target,msg):
-		pass
+
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+		
+		w = self.getWindow(target,client)
+		if w:
+			w.writeText(nickname+": "+msg)
+			return
+
+		w = self.getWindow(nickname,client)
+		if w:
+			w.writeText(nickname+": "+msg)
+			return
+
+		w = self.newPrivateWindow(nickname,client)
+		if w:
+			c = w.widget()
+			c.writeText(nickname+": "+msg)
+			return
+
 
 	def noticed(self,client,user,target,msg):
 		pass
 
 	def names(self,client,channel,users):
 		
-		w = self.getChannelWindow(channel,client)
+		w = self.getWindow(channel,client)
 		if w:
 			w.writeUserlist(users)
 
 	# END IRC EVENTS
 
-	def getChannelWindow(self,channel,client):
+	def getWindow(self,channel,client):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"name"):
@@ -219,7 +243,12 @@ class Merk(QMainWindow):
 					icon = PRIVATE_ICON
 
 				entry = QAction(QIcon(icon),c.name,self)
-				entry.triggered.connect(lambda state,u=window: self.MDI.setActiveSubWindow(u))
+				if c.window_type==SERVER_WINDOW:
+					# If the server window is hidden, it requires an extra step
+					# to be activated (it must be show()n)
+					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
+				else:
+					entry.triggered.connect(lambda state,u=window: self.MDI.setActiveSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
 
@@ -230,6 +259,17 @@ class Merk(QMainWindow):
 		if hasattr(w,"name"):
 			# It's a named subwindow
 			pass
+
+	def showSubWindow(self,window):
+		window.show()
+		self.MDI.setActiveSubWindow(window)
+
+	def hideSubWindow(self,subwindow_id):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"subwindow_id"):
+				if c.subwindow_id==subwindow_id:
+					window.hide()
 
 	def closeSubWindow(self,subwindow_id):
 		# Step through the list of MDI windows
