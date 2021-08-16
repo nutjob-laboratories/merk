@@ -184,6 +184,11 @@ class IRC_Connection(irc.IRCClient):
 
 		self.sendLine("NAMES "+channel)
 
+	def nickChanged(self,nick):
+		self.nickname = nick
+
+		self.gui.nickChanged(self)
+
 	def irc_ERR_NICKNAMEINUSE(self, prefix, params):
 
 		if self.registered:

@@ -317,6 +317,9 @@ class Window(QMainWindow):
 
 		self.userlist.update()
 
+	def refreshNickDisplay(self):
+		self.nick_display.setText("<b>"+self.client.nickname+"</b>")
+
 	def writeText(self,text):
 
 		self.chat.append(text)

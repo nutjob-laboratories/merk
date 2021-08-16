@@ -125,10 +125,10 @@ class Merk(QMainWindow):
 		# 	)
 
 		connect(
-			nickname="bob",
+			nickname="wraithnix",
 			server="localhost",
 			port=6667,
-			alternate="bobo",
+			alternate="wraithnix",
 			password=None,
 			username="merk_test",
 			realname="The Merk Test",
@@ -149,6 +149,7 @@ class Merk(QMainWindow):
 	def signedOn(self,client):
 		
 		client.join("#themaxx")
+		self.nickChanged(client)
 
 	def joined(self,client,channel):
 		
@@ -192,6 +193,13 @@ class Merk(QMainWindow):
 		w = self.getWindow(channel,client)
 		if w:
 			w.writeUserlist(users)
+
+	def nickChanged(self,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					c.refreshNickDisplay()
 
 	# END IRC EVENTS
 
