@@ -243,12 +243,7 @@ class Merk(QMainWindow):
 					icon = PRIVATE_ICON
 
 				entry = QAction(QIcon(icon),c.name,self)
-				if c.window_type==SERVER_WINDOW:
-					# If the server window is hidden, it requires an extra step
-					# to be activated (it must be show()n)
-					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
-				else:
-					entry.triggered.connect(lambda state,u=window: self.MDI.setActiveSubWindow(u))
+				entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
 
@@ -261,7 +256,7 @@ class Merk(QMainWindow):
 			pass
 
 	def showSubWindow(self,window):
-		window.show()
+		window.showNormal()
 		self.MDI.setActiveSubWindow(window)
 
 	def hideSubWindow(self,subwindow_id):
