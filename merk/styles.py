@@ -39,6 +39,12 @@ CONFIG_DIRECTORY = None
 STYLE_DIRECTORY = None
 STYLE_FILE = None
 
+def loadStyleFile(filename):
+	if os.path.isfile(filename):
+		return read_style_file(filename)
+	else:
+		return None
+
 def loadStyle(client,channel):
 
 	if client.hostname:
@@ -54,6 +60,20 @@ def loadStyle(client,channel):
 		return read_style_file(target)
 	else:
 		return read_style_file(STYLE_FILE)
+
+def parseBackgroundAndForegroundColor(style):
+		background_color = "#FFFFFF"
+		text_color = "#000000"
+		ps = style.split(";")
+		for e in ps:
+			px = e.split(':')
+			if len(px)==2:
+				if px[0].strip().lower()=='background-color':
+					background_color = px[1].strip()
+				if px[0].strip().lower()=='color':
+					text_color = px[1].strip()
+
+		return background_color,text_color
 
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY

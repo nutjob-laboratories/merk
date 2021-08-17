@@ -69,9 +69,6 @@ class Window(QMainWindow):
 		self.admin = False
 		self.halfop = False
 
-		# Load in style file
-		self.style = styles.loadStyle(client,self.name)
-
 		self.setWindowTitle(" "+self.name)
 
 		if self.window_type==CHANNEL_WINDOW:
@@ -208,6 +205,39 @@ class Window(QMainWindow):
 		self.setCentralWidget(interface)
 
 		self.input.setFocus()
+
+		# Load and apply default style
+		self.applyStyle()
+		
+
+	def applyStyle(self,filename=None):
+		if filename == None:
+			self.style = styles.loadStyle(self.client,self.name)
+		else:
+			s = styles.loadStyleFile(filename)
+			if s:
+				self.style = s
+			else:
+				return False
+
+		# Apply style background and forground colors
+		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+
+		p = self.chat.palette()
+		p.setColor(QPalette.Base, QColor(background))
+		p.setColor(QPalette.Text, QColor(foreground))
+		self.chat.setPalette(p)
+
+		p = self.input.palette()
+		p.setColor(QPalette.Base, QColor(background))
+		p.setColor(QPalette.Text, QColor(foreground))
+		self.input.setPalette(p)
+
+		if self.window_type==CHANNEL_WINDOW:
+			p = self.userlist.palette()
+			p.setColor(QPalette.Base, QColor(background))
+			p.setColor(QPalette.Text, QColor(foreground))
+			self.userlist.setPalette(p)
 
 	def writeUserlist(self,users):
 
