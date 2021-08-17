@@ -1,0 +1,55 @@
+timestamp {
+	font-weight: bold;
+}
+
+username {
+	font-weight: bold;
+	color: #0000FF;
+}
+
+message {
+}
+
+system {
+	font-style: italic;
+	font-weight: bold;
+	color: #FF8C00;
+}
+
+self {
+	font-weight: bold;
+	color: #FF0000;
+}
+
+action {
+	font-style: italic;
+	font-weight: bold;
+	color: #006400;
+}
+
+notice {
+	font-weight: bold;
+	color: #800080;
+}
+
+hyperlink {
+	text-decoration: underline;
+	font-weight: bold;
+	color: #0000FF;
+}
+
+all {
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+error {
+	font-style: italic;
+	font-weight: bold;
+	color: #FF0000;
+}
+
+server {
+	font-weight: bold;
+	color: #0073ad;
+}

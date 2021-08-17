@@ -35,6 +35,7 @@ from spellchecker import SpellChecker
 
 from ..resources import *
 from .. import config
+from .. import styles
 
 class Window(QMainWindow):
 
@@ -67,6 +68,9 @@ class Window(QMainWindow):
 		self.owner = False
 		self.admin = False
 		self.halfop = False
+
+		# Load in style file
+		self.style = styles.loadStyle(client,self.name)
 
 		self.setWindowTitle(" "+self.name)
 

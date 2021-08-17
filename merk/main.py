@@ -32,6 +32,7 @@ from PyQt5 import QtCore
 
 from .resources import *
 from . import config
+from . import styles
 from . import widgets
 
 from .irc import(

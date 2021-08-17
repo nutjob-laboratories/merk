@@ -41,6 +41,7 @@ from twisted.internet import reactor
 from merk.main import Merk
 from merk.resources import *
 import merk.config as config
+import merk.styles as styles
 
 # Handle commandline arguments
 
@@ -79,6 +80,9 @@ if __name__ == '__main__':
 
 	# Initialize the config system
 	config.initialize(args.configdir,args.configname)
+
+	# Initialize the styles system
+	styles.initialize(args.configdir,args.configname)
 
 	# Set the configuration file name
 	if args.config==None:
