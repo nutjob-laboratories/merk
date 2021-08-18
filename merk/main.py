@@ -144,8 +144,9 @@ class Merk(QMainWindow):
 
 	def connectionMade(self,client):
 		w = self.newServerWindow(client.server+":"+str(client.port),client)
+		c = w.widget()
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
-		w.writeText(t)
+		c.writeText(t)
 
 
 	def connectionLost(self,client):
@@ -157,13 +158,30 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',"Registered with server!")
 			w.writeText(t)
+
+			if client.hostname:
+				w.name = client.hostname
+				w.updateTitle()
 		
 		client.join("#themaxx")
 		self.nickChanged(client)
 
+	def receivedMOTD(self,client,motd):
+
+		m = "<br>".join(motd)
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SERVER_MESSAGE,'',m)
+			w.writeText(t)
+
 	def joined(self,client,channel):
 		
-		self.newChannelWindow(channel,client)
+		# Create a new channel window
+		w = self.newChannelWindow(channel,client)
+		if w:
+			c = w.widget()
+			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
+			c.writeText(t)
 
 	def left(self,client,channel):
 		pass
@@ -208,8 +226,9 @@ class Merk(QMainWindow):
 		# the message to it
 		w = self.newPrivateWindow(nickname,client)
 		if w:
+			c = w.widget()
 			t = Message(CHAT_MESSAGE,user,msg)
-			w.writeText(t)
+			c.writeText(t)
 			return
 
 
@@ -231,6 +250,19 @@ class Merk(QMainWindow):
 
 	# END IRC EVENTS
 
+	def openPrivate(self,client,nick):
+
+		# Find and raise the private chat window
+		# if it already exists
+		w = self.getSubWindow(nick,client)
+		if w:
+			self.showSubWindow(w)
+			return
+
+		# Create a new private chat window
+		w = self.newPrivateWindow(nick,client)
+		self.showSubWindow(w)
+
 	def getWindow(self,channel,client):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
@@ -249,6 +281,26 @@ class Merk(QMainWindow):
 					if hasattr(c,"client"):
 						if c.client.client_id == client.client_id:
 							return c
+		return None
+
+	def getSubWindow(self,channel,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"name"):
+				if c.name.lower() == channel.lower():
+					if hasattr(c,"client"):
+						if c.client.client_id == client.client_id:
+							return window
+		return None
+
+	def getServerSubWindow(self,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					if hasattr(c,"client"):
+						if c.client.client_id == client.client_id:
+							return window
 		return None
 
 	def buildWindowsMenu(self):
@@ -339,7 +391,7 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
-		return w.widget()
+		return w
 
 	def newServerWindow(self,name,client):
 		w = QMdiSubWindow()
@@ -349,7 +401,7 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
-		return w.widget()
+		return w
 
 	def newPrivateWindow(self,name,client):
 		w = QMdiSubWindow()
@@ -359,7 +411,7 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
-		return w.widget()
+		return w
 
 	# |---------------|
 	# | EVENT METHODS |

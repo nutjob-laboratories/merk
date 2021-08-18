@@ -169,7 +169,8 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.noticed(self,user,channel,msg)
 
 	def receivedMOTD(self, motd):
-		pass
+		
+		self.gui.receivedMOTD(self,motd)
 
 	def nickChanged(self,nick):
 		self.nickname = nick

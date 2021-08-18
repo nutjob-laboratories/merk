@@ -133,7 +133,7 @@ class Window(QMainWindow):
 			# Create the uselist
 			self.userlist = QListWidget(self)
 			self.userlist.setFocusPolicy(Qt.NoFocus)
-			self.userlist.itemDoubleClicked.connect(self._handleDoubleClick)
+			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
 			self.userlist.installEventFilter(self)
 
 		# Create chat display widget
@@ -213,6 +213,8 @@ class Window(QMainWindow):
 		# Load and apply default style
 		self.applyStyle()
 		
+	def updateTitle(self):
+		self.setWindowTitle(" "+self.name)
 
 	def applyStyle(self,filename=None):
 		if filename == None:
@@ -491,11 +493,14 @@ class Window(QMainWindow):
 		self.topic.setText(topic)
 		self.topic.setCursorPosition(0)
 
-	def _handleDoubleClick(self,item):
+	def handleDoubleClick(self,item):
 		item.setSelected(False)
 		user = item.text()
 		user = user.replace('@','')
 		user = user.replace('+','')
+
+		if user!=self.client.nickname:
+			self.parent.openPrivate(self.client,user)
 
 	def keyPressDown(self):
 		if len(self.history_buffer) <= 1: return
