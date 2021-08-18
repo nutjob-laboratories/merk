@@ -262,6 +262,18 @@ class Merk(QMainWindow):
 
 	# END IRC EVENTS
 
+	def handleUserInput(self,window,user_input):
+		
+		# Client has sent a chat message, so display the message
+		t = Message(SELF_MESSAGE,window.client.nickname,user_input)
+		window.writeText(t)
+		# ...and send the message to the server
+		window.client.msg(window.name,user_input)
+
+
+	def handleConsoleInput(self,window,user_input):
+		pass
+
 	def openPrivate(self,client,nick):
 
 		# Find and raise the private chat window

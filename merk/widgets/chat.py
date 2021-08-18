@@ -460,10 +460,12 @@ class Window(QMainWindow):
 		# END COMMAND HISTORY MANAGEMENT
 		# ==============================
 
+		# Pass the input (and window) to the parent
+		# to process input
 		if self.window_type!=SERVER_WINDOW:
-			t = Message(SELF_MESSAGE,self.client.nickname,user_input)
-			self.writeText(t)
-			self.client.msg(self.name,user_input)
+			self.parent.handleUserInput(self,user_input)
+		else:
+			self.parent.handleConsoleInput(self,user_input)
 
 		# Move chat display to the bottom
 		self.moveChatToBottom(True)
