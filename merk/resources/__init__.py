@@ -23,6 +23,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from datetime import datetime
+
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
@@ -62,6 +64,16 @@ PRIVATE_WINDOW = 2
 
 CHAT_WINDOW_WIDGET_SPACING = 5
 
+SYSTEM_MESSAGE = 0
+ERROR_MESSAGE = 1
+ACTION_MESSAGE = 2
+CHAT_MESSAGE = 3
+SELF_MESSAGE = 4
+NOTICE_MESSAGE = 5
+SERVER_MESSAGE = 6
+
+NICK_DISPLAY_WIDTH = 15
+
 # Icons
 
 APPLICATION_ICON = ":/icon-app.png"
@@ -83,3 +95,15 @@ OP_USER = ":/gui-op.png"
 OWNER_USER = ":/gui-owner.png"
 VOICE_USER = ":/gui-voice.png"
 NORMAL_USER = ":/gui-normal.png"
+
+# Classes
+
+class Message:
+	def __init__(self,mtype,sender,contents,timestamp=None):
+		if timestamp:
+			self.timestamp = timestamp
+		else:
+			self.timestamp = datetime.timestamp(datetime.now())
+		self.type = mtype
+		self.sender = sender
+		self.contents = contents

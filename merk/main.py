@@ -34,6 +34,7 @@ from .resources import *
 from . import config
 from . import styles
 from . import widgets
+from . import render
 
 from .irc import(
 	connect,
@@ -171,18 +172,21 @@ class Merk(QMainWindow):
 		
 		w = self.getWindow(target,client)
 		if w:
-			w.writeText(nickname+": "+msg)
+			t = Message(CHAT_MESSAGE,user,msg)
+			w.writeText(t)
 			return
 
 		w = self.getWindow(nickname,client)
 		if w:
-			w.writeText(nickname+": "+msg)
+			t = Message(CHAT_MESSAGE,user,msg)
+			w.writeText(t)
 			return
 
 		w = self.newPrivateWindow(nickname,client)
 		if w:
 			c = w.widget()
-			c.writeText(nickname+": "+msg)
+			t = Message(CHAT_MESSAGE,user,msg)
+			w.writeText(t)
 			return
 
 

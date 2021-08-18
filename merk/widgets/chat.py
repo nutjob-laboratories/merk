@@ -36,6 +36,7 @@ from spellchecker import SpellChecker
 from ..resources import *
 from .. import config
 from .. import styles
+from .. import render
 
 class Window(QMainWindow):
 
@@ -356,7 +357,11 @@ class Window(QMainWindow):
 
 	def writeText(self,text):
 
-		self.chat.append(text)
+		if type(text)==type(str()):
+			self.chat.append(text)
+		else:
+			t = render.render_message(text,self.style)
+			self.chat.append(t)
 		self.moveChatToBottom()
 
 	def closeEvent(self, event):
@@ -451,7 +456,8 @@ class Window(QMainWindow):
 		# ==============================
 
 		if self.window_type!=SERVER_WINDOW:
-			self.writeText(self.client.nickname+": "+user_input)
+			t = Message(SELF_MESSAGE,self.client.nickname,user_input)
+			self.writeText(t)
 			self.client.msg(self.name,user_input)
 
 		# Move chat display to the bottom
