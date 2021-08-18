@@ -127,10 +127,10 @@ class Merk(QMainWindow):
 		# 	)
 
 		connect(
-			nickname="wraithnix",
+			nickname="bob",
 			server="localhost",
 			port=6667,
-			alternate="wraithnix",
+			alternate="b0b",
 			password=None,
 			username="merk_test",
 			realname="The Merk Test",
@@ -143,12 +143,20 @@ class Merk(QMainWindow):
 	# BEGIN IRC EVENTS
 
 	def connectionMade(self,client):
-		self.newServerWindow(client.server+":"+str(client.port),client)
+		w = self.newServerWindow(client.server+":"+str(client.port),client)
+		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
+		w.writeText(t)
+
 
 	def connectionLost(self,client):
 		pass
 
 	def signedOn(self,client):
+
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',"Registered with server!")
+			w.writeText(t)
 		
 		client.join("#themaxx")
 		self.nickChanged(client)
@@ -169,22 +177,37 @@ class Merk(QMainWindow):
 		else:
 			nickname = user
 			hostmask = None
-		
-		w = self.getWindow(target,client)
-		if w:
-			t = Message(CHAT_MESSAGE,user,msg)
-			w.writeText(t)
-			return
 
+		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+			# Channel message
+			w = self.getWindow(target,client)
+			if w:
+				t = Message(CHAT_MESSAGE,user,msg)
+				w.writeText(t)
+				return
+
+		displayed_private_message = False
+
+		# It's a private message, so try to write the message
+		# to the private message window, if there is one
 		w = self.getWindow(nickname,client)
 		if w:
 			t = Message(CHAT_MESSAGE,user,msg)
 			w.writeText(t)
-			return
+			displayed_private_message = True
 
+		# Write the private message to the server window
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(CHAT_MESSAGE,user,msg)
+			w.writeText(t)
+
+		if displayed_private_message: return
+
+		# Create a new private message window and write
+		# the message to it
 		w = self.newPrivateWindow(nickname,client)
 		if w:
-			c = w.widget()
 			t = Message(CHAT_MESSAGE,user,msg)
 			w.writeText(t)
 			return
@@ -213,6 +236,16 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"name"):
 				if c.name.lower() == channel.lower():
+					if hasattr(c,"client"):
+						if c.client.client_id == client.client_id:
+							return c
+		return None
+
+	def getServerWindow(self,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
 					if hasattr(c,"client"):
 						if c.client.client_id == client.client_id:
 							return c
@@ -306,7 +339,7 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
-		return w
+		return w.widget()
 
 	def newServerWindow(self,name,client):
 		w = QMdiSubWindow()
@@ -316,7 +349,7 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
-		return w
+		return w.widget()
 
 	def newPrivateWindow(self,name,client):
 		w = QMdiSubWindow()
@@ -326,7 +359,7 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
-		return w
+		return w.widget()
 
 	# |---------------|
 	# | EVENT METHODS |

@@ -49,6 +49,9 @@ DICTIONARY = [
 	"mƏrk",
 	"Merk",
 ]
+NICKNAME_PAD_LENGTH = 15
+DISPLAY_TIMESTAMP = True
+TIMESTAMP_FORMAT = "%H:%M:%S"
 
 def save_settings(filename):
 
@@ -61,6 +64,9 @@ def save_settings(filename):
 		"default_subwindow_height": DEFAULT_SUBWINDOW_HEIGHT,
 		"command_history_length": COMMAND_HISTORY_LENGTH,
 		"dictionary": DICTIONARY,
+		"nickname_pad_length": NICKNAME_PAD_LENGTH,
+		"display_timestamp": DISPLAY_TIMESTAMP,
+		"timestamp_format": TIMESTAMP_FORMAT,
 	}
 
 	with open(filename, "w") as write_data:
@@ -83,6 +89,12 @@ def patch_settings(settings):
 		settings["command_history_length"] = COMMAND_HISTORY_LENGTH
 	if not "dictionary" in settings:
 		settings["dictionary"] = DICTIONARY
+	if not "nickname_pad_length" in settings:
+		settings["nickname_pad_length"] = NICKNAME_PAD_LENGTH
+	if not "display_timestamp" in settings:
+		settings["display_timestamp"] = DISPLAY_TIMESTAMP
+	if not "timestamp_format" in settings:
+		settings["timestamp_format"] = TIMESTAMP_FORMAT
 
 	return settings
 
@@ -95,21 +107,32 @@ def load_settings(filename):
 	global DEFAULT_SUBWINDOW_HEIGHT
 	global COMMAND_HISTORY_LENGTH
 	global DICTIONARY
+	global NICKNAME_PAD_LENGTH
+	global DISPLAY_TIMESTAMP
+	global TIMESTAMP_FORMAT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
 			settings = json.load(read_settings)
 
-			settings = patch_settings(settings)
+		prepatch_length = len(settings)
+		settings = patch_settings(settings)
+		postpatch_length = len(settings)
 
-			MDI_BACKGROUND_IMAGE = settings["mdi_background_image"]
-			APPLICATION_FONT = settings["application_font"]
-			DISPLAY_NAME = settings["display_name"]
-			DISPLAY_ICON = settings["display_icon"]
-			DEFAULT_SUBWINDOW_WIDTH = settings["default_subwindow_width"]
-			DEFAULT_SUBWINDOW_HEIGHT = settings["default_subwindow_height"]
-			COMMAND_HISTORY_LENGTH = settings["command_history_length"]
-			DICTIONARY = settings["dictionary"]
+		MDI_BACKGROUND_IMAGE = settings["mdi_background_image"]
+		APPLICATION_FONT = settings["application_font"]
+		DISPLAY_NAME = settings["display_name"]
+		DISPLAY_ICON = settings["display_icon"]
+		DEFAULT_SUBWINDOW_WIDTH = settings["default_subwindow_width"]
+		DEFAULT_SUBWINDOW_HEIGHT = settings["default_subwindow_height"]
+		COMMAND_HISTORY_LENGTH = settings["command_history_length"]
+		DICTIONARY = settings["dictionary"]
+		NICKNAME_PAD_LENGTH = settings["nickname_pad_length"]
+		DISPLAY_TIMESTAMP = settings["display_timestamp"]
+		TIMESTAMP_FORMAT = settings["timestamp_format"]
+
+		if prepatch_length!=postpatch_length:
+			save_settings(filename)
 	else:
 		save_settings(filename)
 
@@ -126,6 +149,9 @@ def check_settings(filename):
 			if not "default_subwindow_height" in settings: return False
 			if not "command_history_length" in settings: return False
 			if not "dictionary" in settings: return False
+			if not "nickname_pad_length" in settings: return False
+			if not "display_timestamp" in settings: return False
+			if not "timestamp_format" in settings: return False
 	else:
 		return False
 

@@ -26,6 +26,7 @@
 from itertools import combinations
 
 from .resources import *
+from . import config
 
 IRC_00 = "#FFFFFF"
 IRC_01 = "#000000"
@@ -112,13 +113,16 @@ def render_message(message,style):
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_STYLE_TEMPLATE)
 		output = output.replace("!MESSAGE_STYLE!",output_style)
 
-	tfs = '%H:%M:%S'
-	pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(tfs)
+	if config.DISPLAY_TIMESTAMP:
+		tfs = '%H:%M:%S'
+		pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(tfs)
 
-	ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!",style["timestamp"])
-	ts = ts.replace("!TIME!",pretty_timestamp)
+		ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!",style["timestamp"])
+		ts = ts.replace("!TIME!",pretty_timestamp)
 
-	output = output.replace("!TIMESTAMP!",ts)
+		output = output.replace("!TIMESTAMP!",ts)
+	else:
+		output = output.replace("!TIMESTAMP!",'')
 
 	if message.type==SELF_MESSAGE:
 		user_style = style["self"]
@@ -130,7 +134,7 @@ def render_message(message,style):
 		user_style = ''
 
 	if message.type!=ACTION_MESSAGE:
-		idl = NICK_DISPLAY_WIDTH - len(nick)
+		idl = config.NICKNAME_PAD_LENGTH - len(nick)
 		if idl>0:
 			nick = ('&nbsp;'*idl)+nick
 

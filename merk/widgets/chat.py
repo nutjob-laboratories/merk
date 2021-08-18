@@ -160,6 +160,9 @@ class Window(QMainWindow):
 		# Nickname display
 		self.nick_display = QLabel("<b>"+self.client.nickname+"</b>")
 
+		# Hide the nickname display on server windows
+		if self.window_type==SERVER_WINDOW: self.nick_display.hide()
+
 		inputLayout = QHBoxLayout()
 		inputLayout.addWidget(self.nick_display)
 		inputLayout.addWidget(self.input)
