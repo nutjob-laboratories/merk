@@ -206,6 +206,16 @@ class Merk(QMainWindow):
 
 		displayed_private_message = False
 
+		# Client has received a private message, and will
+		# NOT see it, so write it to the current window
+		if not config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
+			if not self.getWindow(nickname,client):
+				w = self.MDI.activeSubWindow()
+				if w:
+					c = w.widget()
+					t = Message(PRIVATE_MESSAGE,user,msg)
+					c.writeText(t)
+
 		# It's a private message, so try to write the message
 		# to the private message window, if there is one
 		w = self.getWindow(nickname,client)
@@ -214,22 +224,24 @@ class Merk(QMainWindow):
 			w.writeText(t)
 			displayed_private_message = True
 
-		# Write the private message to the server window
-		w = self.getServerWindow(client)
-		if w:
-			t = Message(CHAT_MESSAGE,user,msg)
-			w.writeText(t)
+		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
+			# Write the private message to the server window
+			w = self.getServerWindow(client)
+			if w:
+				t = Message(CHAT_MESSAGE,user,msg)
+				w.writeText(t)
 
 		if displayed_private_message: return
 
-		# Create a new private message window and write
-		# the message to it
-		w = self.newPrivateWindow(nickname,client)
-		if w:
-			c = w.widget()
-			t = Message(CHAT_MESSAGE,user,msg)
-			c.writeText(t)
-			return
+		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
+			# Create a new private message window and write
+			# the message to it
+			w = self.newPrivateWindow(nickname,client)
+			if w:
+				c = w.widget()
+				t = Message(CHAT_MESSAGE,user,msg)
+				c.writeText(t)
+				return
 
 
 	def noticed(self,client,user,target,msg):

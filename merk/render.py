@@ -106,6 +106,9 @@ def render_message(message,style):
 	elif message.type==SERVER_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["server"]
+	elif message.type==PRIVATE_MESSAGE:
+		output = MESSAGE_TEMPLATE
+		output_style = style["message"]
 
 	if style=="":
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)
@@ -130,6 +133,8 @@ def render_message(message,style):
 		user_style = style["username"]
 	elif message.type==NOTICE_MESSAGE:
 		user_style = style["notice"]
+	elif message.type==PRIVATE_MESSAGE:
+		user_style = style["private"]
 	else:
 		user_style = ''
 

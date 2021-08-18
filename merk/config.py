@@ -52,6 +52,8 @@ DICTIONARY = [
 NICKNAME_PAD_LENGTH = 15
 DISPLAY_TIMESTAMP = True
 TIMESTAMP_FORMAT = "%H:%M:%S"
+CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = True
+WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = True
 
 def save_settings(filename):
 
@@ -67,6 +69,8 @@ def save_settings(filename):
 		"nickname_pad_length": NICKNAME_PAD_LENGTH,
 		"display_timestamp": DISPLAY_TIMESTAMP,
 		"timestamp_format": TIMESTAMP_FORMAT,
+		"create_window_for_incoming_private_messages": CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES,
+		"write_private_messages_to_server_window": WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW,
 	}
 
 	with open(filename, "w") as write_data:
@@ -95,6 +99,10 @@ def patch_settings(settings):
 		settings["display_timestamp"] = DISPLAY_TIMESTAMP
 	if not "timestamp_format" in settings:
 		settings["timestamp_format"] = TIMESTAMP_FORMAT
+	if not "create_window_for_incoming_private_messages" in settings:
+		settings["create_window_for_incoming_private_messages"] = CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES
+	if not "write_private_messages_to_server_window" in settings:
+		settings["write_private_messages_to_server_window"] = WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
 
 	return settings
 
@@ -110,6 +118,8 @@ def load_settings(filename):
 	global NICKNAME_PAD_LENGTH
 	global DISPLAY_TIMESTAMP
 	global TIMESTAMP_FORMAT
+	global CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES
+	global WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -130,6 +140,8 @@ def load_settings(filename):
 		NICKNAME_PAD_LENGTH = settings["nickname_pad_length"]
 		DISPLAY_TIMESTAMP = settings["display_timestamp"]
 		TIMESTAMP_FORMAT = settings["timestamp_format"]
+		CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = settings["create_window_for_incoming_private_messages"]
+		WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = settings["write_private_messages_to_server_window"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -152,6 +164,8 @@ def check_settings(filename):
 			if not "nickname_pad_length" in settings: return False
 			if not "display_timestamp" in settings: return False
 			if not "timestamp_format" in settings: return False
+			if not "create_window_for_incoming_private_messages" in settings: return False
+			if not "write_private_messages_to_server_window" in settings: return False
 	else:
 		return False
 
