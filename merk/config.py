@@ -54,6 +54,8 @@ DISPLAY_TIMESTAMP = True
 TIMESTAMP_FORMAT = "%H:%M:%S"
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = True
 WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = True
+ISSUE_COMMAND_SYMBOL = '/'
+DEFAULT_QUIT_MESSAGE = APPLICATION_NAME+" "+APPLICATION_VERSION
 
 def save_settings(filename):
 
@@ -71,6 +73,8 @@ def save_settings(filename):
 		"timestamp_format": TIMESTAMP_FORMAT,
 		"create_window_for_incoming_private_messages": CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES,
 		"write_private_messages_to_server_window": WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW,
+		"issue_command_symbol": ISSUE_COMMAND_SYMBOL,
+		"default_quit_message": DEFAULT_QUIT_MESSAGE,
 	}
 
 	with open(filename, "w") as write_data:
@@ -103,6 +107,10 @@ def patch_settings(settings):
 		settings["create_window_for_incoming_private_messages"] = CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES
 	if not "write_private_messages_to_server_window" in settings:
 		settings["write_private_messages_to_server_window"] = WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
+	if not "issue_command_symbol" in settings:
+		settings["issue_command_symbol"] = ISSUE_COMMAND_SYMBOL
+	if not "default_quit_message" in settings:
+		settings["default_quit_message"] = DEFAULT_QUIT_MESSAGE
 
 	return settings
 
@@ -120,6 +128,8 @@ def load_settings(filename):
 	global TIMESTAMP_FORMAT
 	global CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES
 	global WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
+	global ISSUE_COMMAND_SYMBOL
+	global DEFAULT_QUIT_MESSAGE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -142,6 +152,8 @@ def load_settings(filename):
 		TIMESTAMP_FORMAT = settings["timestamp_format"]
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = settings["create_window_for_incoming_private_messages"]
 		WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = settings["write_private_messages_to_server_window"]
+		ISSUE_COMMAND_SYMBOL = settings["issue_command_symbol"]
+		DEFAULT_QUIT_MESSAGE = settings["default_quit_message"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -166,6 +178,8 @@ def check_settings(filename):
 			if not "timestamp_format" in settings: return False
 			if not "create_window_for_incoming_private_messages" in settings: return False
 			if not "write_private_messages_to_server_window" in settings: return False
+			if not "issue_command_symbol" in settings: return False
+			if not "default_quit_message" in settings: return False
 	else:
 		return False
 

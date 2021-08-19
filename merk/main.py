@@ -189,8 +189,23 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
 			c.writeText(t)
 
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',"You joined "+channel)
+			w.writeText(t)
+
 	def left(self,client,channel):
-		pass
+
+		w = self.getSubWindow(channel,client)
+		if w:
+			self.MDI.removeSubWindow(w)
+			self.buildWindowsMenu()
+
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',"You left "+channel)
+			w.writeText(t)
+		
 
 	def privmsg(self,client,user,target,msg):
 
@@ -326,6 +341,12 @@ class Merk(QMainWindow):
 	# END IRC EVENTS
 
 	def handleUserInput(self,window,user_input):
+
+		# Handle chat commands
+		if self.handleChatCommands(window,user_input): return
+
+		# Handle common commands
+		if self.handleCommonCommands(window,user_input): return
 		
 		# Client has sent a chat message, so display the message
 		t = Message(SELF_MESSAGE,window.client.nickname,user_input)
@@ -333,9 +354,111 @@ class Merk(QMainWindow):
 		# ...and send the message to the server
 		window.client.msg(window.name,user_input)
 
+	def handleChatCommands(self,window,user_input):
+		tokens = user_input.split()
+		
+		# |-------|
+		# | /part |
+		# |-------|
+		# This version of the command allows the user to omit the channel
+		# name in the command, with the channel name being the name of
+		# the chat window it was issued from
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==1:
+				tokens.pop(0)
+				channel = window.name
+				window.client.leave(channel,config.DEFAULT_QUIT_MESSAGE)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=2:
+				tokens.pop(0)
+				if tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+':
+					# It's a channel, so do nothing; this will be handled
+					# by handleCommonCommands()
+					pass
+				else:
+					# Channel name hasn't been passed, it must be a message
+					channel = window.name
+					msg = ' '.join(tokens)
+					window.client.leave(channel,msg)
+					return True
+
+		return False
+
+	def handleCommonCommands(self,window,user_input):
+		tokens = user_input.split()
+
+		# |-------|
+		# | /part |
+		# |-------|
+		if len(tokens)>1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==2:
+				tokens.pop(0)
+				channel = tokens.pop(0)
+				window.client.leave(channel,config.DEFAULT_QUIT_MESSAGE)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=3:
+				tokens.pop(0)
+				channel = tokens.pop(0)
+				msg = ' '.join(tokens)
+				window.client.leave(channel,msg)
+				return True
+
+		# |-------|
+		# | /join |
+		# |-------|
+		if len(tokens)>1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join' and len(tokens)==2:
+				tokens.pop(0)
+				channel = tokens.pop(0)
+
+				# Check to see if the user is trying to /join the
+				# channel from the same channel they are in
+				if window.name.lower()==channel.lower():
+					t = Message(ERROR_MESSAGE,'',"You have already joined "+window.name)
+					window.writeText(t)
+					return True
+
+				# Check to see if the user has already joined
+				# the channel, and switch to the window if they have
+				w = self.getSubWindow(channel,window.client)
+				if w:
+					self.showSubWindow(w)
+					return True
+
+				window.client.join(channel)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join' and len(tokens)==3:
+				tokens.pop(0)
+				channel = tokens.pop(0)
+				key = tokens.pop(0)
+
+				# Check to see if the user is trying to /join the
+				# channel from the same channel they are in
+				if window.name.lower()==channel.lower():
+					t = Message(ERROR_MESSAGE,'',"You have already joined "+window.name)
+					window.writeText(t)
+					return True
+
+				# Check to see if the user has already joined
+				# the channel, and switch to the window if they have
+				w = self.getSubWindow(channel,window.client)
+				if w:
+					self.showSubWindow(w)
+					return True
+
+				window.client.join(channel,key)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]")
+				window.writeText(t)
+				return True
+
+		return False
 
 	def handleConsoleInput(self,window,user_input):
-		pass
+		
+		# Handle common commands
+		if self.handleCommonCommands(window,user_input): return
 
 	def openPrivate(self,client,nick):
 
