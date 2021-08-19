@@ -87,6 +87,7 @@ QUIT_ICON = ":/icon-quit.png"
 SPELLCHECK_ICON = ":/icon-spellcheck.png"
 TOGGLE_ON_ICON = ":/icon-turnon.png"
 TOGGLE_OFF_ICON = ":/icon-turnoff.png"
+NETWORK_ICON = ":/icon-network.png"
 
 ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
 ROUND_CHECKED_ICON = ":/icon-rchecked.png"

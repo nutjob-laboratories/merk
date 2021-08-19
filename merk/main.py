@@ -40,7 +40,8 @@ from .irc import(
 	connect,
 	connectSSL,
 	reconnect,
-	reconnectSSL
+	reconnectSSL,
+	CONNECTIONS
 )
 
 class Merk(QMainWindow):
@@ -337,6 +338,31 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if c.client.client_id == client.client_id:
 					c.refreshNickDisplay()
+				if c.window_type==CHANNEL_WINDOW:
+					c.client.sendLine("NAMES "+c.name)
+
+		# Write a notification to the current window
+		write_to_server_window = True
+		wid = None
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
+			c.writeText(t)
+			wid = c.subwindow_id
+
+		# Write a notification to the server window,
+		# but *only* if the current window is *not*
+		# the server window
+		w = self.getServerWindow(client)
+		if wid:
+			if w:
+				if wid==w.subwindow_id: write_to_server_window = False
+
+		if write_to_server_window:
+			if w:
+				t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
+				w.writeText(t)
 
 	# END IRC EVENTS
 
@@ -388,6 +414,28 @@ class Merk(QMainWindow):
 		tokens = user_input.split()
 
 		# |-------|
+		# | /nick |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'nick' and len(tokens)==2:
+				tokens.pop(0)
+				newnick = tokens.pop(0)
+
+				# Check to see if the user is trying to /join the
+				# channel from the same channel they are in
+				if window.client.nickname.lower()==newnick.lower():
+					t = Message(ERROR_MESSAGE,'',"You are currently using \""+newnick+"\" as a nickname")
+					window.writeText(t)
+					return True
+
+				window.client.setNick(newnick)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'nick':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME")
+				window.writeText(t)
+				return True
+
+		# |-------|
 		# | /part |
 		# |-------|
 		if len(tokens)>1:
@@ -406,7 +454,7 @@ class Merk(QMainWindow):
 		# |-------|
 		# | /join |
 		# |-------|
-		if len(tokens)>1:
+		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join' and len(tokens)==2:
 				tokens.pop(0)
 				channel = tokens.pop(0)
@@ -513,6 +561,16 @@ class Merk(QMainWindow):
 							return window
 		return None
 
+	def getAllSubWindows(self,client):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					retval.append(window)
+		return retval
+
+
 	def buildWindowsMenu(self):
 
 		self.windowsMenu.clear()
@@ -539,9 +597,16 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.addSeparator()
 
-		for window in self.MDI.subWindowList():
-			c = window.widget()
-			if hasattr(c,"subwindow_id"):
+		for entry in CONNECTIONS:
+			if entry.hostname:
+				name = entry.hostname
+			else:
+				name = entry.server+":"+str(entry.port)
+
+			sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
+
+			for w in self.getAllSubWindows(entry):
+				c = w.widget()
 
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
@@ -551,9 +616,8 @@ class Merk(QMainWindow):
 					icon = PRIVATE_ICON
 
 				entry = QAction(QIcon(icon),c.name,self)
-				entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
-				self.windowsMenu.addAction(entry)
-
+				entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+				sm.addAction(entry)
 
 	def subWindowActivated(self,subwindow):
 		if subwindow==None: return

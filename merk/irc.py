@@ -50,6 +50,8 @@ from twisted.words.protocols.irc import ctcpStringify
 from .resources import *
 from . import config
 
+CONNECTIONS = []
+
 def connect(**kwargs):
 	bot = IRC_Connection_Factory(**kwargs)
 	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
@@ -118,9 +120,12 @@ class IRC_Connection(irc.IRCClient):
 
 		irc.IRCClient.connectionMade(self)
 
+		CONNECTIONS.append(self)
+
 		self.gui.connectionMade(self)
 
 	def connectionLost(self, reason):
+		global CONNECTIONS
 
 		if hasattr(self,"uptimeTimer"):
 			self.uptimeTimer.stop()
@@ -129,6 +134,12 @@ class IRC_Connection(irc.IRCClient):
 		self.registered = False
 
 		irc.IRCClient.connectionLost(self, reason)
+
+		clean = []
+		for e in CONNECTIONS:
+			if e.client_id==self.client_id: next
+			clean.append(e)
+		CONNECTIONS = clean
 
 		self.gui.connectionLost(self)
 

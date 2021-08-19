@@ -70,7 +70,7 @@ class Window(QMainWindow):
 		self.admin = False
 		self.halfop = False
 
-		self.setWindowTitle(" "+self.name)
+		self.setWindowTitle(self.name)
 
 		if self.window_type==CHANNEL_WINDOW:
 			icon = CHANNEL_ICON
@@ -220,7 +220,7 @@ class Window(QMainWindow):
 		self.applyStyle()
 		
 	def updateTitle(self):
-		self.setWindowTitle(" "+self.name)
+		self.setWindowTitle(self.name)
 
 	def applyStyle(self,filename=None):
 		if filename == None:
