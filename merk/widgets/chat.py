@@ -54,7 +54,7 @@ class Window(QMainWindow):
 		self.channel_topic = ""		# Channel topic
 		self.userlist_width = 0		# Userlist width
 
-		self.language = "en"
+		self.language = config.DEFAULT_SPELLCHECK_LANGUAGE
 
 		self.history_buffer = ['']
 		self.history_buffer_pointer = 0
@@ -82,38 +82,6 @@ class Window(QMainWindow):
 
 		f = self.parent.app.font()
 		self.setFont(f)
-
-		# Menubar
-		self.menubar = self.menuBar()
-		
-		self.spellcheckMenu = self.menubar.addMenu("Spellcheck")
-
-		self.languageEnabled = QAction("Disable",self)
-		self.languageEnabled.triggered.connect(self.setSpellcheckEnabled)
-		self.spellcheckMenu.addAction(self.languageEnabled)
-
-		self.spellcheckMenu.addSeparator()
-
-		self.languageEnglish = QAction(QIcon(ROUND_UNCHECKED_ICON),"English",self)
-		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageEnglish)
-
-		self.languageFrench = QAction(QIcon(ROUND_UNCHECKED_ICON),"French",self)
-		self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageFrench)
-
-		self.languageSpanish = QAction(QIcon(ROUND_UNCHECKED_ICON),"Spanish",self)
-		self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageSpanish)
-
-		self.languageGerman = QAction(QIcon(ROUND_UNCHECKED_ICON),"German",self)
-		self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageGerman)
-
-		if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
 
 		if self.window_type==CHANNEL_WINDOW:
 			
@@ -163,9 +131,47 @@ class Window(QMainWindow):
 		# Hide the nickname display on server windows
 		if self.window_type==SERVER_WINDOW: self.nick_display.hide()
 
+		# Spellcheck Button
+		self.spellcheckMenu = QMenu("Spellcheck")
+
+		self.languageEnabled = QAction(QIcon(TOGGLE_ON_ICON),"Enabled",self)
+		self.languageEnabled.triggered.connect(self.setSpellcheckEnabled)
+		self.spellcheckMenu.addAction(self.languageEnabled)
+
+		self.spellcheckMenu.addSeparator()
+
+		self.languageEnglish = QAction(QIcon(ROUND_UNCHECKED_ICON),"English",self)
+		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageEnglish)
+
+		self.languageFrench = QAction(QIcon(ROUND_UNCHECKED_ICON),"Française",self)
+		self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageFrench)
+
+		self.languageSpanish = QAction(QIcon(ROUND_UNCHECKED_ICON),"Español",self)
+		self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageSpanish)
+
+		self.languageGerman = QAction(QIcon(ROUND_UNCHECKED_ICON),"Deutsche",self)
+		self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageGerman)
+
+		if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
+
+		self.spellcheckMenuButton = QPushButton(QIcon(SPELLCHECK_ICON),"")
+		self.spellcheckMenuButton.setMenu(self.spellcheckMenu)
+		self.spellcheckMenuButton.setIconSize(QSize(self.input.height(),self.input.height()))
+		self.spellcheckMenuButton.setFixedSize(self.input.height()+5,self.input.height())
+		self.spellcheckMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+		self.spellcheckMenuButton.setToolTip("Spellcheck")
+
 		inputLayout = QHBoxLayout()
 		inputLayout.addWidget(self.nick_display)
 		inputLayout.addWidget(self.input)
+		inputLayout.addWidget(self.spellcheckMenuButton)
 
 		if self.window_type==CHANNEL_WINDOW:
 
@@ -177,7 +183,7 @@ class Window(QMainWindow):
 			self.horizontalSplitter.splitterMoved.connect(self.splitterResize)
 
 			# Set the initial splitter ratio
-			ulwidth = (fm.width('X') + 2) + (fm.width('X')*18)
+			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*15)
 			mwidth = self.width()-ulwidth
 			self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
@@ -390,10 +396,20 @@ class Window(QMainWindow):
 	def setSpellcheckEnabled(self):
 		if self.spellcheck_enabled:
 			self.spellcheck_enabled = False
-			self.languageEnabled.setText("Enable")
+			self.languageEnabled.setText("Disabled")
+			self.languageEnabled.setIcon(QIcon(TOGGLE_OFF_ICON))
+			self.languageEnglish.setEnabled(False)
+			self.languageFrench.setEnabled(False)
+			self.languageSpanish.setEnabled(False)
+			self.languageGerman.setEnabled(False)
 		else:
 			self.spellcheck_enabled = True
-			self.languageEnabled.setText("Disable")
+			self.languageEnabled.setText("Enabled")
+			self.languageEnabled.setIcon(QIcon(TOGGLE_ON_ICON))
+			self.languageEnglish.setEnabled(True)
+			self.languageFrench.setEnabled(True)
+			self.languageSpanish.setEnabled(True)
+			self.languageGerman.setEnabled(True)
 
 		# Rewrite whatever is in the input widget
 		cursor = self.input.textCursor()

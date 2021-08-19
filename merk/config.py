@@ -56,6 +56,7 @@ CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = True
 WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = True
 ISSUE_COMMAND_SYMBOL = '/'
 DEFAULT_QUIT_MESSAGE = APPLICATION_NAME+" "+APPLICATION_VERSION
+DEFAULT_SPELLCHECK_LANGUAGE = "en"
 
 def save_settings(filename):
 
@@ -75,6 +76,7 @@ def save_settings(filename):
 		"write_private_messages_to_server_window": WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW,
 		"issue_command_symbol": ISSUE_COMMAND_SYMBOL,
 		"default_quit_message": DEFAULT_QUIT_MESSAGE,
+		"default_spellcheck_language": DEFAULT_SPELLCHECK_LANGUAGE,
 	}
 
 	with open(filename, "w") as write_data:
@@ -111,6 +113,8 @@ def patch_settings(settings):
 		settings["issue_command_symbol"] = ISSUE_COMMAND_SYMBOL
 	if not "default_quit_message" in settings:
 		settings["default_quit_message"] = DEFAULT_QUIT_MESSAGE
+	if not "default_spellcheck_language" in settings:
+		settings["default_spellcheck_language"] = DEFAULT_SPELLCHECK_LANGUAGE
 
 	return settings
 
@@ -130,6 +134,7 @@ def load_settings(filename):
 	global WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
 	global ISSUE_COMMAND_SYMBOL
 	global DEFAULT_QUIT_MESSAGE
+	global DEFAULT_SPELLCHECK_LANGUAGE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -154,6 +159,7 @@ def load_settings(filename):
 		WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = settings["write_private_messages_to_server_window"]
 		ISSUE_COMMAND_SYMBOL = settings["issue_command_symbol"]
 		DEFAULT_QUIT_MESSAGE = settings["default_quit_message"]
+		DEFAULT_SPELLCHECK_LANGUAGE = settings["default_spellcheck_language"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -180,6 +186,7 @@ def check_settings(filename):
 			if not "write_private_messages_to_server_window" in settings: return False
 			if not "issue_command_symbol" in settings: return False
 			if not "default_quit_message" in settings: return False
+			if not "default_spellcheck_language" in settings: return False
 	else:
 		return False
 
