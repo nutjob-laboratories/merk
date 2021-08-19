@@ -101,8 +101,12 @@ def render_message(message,style):
 		output = MESSAGE_TEMPLATE
 		output_style = style["message"]
 	elif message.type==NOTICE_MESSAGE:
-		output = MESSAGE_TEMPLATE
-		output_style = style["message"]
+		if len(nick)==0:
+			output = SYSTEM_TEMPLATE
+			output_style = style["notice"]
+		else:
+			output = MESSAGE_TEMPLATE
+			output_style = style["message"]
 	elif message.type==SERVER_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["server"]
@@ -139,9 +143,10 @@ def render_message(message,style):
 		user_style = ''
 
 	if message.type!=ACTION_MESSAGE:
-		idl = config.NICKNAME_PAD_LENGTH - len(nick)
-		if idl>0:
-			nick = ('&nbsp;'*idl)+nick
+		if message.type!=NOTICE_MESSAGE and len(nick)>0:
+			idl = config.NICKNAME_PAD_LENGTH - len(nick)
+			if idl>0:
+				nick = ('&nbsp;'*idl)+nick
 
 	output = output.replace("!ID_STYLE!",user_style)
 	output = output.replace("!ID!",nick)

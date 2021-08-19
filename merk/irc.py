@@ -220,6 +220,8 @@ class IRC_Connection(irc.IRCClient):
 		pnick = user.split('!')[0]
 		phostmask = user.split('!')[1]
 
+		self.gui.action(self,user,channel,data)
+
 	def userKicked(self, kickee, channel, kicker, message):
 		self.sendLine("NAMES "+channel)
 
@@ -359,6 +361,8 @@ class IRC_Connection(irc.IRCClient):
 		self.server_options(options)
 
 	def server_options(self,options):
+
+		self.gui.serverMessage(self,' '.join(options))
 
 		# Options are sent in chunks: not every option
 		# will be set in each chunk

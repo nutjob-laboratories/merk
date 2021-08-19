@@ -174,6 +174,12 @@ class Merk(QMainWindow):
 			t = Message(SERVER_MESSAGE,'',m)
 			w.writeText(t)
 
+	def serverMessage(self,client,msg):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SERVER_MESSAGE,'',msg)
+			w.writeText(t)
+
 	def joined(self,client,channel):
 		
 		# Create a new channel window
@@ -206,16 +212,6 @@ class Merk(QMainWindow):
 
 		displayed_private_message = False
 
-		# Client has received a private message, and will
-		# NOT see it, so write it to the current window
-		if not config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
-			if not self.getWindow(nickname,client):
-				w = self.MDI.activeSubWindow()
-				if w:
-					c = w.widget()
-					t = Message(PRIVATE_MESSAGE,user,msg)
-					c.writeText(t)
-
 		# It's a private message, so try to write the message
 		# to the private message window, if there is one
 		w = self.getWindow(nickname,client)
@@ -243,12 +239,79 @@ class Merk(QMainWindow):
 				c.writeText(t)
 				return
 
+		# Client has received a private message, and will
+		# NOT see it, so write it to the current window
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			t = Message(PRIVATE_MESSAGE,user,msg)
+			c.writeText(t)
+
+	def action(self,client,user,target,msg):
+
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+
+		# Channel message
+		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+			w = self.getWindow(target,client)
+			if w:
+				t = Message(ACTION_MESSAGE,nickname,msg)
+				w.writeText(t)
+				return
+
+		# Try to display it as a private message
+		w = self.getWindow(nickname,client)
+		if w:
+			t = Message(ACTION_MESSAGE,nickname,msg)
+			w.writeText(t)
+		else:
+			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
+				# Create a new private message window and write
+				# the message to it
+				w = self.newPrivateWindow(nickname,client)
+				if w:
+					c = w.widget()
+					t = Message(ACTION_MESSAGE,nickname,msg)
+					c.writeText(t)
+					return
 
 	def noticed(self,client,user,target,msg):
-		pass
+
+		# Server notices get written to the server window only
+		if target=='*':
+			w = self.getServerWindow(client)
+			if w:
+				t = Message(NOTICE_MESSAGE,'',msg)
+				w.writeText(t)
+			return
+
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+
+		# Try and send the message to the right window
+		w = self.getWindow(target,client)
+		if w:
+			t = Message(NOTICE_MESSAGE,nickname,msg)
+			w.writeText(t)
+		else:
+			# ...or write it to the server window
+			w = self.getServerWindow(client)
+			if w:
+				t = Message(NOTICE_MESSAGE,nickname,msg)
+				w.writeText(t)
 
 	def names(self,client,channel,users):
-		
 		w = self.getWindow(channel,client)
 		if w:
 			w.writeUserlist(users)
@@ -446,3 +509,5 @@ class Merk(QMainWindow):
 	# any method 
 	def closeEvent(self, event):
 		self.app.quit()
+
+	

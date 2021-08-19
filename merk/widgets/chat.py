@@ -575,7 +575,6 @@ class Window(QMainWindow):
 
 		return super(Window, self).resizeEvent(event)
 
-
 class TopicEdit(QLineEdit):
 	def __init__(self, parent=None):
 		super(QLineEdit, self).__init__(parent)
