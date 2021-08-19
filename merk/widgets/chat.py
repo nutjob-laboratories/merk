@@ -379,6 +379,10 @@ class Window(QMainWindow):
 			self.parent.hideSubWindow(self.subwindow_id)
 			return
 
+		# If this is a channel window, sent a part command
+		if self.window_type==CHANNEL_WINDOW:
+			self.client.leave(self.name,config.DEFAULT_QUIT_MESSAGE)
+
 		# Let the parent know that this subwindow
 		# has been closed by the user
 		self.parent.closeSubWindow(self.subwindow_id)
