@@ -76,6 +76,8 @@ class Merk(QMainWindow):
 		self.configuration_directory_name = configuration_directory_name
 		self.configuration_file = configuration_file
 
+		self.quitting = {}
+
 		# Create the central object of the client,
 		# the MDI widget
 		self.MDI = QMdiArea()
@@ -129,7 +131,7 @@ class Merk(QMainWindow):
 		# 		]
 		# 	)
 
-		irc.connect(
+		irc.reconnect(
 			nickname="bob",
 			server="localhost",
 			port=6667,
@@ -452,11 +454,13 @@ class Merk(QMainWindow):
 					window.client.quit(config.DEFAULT_QUIT_MESSAGE)
 				else:
 					window.client.quit()
+				self.quitting[window.client.client_id] = 0
 				return True
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:
 				tokens.pop(0)
 				msg = ' '.join(tokens)
 				window.client.quit(msg)
+				self.quitting[window.client.client_id] = 0
 				return True
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit':
 				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]")

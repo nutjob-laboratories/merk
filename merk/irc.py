@@ -53,18 +53,22 @@ from . import config
 CONNECTIONS = {}
 
 def connect(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
 	bot = IRC_Connection_Factory(**kwargs)
 	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
 
 def connectSSL(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
 	bot = IRC_Connection_Factory(**kwargs)
 	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
 
 def reconnect(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
 	bot = IRC_ReConnection_Factory(**kwargs)
 	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
 
 def reconnectSSL(**kwargs):
+	kwargs["client_id"] = str(uuid.uuid4())
 	bot = IRC_ReConnection_Factory(**kwargs)
 	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
 
@@ -84,7 +88,7 @@ class IRC_Connection(irc.IRCClient):
 
 		objectconfig(self,**kwargs)
 
-		self.client_id = str(uuid.uuid4())
+		print(self.client_id)
 
 		self.oldnick = self.nickname
 		self.uptime = 0
@@ -480,6 +484,9 @@ def objectconfig(obj,**kwargs):
 
 	for key, value in kwargs.items():
 
+		if key=="client_id":
+			obj.client_id = value
+
 		if key=="nickname":
 			obj.nickname = value
 		
@@ -523,10 +530,14 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		return bot
 
 	def clientConnectionLost(self, connector, reason):
-		pass
+		
+		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
+			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 
 	def clientConnectionFailed(self, connector, reason):
-		pass
+		
+		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
+			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 
 class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 	def __init__(self,**kwargs):
@@ -538,10 +549,17 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		return bot
 
 	def clientConnectionLost(self, connector, reason):
+
+		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
+			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			return
 		
 		protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
 
 	def clientConnectionFailed(self, connector, reason):
+
+		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
+			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 
 		if self.kwargs["failreconnect"]:
 			protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
