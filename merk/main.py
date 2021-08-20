@@ -36,13 +36,15 @@ from . import styles
 from . import widgets
 from . import render
 
-from .irc import(
-	connect,
-	connectSSL,
-	reconnect,
-	reconnectSSL,
-	CONNECTIONS
-)
+# from .irc import(
+# 	connect,
+# 	connectSSL,
+# 	reconnect,
+# 	reconnectSSL,
+# 	CONNECTIONS
+# )
+
+from . import irc
 
 class Merk(QMainWindow):
 
@@ -127,7 +129,7 @@ class Merk(QMainWindow):
 		# 		]
 		# 	)
 
-		connect(
+		irc.connect(
 			nickname="bob",
 			server="localhost",
 			port=6667,
@@ -151,7 +153,15 @@ class Merk(QMainWindow):
 
 
 	def connectionLost(self,client):
-		pass
+		
+		windows = self.getAllSubWindows(client)
+		for w in windows:
+			w.close()
+
+		# Forcibly remove server window
+		w = self.getServerSubWindow(client)
+		self.MDI.removeSubWindow(w)
+		self.buildWindowsMenu()
 
 	def signedOn(self,client):
 
@@ -386,14 +396,32 @@ class Merk(QMainWindow):
 		# Handle common commands
 		if self.handleCommonCommands(window,user_input): return
 		
-		# Client has sent a chat message, so display the message
+		# Client has sent a chat message, so send the message
+		window.client.msg(window.name,user_input)
+		# ...and then display it to the user
 		t = Message(SELF_MESSAGE,window.client.nickname,user_input)
 		window.writeText(t)
-		# ...and send the message to the server
-		window.client.msg(window.name,user_input)
+		
 
 	def handleChatCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |-------|
+		# | /quit |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)==1:
+				window.client.quit(config.DEFAULT_QUIT_MESSAGE)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:
+				tokens.pop(0)
+				msg = ' '.join(tokens)
+				window.client.quit(msg)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]")
+				window.writeText(t)
+				return True
 		
 		# |-------|
 		# | /part |
@@ -403,7 +431,6 @@ class Merk(QMainWindow):
 		# the chat window it was issued from
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==1:
-				tokens.pop(0)
 				channel = window.name
 				window.client.leave(channel,config.DEFAULT_QUIT_MESSAGE)
 				return True
@@ -609,27 +636,30 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.addSeparator()
 
-		for entry in CONNECTIONS:
+		for entry in irc.CONNECTIONS:
 			if entry.hostname:
 				name = entry.hostname
 			else:
 				name = entry.server+":"+str(entry.port)
 
-			sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
+			wl = self.getAllSubWindows(entry)
 
-			for w in self.getAllSubWindows(entry):
-				c = w.widget()
+			if len(wl)>0:
+				sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
 
-				if c.window_type==CHANNEL_WINDOW:
-					icon = CHANNEL_ICON
-				elif c.window_type==SERVER_WINDOW:
-					icon = CONSOLE_ICON
-				elif c.window_type==PRIVATE_WINDOW:
-					icon = PRIVATE_ICON
+				for w in wl:
+					c = w.widget()
 
-				entry = QAction(QIcon(icon),c.name,self)
-				entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
-				sm.addAction(entry)
+					if c.window_type==CHANNEL_WINDOW:
+						icon = CHANNEL_ICON
+					elif c.window_type==SERVER_WINDOW:
+						icon = CONSOLE_ICON
+					elif c.window_type==PRIVATE_WINDOW:
+						icon = PRIVATE_ICON
+
+					entry = QAction(QIcon(icon),c.name,self)
+					entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+					sm.addAction(entry)
 
 	def subWindowActivated(self,subwindow):
 		if subwindow==None: return

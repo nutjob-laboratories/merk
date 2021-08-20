@@ -133,8 +133,6 @@ class IRC_Connection(irc.IRCClient):
 
 		self.registered = False
 
-		irc.IRCClient.connectionLost(self, reason)
-
 		clean = []
 		for e in CONNECTIONS:
 			if e.client_id==self.client_id: next
@@ -142,6 +140,8 @@ class IRC_Connection(irc.IRCClient):
 		CONNECTIONS = clean
 
 		self.gui.connectionLost(self)
+
+		irc.IRCClient.connectionLost(self, reason)
 
 	def signedOn(self):
 
