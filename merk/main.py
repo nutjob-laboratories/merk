@@ -364,6 +364,18 @@ class Merk(QMainWindow):
 				t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
 				w.writeText(t)
 
+	def topicChanged(self,client,user,channel,newTopic):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					if c.window_type==CHANNEL_WINDOW:
+						if c.name==channel:
+							c.setTopic(newTopic)
+
+							if user!='':
+								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
+								c.writeText(t)
 	# END IRC EVENTS
 
 	def handleUserInput(self,window,user_input):

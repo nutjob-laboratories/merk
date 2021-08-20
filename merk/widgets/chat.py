@@ -507,6 +507,9 @@ class Window(QMainWindow):
 	def handleTopicInput(self):
 		entered_topic = self.topic.text()
 
+		self.client.topic(self.name,entered_topic)
+		self.input.setFocus()
+
 	def setTopic(self,topic):
 
 		if not hasattr(self,"topic"): return

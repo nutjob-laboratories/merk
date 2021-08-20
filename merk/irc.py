@@ -224,9 +224,6 @@ class IRC_Connection(irc.IRCClient):
 	def userRenamed(self, oldname, newname):
 		pass
 
-	def topicUpdated(self, user, channel, newTopic):
-		pass
-
 	def action(self, user, channel, data):
 		pnick = user.split('!')[0]
 		phostmask = user.split('!')[1]
@@ -279,6 +276,16 @@ class IRC_Connection(irc.IRCClient):
 			TOPIC = ""
 
 		channel = params[1]
+
+		self.gui.topicChanged(self,'',channel,TOPIC)
+
+		return irc.IRCClient.irc_RPL_TOPIC(self, prefix, params)
+
+	def topicUpdated(self, user, channel, newTopic):
+
+		self.gui.topicChanged(self,user,channel,newTopic)
+
+		return irc.IRCClient.topicUpdated(self, user, channel, newTopic)
 
 	def lineReceived(self, line):
 
