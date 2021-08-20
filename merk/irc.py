@@ -50,7 +50,7 @@ from twisted.words.protocols.irc import ctcpStringify
 from .resources import *
 from . import config
 
-CONNECTIONS = []
+CONNECTIONS = {}
 
 def connect(**kwargs):
 	bot = IRC_Connection_Factory(**kwargs)
@@ -120,7 +120,7 @@ class IRC_Connection(irc.IRCClient):
 
 		irc.IRCClient.connectionMade(self)
 
-		CONNECTIONS.append(self)
+		CONNECTIONS[self.client_id] = self
 
 		self.gui.connectionMade(self)
 
@@ -133,11 +133,7 @@ class IRC_Connection(irc.IRCClient):
 
 		self.registered = False
 
-		clean = []
-		for e in CONNECTIONS:
-			if e.client_id==self.client_id: next
-			clean.append(e)
-		CONNECTIONS = clean
+		del CONNECTIONS[self.client_id]
 
 		self.gui.connectionLost(self)
 

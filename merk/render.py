@@ -24,6 +24,8 @@
 #
 
 from itertools import combinations
+import re
+import html
 
 from .resources import *
 from . import config
@@ -76,8 +78,19 @@ def render_message(message,style):
 	
 	msg_to_display = message.contents
 
-	if string_has_irc_formatting_codes(msg_to_display):
-		msg_to_display = convert_irc_color_to_html(msg_to_display)
+	# Escape all HTML
+	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE:
+		msg_to_display = html.escape(msg_to_display)
+
+	if config.CONVERT_URLS_TO_LINKS:
+		msg_to_display = inject_www_links(msg_to_display,style["hyperlink"])
+
+	if config.DISPLAY_IRC_COLORS:
+		if string_has_irc_formatting_codes(msg_to_display):
+			msg_to_display = convert_irc_color_to_html(msg_to_display)
+	else:
+		if string_has_irc_formatting_codes(msg_to_display):
+			msg_to_display = strip_color(msg_to_display)
 
 	p = message.sender.split('!')
 	if len(p)==2:
@@ -88,9 +101,11 @@ def render_message(message,style):
 	if message.type==SYSTEM_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["system"]
+		msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
 	elif message.type==ERROR_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["error"]
+		msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
 	elif message.type==ACTION_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["action"]
@@ -158,6 +173,14 @@ def render_message(message,style):
 
 	return output
 
+def inject_www_links(txt,style):
+
+	urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', txt)
+	for u in urls:
+		u = re.sub('<[^<]+?>', '', u)
+		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"
+		txt = txt.replace(u,link)
+	return txt
 
 # IRC COLOR CODES
 

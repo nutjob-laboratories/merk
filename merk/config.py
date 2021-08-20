@@ -57,6 +57,9 @@ WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = True
 ISSUE_COMMAND_SYMBOL = '/'
 DEFAULT_QUIT_MESSAGE = APPLICATION_NAME+" "+APPLICATION_VERSION
 DEFAULT_SPELLCHECK_LANGUAGE = "en"
+SYSTEM_MESSAGE_PREFIX = "&diams;"
+DISPLAY_IRC_COLORS = True
+CONVERT_URLS_TO_LINKS = True
 
 def save_settings(filename):
 
@@ -77,6 +80,9 @@ def save_settings(filename):
 		"issue_command_symbol": ISSUE_COMMAND_SYMBOL,
 		"default_quit_message": DEFAULT_QUIT_MESSAGE,
 		"default_spellcheck_language": DEFAULT_SPELLCHECK_LANGUAGE,
+		"system_message_prefix": SYSTEM_MESSAGE_PREFIX,
+		"display_irc_colors": DISPLAY_IRC_COLORS,
+		"convert_urls_to_links": CONVERT_URLS_TO_LINKS,
 	}
 
 	with open(filename, "w") as write_data:
@@ -115,6 +121,12 @@ def patch_settings(settings):
 		settings["default_quit_message"] = DEFAULT_QUIT_MESSAGE
 	if not "default_spellcheck_language" in settings:
 		settings["default_spellcheck_language"] = DEFAULT_SPELLCHECK_LANGUAGE
+	if not "system_message_prefix" in settings:
+		settings["system_message_prefix"] = SYSTEM_MESSAGE_PREFIX
+	if not "display_irc_colors" in settings:
+		settings["display_irc_colors"] = DISPLAY_IRC_COLORS
+	if not "convert_urls_to_links" in settings:
+		settings["convert_urls_to_links"] = CONVERT_URLS_TO_LINKS
 
 	return settings
 
@@ -135,6 +147,9 @@ def load_settings(filename):
 	global ISSUE_COMMAND_SYMBOL
 	global DEFAULT_QUIT_MESSAGE
 	global DEFAULT_SPELLCHECK_LANGUAGE
+	global SYSTEM_MESSAGE_PREFIX
+	global DISPLAY_IRC_COLORS
+	global CONVERT_URLS_TO_LINKS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -160,6 +175,9 @@ def load_settings(filename):
 		ISSUE_COMMAND_SYMBOL = settings["issue_command_symbol"]
 		DEFAULT_QUIT_MESSAGE = settings["default_quit_message"]
 		DEFAULT_SPELLCHECK_LANGUAGE = settings["default_spellcheck_language"]
+		SYSTEM_MESSAGE_PREFIX = settings["system_message_prefix"]
+		DISPLAY_IRC_COLORS = settings["display_irc_colors"]
+		CONVERT_URLS_TO_LINKS = settings["convert_urls_to_links"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -187,6 +205,9 @@ def check_settings(filename):
 			if not "issue_command_symbol" in settings: return False
 			if not "default_quit_message" in settings: return False
 			if not "default_spellcheck_language" in settings: return False
+			if not "system_message_prefix" in settings: return False
+			if not "display_irc_colors" in settings: return False
+			if not "convert_urls_to_links" in settings: return False
 	else:
 		return False
 

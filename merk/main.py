@@ -401,27 +401,18 @@ class Merk(QMainWindow):
 		# ...and then display it to the user
 		t = Message(SELF_MESSAGE,window.client.nickname,user_input)
 		window.writeText(t)
+
+	
+	def handleConsoleInput(self,window,user_input):
 		
+		# Handle common commands
+		if self.handleCommonCommands(window,user_input): return
+
+		t = Message(ERROR_MESSAGE,'',"Unrecognized command: "+user_input)
+		window.writeText(t)
 
 	def handleChatCommands(self,window,user_input):
 		tokens = user_input.split()
-
-		# |-------|
-		# | /quit |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)==1:
-				window.client.quit(config.DEFAULT_QUIT_MESSAGE)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:
-				tokens.pop(0)
-				msg = ' '.join(tokens)
-				window.client.quit(msg)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]")
-				window.writeText(t)
-				return True
 		
 		# |-------|
 		# | /part |
@@ -451,6 +442,26 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |-------|
+		# | /quit |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)==1:
+				if len(config.DEFAULT_QUIT_MESSAGE)>0:
+					window.client.quit(config.DEFAULT_QUIT_MESSAGE)
+				else:
+					window.client.quit()
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:
+				tokens.pop(0)
+				msg = ' '.join(tokens)
+				window.client.quit(msg)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]")
+				window.writeText(t)
+				return True
 
 		# |-------|
 		# | /nick |
@@ -542,11 +553,6 @@ class Merk(QMainWindow):
 
 		return False
 
-	def handleConsoleInput(self,window,user_input):
-		
-		# Handle common commands
-		if self.handleCommonCommands(window,user_input): return
-
 	def openPrivate(self,client,nick):
 
 		# Find and raise the private chat window
@@ -636,7 +642,8 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.addSeparator()
 
-		for entry in irc.CONNECTIONS:
+		for i in irc.CONNECTIONS:
+			entry = irc.CONNECTIONS[i]
 			if entry.hostname:
 				name = entry.hostname
 			else:
