@@ -69,7 +69,7 @@ miscgroup = parser.add_argument_group('Configuration')
 miscgroup.add_argument("-C","--config", type=str,help="Use an alternate configuration file", metavar="FILE", default=None)
 # Change the below default to None to store files in the home directory
 miscgroup.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=config.INSTALL_DIRECTORY)
-miscgroup.add_argument("--config-name",dest="configname",type=str,help="Name of the config file directory (default: .merk)", metavar="NAME", default=".merk")
+miscgroup.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 miscgroup.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
 
 args = parser.parse_args()

@@ -254,6 +254,8 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			msg = ""
 
+		self.gui.irc_QUIT(self,nick,msg)
+
 	def irc_RPL_NAMREPLY(self, prefix, params):
 		channel = params[2].lower()
 		nicklist = params[3].split(' ')

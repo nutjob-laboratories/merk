@@ -479,6 +479,30 @@ class Merk(QMainWindow):
 						t = Message(SYSTEM_MESSAGE,"",oldname+" is now known as "+newname)
 						c.writeText(t)
 
+	def irc_QUIT(self,client,nickname,msg):
+
+		windows = self.getAllSubWindows(client)
+
+		for subwindow in windows:
+			c = subwindow.widget()
+			if hasattr(c,"client"):
+				if c.window_type==CHANNEL_WINDOW:
+					if nickname in c.nicks:
+						c.client.sendLine("NAMES "+c.name)
+						# Now notify the client
+						if msg!='':
+							t = Message(SYSTEM_MESSAGE,"",nickname+" has quit IRC ("+msg+")")
+						else:
+							t = Message(SYSTEM_MESSAGE,"",nickname+" has quit IRC")
+						c.writeText(t)
+				if c.window_type==PRIVATE_WINDOW:
+					if c.name==nickname:
+						if msg!='':
+							t = Message(SYSTEM_MESSAGE,"",nickname+" has quit IRC ("+msg+")")
+						else:
+							t = Message(SYSTEM_MESSAGE,"",nickname+" has quit IRC")
+						c.writeText(t)
+
 	# END IRC EVENTS
 
 	def handleUserInput(self,window,user_input):

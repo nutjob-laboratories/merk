@@ -240,4 +240,4 @@ def initialize(directory,directory_name):
 	CONFIG_DIRECTORY = os.path.join(directory,directory_name)
 	if not os.path.isdir(CONFIG_DIRECTORY): os.mkdir(CONFIG_DIRECTORY)
 
-	CONFIG_FILE = os.path.join(CONFIG_DIRECTORY, "config.json")
+	CONFIG_FILE = os.path.join(CONFIG_DIRECTORY,"settings.json")
