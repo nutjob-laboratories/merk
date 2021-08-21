@@ -504,18 +504,25 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def serverSetMode(self,client,target,mode,argument):
-		pass
+		self.refreshModeDisplay(client)
 
 	def serverUnsetMode(self,client,target,mode):
-		pass
+		self.refreshModeDisplay(client)
 
 	def setMode(self,client,user,target,mode,argument):
-		pass
+		self.refreshModeDisplay(client)
 
 	def unsetMode(self,client,user,target,mode,argument):
-		pass
+		self.refreshModeDisplay(client)
 
 	# END IRC EVENTS
+
+	def refreshModeDisplay(self,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					c.refreshModeDisplay()
 
 	def handleUserInput(self,window,user_input):
 

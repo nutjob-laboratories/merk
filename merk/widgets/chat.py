@@ -131,9 +131,11 @@ class Window(QMainWindow):
 
 		# Nickname display
 		self.nick_display = QLabel("<b>"+self.client.nickname+"</b>")
+		self.mode_display = QLabel("")
 
 		# Hide the nickname display on server windows
 		if self.window_type==SERVER_WINDOW: self.nick_display.hide()
+		if self.window_type==SERVER_WINDOW: self.mode_display.hide()
 
 		# Spellcheck Button
 		self.spellcheckMenu = QMenu("Spellcheck")
@@ -172,8 +174,12 @@ class Window(QMainWindow):
 		self.spellcheckMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 		self.spellcheckMenuButton.setToolTip("Spellcheck")
 
+		nickLayout = QHBoxLayout()
+		nickLayout.addWidget(self.nick_display)
+		nickLayout.addWidget(self.mode_display)
+
 		inputLayout = QHBoxLayout()
-		inputLayout.addWidget(self.nick_display)
+		inputLayout.addLayout(nickLayout)
 		inputLayout.addWidget(self.input)
 		inputLayout.addWidget(self.spellcheckMenuButton)
 
@@ -222,6 +228,12 @@ class Window(QMainWindow):
 
 		# Load and apply default style
 		self.applyStyle()
+
+	def refreshModeDisplay(self):
+		if len(self.client.usermodes)==0:
+			self.mode_display.setText("")
+		else:
+			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
 		
 	def updateTitle(self):
 		self.setWindowTitle(self.name)
