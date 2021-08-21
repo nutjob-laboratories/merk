@@ -60,6 +60,8 @@ DEFAULT_SPELLCHECK_LANGUAGE = "en"
 SYSTEM_MESSAGE_PREFIX = "&diams;"
 DISPLAY_IRC_COLORS = True
 CONVERT_URLS_TO_LINKS = True
+AUTOCOMPLETE_COMMANDS = True
+AUTOCOMPLETE_NICKS = True
 
 def save_settings(filename):
 
@@ -83,6 +85,8 @@ def save_settings(filename):
 		"system_message_prefix": SYSTEM_MESSAGE_PREFIX,
 		"display_irc_colors": DISPLAY_IRC_COLORS,
 		"convert_urls_to_links": CONVERT_URLS_TO_LINKS,
+		"autocomplete_commands": AUTOCOMPLETE_COMMANDS,
+		"autocomplete_nicks": AUTOCOMPLETE_NICKS,
 	}
 
 	with open(filename, "w") as write_data:
@@ -127,6 +131,10 @@ def patch_settings(settings):
 		settings["display_irc_colors"] = DISPLAY_IRC_COLORS
 	if not "convert_urls_to_links" in settings:
 		settings["convert_urls_to_links"] = CONVERT_URLS_TO_LINKS
+	if not "autocomplete_commands" in settings:
+		settings["autocomplete_commands"] = AUTOCOMPLETE_COMMANDS
+	if not "autocomplete_nicks" in settings:
+		settings["autocomplete_nicks"] = AUTOCOMPLETE_NICKS
 
 	return settings
 
@@ -150,6 +158,8 @@ def load_settings(filename):
 	global SYSTEM_MESSAGE_PREFIX
 	global DISPLAY_IRC_COLORS
 	global CONVERT_URLS_TO_LINKS
+	global AUTOCOMPLETE_COMMANDS
+	global AUTOCOMPLETE_NICKS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -178,6 +188,8 @@ def load_settings(filename):
 		SYSTEM_MESSAGE_PREFIX = settings["system_message_prefix"]
 		DISPLAY_IRC_COLORS = settings["display_irc_colors"]
 		CONVERT_URLS_TO_LINKS = settings["convert_urls_to_links"]
+		AUTOCOMPLETE_COMMANDS = settings["autocomplete_commands"]
+		AUTOCOMPLETE_NICKS = settings["autocomplete_nicks"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -208,6 +220,8 @@ def check_settings(filename):
 			if not "system_message_prefix" in settings: return False
 			if not "display_irc_colors" in settings: return False
 			if not "convert_urls_to_links" in settings: return False
+			if not "autocomplete_commands" in settings: return False
+			if not "autocomplete_nicks" in settings: return False
 	else:
 		return False
 
