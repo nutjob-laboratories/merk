@@ -690,7 +690,7 @@ class SpellTextEdit(QPlainTextEdit):
 				if self.textCursor().hasSelection():
 					text = self.textCursor().selectedText()
 
-					self.COMMAND_LIST = self.parent.parent.COMMAND_AUTOCOMPLETE
+					self.COMMAND_LIST = self.parent.parent.command_autocomplete_data
 
 					for c in self.COMMAND_LIST:
 						cmd = c

@@ -190,9 +190,13 @@ class IRC_Connection(irc.IRCClient):
 
 		self.sendLine("NAMES "+channel)
 
+		self.gui.userJoined(self,user,channel)
+
 	def userLeft(self, user, channel):
 
 		self.sendLine("NAMES "+channel)
+
+		self.gui.userLeft(self,user,channel)
 
 	def nickChanged(self,nick):
 		self.nickname = nick
@@ -220,7 +224,8 @@ class IRC_Connection(irc.IRCClient):
 		self.setNick(self.last_tried_nickname)
 
 	def userRenamed(self, oldname, newname):
-		pass
+
+		self.gui.userRenamed(self,oldname,newname)
 
 	def action(self, user, channel, data):
 		pnick = user.split('!')[0]

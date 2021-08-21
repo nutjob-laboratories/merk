@@ -82,7 +82,6 @@ class Merk(QMainWindow):
 		# the MDI widget
 		self.MDI = QMdiArea()
 		self.setCentralWidget(self.MDI)
-
 		self.MDI.subWindowActivated.connect(self.subWindowActivated)
 
 		# Set the background image of the MDI widget
@@ -113,24 +112,6 @@ class Merk(QMainWindow):
 
 		self.buildWindowsMenu()
 
-		# c = self.newChannelWindow("#flarp",None)
-		# self.newPrivateWindow("Bob",None)
-		# self.newPrivateWindow("Joe",None)
-		# self.newServerWindow("Bob",None)
-
-		# w = c.widget()
-		# w.writeUserlist(
-		# 		[
-		# 			"@flarple",
-		# 			"joe",
-		# 			"alfie",
-		# 			"+sn00g",
-		# 			"+clark",
-		# 			"herb",
-		# 			"@argyle"
-		# 		]
-		# 	)
-
 		irc.reconnect(
 			nickname="bob",
 			server="localhost",
@@ -145,11 +126,11 @@ class Merk(QMainWindow):
 			failreconnect=True,
 		)
 
-		
 		# Entries for command autocomplete
-		self.COMMAND_AUTOCOMPLETE = {
+		self.command_autocomplete_data = {
 				config.ISSUE_COMMAND_SYMBOL+"part": config.ISSUE_COMMAND_SYMBOL+"part ",
 				config.ISSUE_COMMAND_SYMBOL+"join": config.ISSUE_COMMAND_SYMBOL+"join ",
+				config.ISSUE_COMMAND_SYMBOL+"notice": config.ISSUE_COMMAND_SYMBOL+"notice ",
 				config.ISSUE_COMMAND_SYMBOL+"nick": config.ISSUE_COMMAND_SYMBOL+"nick ",
 				config.ISSUE_COMMAND_SYMBOL+"help": config.ISSUE_COMMAND_SYMBOL+"help",
 				config.ISSUE_COMMAND_SYMBOL+"topic": config.ISSUE_COMMAND_SYMBOL+"topic ",
@@ -159,10 +140,11 @@ class Merk(QMainWindow):
 			}
 
 		# The command help system
-		COMMAND_HELP = [
+		command_help_information = [
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help</b>", "Displays command usage information" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE</b>", "Sends a CTCP action message to the current chat" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE</b>", "Sends a message" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE</b>", "Sends a notice" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]</b>", "Joins a channel" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]</b>", "Leaves a channel" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
@@ -170,15 +152,19 @@ class Merk(QMainWindow):
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		]
 
-		HELP_ENTRY='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
+		help_entry_template='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
 
-		HELP_HTML_TEMPLATE='''<table style="width: 100%" border="0">
+		help_display_template='''<table style="width: 100%" border="0">
 			<tbody>
 		        <tr>
 		          <td><center><b>Commands</b></center></td>
 		        </tr>
 		        <tr>
-		          <td><center><small>Arguments inside brackets are optional. If called from a channel window, channel windows can be omitted to apply the command to the current channel.</small></center></td>
+		          <td><small>
+		          Arguments inside brackets are optional. If called from a channel window,
+		          channel windows can be omitted to apply the command to the current channel.
+		          %_AUTOCOMPLETE_%
+		          </small></td>
 		        </tr>
 		        <tr>
 		          <td>&nbsp;</center></td>
@@ -195,15 +181,20 @@ class Merk(QMainWindow):
 		      </tbody>
 		    </table>'''
 
+		if config.AUTOCOMPLETE_COMMANDS:
+			help_display_template = help_display_template.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use, type the first few characters of a command and press the \"tab\" key to complete the command.")
+		else:
+			help_display_template = help_display_template.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned off.")
+
 		hdisplay = []
-		for e in COMMAND_HELP:
-			t = HELP_ENTRY
+		for e in command_help_information:
+			t = help_entry_template
 			t = t.replace("%_USAGE_%",e[0])
 			t = t.replace("%_DESCRIPTION_%",e[1])
 			hdisplay.append(t)
-		HELP_DISPLAY = HELP_HTML_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
+		help_display = help_display_template.replace("%_LIST_%","\n".join(hdisplay))
 
-		self.HELP = Message(RAW_SYSTEM_MESSAGE,'',HELP_DISPLAY)
+		self.HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
 	# BEGIN IRC EVENTS
 
@@ -448,6 +439,46 @@ class Merk(QMainWindow):
 							if user!='':
 								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
 								c.writeText(t)
+
+	def userJoined(self,client,user,channel):
+		w = self.getWindow(channel,client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',user+" joined "+channel)
+			w.writeText(t)
+			return
+
+	def userLeft(self,client,user,channel):
+		w = self.getWindow(channel,client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',user+" left "+channel)
+			w.writeText(t)
+			return
+
+	def userRenamed(self,client,oldname,newname):
+
+		windows = self.getAllSubWindows(client)
+
+		for subwindow in windows:
+			c = subwindow.widget()
+			if hasattr(c,"client"):
+				if c.window_type==CHANNEL_WINDOW:
+					if oldname in c.nicks:
+						# Changer is present, get the new user list
+						c.client.sendLine("NAMES "+c.name)
+						# Now notify the client
+						t = Message(SYSTEM_MESSAGE,"",oldname+" is now known as "+newname)
+						c.writeText(t)
+				# If we're chatting with the changer, then
+				# change the settings of the chat window
+				# to relect the new nick
+				if c.window_type==PRIVATE_WINDOW:
+					if c.name==oldname:
+						c.name=newname
+						c.updateTitle()
+						# Notify the client of the change
+						t = Message(SYSTEM_MESSAGE,"",oldname+" is now known as "+newname)
+						c.writeText(t)
+
 	# END IRC EVENTS
 
 	def handleUserInput(self,window,user_input):
@@ -545,6 +576,29 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |---------|
+		# | /notice |
+		# |---------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'notice' and len(tokens)>=3:
+				tokens.pop(0)
+				target = tokens.pop(0)
+				msg = ' '.join(tokens)
+				window.client.notice(target,msg)
+
+				# If we have the target's window open, write
+				# the message there
+				w = self.getWindow(target,window.client)
+				if w:
+					t = Message(NOTICE_MESSAGE,window.client.nickname,msg)
+					w.writeText(t)
+
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'notice':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE")
+				window.writeText(t)
+				return True
 
 		# |------|
 		# | /msg |
@@ -764,6 +818,16 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if c.client.client_id == client.client_id:
 					retval.append(window)
+		return retval
+
+	def getAllSubChannelWindows(self,client):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					if c.window_type==CHANNEL_WINDOW:
+						retval.append(window)
 		return retval
 
 
