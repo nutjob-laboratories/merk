@@ -503,6 +503,18 @@ class Merk(QMainWindow):
 							t = Message(SYSTEM_MESSAGE,"",nickname+" has quit IRC")
 						c.writeText(t)
 
+	def serverSetMode(self,client,target,mode,argument):
+		pass
+
+	def serverUnsetMode(self,client,target,mode):
+		pass
+
+	def setMode(self,client,user,target,mode,argument):
+		pass
+
+	def unsetMode(self,client,user,target,mode,argument):
+		pass
+
 	# END IRC EVENTS
 
 	def handleUserInput(self,window,user_input):

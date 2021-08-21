@@ -94,6 +94,7 @@ class IRC_Connection(irc.IRCClient):
 		self.last_tried_nickname = ''
 
 		self.names = {}
+		self.usermodes = ''
 
 		self.maxnicklen = 0
 		self.maxchannels = 0
@@ -180,6 +181,50 @@ class IRC_Connection(irc.IRCClient):
 	def receivedMOTD(self, motd):
 		
 		self.gui.receivedMOTD(self,motd)
+
+	def modeChanged(self, user, channel, mset, modes, args):
+		if "b" in modes: self.sendLine(f"MODE {channel} +b")
+		if "o" in modes: self.sendLine("NAMES "+channel)
+		if "v" in modes: self.sendLine("NAMES "+channel)
+
+		for m in modes:
+			if mset:
+				if m=='k':
+					self.gui.SetMode(self,user,channel,m,args[0])
+					continue
+				self.gui.setMode(self,user,channel,m,None)
+			else:
+				self.gui.unsetMode(self,user,channel,m,None)
+
+
+	def irc_RPL_CHANNELMODEIS(self, prefix, params):
+		params.pop(0)
+		target = params.pop(0)
+
+		for m in params:
+			if len(m)>0:
+				if m[0] == "+":
+					m = m[1:]
+
+					if m=="k":
+						params.pop(0)
+						chankey = params.pop(0)
+						self.gui.serverSetMode(self,target,m,chankey)
+						continue
+
+					#events.mode(self.gui,self,channel,self.hostname,True,m,[])
+					self.gui.serverSetMode(self,target,m,None)
+
+					if target==self.nickname:
+						self.usermodes = self.usermodes+m
+
+				else:
+					m = m[1:]
+					# mode removed
+					self.gui.serverUnsetMode(self,target,m,None)
+
+					if target==self.nickname:
+						self.usermodes = self.usermodes.replace(m,'')
 
 	def nickChanged(self,nick):
 		self.nickname = nick
