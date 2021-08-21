@@ -154,16 +154,20 @@ class Merk(QMainWindow):
 				config.ISSUE_COMMAND_SYMBOL+"help": config.ISSUE_COMMAND_SYMBOL+"help",
 				config.ISSUE_COMMAND_SYMBOL+"topic": config.ISSUE_COMMAND_SYMBOL+"topic ",
 				config.ISSUE_COMMAND_SYMBOL+"quit": config.ISSUE_COMMAND_SYMBOL+"quit",
+				config.ISSUE_COMMAND_SYMBOL+"msg": config.ISSUE_COMMAND_SYMBOL+"msg ",
+				config.ISSUE_COMMAND_SYMBOL+"me": config.ISSUE_COMMAND_SYMBOL+"me ",
 			}
 
 		# The command help system
 		COMMAND_HELP = [
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help</b>", "Displays command usage information" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE</b>", "Sends a CTCP action message to the current chat" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE</b>", "Sends a message" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]</b>", "Joins a channel" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]</b>", "Leaves a channel" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help</b>", "Displays command usage information" ],
 		]
 
 		HELP_ENTRY='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
@@ -472,6 +476,22 @@ class Merk(QMainWindow):
 	def handleChatCommands(self,window,user_input):
 		tokens = user_input.split()
 
+		# |-----|
+		# | /me |
+		# |-----|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me' and len(tokens)>=2:
+				tokens.pop(0)
+				msg = ' '.join(tokens)
+				window.client.describe(window.name,msg)
+				t = Message(ACTION_MESSAGE,window.client.nickname,msg)
+				window.writeText(t)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE")
+				window.writeText(t)
+				return True
+
 		# |--------|
 		# | /topic |
 		# |--------|
@@ -525,6 +545,29 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |------|
+		# | /msg |
+		# |------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg' and len(tokens)>=3:
+				tokens.pop(0)
+				target = tokens.pop(0)
+				msg = ' '.join(tokens)
+				window.client.msg(target,msg)
+
+				# If we have the target's window open, write
+				# the message there
+				w = self.getWindow(target,window.client)
+				if w:
+					t = Message(SELF_MESSAGE,window.client.nickname,msg)
+					w.writeText(t)
+
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE")
+				window.writeText(t)
+				return True
 
 		# |-------|
 		# | /help |
