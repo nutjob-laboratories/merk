@@ -182,6 +182,18 @@ class IRC_Connection(irc.IRCClient):
 		
 		self.gui.receivedMOTD(self,motd)
 
+	def irc_RPL_BANLIST(self,prefix,params):
+		# bans
+		channel = params[1]
+		mask = params[2]
+		banner = params[3]
+		timestamp = params[4]
+
+	def irc_RPL_ENDOFBANLIST(self,prefix,params):
+		# bans end
+		#print(prefix,params)
+		pass
+
 	def modeChanged(self, user, channel, mset, modes, args):
 		if "b" in modes: self.sendLine(f"MODE {channel} +b")
 		if "o" in modes: self.sendLine("NAMES "+channel)
@@ -193,8 +205,12 @@ class IRC_Connection(irc.IRCClient):
 					self.gui.SetMode(self,user,channel,m,args[0])
 					continue
 				self.gui.setMode(self,user,channel,m,None)
+
+				if channel==self.nickname: self.usermodes = self.usermodes + m
 			else:
 				self.gui.unsetMode(self,user,channel,m,None)
+
+				if channel==self.nickname: self.usermodes = self.usermodes.replace(m,'')
 
 
 	def irc_RPL_CHANNELMODEIS(self, prefix, params):
@@ -356,6 +372,8 @@ class IRC_Connection(irc.IRCClient):
 		d = line2.split(" ")
 		if len(d) >= 2:
 			if d[1].isalpha(): return irc.IRCClient.lineReceived(self, line)
+
+		#print(line2)
 
 		if "Cannot join channel (+k)" in line2:
 			#events.received_error(self.gui,self,f"Cannot join channel (wrong or missing password)")
