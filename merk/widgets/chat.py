@@ -30,6 +30,7 @@ from PyQt5 import QtCore
 
 import re
 import uuid
+import fnmatch
 
 from spellchecker import SpellChecker
 
@@ -678,6 +679,42 @@ class SpellTextEdit(QPlainTextEdit):
 			cursor = self.textCursor()
 
 			if self.toPlainText().strip()=='': return
+
+			# Auto-complete commands
+			cursor.select(QTextCursor.BlockUnderCursor)
+			self.setTextCursor(cursor)
+			if self.textCursor().hasSelection():
+				text = self.textCursor().selectedText()
+
+				self.COMMAND_LIST = self.parent.parent.COMMAND_AUTOCOMPLETE
+
+				for c in self.COMMAND_LIST:
+					cmd = c
+					rep = self.COMMAND_LIST[c]
+
+					if fnmatch.fnmatch(cmd,f"{text}*"):
+						cursor.beginEditBlock()
+						cursor.insertText(rep)
+						cursor.endEditBlock()
+						return
+
+			# Auto-complete nicks
+			cursor.select(QTextCursor.WordUnderCursor)
+			self.setTextCursor(cursor)
+			if self.textCursor().hasSelection():
+				text = self.textCursor().selectedText()
+
+				# Nicks
+				chan_nicks = self.parent.nicks
+				for nick in chan_nicks:
+					# Skip client's nickname
+					if nick==self.parent.client.nickname:
+						continue
+					if fnmatch.fnmatch(nick,f"{text}*"):
+						cursor.beginEditBlock()
+						cursor.insertText(f"{nick}")
+						cursor.endEditBlock()
+						return
 
 			cursor.movePosition(QTextCursor.End)
 			self.setTextCursor(cursor)

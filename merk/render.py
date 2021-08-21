@@ -79,7 +79,7 @@ def render_message(message,style):
 	msg_to_display = message.contents
 
 	# Escape all HTML
-	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE:
+	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE:
 		msg_to_display = html.escape(msg_to_display)
 
 	if config.CONVERT_URLS_TO_LINKS:
@@ -128,6 +128,9 @@ def render_message(message,style):
 	elif message.type==PRIVATE_MESSAGE:
 		output = MESSAGE_TEMPLATE
 		output_style = style["message"]
+	elif message.type==RAW_SYSTEM_MESSAGE:
+		output = SYSTEM_TEMPLATE
+		output_style = style["raw"]
 
 	if style=="":
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)

@@ -88,8 +88,6 @@ class IRC_Connection(irc.IRCClient):
 
 		objectconfig(self,**kwargs)
 
-		print(self.client_id)
-
 		self.oldnick = self.nickname
 		self.uptime = 0
 		self.registered = False

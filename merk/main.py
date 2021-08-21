@@ -145,6 +145,62 @@ class Merk(QMainWindow):
 			failreconnect=True,
 		)
 
+		
+		# Entries for command autocomplete
+		self.COMMAND_AUTOCOMPLETE = {
+				config.ISSUE_COMMAND_SYMBOL+"part": config.ISSUE_COMMAND_SYMBOL+"part ",
+				config.ISSUE_COMMAND_SYMBOL+"join": config.ISSUE_COMMAND_SYMBOL+"join ",
+				config.ISSUE_COMMAND_SYMBOL+"nick": config.ISSUE_COMMAND_SYMBOL+"nick ",
+				config.ISSUE_COMMAND_SYMBOL+"help": config.ISSUE_COMMAND_SYMBOL+"help",
+				config.ISSUE_COMMAND_SYMBOL+"topic": config.ISSUE_COMMAND_SYMBOL+"topic ",
+				config.ISSUE_COMMAND_SYMBOL+"quit": config.ISSUE_COMMAND_SYMBOL+"quit",
+			}
+
+		# The command help system
+		COMMAND_HELP = [
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]</b>", "Joins a channel" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]</b>", "Leaves a channel" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help</b>", "Displays command usage information" ],
+		]
+
+		HELP_ENTRY='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
+
+		HELP_HTML_TEMPLATE='''<table style="width: 100%" border="0">
+			<tbody>
+		        <tr>
+		          <td><center><b>Commands</b></center></td>
+		        </tr>
+		        <tr>
+		          <td><center><small>Arguments inside brackets are optional. If called from a channel window, channel windows can be omitted to apply the command to the current channel.</small></center></td>
+		        </tr>
+		        <tr>
+		          <td>&nbsp;</center></td>
+		        </tr>
+		        <tr>
+		          <td>
+		            <table style="width: 100%" border="0">
+		              <tbody>
+		                %_LIST_%
+		              </tbody>
+		            </table>
+		          </td>
+		        </tr>
+		      </tbody>
+		    </table>'''
+
+		hdisplay = []
+		for e in COMMAND_HELP:
+			t = HELP_ENTRY
+			t = t.replace("%_USAGE_%",e[0])
+			t = t.replace("%_DESCRIPTION_%",e[1])
+			hdisplay.append(t)
+		HELP_DISPLAY = HELP_HTML_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
+
+		self.HELP = Message(RAW_SYSTEM_MESSAGE,'',HELP_DISPLAY)
+
 	# BEGIN IRC EVENTS
 
 	def connectionMade(self,client):
@@ -415,6 +471,31 @@ class Merk(QMainWindow):
 
 	def handleChatCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |--------|
+		# | /topic |
+		# |--------|
+		# The version of the command allows the user to omit the
+		# channel name in the command, much like with /part
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic' and len(tokens)>=2:
+				tokens.pop(0)
+				if tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+':
+					# It's a channel, so do nothing; this will be handled
+					# by handleCommonCommands()
+					pass
+				else:
+					# Check to make sure that we're trying to set a topic on
+					# a channel window and not a private message window
+					if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
+						channel = window.name
+						msg = ' '.join(tokens)
+						window.client.topic(channel,msg)
+						return True
+					else:
+						t = Message(ERROR_MESSAGE,'',"Can't set topic for a private message")
+						window.writeText(t)
+						return True
 		
 		# |-------|
 		# | /part |
@@ -444,6 +525,29 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |-------|
+		# | /help |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'help':
+				window.writeText(self.HELP)
+				return True
+
+		# |--------|
+		# | /topic |
+		# |--------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic' and len(tokens)>=3:
+				tokens.pop(0)
+				channel = tokens.pop(0)
+				msg = ' '.join(tokens)
+				window.client.topic(channel,msg)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC")
+				window.writeText(t)
+				return True
 
 		# |-------|
 		# | /quit |
