@@ -38,6 +38,7 @@ from ..resources import *
 from .. import config
 from .. import styles
 from .. import render
+from ..dialog import *
 
 class Window(QMainWindow):
 
@@ -133,6 +134,11 @@ class Window(QMainWindow):
 		self.nick_display = QLabel("<b>"+self.client.nickname+"</b>")
 		self.mode_display = QLabel("")
 
+		self.nick_display.installEventFilter(self)
+
+		if len(self.client.usermodes)>0:
+			self.mode_display.setText("+"+self.client.usermodes)
+
 		# Hide the nickname display on server windows
 		if self.window_type==SERVER_WINDOW: self.nick_display.hide()
 		if self.window_type==SERVER_WINDOW: self.mode_display.hide()
@@ -174,7 +180,52 @@ class Window(QMainWindow):
 		self.spellcheckMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 		self.spellcheckMenuButton.setToolTip("Spellcheck")
 
+		if self.window_type!=SERVER_WINDOW:
+
+			self.op_icon = QLabel(self)
+			pixmap = QPixmap(OP_USER)
+			fm = QFontMetrics(self.app.font())
+			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.op_icon.setPixmap(pixmap)
+
+			self.voice_icon = QLabel(self)
+			pixmap = QPixmap(VOICE_USER)
+			fm = QFontMetrics(self.app.font())
+			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.voice_icon.setPixmap(pixmap)
+
+			self.owner_icon = QLabel(self)
+			pixmap = QPixmap(OWNER_USER)
+			fm = QFontMetrics(self.app.font())
+			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.owner_icon.setPixmap(pixmap)
+
+			self.admin_icon = QLabel(self)
+			pixmap = QPixmap(ADMIN_USER)
+			fm = QFontMetrics(self.app.font())
+			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.admin_icon.setPixmap(pixmap)
+
+			self.halfop_icon = QLabel(self)
+			pixmap = QPixmap(HALFOP_USER)
+			fm = QFontMetrics(self.app.font())
+			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.halfop_icon.setPixmap(pixmap)
+
+			self.op_icon.hide()
+			self.voice_icon.hide()
+			self.owner_icon.hide()
+			self.admin_icon.hide()
+			self.halfop_icon.hide()
+
+
 		nickLayout = QHBoxLayout()
+		if self.window_type!=SERVER_WINDOW:
+			nickLayout.addWidget(self.op_icon)
+			nickLayout.addWidget(self.voice_icon)
+			nickLayout.addWidget(self.owner_icon)
+			nickLayout.addWidget(self.admin_icon)
+			nickLayout.addWidget(self.halfop_icon)
 		nickLayout.addWidget(self.nick_display)
 		nickLayout.addWidget(self.mode_display)
 
@@ -237,6 +288,18 @@ class Window(QMainWindow):
 		
 	def updateTitle(self):
 		self.setWindowTitle(self.name)
+
+	def eventFilter(self, source, event):
+
+		# Name click
+		if (event.type() == QtCore.QEvent.MouseButtonDblClick and source is self.nick_display):
+			info = NewNickDialog(self.client.nickname,self)
+			if info!=None:
+				self.client.setNick(info)
+				return True
+
+
+		return super(Window, self).eventFilter(source, event)
 
 	def applyStyle(self,filename=None):
 		if filename == None:
@@ -302,19 +365,19 @@ class Window(QMainWindow):
 
 			if '@' in nickname:
 				ops.append(nickname.replace('@',''))
-				#if nickname.replace('@','')==self.client.nickname: self.operator = True
+				if nickname.replace('@','')==self.client.nickname: self.operator = True
 			elif '+' in nickname:
 				voiced.append(nickname.replace('+',''))
-				#if nickname.replace('+','')==self.client.nickname: self.voiced = True
+				if nickname.replace('+','')==self.client.nickname: self.voiced = True
 			elif '~' in nickname:
 				owners.append(nickname.replace('~',''))
-				#if nickname.replace('~','')==self.client.nickname: self.owner = True
+				if nickname.replace('~','')==self.client.nickname: self.owner = True
 			elif '&' in nickname:
 				admins.append(nickname.replace('&',''))
-				#if nickname.replace('&','')==self.client.nickname: self.admin = True
+				if nickname.replace('&','')==self.client.nickname: self.admin = True
 			elif '%' in nickname:
 				halfops.append(nickname.replace('%',''))
-				#if nickname.replace('%','')==self.client.nickname: self.halfop = True
+				if nickname.replace('%','')==self.client.nickname: self.halfop = True
 			else:
 				normal.append(nickname)
 
@@ -378,6 +441,18 @@ class Window(QMainWindow):
 			self.userlist.addItem(ui)
 
 		self.userlist.update()
+
+		self.op_icon.hide()
+		self.voice_icon.hide()
+		self.owner_icon.hide()
+		self.admin_icon.hide()
+		self.halfop_icon.hide()
+
+		if self.operator: self.op_icon.show()
+		if self.voiced: self.voice_icon.show()
+		if self.owner: self.owner_icon.show()
+		if self.admin: self.admin_icon.show()
+		if self.halfop: self.halfop_icon.show()
 
 	def refreshNickDisplay(self):
 		self.nick_display.setText("<b>"+self.client.nickname+"</b>")
