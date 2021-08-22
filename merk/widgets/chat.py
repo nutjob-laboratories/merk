@@ -285,9 +285,21 @@ class Window(QMainWindow):
 			self.mode_display.setText("")
 		else:
 			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
+		self.updateTitle()
 		
 	def updateTitle(self):
-		self.setWindowTitle(self.name)
+
+		if self.window_type==CHANNEL_WINDOW:
+			if self.name in self.client.channelmodes:
+				if len(self.client.channelmodes[self.name])>0:
+					modes = " +"+self.client.channelmodes[self.name]
+				else:
+					modes = ''
+			else:
+				modes = ''
+			self.setWindowTitle(self.name+modes)
+		else:
+			self.setWindowTitle(self.name)
 
 	def eventFilter(self, source, event):
 
