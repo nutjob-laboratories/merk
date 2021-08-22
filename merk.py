@@ -40,6 +40,7 @@ from twisted.internet import reactor
 
 from merk.main import Merk
 from merk.resources import *
+from merk.dialog import *
 import merk.config as config
 import merk.styles as styles
 import merk.logs as logs
@@ -118,12 +119,16 @@ if __name__ == '__main__':
 	# Set Qt widget style
 	app.setStyle(args.qtstyle)
 
+	# Bring up the connection dialog
+	connection_info = ConnectDialog(app)
+
 	# Create the main GUI and show it
 	GUI = Merk(
 			app,				# Application
 			args.configdir,		# Config directory, default None for home directory storage
 			args.configname,	# Config directory name, default ".merk"
 			configuration_file,	# Config filename, default None for default config file
+			connection_info,	# Connection info
 			None,				# Parent
 		)
 

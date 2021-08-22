@@ -624,6 +624,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			return
 
 class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 	def __init__(self,**kwargs):

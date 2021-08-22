@@ -24,6 +24,15 @@
 #
 
 from .newnick import Dialog as Nick
+from .connect import Dialog as Connect
+
+def ConnectDialog(app):
+	x = Connect(app)
+	info = x.get_connect_information(app)
+	del x
+
+	if not info: return None
+	return info
 
 def NewNickDialog(nick,obj):
 	x = Nick(nick,obj)

@@ -38,6 +38,7 @@ from . import styles
 from . import widgets
 from . import render
 from . import irc
+from .dialog import *
 
 # from .irc import(
 # 	connect,
@@ -68,6 +69,7 @@ class Merk(QMainWindow):
 			configuration_location=None,
 			configuration_directory_name=".merk",
 			configuration_file=None,
+			connection_info=None,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -105,6 +107,10 @@ class Merk(QMainWindow):
 		# Main menu
 		self.mainMenu = self.menubar.addMenu(config.DISPLAY_NAME)
 
+		entry = QAction(QIcon(CONNECT_ICON),"Connect",self)
+		entry.triggered.connect(self.connectToIrc)
+		self.mainMenu.addAction(entry)
+
 		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
 		entry.setShortcut('Ctrl+Q')
 		entry.triggered.connect(self.close)
@@ -114,20 +120,6 @@ class Merk(QMainWindow):
 		self.windowsMenu = self.menubar.addMenu("Windows")
 
 		self.buildWindowsMenu()
-
-		irc.reconnect(
-			nickname="bob",
-			server="localhost",
-			port=6667,
-			alternate="b0b",
-			password=None,
-			username="merk_test",
-			realname="The Merk Test",
-			ssl=False,
-			gui=self,
-			reconnect=False,
-			failreconnect=True,
-		)
 
 		# Entries for command autocomplete
 		self.command_autocomplete_data = {
@@ -155,49 +147,24 @@ class Merk(QMainWindow):
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		]
 
-		help_entry_template='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
-
-		help_display_template='''<table style="width: 100%" border="0">
-			<tbody>
-		        <tr>
-		          <td><center><b>Commands</b></center></td>
-		        </tr>
-		        <tr>
-		          <td><small>
-		          Arguments inside brackets are optional. If called from a channel window,
-		          channel windows can be omitted to apply the command to the current channel.
-		          %_AUTOCOMPLETE_%
-		          </small></td>
-		        </tr>
-		        <tr>
-		          <td>&nbsp;</center></td>
-		        </tr>
-		        <tr>
-		          <td>
-		            <table style="width: 100%" border="0">
-		              <tbody>
-		                %_LIST_%
-		              </tbody>
-		            </table>
-		          </td>
-		        </tr>
-		      </tbody>
-		    </table>'''
-
+		global HELP_DISPLAY_TEMPLATE
 		if config.AUTOCOMPLETE_COMMANDS:
-			help_display_template = help_display_template.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use, type the first few characters of a command and press the \"tab\" key to complete the command.")
+			HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use, type the first few characters of a command and press the \"tab\" key to complete the command.")
 		else:
-			help_display_template = help_display_template.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned off.")
+			HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned off.")
 
 		hdisplay = []
 		for e in command_help_information:
-			t = help_entry_template
+			t = HELP_ENTRY_TEMPLATE
 			t = t.replace("%_USAGE_%",e[0])
 			t = t.replace("%_DESCRIPTION_%",e[1])
 			hdisplay.append(t)
-		help_display = help_display_template.replace("%_LIST_%","\n".join(hdisplay))
+		help_display = HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
 
 		self.HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
+
+		if connection_info:
+			self.connectToIrc(connection_info)
 
 	# BEGIN IRC EVENTS
 
@@ -520,6 +487,68 @@ class Merk(QMainWindow):
 
 	# END IRC EVENTS
 
+	def connectToIrc(self,connection_info=None):
+		if connection_info:
+			connection = connection_info
+		else:
+			connection = ConnectDialog(self.app)
+		if connection:
+			
+			if connection.reconnect:
+				if connection.ssl:
+					irc.reconnectSSL(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+				else:
+					irc.reconnect(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+			else:
+				if connection.ssl:
+					irc.connectSSL(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+				else:
+					irc.connect(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+
 	def refreshModeDisplay(self,client):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
@@ -682,7 +711,7 @@ class Merk(QMainWindow):
 		# |-------|
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'help':
-				window.writeText(self.HELP)
+				window.writeText(self.HELP,False)
 				return True
 
 		# |--------|

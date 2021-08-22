@@ -516,7 +516,7 @@ class Window(QMainWindow):
 	def refreshNickDisplay(self):
 		self.nick_display.setText("<b>"+self.client.nickname+"</b>")
 
-	def writeText(self,message):
+	def writeText(self,message,write_to_log=True):
 
 		if type(message)==type(str()):
 			self.chat.append(message)
@@ -526,7 +526,7 @@ class Window(QMainWindow):
 			self.log.append(message)
 
 			# Save entered text to the new log for saving
-			self.new_log.append(message)
+			if write_to_log: self.new_log.append(message)
 
 			t = render.render_message(message,self.style)
 			self.chat.append(t)

@@ -36,6 +36,7 @@ DATA_DIRECTORY = os.path.join(MERK_MODULE_DIRECTORY, "data")
 AUTOCOMPLETE_DIRECTORY = os.path.join(DATA_DIRECTORY, "autocomplete")
 EMOJI_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji2.txt")
 EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji1.txt")
+NETWORK_FILE = os.path.join(DATA_DIRECTORY, "servers.txt")
 
 # Load in major and minor version
 f = open(os.path.join(DATA_DIRECTORY, "major.txt"),mode="r",encoding="latin-1",errors="ignore")
@@ -101,6 +102,7 @@ SPELLCHECK_ICON = ":/icon-spellcheck.png"
 TOGGLE_ON_ICON = ":/icon-turnon.png"
 TOGGLE_OFF_ICON = ":/icon-turnoff.png"
 NETWORK_ICON = ":/icon-network.png"
+CONNECT_ICON = ":/icon-connect.png"
 
 ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
 ROUND_CHECKED_ICON = ":/icon-rchecked.png"
@@ -132,6 +134,35 @@ with open(EMOJI_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") a
 		EMOJI_AUTOCOMPLETE.append(e)
 		line = fp.readline()
 
+HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
+
+HELP_DISPLAY_TEMPLATE='''<table style="width: 100%" border="0">
+	<tbody>
+        <tr>
+          <td><center><b>Commands</b></center></td>
+        </tr>
+        <tr>
+          <td><small>
+          Arguments inside brackets are optional. If called from a channel window,
+          channel windows can be omitted to apply the command to the current channel.
+          %_AUTOCOMPLETE_%
+          </small></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</center></td>
+        </tr>
+        <tr>
+          <td>
+            <table style="width: 100%" border="0">
+              <tbody>
+                %_LIST_%
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>'''
+
 # Classes
 
 class Message:
@@ -143,6 +174,18 @@ class Message:
 		self.type = mtype
 		self.sender = sender
 		self.contents = contents
+
+class ConnectInfo:
+	def __init__(self,nick,alt,username,realname,host,port,password,reconnect,ssl):
+		self.nickname = nick
+		self.alternate = alt
+		self.username = username
+		self.realname = realname
+		self.host = host
+		self.port = port
+		self.password = password
+		self.reconnect = reconnect
+		self.ssl = ssl
 
 # Functions
 
