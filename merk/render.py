@@ -74,6 +74,46 @@ SYSTEM_TEMPLATE = f"""
 MESSAGE_STYLE_TEMPLATE = """<td style="text-align: left; vertical-align: top;"><div style="!MESSAGE_STYLE!">!MESSAGE!</div></td>"""
 MESSAGE_NO_STYLE_TEMPLATE = """<td style="text-align: left; vertical-align: top;">!MESSAGE!</td>"""
 
+HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
+HARD_HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
+LIGHT_HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
+HARD_LIGHT_HORIZONTAL_RULE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
 def render_message(message,style):
 	
 	msg_to_display = message.contents
@@ -131,6 +171,22 @@ def render_message(message,style):
 	elif message.type==RAW_SYSTEM_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["raw"]
+	elif message.type==HORIZONTAL_RULE_MESSAGE:
+
+		if test_if_background_is_light(style["all"]):
+			output = HORIZONTAL_RULE
+		else:
+			output = LIGHT_HORIZONTAL_RULE
+
+		style = style["message"]
+	elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
+
+		if test_if_background_is_light(style["all"]):
+			output = HARD_HORIZONTAL_RULE
+		else:
+			output = HARD_LIGHT_HORIZONTAL_RULE
+
+		style = style["message"]
 
 	if style=="":
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)
@@ -138,16 +194,18 @@ def render_message(message,style):
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_STYLE_TEMPLATE)
 		output = output.replace("!MESSAGE_STYLE!",output_style)
 
-	if config.DISPLAY_TIMESTAMP:
-		tfs = '%H:%M:%S'
-		pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(tfs)
+	if message.type!=HORIZONTAL_RULE_MESSAGE and message.type!=HARD_HORIZONTAL_RULE_MESSAGE:
 
-		ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!",style["timestamp"])
-		ts = ts.replace("!TIME!",pretty_timestamp)
+		if config.DISPLAY_TIMESTAMP:
+			tfs = '%H:%M:%S'
+			pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(tfs)
 
-		output = output.replace("!TIMESTAMP!",ts)
-	else:
-		output = output.replace("!TIMESTAMP!",'')
+			ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!",style["timestamp"])
+			ts = ts.replace("!TIME!",pretty_timestamp)
+
+			output = output.replace("!TIMESTAMP!",ts)
+		else:
+			output = output.replace("!TIMESTAMP!",'')
 
 	if message.type==SELF_MESSAGE:
 		user_style = style["self"]

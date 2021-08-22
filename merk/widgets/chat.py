@@ -39,6 +39,7 @@ from .. import config
 from .. import styles
 from .. import render
 from ..dialog import *
+from .. import logs
 
 class Window(QMainWindow):
 
@@ -62,6 +63,9 @@ class Window(QMainWindow):
 		self.history_buffer_pointer = 0
 
 		self.spellcheck_enabled = True
+
+		self.log = []
+		self.new_log = []
 
 		self.users = []
 		self.nicks = []
@@ -280,6 +284,52 @@ class Window(QMainWindow):
 		# Load and apply default style
 		self.applyStyle()
 
+		load_logs = True
+
+		if self.window_type==CHANNEL_WINDOW:
+			if config.LOAD_CHANNEL_LOGS:
+				load_logs=True
+			else:
+				load_logs=False
+
+		if self.window_type==PRIVATE_WINDOW:
+			if config.LOAD_PRIVATE_LOGS:
+				load_logs=True
+			else:
+				load_logs=False
+
+		# Load in any saved logs
+		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+
+			if load_logs:
+				loadLog = logs.readLog(self.client.network,self.name,logs.LOG_DIRECTORY)
+				if len(loadLog)>config.MAXIMUM_LOADED_LOG_SIZE:
+					loadLog = logs.trimLog(loadLog,config.MAXIMUM_LOADED_LOG_SIZE)
+
+				if len(loadLog)>0:
+					self.log = loadLog + self.log
+
+					# Mark end of loaded log
+					if config.MARK_END_OF_LOADED_LOG:
+						self.log.append(Message(HARD_HORIZONTAL_RULE_MESSAGE,'',''))
+
+					# Show resume message
+					t = datetime.timestamp(datetime.now())
+					pretty_timestamp = datetime.fromtimestamp(t).strftime('%m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+					self.log.append(Message(SYSTEM_MESSAGE,'',"Resumed on "+pretty_timestamp))
+
+				self.rerenderChatLog()
+
+	def rerenderChatLog(self):
+
+		self.chat.clear()
+		for line in self.log:
+			t = render.render_message(line,self.style)
+			self.chat.append(t)
+
+		self.chat.moveCursor(QTextCursor.End)
+		self.input.setFocus()
+
 	def refreshModeDisplay(self):
 		if len(self.client.usermodes)==0:
 			self.mode_display.setText("")
@@ -469,12 +519,19 @@ class Window(QMainWindow):
 	def refreshNickDisplay(self):
 		self.nick_display.setText("<b>"+self.client.nickname+"</b>")
 
-	def writeText(self,text):
+	def writeText(self,message):
 
-		if type(text)==type(str()):
-			self.chat.append(text)
+		if type(message)==type(str()):
+			self.chat.append(message)
 		else:
-			t = render.render_message(text,self.style)
+
+			# Save entered text to the current log
+			self.log.append(message)
+
+			# Save entered text to the new log for saving
+			self.new_log.append(message)
+
+			t = render.render_message(message,self.style)
 			self.chat.append(t)
 		self.moveChatToBottom()
 
@@ -491,6 +548,26 @@ class Window(QMainWindow):
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
 			self.client.leave(self.name,config.DEFAULT_QUIT_MESSAGE)
+
+		save_logs = True
+
+		if self.window_type==CHANNEL_WINDOW:
+			if config.SAVE_CHANNEL_LOGS:
+				save_logs=True
+			else:
+				save_logs=False
+
+		if self.window_type==PRIVATE_WINDOW:
+			if config.SAVE_PRIVATE_LOGS:
+				save_logs=True
+			else:
+				save_logs=False
+
+		# Save logs
+		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+			if save_logs:
+				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+
 
 		# Let the parent know that this subwindow
 		# has been closed by the user

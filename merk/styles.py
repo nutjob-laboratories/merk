@@ -31,10 +31,6 @@ from pathlib import Path
 
 from .resources import *
 
-INSTALL_DIRECTORY = sys.path[0]
-MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
-DATA_DIRECTORY = os.path.join(MERK_MODULE_DIRECTORY, "data")
-
 CONFIG_DIRECTORY = None
 STYLE_DIRECTORY = None
 STYLE_FILE = None

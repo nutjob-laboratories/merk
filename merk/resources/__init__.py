@@ -82,6 +82,8 @@ NOTICE_MESSAGE = 5
 SERVER_MESSAGE = 6
 PRIVATE_MESSAGE = 7
 RAW_SYSTEM_MESSAGE = 8
+HORIZONTAL_RULE_MESSAGE = 9
+HARD_HORIZONTAL_RULE_MESSAGE = 10
 
 # Icons
 
@@ -109,6 +111,11 @@ OWNER_USER = ":/gui-owner.png"
 VOICE_USER = ":/gui-voice.png"
 NORMAL_USER = ":/gui-normal.png"
 
+HORIZONTAL_DOTTED_BACKGROUND = ":/gui-horizontal_dotted.png"
+HORIZONTAL_RULE_BACKGROUND = ":/gui-horizontal_rule.png"
+LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
+LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
+
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
 with open(EMOJI_ALIAS_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:
@@ -135,3 +142,26 @@ class Message:
 		self.type = mtype
 		self.sender = sender
 		self.contents = contents
+
+# Functions
+
+def test_if_background_is_light(style):
+
+	bg = None
+	style = style.strip()
+	for e in style.split(';'):
+		y = e.split(':')
+		if len(y)==2:
+			c = y[0].strip()
+			if c.lower()=='background-color':
+				bg = y[1].strip()
+
+	if bg!=None:
+		c = tuple(int(bg[i:i + 2], 16) / 255. for i in (1, 3, 5))
+		luma = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+		luma = luma*100
+
+		if luma>=40:
+			return True
+		else:
+			return False

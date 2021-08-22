@@ -42,6 +42,7 @@ from merk.main import Merk
 from merk.resources import *
 import merk.config as config
 import merk.styles as styles
+import merk.logs as logs
 
 # Handle commandline arguments
 
@@ -83,6 +84,9 @@ if __name__ == '__main__':
 
 	# Initialize the styles system
 	styles.initialize(args.configdir,args.configname)
+
+	# Initialize the logs system
+	logs.initialize(args.configdir,args.configname)
 
 	# Set the configuration file name
 	if args.config==None:

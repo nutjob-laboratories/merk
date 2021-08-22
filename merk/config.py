@@ -58,8 +58,13 @@ DISPLAY_IRC_COLORS = True
 CONVERT_URLS_TO_LINKS = True
 AUTOCOMPLETE_COMMANDS = True
 AUTOCOMPLETE_NICKS = True
-
 AUTOCOMPLETE_EMOJIS = True
+MAXIMUM_LOADED_LOG_SIZE = 500
+MARK_END_OF_LOADED_LOG = True
+SAVE_CHANNEL_LOGS = True
+LOAD_CHANNEL_LOGS = True
+SAVE_PRIVATE_LOGS = True
+LOAD_PRIVATE_LOGS = True
 
 def save_settings(filename):
 
@@ -86,12 +91,26 @@ def save_settings(filename):
 		"autocomplete_commands": AUTOCOMPLETE_COMMANDS,
 		"autocomplete_nicks": AUTOCOMPLETE_NICKS,
 		"autocomplete_emojis": AUTOCOMPLETE_EMOJIS,
+		"maximum_loaded_log_size": MAXIMUM_LOADED_LOG_SIZE,
+		"mark_end_of_loaded_log": MARK_END_OF_LOADED_LOG,
+		"save_channel_logs": SAVE_CHANNEL_LOGS,
+		"load_channel_logs": LOAD_CHANNEL_LOGS,
+		"save_private_logs": SAVE_PRIVATE_LOGS,
+		"load_private_logs": LOAD_PRIVATE_LOGS,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "save_private_logs" in settings:
+		settings["save_private_logs"] = SAVE_PRIVATE_LOGS
+	if not "load_private_logs" in settings:
+		settings["load_private_logs"] = LOAD_PRIVATE_LOGS
+	if not "save_channel_logs" in settings:
+		settings["save_channel_logs"] = SAVE_CHANNEL_LOGS
+	if not "load_channel_logs" in settings:
+		settings["load_channel_logs"] = LOAD_CHANNEL_LOGS
 	if not "mdi_background_image" in settings:
 		settings["mdi_background_image"] = MDI_BACKGROUND_IMAGE
 	if not "application_font" in settings:
@@ -136,6 +155,10 @@ def patch_settings(settings):
 		settings["autocomplete_nicks"] = AUTOCOMPLETE_NICKS
 	if not "autocomplete_emojis" in settings:
 		settings["autocomplete_emojis"] = AUTOCOMPLETE_EMOJIS
+	if not "maximum_loaded_log_size" in settings:
+		settings["maximum_loaded_log_size"] = MAXIMUM_LOADED_LOG_SIZE
+	if not "mark_end_of_loaded_log" in settings:
+		settings["mark_end_of_loaded_log"] = MARK_END_OF_LOADED_LOG
 
 	return settings
 
@@ -162,6 +185,12 @@ def load_settings(filename):
 	global AUTOCOMPLETE_COMMANDS
 	global AUTOCOMPLETE_NICKS
 	global AUTOCOMPLETE_EMOJIS
+	global MAXIMUM_LOADED_LOG_SIZE
+	global MARK_END_OF_LOADED_LOG
+	global SAVE_CHANNEL_LOGS
+	global LOAD_CHANNEL_LOGS
+	global SAVE_PRIVATE_LOGS
+	global LOAD_PRIVATE_LOGS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -171,6 +200,10 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SAVE_PRIVATE_LOGS = settings["save_private_logs"]
+		LOAD_PRIVATE_LOGS = settings["load_private_logs"]
+		SAVE_CHANNEL_LOGS = settings["save_channel_logs"]
+		LOAD_CHANNEL_LOGS = settings["load_channel_logs"]
 		MDI_BACKGROUND_IMAGE = settings["mdi_background_image"]
 		APPLICATION_FONT = settings["application_font"]
 		DISPLAY_NAME = settings["display_name"]
@@ -193,6 +226,8 @@ def load_settings(filename):
 		AUTOCOMPLETE_COMMANDS = settings["autocomplete_commands"]
 		AUTOCOMPLETE_NICKS = settings["autocomplete_nicks"]
 		AUTOCOMPLETE_EMOJIS = settings["autocomplete_emojis"]
+		MAXIMUM_LOADED_LOG_SIZE = settings["maximum_loaded_log_size"]
+		MARK_END_OF_LOADED_LOG = settings["mark_end_of_loaded_log"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -226,6 +261,12 @@ def check_settings(filename):
 			if not "autocomplete_commands" in settings: return False
 			if not "autocomplete_nicks" in settings: return False
 			if not "autocomplete_emojis" in settings: return False
+			if not "maximum_loaded_log_size" in settings: return False
+			if not "mark_end_of_loaded_log" in settings: return False
+			if not "save_channel_logs" in settings: return False
+			if not "load_channel_logs" in settings: return False
+			if not "save_private_logs" in settings: return False
+			if not "load_private_logs" in settings: return False
 	else:
 		return False
 
