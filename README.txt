@@ -56,6 +56,7 @@ Several tools are included in [the official **mƏrk** repository](https://github
 		 - The `merk` directory and its contents
 		 - The `qt5reactor` directory and its contents
 		 - The `spellchecker` directory and its contents
+		 - The `emoji` directory and its contents
 	 - Zips up the `dist` directory either using [PowerShell](https://en.wikipedia.org/wiki/PowerShell) (if the host system is Windows) or the [zip](https://linux.die.net/man/1/zip) utility (if the host system is Linux) into a file named `dist.zip`
 	 - Deletes the `dist` directory and its contents
 	 - Renames `dist.zip` to "merk-*MAJOR VERSION*.zip", referred to as `merk.zip` in this description.
