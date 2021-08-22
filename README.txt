@@ -21,9 +21,13 @@ To connect to IRC servers via SSL, two additional libraries are needed:
 If you're running Windows, and you're getting errors when trying to run **mƏrk**, you may have to install another library, [pywin32](https://pypi.org/project/pywin32/). You can also install this with [**pip**](https://pypi.org/project/pip/):
 
     pip install pywin32
- To run properly on Linux, the latest version of all required software is recommended.  There is one library that comes bundled with **mƏrk**:
+
+To run properly on Linux, the latest version of all required software is recommended.
+
+There are three libraries that comes bundled with **mƏrk**:
  - [qt5reactor](https://github.com/twisted/qt5reactor)
  - [pyspellchecker](https://github.com/barrust/pyspellchecker)
+ - [emoji](https://github.com/carpedm20/emoji)
 
 # Running mƏrk
 

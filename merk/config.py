@@ -30,10 +30,6 @@ from pathlib import Path
 
 from .resources import *
 
-INSTALL_DIRECTORY = sys.path[0]
-MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
-DATA_DIRECTORY = os.path.join(MERK_MODULE_DIRECTORY, "data")
-
 CONFIG_DIRECTORY = None
 CONFIG_FILE = None
 
@@ -63,6 +59,8 @@ CONVERT_URLS_TO_LINKS = True
 AUTOCOMPLETE_COMMANDS = True
 AUTOCOMPLETE_NICKS = True
 
+AUTOCOMPLETE_EMOJIS = True
+
 def save_settings(filename):
 
 	settings = {
@@ -87,6 +85,7 @@ def save_settings(filename):
 		"convert_urls_to_links": CONVERT_URLS_TO_LINKS,
 		"autocomplete_commands": AUTOCOMPLETE_COMMANDS,
 		"autocomplete_nicks": AUTOCOMPLETE_NICKS,
+		"autocomplete_emojis": AUTOCOMPLETE_EMOJIS,
 	}
 
 	with open(filename, "w") as write_data:
@@ -135,6 +134,8 @@ def patch_settings(settings):
 		settings["autocomplete_commands"] = AUTOCOMPLETE_COMMANDS
 	if not "autocomplete_nicks" in settings:
 		settings["autocomplete_nicks"] = AUTOCOMPLETE_NICKS
+	if not "autocomplete_emojis" in settings:
+		settings["autocomplete_emojis"] = AUTOCOMPLETE_EMOJIS
 
 	return settings
 
@@ -160,6 +161,7 @@ def load_settings(filename):
 	global CONVERT_URLS_TO_LINKS
 	global AUTOCOMPLETE_COMMANDS
 	global AUTOCOMPLETE_NICKS
+	global AUTOCOMPLETE_EMOJIS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -190,6 +192,7 @@ def load_settings(filename):
 		CONVERT_URLS_TO_LINKS = settings["convert_urls_to_links"]
 		AUTOCOMPLETE_COMMANDS = settings["autocomplete_commands"]
 		AUTOCOMPLETE_NICKS = settings["autocomplete_nicks"]
+		AUTOCOMPLETE_EMOJIS = settings["autocomplete_emojis"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -222,6 +225,7 @@ def check_settings(filename):
 			if not "convert_urls_to_links" in settings: return False
 			if not "autocomplete_commands" in settings: return False
 			if not "autocomplete_nicks" in settings: return False
+			if not "autocomplete_emojis" in settings: return False
 	else:
 		return False
 

@@ -24,16 +24,25 @@
 #
 
 from datetime import datetime
+import sys
+import os
 
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
+INSTALL_DIRECTORY = sys.path[0]
+MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
+DATA_DIRECTORY = os.path.join(MERK_MODULE_DIRECTORY, "data")
+AUTOCOMPLETE_DIRECTORY = os.path.join(DATA_DIRECTORY, "autocomplete")
+EMOJI_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji2.txt")
+EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji1.txt")
+
 # Load in major and minor version
-f = open("./merk/data/major.txt","r")
+f = open(os.path.join(DATA_DIRECTORY, "major.txt"),mode="r",encoding="latin-1",errors="ignore")
 major = f.read()
 f.close()
 
-f = open("./merk/data/minor.txt","r")
+f = open(os.path.join(DATA_DIRECTORY, "minor.txt"),mode="r",encoding="latin-1",errors="ignore")
 minor = f.read()
 f.close()
 
@@ -99,6 +108,21 @@ OP_USER = ":/gui-op.png"
 OWNER_USER = ":/gui-owner.png"
 VOICE_USER = ":/gui-voice.png"
 NORMAL_USER = ":/gui-normal.png"
+
+# Load in autocomplete data
+EMOJI_AUTOCOMPLETE = []
+with open(EMOJI_ALIAS_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:
+	line = fp.readline()
+	while line:
+		e = line.strip()
+		EMOJI_AUTOCOMPLETE.append(e)
+		line = fp.readline()
+with open(EMOJI_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:
+	line = fp.readline()
+	while line:
+		e = line.strip()
+		EMOJI_AUTOCOMPLETE.append(e)
+		line = fp.readline()
 
 # Classes
 

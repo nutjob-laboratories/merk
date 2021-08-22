@@ -30,11 +30,14 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
+import emoji
+
 from .resources import *
 from . import config
 from . import styles
 from . import widgets
 from . import render
+from . import irc
 
 # from .irc import(
 # 	connect,
@@ -44,7 +47,7 @@ from . import render
 # 	CONNECTIONS
 # )
 
-from . import irc
+
 
 class Merk(QMainWindow):
 
@@ -532,6 +535,9 @@ class Merk(QMainWindow):
 		# Handle common commands
 		if self.handleCommonCommands(window,user_input): return
 		
+		# Add emojis to the message
+		user_input = emoji.emojize(user_input,use_aliases=True)
+
 		# Client has sent a chat message, so send the message
 		window.client.msg(window.name,user_input)
 		# ...and then display it to the user
@@ -557,6 +563,7 @@ class Merk(QMainWindow):
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me' and len(tokens)>=2:
 				tokens.pop(0)
 				msg = ' '.join(tokens)
+				msg = emoji.emojize(msg,use_aliases=True)
 				window.client.describe(window.name,msg)
 				t = Message(ACTION_MESSAGE,window.client.nickname,msg)
 				window.writeText(t)
@@ -584,6 +591,7 @@ class Merk(QMainWindow):
 					if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
 						channel = window.name
 						msg = ' '.join(tokens)
+						msg = emoji.emojize(msg,use_aliases=True)
 						window.client.topic(channel,msg)
 						return True
 					else:
@@ -612,6 +620,7 @@ class Merk(QMainWindow):
 					# Channel name hasn't been passed, it must be a message
 					channel = window.name
 					msg = ' '.join(tokens)
+					msg = emoji.emojize(msg,use_aliases=True)
 					window.client.leave(channel,msg)
 					return True
 
@@ -628,6 +637,7 @@ class Merk(QMainWindow):
 				tokens.pop(0)
 				target = tokens.pop(0)
 				msg = ' '.join(tokens)
+				msg = emoji.emojize(msg,use_aliases=True)
 				window.client.notice(target,msg)
 
 				# If we have the target's window open, write
@@ -651,6 +661,7 @@ class Merk(QMainWindow):
 				tokens.pop(0)
 				target = tokens.pop(0)
 				msg = ' '.join(tokens)
+				msg = emoji.emojize(msg,use_aliases=True)
 				window.client.msg(target,msg)
 
 				# If we have the target's window open, write
@@ -682,6 +693,7 @@ class Merk(QMainWindow):
 				tokens.pop(0)
 				channel = tokens.pop(0)
 				msg = ' '.join(tokens)
+				msg = emoji.emojize(msg,use_aliases=True)
 				window.client.topic(channel,msg)
 				return True
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic':
@@ -703,6 +715,7 @@ class Merk(QMainWindow):
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:
 				tokens.pop(0)
 				msg = ' '.join(tokens)
+				msg = emoji.emojize(msg,use_aliases=True)
 				window.client.quit(msg)
 				self.quitting[window.client.client_id] = 0
 				return True
@@ -746,6 +759,7 @@ class Merk(QMainWindow):
 				tokens.pop(0)
 				channel = tokens.pop(0)
 				msg = ' '.join(tokens)
+				msg = emoji.emojize(msg,use_aliases=True)
 				window.client.leave(channel,msg)
 				return True
 

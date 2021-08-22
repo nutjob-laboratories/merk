@@ -61,6 +61,7 @@ os.mkdir("./dist")
 shutil.copytree("./merk", "./dist/merk",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 shutil.copytree("./qt5reactor", "./dist/qt5reactor",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 shutil.copytree("./spellchecker", "./dist/spellchecker",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
+shutil.copytree("./emoji", "./dist/emoji",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 
 shutil.copy("./merk.py", "./dist/merk.py")
 shutil.copy("./LICENSE", "./dist/LICENSE")
