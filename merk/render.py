@@ -114,6 +114,32 @@ HARD_LIGHT_HORIZONTAL_RULE = f'''
 	</tbody>
 </table>'''
 
+TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+			<td><small><center><b>!MESSAGE!</b></center></small></td>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
+LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+			<td><small><center><b>!MESSAGE!</b></center></small></td>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
 def render_message(message,style):
 	
 	msg_to_display = message.contents
@@ -187,6 +213,14 @@ def render_message(message,style):
 			output = HARD_LIGHT_HORIZONTAL_RULE
 
 		style = style["message"]
+	elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
+
+		if test_if_background_is_light(style["all"]):
+			output = TEXT_HORIZONTAL_RULE_TEMPLATE
+		else:
+			output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
+
+		style = style["message"]
 
 	if style=="":
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)
@@ -194,7 +228,7 @@ def render_message(message,style):
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_STYLE_TEMPLATE)
 		output = output.replace("!MESSAGE_STYLE!",output_style)
 
-	if message.type!=HORIZONTAL_RULE_MESSAGE and message.type!=HARD_HORIZONTAL_RULE_MESSAGE:
+	if message.type!=HORIZONTAL_RULE_MESSAGE and message.type!=HARD_HORIZONTAL_RULE_MESSAGE and message.type!=TEXT_HORIZONTAL_RULE_MESSAGE:
 
 		if config.DISPLAY_TIMESTAMP:
 			tfs = '%H:%M:%S'

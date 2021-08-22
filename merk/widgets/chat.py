@@ -311,12 +311,9 @@ class Window(QMainWindow):
 
 					# Mark end of loaded log
 					if config.MARK_END_OF_LOADED_LOG:
-						self.log.append(Message(HARD_HORIZONTAL_RULE_MESSAGE,'',''))
-
-					# Show resume message
-					t = datetime.timestamp(datetime.now())
-					pretty_timestamp = datetime.fromtimestamp(t).strftime('%m/%d/%Y, '+config.TIMESTAMP_FORMAT)
-					self.log.append(Message(SYSTEM_MESSAGE,'',"Resumed on "+pretty_timestamp))
+						t = datetime.timestamp(datetime.now())
+						pretty_timestamp = datetime.fromtimestamp(t).strftime('%m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+						self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
 
 				self.rerenderChatLog()
 
