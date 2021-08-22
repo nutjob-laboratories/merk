@@ -224,9 +224,9 @@ class Dialog(QDialog):
 		
 		for s in organized_list:
 			if s[3].lower()=='ssl':
-				self.servers.addItem(QIcon(NEXT_ICON),s[2]+" - "+s[0])
+				self.servers.addItem(QIcon(SECURE_ICON),s[2]+" - "+s[0])
 			else:
-				self.servers.addItem(QIcon(PREVIOUS_ICON),s[2]+" - "+s[0])
+				self.servers.addItem(QIcon(BOOKMARK_ICON),s[2]+" - "+s[0])
 
 			self.StoredData.append(s)
 

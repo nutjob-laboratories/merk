@@ -66,13 +66,17 @@ Available Qt widget styles: {", ".join(QStyleFactory.keys())}
 ''',
 )
 
-miscgroup = parser.add_argument_group('Configuration')
+configuration_group = parser.add_argument_group('Configuration')
 
-miscgroup.add_argument("-C","--config", type=str,help="Use an alternate configuration file", metavar="FILE", default=None)
+configuration_group.add_argument("-C","--config", type=str,help="Use an alternate configuration file", metavar="FILE", default=None)
 # Change the below default to None to store files in the home directory
-miscgroup.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=config.INSTALL_DIRECTORY)
-miscgroup.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
-miscgroup.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
+configuration_group.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=config.INSTALL_DIRECTORY)
+configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
+configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
+
+misc_group = parser.add_argument_group('Miscellaneous')
+
+misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
 
 args = parser.parse_args()
 
@@ -119,20 +123,35 @@ if __name__ == '__main__':
 	# Set Qt widget style
 	app.setStyle(args.qtstyle)
 
-	# Bring up the connection dialog
-	connection_info = ConnectDialog(app)
+	if args.noask:
+		# Create the main GUI and show it
+		GUI = Merk(
+				app,				# Application
+				args.configdir,		# Config directory, default None for home directory storage
+				args.configname,	# Config directory name, default ".merk"
+				configuration_file,	# Config filename, default None for default config file
+				None,				# Connection info
+				None,				# Parent
+			)
 
-	# Create the main GUI and show it
-	GUI = Merk(
-			app,				# Application
-			args.configdir,		# Config directory, default None for home directory storage
-			args.configname,	# Config directory name, default ".merk"
-			configuration_file,	# Config filename, default None for default config file
-			connection_info,	# Connection info
-			None,				# Parent
-		)
+		GUI.show()
+	else:
+		# Bring up the connection dialog
+		connection_info = ConnectDialog(app)
+		if connection_info:
+			# Create the main GUI and show it
+			GUI = Merk(
+					app,				# Application
+					args.configdir,		# Config directory, default None for home directory storage
+					args.configname,	# Config directory name, default ".merk"
+					configuration_file,	# Config filename, default None for default config file
+					connection_info,	# Connection info
+					None,				# Parent
+				)
 
-	GUI.show()
+			GUI.show()
+		else:
+			app.quit()
 
 	# Start the reactor!
 	reactor.run()
