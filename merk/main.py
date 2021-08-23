@@ -68,7 +68,6 @@ class Merk(QMainWindow):
 			app,
 			configuration_location=None,
 			configuration_directory_name=".merk",
-			configuration_file=None,
 			connection_info=None,
 			parent=None,
 		):
@@ -79,7 +78,6 @@ class Merk(QMainWindow):
 		self.parent = parent
 		self.configuration_location = configuration_location
 		self.configuration_directory_name = configuration_directory_name
-		self.configuration_file = configuration_file
 
 		self.quitting = {}
 

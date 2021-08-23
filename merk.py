@@ -126,7 +126,6 @@ if __name__ == '__main__':
 				app,				# Application
 				args.configdir,		# Config directory, default None for home directory storage
 				args.configname,	# Config directory name, default ".merk"
-				configuration_file,	# Config filename, default None for default config file
 				None,				# Connection info
 				None,				# Parent
 			)
@@ -141,7 +140,6 @@ if __name__ == '__main__':
 					app,				# Application
 					args.configdir,		# Config directory, default None for home directory storage
 					args.configname,	# Config directory name, default ".merk"
-					configuration_file,	# Config filename, default None for default config file
 					connection_info,	# Connection info
 					None,				# Parent
 				)
