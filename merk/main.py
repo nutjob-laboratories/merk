@@ -174,7 +174,6 @@ class Merk(QMainWindow):
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
 		c.writeText(t)
 
-
 	def connectionLost(self,client):
 		
 		windows = self.getAllSubWindows(client)
@@ -197,7 +196,6 @@ class Merk(QMainWindow):
 				w.name = client.hostname
 				w.updateTitle()
 		
-		client.join("#themaxx")
 		self.nickChanged(client)
 
 	def receivedMOTD(self,client,motd):

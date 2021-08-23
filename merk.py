@@ -44,6 +44,7 @@ from merk.dialog import *
 import merk.config as config
 import merk.styles as styles
 import merk.logs as logs
+import merk.user as user
 
 # Handle commandline arguments
 
@@ -68,7 +69,6 @@ Available Qt widget styles: {", ".join(QStyleFactory.keys())}
 
 configuration_group = parser.add_argument_group('Configuration')
 
-configuration_group.add_argument("-C","--config", type=str,help="Use an alternate configuration file", metavar="FILE", default=None)
 # Change the below default to None to store files in the home directory
 configuration_group.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=config.INSTALL_DIRECTORY)
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
@@ -93,14 +93,11 @@ if __name__ == '__main__':
 	# Initialize the logs system
 	logs.initialize(args.configdir,args.configname)
 
-	# Set the configuration file name
-	if args.config==None:
-		configuration_file = config.CONFIG_FILE
-	else:
-		configuration_file = args.config
+	# Initialize the user system
+	user.initialize(args.configdir,args.configname)
 
 	# Load the config file
-	config.load_settings(configuration_file)
+	config.load_settings(config.CONFIG_FILE)
 
 	# Load in fonts from the resources file
 	fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)

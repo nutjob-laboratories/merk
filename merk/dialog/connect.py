@@ -38,6 +38,7 @@ except Exception as exception:
 
 from ..resources import *
 from .. import config
+from .. import user
 
 class Dialog(QDialog):
 
@@ -50,6 +51,18 @@ class Dialog(QDialog):
 		return None
 
 	def return_info(self):
+
+		# Save user settings
+		user.NICKNAME = self.nick.text()
+		user.ALTERNATE = self.alternative.text()
+		user.USERNAME = self.username.text()
+		user.REALNAME = self.realname.text()
+		user.LAST_HOST = self.host.text()
+		user.LAST_PORT = self.port.text()
+		user.LAST_PASSWORD = self.password.text()
+		user.LAST_SSL = self.CONNECT_VIA_SSL
+		user.LAST_RECONNECT = self.RECONNECT_OPTION
+		user.save_user(user.USER_FILE)
 
 		retval = ConnectInfo(
 			self.nick.text(),
@@ -117,16 +130,19 @@ class Dialog(QDialog):
 		self.StoredData = []
 		self.StoredServer = 0
 
+		# Load in user settings
+		user.load_user(user.USER_FILE)
+
 		self.CONNECT_VIA_SSL = False
-		self.RECONNECT_OPTION = True
+		self.RECONNECT_OPTION = False
 
 		self.setWindowTitle(APPLICATION_NAME+" "+APPLICATION_VERSION)
 		self.setWindowIcon(QIcon(CONNECT_ICON))
 
-		self.nick = QLineEdit('')
-		self.alternative = QLineEdit('')
-		self.username = QLineEdit('')
-		self.realname = QLineEdit('')
+		self.nick = QLineEdit(user.NICKNAME)
+		self.alternative = QLineEdit(user.ALTERNATE)
+		self.username = QLineEdit(user.USERNAME)
+		self.realname = QLineEdit(user.REALNAME)
 
 		nickl = QLabel("Nickname")
 		altl = QLabel("Alternate")
@@ -148,9 +164,9 @@ class Dialog(QDialog):
 
 		self.buildServerSelector()
 
-		self.host = QLineEdit('')
-		self.port = QLineEdit('6667')
-		self.password = QLineEdit('')
+		self.host = QLineEdit(user.LAST_HOST)
+		self.port = QLineEdit(user.LAST_PORT)
+		self.password = QLineEdit(user.LAST_PASSWORD)
 		self.password.setEchoMode(QLineEdit.Password)
 
 		serverLayout = QFormLayout()
@@ -167,8 +183,12 @@ class Dialog(QDialog):
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
 		self.ssl.stateChanged.connect(self.clickSSL)
 
+		if user.LAST_SSL: self.ssl.toggle()
+
 		self.reconnect = QCheckBox("Reconnect",self)
 		self.reconnect.stateChanged.connect(self.clickReconnect)
+
+		if user.LAST_RECONNECT: self.reconnect.toggle()
 
 		sfBox = QVBoxLayout()
 		sfBox.addWidget(self.servers)
