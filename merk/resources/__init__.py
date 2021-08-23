@@ -127,6 +127,8 @@ HORIZONTAL_RULE_BACKGROUND = ":/gui-horizontal_rule.png"
 LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
 LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
 
+DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
+
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
 with open(EMOJI_ALIAS_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:

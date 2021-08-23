@@ -97,7 +97,7 @@ class Window(QMainWindow):
 			self.addToolBar(Qt.TopToolBarArea,self.toolbar)
 			self.toolbar.setFloatable(False)
 
-			self.toolbar.setIconSize(QSize(20, 20))
+			self.toolbar.setIconSize(QSize(15, 15))
 
 			entry = QAction(QIcon(CHANNEL_ICON),"Join a channel",self)
 			entry.triggered.connect(self.joinChannel)
@@ -537,7 +537,23 @@ class Window(QMainWindow):
 		if self.halfop: self.halfop_icon.show()
 
 	def disconnect(self):
-		self.client.quit(config.DEFAULT_QUIT_MESSAGE)
+
+		do_disconnect = True
+
+		if config.ASK_BEFORE_DISCONNECT:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setText("Are you sure you want to disconnect from "+self.client.hostname+"?")
+			msgBox.setWindowTitle("Disconnect")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				do_disconnect = False
+
+		if do_disconnect:
+			self.client.quit(config.DEFAULT_QUIT_MESSAGE)
 
 	def changeNick(self):
 		newnick = NewNickDialog(self.client.nickname,self)

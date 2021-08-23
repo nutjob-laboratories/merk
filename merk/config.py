@@ -65,6 +65,7 @@ SAVE_CHANNEL_LOGS = True
 LOAD_CHANNEL_LOGS = True
 SAVE_PRIVATE_LOGS = True
 LOAD_PRIVATE_LOGS = True
+ASK_BEFORE_DISCONNECT = True
 
 def save_settings(filename):
 
@@ -97,12 +98,15 @@ def save_settings(filename):
 		"load_channel_logs": LOAD_CHANNEL_LOGS,
 		"save_private_logs": SAVE_PRIVATE_LOGS,
 		"load_private_logs": LOAD_PRIVATE_LOGS,
+		"ask_before_disconnect": ASK_BEFORE_DISCONNECT,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "ask_before_disconnect" in settings:
+		settings["ask_before_disconnect"] = ASK_BEFORE_DISCONNECT
 	if not "save_private_logs" in settings:
 		settings["save_private_logs"] = SAVE_PRIVATE_LOGS
 	if not "load_private_logs" in settings:
@@ -191,6 +195,7 @@ def load_settings(filename):
 	global LOAD_CHANNEL_LOGS
 	global SAVE_PRIVATE_LOGS
 	global LOAD_PRIVATE_LOGS
+	global ASK_BEFORE_DISCONNECT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -200,6 +205,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ASK_BEFORE_DISCONNECT = settings["ask_before_disconnect"]
 		SAVE_PRIVATE_LOGS = settings["save_private_logs"]
 		LOAD_PRIVATE_LOGS = settings["load_private_logs"]
 		SAVE_CHANNEL_LOGS = settings["save_channel_logs"]
@@ -267,6 +273,7 @@ def check_settings(filename):
 			if not "load_channel_logs" in settings: return False
 			if not "save_private_logs" in settings: return False
 			if not "load_private_logs" in settings: return False
+			if not "ask_before_disconnect" in settings: return False
 	else:
 		return False
 
