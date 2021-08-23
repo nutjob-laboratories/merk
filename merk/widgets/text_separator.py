@@ -30,59 +30,52 @@ from PyQt5 import QtCore
 
 from ..resources import *
 
-class Dialog(QDialog):
+TEXT_SEPARATOR = f'''
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+			<td><center><small>!TEXT!</small></center></td>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
 
-	@staticmethod
-	def get_nick_information(nick,parent=None):
-		dialog = Dialog(nick,parent)
-		r = dialog.exec_()
-		if r:
-			return dialog.return_info()
-		return None
+LIGHT_TEXT_SEPARATOR = f'''
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+			<td><center><small>!TEXT!</small></center></td>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
 
-		self.close()
+def textSeparatorLabel(obj,text):
 
-	def return_info(self):
+	if test_if_window_background_is_light(obj):
+		gsep = TEXT_SEPARATOR
+	else:
+		gsep = LIGHT_TEXT_SEPARATOR
 
-		retval = self.name.text()
+	return QLabel( gsep.replace("!TEXT!",text.upper()) )
 
-		return retval
+def textSeparator(obj,text):
 
-	def __init__(self,nick,parent=None):
-		super(Dialog,self).__init__(parent)
+	if test_if_window_background_is_light(obj):
+		gsep = TEXT_SEPARATOR
+	else:
+		gsep = LIGHT_TEXT_SEPARATOR
 
-		self.parent = parent
-		self.nick = nick
+	text = text.upper()
+		
+	tsLabel = QLabel( gsep.replace("!TEXT!",text) )
+	tsAction = QWidgetAction(obj)
+	tsAction.setDefaultWidget(tsLabel)
 
-		self.setWindowTitle("Change nickname")
-		self.setWindowIcon(QIcon(PRIVATE_ICON))
-
-		nameLayout = QHBoxLayout()
-		self.nameLabel = QLabel("<b>New nickname:</b>")
-		self.name = QLineEdit()
-		nameLayout.addWidget(self.nameLabel)
-		nameLayout.addStretch()
-		nameLayout.addWidget(self.name)
-
-		self.name.setPlaceholderText(self.nick)
-
-		# Buttons
-		buttons = QDialogButtonBox(self)
-		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-		buttons.accepted.connect(self.accept)
-		buttons.rejected.connect(self.reject)
-
-		nickInfoBox = QGroupBox("",self)
-		nickInfoBox.setLayout(nameLayout)
-		nickInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
-
-		finalLayout = QVBoxLayout()
-		finalLayout.addWidget(nickInfoBox)
-		finalLayout.addWidget(buttons)
-
-		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
-
-		self.setLayout(finalLayout)
-
-		self.name.setFocus()
+	return tsAction

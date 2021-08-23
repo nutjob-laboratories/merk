@@ -24,3 +24,4 @@
 #
 
 from .chat import Window
+from .text_separator import textSeparatorLabel,textSeparator

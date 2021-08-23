@@ -25,10 +25,19 @@
 
 from .newnick import Dialog as Nick
 from .connect import Dialog as Connect
+from .joinchannel import Dialog as JoinChannel
 
-def ConnectDialog(app):
-	x = Connect(app)
-	info = x.get_connect_information(app)
+def JoinChannelDialog(obj):
+	x = JoinChannel(obj)
+	info = x.get_channel_information(obj)
+	del x
+
+	if not info: return None
+	return info
+
+def ConnectDialog(obj):
+	x = Connect(obj)
+	info = x.get_connect_information(obj)
 	del x
 
 	if not info: return None

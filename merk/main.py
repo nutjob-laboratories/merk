@@ -109,6 +109,8 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.connectToIrc)
 		self.mainMenu.addAction(entry)
 
+		self.mainMenu.addSeparator()
+
 		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
 		entry.setShortcut('Ctrl+Q')
 		entry.triggered.connect(self.close)
@@ -925,8 +927,6 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.MDI.tileSubWindows)
 		self.windowsMenu.addAction(entry)
 
-		self.windowsMenu.addSeparator()
-
 		entry = QAction(QIcon(NEXT_ICON),"Next window",self)
 		entry.setShortcut('Ctrl++')
 		entry.triggered.connect(self.MDI.activateNextSubWindow)
@@ -937,7 +937,9 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.MDI.activatePreviousSubWindow)
 		self.windowsMenu.addAction(entry)
 
-		self.windowsMenu.addSeparator()
+		if len(irc.CONNECTIONS)>0:
+			entry = widgets.textSeparator(self,"Subwindows")
+			self.windowsMenu.addAction(entry)
 
 		for i in irc.CONNECTIONS:
 			entry = irc.CONNECTIONS[i]
@@ -1043,4 +1045,59 @@ class Merk(QMainWindow):
 	def closeEvent(self, event):
 		self.app.quit()
 
-	
+def FancyMenuAction(self,icon,title,description,icon_size,func):
+
+	erkmenuLabel = MenuLabel( menuHtml(icon,title,description,icon_size) )
+	erkmenuAction = QWidgetAction(self)
+	erkmenuAction.setDefaultWidget(erkmenuLabel)
+	erkmenuLabel.clicked.connect(func)
+
+	return erkmenuAction
+
+class MenuLabel(QLabel):
+	clicked=pyqtSignal()
+
+	def __init__(self, parent=None):
+		QLabel.__init__(self, parent)
+		self.installEventFilter(self)
+
+	def mousePressEvent(self, ev):
+		self.clicked.emit()
+
+	def eventFilter(self, object, event):
+		if event.type() == QEvent.Enter:
+			col = self.palette().highlight().color().name()
+			highlight = QColor(col).name()
+
+			col = self.palette().highlightedText().color().name()
+			highlight_text = QColor(col).name()
+			
+			self.setStyleSheet(f"background-color: {highlight}; color: {highlight_text};")
+			return True
+		elif event.type() == QEvent.Leave:
+			self.setStyleSheet('')
+			return True
+		return False
+
+def menuHtml(icon,text,description,icon_size):
+	return f'''
+<table style="width: 100%" border="0" cellspacing="2" cellpadding="0">
+	  <tbody>
+		<tr>
+		  <td style="text-align: center; vertical-align: middle;">&nbsp;<img src="{icon}" width="{icon_size}" height="{icon_size}">&nbsp;</td>
+		  <td>
+			<table style="width: 100%" border="0">
+			  <tbody>
+				<tr>
+				  <td style="font-weight: bold;">{text}</td>
+				</tr>
+				<tr>
+				  <td>{description}&nbsp;&nbsp;</td>
+				</tr>
+			  </tbody>
+			</table>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	'''

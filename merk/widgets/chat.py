@@ -92,6 +92,29 @@ class Window(QMainWindow):
 		# For nick autocomplete
 		if self.window_type==PRIVATE_WINDOW: self.nicks = [ self.name ]
 
+		if self.window_type==SERVER_WINDOW:
+			self.toolbar = QToolBar(self)
+			self.addToolBar(Qt.TopToolBarArea,self.toolbar)
+			self.toolbar.setFloatable(False)
+
+			self.toolbar.setIconSize(QSize(20, 20))
+
+			entry = QAction(QIcon(CHANNEL_ICON),"Join a channel",self)
+			entry.triggered.connect(self.joinChannel)
+			self.toolbar.addAction(entry)
+
+			entry = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+			entry.triggered.connect(self.changeNick)
+			self.toolbar.addAction(entry)
+
+			self.spacer = QWidget()
+			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+			self.toolbar.addWidget(self.spacer)
+
+			entry = QAction(QIcon(DISCONNECT_ICON),"Disconnect",self)
+			entry.triggered.connect(self.disconnect)
+			self.toolbar.addAction(entry)
+
 		if self.window_type==CHANNEL_WINDOW:
 			
 			# Create topic editor
@@ -512,6 +535,22 @@ class Window(QMainWindow):
 		if self.owner: self.owner_icon.show()
 		if self.admin: self.admin_icon.show()
 		if self.halfop: self.halfop_icon.show()
+
+	def disconnect(self):
+		self.client.quit(config.DEFAULT_QUIT_MESSAGE)
+
+	def changeNick(self):
+		newnick = NewNickDialog(self.client.nickname,self)
+		if newnick:
+			self.client.setNick(newnick)
+
+	def joinChannel(self):
+		channel_info = JoinChannelDialog(self)
+		if channel_info:
+			if channel_info[0][:1]=='#' or channel_info[0][:1]=='&' or channel_info[0][:1]=='!' or channel_info[0][:1]=='+':
+				self.client.join(channel_info[0],channel_info[1])
+			else:
+				self.client.join('#'+channel_info[0],channel_info[1])
 
 	def refreshNickDisplay(self):
 		self.nick_display.setText("<b>"+self.client.nickname+"</b>")

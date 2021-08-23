@@ -33,8 +33,8 @@ from ..resources import *
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_nick_information(nick,parent=None):
-		dialog = Dialog(nick,parent)
+	def get_channel_information(parent=None):
+		dialog = Dialog(parent)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -44,27 +44,32 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = self.name.text()
+		retval = [self.name.text(),self.key.text()]
 
 		return retval
 
-	def __init__(self,nick,parent=None):
+	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
-		self.nick = nick
 
-		self.setWindowTitle("Change nickname")
-		self.setWindowIcon(QIcon(PRIVATE_ICON))
+		self.setWindowTitle("Join channel")
+		self.setWindowIcon(QIcon(CHANNEL_ICON))
 
 		nameLayout = QHBoxLayout()
-		self.nameLabel = QLabel("<b>New nickname:</b>")
+		self.nameLabel = QLabel("<b>Channel:</b>")
 		self.name = QLineEdit()
 		nameLayout.addWidget(self.nameLabel)
 		nameLayout.addStretch()
 		nameLayout.addWidget(self.name)
 
-		self.name.setPlaceholderText(self.nick)
+		keyLayout = QHBoxLayout()
+		self.keyLabel = QLabel("<b>Key:</b>")
+		self.key = QLineEdit()
+		self.key.setEchoMode(QLineEdit.Password)
+		keyLayout.addWidget(self.keyLabel)
+		keyLayout.addStretch()
+		keyLayout.addWidget(self.key)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -72,12 +77,16 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		nickInfoBox = QGroupBox("",self)
-		nickInfoBox.setLayout(nameLayout)
-		nickInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
+		chanLayout = QVBoxLayout()
+		chanLayout.addLayout(nameLayout)
+		chanLayout.addLayout(keyLayout)
+
+		chanInfoBox = QGroupBox("",self)
+		chanInfoBox.setLayout(chanLayout)
+		chanInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
 
 		finalLayout = QVBoxLayout()
-		finalLayout.addWidget(nickInfoBox)
+		finalLayout.addWidget(chanInfoBox)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
@@ -86,3 +95,4 @@ class Dialog(QDialog):
 		self.setLayout(finalLayout)
 
 		self.name.setFocus()
+
