@@ -204,18 +204,25 @@ class IRC_Connection(irc.IRCClient):
 		for m in modes:
 			if mset:
 				
-				if channel==self.nickname: self.usermodes = self.usermodes + m
+				if channel==self.nickname: 
+					self.usermodes = self.usermodes + m
 
 				if channel in self.channelmodes:
 					self.channelmodes[channel] = self.channelmodes[channel] + m
 				else:
 					self.channelmodes[channel] = m
 
+				# Remove 'o' from channel modes
+				self.channelmodes[channel] = self.channelmodes[channel].replace('o','')
+
 				if m=='k':
 					self.channelkeys[channel] = args[0]
-					self.gui.SetMode(self,user,channel,m,args[0])
+					self.gui.setMode(self,user,channel,m,args[0])
 					continue
-				self.gui.setMode(self,user,channel,m,None)
+				if m=='o':
+					self.gui.setMode(self,user,channel,m,[args[0]])
+					continue
+				self.gui.setMode(self,user,channel,m,[])
 
 			else:
 				
@@ -226,8 +233,11 @@ class IRC_Connection(irc.IRCClient):
 
 				if m=="k":
 					if channel in self.channelkeys: del self.channelkeys[channel]
+				if m=='o':
+					self.gui.unsetMode(self,user,channel,m,[args[0]])
+					continue
 
-				self.gui.unsetMode(self,user,channel,m,None)
+				self.gui.unsetMode(self,user,channel,m,[])
 
 
 
@@ -243,22 +253,36 @@ class IRC_Connection(irc.IRCClient):
 					if m=="k":
 						params.pop(0)
 						chankey = params.pop(0)
+						self.channelkeys[target] = chankey
 						self.gui.serverSetMode(self,target,m,chankey)
 						continue
 
-					#events.mode(self.gui,self,channel,self.hostname,True,m,[])
-					self.gui.serverSetMode(self,target,m,None)
+					
 
 					if target==self.nickname:
 						self.usermodes = self.usermodes+m
 
+					if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+						if target in self.channelmodes:
+							self.channelmodes[target] = self.channelmodes[target] + m
+						else:
+							self.channelmodes[target] = m
+
+					self.gui.serverSetMode(self,target,m,None)
+
 				else:
 					m = m[1:]
-					# mode removed
-					self.gui.serverUnsetMode(self,target,m,None)
-
+					
 					if target==self.nickname:
 						self.usermodes = self.usermodes.replace(m,'')
+
+					if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+						if target in self.channelmodes:
+							self.channelmodes[target] = self.channelmodes[target].replace('m','')
+
+
+					# mode removed
+					self.gui.serverUnsetMode(self,target,m,[])
 
 	def nickChanged(self,nick):
 		self.nickname = nick

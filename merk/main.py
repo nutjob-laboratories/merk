@@ -132,6 +132,7 @@ class Merk(QMainWindow):
 				config.ISSUE_COMMAND_SYMBOL+"quit": config.ISSUE_COMMAND_SYMBOL+"quit",
 				config.ISSUE_COMMAND_SYMBOL+"msg": config.ISSUE_COMMAND_SYMBOL+"msg ",
 				config.ISSUE_COMMAND_SYMBOL+"me": config.ISSUE_COMMAND_SYMBOL+"me ",
+				config.ISSUE_COMMAND_SYMBOL+"mode": config.ISSUE_COMMAND_SYMBOL+"mode ",
 			}
 
 		# The command help system
@@ -144,6 +145,7 @@ class Merk(QMainWindow):
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]</b>", "Leaves a channel" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...</b>", "Sets a mode on a channel or user" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		]
 
@@ -474,14 +476,70 @@ class Merk(QMainWindow):
 	def serverSetMode(self,client,target,mode,argument):
 		self.refreshModeDisplay(client)
 
+		if len(mode.strip())==0: return
+
+		if argument:
+			c = []
+			for e in argument:
+				if e: c.append(e)
+			argument = c
+		else:
+			argument = []
+
+		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument))
+
+		w = self.getWindow(target,client)
+		if w: w.writeText(t)
+
+		w = self.getServerWindow(client)
+		if w: w.writeText(t)
+
 	def serverUnsetMode(self,client,target,mode):
 		self.refreshModeDisplay(client)
+
+		if len(mode.strip())==0: return
+
+		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode)
+
+		w = self.getWindow(target,client)
+		if w: w.writeText(t)
+
+		w = self.getServerWindow(client)
+		if w: w.writeText(t)
 
 	def setMode(self,client,user,target,mode,argument):
 		self.refreshModeDisplay(client)
 
+		if len(mode.strip())==0: return
+
+		if argument:
+			c = []
+			for e in argument:
+				if e: c.append(e)
+			argument = c
+		else:
+			argument = []
+
+		t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+' '.join(argument))
+
+		w = self.getWindow(target,client)
+		if w: w.writeText(t)
+
+		w = self.getServerWindow(client)
+		if w: w.writeText(t)
+
 	def unsetMode(self,client,user,target,mode,argument):
 		self.refreshModeDisplay(client)
+
+		if len(mode.strip())==0: return
+
+		t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+' '.join(argument))
+
+		w = self.getWindow(target,client)
+		if w: w.writeText(t)
+
+		w = self.getServerWindow(client)
+		if w: w.writeText(t)
 
 	# END IRC EVENTS
 
@@ -565,11 +623,12 @@ class Merk(QMainWindow):
 		# Add emojis to the message
 		user_input = emoji.emojize(user_input,use_aliases=True)
 
-		# Client has sent a chat message, so send the message
-		window.client.msg(window.name,user_input)
-		# ...and then display it to the user
-		t = Message(SELF_MESSAGE,window.client.nickname,user_input)
-		window.writeText(t)
+		if len(user_input)>0:
+			# Client has sent a chat message, so send the message
+			window.client.msg(window.name,user_input)
+			# ...and then display it to the user
+			t = Message(SELF_MESSAGE,window.client.nickname,user_input)
+			window.writeText(t)
 
 	
 	def handleConsoleInput(self,window,user_input):
@@ -582,6 +641,28 @@ class Merk(QMainWindow):
 
 	def handleChatCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |-------|
+		# | /mode |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode' and len(tokens)>=2:
+				tokens.pop(0)
+				if tokens[0][:1]=='#':
+					# It's a channel, so do nothing; this will be handled
+					# by handleCommonCommands()
+					pass
+				else:
+					# If the current window is a channel, try to set the mode
+					# on that channel; if not, then this will be handled
+					# by handleCommonCommands()
+					if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
+						target = window.name
+						mode = ' '.join(tokens)
+						window.client.sendLine("MODE "+target+" "+mode)
+						return True
+					else:
+						pass
 
 		# |-----|
 		# | /me |
@@ -655,6 +736,22 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |-------|
+		# | /mode |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode' and len(tokens)>=2:
+				tokens.pop(0)
+				target = tokens.pop(0)
+				mode = ' '.join(tokens)
+				window.client.sendLine("MODE "+target+" "+mode)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...")
+				window.writeText(t)
+				return True
+
 
 		# |---------|
 		# | /notice |
