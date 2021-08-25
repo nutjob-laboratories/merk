@@ -58,7 +58,8 @@ class Dialog(QDialog):
 
 		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Channel:</b>")
-		self.name = QLineEdit()
+		self.name = NoSpaceEdit()	# Spaces can't be typed into this QLineEdit, as
+									# spaces are forbidden in channel names
 		nameLayout.addWidget(self.nameLabel)
 		nameLayout.addStretch()
 		nameLayout.addWidget(self.name)
@@ -96,3 +97,14 @@ class Dialog(QDialog):
 
 		self.name.setFocus()
 
+class NoSpaceEdit(QLineEdit):
+
+	def __init__(self, *args):
+		QLineEdit.__init__(self, *args)
+
+	def keyPressEvent(self,event):
+
+		if event.key() == Qt.Key_Space:
+			return
+		else:
+			return super().keyPressEvent(event)
