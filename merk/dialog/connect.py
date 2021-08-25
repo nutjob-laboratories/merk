@@ -52,26 +52,26 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
+		# Add connection to the user history
 		user_history = list(user.HISTORY)
 
-		# make sure server isn't in history
+		# Check to make sure that the connection isn't
+		# already in the user's history
 		inhistory = False
 		for s in user_history:
 			if s[0]==self.host.text():
 				if s[1]==self.port.text():
 					inhistory = True
 
+		# If the connection isn't already in the user's
+		# history, then add it
 		if inhistory==False:
-
 			if self.CONNECT_VIA_SSL:
 				ussl = "ssl"
 			else:
 				ussl = "normal"
-
-
 			entry = [ self.host.text(),self.port.text(),UNKNOWN_NETWORK,ussl,self.password.text() ]
 			user_history.append(entry)
-
 
 		# Save user settings
 		user.NICKNAME = self.nick.text()
@@ -258,7 +258,7 @@ class Dialog(QDialog):
 			self.servers.addItem(icon,"Last server connection")
 		else:
 			self.StoredData.append( ['',"6667",'','normal','' ]    )
-			self.servers.addItem("Select a server")
+			self.servers.addItem("Select or enter a server")
 
 		# Load in stuff from disk
 		self.built_in_server_list = get_network_list()
