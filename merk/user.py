@@ -44,6 +44,8 @@ LAST_SSL = False
 LAST_RECONNECT = False
 LAST_PASSWORD = ''
 
+HISTORY = []
+
 def save_user(filename):
 
 	settings = {
@@ -56,6 +58,7 @@ def save_user(filename):
 		"last_ssl": LAST_SSL,
 		"last_reconnect": LAST_RECONNECT,
 		"last_password": LAST_PASSWORD,
+		"history": HISTORY,
 	}
 
 	with open(filename, "w") as write_data:
@@ -71,6 +74,7 @@ def load_user(filename):
 	global LAST_SSL
 	global LAST_RECONNECT
 	global LAST_PASSWORD
+	global HISTORY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -85,6 +89,8 @@ def load_user(filename):
 		LAST_SSL = settings["last_ssl"]
 		LAST_RECONNECT = settings["last_reconnect"]
 		LAST_PASSWORD = settings["last_password"]
+		LAST_PASSWORD = settings["last_password"]
+		HISTORY = settings["history"]
 
 		save_user(filename)
 	else:

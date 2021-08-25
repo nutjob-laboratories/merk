@@ -52,6 +52,27 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
+		user_history = list(user.HISTORY)
+
+		# make sure server isn't in history
+		inhistory = False
+		for s in user_history:
+			if s[0]==self.host.text():
+				if s[1]==self.port.text():
+					inhistory = True
+
+		if inhistory==False:
+
+			if self.CONNECT_VIA_SSL:
+				ussl = "ssl"
+			else:
+				ussl = "normal"
+
+
+			entry = [ self.host.text(),self.port.text(),UNKNOWN_NETWORK,ussl,self.password.text() ]
+			user_history.append(entry)
+
+
 		# Save user settings
 		user.NICKNAME = self.nick.text()
 		user.ALTERNATE = self.alternative.text()
@@ -62,6 +83,7 @@ class Dialog(QDialog):
 		user.LAST_PASSWORD = self.password.text()
 		user.LAST_SSL = self.CONNECT_VIA_SSL
 		user.LAST_RECONNECT = self.RECONNECT_OPTION
+		user.HISTORY = user_history
 		user.save_user(user.USER_FILE)
 
 		retval = ConnectInfo(
@@ -224,13 +246,37 @@ class Dialog(QDialog):
 
 		self.servers.clear()
 
-		self.StoredData.append( ['',"6667",'','normal','' ]    )
-		self.servers.addItem("Select a server")
+		if user.LAST_SSL:
+			dussl = "ssl"
+			icon = QIcon(VISITED_SECURE_ICON)
+		else:
+			dussl = "normal"
+			icon = QIcon(VISITED_BOOKMARK_ICON)
+
+		if len(user.LAST_HOST)>0:
+			self.StoredData.append( [ user.LAST_HOST,user.LAST_PORT,"Last server",dussl,user.LAST_PASSWORD ]    )
+			self.servers.addItem(icon,"Last server connection")
+		else:
+			self.StoredData.append( ['',"6667",'','normal','' ]    )
+			self.servers.addItem("Select a server")
 
 		# Load in stuff from disk
 		self.built_in_server_list = get_network_list()
 
 		organized_list = []
+
+		if len(user.HISTORY)>0:
+			# servers are in history
+			for s in user.HISTORY:
+
+				builtin = False
+				for entry in self.built_in_server_list:
+					if entry[0]==s[0]:
+						if entry[1]==s[1]:
+							builtin = True
+
+				if not builtin:
+					self.built_in_server_list.insert(0,s)
 
 		counter = -1
 		for entry in self.built_in_server_list:
@@ -240,15 +286,40 @@ class Dialog(QDialog):
 			if "ssl" in entry[3]:
 				if not SSL_AVAILABLE: continue
 
-			organized_list.append(entry)
-		
-		for s in organized_list:
-			if s[3].lower()=='ssl':
-				self.servers.addItem(QIcon(SECURE_ICON),s[2]+" - "+s[0])
-			else:
-				self.servers.addItem(QIcon(BOOKMARK_ICON),s[2]+" - "+s[0])
+			visited = False
+			if len(user.HISTORY)>0:
+				for s in user.HISTORY:
+					if s[0]==entry[0]:
+						if s[1]==entry[1]:
+							visited = True
 
-			self.StoredData.append(s)
+			if visited:
+				organized_list.append([True,entry])
+			else:
+				organized_list.append([False,entry])
+		
+		vserver = []
+		nserver = []
+		for x in organized_list:
+			if x[0]:
+				vserver.append(x)
+			else:
+				nserver.append(x)
+		finallist = vserver + nserver
+
+		for s in finallist:
+			if s[0]:
+				if s[1][3].lower()=='ssl':
+					self.servers.addItem(QIcon(VISITED_SECURE_ICON),s[1][2]+" - "+s[1][0])
+				else:
+					self.servers.addItem(QIcon(VISITED_BOOKMARK_ICON),s[1][2]+" - "+s[1][0])
+			else:
+				if s[1][3].lower()=='ssl':
+					self.servers.addItem(QIcon(SECURE_ICON),s[1][2]+" - "+s[1][0])
+				else:
+					self.servers.addItem(QIcon(BOOKMARK_ICON),s[1][2]+" - "+s[1][0])
+
+			self.StoredData.append(s[1])
 
 		self.StoredServer = self.servers.currentIndex()
 

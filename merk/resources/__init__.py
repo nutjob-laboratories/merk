@@ -92,6 +92,8 @@ HORIZONTAL_RULE_MESSAGE = 9
 HARD_HORIZONTAL_RULE_MESSAGE = 10
 TEXT_HORIZONTAL_RULE_MESSAGE = 11
 
+UNKNOWN_NETWORK = "%_UNKNOWN_%"
+
 # Icons
 
 APPLICATION_ICON = ":/icon-app.png"
@@ -108,12 +110,16 @@ TOGGLE_ON_ICON = ":/icon-turnon.png"
 TOGGLE_OFF_ICON = ":/icon-turnoff.png"
 NETWORK_ICON = ":/icon-network.png"
 CONNECT_ICON = ":/icon-connect.png"
-BOOKMARK_ICON = ":/icon-bookmark.png"
-SECURE_ICON = ":/icon-secure.png"
 DISCONNECT_ICON = ":/icon-disconnect.png"
 BOLD_ICON = ":/icon-bold.png"
 ITALIC_ICON = ":/icon-italic.png"
 RESET_ICON = ":/icon-reset.png"
+
+BOOKMARK_ICON = ":/icon-bookmark.png"
+SECURE_ICON = ":/icon-secure.png"
+
+VISITED_BOOKMARK_ICON = ":/icon-visited_bookmark.png"
+VISITED_SECURE_ICON = ":/icon-visited_secure.png"
 
 ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
 ROUND_CHECKED_ICON = ":/icon-rchecked.png"

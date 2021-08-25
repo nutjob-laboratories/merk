@@ -49,6 +49,7 @@ from twisted.words.protocols.irc import ctcpStringify
 
 from .resources import *
 from . import config
+from . import user
 
 CONNECTIONS = {}
 
@@ -572,6 +573,26 @@ class IRC_Connection(irc.IRCClient):
 		if len(supports)>0:
 			for s in supports:
 				self.supports.append(s)
+
+		if hasattr(self,'network'):
+			if self.network:
+
+				user_history = list(user.HISTORY)
+
+				newhistory = []
+				change = False
+				for s in user_history:
+					if s[0]==self.server:
+						if s[1]==str(self.port):
+							if s[2]==UNKNOWN_NETWORK:
+								s[2] = self.network
+								change = True
+					newhistory.append(s)
+
+				if change:
+					user.HISTORY = newhistory
+					user.save_user(user.USER_FILE)
+
 
 class UptimeHeartbeat(QThread):
 
