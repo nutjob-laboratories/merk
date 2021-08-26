@@ -107,15 +107,14 @@ if __name__ == '__main__':
 	# Set the application font
 	if config.APPLICATION_FONT!=None:
 		# Set the font set in the config file
-		f = QFont()
-		f.fromString(config.APPLICATION_FONT)
-		app.setFont(f)
+		font = QFont()
+		font.fromString(config.APPLICATION_FONT)
+		app.setFont(font)
 	else:
 		# Set the default font
 		_fontstr = QFontDatabase.applicationFontFamilies(fid)[0]
 		font = QFont(_fontstr,BUNDLED_FONT_SIZE)
-
-	app.setFont(font)
+		app.setFont(font)
 
 	# Set Qt widget style
 	app.setStyle(args.qtstyle)
@@ -127,6 +126,7 @@ if __name__ == '__main__':
 				args.configdir,		# Config directory, default None for home directory storage
 				args.configname,	# Config directory name, default ".merk"
 				None,				# Connection info
+				font,				# Application font
 				None,				# Parent
 			)
 
@@ -141,6 +141,7 @@ if __name__ == '__main__':
 					args.configdir,		# Config directory, default None for home directory storage
 					args.configname,	# Config directory name, default ".merk"
 					connection_info,	# Connection info
+					font,				# Application font
 					None,				# Parent
 				)
 

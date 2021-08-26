@@ -55,18 +55,14 @@ class Dialog(QDialog):
 		errors = []
 
 		if len(self.nick.text().strip())==0: errors.append("No nickname entered")
-		if ' ' in self.nick.text().strip(): errors.append("Nicknames can't contain spaces")
 
 		if len(self.username.text().strip())==0: errors.append("No username entered")
-		if ' ' in self.username.text(): errors.append("Usernames can't contain spaces")
 
 		if len(self.realname.text().strip())==0: errors.append("No realname entered")
 
 		if len(self.alternative.text().strip())==0: errors.append("No alternate nickname entered")
-		if ' ' in self.alternative.text().strip(): errors.append("Alternate nicknames can't contain spaces")
 
 		if len(self.host.text().strip())==0: errors.append("No host entered")
-		if ' ' in self.host.text().strip(): errors.append("Hostnames can't contain spaces")
 
 		try:
 			sp = int(self.port.text())
@@ -198,9 +194,9 @@ class Dialog(QDialog):
 		self.setWindowTitle(APPLICATION_NAME+" "+APPLICATION_VERSION)
 		self.setWindowIcon(QIcon(CONNECT_ICON))
 
-		self.nick = QLineEdit(user.NICKNAME)
-		self.alternative = QLineEdit(user.ALTERNATE)
-		self.username = QLineEdit(user.USERNAME)
+		self.nick = QNoSpaceLineEdit(user.NICKNAME)
+		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
+		self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QLineEdit(user.REALNAME)
 
 		nickl = QLabel("Nickname")
@@ -219,8 +215,8 @@ class Dialog(QDialog):
 
 		self.buildServerSelector()
 
-		self.host = QLineEdit(user.LAST_HOST)
-		self.port = QLineEdit(user.LAST_PORT)
+		self.host = QNoSpaceLineEdit(user.LAST_HOST)
+		self.port = QNoSpaceLineEdit(user.LAST_PORT)
 		self.password = QLineEdit(user.LAST_PASSWORD)
 		self.password.setEchoMode(QLineEdit.Password)
 

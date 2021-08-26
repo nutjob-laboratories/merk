@@ -59,6 +59,7 @@ class Merk(QMainWindow):
 			configuration_location=None,
 			configuration_directory_name=".merk",
 			connection_info=None,
+			application_font=None,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -68,6 +69,10 @@ class Merk(QMainWindow):
 		self.parent = parent
 		self.configuration_location = configuration_location
 		self.configuration_directory_name = configuration_directory_name
+		self.application_font = application_font
+
+		# Set the application font
+		self.app.setFont(self.application_font)
 
 		self.quitting = {}
 

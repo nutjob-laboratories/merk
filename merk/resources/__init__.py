@@ -240,3 +240,17 @@ def test_if_background_is_light(style):
 			return True
 		else:
 			return False
+
+# Widgets
+
+class QNoSpaceLineEdit(QLineEdit):
+
+	def __init__(self, *args):
+		QLineEdit.__init__(self, *args)
+
+	def keyPressEvent(self,event):
+
+		if event.key() == Qt.Key_Space:
+			return
+		else:
+			return super().keyPressEvent(event)

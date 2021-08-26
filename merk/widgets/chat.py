@@ -165,6 +165,8 @@ class Window(QMainWindow):
 
 		if len(self.client.usermodes)>0:
 			self.mode_display.setText("+"+self.client.usermodes)
+		else:
+			self.mode_display.hide()
 
 		# Hide the nickname display on server windows
 		if self.window_type==SERVER_WINDOW: self.nick_display.hide()
@@ -353,8 +355,10 @@ class Window(QMainWindow):
 	def refreshModeDisplay(self):
 		if len(self.client.usermodes)==0:
 			self.mode_display.setText("")
+			self.mode_display.hide()
 		else:
 			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
+			if self.window_type!=SERVER_WINDOW: self.mode_display.show()
 		self.updateTitle()
 		
 	def updateTitle(self):
@@ -556,12 +560,12 @@ class Window(QMainWindow):
 			self.client.quit(config.DEFAULT_QUIT_MESSAGE)
 
 	def changeNick(self):
-		newnick = NewNickDialog(self.client.nickname,self)
+		newnick = NewNickDialog(self.client.nickname,self.parent)
 		if newnick:
 			self.client.setNick(newnick)
 
 	def joinChannel(self):
-		channel_info = JoinChannelDialog(self)
+		channel_info = JoinChannelDialog(self.parent)
 		if channel_info:
 			if channel_info[0][:1]=='#' or channel_info[0][:1]=='&' or channel_info[0][:1]=='!' or channel_info[0][:1]=='+':
 				self.client.join(channel_info[0],channel_info[1])
