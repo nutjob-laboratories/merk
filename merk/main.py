@@ -40,16 +40,6 @@ from . import render
 from . import irc
 from .dialog import *
 
-# from .irc import(
-# 	connect,
-# 	connectSSL,
-# 	reconnect,
-# 	reconnectSSL,
-# 	CONNECTIONS
-# )
-
-
-
 class Merk(QMainWindow):
 
 	# ===========

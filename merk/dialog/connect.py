@@ -50,55 +50,92 @@ class Dialog(QDialog):
 			return dialog.return_info()
 		return None
 
+	def check_input(self):
+
+		errors = []
+
+		if len(self.nick.text().strip())==0: errors.append("No nickname entered")
+		if ' ' in self.nick.text().strip(): errors.append("Nicknames can't contain spaces")
+
+		if len(self.username.text().strip())==0: errors.append("No username entered")
+		if ' ' in self.username.text(): errors.append("Usernames can't contain spaces")
+
+		if len(self.realname.text().strip())==0: errors.append("No realname entered")
+
+		if len(self.alternative.text().strip())==0: errors.append("No alternate nickname entered")
+		if ' ' in self.alternative.text().strip(): errors.append("Alternate nicknames can't contain spaces")
+
+		if len(self.host.text().strip())==0: errors.append("No host entered")
+		if ' ' in self.host.text().strip(): errors.append("Hostnames can't contain spaces")
+
+		try:
+			sp = int(self.port.text())
+		except:
+			errors.append("Port must be a number")
+
+		if len(errors)>=1:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Critical)
+			msg.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msg.setText("Can't connect to server!")
+			msg.setInformativeText("\n".join(errors))
+			msg.setWindowTitle("Error")
+			msg.exec_()
+
+			return False
+		return True
+
 	def return_info(self):
 
-		# Add connection to the user history
-		user_history = list(user.HISTORY)
+		if self.check_input():
 
-		# Check to make sure that the connection isn't
-		# already in the user's history
-		inhistory = False
-		for s in user_history:
-			if s[0]==self.host.text():
-				if s[1]==self.port.text():
-					inhistory = True
+			# Add connection to the user history
+			user_history = list(user.HISTORY)
 
-		# If the connection isn't already in the user's
-		# history, then add it
-		if inhistory==False:
-			if self.CONNECT_VIA_SSL:
-				ussl = "ssl"
-			else:
-				ussl = "normal"
-			entry = [ self.host.text(),self.port.text(),UNKNOWN_NETWORK,ussl,self.password.text() ]
-			user_history.append(entry)
+			# Check to make sure that the connection isn't
+			# already in the user's history
+			inhistory = False
+			for s in user_history:
+				if s[0]==self.host.text():
+					if s[1]==self.port.text():
+						inhistory = True
 
-		# Save user settings
-		user.NICKNAME = self.nick.text()
-		user.ALTERNATE = self.alternative.text()
-		user.USERNAME = self.username.text()
-		user.REALNAME = self.realname.text()
-		user.LAST_HOST = self.host.text()
-		user.LAST_PORT = self.port.text()
-		user.LAST_PASSWORD = self.password.text()
-		user.LAST_SSL = self.CONNECT_VIA_SSL
-		user.LAST_RECONNECT = self.RECONNECT_OPTION
-		user.HISTORY = user_history
-		user.save_user(user.USER_FILE)
+			# If the connection isn't already in the user's
+			# history, then add it
+			if inhistory==False:
+				if self.CONNECT_VIA_SSL:
+					ussl = "ssl"
+				else:
+					ussl = "normal"
+				entry = [ self.host.text(),self.port.text(),UNKNOWN_NETWORK,ussl,self.password.text() ]
+				user_history.append(entry)
 
-		retval = ConnectInfo(
-			self.nick.text(),
-			self.alternative.text(),
-			self.username.text(),
-			self.realname.text(),
-			self.host.text(),
-			int(self.port.text()),
-			self.password.text(),
-			self.RECONNECT_OPTION,
-			self.CONNECT_VIA_SSL,
-		)
+			# Save user settings
+			user.NICKNAME = self.nick.text()
+			user.ALTERNATE = self.alternative.text()
+			user.USERNAME = self.username.text()
+			user.REALNAME = self.realname.text()
+			user.LAST_HOST = self.host.text()
+			user.LAST_PORT = self.port.text()
+			user.LAST_PASSWORD = self.password.text()
+			user.LAST_SSL = self.CONNECT_VIA_SSL
+			user.LAST_RECONNECT = self.RECONNECT_OPTION
+			user.HISTORY = user_history
+			user.save_user(user.USER_FILE)
 
-		return retval
+			retval = ConnectInfo(
+				self.nick.text(),
+				self.alternative.text(),
+				self.username.text(),
+				self.realname.text(),
+				self.host.text(),
+				int(self.port.text()),
+				self.password.text(),
+				self.RECONNECT_OPTION,
+				self.CONNECT_VIA_SSL,
+			)
+
+			return retval
 
 	def setServer(self):
 
@@ -177,10 +214,6 @@ class Dialog(QDialog):
 		userLayout.addRow(usrl, self.username)
 		userLayout.addRow(reall, self.realname)
 
-		userInfoBox = QGroupBox("User Information",self)
-		userInfoBox.setLayout(userLayout)
-		userInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
-
 		self.servers = QComboBox(self)
 		self.servers.activated.connect(self.setServer)
 
@@ -212,15 +245,21 @@ class Dialog(QDialog):
 
 		if user.LAST_RECONNECT: self.reconnect.toggle()
 
-		sfBox = QVBoxLayout()
-		sfBox.addWidget(self.servers)
-		sfBox.addLayout(serverLayout)
-		sfBox.addWidget(self.ssl)
-		sfBox.addWidget(self.reconnect)
+		serverInfoLayout = QVBoxLayout()
+		serverInfoLayout.addWidget(self.servers)
+		serverInfoLayout.addLayout(serverLayout)
+		serverInfoLayout.addWidget(self.ssl)
+		serverInfoLayout.addWidget(self.reconnect)
 
-		serverInfoBox = QGroupBox("IRC Server",self)
-		serverInfoBox.setLayout(sfBox)
-		serverInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
+		self.tabs = QTabWidget()
+
+		self.user_tab = QWidget()
+		self.user_tab.setLayout(userLayout)
+		self.tabs.addTab(self.user_tab, QIcon(PRIVATE_ICON), "User")
+
+		self.server_tab = QWidget()
+		self.server_tab.setLayout(serverInfoLayout)
+		self.tabs.addTab(self.server_tab, QIcon(PRIVATE_ICON), "Server")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -230,14 +269,18 @@ class Dialog(QDialog):
 		buttons.button(QDialogButtonBox.Ok).setText("Connect")
 
 		finalLayout = QVBoxLayout()
-		finalLayout.addWidget(userInfoBox)
-		finalLayout.addWidget(serverInfoBox)
+		finalLayout.addWidget(self.tabs)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		if user.NICKNAME=='' or user.ALTERNATE=='' or user.USERNAME=='' or user.REALNAME=='':
+			self.tabs.setCurrentWidget(self.user_tab)
+		else:
+			self.tabs.setCurrentWidget(self.server_tab)
 
 
 	def buildServerSelector(self):
