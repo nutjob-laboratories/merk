@@ -67,6 +67,9 @@ SAVE_PRIVATE_LOGS = True
 LOAD_PRIVATE_LOGS = True
 ASK_BEFORE_DISCONNECT = True
 
+SERVER_TOOLBAR_BUTTON_SIZE = 25
+SERVER_TOOLBAR_ICON_SIZE = 20
+
 def save_settings(filename):
 
 	settings = {
@@ -99,12 +102,18 @@ def save_settings(filename):
 		"save_private_logs": SAVE_PRIVATE_LOGS,
 		"load_private_logs": LOAD_PRIVATE_LOGS,
 		"ask_before_disconnect": ASK_BEFORE_DISCONNECT,
+		"server_toolbar_button_size": SERVER_TOOLBAR_BUTTON_SIZE,
+		"server_toolbar_icon_size": SERVER_TOOLBAR_ICON_SIZE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "server_toolbar_button_size" in settings:
+		settings["server_toolbar_button_size"] = SERVER_TOOLBAR_BUTTON_SIZE
+	if not "server_toolbar_icon_size" in settings:
+		settings["server_toolbar_icon_size"] = SERVER_TOOLBAR_ICON_SIZE
 	if not "ask_before_disconnect" in settings:
 		settings["ask_before_disconnect"] = ASK_BEFORE_DISCONNECT
 	if not "save_private_logs" in settings:
@@ -196,6 +205,8 @@ def load_settings(filename):
 	global SAVE_PRIVATE_LOGS
 	global LOAD_PRIVATE_LOGS
 	global ASK_BEFORE_DISCONNECT
+	global SERVER_TOOLBAR_BUTTON_SIZE
+	global SERVER_TOOLBAR_ICON_SIZE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -205,6 +216,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SERVER_TOOLBAR_BUTTON_SIZE = settings["server_toolbar_button_size"]
+		SERVER_TOOLBAR_ICON_SIZE = settings["server_toolbar_icon_size"]
 		ASK_BEFORE_DISCONNECT = settings["ask_before_disconnect"]
 		SAVE_PRIVATE_LOGS = settings["save_private_logs"]
 		LOAD_PRIVATE_LOGS = settings["load_private_logs"]
@@ -274,6 +287,8 @@ def check_settings(filename):
 			if not "save_private_logs" in settings: return False
 			if not "load_private_logs" in settings: return False
 			if not "ask_before_disconnect" in settings: return False
+			if not "server_toolbar_icon_size" in settings: return False
+			if not "server_toolbar_button_size" in settings: return False
 	else:
 		return False
 

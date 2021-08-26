@@ -23,7 +23,24 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .chat import Window
-from .text_separator import textSeparatorLabel,textSeparator
-from .textstyler import TextStyler
-from .plain_text import plainTextAction
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5 import QtCore
+
+PLAIN_TEXT = f'''
+<table width="100%" border="0" cellspacing="1" cellpadding="1">
+	<tbody>
+		<tr>
+			<td>&nbsp;&nbsp;!TEXT!&nbsp;&nbsp;</td>
+		</tr>
+	</tbody>
+</table>'''
+
+def plainTextAction(self,text):
+		
+	tsLabel = QLabel( PLAIN_TEXT.replace("!TEXT!",text) )
+	tsAction = QWidgetAction(self)
+	tsAction.setDefaultWidget(tsLabel)
+
+	return tsAction

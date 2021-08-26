@@ -40,6 +40,8 @@ from .. import styles
 from .. import render
 from ..dialog import *
 from .. import logs
+from .plain_text import plainTextAction
+from .text_separator import textSeparatorLabel,textSeparator
 
 class Window(QMainWindow):
 
@@ -99,21 +101,46 @@ class Window(QMainWindow):
 
 			self.toolbar.setIconSize(QSize(15, 15))
 
-			entry = QAction(QIcon(CHANNEL_ICON),"Join a channel",self)
-			entry.triggered.connect(self.joinChannel)
-			self.toolbar.addAction(entry)
+			self.infoMenuButton = QPushButton("")
+			self.infoMenuButton.setIcon(QIcon(INFO_ICON))
+			self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
+			self.infoMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+			self.infoMenuButton.setToolTip("Server information")
+			self.infoMenuButton.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.infoMenuButton.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.infoMenuButton.setFlat(True)
+			self.toolbar.addWidget(self.infoMenuButton)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
-			entry.triggered.connect(self.changeNick)
-			self.toolbar.addAction(entry)
+			entry = QPushButton("")
+			entry.setIcon(QIcon(CHANNEL_ICON))
+			entry.clicked.connect(self.joinChannel)
+			entry.setToolTip("Join a channel")
+			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			entry.setFlat(True)
+			self.toolbar.addWidget(entry)
+
+			entry = QPushButton("")
+			entry.setIcon(QIcon(PRIVATE_ICON))
+			entry.clicked.connect(self.changeNick)
+			entry.setToolTip("Change your nickname")
+			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			entry.setFlat(True)
+			self.toolbar.addWidget(entry)
 
 			self.spacer = QWidget()
 			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 			self.toolbar.addWidget(self.spacer)
 
-			entry = QAction(QIcon(DISCONNECT_ICON),"Disconnect",self)
-			entry.triggered.connect(self.disconnect)
-			self.toolbar.addAction(entry)
+			entry = QPushButton("")
+			entry.setIcon(QIcon(DISCONNECT_TOOLBAR_ICON))
+			entry.clicked.connect(self.disconnect)
+			entry.setToolTip("Disconnect from server")
+			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			entry.setFlat(True)
+			self.toolbar.addWidget(entry)
 
 		if self.window_type==CHANNEL_WINDOW:
 			
@@ -247,7 +274,6 @@ class Window(QMainWindow):
 			self.admin_icon.hide()
 			self.halfop_icon.hide()
 
-
 		nickLayout = QHBoxLayout()
 		if self.window_type!=SERVER_WINDOW:
 			nickLayout.addWidget(self.op_icon)
@@ -341,6 +367,9 @@ class Window(QMainWindow):
 						self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
 
 				self.rerenderChatLog()
+
+	def refreshInfoMenu(self):
+		self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
 
 	def rerenderChatLog(self):
 
@@ -833,6 +862,110 @@ class Window(QMainWindow):
 			self.input.setFocus()
 
 		return super(Window, self).resizeEvent(event)
+
+def buildServerSettingsMenu(self,client):
+
+	supports = client.supports # list
+	maxchannels = client.maxchannels
+	maxnicklen = client.maxnicklen
+	channellen = client.channellen
+	topiclen = client.topiclen
+	kicklen = client.kicklen
+	awaylen = client.awaylen
+	maxtargets = client.maxtargets
+	modes = client.modes
+	chanmodes = client.chanmodes #list
+	prefix = client.prefix # list
+	cmds = client.cmds # list
+	casemapping = client.casemapping
+	maxmodes = client.maxmodes
+
+	optionsMenu = QMenu("Server settings")
+
+	e = textSeparator(self,"Limits")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum channels"+f":</b> {maxchannels}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum nickname length"+f":</b> {maxnicklen}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum channel length"+f":</b> {channellen}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum topic length"+f":</b> {topiclen}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum kick length"+f":</b> {kicklen}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum away length"+f":</b> {awaylen}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum message targets"+f":</b> {maxtargets}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Maximum modes per user"+f":</b> {modes}")
+	optionsMenu.addAction(e)
+
+	e = textSeparator(self,"Miscellaneous")
+	optionsMenu.addAction(e)
+
+	if len(maxmodes)>0:
+		maxmodesmenu = QMenu("Maximum modes",self)
+		for c in maxmodes:
+			e = QAction(F"{c[0]}: {c[1]}", self) 
+			maxmodesmenu.addAction(e)
+		optionsMenu.addMenu(maxmodesmenu)
+
+	if len(cmds)>0:
+		cmdmenu = QMenu("Commands",self)
+		for c in cmds:
+			e = QAction(F"{c}", self) 
+			cmdmenu.addAction(e)
+		optionsMenu.addMenu(cmdmenu)
+
+	if len(supports)>0:
+		supportsmenu = QMenu("Supports",self)
+		for c in supports:
+			e = QAction(F"{c}", self) 
+			supportsmenu.addAction(e)
+		optionsMenu.addMenu(supportsmenu)
+
+	if len(chanmodes)>0:
+		chanmodemenu = QMenu("Channel modes",self)
+		ct = 0
+		for c in chanmodes:
+			if ct==0:
+				ctype = "A"
+			elif ct==1:
+				ctype = "B"
+			elif ct==2:
+				ctype = "C"
+			elif ct==3:
+				ctype = "D"
+			e = QAction(F"{ctype}: {c}", self) 
+			chanmodemenu.addAction(e)
+			ct = ct + 1
+		optionsMenu.addMenu(chanmodemenu)
+
+	if len(prefix)>0:
+		prefixmenu = QMenu("Status prefixes",self)
+		for c in prefix:
+			m = c[0]
+			s = c[1]
+			if s=="&": s="&&"
+			e = QAction(F"{m}: {s}", self)
+			if m=="o": e.setIcon(QIcon(OP_USER))
+			if m=="v": e.setIcon(QIcon(VOICE_USER))
+			if m=="a": e.setIcon(QIcon(ADMIN_USER))
+			if m=="q": e.setIcon(QIcon(OWNER_USER))
+			if m=="h": e.setIcon(QIcon(HALFOP_USER))
+			prefixmenu.addAction(e)
+		optionsMenu.addMenu(prefixmenu)
+
+	return optionsMenu
 
 class TopicEdit(QLineEdit):
 	def __init__(self, parent=None):

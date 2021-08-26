@@ -99,11 +99,6 @@ if __name__ == '__main__':
 	# Load the config file
 	config.load_settings(config.CONFIG_FILE)
 
-	# Load in fonts from the resources file
-	fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
-	for f in OTHER_BUNDLED_FONTS:
-		QFontDatabase.addApplicationFont(f)
-
 	# Set the application font
 	if config.APPLICATION_FONT!=None:
 		# Set the font set in the config file
@@ -111,7 +106,10 @@ if __name__ == '__main__':
 		font.fromString(config.APPLICATION_FONT)
 		app.setFont(font)
 	else:
-		# Set the default font
+		# Load in fonts from the resources file
+		fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
+		for f in OTHER_BUNDLED_FONTS:
+			QFontDatabase.addApplicationFont(f)
 		_fontstr = QFontDatabase.applicationFontFamilies(fid)[0]
 		font = QFont(_fontstr,BUNDLED_FONT_SIZE)
 		app.setFont(font)

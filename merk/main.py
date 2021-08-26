@@ -206,6 +206,10 @@ class Merk(QMainWindow):
 			t = Message(SERVER_MESSAGE,'',m)
 			w.writeText(t)
 
+		w = self.getServerWindow(client)
+		if w:
+			w.refreshInfoMenu()
+
 	def serverMessage(self,client,msg):
 		w = self.getServerWindow(client)
 		if w:
@@ -1100,6 +1104,14 @@ class Merk(QMainWindow):
 					self.MDI.removeSubWindow(window)
 					self.buildWindowsMenu()
 
+	def endEverything(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+			if window:
+				self.MDI.removeSubWindow(window)
+
 	def newChannelWindow(self,name,client):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
@@ -1138,4 +1150,5 @@ class Merk(QMainWindow):
 	# Triggered when the client window is closed, via
 	# any method 
 	def closeEvent(self, event):
+		self.endEverything()
 		self.app.quit()

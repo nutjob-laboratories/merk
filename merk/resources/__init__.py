@@ -114,6 +114,7 @@ DISCONNECT_ICON = ":/icon-disconnect.png"
 BOLD_ICON = ":/icon-bold.png"
 ITALIC_ICON = ":/icon-italic.png"
 RESET_ICON = ":/icon-reset.png"
+INFO_ICON = ":/icon-info.png"
 
 BOOKMARK_ICON = ":/icon-bookmark.png"
 SECURE_ICON = ":/icon-secure.png"
@@ -123,6 +124,8 @@ VISITED_SECURE_ICON = ":/icon-visited_secure.png"
 
 ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
 ROUND_CHECKED_ICON = ":/icon-rchecked.png"
+
+DISCONNECT_TOOLBAR_ICON = ":/icon-disconnect_toolbar.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
