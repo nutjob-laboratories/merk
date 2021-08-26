@@ -103,8 +103,7 @@ class Merk(QMainWindow):
 		# Main menu
 		self.mainMenu = self.menubar.addMenu(config.DISPLAY_NAME)
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect",self)
-		entry.triggered.connect(self.connectToIrc)
+		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectToIrc)
 		self.mainMenu.addAction(entry)
 
 		self.mainMenu.addSeparator()
@@ -1018,53 +1017,59 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.clear()
 
-		entry = QAction(QIcon(CASCADE_ICON),"Cascade",self)
-		entry.triggered.connect(self.MDI.cascadeSubWindows)
-		self.windowsMenu.addAction(entry)
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
+		entry1.triggered.connect(self.MDI.cascadeSubWindows)
+		self.windowsMenu.addAction(entry1)
 
-		entry = QAction(QIcon(TILE_ICON),"Tile",self)
-		entry.triggered.connect(self.MDI.tileSubWindows)
-		self.windowsMenu.addAction(entry)
+		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
+		entry2.triggered.connect(self.MDI.tileSubWindows)
+		self.windowsMenu.addAction(entry2)
 
-		entry = QAction(QIcon(NEXT_ICON),"Next window",self)
-		entry.setShortcut('Ctrl++')
-		entry.triggered.connect(self.MDI.activateNextSubWindow)
-		self.windowsMenu.addAction(entry)
+		self.windowsMenu.addSeparator()
 
-		entry = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
-		entry.setShortcut('Ctrl+-')
-		entry.triggered.connect(self.MDI.activatePreviousSubWindow)
-		self.windowsMenu.addAction(entry)
+		if len(irc.CONNECTIONS)==0:
+			entry1.setEnabled(False)
+			entry2.setEnabled(False)
 
 		if len(irc.CONNECTIONS)>0:
-			entry = widgets.textSeparator(self,"Subwindows")
+
+			for i in irc.CONNECTIONS:
+				entry = irc.CONNECTIONS[i]
+				if entry.hostname:
+					name = entry.hostname
+				else:
+					name = entry.server+":"+str(entry.port)
+
+				wl = self.getAllSubWindows(entry)
+
+				if len(wl)>0:
+					sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
+
+					for w in wl:
+						c = w.widget()
+
+						if c.window_type==CHANNEL_WINDOW:
+							icon = CHANNEL_ICON
+						elif c.window_type==SERVER_WINDOW:
+							icon = CONSOLE_ICON
+						elif c.window_type==PRIVATE_WINDOW:
+							icon = PRIVATE_ICON
+
+						entry = QAction(QIcon(icon),c.name,self)
+						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+						sm.addAction(entry)
+
+			self.windowsMenu.addSeparator()
+
+			entry = QAction(QIcon(NEXT_ICON),"Next window",self)
+			entry.setShortcut('Ctrl++')
+			entry.triggered.connect(self.MDI.activateNextSubWindow)
 			self.windowsMenu.addAction(entry)
 
-		for i in irc.CONNECTIONS:
-			entry = irc.CONNECTIONS[i]
-			if entry.hostname:
-				name = entry.hostname
-			else:
-				name = entry.server+":"+str(entry.port)
-
-			wl = self.getAllSubWindows(entry)
-
-			if len(wl)>0:
-				sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
-
-				for w in wl:
-					c = w.widget()
-
-					if c.window_type==CHANNEL_WINDOW:
-						icon = CHANNEL_ICON
-					elif c.window_type==SERVER_WINDOW:
-						icon = CONSOLE_ICON
-					elif c.window_type==PRIVATE_WINDOW:
-						icon = PRIVATE_ICON
-
-					entry = QAction(QIcon(icon),c.name,self)
-					entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
-					sm.addAction(entry)
+			entry = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+			entry.setShortcut('Ctrl+-')
+			entry.triggered.connect(self.MDI.activatePreviousSubWindow)
+			self.windowsMenu.addAction(entry)
 
 	def subWindowActivated(self,subwindow):
 		if subwindow==None: return
@@ -1073,6 +1078,9 @@ class Merk(QMainWindow):
 		if hasattr(w,"name"):
 			# It's a named subwindow
 			pass
+
+		if hasattr(w,"input"):
+			w.input.setFocus()
 
 	def showSubWindow(self,window):
 		window.showNormal()
