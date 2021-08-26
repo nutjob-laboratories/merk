@@ -74,6 +74,9 @@ class Merk(QMainWindow):
 		# Set the application font
 		self.app.setFont(self.application_font)
 
+		# Set the widget font
+		self.setFont(self.application_font)
+
 		self.quitting = {}
 
 		# Create the central object of the client,
@@ -1098,7 +1101,7 @@ class Merk(QMainWindow):
 					self.buildWindowsMenu()
 
 	def newChannelWindow(self,name,client):
-		w = QMdiSubWindow()
+		w = QMdiSubWindow(self)
 		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		self.MDI.addSubWindow(w)
@@ -1108,7 +1111,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newServerWindow(self,name,client):
-		w = QMdiSubWindow()
+		w = QMdiSubWindow(self)
 		w.setWidget(widgets.Window(name,client,SERVER_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		self.MDI.addSubWindow(w)
@@ -1118,7 +1121,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newPrivateWindow(self,name,client):
-		w = QMdiSubWindow()
+		w = QMdiSubWindow(self)
 		w.setWidget(widgets.Window(name,client,PRIVATE_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		self.MDI.addSubWindow(w)

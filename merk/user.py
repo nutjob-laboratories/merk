@@ -37,13 +37,11 @@ NICKNAME = ''
 ALTERNATE = ''
 USERNAME = ''
 REALNAME = ''
-
 LAST_HOST = ''
 LAST_PORT = '6667'
 LAST_SSL = False
 LAST_RECONNECT = False
 LAST_PASSWORD = ''
-
 HISTORY = []
 
 def save_user(filename):
@@ -64,6 +62,30 @@ def save_user(filename):
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
+def patch_user(settings):
+	if not "nickname" in settings:
+		settings["nickname"] = NICKNAME
+	if not "alternate" in settings:
+		settings["alternate"] = ALTERNATE
+	if not "username" in settings:
+		settings["username"] = USERNAME
+	if not "realname" in settings:
+		settings["realname"] = REALNAME
+	if not "last_host" in settings:
+		settings["last_host"] = LAST_HOST
+	if not "last_port" in settings:
+		settings["last_port"] = LAST_PORT
+	if not "last_ssl" in settings:
+		settings["last_ssl"] = LAST_SSL
+	if not "last_reconnect" in settings:
+		settings["last_reconnect"] = LAST_RECONNECT
+	if not "last_password" in settings:
+		settings["last_password"] = LAST_PASSWORD
+	if not "history" in settings:
+		settings["history"] = HISTORY
+
+	return settings
+
 def load_user(filename):
 	global NICKNAME
 	global ALTERNATE
@@ -80,6 +102,10 @@ def load_user(filename):
 		with open(filename, "r") as read_settings:
 			settings = json.load(read_settings)
 
+		prepatch_length = len(settings)
+		settings = patch_user(settings)
+		postpatch_length = len(settings)
+
 		NICKNAME = settings["nickname"]
 		ALTERNATE = settings["alternate"]
 		REALNAME = settings["realname"]
@@ -92,7 +118,8 @@ def load_user(filename):
 		LAST_PASSWORD = settings["last_password"]
 		HISTORY = settings["history"]
 
-		save_user(filename)
+		if prepatch_length!=postpatch_length:
+			save_settings(filename)
 	else:
 		save_user(filename)
 
