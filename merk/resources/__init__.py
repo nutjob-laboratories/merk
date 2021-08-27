@@ -134,6 +134,7 @@ KICKBAN_ICON = ":/icon-kickban.png"
 CLIPBOARD_ICON = ":/icon-clipboard.png"
 PLUS_ICON = ":/icon-plus.png"
 MINUS_ICON = ":/icon-minus.png"
+KEY_ICON = ":/icon-key.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

@@ -243,8 +243,6 @@ class IRC_Connection(irc.IRCClient):
 
 				self.gui.unsetMode(self,user,channel,m,[])
 
-
-
 	def irc_RPL_CHANNELMODEIS(self, prefix, params):
 		params.pop(0)
 		target = params.pop(0)
@@ -274,13 +272,16 @@ class IRC_Connection(irc.IRCClient):
 
 				else:
 					m = m[1:]
+
+					if m=="k":
+						if target in self.channelkeys: del self.channelkeys[target]
 					
 					if target==self.nickname:
 						self.usermodes = self.usermodes.replace(m,'')
 
 					if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 						if target in self.channelmodes:
-							self.channelmodes[target] = self.channelmodes[target].replace('m','')
+							self.channelmodes[target] = self.channelmodes[target].replace(m,'')
 
 
 					# mode removed

@@ -186,7 +186,7 @@ class Window(QMainWindow):
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel("<b>"+self.client.nickname+"</b>")
+		self.nick_display = QLabel("&nbsp;<b>"+self.client.nickname+"</b>")
 		self.mode_display = QLabel("")
 
 		self.nick_display.installEventFilter(self)
@@ -269,11 +269,18 @@ class Window(QMainWindow):
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.halfop_icon.setPixmap(pixmap)
 
+			self.key_icon = QLabel(self)
+			pixmap = QPixmap(KEY_ICON)
+			fm = QFontMetrics(self.app.font())
+			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.key_icon.setPixmap(pixmap)
+
 			self.op_icon.hide()
 			self.voice_icon.hide()
 			self.owner_icon.hide()
 			self.admin_icon.hide()
 			self.halfop_icon.hide()
+			self.key_icon.hide()
 
 		nickLayout = QHBoxLayout()
 		if self.window_type!=SERVER_WINDOW:
@@ -333,6 +340,23 @@ class Window(QMainWindow):
 
 		self.input.setFocus()
 
+		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+			self.status = self.statusBar()
+
+			self.status_server = QLabel("&nbsp;<small><b>"+self.client.hostname+"</b></small>")
+			self.status.addPermanentWidget(self.status_server,0)
+
+			# Spacer
+			self.status.addPermanentWidget(QLabel(),1)
+
+			self.status.setStyleSheet("QStatusBar::item { border: none; }")
+
+			if self.window_type==CHANNEL_WINDOW:
+				self.status.addPermanentWidget(self.key_icon,0)
+				self.key_value = QLabel("")
+				self.status.addPermanentWidget(self.key_value,0)
+				self.key_value.hide()
+
 		# Load and apply default style
 		self.applyStyle()
 
@@ -390,6 +414,17 @@ class Window(QMainWindow):
 			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
 			if self.window_type!=SERVER_WINDOW: self.mode_display.show()
 		self.updateTitle()
+
+		if hasattr(self,"key_icon"):
+			if self.name in self.client.channelkeys:
+				self.key_icon.show()
+				if hasattr(self,"key_value"):
+					self.key_value.setText("<small>+k "+self.client.channelkeys[self.name]+"</small>")
+					self.key_value.show()
+			else:
+				self.key_icon.hide()
+				if hasattr(self,"key_value"):
+					self.key_value.hide()
 		
 	def updateTitle(self):
 
@@ -834,7 +869,7 @@ class Window(QMainWindow):
 				self.client.join('#'+channel_info[0],channel_info[1])
 
 	def refreshNickDisplay(self):
-		self.nick_display.setText("<b>"+self.client.nickname+"</b>")
+		self.nick_display.setText("&nbsp;<b>"+self.client.nickname+"</b>")
 
 	def writeText(self,message,write_to_log=True):
 
