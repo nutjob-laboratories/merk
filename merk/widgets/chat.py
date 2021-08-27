@@ -343,7 +343,26 @@ class Window(QMainWindow):
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 			self.status = self.statusBar()
 
-			self.status_server = QLabel("&nbsp;<small><b>"+self.client.hostname+"</b></small>")
+			if self.client.kwargs["ssl"]:
+
+				self.secure_icon = QLabel(self)
+				pixmap = QPixmap(VISITED_SECURE_ICON)
+				fm = QFontMetrics(self.app.font())
+				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+				self.secure_icon.setPixmap(pixmap)
+				self.status.addPermanentWidget(self.secure_icon,0)
+
+				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.server+":"+str(self.client.port)+")</small>")
+			else:
+
+				self.secure_icon = QLabel(self)
+				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
+				fm = QFontMetrics(self.app.font())
+				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+				self.secure_icon.setPixmap(pixmap)
+				self.status.addPermanentWidget(self.secure_icon,0)
+
+				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.server+":"+str(self.client.port)+")</small>")
 			self.status.addPermanentWidget(self.status_server,0)
 
 			# Spacer
