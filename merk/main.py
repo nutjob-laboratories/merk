@@ -542,6 +542,34 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
+	def userKicked(self,client,kickee,channel,kicker,message):
+		
+		if len(message)>0:
+			t = Message(SYSTEM_MESSAGE,'',kicker+" kicked "+kickee+" from "+channel+" ("+message+")")
+		else:
+			t = Message(SYSTEM_MESSAGE,'',kicker+" kicked "+kickee+" from "+channel)
+
+		w = self.getWindow(channel,client)
+		if w: w.writeText(t)
+
+		w = self.getServerWindow(client)
+		if w: w.writeText(t)
+
+	def kickedFrom(self,client,channel,kicker,message):
+		
+		w = self.getSubWindow(channel,client)
+		if w:
+			self.MDI.removeSubWindow(w)
+			self.buildWindowsMenu()
+
+		w = self.getServerWindow(client)
+		if w:
+			if len(message)>0:
+				t = Message(SYSTEM_MESSAGE,'',kicker+" kicked you from "+channel+" ("+message+")")
+			else:
+				t = Message(SYSTEM_MESSAGE,'',kicker+" kicked you from "+channel)
+			w.writeText(t)
+
 	# END IRC EVENTS
 
 	def connectToIrc(self,connection_info=None):

@@ -340,8 +340,11 @@ class IRC_Connection(irc.IRCClient):
 	def userKicked(self, kickee, channel, kicker, message):
 		self.sendLine("NAMES "+channel)
 
+		self.gui.userKicked(self,kickee,channel,kicker,message)
+
 	def kickedFrom(self, channel, kicker, message):
-		pass
+		
+		self.gui.kickedFrom(self,channel,kicker,message)
 
 	def irc_QUIT(self,prefix,params):
 		x = prefix.split('!')
