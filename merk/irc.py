@@ -216,6 +216,9 @@ class IRC_Connection(irc.IRCClient):
 				# Remove 'o' from channel modes
 				self.channelmodes[channel] = self.channelmodes[channel].replace('o','')
 
+				# Remove 'k' from channel modes
+				self.channelmodes[channel] = self.channelmodes[channel].replace('k','')
+
 				if m=='k':
 					self.channelkeys[channel] = args[0]
 					self.gui.setMode(self,user,channel,m,args[0])
@@ -257,8 +260,6 @@ class IRC_Connection(irc.IRCClient):
 						self.channelkeys[target] = chankey
 						self.gui.serverSetMode(self,target,m,chankey)
 						continue
-
-					
 
 					if target==self.nickname:
 						self.usermodes = self.usermodes+m
@@ -423,60 +424,79 @@ class IRC_Connection(irc.IRCClient):
 
 		if "Cannot join channel (+k)" in line2:
 			#events.received_error(self.gui,self,f"Cannot join channel (wrong or missing password)")
+			self.gui.receivedError(self,"Cannot join channel (wrong or missing password)")
 			pass
 		if "Cannot join channel (+l)" in line2:
 			#events.received_error(self.gui,self,f"Cannot join channel (channel is full)")
+			self.gui.receivedError(self,"Cannot join channel (channel is full)")
 			pass
 		if "Cannot join channel (+b)" in line2:
 			#events.received_error(self.gui,self,f"Cannot join channel (banned)")
+			self.gui.receivedError(self,"Cannot join channel (banned)")
 			pass
 		if "Cannot join channel (+i)" in line2:
 			#events.received_error(self.gui,self,f"Cannot join channel (channel is invite only)")
+			self.gui.receivedError(self,"Cannot join channel (channel is invite only)")
 			pass
 		if "not an IRC operator" in line2:
-			#events.received_error(self.gui,self,"Permission denied (you're not an IRC operator")
+			#events.received_error(self.gui,self,"Permission denied (you're not an IRC operator)")
+			self.gui.receivedError(self,"Permission denied (you're not an IRC operator)")
 			pass
 		if "not channel operator" in line2:
 			#events.received_error(self.gui,self,"Permission denied (you're not channel operator)")
+			self.gui.receivedError(self,"Permission denied (you're not channel operator)")
 			pass
 		if "is already on channel" in line2:
 			#events.received_error(self.gui,self,"Invite failed (user is already in channel)")
+			self.gui.receivedError(self,"Invite failed (user is already in channel)")
 			pass
 		if "not on that channel" in line2:
 			#events.received_error(self.gui,self,"Permission denied (you're not in channel)")
+			self.gui.receivedError(self,"Permission denied (you're not in channel)")
 			pass
 		if "aren't on that channel" in line2:
 			#events.received_error(self.gui,self,"Permission denied (target user is not in channel)")
+			self.gui.receivedError(self,"Permission denied (target user is not in channel)")
 			pass
 		if "have not registered" in line2:
 			#events.received_error(self.gui,self,"You're not registered")
+			self.gui.receivedError(self,"You're not registered")
 			pass
 		if "may not reregister" in line2:
 			#events.received_error(self.gui,self,"You can't reregister")
+			self.gui.receivedError(self,"You can't reregister")
 			pass
 		if "enough parameters" in line2:
 			#events.received_error(self.gui,self,"Error: not enough parameters supplied to command")
+			self.gui.receivedError(self,"Not enough parameters supplied to command")
 			pass
 		if "isn't among the privileged" in line2:
 			#events.received_error(self.gui,self,"Registration refused (server isn't setup to allow connections from your host)")
+			self.gui.receivedError(self,"Registration refused (server isn't setup to allow connections from your host)")
 			pass
 		if "Password incorrect" in line2:
 			#events.received_error(self.gui,self,"Permission denied (incorrect password)")
+			self.gui.receivedError(self,"Permission denied (incorrect password)")
 			pass
 		if "banned from this server" in line2:
 			#events.received_error(self.gui,self,"You are banned from this server")
+			self.gui.receivedError(self,"You are banned from this server")
 			pass
 		if "kill a server" in line2:
 			#events.received_error(self.gui,self,"Permission denied (you can't kill a server)")
+			self.gui.receivedError(self,"Permission denied (you can't kill a server)")
 			pass
 		if "O-lines for your host" in line2:
 			#events.received_error(self.gui,self,"Error: no O-lines for your host")
+			self.gui.receivedError(self,"No O-lines for your host")
 			pass
 		if "Unknown MODE flag" in line2:
 			#events.received_error(self.gui,self,"Error: unknown MODE flag")
+			self.gui.receivedError(self,"Unknown MODE flag")
 			pass
 		if "change mode for other users" in line2:
 			#events.received_error(self.gui,self,"Permission denied (can't change mode for other users)")
+			self.gui.receivedError(self,"Permission denied (can't change mode for other users)")
 			pass
 
 		return irc.IRCClient.lineReceived(self, line)

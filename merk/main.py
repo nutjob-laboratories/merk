@@ -491,8 +491,16 @@ class Merk(QMainWindow):
 
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument))
 
+		if mode=="k":
+			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument))
+
 		w = self.getWindow(target,client)
 		if w: w.writeText(t)
+
+		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
+
+		if mode=="k":
+			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
@@ -506,6 +514,8 @@ class Merk(QMainWindow):
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t)
+
+		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
@@ -525,8 +535,16 @@ class Merk(QMainWindow):
 
 		t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+' '.join(argument))
 
+		if mode=='k':
+			t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+''.join(argument))
+
 		w = self.getWindow(target,client)
 		if w: w.writeText(t)
+
+		t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
+
+		if mode=='k':
+			t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
@@ -538,8 +556,16 @@ class Merk(QMainWindow):
 
 		t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+' '.join(argument))
 
+		if mode=="k":
+			t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+''.join(argument))
+
 		w = self.getWindow(target,client)
 		if w: w.writeText(t)
+
+		t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
+
+		if mode=="k":
+			t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
@@ -571,6 +597,22 @@ class Merk(QMainWindow):
 			else:
 				t = Message(SYSTEM_MESSAGE,'',kicker+" kicked you from "+channel)
 			w.writeText(t)
+
+	def receivedError(self,client,message):
+
+		t = Message(ERROR_MESSAGE,'',message)
+
+		w = self.getServerWindow(client)
+		if w: w.writeText(t)
+
+		a = self.MDI.activeSubWindow()
+		c = a.widget()
+
+		if hasattr(c,"subwindow_id"):
+			if c.subwindow_id==w.subwindow_id:
+				return
+
+			c.writeText(t)
 
 	# END IRC EVENTS
 
