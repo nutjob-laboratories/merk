@@ -130,6 +130,7 @@ class Merk(QMainWindow):
 				config.ISSUE_COMMAND_SYMBOL+"msg": config.ISSUE_COMMAND_SYMBOL+"msg ",
 				config.ISSUE_COMMAND_SYMBOL+"me": config.ISSUE_COMMAND_SYMBOL+"me ",
 				config.ISSUE_COMMAND_SYMBOL+"mode": config.ISSUE_COMMAND_SYMBOL+"mode ",
+				config.ISSUE_COMMAND_SYMBOL+"kick": config.ISSUE_COMMAND_SYMBOL+"kick ",
 			}
 
 		# The command help system
@@ -143,12 +144,13 @@ class Merk(QMainWindow):
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...</b>", "Sets a mode on a channel or user" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [MESSAGE]</b>", "Kicks a user from a channel" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		]
 
 		global HELP_DISPLAY_TEMPLATE
 		if config.AUTOCOMPLETE_COMMANDS:
-			HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use, type the first few characters of a command and press the \"tab\" key to complete the command.")
+			HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command.")
 		else:
 			HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned off.")
 
@@ -672,6 +674,30 @@ class Merk(QMainWindow):
 		tokens = user_input.split()
 
 		# |-------|
+		# | /kick |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick' and len(tokens)>=2:
+				tokens.pop(0)
+				if tokens[0][:1]=='#':
+					# It's a channel, so do nothing; this will be handled
+					# by handleCommonCommands()
+					pass
+				else:
+					# If the current window is a channel, try to set the mode
+					# on that channel; if not, then this will be handled
+					# by handleCommonCommands()
+					if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
+						channel = window.name
+						target = tokens.pop(0)
+						msg = ' '.join(tokens)
+						if len(msg.strip())==0: msg = None
+						window.client.kick(channel,target,msg)
+						return True
+					else:
+						pass
+
+		# |-------|
 		# | /mode |
 		# |-------|
 		if len(tokens)>=1:
@@ -765,6 +791,23 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |-------|
+		# | /kick |
+		# |-------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick' and len(tokens)>=3:
+				tokens.pop(0)
+				channel = tokens.pop(0)
+				target = tokens.pop(0)
+				msg = ' '.join(tokens)
+				if len(msg.strip())==0: msg = None
+				window.client.kick(channel,target,msg)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [REASON]")
+				window.writeText(t)
+				return True
 
 		# |-------|
 		# | /mode |
