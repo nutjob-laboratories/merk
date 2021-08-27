@@ -127,6 +127,14 @@ ROUND_CHECKED_ICON = ":/icon-rchecked.png"
 
 DISCONNECT_TOOLBAR_ICON = ":/icon-disconnect_toolbar.png"
 
+WHOIS_ICON = ":/icon-whois.png"
+KICK_ICON = ":/icon-kick.png"
+BAN_ICON = ":/icon-ban.png"
+KICKBAN_ICON = ":/icon-kickban.png"
+CLIPBOARD_ICON = ":/icon-clipboard.png"
+PLUS_ICON = ":/icon-plus.png"
+MINUS_ICON = ":/icon-minus.png"
+
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
 OP_USER = ":/gui-op.png"

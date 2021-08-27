@@ -53,6 +53,29 @@ def menuHtml(icon,text,description,icon_size):
 	</table>
 	'''
 
+def menuHtmlSpaced(icon,text,description,icon_size):
+	return f'''
+<table style="width: 100%" border="0" cellspacing="2" cellpadding="2">
+	  <tbody>
+		<tr>
+		  <td style="text-align: center; vertical-align: middle;">&nbsp;<img src="{icon}" width="{icon_size}" height="{icon_size}"></td>
+		  <td>
+			<table style="width: 100%" border="0">
+			  <tbody>
+				<tr>
+				  <td style="font-weight: bold;"><big>{text}</big></td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;"><small>{description}&nbsp;&nbsp;</small></td>
+				</tr>
+			  </tbody>
+			</table>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	'''
+
 class MenuLabel(QLabel):
 	clicked=pyqtSignal()
 
@@ -84,5 +107,13 @@ def ExtendedMenuItem(self,icon,title,description,icon_size,func):
 	erkmenuAction = QWidgetAction(self)
 	erkmenuAction.setDefaultWidget(erkmenuLabel)
 	erkmenuLabel.clicked.connect(func)
+
+	return erkmenuAction
+
+def MenuNoActionRaw(self,icon,title,description,icon_size):
+
+	erkmenuLabel = QLabel( menuHtmlSpaced(icon,title,description,icon_size) )
+	erkmenuAction = QWidgetAction(self)
+	erkmenuAction.setDefaultWidget(erkmenuLabel)
 
 	return erkmenuAction

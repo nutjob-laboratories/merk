@@ -8,6 +8,8 @@
 
 **mƏrk** is in alpha (not even beta), but it is usable. It's not pretty, and a lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
 
+Currently, user settings and logs are stored in the application directory. Later, user settings and logs will be stored in the user's home directory (or, via a command-line option, another directory of the user's choosing).
+
 # Requirements
 
 **mƏrk** requires Python 3, [PyQt5](https://pypi.org/project/PyQt5/), and [Twisted](https://twistedmatrix.com/trac/). PyQt5 and Twisted can be installed by using [**pip**](https://pypi.org/project/pip/):
