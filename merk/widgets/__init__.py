@@ -25,6 +25,6 @@
 
 from .chat import Window
 from .text_separator import textSeparatorLabel,textSeparator
-from .textstyler import TextStyler
+from .textstyler import TextStyler,AllStyler
 from .plain_text import plainTextAction
 from .extendedmenuitem import ExtendedMenuItem,MenuNoActionRaw

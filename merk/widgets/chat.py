@@ -232,10 +232,16 @@ class Window(QMainWindow):
 
 		self.spellcheckMenuButton = QPushButton(QIcon(SPELLCHECK_ICON),"")
 		self.spellcheckMenuButton.setMenu(self.spellcheckMenu)
-		self.spellcheckMenuButton.setIconSize(QSize(self.input.height(),self.input.height()))
-		self.spellcheckMenuButton.setFixedSize(self.input.height()+5,self.input.height())
+		self.spellcheckMenuButton.setIconSize(QSize(self.input.height()-5,self.input.height()-5))
+		self.spellcheckMenuButton.setFixedSize(self.input.height()+3,self.input.height())
 		self.spellcheckMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 		self.spellcheckMenuButton.setToolTip("Spellcheck")
+
+		self.styleButton = QPushButton(QIcon(STYLE_ICON),"")
+		self.styleButton.setIconSize(QSize(self.input.height()-5,self.input.height()-5))
+		self.styleButton.setFixedSize(self.input.height()+3,self.input.height())
+		self.styleButton.setToolTip("Text style")
+		self.styleButton.clicked.connect(self.pressedStyleButton)
 
 		if self.window_type!=SERVER_WINDOW:
 
@@ -296,6 +302,9 @@ class Window(QMainWindow):
 		inputLayout.addLayout(nickLayout)
 		inputLayout.addWidget(self.input)
 		inputLayout.addWidget(self.spellcheckMenuButton)
+		inputLayout.addWidget(self.styleButton)
+
+		if self.window_type==SERVER_WINDOW: self.styleButton.hide()
 
 		if self.window_type==CHANNEL_WINDOW:
 
@@ -340,36 +349,39 @@ class Window(QMainWindow):
 
 		self.input.setFocus()
 
+		# Channel and private chat windows get a status bar
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+
+			# Create the status bar, and give it a "flat" style
 			self.status = self.statusBar()
+			self.status.setStyleSheet("QStatusBar::item { border: none; }")
 
+			# Here, we display the server the chat window is associated
+			# with, as well as how the client is connected to it (using
+			# SSL/TLS or not) and other information
 			if self.client.kwargs["ssl"]:
-
 				self.secure_icon = QLabel(self)
 				pixmap = QPixmap(VISITED_SECURE_ICON)
 				fm = QFontMetrics(self.app.font())
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-
-				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.server+":"+str(self.client.port)+")</small>")
+				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 			else:
-
 				self.secure_icon = QLabel(self)
 				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
 				fm = QFontMetrics(self.app.font())
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-
-				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.server+":"+str(self.client.port)+")</small>")
+				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 			self.status.addPermanentWidget(self.status_server,0)
 
 			# Spacer
 			self.status.addPermanentWidget(QLabel(),1)
 
-			self.status.setStyleSheet("QStatusBar::item { border: none; }")
-
+			# Channel windows will display the key for that
+			# channel (if set) in the lower right corner
 			if self.window_type==CHANNEL_WINDOW:
 				self.status.addPermanentWidget(self.key_icon,0)
 				self.key_value = QLabel("")
@@ -379,6 +391,7 @@ class Window(QMainWindow):
 		# Load and apply default style
 		self.applyStyle()
 
+		# Decide whether to load logs or not
 		load_logs = True
 
 		if self.window_type==CHANNEL_WINDOW:
@@ -393,23 +406,26 @@ class Window(QMainWindow):
 			else:
 				load_logs=False
 
-		# Load in any saved logs
+		# Only channel and private chat windows load logs
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
-
 			if load_logs:
+				# Load log from disk
 				loadLog = logs.readLog(self.client.network,self.name,logs.LOG_DIRECTORY)
+				# If the log is too long (which, after a while, it *will* be), we
+				# trim it, so that the chat window doesn't take up 50GB of memory
 				if len(loadLog)>config.MAXIMUM_LOADED_LOG_SIZE:
 					loadLog = logs.trimLog(loadLog,config.MAXIMUM_LOADED_LOG_SIZE)
-
+				# If there's been log data loaded, add it to the internal
+				# log of the chat window
 				if len(loadLog)>0:
 					self.log = loadLog + self.log
-
 					# Mark end of loaded log
 					if config.MARK_END_OF_LOADED_LOG:
 						t = datetime.timestamp(datetime.now())
 						pretty_timestamp = datetime.fromtimestamp(t).strftime('%m/%d/%Y, '+config.TIMESTAMP_FORMAT)
 						self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
-
+				# Now, rerender all text in the log, so that
+				# the loaded log data is displayed
 				self.rerenderChatLog()
 
 	def refreshInfoMenu(self):
@@ -702,6 +718,33 @@ class Window(QMainWindow):
 
 		return super(Window, self).eventFilter(source, event)
 
+	def pressedStyleButton(self):
+		x = StylerDialog(self.client,self,self.parent)
+		if x:
+
+			self.style = x
+
+			# Apply style background and forground colors
+			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+
+			p = self.chat.palette()
+			p.setColor(QPalette.Base, QColor(background))
+			p.setColor(QPalette.Text, QColor(foreground))
+			self.chat.setPalette(p)
+
+			p = self.input.palette()
+			p.setColor(QPalette.Base, QColor(background))
+			p.setColor(QPalette.Text, QColor(foreground))
+			self.input.setPalette(p)
+
+			if self.window_type==CHANNEL_WINDOW:
+				p = self.userlist.palette()
+				p.setColor(QPalette.Base, QColor(background))
+				p.setColor(QPalette.Text, QColor(foreground))
+				self.userlist.setPalette(p)
+
+			self.rerenderChatLog()
+
 	def applyStyle(self,filename=None):
 		if filename == None:
 			self.style = styles.loadStyle(self.client,self.name)
@@ -730,6 +773,8 @@ class Window(QMainWindow):
 			p.setColor(QPalette.Base, QColor(background))
 			p.setColor(QPalette.Text, QColor(foreground))
 			self.userlist.setPalette(p)
+
+		self.rerenderChatLog()
 
 	def writeUserlist(self,users):
 

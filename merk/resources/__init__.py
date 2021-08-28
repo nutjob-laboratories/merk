@@ -127,6 +127,8 @@ ROUND_CHECKED_ICON = ":/icon-rchecked.png"
 
 DISCONNECT_TOOLBAR_ICON = ":/icon-disconnect_toolbar.png"
 
+STYLE_ICON = ":/icon-style.png"
+
 WHOIS_ICON = ":/icon-whois.png"
 KICK_ICON = ":/icon-kick.png"
 BAN_ICON = ":/icon-ban.png"

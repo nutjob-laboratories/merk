@@ -26,6 +26,15 @@
 from .newnick import Dialog as Nick
 from .connect import Dialog as Connect
 from .joinchannel import Dialog as JoinChannel
+from .styler import Dialog as Styler
+
+def StylerDialog(client,chat,obj):
+	x = Styler(client,chat,obj)
+	info = x.get_style_information(client,chat,obj)
+	del x
+
+	if not info: return None
+	return info
 
 def JoinChannelDialog(obj):
 	x = JoinChannel(obj)

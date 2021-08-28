@@ -149,7 +149,7 @@ class TextStyler(QWidget):
 					if value.lower()=='bold':
 						self.bold = True
 
-	def __init__(self,name,text,qss,show_styles=True,underline=False,parent=None):
+	def __init__(self,name,text,qss,show_styles=True,underline=False,bgcolor=None,parent=None):
 		super(TextStyler,self).__init__(parent)
 		self.name = name
 		self.text = text
@@ -161,7 +161,7 @@ class TextStyler(QWidget):
 		self.bold = False
 		self.italic = False
 		self.underline = underline
-		self.bgcolor = None
+		self.bgcolor = bgcolor
 
 		self.parseQss()
 
@@ -235,3 +235,125 @@ class TextStyler(QWidget):
 		finale.addLayout(controlsLayout)
 
 		self.setLayout(finale)
+
+class AllStyler(QWidget):
+
+	def loadQss(self,style):
+		self.qss = style
+
+		self.parseQss()
+		self.generateQss()
+
+		self.example.setStyleSheet(self.qss)
+
+
+	def buttonColor(self):
+		self.newcolor = QColorDialog.getColor(QColor(self.color))
+
+		if self.newcolor.isValid():
+			self.ncolor = self.newcolor.name()
+			self.color = self.ncolor
+			self.generateQss()
+			self.example.setStyleSheet(self.qss)
+
+	def buttonBg(self):
+		self.newcolor = QColorDialog.getColor(QColor(self.background_color))
+
+		if self.newcolor.isValid():
+			self.ncolor = self.newcolor.name()
+			self.background_color = self.ncolor
+			self.generateQss()
+			self.example.setStyleSheet(self.qss)
+
+	def buttonReset(self):
+		self.color = self.first_color
+		self.background_color = self.first_background
+
+		self.generateQss()
+		self.example.setStyleSheet(self.qss)
+
+
+	def generateQss(self):
+		gcode = f'color: {self.color};'
+		gcode = gcode + f' background-color: {self.background_color};'
+		self.qss = gcode
+
+	def exportQss(self):
+		gcode = f'color: {self.color};'
+		gcode = gcode + f' background-color: {self.background_color};'
+		return gcode
+
+	def parseQss(self):
+		for line in self.qss.split(";"):
+			e = line.split(':')
+			if len(e)==2:
+				key = e[0].strip()
+				value = e[1].strip()
+
+				if key.lower()=='color':
+					self.color = value
+
+				if key.lower()=='background-color':
+					self.background_color = value
+
+	def __init__(self,name,qss,parent=None):
+		super(AllStyler,self).__init__(parent)
+		self.name = name
+		self.qss = qss
+
+		self.color = None
+		self.background_color = None
+
+		self.parseQss()
+
+		self.first_color = self.color
+		self.first_background = self.background_color
+
+		# self.example = QLabel("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor<br>incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud")
+		self.example = QLabel("This is an example of chat text, with the <br>background color of all text displays")
+		self.example.setStyleSheet(self.qss)
+
+		self.setColor = QPushButton("Text")
+		self.setColor.clicked.connect(self.buttonColor)
+		#self.setColor.setIcon(QIcon(FORMAT_ICON))
+
+		fm = QFontMetrics(self.font())
+		br = fm.boundingRect('Text')
+		#self.setDefault.setFixedWidth(br.width()+8)
+		self.setColor.setFixedWidth(br.width()+35)
+
+		self.setBg = QPushButton("Background")
+		self.setBg.clicked.connect(self.buttonBg)
+		#self.setBg.setIcon(QIcon(FORMAT_ICON))
+
+		br = fm.boundingRect('Background')
+		self.setBg.setFixedWidth(br.width()+35)
+
+		self.setReset = QPushButton("Reset")
+		self.setReset.clicked.connect(self.buttonReset)
+
+		br = fm.boundingRect('Reset')
+		self.setReset.setFixedWidth(br.width()+10)
+
+		controlLayout = QHBoxLayout()
+		controlLayout.addWidget(self.setColor)
+		controlLayout.addWidget(self.setBg)
+		controlLayout.addWidget(self.setReset)
+		controlLayout.setAlignment(Qt.AlignRight)
+
+		allTextLayout = QVBoxLayout()
+		allTextLayout.addWidget(self.example)
+		allTextLayout.addLayout(controlLayout)
+
+		finalBox = QGroupBox()
+		finalBox.setAlignment(Qt.AlignHCenter)
+		finalBox.setLayout(allTextLayout)
+
+		finalLayout = QHBoxLayout()
+		finalLayout.addWidget(finalBox)
+
+		DMARGIN = 0
+		margins = finalLayout.contentsMargins()
+		finalLayout.setContentsMargins(margins.left(),DMARGIN,margins.right(),DMARGIN)
+
+		self.setLayout(finalLayout)
