@@ -187,7 +187,7 @@ class Dialog(QDialog):
 		self.CONNECT_VIA_SSL = False
 		self.RECONNECT_OPTION = False
 
-		self.setWindowTitle(APPLICATION_NAME+" "+APPLICATION_VERSION)
+		self.setWindowTitle(APPLICATION_NAME+" IRC Client")
 		self.setWindowIcon(QIcon(CONNECT_ICON))
 
 		self.nick = QNoSpaceLineEdit(user.NICKNAME)
@@ -195,10 +195,10 @@ class Dialog(QDialog):
 		self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QLineEdit(user.REALNAME)
 
-		nickl = QLabel("Nickname")
-		altl = QLabel("Alternate")
-		usrl = QLabel("Username")
-		reall = QLabel("Real name")
+		nickl = QLabel("Nickname:")
+		altl = QLabel("Alternate:")
+		usrl = QLabel("Username:")
+		reall = QLabel("Real name:")
 
 		userLayout = QFormLayout()
 		userLayout.addRow(nickl, self.nick)
@@ -218,13 +218,13 @@ class Dialog(QDialog):
 
 		serverLayout = QFormLayout()
 
-		hostl = QLabel("Host")
+		hostl = QLabel("Host:")
 		serverLayout.addRow(hostl, self.host)
 
-		portl = QLabel("Port")
+		portl = QLabel("Port:")
 		serverLayout.addRow(portl, self.port)
 
-		passl = QLabel("Password")
+		passl = QLabel("Password:")
 		serverLayout.addRow(passl, self.password)
 
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
@@ -245,8 +245,13 @@ class Dialog(QDialog):
 
 		self.tabs = QTabWidget()
 
+		userPageLayout = QVBoxLayout()
+		userPageLayout.addStretch()
+		userPageLayout.addLayout(userLayout)
+		userPageLayout.addStretch()
+
 		self.user_tab = QWidget()
-		self.user_tab.setLayout(userLayout)
+		self.user_tab.setLayout(userPageLayout)
 		self.tabs.addTab(self.user_tab, QIcon(PRIVATE_ICON), "User")
 
 		self.server_tab = QWidget()
@@ -260,8 +265,17 @@ class Dialog(QDialog):
 
 		buttons.button(QDialogButtonBox.Ok).setText("Connect")
 
+		banner = QLabel()
+		pixmap = QPixmap(MERK_SPLASH_IMAGE)
+		banner.setPixmap(pixmap)
+		banner.setAlignment(Qt.AlignCenter)
+
+		bannerTabs = QHBoxLayout()
+		bannerTabs.addWidget(banner)
+		bannerTabs.addWidget(self.tabs)
+
 		finalLayout = QVBoxLayout()
-		finalLayout.addWidget(self.tabs)
+		finalLayout.addLayout(bannerTabs)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()

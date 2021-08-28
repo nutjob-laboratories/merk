@@ -137,9 +137,9 @@ class Window(QMainWindow):
 			self.toolbar.addWidget(self.spacer)
 
 			self.serverUptime = QLabel("<b>00:00:00</b>")
-			wa = self.toolbar.addWidget(self.serverUptime)
+			self.serverUptimeAction = self.toolbar.addWidget(self.serverUptime)
 
-			if not config.SHOW_CONNECTION_UPTIME: wa.setVisible(False)
+			if not config.SHOW_CONNECTION_UPTIME: self.serverUptimeAction.setVisible(False)
 
 			self.toolbar.addSeparator()
 

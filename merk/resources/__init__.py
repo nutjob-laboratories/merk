@@ -60,7 +60,7 @@ elif len(minor)==2:
 	minor = f"0{minor}"
 
 APPLICATION_VERSION = major+"."+minor
-APPLICATION_NAME = "mƏrk"
+APPLICATION_NAME = "mƏRK"
 
 MDI_BACKGROUND = ":/gui-background.png"
 
@@ -151,6 +151,8 @@ LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
 LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
 
 DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
+
+MERK_SPLASH_IMAGE = ":/gui-merk_splash.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
