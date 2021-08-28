@@ -66,9 +66,10 @@ LOAD_CHANNEL_LOGS = True
 SAVE_PRIVATE_LOGS = True
 LOAD_PRIVATE_LOGS = True
 ASK_BEFORE_DISCONNECT = True
-
 SERVER_TOOLBAR_BUTTON_SIZE = 25
 SERVER_TOOLBAR_ICON_SIZE = 20
+SHOW_CONNECTION_UPTIME = True
+SHOW_CHANNEL_UPTIME = True
 
 def save_settings(filename):
 
@@ -104,12 +105,18 @@ def save_settings(filename):
 		"ask_before_disconnect": ASK_BEFORE_DISCONNECT,
 		"server_toolbar_button_size": SERVER_TOOLBAR_BUTTON_SIZE,
 		"server_toolbar_icon_size": SERVER_TOOLBAR_ICON_SIZE,
+		"show_connection_uptime": SHOW_CONNECTION_UPTIME,
+		"show_channel_uptime": SHOW_CHANNEL_UPTIME,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_channel_uptime" in settings:
+		settings["show_channel_uptime"] = SHOW_CHANNEL_UPTIME
+	if not "show_connection_uptime" in settings:
+		settings["show_connection_uptime"] = SHOW_CONNECTION_UPTIME
 	if not "server_toolbar_button_size" in settings:
 		settings["server_toolbar_button_size"] = SERVER_TOOLBAR_BUTTON_SIZE
 	if not "server_toolbar_icon_size" in settings:
@@ -207,6 +214,8 @@ def load_settings(filename):
 	global ASK_BEFORE_DISCONNECT
 	global SERVER_TOOLBAR_BUTTON_SIZE
 	global SERVER_TOOLBAR_ICON_SIZE
+	global SHOW_CONNECTION_UPTIME
+	global SHOW_CHANNEL_UPTIME
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -216,6 +225,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_UPTIME = settings["show_channel_uptime"]
+		SHOW_CONNECTION_UPTIME = settings["show_connection_uptime"]
 		SERVER_TOOLBAR_BUTTON_SIZE = settings["server_toolbar_button_size"]
 		SERVER_TOOLBAR_ICON_SIZE = settings["server_toolbar_icon_size"]
 		ASK_BEFORE_DISCONNECT = settings["ask_before_disconnect"]
@@ -289,6 +300,8 @@ def check_settings(filename):
 			if not "ask_before_disconnect" in settings: return False
 			if not "server_toolbar_icon_size" in settings: return False
 			if not "server_toolbar_button_size" in settings: return False
+			if not "show_connection_uptime" in settings: return False
+			if not "show_channel_uptime" in settings: return False
 	else:
 		return False
 

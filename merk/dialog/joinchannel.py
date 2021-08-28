@@ -66,7 +66,7 @@ class Dialog(QDialog):
 
 		keyLayout = QHBoxLayout()
 		self.keyLabel = QLabel("<b>Key:</b>")
-		self.key = QLineEdit()
+		self.key = QNoSpaceLineEdit()
 		self.key.setEchoMode(QLineEdit.Password)
 		keyLayout.addWidget(self.keyLabel)
 		keyLayout.addStretch()

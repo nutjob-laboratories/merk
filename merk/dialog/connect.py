@@ -55,13 +55,9 @@ class Dialog(QDialog):
 		errors = []
 
 		if len(self.nick.text().strip())==0: errors.append("No nickname entered")
-
 		if len(self.username.text().strip())==0: errors.append("No username entered")
-
 		if len(self.realname.text().strip())==0: errors.append("No realname entered")
-
 		if len(self.alternative.text().strip())==0: errors.append("No alternate nickname entered")
-
 		if len(self.host.text().strip())==0: errors.append("No host entered")
 
 		try:

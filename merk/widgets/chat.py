@@ -136,8 +136,10 @@ class Window(QMainWindow):
 			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 			self.toolbar.addWidget(self.spacer)
 
-			self.serverUptime = QLabel("00:00:00")
-			self.toolbar.addWidget(self.serverUptime)
+			self.serverUptime = QLabel("<b>00:00:00</b>")
+			wa = self.toolbar.addWidget(self.serverUptime)
+
+			if not config.SHOW_CONNECTION_UPTIME: wa.setVisible(False)
 
 			self.toolbar.addSeparator()
 
@@ -170,6 +172,10 @@ class Window(QMainWindow):
 			self.userlist.setFocusPolicy(Qt.NoFocus)
 			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
 			self.userlist.installEventFilter(self)
+
+			self.channelUptime = QLabel("<small>00:00:00</small>")
+
+			if not config.SHOW_CHANNEL_UPTIME: self.channelUptime.hide()
 
 		# Create chat display widget
 		self.chat = QTextBrowser(self)
@@ -393,6 +399,12 @@ class Window(QMainWindow):
 				self.status.addPermanentWidget(self.key_value,0)
 				self.key_value.hide()
 
+			if self.window_type==CHANNEL_WINDOW:
+				self.key_spacer = QLabel("")
+				self.status.addPermanentWidget(self.key_spacer,0)
+				self.key_spacer.hide()
+				self.status.addPermanentWidget(self.channelUptime,0)
+
 		# Load and apply default style
 		self.applyStyle()
 
@@ -434,10 +446,14 @@ class Window(QMainWindow):
 				self.rerenderChatLog()
 
 	def tickUptime(self,uptime):
-		self.uptime = uptime
-
+		
 		if self.window_type==SERVER_WINDOW:
-			self.serverUptime.setText(prettyUptime(self.uptime))
+			self.uptime = uptime
+			self.serverUptime.setText("<b>"+prettyUptime(self.uptime)+"</b>")
+		else:
+			self.uptime = self.uptime + 1
+			if self.window_type==CHANNEL_WINDOW:
+				self.channelUptime.setText("<small>"+prettyUptime(self.uptime)+"</small>")
 
 	def refreshInfoMenu(self):
 		self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
@@ -467,10 +483,12 @@ class Window(QMainWindow):
 				if hasattr(self,"key_value"):
 					self.key_value.setText("<small>+k "+self.client.channelkeys[self.name]+"</small>")
 					self.key_value.show()
+					self.key_spacer.show()
 			else:
 				self.key_icon.hide()
 				if hasattr(self,"key_value"):
 					self.key_value.hide()
+					self.key_spacer.hide()
 		
 	def updateTitle(self):
 
