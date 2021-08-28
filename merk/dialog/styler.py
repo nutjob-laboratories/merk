@@ -72,7 +72,7 @@ class Dialog(QDialog):
 		
 		# saveStyle(client,channel,style,is_server_window=False):
 		if self.chat.window_type==SERVER_WINDOW:
-			styles.saveStyle(self.client,self.chat.name,self.style,False)
+			styles.saveStyle(self.client,self.chat.name,self.style,True)
 		else:
 			styles.saveStyle(self.client,self.chat.name,self.style,False)
 

@@ -46,23 +46,30 @@ def saveStyle(client,channel,style,is_server_window=False):
 	if hasattr(client,"network"):
 		starter = client.network
 	else:
-		starter = client.server+":"+str(client.port)
+		starter = client.server+"-"+str(client.port)
 
 	if is_server_window:
-		starter = client.server+":"+str(client.port)
-
-	fname = starter+"-"+channel+".style"
-	fname = os.path.join(STYLE_DIRECTORY,fname)
+		fname = os.path.join(STYLE_DIRECTORY,client.server+"-"+str(client.port)+".style")
+	else:
+		fname = starter+"-"+channel+".style"
+		fname = os.path.join(STYLE_DIRECTORY,fname)
 
 	write_style_file(style,fname)
 
+def loadStyleServer(client):
+	fname = os.path.join(STYLE_DIRECTORY,client.server+"-"+str(client.port)+".style")
+
+	if os.path.isfile(fname):
+		return read_style_file(fname)
+	else:
+		return read_style_file(STYLE_FILE)
 
 def loadStyle(client,channel):
 
 	if hasattr(client,"network"):
 		starter = client.network
 	else:
-		starter = client.server+":"+str(client.port)
+		starter = client.server+"-"+str(client.port)
 
 	fname = starter+"-"+channel+".style"
 	fname = os.path.join(STYLE_DIRECTORY,fname)

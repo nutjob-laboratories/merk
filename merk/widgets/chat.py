@@ -304,8 +304,6 @@ class Window(QMainWindow):
 		inputLayout.addWidget(self.spellcheckMenuButton)
 		inputLayout.addWidget(self.styleButton)
 
-		if self.window_type==SERVER_WINDOW: self.styleButton.hide()
-
 		if self.window_type==CHANNEL_WINDOW:
 
 			# Channel windows will have the chat display split with
@@ -747,7 +745,10 @@ class Window(QMainWindow):
 
 	def applyStyle(self,filename=None):
 		if filename == None:
-			self.style = styles.loadStyle(self.client,self.name)
+			if self.window_type==SERVER_WINDOW:
+				self.style = styles.loadStyleServer(self.client)
+			else:
+				self.style = styles.loadStyle(self.client,self.name)
 		else:
 			s = styles.loadStyleFile(filename)
 			if s:
