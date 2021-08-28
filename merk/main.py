@@ -614,6 +614,13 @@ class Merk(QMainWindow):
 
 			c.writeText(t)
 
+	def uptime(self,client,uptime):
+
+		# getAllSubWindows(self,client):
+		for w in self.getAllSubWindows(client):
+			c = w.widget()
+			c.tickUptime(uptime)
+
 	# END IRC EVENTS
 
 	def connectToIrc(self,connection_info=None):

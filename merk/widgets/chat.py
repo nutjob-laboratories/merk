@@ -57,6 +57,8 @@ class Window(QMainWindow):
 
 		self.subwindow_id = str(uuid.uuid4())
 
+		self.uptime = 0
+
 		self.channel_topic = ""		# Channel topic
 		self.userlist_width = 0		# Userlist width
 
@@ -133,6 +135,11 @@ class Window(QMainWindow):
 			self.spacer = QWidget()
 			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 			self.toolbar.addWidget(self.spacer)
+
+			self.serverUptime = QLabel("00:00:00")
+			self.toolbar.addWidget(self.serverUptime)
+
+			self.toolbar.addSeparator()
 
 			entry = QPushButton("")
 			entry.setIcon(QIcon(DISCONNECT_TOOLBAR_ICON))
@@ -425,6 +432,12 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
+
+	def tickUptime(self,uptime):
+		self.uptime = uptime
+
+		if self.window_type==SERVER_WINDOW:
+			self.serverUptime.setText(prettyUptime(self.uptime))
 
 	def refreshInfoMenu(self):
 		self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))

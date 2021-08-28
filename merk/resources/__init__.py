@@ -222,6 +222,22 @@ class ConnectInfo:
 
 # Functions
 
+def convertSeconds(seconds):
+	h = seconds//(60*60)
+	m = (seconds-h*60*60)//60
+	s = seconds-(h*60*60)-(m*60)
+	return [h, m, s]
+
+def prettyUptime(uptime):
+	t = convertSeconds(uptime)
+	hours = t[0]
+	if len(str(hours))==1: hours = f"0{hours}"
+	minutes = t[1]
+	if len(str(minutes))==1: minutes = f"0{minutes}"
+	seconds = t[2]
+	if len(str(seconds))==1: seconds = f"0{seconds}"
+	return f"{hours}:{minutes}:{seconds}"
+
 def test_if_window_background_is_light(obj):
 	# Determine if window color is dark or light
 		mbcolor = obj.palette().color(QPalette.Window).name()

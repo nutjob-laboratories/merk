@@ -119,6 +119,8 @@ class IRC_Connection(irc.IRCClient):
 
 		self.uptime = self.uptime + 1
 
+		self.gui.uptime(self,self.uptime)
+
 	def connectionMade(self):
 
 		# PROTOCTL UHNAMES
