@@ -54,8 +54,11 @@ class Dialog(QDialog):
 		self.style['self'] = self.self_style.exportQss()
 		self.style['username'] = self.user_style.exportQss()
 		self.style['notice'] = self.notice_style.exportQss()
-		self.style['all'] = self.all_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
+
+		gcode = f'color: {self.fgcolor};'
+		gcode = gcode + f' background-color: {self.bgcolor};'
+		self.style["all"] = gcode
 
 		return self.style
 
@@ -68,14 +71,17 @@ class Dialog(QDialog):
 		self.style['self'] = self.self_style.exportQss()
 		self.style['username'] = self.user_style.exportQss()
 		self.style['notice'] = self.notice_style.exportQss()
-		self.style['all'] = self.all_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
+
+		gcode = f'color: {self.fgcolor};'
+		gcode = gcode + f' background-color: {self.bgcolor};'
+		self.style["all"] = gcode
 		
 		# saveStyle(client,channel,style,is_server_window=False):
-		if self.chat.window_type==SERVER_WINDOW:
-			styles.saveStyle(self.client,self.chat.name,self.style,True)
+		if self.wchat.window_type==SERVER_WINDOW:
+			styles.saveStyle(self.client,self.wchat.name,self.style,True)
 		else:
-			styles.saveStyle(self.client,self.chat.name,self.style,False)
+			styles.saveStyle(self.client,self.wchat.name,self.style,False)
 
 	def qssChanged(self,data):
 		style_name = data[0]
