@@ -31,6 +31,7 @@ from PyQt5 import QtCore
 from ..resources import *
 from .. import widgets
 from .. import styles
+from .. import render
 
 class Dialog(QDialog):
 
@@ -76,41 +77,144 @@ class Dialog(QDialog):
 		else:
 			styles.saveStyle(self.client,self.chat.name,self.style,False)
 
+	def qssChanged(self,data):
+		style_name = data[0]
+		qss = data[1]
+
+		self.style[style_name] = qss
+
+		self.chat.clear()
+
+		for line in self.messages:
+			t = render.render_message(line,self.style)
+			self.chat.append(t)
+	
+	def setTextColor(self):
+
+		newcolor = QColorDialog.getColor(QColor(self.fgcolor))
+		if newcolor.isValid():
+
+			self.fgcolor = newcolor
+
+			gcode = f'color: {self.fgcolor};'
+			gcode = gcode + f' background-color: {self.bgcolor};'
+
+			self.style["all"] = gcode
+
+			p = self.chat.palette()
+			p.setColor(QPalette.Base, QColor(self.bgcolor))
+			p.setColor(QPalette.Text, QColor(self.fgcolor))
+			self.chat.setPalette(p)
+
+	def setBackground(self):
+
+		newcolor = QColorDialog.getColor(QColor(self.bgcolor))
+		if newcolor.isValid():
+
+			self.bgcolor = newcolor
+
+			gcode = f'color: {self.fgcolor};'
+			gcode = gcode + f' background-color: {self.bgcolor};'
+
+			self.style["all"] = gcode
+
+			p = self.chat.palette()
+			p.setColor(QPalette.Base, QColor(self.bgcolor))
+			p.setColor(QPalette.Text, QColor(self.fgcolor))
+			self.chat.setPalette(p)
+
 	def __init__(self,client,chat,parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.client = client
-		self.chat = chat
+		self.wchat = chat
 		self.parent = parent
 
-		self.style = self.chat.style
+		self.style = self.wchat.style
 
-		self.setWindowTitle("Edit text styles")
+		self.setWindowTitle("Edit text style for "+self.wchat.name)
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
-		bgcolor,fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
-		self.system_style = widgets.TextStyler('system','This is a system message',self.style['system'],True,False,bgcolor,self)
-		self.link_style = widgets.TextStyler('hyperlink','This is a link',self.style['hyperlink'],True,True,bgcolor,self)
-		self.action_style = widgets.TextStyler('action','This is a CTCP Action message',self.style['action'],True,False,bgcolor,self)
-		self.error_style = widgets.TextStyler('error','This is an error message',self.style['error'],True,False,bgcolor,self)
-		self.notice_style = widgets.TextStyler('notice','Notice nicknames',self.style['notice'],True,False,bgcolor,self)
-		self.self_style = widgets.TextStyler('self','Your nickname',self.style['self'],True,False,bgcolor,self)
-		self.user_style = widgets.TextStyler('username','Other nicknames',self.style['username'],True,False,bgcolor,self)
-		self.server_style = widgets.TextStyler('server','This is a server message',self.style['server'],True,False,bgcolor,self)
+		self.system_style = widgets.MiniStyler('system', "System messages    ",self.style['system'],False,self)
+		self.link_style = widgets.MiniStyler('hyperlink','Hyperlinks         ',self.style['hyperlink'],True,self)
+		self.action_style = widgets.MiniStyler('action', 'CTCP Action message',self.style['action'],False,self)
+		self.error_style = widgets.MiniStyler('error',   'Error message      ',self.style['error'],False,self)
+		self.notice_style = widgets.MiniStyler('notice', 'Notice nicknames   ',self.style['notice'],False,self)
+		self.self_style = widgets.MiniStyler('self',     'Your nickname      ',self.style['self'],False,self)
+		self.user_style = widgets.MiniStyler('username', 'Other nicknames    ',self.style['username'],False,self)
+		self.server_style = widgets.MiniStyler('server', 'Server message     ',self.style['server'],False,self)
 
-		self.all_style = widgets.AllStyler('all',self.style['all'],self)
+		self.system_style.qssChanged.connect(self.qssChanged)
+		self.link_style.qssChanged.connect(self.qssChanged)
+		self.action_style.qssChanged.connect(self.qssChanged)
+		self.error_style.qssChanged.connect(self.qssChanged)
+		self.notice_style.qssChanged.connect(self.qssChanged)
+		self.self_style.qssChanged.connect(self.qssChanged)
+		self.user_style.qssChanged.connect(self.qssChanged)
+		self.server_style.qssChanged.connect(self.qssChanged)
+
+		self.chat = QTextBrowser(self)
+		self.chat.setFocusPolicy(Qt.NoFocus)
+
+		p = self.chat.palette()
+		p.setColor(QPalette.Base, QColor(self.bgcolor))
+		p.setColor(QPalette.Text, QColor(self.fgcolor))
+		self.chat.setPalette(p)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+
+		self.chat.setFixedHeight((fheight*9)+10)
+
+		self.messages = [
+			Message(SERVER_MESSAGE,'','This is a server message'),
+			Message(SYSTEM_MESSAGE,'','This is a system message'),
+			Message(ERROR_MESSAGE,'','This is an error message'),
+			Message(NOTICE_MESSAGE,'carrie','This is a notice message'),
+			Message(CHAT_MESSAGE,'other_nicks',"Here's a message with a link: http://google.com"),
+			Message(SELF_MESSAGE,'your_nick',"Here's a message without a link!"),
+			Message(ACTION_MESSAGE,'alice','sends a CTCP action message'),
+		]
+
+		for line in self.messages:
+			t = render.render_message(line,self.style)
+			self.chat.append(t)
+
+		self.bg_button = QPushButton("Background Color")
+		self.bg_button.clicked.connect(self.setBackground)
+
+		self.fg_button = QPushButton("Text Color")
+		self.fg_button.clicked.connect(self.setTextColor)
+
+		ln1 = QHBoxLayout()
+		ln1.addWidget(self.system_style)
+		ln1.addWidget(self.error_style)
+
+		ln2 = QHBoxLayout()
+		ln2.addWidget(self.link_style)
+		ln2.addWidget(self.server_style)
+
+		ln3 = QHBoxLayout()
+		ln3.addWidget(self.self_style)
+		ln3.addWidget(self.user_style)
+
+		ln4 = QHBoxLayout()
+		ln4.addWidget(self.action_style)
+		ln4.addWidget(self.notice_style)
+
+		ln5 = QHBoxLayout()
+		ln5.addWidget(self.bg_button)
+		ln5.addWidget(self.fg_button)
 
 		styleLayout = QVBoxLayout()
-		styleLayout.addWidget(self.all_style)
-		styleLayout.addWidget(self.system_style)
-		styleLayout.addWidget(self.link_style)
-		styleLayout.addWidget(self.action_style)
-		styleLayout.addWidget(self.error_style)
-		styleLayout.addWidget(self.notice_style)
-		styleLayout.addWidget(self.self_style)
-		styleLayout.addWidget(self.user_style)
-		styleLayout.addWidget(self.server_style)
+		styleLayout.addWidget(self.chat)
+		styleLayout.addLayout(ln1)
+		styleLayout.addLayout(ln2)
+		styleLayout.addLayout(ln3)
+		styleLayout.addLayout(ln4)
+		styleLayout.addLayout(ln5)
 		styleLayout.addStretch()
 
 		# Buttons
@@ -119,15 +223,16 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		buttons.button(QDialogButtonBox.Ok).setText("Apply")
+		buttons.button(QDialogButtonBox.Ok).setText("Apply style")
 
-		entry = QPushButton("Save")
+		entry = QPushButton("Save as default style")
 		entry.clicked.connect(self.saveStyle)
 
 		buttonLayout = QHBoxLayout()
-		buttonLayout.addStretch()
+		#buttonLayout.addStretch()
 		buttonLayout.addWidget(entry)
 		buttonLayout.addWidget(buttons)
+		buttonLayout.setAlignment(Qt.AlignRight)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(styleLayout)
