@@ -27,6 +27,39 @@ from .newnick import Dialog as Nick
 from .connect import Dialog as Connect
 from .joinchannel import Dialog as JoinChannel
 from .styler import Dialog as Styler
+from .settings import Dialog as Settings
+from .windowsize import Dialog as WindowSize
+from .logsize import Dialog as LogSize
+from .historysize import Dialog as HistorySize
+
+def HistorySizeDialog(obj):
+	x = HistorySize(obj)
+	info = x.get_entry_information(obj)
+	del x
+
+	if not info: return None
+	return info
+
+def LogSizeDialog(obj):
+	x = LogSize(obj)
+	info = x.get_entry_information(obj)
+	del x
+
+	if not info: return None
+	return info
+
+def SizeDialog(obj):
+	x = WindowSize(obj)
+	info = x.get_window_information(obj)
+	del x
+
+	if not info: return None
+	return info
+
+def SettingsDialog(app,obj):
+	x = Settings(app,obj)
+	x.show()
+	return x
 
 def StylerDialog(client,chat,obj):
 	x = Styler(client,chat,obj)

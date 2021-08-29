@@ -106,6 +106,9 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectToIrc)
 		self.mainMenu.addAction(entry)
 
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
+		self.mainMenu.addAction(entry)
+
 		self.mainMenu.addSeparator()
 
 		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
@@ -623,6 +626,9 @@ class Merk(QMainWindow):
 
 	# END IRC EVENTS
 
+	def openSettings(self):
+		self.settingsDialog = SettingsDialog(self.app,self)
+
 	def connectToIrc(self,connection_info=None):
 		if connection_info:
 			connection = connection_info
@@ -691,6 +697,28 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if c.client.client_id == client.client_id:
 					c.refreshModeDisplay()
+
+	def setAllFont(self,newfont):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			c.setFont(newfont)
+			if hasattr(c,"chat"): c.chat.setFont(newfont)
+			if hasattr(c,"userlist"): c.userlist.setFont(newfont)
+			if hasattr(c,"input"): c.input.setFont(newfont)
+			if hasattr(c,"topic"): c.topic.setFont(newfont)
+			if hasattr(c,"channelUptime"): c.channelUptime.setFont(newfont)
+			if hasattr(c,"nick_display"): c.nick_display.setFont(newfont)
+			if hasattr(c,"mode_display"): c.mode_display.setFont(newfont)
+			if hasattr(c,"spellcheckMenu"): c.spellcheckMenu.setFont(newfont)
+			if hasattr(c,"status"): c.status.setFont(newfont)
+			if hasattr(c,"status_server"): c.status_server.setFont(newfont)
+			if hasattr(c,"key_value"): c.key_value.setFont(newfont)
+
+	def setAllLanguage(self,newlang):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"menuSetLanguage"):
+				c.menuSetLanguage(newlang)
 
 	def handleUserInput(self,window,user_input):
 
