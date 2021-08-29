@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/nutjob-laboratories/merk/raw/main/merk_button.png"><br>
+  <img src="https://github.com/nutjob-laboratories/merk/raw/main/merk_logo.png"><br>
   <b><big>mƏrk IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
 </p>
