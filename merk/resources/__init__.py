@@ -91,6 +91,7 @@ RAW_SYSTEM_MESSAGE = 8
 HORIZONTAL_RULE_MESSAGE = 9
 HARD_HORIZONTAL_RULE_MESSAGE = 10
 TEXT_HORIZONTAL_RULE_MESSAGE = 11
+WHOIS_MESSAGE = 12
 
 UNKNOWN_NETWORK = "UNKNOWN"
 
@@ -229,6 +230,18 @@ class ConnectInfo:
 		self.password = password
 		self.reconnect = reconnect
 		self.ssl = ssl
+
+class WhoisData:
+	def __init__(self):
+		self.nickname = 'Unknown'
+		self.username = 'Unknown'
+		self.realname = 'Unknown'
+		self.host = 'Unknown'
+		self.signon = '0'
+		self.idle = '0'
+		self.server = 'Unknown'
+		self.channels = 'Unknown'
+		self.privs = 'is a normal user'
 
 # Functions
 

@@ -98,6 +98,7 @@ class IRC_Connection(irc.IRCClient):
 		self.usermodes = ''
 		self.channelmodes = {}
 		self.channelkeys = {}
+		self.whoisdata = {}
 
 		self.maxnicklen = 0
 		self.maxchannels = 0
@@ -402,6 +403,79 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.topicChanged(self,user,channel,newTopic)
 
 		return irc.IRCClient.topicUpdated(self, user, channel, newTopic)
+
+	def irc_RPL_WHOISCHANNELS(self, prefix, params):
+		params.pop(0)
+		nick = params.pop(0)
+		channels = ", ".join(params)
+
+		if nick in self.whoisdata:
+			self.whoisdata[nick].channels = channels
+		else:
+			self.whoisdata[nick] = WhoisData()
+			self.whoisdata[nick].nickname = nick
+			self.whoisdata[nick].channels = channels
+
+	def irc_RPL_WHOISUSER(self, prefix, params):
+		nick = params[1]
+		username = params[2]
+		host = params[3]
+		realname = params[5]
+
+		if nick in self.whoisdata:
+			self.whoisdata[nick].username = username
+			self.whoisdata[nick].host = host
+			self.whoisdata[nick].realname = realname
+		else:
+			self.whoisdata[nick] = WhoisData()
+			self.whoisdata[nick].nickname = nick
+			self.whoisdata[nick].username = username
+			self.whoisdata[nick].host = host
+			self.whoisdata[nick].realname = realname
+
+	def irc_RPL_WHOISIDLE(self, prefix, params):
+		params.pop(0)
+		nick = params.pop(0)
+		idle_time = params.pop(0)
+		signed_on = params.pop(0)
+
+		if nick in self.whoisdata:
+			self.whoisdata[nick].idle = idle_time
+			self.whoisdata[nick].signon = signed_on
+		else:
+			self.whoisdata[nick] = WhoisData()
+			self.whoisdata[nick].nickname = nick
+			self.whoisdata[nick].idle = idle_time
+			self.whoisdata[nick].signon = signed_on
+
+	def irc_RPL_WHOISSERVER(self, prefix, params):
+		nick = params[1]
+		server = params[2]
+
+		if nick in self.whoisdata:
+			self.whoisdata[nick].server = server
+		else:
+			self.whoisdata[nick] = WhoisData()
+			self.whoisdata[nick].nickname = nick
+			self.whoisdata[nick].server = server
+
+	def irc_RPL_WHOISOPERATOR(self,prefix,params):
+		nick = params[1]
+		privs = params[2]
+
+		if nick in self.whoisdata:
+			self.whoisdata[nick].privs = privs
+		else:
+			self.whoisdata[nick] = WhoisData()
+			self.whoisdata[nick].nickname = nick
+			self.whoisdata[nick].privs = privs
+
+	def irc_RPL_ENDOFWHOIS(self, prefix, params):
+		nick = params[1]
+
+		if nick in self.whoisdata:
+			self.gui.whois(self,self.whoisdata[nick])
+			del self.whoisdata[nick]
 
 	def lineReceived(self, line):
 

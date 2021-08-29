@@ -134,6 +134,7 @@ class Merk(QMainWindow):
 				config.ISSUE_COMMAND_SYMBOL+"me": config.ISSUE_COMMAND_SYMBOL+"me ",
 				config.ISSUE_COMMAND_SYMBOL+"mode": config.ISSUE_COMMAND_SYMBOL+"mode ",
 				config.ISSUE_COMMAND_SYMBOL+"kick": config.ISSUE_COMMAND_SYMBOL+"kick ",
+				config.ISSUE_COMMAND_SYMBOL+"whois": config.ISSUE_COMMAND_SYMBOL+"whois ",
 			}
 
 		# The command help system
@@ -148,6 +149,7 @@ class Merk(QMainWindow):
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...</b>", "Sets a mode on a channel or user" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [MESSAGE]</b>", "Kicks a user from a channel" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]</b>", "Requests user information from the server" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		]
 
@@ -624,6 +626,25 @@ class Merk(QMainWindow):
 			c = w.widget()
 			c.tickUptime(uptime)
 
+	def whois(self,client,whoisdata):
+
+		displaynick = "["+whoisdata.nickname+"]"
+
+		wd = [
+			Message(WHOIS_MESSAGE,displaynick, whoisdata.username+"@"+whoisdata.host+": \x02"+whoisdata.realname+"\x0F"),
+			Message(WHOIS_MESSAGE,displaynick, "\x02"+whoisdata.server+"\x0F"),
+			Message(WHOIS_MESSAGE,displaynick, "\x02"+whoisdata.channels+"\x0F"),
+			Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon)).strftime('%m/%d/%Y, %H:%M:%S')),
+			Message(WHOIS_MESSAGE,displaynick, "\x02Idle:\x0F "+whoisdata.idle+" seconds"),
+			Message(WHOIS_MESSAGE,displaynick, "\x02"+whoisdata.privs+"\x0F"),
+		]
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			for msg in wd:
+				c.writeText(msg,False)
+
 	# END IRC EVENTS
 
 	def openSettings(self):
@@ -868,6 +889,26 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |--------|
+		# | /whois |
+		# |--------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois' and len(tokens)==2:
+				tokens.pop(0)
+				nick = tokens.pop(0)
+				window.client.whois(nick)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois' and len(tokens)==3:
+				tokens.pop(0)
+				nick = tokens.pop(0)
+				server = tokens.pop(0)
+				window.client.whois(nick,server)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]")
+				window.writeText(t)
+				return True
 
 		# |-------|
 		# | /kick |
