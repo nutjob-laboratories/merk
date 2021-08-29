@@ -178,10 +178,10 @@ class Dialog(QDialog):
 			Message(SERVER_MESSAGE,'','This is a server message'),
 			Message(SYSTEM_MESSAGE,'','This is a system message'),
 			Message(ERROR_MESSAGE,'','This is an error message'),
-			Message(NOTICE_MESSAGE,'carrie','This is a notice message'),
+			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
 			Message(CHAT_MESSAGE,'other_nicks',"Here's a message with a link: http://google.com"),
 			Message(SELF_MESSAGE,'your_nick',"Here's a message without a link!"),
-			Message(ACTION_MESSAGE,'alice','sends a CTCP action message'),
+			Message(ACTION_MESSAGE,'nickname','sends a CTCP action message'),
 		]
 
 		for line in self.messages:
