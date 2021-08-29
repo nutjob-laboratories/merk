@@ -56,9 +56,9 @@ class Dialog(QDialog):
 		self.style['notice'] = self.notice_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
 
-		gcode = f'color: {self.fgcolor};'
-		gcode = gcode + f' background-color: {self.bgcolor};'
-		self.style["all"] = gcode
+		# gcode = f'color: {self.fgcolor};'
+		# gcode = gcode + f' background-color: {self.bgcolor};'
+		# self.style["all"] = gcode
 
 		return self.style
 
@@ -73,9 +73,9 @@ class Dialog(QDialog):
 		self.style['notice'] = self.notice_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
 
-		gcode = f'color: {self.fgcolor};'
-		gcode = gcode + f' background-color: {self.bgcolor};'
-		self.style["all"] = gcode
+		# gcode = f'color: {self.fgcolor};'
+		# gcode = gcode + f' background-color: {self.bgcolor};'
+		# self.style["all"] = gcode
 		
 		# saveStyle(client,channel,style,is_server_window=False):
 		if self.wchat.window_type==SERVER_WINDOW:
@@ -100,7 +100,7 @@ class Dialog(QDialog):
 		newcolor = QColorDialog.getColor(QColor(self.fgcolor))
 		if newcolor.isValid():
 
-			self.fgcolor = newcolor
+			self.fgcolor = newcolor.name()
 
 			gcode = f'color: {self.fgcolor};'
 			gcode = gcode + f' background-color: {self.bgcolor};'
@@ -117,7 +117,7 @@ class Dialog(QDialog):
 		newcolor = QColorDialog.getColor(QColor(self.bgcolor))
 		if newcolor.isValid():
 
-			self.bgcolor = newcolor
+			self.bgcolor = newcolor.name()
 
 			gcode = f'color: {self.fgcolor};'
 			gcode = gcode + f' background-color: {self.bgcolor};'
