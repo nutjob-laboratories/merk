@@ -41,6 +41,35 @@ First, make sure that all the requirements are installed. Next, [download **mƏr
 
     python merk.py
 
+# Usage
+
+```
+usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-D DIRECTORY]
+                      [--config-name NAME] [--qtstyle NAME] [-N]
+                      [SERVER] [PORT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Connection:
+  SERVER                Server to connect to
+  PORT                  Server port to connect to (6667)
+  --ssl                 Use SSL to connect to IRC
+  --reconnect           Reconnect to servers on disconnection
+  -p PASSWORD, --password PASSWORD
+                        Use server password to connect
+
+Configuration:
+  -D DIRECTORY, --config-directory DIRECTORY
+                        Location to store configuration files
+  --config-name NAME    Name of the configuration file directory (default:
+                        .merk)
+  --qtstyle NAME        Set Qt widget style (default: Windows)
+
+Miscellaneous:
+  -N, --noask           Don't ask for connection information on start
+```
+
 # Developing mƏrk
 
 Several tools are included in [the official **mƏrk** repository](https://github.com/nutjob-laboratories/merk) for developing **mƏrk**. The [`pyrcc5` utility](https://manpages.ubuntu.com/manpages/xenial/man1/pyrcc5.1.html) is required, and should be installed automatically when you install PyQt. These are only needed if you're developing **mƏrk**, and can be ignored if you're only using the **mƏrk** IRC client.

@@ -67,6 +67,14 @@ Available Qt widget styles: {", ".join(QStyleFactory.keys())}
 ''',
 )
 
+congroup = parser.add_argument_group('Connection')
+
+congroup.add_argument("server", type=str,help="Server to connect to", metavar="SERVER", nargs='?')
+congroup.add_argument("port", type=int,help="Server port to connect to (6667)", default=6667, nargs='?', metavar="PORT")
+congroup.add_argument( "--ssl", help=f"Use SSL to connect to IRC", action="store_true")
+congroup.add_argument( "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
+congroup.add_argument("-p","--password", type=str,help="Use server password to connect", metavar="PASSWORD", default='')
+
 configuration_group = parser.add_argument_group('Configuration')
 
 # Change the below default to None to store files in the home directory
@@ -117,35 +125,87 @@ if __name__ == '__main__':
 	# Set Qt widget style
 	app.setStyle(args.qtstyle)
 
-	if args.noask:
-		# Create the main GUI and show it
+	# Handle connecting to a server if one has been provided
+	if args.server:
+
+		if args.password=='':
+			pword = None
+		else:
+			pword = args.password
+
+		# Load in user settings
+		user.load_user(user.USER_FILE)
+
+		if len(user.NICKNAME.strip())==0:
+			print("No nickname set!")
+			sys.exit(1)
+
+		if len(user.ALTERNATE.strip())==0:
+			print("No alternate nickname set!")
+			sys.exit(1)
+
+		if len(user.USERNAME.strip())==0:
+			print("No username set!")
+			sys.exit(1)
+
+		if len(user.REALNAME.strip())==0:
+			print("No realname set!")
+			sys.exit(1)
+
+		i = ConnectInfo(
+			user.NICKNAME,
+			user.ALTERNATE,
+			user.USERNAME,
+			user.REALNAME,
+			args.server,
+			args.port,
+			pword,
+			args.reconnect,
+			args.ssl,
+		)
+
 		GUI = Merk(
 				app,				# Application
 				args.configdir,		# Config directory, default None for home directory storage
 				args.configname,	# Config directory name, default ".merk"
-				None,				# Connection info
+				i,	# Connection info
 				font,				# Application font
 				None,				# Parent
 			)
 
 		GUI.show()
+
 	else:
-		# Bring up the connection dialog
-		connection_info = ConnectDialog(app)
-		if connection_info:
+
+		if args.noask:
 			# Create the main GUI and show it
 			GUI = Merk(
 					app,				# Application
 					args.configdir,		# Config directory, default None for home directory storage
 					args.configname,	# Config directory name, default ".merk"
-					connection_info,	# Connection info
+					None,				# Connection info
 					font,				# Application font
 					None,				# Parent
 				)
 
 			GUI.show()
 		else:
-			app.quit()
+			# Bring up the connection dialog
+			connection_info = ConnectDialog(app)
+			if connection_info:
+				# Create the main GUI and show it
+				GUI = Merk(
+						app,				# Application
+						args.configdir,		# Config directory, default None for home directory storage
+						args.configname,	# Config directory name, default ".merk"
+						connection_info,	# Connection info
+						font,				# Application font
+						None,				# Parent
+					)
+
+				GUI.show()
+			else:
+				app.quit()
 
 	# Start the reactor!
 	reactor.run()

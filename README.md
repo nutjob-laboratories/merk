@@ -4,7 +4,7 @@
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
 </p>
 
-**mƏrk** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **010.025**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **mƏrk** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**mƏrk** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **010.026**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **mƏrk** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **mƏrk** is in alpha (not even beta), but it is usable. It's not pretty, and a lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
 
@@ -40,6 +40,35 @@ There are three libraries that comes bundled with **mƏrk**:
 First, make sure that all the requirements are installed. Next, [download **mƏrk**](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **mƏrk** to, and type:
 
     python merk.py
+
+# Usage
+
+```
+usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-D DIRECTORY]
+                      [--config-name NAME] [--qtstyle NAME] [-N]
+                      [SERVER] [PORT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Connection:
+  SERVER                Server to connect to
+  PORT                  Server port to connect to (6667)
+  --ssl                 Use SSL to connect to IRC
+  --reconnect           Reconnect to servers on disconnection
+  -p PASSWORD, --password PASSWORD
+                        Use server password to connect
+
+Configuration:
+  -D DIRECTORY, --config-directory DIRECTORY
+                        Location to store configuration files
+  --config-name NAME    Name of the configuration file directory (default:
+                        .merk)
+  --qtstyle NAME        Set Qt widget style (default: Windows)
+
+Miscellaneous:
+  -N, --noask           Don't ask for connection information on start
+```
 
 # Developing mƏrk
 
