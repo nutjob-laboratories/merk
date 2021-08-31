@@ -112,7 +112,7 @@ class Window(QMainWindow):
 			self.infoMenuButton.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
 			self.infoMenuButton.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 			self.infoMenuButton.setFlat(True)
-			self.toolbar.addWidget(self.infoMenuButton)
+			self.info_button = self.toolbar.addWidget(self.infoMenuButton)
 
 			entry = QPushButton("")
 			entry.setIcon(QIcon(CHANNEL_ICON))
@@ -121,7 +121,7 @@ class Window(QMainWindow):
 			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
 			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 			entry.setFlat(True)
-			self.toolbar.addWidget(entry)
+			self.join_button = self.toolbar.addWidget(entry)
 
 			entry = QPushButton("")
 			entry.setIcon(QIcon(PRIVATE_ICON))
@@ -130,7 +130,7 @@ class Window(QMainWindow):
 			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
 			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 			entry.setFlat(True)
-			self.toolbar.addWidget(entry)
+			self.nick_button = self.toolbar.addWidget(entry)
 
 			self.spacer = QWidget()
 			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -150,7 +150,12 @@ class Window(QMainWindow):
 			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
 			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 			entry.setFlat(True)
-			self.toolbar.addWidget(entry)
+			self.disconnect_button = self.toolbar.addWidget(entry)
+
+			self.disconnect_button.setEnabled(False)
+			self.nick_button.setEnabled(False)
+			self.join_button.setEnabled(False)
+			self.info_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
 			
@@ -1020,6 +1025,26 @@ class Window(QMainWindow):
 		# Let the parent know that this subwindow
 		# has been closed by the user
 		self.parent.closeSubWindow(self.subwindow_id)
+
+	def saveLogs(self):
+		save_logs = True
+
+		if self.window_type==CHANNEL_WINDOW:
+			if config.SAVE_CHANNEL_LOGS:
+				save_logs=True
+			else:
+				save_logs=False
+
+		if self.window_type==PRIVATE_WINDOW:
+			if config.SAVE_PRIVATE_LOGS:
+				save_logs=True
+			else:
+				save_logs=False
+
+		# Save logs
+		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+			if save_logs:
+				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 
 	def setSpellcheckEnabled(self):
 		if self.spellcheck_enabled:

@@ -49,6 +49,7 @@ class Dialog(QDialog):
 			font_size = pfs[1]
 
 			self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
+			self.changed.show()
 
 	def setWinsize(self):
 		
@@ -57,6 +58,7 @@ class Dialog(QDialog):
 			self.subWidth = x[0]
 			self.subHeight = x[1]
 			self.sizeLabel.setText(f"Window size: <b>{str(self.subWidth)}x{str(self.subHeight)} pixels</b>")
+			self.changed.show()
 
 	def setLogSize(self):
 
@@ -64,6 +66,7 @@ class Dialog(QDialog):
 		if x:
 			self.logsize = x
 			self.logLabel.setText(f"Log load size: <b>{str(self.logsize)} lines</b>")
+			self.changed.show()
 
 	def setHistorySize(self):
 
@@ -71,18 +74,26 @@ class Dialog(QDialog):
 		if x:
 			self.historysize = x
 			self.historyLabel.setText(f"Command history size: <b>{str(self.historysize)} lines</b>")
+			self.changed.show()
 
 	def selEnglish(self):
 		self.spellLang = "en"
+		self.changed.show()
 
 	def selFrench(self):
 		self.spellLang = "fr"
+		self.changed.show()
 
 	def selGerman(self):
 		self.spellLang = "de"
+		self.changed.show()
 
 	def selSpanish(self):
 		self.spellLang = "es"
+		self.changed.show()
+
+	def changedSetting(self,state):
+		self.changed.show()
 
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
@@ -102,6 +113,8 @@ class Dialog(QDialog):
 
 		self.selector = QListWidget(self)
 		self.stack = QStackedWidget(self)
+
+		self.changed = QLabel("<small><i>Settings changed.</i></small>")
 
 		fm = QFontMetrics(self.font())
 		fwidth = fm.width('X') * 27
@@ -168,12 +181,15 @@ class Dialog(QDialog):
 
 		self.askBeforeDisconnect = QCheckBox("Ask before disconnecting",self)
 		if config.ASK_BEFORE_DISCONNECT: self.askBeforeDisconnect.setChecked(True)
+		self.askBeforeDisconnect.stateChanged.connect(self.changedSetting)
 
 		self.showUptime = QCheckBox("Show connection uptime",self)
 		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
+		self.showUptime.stateChanged.connect(self.changedSetting)
 
 		self.showChanUptime = QCheckBox("Show channel uptime",self)
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
+		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addLayout(fontLayout)
@@ -200,12 +216,15 @@ class Dialog(QDialog):
 
 		self.autocompleteCommands = QCheckBox("Autocomplete commands",self)
 		if config.AUTOCOMPLETE_COMMANDS: self.autocompleteCommands.setChecked(True)
+		self.autocompleteCommands.stateChanged.connect(self.changedSetting)
 
 		self.autocompleteNicks = QCheckBox("Autocomplete nicknames",self)
 		if config.AUTOCOMPLETE_NICKS: self.autocompleteNicks.setChecked(True)
+		self.autocompleteNicks.stateChanged.connect(self.changedSetting)
 
 		self.autocompleteEmojis = QCheckBox("Autocomplete emoji shortcodes",self)
 		if config.AUTOCOMPLETE_EMOJIS: self.autocompleteEmojis.setChecked(True)
+		self.autocompleteEmojis.stateChanged.connect(self.changedSetting)
 
 		self.historyLabel = QLabel(f"Command history size: <b>{str(config.COMMAND_HISTORY_LENGTH)} lines</b>",self)
 
@@ -282,18 +301,23 @@ class Dialog(QDialog):
 
 		self.saveChanLogs = QCheckBox("Save channel logs",self)
 		if config.SAVE_CHANNEL_LOGS: self.saveChanLogs.setChecked(True)
+		self.saveChanLogs.stateChanged.connect(self.changedSetting)
 
 		self.loadChanLogs = QCheckBox("Load channel logs",self)
 		if config.LOAD_CHANNEL_LOGS: self.loadChanLogs.setChecked(True)
+		self.loadChanLogs.stateChanged.connect(self.changedSetting)
 
 		self.savePrivLogs = QCheckBox("Save private chat logs",self)
 		if config.SAVE_PRIVATE_LOGS: self.savePrivLogs.setChecked(True)
+		self.savePrivLogs.stateChanged.connect(self.changedSetting)
 
 		self.loadPrivLogs = QCheckBox("Load private chat logs",self)
 		if config.LOAD_PRIVATE_LOGS: self.loadPrivLogs.setChecked(True)
+		self.loadPrivLogs.stateChanged.connect(self.changedSetting)
 
 		self.markLog = QCheckBox("Mark end of loaded log",self)
 		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
+		self.markLog.stateChanged.connect(self.changedSetting)
 
 		self.logLabel = QLabel(f"Log load size: <b>{str(config.MAXIMUM_LOADED_LOG_SIZE)} lines</b>",self)
 
@@ -338,18 +362,23 @@ class Dialog(QDialog):
 
 		self.showTimestamps = QCheckBox("Show timestamps",self)
 		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
+		self.showTimestamps.stateChanged.connect(self.changedSetting)
 
 		self.showColors = QCheckBox("Show IRC colors",self)
 		if config.DISPLAY_IRC_COLORS: self.showColors.setChecked(True)
+		self.showColors.stateChanged.connect(self.changedSetting)
 
 		self.showLinks = QCheckBox("Convert URLs to hyperlinks",self)
 		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
+		self.showLinks.stateChanged.connect(self.changedSetting)
 
 		self.createWindow = QCheckBox("Create windows for private chat",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
+		self.createWindow.stateChanged.connect(self.changedSetting)
 
 		self.writePrivate = QCheckBox("Write private messages to server window",self)
 		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
+		self.writePrivate.stateChanged.connect(self.changedSetting)
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(self.showTimestamps)
@@ -360,6 +389,8 @@ class Dialog(QDialog):
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
+
+		self.changed.hide()
 
 		# Buttons
 
@@ -373,6 +404,7 @@ class Dialog(QDialog):
 		# Finalize layout
 
 		dialogButtonsLayout = QHBoxLayout()
+		dialogButtonsLayout.addWidget(self.changed)
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(saveButton)
 		dialogButtonsLayout.addWidget(cancelButton)

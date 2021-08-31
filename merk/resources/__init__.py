@@ -243,6 +243,19 @@ class WhoisData:
 		self.channels = 'Unknown'
 		self.privs = 'is a normal user'
 
+class WhoData:
+	def __init__(self):
+		self.username = 'Unknown'
+		self.host = 'Unknown'
+		self.server = 'Unknown'
+		self.channel = 'Unknown'
+
+class WhoWasData:
+	def __init__(self):
+		self.username = 'Unknown'
+		self.host = 'Unknown'
+		self.realname = 'Unknown'
+
 # Functions
 
 def convertSeconds(seconds):

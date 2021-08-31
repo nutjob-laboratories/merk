@@ -99,6 +99,8 @@ class IRC_Connection(irc.IRCClient):
 		self.channelmodes = {}
 		self.channelkeys = {}
 		self.whoisdata = {}
+		self.who = {}
+		self.whowas = {}
 
 		self.maxnicklen = 0
 		self.maxchannels = 0
@@ -476,6 +478,67 @@ class IRC_Connection(irc.IRCClient):
 		if nick in self.whoisdata:
 			self.gui.whois(self,self.whoisdata[nick])
 			del self.whoisdata[nick]
+
+	def irc_RPL_WHOREPLY(self, prefix, params):
+		channel = params[1]
+		username = params[2]
+		host = params[3]
+		server = params[4]
+		nick = params[5]
+		hr = params[7].split(' ')
+
+		if nick in self.who:
+			entry = WhoData()
+			entry.channel = channel
+			entry.username = username
+			entry.host = host
+			entry.server = server
+			self.who[nick].append(entry)
+		else:
+			self.who[nick] = []
+			entry = WhoData()
+			entry.channel = channel
+			entry.username = username
+			entry.host = host
+			entry.server = server
+			self.who[nick].append(entry)
+
+
+	def irc_RPL_ENDOFWHO(self, prefix, params):
+		nick = params[1]
+
+		if nick in self.who:
+			replies = self.who[nick]
+			del self.who[nick]
+			self.gui.who(self,nick,replies)
+
+	def irc_RPL_WHOWASUSER(self, prefix, params):
+		nick = params[1]
+		username = params[2]
+		host = params[3]
+		realname = params[5]
+
+		if nick in self.whowas:
+			entry = WhoWasData()
+			entry.username = username
+			entry.host = host
+			entry.realname = realname
+			self.whowas[nick].append(entry)
+		else:
+			self.whowas[nick] = []
+			entry = WhoWasData()
+			entry.username = username
+			entry.host = host
+			entry.realname = realname
+			self.whowas[nick].append(entry)
+
+	def irc_RPL_ENDOFWHOWAS(self, prefix, params):
+		nick = params[1]
+
+		if nick in self.whowas:
+			replies = self.whowas[nick]
+			del self.whowas[nick]
+			self.gui.whowas(self,nick,replies)
 
 	def lineReceived(self, line):
 

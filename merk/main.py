@@ -135,6 +135,8 @@ class Merk(QMainWindow):
 				config.ISSUE_COMMAND_SYMBOL+"mode": config.ISSUE_COMMAND_SYMBOL+"mode ",
 				config.ISSUE_COMMAND_SYMBOL+"kick": config.ISSUE_COMMAND_SYMBOL+"kick ",
 				config.ISSUE_COMMAND_SYMBOL+"whois": config.ISSUE_COMMAND_SYMBOL+"whois ",
+				config.ISSUE_COMMAND_SYMBOL+"whowas": config.ISSUE_COMMAND_SYMBOL+"whowas ",
+				config.ISSUE_COMMAND_SYMBOL+"who": config.ISSUE_COMMAND_SYMBOL+"who ",
 			}
 
 		# The command help system
@@ -150,6 +152,8 @@ class Merk(QMainWindow):
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...</b>", "Sets a mode on a channel or user" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [MESSAGE]</b>", "Kicks a user from a channel" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]</b>", "Requests user information from the server" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]</b>", "Requests user information from the server" ],
+			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
 			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		]
 
@@ -201,6 +205,11 @@ class Merk(QMainWindow):
 			if client.hostname:
 				w.name = client.hostname
 				w.updateTitle()
+
+			w.disconnect_button.setEnabled(True)
+			w.nick_button.setEnabled(True)
+			w.join_button.setEnabled(True)
+			w.info_button.setEnabled(True)
 		
 		self.nickChanged(client)
 
@@ -240,6 +249,8 @@ class Merk(QMainWindow):
 
 		w = self.getSubWindow(channel,client)
 		if w:
+			c = w.widget()
+			if hasattr(c,"saveLogs"): c.saveLogs()
 			self.MDI.removeSubWindow(w)
 			self.buildWindowsMenu()
 
@@ -645,6 +656,24 @@ class Merk(QMainWindow):
 			for msg in wd:
 				c.writeText(msg,False)
 
+	def who(self,client,nick,whodata):
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			for entry in whodata:
+				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.channel+"\x0F ("+entry.server+")")
+				c.writeText(t,False)
+
+	def whowas(self,client,nick,whodata):
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			for entry in whodata:
+				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.realname+"\x0F")
+				c.writeText(t,False)
+
 	# END IRC EVENTS
 
 	def openSettings(self):
@@ -889,6 +918,69 @@ class Merk(QMainWindow):
 
 	def handleCommonCommands(self,window,user_input):
 		tokens = user_input.split()
+
+		# |---------|
+		# | /whowas |
+		# |---------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==2:
+				tokens.pop(0)
+				nick = tokens.pop(0)
+				window.client.sendLine("WHOWAS "+nick)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==3:
+				tokens.pop(0)
+				nick = tokens.pop(0)
+				arg = tokens.pop(0)
+				try:
+					arg = int(arg)
+				except:
+					t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
+					window.writeText(t)
+					return True
+				window.client.sendLine("WHOWAS "+nick+" "+str(arg))
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==4:
+				tokens.pop(0)
+				nick = tokens.pop(0)
+				arg = tokens.pop(0)
+				serv = tokens.pop(0)
+				try:
+					arg = int(arg)
+				except:
+					t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
+					window.writeText(t)
+					return True
+				window.client.sendLine("WHOWAS "+nick+" "+str(arg)+" "+serv)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]")
+				window.writeText(t)
+				return True
+
+		# |------|
+		# | /who |
+		# |------|
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who' and len(tokens)==2:
+				tokens.pop(0)
+				nick = tokens.pop(0)
+				window.client.sendLine("WHO "+nick)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who' and len(tokens)==3:
+				tokens.pop(0)
+				nick = tokens.pop(0)
+				arg = tokens.pop(0)
+				if arg.lower()!='o':
+					t = Message(ERROR_MESSAGE,'',"Improper argument for "+config.ISSUE_COMMAND_SYMBOL+"who")
+					window.writeText(t)
+					return True
+				window.client.sendLine("WHO "+nick+" o")
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who':
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]")
+				window.writeText(t)
+				return True
 
 		# |--------|
 		# | /whois |
