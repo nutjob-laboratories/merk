@@ -1396,6 +1396,7 @@ class Merk(QMainWindow):
 	def endEverything(self):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
+			if hasattr(c,"saveLogs"): c.saveLogs()
 			if hasattr(c,"client"):
 				c.client.quit(config.DEFAULT_QUIT_MESSAGE)
 			if window:
