@@ -152,7 +152,6 @@ class Window(QMainWindow):
 			entry.setFlat(True)
 			self.disconnect_button = self.toolbar.addWidget(entry)
 
-			self.disconnect_button.setEnabled(False)
 			self.nick_button.setEnabled(False)
 			self.join_button.setEnabled(False)
 			self.info_button.setEnabled(False)
@@ -940,22 +939,20 @@ class Window(QMainWindow):
 
 	def disconnect(self):
 
-		do_disconnect = True
+		no_hostname = False
+		if not hasattr(self.client,"hostname"): no_hostname = True
+		if not self.client.hostname: no_hostname = True
 
-		if config.ASK_BEFORE_DISCONNECT:
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
-			msgBox.setText("Are you sure you want to disconnect from "+self.client.hostname+"?")
-			msgBox.setWindowTitle("Disconnect")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
-			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
-				do_disconnect = False
+		do_disconnect = self.parent.askDisconnect(self.client)
 
 		if do_disconnect:
-			self.client.quit(config.DEFAULT_QUIT_MESSAGE)
+			if no_hostname:
+				self.parent.quitting[self.client.client_id] = 0
+				self.client.quit()
+				self.parent.hideServerWindow(self.client)
+			else:
+				self.parent.quitting[self.client.client_id] = 0
+				self.client.quit(config.DEFAULT_QUIT_MESSAGE)
 
 	def changeNick(self):
 		newnick = NewNickDialog(self.client.nickname,self.parent)

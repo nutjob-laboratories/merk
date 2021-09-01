@@ -79,6 +79,7 @@ class Merk(QMainWindow):
 		self.setFont(self.application_font)
 
 		self.quitting = {}
+		self.hiding = {}
 
 		# Create the central object of the client,
 		# the MDI widget
@@ -213,7 +214,6 @@ class Merk(QMainWindow):
 				w.name = client.hostname
 				w.updateTitle()
 
-			w.disconnect_button.setEnabled(True)
 			w.nick_button.setEnabled(True)
 			w.join_button.setEnabled(True)
 			w.info_button.setEnabled(True)
@@ -312,6 +312,7 @@ class Merk(QMainWindow):
 				c = w.widget()
 				t = Message(CHAT_MESSAGE,user,msg)
 				c.writeText(t)
+				self.MDI.setActiveSubWindow(w)
 				return
 
 		# Client has received a private message, and will
@@ -1119,6 +1120,9 @@ class Merk(QMainWindow):
 		# |-------|
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)==1:
+
+				if not self.askDisconnect(window.client): return True
+
 				if len(config.DEFAULT_QUIT_MESSAGE)>0:
 					window.client.quit(config.DEFAULT_QUIT_MESSAGE)
 				else:
@@ -1126,6 +1130,9 @@ class Merk(QMainWindow):
 				self.quitting[window.client.client_id] = 0
 				return True
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:
+
+				if not self.askDisconnect(window.client): return True
+				
 				tokens.pop(0)
 				msg = ' '.join(tokens)
 				msg = emoji.emojize(msg,use_aliases=True)
@@ -1228,6 +1235,32 @@ class Merk(QMainWindow):
 
 		return False
 
+	def askDisconnect(self,client):
+
+		no_hostname = False
+		if not hasattr(client,"hostname"): no_hostname = True
+		if not client.hostname: no_hostname = True
+
+		do_disconnect = True
+
+		if config.ASK_BEFORE_DISCONNECT:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			if no_hostname:
+				msgBox.setText("Are you sure you want to disconnect from "+client.server+":"+str(client.port)+"?")
+			else:
+				msgBox.setText("Are you sure you want to disconnect from "+client.hostname+"?")
+			msgBox.setWindowTitle("Disconnect")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				do_disconnect = False
+
+		return do_disconnect
+
+
 	def openPrivate(self,client,nick):
 
 		# Find and raise the private chat window
@@ -1260,6 +1293,17 @@ class Merk(QMainWindow):
 						if c.client.client_id == client.client_id:
 							return c
 		return None
+
+	def hideServerWindow(self,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					if hasattr(c,"client"):
+						if c.client.client_id == client.client_id:
+							window.hide()
+							self.hiding[client.client_id] = client
+							self.buildWindowsMenu()
 
 	def getSubWindow(self,channel,client):
 		for window in self.MDI.subWindowList():
@@ -1315,14 +1359,21 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.addSeparator()
 
-		if len(irc.CONNECTIONS)==0:
+		listOfConnections = {}
+		for i in irc.CONNECTIONS:
+			add_to_list = True
+			for j in self.hiding:
+				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+
+		if len(listOfConnections)==0:
 			entry1.setEnabled(False)
 			entry2.setEnabled(False)
 
-		if len(irc.CONNECTIONS)>0:
+		if len(listOfConnections)>0:
 
-			for i in irc.CONNECTIONS:
-				entry = irc.CONNECTIONS[i]
+			for i in listOfConnections:
+				entry = listOfConnections[i]
 				if entry.hostname:
 					name = entry.hostname
 				else:
