@@ -38,6 +38,7 @@ from . import styles
 from . import widgets
 from . import render
 from . import irc
+from . import logs
 from .dialog import *
 
 class Merk(QMainWindow):
@@ -106,15 +107,21 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectToIrc)
 		self.mainMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
-		self.mainMenu.addAction(entry)
-
 		self.mainMenu.addSeparator()
 
 		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
 		entry.setShortcut('Ctrl+Q')
 		entry.triggered.connect(self.close)
 		self.mainMenu.addAction(entry)
+
+		# Tools menu
+		self.toolsMenu = self.menubar.addMenu("Tools")
+
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
+		self.toolsMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
+		self.toolsMenu.addAction(entry)
 
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")
@@ -1431,6 +1438,41 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 
 		return w
+
+	def menuExportLog(self):
+		d = ExportLogDialog(logs.LOG_DIRECTORY,None)
+		if d:
+			elog = d[0]
+			dlog = d[1]
+			llog = d[2]
+			do_json = d[3]
+			do_epoch = d[4]
+			if not do_json:
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
+				if fileName:
+					# extension = os.path.splitext(fileName)[1]
+					# if extension.lower()!='txt': fileName = fileName + ".txt"
+					efl = len("txt")+1
+					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+					dump = logs.dumpLog(elog,dlog,llog,do_epoch)
+					code = open(fileName,mode="w",encoding="utf-8")
+					code.write(dump)
+					code.close()
+			else:
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
+				if fileName:
+					# extension = os.path.splitext(fileName)[1]
+					# if extension.lower()!='json': fileName = fileName + ".json"
+					efl = len("json")+1
+					if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
+					dump = logs.dumpLogJson(elog,do_epoch)
+					code = open(fileName,mode="w",encoding="utf-8")
+					code.write(dump)
+					code.close()
 
 	# |---------------|
 	# | EVENT METHODS |

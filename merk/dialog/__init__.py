@@ -31,6 +31,15 @@ from .settings import Dialog as Settings
 from .windowsize import Dialog as WindowSize
 from .logsize import Dialog as LogSize
 from .historysize import Dialog as HistorySize
+from .export import Dialog as ExportLog
+
+def ExportLogDialog(logdir,obj):
+	x = ExportLog(logdir,obj)
+	info = x.get_name_information(logdir,obj)
+	del x
+
+	if not info: return None
+	return info
 
 def HistorySizeDialog(obj):
 	x = HistorySize(obj)

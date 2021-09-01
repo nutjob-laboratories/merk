@@ -409,6 +409,7 @@ class Window(QMainWindow):
 				self.status.addPermanentWidget(self.key_spacer,0)
 				self.key_spacer.hide()
 				self.status.addPermanentWidget(self.channelUptime,0)
+				self.status.addPermanentWidget(QLabel(' '),0)
 
 		# Load and apply default style
 		self.applyStyle()

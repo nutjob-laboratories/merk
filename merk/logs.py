@@ -27,6 +27,7 @@ import sys
 import os
 import json
 from pathlib import Path
+from datetime import datetime
 
 from .resources import *
 
@@ -119,3 +120,44 @@ def readLog(network,name,logdir=LOG_DIRECTORY):
 	logs = loadLog(network,name,logdir)
 	logs = array_to_log(logs)
 	return logs
+
+# Loads an AoA from disk, converts it to a string
+def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
+	if os.path.isfile(filename):
+		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
+			logs = json.load(logentries)
+	if logs:
+		out = []
+		for l in logs:
+			l[2] = l[2].strip()
+			l[3] = l[3].strip()
+			if l[2]=='': l[2] = '***'
+
+			if not epoch:
+				pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%a, %d %b %Y %H:%M:%S')
+				entry = pretty_timestamp+delimiter+l[2]+delimiter+l[3]
+			else:
+				entry = str(l[0])+delimiter+l[2]+delimiter+l[3]
+			out.append(entry)
+		return linedelim.join(out)
+	else:
+		return ''
+
+# Loads an AoA from disk, converts it to a JSON string
+def dumpLogJson(filename,epoch=True):
+	if os.path.isfile(filename):
+		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
+			logs = json.load(logentries)
+	if logs:
+		out = []
+		for l in logs:
+			l[2] = l[2].strip()
+			l[3] = l[3].strip()
+			if l[2]=='': l[2] = '*'
+			if not epoch:
+				l[0] = datetime.fromtimestamp(l[0]).strftime('%a, %d %b %Y %H:%M:%S')
+			entry = [ l[0],l[2],l[3] ]
+			out.append(entry)
+		return json.dumps(out, indent=4, sort_keys=True)
+	else:
+		return ''

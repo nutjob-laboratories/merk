@@ -114,6 +114,10 @@ class Dialog(QDialog):
 		self.selector = QListWidget(self)
 		self.stack = QStackedWidget(self)
 
+		f = self.selector.font()
+		f.setBold(True)
+		self.selector.setFont(f)
+
 		self.changed = QLabel("<small><i>Settings changed.</i></small>")
 
 		fm = QFontMetrics(self.font())
