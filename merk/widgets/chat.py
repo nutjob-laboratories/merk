@@ -194,7 +194,7 @@ class Window(QMainWindow):
 
 		# Text input widget should only be one line
 		fm = self.input.fontMetrics()
-		self.input.setFixedHeight(fm.height()+9)
+		self.input.setFixedHeight(fm.height()+12)
 		self.input.setWordWrapMode(QTextOption.NoWrap)
 		self.input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.input.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
