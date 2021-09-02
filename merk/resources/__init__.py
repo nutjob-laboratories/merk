@@ -166,6 +166,8 @@ MERK_SPLASH_IMAGE = ":/gui-merk_splash.png"
 
 NUTJOB_LOGO = ":/gui-nutjob.png"
 
+MERK_ABOUT_LOGO = ":/gui-about.png"
+
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
 with open(EMOJI_ALIAS_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:

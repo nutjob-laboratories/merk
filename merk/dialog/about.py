@@ -61,7 +61,7 @@ class Dialog(QDialog):
 		self.tabs.addTab(self.credits_tab, "Credits")
 
 		logo = QLabel()
-		pixmap = QPixmap(MERK_SPLASH_IMAGE)
+		pixmap = QPixmap(MERK_ABOUT_LOGO)
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
