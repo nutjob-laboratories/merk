@@ -66,6 +66,7 @@ shutil.copytree("./emoji", "./dist/emoji",ignore=shutil.ignore_patterns('*.pyc',
 shutil.copy("./merk.py", "./dist/merk.py")
 shutil.copy("./LICENSE", "./dist/LICENSE")
 shutil.copy("./README.md", "./dist/README.md")
+shutil.copy("./merk.ico", "./dist/merk.ico")
 
 if "Windows" in devp:
 	os.system("powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('dist', 'dist.zip'); }\" ")
