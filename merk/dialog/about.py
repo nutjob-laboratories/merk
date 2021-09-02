@@ -72,11 +72,11 @@ class Dialog(QDialog):
 
 		line1 = QLabel("<big><b>"+APPLICATION_NAME+"</b></big>")
 		line1.setAlignment(Qt.AlignCenter)
-		line2 = QLabel("<big><b>\"Open Source IRC Client\"</b></big>")
+		line2 = QLabel("<big><b>Open Source IRC Client</b></big>")
 		line2.setAlignment(Qt.AlignCenter)
 		line3 = QLabel("<big><b>Version "+APPLICATION_VERSION+"</b></big>")
 		line3.setAlignment(Qt.AlignCenter)
-		line4 = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories/merk\">https://github.com/nutjob-laboratories/merk</a></b></big>")
+		line4 = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories/merk\">Official Repository</a></b></big>")
 		line4.setAlignment(Qt.AlignCenter)
 		line4.setOpenExternalLinks(True)
 
