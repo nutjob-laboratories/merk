@@ -146,6 +146,7 @@ EDIT_ICON = ":/icon-edit.png"
 INPUT_ICON = ":/icon-input.png"
 LOG_ICON = ":/icon-log.png"
 MESSAGE_ICON = ":/icon-message.png"
+ABOUT_ICON = ":/icon-about.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
@@ -162,6 +163,8 @@ LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
 DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
 
 MERK_SPLASH_IMAGE = ":/gui-merk_splash.png"
+
+NUTJOB_LOGO = ":/gui-nutjob.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []

@@ -129,6 +129,13 @@ class Merk(QMainWindow):
 
 		self.buildWindowsMenu()
 
+		# Help menu
+		self.helpMenu = self.menubar.addMenu("Help")
+
+		entry = QAction(QIcon(ABOUT_ICON),"About",self)
+		entry.triggered.connect(self.showAbout)
+		self.helpMenu.addAction(entry)
+
 		# Entries for command autocomplete
 		self.command_autocomplete_data = {
 				config.ISSUE_COMMAND_SYMBOL+"part": config.ISSUE_COMMAND_SYMBOL+"part ",
@@ -1489,6 +1496,9 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 
 		return w
+
+	def showAbout(self):
+		self.__about_dialog = AboutDialog()
 
 	def menuExportLog(self):
 		d = ExportLogDialog(logs.LOG_DIRECTORY,None)

@@ -32,6 +32,12 @@ from .windowsize import Dialog as WindowSize
 from .logsize import Dialog as LogSize
 from .historysize import Dialog as HistorySize
 from .export import Dialog as ExportLog
+from .about import Dialog as About
+
+def AboutDialog():
+	x = About()
+	x.show()
+	return x
 
 def ExportLogDialog(logdir,obj):
 	x = ExportLog(logdir,obj)
