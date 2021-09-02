@@ -60,7 +60,7 @@ elif len(minor)==2:
 	minor = f"0{minor}"
 
 APPLICATION_VERSION = major+"."+minor
-APPLICATION_NAME = "mƏRK"
+APPLICATION_NAME = "MERK"
 
 MDI_BACKGROUND = ":/gui-background.png"
 

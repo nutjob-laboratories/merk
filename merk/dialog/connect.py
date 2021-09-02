@@ -270,7 +270,7 @@ class Dialog(QDialog):
 		banner.setPixmap(pixmap)
 		banner.setAlignment(Qt.AlignCenter)
 
-		bannerTabs = QHBoxLayout()
+		bannerTabs = QVBoxLayout()
 		bannerTabs.addWidget(banner)
 		bannerTabs.addWidget(self.tabs)
 

@@ -70,10 +70,10 @@ class Dialog(QDialog):
 		nutjob.setPixmap(pixmap)
 		nutjob.setAlignment(Qt.AlignCenter)
 
-		line1 = QLabel("<big><b>Open Source IRC Client</b></big>")
+		line1 = QLabel("<big><b>"+APPLICATION_NAME+"</b></big>")
 		line1.setAlignment(Qt.AlignCenter)
-		# line2 = QLabel("<big><b>\"It's How You Say IRC\"</b></big>")
-		# line2.setAlignment(Qt.AlignCenter)
+		line2 = QLabel("<big><b>\"Open Source IRC Client\"</b></big>")
+		line2.setAlignment(Qt.AlignCenter)
 		line3 = QLabel("<big><b>Version "+APPLICATION_VERSION+"</b></big>")
 		line3.setAlignment(Qt.AlignCenter)
 		line4 = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories/merk\">https://github.com/nutjob-laboratories/merk</a></b></big>")
@@ -82,7 +82,7 @@ class Dialog(QDialog):
 
 		descriptionLayout = QVBoxLayout()
 		descriptionLayout.addWidget(line1)
-		#descriptionLayout.addWidget(line2)
+		descriptionLayout.addWidget(line2)
 		descriptionLayout.addWidget(line3)
 		descriptionLayout.addWidget(line4)
 
@@ -173,10 +173,12 @@ class Dialog(QDialog):
 		okButton.clicked.connect(self.close)
 
 		aboutLayout = QVBoxLayout()
+		aboutLayout.addStretch()
 		aboutLayout.addLayout(titleLayout)
 		
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addWidget(platform_credit)
+		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
 
