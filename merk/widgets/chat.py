@@ -1215,7 +1215,22 @@ class Window(QMainWindow):
 		# Save the width of the userlist for the resize event
 		self.userlist_width = self.userlist.width()
 
+	def resizeScroll(self):
+		self.moveChatToBottom(True)
+
 	def resizeEvent(self, event):
+
+		if config.SCROLL_CHAT_TO_BOTTOM_ON_RESIZE:
+			# Set (or reset, if the resize is still on-going)
+			# a timer, so that 100 milliseconds after the resize
+			# is complete, the chat display is scrolled to the
+			# bottom. Calling the scroll function every time
+			# the resize event is triggered works, but it
+			# slows the app down and makes it "jitter". This
+			# speeds it up quite a bit.
+			self.__resize_timer = QTimer()
+			self.__resize_timer.timeout.connect(self.resizeScroll)
+			self.__resize_timer.start(100)
 
 		if self.window_type==CHANNEL_WINDOW:
 

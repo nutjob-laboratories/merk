@@ -1,12 +1,12 @@
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk/raw/main/merk_splash.png"><br>
-  <b><big>MERK IRC Client</big></b><br>
+  <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
 </p>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **010.061**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **010.063**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
-**MERK** is in alpha (not even beta), but it is usable. It's not pretty, and a lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
+**MERK** is in beta, but it is usable. A lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
 
 Currently, user settings and logs are stored in the application directory. Later, user settings and logs will be stored in the user's home directory (or, via a command-line option, another directory of the user's choosing).
 
