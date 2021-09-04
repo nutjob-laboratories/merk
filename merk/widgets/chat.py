@@ -1218,7 +1218,10 @@ class Window(QMainWindow):
 		self.userlist_width = self.userlist.width()
 
 	def resizeScroll(self):
+		# Scroll the chat display down to the bottom
 		self.moveChatToBottom(True)
+		# Delete the timer
+		del self.__resize_timer
 
 	def resizeEvent(self, event):
 
