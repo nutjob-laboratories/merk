@@ -61,6 +61,7 @@ elif len(minor)==2:
 
 APPLICATION_VERSION = major+"."+minor
 APPLICATION_NAME = "MERK"
+APPLICATION_SOURCE = "https://github.com/nutjob-laboratories/merk"
 
 MDI_BACKGROUND = ":/gui-background.png"
 
@@ -143,6 +144,9 @@ ABOUT_ICON = ":/icon-about.png"
 
 PRIVATE_WINDOW_ICON = ":/icon-private_window.png"
 CHANNEL_WINDOW_ICON = ":/icon-channel_window.png"
+
+LINK_ICON = ":/icon-link.png"
+FOLDER_ICON = ":/icon-folder.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

@@ -127,6 +127,12 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
 		self.toolsMenu.addAction(entry)
 
+		self.toolsMenu.addSeparator()
+
+		entry = QAction(QIcon(FOLDER_ICON),"Open settings directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		self.toolsMenu.addAction(entry)
+
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")
 
@@ -135,8 +141,17 @@ class Merk(QMainWindow):
 		# Help menu
 		self.helpMenu = self.menubar.addMenu("Help")
 
-		entry = QAction(QIcon(ABOUT_ICON),"About",self)
-		entry.triggered.connect(self.showAbout)
+		entry = widgets.ExtendedMenuItem(self,ABOUT_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION+"&nbsp;&nbsp;",25,self.showAbout)
+		self.helpMenu.addAction(entry)
+
+		self.helpMenu.addSeparator()
+
+		entry = QAction(QIcon(LINK_ICON),"Source code repository",self)
+		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
+		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 		if connection_info:
@@ -917,6 +932,11 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 
 		return w
+
+	def openLinkInBrowser(self,url):
+		u = QUrl()
+		u.setUrl(url)
+		QDesktopServices.openUrl(u)
 
 	# |--------------|
 	# | MENU METHODS |

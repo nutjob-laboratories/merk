@@ -74,12 +74,13 @@ def reconnectSSL(**kwargs):
 	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
 
 class IRC_Connection(irc.IRCClient):
-	nickname = 'bot'
-	realname = 'bot'
-	username = 'bot'
+	nickname = 'merk'
+	realname = 'merk'
+	username = 'merk'
 
 	versionName = APPLICATION_NAME
 	versionNum = APPLICATION_VERSION
+	sourceURL = APPLICATION_SOURCE
 
 	heartbeatInterval = 120
 
