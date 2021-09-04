@@ -44,6 +44,8 @@ from .plain_text import plainTextAction
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import MenuNoActionRaw
 
+from .. import commands
+
 class Window(QMainWindow):
 
 	def __init__(self,name,client,window_type,app,parent=None):
@@ -1456,7 +1458,7 @@ class SpellTextEdit(QPlainTextEdit):
 				if self.textCursor().hasSelection():
 					text = self.textCursor().selectedText()
 
-					self.COMMAND_LIST = self.parent.parent.command_autocomplete_data
+					self.COMMAND_LIST = commands.AUTOCOMPLETE
 
 					for c in self.COMMAND_LIST:
 						cmd = c

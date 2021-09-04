@@ -46,8 +46,6 @@ import merk.styles as styles
 import merk.logs as logs
 import merk.user as user
 
-# Handle commandline arguments
-
 parser = argparse.ArgumentParser(
 	prog=f"python {os.path.basename(__file__)}",
 	formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -168,7 +166,7 @@ if __name__ == '__main__':
 				app,				# Application
 				args.configdir,		# Config directory, default None for home directory storage
 				args.configname,	# Config directory name, default ".merk"
-				i,	# Connection info
+				i,					# Connection info
 				font,				# Application font
 				None,				# Parent
 			)

@@ -41,6 +41,8 @@ from . import irc
 from . import logs
 from .dialog import *
 
+from . import commands
+
 class Merk(QMainWindow):
 
 	# ===========
@@ -78,6 +80,7 @@ class Merk(QMainWindow):
 		# Set the widget font
 		self.setFont(self.application_font)
 
+		# Internal attributes
 		self.quitting = {}
 		self.hiding = {}
 
@@ -103,7 +106,7 @@ class Merk(QMainWindow):
 		self.menubar = self.menuBar()
 
 		# Main menu
-		self.mainMenu = self.menubar.addMenu(config.DISPLAY_NAME)
+		self.mainMenu = self.menubar.addMenu("IRC")
 
 		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectToIrc)
 		self.mainMenu.addAction(entry)
@@ -136,62 +139,12 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.showAbout)
 		self.helpMenu.addAction(entry)
 
-		# Entries for command autocomplete
-		self.command_autocomplete_data = {
-				config.ISSUE_COMMAND_SYMBOL+"part": config.ISSUE_COMMAND_SYMBOL+"part ",
-				config.ISSUE_COMMAND_SYMBOL+"join": config.ISSUE_COMMAND_SYMBOL+"join ",
-				config.ISSUE_COMMAND_SYMBOL+"notice": config.ISSUE_COMMAND_SYMBOL+"notice ",
-				config.ISSUE_COMMAND_SYMBOL+"nick": config.ISSUE_COMMAND_SYMBOL+"nick ",
-				config.ISSUE_COMMAND_SYMBOL+"help": config.ISSUE_COMMAND_SYMBOL+"help",
-				config.ISSUE_COMMAND_SYMBOL+"topic": config.ISSUE_COMMAND_SYMBOL+"topic ",
-				config.ISSUE_COMMAND_SYMBOL+"quit": config.ISSUE_COMMAND_SYMBOL+"quit",
-				config.ISSUE_COMMAND_SYMBOL+"msg": config.ISSUE_COMMAND_SYMBOL+"msg ",
-				config.ISSUE_COMMAND_SYMBOL+"me": config.ISSUE_COMMAND_SYMBOL+"me ",
-				config.ISSUE_COMMAND_SYMBOL+"mode": config.ISSUE_COMMAND_SYMBOL+"mode ",
-				config.ISSUE_COMMAND_SYMBOL+"kick": config.ISSUE_COMMAND_SYMBOL+"kick ",
-				config.ISSUE_COMMAND_SYMBOL+"whois": config.ISSUE_COMMAND_SYMBOL+"whois ",
-				config.ISSUE_COMMAND_SYMBOL+"whowas": config.ISSUE_COMMAND_SYMBOL+"whowas ",
-				config.ISSUE_COMMAND_SYMBOL+"who": config.ISSUE_COMMAND_SYMBOL+"who ",
-			}
-
-		# The command help system
-		command_help_information = [
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help</b>", "Displays command usage information" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE</b>", "Sends a CTCP action message to the current chat" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE</b>", "Sends a message" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE</b>", "Sends a notice" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]</b>", "Joins a channel" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]</b>", "Leaves a channel" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...</b>", "Sets a mode on a channel or user" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [MESSAGE]</b>", "Kicks a user from a channel" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]</b>", "Requests user information from the server" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]</b>", "Requests user information from the server" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
-			[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
-		]
-
-		global HELP_DISPLAY_TEMPLATE
-		if config.AUTOCOMPLETE_COMMANDS:
-			HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command.")
-		else:
-			HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned off.")
-
-		hdisplay = []
-		for e in command_help_information:
-			t = HELP_ENTRY_TEMPLATE
-			t = t.replace("%_USAGE_%",e[0])
-			t = t.replace("%_DESCRIPTION_%",e[1])
-			hdisplay.append(t)
-		help_display = HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
-
-		self.HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
-
 		if connection_info:
 			self.connectToIrc(connection_info)
 
-	# BEGIN IRC EVENTS
+	# |==================|
+	# | BEGIN IRC EVENTS |
+	# |==================|
 
 	def connectionMade(self,client):
 		w = self.newServerWindow(client.server+":"+str(client.port),client)
@@ -689,10 +642,9 @@ class Merk(QMainWindow):
 				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.realname+"\x0F")
 				c.writeText(t,False)
 
-	# END IRC EVENTS
-
-	def openSettings(self):
-		self.settingsDialog = SettingsDialog(self.app,self)
+	# |================|
+	# | END IRC EVENTS |
+	# |================|
 
 	def connectToIrc(self,connection_info=None):
 		if connection_info:
@@ -788,10 +740,10 @@ class Merk(QMainWindow):
 	def handleUserInput(self,window,user_input):
 
 		# Handle chat commands
-		if self.handleChatCommands(window,user_input): return
+		if commands.handleChatCommands(self,window,user_input): return
 
 		# Handle common commands
-		if self.handleCommonCommands(window,user_input): return
+		if commands.handleCommonCommands(self,window,user_input): return
 		
 		# Add emojis to the message
 		user_input = emoji.emojize(user_input,use_aliases=True)
@@ -807,440 +759,10 @@ class Merk(QMainWindow):
 	def handleConsoleInput(self,window,user_input):
 		
 		# Handle common commands
-		if self.handleCommonCommands(window,user_input): return
+		if commands.handleCommonCommands(self,window,user_input): return
 
 		t = Message(ERROR_MESSAGE,'',"Unrecognized command: "+user_input)
 		window.writeText(t)
-
-	def handleChatCommands(self,window,user_input):
-		tokens = user_input.split()
-
-		# |-------|
-		# | /kick |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick' and len(tokens)>=2:
-				tokens.pop(0)
-				if tokens[0][:1]=='#':
-					# It's a channel, so do nothing; this will be handled
-					# by handleCommonCommands()
-					pass
-				else:
-					# If the current window is a channel, try to set the mode
-					# on that channel; if not, then this will be handled
-					# by handleCommonCommands()
-					if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
-						channel = window.name
-						target = tokens.pop(0)
-						msg = ' '.join(tokens)
-						if len(msg.strip())==0: msg = None
-						window.client.kick(channel,target,msg)
-						return True
-					else:
-						pass
-
-		# |-------|
-		# | /mode |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode' and len(tokens)>=2:
-				tokens.pop(0)
-				if tokens[0][:1]=='#':
-					# It's a channel, so do nothing; this will be handled
-					# by handleCommonCommands()
-					pass
-				else:
-					# If the current window is a channel, try to set the mode
-					# on that channel; if not, then this will be handled
-					# by handleCommonCommands()
-					if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
-						target = window.name
-						mode = ' '.join(tokens)
-						window.client.sendLine("MODE "+target+" "+mode)
-						return True
-					else:
-						pass
-
-		# |-----|
-		# | /me |
-		# |-----|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me' and len(tokens)>=2:
-				tokens.pop(0)
-				msg = ' '.join(tokens)
-				msg = emoji.emojize(msg,use_aliases=True)
-				window.client.describe(window.name,msg)
-				t = Message(ACTION_MESSAGE,window.client.nickname,msg)
-				window.writeText(t)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE")
-				window.writeText(t)
-				return True
-
-		# |--------|
-		# | /topic |
-		# |--------|
-		# The version of the command allows the user to omit the
-		# channel name in the command, much like with /part
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic' and len(tokens)>=2:
-				tokens.pop(0)
-				if tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+':
-					# It's a channel, so do nothing; this will be handled
-					# by handleCommonCommands()
-					pass
-				else:
-					# Check to make sure that we're trying to set a topic on
-					# a channel window and not a private message window
-					if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
-						channel = window.name
-						msg = ' '.join(tokens)
-						msg = emoji.emojize(msg,use_aliases=True)
-						window.client.topic(channel,msg)
-						return True
-					else:
-						t = Message(ERROR_MESSAGE,'',"Can't set topic for a private message")
-						window.writeText(t)
-						return True
-		
-		# |-------|
-		# | /part |
-		# |-------|
-		# This version of the command allows the user to omit the channel
-		# name in the command, with the channel name being the name of
-		# the chat window it was issued from
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==1:
-				channel = window.name
-				window.client.leave(channel,config.DEFAULT_QUIT_MESSAGE)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=2:
-				tokens.pop(0)
-				if tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+':
-					# It's a channel, so do nothing; this will be handled
-					# by handleCommonCommands()
-					pass
-				else:
-					# Channel name hasn't been passed, it must be a message
-					channel = window.name
-					msg = ' '.join(tokens)
-					msg = emoji.emojize(msg,use_aliases=True)
-					window.client.leave(channel,msg)
-					return True
-
-		return False
-
-	def handleCommonCommands(self,window,user_input):
-		tokens = user_input.split()
-
-		# |---------|
-		# | /whowas |
-		# |---------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==2:
-				tokens.pop(0)
-				nick = tokens.pop(0)
-				window.client.sendLine("WHOWAS "+nick)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==3:
-				tokens.pop(0)
-				nick = tokens.pop(0)
-				arg = tokens.pop(0)
-				try:
-					arg = int(arg)
-				except:
-					t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
-					window.writeText(t)
-					return True
-				window.client.sendLine("WHOWAS "+nick+" "+str(arg))
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==4:
-				tokens.pop(0)
-				nick = tokens.pop(0)
-				arg = tokens.pop(0)
-				serv = tokens.pop(0)
-				try:
-					arg = int(arg)
-				except:
-					t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
-					window.writeText(t)
-					return True
-				window.client.sendLine("WHOWAS "+nick+" "+str(arg)+" "+serv)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]")
-				window.writeText(t)
-				return True
-
-		# |------|
-		# | /who |
-		# |------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who' and len(tokens)==2:
-				tokens.pop(0)
-				nick = tokens.pop(0)
-				window.client.sendLine("WHO "+nick)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who' and len(tokens)==3:
-				tokens.pop(0)
-				nick = tokens.pop(0)
-				arg = tokens.pop(0)
-				if arg.lower()!='o':
-					t = Message(ERROR_MESSAGE,'',"Improper argument for "+config.ISSUE_COMMAND_SYMBOL+"who")
-					window.writeText(t)
-					return True
-				window.client.sendLine("WHO "+nick+" o")
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]")
-				window.writeText(t)
-				return True
-
-		# |--------|
-		# | /whois |
-		# |--------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois' and len(tokens)==2:
-				tokens.pop(0)
-				nick = tokens.pop(0)
-				window.client.whois(nick)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois' and len(tokens)==3:
-				tokens.pop(0)
-				nick = tokens.pop(0)
-				server = tokens.pop(0)
-				window.client.whois(nick,server)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]")
-				window.writeText(t)
-				return True
-
-		# |-------|
-		# | /kick |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick' and len(tokens)>=3:
-				tokens.pop(0)
-				channel = tokens.pop(0)
-				target = tokens.pop(0)
-				msg = ' '.join(tokens)
-				if len(msg.strip())==0: msg = None
-				window.client.kick(channel,target,msg)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [REASON]")
-				window.writeText(t)
-				return True
-
-		# |-------|
-		# | /mode |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode' and len(tokens)>=2:
-				tokens.pop(0)
-				target = tokens.pop(0)
-				mode = ' '.join(tokens)
-				window.client.sendLine("MODE "+target+" "+mode)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...")
-				window.writeText(t)
-				return True
-
-
-		# |---------|
-		# | /notice |
-		# |---------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'notice' and len(tokens)>=3:
-				tokens.pop(0)
-				target = tokens.pop(0)
-				msg = ' '.join(tokens)
-				msg = emoji.emojize(msg,use_aliases=True)
-				window.client.notice(target,msg)
-
-				# If we have the target's window open, write
-				# the message there
-				w = self.getWindow(target,window.client)
-				if w:
-					t = Message(NOTICE_MESSAGE,window.client.nickname,msg)
-					w.writeText(t)
-
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'notice':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE")
-				window.writeText(t)
-				return True
-
-		# |------|
-		# | /msg |
-		# |------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg' and len(tokens)>=3:
-				tokens.pop(0)
-				target = tokens.pop(0)
-				msg = ' '.join(tokens)
-				msg = emoji.emojize(msg,use_aliases=True)
-				window.client.msg(target,msg)
-
-				# If we have the target's window open, write
-				# the message there
-				w = self.getWindow(target,window.client)
-				if w:
-					t = Message(SELF_MESSAGE,window.client.nickname,msg)
-					w.writeText(t)
-
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE")
-				window.writeText(t)
-				return True
-
-		# |-------|
-		# | /help |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'help':
-				window.writeText(self.HELP,False)
-				return True
-
-		# |--------|
-		# | /topic |
-		# |--------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic' and len(tokens)>=3:
-				tokens.pop(0)
-				channel = tokens.pop(0)
-				msg = ' '.join(tokens)
-				msg = emoji.emojize(msg,use_aliases=True)
-				window.client.topic(channel,msg)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC")
-				window.writeText(t)
-				return True
-
-		# |-------|
-		# | /quit |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)==1:
-
-				if not self.askDisconnect(window.client): return True
-
-				if len(config.DEFAULT_QUIT_MESSAGE)>0:
-					window.client.quit(config.DEFAULT_QUIT_MESSAGE)
-				else:
-					window.client.quit()
-				self.quitting[window.client.client_id] = 0
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:
-
-				if not self.askDisconnect(window.client): return True
-				
-				tokens.pop(0)
-				msg = ' '.join(tokens)
-				msg = emoji.emojize(msg,use_aliases=True)
-				window.client.quit(msg)
-				self.quitting[window.client.client_id] = 0
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]")
-				window.writeText(t)
-				return True
-
-		# |-------|
-		# | /nick |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'nick' and len(tokens)==2:
-				tokens.pop(0)
-				newnick = tokens.pop(0)
-
-				# Check to see if the user is trying to /join the
-				# channel from the same channel they are in
-				if window.client.nickname.lower()==newnick.lower():
-					t = Message(ERROR_MESSAGE,'',"You are currently using \""+newnick+"\" as a nickname")
-					window.writeText(t)
-					return True
-
-				window.client.setNick(newnick)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'nick':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME")
-				window.writeText(t)
-				return True
-
-		# |-------|
-		# | /part |
-		# |-------|
-		if len(tokens)>1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==2:
-				tokens.pop(0)
-				channel = tokens.pop(0)
-				window.client.leave(channel,config.DEFAULT_QUIT_MESSAGE)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=3:
-				tokens.pop(0)
-				channel = tokens.pop(0)
-				msg = ' '.join(tokens)
-				msg = emoji.emojize(msg,use_aliases=True)
-				window.client.leave(channel,msg)
-				return True
-
-		# |-------|
-		# | /join |
-		# |-------|
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join' and len(tokens)==2:
-				tokens.pop(0)
-				channel = tokens.pop(0)
-
-				# Check to see if the user is trying to /join the
-				# channel from the same channel they are in
-				if window.name.lower()==channel.lower():
-					t = Message(ERROR_MESSAGE,'',"You have already joined "+window.name)
-					window.writeText(t)
-					return True
-
-				# Check to see if the user has already joined
-				# the channel, and switch to the window if they have
-				w = self.getSubWindow(channel,window.client)
-				if w:
-					self.showSubWindow(w)
-					return True
-
-				window.client.join(channel)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join' and len(tokens)==3:
-				tokens.pop(0)
-				channel = tokens.pop(0)
-				key = tokens.pop(0)
-
-				# Check to see if the user is trying to /join the
-				# channel from the same channel they are in
-				if window.name.lower()==channel.lower():
-					t = Message(ERROR_MESSAGE,'',"You have already joined "+window.name)
-					window.writeText(t)
-					return True
-
-				# Check to see if the user has already joined
-				# the channel, and switch to the window if they have
-				w = self.getSubWindow(channel,window.client)
-				if w:
-					self.showSubWindow(w)
-					return True
-
-				window.client.join(channel,key)
-				return True
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join':
-				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]")
-				window.writeText(t)
-				return True
-
-		return False
 
 	def askDisconnect(self,client):
 
@@ -1267,6 +789,14 @@ class Merk(QMainWindow):
 
 		return do_disconnect
 
+	def closeAndRemoveAllWindows(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"saveLogs"): c.saveLogs()
+			if hasattr(c,"client"):
+				c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+			if window:
+				self.MDI.removeSubWindow(window)
 
 	def openPrivate(self,client,nick):
 
@@ -1351,6 +881,110 @@ class Merk(QMainWindow):
 						retval.append(window)
 		return retval
 
+	def showSubWindow(self,window):
+		window.showNormal()
+		self.MDI.setActiveSubWindow(window)
+
+	def hideSubWindow(self,subwindow_id):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"subwindow_id"):
+				if c.subwindow_id==subwindow_id:
+					window.hide()
+
+	def closeSubWindow(self,subwindow_id):
+		# Step through the list of MDI windows
+		# and remove the subwindow associated with this ID
+		for window in self.MDI.subWindowList():
+
+			# Get the chat window instance associated
+			# with the current subwindow
+			c = window.widget()
+
+			# Check to see if the subwindow_id passed
+			# to this function is the one we're looking
+			# to remove
+			if hasattr(c,"subwindow_id"):
+				if c.subwindow_id==subwindow_id:
+					# Pass the *SUBWINDOW* widget to actually
+					# delete it from the MDI area
+					self.MDI.removeSubWindow(window)
+					self.buildWindowsMenu()
+
+	def newChannelWindow(self,name,client):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		self.MDI.addSubWindow(w)
+		w.show()
+		self.buildWindowsMenu()
+
+		return w
+
+	def newServerWindow(self,name,client):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.Window(name,client,SERVER_WINDOW,self.app,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		self.MDI.addSubWindow(w)
+		w.show()
+		self.buildWindowsMenu()
+
+		return w
+
+	def newPrivateWindow(self,name,client):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.Window(name,client,PRIVATE_WINDOW,self.app,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		self.MDI.addSubWindow(w)
+		w.show()
+		self.buildWindowsMenu()
+
+		return w
+
+	# |--------------|
+	# | MENU METHODS |
+	# |--------------|
+
+	def openSettings(self):
+		self.settingsDialog = SettingsDialog(self.app,self)
+
+	def showAbout(self):
+		self.__about_dialog = AboutDialog()
+
+	def menuExportLog(self):
+		d = ExportLogDialog(logs.LOG_DIRECTORY,None)
+		if d:
+			elog = d[0]
+			dlog = d[1]
+			llog = d[2]
+			do_json = d[3]
+			do_epoch = d[4]
+			if not do_json:
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
+				if fileName:
+					# extension = os.path.splitext(fileName)[1]
+					# if extension.lower()!='txt': fileName = fileName + ".txt"
+					efl = len("txt")+1
+					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+					dump = logs.dumpLog(elog,dlog,llog,do_epoch)
+					code = open(fileName,mode="w",encoding="utf-8")
+					code.write(dump)
+					code.close()
+			else:
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
+				if fileName:
+					# extension = os.path.splitext(fileName)[1]
+					# if extension.lower()!='json': fileName = fileName + ".json"
+					efl = len("json")+1
+					if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
+					dump = logs.dumpLogJson(elog,do_epoch)
+					code = open(fileName,mode="w",encoding="utf-8")
+					code.write(dump)
+					code.close()
 
 	def buildWindowsMenu(self):
 
@@ -1417,6 +1051,19 @@ class Merk(QMainWindow):
 			entry.triggered.connect(self.MDI.activatePreviousSubWindow)
 			self.windowsMenu.addAction(entry)
 
+	# |---------------|
+	# | EVENT METHODS |
+	# |---------------|
+
+	# closeEvent()
+	# Triggered when the client window is closed, via
+	# any method 
+	def closeEvent(self, event):
+		self.closeAndRemoveAllWindows()
+		self.app.quit()
+
+	# subWindowActivated()
+	# Triggered whenever a subwindow is activated
 	def subWindowActivated(self,subwindow):
 		if subwindow==None: return
 
@@ -1427,121 +1074,3 @@ class Merk(QMainWindow):
 
 		if hasattr(w,"input"):
 			w.input.setFocus()
-
-	def showSubWindow(self,window):
-		window.showNormal()
-		self.MDI.setActiveSubWindow(window)
-
-	def hideSubWindow(self,subwindow_id):
-		for window in self.MDI.subWindowList():
-			c = window.widget()
-			if hasattr(c,"subwindow_id"):
-				if c.subwindow_id==subwindow_id:
-					window.hide()
-
-	def closeSubWindow(self,subwindow_id):
-		# Step through the list of MDI windows
-		# and remove the subwindow associated with this ID
-		for window in self.MDI.subWindowList():
-
-			# Get the chat window instance associated
-			# with the current subwindow
-			c = window.widget()
-
-			# Check to see if the subwindow_id passed
-			# to this function is the one we're looking
-			# to remove
-			if hasattr(c,"subwindow_id"):
-				if c.subwindow_id==subwindow_id:
-					# Pass the *SUBWINDOW* widget to actually
-					# delete it from the MDI area
-					self.MDI.removeSubWindow(window)
-					self.buildWindowsMenu()
-
-	def endEverything(self):
-		for window in self.MDI.subWindowList():
-			c = window.widget()
-			if hasattr(c,"saveLogs"): c.saveLogs()
-			if hasattr(c,"client"):
-				c.client.quit(config.DEFAULT_QUIT_MESSAGE)
-			if window:
-				self.MDI.removeSubWindow(window)
-
-	def newChannelWindow(self,name,client):
-		w = QMdiSubWindow(self)
-		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
-		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		self.MDI.addSubWindow(w)
-		w.show()
-		self.buildWindowsMenu()
-
-		return w
-
-	def newServerWindow(self,name,client):
-		w = QMdiSubWindow(self)
-		w.setWidget(widgets.Window(name,client,SERVER_WINDOW,self.app,self))
-		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		self.MDI.addSubWindow(w)
-		w.show()
-		self.buildWindowsMenu()
-
-		return w
-
-	def newPrivateWindow(self,name,client):
-		w = QMdiSubWindow(self)
-		w.setWidget(widgets.Window(name,client,PRIVATE_WINDOW,self.app,self))
-		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		self.MDI.addSubWindow(w)
-		w.show()
-		self.buildWindowsMenu()
-
-		return w
-
-	def showAbout(self):
-		self.__about_dialog = AboutDialog()
-
-	def menuExportLog(self):
-		d = ExportLogDialog(logs.LOG_DIRECTORY,None)
-		if d:
-			elog = d[0]
-			dlog = d[1]
-			llog = d[2]
-			do_json = d[3]
-			do_epoch = d[4]
-			if not do_json:
-				options = QFileDialog.Options()
-				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
-				if fileName:
-					# extension = os.path.splitext(fileName)[1]
-					# if extension.lower()!='txt': fileName = fileName + ".txt"
-					efl = len("txt")+1
-					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
-					dump = logs.dumpLog(elog,dlog,llog,do_epoch)
-					code = open(fileName,mode="w",encoding="utf-8")
-					code.write(dump)
-					code.close()
-			else:
-				options = QFileDialog.Options()
-				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
-				if fileName:
-					# extension = os.path.splitext(fileName)[1]
-					# if extension.lower()!='json': fileName = fileName + ".json"
-					efl = len("json")+1
-					if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
-					dump = logs.dumpLogJson(elog,do_epoch)
-					code = open(fileName,mode="w",encoding="utf-8")
-					code.write(dump)
-					code.close()
-
-	# |---------------|
-	# | EVENT METHODS |
-	# |---------------|
-
-	# closeEvent()
-	# Triggered when the client window is closed, via
-	# any method 
-	def closeEvent(self, event):
-		self.endEverything()
-		self.app.quit()
