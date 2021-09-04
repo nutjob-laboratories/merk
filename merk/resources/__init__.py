@@ -116,20 +116,14 @@ BOLD_ICON = ":/icon-bold.png"
 ITALIC_ICON = ":/icon-italic.png"
 RESET_ICON = ":/icon-reset.png"
 INFO_ICON = ":/icon-info.png"
-
 BOOKMARK_ICON = ":/icon-bookmark.png"
 SECURE_ICON = ":/icon-secure.png"
-
 VISITED_BOOKMARK_ICON = ":/icon-visited_bookmark.png"
 VISITED_SECURE_ICON = ":/icon-visited_secure.png"
-
 ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
 ROUND_CHECKED_ICON = ":/icon-rchecked.png"
-
 DISCONNECT_TOOLBAR_ICON = ":/icon-disconnect_toolbar.png"
-
 STYLE_ICON = ":/icon-style.png"
-
 WHOIS_ICON = ":/icon-whois.png"
 KICK_ICON = ":/icon-kick.png"
 BAN_ICON = ":/icon-ban.png"
@@ -138,7 +132,6 @@ CLIPBOARD_ICON = ":/icon-clipboard.png"
 PLUS_ICON = ":/icon-plus.png"
 MINUS_ICON = ":/icon-minus.png"
 KEY_ICON = ":/icon-key.png"
-
 FONT_ICON = ":/icon-font.png"
 RESIZE_ICON = ":/icon-resize.png"
 SETTINGS_ICON = ":/icon-settings.png"
@@ -147,6 +140,9 @@ INPUT_ICON = ":/icon-input.png"
 LOG_ICON = ":/icon-log.png"
 MESSAGE_ICON = ":/icon-message.png"
 ABOUT_ICON = ":/icon-about.png"
+
+PRIVATE_WINDOW_ICON = ":/icon-private_window.png"
+CHANNEL_WINDOW_ICON = ":/icon-channel_window.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
