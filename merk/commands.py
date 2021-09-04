@@ -485,6 +485,11 @@ def handleCommonCommands(gui,window,user_input):
 				gui.showSubWindow(w)
 				return True
 
+			# Check to see if a channel name prefix (like #) starts the channel's name,
+			# and if not, add a # to the channel name
+			if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
+				channel = "#"+channel
+
 			window.client.join(channel)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join' and len(tokens)==3:
@@ -505,6 +510,11 @@ def handleCommonCommands(gui,window,user_input):
 			if w:
 				gui.showSubWindow(w)
 				return True
+
+			# Check to see if a channel name prefix (like #) starts the channel's name,
+			# and if not, add a # to the channel name
+			if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
+				channel = "#"+channel
 
 			window.client.join(channel,key)
 			return True

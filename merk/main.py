@@ -192,6 +192,8 @@ class Merk(QMainWindow):
 			w.nick_button.setEnabled(True)
 			w.join_button.setEnabled(True)
 			w.info_button.setEnabled(True)
+
+			self.buildWindowsMenu()
 		
 		self.nickChanged(client)
 
@@ -861,6 +863,18 @@ class Merk(QMainWindow):
 					retval.append(window)
 		return retval
 
+	def getAllSubChatWindows(self,client):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					if c.window_type==CHANNEL_WINDOW:
+						retval.append(window)
+					elif c.window_type==PRIVATE_WINDOW:
+						retval.append(window)
+		return retval
+
 	def getAllSubChannelWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():
@@ -868,6 +882,16 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if c.client.client_id == client.client_id:
 					if c.window_type==CHANNEL_WINDOW:
+						retval.append(window)
+		return retval
+
+	def getAllSubPrivateWindows(self,client):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					if c.window_type==PRIVATE_WINDOW:
 						retval.append(window)
 		return retval
 
@@ -1062,10 +1086,18 @@ class Merk(QMainWindow):
 				else:
 					name = entry.server+":"+str(entry.port)
 
-				wl = self.getAllSubWindows(entry)
+				sw = self.getServerSubWindow(entry)
+				wl = self.getAllSubChatWindows(entry)
+				total = self.getAllSubWindows(entry)
 
-				if len(wl)>0:
+				if len(total)>0:
 					sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
+
+					entry = QAction(QIcon(CONSOLE_ICON),name,self)
+					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
+					sm.addAction(entry)
+
+					sm.addSeparator()
 
 					for w in wl:
 						c = w.widget()
