@@ -949,25 +949,29 @@ class Merk(QMainWindow):
 
 	def openSettings(self):
 		self.settingsDialog = SettingsDialog(self.app,self)
-	
-	def aboutClosed(self,window):
-		self.MDI.removeSubWindow(window)
 
 	def showAbout(self):
 		self.__about_dialog = AboutDialog()
-		w = QMdiSubWindow(self)
-		w.setWidget(self.__about_dialog)
-		self.__about_dialog.closed.connect(lambda window=w: self.aboutClosed(window))
-		w.setWindowFlags(
-			Qt.WindowCloseButtonHint |
-			Qt.WindowTitleHint )
-		self.MDI.addSubWindow(w)
+		self.__about_dialog.show()
+	
+	# def aboutClosed(self,window):
+	# 	self.MDI.removeSubWindow(window)
 
-		wx = (self.MDI.width()/2)-(w.width()/2)
-		wy = (self.MDI.height()/2)-(w.height()/2)
-		w.move(wx,wy)
+	# def showAbout(self):
+	# 	self.__about_dialog = AboutDialog()
+	# 	w = QMdiSubWindow(self)
+	# 	w.setWidget(self.__about_dialog)
+	# 	self.__about_dialog.closed.connect(lambda window=w: self.aboutClosed(window))
+	# 	w.setWindowFlags(
+	# 		Qt.WindowCloseButtonHint |
+	# 		Qt.WindowTitleHint )
+	# 	self.MDI.addSubWindow(w)
 
-		w.show()
+	# 	wx = (self.MDI.width()/2)-(w.width()/2)
+	# 	wy = (self.MDI.height()/2)-(w.height()/2)
+	# 	w.move(wx,wy)
+
+	# 	w.show()
 
 	def menuExportLog(self):
 		d = ExportLogDialog(logs.LOG_DIRECTORY,None)
