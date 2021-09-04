@@ -764,31 +764,6 @@ class Merk(QMainWindow):
 		t = Message(ERROR_MESSAGE,'',"Unrecognized command: "+user_input)
 		window.writeText(t)
 
-	def askDisconnect(self,client):
-
-		no_hostname = False
-		if not hasattr(client,"hostname"): no_hostname = True
-		if not client.hostname: no_hostname = True
-
-		do_disconnect = True
-
-		if config.ASK_BEFORE_DISCONNECT:
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
-			if no_hostname:
-				msgBox.setText("Are you sure you want to disconnect from "+client.server+":"+str(client.port)+"?")
-			else:
-				msgBox.setText("Are you sure you want to disconnect from "+client.hostname+"?")
-			msgBox.setWindowTitle("Disconnect")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
-			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
-				do_disconnect = False
-
-		return do_disconnect
-
 	def closeAndRemoveAllWindows(self):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
@@ -947,11 +922,52 @@ class Merk(QMainWindow):
 	# | MENU METHODS |
 	# |--------------|
 
+	def askDisconnect(self,client):
+
+		no_hostname = False
+		if not hasattr(client,"hostname"): no_hostname = True
+		if not client.hostname: no_hostname = True
+
+		do_disconnect = True
+
+		if config.ASK_BEFORE_DISCONNECT:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			if no_hostname:
+				msgBox.setText("Are you sure you want to disconnect from "+client.server+":"+str(client.port)+"?")
+			else:
+				msgBox.setText("Are you sure you want to disconnect from "+client.hostname+"?")
+			msgBox.setWindowTitle("Disconnect")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				do_disconnect = False
+
+		return do_disconnect
+
 	def openSettings(self):
 		self.settingsDialog = SettingsDialog(self.app,self)
+	
+	def aboutClosed(self,window):
+		self.MDI.removeSubWindow(window)
 
 	def showAbout(self):
 		self.__about_dialog = AboutDialog()
+		w = QMdiSubWindow(self)
+		w.setWidget(self.__about_dialog)
+		self.__about_dialog.closed.connect(lambda window=w: self.aboutClosed(window))
+		w.setWindowFlags(
+			Qt.WindowCloseButtonHint |
+			Qt.WindowTitleHint )
+		self.MDI.addSubWindow(w)
+
+		wx = (self.MDI.width()/2)-(w.width()/2)
+		wy = (self.MDI.height()/2)-(w.height()/2)
+		w.move(wx,wy)
+
+		w.show()
 
 	def menuExportLog(self):
 		d = ExportLogDialog(logs.LOG_DIRECTORY,None)

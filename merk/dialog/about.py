@@ -35,6 +35,11 @@ from ..resources import *
 
 class Dialog(QDialog):
 
+	closed = pyqtSignal()
+
+	def closeEvent(self, event):
+		self.closed.emit()
+
 	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
