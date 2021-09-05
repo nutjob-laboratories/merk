@@ -141,6 +141,7 @@ INPUT_ICON = ":/icon-input.png"
 LOG_ICON = ":/icon-log.png"
 MESSAGE_ICON = ":/icon-message.png"
 ABOUT_ICON = ":/icon-about.png"
+OPTIONS_ICON = ":/icon-options.png"
 
 PRIVATE_WINDOW_ICON = ":/icon-private_window.png"
 CHANNEL_WINDOW_ICON = ":/icon-channel_window.png"

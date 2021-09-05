@@ -221,6 +221,7 @@ class Window(QMainWindow):
 
 		# Spellcheck Button
 		self.spellcheckMenu = QMenu("Spellcheck")
+		self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
 
 		self.languageEnabled = QAction(QIcon(TOGGLE_ON_ICON),"Enabled",self)
 		self.languageEnabled.triggered.connect(self.setSpellcheckEnabled)
@@ -249,18 +250,24 @@ class Window(QMainWindow):
 		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
 		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
 
-		self.spellcheckMenuButton = QPushButton(QIcon(SPELLCHECK_ICON),"")
-		self.spellcheckMenuButton.setMenu(self.spellcheckMenu)
-		self.spellcheckMenuButton.setIconSize(QSize(self.input.height()-5,self.input.height()-5))
-		self.spellcheckMenuButton.setFixedSize(self.input.height()+3,self.input.height())
-		self.spellcheckMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
-		self.spellcheckMenuButton.setToolTip("Spellcheck")
+		self.settingsMenu = QMenu("")
 
-		self.styleButton = QPushButton(QIcon(STYLE_ICON),"")
-		self.styleButton.setIconSize(QSize(self.input.height()-5,self.input.height()-5))
-		self.styleButton.setFixedSize(self.input.height()+3,self.input.height())
-		self.styleButton.setToolTip("Text style")
-		self.styleButton.clicked.connect(self.pressedStyleButton)
+		entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+		entry.triggered.connect(self.pressedStyleButton)
+		self.settingsMenu.addAction(entry)
+
+		self.settingsMenu.addMenu(self.spellcheckMenu)
+
+		self.settingsButton = QPushButton(QIcon(OPTIONS_ICON),"")
+		self.settingsButton.setIconSize(QSize(self.input.height()-10,self.input.height()))
+		self.settingsButton.setFixedSize(self.input.height()-10,self.input.height())
+		self.settingsButton.setToolTip("Options")
+		self.settingsButton.setMenu(self.settingsMenu)
+		self.settingsButton.setFlat(True)
+		self.settingsButton.setStyleSheet("""
+			QPushButton::menu-indicator { image: none; }
+			QPushButton:pressed { border: none;}
+		""")
 
 		if self.window_type!=SERVER_WINDOW:
 
@@ -320,8 +327,7 @@ class Window(QMainWindow):
 		inputLayout = QHBoxLayout()
 		inputLayout.addLayout(nickLayout)
 		inputLayout.addWidget(self.input)
-		inputLayout.addWidget(self.spellcheckMenuButton)
-		inputLayout.addWidget(self.styleButton)
+		inputLayout.addWidget(self.settingsButton)
 
 		if self.window_type==CHANNEL_WINDOW:
 
