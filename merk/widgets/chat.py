@@ -1600,17 +1600,18 @@ class SpellTextEdit(QPlainTextEdit):
 			popup_menu.insertSeparator(popup_menu.actions()[counter])
 			counter = counter + 1
 
-			if unknown_word:
-				entry = QAction(QIcon(DICTIONARY_ICON),f"Add \"{text}\" to dictionary",self)
-				entry.triggered.connect(lambda state,word=text: self.addToDictionary(word))
-				popup_menu.insertAction(popup_menu.actions()[counter],entry)
-				popup_menu.insertSeparator(popup_menu.actions()[counter+1])
+			if not ' ' in text:
+				if unknown_word:
+					entry = QAction(QIcon(DICTIONARY_ICON),f"Add \"{text}\" to dictionary",self)
+					entry.triggered.connect(lambda state,word=text: self.addToDictionary(word))
+					popup_menu.insertAction(popup_menu.actions()[counter],entry)
+					popup_menu.insertSeparator(popup_menu.actions()[counter+1])
 
-			if text in config.DICTIONARY:
-				entry = QAction(QIcon(DICTIONARY_ICON),f"Remove \"{text}\" from dictionary",self)
-				entry.triggered.connect(lambda state,word=text: self.removeFromDictionary(word))
-				popup_menu.insertAction(popup_menu.actions()[counter],entry)
-				popup_menu.insertSeparator(popup_menu.actions()[counter+1])
+				if text in config.DICTIONARY:
+					entry = QAction(QIcon(DICTIONARY_ICON),f"Remove \"{text}\" from dictionary",self)
+					entry.triggered.connect(lambda state,word=text: self.removeFromDictionary(word))
+					popup_menu.insertAction(popup_menu.actions()[counter],entry)
+					popup_menu.insertSeparator(popup_menu.actions()[counter+1])
 
 		popup_menu.exec_(event.globalPos())
 
