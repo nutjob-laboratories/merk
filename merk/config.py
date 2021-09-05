@@ -72,6 +72,7 @@ SHOW_CONNECTION_UPTIME = True
 SHOW_CHANNEL_UPTIME = True
 SCROLL_CHAT_TO_BOTTOM_ON_RESIZE = True
 ENABLE_EMOJI_SHORTCODES = True
+ENABLE_SPELLCHECK = True
 
 def save_settings(filename):
 
@@ -111,12 +112,15 @@ def save_settings(filename):
 		"show_channel_uptime": SHOW_CHANNEL_UPTIME,
 		"scroll_chat_to_bottom_on_resize": SCROLL_CHAT_TO_BOTTOM_ON_RESIZE,
 		"enable_emoji_shortcodes": ENABLE_EMOJI_SHORTCODES,
+		"enable_spellcheck": ENABLE_SPELLCHECK,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "enable_spellcheck" in settings:
+		settings["enable_spellcheck"] = ENABLE_SPELLCHECK
 	if not "enable_emoji_shortcodes" in settings:
 		settings["enable_emoji_shortcodes"] = ENABLE_EMOJI_SHORTCODES
 	if not "scroll_chat_to_bottom_on_resize" in settings:
@@ -226,6 +230,7 @@ def load_settings(filename):
 	global SHOW_CHANNEL_UPTIME
 	global SCROLL_CHAT_TO_BOTTOM_ON_RESIZE
 	global ENABLE_EMOJI_SHORTCODES
+	global ENABLE_SPELLCHECK
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -235,6 +240,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_SPELLCHECK = settings["enable_spellcheck"]
 		ENABLE_EMOJI_SHORTCODES = settings["enable_emoji_shortcodes"]
 		SCROLL_CHAT_TO_BOTTOM_ON_RESIZE = settings["scroll_chat_to_bottom_on_resize"]
 		SHOW_CHANNEL_UPTIME = settings["show_channel_uptime"]
@@ -316,6 +322,7 @@ def check_settings(filename):
 			if not "show_channel_uptime" in settings: return False
 			if not "scroll_chat_to_bottom_on_resize" in settings: return False
 			if not "enable_emoji_shortcodes" in settings: return False
+			if not "enable_spellcheck" in settings: return False
 	else:
 		return False
 

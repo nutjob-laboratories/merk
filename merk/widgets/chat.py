@@ -69,8 +69,6 @@ class Window(QMainWindow):
 		self.history_buffer = ['']
 		self.history_buffer_pointer = 0
 
-		self.spellcheck_enabled = True
-
 		self.log = []
 		self.new_log = []
 
@@ -222,12 +220,6 @@ class Window(QMainWindow):
 		# Spellcheck Button
 		self.spellcheckMenu = QMenu("Spellcheck")
 		self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
-
-		self.languageEnabled = QAction(QIcon(TOGGLE_ON_ICON),"Enabled",self)
-		self.languageEnabled.triggered.connect(self.setSpellcheckEnabled)
-		self.spellcheckMenu.addAction(self.languageEnabled)
-
-		self.spellcheckMenu.addSeparator()
 
 		self.languageEnglish = QAction(QIcon(ROUND_UNCHECKED_ICON),"English",self)
 		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
@@ -1052,31 +1044,6 @@ class Window(QMainWindow):
 			if save_logs:
 				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 
-	def setSpellcheckEnabled(self):
-		if self.spellcheck_enabled:
-			self.spellcheck_enabled = False
-			self.languageEnabled.setText("Disabled")
-			self.languageEnabled.setIcon(QIcon(TOGGLE_OFF_ICON))
-			self.languageEnglish.setEnabled(False)
-			self.languageFrench.setEnabled(False)
-			self.languageSpanish.setEnabled(False)
-			self.languageGerman.setEnabled(False)
-		else:
-			self.spellcheck_enabled = True
-			self.languageEnabled.setText("Enabled")
-			self.languageEnabled.setIcon(QIcon(TOGGLE_ON_ICON))
-			self.languageEnglish.setEnabled(True)
-			self.languageFrench.setEnabled(True)
-			self.languageSpanish.setEnabled(True)
-			self.languageGerman.setEnabled(True)
-
-		# Rewrite whatever is in the input widget
-		cursor = self.input.textCursor()
-		user_input = self.input.text()
-		self.input.setText('')
-		self.input.setText(user_input)
-		self.input.moveCursor(cursor.position())
-
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)
 
@@ -1089,6 +1056,17 @@ class Window(QMainWindow):
 		if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
 		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
 		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
+
+		if config.ENABLE_SPELLCHECK:
+			self.languageEnglish.setEnabled(True)
+			self.languageFrench.setEnabled(True)
+			self.languageSpanish.setEnabled(True)
+			self.languageGerman.setEnabled(True)
+		else:
+			self.languageEnglish.setEnabled(False)
+			self.languageFrench.setEnabled(False)
+			self.languageSpanish.setEnabled(False)
+			self.languageGerman.setEnabled(False)
 
 	def linkClicked(self,url):
 		if url.host():
@@ -1577,7 +1555,7 @@ class SpellTextEdit(QPlainTextEdit):
 			# Make sure that words in the custom dictionary aren't flagged as misspelled
 			if not text in config.DICTIONARY:
 
-				if self.parent.spellcheck_enabled:
+				if config.ENABLE_SPELLCHECK:
 
 					misspelled = self.dict.unknown([text])
 					if len(misspelled)>0:
@@ -1634,7 +1612,7 @@ class Highlighter(QSyntaxHighlighter):
 
 		for word_object in re.finditer(self.WORDS, text):
 
-			if self.parent.spellcheck_enabled:
+			if config.ENABLE_SPELLCHECK:
 
 				misspelled = self.dict.unknown([word_object.group()])
 				if len(misspelled)>0:

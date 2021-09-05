@@ -239,6 +239,10 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_EMOJIS: self.autocompleteEmojis.setChecked(True)
 		self.autocompleteEmojis.stateChanged.connect(self.changedSetting)
 
+		self.enableSpellcheck = QCheckBox("Enable spellcheck",self)
+		if config.ENABLE_SPELLCHECK: self.enableSpellcheck.setChecked(True)
+		self.enableSpellcheck.stateChanged.connect(self.changedSetting)
+
 		self.historyLabel = QLabel(f"Command history size: <b>{str(config.COMMAND_HISTORY_LENGTH)} lines</b>",self)
 
 		historyButton = QPushButton("")
@@ -259,13 +263,13 @@ class Dialog(QDialog):
 		self.englishSC = QRadioButton("English")
 		self.englishSC.toggled.connect(self.selEnglish)
 
-		self.frenchSC = QRadioButton("French")
+		self.frenchSC = QRadioButton("Française")
 		self.frenchSC.toggled.connect(self.selFrench)
 
-		self.spanishSC = QRadioButton("Spanish")
+		self.spanishSC = QRadioButton("Español")
 		self.spanishSC.toggled.connect(self.selSpanish)
 
-		self.germanSC = QRadioButton("German")
+		self.germanSC = QRadioButton("Deutsche")
 		self.germanSC.toggled.connect(self.selGerman)
 
 
@@ -296,6 +300,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(self.autocompleteNicks)
 		inputLayout.addWidget(self.autocompleteEmojis)
 		inputLayout.addLayout(historyLayout)
+		inputLayout.addWidget(self.enableSpellcheck)
 		inputLayout.addWidget(langBox)
 		inputLayout.addStretch()
 
@@ -443,6 +448,7 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		config.ENABLE_SPELLCHECK = self.enableSpellcheck.isChecked()
 		config.ENABLE_EMOJI_SHORTCODES = self.enableEmojis.isChecked()
 		config.DEFAULT_SPELLCHECK_LANGUAGE = self.spellLang
 		config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = self.writePrivate.isChecked()
