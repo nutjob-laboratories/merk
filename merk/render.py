@@ -140,6 +140,32 @@ LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
+DATE_MESSAGE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+			<td><center><small><b>!MESSAGE!</b></small></center></td>
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
+LIGHT_DATE_MESSAGE_TEMPLATE = f'''
+<table width="100%" border="0">
+	<tbody>
+		<tr>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+			<td><center><small><b>!MESSAGE!</b></small></center></td>
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			</td>
+		</tr>
+	</tbody>
+</table>'''
+
 def render_message(message,style):
 	
 	msg_to_display = message.contents
@@ -224,6 +250,14 @@ def render_message(message,style):
 	elif message.type==WHOIS_MESSAGE:
 		output = MESSAGE_TEMPLATE
 		output_style = style["server"]
+	elif message.type==DATE_MESSAGE:
+
+		if test_if_background_is_light(style["all"]):
+			output = DATE_MESSAGE_TEMPLATE
+		else:
+			output = LIGHT_DATE_MESSAGE_TEMPLATE
+
+		style = style["message"]
 
 	if style=="":
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)
@@ -231,7 +265,7 @@ def render_message(message,style):
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_STYLE_TEMPLATE)
 		output = output.replace("!MESSAGE_STYLE!",output_style)
 
-	if message.type!=HORIZONTAL_RULE_MESSAGE and message.type!=HARD_HORIZONTAL_RULE_MESSAGE and message.type!=TEXT_HORIZONTAL_RULE_MESSAGE:
+	if message.type!=HORIZONTAL_RULE_MESSAGE and message.type!=HARD_HORIZONTAL_RULE_MESSAGE and message.type!=TEXT_HORIZONTAL_RULE_MESSAGE and message.type!=DATE_MESSAGE:
 
 		if config.DISPLAY_TIMESTAMP:
 			tfs = '%H:%M:%S'

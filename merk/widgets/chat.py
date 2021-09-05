@@ -81,6 +81,8 @@ class Window(QMainWindow):
 		self.admin = False
 		self.halfop = False
 
+		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
+
 		self.setWindowTitle(self.name)
 
 		if self.window_type==CHANNEL_WINDOW:
@@ -441,6 +443,24 @@ class Window(QMainWindow):
 				# log of the chat window
 				if len(loadLog)>0:
 					self.log = loadLog + self.log
+					# Now, we insert day markers; starting with the first saved
+					# log message, we will insert a separator before the first
+					# message of a new day containing the date the following
+					# messages will have taken place on. This makes reading
+					# the loaded log a bit clearer. We step through the loaded
+					# log data, checking the date of each message, placing
+					# our markers whenever the date changes, the then replace
+					# the loaded log data with our "altered" log.
+					cdate = None
+					marked = []
+					for e in self.log:
+						ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
+						if cdate!=ndate:
+							cdate = ndate
+							m = Message(DATE_MESSAGE,'',cdate)
+							marked.append(m)
+						marked.append(e)
+					self.log = marked
 					# Mark end of loaded log
 					if config.MARK_END_OF_LOADED_LOG:
 						t = datetime.timestamp(datetime.now())
@@ -976,14 +996,26 @@ class Window(QMainWindow):
 			self.chat.append(message)
 		else:
 
+			t = render.render_message(message,self.style)
+
+			# Mark when it's a new day, for long connections
+			if t!=None:
+				cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
+				if cdate!=self.current_date:
+					self.current_date = cdate
+					# there's a new date; create a new date separator
+					m = Message(DATE_MESSAGE,'',cdate)
+					d2 = render.render_message(m,self.style)
+					self.chat.append(d2)
+
 			# Save entered text to the current log
 			self.log.append(message)
 
 			# Save entered text to the new log for saving
 			if write_to_log: self.new_log.append(message)
 
-			t = render.render_message(message,self.style)
 			self.chat.append(t)
+
 		self.moveChatToBottom()
 
 	def closeEvent(self, event):
