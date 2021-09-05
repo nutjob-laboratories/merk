@@ -31,6 +31,7 @@ from PyQt5 import QtCore
 from ..resources import *
 from .. import config
 from .. import dialog
+from .. import widgets
 
 class Dialog(QDialog):
 
@@ -124,6 +125,9 @@ class Dialog(QDialog):
 		fwidth = fm.width('X') * 27
 		self.selector.setMaximumWidth(fwidth)
 
+		add_factor = 10
+		self.selector.setIconSize(QSize(fm.height()+add_factor,fm.height()+add_factor))
+
 		self.selector.itemClicked.connect(self.selectorClick)
 
 		self.selector.setStyleSheet("background-color: transparent; border-width: 0px; border-color: transparent;")
@@ -196,6 +200,7 @@ class Dialog(QDialog):
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
 		applicationLayout = QVBoxLayout()
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.askBeforeDisconnect)
@@ -281,6 +286,7 @@ class Dialog(QDialog):
 
 
 		inputLayout = QVBoxLayout()
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
 		inputLayout.addWidget(self.autocompleteCommands)
 		inputLayout.addWidget(self.autocompleteNicks)
 		inputLayout.addWidget(self.autocompleteEmojis)
@@ -341,6 +347,7 @@ class Dialog(QDialog):
 		logsizeLayout.addStretch()
 
 		logLayout = QVBoxLayout()
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat log settings</b>"))
 		logLayout.addWidget(self.saveChanLogs)
 		logLayout.addWidget(self.loadChanLogs)
 		logLayout.addWidget(self.savePrivLogs)
@@ -385,6 +392,7 @@ class Dialog(QDialog):
 		self.writePrivate.stateChanged.connect(self.changedSetting)
 
 		messageLayout = QVBoxLayout()
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showTimestamps)
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
