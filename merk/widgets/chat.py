@@ -1141,6 +1141,13 @@ class Window(QMainWindow):
 		self.input.setText(user_input)
 		self.input.moveCursor(cursor.position())
 
+	def resetInput(self):
+		cursor = self.input.textCursor()
+		user_input = self.input.text()
+		self.input.setText('')
+		self.input.setText(user_input)
+		self.input.moveCursor(cursor.position())
+
 	def handleTopicInput(self):
 		entered_topic = self.topic.text()
 
@@ -1529,6 +1536,26 @@ class SpellTextEdit(QPlainTextEdit):
 				Qt.LeftButton, Qt.LeftButton, Qt.NoModifier)
 		QPlainTextEdit.mousePressEvent(self, event)
 
+	def addToDictionary(self,word):
+		# Add the word to the internal dictionary
+		config.DICTIONARY.append(word)
+
+		# Save new settings to the config file
+		config.save_settings(config.CONFIG_FILE)
+
+		# Reset the input
+		self.parent.resetInput()
+
+	def removeFromDictionary(self,word):
+		# Remove the word from the internal dictionary
+		config.DICTIONARY.remove(word)
+
+		# Save new settings to the config file
+		config.save_settings(config.CONFIG_FILE)
+
+		# Reset the input
+		self.parent.resetInput()
+
 	def contextMenuEvent(self, event):
 
 		popup_menu = self.createStandardContextMenu()
@@ -1546,6 +1573,7 @@ class SpellTextEdit(QPlainTextEdit):
 			do_spellcheck = True
 		
 		counter = 0
+		unknown_word = False
 
 		# Check if the selected word is misspelled and offer spelling
 		# suggestions if it is.
@@ -1559,17 +1587,30 @@ class SpellTextEdit(QPlainTextEdit):
 
 					misspelled = self.dict.unknown([text])
 					if len(misspelled)>0:
-						
+						unknown_word =True
 						for word in self.dict.candidates(text):
-							action = SpellAction(word, popup_menu)
-							action.correct.connect(self.correctWord)
-							popup_menu.insertAction(popup_menu.actions()[0],action)
-							counter = counter + 1
+							if word!=text:
+								action = SpellAction(word, popup_menu)
+								action.correct.connect(self.correctWord)
+								popup_menu.insertAction(popup_menu.actions()[0],action)
+								counter = counter + 1
 						if counter != 0:
 							popup_menu.insertSeparator(popup_menu.actions()[counter])
 
 			popup_menu.insertSeparator(popup_menu.actions()[counter])
 			counter = counter + 1
+
+			if unknown_word:
+				entry = QAction(QIcon(DICTIONARY_ICON),f"Add \"{text}\" to dictionary",self)
+				entry.triggered.connect(lambda state,word=text: self.addToDictionary(word))
+				popup_menu.insertAction(popup_menu.actions()[counter],entry)
+				popup_menu.insertSeparator(popup_menu.actions()[counter+1])
+
+			if text in config.DICTIONARY:
+				entry = QAction(QIcon(DICTIONARY_ICON),f"Remove \"{text}\" from dictionary",self)
+				entry.triggered.connect(lambda state,word=text: self.removeFromDictionary(word))
+				popup_menu.insertAction(popup_menu.actions()[counter],entry)
+				popup_menu.insertSeparator(popup_menu.actions()[counter+1])
 
 		popup_menu.exec_(event.globalPos())
 

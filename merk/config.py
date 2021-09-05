@@ -44,6 +44,7 @@ DICTIONARY = [
 	"merk",
 	"mƏrk",
 	"Merk",
+	"MERK",
 ]
 NICKNAME_PAD_LENGTH = 15
 DISPLAY_TIMESTAMP = True

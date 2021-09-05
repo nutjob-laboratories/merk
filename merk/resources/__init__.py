@@ -146,6 +146,7 @@ PRIVATE_WINDOW_ICON = ":/icon-private_window.png"
 CHANNEL_WINDOW_ICON = ":/icon-channel_window.png"
 LINK_ICON = ":/icon-link.png"
 FOLDER_ICON = ":/icon-folder.png"
+DICTIONARY_ICON = ":/icon-dictionary.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
