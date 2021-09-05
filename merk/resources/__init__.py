@@ -142,14 +142,10 @@ LOG_ICON = ":/icon-log.png"
 MESSAGE_ICON = ":/icon-message.png"
 ABOUT_ICON = ":/icon-about.png"
 OPTIONS_ICON = ":/icon-options.png"
-
 PRIVATE_WINDOW_ICON = ":/icon-private_window.png"
 CHANNEL_WINDOW_ICON = ":/icon-channel_window.png"
-
 LINK_ICON = ":/icon-link.png"
 FOLDER_ICON = ":/icon-folder.png"
-
-SAVE_ICON = ":/icon-save.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

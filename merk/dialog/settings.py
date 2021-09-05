@@ -223,6 +223,10 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.inputPage)
 
+		self.enableEmojis = QCheckBox("Enable emoji chortcodes",self)
+		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
+		self.enableEmojis.stateChanged.connect(self.changedSetting)
+
 		self.autocompleteCommands = QCheckBox("Autocomplete commands",self)
 		if config.AUTOCOMPLETE_COMMANDS: self.autocompleteCommands.setChecked(True)
 		self.autocompleteCommands.stateChanged.connect(self.changedSetting)
@@ -287,6 +291,7 @@ class Dialog(QDialog):
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
+		inputLayout.addWidget(self.enableEmojis)
 		inputLayout.addWidget(self.autocompleteCommands)
 		inputLayout.addWidget(self.autocompleteNicks)
 		inputLayout.addWidget(self.autocompleteEmojis)
@@ -438,6 +443,7 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		config.ENABLE_EMOJI_SHORTCODES = self.enableEmojis.isChecked()
 		config.DEFAULT_SPELLCHECK_LANGUAGE = self.spellLang
 		config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = self.writePrivate.isChecked()
 		config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = self.createWindow.isChecked()

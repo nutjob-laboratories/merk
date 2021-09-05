@@ -763,7 +763,8 @@ class Merk(QMainWindow):
 		if commands.handleCommonCommands(self,window,user_input): return
 		
 		# Add emojis to the message
-		user_input = emoji.emojize(user_input,use_aliases=True)
+		if config.ENABLE_EMOJI_SHORTCODES:
+			user_input = emoji.emojize(user_input,use_aliases=True)
 
 		if len(user_input)>0:
 			# Client has sent a chat message, so send the message

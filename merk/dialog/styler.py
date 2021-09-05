@@ -269,7 +269,7 @@ class Dialog(QDialog):
 
 		buttons.button(QDialogButtonBox.Ok).setText("Apply")
 
-		saveButton = QPushButton(QIcon(SAVE_ICON),"Save style")
+		saveButton = QPushButton("Save style")
 		saveButton.clicked.connect(self.saveStyle)
 
 		saveAsButton = QPushButton("Save as...")
