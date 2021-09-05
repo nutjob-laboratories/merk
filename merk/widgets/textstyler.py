@@ -92,6 +92,26 @@ class MiniStyler(QWidget):
 
 			self.qssChanged.emit([self.name,self.exportQss()])
 
+	def setQss(self,newstyle):
+		self.qss = newstyle
+		self.italic = False
+		self.bold = False
+
+		self.parseQss()
+
+		self.setColor.setStyleSheet(f'background-color: {self.color};')
+
+		if self.bold:
+			self.setBold.setCheckState(Qt.Checked)
+		else:
+			self.setBold.setCheckState(Qt.Unchecked)
+
+		if self.italic:
+			self.setItalic.setCheckState(Qt.Checked)
+		else:
+			self.setItalic.setCheckState(Qt.Unchecked)
+
+
 	def __init__(self,name,description,qss,underline=False,parent=None):
 		super(MiniStyler,self).__init__(parent)
 

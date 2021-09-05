@@ -56,10 +56,6 @@ class Dialog(QDialog):
 		self.style['notice'] = self.notice_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
 
-		# gcode = f'color: {self.fgcolor};'
-		# gcode = gcode + f' background-color: {self.bgcolor};'
-		# self.style["all"] = gcode
-
 		return self.style
 
 	def saveStyle(self):
@@ -73,11 +69,6 @@ class Dialog(QDialog):
 		self.style['notice'] = self.notice_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
 
-		# gcode = f'color: {self.fgcolor};'
-		# gcode = gcode + f' background-color: {self.bgcolor};'
-		# self.style["all"] = gcode
-		
-		# saveStyle(client,channel,style,is_server_window=False):
 		if self.wchat.window_type==SERVER_WINDOW:
 			styles.saveStyle(self.client,self.wchat.name,self.style,True)
 		else:
@@ -128,6 +119,53 @@ class Dialog(QDialog):
 			p.setColor(QPalette.Base, QColor(self.bgcolor))
 			p.setColor(QPalette.Text, QColor(self.fgcolor))
 			self.chat.setPalette(p)
+
+	def saveAsStyle(self):
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,"Save Style As...","","Style File (*.style);;All Files (*)", options=options)
+		if fileName:
+			efl = len("style")+1
+			if fileName[-efl:].lower()!=f".style": fileName = fileName+f".style"
+
+			self.style['system'] = self.system_style.exportQss()
+			self.style['action'] = self.action_style.exportQss()
+			self.style['error'] = self.error_style.exportQss()
+			self.style['hyperlink'] = self.link_style.exportQss()
+			self.style['self'] = self.self_style.exportQss()
+			self.style['username'] = self.user_style.exportQss()
+			self.style['notice'] = self.notice_style.exportQss()
+			self.style['server'] = self.server_style.exportQss()
+
+			styles.write_style_file(self.style,fileName)
+
+	def loadStyle(self):
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Select Style File", styles.STYLE_DIRECTORY,"Style File (*.style);;All Files (*)", options=options)
+		if fileName:
+			self.style = styles.read_style_file(fileName)
+
+			self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+			self.system_style.setQss(self.style['system'])
+			self.link_style.setQss(self.style['hyperlink'])
+			self.action_style.setQss(self.style['action'])
+			self.error_style.setQss(self.style['error'])
+			self.notice_style.setQss(self.style['notice'])
+			self.self_style.setQss(self.style['self'])
+			self.user_style.setQss(self.style['username'])
+			self.server_style.setQss(self.style['server'])
+
+			p = self.chat.palette()
+			p.setColor(QPalette.Base, QColor(self.bgcolor))
+			p.setColor(QPalette.Text, QColor(self.fgcolor))
+			self.chat.setPalette(p)
+
+			self.chat.clear()
+
+			for line in self.messages:
+				t = render.render_message(line,self.style)
+				self.chat.append(t)
 
 	def __init__(self,client,chat,parent=None):
 		super(Dialog,self).__init__(parent)
@@ -229,14 +267,21 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		buttons.button(QDialogButtonBox.Ok).setText("Apply style")
+		buttons.button(QDialogButtonBox.Ok).setText("Apply")
 
-		entry = QPushButton("Save as default style")
-		entry.clicked.connect(self.saveStyle)
+		saveButton = QPushButton(QIcon(SAVE_ICON),"Save style")
+		saveButton.clicked.connect(self.saveStyle)
+
+		saveAsButton = QPushButton("Save as...")
+		saveAsButton.clicked.connect(self.saveAsStyle)
+
+		loadButton = QPushButton("Open style")
+		loadButton.clicked.connect(self.loadStyle)
 
 		buttonLayout = QHBoxLayout()
-		#buttonLayout.addStretch()
-		buttonLayout.addWidget(entry)
+		buttonLayout.addWidget(saveButton)
+		buttonLayout.addWidget(saveAsButton)
+		buttonLayout.addWidget(loadButton)
 		buttonLayout.addWidget(buttons)
 		buttonLayout.setAlignment(Qt.AlignRight)
 
