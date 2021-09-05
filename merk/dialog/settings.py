@@ -223,7 +223,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.inputPage)
 
-		self.enableEmojis = QCheckBox("Enable emoji chortcodes",self)
+		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
 		self.enableEmojis.stateChanged.connect(self.changedSetting)
 
