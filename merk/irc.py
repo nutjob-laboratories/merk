@@ -217,6 +217,8 @@ class IRC_Connection(irc.IRCClient):
 				if channel in self.channelmodes:
 					if not m in self.channelmodes[channel]:
 						self.channelmodes[channel] = self.channelmodes[channel] + m
+					else:
+						continue
 				else:
 					self.channelmodes[channel] = m
 
@@ -273,6 +275,8 @@ class IRC_Connection(irc.IRCClient):
 						if target in self.channelmodes:
 							if not m in self.channelmodes[target]:
 								self.channelmodes[target] = self.channelmodes[target] + m
+							else:
+								continue
 						else:
 							self.channelmodes[target] = m
 
