@@ -3,7 +3,10 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
 </p>
-
+<p align="center">
+  <a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot.png"></a><br>
+  <i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, <a href="https://www.scuttled.net/">2600net</a>, and a local IRC server. <a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_big.png">Click</a> to enlarge.</small></i><br>
+</p>
 **MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **MERK** is in beta, but it is usable. A lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
@@ -77,26 +80,27 @@ Several tools are included in [the official **MERK** repository](https://github.
  - ***compile_resources.bat*** - This batch file compiles the miscellaneous resources (graphics, fonts, etc) required by **MERK** into a single file, `resources.py`, and inserts the file into the **MERK** source code. This is for development on the Windows platform.
  - ***compile_resources.sh*** - This shell script basically does the same thing that `compile_resources.bat` does, only it's for development on the Linux platform.
  - ***build_dist.py*** - This is a Python 3 script that, when executed, does several things:
-	 - Executes either `compile_resources.bat` (if the host system is Windows) or `compile_resources.sh` (if the host system is Linux); if the host system is not running either Windows or Linux, `build_dist.py` will exit with an error
-	 - Increments the **MERK**'s minor version (which is stored in `merk/data/minor.txt`) and saves it
-	 - Reads`README.txt` into memory and replaces several symbols in it:
-		 - `! _VERSION_ !` (without spaces) is replaced with **MERK**'s major version
-		 - `! _MINOR_ !` (without spaces) is replaced with **MERK**'s minor version
-		 - `! _FULL_VERSION_ !` (without spaces) is replaced with **MERK**'s major and minor version, with a period in between them.
-	 - Overwrites `README.md` with the edited contents of `README.txt`
-	 - Creates a new directory named `dist`, and copies into it:
-		 - `merk.py`
-		 - `LICENSE`
-		 - `README.md`
-		 - The `merk` directory and its contents
-		 - The `qt5reactor` directory and its contents
-		 - The `spellchecker` directory and its contents
-		 - The `emoji` directory and its contents
-	 - Zips up the `dist` directory either using [PowerShell](https://en.wikipedia.org/wiki/PowerShell) (if the host system is Windows) or the [zip](https://linux.die.net/man/1/zip) utility (if the host system is Linux) into a file named `dist.zip`
-	 - Deletes the `dist` directory and its contents
-	 - Renames `dist.zip` to "merk-*MAJOR VERSION*.zip", referred to as `merk.zip` in this description.
-	 - If `merk.zip` exists in the `downloads` directory, the version in the `downloads` directory is deleted
-	 - If `merk-latest.zip` exists in the `downloads` directory, it is deleted
-	 - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
+   - Executes either `compile_resources.bat` (if the host system is Windows) or `compile_resources.sh` (if the host system is Linux); if the host system is not running either Windows or Linux, `build_dist.py` will exit with an error
+   - Increments the **MERK**'s minor version (which is stored in `merk/data/minor.txt`) and saves it
+   - Reads`README.txt` into memory and replaces several symbols in it:
+     - `! _VERSION_ !` (without spaces) is replaced with **MERK**'s major version
+     - `! _MINOR_ !` (without spaces) is replaced with **MERK**'s minor version
+     - `! _FULL_VERSION_ !` (without spaces) is replaced with **MERK**'s major and minor version, with a period in between them.
+   - Overwrites `README.md` with the edited contents of `README.txt`
+   - Creates a new directory named `dist`, and copies into it:
+     - `merk.py`
+     - `LICENSE`
+     - `README.md`
+     - The `merk` directory and its contents
+     - The `qt5reactor` directory and its contents
+     - The `spellchecker` directory and its contents
+     - The `emoji` directory and its contents
+   - Zips up the `dist` directory either using [PowerShell](https://en.wikipedia.org/wiki/PowerShell) (if the host system is Windows) or the [zip](https://linux.die.net/man/1/zip) utility (if the host system is Linux) into a file named `dist.zip`
+   - Deletes the `dist` directory and its contents
+   - Renames `dist.zip` to "merk-*MAJOR VERSION*.zip", referred to as `merk.zip` in this description.
+   - If `merk.zip` exists in the `downloads` directory, the version in the `downloads` directory is deleted
+   - If `merk-latest.zip` exists in the `downloads` directory, it is deleted
+   - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
 
 [//]: # (End of document)
+
