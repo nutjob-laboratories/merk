@@ -96,6 +96,10 @@ class Dialog(QDialog):
 	def changedSetting(self,state):
 		self.changed.show()
 
+	def changedSettingRerender(self,state):
+		self.changed.show()
+		self.rerender = True
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -108,6 +112,7 @@ class Dialog(QDialog):
 		self.logsize = config.MAXIMUM_LOADED_LOG_SIZE
 		self.historysize = config.COMMAND_HISTORY_LENGTH
 		self.spellLang = config.DEFAULT_SPELLCHECK_LANGUAGE
+		self.rerender = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -383,15 +388,15 @@ class Dialog(QDialog):
 
 		self.showTimestamps = QCheckBox("Show timestamps",self)
 		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
-		self.showTimestamps.stateChanged.connect(self.changedSetting)
+		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
 
 		self.showColors = QCheckBox("Show IRC colors",self)
 		if config.DISPLAY_IRC_COLORS: self.showColors.setChecked(True)
-		self.showColors.stateChanged.connect(self.changedSetting)
+		self.showColors.stateChanged.connect(self.changedSettingRerender)
 
 		self.showLinks = QCheckBox("Convert URLs to hyperlinks",self)
 		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
-		self.showLinks.stateChanged.connect(self.changedSetting)
+		self.showLinks.stateChanged.connect(self.changedSettingRerender)
 
 		self.createWindow = QCheckBox("Create windows for private chat",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
@@ -472,6 +477,7 @@ class Dialog(QDialog):
 		config.DEFAULT_SUBWINDOW_HEIGHT = self.subHeight
 
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
+		if self.rerender: self.parent.reRenderAll()
 
 		if self.newfont!=None:
 			config.APPLICATION_FONT = self.newfont.toString()

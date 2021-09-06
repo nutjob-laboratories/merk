@@ -754,6 +754,12 @@ class Merk(QMainWindow):
 			if hasattr(c,"menuSetLanguage"):
 				c.menuSetLanguage(newlang)
 
+	def reRenderAll(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"rerenderChatLog"):
+				c.rerenderChatLog()
+
 	def handleUserInput(self,window,user_input):
 
 		# Handle chat commands
