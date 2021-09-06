@@ -215,7 +215,8 @@ class IRC_Connection(irc.IRCClient):
 					self.usermodes = self.usermodes + m
 
 				if channel in self.channelmodes:
-					self.channelmodes[channel] = self.channelmodes[channel] + m
+					if not m in self.channelmodes[channel]:
+						self.channelmodes[channel] = self.channelmodes[channel] + m
 				else:
 					self.channelmodes[channel] = m
 
@@ -270,7 +271,8 @@ class IRC_Connection(irc.IRCClient):
 
 					if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 						if target in self.channelmodes:
-							self.channelmodes[target] = self.channelmodes[target] + m
+							if not m in self.channelmodes[target]:
+								self.channelmodes[target] = self.channelmodes[target] + m
 						else:
 							self.channelmodes[target] = m
 
