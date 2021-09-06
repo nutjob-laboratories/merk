@@ -39,6 +39,7 @@ from . import widgets
 from . import render
 from . import irc
 from . import logs
+from . import user
 from .dialog import *
 
 from . import commands
@@ -196,6 +197,13 @@ class Merk(QMainWindow):
 			self.buildWindowsMenu()
 		
 		self.nickChanged(client)
+
+		w = self.getServerWindow(client)
+		if w:
+			hostid = client.server+":"+str(client.port)
+			if hostid in user.COMMANDS:
+				for line in user.COMMANDS[hostid].split("\n"):
+					commands.handleCommonCommands(self,w,line)
 
 	def receivedMOTD(self,client,motd):
 

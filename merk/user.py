@@ -43,6 +43,7 @@ LAST_SSL = False
 LAST_RECONNECT = False
 LAST_PASSWORD = ''
 HISTORY = []
+COMMANDS = {}
 
 def save_user(filename):
 
@@ -57,6 +58,7 @@ def save_user(filename):
 		"last_reconnect": LAST_RECONNECT,
 		"last_password": LAST_PASSWORD,
 		"history": HISTORY,
+		"commands": COMMANDS,
 	}
 
 	with open(filename, "w") as write_data:
@@ -83,6 +85,8 @@ def patch_user(settings):
 		settings["last_password"] = LAST_PASSWORD
 	if not "history" in settings:
 		settings["history"] = HISTORY
+	if not "commands" in settings:
+		settings["commands"] = COMMANDS
 
 	return settings
 
@@ -97,6 +101,7 @@ def load_user(filename):
 	global LAST_RECONNECT
 	global LAST_PASSWORD
 	global HISTORY
+	global COMMANDS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -117,6 +122,7 @@ def load_user(filename):
 		LAST_PASSWORD = settings["last_password"]
 		LAST_PASSWORD = settings["last_password"]
 		HISTORY = settings["history"]
+		COMMANDS = settings["commands"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)

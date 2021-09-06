@@ -148,6 +148,7 @@ CHANNEL_WINDOW_ICON = ":/icon-channel_window.png"
 LINK_ICON = ":/icon-link.png"
 FOLDER_ICON = ":/icon-folder.png"
 DICTIONARY_ICON = ":/icon-dictionary.png"
+COMMAND_ICON = ":/icon-command.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

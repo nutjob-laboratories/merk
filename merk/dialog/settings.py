@@ -402,9 +402,11 @@ class Dialog(QDialog):
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
 		self.createWindow.stateChanged.connect(self.changedSetting)
 
-		self.writePrivate = QCheckBox("Write private messages to server window",self)
+		self.writePrivate = QCheckBox("Write private messages to\nserver window",self)
 		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
 		self.writePrivate.stateChanged.connect(self.changedSetting)
+
+		self.writePrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))

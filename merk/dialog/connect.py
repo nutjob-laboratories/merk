@@ -113,6 +113,18 @@ class Dialog(QDialog):
 			user.LAST_SSL = self.CONNECT_VIA_SSL
 			user.LAST_RECONNECT = self.RECONNECT_OPTION
 			user.HISTORY = user_history
+
+			commands = self.commands.toPlainText()
+			hostid = self.host.text()+":"+self.port.text()
+			if hostid in user.COMMANDS:
+				if len(commands.strip())==0:
+					del user.COMMANDS[hostid]
+				else:
+					user.COMMANDS[hostid] = self.commands.toPlainText()
+			else:
+				if len(commands.strip())>0:
+					user.COMMANDS[hostid] = self.commands.toPlainText()
+
 			user.save_user(user.USER_FILE)
 
 			retval = ConnectInfo(
@@ -173,6 +185,21 @@ class Dialog(QDialog):
 		else:
 			self.RECONNECT_OPTION = False
 
+	def serverEntered(self):
+		host = self.host.text()
+		port = self.port.text()
+
+		if len(host.strip())==0:
+			hostid = "Unknown"
+		else:
+			hostid = host+":"+port
+		self.commandHost.setText(f"<center><big><b>{hostid}</b></big></center>")
+
+		if hostid in user.COMMANDS:
+			self.commands.setPlainText(user.COMMANDS[hostid])
+		else:
+			self.commands.clear()
+
 	def __init__(self,app,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -216,6 +243,9 @@ class Dialog(QDialog):
 		self.password = QLineEdit(user.LAST_PASSWORD)
 		self.password.setEchoMode(QLineEdit.Password)
 
+		self.host.textChanged.connect(self.serverEntered)
+		self.port.textChanged.connect(self.serverEntered)
+
 		serverLayout = QFormLayout()
 
 		hostl = QLabel("Host:")
@@ -243,6 +273,25 @@ class Dialog(QDialog):
 		serverInfoLayout.addWidget(self.ssl)
 		serverInfoLayout.addWidget(self.reconnect)
 
+		self.commandHost = QLabel("<center><big><b>Unknown</b></big></center>")
+		self.commandDescription = QLabel("""
+			<center><small>
+			Execute these commands upon connection.
+			</center></small>
+
+			""")
+		#self.commandDescription.setAlignment(Qt.AlignJustify)
+		self.commands = QPlainTextEdit()
+
+		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
+		height = height + serverLayout.sizeHint().height() + 20
+		self.commands.setFixedHeight(height)
+
+		commandsLayout = QVBoxLayout()
+		commandsLayout.addWidget(self.commandHost)
+		commandsLayout.addWidget(self.commandDescription)
+		commandsLayout.addWidget(self.commands)
+
 		self.tabs = QTabWidget()
 
 		userPageLayout = QVBoxLayout()
@@ -256,7 +305,11 @@ class Dialog(QDialog):
 
 		self.server_tab = QWidget()
 		self.server_tab.setLayout(serverInfoLayout)
-		self.tabs.addTab(self.server_tab, QIcon(PRIVATE_ICON), "Server")
+		self.tabs.addTab(self.server_tab, QIcon(NETWORK_ICON), "Server")
+
+		self.commands_tab = QWidget()
+		self.commands_tab.setLayout(commandsLayout)
+		self.tabs.addTab(self.commands_tab, QIcon(COMMAND_ICON), "Commands")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -287,6 +340,8 @@ class Dialog(QDialog):
 			self.tabs.setCurrentWidget(self.user_tab)
 		else:
 			self.tabs.setCurrentWidget(self.server_tab)
+
+		self.serverEntered()
 
 
 	def buildServerSelector(self):
