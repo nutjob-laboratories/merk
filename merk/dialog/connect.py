@@ -222,10 +222,10 @@ class Dialog(QDialog):
 		self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QLineEdit(user.REALNAME)
 
-		nickl = QLabel("Nickname:")
-		altl = QLabel("Alternate:")
-		usrl = QLabel("Username:")
-		reall = QLabel("Real name:")
+		nickl = QLabel("<b>Nickname:</b>")
+		altl = QLabel("<b>Alternate:</b>")
+		usrl = QLabel("<b>Username:</b>")
+		reall = QLabel("<b>Real name:</b>")
 
 		userLayout = QFormLayout()
 		userLayout.addRow(nickl, self.nick)
@@ -248,13 +248,13 @@ class Dialog(QDialog):
 
 		serverLayout = QFormLayout()
 
-		hostl = QLabel("Host:")
+		hostl = QLabel("<b>Host:</b>")
 		serverLayout.addRow(hostl, self.host)
 
-		portl = QLabel("Port:")
+		portl = QLabel("<b>Port:</b>")
 		serverLayout.addRow(portl, self.port)
 
-		passl = QLabel("Password:")
+		passl = QLabel("<b>Password:</b>")
 		serverLayout.addRow(passl, self.password)
 
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
@@ -267,24 +267,38 @@ class Dialog(QDialog):
 
 		if user.LAST_RECONNECT: self.reconnect.toggle()
 
+		self.serverDescription = QLabel("""
+			<small>
+			Select a server below, or enter connection information by hand. To automatically
+			reconnect on disconnection, check the <b>Reconnect</b> checkbox.
+			</small>
+
+			""")
+		self.serverDescription.setWordWrap(True)
+		self.serverDescription.setAlignment(Qt.AlignJustify)
+
 		serverInfoLayout = QVBoxLayout()
+		serverInfoLayout.addWidget(self.serverDescription)
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addWidget(self.ssl)
 		serverInfoLayout.addWidget(self.reconnect)
 
 		self.commandHost = QLabel("<center><big><b>Unknown</b></big></center>")
-		self.commandDescription = QLabel("""
-			<center><small>
-			Execute these commands upon connection.
-			</center></small>
+		self.commandDescription = QLabel(f"""
+			<small>
+			Execute these commands upon connection to the server. To insert a pause in between commands,
+			use the <b>{config.ISSUE_COMMAND_SYMBOL}wait</b> command, passing the number
+			of seconds to pause as an argument.
+			</small>
 
 			""")
-		#self.commandDescription.setAlignment(Qt.AlignJustify)
+		self.commandDescription.setWordWrap(True)
+		self.commandDescription.setAlignment(Qt.AlignJustify)
 		self.commands = QPlainTextEdit()
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
-		height = height + serverLayout.sizeHint().height() + 20
+		height = height + serverLayout.sizeHint().height() + 25
 		self.commands.setFixedHeight(height)
 
 		commandsLayout = QVBoxLayout()
@@ -294,10 +308,22 @@ class Dialog(QDialog):
 
 		self.tabs = QTabWidget()
 
+		self.userDescription = QLabel(f"""
+			<small>
+			Enter your user information here. <b>Nickname</b> is the nickname you'd like to be known by;
+			<b>alternate</b> is the nickname to use if your primary choice is taken, <b>username</b> is
+			your username, and <b>real name</b> is another identifier, only it can contain spaces.
+			</small>
+
+			""")
+		self.userDescription.setWordWrap(True)
+		self.userDescription.setAlignment(Qt.AlignJustify)
+
 		userPageLayout = QVBoxLayout()
-		userPageLayout.addStretch()
+		userPageLayout.addWidget(self.userDescription)
 		userPageLayout.addLayout(userLayout)
 		userPageLayout.addStretch()
+		
 
 		self.user_tab = QWidget()
 		self.user_tab.setLayout(userPageLayout)
@@ -335,6 +361,8 @@ class Dialog(QDialog):
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.setFixedSize(finalLayout.sizeHint())
 
 		if user.NICKNAME=='' or user.ALTERNATE=='' or user.USERNAME=='' or user.REALNAME=='':
 			self.tabs.setCurrentWidget(self.user_tab)

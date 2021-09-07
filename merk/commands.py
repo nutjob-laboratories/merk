@@ -28,6 +28,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
+import os
+import time
+import uuid
+import re
+
 import emoji
 
 from .resources import *
@@ -204,8 +209,74 @@ def handleChatCommands(gui,window,user_input):
 
 	return False
 
+def find_script(filename):
+	if os.path.isfile(filename): return filename
+	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
+	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return os.path.join(config.CONFIG_DIRECTORY, filename)
+	return None
+
+def execute_script_line(data):
+	gui = data[0]
+	window = data[1]
+	line = data[2]
+
+	handleCommonCommands(gui,window,line)
+
+def execute_script_error(data):
+	gui = data[0]
+	window = data[1]
+	line = data[2]
+
+	t = Message(ERROR_MESSAGE,'',line)
+	window.writeText(t)
+
+def execute_script_end(data):
+	gui = data[0]
+	script_id = data[1]
+
+	del gui.scripts[script_id]
+
+def executeScript(gui,window,text):
+
+	script_id = str(uuid.uuid4())
+	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window)
+	gui.scripts[script_id].execLine.connect(execute_script_line)
+	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
+	gui.scripts[script_id].scriptError.connect(execute_script_error)
+	gui.scripts[script_id].start()
+
 def handleCommonCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |---------|
+	# | /script |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)==2:
+			tokens.pop(0)
+			filename = tokens.pop(0)
+
+			filename = find_script(filename)
+			if filename:
+				f=open(filename, "r",encoding="utf-8",errors="ignore")
+				text = f.read()
+				f.close()
+
+				script_id = str(uuid.uuid4())
+				gui.scripts[script_id] = ScriptThread(text,script_id,gui,window)
+				gui.scripts[script_id].execLine.connect(execute_script_line)
+				gui.scripts[script_id].scriptEnd.connect(execute_script_end)
+				gui.scripts[script_id].scriptError.connect(execute_script_error)
+				gui.scripts[script_id].start()
+
+			else:
+				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
+				window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
+			window.writeText(t)
+			return True
 
 	# |---------|
 	# | /whowas |
@@ -524,3 +595,57 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 
 	return False
+
+class ScriptThread(QThread):
+
+	execLine = pyqtSignal(list)
+	scriptEnd = pyqtSignal(list)
+	scriptError = pyqtSignal(list)
+
+	def __init__(self,script,sid,gui,window,parent=None):
+		super(ScriptThread, self).__init__(parent)
+		self.script = script
+		self.id = sid
+		self.gui = gui
+		self.window = window
+
+		# Strip comments from script
+		self.script = re.sub(re.compile("/\*.*?\*/",re.DOTALL ) ,"" ,self.script)
+
+	def run(self):
+
+		no_errors = True
+
+		# First pass through the script, to see if there's
+		# any problem with /wait calls
+		for line in self.script.split("\n"):
+			line = line.strip()
+			if len(line)==0: continue
+			tokens = line.split()
+
+			if len(tokens)==2:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' or tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'sleep':
+					count = tokens[1]
+					try:
+						count = int(count)
+					except:
+						self.scriptError.emit([self.gui,self.window,config.ISSUE_COMMAND_SYMBOL+'wait must be called with a numerical argument'])
+						no_errors = False
+					
+		if no_errors:
+			for line in self.script.split("\n"):
+				line = line.strip()
+				if len(line)==0: continue
+
+				tokens = line.split()
+
+				if len(tokens)==2:
+					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' or tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'sleep':
+						count = tokens[1]
+						count = int(count)
+						time.sleep(count)
+						continue
+
+				self.execLine.emit([self.gui,self.window,line])
+
+		self.scriptEnd.emit([self.gui,self.id])

@@ -84,6 +84,7 @@ class Merk(QMainWindow):
 		# Internal attributes
 		self.quitting = {}
 		self.hiding = {}
+		self.scripts = {}
 
 		# Create the central object of the client,
 		# the MDI widget
@@ -202,8 +203,7 @@ class Merk(QMainWindow):
 		if w:
 			hostid = client.server+":"+str(client.port)
 			if hostid in user.COMMANDS:
-				for line in user.COMMANDS[hostid].split("\n"):
-					commands.handleCommonCommands(self,w,line)
+				commands.executeScript(self,w,user.COMMANDS[hostid])
 
 	def receivedMOTD(self,client,motd):
 
