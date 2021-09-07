@@ -125,7 +125,7 @@ def load_user(filename):
 		COMMANDS = settings["commands"]
 
 		if prepatch_length!=postpatch_length:
-			save_settings(filename)
+			save_user(filename)
 	else:
 		save_user(filename)
 
