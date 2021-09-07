@@ -11,9 +11,9 @@
             <table style="width: 100%" border="0">
               <tbody>
                 <tr>
-                  <td style="text-align: center; vertical-align: middle;"><center><a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot.png"></a></center>
+                  <td style="text-align: center; vertical-align: middle;"><center><a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="https://www.scuttled.net/">2600net</a>, and a local IRC server. </small></i></center></td>
-                  <td style="text-align: center; vertical-align: middle;"><center><a href="https://github.com/nutjob-laboratories/merk/raw/main/connect_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/connect.png"></a></center>
+                  <td style="text-align: center; vertical-align: middle;"><center><a href="https://github.com/nutjob-laboratories/merk/raw/main/connect_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/connect.png"></a></center></br>
   <center><i><small>The connection dialog.</small></i></center></td>
                 </tr>
               </tbody>
@@ -24,7 +24,7 @@
     </table>
 </p></center>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **010.118**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **010.119**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **MERK** is in beta, but it is usable. A lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
 
