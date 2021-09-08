@@ -110,15 +110,7 @@ class Merk(QMainWindow):
 		# Main menu
 		self.mainMenu = self.menubar.addMenu("IRC")
 
-		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectToIrc)
-		self.mainMenu.addAction(entry)
-
-		self.mainMenu.addSeparator()
-
-		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
-		entry.setShortcut('Ctrl+Q')
-		entry.triggered.connect(self.close)
-		self.mainMenu.addAction(entry)
+		self.buildMainMenu()
 
 		# Tools menu
 		self.toolsMenu = self.menubar.addMenu("Tools")
@@ -169,6 +161,8 @@ class Merk(QMainWindow):
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
 		c.writeText(t)
 
+		self.buildMainMenu()
+
 	def connectionLost(self,client):
 		
 		windows = self.getAllSubWindows(client)
@@ -179,6 +173,8 @@ class Merk(QMainWindow):
 		w = self.getServerSubWindow(client)
 		self.MDI.removeSubWindow(w)
 		self.buildWindowsMenu()
+
+		self.buildMainMenu()
 
 	def signedOn(self,client):
 
@@ -869,6 +865,15 @@ class Merk(QMainWindow):
 							return window
 		return None
 
+	def getAllServerWindows(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					retval.append(window)
+		return retval
+
 	def getAllSubWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():
@@ -981,6 +986,55 @@ class Merk(QMainWindow):
 	# | MENU METHODS |
 	# |--------------|
 
+	def disconnectAll(self):
+		windows = self.getAllServerWindows()
+		if len(windows)>0:
+
+			dc = []
+			for w in windows:
+				c = w.widget()
+				dc.append(c.client)
+
+			if self.askDisconnectMulti(dc):
+				for w in windows:
+					c = w.widget()
+
+					no_hostname = False
+					if not hasattr(c.client,"hostname"): no_hostname = True
+					if not c.client.hostname: no_hostname = True
+
+					if no_hostname:
+						self.quitting[c.client.client_id] = 0
+						c.client.quit()
+						self.hideServerWindow(c.client)
+					else:
+						self.quitting[c.client.client_id] = 0
+						c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+
+
+	def buildMainMenu(self):
+		self.mainMenu.clear()
+
+		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectToIrc)
+		self.mainMenu.addAction(entry)
+
+		windows = self.getAllServerWindows()
+		if len(windows)>0:
+			if len(windows)==1:
+				desc = 'Disconnect from server'
+			else:
+				desc = 'Disconnect from '+str(len(windows))+' servers'
+			entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,'Disconnect',desc,25,self.disconnectAll)
+			self.mainMenu.addAction(entry)
+
+
+		self.mainMenu.addSeparator()
+
+		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
+		entry.setShortcut('Ctrl+Q')
+		entry.triggered.connect(self.close)
+		self.mainMenu.addAction(entry)
+
 	def askDisconnect(self,client):
 
 		no_hostname = False
@@ -997,6 +1051,49 @@ class Merk(QMainWindow):
 				msgBox.setText("Are you sure you want to disconnect from "+client.server+":"+str(client.port)+"?")
 			else:
 				msgBox.setText("Are you sure you want to disconnect from "+client.hostname+"?")
+			msgBox.setWindowTitle("Disconnect")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				do_disconnect = False
+
+		return do_disconnect
+
+	def askDisconnectMulti(self,list_of_client):
+
+		if len(list_of_client)>1:
+			conns = []
+			for client in list_of_client:
+				no_hostname = False
+				if not hasattr(client,"hostname"): no_hostname = True
+				if not client.hostname: no_hostname = True
+
+				if no_hostname:
+					conns.append(client.server+":"+str(client.port))
+				else:
+					conns.append(client.hostname)
+
+			last = conns.pop()
+			cstr = ", ".join(conns)+" and "+last
+		else:
+			c = list_of_client.pop(0)
+			no_hostname = False
+			if not hasattr(c,"hostname"): no_hostname = True
+			if not c.hostname: no_hostname = True
+
+			if no_hostname:
+				cstr = c.server+":"+str(c.port)
+			else:
+				cstr = c.hostname
+
+		do_disconnect = True
+
+		if config.ASK_BEFORE_DISCONNECT:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setText("Are you sure you want to disconnect from "+cstr+"?")
 			msgBox.setWindowTitle("Disconnect")
 			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
