@@ -217,10 +217,20 @@ class Dialog(QDialog):
 		self.setWindowTitle(APPLICATION_NAME+" IRC Client")
 		self.setWindowIcon(QIcon(CONNECT_ICON))
 
+		if user.USERNAME=='':
+			username = "MERK"
+		else:
+			username = user.USERNAME
+
+		if user.REALNAME=='':
+			realname = APPLICATION_NAME+" "+APPLICATION_VERSION
+		else:
+			realname = user.REALNAME
+
 		self.nick = QNoSpaceLineEdit(user.NICKNAME)
 		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
-		self.username = QNoSpaceLineEdit(user.USERNAME)
-		self.realname = QLineEdit(user.REALNAME)
+		self.username = QNoSpaceLineEdit(username)
+		self.realname = QLineEdit(realname)
 
 		nickl = QLabel("<b>Nickname:</b>")
 		altl = QLabel("<b>Alternate:</b>")
@@ -310,9 +320,9 @@ class Dialog(QDialog):
 
 		self.userDescription = QLabel(f"""
 			<small>
-			Enter your user information here. <b>Nickname</b> is the nickname you'd like to be known by;
-			<b>alternate</b> is the nickname to use if your primary choice is taken, <b>username</b> is
-			your username, and <b>real name</b> is another identifier, only it can contain spaces.
+			Enter your user information here. <b>Nickname</b> is the nickname you'd like to be known by, and
+			<b>alternate</b> is the nickname to use if your primary choice is taken. When
+			you're done, click the <b>Server</b> tab to select or enter a server.
 			</small>
 
 			""")
