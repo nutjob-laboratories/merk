@@ -667,11 +667,71 @@ class Merk(QMainWindow):
 	# | END IRC EVENTS |
 	# |================|
 
+	def connectToIrcFail(self,message,reason):
+		connection = ConnectDialog(self.app,self,message,reason)
+
+		if connection:
+			
+			if connection.reconnect:
+				if connection.ssl:
+					irc.reconnectSSL(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+				else:
+					irc.reconnect(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+			else:
+				if connection.ssl:
+					irc.connectSSL(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+				else:
+					irc.connect(
+						nickname=connection.nickname,
+						server=connection.host,
+						port=connection.port,
+						alternate=connection.alternate,
+						password=connection.password,
+						username=connection.username,
+						realname=connection.realname,
+						ssl=connection.ssl,
+						gui=self,
+						failreconnect=True,
+					)
+
 	def connectToIrc(self,connection_info=None):
 		if connection_info:
 			connection = connection_info
 		else:
-			connection = ConnectDialog(self.app)
+			connection = ConnectDialog(self.app,self)
 		if connection:
 			
 			if connection.reconnect:
@@ -1120,25 +1180,6 @@ class Merk(QMainWindow):
 	def showAbout(self):
 		self.__about_dialog = AboutDialog()
 		self.__about_dialog.show()
-	
-	# def aboutClosed(self,window):
-	# 	self.MDI.removeSubWindow(window)
-
-	# def showAbout(self):
-	# 	self.__about_dialog = AboutDialog()
-	# 	w = QMdiSubWindow(self)
-	# 	w.setWidget(self.__about_dialog)
-	# 	self.__about_dialog.closed.connect(lambda window=w: self.aboutClosed(window))
-	# 	w.setWindowFlags(
-	# 		Qt.WindowCloseButtonHint |
-	# 		Qt.WindowTitleHint )
-	# 	self.MDI.addSubWindow(w)
-
-	# 	wx = (self.MDI.width()/2)-(w.width()/2)
-	# 	wy = (self.MDI.height()/2)-(w.height()/2)
-	# 	w.move(wx,wy)
-
-	# 	w.show()
 
 	def menuExportLog(self):
 		d = ExportLogDialog(logs.LOG_DIRECTORY,None)

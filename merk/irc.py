@@ -836,12 +836,13 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 
 	def clientConnectionFailed(self, connector, reason):
-
-		#print("failed")
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			return
+
+		msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+		self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
 
 class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 	def __init__(self,**kwargs):
@@ -862,11 +863,11 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 	def clientConnectionFailed(self, connector, reason):
 
-		#print("failed")
-
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			return
 
-		if self.kwargs["failreconnect"]:
-			protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
+		msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+		self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
+
 

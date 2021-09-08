@@ -92,9 +92,9 @@ def JoinChannelDialog(obj):
 	if not info: return None
 	return info
 
-def ConnectDialog(obj):
-	x = Connect(obj)
-	info = x.get_connect_information(obj)
+def ConnectDialog(obj,parent=None,dismsg='',reason=''):
+	x = Connect(obj,parent,dismsg,reason)
+	info = x.get_connect_information(obj,parent,dismsg,reason)
 	del x
 
 	if not info: return None

@@ -43,8 +43,8 @@ from .. import user
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_connect_information(parent=None):
-		dialog = Dialog(parent)
+	def get_connect_information(app,parent=None,dismsg='',reason=''):
+		dialog = Dialog(app,parent,dismsg,reason)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -200,10 +200,13 @@ class Dialog(QDialog):
 		else:
 			self.commands.clear()
 
-	def __init__(self,app,parent=None):
+	def __init__(self,app,parent=None,dismsg='',reason=''):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
+		self.parent = parent
+		self.disconnect_message = dismsg
+		self.reason = reason
 
 		self.StoredData = []
 		self.StoredServer = 0
@@ -359,9 +362,23 @@ class Dialog(QDialog):
 		banner.setPixmap(pixmap)
 		banner.setAlignment(Qt.AlignCenter)
 
-		bannerTabs = QVBoxLayout()
-		bannerTabs.addWidget(banner)
-		bannerTabs.addWidget(self.tabs)
+		if self.disconnect_message!='':
+
+			discoMessage = QLabel(f"""
+				<center>
+					<b><div style="color: red;" alt="{self.reason}">{self.disconnect_message}</div></b><br>
+					<small><b>Please select another server below.</b></small>
+				</center>
+				""")
+
+			bannerTabs = QVBoxLayout()
+			bannerTabs.addWidget(banner)
+			bannerTabs.addWidget(discoMessage)
+			bannerTabs.addWidget(self.tabs)
+		else:
+			bannerTabs = QVBoxLayout()
+			bannerTabs.addWidget(banner)
+			bannerTabs.addWidget(self.tabs)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(bannerTabs)
