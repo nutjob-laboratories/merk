@@ -85,6 +85,7 @@ class Merk(QMainWindow):
 		self.quitting = {}
 		self.hiding = {}
 		self.scripts = {}
+		self.reconnecting = {}
 
 		# Create the central object of the client,
 		# the MDI widget

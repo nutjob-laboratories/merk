@@ -834,6 +834,17 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			return
+
+		msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost."
+
+		msgBox = QMessageBox()
+		msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+		msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+		msgBox.setText(msg)
+		msgBox.setWindowTitle("Connection lost")
+		msgBox.setStandardButtons(QMessageBox.Ok)
+		msgBox.exec()
 
 	def clientConnectionFailed(self, connector, reason):
 		
@@ -857,17 +868,42 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
+				del self.kwargs["gui"].reconnecting[self.kwargs["client_id"]]
 			return
-		
-		protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+
+		self.kwargs["gui"].reconnecting[self.kwargs["client_id"]] = 0
+
+		if config.ASK_BEFORE_RECONNECT:
+			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.\nTry to reconnect?"
+
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setText(msg)
+			msgBox.setWindowTitle("Connection lost")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				pass
+			else:
+				protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+		else:
+			protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
 
 	def clientConnectionFailed(self, connector, reason):
 
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
+				del self.kwargs["gui"].reconnecting[self.kwargs["client_id"]]
 			return
 
-		msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
-		self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
+		if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
+			protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
+		else:
+			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+			self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
 
 

@@ -204,11 +204,17 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
+		self.askBeforeReconnect = QCheckBox("Ask before automatic reconnection",self)
+		if config.ASK_BEFORE_RECONNECT: self.askBeforeReconnect.setChecked(True)
+		self.askBeforeReconnect.stateChanged.connect(self.changedSetting)
+		#self.askBeforeReconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.askBeforeDisconnect)
+		applicationLayout.addWidget(self.askBeforeReconnect)
 		applicationLayout.addWidget(self.showUptime)
 		applicationLayout.addWidget(self.showChanUptime)
 		applicationLayout.addStretch()
@@ -455,6 +461,7 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		config.ASK_BEFORE_RECONNECT = self.askBeforeReconnect.isChecked()
 		config.ENABLE_SPELLCHECK = self.enableSpellcheck.isChecked()
 		config.ENABLE_EMOJI_SHORTCODES = self.enableEmojis.isChecked()
 		config.DEFAULT_SPELLCHECK_LANGUAGE = self.spellLang
