@@ -1019,6 +1019,17 @@ class Merk(QMainWindow):
 		self.mainMenu.addAction(entry)
 
 		windows = self.getAllServerWindows()
+
+		# Make sure that clients that are still connected
+		# but in the process of disconnecting don't cause
+		# the "disconnect" menu entry to appear
+		clean = []
+		for w in windows:
+			c = w.widget()
+			if c.client.client_id in self.quitting: continue
+			clean.append(w)
+		windows = clean
+
 		if len(windows)>0:
 			if len(windows)==1:
 				desc = 'Disconnect from server'

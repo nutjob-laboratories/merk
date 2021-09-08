@@ -836,6 +836,8 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 
 	def clientConnectionFailed(self, connector, reason):
+
+		#print("failed")
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
@@ -859,6 +861,8 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
 
 	def clientConnectionFailed(self, connector, reason):
+
+		#print("failed")
 
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
