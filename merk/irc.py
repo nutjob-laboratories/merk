@@ -836,15 +836,16 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			return
 
-		msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost."
+		if config.NOTIFY_ON_LOST_CONNECTION:
+			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost."
 
-		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-		msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
-		msgBox.setText(msg)
-		msgBox.setWindowTitle("Connection lost")
-		msgBox.setStandardButtons(QMessageBox.Ok)
-		msgBox.exec()
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setText(msg)
+			msgBox.setWindowTitle("Connection lost")
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()
 
 	def clientConnectionFailed(self, connector, reason):
 		
