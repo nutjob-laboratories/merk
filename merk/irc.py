@@ -843,6 +843,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
 			msgBox.setText(msg)
+			msgBox.setInformativeText(reason.getErrorMessage())
 			msgBox.setWindowTitle("Connection lost")
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
@@ -882,6 +883,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
 			msgBox.setText(msg)
+			msgBox.setInformativeText(reason.getErrorMessage())
 			msgBox.setWindowTitle("Connection lost")
 			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 

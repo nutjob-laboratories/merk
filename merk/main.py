@@ -1096,6 +1096,7 @@ class Merk(QMainWindow):
 			entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,'Disconnect',desc,25,self.disconnectAll)
 			self.mainMenu.addAction(entry)
 
+		self.mainMenu.addSeparator()
 
 		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
 		self.mainMenu.addAction(entry)
