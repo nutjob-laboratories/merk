@@ -116,9 +116,6 @@ class Merk(QMainWindow):
 		# Tools menu
 		self.toolsMenu = self.menubar.addMenu("Tools")
 
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
-		self.toolsMenu.addAction(entry)
-
 		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
 		self.toolsMenu.addAction(entry)
 
@@ -1099,6 +1096,9 @@ class Merk(QMainWindow):
 			entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,'Disconnect',desc,25,self.disconnectAll)
 			self.mainMenu.addAction(entry)
 
+
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
+		self.mainMenu.addAction(entry)
 
 		self.mainMenu.addSeparator()
 
