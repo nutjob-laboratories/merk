@@ -41,8 +41,8 @@ from . import irc
 from . import logs
 from . import user
 from .dialog import *
-
 from . import commands
+from . import plugins
 
 class Merk(QMainWindow):
 
@@ -152,11 +152,17 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
+		# Now, load in plugins
+		plugin_load_errors = plugins.load_plugins([])
+		if len(plugin_load_errors)>0:
+			for e in plugin_load_errors:
+				print("\n".join(e.errors))
+
+		# Trigger plugin load event
+		plugins.load()
+
 		if connection_info:
 			self.connectToIrc(connection_info)
-
-	def menuEditStyle(self):
-		x = StylerDefaultDialog(self)
 
 	# |==================|
 	# | BEGIN IRC EVENTS |
@@ -1059,6 +1065,9 @@ class Merk(QMainWindow):
 	# | MENU METHODS |
 	# |--------------|
 
+	def menuEditStyle(self):
+		x = StylerDefaultDialog(self)
+
 	def disconnectAll(self):
 		windows = self.getAllServerWindows()
 		if len(windows)>0:
@@ -1311,6 +1320,10 @@ class Merk(QMainWindow):
 	# Triggered when the client window is closed, via
 	# any method 
 	def closeEvent(self, event):
+
+		# Trigger plugin unload event
+		plugins.unload()
+
 		self.closeAndRemoveAllWindows()
 		self.app.quit()
 

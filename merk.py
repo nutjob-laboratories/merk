@@ -45,6 +45,7 @@ import merk.config as config
 import merk.styles as styles
 import merk.logs as logs
 import merk.user as user
+import merk.plugins as plugins
 
 parser = argparse.ArgumentParser(
 	prog=f"python {os.path.basename(__file__)}",
@@ -101,6 +102,9 @@ if __name__ == '__main__':
 
 	# Initialize the user system
 	user.initialize(args.configdir,args.configname)
+
+	# Initialize the plugin system
+	plugins.initialize(args.configdir,args.configname)
 
 	# Load the config file
 	config.load_settings(config.CONFIG_FILE)

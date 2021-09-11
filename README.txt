@@ -37,7 +37,7 @@ Currently, user settings and logs are stored in the application directory. Later
     pip install pyqt5
     pip install Twisted
 
-To connect to IRC servers via SSL, two additional libraries are needed:
+To connect to IRC servers via SSL, two additional libraries may be needed:
 
     pip install pyOpenSSL
     pip install service_identity
@@ -50,10 +50,11 @@ If you're running Windows, and you're getting errors when trying to run **MERK**
 
 To run properly on Linux, the latest version of all required software is recommended.
 
-There are three libraries that comes bundled with **MERK**:
+There are four libraries that comes bundled with **MERK**:
  - [qt5reactor](https://github.com/twisted/qt5reactor)
  - [pyspellchecker](https://github.com/barrust/pyspellchecker)
  - [emoji](https://github.com/carpedm20/emoji)
+ - [pike](https://github.com/pyarmory/pike)
 
 # Running MERK
 
@@ -112,6 +113,7 @@ Several tools are included in [the official **MERK** repository](https://github.
      - The `qt5reactor` directory and its contents
      - The `spellchecker` directory and its contents
      - The `emoji` directory and its contents
+     - The `pike` directory and its contents
    - Zips up the `dist` directory either using [PowerShell](https://en.wikipedia.org/wiki/PowerShell) (if the host system is Windows) or the [zip](https://linux.die.net/man/1/zip) utility (if the host system is Linux) into a file named `dist.zip`
    - Deletes the `dist` directory and its contents
    - Renames `dist.zip` to "merk-*MAJOR VERSION*.zip", referred to as `merk.zip` in this description.
