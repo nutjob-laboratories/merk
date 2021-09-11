@@ -36,8 +36,8 @@ from .. import render
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_style_information(client,chat,parent=None):
-		dialog = Dialog(client,chat,parent)
+	def get_style_information(client,chat,parent=None,default=False):
+		dialog = Dialog(client,chat,parent,default)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -56,6 +56,10 @@ class Dialog(QDialog):
 		self.style['notice'] = self.notice_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
 
+		if self.default:
+			styles.saveDefault(self.style)
+			self.parent.reApplyStyle()
+
 		return self.style
 
 	def saveStyle(self):
@@ -69,10 +73,13 @@ class Dialog(QDialog):
 		self.style['notice'] = self.notice_style.exportQss()
 		self.style['server'] = self.server_style.exportQss()
 
-		if self.wchat.window_type==SERVER_WINDOW:
-			styles.saveStyle(self.client,self.wchat.name,self.style,True)
+		if self.default:
+			styles.saveDefault(self.style)
 		else:
-			styles.saveStyle(self.client,self.wchat.name,self.style,False)
+			if self.wchat.window_type==SERVER_WINDOW:
+				styles.saveStyle(self.client,self.wchat.name,self.style,True)
+			else:
+				styles.saveStyle(self.client,self.wchat.name,self.style,False)
 
 	def qssChanged(self,data):
 		style_name = data[0]
@@ -167,16 +174,22 @@ class Dialog(QDialog):
 				t = render.render_message(line,self.style)
 				self.chat.append(t)
 
-	def __init__(self,client,chat,parent=None):
+	def __init__(self,client,chat,parent=None,default=False):
 		super(Dialog,self).__init__(parent)
 
 		self.client = client
 		self.wchat = chat
 		self.parent = parent
+		self.default = default
 
-		self.style = self.wchat.style
+		if default:
+			self.style = styles.loadDefault()
+			self.setWindowTitle("Edit default text style")
+		else:
+			self.style = self.wchat.style
+			self.setWindowTitle("Edit text style for "+self.wchat.name)
 
-		self.setWindowTitle("Edit text style for "+self.wchat.name)
+		
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])

@@ -84,6 +84,14 @@ def StylerDialog(client,chat,obj):
 	if not info: return None
 	return info
 
+def StylerDefaultDialog(obj):
+	x = Styler(None,None,obj,True)
+	info = x.get_style_information(None,None,obj,True)
+	del x
+
+	if not info: return None
+	return info
+
 def JoinChannelDialog(obj):
 	x = JoinChannel(obj)
 	info = x.get_channel_information(obj)

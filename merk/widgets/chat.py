@@ -205,13 +205,13 @@ class Window(QMainWindow):
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel("&nbsp;<b>"+self.client.nickname+"</b>")
+		self.nick_display = QLabel("<b>"+self.client.nickname+"</b>")
 		self.mode_display = QLabel("")
 
 		self.nick_display.installEventFilter(self)
 
 		if len(self.client.usermodes)>0:
-			self.mode_display.setText("+"+self.client.usermodes)
+			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
 		else:
 			self.mode_display.hide()
 
@@ -988,7 +988,7 @@ class Window(QMainWindow):
 				self.client.join('#'+channel_info[0],channel_info[1])
 
 	def refreshNickDisplay(self):
-		self.nick_display.setText("&nbsp;<b>"+self.client.nickname+"</b>")
+		self.nick_display.setText("<b>"+self.client.nickname+"</b>")
 
 	def writeText(self,message,write_to_log=True):
 

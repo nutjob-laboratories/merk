@@ -114,16 +114,22 @@ class Merk(QMainWindow):
 		self.buildMainMenu()
 
 		# Tools menu
-		self.toolsMenu = self.menubar.addMenu("Tools")
+		self.settingsMenu = self.menubar.addMenu("Settings")
+
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
+		self.settingsMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,STYLE_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
+		self.settingsMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
-		self.toolsMenu.addAction(entry)
+		self.settingsMenu.addAction(entry)
 
-		self.toolsMenu.addSeparator()
+		self.settingsMenu.addSeparator()
 
 		entry = QAction(QIcon(FOLDER_ICON),"Open settings directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
-		self.toolsMenu.addAction(entry)
+		self.settingsMenu.addAction(entry)
 
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")
@@ -148,6 +154,9 @@ class Merk(QMainWindow):
 
 		if connection_info:
 			self.connectToIrc(connection_info)
+
+	def menuEditStyle(self):
+		x = StylerDefaultDialog(self)
 
 	# |==================|
 	# | BEGIN IRC EVENTS |
@@ -822,6 +831,12 @@ class Merk(QMainWindow):
 			if hasattr(c,"rerenderChatLog"):
 				c.rerenderChatLog()
 
+	def reApplyStyle(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"applyStyle"):
+				c.applyStyle()
+
 	def handleUserInput(self,window,user_input):
 
 		# Handle chat commands
@@ -1095,11 +1110,6 @@ class Merk(QMainWindow):
 				desc = 'Disconnect from '+str(len(windows))+' servers'
 			entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,'Disconnect',desc,25,self.disconnectAll)
 			self.mainMenu.addAction(entry)
-
-		self.mainMenu.addSeparator()
-
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
-		self.mainMenu.addAction(entry)
 
 		self.mainMenu.addSeparator()
 

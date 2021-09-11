@@ -56,6 +56,12 @@ def saveStyle(client,channel,style,is_server_window=False):
 
 	write_style_file(style,fname)
 
+def saveDefault(style):
+	write_style_file(style,STYLE_FILE)
+
+def loadDefault():
+	return read_style_file(STYLE_FILE)
+
 def loadStyleServer(client):
 	fname = os.path.join(STYLE_DIRECTORY,client.server+"-"+str(client.port)+".style")
 
