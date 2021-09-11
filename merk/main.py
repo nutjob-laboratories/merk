@@ -1105,10 +1105,12 @@ class Merk(QMainWindow):
 
 		if len(windows)>0:
 			if len(windows)==1:
+				title = "Disconnect"
 				desc = 'Disconnect from server'
 			else:
+				title = "Disconnect all"
 				desc = 'Disconnect from '+str(len(windows))+' servers'
-			entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,'Disconnect',desc,25,self.disconnectAll)
+			entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,title,desc,25,self.disconnectAll)
 			self.mainMenu.addAction(entry)
 
 		self.mainMenu.addSeparator()

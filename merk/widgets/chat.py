@@ -106,8 +106,13 @@ class Window(QMainWindow):
 
 			self.toolbar.setIconSize(QSize(15, 15))
 
+			if self.client.kwargs["ssl"]:
+				icon = QIcon(VISITED_SECURE_ICON)
+			else:
+				icon = QIcon(VISITED_BOOKMARK_ICON)
+
 			self.infoMenuButton = QPushButton("")
-			self.infoMenuButton.setIcon(QIcon(INFO_ICON))
+			self.infoMenuButton.setIcon(icon)
 			self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
 			self.infoMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.infoMenuButton.setToolTip("Server information")
@@ -265,39 +270,35 @@ class Window(QMainWindow):
 
 		if self.window_type!=SERVER_WINDOW:
 
+			fm = QFontMetrics(self.app.font())
+
 			self.op_icon = QLabel(self)
 			pixmap = QPixmap(OP_USER)
-			fm = QFontMetrics(self.app.font())
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.op_icon.setPixmap(pixmap)
 
 			self.voice_icon = QLabel(self)
 			pixmap = QPixmap(VOICE_USER)
-			fm = QFontMetrics(self.app.font())
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.voice_icon.setPixmap(pixmap)
 
 			self.owner_icon = QLabel(self)
 			pixmap = QPixmap(OWNER_USER)
-			fm = QFontMetrics(self.app.font())
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.owner_icon.setPixmap(pixmap)
 
 			self.admin_icon = QLabel(self)
 			pixmap = QPixmap(ADMIN_USER)
-			fm = QFontMetrics(self.app.font())
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.admin_icon.setPixmap(pixmap)
 
 			self.halfop_icon = QLabel(self)
 			pixmap = QPixmap(HALFOP_USER)
-			fm = QFontMetrics(self.app.font())
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.halfop_icon.setPixmap(pixmap)
 
 			self.key_icon = QLabel(self)
 			pixmap = QPixmap(KEY_ICON)
-			fm = QFontMetrics(self.app.font())
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.key_icon.setPixmap(pixmap)
 
@@ -376,10 +377,10 @@ class Window(QMainWindow):
 			# Here, we display the server the chat window is associated
 			# with, as well as how the client is connected to it (using
 			# SSL/TLS or not) and other information
+			fm = QFontMetrics(self.app.font())
 			if self.client.kwargs["ssl"]:
 				self.secure_icon = QLabel(self)
 				pixmap = QPixmap(VISITED_SECURE_ICON)
-				fm = QFontMetrics(self.app.font())
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
@@ -387,7 +388,6 @@ class Window(QMainWindow):
 			else:
 				self.secure_icon = QLabel(self)
 				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
-				fm = QFontMetrics(self.app.font())
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
@@ -1227,7 +1227,7 @@ class Window(QMainWindow):
 			self.chat.ensureCursorVisible()
 
 		fm = QFontMetrics(self.chat.font())
-		fheight = fm.height() * 2
+		fheight = fm.height() * 1.5
 		sb = self.chat.verticalScrollBar()
 		is_at_bottom = False
 		if sb.value()>=sb.maximum()-fheight: is_at_bottom = True

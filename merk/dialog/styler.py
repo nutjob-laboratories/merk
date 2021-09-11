@@ -306,3 +306,5 @@ class Dialog(QDialog):
                     ^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.setFixedSize(finalLayout.sizeHint())
