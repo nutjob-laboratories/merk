@@ -31,6 +31,7 @@ from PyQt5 import QtCore
 from datetime import datetime
 import sys
 import os
+import math
 
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
@@ -148,6 +149,8 @@ LINK_ICON = ":/icon-link.png"
 FOLDER_ICON = ":/icon-folder.png"
 DICTIONARY_ICON = ":/icon-dictionary.png"
 COMMAND_ICON = ":/icon-command.png"
+PLUGIN_ICON = ":/icon-plugin.png"
+PACKAGE_ICON = ":/icon-package.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
@@ -263,6 +266,15 @@ class WhoWasData:
 		self.realname = 'Unknown'
 
 # Functions
+
+def convert_size(size_bytes):
+	if size_bytes == 0:
+		return "0 B"
+	size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+	i = int(math.floor(math.log(size_bytes, 1024)))
+	p = math.pow(1024, i)
+	s = round(size_bytes / p, 2)
+	return "%s %s" % (s, size_name[i])
 
 def convertSeconds(seconds):
 	h = seconds//(60*60)

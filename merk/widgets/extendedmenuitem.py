@@ -110,7 +110,7 @@ def ExtendedMenuItem(self,icon,title,description,icon_size,func):
 
 	return erkmenuAction
 
-def MenuNoActionRaw(self,icon,title,description,icon_size):
+def ExtendedMenuItemNoAction(self,icon,title,description,icon_size):
 
 	erkmenuLabel = QLabel( menuHtmlSpaced(icon,title,description,icon_size) )
 	erkmenuAction = QWidgetAction(self)

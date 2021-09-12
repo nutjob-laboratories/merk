@@ -26,6 +26,7 @@
 import sys
 import os
 import inspect
+import uuid
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -39,6 +40,7 @@ from .resources import *
 CONFIG_DIRECTORY = None
 PLUGIN_DIRECTORY = None
 PLUGINS = []
+LOADED = []
 
 EVENTS = [
 	"load",
@@ -47,10 +49,12 @@ EVENTS = [
 
 def load():
 	for p in PLUGINS:
+		if p.id() in LOADED: continue
 		obj = p.obj
 		inject_plugin(obj,p,None)
 		if hasattr(obj,"load"):
 			obj.load()
+			LOADED.append(p.id())
 		cleanup_plugin(obj)
 
 def unload():
@@ -91,6 +95,8 @@ class PluginEntry():
 		self.obj = pobj
 		self.errors = []
 
+		self.plugin_id = ''
+
 		self.filename = inspect.getfile(pclass)
 		self.directory = os.path.dirname(self.filename)
 		self.basename = os.path.basename(self.filename)
@@ -99,11 +105,24 @@ class PluginEntry():
 
 		fname, extension = os.path.splitext(self.filename)
 
+		module = inspect.getmodule(self.obj)
+		if hasattr(module,"PACKAGE"):
+			self.package = module.PACKAGE
+		else:
+			self.package = None
+
 		icon_name = fname+".png"
 		if os.path.isfile(icon_name):
 			self.icon = icon_name
 		else:
 			self.icon = None
+
+		self.events = 0
+		self.event_list = []
+		for e in EVENTS:
+			if hasattr(self.obj,e):
+				self.events = self.events + 1
+				self.event_list.append(e)
 
 		classicon = os.path.join(os.path.dirname(self.filename), self.pclass.__name__+".png")
 		if os.path.isfile(classicon):
@@ -204,6 +223,8 @@ def load_plugins(additional_locations):
 
 		# Create the plugin entry for the registry (and errors)
 		entry = PluginEntry(c,obj)
+
+		entry.plugin_id = str(uuid.uuid4())
 
 		# Make sure the class has any required attributes
 		had_error = False

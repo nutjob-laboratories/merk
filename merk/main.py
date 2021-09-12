@@ -108,58 +108,10 @@ class Merk(QMainWindow):
 		# Menubar
 		self.menubar = self.menuBar()
 
-		# Main menu
-		self.mainMenu = self.menubar.addMenu("IRC")
-
-		self.buildMainMenu()
-
-		# Tools menu
-		self.settingsMenu = self.menubar.addMenu("Settings")
-
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
-		self.settingsMenu.addAction(entry)
-
-		entry = widgets.ExtendedMenuItem(self,STYLE_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
-		self.settingsMenu.addAction(entry)
-
-		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
-		self.settingsMenu.addAction(entry)
-
-		self.settingsMenu.addSeparator()
-
-		entry = QAction(QIcon(FOLDER_ICON),"Open settings directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
-		self.settingsMenu.addAction(entry)
-
-		# Windows menu
-		self.windowsMenu = self.menubar.addMenu("Windows")
-
-		self.buildWindowsMenu()
-
-		# Help menu
-		self.helpMenu = self.menubar.addMenu("Help")
-
-		entry = widgets.ExtendedMenuItem(self,ABOUT_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION+"&nbsp;&nbsp;",25,self.showAbout)
-		self.helpMenu.addAction(entry)
-
-		self.helpMenu.addSeparator()
-
-		entry = QAction(QIcon(LINK_ICON),"Source code repository",self)
-		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
-
-		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
-		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
-
 		# Now, load in plugins
-		plugin_load_errors = plugins.load_plugins([])
-		if len(plugin_load_errors)>0:
-			for e in plugin_load_errors:
-				print("\n".join(e.errors))
+		self.loadPlugins()
 
-		# Trigger plugin load event
-		plugins.load()
+		self.buildMenu()
 
 		if connection_info:
 			self.connectToIrc(connection_info)
@@ -1061,9 +1013,141 @@ class Merk(QMainWindow):
 		u.setUrl(url)
 		QDesktopServices.openUrl(u)
 
+	def loadPlugins(self):
+		plugin_load_errors = plugins.load_plugins([])
+		if len(plugin_load_errors)>0:
+			for e in plugin_load_errors:
+				print("\n".join(e.errors))
+		self.buildMenu()
+
+		# Trigger plugin load event
+		plugins.load()
+
+
 	# |--------------|
 	# | MENU METHODS |
 	# |--------------|
+
+	def buildMenu(self):
+		self.menubar.clear()
+
+		# Main menu
+		self.mainMenu = self.menubar.addMenu("IRC")
+
+		self.buildMainMenu()
+
+		# Tools menu
+		self.settingsMenu = self.menubar.addMenu("Settings")
+
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
+		self.settingsMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,STYLE_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
+		self.settingsMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
+		self.settingsMenu.addAction(entry)
+
+		self.settingsMenu.addSeparator()
+
+		entry = QAction(QIcon(FOLDER_ICON),"Open settings directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		self.settingsMenu.addAction(entry)
+
+		# Plugins menu
+		self.pluginsMenu = self.menubar.addMenu("Plugins")
+
+		entry = QAction(QIcon(WHOIS_ICON),"Scan for new plugins",self)
+		entry.triggered.connect(self.loadPlugins)
+		self.pluginsMenu.addAction(entry)
+
+		if len(plugins.PLUGINS)>0:
+			e = widgets.textSeparator(self,"Loaded Plugins")
+			self.pluginsMenu.addAction(e)
+
+			files = {}
+			for p in plugins.PLUGINS:
+				if p.filename in files:
+					files[p.filename].append(p)
+				else:
+					files[p.filename] = [p]
+
+			for file in files:
+
+				e = (files[file][:1] or [None])[0]
+				pname = e.package
+				if pname==None: pname = os.path.basename(file)
+
+				ico = e.icon
+				if ico==None: ico = PACKAGE_ICON
+
+				m = self.pluginsMenu.addMenu(QIcon(ico),pname)
+
+				for p in files[file]:
+
+					if p.class_icon!=None:
+						icon = p.class_icon
+					else:
+						icon = PLUGIN_ICON
+
+					if p.plugin_description()!=None:
+						entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.plugin_description(),25)
+					else:
+						entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.id(),25)
+
+					m.addAction(entry)
+
+					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>File:</b> "+os.path.basename(file)+"</small>" )
+					entry = QWidgetAction(self)
+					entry.setDefaultWidget(entryLabel)
+					m.addAction(entry)
+
+					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Class:</b> "+p.class_name()+"</small>" )
+					entry = QWidgetAction(self)
+					entry.setDefaultWidget(entryLabel)
+					m.addAction(entry)
+
+					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Size:</b> "+str(convert_size(os.path.getsize(file)))+"</small>" )
+					entry = QWidgetAction(self)
+					entry.setDefaultWidget(entryLabel)
+					m.addAction(entry)
+
+					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Memory:</b> "+str(convert_size(p.size))+"</small>" )
+					entry = QWidgetAction(self)
+					entry.setDefaultWidget(entryLabel)
+					m.addAction(entry)
+
+					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Events:</b> "+str(p.events)+"</b></small>" )
+					entry = QWidgetAction(self)
+					entry.setDefaultWidget(entryLabel)
+					m.addAction(entry)
+
+					if not p.is_home_plugin:
+						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Loaded from an external source</b></small>" )
+						entry = QWidgetAction(self)
+						entry.setDefaultWidget(entryLabel)
+						m.addAction(entry)
+
+		# Windows menu
+		self.windowsMenu = self.menubar.addMenu("Windows")
+
+		self.buildWindowsMenu()
+
+		# Help menu
+		self.helpMenu = self.menubar.addMenu("Help")
+
+		entry = widgets.ExtendedMenuItem(self,ABOUT_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION+"&nbsp;&nbsp;",25,self.showAbout)
+		self.helpMenu.addAction(entry)
+
+		self.helpMenu.addSeparator()
+
+		entry = QAction(QIcon(LINK_ICON),"Source code repository",self)
+		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
+		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
 
 	def menuEditStyle(self):
 		x = StylerDefaultDialog(self)

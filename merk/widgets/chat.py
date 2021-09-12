@@ -42,7 +42,7 @@ from ..dialog import *
 from .. import logs
 from .plain_text import plainTextAction
 from .text_separator import textSeparatorLabel,textSeparator
-from .extendedmenuitem import MenuNoActionRaw
+from .extendedmenuitem import ExtendedMenuItemNoAction
 
 from .. import commands
 
@@ -112,7 +112,7 @@ class Window(QMainWindow):
 				icon = QIcon(VISITED_BOOKMARK_ICON)
 
 			self.infoMenuButton = QPushButton("")
-			self.infoMenuButton.setIcon(icon)
+			self.infoMenuButton.setIcon(QIcon(INFO_ICON))
 			self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
 			self.infoMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.infoMenuButton.setToolTip("Server information")
@@ -670,10 +670,10 @@ class Window(QMainWindow):
 			statusLayout.addStretch()
 
 			if user_hostmask:
-				entry = MenuNoActionRaw(self,ICON,user_nick,display_hostmask,25)
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,25)
 				menu.addAction(entry)
 			else:
-				entry = MenuNoActionRaw(self,ICON,user_nick,OTHER_TEXT,25)
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,25)
 				menu.addAction(entry)
 
 			menu.addSeparator()
