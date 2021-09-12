@@ -112,7 +112,7 @@ class Window(QMainWindow):
 				icon = QIcon(VISITED_BOOKMARK_ICON)
 
 			self.infoMenuButton = QPushButton("")
-			self.infoMenuButton.setIcon(QIcon(INFO_ICON))
+			self.infoMenuButton.setIcon(icon)
 			self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
 			self.infoMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.infoMenuButton.setToolTip("Server information")
