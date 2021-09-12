@@ -45,6 +45,8 @@ LOADED = []
 EVENTS = [
 	"load",
 	"unload",
+	"line_in",
+	"line_out",
 ]
 
 def load():
@@ -63,6 +65,22 @@ def unload():
 		inject_plugin(obj,p,None)
 		if hasattr(obj,"unload"):
 			obj.unload()
+		cleanup_plugin(obj)
+
+def line_in(client,data):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"line_in"):
+			obj.line_in(data)
+		cleanup_plugin(obj)
+
+def line_out(client,data):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"line_out"):
+			obj.line_out(data)
 		cleanup_plugin(obj)
 
 def initialize(directory,directory_name):
