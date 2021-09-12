@@ -118,10 +118,10 @@ TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
 			</td>
-			<td><small><center><b>!MESSAGE!</b></center></small></td>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td><small><center>!MESSAGE!</center></small></td>
+			<td style="background-image: url({HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
 			</td>
 		</tr>
 	</tbody>
@@ -131,10 +131,10 @@ LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE = f'''
 <table width="100%" border="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
 			</td>
-			<td><small><center><b>!MESSAGE!</b></center></small></td>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td><small><center>!MESSAGE!</center></small></td>
+			<td style="background-image: url({LIGHT_HORIZONTAL_DOTTED_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
 			</td>
 		</tr>
 	</tbody>
