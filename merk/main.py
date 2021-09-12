@@ -1136,7 +1136,13 @@ class Merk(QMainWindow):
 		# Help menu
 		self.helpMenu = self.menubar.addMenu("Help")
 
-		entry = widgets.ExtendedMenuItem(self,ABOUT_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION+"&nbsp;&nbsp;",25,self.showAbout)
+		entry = widgets.ExtendedMenuItem(self,ABOUT_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION,25,self.showAbout)
+		self.helpMenu.addAction(entry)
+
+		self.helpMenu.addSeparator()
+
+		entry = QAction(QIcon(PDF_ICON),"Plugin development guide",self)
+		entry.triggered.connect(self.openPluginDocs)
 		self.helpMenu.addAction(entry)
 
 		self.helpMenu.addSeparator()
@@ -1148,6 +1154,9 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
+
+	def openPluginDocs(self):
+		QDesktopServices.openUrl(QUrl("file:"+PLUGIN_DOCUMENTATION))
 
 	def menuEditStyle(self):
 		x = StylerDefaultDialog(self)

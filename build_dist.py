@@ -69,6 +69,9 @@ shutil.copy("./LICENSE", "./dist/LICENSE")
 shutil.copy("./README.md", "./dist/README.md")
 shutil.copy("./merk.ico", "./dist/merk.ico")
 
+os.mkdir("./dist/documentation")
+shutil.copy("./documentation/MERK_Plugin_Development_Guide.pdf", "./dist/documentation/MERK_Plugin_Development_Guide.pdf")
+
 if "Windows" in devp:
 	os.system("powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('dist', 'dist.zip'); }\" ")
 elif "Linux" in devp:

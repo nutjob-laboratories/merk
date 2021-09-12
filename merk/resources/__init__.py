@@ -43,6 +43,10 @@ AUTOCOMPLETE_DIRECTORY = os.path.join(DATA_DIRECTORY, "autocomplete")
 EMOJI_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji2.txt")
 EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji1.txt")
 NETWORK_FILE = os.path.join(DATA_DIRECTORY, "servers.txt")
+BLANK_PLUGIN_FILE = os.path.join(DATA_DIRECTORY, "plugin.py")
+
+DOCUMENTATION_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "documentation")
+PLUGIN_DOCUMENTATION = os.path.join(DOCUMENTATION_DIRECTORY, "MERK_Plugin_Development_Guide.pdf")
 
 # Load in major and minor version
 f = open(os.path.join(DATA_DIRECTORY, "major.txt"),mode="r",encoding="latin-1",errors="ignore")
@@ -151,6 +155,7 @@ DICTIONARY_ICON = ":/icon-dictionary.png"
 COMMAND_ICON = ":/icon-command.png"
 PLUGIN_ICON = ":/icon-plugin.png"
 PACKAGE_ICON = ":/icon-package.png"
+PDF_ICON = ":/icon-pdf.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

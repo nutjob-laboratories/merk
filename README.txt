@@ -66,7 +66,8 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 
 ```
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-D DIRECTORY]
-                      [--config-name NAME] [--qtstyle NAME] [-N]
+                      [--config-name NAME] [--qtstyle NAME]
+                      [--generate [FILE]] [-N]
                       [SERVER] [PORT]
 
 optional arguments:
@@ -86,6 +87,9 @@ Configuration:
   --config-name NAME    Name of the configuration file directory (default:
                         .merk)
   --qtstyle NAME        Set Qt widget style (default: Windows)
+
+Tools:
+  --generate [FILE]     Create a "blank" plugin for editing
 
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start

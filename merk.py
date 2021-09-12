@@ -81,6 +81,10 @@ configuration_group.add_argument("-D","--config-directory",dest="configdir",type
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
 
+devgroup = parser.add_argument_group('Tools')
+
+devgroup.add_argument("--generate", nargs='?', type=str,help="Create a \"blank\" plugin for editing", metavar="FILE",const=1)
+
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
@@ -90,6 +94,25 @@ args = parser.parse_args()
 if __name__ == '__main__':
 
 	app = QApplication([])
+
+	# "Generate" a blank plugin
+	if args.generate:
+		if args.generate==1:
+			# No argument, so print to STDOUT
+			f = open(BLANK_PLUGIN_FILE,'r+')
+			x = f.read()
+			f.close()
+			print(x)
+			sys.exit(0)
+		else:
+			if os.path.isfile(args.generate):
+				print("File \""+args.generate+"\" already exists.")
+				sys.exit(1)
+			# Copy the blank plugin in the data directory
+			# to the new location
+			shutil.copy(BLANK_PLUGIN_FILE,args.generate)
+			print("Plugin generated!")
+			sys.exit(0)
 
 	# Initialize the config system
 	config.initialize(args.configdir,args.configname)
