@@ -47,6 +47,10 @@ EVENTS = [
 	"unload",
 	"line_in",
 	"line_out",
+	"public",
+	"private",
+	"action",
+	"notice",
 ]
 
 def load():
@@ -97,6 +101,22 @@ def private(client,user,message):
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"private"):
 			obj.private(user,message)
+		cleanup_plugin(obj)
+
+def action(client,channel,user,message):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"action"):
+			obj.action(channel,user,message)
+		cleanup_plugin(obj)
+
+def notice(client,channel,user,message):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"notice"):
+			obj.notice(channel,user,message)
 		cleanup_plugin(obj)
 
 def initialize(directory,directory_name):

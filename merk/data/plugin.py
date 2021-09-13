@@ -81,4 +81,32 @@ class MERKPlugin(Plugin):
 	"""
 	def private(self,user,message):
 		pass
+
+	"""
+		action()
+		Arguments:		target (string), user (string), message (string)
+		Returns:		None
+		Description:	Triggered when MERK receives a CTCP action message.
+						target contains the name of the target the message was
+						sent to (channel or user), user contains the nickname
+						and hostmask (in the format NICKNAME!USERNAME@HOST)
+						of the user that sent the message, and message contains
+						the message sent.
+	"""
+	def action(self,target,user,message):
+		pass
+
+	"""
+		notice()
+		Arguments:		target (string), user (string), message (string)
+		Returns:		None
+		Description:	Triggered when MERK receives a notice message.
+						target contains the name of the target (channel or
+						user) the message was sent to, user contains the
+						nickname and hostmask (in the format NICKNAME!USERNAME@HOST)
+						of the user that sent the message, and message
+						contains the message sent.
+	"""
+	def notice(self,target,user,message):
+		pass
 	

@@ -282,6 +282,8 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
+		plugins.action(client,target,user,msg)
+
 		# Channel message
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 			w = self.getWindow(target,client)
@@ -308,6 +310,16 @@ class Merk(QMainWindow):
 
 	def noticed(self,client,user,target,msg):
 
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+
+		plugins.notice(client,target,user,msg)
+
 		# Server notices get written to the server window only
 		if target=='*':
 			w = self.getServerWindow(client)
@@ -325,16 +337,26 @@ class Merk(QMainWindow):
 			hostmask = None
 
 		# Try and send the message to the right window
-		w = self.getWindow(target,client)
+		w = self.getWindow(nickname,client)
 		if w:
 			t = Message(NOTICE_MESSAGE,nickname,msg)
 			w.writeText(t)
 		else:
-			# ...or write it to the server window
-			w = self.getServerWindow(client)
-			if w:
-				t = Message(NOTICE_MESSAGE,nickname,msg)
-				w.writeText(t)
+			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
+				# Create a new private message window and write
+				# the message to it
+				w = self.newPrivateWindow(nickname,client)
+				if w:
+					c = w.widget()
+					t = Message(NOTICE_MESSAGE,nickname,msg)
+					c.writeText(t)
+					return
+			else:
+				# Write the notice to the server window
+				w = self.getServerWindow(client)
+				if w:
+					t = Message(NOTICE_MESSAGE,nickname,msg)
+					w.writeText(t)
 
 	def names(self,client,channel,users):
 		w = self.getWindow(channel,client)
