@@ -59,6 +59,8 @@ class Dialog(QDialog):
 		if self.default:
 			styles.saveDefault(self.style)
 			self.parent.reApplyStyle()
+		else:
+			self.saveStyle()
 
 		return self.style
 
@@ -280,21 +282,17 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		buttons.button(QDialogButtonBox.Ok).setText("Apply")
+		buttons.button(QDialogButtonBox.Ok).setText("Save")
 
-		saveButton = QPushButton("Save style")
-		saveButton.clicked.connect(self.saveStyle)
-
-		saveAsButton = QPushButton("Save as...")
+		saveAsButton = QPushButton("Save style as...")
 		saveAsButton.clicked.connect(self.saveAsStyle)
 
 		loadButton = QPushButton("Open style")
 		loadButton.clicked.connect(self.loadStyle)
 
 		buttonLayout = QHBoxLayout()
-		buttonLayout.addWidget(saveButton)
-		buttonLayout.addWidget(saveAsButton)
 		buttonLayout.addWidget(loadButton)
+		buttonLayout.addWidget(saveAsButton)
 		buttonLayout.addWidget(buttons)
 		buttonLayout.setAlignment(Qt.AlignRight)
 
