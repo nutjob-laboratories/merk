@@ -57,3 +57,28 @@ class MERKPlugin(Plugin):
 	def line_out(self,data):
 		pass
 	
+	"""
+		public()
+		Arguments:		channel (string), user (string), message (string)
+		Returns:		None
+		Description:	Triggered when MERK receives a public (channel) message.
+						channel contains the name of the channel the message was
+						sent to, user contains the nickname and hostmask (in the
+						format NICKNAME!USERNAME@HOST) of the user that sent the
+						message, and message contains the message sent.
+	"""
+	def public(self,channel,user,message):
+		pass
+
+	"""
+		private()
+		Arguments:		user (string), message (string)
+		Returns:		None
+		Description:	Triggered when MERK receives a private message.
+						user contains the nickname and hostmask (in the format
+						NICKNAME!USERNAME@HOST) of the user that sent the
+						message, and message contains the message sent.
+	"""
+	def private(self,user,message):
+		pass
+	

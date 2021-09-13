@@ -83,6 +83,22 @@ def line_out(client,data):
 			obj.line_out(data)
 		cleanup_plugin(obj)
 
+def public(client,channel,user,message):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"public"):
+			obj.public(channel,user,message)
+		cleanup_plugin(obj)
+
+def private(client,user,message):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"private"):
+			obj.private(user,message)
+		cleanup_plugin(obj)
+
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
 	global PLUGIN_DIRECTORY
