@@ -342,21 +342,21 @@ class Merk(QMainWindow):
 			t = Message(NOTICE_MESSAGE,nickname,msg)
 			w.writeText(t)
 		else:
-			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
-				# Create a new private message window and write
-				# the message to it
-				w = self.newPrivateWindow(nickname,client)
-				if w:
-					c = w.widget()
-					t = Message(NOTICE_MESSAGE,nickname,msg)
-					c.writeText(t)
-					return
-			else:
-				# Write the notice to the server window
-				w = self.getServerWindow(client)
-				if w:
-					t = Message(NOTICE_MESSAGE,nickname,msg)
-					w.writeText(t)
+			# if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
+			# 	# Create a new private message window and write
+			# 	# the message to it
+			# 	w = self.newPrivateWindow(nickname,client)
+			# 	if w:
+			# 		c = w.widget()
+			# 		t = Message(NOTICE_MESSAGE,nickname,msg)
+			# 		c.writeText(t)
+			# 		return
+			# else:
+			# Write the notice to the server window
+			w = self.getServerWindow(client)
+			if w:
+				t = Message(NOTICE_MESSAGE,nickname,msg)
+				w.writeText(t)
 
 	def names(self,client,channel,users):
 		w = self.getWindow(channel,client)
