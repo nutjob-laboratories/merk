@@ -185,6 +185,8 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def joined(self,client,channel):
+
+		plugins.join(client,channel,client.nickname)
 		
 		# Create a new channel window
 		w = self.newChannelWindow(channel,client)
@@ -199,6 +201,8 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def left(self,client,channel):
+
+		plugins.part(client,channel,client.nickname)
 
 		w = self.getSubWindow(channel,client)
 		if w:
@@ -410,6 +414,7 @@ class Merk(QMainWindow):
 								c.writeText(t)
 
 	def userJoined(self,client,user,channel):
+		plugins.join(client,channel,user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" joined "+channel)
@@ -417,6 +422,7 @@ class Merk(QMainWindow):
 			return
 
 	def userLeft(self,client,user,channel):
+		plugins.part(client,channel,user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" left "+channel)

@@ -51,6 +51,8 @@ EVENTS = [
 	"private",
 	"action",
 	"notice",
+	"join",
+	"part",
 ]
 
 def load():
@@ -117,6 +119,22 @@ def notice(client,channel,user,message):
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"notice"):
 			obj.notice(channel,user,message)
+		cleanup_plugin(obj)
+
+def join(client,channel,user):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"join"):
+			obj.join(channel,user)
+		cleanup_plugin(obj)
+
+def part(client,channel,user):
+	for p in PLUGINS:
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"part"):
+			obj.part(channel,user)
 		cleanup_plugin(obj)
 
 def initialize(directory,directory_name):

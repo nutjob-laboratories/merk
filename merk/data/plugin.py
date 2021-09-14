@@ -109,4 +109,26 @@ class MERKPlugin(Plugin):
 	"""
 	def notice(self,target,user,message):
 		pass
+
+	"""
+		join()
+		Arguments:		channel (string), user (string)
+		Returns:		None
+		Description:	Triggered when MERK "sees" someone joins a channel, including
+						the user of the MERK client. channel is the name of the
+						channel being joined, and user is the user joining.
+	"""
+	def join(self,target,user):
+		pass
+
+	"""
+		part()
+		Arguments:		channel (string), user (string)
+		Returns:		None
+		Description:	Triggered when MERK "sees" someone leaves a channel, including
+						the user of the MERK client. channel is the name of the
+						channel being left, and user is the user leaving.
+	"""
+	def part(self,target,user):
+		pass
 	
