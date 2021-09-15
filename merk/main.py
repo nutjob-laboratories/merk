@@ -64,6 +64,7 @@ class Merk(QMainWindow):
 			configuration_directory_name=".merk",
 			connection_info=None,
 			application_font=None,
+			plugins_disabled=True,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -74,6 +75,9 @@ class Merk(QMainWindow):
 		self.configuration_location = configuration_location
 		self.configuration_directory_name = configuration_directory_name
 		self.application_font = application_font
+		self.plugins_disabled = plugins_disabled
+
+		if self.plugins_disabled: config.PLUGINS_ENABLED = False
 
 		# Set the application font
 		self.app.setFont(self.application_font)
@@ -1046,6 +1050,8 @@ class Merk(QMainWindow):
 		QDesktopServices.openUrl(u)
 
 	def loadPlugins(self):
+		if self.plugins_disabled: return
+		
 		plugin_load_errors = plugins.load_plugins([])
 		if len(plugin_load_errors)>0:
 			for e in plugin_load_errors:
@@ -1087,78 +1093,82 @@ class Merk(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		# Plugins menu
-		self.pluginsMenu = self.menubar.addMenu("Plugins")
+		show_plugin_menu = True
+		if self.plugins_disabled: show_plugin_menu = False
 
-		entry = QAction(QIcon(WHOIS_ICON),"Scan for new plugins",self)
-		entry.triggered.connect(self.loadPlugins)
-		self.pluginsMenu.addAction(entry)
+		if show_plugin_menu:
+			self.pluginsMenu = self.menubar.addMenu("Plugins")
 
-		if len(plugins.PLUGINS)>0:
-			e = widgets.textSeparator(self,"Loaded Plugins")
-			self.pluginsMenu.addAction(e)
+			entry = QAction(QIcon(WHOIS_ICON),"Scan for new plugins",self)
+			entry.triggered.connect(self.loadPlugins)
+			self.pluginsMenu.addAction(entry)
 
-			files = {}
-			for p in plugins.PLUGINS:
-				if p.filename in files:
-					files[p.filename].append(p)
-				else:
-					files[p.filename] = [p]
+			if len(plugins.PLUGINS)>0:
+				e = widgets.textSeparator(self,"Loaded Plugins")
+				self.pluginsMenu.addAction(e)
 
-			for file in files:
-
-				e = (files[file][:1] or [None])[0]
-				pname = e.package
-				if pname==None: pname = os.path.basename(file)
-
-				ico = e.icon
-				if ico==None: ico = PACKAGE_ICON
-
-				m = self.pluginsMenu.addMenu(QIcon(ico),pname)
-
-				for p in files[file]:
-
-					if p.class_icon!=None:
-						icon = p.class_icon
+				files = {}
+				for p in plugins.PLUGINS:
+					if p.filename in files:
+						files[p.filename].append(p)
 					else:
-						icon = PLUGIN_ICON
+						files[p.filename] = [p]
 
-					if p.plugin_description()!=None:
-						entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.plugin_description(),25)
-					else:
-						entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.id(),25)
+				for file in files:
 
-					m.addAction(entry)
+					e = (files[file][:1] or [None])[0]
+					pname = e.package
+					if pname==None: pname = os.path.basename(file)
 
-					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>File:</b> "+os.path.basename(file)+"</small>" )
-					entry = QWidgetAction(self)
-					entry.setDefaultWidget(entryLabel)
-					m.addAction(entry)
+					ico = e.icon
+					if ico==None: ico = PACKAGE_ICON
 
-					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Class:</b> "+p.class_name()+"</small>" )
-					entry = QWidgetAction(self)
-					entry.setDefaultWidget(entryLabel)
-					m.addAction(entry)
+					m = self.pluginsMenu.addMenu(QIcon(ico),pname)
 
-					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Size:</b> "+str(convert_size(os.path.getsize(file)))+"</small>" )
-					entry = QWidgetAction(self)
-					entry.setDefaultWidget(entryLabel)
-					m.addAction(entry)
+					for p in files[file]:
 
-					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Memory:</b> "+str(convert_size(p.size))+"</small>" )
-					entry = QWidgetAction(self)
-					entry.setDefaultWidget(entryLabel)
-					m.addAction(entry)
+						if p.class_icon!=None:
+							icon = p.class_icon
+						else:
+							icon = PLUGIN_ICON
 
-					entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Events:</b> "+str(p.events)+"</b></small>" )
-					entry = QWidgetAction(self)
-					entry.setDefaultWidget(entryLabel)
-					m.addAction(entry)
+						if p.plugin_description()!=None:
+							entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.plugin_description(),25)
+						else:
+							entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.id(),25)
 
-					if not p.is_home_plugin:
-						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Loaded from an external source</b></small>" )
+						m.addAction(entry)
+
+						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>File:</b> "+os.path.basename(file)+"</small>" )
 						entry = QWidgetAction(self)
 						entry.setDefaultWidget(entryLabel)
 						m.addAction(entry)
+
+						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Class:</b> "+p.class_name()+"</small>" )
+						entry = QWidgetAction(self)
+						entry.setDefaultWidget(entryLabel)
+						m.addAction(entry)
+
+						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Size:</b> "+str(convert_size(os.path.getsize(file)))+"</small>" )
+						entry = QWidgetAction(self)
+						entry.setDefaultWidget(entryLabel)
+						m.addAction(entry)
+
+						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Memory:</b> "+str(convert_size(p.size))+"</small>" )
+						entry = QWidgetAction(self)
+						entry.setDefaultWidget(entryLabel)
+						m.addAction(entry)
+
+						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Events:</b> "+str(p.events)+"</b></small>" )
+						entry = QWidgetAction(self)
+						entry.setDefaultWidget(entryLabel)
+						m.addAction(entry)
+
+						if not p.is_home_plugin:
+							entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Loaded from an external source</b></small>" )
+							entry = QWidgetAction(self)
+							entry.setDefaultWidget(entryLabel)
+							m.addAction(entry)
 
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")

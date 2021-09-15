@@ -27,6 +27,7 @@ import sys
 import os
 import inspect
 import uuid
+from pathlib import Path
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -36,6 +37,7 @@ from PyQt5 import QtCore
 from pike.manager import PikeManager
 
 from .resources import *
+from . import config
 
 CONFIG_DIRECTORY = None
 PLUGIN_DIRECTORY = None
@@ -56,6 +58,7 @@ EVENTS = [
 ]
 
 def load():
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		if p.id() in LOADED: continue
 		obj = p.obj
@@ -66,6 +69,7 @@ def load():
 		cleanup_plugin(obj)
 
 def unload():
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,None)
@@ -74,6 +78,7 @@ def unload():
 		cleanup_plugin(obj)
 
 def line_in(client,data):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)
@@ -82,6 +87,7 @@ def line_in(client,data):
 		cleanup_plugin(obj)
 
 def line_out(client,data):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)
@@ -90,6 +96,7 @@ def line_out(client,data):
 		cleanup_plugin(obj)
 
 def public(client,channel,user,message):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)
@@ -98,6 +105,7 @@ def public(client,channel,user,message):
 		cleanup_plugin(obj)
 
 def private(client,user,message):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)
@@ -106,6 +114,7 @@ def private(client,user,message):
 		cleanup_plugin(obj)
 
 def action(client,channel,user,message):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)
@@ -114,6 +123,7 @@ def action(client,channel,user,message):
 		cleanup_plugin(obj)
 
 def notice(client,channel,user,message):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)
@@ -122,6 +132,7 @@ def notice(client,channel,user,message):
 		cleanup_plugin(obj)
 
 def join(client,channel,user):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)
@@ -130,6 +141,7 @@ def join(client,channel,user):
 		cleanup_plugin(obj)
 
 def part(client,channel,user):
+	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		obj = p.obj
 		inject_plugin(obj,p,client)

@@ -118,7 +118,7 @@ class MERKPlugin(Plugin):
 						the user of the MERK client. channel is the name of the
 						channel being joined, and user is the user joining.
 	"""
-	def join(self,target,user):
+	def join(self,channel,user):
 		pass
 
 	"""
@@ -129,6 +129,6 @@ class MERKPlugin(Plugin):
 						the user of the MERK client. channel is the name of the
 						channel being left, and user is the user leaving.
 	"""
-	def part(self,target,user):
+	def part(self,channel,user):
 		pass
 	

@@ -70,20 +70,23 @@ congroup = parser.add_argument_group('Connection')
 
 congroup.add_argument("server", type=str,help="Server to connect to", metavar="SERVER", nargs='?')
 congroup.add_argument("port", type=int,help="Server port to connect to (6667)", default=6667, nargs='?', metavar="PORT")
-congroup.add_argument( "--ssl", help=f"Use SSL to connect to IRC", action="store_true")
+congroup.add_argument( "--ssl","--tls", help=f"Use SSL/TLS to connect to IRC", action="store_true")
 congroup.add_argument( "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
 congroup.add_argument("-p","--password", type=str,help="Use server password to connect", metavar="PASSWORD", default='')
 
 configuration_group = parser.add_argument_group('Configuration')
 
 # Change the below default to None to store files in the home directory
-configuration_group.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=config.INSTALL_DIRECTORY)
+configuration_group.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
+configuration_group.add_argument( "-L","--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
 
-devgroup = parser.add_argument_group('Tools')
+
+devgroup = parser.add_argument_group('Plugins')
 
 devgroup.add_argument("--generate", nargs='?', type=str,help="Create a \"blank\" plugin for editing", metavar="FILE",const=1)
+devgroup.add_argument( "--noplugins", help=f"Disable plugins", action="store_true")
 
 misc_group = parser.add_argument_group('Miscellaneous')
 
@@ -113,6 +116,11 @@ if __name__ == '__main__':
 			shutil.copy(BLANK_PLUGIN_FILE,args.generate)
 			print("Plugin generated!")
 			sys.exit(0)
+
+	# If user wants to store config data in the install
+	# directory, then set that up here
+	if args.configinstall:
+		args.configdir = config.INSTALL_DIRECTORY
 
 	# Initialize the config system
 	config.initialize(args.configdir,args.configname)
@@ -195,6 +203,7 @@ if __name__ == '__main__':
 				args.configname,	# Config directory name, default ".merk"
 				i,					# Connection info
 				font,				# Application font
+				args.noplugins,		# Disable plugins
 				None,				# Parent
 			)
 
@@ -210,6 +219,7 @@ if __name__ == '__main__':
 					args.configname,	# Config directory name, default ".merk"
 					None,				# Connection info
 					font,				# Application font
+					args.noplugins,		# Disable plugins
 					None,				# Parent
 				)
 
@@ -225,6 +235,7 @@ if __name__ == '__main__':
 						args.configname,	# Config directory name, default ".merk"
 						connection_info,	# Connection info
 						font,				# Application font
+						args.noplugins,		# Disable plugins
 						None,				# Parent
 					)
 

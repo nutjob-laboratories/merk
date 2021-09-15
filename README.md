@@ -24,7 +24,7 @@
     </table>
 </center></p>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **022.022**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **022.027**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **MERK** is in beta, but it is usable. A lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
 
@@ -66,8 +66,8 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 
 ```
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-D DIRECTORY]
-                      [--config-name NAME] [--qtstyle NAME]
-                      [--generate [FILE]] [-N]
+                      [-L] [--config-name NAME] [--qtstyle NAME]
+                      [--generate [FILE]] [--noplugins] [-N]
                       [SERVER] [PORT]
 
 optional arguments:
@@ -76,7 +76,7 @@ optional arguments:
 Connection:
   SERVER                Server to connect to
   PORT                  Server port to connect to (6667)
-  --ssl                 Use SSL to connect to IRC
+  --ssl, --tls          Use SSL/TLS to connect to IRC
   --reconnect           Reconnect to servers on disconnection
   -p PASSWORD, --password PASSWORD
                         Use server password to connect
@@ -84,12 +84,14 @@ Connection:
 Configuration:
   -D DIRECTORY, --config-directory DIRECTORY
                         Location to store configuration files
+  -L, --config-local    Store configuration files in install directory
   --config-name NAME    Name of the configuration file directory (default:
                         .merk)
   --qtstyle NAME        Set Qt widget style (default: Windows)
 
-Tools:
+Plugins:
   --generate [FILE]     Create a "blank" plugin for editing
+  --noplugins           Disable plugins
 
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start
