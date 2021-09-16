@@ -156,6 +156,8 @@ COMMAND_ICON = ":/icon-command.png"
 PLUGIN_ICON = ":/icon-plugin.png"
 PACKAGE_ICON = ":/icon-package.png"
 PDF_ICON = ":/icon-pdf.png"
+CHECKED_ICON = ":/icon-checked.png"
+UNCHECKED_ICON = ":/icon-unchecked.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

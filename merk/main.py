@@ -1170,6 +1170,15 @@ class Merk(QMainWindow):
 							entry.setDefaultWidget(entryLabel)
 							m.addAction(entry)
 
+						if plugins.is_plugin_disabled(p):
+							entry = QAction(QIcon(UNCHECKED_ICON),"Enabled",self)
+						else:
+							entry = QAction(QIcon(CHECKED_ICON),"Enabled",self)
+						entry.triggered.connect(lambda state,u=p: self.togglePlugin(u))
+						m.addAction(entry)
+
+						m.addSeparator()
+
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")
 
@@ -1196,6 +1205,13 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
+
+	def togglePlugin(self,plugin):
+		if plugins.is_plugin_disabled(plugin):
+			plugins.enable_plugin(plugin)
+		else:
+			plugins.disable_plugin(plugin)
+		self.buildMenu()
 
 	def openPluginDocs(self):
 		QDesktopServices.openUrl(QUrl("file:"+PLUGIN_DOCUMENTATION))

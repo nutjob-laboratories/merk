@@ -57,10 +57,31 @@ EVENTS = [
 	"part",
 ]
 
+def is_plugin_disabled(entry):
+	for e in config.DISABLED_PLUGINS:
+		if e==entry.id():
+			return True
+	return False
+
+def disable_plugin(entry):
+	for e in config.DISABLED_PLUGINS:
+		if e==entry.id(): return
+	config.DISABLED_PLUGINS.append(entry.id())
+	config.save_settings(config.CONFIG_FILE)
+
+def enable_plugin(entry):
+	clean = []
+	for e in config.DISABLED_PLUGINS:
+		if e==entry.id(): continue
+		clean.append(e)
+	config.DISABLED_PLUGINS = clean
+	config.save_settings(config.CONFIG_FILE)
+
 def load():
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
 		if p.id() in LOADED: continue
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,None)
 		if hasattr(obj,"load"):
@@ -71,6 +92,7 @@ def load():
 def unload():
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,None)
 		if hasattr(obj,"unload"):
@@ -80,6 +102,7 @@ def unload():
 def line_in(client,data):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"line_in"):
@@ -89,6 +112,7 @@ def line_in(client,data):
 def line_out(client,data):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"line_out"):
@@ -98,6 +122,7 @@ def line_out(client,data):
 def public(client,channel,user,message):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"public"):
@@ -107,6 +132,7 @@ def public(client,channel,user,message):
 def private(client,user,message):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"private"):
@@ -116,6 +142,7 @@ def private(client,user,message):
 def action(client,channel,user,message):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"action"):
@@ -125,6 +152,7 @@ def action(client,channel,user,message):
 def notice(client,channel,user,message):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"notice"):
@@ -134,6 +162,7 @@ def notice(client,channel,user,message):
 def join(client,channel,user):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"join"):
@@ -143,6 +172,7 @@ def join(client,channel,user):
 def part(client,channel,user):
 	if not config.PLUGINS_ENABLED: return
 	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
 		obj = p.obj
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"part"):

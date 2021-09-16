@@ -82,7 +82,6 @@ configuration_group.add_argument( "-L","--config-local",dest="configinstall",hel
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
 
-
 devgroup = parser.add_argument_group('Plugins')
 
 devgroup.add_argument("--generate", nargs='?', type=str,help="Create a \"blank\" plugin for editing", metavar="FILE",const=1)

@@ -78,6 +78,7 @@ ENABLE_EMOJI_SHORTCODES = True
 ENABLE_SPELLCHECK = True
 ASK_BEFORE_RECONNECT = False
 NOTIFY_ON_LOST_CONNECTION = True
+DISABLED_PLUGINS = []
 
 def save_settings(filename):
 
@@ -120,12 +121,15 @@ def save_settings(filename):
 		"enable_spellcheck": ENABLE_SPELLCHECK,
 		"ask_before_reconnect": ASK_BEFORE_RECONNECT,
 		"notify_on_lost_connection": NOTIFY_ON_LOST_CONNECTION,
+		"disabled_plugins": DISABLED_PLUGINS,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "disabled_plugins" in settings:
+		settings["disabled_plugins"] = DISABLED_PLUGINS
 	if not "notify_on_lost_connection" in settings:
 		settings["notify_on_lost_connection"] = NOTIFY_ON_LOST_CONNECTION
 	if not "ask_before_reconnect" in settings:
@@ -243,7 +247,8 @@ def load_settings(filename):
 	global ENABLE_EMOJI_SHORTCODES
 	global ENABLE_SPELLCHECK
 	global ASK_BEFORE_RECONNECT
-	global NOTIFY_ON_LOST_CONNECTION
+	global NOTIFY_ON_LOST_CONNECTIONr
+	global DISABLED_PLUGINS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -253,6 +258,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISABLED_PLUGINS = settings["disabled_plugins"]
 		NOTIFY_ON_LOST_CONNECTION = settings["notify_on_lost_connection"]
 		ASK_BEFORE_RECONNECT = settings["ask_before_reconnect"]
 		ENABLE_SPELLCHECK = settings["enable_spellcheck"]
@@ -340,6 +346,7 @@ def check_settings(filename):
 			if not "enable_spellcheck" in settings: return False
 			if not "ask_before_reconnect" in settings: return False
 			if not "notify_on_lost_connection" in settings: return False
+			if not "disabled_plugins" in settings: return False
 	else:
 		return False
 
