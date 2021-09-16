@@ -115,6 +115,10 @@ class Merk(QMainWindow):
 		# Now, load in plugins
 		self.loadPlugins()
 
+		# Give the plugins module a reference
+		# to the main app (that is, this window)
+		plugins.GUI = self
+
 		self.buildMenu()
 
 		if connection_info:
@@ -169,6 +173,8 @@ class Merk(QMainWindow):
 			hostid = client.server+":"+str(client.port)
 			if hostid in user.COMMANDS:
 				commands.executeScript(self,w,user.COMMANDS[hostid])
+
+		plugins.connect(client)
 
 	def receivedMOTD(self,client,motd):
 

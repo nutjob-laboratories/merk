@@ -131,4 +131,13 @@ class MERKPlugin(Plugin):
 	"""
 	def part(self,channel,user):
 		pass
+
+	"""
+		connect()
+		Arguments:		None
+		Returns:		None
+		Description:	Triggered when MERK completes registration with an IRC server.
+	"""
+	def connect(self):
+		pass
 	

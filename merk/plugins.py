@@ -43,6 +43,7 @@ CONFIG_DIRECTORY = None
 PLUGIN_DIRECTORY = None
 PLUGINS = []
 LOADED = []
+GUI = None
 
 EVENTS = [
 	"load",
@@ -55,6 +56,7 @@ EVENTS = [
 	"notice",
 	"join",
 	"part",
+	"connect",
 ]
 
 def is_plugin_disabled(entry):
@@ -179,6 +181,16 @@ def part(client,channel,user):
 			obj.part(channel,user)
 		cleanup_plugin(obj)
 
+def connect(client):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"connect"):
+			obj.connect()
+		cleanup_plugin(obj)
+
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
 	global PLUGIN_DIRECTORY
@@ -202,6 +214,28 @@ class Plugin():
 	__class_file = None
 	__plugin_icon = None
 	__plugin_directory = None
+
+	def writeConsole(self,text):
+		if GUI==None: return False
+		if self.irc==None: return False
+
+		w = GUI.getServerWindow(self.irc)
+		if w:
+			t = Message(PLUGIN_MESSAGE,'',text)
+			w.writeText(t)
+			return True
+		return False
+
+	def writeWindow(self,name,text):
+		if GUI==None: return False
+		if self.irc==None: return False
+
+		w = GUI.getWindow(name,self.irc)
+		if w:
+			t = Message(PLUGIN_MESSAGE,'',text)
+			w.writeText(t)
+			return True
+		return False
 
 class PluginEntry():
 	def __init__(self,pclass,pobj):

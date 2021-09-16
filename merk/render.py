@@ -171,7 +171,7 @@ def render_message(message,style):
 	msg_to_display = message.contents
 
 	# Escape all HTML
-	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE:
+	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=PLUGIN_MESSAGE:
 		msg_to_display = html.escape(msg_to_display)
 
 	if config.CONVERT_URLS_TO_LINKS:
@@ -258,6 +258,9 @@ def render_message(message,style):
 			output = LIGHT_DATE_MESSAGE_TEMPLATE
 
 		style = style["message"]
+	elif message.type==PLUGIN_MESSAGE:
+		output = SYSTEM_TEMPLATE
+		output_style = style["message"]
 
 	if style=="":
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)
