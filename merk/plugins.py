@@ -38,6 +38,7 @@ from pike.manager import PikeManager
 
 from .resources import *
 from . import config
+from . import commands
 
 CONFIG_DIRECTORY = None
 PLUGIN_DIRECTORY = None
@@ -215,6 +216,16 @@ class Plugin():
 	__plugin_icon = None
 	__plugin_directory = None
 
+	def command(self,cmd):
+		if GUI==None: return False
+		if self.irc==None: return False
+
+		w = GUI.getServerWindow(self.irc)
+		if w:
+			commands.handleCommonCommands(GUI,w,cmd)
+			return True
+		return False
+
 	def writeConsole(self,text):
 		if GUI==None: return False
 		if self.irc==None: return False
@@ -222,7 +233,7 @@ class Plugin():
 		w = GUI.getServerWindow(self.irc)
 		if w:
 			t = Message(PLUGIN_MESSAGE,'',text)
-			w.writeText(t)
+			w.writeText(t,False)
 			return True
 		return False
 
@@ -233,7 +244,7 @@ class Plugin():
 		w = GUI.getWindow(name,self.irc)
 		if w:
 			t = Message(PLUGIN_MESSAGE,'',text)
-			w.writeText(t)
+			w.writeText(t,False)
 			return True
 		return False
 
