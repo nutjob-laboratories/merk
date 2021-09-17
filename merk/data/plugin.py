@@ -140,4 +140,15 @@ class MERKPlugin(Plugin):
 	"""
 	def connect(self):
 		pass
+
+	"""
+		tick()
+		Arguments:		uptime (integer)
+		Returns:		None
+		Description:	Triggers once a second while MERK is connected to a server.
+						uptime contains the number of seconds the current connection
+						has been connected to the server.
+	"""
+	def tick(self,uptime):
+		pass
 	

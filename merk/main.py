@@ -628,6 +628,8 @@ class Merk(QMainWindow):
 
 	def uptime(self,client,uptime):
 
+		plugins.tick(client,uptime)
+
 		# getAllSubWindows(self,client):
 		for w in self.getAllSubWindows(client):
 			c = w.widget()

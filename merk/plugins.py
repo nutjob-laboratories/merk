@@ -58,6 +58,7 @@ EVENTS = [
 	"join",
 	"part",
 	"connect",
+	"tick",
 ]
 
 def is_plugin_disabled(entry):
@@ -190,6 +191,16 @@ def connect(client):
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"connect"):
 			obj.connect()
+		cleanup_plugin(obj)
+
+def tick(client,uptime):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"tick"):
+			obj.tick(uptime)
 		cleanup_plugin(obj)
 
 def initialize(directory,directory_name):
