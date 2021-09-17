@@ -59,6 +59,8 @@ EVENTS = [
 	"part",
 	"connect",
 	"tick",
+	"topic",
+	"rename",
 ]
 
 def is_plugin_disabled(entry):
@@ -201,6 +203,26 @@ def tick(client,uptime):
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"tick"):
 			obj.tick(uptime)
+		cleanup_plugin(obj)
+
+def topic(client,channel,newtopic):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"topic"):
+			obj.topic(channel,newtopic)
+		cleanup_plugin(obj)
+
+def rename(client,oldname,newname):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"rename"):
+			obj.rename(oldname,newname)
 		cleanup_plugin(obj)
 
 def initialize(directory,directory_name):

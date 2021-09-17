@@ -151,4 +151,26 @@ class MERKPlugin(Plugin):
 	"""
 	def tick(self,uptime):
 		pass
+
+	"""
+		topic()
+		Arguments:		channel (string), newtopic (string)
+		Returns:		None
+		Description:	Triggered when the topic changes in a channel that MERK is "in".
+						channel contains the name of the channel, and newtopic contains
+						the new channel topic.
+	"""
+	def topic(self,channel,newtopic):
+		pass
+
+	"""
+		rename()
+		Arguments:		oldname (string), newname (string)
+		Returns:		None
+		Description:	Triggered when the nickname of a user changes in MERK's "presence".
+						oldname is the user's old nickname, and newname is the user's new
+						nickname.
+	"""
+	def rename(self,oldname,newname):
+		pass
 	

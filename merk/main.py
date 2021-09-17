@@ -411,6 +411,7 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 	def topicChanged(self,client,user,channel,newTopic):
+		plugins.topic(client,channel,newTopic)
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -440,7 +441,7 @@ class Merk(QMainWindow):
 			return
 
 	def userRenamed(self,client,oldname,newname):
-
+		plugins.rename(client,oldname,newname)
 		windows = self.getAllSubWindows(client)
 
 		for subwindow in windows:
