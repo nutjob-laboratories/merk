@@ -1016,7 +1016,7 @@ class Window(QMainWindow):
 
 			self.chat.append(t)
 
-		self.moveChatToBottom()
+		self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)
 
 	def closeEvent(self, event):
 

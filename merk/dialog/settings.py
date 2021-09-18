@@ -418,6 +418,18 @@ class Dialog(QDialog):
 
 		self.writePrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+
+
+
+		self.writeScroll = QCheckBox("Always scroll to bottom\nwhen displaying text",self)
+		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
+		self.writeScroll.stateChanged.connect(self.changedSetting)
+
+		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+
+
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showTimestamps)
@@ -425,6 +437,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.createWindow)
 		messageLayout.addWidget(self.writePrivate)
+		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -465,6 +478,7 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		config.ALWAYS_SCROLL_TO_BOTTOM = self.writeScroll.isChecked()
 		config.NOTIFY_ON_LOST_CONNECTION = self.notifyOnLostConnection.isChecked()
 		config.ASK_BEFORE_RECONNECT = self.askBeforeReconnect.isChecked()
 		config.ENABLE_SPELLCHECK = self.enableSpellcheck.isChecked()
