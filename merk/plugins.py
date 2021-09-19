@@ -260,6 +260,9 @@ class Plugin():
 	__plugin_icon = None
 	__plugin_directory = None
 
+	def getDirectory(self):
+		return self.__plugin_directory
+
 	def command(self,cmd):
 		if GUI==None: return False
 		if self.irc==None: return False
