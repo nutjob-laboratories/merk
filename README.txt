@@ -2,6 +2,8 @@
   <img src="https://github.com/nutjob-laboratories/merk/raw/main/merk_splash.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
+  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a><br>
+  <a href="https://github.com/nutjob-laboratories/merk/raw/main/documentation/MERK_Plugin_Development_Guide.pdf">Plugin Development Guide</a><br>
 </p>
 <p align="center"><center>
 <table style="width: 100%" border="0">
@@ -26,9 +28,24 @@
 
 **MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
-**MERK** is in beta, but it is usable. A lot of the fancier features don't work, but you can connect to a server, join channels, and chat with people. Private chat works, too.
+**MERK** is in beta, but it works, and can be used for most IRC activities.
 
-Currently, user settings and logs are stored in the application directory. Later, user settings and logs will be stored in the user's home directory (or, via a command-line option, another directory of the user's choosing).
+# Features
+
+-   Runs on Windows and Linux
+-   Supports multiple connections (you can chat on more than one IRC server at a time)
+-   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
+-   A built-in list of over 80 IRC servers to connect to
+-   Text colors are customize-able
+-   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, and German)
+-   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
+    -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
+-   Command/nickname auto-completion
+-   Full IRC color support
+-   Automatic logging of channel and private chats
+  - Includes a utility to export logs to JSON, CSV, or your own custom format
+- Plugins
+  - Plugins are written in Python 3, just like **MERK**
 
 # Requirements
 
@@ -96,7 +113,25 @@ Plugins:
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start
 ```
+## Writing plugins for MERK
 
+**MERK** plugins are written in Python 3, the same language that **MERK** is written in. At its core, a  plugin is just a Python 3 class that inherits from a parent class built into **MERK**. Here's a basic example. All it does is print all incoming and outgoing IRC traffic to the console:
+```python
+from merk import *
+
+class ExamplePlugin(Plugin):
+
+  NAME = "Example Plugin"
+  VERSION = "1.0"
+  DESCRIPTION = "Displays all IRC network traffic"
+
+  def line_in(self,data):
+    print(self.irc.server+":"+str(self.irc.port)+" <- "+data)
+
+  def line_out(self,data):
+    print(self.irc.server+":"+str(self.irc.port)+" -> "+data)
+```
+Everything you need to write your own **MERK** plugins is in the [Plugin Development Guide](https://github.com/nutjob-laboratories/merk/raw/main/documentation/MERK_Plugin_Development_Guide.pdf), included with every download.
 # Developing MERK
 
 Several tools are included in [the official **MERK** repository](https://github.com/nutjob-laboratories/merk) for developing **MERK**. The [`pyrcc5` utility](https://manpages.ubuntu.com/manpages/xenial/man1/pyrcc5.1.html) is required, and should be installed automatically when you install PyQt. These are only needed if you're developing **MERK**, and can be ignored if you're only using the **MERK** IRC client.
@@ -128,4 +163,5 @@ Several tools are included in [the official **MERK** repository](https://github.
    - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
 
 [//]: # (End of document)
+
 
