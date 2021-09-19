@@ -173,4 +173,16 @@ class MERKPlugin(Plugin):
 	"""
 	def rename(self,oldname,newname):
 		pass
+
+	"""
+		quit()
+		Arguments:		user (string), message (string)
+		Returns:		None
+		Description:	Triggered when a user disconnects from IRC in MERK's "presence".
+						user is the nickname of the user that quit, and message is
+						the quit message the user left (if they left one; if they did not,
+						message will be an empty string).
+	"""
+	def quit(self,user,message):
+		pass
 	

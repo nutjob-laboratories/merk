@@ -466,7 +466,7 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def irc_QUIT(self,client,nickname,msg):
-
+		plugins.quit(client,nickname,msg)
 		windows = self.getAllSubWindows(client)
 
 		for subwindow in windows:

@@ -61,6 +61,7 @@ EVENTS = [
 	"tick",
 	"topic",
 	"rename",
+	"quit",
 ]
 
 def is_plugin_disabled(entry):
@@ -223,6 +224,16 @@ def rename(client,oldname,newname):
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"rename"):
 			obj.rename(oldname,newname)
+		cleanup_plugin(obj)
+
+def quit(client,nickname,message):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"quit"):
+			obj.quit(nickname,message)
 		cleanup_plugin(obj)
 
 def initialize(directory,directory_name):
