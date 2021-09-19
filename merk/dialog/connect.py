@@ -43,8 +43,8 @@ from .. import user
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_connect_information(app,parent=None,dismsg='',reason=''):
-		dialog = Dialog(app,parent,dismsg,reason)
+	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True):
+		dialog = Dialog(app,parent,dismsg,reason,logo)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -200,13 +200,14 @@ class Dialog(QDialog):
 		else:
 			self.commands.clear()
 
-	def __init__(self,app,parent=None,dismsg='',reason=''):
+	def __init__(self,app,parent=None,dismsg='',reason='',logo=True):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
 		self.parent = parent
 		self.disconnect_message = dismsg
 		self.reason = reason
+		self.logo = logo
 
 		self.StoredData = []
 		self.StoredServer = 0
@@ -217,8 +218,15 @@ class Dialog(QDialog):
 		self.CONNECT_VIA_SSL = False
 		self.RECONNECT_OPTION = False
 
-		self.setWindowTitle(APPLICATION_NAME+" IRC Client")
-		self.setWindowIcon(QIcon(CONNECT_ICON))
+		if self.logo:
+			self.setWindowTitle(APPLICATION_NAME+" IRC Client")
+			self.setWindowIcon(QIcon(APPLICATION_ICON))
+		else:
+			if self.disconnect_message=='':
+				self.setWindowTitle("Connect to IRC")
+			else:
+				self.setWindowTitle("Connection failed")
+			self.setWindowIcon(QIcon(CONNECT_ICON))
 
 		if user.USERNAME=='':
 			username = "MERK"
@@ -361,6 +369,8 @@ class Dialog(QDialog):
 		pixmap = QPixmap(MERK_SPLASH_IMAGE)
 		banner.setPixmap(pixmap)
 		banner.setAlignment(Qt.AlignCenter)
+
+		if not self.logo: banner.hide()
 
 		if self.disconnect_message!='':
 

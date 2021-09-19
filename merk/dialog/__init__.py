@@ -108,6 +108,14 @@ def ConnectDialog(obj,parent=None,dismsg='',reason=''):
 	if not info: return None
 	return info
 
+def ConnectDialogNoLogo(obj,parent=None,dismsg='',reason=''):
+	x = Connect(obj,parent,dismsg,reason,False)
+	info = x.get_connect_information(obj,parent,dismsg,reason,False)
+	del x
+
+	if not info: return None
+	return info
+
 def NewNickDialog(nick,obj):
 	x = Nick(nick,obj)
 	info = x.get_nick_information(nick,obj)
