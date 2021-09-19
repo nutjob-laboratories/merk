@@ -185,4 +185,27 @@ class MERKPlugin(Plugin):
 	"""
 	def quit(self,user,message):
 		pass
+
+	"""
+		kick()
+		Arguments:		channel (string), kicker (string), kickee (string), message (string)
+		Returns:		None
+		Description:	Triggered when a user is kicked from a channel that MERK is "in".
+						channel is the name of the channel the user was kicked from, kicker
+						is the user performed the kick, kickee is the user that was kicked,
+						and message is the kick message.
+	"""
+	def kick(self,channel,kicker,kickee,message):
+		pass
+
+	"""
+		kicked()
+		Arguments:		channel (string), kicker (string), message (string)
+		Returns:		None
+		Description:	Triggered when MERK is kicked from a channel. channel is
+						the name of the channel, kicker is the user that perfomed
+						the kick, and message is the kick message.
+	"""
+	def kicked(self,channel,kicker,message):
+		pass
 	

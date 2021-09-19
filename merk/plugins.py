@@ -62,6 +62,8 @@ EVENTS = [
 	"topic",
 	"rename",
 	"quit",
+	"kick",
+	"kicked",
 ]
 
 def is_plugin_disabled(entry):
@@ -236,6 +238,26 @@ def quit(client,nickname,message):
 			obj.quit(nickname,message)
 		cleanup_plugin(obj)
 
+def kick(client,channel,kicker,kickee,message):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"kick"):
+			obj.kick(channel,kicker,kickee,message)
+		cleanup_plugin(obj)
+
+def kicked(client,channel,kicker,message):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"kicked"):
+			obj.kicked(channel,kicker,message)
+		cleanup_plugin(obj)
+
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
 	global PLUGIN_DIRECTORY
@@ -263,7 +285,7 @@ class Plugin():
 	def getDirectory(self):
 		return self.__plugin_directory
 
-	def command(self,cmd):
+	def executeCommand(self,cmd):
 		if GUI==None: return False
 		if self.irc==None: return False
 

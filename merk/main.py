@@ -584,6 +584,8 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def userKicked(self,client,kickee,channel,kicker,message):
+
+		plugins.kick(client,channel,kicker,kickee,message)
 		
 		if len(message)>0:
 			t = Message(SYSTEM_MESSAGE,'',kicker+" kicked "+kickee+" from "+channel+" ("+message+")")
@@ -597,6 +599,8 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def kickedFrom(self,client,channel,kicker,message):
+
+		plugins.kicked(client,channel,kicker,message)
 		
 		w = self.getSubWindow(channel,client)
 		if w:
