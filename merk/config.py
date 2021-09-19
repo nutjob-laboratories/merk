@@ -77,9 +77,10 @@ SCROLL_CHAT_TO_BOTTOM_ON_RESIZE = True
 ENABLE_EMOJI_SHORTCODES = True
 ENABLE_SPELLCHECK = True
 ASK_BEFORE_RECONNECT = False
-NOTIFY_ON_LOST_CONNECTION = True
+NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
 DISABLED_PLUGINS = []
 ALWAYS_SCROLL_TO_BOTTOM = False
+PROMPT_ON_FAILED_CONNECTION = True
 
 def save_settings(filename):
 
@@ -121,21 +122,24 @@ def save_settings(filename):
 		"enable_emoji_shortcodes": ENABLE_EMOJI_SHORTCODES,
 		"enable_spellcheck": ENABLE_SPELLCHECK,
 		"ask_before_reconnect": ASK_BEFORE_RECONNECT,
-		"notify_on_lost_connection": NOTIFY_ON_LOST_CONNECTION,
+		"notify_on_lost_or_failed_connection": NOTIFY_ON_LOST_OR_FAILED_CONNECTION,
 		"disabled_plugins": DISABLED_PLUGINS,
 		"always_scroll_to_bottom": ALWAYS_SCROLL_TO_BOTTOM,
+		"prompt_on_failed_connection": PROMPT_ON_FAILED_CONNECTION,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "prompt_on_failed_connection" in settings:
+		settings["prompt_on_failed_connection"] = PROMPT_ON_FAILED_CONNECTION
 	if not "always_scroll_to_bottom" in settings:
 		settings["always_scroll_to_bottom"] = ALWAYS_SCROLL_TO_BOTTOM
 	if not "disabled_plugins" in settings:
 		settings["disabled_plugins"] = DISABLED_PLUGINS
-	if not "notify_on_lost_connection" in settings:
-		settings["notify_on_lost_connection"] = NOTIFY_ON_LOST_CONNECTION
+	if not "notify_on_lost_or_failed_connection" in settings:
+		settings["notify_on_lost_or_failed_connection"] = NOTIFY_ON_LOST_OR_FAILED_CONNECTION
 	if not "ask_before_reconnect" in settings:
 		settings["ask_before_reconnect"] = ASK_BEFORE_RECONNECT
 	if not "enable_spellcheck" in settings:
@@ -251,9 +255,10 @@ def load_settings(filename):
 	global ENABLE_EMOJI_SHORTCODES
 	global ENABLE_SPELLCHECK
 	global ASK_BEFORE_RECONNECT
-	global NOTIFY_ON_LOST_CONNECTIONr
+	global NOTIFY_ON_LOST_OR_FAILED_CONNECTION
 	global DISABLED_PLUGINS
 	global ALWAYS_SCROLL_TO_BOTTOM
+	global PROMPT_ON_FAILED_CONNECTION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -263,9 +268,10 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PROMPT_ON_FAILED_CONNECTION = settings["prompt_on_failed_connection"]
 		ALWAYS_SCROLL_TO_BOTTOM = settings["always_scroll_to_bottom"]
 		DISABLED_PLUGINS = settings["disabled_plugins"]
-		NOTIFY_ON_LOST_CONNECTION = settings["notify_on_lost_connection"]
+		NOTIFY_ON_LOST_OR_FAILED_CONNECTION = settings["notify_on_lost_or_failed_connection"]
 		ASK_BEFORE_RECONNECT = settings["ask_before_reconnect"]
 		ENABLE_SPELLCHECK = settings["enable_spellcheck"]
 		ENABLE_EMOJI_SHORTCODES = settings["enable_emoji_shortcodes"]
@@ -351,9 +357,10 @@ def check_settings(filename):
 			if not "enable_emoji_shortcodes" in settings: return False
 			if not "enable_spellcheck" in settings: return False
 			if not "ask_before_reconnect" in settings: return False
-			if not "notify_on_lost_connection" in settings: return False
+			if not "notify_on_lost_or_failed_connection" in settings: return False
 			if not "disabled_plugins" in settings: return False
 			if not "always_scroll_to_bottom" in settings: return False
+			if not "prompt_on_failed_connection" in settings: return False
 	else:
 		return False
 

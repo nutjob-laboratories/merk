@@ -845,7 +845,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			return
 
-		if config.NOTIFY_ON_LOST_CONNECTION:
+		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
 			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost."
 
 			msgBox = QMessageBox()
@@ -863,8 +863,20 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			return
 
-		msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
-		self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
+		if config.PROMPT_ON_FAILED_CONNECTION:
+			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+			self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
+		else:
+			if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
+				msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+				msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+				msgBox.setText(msg)
+				msgBox.setWindowTitle("Connection failed")
+				msgBox.setStandardButtons(QMessageBox.Ok)
+				msgBox.exec()
 
 class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 	def __init__(self,**kwargs):
@@ -915,7 +927,19 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
 			protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
 		else:
-			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
-			self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
+			if config.PROMPT_ON_FAILED_CONNECTION:
+				msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+				self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
+			else:
+				if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
+					msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+
+					msgBox = QMessageBox()
+					msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+					msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+					msgBox.setText(msg)
+					msgBox.setWindowTitle("Connection failed")
+					msgBox.setStandardButtons(QMessageBox.Ok)
+					msgBox.exec()
 
 

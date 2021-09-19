@@ -204,13 +204,21 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
-		self.askBeforeReconnect = QCheckBox("Ask before automatic reconnection",self)
+		self.askBeforeReconnect = QCheckBox("Ask before automatically\nreconnecting",self)
 		if config.ASK_BEFORE_RECONNECT: self.askBeforeReconnect.setChecked(True)
 		self.askBeforeReconnect.stateChanged.connect(self.changedSetting)
 
-		self.notifyOnLostConnection = QCheckBox("Notify on lost connection",self)
-		if config.NOTIFY_ON_LOST_CONNECTION: self.notifyOnLostConnection.setChecked(True)
+		self.askBeforeReconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.notifyOnLostConnection = QCheckBox("Notify on lost/failed connection",self)
+		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION: self.notifyOnLostConnection.setChecked(True)
 		self.notifyOnLostConnection.stateChanged.connect(self.changedSetting)
+
+		self.promptFail = QCheckBox("Prompt for new server on\nconnection failure",self)
+		if config.PROMPT_ON_FAILED_CONNECTION: self.promptFail.setChecked(True)
+		self.promptFail.stateChanged.connect(self.changedSetting)
+
+		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
@@ -219,6 +227,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.askBeforeDisconnect)
 		applicationLayout.addWidget(self.askBeforeReconnect)
 		applicationLayout.addWidget(self.notifyOnLostConnection)
+		applicationLayout.addWidget(self.promptFail)
 		applicationLayout.addWidget(self.showUptime)
 		applicationLayout.addWidget(self.showChanUptime)
 		applicationLayout.addStretch()
@@ -418,17 +427,11 @@ class Dialog(QDialog):
 
 		self.writePrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-
-
-
 		self.writeScroll = QCheckBox("Always scroll to bottom\nwhen displaying text",self)
 		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
 		self.writeScroll.stateChanged.connect(self.changedSetting)
 
 		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-
-
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
@@ -478,8 +481,9 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		config.PROMPT_ON_FAILED_CONNECTION = self.promptFail.isChecked()
 		config.ALWAYS_SCROLL_TO_BOTTOM = self.writeScroll.isChecked()
-		config.NOTIFY_ON_LOST_CONNECTION = self.notifyOnLostConnection.isChecked()
+		config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = self.notifyOnLostConnection.isChecked()
 		config.ASK_BEFORE_RECONNECT = self.askBeforeReconnect.isChecked()
 		config.ENABLE_SPELLCHECK = self.enableSpellcheck.isChecked()
 		config.ENABLE_EMOJI_SHORTCODES = self.enableEmojis.isChecked()
