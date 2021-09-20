@@ -208,4 +208,18 @@ class MERKPlugin(Plugin):
 	"""
 	def kicked(self,channel,kicker,message):
 		pass
+
+	"""
+		mode()
+		Arguments:		target (string), user (string), mset (boolean), modes (string), args (tuple)
+		Returns:		None
+		Description:	Triggered when MERK receives a mode change notification.
+						target is the target of the mode change, user is the
+						user setting the mode, mset is True if the mode is being set
+						and False if the mode is being unset, modes is the modes
+						being set or unset, and args is any arguments to the mode being
+						set or unset
+	"""
+	def mode(self,target,user,mset,modes,args):
+		pass
 	

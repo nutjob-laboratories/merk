@@ -64,6 +64,7 @@ EVENTS = [
 	"quit",
 	"kick",
 	"kicked",
+	"mode",
 ]
 
 def is_plugin_disabled(entry):
@@ -256,6 +257,16 @@ def kicked(client,channel,kicker,message):
 		inject_plugin(obj,p,client)
 		if hasattr(obj,"kicked"):
 			obj.kicked(channel,kicker,message)
+		cleanup_plugin(obj)
+
+def mode(client,target,user,mset,modes,args):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"mode"):
+			obj.mode(target,user,mset,modes,args)
 		cleanup_plugin(obj)
 
 def initialize(directory,directory_name):

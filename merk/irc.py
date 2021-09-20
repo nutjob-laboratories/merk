@@ -209,6 +209,8 @@ class IRC_Connection(irc.IRCClient):
 		if "o" in modes: self.sendLine("NAMES "+channel)
 		if "v" in modes: self.sendLine("NAMES "+channel)
 
+		plugins.mode(self,channel,user,mset,modes,args)
+
 		for m in modes:
 			if mset:
 				
