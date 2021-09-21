@@ -550,6 +550,28 @@ class IRC_Connection(irc.IRCClient):
 			del self.whowas[nick]
 			self.gui.whowas(self,nick,replies)
 
+	def irc_INVITE(self,prefix,params):
+		p = prefix.split("!")
+		if len(p)==2:
+			nick = p[0]
+			hostmask = p[1]
+		else:
+			nick = prefix
+			hostmask = None
+
+		target = params[0]
+		channel = params[1]
+
+		#events.erk_invited(self.gui,self,prefix,channel)
+		self.gui.invited(self,prefix,channel)
+		
+	def irc_RPL_INVITING(self,prefix,params):
+		user = params[1]
+		channel = params[2]
+
+		#events.erk_inviting(self.gui,self,user,channel)
+		self.gui.inviting(self,user,channel)
+
 	def sendLine(self,line):
 
 		plugins.line_out(self,line)

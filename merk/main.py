@@ -677,6 +677,31 @@ class Merk(QMainWindow):
 				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.realname+"\x0F")
 				c.writeText(t,False)
 
+	def invited(self,client,user,channel):
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			t = Message(SYSTEM_MESSAGE,'', user+" invited you to "+channel)
+			c.writeText(t)
+
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'', user+" invited you to "+channel)
+			w.writeText(t)
+
+	def inviting(self,client,user,channel):
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			t = Message(SYSTEM_MESSAGE,'', "You invited "+user+" to "+channel)
+			c.writeText(t)
+
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'', "You invited "+user+" to "+channel)
+			w.writeText(t)
+
+
 	# |================|
 	# | END IRC EVENTS |
 	# |================|

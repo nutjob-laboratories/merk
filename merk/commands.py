@@ -54,6 +54,7 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"whois": config.ISSUE_COMMAND_SYMBOL+"whois ",
 		config.ISSUE_COMMAND_SYMBOL+"whowas": config.ISSUE_COMMAND_SYMBOL+"whowas ",
 		config.ISSUE_COMMAND_SYMBOL+"who": config.ISSUE_COMMAND_SYMBOL+"who ",
+		config.ISSUE_COMMAND_SYMBOL+"invite": config.ISSUE_COMMAND_SYMBOL+"invite ",
 	}
 
 # The command help system
@@ -67,6 +68,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...</b>", "Sets a mode on a channel or user" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"invite NICKNAME CHANNEL</b>", "Sends a channel invitation" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [MESSAGE]</b>", "Kicks a user from a channel" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]</b>", "Requests user information from the server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]</b>", "Requests user information from the server" ],
@@ -92,6 +94,21 @@ HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
 def handleChatCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |---------|
+	# | /invite |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'invite' and len(tokens)==2:
+			if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
+				tokens.pop(0)
+				user = tokens.pop(0)
+				window.client.sendLine("INVITE "+user+" "+window.name)
+				return True
+			else:
+				t = Message(ERROR_MESSAGE,'',"You can't invite a user to a private chat")
+				window.writeText(t)
+				return True
 
 	# |-------|
 	# | /kick |
@@ -247,6 +264,21 @@ def executeScript(gui,window,text):
 
 def handleCommonCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |---------|
+	# | /invite |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'invite' and len(tokens)==3:
+			tokens.pop(0)
+			user = tokens.pop(0)
+			channel = tokens.pop(0)
+			window.client.sendLine("INVITE "+user+" "+channel)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'invite':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"invite NICKNAME CHANNEL")
+			window.writeText(t)
+			return True
 
 	# |---------|
 	# | /script |
