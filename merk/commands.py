@@ -107,7 +107,7 @@ def handleChatCommands(gui,window,user_input):
 				return True
 			else:
 				t = Message(ERROR_MESSAGE,'',"You can't invite a user to a private chat")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 
 	# |-------|
@@ -170,7 +170,7 @@ def handleChatCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |--------|
@@ -196,7 +196,7 @@ def handleChatCommands(gui,window,user_input):
 					return True
 				else:
 					t = Message(ERROR_MESSAGE,'',"Can't set topic for a private message")
-					window.writeText(t)
+					window.writeText(t,False)
 					return True
 	
 	# |-------|
@@ -245,7 +245,7 @@ def execute_script_error(data):
 	line = data[2]
 
 	t = Message(ERROR_MESSAGE,'',line)
-	window.writeText(t)
+	window.writeText(t,False)
 
 def execute_script_end(data):
 	gui = data[0]
@@ -307,7 +307,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |---------|
@@ -327,7 +327,7 @@ def handleCommonCommands(gui,window,user_input):
 				arg = int(arg)
 			except:
 				t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 			window.client.sendLine("WHOWAS "+nick+" "+str(arg))
 			return True
@@ -340,13 +340,13 @@ def handleCommonCommands(gui,window,user_input):
 				arg = int(arg)
 			except:
 				t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 			window.client.sendLine("WHOWAS "+nick+" "+str(arg)+" "+serv)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |------|
@@ -364,13 +364,13 @@ def handleCommonCommands(gui,window,user_input):
 			arg = tokens.pop(0)
 			if arg.lower()!='o':
 				t = Message(ERROR_MESSAGE,'',"Improper argument for "+config.ISSUE_COMMAND_SYMBOL+"who")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 			window.client.sendLine("WHO "+nick+" o")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |--------|
@@ -390,7 +390,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -407,7 +407,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [REASON]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -422,7 +422,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 
@@ -447,7 +447,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'notice':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |------|
@@ -471,7 +471,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -495,7 +495,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -524,7 +524,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -539,14 +539,14 @@ def handleCommonCommands(gui,window,user_input):
 			# channel from the same channel they are in
 			if window.client.nickname.lower()==newnick.lower():
 				t = Message(ERROR_MESSAGE,'',"You are currently using \""+newnick+"\" as a nickname")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 
 			window.client.setNick(newnick)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'nick':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -578,7 +578,7 @@ def handleCommonCommands(gui,window,user_input):
 			# channel from the same channel they are in
 			if window.name.lower()==channel.lower():
 				t = Message(ERROR_MESSAGE,'',"You have already joined "+window.name)
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 
 			# Check to see if the user has already joined
@@ -604,7 +604,7 @@ def handleCommonCommands(gui,window,user_input):
 			# channel from the same channel they are in
 			if window.name.lower()==channel.lower():
 				t = Message(ERROR_MESSAGE,'',"You have already joined "+window.name)
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 
 			# Check to see if the user has already joined
@@ -623,7 +623,7 @@ def handleCommonCommands(gui,window,user_input):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	return False
