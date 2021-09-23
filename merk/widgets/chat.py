@@ -1245,7 +1245,7 @@ class Window(QMainWindow):
 				if hasattr(self,"topic"): self.topic.refresh()
 
 			elif event.oldState() == Qt.WindowNoState or self.windowState() == Qt.WindowMaximized:
-				# Mazimized
+				# Maximized
 
 				# Make sure the topic displays correctly
 				if hasattr(self,"topic"): self.topic.refresh()

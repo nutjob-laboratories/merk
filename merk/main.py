@@ -1521,11 +1521,24 @@ class Merk(QMainWindow):
 	# subWindowActivated()
 	# Triggered whenever a subwindow is activated
 	def subWindowActivated(self,subwindow):
+
+		# Reset the window title
+		self.setWindowTitle(config.DISPLAY_NAME)
+
 		if subwindow==None: return
 
 		w = subwindow.widget()
 		if hasattr(w,"name"):
 			# It's a named subwindow
+			if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
+				if w.client.hostname:
+					server = w.client.hostname
+				else:
+					server = w.client.server+":"+str(w.client.port)
+				if w.window_type==SERVER_WINDOW:
+					self.setWindowTitle(config.DISPLAY_NAME+" - "+server)
+				else:
+					self.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
 			pass
 
 		if hasattr(w,"input"):

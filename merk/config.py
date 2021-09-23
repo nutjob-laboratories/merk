@@ -81,6 +81,7 @@ NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
 DISABLED_PLUGINS = []
 ALWAYS_SCROLL_TO_BOTTOM = False
 PROMPT_ON_FAILED_CONNECTION = True
+DISPLAY_ACTIVE_CHAT_IN_TITLE = True
 
 def save_settings(filename):
 
@@ -126,12 +127,15 @@ def save_settings(filename):
 		"disabled_plugins": DISABLED_PLUGINS,
 		"always_scroll_to_bottom": ALWAYS_SCROLL_TO_BOTTOM,
 		"prompt_on_failed_connection": PROMPT_ON_FAILED_CONNECTION,
+		"display_active_chat_in_title": DISPLAY_ACTIVE_CHAT_IN_TITLE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "display_active_chat_in_title" in settings:
+		settings["display_active_chat_in_title"] = DISPLAY_ACTIVE_CHAT_IN_TITLE
 	if not "prompt_on_failed_connection" in settings:
 		settings["prompt_on_failed_connection"] = PROMPT_ON_FAILED_CONNECTION
 	if not "always_scroll_to_bottom" in settings:
@@ -259,6 +263,7 @@ def load_settings(filename):
 	global DISABLED_PLUGINS
 	global ALWAYS_SCROLL_TO_BOTTOM
 	global PROMPT_ON_FAILED_CONNECTION
+	global DISPLAY_ACTIVE_CHAT_IN_TITLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -268,6 +273,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISPLAY_ACTIVE_CHAT_IN_TITLE = settings["display_active_chat_in_title"]
 		PROMPT_ON_FAILED_CONNECTION = settings["prompt_on_failed_connection"]
 		ALWAYS_SCROLL_TO_BOTTOM = settings["always_scroll_to_bottom"]
 		DISABLED_PLUGINS = settings["disabled_plugins"]
@@ -361,6 +367,7 @@ def check_settings(filename):
 			if not "disabled_plugins" in settings: return False
 			if not "always_scroll_to_bottom" in settings: return False
 			if not "prompt_on_failed_connection" in settings: return False
+			if not "display_active_chat_in_title" in settings: return False
 	else:
 		return False
 

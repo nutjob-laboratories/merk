@@ -192,10 +192,6 @@ class Dialog(QDialog):
 		sizeLayout.addWidget(self.sizeLabel)
 		sizeLayout.addStretch()
 
-		self.askBeforeDisconnect = QCheckBox("Ask before disconnecting",self)
-		if config.ASK_BEFORE_DISCONNECT: self.askBeforeDisconnect.setChecked(True)
-		self.askBeforeDisconnect.stateChanged.connect(self.changedSetting)
-
 		self.showUptime = QCheckBox("Show connection uptime",self)
 		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
 		self.showUptime.stateChanged.connect(self.changedSetting)
@@ -203,6 +199,38 @@ class Dialog(QDialog):
 		self.showChanUptime = QCheckBox("Show channel uptime",self)
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
+
+		self.showChatInTitle = QCheckBox("Show active chat in window title",self)
+		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
+		self.showChatInTitle.stateChanged.connect(self.changedSetting)
+
+		applicationLayout = QVBoxLayout()
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
+		applicationLayout.addLayout(fontLayout)
+		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addWidget(self.showChatInTitle)
+		applicationLayout.addWidget(self.showUptime)
+		applicationLayout.addWidget(self.showChanUptime)
+		applicationLayout.addStretch()
+
+		self.applicationPage.setLayout(applicationLayout)
+
+		# Application page
+
+		self.connectionsPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Connection")
+		entry.widget = self.connectionsPage
+		entry.setIcon(QIcon(CONNECT_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.connectionsPage)
+
+		self.askBeforeDisconnect = QCheckBox("Ask before disconnecting",self)
+		if config.ASK_BEFORE_DISCONNECT: self.askBeforeDisconnect.setChecked(True)
+		self.askBeforeDisconnect.stateChanged.connect(self.changedSetting)
 
 		self.askBeforeReconnect = QCheckBox("Ask before automatically\nreconnecting",self)
 		if config.ASK_BEFORE_RECONNECT: self.askBeforeReconnect.setChecked(True)
@@ -220,19 +248,16 @@ class Dialog(QDialog):
 
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
-		applicationLayout.addLayout(fontLayout)
-		applicationLayout.addLayout(sizeLayout)
-		applicationLayout.addWidget(self.askBeforeDisconnect)
-		applicationLayout.addWidget(self.askBeforeReconnect)
-		applicationLayout.addWidget(self.notifyOnLostConnection)
-		applicationLayout.addWidget(self.promptFail)
-		applicationLayout.addWidget(self.showUptime)
-		applicationLayout.addWidget(self.showChanUptime)
-		applicationLayout.addStretch()
 
-		self.applicationPage.setLayout(applicationLayout)
+		connectionsLayout = QVBoxLayout()
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
+		connectionsLayout.addWidget(self.askBeforeDisconnect)
+		connectionsLayout.addWidget(self.askBeforeReconnect)
+		connectionsLayout.addWidget(self.notifyOnLostConnection)
+		connectionsLayout.addWidget(self.promptFail)
+		connectionsLayout.addStretch()
+
+		self.connectionsPage.setLayout(connectionsLayout)
 
 		# Input page
 
@@ -481,6 +506,7 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		config.DISPLAY_ACTIVE_CHAT_IN_TITLE = self.showChatInTitle.isChecked()
 		config.PROMPT_ON_FAILED_CONNECTION = self.promptFail.isChecked()
 		config.ALWAYS_SCROLL_TO_BOTTOM = self.writeScroll.isChecked()
 		config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = self.notifyOnLostConnection.isChecked()
@@ -515,6 +541,8 @@ class Dialog(QDialog):
 			config.APPLICATION_FONT = self.newfont.toString()
 			self.parent.app.setFont(self.newfont)
 			self.parent.setAllFont(self.newfont)
+
+		self.parent.subWindowActivated(None)
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
