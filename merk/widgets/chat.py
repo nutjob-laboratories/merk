@@ -1236,6 +1236,20 @@ class Window(QMainWindow):
 			sb.setValue(sb.maximum())
 			self.chat.ensureCursorVisible()
 
+	def changeEvent(self, event):
+		if event.type() == QEvent.WindowStateChange:
+			if event.oldState() and Qt.WindowMinimized:
+				# Minimized
+
+				# Make sure the topic displays correctly
+				if hasattr(self,"topic"): self.topic.refresh()
+
+			elif event.oldState() == Qt.WindowNoState or self.windowState() == Qt.WindowMaximized:
+				# Mazimized
+
+				# Make sure the topic displays correctly
+				if hasattr(self,"topic"): self.topic.refresh()
+
 	def splitterResize(self,position,index):
 		# Save the width of the userlist for the resize event
 		self.userlist_width = self.userlist.width()
