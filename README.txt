@@ -106,7 +106,7 @@ Plugins:
 
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start
-  -X, --nocommands      Don't execute commands on connections
+  -X, --nocommands      Don't auto-execute commands on connection
 ```
 ## Writing plugins for MERK
 

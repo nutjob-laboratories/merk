@@ -91,7 +91,7 @@ devgroup.add_argument( "--noplugins", help=f"Disable plugins", action="store_tru
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
-misc_group.add_argument( "-X","--nocommands", help=f"Don't execute commands on connections", action="store_true")
+misc_group.add_argument( "-X","--nocommands", help=f"Don't auto-execute commands on connection", action="store_true")
 
 args = parser.parse_args()
 
