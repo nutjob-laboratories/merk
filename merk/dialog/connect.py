@@ -43,8 +43,8 @@ from .. import user
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True):
-		dialog = Dialog(app,parent,dismsg,reason,logo)
+	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,nocommands=False):
+		dialog = Dialog(app,parent,dismsg,reason,logo,nocommands)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -200,7 +200,7 @@ class Dialog(QDialog):
 		else:
 			self.commands.clear()
 
-	def __init__(self,app,parent=None,dismsg='',reason='',logo=True):
+	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,nocommands=False):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
@@ -208,6 +208,7 @@ class Dialog(QDialog):
 		self.disconnect_message = dismsg
 		self.reason = reason
 		self.logo = logo
+		self.no_commands = nocommands
 
 		self.StoredData = []
 		self.StoredServer = 0
@@ -371,6 +372,9 @@ class Dialog(QDialog):
 		banner.setAlignment(Qt.AlignCenter)
 
 		if not self.logo: banner.hide()
+
+		if self.no_commands:
+			self.tabs.removeTab(2)
 
 		if self.disconnect_message!='':
 

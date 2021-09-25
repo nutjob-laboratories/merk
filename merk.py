@@ -73,6 +73,7 @@ congroup.add_argument("port", type=int,help="Server port to connect to (6667)", 
 congroup.add_argument( "--ssl","--tls", help=f"Use SSL/TLS to connect to IRC", action="store_true")
 congroup.add_argument( "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
 congroup.add_argument("-p","--password", type=str,help="Use server password to connect", metavar="PASSWORD", default='')
+congroup.add_argument("-c","--channel", type=str,help="Join channel on connection", metavar="CHANNEL[:KEY]", action='append')
 
 configuration_group = parser.add_argument_group('Configuration')
 
@@ -90,6 +91,7 @@ devgroup.add_argument( "--noplugins", help=f"Disable plugins", action="store_tru
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
+misc_group.add_argument( "-X","--nocommands", help=f"Don't execute commands on connections", action="store_true")
 
 args = parser.parse_args()
 
@@ -165,6 +167,18 @@ if __name__ == '__main__':
 		else:
 			pword = args.password
 
+		chans = []
+		if args.channel:
+			for c in args.channel:
+				if type(c)==list:
+					chans.append(c)
+				else:
+					p = c.split(':')
+					if len(p)==2:
+						chans.append(p)
+					else:
+						chans.append( [c,''] )
+
 		# Load in user settings
 		user.load_user(user.USER_FILE)
 
@@ -203,6 +217,8 @@ if __name__ == '__main__':
 				i,					# Connection info
 				font,				# Application font
 				args.noplugins,		# Disable plugins
+				args.nocommands,	# Disable connection commands
+				chans,				# Channels
 				None,				# Parent
 			)
 
@@ -219,13 +235,15 @@ if __name__ == '__main__':
 					None,				# Connection info
 					font,				# Application font
 					args.noplugins,		# Disable plugins
+					args.nocommands,	# Disable connection commands
+					[],					# Channels
 					None,				# Parent
 				)
 
 			GUI.show()
 		else:
 			# Bring up the connection dialog
-			connection_info = ConnectDialog(app)
+			connection_info = ConnectDialog(app,None,'','',args.nocommands)
 			if connection_info:
 				# Create the main GUI and show it
 				GUI = Merk(
@@ -235,6 +253,8 @@ if __name__ == '__main__':
 						connection_info,	# Connection info
 						font,				# Application font
 						args.noplugins,		# Disable plugins
+						args.nocommands,	# Disable connection commands
+						[],					# Channels
 						None,				# Parent
 					)
 

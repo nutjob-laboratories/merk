@@ -578,6 +578,18 @@ class IRC_Connection(irc.IRCClient):
 
 		return irc.IRCClient.sendLine(self, line)
 
+	def irc_ERR_NOSUCHNICK(self,prefix,params):
+		self.gui.receivedError(self,params[1]+": "+params[2])
+
+	def irc_ERR_NOSUCHSERVER(self,prefix,params):
+		self.gui.receivedError(self,params[1]+": "+params[2])
+
+	def irc_ERR_NOSUCHCHANNEL(self,prefix,params):
+		self.gui.receivedError(self,params[1]+": "+params[2])
+
+	def irc_ERR_CANNOTSENDTOCHAN(self,prefix,params):
+		self.gui.receivedError(self,params[1]+": "+params[2])
+
 	def lineReceived(self, line):
 
 		# Decode the incoming text line

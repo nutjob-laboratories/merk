@@ -73,9 +73,10 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 # Usage
 
 ```
-usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-D DIRECTORY]
-                      [-L] [--config-name NAME] [--qtstyle NAME]
-                      [--generate [FILE]] [--noplugins] [-N]
+usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD]
+                      [-c CHANNEL[:KEY]] [-D DIRECTORY] [-L]
+                      [--config-name NAME] [--qtstyle NAME]
+                      [--generate [FILE]] [--noplugins] [-N] [-X]
                       [SERVER] [PORT]
 
 optional arguments:
@@ -88,6 +89,8 @@ Connection:
   --reconnect           Reconnect to servers on disconnection
   -p PASSWORD, --password PASSWORD
                         Use server password to connect
+  -c CHANNEL[:KEY], --channel CHANNEL[:KEY]
+                        Join channel on connection
 
 Configuration:
   -D DIRECTORY, --config-directory DIRECTORY
@@ -103,6 +106,7 @@ Plugins:
 
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start
+  -X, --nocommands      Don't execute commands on connections
 ```
 ## Writing plugins for MERK
 

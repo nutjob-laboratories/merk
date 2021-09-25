@@ -64,7 +64,9 @@ class Merk(QMainWindow):
 			configuration_directory_name=".merk",
 			connection_info=None,
 			application_font=None,
-			plugins_disabled=True,
+			plugins_disabled=False,
+			no_commands=False,
+			channels=[],
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -76,6 +78,8 @@ class Merk(QMainWindow):
 		self.configuration_directory_name = configuration_directory_name
 		self.application_font = application_font
 		self.plugins_disabled = plugins_disabled
+		self.no_commands = no_commands
+		self.join_channels = channels
 
 		if self.plugins_disabled: config.PLUGINS_ENABLED = False
 
@@ -168,11 +172,17 @@ class Merk(QMainWindow):
 		
 		self.nickChanged(client)
 
-		w = self.getServerWindow(client)
-		if w:
-			hostid = client.server+":"+str(client.port)
-			if hostid in user.COMMANDS:
-				commands.executeScript(self,w,user.COMMANDS[hostid])
+		if not self.no_commands:
+			w = self.getServerWindow(client)
+			if w:
+				hostid = client.server+":"+str(client.port)
+				if hostid in user.COMMANDS:
+					commands.executeScript(self,w,user.COMMANDS[hostid])
+
+		if len(self.join_channels)>0:
+			for e in self.join_channels:
+				client.join(e[0],e[1])
+			self.join_channels = []
 
 		plugins.connect(client)
 
@@ -710,8 +720,7 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		# connection = ConnectDialog(self.app,self,message,reason)
-		connection = ConnectDialogNoLogo(self.app,self,message,reason)
+		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.no_commands)
 
 		if connection:
 			
@@ -774,8 +783,7 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			#connection = ConnectDialog(self.app,self)
-			connection = ConnectDialogNoLogo(self.app,self)
+			connection = ConnectDialogNoLogo(self.app,self,'','',self.no_commands)
 		if connection:
 			
 			if connection.reconnect:
