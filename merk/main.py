@@ -678,6 +678,9 @@ class Merk(QMainWindow):
 				c.writeText(t,False)
 
 	def invited(self,client,user,channel):
+
+		plugins.invite(client,channel,user)
+
 		w = self.MDI.activeSubWindow()
 		if w:
 			c = w.widget()

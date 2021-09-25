@@ -269,6 +269,16 @@ def mode(client,target,user,mset,modes,args):
 			obj.mode(target,user,mset,modes,args)
 		cleanup_plugin(obj)
 
+def invite(client,channel,user):
+	if not config.PLUGINS_ENABLED: return
+	for p in PLUGINS:
+		if is_plugin_disabled(p): continue
+		obj = p.obj
+		inject_plugin(obj,p,client)
+		if hasattr(obj,"invite"):
+			obj.invite(channel,user)
+		cleanup_plugin(obj)
+
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
 	global PLUGIN_DIRECTORY

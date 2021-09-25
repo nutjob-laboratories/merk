@@ -222,4 +222,16 @@ class MERKPlugin(Plugin):
 	"""
 	def mode(self,target,user,mset,modes,args):
 		pass
+
+	"""
+		invite()
+		Arguments:		channel (string), user (string)
+		Returns:		None
+		Description:	Triggered when MERK receives a channel invite. channel contains
+						the name of the channel, and user user contains the
+						nickname and hostmask (in the format NICKNAME!USERNAME@HOST)
+						of the user that sent the invitation.
+	"""
+	def invite(self,channel,user):
+		pass
 	
