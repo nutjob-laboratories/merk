@@ -58,7 +58,7 @@ class Dialog(QDialog):
 		if x:
 			self.subWidth = x[0]
 			self.subHeight = x[1]
-			self.sizeLabel.setText(f"Window size: <b>{str(self.subWidth)}x{str(self.subHeight)} pixels</b>")
+			self.sizeLabel.setText(f"Initial window size: <b>{str(self.subWidth)}x{str(self.subHeight)} px</b>")
 			self.changed.show()
 
 	def setLogSize(self):
@@ -100,6 +100,16 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.rerender = True
 
+	def setQuitMsg(self):
+		info = dialog.QuitPartDialog(self.default_quit_part,self)
+
+		if not info: return None
+
+		self.default_quit_part = info
+		self.partMsg.setText("<b>"+str(info)+"</b>")
+
+		self.changed.show()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -113,6 +123,7 @@ class Dialog(QDialog):
 		self.historysize = config.COMMAND_HISTORY_LENGTH
 		self.spellLang = config.DEFAULT_SPELLCHECK_LANGUAGE
 		self.rerender = False
+		self.default_quit_part = config.DEFAULT_QUIT_MESSAGE
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -175,7 +186,7 @@ class Dialog(QDialog):
 		fontLayout.addWidget(self.fontLabel)
 		fontLayout.addStretch()
 
-		self.sizeLabel = QLabel(f"Window size: <b>{str(config.DEFAULT_SUBWINDOW_WIDTH)}x{str(config.DEFAULT_SUBWINDOW_HEIGHT)} pixels</b>",self)
+		self.sizeLabel = QLabel(f"Initial window size: <b>{str(config.DEFAULT_SUBWINDOW_WIDTH)}x{str(config.DEFAULT_SUBWINDOW_HEIGHT)} px</b>",self)
 
 		sizeButton = QPushButton("")
 		sizeButton.clicked.connect(self.setWinsize)
@@ -215,7 +226,7 @@ class Dialog(QDialog):
 
 		self.applicationPage.setLayout(applicationLayout)
 
-		# Application page
+		# Connection page
 
 		self.connectionsPage = QWidget()
 
@@ -249,8 +260,47 @@ class Dialog(QDialog):
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 
+
+
+
+
+		self.partMsg = QLabel("<b>"+str(config.DEFAULT_QUIT_MESSAGE)+"</b>")
+
+		self.setPartMsg = QPushButton("")
+		self.setPartMsg.clicked.connect(self.setQuitMsg)
+		self.setPartMsg.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.setPartMsg.setFixedSize(fheight +10,fheight + 10)
+		self.setPartMsg.setIcon(QIcon(EDIT_ICON))
+		self.setPartMsg.setToolTip("Set quit/part message")
+
+		cgbLayout = QHBoxLayout()
+		cgbLayout.addWidget(self.setPartMsg)
+		cgbLayout.addWidget(self.partMsg)
+		cgbLayout.addStretch()
+
+		quitPartBox = QGroupBox("Default Quit/Part Message",self)
+		quitPartBox.setLayout(cgbLayout)
+
+		quitPartBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
+
+
+
+
+
+
+
+
+
+
+
+
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
+		connectionsLayout.addWidget(quitPartBox)
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
 		connectionsLayout.addWidget(self.askBeforeReconnect)
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
@@ -533,6 +583,8 @@ class Dialog(QDialog):
 		config.ASK_BEFORE_DISCONNECT = self.askBeforeDisconnect.isChecked()
 		config.DEFAULT_SUBWINDOW_WIDTH = self.subWidth
 		config.DEFAULT_SUBWINDOW_HEIGHT = self.subHeight
+
+		config.DEFAULT_QUIT_MESSAGE = self.default_quit_part
 
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		if self.rerender: self.parent.reRenderAll()

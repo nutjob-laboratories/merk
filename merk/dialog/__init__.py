@@ -33,6 +33,14 @@ from .logsize import Dialog as LogSize
 from .historysize import Dialog as HistorySize
 from .export import Dialog as ExportLog
 from .about import Dialog as About
+from .quitpart import Dialog as QuitPart
+
+def QuitPartDialog(msg,parent):
+	x = QuitPart(msg,parent)
+	info = x.get_message_information(msg,parent)
+	del x
+
+	return info
 
 def AboutDialog():
 	x = About()
