@@ -159,6 +159,7 @@ PACKAGE_ICON = ":/icon-package.png"
 PDF_ICON = ":/icon-pdf.png"
 CHECKED_ICON = ":/icon-checked.png"
 UNCHECKED_ICON = ":/icon-unchecked.png"
+TIMESTAMP_ICON = ":/icon-timestamp.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

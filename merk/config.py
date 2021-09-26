@@ -50,7 +50,6 @@ DICTIONARY = [
 ]
 NICKNAME_PAD_LENGTH = 15
 DISPLAY_TIMESTAMP = True
-TIMESTAMP_FORMAT = "%H:%M:%S"
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = True
 WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = True
 ISSUE_COMMAND_SYMBOL = '/'
@@ -82,6 +81,11 @@ DISABLED_PLUGINS = []
 ALWAYS_SCROLL_TO_BOTTOM = False
 PROMPT_ON_FAILED_CONNECTION = True
 DISPLAY_ACTIVE_CHAT_IN_TITLE = True
+
+TIMESTAMP_FORMAT = "%H:%M:%S"
+
+TIMESTAMP_24_HOUR = True
+TIMESTAMP_SHOW_SECONDS = True
 
 def save_settings(filename):
 
@@ -128,12 +132,18 @@ def save_settings(filename):
 		"always_scroll_to_bottom": ALWAYS_SCROLL_TO_BOTTOM,
 		"prompt_on_failed_connection": PROMPT_ON_FAILED_CONNECTION,
 		"display_active_chat_in_title": DISPLAY_ACTIVE_CHAT_IN_TITLE,
+		"timestamp_24_hour": TIMESTAMP_24_HOUR,
+		"timestamp_show_seconds": TIMESTAMP_SHOW_SECONDS,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "timestamp_24_hour" in settings:
+		settings["timestamp_24_hour"] = TIMESTAMP_24_HOUR
+	if not "timestamp_show_seconds" in settings:
+		settings["timestamp_show_seconds"] = TIMESTAMP_SHOW_SECONDS
 	if not "display_active_chat_in_title" in settings:
 		settings["display_active_chat_in_title"] = DISPLAY_ACTIVE_CHAT_IN_TITLE
 	if not "prompt_on_failed_connection" in settings:
@@ -264,6 +274,8 @@ def load_settings(filename):
 	global ALWAYS_SCROLL_TO_BOTTOM
 	global PROMPT_ON_FAILED_CONNECTION
 	global DISPLAY_ACTIVE_CHAT_IN_TITLE
+	global TIMESTAMP_24_HOUR
+	global TIMESTAMP_SHOW_SECONDS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -273,6 +285,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		TIMESTAMP_24_HOUR = settings["timestamp_24_hour"]
+		TIMESTAMP_SHOW_SECONDS = settings["timestamp_show_seconds"]
 		DISPLAY_ACTIVE_CHAT_IN_TITLE = settings["display_active_chat_in_title"]
 		PROMPT_ON_FAILED_CONNECTION = settings["prompt_on_failed_connection"]
 		ALWAYS_SCROLL_TO_BOTTOM = settings["always_scroll_to_bottom"]
@@ -368,6 +382,8 @@ def check_settings(filename):
 			if not "always_scroll_to_bottom" in settings: return False
 			if not "prompt_on_failed_connection" in settings: return False
 			if not "display_active_chat_in_title" in settings: return False
+			if not "timestamp_24_hour" in settings: return False
+			if not "timestamp_show_seconds" in settings: return False
 	else:
 		return False
 

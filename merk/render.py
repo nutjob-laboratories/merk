@@ -271,8 +271,7 @@ def render_message(message,style):
 	if message.type!=HORIZONTAL_RULE_MESSAGE and message.type!=HARD_HORIZONTAL_RULE_MESSAGE and message.type!=TEXT_HORIZONTAL_RULE_MESSAGE and message.type!=DATE_MESSAGE:
 
 		if config.DISPLAY_TIMESTAMP:
-			tfs = '%H:%M:%S'
-			pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(tfs)
+			pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(config.TIMESTAMP_FORMAT)
 
 			ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!",style["timestamp"])
 			ts = ts.replace("!TIME!",pretty_timestamp)

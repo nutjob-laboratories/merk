@@ -259,11 +259,6 @@ class Dialog(QDialog):
 
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-
-
-
-
-
 		self.partMsg = QLabel("<b>"+str(config.DEFAULT_QUIT_MESSAGE)+"</b>")
 
 		self.setPartMsg = QPushButton("")
@@ -285,18 +280,6 @@ class Dialog(QDialog):
 		quitPartBox.setLayout(cgbLayout)
 
 		quitPartBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
-
-
-
-
-
-
-
-
-
-
-
-
 
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
@@ -480,10 +463,6 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.messagePage)
 
-		self.showTimestamps = QCheckBox("Show timestamps",self)
-		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
-		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
-
 		self.showColors = QCheckBox("Show IRC colors",self)
 		if config.DISPLAY_IRC_COLORS: self.showColors.setChecked(True)
 		self.showColors.stateChanged.connect(self.changedSettingRerender)
@@ -510,7 +489,6 @@ class Dialog(QDialog):
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
-		messageLayout.addWidget(self.showTimestamps)
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.createWindow)
@@ -519,6 +497,40 @@ class Dialog(QDialog):
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
+
+		# Timestamps
+
+		self.timestampPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Timestamps")
+		entry.widget = self.timestampPage
+		entry.setIcon(QIcon(TIMESTAMP_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.timestampPage)
+
+		self.showTimestamps = QCheckBox("Show timestamps",self)
+		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
+		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
+
+		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
+		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
+		self.timestamp24hour.stateChanged.connect(self.changedSettingRerender)
+
+		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
+		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
+		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
+
+		timestampLayout = QVBoxLayout()
+		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
+		timestampLayout.addWidget(self.showTimestamps)
+		timestampLayout.addWidget(self.timestamp24hour)
+		timestampLayout.addWidget(self.timestampSeconds)
+		timestampLayout.addStretch()
+
+		self.timestampPage.setLayout(timestampLayout)
 
 		self.changed.hide()
 
@@ -583,8 +595,17 @@ class Dialog(QDialog):
 		config.ASK_BEFORE_DISCONNECT = self.askBeforeDisconnect.isChecked()
 		config.DEFAULT_SUBWINDOW_WIDTH = self.subWidth
 		config.DEFAULT_SUBWINDOW_HEIGHT = self.subHeight
-
 		config.DEFAULT_QUIT_MESSAGE = self.default_quit_part
+		config.TIMESTAMP_24_HOUR = self.timestamp24hour.isChecked()
+		config.TIMESTAMP_SHOW_SECONDS = self.timestampSeconds.isChecked()
+
+		if config.TIMESTAMP_24_HOUR:
+			ts = '%H:%M'
+		else:
+			ts = '%I:%M'
+		if config.TIMESTAMP_SHOW_SECONDS: ts = ts + ':%S'
+
+		config.TIMESTAMP_FORMAT = ts
 
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		if self.rerender: self.parent.reRenderAll()
