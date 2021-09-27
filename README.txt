@@ -74,7 +74,8 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 
 ```
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD]
-                      [-c CHANNEL[:KEY]] [-D DIRECTORY] [-L]
+                      [-c CHANNEL[:KEY]] [-n NICKNAME] [-u USERNAME]
+                      [-a NICKNAME] [-r REALNAME] [-D DIRECTORY] [-L]
                       [--config-name NAME] [--qtstyle NAME]
                       [--generate [FILE]] [--noplugins] [-N] [-X]
                       [SERVER] [PORT]
@@ -91,6 +92,14 @@ Connection:
                         Use server password to connect
   -c CHANNEL[:KEY], --channel CHANNEL[:KEY]
                         Join channel on connection
+  -n NICKNAME, --nickname NICKNAME
+                        Use this nickname to connect
+  -u USERNAME, --username USERNAME
+                        Use this username to connect
+  -a NICKNAME, --alternate NICKNAME
+                        Use this alternate nickname to connect
+  -r REALNAME, --realname REALNAME
+                        Use this realname to connect
 
 Configuration:
   -D DIRECTORY, --config-directory DIRECTORY
@@ -108,6 +117,7 @@ Miscellaneous:
   -N, --noask           Don't ask for connection information on start
   -X, --nocommands      Don't auto-execute commands on connection
 ```
+
 ## Writing plugins for MERK
 
 **MERK** plugins are written in Python 3, the same language that **MERK** is written in. At its core, a  plugin is just a Python 3 class that inherits from a parent class built into **MERK**. Here's a basic example. All it does is print all incoming and outgoing IRC traffic to the console:

@@ -25,6 +25,7 @@
 
 import argparse
 import os
+import random
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -74,6 +75,10 @@ congroup.add_argument( "--ssl","--tls", help=f"Use SSL/TLS to connect to IRC", a
 congroup.add_argument( "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
 congroup.add_argument("-p","--password", type=str,help="Use server password to connect", metavar="PASSWORD", default='')
 congroup.add_argument("-c","--channel", type=str,help="Join channel on connection", metavar="CHANNEL[:KEY]", action='append')
+congroup.add_argument("-n","--nickname", type=str,help="Use this nickname to connect", metavar="NICKNAME", default='')
+congroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
+congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
+congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
 
 configuration_group = parser.add_argument_group('Configuration')
 
@@ -182,27 +187,35 @@ if __name__ == '__main__':
 		# Load in user settings
 		user.load_user(user.USER_FILE)
 
-		if len(user.NICKNAME.strip())==0:
-			print("No nickname set!")
-			sys.exit(1)
+		if args.nickname=='':
+			if len(user.NICKNAME.strip())==0:
+				print("No nickname set!")
+				sys.exit(1)
+			args.nickname = user.NICKNAME
 
-		if len(user.ALTERNATE.strip())==0:
-			print("No alternate nickname set!")
-			sys.exit(1)
+		if args.username=='':
+			if len(user.USERNAME.strip())==0:
+				args.username = args.nickname
+			else:
+				args.username = user.USERNAME
 
-		if len(user.USERNAME.strip())==0:
-			print("No username set!")
-			sys.exit(1)
+		if args.alternate=='':
+			if len(user.ALTERNATE.strip())==0:
+				args.alternate = args.nickname + str(random.randint(1,999))
+			else:
+				args.alternate = user.ALTERNATE
 
-		if len(user.REALNAME.strip())==0:
-			print("No realname set!")
-			sys.exit(1)
+		if args.realname=='':
+			if len(user.REALNAME.strip())==0:
+				args.realname = APPLICATION_NAME +" "+APPLICATION_VERSION
+			else:
+				args.realname = user.REALNAME
 
 		i = ConnectInfo(
-			user.NICKNAME,
-			user.ALTERNATE,
-			user.USERNAME,
-			user.REALNAME,
+			args.nickname,
+			args.alternate,
+			args.username,
+			args.realname,
 			args.server,
 			args.port,
 			pword,
