@@ -166,9 +166,8 @@ class Window(QMainWindow):
 		if self.window_type==CHANNEL_WINDOW:
 
 			# Channel name display
-			self.channel_mode_display = QLabel("")
+			self.channel_mode_display = QLabel("<b><small>"+self.name+"</small></b>")
 			self.channel_mode_display.setStyleSheet("border: 1px solid black; padding: 0px;")
-			self.channel_mode_display.hide()
 			
 			# Create topic editor
 			self.topic = TopicEdit(self)
@@ -531,14 +530,11 @@ class Window(QMainWindow):
 					modes = ''
 			else:
 				modes = ''
-			# self.setWindowTitle(self.name+modes)
 
 			if len(modes)>0:
-				self.channel_mode_display.show()
-				self.channel_mode_display.setText("<b><small>"+modes+"</small></b>")
+				self.channel_mode_display.setText("<b><small>"+self.name+" "+modes+"</small></b>")
 			else:
-				self.channel_mode_display.hide()
-
+				self.channel_mode_display.setText("<b><small>"+self.name+"</small></b>")
 		else:
 			self.setWindowTitle(self.name)
 
