@@ -164,6 +164,11 @@ class Window(QMainWindow):
 			self.info_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
+
+			# Channel name display
+			self.channel_mode_display = QLabel("")
+			self.channel_mode_display.setStyleSheet("border: 1px solid black; padding: 0px;")
+			self.channel_mode_display.hide()
 			
 			# Create topic editor
 			self.topic = TopicEdit(self)
@@ -216,7 +221,7 @@ class Window(QMainWindow):
 		self.nick_display.installEventFilter(self)
 
 		if len(self.client.usermodes)>0:
-			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
+			self.mode_display.setText("<b><small>+"+self.client.usermodes+"</small></b>")
 		else:
 			self.mode_display.hide()
 
@@ -343,6 +348,7 @@ class Window(QMainWindow):
 			self.userlist_width = ulwidth
 
 			topicLayout = QHBoxLayout()
+			topicLayout.addWidget(self.channel_mode_display)
 			topicLayout.addWidget(self.topic)
 
 			finalLayout = QVBoxLayout()
@@ -498,7 +504,7 @@ class Window(QMainWindow):
 			self.mode_display.setText("")
 			self.mode_display.hide()
 		else:
-			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
+			self.mode_display.setText("<b><small>+"+self.client.usermodes+"</small></b>")
 			if self.window_type!=SERVER_WINDOW: self.mode_display.show()
 		self.updateTitle()
 
@@ -525,7 +531,14 @@ class Window(QMainWindow):
 					modes = ''
 			else:
 				modes = ''
-			self.setWindowTitle(self.name+modes)
+			# self.setWindowTitle(self.name+modes)
+
+			if len(modes)>0:
+				self.channel_mode_display.show()
+				self.channel_mode_display.setText("<b><small>"+modes+"</small></b>")
+			else:
+				self.channel_mode_display.hide()
+
 		else:
 			self.setWindowTitle(self.name)
 
