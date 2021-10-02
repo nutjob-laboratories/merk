@@ -188,6 +188,10 @@ class Window(QMainWindow):
 			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
 			self.userlist.installEventFilter(self)
 
+			f = self.userlist.font()
+			f.setBold(True)
+			self.userlist.setFont(f)
+
 			self.channelUptime = QLabel("<small>00:00:00</small>")
 
 			if not config.SHOW_CHANNEL_UPTIME: self.channelUptime.hide()
@@ -842,6 +846,9 @@ class Window(QMainWindow):
 
 		self.rerenderChatLog()
 
+	def rerenderUserlist(self):
+		self.writeUserlist(self.users)
+
 	def writeUserlist(self,users):
 
 		if not hasattr(self,"userlist"): return
@@ -907,48 +914,66 @@ class Window(QMainWindow):
 		# Add owners
 		for u in owners:
 			ui = QListWidgetItem()
-			ui.setIcon(QIcon(OWNER_USER))
-			ui.setText(u)
+			if config.PLAIN_USER_LISTS:
+				ui.setText('~ '+u)
+			else:
+				ui.setIcon(QIcon(OWNER_USER))
+				ui.setText(u)
 
 			self.userlist.addItem(ui)
 
 		# Add admins
 		for u in admins:
 			ui = QListWidgetItem()
-			ui.setIcon(QIcon(ADMIN_USER))
-			ui.setText(u)
+			if config.PLAIN_USER_LISTS:
+				ui.setText('& '+u)
+			else:
+				ui.setIcon(QIcon(ADMIN_USER))
+				ui.setText(u)
 
 			self.userlist.addItem(ui)
 
 		# Add halfops
 		for u in halfops:
 			ui = QListWidgetItem()
-			ui.setIcon(QIcon(HALFOP_USER))
-			ui.setText(u)
+			if config.PLAIN_USER_LISTS:
+				ui.setText('% '+u)
+			else:
+				ui.setIcon(QIcon(HALFOP_USER))
+				ui.setText(u)
 
 			self.userlist.addItem(ui)
 
 		# Add ops
 		for u in ops:
 			ui = QListWidgetItem()
-			ui.setIcon(QIcon(OP_USER))
-			ui.setText(u)
+			if config.PLAIN_USER_LISTS:
+				ui.setText('@ '+u)
+			else:
+				ui.setIcon(QIcon(OP_USER))
+				ui.setText(u)
 
 			self.userlist.addItem(ui)
 
 		# Add voiced
 		for u in voiced:
 			ui = QListWidgetItem()
-			ui.setIcon(QIcon(VOICE_USER))
-			ui.setText(u)
+			if config.PLAIN_USER_LISTS:
+				ui.setText('+ '+u)
+			else:
+				ui.setIcon(QIcon(VOICE_USER))
+				ui.setText(u)
 
 			self.userlist.addItem(ui)
 
 		# Add normal
 		for u in normal:
 			ui = QListWidgetItem()
-			ui.setIcon(QIcon(NORMAL_USER))
-			ui.setText(u)
+			if config.PLAIN_USER_LISTS:
+				ui.setText('  '+u)
+			else:
+				ui.setIcon(QIcon(NORMAL_USER))
+				ui.setText(u)
 
 			self.userlist.addItem(ui)
 

@@ -864,6 +864,12 @@ class Merk(QMainWindow):
 			if hasattr(c,"status_server"): c.status_server.setFont(newfont)
 			if hasattr(c,"key_value"): c.key_value.setFont(newfont)
 
+	def rerenderUserlists(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"userlist"):
+				c.rerenderUserlist()
+
 	def setAllLanguage(self,newlang):
 		for window in self.MDI.subWindowList():
 			c = window.widget()

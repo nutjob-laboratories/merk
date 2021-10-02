@@ -81,11 +81,10 @@ DISABLED_PLUGINS = []
 ALWAYS_SCROLL_TO_BOTTOM = False
 PROMPT_ON_FAILED_CONNECTION = True
 DISPLAY_ACTIVE_CHAT_IN_TITLE = True
-
 TIMESTAMP_FORMAT = "%H:%M:%S"
-
 TIMESTAMP_24_HOUR = True
 TIMESTAMP_SHOW_SECONDS = True
+PLAIN_USER_LISTS = False
 
 def save_settings(filename):
 
@@ -134,12 +133,15 @@ def save_settings(filename):
 		"display_active_chat_in_title": DISPLAY_ACTIVE_CHAT_IN_TITLE,
 		"timestamp_24_hour": TIMESTAMP_24_HOUR,
 		"timestamp_show_seconds": TIMESTAMP_SHOW_SECONDS,
+		"plain_user_lists": PLAIN_USER_LISTS,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "plain_user_lists" in settings:
+		settings["plain_user_lists"] = PLAIN_USER_LISTS
 	if not "timestamp_24_hour" in settings:
 		settings["timestamp_24_hour"] = TIMESTAMP_24_HOUR
 	if not "timestamp_show_seconds" in settings:
@@ -276,6 +278,7 @@ def load_settings(filename):
 	global DISPLAY_ACTIVE_CHAT_IN_TITLE
 	global TIMESTAMP_24_HOUR
 	global TIMESTAMP_SHOW_SECONDS
+	global PLAIN_USER_LISTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -285,6 +288,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLAIN_USER_LISTS = settings["plain_user_lists"]
 		TIMESTAMP_24_HOUR = settings["timestamp_24_hour"]
 		TIMESTAMP_SHOW_SECONDS = settings["timestamp_show_seconds"]
 		DISPLAY_ACTIVE_CHAT_IN_TITLE = settings["display_active_chat_in_title"]
@@ -384,6 +388,7 @@ def check_settings(filename):
 			if not "display_active_chat_in_title" in settings: return False
 			if not "timestamp_24_hour" in settings: return False
 			if not "timestamp_show_seconds" in settings: return False
+			if not "plain_user_lists" in settings: return False
 	else:
 		return False
 

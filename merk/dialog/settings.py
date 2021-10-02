@@ -100,6 +100,10 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.rerender = True
 
+	def changedSettingRerenderUserlists(self,state):
+		self.changed.show()
+		self.rerenderUsers = True
+
 	def setQuitMsg(self):
 		info = dialog.QuitPartDialog(self.default_quit_part,self)
 
@@ -124,6 +128,7 @@ class Dialog(QDialog):
 		self.spellLang = config.DEFAULT_SPELLCHECK_LANGUAGE
 		self.rerender = False
 		self.default_quit_part = config.DEFAULT_QUIT_MESSAGE
+		self.rerenderUsers = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -215,6 +220,10 @@ class Dialog(QDialog):
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
+		self.plainUserLists = QCheckBox("Plain user lists",self)
+		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
+		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -222,6 +231,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showUptime)
 		applicationLayout.addWidget(self.showChanUptime)
+		applicationLayout.addWidget(self.plainUserLists)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -598,6 +608,7 @@ class Dialog(QDialog):
 		config.DEFAULT_QUIT_MESSAGE = self.default_quit_part
 		config.TIMESTAMP_24_HOUR = self.timestamp24hour.isChecked()
 		config.TIMESTAMP_SHOW_SECONDS = self.timestampSeconds.isChecked()
+		config.PLAIN_USER_LISTS = self.plainUserLists.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
@@ -609,6 +620,7 @@ class Dialog(QDialog):
 
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		if self.rerender: self.parent.reRenderAll()
+		if self.rerenderUsers: self.parent.rerenderUserlists()
 
 		if self.newfont!=None:
 			config.APPLICATION_FONT = self.newfont.toString()
