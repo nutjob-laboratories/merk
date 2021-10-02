@@ -1472,6 +1472,10 @@ class Merk(QMainWindow):
 			entry1.setEnabled(False)
 			entry2.setEnabled(False)
 
+			# Reset application title, due to there being
+			# no connections
+			self.subWindowActivated(None)
+
 		if len(listOfConnections)>0:
 
 			for i in listOfConnections:
