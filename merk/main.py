@@ -870,6 +870,12 @@ class Merk(QMainWindow):
 			if hasattr(c,"userlist"):
 				c.rerenderUserlist()
 
+	def toggleNickDisplay(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"nick_display"):
+				c.toggleNickDisplay()
+
 	def setAllLanguage(self,newlang):
 		for window in self.MDI.subWindowList():
 			c = window.widget()

@@ -104,6 +104,10 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.rerenderUsers = True
 
+	def changedSettingRerenderNick(self,state):
+		self.changed.show()
+		self.rerenderNick = True
+
 	def setQuitMsg(self):
 		info = dialog.QuitPartDialog(self.default_quit_part,self)
 
@@ -129,6 +133,7 @@ class Dialog(QDialog):
 		self.rerender = False
 		self.default_quit_part = config.DEFAULT_QUIT_MESSAGE
 		self.rerenderUsers = False
+		self.rerenderNick = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -208,30 +213,15 @@ class Dialog(QDialog):
 		sizeLayout.addWidget(self.sizeLabel)
 		sizeLayout.addStretch()
 
-		self.showUptime = QCheckBox("Show connection uptime",self)
-		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
-		self.showUptime.stateChanged.connect(self.changedSetting)
-
-		self.showChanUptime = QCheckBox("Show channel uptime",self)
-		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
-		self.showChanUptime.stateChanged.connect(self.changedSetting)
-
 		self.showChatInTitle = QCheckBox("Show active chat in window title",self)
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
-
-		self.plainUserLists = QCheckBox("Plain user lists",self)
-		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
-		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.showChatInTitle)
-		applicationLayout.addWidget(self.showUptime)
-		applicationLayout.addWidget(self.showChanUptime)
-		applicationLayout.addWidget(self.plainUserLists)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -301,6 +291,47 @@ class Dialog(QDialog):
 		connectionsLayout.addStretch()
 
 		self.connectionsPage.setLayout(connectionsLayout)
+
+		# Interface page
+
+		self.interfacePage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Windows")
+		entry.widget = self.interfacePage
+		entry.setIcon(QIcon(INTERFACE_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.interfacePage)
+
+		self.showUptime = QCheckBox("Show connection uptime",self)
+		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
+		self.showUptime.stateChanged.connect(self.changedSetting)
+
+		self.showChanUptime = QCheckBox("Show channel uptime",self)
+		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
+		self.showChanUptime.stateChanged.connect(self.changedSetting)
+
+		self.plainUserLists = QCheckBox("Plain user lists",self)
+		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
+		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.showInfo = QCheckBox("Show user info on all chat\nwindows",self)
+		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
+		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
+
+		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		interfaceLayout = QVBoxLayout()
+		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
+		interfaceLayout.addWidget(self.showUptime)
+		interfaceLayout.addWidget(self.showChanUptime)
+		interfaceLayout.addWidget(self.plainUserLists)
+		interfaceLayout.addWidget(self.showInfo)
+		interfaceLayout.addStretch()
+
+		self.interfacePage.setLayout(interfaceLayout)
 
 		# Input page
 
@@ -609,6 +640,7 @@ class Dialog(QDialog):
 		config.TIMESTAMP_24_HOUR = self.timestamp24hour.isChecked()
 		config.TIMESTAMP_SHOW_SECONDS = self.timestampSeconds.isChecked()
 		config.PLAIN_USER_LISTS = self.plainUserLists.isChecked()
+		config.SHOW_USER_INFO_ON_CHAT_WINDOWS = self.showInfo.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
@@ -621,6 +653,10 @@ class Dialog(QDialog):
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		if self.rerender: self.parent.reRenderAll()
 		if self.rerenderUsers: self.parent.rerenderUserlists()
+
+		if self.rerenderNick:
+			self.parent.toggleNickDisplay()
+			if not self.rerenderUsers: self.parent.rerenderUserlists()
 
 		if self.newfont!=None:
 			config.APPLICATION_FONT = self.newfont.toString()

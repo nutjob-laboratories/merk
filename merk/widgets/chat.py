@@ -327,6 +327,11 @@ class Window(QMainWindow):
 		nickLayout.addWidget(self.nick_display)
 		nickLayout.addWidget(self.mode_display)
 
+		if self.window_type!=SERVER_WINDOW:
+			if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+				self.nick_display.hide()
+				self.mode_display.hide()
+
 		inputLayout = QHBoxLayout()
 		inputLayout.addLayout(nickLayout)
 		inputLayout.addWidget(self.input)
@@ -492,6 +497,14 @@ class Window(QMainWindow):
 	def refreshInfoMenu(self):
 		self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
 
+	def toggleNickDisplay(self):
+		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+			self.nick_display.show()
+			self.mode_display.show()
+		else:
+			self.nick_display.hide()
+			self.mode_display.hide()
+
 	def rerenderChatLog(self):
 
 		self.chat.clear()
@@ -508,7 +521,9 @@ class Window(QMainWindow):
 			self.mode_display.hide()
 		else:
 			self.mode_display.setText("<b><small>+"+self.client.usermodes+"</small></b>")
-			if self.window_type!=SERVER_WINDOW: self.mode_display.show()
+			if self.window_type!=SERVER_WINDOW:
+				if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+					self.mode_display.show()
 		self.updateTitle()
 
 		if hasattr(self,"key_icon"):
@@ -985,11 +1000,12 @@ class Window(QMainWindow):
 		self.admin_icon.hide()
 		self.halfop_icon.hide()
 
-		if self.operator: self.op_icon.show()
-		if self.voiced: self.voice_icon.show()
-		if self.owner: self.owner_icon.show()
-		if self.admin: self.admin_icon.show()
-		if self.halfop: self.halfop_icon.show()
+		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+			if self.operator: self.op_icon.show()
+			if self.voiced: self.voice_icon.show()
+			if self.owner: self.owner_icon.show()
+			if self.admin: self.admin_icon.show()
+			if self.halfop: self.halfop_icon.show()
 
 	def disconnect(self):
 
