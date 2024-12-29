@@ -26,6 +26,7 @@
 import argparse
 import os
 import random
+import shutil
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
