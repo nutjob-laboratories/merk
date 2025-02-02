@@ -1,6 +1,6 @@
 import os
 import sys
-import imp
+import importlib as imp
 
 
 class PikeLoader(object):
