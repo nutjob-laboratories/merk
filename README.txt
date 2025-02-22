@@ -69,8 +69,9 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 # Usage
 
 ```
-usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME] [-u USERNAME]
-                      [-a NICKNAME] [-r REALNAME] [-D DIRECTORY] [-L] [--config-name NAME] [--qtstyle NAME] [-N] [-X]
+usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-D DIRECTORY] [-L]
+                      [--config-name NAME] [--qtstyle NAME] [-N] [-X]
                       [SERVER] [PORT]
 
 optional arguments:
