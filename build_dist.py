@@ -62,15 +62,11 @@ shutil.copytree("./merk", "./dist/merk",ignore=shutil.ignore_patterns('*.pyc', '
 shutil.copytree("./qt5reactor", "./dist/qt5reactor",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 shutil.copytree("./spellchecker", "./dist/spellchecker",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 shutil.copytree("./emoji", "./dist/emoji",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
-shutil.copytree("./pike", "./dist/pike",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 
 shutil.copy("./merk.py", "./dist/merk.py")
 shutil.copy("./LICENSE", "./dist/LICENSE")
 shutil.copy("./README.md", "./dist/README.md")
 shutil.copy("./merk.ico", "./dist/merk.ico")
-
-os.mkdir("./dist/documentation")
-shutil.copy("./documentation/MERK_Plugin_Development_Guide.pdf", "./dist/documentation/MERK_Plugin_Development_Guide.pdf")
 
 if "Windows" in devp:
 	os.system("powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('dist', 'dist.zip'); }\" ")

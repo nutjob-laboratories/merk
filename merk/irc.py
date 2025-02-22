@@ -50,7 +50,6 @@ from twisted.words.protocols.irc import ctcpStringify
 from .resources import *
 from . import config
 from . import user
-from . import plugins
 
 CONNECTIONS = {}
 
@@ -208,8 +207,6 @@ class IRC_Connection(irc.IRCClient):
 		if "b" in modes: self.sendLine(f"MODE {channel} +b")
 		if "o" in modes: self.sendLine("NAMES "+channel)
 		if "v" in modes: self.sendLine("NAMES "+channel)
-
-		plugins.mode(self,channel,user,mset,modes,args)
 
 		for m in modes:
 			if mset:
@@ -574,8 +571,6 @@ class IRC_Connection(irc.IRCClient):
 
 	def sendLine(self,line):
 
-		plugins.line_out(self,line)
-
 		return irc.IRCClient.sendLine(self, line)
 
 	def irc_ERR_NOSUCHNICK(self,prefix,params):
@@ -605,8 +600,6 @@ class IRC_Connection(irc.IRCClient):
 		# IRC events (this fixes an error raised when attempting
 		# to get a channel list from a server)
 		line = line2.encode('utf-8')
-
-		plugins.line_in(self,line2)
 
 		d = line2.split(" ")
 		if len(d) >= 2:

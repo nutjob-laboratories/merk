@@ -33,8 +33,6 @@ from .resources import *
 CONFIG_DIRECTORY = None
 CONFIG_FILE = None
 
-PLUGINS_ENABLED = True
-
 MDI_BACKGROUND_IMAGE = None
 APPLICATION_FONT = None
 DISPLAY_NAME = APPLICATION_NAME
@@ -77,7 +75,6 @@ ENABLE_EMOJI_SHORTCODES = True
 ENABLE_SPELLCHECK = True
 ASK_BEFORE_RECONNECT = False
 NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
-DISABLED_PLUGINS = []
 ALWAYS_SCROLL_TO_BOTTOM = False
 PROMPT_ON_FAILED_CONNECTION = True
 DISPLAY_ACTIVE_CHAT_IN_TITLE = True
@@ -128,7 +125,6 @@ def save_settings(filename):
 		"enable_spellcheck": ENABLE_SPELLCHECK,
 		"ask_before_reconnect": ASK_BEFORE_RECONNECT,
 		"notify_on_lost_or_failed_connection": NOTIFY_ON_LOST_OR_FAILED_CONNECTION,
-		"disabled_plugins": DISABLED_PLUGINS,
 		"always_scroll_to_bottom": ALWAYS_SCROLL_TO_BOTTOM,
 		"prompt_on_failed_connection": PROMPT_ON_FAILED_CONNECTION,
 		"display_active_chat_in_title": DISPLAY_ACTIVE_CHAT_IN_TITLE,
@@ -156,8 +152,6 @@ def patch_settings(settings):
 		settings["prompt_on_failed_connection"] = PROMPT_ON_FAILED_CONNECTION
 	if not "always_scroll_to_bottom" in settings:
 		settings["always_scroll_to_bottom"] = ALWAYS_SCROLL_TO_BOTTOM
-	if not "disabled_plugins" in settings:
-		settings["disabled_plugins"] = DISABLED_PLUGINS
 	if not "notify_on_lost_or_failed_connection" in settings:
 		settings["notify_on_lost_or_failed_connection"] = NOTIFY_ON_LOST_OR_FAILED_CONNECTION
 	if not "ask_before_reconnect" in settings:
@@ -276,7 +270,6 @@ def load_settings(filename):
 	global ENABLE_SPELLCHECK
 	global ASK_BEFORE_RECONNECT
 	global NOTIFY_ON_LOST_OR_FAILED_CONNECTION
-	global DISABLED_PLUGINS
 	global ALWAYS_SCROLL_TO_BOTTOM
 	global PROMPT_ON_FAILED_CONNECTION
 	global DISPLAY_ACTIVE_CHAT_IN_TITLE
@@ -300,7 +293,6 @@ def load_settings(filename):
 		DISPLAY_ACTIVE_CHAT_IN_TITLE = settings["display_active_chat_in_title"]
 		PROMPT_ON_FAILED_CONNECTION = settings["prompt_on_failed_connection"]
 		ALWAYS_SCROLL_TO_BOTTOM = settings["always_scroll_to_bottom"]
-		DISABLED_PLUGINS = settings["disabled_plugins"]
 		NOTIFY_ON_LOST_OR_FAILED_CONNECTION = settings["notify_on_lost_or_failed_connection"]
 		ASK_BEFORE_RECONNECT = settings["ask_before_reconnect"]
 		ENABLE_SPELLCHECK = settings["enable_spellcheck"]
@@ -388,7 +380,6 @@ def check_settings(filename):
 			if not "enable_spellcheck" in settings: return False
 			if not "ask_before_reconnect" in settings: return False
 			if not "notify_on_lost_or_failed_connection" in settings: return False
-			if not "disabled_plugins" in settings: return False
 			if not "always_scroll_to_bottom" in settings: return False
 			if not "prompt_on_failed_connection" in settings: return False
 			if not "display_active_chat_in_title" in settings: return False

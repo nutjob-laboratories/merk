@@ -42,7 +42,6 @@ from . import logs
 from . import user
 from .dialog import *
 from . import commands
-from . import plugins
 
 class Merk(QMainWindow):
 
@@ -64,7 +63,6 @@ class Merk(QMainWindow):
 			configuration_directory_name=".merk",
 			connection_info=None,
 			application_font=None,
-			plugins_disabled=False,
 			no_commands=False,
 			channels=[],
 			parent=None,
@@ -77,11 +75,8 @@ class Merk(QMainWindow):
 		self.configuration_location = configuration_location
 		self.configuration_directory_name = configuration_directory_name
 		self.application_font = application_font
-		self.plugins_disabled = plugins_disabled
 		self.no_commands = no_commands
 		self.join_channels = channels
-
-		if self.plugins_disabled: config.PLUGINS_ENABLED = False
 
 		# Set the application font
 		self.app.setFont(self.application_font)
@@ -115,13 +110,6 @@ class Merk(QMainWindow):
 
 		# Menubar
 		self.menubar = self.menuBar()
-
-		# Now, load in plugins
-		self.loadPlugins()
-
-		# Give the plugins module a reference
-		# to the main app (that is, this window)
-		plugins.GUI = self
 
 		self.buildMenu()
 
@@ -184,8 +172,6 @@ class Merk(QMainWindow):
 				client.join(e[0],e[1])
 			self.join_channels = []
 
-		plugins.connect(client)
-
 	def receivedMOTD(self,client,motd):
 
 		m = "<br>".join(motd)
@@ -205,8 +191,6 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def joined(self,client,channel):
-
-		plugins.join(client,channel,client.nickname)
 		
 		# Create a new channel window
 		w = self.newChannelWindow(channel,client)
@@ -221,8 +205,6 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def left(self,client,channel):
-
-		plugins.part(client,channel,client.nickname)
 
 		w = self.getSubWindow(channel,client)
 		if w:
@@ -249,7 +231,6 @@ class Merk(QMainWindow):
 
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 			# Channel message
-			plugins.public(client,target,user,msg)
 			w = self.getWindow(target,client)
 			if w:
 				t = Message(CHAT_MESSAGE,user,msg)
@@ -257,7 +238,6 @@ class Merk(QMainWindow):
 				return
 
 		if target==client.nickname:
-			plugins.private(client,user,msg)
 			displayed_private_message = False
 
 			# It's a private message, so try to write the message
@@ -306,8 +286,6 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
-		plugins.action(client,target,user,msg)
-
 		# Channel message
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 			w = self.getWindow(target,client)
@@ -341,8 +319,6 @@ class Merk(QMainWindow):
 		else:
 			nickname = user
 			hostmask = None
-
-		plugins.notice(client,target,user,msg)
 
 		# Server notices get written to the server window only
 		if target=='*':
@@ -421,7 +397,6 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 	def topicChanged(self,client,user,channel,newTopic):
-		plugins.topic(client,channel,newTopic)
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -435,7 +410,6 @@ class Merk(QMainWindow):
 								c.writeText(t)
 
 	def userJoined(self,client,user,channel):
-		plugins.join(client,channel,user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" joined "+channel)
@@ -443,7 +417,6 @@ class Merk(QMainWindow):
 			return
 
 	def userLeft(self,client,user,channel):
-		plugins.part(client,channel,user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" left "+channel)
@@ -451,7 +424,6 @@ class Merk(QMainWindow):
 			return
 
 	def userRenamed(self,client,oldname,newname):
-		plugins.rename(client,oldname,newname)
 		windows = self.getAllSubWindows(client)
 
 		for subwindow in windows:
@@ -476,7 +448,6 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def irc_QUIT(self,client,nickname,msg):
-		plugins.quit(client,nickname,msg)
 		windows = self.getAllSubWindows(client)
 
 		for subwindow in windows:
@@ -594,8 +565,6 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def userKicked(self,client,kickee,channel,kicker,message):
-
-		plugins.kick(client,channel,kicker,kickee,message)
 		
 		if len(message)>0:
 			t = Message(SYSTEM_MESSAGE,'',kicker+" kicked "+kickee+" from "+channel+" ("+message+")")
@@ -609,8 +578,6 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def kickedFrom(self,client,channel,kicker,message):
-
-		plugins.kicked(client,channel,kicker,message)
 		
 		w = self.getSubWindow(channel,client)
 		if w:
@@ -642,8 +609,6 @@ class Merk(QMainWindow):
 			c.writeText(t)
 
 	def uptime(self,client,uptime):
-
-		plugins.tick(client,uptime)
 
 		# getAllSubWindows(self,client):
 		for w in self.getAllSubWindows(client):
@@ -688,8 +653,6 @@ class Merk(QMainWindow):
 				c.writeText(t,False)
 
 	def invited(self,client,user,channel):
-
-		plugins.invite(client,channel,user)
 
 		w = self.MDI.activeSubWindow()
 		if w:
@@ -1112,18 +1075,6 @@ class Merk(QMainWindow):
 		u.setUrl(url)
 		QDesktopServices.openUrl(u)
 
-	def loadPlugins(self):
-		if self.plugins_disabled: return
-		
-		plugin_load_errors = plugins.load_plugins([])
-		if len(plugin_load_errors)>0:
-			for e in plugin_load_errors:
-				print("\n".join(e.errors))
-		self.buildMenu()
-
-		# Trigger plugin load event
-		plugins.load()
-
 
 	# |--------------|
 	# | MENU METHODS |
@@ -1155,93 +1106,6 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 		self.settingsMenu.addAction(entry)
 
-		# Plugins menu
-		show_plugin_menu = True
-		if self.plugins_disabled: show_plugin_menu = False
-
-		if show_plugin_menu:
-			self.pluginsMenu = self.menubar.addMenu("Plugins")
-
-			entry = QAction(QIcon(WHOIS_ICON),"Scan for new plugins",self)
-			entry.triggered.connect(self.loadPlugins)
-			self.pluginsMenu.addAction(entry)
-
-			if len(plugins.PLUGINS)>0:
-				e = widgets.textSeparator(self,"Loaded Plugins")
-				self.pluginsMenu.addAction(e)
-
-				files = {}
-				for p in plugins.PLUGINS:
-					if p.filename in files:
-						files[p.filename].append(p)
-					else:
-						files[p.filename] = [p]
-
-				for file in files:
-
-					e = (files[file][:1] or [None])[0]
-					pname = e.package
-					if pname==None: pname = os.path.basename(file)
-
-					ico = e.icon
-					if ico==None: ico = PACKAGE_ICON
-
-					m = self.pluginsMenu.addMenu(QIcon(ico),pname)
-
-					for p in files[file]:
-
-						if p.class_icon!=None:
-							icon = p.class_icon
-						else:
-							icon = PLUGIN_ICON
-
-						if p.plugin_description()!=None:
-							entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.plugin_description(),25)
-						else:
-							entry = widgets.ExtendedMenuItemNoAction(self,icon,p.plugin_name()+" "+p.plugin_version()+"&nbsp;&nbsp;",p.id(),25)
-
-						m.addAction(entry)
-
-						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>File:</b> "+os.path.basename(file)+"</small>" )
-						entry = QWidgetAction(self)
-						entry.setDefaultWidget(entryLabel)
-						m.addAction(entry)
-
-						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Class:</b> "+p.class_name()+"</small>" )
-						entry = QWidgetAction(self)
-						entry.setDefaultWidget(entryLabel)
-						m.addAction(entry)
-
-						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Size:</b> "+str(convert_size(os.path.getsize(file)))+"</small>" )
-						entry = QWidgetAction(self)
-						entry.setDefaultWidget(entryLabel)
-						m.addAction(entry)
-
-						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Memory:</b> "+str(convert_size(p.size))+"</small>" )
-						entry = QWidgetAction(self)
-						entry.setDefaultWidget(entryLabel)
-						m.addAction(entry)
-
-						entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Events:</b> "+str(p.events)+"</b></small>" )
-						entry = QWidgetAction(self)
-						entry.setDefaultWidget(entryLabel)
-						m.addAction(entry)
-
-						if not p.is_home_plugin:
-							entryLabel = QLabel( "<small>&nbsp;&nbsp;<b>Loaded from an external source</b></small>" )
-							entry = QWidgetAction(self)
-							entry.setDefaultWidget(entryLabel)
-							m.addAction(entry)
-
-						if plugins.is_plugin_disabled(p):
-							entry = QAction(QIcon(UNCHECKED_ICON),"Enabled",self)
-						else:
-							entry = QAction(QIcon(CHECKED_ICON),"Enabled",self)
-						entry.triggered.connect(lambda state,u=p: self.togglePlugin(u))
-						m.addAction(entry)
-
-						m.addSeparator()
-
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")
 
@@ -1255,12 +1119,6 @@ class Merk(QMainWindow):
 
 		self.helpMenu.addSeparator()
 
-		entry = QAction(QIcon(PDF_ICON),"Plugin development guide",self)
-		entry.triggered.connect(self.openPluginDocs)
-		self.helpMenu.addAction(entry)
-
-		self.helpMenu.addSeparator()
-
 		entry = QAction(QIcon(LINK_ICON),"Source code repository",self)
 		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
@@ -1268,16 +1126,6 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
-
-	def togglePlugin(self,plugin):
-		if plugins.is_plugin_disabled(plugin):
-			plugins.enable_plugin(plugin)
-		else:
-			plugins.disable_plugin(plugin)
-		self.buildMenu()
-
-	def openPluginDocs(self):
-		QDesktopServices.openUrl(QUrl("file:"+PLUGIN_DOCUMENTATION))
 
 	def menuEditStyle(self):
 		x = StylerDefaultDialog(self)
@@ -1538,9 +1386,6 @@ class Merk(QMainWindow):
 	# Triggered when the client window is closed, via
 	# any method 
 	def closeEvent(self, event):
-
-		# Trigger plugin unload event
-		plugins.unload()
 
 		self.closeAndRemoveAllWindows()
 		self.app.quit()

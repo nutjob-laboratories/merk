@@ -47,7 +47,6 @@ import merk.config as config
 import merk.styles as styles
 import merk.logs as logs
 import merk.user as user
-import merk.plugins as plugins
 
 parser = argparse.ArgumentParser(
 	prog=f"python {os.path.basename(__file__)}",
@@ -89,11 +88,6 @@ configuration_group.add_argument( "-L","--config-local",dest="configinstall",hel
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
 
-devgroup = parser.add_argument_group('Plugins')
-
-devgroup.add_argument("--generate", nargs='?', type=str,help="Create a \"blank\" plugin for editing", metavar="FILE",const=1)
-devgroup.add_argument( "--noplugins", help=f"Disable plugins", action="store_true")
-
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
@@ -104,25 +98,6 @@ args = parser.parse_args()
 if __name__ == '__main__':
 
 	app = QApplication([])
-
-	# "Generate" a blank plugin
-	if args.generate:
-		if args.generate==1:
-			# No argument, so print to STDOUT
-			f = open(BLANK_PLUGIN_FILE,'r+')
-			x = f.read()
-			f.close()
-			print(x)
-			sys.exit(0)
-		else:
-			if os.path.isfile(args.generate):
-				print("File \""+args.generate+"\" already exists.")
-				sys.exit(1)
-			# Copy the blank plugin in the data directory
-			# to the new location
-			shutil.copy(BLANK_PLUGIN_FILE,args.generate)
-			print("Plugin generated!")
-			sys.exit(0)
 
 	# If user wants to store config data in the install
 	# directory, then set that up here
@@ -140,9 +115,6 @@ if __name__ == '__main__':
 
 	# Initialize the user system
 	user.initialize(args.configdir,args.configname)
-
-	# Initialize the plugin system
-	plugins.initialize(args.configdir,args.configname)
 
 	# Load the config file
 	config.load_settings(config.CONFIG_FILE)
@@ -230,7 +202,6 @@ if __name__ == '__main__':
 				args.configname,	# Config directory name, default ".merk"
 				i,					# Connection info
 				font,				# Application font
-				args.noplugins,		# Disable plugins
 				args.nocommands,	# Disable connection commands
 				chans,				# Channels
 				None,				# Parent
@@ -248,7 +219,6 @@ if __name__ == '__main__':
 					args.configname,	# Config directory name, default ".merk"
 					None,				# Connection info
 					font,				# Application font
-					args.noplugins,		# Disable plugins
 					args.nocommands,	# Disable connection commands
 					[],					# Channels
 					None,				# Parent
@@ -266,7 +236,6 @@ if __name__ == '__main__':
 						args.configname,	# Config directory name, default ".merk"
 						connection_info,	# Connection info
 						font,				# Application font
-						args.noplugins,		# Disable plugins
 						args.nocommands,	# Disable connection commands
 						[],					# Channels
 						None,				# Parent
