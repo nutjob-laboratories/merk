@@ -1102,9 +1102,15 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.addSeparator()
 
-		entry = QAction(QIcon(FOLDER_ICON),"Open settings directory",self)
+		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
+
+		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
-		self.settingsMenu.addAction(entry)
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+		sm.addAction(entry)
 
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")

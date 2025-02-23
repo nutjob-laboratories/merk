@@ -43,7 +43,6 @@ AUTOCOMPLETE_DIRECTORY = os.path.join(DATA_DIRECTORY, "autocomplete")
 EMOJI_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji2.txt")
 EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji1.txt")
 NETWORK_FILE = os.path.join(DATA_DIRECTORY, "servers.txt")
-BLANK_PLUGIN_FILE = os.path.join(DATA_DIRECTORY, "plugin.py")
 
 DOCUMENTATION_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "documentation")
 PLUGIN_DOCUMENTATION = os.path.join(DOCUMENTATION_DIRECTORY, "MERK_Plugin_Development_Guide.pdf")
@@ -178,6 +177,8 @@ MERK_SPLASH_IMAGE = ":/gui-merk_splash.png"
 NUTJOB_LOGO = ":/gui-nutjob.png"
 
 MERK_ABOUT_LOGO = ":/gui-about.png"
+
+SCRIPT_ICON = ":/icon-script.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
