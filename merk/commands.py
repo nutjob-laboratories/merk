@@ -56,6 +56,7 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"who": config.ISSUE_COMMAND_SYMBOL+"who ",
 		config.ISSUE_COMMAND_SYMBOL+"invite": config.ISSUE_COMMAND_SYMBOL+"invite ",
 		config.ISSUE_COMMAND_SYMBOL+"script": config.ISSUE_COMMAND_SYMBOL+"script ",
+		config.ISSUE_COMMAND_SYMBOL+"switch": config.ISSUE_COMMAND_SYMBOL+"switch ",
 	}
 
 # The command help system
@@ -76,6 +77,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script [FILENAME]</b>", "Executes a list of commands in a file" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"switch [WINDOW NAME]</b>", "Switches focus to another window" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -96,6 +98,21 @@ HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
 def handleChatCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |---------|
+	# | /switch |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'switch' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				gui.showSubWindow(w)
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
 
 	# |---------|
 	# | /invite |
@@ -266,6 +283,25 @@ def executeScript(gui,window,text):
 
 def handleCommonCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |---------|
+	# | /switch |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'switch' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				gui.showSubWindow(w)
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'switch':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"switch WINDOW")
+			window.writeText(t)
+			return True
 
 	# |---------|
 	# | /invite |
