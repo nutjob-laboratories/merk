@@ -32,11 +32,27 @@ import os
 import time
 import uuid
 import re
+from pathlib import Path
 
 import emoji
 
 from .resources import *
 from . import config
+
+CONFIG_DIRECTORY = None
+SCRIPTS_DIRECTORY = None
+
+def initialize(directory,directory_name):
+	global SCRIPTS_DIRECTORY
+
+	# If the passed directory is set to None,
+	# set the storage directory to the user's
+	# home directory
+	if directory==None:
+		directory = str(Path.home())
+
+	SCRIPTS_DIRECTORY = os.path.join(directory,directory_name)
+	if not os.path.isdir(SCRIPTS_DIRECTORY): os.mkdir(SCRIPTS_DIRECTORY)
 
 # Entries for command autocomplete
 AUTOCOMPLETE = {
@@ -246,9 +262,19 @@ def handleChatCommands(gui,window,user_input):
 	return False
 
 def find_script(filename):
+
+	# Check if it's a complete filename
 	if os.path.isfile(filename): return filename
-	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
+
+	# Look for the script in the scripts directory
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, filename)): return os.path.join(SCRIPTS_DIRECTORY, filename)
+
+	# Look for the script in the config directory
 	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return os.path.join(config.CONFIG_DIRECTORY, filename)
+
+	# Look for the script in the install directory
+	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
+
 	return None
 
 def execute_script_line(data):
@@ -719,3 +745,19 @@ class ScriptThread(QThread):
 				self.execLine.emit([self.gui,self.window,line])
 
 		self.scriptEnd.emit([self.gui,self.id])
+
+def initialize(directory,directory_name,folder):
+	global CONFIG_DIRECTORY
+	global SCRIPTS_DIRECTORY
+
+	# If the passed directory is set to None,
+	# set the storage directory to the user's
+	# home directory
+	if directory==None:
+		directory = str(Path.home())
+
+	CONFIG_DIRECTORY = os.path.join(directory,directory_name)
+	if not os.path.isdir(CONFIG_DIRECTORY): os.mkdir(CONFIG_DIRECTORY)
+
+	SCRIPTS_DIRECTORY = os.path.join(CONFIG_DIRECTORY,folder)
+	if not os.path.isdir(SCRIPTS_DIRECTORY): os.mkdir(SCRIPTS_DIRECTORY)

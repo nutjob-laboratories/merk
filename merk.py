@@ -48,6 +48,8 @@ import merk.styles as styles
 import merk.logs as logs
 import merk.user as user
 
+import merk.commands as commands
+
 parser = argparse.ArgumentParser(
 	prog=f"python {os.path.basename(__file__)}",
 	formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -88,6 +90,8 @@ configuration_group.add_argument( "-L","--config-local",dest="configinstall",hel
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
 
+configuration_group.add_argument("-S","--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default="scripts")
+
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
@@ -115,6 +119,9 @@ if __name__ == '__main__':
 
 	# Initialize the user system
 	user.initialize(args.configdir,args.configname)
+
+	# Initialize the scripts system
+	commands.initialize(args.configdir,args.configname,args.scriptdir)
 
 	# Load the config file
 	config.load_settings(config.CONFIG_FILE)
