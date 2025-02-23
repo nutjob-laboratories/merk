@@ -55,6 +55,7 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"whowas": config.ISSUE_COMMAND_SYMBOL+"whowas ",
 		config.ISSUE_COMMAND_SYMBOL+"who": config.ISSUE_COMMAND_SYMBOL+"who ",
 		config.ISSUE_COMMAND_SYMBOL+"invite": config.ISSUE_COMMAND_SYMBOL+"invite ",
+		config.ISSUE_COMMAND_SYMBOL+"script": config.ISSUE_COMMAND_SYMBOL+"script ",
 	}
 
 # The command help system
@@ -74,6 +75,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]</b>", "Requests user information from the server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script [FILENAME]</b>", "Executes a list of commands in a file" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
