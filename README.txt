@@ -71,7 +71,7 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 ```
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
                       [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-D DIRECTORY] [-L]
-                      [--config-name NAME] [--qtstyle NAME] [-N] [-X]
+                      [--config-name NAME] [--qtstyle NAME] [-S DIRECTORY] [-N] [-X]
                       [SERVER] [PORT]
 
 optional arguments:
@@ -96,12 +96,14 @@ Connection:
                         Use this realname to connect
 
 Configuration:
-  -D DIRECTORY, --config-directory DIRECTORY
+  -D, --config-directory DIRECTORY
                         Location to store configuration files
   -L, --config-local    Store configuration files in install directory
   --config-name NAME    Name of the configuration file directory (default:
                         .merk)
   --qtstyle NAME        Set Qt widget style (default: Windows)
+  -S, --scripts-directory DIRECTORY
+                        Location to look for script files
 
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start

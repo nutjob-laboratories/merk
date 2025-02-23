@@ -759,5 +759,7 @@ def initialize(directory,directory_name,folder):
 	CONFIG_DIRECTORY = os.path.join(directory,directory_name)
 	if not os.path.isdir(CONFIG_DIRECTORY): os.mkdir(CONFIG_DIRECTORY)
 
+	if folder==None: folder="scripts"
+
 	SCRIPTS_DIRECTORY = os.path.join(CONFIG_DIRECTORY,folder)
 	if not os.path.isdir(SCRIPTS_DIRECTORY): os.mkdir(SCRIPTS_DIRECTORY)
