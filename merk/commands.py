@@ -73,6 +73,9 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"invite": config.ISSUE_COMMAND_SYMBOL+"invite ",
 		config.ISSUE_COMMAND_SYMBOL+"script": config.ISSUE_COMMAND_SYMBOL+"script ",
 		config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
+		config.ISSUE_COMMAND_SYMBOL+"maximize": config.ISSUE_COMMAND_SYMBOL+"maximize ",
+		config.ISSUE_COMMAND_SYMBOL+"minimize": config.ISSUE_COMMAND_SYMBOL+"minimize ",
+		config.ISSUE_COMMAND_SYMBOL+"restore": config.ISSUE_COMMAND_SYMBOL+"restore ",
 	}
 
 # The command help system
@@ -94,6 +97,9 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script [FILENAME]</b>", "Executes a list of commands in a file" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW</b>", "Minimizes a window" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] WINDOW</b>", "Restores a window" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -114,6 +120,111 @@ HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
 def handleChatCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |----------|
+	# | /restore |
+	# |----------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.showNormal()
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.showNormal()
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
+
+	# |-----------|
+	# | /minimize |
+	# |-----------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.showMinimized()
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.showMinimized()
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
+
+	# |-----------|
+	# | /maximize |
+	# |-----------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.showMaximized()
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.showMaximized()
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
 
 	# |--------|
 	# | /focus |
@@ -329,6 +440,123 @@ def executeScript(gui,window,text):
 
 def handleCommonCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |----------|
+	# | /restore |
+	# |----------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.showNormal()
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.showNormal()
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] WINDOW")
+			window.writeText(t)
+			return True
+
+	# |-----------|
+	# | /minimize |
+	# |-----------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.showMinimized()
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.showMinimized()
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW")
+			window.writeText(t)
+			return True
+
+	# |-----------|
+	# | /maximize |
+	# |-----------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.showMaximized()
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.showMaximized()
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW")
+			window.writeText(t)
+			return True
 
 	# |--------|
 	# | /focus |
