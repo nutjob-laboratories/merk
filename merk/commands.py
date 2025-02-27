@@ -121,146 +121,6 @@ HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 def handleChatCommands(gui,window,user_input):
 	tokens = user_input.split()
 
-	# |----------|
-	# | /restore |
-	# |----------|
-	if len(tokens)>=1:
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==3:
-			tokens.pop(0)
-			server = tokens.pop(0)
-			target = tokens.pop(0)
-
-			swins = gui.getAllServerWindows()
-			for win in swins:
-				if server in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
-					if w:
-						w.showNormal()
-					else:
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
-					return True
-			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==2:
-			tokens.pop(0)
-			target = tokens.pop(0)
-			w = gui.getSubWindow(target,window.client)
-			if w:
-				w.showNormal()
-			else:
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
-			return True
-
-	# |-----------|
-	# | /minimize |
-	# |-----------|
-	if len(tokens)>=1:
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==3:
-			tokens.pop(0)
-			server = tokens.pop(0)
-			target = tokens.pop(0)
-
-			swins = gui.getAllServerWindows()
-			for win in swins:
-				if server in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
-					if w:
-						w.showMinimized()
-					else:
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
-					return True
-			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==2:
-			tokens.pop(0)
-			target = tokens.pop(0)
-			w = gui.getSubWindow(target,window.client)
-			if w:
-				w.showMinimized()
-			else:
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
-			return True
-
-	# |-----------|
-	# | /maximize |
-	# |-----------|
-	if len(tokens)>=1:
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==3:
-			tokens.pop(0)
-			server = tokens.pop(0)
-			target = tokens.pop(0)
-
-			swins = gui.getAllServerWindows()
-			for win in swins:
-				if server in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
-					if w:
-						w.showMaximized()
-					else:
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
-					return True
-			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==2:
-			tokens.pop(0)
-			target = tokens.pop(0)
-			w = gui.getSubWindow(target,window.client)
-			if w:
-				w.showMaximized()
-			else:
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
-			return True
-
-	# |--------|
-	# | /focus |
-	# |--------|
-	if len(tokens)>=1:
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==3:
-			tokens.pop(0)
-			server = tokens.pop(0)
-			target = tokens.pop(0)
-
-			swins = gui.getAllServerWindows()
-			for win in swins:
-				if server in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
-					if w:
-						gui.showSubWindow(w)
-					else:
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
-					return True
-			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==2:
-			tokens.pop(0)
-			target = tokens.pop(0)
-			w = gui.getSubWindow(target,window.client)
-			if w:
-				gui.showSubWindow(w)
-			else:
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
-			return True
-
 	# |---------|
 	# | /invite |
 	# |---------|
@@ -476,8 +336,7 @@ def handleCommonCommands(gui,window,user_input):
 				window.writeText(t)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore':
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] WINDOW")
-			window.writeText(t)
+			window.showNormal()
 			return True
 
 	# |-----------|
@@ -515,8 +374,7 @@ def handleCommonCommands(gui,window,user_input):
 				window.writeText(t)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize':
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW")
-			window.writeText(t)
+			window.showMinimized()
 			return True
 
 	# |-----------|
@@ -554,8 +412,7 @@ def handleCommonCommands(gui,window,user_input):
 				window.writeText(t)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize':
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW")
-			window.writeText(t)
+			window.showMaximized()
 			return True
 
 	# |--------|
