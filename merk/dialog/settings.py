@@ -354,9 +354,13 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_COMMANDS: self.autocompleteCommands.setChecked(True)
 		self.autocompleteCommands.stateChanged.connect(self.changedSetting)
 
-		self.autocompleteNicks = QCheckBox("Autocomplete nicknames/channels",self)
+		self.autocompleteNicks = QCheckBox("Autocomplete nicknames",self)
 		if config.AUTOCOMPLETE_NICKS: self.autocompleteNicks.setChecked(True)
 		self.autocompleteNicks.stateChanged.connect(self.changedSetting)
+
+		self.autocompleteChans = QCheckBox("Autocomplete channels",self)
+		if config.AUTOCOMPLETE_CHANNELS: self.autocompleteChans.setChecked(True)
+		self.autocompleteChans.stateChanged.connect(self.changedSetting)
 
 		self.autocompleteEmojis = QCheckBox("Autocomplete emoji shortcodes",self)
 		if config.AUTOCOMPLETE_EMOJIS: self.autocompleteEmojis.setChecked(True)
@@ -421,6 +425,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(self.enableEmojis)
 		inputLayout.addWidget(self.autocompleteCommands)
 		inputLayout.addWidget(self.autocompleteNicks)
+		inputLayout.addWidget(self.autocompleteChans)
 		inputLayout.addWidget(self.autocompleteEmojis)
 		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(self.enableSpellcheck)
@@ -641,6 +646,7 @@ class Dialog(QDialog):
 		config.TIMESTAMP_SHOW_SECONDS = self.timestampSeconds.isChecked()
 		config.PLAIN_USER_LISTS = self.plainUserLists.isChecked()
 		config.SHOW_USER_INFO_ON_CHAT_WINDOWS = self.showInfo.isChecked()
+		config.AUTOCOMPLETE_CHANNELS = self.autocompleteChans.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

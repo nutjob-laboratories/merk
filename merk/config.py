@@ -84,6 +84,8 @@ TIMESTAMP_SHOW_SECONDS = True
 PLAIN_USER_LISTS = False
 SHOW_USER_INFO_ON_CHAT_WINDOWS = True
 
+AUTOCOMPLETE_CHANNELS = True
+
 def save_settings(filename):
 
 	settings = {
@@ -132,12 +134,15 @@ def save_settings(filename):
 		"timestamp_show_seconds": TIMESTAMP_SHOW_SECONDS,
 		"plain_user_lists": PLAIN_USER_LISTS,
 		"show_user_info_on_chat_windows": SHOW_USER_INFO_ON_CHAT_WINDOWS,
+		"autocomplete_channels": AUTOCOMPLETE_CHANNELS,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "autocomplete_channels" in settings:
+		settings["autocomplete_channels"] = AUTOCOMPLETE_CHANNELS
 	if not "show_user_info_on_chat_windows" in settings:
 		settings["show_user_info_on_chat_windows"] = SHOW_USER_INFO_ON_CHAT_WINDOWS
 	if not "plain_user_lists" in settings:
@@ -277,6 +282,7 @@ def load_settings(filename):
 	global TIMESTAMP_SHOW_SECONDS
 	global PLAIN_USER_LISTS
 	global SHOW_USER_INFO_ON_CHAT_WINDOWS
+	global AUTOCOMPLETE_CHANNELS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -286,6 +292,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOCOMPLETE_CHANNELS = settings["autocomplete_channels"]
 		SHOW_USER_INFO_ON_CHAT_WINDOWS = settings["show_user_info_on_chat_windows"]
 		PLAIN_USER_LISTS = settings["plain_user_lists"]
 		TIMESTAMP_24_HOUR = settings["timestamp_24_hour"]
@@ -387,6 +394,7 @@ def check_settings(filename):
 			if not "timestamp_show_seconds" in settings: return False
 			if not "plain_user_lists" in settings: return False
 			if not "show_user_info_on_chat_windows" in settings: return False
+			if not "autocomplete_channels" in settings: return False
 	else:
 		return False
 

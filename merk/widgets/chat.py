@@ -1579,7 +1579,7 @@ class SpellTextEdit(QPlainTextEdit):
 							cursor.endEditBlock()
 							return
 
-			if config.AUTOCOMPLETE_NICKS:
+			if config.AUTOCOMPLETE_CHANNELS:
 				# Auto-complete channel/server
 				cursor.select(QTextCursor.WordUnderCursor)
 				oldpos = cursor.position()
@@ -1746,7 +1746,7 @@ class SpellTextEdit(QPlainTextEdit):
 
 class Highlighter(QSyntaxHighlighter):
 
-	WORDS = u'(?iu)[\w\']+'
+	WORDS = u'(?iu)[\\w\']+'
 
 	def __init__(self, *args):
 		QSyntaxHighlighter.__init__(self, *args)
