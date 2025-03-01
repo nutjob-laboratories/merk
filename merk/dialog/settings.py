@@ -354,7 +354,7 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_COMMANDS: self.autocompleteCommands.setChecked(True)
 		self.autocompleteCommands.stateChanged.connect(self.changedSetting)
 
-		self.autocompleteNicks = QCheckBox("Autocomplete nicknames",self)
+		self.autocompleteNicks = QCheckBox("Autocomplete nicknames/channels",self)
 		if config.AUTOCOMPLETE_NICKS: self.autocompleteNicks.setChecked(True)
 		self.autocompleteNicks.stateChanged.connect(self.changedSetting)
 

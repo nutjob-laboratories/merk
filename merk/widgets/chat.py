@@ -1579,6 +1579,26 @@ class SpellTextEdit(QPlainTextEdit):
 							cursor.endEditBlock()
 							return
 
+			if config.AUTOCOMPLETE_NICKS:
+				# Auto-complete channel/server
+				cursor.select(QTextCursor.WordUnderCursor)
+				oldpos = cursor.position()
+				cursor.select(QTextCursor.WordUnderCursor)
+				newpos = cursor.selectionStart() - 1
+				cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+				cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+				self.setTextCursor(cursor)
+				if self.textCursor().hasSelection():
+					text = self.textCursor().selectedText()
+
+					# Channel/server names
+					for name in self.parent.parent.getAllChatNames():
+						if fnmatch.fnmatch(name,f"{text}*"):
+							cursor.beginEditBlock()
+							cursor.insertText(f"{name}")
+							cursor.endEditBlock()
+							return
+
 			if config.ENABLE_EMOJI_SHORTCODES:
 				if config.AUTOCOMPLETE_EMOJIS:
 					# Autocomplete emojis

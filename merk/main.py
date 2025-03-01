@@ -988,6 +988,14 @@ class Merk(QMainWindow):
 						retval.append(window)
 		return retval
 
+	def getAllChatNames(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				retval.append(window.widget().name)
+		return retval
+
 	def getAllSubChannelWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():
