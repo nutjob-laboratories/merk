@@ -17,7 +17,7 @@
  </p>
  <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_linux_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_linux2.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="http://www.efnet.org/">EFnet</a> and 2600net on Linux Mint 20.2.</small></i></center>
+  <center><i><small>MERK connected to <a href="http://www.efnet.org/">EFnet</a>, <a href="https://freenode.net/">Freenode</a>, and <a href="https://libera.chat/">Libera</a> on Linux Mint 20.2.</small></i></center>
   </p>
   
 # Features
