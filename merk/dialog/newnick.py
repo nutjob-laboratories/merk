@@ -29,6 +29,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 from ..resources import *
+from .. import user
 
 class Dialog(QDialog):
 
@@ -46,13 +47,25 @@ class Dialog(QDialog):
 
 		retval = self.name.text()
 
+		if self.save_as_default:
+			user.NICKNAME = retval
+			user.save_user(user.USER_FILE)
+
 		return retval
+
+	def clickSave(self,state):
+		if state == Qt.Checked:
+			self.save_as_default = True
+		else:
+			self.save_as_default = False
 
 	def __init__(self,nick,parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
 		self.nick = nick
+
+		self.save_as_default = False
 
 		self.setWindowTitle("Change nickname")
 		self.setWindowIcon(QIcon(PRIVATE_ICON))
@@ -63,6 +76,9 @@ class Dialog(QDialog):
 		nameLayout.addWidget(self.nameLabel)
 		nameLayout.addStretch()
 		nameLayout.addWidget(self.name)
+
+		self.savenick = QCheckBox("Save nickname as default",self)
+		self.savenick.stateChanged.connect(self.clickSave)
 
 		self.name.setPlaceholderText(self.nick)
 
@@ -78,6 +94,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(nickInfoBox)
+		finalLayout.addWidget(self.savenick)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
