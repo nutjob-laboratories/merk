@@ -76,6 +76,8 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"maximize": config.ISSUE_COMMAND_SYMBOL+"maximize ",
 		config.ISSUE_COMMAND_SYMBOL+"minimize": config.ISSUE_COMMAND_SYMBOL+"minimize ",
 		config.ISSUE_COMMAND_SYMBOL+"restore": config.ISSUE_COMMAND_SYMBOL+"restore ",
+		config.ISSUE_COMMAND_SYMBOL+"cascade": config.ISSUE_COMMAND_SYMBOL+"cascade",
+		config.ISSUE_COMMAND_SYMBOL+"tile": config.ISSUE_COMMAND_SYMBOL+"tile",
 	}
 
 # The command help system
@@ -100,6 +102,8 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW</b>", "Minimizes a window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] WINDOW</b>", "Restores a window" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"cascade</b>", "Cascades all subwindows" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -300,6 +304,22 @@ def executeScript(gui,window,text):
 
 def handleCommonCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |-------|
+	# | /tile |
+	# |-------|
+	if len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'tile':
+			gui.MDI.tileSubWindows()
+			return True
+
+	# |----------|
+	# | /cascade |
+	# |----------|
+	if len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'cascade':
+			gui.MDI.cascadeSubWindows()
+			return True
 
 	# |----------|
 	# | /restore |
@@ -832,7 +852,7 @@ class ScriptThread(QThread):
 		self.window = window
 
 		# Strip comments from script
-		self.script = re.sub(re.compile("/\*.*?\*/",re.DOTALL ) ,"" ,self.script)
+		self.script = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,self.script)
 
 	def run(self):
 
