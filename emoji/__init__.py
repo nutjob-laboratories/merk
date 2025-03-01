@@ -1,39 +1,35 @@
-# -*- coding: UTF-8 -*-
+__all__ = [
+    # emoji.core
+    'emojize',
+    'demojize',
+    'analyze',
+    'config',
+    'emoji_list',
+    'distinct_emoji_list',
+    'emoji_count',
+    'replace_emoji',
+    'is_emoji',
+    'purely_emoji',
+    'version',
+    'Token',
+    'EmojiMatch',
+    'EmojiMatchZWJ',
+    'EmojiMatchZWJNonRGI',
+    # emoji.unicode_codes
+    'EMOJI_DATA',
+    'STATUS',
+    'LANGUAGES',
+]
 
-
-"""
-emoji for Python
-~~~~~~~~~~~~~~~~
-
-emoji terminal output for Python.
-
-    >>> import emoji
-    >>> print(emoji.emojize('Python is :thumbsup:', use_aliases=True))
-    Python is 👍
-    >> print(emoji.emojize('Python is :thumbs_up:'))
-    Python is 👍
-"""
-
-
-from emoji.core import emojize
-from emoji.core import demojize
-from emoji.core import get_emoji_regexp
-from emoji.core import emoji_count
-from emoji.core import emoji_lis
-from emoji.unicode_codes import EMOJI_ALIAS_UNICODE
-from emoji.unicode_codes import EMOJI_UNICODE
-from emoji.unicode_codes import UNICODE_EMOJI
-from emoji.unicode_codes import UNICODE_EMOJI_ALIAS
-
-__version__ = '0.5.3'
-__author__ = 'Taehoon Kim and Kevin Wurster'
+__version__ = '2.14.1'
+__author__ = 'Taehoon Kim, Kevin Wurster'
 __email__ = 'carpedm20@gmail.com'
-# and wursterk@gmail.com
+# and wursterk@gmail.com, tahir.jalilov@gmail.com
 __source__ = 'https://github.com/carpedm20/emoji/'
-__license__ = '''
+__license__ = """
 New BSD License
 
-Copyright (c) 2014-2015, Taehoon Kim and Kevin Wurster
+Copyright (c) 2014-2025, Taehoon Kim, Kevin Wurster
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -59,4 +55,7 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-'''
+"""
+
+from emoji.core import *
+from emoji.unicode_codes import *
