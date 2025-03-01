@@ -2,10 +2,10 @@
   <img src="https://github.com/nutjob-laboratories/merk/raw/main/merk_splash.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
-  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.023.019</a><br>
+  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.023.020</a><br>
 </p>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.023.019**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.023.020**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **MERK** is in beta, but it works, and can be used for most IRC activities.
 
@@ -13,7 +13,7 @@
 
 <p align="center">
 <center><a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot1.png"></a></center></br>
- <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="https://www.scuttled.net/">2600net</a>, and a local IRC server, on Windows 11. </small></i></center>
+ <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and a local IRC server, on Windows 11. </small></i></center>
  </p>
  <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_linux_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_linux2.png"></a></center></br>

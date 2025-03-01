@@ -13,7 +13,7 @@
 
 <p align="center">
 <center><a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot1.png"></a></center></br>
- <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="https://www.scuttled.net/">2600net</a>, and a local IRC server, on Windows 11. </small></i></center>
+ <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and a local IRC server, on Windows 11. </small></i></center>
  </p>
  <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_linux_big.png"><img src="https://github.com/nutjob-laboratories/merk/raw/main/screenshot_linux2.png"></a></center></br>
