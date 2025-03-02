@@ -39,6 +39,7 @@ except Exception as exception:
 from ..resources import *
 from .. import config
 from .. import user
+from .. import syntax
 
 class Dialog(QDialog):
 
@@ -318,6 +319,9 @@ class Dialog(QDialog):
 		self.commandDescription.setWordWrap(True)
 		self.commandDescription.setAlignment(Qt.AlignJustify)
 		self.commands = QPlainTextEdit()
+
+		# Add syntax highlighting
+		self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
 		height = height + serverLayout.sizeHint().height() + 25
