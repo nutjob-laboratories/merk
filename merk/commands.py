@@ -33,6 +33,7 @@ import time
 import uuid
 import re
 from pathlib import Path
+import shlex
 
 import emoji
 
@@ -123,7 +124,14 @@ help_display = HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
 HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
 def handleChatCommands(gui,window,user_input):
-	tokens = user_input.split()
+	return executeChatCommands(gui,window,user_input)
+
+def handleCommonCommands(gui,window,user_input):
+	return executeCommonCommands(gui,window,user_input)
+
+def executeChatCommands(gui,window,user_input):
+	#tokens = user_input.split()
+	tokens = shlex.split(user_input)
 
 	# |---------|
 	# | /invite |
@@ -302,8 +310,9 @@ def executeScript(gui,window,text):
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
 	gui.scripts[script_id].start()
 
-def handleCommonCommands(gui,window,user_input):
-	tokens = user_input.split()
+def executeCommonCommands(gui,window,user_input):
+	#tokens = user_input.split()
+	tokens = shlex.split(user_input)
 
 	# |-------|
 	# | /tile |
@@ -745,8 +754,8 @@ def handleCommonCommands(gui,window,user_input):
 			tokens.pop(0)
 			newnick = tokens.pop(0)
 
-			# Check to see if the user is trying to /join the
-			# channel from the same channel they are in
+			# Check to see if the user is trying set their
+			# new nickname to the nickname they are already using
 			if window.client.nickname.lower()==newnick.lower():
 				t = Message(ERROR_MESSAGE,'',"You are currently using \""+newnick+"\" as a nickname")
 				window.writeText(t,False)
