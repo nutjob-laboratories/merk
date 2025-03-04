@@ -121,6 +121,8 @@ class Window(QMainWindow):
 			self.infoMenuButton.setFlat(True)
 			self.info_button = self.toolbar.addWidget(self.infoMenuButton)
 
+			self.toolbar.addSeparator()
+
 			entry = QPushButton("")
 			entry.setIcon(QIcon(CHANNEL_ICON))
 			entry.clicked.connect(self.joinChannel)
@@ -134,6 +136,15 @@ class Window(QMainWindow):
 			entry.setIcon(QIcon(PRIVATE_ICON))
 			entry.clicked.connect(self.changeNick)
 			entry.setToolTip("Change your nickname")
+			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			entry.setFlat(True)
+			self.nick_button = self.toolbar.addWidget(entry)
+
+			entry = QPushButton("")
+			entry.setIcon(QIcon(SCRIPT_ICON))
+			entry.clicked.connect(self.loadScript)
+			entry.setToolTip("Run a script")
 			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
 			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 			entry.setFlat(True)
@@ -799,6 +810,17 @@ class Window(QMainWindow):
 			return True
 
 		return super(Window, self).eventFilter(source, event)
+
+	def loadScript(self):
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Select Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.txt);;All Files (*)", options=options)
+		if fileName:
+			sfile = open(fileName,"r",encoding="utf-8",errors="ignore")
+			script = sfile.read()
+			sfile.close()
+			commands.executeScript(self.parent,self,script)
+
 
 	def pressedStyleButton(self):
 		x = StylerDialog(self.client,self,self.parent)
