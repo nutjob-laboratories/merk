@@ -33,7 +33,6 @@ import time
 import uuid
 import re
 from pathlib import Path
-import shlex
 
 import emoji
 
@@ -130,8 +129,7 @@ def handleCommonCommands(gui,window,user_input):
 	return executeCommonCommands(gui,window,user_input)
 
 def executeChatCommands(gui,window,user_input):
-	#tokens = user_input.split()
-	tokens = shlex.split(user_input)
+	tokens = user_input.split()
 
 	# |---------|
 	# | /invite |
@@ -311,8 +309,7 @@ def executeScript(gui,window,text):
 	gui.scripts[script_id].start()
 
 def executeCommonCommands(gui,window,user_input):
-	#tokens = user_input.split()
-	tokens = shlex.split(user_input)
+	tokens = user_input.split()
 
 	# |-------|
 	# | /tile |
