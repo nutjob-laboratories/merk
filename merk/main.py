@@ -1137,6 +1137,14 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 		sm.addAction(entry)
 
+		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		sm.addAction(entry)
+
 		if config.COMMANDLINE_NO_SCRIPT==False:
 			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
