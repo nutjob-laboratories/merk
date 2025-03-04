@@ -88,12 +88,13 @@ configuration_group.add_argument("-D","--config-directory",dest="configdir",type
 configuration_group.add_argument( "-L","--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
-configuration_group.add_argument("-S","--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
+configuration_group.add_argument("-s","--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-X","--nocommands", help=f"Don't auto-execute commands on connection", action="store_true")
+misc_group.add_argument( "-S","--noscripts", help=f"Don't allow script execution", action="store_true")
 
 args = parser.parse_args()
 
@@ -118,11 +119,14 @@ if __name__ == '__main__':
 	# Initialize the user system
 	user.initialize(args.configdir,args.configname)
 
+	# Load the config file
+	config.load_settings(config.CONFIG_FILE)
+
 	# Initialize the scripts system
 	commands.initialize(args.configdir,args.configname,args.scriptdir)
 
-	# Load the config file
-	config.load_settings(config.CONFIG_FILE)
+	# See if the noscript flag is set
+	if args.noscripts: config.COMMANDLINE_NO_SCRIPT = True
 
 	# Set the application font
 	if config.APPLICATION_FONT!=None:

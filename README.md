@@ -2,10 +2,10 @@
   <img src="https://github.com/nutjob-laboratories/merk/raw/main/merk_splash.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
-  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.023.030</a><br>
+  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.023.032</a><br>
 </p>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.023.030**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.023.032**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **MERK** is in beta, but it works, and can be used for most IRC activities.
 
@@ -69,9 +69,10 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 # Usage
 
 ```
+
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
                       [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-D DIRECTORY] [-L]
-                      [--config-name NAME] [--qtstyle NAME] [-S DIRECTORY] [-N] [-X]
+                      [--config-name NAME] [--qtstyle NAME] [-s DIRECTORY] [-N] [-X] [-S]
                       [SERVER] [PORT]
 
 optional arguments:
@@ -102,12 +103,13 @@ Configuration:
   --config-name NAME    Name of the configuration file directory (default:
                         .merk)
   --qtstyle NAME        Set Qt widget style (default: Windows)
-  -S, --scripts-directory DIRECTORY
+  -s, --scripts-directory DIRECTORY
                         Location to look for script files
 
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start
   -X, --nocommands      Don't auto-execute commands on connection
+  -S, --noscripts       Don't allow script execution
 ```
 # Developing MERK
 

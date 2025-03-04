@@ -71,7 +71,6 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"whowas": config.ISSUE_COMMAND_SYMBOL+"whowas ",
 		config.ISSUE_COMMAND_SYMBOL+"who": config.ISSUE_COMMAND_SYMBOL+"who ",
 		config.ISSUE_COMMAND_SYMBOL+"invite": config.ISSUE_COMMAND_SYMBOL+"invite ",
-		config.ISSUE_COMMAND_SYMBOL+"script": config.ISSUE_COMMAND_SYMBOL+"script ",
 		config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
 		config.ISSUE_COMMAND_SYMBOL+"maximize": config.ISSUE_COMMAND_SYMBOL+"maximize ",
 		config.ISSUE_COMMAND_SYMBOL+"minimize": config.ISSUE_COMMAND_SYMBOL+"minimize ",
@@ -97,7 +96,6 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]</b>", "Requests user information from the server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
-	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script [FILENAME]</b>", "Executes a list of commands in a file" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW</b>", "Minimizes a window" ],
@@ -501,6 +499,12 @@ def executeCommonCommands(gui,window,user_input):
 	# |---------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)==2:
+
+			if config.COMMANDLINE_NO_SCRIPT==True:
+				t = Message(ERROR_MESSAGE,'',"The "+config.ISSUE_COMMAND_SYMBOL+"script command has been disabled.")
+				window.writeText(t)
+				return True
+
 			tokens.pop(0)
 			filename = tokens.pop(0)
 
@@ -522,6 +526,12 @@ def executeCommonCommands(gui,window,user_input):
 				window.writeText(t)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
+
+			if config.COMMANDLINE_NO_SCRIPT==True:
+				t = Message(ERROR_MESSAGE,'',"The "+config.ISSUE_COMMAND_SYMBOL+"script command has been disabled.")
+				window.writeText(t)
+				return True
+
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
 			window.writeText(t,False)
 			return True

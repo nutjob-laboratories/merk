@@ -85,6 +85,8 @@ PLAIN_USER_LISTS = False
 SHOW_USER_INFO_ON_CHAT_WINDOWS = True
 AUTOCOMPLETE_CHANNELS = True
 
+COMMANDLINE_NO_SCRIPT = False
+
 def save_settings(filename):
 
 	settings = {

@@ -116,6 +116,26 @@ class Merk(QMainWindow):
 		if connection_info:
 			self.connectToIrc(connection_info)
 
+		if config.COMMANDLINE_NO_SCRIPT==False:
+			# Add /script to autocomplete
+			commands.AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"script"] = config.ISSUE_COMMAND_SYMBOL+"script "
+
+			# Add the /script command to the /help display
+			entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script [FILENAME]</b>", "Executes a list of commands in a file" ]
+			commands.COMMAND_HELP_INFORMATION.append(entry)
+
+			# Rebuild the command help, with the "/script" command added
+			hdisplay = []
+			for e in commands.COMMAND_HELP_INFORMATION:
+				t = commands.HELP_ENTRY_TEMPLATE
+				t = t.replace("%_USAGE_%",e[0])
+				t = t.replace("%_DESCRIPTION_%",e[1])
+				hdisplay.append(t)
+			help_display = commands.HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
+
+			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
+
+
 	# |==================|
 	# | BEGIN IRC EVENTS |
 	# |==================|
@@ -164,8 +184,9 @@ class Merk(QMainWindow):
 			w = self.getServerWindow(client)
 			if w:
 				hostid = client.server+":"+str(client.port)
-				if hostid in user.COMMANDS:
-					commands.executeScript(self,w,user.COMMANDS[hostid])
+				if config.COMMANDLINE_NO_SCRIPT==False:
+					if hostid in user.COMMANDS:
+						commands.executeScript(self,w,user.COMMANDS[hostid])
 
 		if len(self.join_channels)>0:
 			for e in self.join_channels:
@@ -1116,9 +1137,10 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-		sm.addAction(entry)
+		if config.COMMANDLINE_NO_SCRIPT==False:
+			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			sm.addAction(entry)
 
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")

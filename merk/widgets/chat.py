@@ -141,14 +141,15 @@ class Window(QMainWindow):
 			entry.setFlat(True)
 			self.nick_button = self.toolbar.addWidget(entry)
 
-			entry = QPushButton("")
-			entry.setIcon(QIcon(SCRIPT_ICON))
-			entry.clicked.connect(self.loadScript)
-			entry.setToolTip("Run a script")
-			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
-			entry.setFlat(True)
-			self.nick_button = self.toolbar.addWidget(entry)
+			if config.COMMANDLINE_NO_SCRIPT==False:
+				entry = QPushButton("")
+				entry.setIcon(QIcon(SCRIPT_ICON))
+				entry.clicked.connect(self.loadScript)
+				entry.setToolTip("Run a script")
+				entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+				entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+				entry.setFlat(True)
+				self.nick_button = self.toolbar.addWidget(entry)
 
 			self.spacer = QWidget()
 			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

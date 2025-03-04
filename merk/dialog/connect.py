@@ -359,9 +359,10 @@ class Dialog(QDialog):
 		self.server_tab.setLayout(serverInfoLayout)
 		self.tabs.addTab(self.server_tab, QIcon(NETWORK_ICON), "Server")
 
-		self.commands_tab = QWidget()
-		self.commands_tab.setLayout(commandsLayout)
-		self.tabs.addTab(self.commands_tab, QIcon(COMMAND_ICON), "Commands")
+		if config.COMMANDLINE_NO_SCRIPT==False:
+			self.commands_tab = QWidget()
+			self.commands_tab.setLayout(commandsLayout)
+			self.tabs.addTab(self.commands_tab, QIcon(COMMAND_ICON), "Commands")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
