@@ -207,6 +207,7 @@ HELP_DISPLAY_TEMPLATE='''<table style="width: 100%" border="0">
           Arguments inside brackets are optional. If called from a channel window,
           channel windows can be omitted to apply the command to the current channel.
           %_AUTOCOMPLETE_%
+          %_SCRIPTING_%
           </small></td>
         </tr>
         <tr>

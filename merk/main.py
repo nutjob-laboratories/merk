@@ -131,9 +131,14 @@ class Merk(QMainWindow):
 				t = t.replace("%_USAGE_%",e[0])
 				t = t.replace("%_DESCRIPTION_%",e[1])
 				hdisplay.append(t)
-			help_display = commands.HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
+			commands.help_display = commands.HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
 
-			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
+			commands.help_display = commands.help_display.replace("%_SCRIPTING_%", "")
+
+			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',commands.help_display)
+		else:
+			commands.help_display = commands.help_display.replace("%_SCRIPTING_%", "Scripting is turned off.")
+			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',commands.help_display)
 
 
 	# |==================|
