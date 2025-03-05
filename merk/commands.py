@@ -77,6 +77,7 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"restore": config.ISSUE_COMMAND_SYMBOL+"restore ",
 		config.ISSUE_COMMAND_SYMBOL+"cascade": config.ISSUE_COMMAND_SYMBOL+"cascade",
 		config.ISSUE_COMMAND_SYMBOL+"tile": config.ISSUE_COMMAND_SYMBOL+"tile",
+		config.ISSUE_COMMAND_SYMBOL+"clear": config.ISSUE_COMMAND_SYMBOL+"clear",
 	}
 
 # The command help system
@@ -102,6 +103,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] WINDOW</b>", "Restores a window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"cascade</b>", "Cascades all subwindows" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear</b>", "Clears the current windows chat display" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -128,6 +130,18 @@ def handleCommonCommands(gui,window,user_input):
 
 def executeChatCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |--------|
+	# | /clear |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==1:
+			window.clearChat()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)>1:
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"clear")
+			window.writeText(t,False)
+			return True
 
 	# |---------|
 	# | /invite |
@@ -308,6 +322,18 @@ def executeScript(gui,window,text):
 
 def executeCommonCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |--------|
+	# | /clear |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==1:
+			window.clearChat()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)>1:
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"clear")
+			window.writeText(t,False)
+			return True
 
 	# |-------|
 	# | /tile |

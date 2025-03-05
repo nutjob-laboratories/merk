@@ -517,6 +517,10 @@ class Window(QMainWindow):
 			self.nick_display.hide()
 			self.mode_display.hide()
 
+	def clearChat(self):
+		self.log = []
+		self.rerenderChatLog()
+
 	def rerenderChatLog(self):
 
 		self.chat.clear()
