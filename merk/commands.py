@@ -103,7 +103,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] WINDOW</b>", "Restores a window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"cascade</b>", "Cascades all subwindows" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
-	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear</b>", "Clears the current windows chat display" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -137,10 +137,6 @@ def executeChatCommands(gui,window,user_input):
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==1:
 			window.clearChat()
-			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)>1:
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"clear")
-			window.writeText(t,False)
 			return True
 
 	# |---------|
@@ -330,9 +326,17 @@ def executeCommonCommands(gui,window,user_input):
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==1:
 			window.clearChat()
 			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)>1:
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"clear")
-			window.writeText(t,False)
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.widget().clearChat()
+				# Move focus back to the calling window
+				gui.showSubWindow(gui.getSubWindow(window.name,window.client))
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t)
 			return True
 
 	# |-------|
