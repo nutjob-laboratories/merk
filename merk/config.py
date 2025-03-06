@@ -87,6 +87,15 @@ AUTOCOMPLETE_CHANNELS = True
 
 COMMANDLINE_NO_SCRIPT = False
 
+SYNTAX_COMMENT_COLOR = "Magenta"
+SYNTAX_COMMENT_STYLE = "bold italic"
+
+SYNTAX_COMMAND_COLOR = "darkBlue"
+SYNTAX_COMMAND_STYLE = "bold"
+
+SYNTAX_CHANNEL_COLOR = "darkRed"
+SYNTAX_CHANNEL_STYLE = "bold"
+
 def save_settings(filename):
 
 	settings = {

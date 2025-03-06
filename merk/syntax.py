@@ -67,9 +67,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		]
 
 		STYLES = {
-			'comments': format('Magenta','bold italic'),
-			'merk': format('darkBlue','bold'),
-			'channel': format('darkRed','bold'),
+			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),
+			'merk': format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE),
+			'channel': format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE),
 		}
 
 		# Comments
