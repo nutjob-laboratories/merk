@@ -323,6 +323,12 @@ class Dialog(QDialog):
 		# Add syntax highlighting
 		self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
 
+		# Set background/foreground
+		p = self.commands.palette()
+		p.setColor(QPalette.Base, QColor(config.SYNTAX_BACKGROUND))
+		p.setColor(QPalette.Text, QColor(config.SYNTAX_FOREGROUND))
+		self.commands.setPalette(p)
+
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
 		height = height + serverLayout.sizeHint().height() + 25
 		self.commands.setFixedHeight(height)

@@ -96,6 +96,9 @@ SYNTAX_COMMAND_STYLE = "bold"
 SYNTAX_CHANNEL_COLOR = "darkRed"
 SYNTAX_CHANNEL_STYLE = "bold"
 
+SYNTAX_BACKGROUND = "white"
+SYNTAX_FOREGROUND = "black"
+
 def save_settings(filename):
 
 	settings = {
