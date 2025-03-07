@@ -78,6 +78,8 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"cascade": config.ISSUE_COMMAND_SYMBOL+"cascade",
 		config.ISSUE_COMMAND_SYMBOL+"tile": config.ISSUE_COMMAND_SYMBOL+"tile",
 		config.ISSUE_COMMAND_SYMBOL+"clear": config.ISSUE_COMMAND_SYMBOL+"clear",
+		config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
+		config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
 	}
 
 # The command help system
@@ -104,6 +106,8 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"cascade</b>", "Cascades all subwindows" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -318,6 +322,22 @@ def executeScript(gui,window,text):
 
 def executeCommonCommands(gui,window,user_input):
 	tokens = user_input.split()
+
+	# |--------|
+	# | /style |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style' and len(tokens)==1:
+			window.pressedStyleButton()
+			return True
+
+	# |-----------|
+	# | /settings |
+	# |-----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings' and len(tokens)==1:
+			gui.openSettings()
+			return True
 
 	# |--------|
 	# | /clear |
