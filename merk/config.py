@@ -84,18 +84,13 @@ TIMESTAMP_SHOW_SECONDS = True
 PLAIN_USER_LISTS = False
 SHOW_USER_INFO_ON_CHAT_WINDOWS = True
 AUTOCOMPLETE_CHANNELS = True
-
 COMMANDLINE_NO_SCRIPT = False
-
 SYNTAX_COMMENT_COLOR = "Magenta"
 SYNTAX_COMMENT_STYLE = "bold italic"
-
 SYNTAX_COMMAND_COLOR = "darkBlue"
 SYNTAX_COMMAND_STYLE = "bold"
-
 SYNTAX_CHANNEL_COLOR = "darkRed"
 SYNTAX_CHANNEL_STYLE = "bold"
-
 SYNTAX_BACKGROUND = "white"
 SYNTAX_FOREGROUND = "black"
 
@@ -148,12 +143,36 @@ def save_settings(filename):
 		"plain_user_lists": PLAIN_USER_LISTS,
 		"show_user_info_on_chat_windows": SHOW_USER_INFO_ON_CHAT_WINDOWS,
 		"autocomplete_channels": AUTOCOMPLETE_CHANNELS,
+		"syntax_comment_color": SYNTAX_COMMENT_COLOR,
+		"syntax_comment_style": SYNTAX_COMMENT_STYLE,
+		"syntax_command_color": SYNTAX_COMMAND_COLOR,
+		"syntax_command_style": SYNTAX_COMMAND_STYLE,
+		"syntax_channel_color": SYNTAX_CHANNEL_COLOR,
+		"syntax_channel_style": SYNTAX_CHANNEL_STYLE,
+		"syntax_background_color": SYNTAX_BACKGROUND,
+		"syntax_foreground_color": SYNTAX_FOREGROUND,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "syntax_comment_color" in settings:
+		settings["syntax_comment_color"] = SYNTAX_COMMENT_COLOR
+	if not "syntax_comment_style" in settings:
+		settings["syntax_comment_style"] = SYNTAX_COMMENT_STYLE
+	if not "syntax_command_color" in settings:
+		settings["syntax_command_color"] = SYNTAX_COMMAND_COLOR
+	if not "syntax_command_style" in settings:
+		settings["syntax_command_style"] = SYNTAX_COMMAND_STYLE
+	if not "syntax_channel_color" in settings:
+		settings["syntax_channel_color"] = SYNTAX_CHANNEL_COLOR
+	if not "syntax_channel_style" in settings:
+		settings["syntax_channel_style"] = SYNTAX_CHANNEL_STYLE
+	if not "syntax_background_color" in settings:
+		settings["syntax_background_color"] = SYNTAX_BACKGROUND
+	if not "syntax_foreground_color" in settings:
+		settings["syntax_foreground_color"] = SYNTAX_FOREGROUND
 	if not "autocomplete_channels" in settings:
 		settings["autocomplete_channels"] = AUTOCOMPLETE_CHANNELS
 	if not "show_user_info_on_chat_windows" in settings:
@@ -296,6 +315,15 @@ def load_settings(filename):
 	global PLAIN_USER_LISTS
 	global SHOW_USER_INFO_ON_CHAT_WINDOWS
 	global AUTOCOMPLETE_CHANNELS
+	global SYNTAX_COMMENT_COLOR
+	global SYNTAX_COMMENT_STYLE
+	global SYNTAX_COMMAND_COLOR
+	global SYNTAX_COMMAND_STYLE
+	global SYNTAX_CHANNEL_COLOR
+	global SYNTAX_CHANNEL_STYLE
+	global SYNTAX_BACKGROUND
+	global SYNTAX_FOREGROUND
+
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -351,6 +379,14 @@ def load_settings(filename):
 		AUTOCOMPLETE_EMOJIS = settings["autocomplete_emojis"]
 		MAXIMUM_LOADED_LOG_SIZE = settings["maximum_loaded_log_size"]
 		MARK_END_OF_LOADED_LOG = settings["mark_end_of_loaded_log"]
+		SYNTAX_COMMENT_COLOR = settings["syntax_comment_color"]
+		SYNTAX_COMMENT_STYLE = settings["syntax_comment_style"]
+		SYNTAX_COMMAND_COLOR = settings["syntax_command_color"]
+		SYNTAX_COMMAND_STYLE = settings["syntax_command_style"]
+		SYNTAX_CHANNEL_COLOR = settings["syntax_channel_color"]
+		SYNTAX_CHANNEL_STYLE = settings["syntax_channel_style"]
+		SYNTAX_BACKGROUND = settings["syntax_background_color"]
+		SYNTAX_FOREGROUND = settings["syntax_foreground_color"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
@@ -362,6 +398,14 @@ def check_settings(filename):
 		with open(filename, "r") as read_settings:
 			settings = json.load(read_settings)
 
+			if not "syntax_comment_color" in settings: return False
+			if not "syntax_comment_style" in settings: return False
+			if not "syntax_command_color" in settings: return False
+			if not "syntax_command_style" in settings: return False
+			if not "syntax_channel_color" in settings: return False
+			if not "syntax_channel_style" in settings: return False
+			if not "syntax_background_color" in settings: return False
+			if not "syntax_foreground_color" in settings: return False
 			if not "mdi_background_image" in settings: return False
 			if not "application_font" in settings: return False
 			if not "display_name" in settings: return False
