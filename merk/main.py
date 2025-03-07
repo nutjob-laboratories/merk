@@ -906,7 +906,7 @@ class Merk(QMainWindow):
 	def handleConsoleInput(self,window,user_input):
 		
 		# Handle common commands
-		if commands.handleCommonCommands(self,window,user_input): return
+		if commands.handleCommonCommands(self,window,user_input,False): return
 
 		t = Message(ERROR_MESSAGE,'',"Unrecognized command: "+user_input)
 		window.writeText(t)
