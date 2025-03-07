@@ -39,8 +39,9 @@ class SyntaxColor(QWidget):
 		style = []
 		if self.bold: style.append("bold")
 		if self.italic: style.append("italic")
+		flatstyle = ' '.join(style)
 
-		gcode = [ f"{self.color}",' '.join(style)]
+		gcode = [ f"{self.color}",flatstyle]
 
 		return gcode
 
