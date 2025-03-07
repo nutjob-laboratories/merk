@@ -126,13 +126,13 @@ help_display = HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
 
 HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
-def handleChatCommands(gui,window,user_input):
-	return executeChatCommands(gui,window,user_input)
+def handleChatCommands(gui,window,user_input,is_script):
+	return executeChatCommands(gui,window,user_input,is_script)
 
-def handleCommonCommands(gui,window,user_input):
-	return executeCommonCommands(gui,window,user_input)
+def handleCommonCommands(gui,window,user_input,is_script):
+	return executeCommonCommands(gui,window,user_input,is_script)
 
-def executeChatCommands(gui,window,user_input):
+def executeChatCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
 
 	# |--------|
@@ -295,7 +295,7 @@ def execute_script_line(data):
 	window = data[1]
 	line = data[2]
 
-	handleCommonCommands(gui,window,line)
+	handleCommonCommands(gui,window,line,True)
 
 def execute_script_error(data):
 	gui = data[0]
@@ -320,7 +320,7 @@ def executeScript(gui,window,text):
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
 	gui.scripts[script_id].start()
 
-def executeCommonCommands(gui,window,user_input):
+def executeCommonCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
 
 	# |--------|
@@ -328,6 +328,12 @@ def executeCommonCommands(gui,window,user_input):
 	# |--------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style' and len(tokens)==1:
+
+			if is_script==True:
+				t = Message(ERROR_MESSAGE,'',""+config.ISSUE_COMMAND_SYMBOL+"style cannot be called from a script")
+				window.writeText(t)
+				return True
+
 			window.pressedStyleButton()
 			return True
 
@@ -336,6 +342,12 @@ def executeCommonCommands(gui,window,user_input):
 	# |-----------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings' and len(tokens)==1:
+
+			if is_script==True:
+				t = Message(ERROR_MESSAGE,'',""+config.ISSUE_COMMAND_SYMBOL+"settings cannot be called from a script")
+				window.writeText(t)
+				return True
+
 			gui.openSettings()
 			return True
 
