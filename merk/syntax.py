@@ -70,6 +70,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"oper",
 			cmdsymbol+"time",
 			cmdsymbol+"print",
+			cmdsymbol+"version",
 		]
 
 		STYLES = {

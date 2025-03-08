@@ -382,6 +382,12 @@ class IRC_Connection(irc.IRCClient):
 		
 		self.gui.kickedFrom(self,channel,kicker,message)
 
+	def irc_RPL_VERSION(self, prefix, params):
+		sversion = params[1]
+		server = params[2]
+
+		self.gui.gotVersion(self,server,sversion)
+
 	def irc_QUIT(self,prefix,params):
 		x = prefix.split('!')
 		if len(x) >= 2:

@@ -256,6 +256,12 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
 			w.writeText(t)
 
+	def gotVersion(self,client,server,version):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',f"{server} VERSION: {version}")
+			w.writeText(t)
+
 	def privmsg(self,client,user,target,msg):
 
 		p = user.split("!")
