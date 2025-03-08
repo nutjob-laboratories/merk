@@ -75,8 +75,9 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"away": config.ISSUE_COMMAND_SYMBOL+"away ",
 		config.ISSUE_COMMAND_SYMBOL+"back": config.ISSUE_COMMAND_SYMBOL+"back",
 		config.ISSUE_COMMAND_SYMBOL+"raw": config.ISSUE_COMMAND_SYMBOL+"raw ",
+		config.ISSUE_COMMAND_SYMBOL+"time": config.ISSUE_COMMAND_SYMBOL+"time",
 
-
+		config.ISSUE_COMMAND_SYMBOL+"print": config.ISSUE_COMMAND_SYMBOL+"print ",
 		config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
 		config.ISSUE_COMMAND_SYMBOL+"maximize": config.ISSUE_COMMAND_SYMBOL+"maximize ",
 		config.ISSUE_COMMAND_SYMBOL+"minimize": config.ISSUE_COMMAND_SYMBOL+"minimize ",
@@ -91,8 +92,8 @@ AUTOCOMPLETE = {
 # The command help system
 COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help</b>", "Displays command usage information" ],
-	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE</b>", "Sends a CTCP action message to the current chat" ],
-	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE</b>", "Sends a message" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE...</b>", "Sends a CTCP action message to the current chat" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE...</b>", "Sends a message" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE</b>", "Sends a notice" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]</b>", "Joins a channel" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]</b>", "Leaves a channel" ],
@@ -108,8 +109,9 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD</b>", "Logs into an operator account" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"away [MESSAGE]</b>", "Sets status as \"away\"" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"back</b>", "Sets status as \"back\"" ],
-	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"raw TEXT</b>", "Sends unprocessed data to the server" ],
-
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"raw TEXT...</b>", "Sends unprocessed data to the server" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"time</b>", "Requests server time" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print TEXT...</b>", "Prints text to the current window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW</b>", "Minimizes a window" ],
@@ -349,6 +351,33 @@ def executeScript(gui,window,text):
 
 def executeCommonCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
+
+	# |--------|
+	# | /print |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'print' and len(tokens)>=2:
+			tokens.pop(0)
+			msg = ' '.join(tokens)
+			t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+			window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'print' and len(tokens)==1:
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"print TEXT")
+			window.writeText(t)
+			return True
+
+	# |-------|
+	# | /time |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'time' and len(tokens)==1:
+			window.client.sendLine("TIME")
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'time':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"time")
+			window.writeText(t)
+			return True
 
 	# |------|
 	# | /raw |

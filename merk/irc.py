@@ -191,6 +191,13 @@ class IRC_Connection(irc.IRCClient):
 		
 		self.gui.receivedMOTD(self,motd)
 
+	def irc_RPL_TIME(self,prefix,params):
+
+		server = params[1]
+		time = params[2]
+
+		self.gui.gotTime(self,server,time)
+
 	def irc_RPL_BANLIST(self,prefix,params):
 		# bans
 		channel = params[1]

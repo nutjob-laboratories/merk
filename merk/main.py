@@ -385,6 +385,12 @@ class Merk(QMainWindow):
 				t = Message(NOTICE_MESSAGE,nickname,msg)
 				w.writeText(t)
 
+	def gotTime(self,client,server,time):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,"",f"{server} reports time {time}")
+			w.writeText(t)
+
 	def names(self,client,channel,users):
 		w = self.getWindow(channel,client)
 		if w:
