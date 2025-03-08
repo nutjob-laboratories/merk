@@ -118,6 +118,7 @@ class IRC_Connection(irc.IRCClient):
 		self.supports = []
 		self.modes = 0
 		self.maxmodes = []
+		self.is_away = False
 
 		self.banlists = defaultdict(list)
 
@@ -605,6 +606,25 @@ class IRC_Connection(irc.IRCClient):
 
 	def irc_ERR_CANNOTSENDTOCHAN(self,prefix,params):
 		self.gui.receivedError(self,params[1]+": "+params[2])
+
+	def irc_RPL_AWAY(self,prefix,params):
+		user = params[1]
+		msg = params[2]
+
+	def irc_RPL_UNAWAY(self,prefix,params):
+		msg = params[1]
+
+		self.is_away = False
+		self.gui.rerenderUserlists()
+		self.gui.back(self)
+
+	def irc_RPL_NOWAWAY(self,prefix,params):
+
+		msg = params[1]
+
+		self.is_away = True
+		self.gui.rerenderUserlists()
+		self.gui.away(self,msg)
 
 	def lineReceived(self, line):
 

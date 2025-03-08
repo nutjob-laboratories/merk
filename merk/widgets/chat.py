@@ -913,6 +913,13 @@ class Window(QMainWindow):
 	def rerenderUserlist(self):
 		self.writeUserlist(self.users)
 
+	def change_to_away_display(self,w):
+		font = QFont()
+		font.setBold(False)
+		#font.setItalic(True)
+		#font.setStrikeOut(True)
+		w.setFont(font)
+
 	def writeUserlist(self,users):
 
 		if not hasattr(self,"userlist"): return
@@ -984,6 +991,10 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(OWNER_USER))
 				ui.setText(u)
 
+			if u==self.client.nickname:
+				if self.client.is_away:
+					self.change_to_away_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add admins
@@ -994,6 +1005,10 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(ADMIN_USER))
 				ui.setText(u)
+
+			if u==self.client.nickname:
+				if self.client.is_away:
+					self.change_to_away_display(ui)
 
 			self.userlist.addItem(ui)
 
@@ -1006,6 +1021,10 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(HALFOP_USER))
 				ui.setText(u)
 
+			if u==self.client.nickname:
+				if self.client.is_away:
+					self.change_to_away_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add ops
@@ -1016,6 +1035,10 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(OP_USER))
 				ui.setText(u)
+
+			if u==self.client.nickname:
+				if self.client.is_away:
+					self.change_to_away_display(ui)
 
 			self.userlist.addItem(ui)
 
@@ -1028,6 +1051,10 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(VOICE_USER))
 				ui.setText(u)
 
+			if u==self.client.nickname:
+				if self.client.is_away:
+					self.change_to_away_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add normal
@@ -1038,6 +1065,10 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(NORMAL_USER))
 				ui.setText(u)
+
+			if u==self.client.nickname:
+				if self.client.is_away:
+					self.change_to_away_display(ui)
 
 			self.userlist.addItem(ui)
 

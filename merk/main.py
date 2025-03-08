@@ -244,6 +244,17 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',"You left "+channel)
 			w.writeText(t)
 		
+	def away(self,client,msg):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
+			w.writeText(t)
+
+	def back(self,client):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
+			w.writeText(t)
 
 	def privmsg(self,client,user,target,msg):
 
