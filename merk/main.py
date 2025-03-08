@@ -391,6 +391,13 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,"",f"{server} reports time {time}")
 			w.writeText(t)
 
+	def gotBanlist(self,client,channel,banlist):
+		w = self.getWindow(channel,client)
+		if w:
+			w.banlist = banlist.copy()
+			w.refreshBanMenu()
+			return
+
 	def names(self,client,channel,users):
 		w = self.getWindow(channel,client)
 		if w:

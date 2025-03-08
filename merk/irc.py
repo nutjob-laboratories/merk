@@ -34,6 +34,7 @@ import sys
 import random
 import time
 import uuid
+from collections import defaultdict
 
 from twisted.internet import reactor, protocol
 
@@ -117,6 +118,8 @@ class IRC_Connection(irc.IRCClient):
 		self.supports = []
 		self.modes = 0
 		self.maxmodes = []
+
+		self.banlists = defaultdict(list)
 
 
 	def uptime_beat(self):
@@ -205,10 +208,21 @@ class IRC_Connection(irc.IRCClient):
 		banner = params[3]
 		timestamp = params[4]
 
+		e = [mask,banner,timestamp]
+
+		self.banlists[channel].append(e)
+
+
 	def irc_RPL_ENDOFBANLIST(self,prefix,params):
 		# bans end
-		#print(prefix,params)
-		pass
+		channel = params[1]
+
+		banlist = []
+		if channel in self.banlists:
+			banlist = self.banlists[channel]
+			self.banlists[channel] = []
+
+		self.gui.gotBanlist(self,channel,banlist)
 
 	def modeChanged(self, user, channel, mset, modes, args):
 		if "b" in modes: self.sendLine(f"MODE {channel} +b")

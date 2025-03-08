@@ -81,6 +81,8 @@ class Window(QMainWindow):
 		self.admin = False
 		self.halfop = False
 
+		self.banlist = []
+
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
 		self.setWindowTitle(self.name)
@@ -367,7 +369,19 @@ class Window(QMainWindow):
 			self.userlist.resize(ulwidth,self.height())
 			self.userlist_width = ulwidth
 
+			# BANLIST BUTTON
+			self.banlist_menu = QPushButton("")
+			self.banlist_menu.setIcon(QIcon(BAN_ICON))
+			self.banlist_menu.setMenu(buildBanMenu(self,self.client))
+			self.banlist_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+			self.banlist_menu.setToolTip("Channel Bans")
+			self.banlist_menu.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE - 8,config.SERVER_TOOLBAR_BUTTON_SIZE - 8))
+			self.banlist_menu.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE - 7,config.SERVER_TOOLBAR_ICON_SIZE - 7))
+			self.banlist_menu.setFlat(True)
+			self.banlist_menu.hide()
+
 			topicLayout = QHBoxLayout()
+			topicLayout.addWidget(self.banlist_menu)
 			topicLayout.addWidget(self.channel_mode_display)
 			topicLayout.addWidget(self.topic)
 
@@ -505,6 +519,14 @@ class Window(QMainWindow):
 			self.uptime = self.uptime + 1
 			if self.window_type==CHANNEL_WINDOW:
 				self.channelUptime.setText("<small>"+prettyUptime(self.uptime)+"</small>")
+
+	def refreshBanMenu(self):
+		self.banlist_menu.setMenu(buildBanMenu(self,self.client))
+
+		if len(self.banlist)>0:
+			self.banlist_menu.show()
+		else:
+			self.banlist_menu.hide()
 
 	def refreshInfoMenu(self):
 		self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
@@ -1382,6 +1404,18 @@ class Window(QMainWindow):
 			self.input.setFocus()
 
 		return super(Window, self).resizeEvent(event)
+
+def buildBanMenu(self,client):
+
+	banlist = self.banlist
+
+	optionsMenu = QMenu("Banned Users")
+
+	for b in banlist:
+		e = plainTextAction(self,f"<b>{b[0]}</b>")
+		optionsMenu.addAction(e)
+
+	return optionsMenu
 
 def buildServerSettingsMenu(self,client):
 
