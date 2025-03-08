@@ -64,6 +64,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"cascade",
 			cmdsymbol+"tile",
 			cmdsymbol+"wait",
+			cmdsymbol+"away",
+			cmdsymbol+"back",
+			cmdsymbol+"raw",
+			cmdsymbol+"oper",
 		]
 
 		STYLES = {

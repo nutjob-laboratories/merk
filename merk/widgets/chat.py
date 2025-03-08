@@ -819,7 +819,7 @@ class Window(QMainWindow):
 	def loadScript(self):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getOpenFileName(self,"Select Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.txt);;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getOpenFileName(self,"Select Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.merk);;All Files (*)", options=options)
 		if fileName:
 			sfile = open(fileName,"r",encoding="utf-8",errors="ignore")
 			script = sfile.read()

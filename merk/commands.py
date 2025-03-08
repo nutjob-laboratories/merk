@@ -71,6 +71,12 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"whowas": config.ISSUE_COMMAND_SYMBOL+"whowas ",
 		config.ISSUE_COMMAND_SYMBOL+"who": config.ISSUE_COMMAND_SYMBOL+"who ",
 		config.ISSUE_COMMAND_SYMBOL+"invite": config.ISSUE_COMMAND_SYMBOL+"invite ",
+		config.ISSUE_COMMAND_SYMBOL+"oper": config.ISSUE_COMMAND_SYMBOL+"oper ",
+		config.ISSUE_COMMAND_SYMBOL+"away": config.ISSUE_COMMAND_SYMBOL+"away ",
+		config.ISSUE_COMMAND_SYMBOL+"back": config.ISSUE_COMMAND_SYMBOL+"back",
+		config.ISSUE_COMMAND_SYMBOL+"raw": config.ISSUE_COMMAND_SYMBOL+"raw ",
+
+
 		config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
 		config.ISSUE_COMMAND_SYMBOL+"maximize": config.ISSUE_COMMAND_SYMBOL+"maximize ",
 		config.ISSUE_COMMAND_SYMBOL+"minimize": config.ISSUE_COMMAND_SYMBOL+"minimize ",
@@ -99,6 +105,11 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]</b>", "Requests user information from the server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD</b>", "Logs into an operator account" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"away [MESSAGE]</b>", "Sets status as \"away\"" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"back</b>", "Sets status as \"back\"" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"raw TEXT</b>", "Sends unprocessed data to the server" ],
+
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW</b>", "Minimizes a window" ],
@@ -288,6 +299,22 @@ def find_script(filename):
 	# Look for the script in the install directory
 	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
 
+	# Add the default file extension and see if we find it
+
+	efilename = filename + ".merk"
+
+	# Check if it's a complete filename
+	if os.path.isfile(efilename): return filename
+
+	# Look for the script in the scripts directory
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
+
+	# Look for the script in the config directory
+	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
+
+	# Look for the script in the install directory
+	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
+
 	return None
 
 def execute_script_line(data):
@@ -322,6 +349,61 @@ def executeScript(gui,window,text):
 
 def executeCommonCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
+
+	# |------|
+	# | /raw |
+	# |------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'raw' and len(tokens)>=2:
+			tokens.pop(0)
+			msg = ' '.join(tokens)
+			window.client.sendLine(msg)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'raw' and len(tokens)==1:
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"raw TEXT")
+			window.writeText(t)
+			return True
+
+	# |-------|
+	# | /back |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'back' and len(tokens)==1:
+			window.client.back()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'back':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"back")
+			window.writeText(t)
+			return True
+
+	# |-------|
+	# | /away |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)>=2:
+			tokens.pop(0)
+			msg = ' '.join(tokens)
+			window.client.away(msg)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)==1:
+			window.client.away("busy")
+			return True
+
+	# |-------|
+	# | /oper |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'oper' and len(tokens)==3:
+			tokens.pop(0)
+			username = tokens.pop(0)
+			password = tokens.pop(0)
+			window.client.sendLine("OPER "+username+" "+password)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'oper':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD")
+			window.writeText(t)
+			return True
 
 	# |--------|
 	# | /style |
