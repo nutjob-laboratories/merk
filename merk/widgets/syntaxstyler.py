@@ -128,3 +128,48 @@ class SyntaxColor(QWidget):
 
 		self.setLayout(controlsLayout)
 
+class SyntaxTextColor(QWidget):
+
+	syntaxChanged = pyqtSignal(list)
+
+	def exportSettings(self):
+
+		return self.color
+
+	def buttonColor(self):
+
+		self.newcolor = QColorDialog.getColor(QColor(self.color))
+
+		if self.newcolor.isValid():
+			self.ncolor = self.newcolor.name()
+			self.color = self.ncolor
+
+			self.setColor.setStyleSheet(f'background-color: {self.color};')
+
+			self.syntaxChanged.emit([self.name,self.exportSettings()])
+
+
+	def __init__(self,name,description,color,parent=None):
+		super(SyntaxTextColor,self).__init__(parent)
+
+		self.name = name
+		self.description = description
+		self.color = color
+		self.parent = parent
+
+		self.descriptionLabel = QLabel(self.description)
+
+		self.setColor = QPushButton("")
+		self.setColor.clicked.connect(self.buttonColor)
+		self.setColor.setStyleSheet(f'background-color: {self.color};')
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.setColor.setFixedSize(fheight+8,fheight+8)
+
+		controlsLayout = QHBoxLayout()
+		controlsLayout.addWidget(self.descriptionLabel)
+		controlsLayout.addWidget(QLabel(' '))
+		controlsLayout.addWidget(self.setColor)
+		controlsLayout.setAlignment(Qt.AlignLeft)
+
+		self.setLayout(controlsLayout)

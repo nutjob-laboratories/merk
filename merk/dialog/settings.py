@@ -118,6 +118,37 @@ class Dialog(QDialog):
 
 		self.changed.show()
 
+	def syntaxChanged(self,data):
+		name = data[0]
+		
+		if name=="comment":
+			color = data[1][0]
+			style = data[1][1]
+			self.SYNTAX_COMMENT_COLOR = color
+			self.SYNTAX_COMMENT_STYLE = style
+			self.changed.show()
+		elif name=="command":
+			color = data[1][0]
+			style = data[1][1]
+			self.SYNTAX_COMMAND_COLOR = color
+			self.SYNTAX_COMMAND_STYLE = style
+			self.changed.show()
+		elif name=="channel":
+			color = data[1][0]
+			style = data[1][1]
+			self.SYNTAX_CHANNEL_COLOR = color
+			self.SYNTAX_CHANNEL_STYLE = style
+			self.changed.show()
+		elif name=="fore":
+			color = data[1]
+			self.SYNTAX_FOREGROUND = color
+			self.changed.show()
+		elif name=="back":
+			color = data[1]
+			self.SYNTAX_BACKGROUND = color
+			self.changed.show()
+
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -134,6 +165,15 @@ class Dialog(QDialog):
 		self.default_quit_part = config.DEFAULT_QUIT_MESSAGE
 		self.rerenderUsers = False
 		self.rerenderNick = False
+
+		self.SYNTAX_COMMENT_COLOR = config.SYNTAX_COMMENT_COLOR
+		self.SYNTAX_COMMENT_STYLE = config.SYNTAX_COMMENT_STYLE
+		self.SYNTAX_COMMAND_COLOR = config.SYNTAX_COMMAND_COLOR
+		self.SYNTAX_COMMAND_STYLE = config.SYNTAX_COMMAND_STYLE
+		self.SYNTAX_CHANNEL_COLOR = config.SYNTAX_CHANNEL_COLOR
+		self.SYNTAX_CHANNEL_STYLE = config.SYNTAX_CHANNEL_STYLE
+		self.SYNTAX_BACKGROUND = config.SYNTAX_BACKGROUND
+		self.SYNTAX_FOREGROUND = config.SYNTAX_FOREGROUND
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -578,6 +618,44 @@ class Dialog(QDialog):
 
 		self.timestampPage.setLayout(timestampLayout)
 
+		# Syntax
+
+		self.syntaxPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Highlighting")
+		entry.widget = self.syntaxPage
+		entry.setIcon(QIcon(SCRIPT_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.syntaxPage)
+
+		self.syntaxcomment = widgets.SyntaxColor('comment', "Comments   ",self.SYNTAX_COMMENT_COLOR,self.SYNTAX_COMMENT_STYLE,self)
+		self.syntaxcommand = widgets.SyntaxColor('command', "Commands   ",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
+		self.syntaxchannel = widgets.SyntaxColor('channel', "Channels   ",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
+
+		self.syntaxfore = widgets.SyntaxTextColor('fore', "Text       ",self.SYNTAX_FOREGROUND,self)
+		self.syntaxback = widgets.SyntaxTextColor('back', "Background ",self.SYNTAX_BACKGROUND,self)
+
+		self.syntaxcomment.syntaxChanged.connect(self.syntaxChanged)
+		self.syntaxcommand.syntaxChanged.connect(self.syntaxChanged)
+		self.syntaxchannel.syntaxChanged.connect(self.syntaxChanged)
+
+		self.syntaxfore.syntaxChanged.connect(self.syntaxChanged)
+		self.syntaxback.syntaxChanged.connect(self.syntaxChanged)
+
+		syntaxLayout = QVBoxLayout()
+		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
+		syntaxLayout.addWidget(self.syntaxfore)
+		syntaxLayout.addWidget(self.syntaxback)
+		syntaxLayout.addWidget(self.syntaxcomment)
+		syntaxLayout.addWidget(self.syntaxcommand)
+		syntaxLayout.addWidget(self.syntaxchannel)
+		syntaxLayout.addStretch()
+
+		self.syntaxPage.setLayout(syntaxLayout)
+
 		self.changed.hide()
 
 		# Buttons
@@ -647,6 +725,14 @@ class Dialog(QDialog):
 		config.PLAIN_USER_LISTS = self.plainUserLists.isChecked()
 		config.SHOW_USER_INFO_ON_CHAT_WINDOWS = self.showInfo.isChecked()
 		config.AUTOCOMPLETE_CHANNELS = self.autocompleteChans.isChecked()
+		config.SYNTAX_COMMENT_COLOR = self.SYNTAX_COMMENT_COLOR
+		config.SYNTAX_COMMENT_STYLE = self.SYNTAX_COMMENT_STYLE
+		config.SYNTAX_COMMAND_COLOR = self.SYNTAX_COMMAND_COLOR
+		config.SYNTAX_COMMAND_STYLE = self.SYNTAX_COMMAND_STYLE
+		config.SYNTAX_CHANNEL_COLOR = self.SYNTAX_CHANNEL_COLOR
+		config.SYNTAX_CHANNEL_STYLE = self.SYNTAX_CHANNEL_STYLE
+		config.SYNTAX_BACKGROUND = self.SYNTAX_BACKGROUND
+		config.SYNTAX_FOREGROUND = self.SYNTAX_FOREGROUND
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
