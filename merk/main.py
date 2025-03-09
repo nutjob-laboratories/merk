@@ -1263,6 +1263,8 @@ class Merk(QMainWindow):
 						self.quitting[c.client.client_id] = 0
 						c.client.quit(config.DEFAULT_QUIT_MESSAGE)
 
+		self.mainMenu.close()
+
 
 	def buildMainMenu(self):
 		self.mainMenu.clear()
