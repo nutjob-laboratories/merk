@@ -34,6 +34,7 @@ from ..resources import *
 from .. import config
 from .. import syntax
 from .. import commands
+from .. import user
 
 class Window(QMainWindow):
 
@@ -45,12 +46,28 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
+	def readConnect(self,hostid,contents):
+
+		self.editing_user_script = True
+		self.current_user_script = hostid
+
+		self.editor.setPlainText(contents)
+		self.menuSave.setEnabled(True)
+		self.changed = False
+		self.updateApplicationTitle()
+
 	def __init__(self,filename=None,parent=None):
 		super(Window, self).__init__(parent)
 
 		self.filename = filename
 		self.parent = parent
 		self.changed = False
+
+		self.editing_user_script = False
+		self.current_user_script = None
+
+		# Load in user settings
+		user.load_user(user.USER_FILE)
 
 		self.subwindow_id = str(uuid.uuid4())
 
@@ -95,7 +112,7 @@ class Window(QMainWindow):
 		entry.setShortcut("Ctrl+O")
 		self.fileMenu.addAction(entry)
 
-		self.menuSave = QAction(QIcon(SAVEFILE_ICON),"Save file",self)
+		self.menuSave = QAction(QIcon(SAVEFILE_ICON),"Save",self)
 		self.menuSave.triggered.connect(self.doFileSave)
 		if self.filename: self.menuSave.setShortcut("Ctrl+S")
 		self.fileMenu.addAction(self.menuSave)
@@ -109,6 +126,18 @@ class Window(QMainWindow):
 		self.fileMenu.addAction(self.menuSaveAs)
 
 		self.fileMenu.addSeparator()
+
+		if len(user.COMMANDS)>0:
+
+			sm = self.fileMenu.addMenu(QIcon(CONNECT_ICON),"Open connection script")
+
+			for host in user.COMMANDS:
+				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
+				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
+				sm.addAction(entry)
+
+			self.fileMenu.addSeparator()
+
 
 		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
 		entry.triggered.connect(self.close)
@@ -171,6 +200,14 @@ class Window(QMainWindow):
 		self.editor.setFocus()
 
 	def updateApplicationTitle(self):
+
+		if self.editing_user_script:
+			if self.changed:
+				self.setWindowTitle("* Connection script for "+self.current_user_script)
+			else:
+				self.setWindowTitle("Connection script for "+self.current_user_script)
+			return
+
 		if self.filename!=None:
 			base = os.path.basename(self.filename)
 			if self.changed:
@@ -202,9 +239,11 @@ class Window(QMainWindow):
 		self.editor.clear()
 		self.menuSave.setEnabled(False)
 		self.changed = False
-		self.updateApplicationTitle()
 		self.menuSave.setShortcut(QKeySequence())
 		self.menuSaveAs.setShortcut("Ctrl+S")
+		self.editing_user_script = False
+		self.current_user_script = None
+		self.updateApplicationTitle()
 
 	def doFileOpen(self):
 		options = QFileDialog.Options()
@@ -220,8 +259,22 @@ class Window(QMainWindow):
 			self.menuSave.setEnabled(True)
 			self.menuSave.setShortcut("Ctrl+S")
 			self.menuSaveAs.setShortcut(QKeySequence())
+			self.editing_user_script = False
+			self.current_user_script = None
 
 	def doFileSave(self):
+
+		if self.editing_user_script:
+			contents = self.editor.toPlainText()
+			if len(contents)==0:
+				del user.COMMANDS[self.current_user_script]
+			else:
+				user.COMMANDS[self.current_user_script] = contents
+			user.save_user(user.USER_FILE)
+			self.changed = False
+			self.updateApplicationTitle()
+			return
+
 		code = open(self.filename,"w",encoding="utf-8",errors="ignore")
 		code.write(self.editor.toPlainText())
 		code.close()
@@ -234,25 +287,22 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def hasUndo(self,avail):
-		# if avail:
-		# 	self.menuUndo.setEnabled(True)
-		# else:
-		# 	self.menuUndo.setEnabled(False)
-		pass
+		if avail:
+			self.menuUndo.setEnabled(True)
+		else:
+			self.menuUndo.setEnabled(False)
 
 	def hasRedo(self,avail):
-		# if avail:
-		# 	self.menuRedo.setEnabled(True)
-		# else:
-		# 	self.menuRedo.setEnabled(False)
-		pass
+		if avail:
+			self.menuRedo.setEnabled(True)
+		else:
+			self.menuRedo.setEnabled(False)
 
 	def hasCopy(self,avail):
-		# if avail:
-		# 	self.menuCopy.setEnabled(True)
-		# 	self.menuCut.setEnabled(True)
-		# else:
-		# 	self.menuCopy.setEnabled(False)
-		# 	self.menuCut.setEnabled(False)
-		pass
+		if avail:
+			self.menuCopy.setEnabled(True)
+			self.menuCut.setEnabled(True)
+		else:
+			self.menuCopy.setEnabled(False)
+			self.menuCut.setEnabled(False)
 
