@@ -1140,7 +1140,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		self.MDI.addSubWindow(w)
-		self.settingsMenu.close()
+		self.toolsMenu.close()
 		w.show()
 
 		return w
@@ -1151,7 +1151,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		self.MDI.addSubWindow(w)
-		self.settingsMenu.close()
+		self.toolsMenu.close()
 		w.show()
 
 		return w
@@ -1183,12 +1183,6 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',25,self.newEditorWindow)
-		self.settingsMenu.addAction(entry)
-
-		entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
-		self.settingsMenu.addAction(entry)
-
 		self.settingsMenu.addSeparator()
 
 		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
@@ -1209,6 +1203,14 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 			sm.addAction(entry)
+
+		self.toolsMenu = self.menubar.addMenu("Tools")
+
+		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',25,self.newEditorWindow)
+		self.toolsMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
+		self.toolsMenu.addAction(entry)
 
 		# Windows menu
 		self.windowsMenu = self.menubar.addMenu("Windows")

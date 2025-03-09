@@ -31,6 +31,7 @@ from PyQt5 import QtCore
 import uuid
 
 from ..resources import *
+from ..dialog import *
 from .. import config
 from .. import syntax
 from .. import commands
@@ -195,9 +196,103 @@ class Window(QMainWindow):
 		self.menuZoomOut.setShortcut("Ctrl+-")
 		editMenu.addAction(self.menuZoomOut)
 
+		self.commandMenu = self.menubar.addMenu("Insert Command")
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Comment",self)
+		entry.triggered.connect(self.insertComment)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Multiline comment",self)
+		entry.triggered.connect(self.insertMLComment)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+		entry.triggered.connect(self.insertJoin)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
+		entry.triggered.connect(self.insertPause)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(PRIVATE_ICON),"Send private message",self)
+		entry.triggered.connect(self.insertPM)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(EDIT_ICON),"Print to window",self)
+		entry.triggered.connect(self.insertWrite)
+		self.commandMenu.addAction(entry)
+
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertWrite(self):
+		x = PrintMsg(self)
+		e = x.get_message_information(self)
+
+		if not e: return
+
+		if len(e)>0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"print "+e+"\n")
+			self.updateApplicationTitle()
+
+	def insertPM(self):
+		x = SendPM(self)
+		e = x.get_message_information(self)
+
+		if not e: return
+
+		target = e[0]
+		msg = e[1]
+		
+		if len(target)>0 and len(msg)>0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"msg "+target+" "+msg+"\n")
+			self.updateApplicationTitle()
+
+	def insertPause(self):
+		x = Pause(self)
+		e = x.get_time_information(self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"wait "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertMLComment(self):
+		x = Comment(False,self)
+		e = x.get_message_information(False,self)
+
+		if not e: return
+
+		if len(e)>0:
+			self.editor.insertPlainText("/*\n"+e+"\n*/\n")
+			self.updateApplicationTitle()
+
+	def insertComment(self):
+		x = Comment(True,self)
+		e = x.get_message_information(True,self)
+
+		if not e: return
+
+		if len(e)>0:
+			self.editor.insertPlainText("/* "+e+" */\n")
+			self.updateApplicationTitle()
+
+	def insertJoin(self):
+		x = JoinChannel(self)
+		e = x.get_channel_information(self)
+
+		if not e: return
+
+		channel = e[0]
+		key = e[1]
+
+		if len(key)==0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"join "+channel+"\n")
+			self.updateApplicationTitle()
+		else:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"join "+channel+" "+key+"\n")
+			self.updateApplicationTitle()
 
 	def updateApplicationTitle(self):
 

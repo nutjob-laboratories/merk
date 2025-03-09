@@ -34,6 +34,10 @@ from .historysize import Dialog as HistorySize
 from .export import Dialog as ExportLog
 from .about import Dialog as About
 from .quitpart import Dialog as QuitPart
+from .comment import Dialog as Comment
+from .pause import Dialog as Pause
+from .send_pm import Dialog as SendPM
+from .print import Dialog as PrintMsg
 
 def QuitPartDialog(msg,parent):
 	x = QuitPart(msg,parent)
