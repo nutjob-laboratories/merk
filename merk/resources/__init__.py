@@ -169,6 +169,12 @@ CUT_ICON = ":/icon-cut.png"
 COPY_ICON = ":/icon-copy.png"
 SELECTALL_ICON = ":/icon-select_all.png"
 
+SCRIPT_MENU_ICON = ":/icon-script_menu.png"
+SETTINGS_MENU_ICON = ":/icon-settings_menu.png"
+STYLE_MENU_ICON = ":/icon-style_menu.png"
+LOG_MENU_ICON = ":/icon-log_menu.png"
+ABOUT_MENU_ICON = ":/icon-about_menu.png"
+
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
 OP_USER = ":/gui-op.png"

@@ -1177,16 +1177,16 @@ class Merk(QMainWindow):
 		# Tools menu
 		self.settingsMenu = self.menubar.addMenu("Settings")
 
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_ICON,'Settings','Edit settings',25,self.openSettings)
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Edit settings',25,self.openSettings)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,STYLE_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
+		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,SCRIPT_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',25,self.newEditorWindow)
+		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',25,self.newEditorWindow)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
+		entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
 		self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
@@ -1218,7 +1218,7 @@ class Merk(QMainWindow):
 		# Help menu
 		self.helpMenu = self.menubar.addMenu("Help")
 
-		entry = widgets.ExtendedMenuItem(self,ABOUT_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION,25,self.showAbout)
+		entry = widgets.ExtendedMenuItem(self,ABOUT_MENU_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION,25,self.showAbout)
 		self.helpMenu.addAction(entry)
 
 		self.helpMenu.addSeparator()
