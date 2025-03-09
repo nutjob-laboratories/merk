@@ -66,6 +66,7 @@ elif len(minor)==2:
 APPLICATION_VERSION = major+"."+minor
 APPLICATION_NAME = "MERK"
 APPLICATION_SOURCE = "https://github.com/nutjob-laboratories/merk"
+SCRIPT_FILE_EXTENSION = "merk"
 
 MDI_BACKGROUND = ":/gui-background.png"
 
@@ -157,6 +158,16 @@ CHECKED_ICON = ":/icon-checked.png"
 UNCHECKED_ICON = ":/icon-unchecked.png"
 TIMESTAMP_ICON = ":/icon-timestamp.png"
 INTERFACE_ICON = ":/icon-interface.png"
+NEWFILE_ICON = ":/icon-new_file.png"
+OPENFILE_ICON = ":/icon-file_open.png"
+SAVEFILE_ICON = ":/icon-save_file.png"
+SAVEASFILE_ICON = ":/icon-save_as.png"
+
+UNDO_ICON = ":/icon-undo.png"
+REDO_ICON = ":/icon-redo.png"
+CUT_ICON = ":/icon-cut.png"
+COPY_ICON = ":/icon-copy.png"
+SELECTALL_ICON = ":/icon-select_all.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"

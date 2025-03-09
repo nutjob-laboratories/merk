@@ -87,6 +87,7 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"clear": config.ISSUE_COMMAND_SYMBOL+"clear",
 		config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
 		config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
+		config.ISSUE_COMMAND_SYMBOL+"edit": config.ISSUE_COMMAND_SYMBOL+"edit ",
 	}
 
 # The command help system
@@ -122,6 +123,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit FILENAME</b>", "Opens a script in the editor" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -304,7 +306,7 @@ def find_script(filename):
 
 	# Add the default file extension and see if we find it
 
-	efilename = filename + ".merk"
+	efilename = filename + "." + SCRIPT_FILE_EXTENSION
 
 	# Check if it's a complete filename
 	if os.path.isfile(efilename): return filename
@@ -352,6 +354,28 @@ def executeScript(gui,window,text):
 
 def executeCommonCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
+
+	# |-------|
+	# | /edit |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)==2:
+
+			tokens.pop(0)
+			filename = tokens.pop(0)
+
+			filename = find_script(filename)
+			if filename:
+				gui.newEditorWindowFile(filename)
+
+			else:
+				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
+				window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"edit FILENAME")
+			window.writeText(t,False)
+			return True
 
 	# |----------|
 	# | /version |

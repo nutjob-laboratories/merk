@@ -1134,6 +1134,28 @@ class Merk(QMainWindow):
 
 		return w
 
+	def newEditorWindow(self):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(None,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.MDI.addSubWindow(w)
+		self.settingsMenu.close()
+		w.show()
+
+		return w
+
+	def newEditorWindowFile(self,filename):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(filename,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.MDI.addSubWindow(w)
+		self.settingsMenu.close()
+		w.show()
+
+		return w
+
 	def openLinkInBrowser(self,url):
 		u = QUrl()
 		u.setUrl(url)
@@ -1159,6 +1181,9 @@ class Merk(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,STYLE_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
+		self.settingsMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,SCRIPT_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',25,self.newEditorWindow)
 		self.settingsMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,LOG_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
