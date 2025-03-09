@@ -32,6 +32,9 @@
     -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
 -   Command/nickname auto-completion
 -   Full IRC color support
+-   Scripting
+    - Includes a built in script editor, with scripting macros and syntax highlighting
+- Multithreaded
 -   Automatic logging of channel and private chats
   - Includes a utility to export logs to JSON, CSV, or your own custom format
 
@@ -142,3 +145,4 @@ Several tools are included in [the official **MERK** repository](https://github.
    - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
 
 [//]: # (End of document)
+
