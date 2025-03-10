@@ -95,12 +95,6 @@ class Dialog(QDialog):
 		titleLayout.addWidget(logo)
 		titleLayout.addLayout(descriptionLayout)
 
-
-		tech_credit = QLabel(f"<small>Written with </small><a href=\"https://python.org\"><small>Python</small></a><small>, </small><a href=\"https://www.qt.io/\"><small>Qt</small></a><small>, and </small><a href=\"https://twistedmatrix.com/\"><small>Twisted</small></a>")
-		tech_credit.setAlignment(Qt.AlignCenter)
-		tech_credit.setOpenExternalLinks(True)
-
-
 		icons_credit = QLabel(f"<small>Icons by </small></small><a href=\"https://material.io/resources/icons/\"><small>Google</small></a><small> and other public domain sources</small>")
 		icons_credit.setAlignment(Qt.AlignCenter)
 		icons_credit.setOpenExternalLinks(True)
@@ -131,7 +125,7 @@ class Dialog(QDialog):
 
 		# QT_VERSION_STR
 
-		qtv_credit = QLabel(f"<small><b>Qt " + str(QT_VERSION_STR) +"</b></small>")
+		qtv_credit = QLabel(f"<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>")
 		qtv_credit.setAlignment(Qt.AlignCenter)
 
 		tv = str(twisted.version)
@@ -142,21 +136,15 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		twv_credit = QLabel(f"<small><b>Twisted " + tv +"</b></small>")
+		twv_credit = QLabel(f"<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>")
 		twv_credit.setAlignment(Qt.AlignCenter)
 
-		pyv_credit = QLabel(f"<small><b>Python " + platform.python_version().strip() +"</b></small>")
+		pyv_credit = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>")
 		pyv_credit.setAlignment(Qt.AlignCenter)
 
 		me_credit = QLabel(f"<small>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></small>")
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
-
-		# https://bit.ly/erk-irc
-
-		# bitly_credit = QLabel(f"<a href=\"{OFFICIAL_REPOSITORY}\"><small>Source Code Repository</small></a>")
-		# bitly_credit.setAlignment(Qt.AlignCenter)
-		# bitly_credit.setOpenExternalLinks(True)
 
 		creditsBox = QGroupBox()
 		creditsBox.setAlignment(Qt.AlignHCenter)
@@ -185,12 +173,10 @@ class Dialog(QDialog):
 		credLayout = QVBoxLayout()
 		credLayout.addWidget(nutjob)
 		credLayout.addWidget(me_credit)
-		#credLayout.addWidget(bitly_credit)
 		
 		credLayout.addStretch()
 		credLayout.addWidget(creditsBox)
 		credLayout.addStretch()
-		credLayout.addWidget(tech_credit)
 		credLayout.addWidget(pyv_credit)
 		credLayout.addWidget(qtv_credit)
 		credLayout.addWidget(twv_credit)
