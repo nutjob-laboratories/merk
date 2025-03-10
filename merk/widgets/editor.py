@@ -206,6 +206,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertJoin)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(CHANNEL_ICON),"Part channel",self)
+		entry.triggered.connect(self.insertPart)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(PRIVATE_ICON),"Send private message",self)
 		entry.triggered.connect(self.insertPM)
 		self.commandMenu.addAction(entry)
@@ -240,6 +244,22 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertPart(self):
+		x = PartChannel(self)
+		e = x.get_channel_information(self)
+
+		if not e: return
+
+		channel = e[0]
+		msg = e[1]
+
+		if len(msg)==0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"part "+channel+"\n")
+			self.updateApplicationTitle()
+		else:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"part "+channel+" "+msg+"\n")
+			self.updateApplicationTitle()
 
 	def insertNick(self):
 		x = SetNick(self)
