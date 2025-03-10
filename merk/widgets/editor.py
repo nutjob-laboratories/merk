@@ -222,6 +222,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertNotice)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(PRIVATE_ICON),"Set nickname",self)
+		entry.triggered.connect(self.insertNick)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(EDIT_ICON),"Print to window",self)
 		entry.triggered.connect(self.insertWrite)
 		self.commandMenu.addAction(entry)
@@ -229,6 +233,15 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertNick(self):
+		x = SetNick(self)
+		e = x.get_nick_information(self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"nick "+str(e)+"\n")
+		self.updateApplicationTitle()
 
 	def insertNotice(self):
 		x = SendNotice(self)

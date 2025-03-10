@@ -39,6 +39,7 @@ from .pause import Dialog as Pause
 from .send_pm import Dialog as SendPM
 from .print import Dialog as PrintMsg
 from .send_notice import Dialog as SendNotice
+from .set_nick import Dialog as SetNick
 
 def QuitPartDialog(msg,parent):
 	x = QuitPart(msg,parent)
