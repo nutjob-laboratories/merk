@@ -36,6 +36,7 @@ from .. import config
 from .. import syntax
 from .. import commands
 from .. import user
+from .text_separator import textSeparatorLabel,textSeparator
 
 class Window(QMainWindow):
 
@@ -196,22 +197,13 @@ class Window(QMainWindow):
 		self.menuZoomOut.setShortcut("Ctrl+-")
 		editMenu.addAction(self.menuZoomOut)
 
-		self.commandMenu = self.menubar.addMenu("Insert Command")
+		self.commandMenu = self.menubar.addMenu("Insert")
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Comment",self)
-		entry.triggered.connect(self.insertComment)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Multiline comment",self)
-		entry.triggered.connect(self.insertMLComment)
-		self.commandMenu.addAction(entry)
+		e = textSeparator(self,"IRC Commands")
+		self.commandMenu.addAction(e)
 
 		entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
 		entry.triggered.connect(self.insertJoin)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
-		entry.triggered.connect(self.insertPause)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(PRIVATE_ICON),"Send private message",self)
@@ -224,6 +216,21 @@ class Window(QMainWindow):
 
 		entry = QAction(QIcon(PRIVATE_ICON),"Set nickname",self)
 		entry.triggered.connect(self.insertNick)
+		self.commandMenu.addAction(entry)
+
+		e = textSeparator(self,"Script Commands")
+		self.commandMenu.addAction(e)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Comment",self)
+		entry.triggered.connect(self.insertComment)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Multiline comment",self)
+		entry.triggered.connect(self.insertMLComment)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
+		entry.triggered.connect(self.insertPause)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(EDIT_ICON),"Print to window",self)
