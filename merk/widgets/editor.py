@@ -218,6 +218,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertPM)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(PRIVATE_ICON),"Send notice",self)
+		entry.triggered.connect(self.insertNotice)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(EDIT_ICON),"Print to window",self)
 		entry.triggered.connect(self.insertWrite)
 		self.commandMenu.addAction(entry)
@@ -225,6 +229,19 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertNotice(self):
+		x = SendNotice(self)
+		e = x.get_message_information(self)
+
+		if not e: return
+
+		target = e[0]
+		msg = e[1]
+		
+		if len(target)>0 and len(msg)>0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"notice "+target+" "+msg+"\n")
+			self.updateApplicationTitle()
 
 	def insertWrite(self):
 		x = PrintMsg(self)

@@ -38,6 +38,7 @@ from .comment import Dialog as Comment
 from .pause import Dialog as Pause
 from .send_pm import Dialog as SendPM
 from .print import Dialog as PrintMsg
+from .send_notice import Dialog as SendNotice
 
 def QuitPartDialog(msg,parent):
 	x = QuitPart(msg,parent)
