@@ -41,6 +41,15 @@ from .print import Dialog as PrintMsg
 from .send_notice import Dialog as SendNotice
 from .set_nick import Dialog as SetNick
 from .part_channel import Dialog as PartChannel
+from .set_window import Dialog as SetWindow
+
+def SetWindowDialog(win,obj):
+	x = SetWindow(win,obj)
+	info = x.get_window_information(win,obj)
+	del x
+
+	if not info: return None
+	return info
 
 def QuitPartDialog(msg,parent):
 	x = QuitPart(msg,parent)

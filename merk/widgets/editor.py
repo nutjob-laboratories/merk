@@ -241,9 +241,45 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertWrite)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(CONSOLE_ICON),"Maximize window",self)
+		entry.triggered.connect(self.insertMax)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(CONSOLE_ICON),"Minimize window",self)
+		entry.triggered.connect(self.insertMin)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(CONSOLE_ICON),"Set focus on window",self)
+		entry.triggered.connect(self.insertFocus)
+		self.commandMenu.addAction(entry)
+
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertFocus(self):
+		e = SetWindowDialog("Set focus on",self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"focus "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertMin(self):
+		e = SetWindowDialog("Minimize",self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"minimize "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertMax(self):
+		e = SetWindowDialog("Maximize",self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"maximize "+str(e)+"\n")
+		self.updateApplicationTitle()
 
 	def insertPart(self):
 		x = PartChannel(self)
