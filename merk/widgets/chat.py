@@ -1442,6 +1442,9 @@ def buildBanMenu(self,client):
 
 	optionsMenu = QMenu("Banned Users")
 
+	e = textSeparator(self,"Banned Users")
+	optionsMenu.addAction(e)
+
 	for b in banlist:
 		e = plainTextAction(self,f"<b>{b[0]}</b>")
 		optionsMenu.addAction(e)
