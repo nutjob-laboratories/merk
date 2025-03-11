@@ -160,8 +160,8 @@ class Dialog(QDialog):
 		aboutLayout.addStretch()
 		aboutLayout.addLayout(titleLayout)
 		aboutLayout.addWidget(gnu_credit)
-		aboutLayout.addWidget(pyv_credit)
 		aboutLayout.addWidget(platform_credit)
+		aboutLayout.addWidget(pyv_credit)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
