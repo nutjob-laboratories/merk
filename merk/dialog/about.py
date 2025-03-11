@@ -120,7 +120,7 @@ class Dialog(QDialog):
 		qr_credit.setAlignment(Qt.AlignCenter)
 		qr_credit.setOpenExternalLinks(True)
 
-		platform_credit = QLabel(f"<small>Running on "+ platform.system().strip() + " " + platform.release().strip() +"</small>")
+		platform_credit = QLabel(f"<small><b>Running on "+ platform.system().strip() + " " + platform.release().strip() +"</b></small>")
 		platform_credit.setAlignment(Qt.AlignCenter)
 
 		# QT_VERSION_STR
@@ -159,7 +159,6 @@ class Dialog(QDialog):
 		aboutLayout.addLayout(titleLayout)
 		
 		aboutLayout.addWidget(gnu_credit)
-		aboutLayout.addWidget(platform_credit)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
@@ -171,6 +170,7 @@ class Dialog(QDialog):
 		credLayout.addStretch()
 		credLayout.addWidget(creditsBox)
 		credLayout.addStretch()
+		credLayout.addWidget(platform_credit)
 		credLayout.addWidget(pyv_credit)
 
 		credLayout.addStretch()
