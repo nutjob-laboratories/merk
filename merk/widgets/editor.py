@@ -222,6 +222,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertNick)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(DISCONNECT_ICON),"Quit server",self)
+		entry.triggered.connect(self.insertQuit)
+		self.commandMenu.addAction(entry)
+
 		e = textSeparator(self,"Script Commands")
 		self.commandMenu.addAction(e)
 
@@ -256,6 +260,15 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertQuit(self):
+		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
+		e = x.get_message_information(config.DEFAULT_QUIT_MESSAGE,self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"quit "+str(e)+"\n")
+		self.updateApplicationTitle()
 
 	def insertFocus(self):
 		e = SetWindowDialog("Set focus on",self)
