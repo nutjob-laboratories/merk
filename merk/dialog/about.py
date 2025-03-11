@@ -125,9 +125,6 @@ class Dialog(QDialog):
 
 		# QT_VERSION_STR
 
-		qtv_credit = QLabel(f"<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>")
-		qtv_credit.setAlignment(Qt.AlignCenter)
-
 		tv = str(twisted.version)
 		tv = tv.replace('[','',1)
 		tv = tv.replace(']','',1)
@@ -136,10 +133,7 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		twv_credit = QLabel(f"<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>")
-		twv_credit.setAlignment(Qt.AlignCenter)
-
-		pyv_credit = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>")
+		pyv_credit = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>" + " - " + f"<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>" + " - " + f"<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>")
 		pyv_credit.setAlignment(Qt.AlignCenter)
 
 		me_credit = QLabel(f"<small>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></small>")
@@ -178,8 +172,6 @@ class Dialog(QDialog):
 		credLayout.addWidget(creditsBox)
 		credLayout.addStretch()
 		credLayout.addWidget(pyv_credit)
-		credLayout.addWidget(qtv_credit)
-		credLayout.addWidget(twv_credit)
 
 		credLayout.addStretch()
 		
