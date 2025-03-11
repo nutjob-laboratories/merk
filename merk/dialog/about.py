@@ -140,6 +140,8 @@ class Dialog(QDialog):
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
 
+
+
 		creditsBox = QGroupBox()
 		creditsBox.setAlignment(Qt.AlignHCenter)
 
@@ -157,22 +159,20 @@ class Dialog(QDialog):
 		aboutLayout = QVBoxLayout()
 		aboutLayout.addStretch()
 		aboutLayout.addLayout(titleLayout)
-		
 		aboutLayout.addWidget(gnu_credit)
+		aboutLayout.addWidget(pyv_credit)
+		aboutLayout.addWidget(platform_credit)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
 
 		credLayout = QVBoxLayout()
+		credLayout.addStretch()
 		credLayout.addWidget(nutjob)
 		credLayout.addWidget(me_credit)
 		
 		credLayout.addStretch()
 		credLayout.addWidget(creditsBox)
-		credLayout.addStretch()
-		credLayout.addWidget(platform_credit)
-		credLayout.addWidget(pyv_credit)
-
 		credLayout.addStretch()
 		
 		self.credits_tab.setLayout(credLayout)
