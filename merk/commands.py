@@ -359,6 +359,27 @@ def executeScript(gui,window,text):
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
 	gui.scripts[script_id].start()
 
+def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=False):
+	try:
+		port = int(port)
+	except:
+		t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+		window.writeText(t,False)
+		return True
+	USER.load_user(USER.USER_FILE)
+	i = ConnectInfo(
+		USER.NICKNAME,
+		USER.ALTERNATE,
+		USER.USERNAME,
+		USER.REALNAME,
+		host,
+		port,
+		password,
+		reconnect,
+		ssl,
+	)
+	gui.connectToIrc(i)
+
 def executeCommonCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
 
@@ -375,70 +396,22 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = 6667
-			USER.load_user(USER.USER_FILE)
-			i = ConnectInfo(
-				USER.NICKNAME,
-				USER.ALTERNATE,
-				USER.USERNAME,
-				USER.REALNAME,
-				host,
-				port,
-				None,
-				False,
-				True,
-			)
-			gui.connectToIrc(i)
+			connect_to_irc(gui,window,host,port,None,True,False)
 			return True
 		# /connectssl HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==3:
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
-			try:
-				port = int(port)
-			except:
-				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-				window.writeText(t,False)
-				return True
-			USER.load_user(USER.USER_FILE)
-			i = ConnectInfo(
-				USER.NICKNAME,
-				USER.ALTERNATE,
-				USER.USERNAME,
-				USER.REALNAME,
-				host,
-				port,
-				None,
-				False,
-				True,
-			)
-			gui.connectToIrc(i)
+			connect_to_irc(gui,window,host,port,None,True,False)
 			return True
 		# /connectssl HOST PORT PASSWORD
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==4:
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
-			try:
-				port = int(port)
-			except:
-				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-				window.writeText(t,False)
-				return True
 			password = tokens.pop(0)
-			USER.load_user(USER.USER_FILE)
-			i = ConnectInfo(
-				USER.NICKNAME,
-				USER.ALTERNATE,
-				USER.USERNAME,
-				USER.REALNAME,
-				host,
-				port,
-				password,
-				False,
-				True,
-			)
-			gui.connectToIrc(i)
+			connect_to_irc(gui,window,host,port,password,True,False)
 			return True
 
 	# |----------|
@@ -454,70 +427,22 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = 6667
-			USER.load_user(USER.USER_FILE)
-			i = ConnectInfo(
-				USER.NICKNAME,
-				USER.ALTERNATE,
-				USER.USERNAME,
-				USER.REALNAME,
-				host,
-				port,
-				None,
-				False,
-				False,
-			)
-			gui.connectToIrc(i)
+			connect_to_irc(gui,window,host,port,None,False,False)
 			return True
 		# /connect HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==3:
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
-			try:
-				port = int(port)
-			except:
-				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-				window.writeText(t,False)
-				return True
-			USER.load_user(USER.USER_FILE)
-			i = ConnectInfo(
-				USER.NICKNAME,
-				USER.ALTERNATE,
-				USER.USERNAME,
-				USER.REALNAME,
-				host,
-				port,
-				None,
-				False,
-				False,
-			)
-			gui.connectToIrc(i)
+			connect_to_irc(gui,window,host,port,None,False,False)
 			return True
 		# /connect HOST PORT PASSWORD
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==4:
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
-			try:
-				port = int(port)
-			except:
-				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-				window.writeText(t,False)
-				return True
 			password = tokens.pop(0)
-			USER.load_user(USER.USER_FILE)
-			i = ConnectInfo(
-				USER.NICKNAME,
-				USER.ALTERNATE,
-				USER.USERNAME,
-				USER.REALNAME,
-				host,
-				port,
-				password,
-				False,
-				False,
-			)
-			gui.connectToIrc(i)
+			connect_to_irc(gui,window,host,port,password,False,False)
 			return True
 
 	# |-------|
