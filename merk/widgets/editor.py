@@ -64,6 +64,7 @@ class Window(QMainWindow):
 		self.filename = filename
 		self.parent = parent
 		self.changed = False
+		self.cscript_menu = None
 
 		self.editing_user_script = False
 		self.current_user_script = None
@@ -104,12 +105,12 @@ class Window(QMainWindow):
 
 		self.fileMenu = self.menubar.addMenu("File")
 
-		entry = QAction(QIcon(NEWFILE_ICON),"New file",self)
+		entry = QAction(QIcon(NEWFILE_ICON),"New script",self)
 		entry.triggered.connect(self.doNewFile)
 		entry.setShortcut("Ctrl+N")
 		self.fileMenu.addAction(entry)
 
-		entry = QAction(QIcon(OPENFILE_ICON),"Open file",self)
+		entry = QAction(QIcon(OPENFILE_ICON),"Open script",self)
 		entry.triggered.connect(self.doFileOpen)
 		entry.setShortcut("Ctrl+O")
 		self.fileMenu.addAction(entry)
@@ -129,19 +130,23 @@ class Window(QMainWindow):
 
 		self.fileMenu.addSeparator()
 
+		entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
+		entry.triggered.connect(self.doNewScript)
+		self.fileMenu.addAction(entry)
+
 		if len(user.COMMANDS)>0:
 
-			sm = self.fileMenu.addMenu(QIcon(CONNECT_ICON),"Open connection script")
+			self.cscript_menu = self.fileMenu.addMenu(QIcon(CONNECT_ICON),"Open connection script")
 
 			for host in user.COMMANDS:
 				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
 				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
-				sm.addAction(entry)
+				self.cscript_menu.addAction(entry)
 
 			self.fileMenu.addSeparator()
 
 
-		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
+		entry = QAction(QIcon(QUIT_ICON),"Close",self)
 		entry.triggered.connect(self.close)
 		self.fileMenu.addAction(entry)
 
@@ -264,6 +269,33 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def doNewScript(self):
+
+		x = NewConnectScript(self)
+		e = x.get_server_information(self)
+
+		if not e: return
+
+		if e[0]=="": return
+		if e[1]=="": e[1] = "6667"
+
+		cscript = f"{e[0]}:{e[1]}"
+
+		# If the connection script already exists, open it
+		if cscript in user.COMMANDS:
+			self.readConnect(cscript,user.COMMANDS[cscript])
+			return
+
+		self.filename = None
+		self.editor.clear()
+		self.menuSave.setEnabled(True)
+		self.changed = False
+		self.menuSave.setShortcut(QKeySequence())
+		self.menuSaveAs.setShortcut("Ctrl+S")
+		self.editing_user_script = True
+		self.current_user_script = cscript
+		self.updateApplicationTitle()
 
 	def insertConnect(self):
 		x = ConnectServer(self)
@@ -501,6 +533,16 @@ class Window(QMainWindow):
 			else:
 				user.COMMANDS[self.current_user_script] = contents
 			user.save_user(user.USER_FILE)
+
+
+			self.cscript_menu.clear()
+
+			for host in user.COMMANDS:
+				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
+				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
+				self.cscript_menu.addAction(entry)
+
+
 			self.changed = False
 			self.updateApplicationTitle()
 			return

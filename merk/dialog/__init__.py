@@ -44,6 +44,7 @@ from .part_channel import Dialog as PartChannel
 from .set_window import Dialog as SetWindow
 from .set_quit import Dialog as SetQuit
 from .connect_server import Dialog as ConnectServer
+from .new_connect_script import Dialog as NewConnectScript
 
 def SetWindowDialog(win,obj):
 	x = SetWindow(win,obj)
