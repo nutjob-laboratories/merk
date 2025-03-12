@@ -38,6 +38,7 @@ import emoji
 
 from .resources import *
 from . import config
+from . import user as USER
 
 CONFIG_DIRECTORY = None
 SCRIPTS_DIRECTORY = None
@@ -88,6 +89,8 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
 		config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
 		config.ISSUE_COMMAND_SYMBOL+"edit": config.ISSUE_COMMAND_SYMBOL+"edit ",
+		config.ISSUE_COMMAND_SYMBOL+"connect": config.ISSUE_COMMAND_SYMBOL+"connect ",
+		config.ISSUE_COMMAND_SYMBOL+"connectssl": config.ISSUE_COMMAND_SYMBOL+"connectssl ",
 	}
 
 # The command help system
@@ -113,6 +116,10 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"raw TEXT...</b>", "Sends unprocessed data to the server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"time</b>", "Requests server time" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"version [SERVER]</b>", "Requests server version" ],
+
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL" ],
+
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print TEXT...</b>", "Prints text to the current window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
@@ -354,6 +361,164 @@ def executeScript(gui,window,text):
 
 def executeCommonCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
+
+	# |-------------|
+	# | /connectssl |
+	# |-------------|
+	if len(tokens)>=1:
+		# /connectssl HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==1:
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connectssl HOST [PORT] [PASSWORD]")
+			window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			USER.load_user(USER.USER_FILE)
+			i = ConnectInfo(
+				USER.NICKNAME,
+				USER.ALTERNATE,
+				USER.USERNAME,
+				USER.REALNAME,
+				host,
+				port,
+				None,
+				False,
+				True,
+			)
+			gui.connectToIrc(i)
+			return True
+		# /connectssl HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,False)
+				return True
+			USER.load_user(USER.USER_FILE)
+			i = ConnectInfo(
+				USER.NICKNAME,
+				USER.ALTERNATE,
+				USER.USERNAME,
+				USER.REALNAME,
+				host,
+				port,
+				None,
+				False,
+				True,
+			)
+			gui.connectToIrc(i)
+			return True
+		# /connectssl HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,False)
+				return True
+			password = tokens.pop(0)
+			USER.load_user(USER.USER_FILE)
+			i = ConnectInfo(
+				USER.NICKNAME,
+				USER.ALTERNATE,
+				USER.USERNAME,
+				USER.REALNAME,
+				host,
+				port,
+				password,
+				False,
+				True,
+			)
+			gui.connectToIrc(i)
+			return True
+
+	# |----------|
+	# | /connect |
+	# |----------|
+	if len(tokens)>=1:
+		# /connect HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==1:
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
+			window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			USER.load_user(USER.USER_FILE)
+			i = ConnectInfo(
+				USER.NICKNAME,
+				USER.ALTERNATE,
+				USER.USERNAME,
+				USER.REALNAME,
+				host,
+				port,
+				None,
+				False,
+				False,
+			)
+			gui.connectToIrc(i)
+			return True
+		# /connect HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,False)
+				return True
+			USER.load_user(USER.USER_FILE)
+			i = ConnectInfo(
+				USER.NICKNAME,
+				USER.ALTERNATE,
+				USER.USERNAME,
+				USER.REALNAME,
+				host,
+				port,
+				None,
+				False,
+				False,
+			)
+			gui.connectToIrc(i)
+			return True
+		# /connect HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,False)
+				return True
+			password = tokens.pop(0)
+			USER.load_user(USER.USER_FILE)
+			i = ConnectInfo(
+				USER.NICKNAME,
+				USER.ALTERNATE,
+				USER.USERNAME,
+				USER.REALNAME,
+				host,
+				port,
+				password,
+				False,
+				False,
+			)
+			gui.connectToIrc(i)
+			return True
 
 	# |-------|
 	# | /edit |
