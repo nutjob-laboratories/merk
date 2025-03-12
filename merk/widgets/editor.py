@@ -229,6 +229,10 @@ class Window(QMainWindow):
 		e = textSeparator(self,"Script Commands")
 		self.commandMenu.addAction(e)
 
+		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
+		entry.triggered.connect(self.insertConnect)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(SCRIPT_ICON),"Comment",self)
 		entry.triggered.connect(self.insertComment)
 		self.commandMenu.addAction(entry)
@@ -260,6 +264,31 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertConnect(self):
+		x = ConnectServer(self)
+		e = x.get_server_information(self)
+
+		if not e: return
+
+		host = e[0]
+		port = e[1]
+		password = e[2]
+		ssl = e[3]
+
+		if len(port)==0: port = "6667"
+
+		if len(password)==0:
+			cmd = host+" "+port+"\n"
+		else:
+			cmd = host+" "+port+" "+password+"\n"
+
+		if ssl==True:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"connectssl "+cmd)
+			self.updateApplicationTitle()
+		else:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"connect "+cmd)
+			self.updateApplicationTitle()
 
 	def insertQuit(self):
 		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)

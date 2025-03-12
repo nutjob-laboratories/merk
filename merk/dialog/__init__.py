@@ -43,6 +43,7 @@ from .set_nick import Dialog as SetNick
 from .part_channel import Dialog as PartChannel
 from .set_window import Dialog as SetWindow
 from .set_quit import Dialog as SetQuit
+from .connect_server import Dialog as ConnectServer
 
 def SetWindowDialog(win,obj):
 	x = SetWindow(win,obj)
