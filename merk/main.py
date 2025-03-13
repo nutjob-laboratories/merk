@@ -1425,19 +1425,21 @@ class Merk(QMainWindow):
 		entry2.triggered.connect(self.MDI.tileSubWindows)
 		self.windowsMenu.addAction(entry2)
 
+		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
+		entry3.setShortcut('Ctrl++')
+		entry3.triggered.connect(self.MDI.activateNextSubWindow)
+		self.windowsMenu.addAction(entry3)
+
+		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+		entry4.setShortcut('Ctrl+-')
+		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
+		self.windowsMenu.addAction(entry4)
+
 		if len(self.MDI.subWindowList())==0:
 			entry1.setEnabled(False)
 			entry2.setEnabled(False)
-
-		entry = QAction(QIcon(NEXT_ICON),"Next window",self)
-		entry.setShortcut('Ctrl++')
-		entry.triggered.connect(self.MDI.activateNextSubWindow)
-		self.windowsMenu.addAction(entry)
-
-		entry = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
-		entry.setShortcut('Ctrl+-')
-		entry.triggered.connect(self.MDI.activatePreviousSubWindow)
-		self.windowsMenu.addAction(entry)
+			entry3.setEnabled(False)
+			entry4.setEnabled(False)
 
 		self.windowsMenu.addSeparator()
 
