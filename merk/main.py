@@ -1425,6 +1425,20 @@ class Merk(QMainWindow):
 		entry2.triggered.connect(self.MDI.tileSubWindows)
 		self.windowsMenu.addAction(entry2)
 
+		if len(self.MDI.subWindowList())==0:
+			entry1.setEnabled(False)
+			entry2.setEnabled(False)
+
+		entry = QAction(QIcon(NEXT_ICON),"Next window",self)
+		entry.setShortcut('Ctrl++')
+		entry.triggered.connect(self.MDI.activateNextSubWindow)
+		self.windowsMenu.addAction(entry)
+
+		entry = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+		entry.setShortcut('Ctrl+-')
+		entry.triggered.connect(self.MDI.activatePreviousSubWindow)
+		self.windowsMenu.addAction(entry)
+
 		self.windowsMenu.addSeparator()
 
 		listOfConnections = {}
@@ -1433,10 +1447,6 @@ class Merk(QMainWindow):
 			for j in self.hiding:
 				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
 			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
-
-		if len(listOfConnections)==0:
-			entry1.setEnabled(False)
-			entry2.setEnabled(False)
 
 			# Reset application title, due to there being
 			# no connections
@@ -1478,18 +1488,7 @@ class Merk(QMainWindow):
 						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
 						sm.addAction(entry)
 
-			self.windowsMenu.addSeparator()
-
-			entry = QAction(QIcon(NEXT_ICON),"Next window",self)
-			entry.setShortcut('Ctrl++')
-			entry.triggered.connect(self.MDI.activateNextSubWindow)
-			self.windowsMenu.addAction(entry)
-
-			entry = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
-			entry.setShortcut('Ctrl+-')
-			entry.triggered.connect(self.MDI.activatePreviousSubWindow)
-			self.windowsMenu.addAction(entry)
-
+			
 	# |---------------|
 	# | EVENT METHODS |
 	# |---------------|
