@@ -1141,6 +1141,7 @@ class Merk(QMainWindow):
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
+		self.buildWindowsMenu()
 		w.show()
 
 		return w
@@ -1152,6 +1153,7 @@ class Merk(QMainWindow):
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
+		self.buildWindowsMenu()
 		w.show()
 
 		return w
@@ -1413,6 +1415,15 @@ class Merk(QMainWindow):
 					code.write(dump)
 					code.close()
 
+	def getAllEditorWindows(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==EDITOR_WINDOW:
+					retval.append(window)
+		return retval
+
 	def buildWindowsMenu(self):
 
 		self.windowsMenu.clear()
@@ -1441,8 +1452,6 @@ class Merk(QMainWindow):
 			entry3.setEnabled(False)
 			entry4.setEnabled(False)
 
-		self.windowsMenu.addSeparator()
-
 		listOfConnections = {}
 		for i in irc.CONNECTIONS:
 			add_to_list = True
@@ -1455,6 +1464,12 @@ class Merk(QMainWindow):
 			self.subWindowActivated(None)
 
 		if len(listOfConnections)>0:
+
+			if len(self.getAllEditorWindows())>0:
+				e = widgets.textSeparator(self,"IRC")
+				self.windowsMenu.addAction(e)
+			else:
+				self.windowsMenu.addSeparator()
 
 			for i in listOfConnections:
 				entry = listOfConnections[i]
@@ -1489,6 +1504,21 @@ class Merk(QMainWindow):
 						entry = QAction(QIcon(icon),c.name,self)
 						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
 						sm.addAction(entry)
+
+		edwins = self.getAllEditorWindows()
+		if len(edwins)>0:
+
+			if len(listOfConnections)>0:
+				e = widgets.textSeparator(self,"SCRIPTS")
+				self.windowsMenu.addAction(e)
+			else:
+				self.windowsMenu.addSeparator()
+
+			for win in edwins:
+				c = win.widget()
+				entry = QAction(QIcon(SCRIPT_ICON),c.name,self)
+				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
+				self.windowsMenu.addAction(entry)
 
 			
 	# |---------------|
