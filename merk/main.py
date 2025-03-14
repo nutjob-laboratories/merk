@@ -1428,30 +1428,6 @@ class Merk(QMainWindow):
 
 		self.windowsMenu.clear()
 
-		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
-		entry1.triggered.connect(self.MDI.cascadeSubWindows)
-		self.windowsMenu.addAction(entry1)
-
-		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
-		entry2.triggered.connect(self.MDI.tileSubWindows)
-		self.windowsMenu.addAction(entry2)
-
-		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
-		entry3.setShortcut('Ctrl++')
-		entry3.triggered.connect(self.MDI.activateNextSubWindow)
-		self.windowsMenu.addAction(entry3)
-
-		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
-		entry4.setShortcut('Ctrl+-')
-		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
-		self.windowsMenu.addAction(entry4)
-
-		if len(self.MDI.subWindowList())==0:
-			entry1.setEnabled(False)
-			entry2.setEnabled(False)
-			entry3.setEnabled(False)
-			entry4.setEnabled(False)
-
 		listOfConnections = {}
 		for i in irc.CONNECTIONS:
 			add_to_list = True
@@ -1464,12 +1440,6 @@ class Merk(QMainWindow):
 			self.subWindowActivated(None)
 
 		if len(listOfConnections)>0:
-
-			if len(self.getAllEditorWindows())>0:
-				e = widgets.textSeparator(self,"IRC")
-				self.windowsMenu.addAction(e)
-			else:
-				self.windowsMenu.addSeparator()
 
 			for i in listOfConnections:
 				entry = listOfConnections[i]
@@ -1508,17 +1478,37 @@ class Merk(QMainWindow):
 		edwins = self.getAllEditorWindows()
 		if len(edwins)>0:
 
-			if len(listOfConnections)>0:
-				e = widgets.textSeparator(self,"SCRIPTS")
-				self.windowsMenu.addAction(e)
-			else:
-				self.windowsMenu.addSeparator()
-
 			for win in edwins:
 				c = win.widget()
 				entry = QAction(QIcon(SCRIPT_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
+
+		self.windowsMenu.addSeparator()
+
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
+		entry1.triggered.connect(self.MDI.cascadeSubWindows)
+		self.windowsMenu.addAction(entry1)
+
+		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
+		entry2.triggered.connect(self.MDI.tileSubWindows)
+		self.windowsMenu.addAction(entry2)
+
+		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
+		entry3.setShortcut('Ctrl++')
+		entry3.triggered.connect(self.MDI.activateNextSubWindow)
+		self.windowsMenu.addAction(entry3)
+
+		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+		entry4.setShortcut('Ctrl+-')
+		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
+		self.windowsMenu.addAction(entry4)
+
+		if len(self.MDI.subWindowList())==0:
+			entry1.setEnabled(False)
+			entry2.setEnabled(False)
+			entry3.setEnabled(False)
+			entry4.setEnabled(False)
 
 			
 	# |---------------|
