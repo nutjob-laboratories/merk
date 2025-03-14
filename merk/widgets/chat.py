@@ -232,7 +232,7 @@ class Window(QMainWindow):
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel("<b>"+self.client.nickname+"</b>")
+		self.nick_display = QLabel("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
 		self.mode_display = QLabel("")
 
 		self.nick_display.installEventFilter(self)
@@ -338,9 +338,9 @@ class Window(QMainWindow):
 			nickLayout.addWidget(self.owner_icon)
 			nickLayout.addWidget(self.admin_icon)
 			nickLayout.addWidget(self.halfop_icon)
-		nickLayout.addWidget(self.nick_display)
 		nickLayout.addWidget(self.mode_display)
-
+		nickLayout.addWidget(self.nick_display)
+		
 		if self.window_type!=SERVER_WINDOW:
 			if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
 				self.nick_display.hide()
@@ -916,8 +916,6 @@ class Window(QMainWindow):
 	def change_to_away_display(self,w):
 		font = QFont()
 		font.setBold(False)
-		#font.setItalic(True)
-		#font.setStrikeOut(True)
 		w.setFont(font)
 
 	def writeUserlist(self,users):
@@ -1118,7 +1116,7 @@ class Window(QMainWindow):
 				self.client.join('#'+channel_info[0],channel_info[1])
 
 	def refreshNickDisplay(self):
-		self.nick_display.setText("<b>"+self.client.nickname+"</b>")
+		self.nick_display.setText("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
 
 	def writeText(self,message,write_to_log=True):
 
