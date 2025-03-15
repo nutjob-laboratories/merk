@@ -1453,7 +1453,7 @@ class Merk(QMainWindow):
 				total = self.getAllSubWindows(entry)
 
 				if len(total)>0:
-					sm = self.windowsMenu.addMenu(QIcon(NETWORK_ICON),name)
+					sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
 
 					entry = QAction(QIcon(CONSOLE_ICON),name,self)
 					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
@@ -1536,14 +1536,15 @@ class Merk(QMainWindow):
 		if hasattr(w,"name"):
 			# It's a named subwindow
 			if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
-				if w.client.hostname:
-					server = w.client.hostname
-				else:
-					server = w.client.server+":"+str(w.client.port)
-				if w.window_type==SERVER_WINDOW:
-					self.setWindowTitle(config.DISPLAY_NAME+" - "+server)
-				else:
-					self.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
+				if hasattr(w,"client"):
+					if w.client.hostname:
+						server = w.client.hostname
+					else:
+						server = w.client.server+":"+str(w.client.port)
+					if w.window_type==SERVER_WINDOW:
+						self.setWindowTitle(config.DISPLAY_NAME+" - "+server)
+					else:
+						self.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
 			pass
 
 		if hasattr(w,"input"):

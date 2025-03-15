@@ -149,7 +149,7 @@ class Window(QMainWindow):
 			self.fileMenu.addSeparator()
 
 
-		entry = QAction(QIcon(QUIT_ICON),"Close",self)
+		entry = QAction(QIcon(CLOSE_ICON),"Close",self)
 		entry.triggered.connect(self.close)
 		self.fileMenu.addAction(entry)
 

@@ -197,6 +197,7 @@ NUTJOB_LOGO = ":/gui-nutjob.png"
 MERK_ABOUT_LOGO = ":/gui-about.png"
 
 SCRIPT_ICON = ":/icon-script.png"
+CLOSE_ICON = ":/icon-close.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
