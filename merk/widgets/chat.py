@@ -387,6 +387,13 @@ class Window(QMainWindow):
 
 			
 			self.toolbar.addWidget(self.channel_mode_display)
+
+			# Add small space inbetween channel and topic displays
+			spacer = QWidget()
+			spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+			spacer.setFixedWidth(3)
+			self.toolbar.addWidget(spacer)
+
 			self.toolbar.addWidget(self.topic)
 
 			self.spacer = QWidget()
