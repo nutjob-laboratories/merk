@@ -26,16 +26,16 @@
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
-  - Multiple channel and server windows can be open for viewing and chatting at once
-  - All chat windows are contained in a single "parent" window
+    - Multiple channel and server windows can be open for viewing and chatting at once
+    - All chat windows are contained in a single "parent" window
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
-  - Text customization can be saved to importable files
-  - Individual channels can have their own color schemes
+    - Text customization can be saved to importable files
+    - Individual channels can have their own color schemes
 -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, and German)
 -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
     -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
-  -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
+    -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
 -   Command/nickname auto-completion
 -   Full IRC color support
 -   Scripting
