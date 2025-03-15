@@ -1288,15 +1288,31 @@ class Merk(QMainWindow):
 			clean.append(w)
 		windows = clean
 
+		if len(windows)==1:
+			self.mainMenu.addSeparator()
+
 		if len(windows)>0:
 			if len(windows)==1:
-				title = "Disconnect"
-				desc = 'Disconnect from server'
+				c = windows[0].widget()
+				sname = c.client.server+":"+str(c.client.port)
+				title = 'Disconnect from ' + sname
+				entry = QAction(QIcon(CLOSE_ICON),title,self)
+				entry.triggered.connect(self.disconnectAll)
+				self.mainMenu.addAction(entry)
 			else:
-				title = "Disconnect all"
-				desc = 'Disconnect from '+str(len(windows))+' servers'
-			entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,title,desc,25,self.disconnectAll)
-			self.mainMenu.addAction(entry)
+				title = "Disconnect from all servers"
+				entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,"Disconnect","Disconnect from all servers",25,self.disconnectAll)
+				self.mainMenu.addAction(entry)
+
+				self.mainMenu.addSeparator()
+
+			if len(windows)>1:
+				for w in windows:
+					c = w.widget()
+					sname = c.client.server+":"+str(c.client.port)
+					entry = QAction(QIcon(CLOSE_ICON),"Disconnect from "+sname,self)
+					entry.triggered.connect(lambda state,u=c: u.disconnect())
+					self.mainMenu.addAction(entry)
 
 		self.mainMenu.addSeparator()
 

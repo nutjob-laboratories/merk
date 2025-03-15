@@ -404,13 +404,6 @@ class Window(QMainWindow):
 
 			self.toolbar.addWidget(self.topic)
 
-			# self.spacer = QWidget()
-			# self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-			# self.toolbar.addWidget(self.spacer)
-
-			# self.banlist_action = self.toolbar.addWidget(self.banlist_menu)
-			# self.banlist_action.setVisible(False)
-
 
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
@@ -620,6 +613,7 @@ class Window(QMainWindow):
 				self.channel_mode_display.setText("<b><small>"+self.name+"</small></b>")
 		else:
 			self.setWindowTitle(self.name)
+			self.parent.buildWindowsMenu()
 
 	def eventFilter(self, source, event):
 
