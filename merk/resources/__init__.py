@@ -190,14 +190,14 @@ LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
 
 DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
 
-MERK_SPLASH_IMAGE = ":/gui-merk_splash.png"
-
 NUTJOB_LOGO = ":/gui-nutjob.png"
 
 MERK_ABOUT_LOGO = ":/gui-about.png"
 
 SCRIPT_ICON = ":/icon-script.png"
 CLOSE_ICON = ":/icon-close.png"
+
+MERK_CONNECT_SPLASH_IMAGE = ":/gui-connect_splash.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []

@@ -221,7 +221,7 @@ class Dialog(QDialog):
 		self.RECONNECT_OPTION = False
 
 		if self.logo:
-			self.setWindowTitle(APPLICATION_NAME+" IRC Client")
+			self.setWindowTitle("Connect to IRC")
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
@@ -378,7 +378,7 @@ class Dialog(QDialog):
 		buttons.button(QDialogButtonBox.Ok).setText("Connect")
 
 		banner = QLabel()
-		pixmap = QPixmap(MERK_SPLASH_IMAGE)
+		pixmap = QPixmap(MERK_CONNECT_SPLASH_IMAGE)
 		banner.setPixmap(pixmap)
 		banner.setAlignment(Qt.AlignCenter)
 
