@@ -136,6 +136,10 @@ class Dialog(QDialog):
 		pyv_credit = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>" + " - " + f"<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>" + " - " + f"<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>")
 		pyv_credit.setAlignment(Qt.AlignCenter)
 
+		nutjob_credit = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories\">NUTJOB</a> <a href=\"https://github.com/nutjob-laboratories\">LABORATORIES</a></b></big>")
+		nutjob_credit.setAlignment(Qt.AlignCenter)
+		nutjob_credit.setOpenExternalLinks(True)
+
 		me_credit = QLabel(f"<small>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></small>")
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
@@ -169,6 +173,7 @@ class Dialog(QDialog):
 		credLayout = QVBoxLayout()
 		credLayout.addStretch()
 		credLayout.addWidget(nutjob)
+		credLayout.addWidget(nutjob_credit)
 		credLayout.addWidget(me_credit)
 		
 		credLayout.addStretch()
