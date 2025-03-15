@@ -181,6 +181,7 @@ class Window(QMainWindow):
 
 			self.toolbar = QToolBar(self)
 			self.addToolBar(Qt.TopToolBarArea,self.toolbar)
+			self.toolbar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
 			self.toolbar.setFloatable(False)
 
 			self.toolbar.setIconSize(QSize(15, 15))
@@ -385,23 +386,30 @@ class Window(QMainWindow):
 			self.banlist_menu.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE - 8,config.SERVER_TOOLBAR_ICON_SIZE - 8))
 			self.banlist_menu.setFlat(True)
 
-			
-			self.toolbar.addWidget(self.channel_mode_display)
+			self.banlist_action = self.toolbar.addWidget(self.banlist_menu)
+			self.banlist_action.setVisible(False)
 
 			# Add small space inbetween channel and topic displays
 			spacer = QWidget()
 			spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-			spacer.setFixedWidth(5)
+			spacer.setFixedWidth(3)
 			self.toolbar.addWidget(spacer)
+			
+			self.toolbar.addWidget(self.channel_mode_display)
+
+			spacer1 = QWidget()
+			spacer1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+			spacer1.setFixedWidth(5)
+			self.toolbar.addWidget(spacer1)
 
 			self.toolbar.addWidget(self.topic)
 
-			self.spacer = QWidget()
-			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-			self.toolbar.addWidget(self.spacer)
+			# self.spacer = QWidget()
+			# self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+			# self.toolbar.addWidget(self.spacer)
 
-			self.banlist_action = self.toolbar.addWidget(self.banlist_menu)
-			self.banlist_action.setVisible(False)
+			# self.banlist_action = self.toolbar.addWidget(self.banlist_menu)
+			# self.banlist_action.setVisible(False)
 
 
 			finalLayout = QVBoxLayout()
