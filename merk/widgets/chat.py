@@ -179,6 +179,12 @@ class Window(QMainWindow):
 
 		if self.window_type==CHANNEL_WINDOW:
 
+			self.toolbar = QToolBar(self)
+			self.addToolBar(Qt.TopToolBarArea,self.toolbar)
+			self.toolbar.setFloatable(False)
+
+			self.toolbar.setIconSize(QSize(15, 15))
+
 			# Channel name display
 			self.channel_mode_display = QLabel("<b><small>"+self.name+"</small></b>")
 			self.channel_mode_display.setStyleSheet("border: 1px solid black; padding: 0px;")
@@ -375,20 +381,25 @@ class Window(QMainWindow):
 			self.banlist_menu.setMenu(buildBanMenu(self,self.client))
 			self.banlist_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.banlist_menu.setToolTip("Channel Bans")
-			self.banlist_menu.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE - 8,config.SERVER_TOOLBAR_BUTTON_SIZE - 8))
-			self.banlist_menu.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE - 7,config.SERVER_TOOLBAR_ICON_SIZE - 7))
+			self.banlist_menu.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE - 7,config.SERVER_TOOLBAR_BUTTON_SIZE - 7))
+			self.banlist_menu.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE - 8,config.SERVER_TOOLBAR_ICON_SIZE - 8))
 			self.banlist_menu.setFlat(True)
-			self.banlist_menu.hide()
 
-			topicLayout = QHBoxLayout()
-			topicLayout.addWidget(self.banlist_menu)
-			topicLayout.addWidget(self.channel_mode_display)
-			topicLayout.addWidget(self.topic)
+			
+			self.toolbar.addWidget(self.channel_mode_display)
+			self.toolbar.addWidget(self.topic)
+
+			self.spacer = QWidget()
+			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+			self.toolbar.addWidget(self.spacer)
+
+			self.banlist_action = self.toolbar.addWidget(self.banlist_menu)
+			self.banlist_action.setVisible(False)
+
 
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-			finalLayout.addLayout(topicLayout)
 			finalLayout.addWidget(self.horizontalSplitter)
 			finalLayout.addLayout(inputLayout)
 
@@ -524,9 +535,9 @@ class Window(QMainWindow):
 		self.banlist_menu.setMenu(buildBanMenu(self,self.client))
 
 		if len(self.banlist)>0:
-			self.banlist_menu.show()
+			self.banlist_action.setVisible(True)
 		else:
-			self.banlist_menu.hide()
+			self.banlist_action.setVisible(False)
 
 	def refreshInfoMenu(self):
 		self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
