@@ -223,16 +223,65 @@ class Merk(QMainWindow):
 		if self.is_hidden:
 			self.trayConnect.setEnabled(False)
 
-		if len(windows)>0:
-			self.trayDisconnect = self.trayMenu.addMenu(QIcon(DISCONNECT_ICON),"Disconnect")
-			for w in windows:
-				c = w.widget()
-				sname = c.client.server+":"+str(c.client.port)
-				entry = QAction(QIcon(CLOSE_ICON),sname,self)
-				entry.triggered.connect(lambda state,u=c: u.disconnect())
-				self.trayDisconnect.addAction(entry)
+		if len(windows)>1:
+			self.trayDisconnectAll = QAction(QIcon(DISCONNECT_ICON),"Disconnect all",self)
+			self.trayDisconnectAll.triggered.connect(self.disconnectAll)
+			self.trayMenu.addAction(self.trayDisconnectAll)
 
 		self.trayMenu.addSeparator()
+
+
+		listOfConnections = {}
+		for i in irc.CONNECTIONS:
+			add_to_list = True
+			for j in self.hiding:
+				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+
+		if len(listOfConnections)>0:
+
+			for i in listOfConnections:
+				entry = listOfConnections[i]
+				if entry.hostname:
+					name = entry.hostname
+				else:
+					name = entry.server+":"+str(entry.port)
+
+				sw = self.getServerSubWindow(entry)
+				wl = self.getAllSubChatWindows(entry)
+				total = self.getAllSubWindows(entry)
+
+				if len(total)>0:
+					sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
+
+					entry = QAction(QIcon(CLOSE_ICON),"Disconnect "+name,self)
+					entry.triggered.connect(lambda state,u=c: u.disconnect())
+					sm.addAction(entry)
+
+					sm.addSeparator()
+
+					entry = QAction(QIcon(CONSOLE_ICON),name,self)
+					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
+					sm.addAction(entry)
+
+					sm.addSeparator()
+
+					for w in wl:
+						c = w.widget()
+
+						if c.window_type==CHANNEL_WINDOW:
+							icon = CHANNEL_ICON
+						elif c.window_type==SERVER_WINDOW:
+							icon = CONSOLE_ICON
+						elif c.window_type==PRIVATE_WINDOW:
+							icon = PRIVATE_ICON
+
+						entry = QAction(QIcon(icon),c.name,self)
+						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+						sm.addAction(entry)
+
+		self.trayMenu.addSeparator()
+
 
 		entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
 		entry.triggered.connect(self.openSettings)
