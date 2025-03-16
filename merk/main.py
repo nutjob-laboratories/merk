@@ -197,8 +197,6 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,25)
 		self.trayMenu.addAction(entry)
 
-		self.trayMenu.addSeparator()
-
 		if self.is_hidden:
 			entry = QAction(QIcon(TOGGLE_ON_ICON),"Show window",self)
 			entry.triggered.connect(self.toggleHide)
