@@ -237,16 +237,16 @@ class Window(QMainWindow):
 		e = textSeparator(self,"Script Commands")
 		self.commandMenu.addAction(e)
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
-		entry.triggered.connect(self.insertConnect)
+		entry = QAction(QIcon(SCRIPT_ICON),"Multiline comment",self)
+		entry.triggered.connect(self.insertMLComment)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Comment",self)
 		entry.triggered.connect(self.insertComment)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Multiline comment",self)
-		entry.triggered.connect(self.insertMLComment)
+		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
+		entry.triggered.connect(self.insertConnect)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)

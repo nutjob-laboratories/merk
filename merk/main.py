@@ -111,6 +111,23 @@ class Merk(QMainWindow):
 		# Menubar
 		self.menubar = self.menuBar()
 
+		# Systray
+		self.tray = QSystemTrayIcon() 
+		self.tray.setIcon(QIcon(APPLICATION_ICON))
+		if config.SYSTRAY_MENU==False:
+			self.tray.setVisible(False)
+		else:
+			self.tray.setVisible(True)
+		self.tray.setToolTip(APPLICATION_NAME+" IRC client")
+
+		self.trayMenu = QMenu()
+		self.tray.setContextMenu(self.trayMenu)
+		self.buildSystrayMenu()
+
+		if config.SYSTRAY_MENU==False:
+			self.tray.hide()
+
+		# Build the main menu
 		self.buildMenu()
 
 		if connection_info:
@@ -140,6 +157,123 @@ class Merk(QMainWindow):
 			commands.help_display = commands.help_display.replace("%_SCRIPTING_%", "Scripting is turned off.")
 			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',commands.help_display)
 
+	# SYSTRAY MENU
+
+	def buildSystrayMenu(self):
+
+		self.trayMenu.clear()
+
+		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,25)
+		self.trayMenu.addAction(entry)
+
+		self.trayMenu.addSeparator()
+
+		entry = QAction(QIcon(CONNECT_ICON),"Connect",self)
+		entry.triggered.connect(self.connectToIrc)
+		self.trayMenu.addAction(entry)
+
+		windows = self.getAllServerWindows()
+		clean = []
+		for w in windows:
+			c = w.widget()
+			if c.client.client_id in self.quitting: continue
+			clean.append(w)
+		windows = clean
+
+		if len(windows)>0:
+			self.trayDisconnect = self.trayMenu.addMenu(QIcon(DISCONNECT_ICON),"Disconnect")
+			for w in windows:
+				c = w.widget()
+				sname = c.client.server+":"+str(c.client.port)
+				entry = QAction(QIcon(CLOSE_ICON),sname,self)
+				entry.triggered.connect(lambda state,u=c: u.disconnect())
+				self.trayDisconnect.addAction(entry)
+
+		self.trayMenu.addSeparator()
+
+		entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
+		entry.triggered.connect(self.openSettings)
+		self.trayMenu.addAction(entry)
+
+		self.trayWindow = self.trayMenu.addMenu(QIcon(WINDOW_ICON),"Window")
+
+		entry = QAction(QIcon(MAXIMIZE_ICON),"Maximize",self)
+		entry.triggered.connect(self.menuMax)
+		self.trayWindow.addAction(entry)
+
+		entry = QAction(QIcon(MINIMIZE_ICON),"Minimize",self)
+		entry.triggered.connect(self.menuMin)
+		self.trayWindow.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Restore",self)
+		entry.triggered.connect(self.showNormal)
+		self.trayWindow.addAction(entry)
+
+		self.trayWindow.addSeparator()
+
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade subwindows",self)
+		entry1.triggered.connect(self.MDI.cascadeSubWindows)
+		self.trayWindow.addAction(entry1)
+
+		entry2 = QAction(QIcon(TILE_ICON),"Tile subwindows",self)
+		entry2.triggered.connect(self.MDI.tileSubWindows)
+		self.trayWindow.addAction(entry2)
+
+		# Disable subwindow menu entries if there
+		# aren't any subwindows
+		if len(self.MDI.subWindowList())==0:
+			entry1.setEnabled(False)
+			entry2.setEnabled(False)
+
+		self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
+
+		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		self.trayFolder.addAction(entry)
+
+		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+		self.trayFolder.addAction(entry)
+
+		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		self.trayFolder.addAction(entry)
+
+		if config.COMMANDLINE_NO_SCRIPT==False:
+			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			self.trayFolder.addAction(entry)
+
+
+		self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
+
+		entry = QAction(QIcon(LINK_ICON),"Source code",self)
+		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"GPL v3",self)
+		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		self.trayMenu.addSeparator()
+
+		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
+		entry.triggered.connect(self.close)
+		self.trayMenu.addAction(entry)
+
+	def menuMax(self):
+
+		if self.windowState() == Qt.WindowMaximized:
+			self.setWindowState(Qt.WindowNoState)
+		else:
+			self.setWindowState(Qt.WindowMaximized)
+
+	def menuMin(self):
+
+		if self.windowState() == Qt.WindowMinimized:
+			self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+		else:
+			self.setWindowState(Qt.WindowMinimized)
 
 	# |==================|
 	# | BEGIN IRC EVENTS |
@@ -1271,6 +1405,10 @@ class Merk(QMainWindow):
 
 
 	def buildMainMenu(self):
+
+		# Rebuild systray menu
+		self.buildSystrayMenu()
+
 		self.mainMenu.clear()
 
 		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectToIrc)
@@ -1441,6 +1579,9 @@ class Merk(QMainWindow):
 		return retval
 
 	def buildWindowsMenu(self):
+
+		# Rebuild systray menu
+		self.buildSystrayMenu()
 
 		self.windowsMenu.clear()
 

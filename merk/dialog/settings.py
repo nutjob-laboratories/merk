@@ -257,11 +257,16 @@ class Dialog(QDialog):
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
+		self.showSystray = QCheckBox("Show system tray icon and menu",self)
+		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
+		self.showSystray.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.showChatInTitle)
+		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -733,6 +738,7 @@ class Dialog(QDialog):
 		config.SYNTAX_CHANNEL_STYLE = self.SYNTAX_CHANNEL_STYLE
 		config.SYNTAX_BACKGROUND = self.SYNTAX_BACKGROUND
 		config.SYNTAX_FOREGROUND = self.SYNTAX_FOREGROUND
+		config.SYSTRAY_MENU = self.showSystray.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
@@ -756,6 +762,13 @@ class Dialog(QDialog):
 			self.parent.setAllFont(self.newfont)
 
 		self.parent.subWindowActivated(None)
+
+		if config.SYSTRAY_MENU:
+			self.parent.tray.setVisible(True)
+			self.parent.tray.show()
+		else:
+			self.parent.tray.setVisible(False)
+			self.parent.tray.hide()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

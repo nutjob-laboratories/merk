@@ -175,6 +175,7 @@ SETTINGS_MENU_ICON = ":/icon-settings_menu.png"
 STYLE_MENU_ICON = ":/icon-style_menu.png"
 LOG_MENU_ICON = ":/icon-log_menu.png"
 ABOUT_MENU_ICON = ":/icon-about_menu.png"
+APPLICATION_MENU_ICON = ":/icon-app_menu.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
@@ -198,6 +199,10 @@ SCRIPT_ICON = ":/icon-script.png"
 CLOSE_ICON = ":/icon-close.png"
 
 MERK_CONNECT_SPLASH_IMAGE = ":/gui-connect_splash.png"
+
+MAXIMIZE_ICON = ":/icon-maximize.png"
+MINIMIZE_ICON = ":/icon-minimize.png"
+WINDOW_ICON = ":/icon-window.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
