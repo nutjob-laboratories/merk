@@ -187,7 +187,7 @@ class Window(QMainWindow):
 			self.toolbar.setIconSize(QSize(15, 15))
 
 			# Channel name display
-			self.channel_mode_display = QLabel("<b><small>"+self.name+"</small></b>")
+			self.channel_mode_display = QLabel("<b>"+self.name+"</b>")
 			self.channel_mode_display.setStyleSheet("border: 1px solid black; padding: 0px;")
 			
 			# Create topic editor
@@ -239,13 +239,13 @@ class Window(QMainWindow):
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
+		self.nick_display = QLabel("<b>"+self.client.nickname+"&nbsp;</b>")
 		self.mode_display = QLabel("")
 
 		self.nick_display.installEventFilter(self)
 
 		if len(self.client.usermodes)>0:
-			self.mode_display.setText("<b><small>+"+self.client.usermodes+"</small></b>")
+			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
 		else:
 			self.mode_display.hide()
 
@@ -338,6 +338,8 @@ class Window(QMainWindow):
 			self.halfop_icon.hide()
 			self.key_icon.hide()
 
+			self.name_spacer = QLabel("")
+
 		nickLayout = QHBoxLayout()
 		if self.window_type!=SERVER_WINDOW:
 			nickLayout.addWidget(self.op_icon)
@@ -345,8 +347,9 @@ class Window(QMainWindow):
 			nickLayout.addWidget(self.owner_icon)
 			nickLayout.addWidget(self.admin_icon)
 			nickLayout.addWidget(self.halfop_icon)
-		nickLayout.addWidget(self.mode_display)
+			nickLayout.addWidget(self.name_spacer)
 		nickLayout.addWidget(self.nick_display)
+		nickLayout.addWidget(self.mode_display)
 		
 		if self.window_type!=SERVER_WINDOW:
 			if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
@@ -588,7 +591,7 @@ class Window(QMainWindow):
 			self.mode_display.setText("")
 			self.mode_display.hide()
 		else:
-			self.mode_display.setText("<b><small>+"+self.client.usermodes+"</small></b>")
+			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
 			if self.window_type!=SERVER_WINDOW:
 				if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
 					self.mode_display.show()
@@ -619,9 +622,9 @@ class Window(QMainWindow):
 				modes = ''
 
 			if len(modes)>0:
-				self.channel_mode_display.setText("<b><small>"+self.name+" "+modes+"</small></b>")
+				self.channel_mode_display.setText("<b>"+self.name+"</b> <small>"+modes+"</small>")
 			else:
-				self.channel_mode_display.setText("<b><small>"+self.name+"</small></b>")
+				self.channel_mode_display.setText("<b>"+self.name+"</b>")
 		else:
 			self.setWindowTitle(self.name)
 			self.parent.buildWindowsMenu()
@@ -1110,11 +1113,27 @@ class Window(QMainWindow):
 		self.halfop_icon.hide()
 
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
-			if self.operator: self.op_icon.show()
-			if self.voiced: self.voice_icon.show()
-			if self.owner: self.owner_icon.show()
-			if self.admin: self.admin_icon.show()
-			if self.halfop: self.halfop_icon.show()
+			need_spacer = True
+			if self.operator:
+				self.op_icon.show()
+				need_spacer = False
+			if self.voiced:
+				self.voice_icon.show()
+				need_spacer = False
+			if self.owner:
+				self.owner_icon.show()
+				need_spacer = False
+			if self.admin:
+				self.admin_icon.show()
+				need_spacer = False
+			if self.halfop:
+				self.halfop_icon.show()
+				need_spacer = False
+
+			if need_spacer:
+				self.name_spacer.show()
+			else:
+				self.name_spacer.hide()
 
 	def disconnect(self):
 
@@ -1147,7 +1166,7 @@ class Window(QMainWindow):
 				self.client.join('#'+channel_info[0],channel_info[1])
 
 	def refreshNickDisplay(self):
-		self.nick_display.setText("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
+		self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
 
 	def writeText(self,message,write_to_log=True):
 
