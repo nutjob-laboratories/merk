@@ -90,6 +90,8 @@ class Merk(QMainWindow):
 		self.scripts = {}
 		self.reconnecting = {}
 		self.is_hidden = False
+		self.was_maximized = False
+		self.maximized_window = None
 
 		# Create the central object of the client,
 		# the MDI widget
@@ -164,7 +166,26 @@ class Merk(QMainWindow):
 		if self.is_hidden:
 			self.show()
 			self.is_hidden = False
+
+			if self.maximized_window!=None:
+				self.maximized_window.showMaximized()
+				if self.was_maximized:
+					self.showNormal()
+					self.showMaximized()
 		else:
+			if self.isMaximized():
+				self.was_maximized = True
+			if self.isMinimized():
+				self.was_maximized = False
+			active_subwindow = self.MDI.activeSubWindow()
+			if active_subwindow:
+				if active_subwindow.windowState() & QtCore.Qt.WindowMaximized:
+					self.maximized_window = active_subwindow
+				else:
+					self.maximized_window = None
+			else:
+				self.maximized_window = None
+
 			self.hide()
 			self.is_hidden = True
 		self.buildSystrayMenu()
