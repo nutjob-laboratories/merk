@@ -89,6 +89,7 @@ class Merk(QMainWindow):
 		self.hiding = {}
 		self.scripts = {}
 		self.reconnecting = {}
+		self.is_hidden = False
 
 		# Create the central object of the client,
 		# the MDI widget
@@ -159,6 +160,15 @@ class Merk(QMainWindow):
 
 	# SYSTRAY MENU
 
+	def toggleHide(self):
+		if self.is_hidden:
+			self.show()
+			self.is_hidden = False
+		else:
+			self.hide()
+			self.is_hidden = True
+		self.buildSystrayMenu()
+
 	def buildSystrayMenu(self):
 
 		self.trayMenu.clear()
@@ -168,9 +178,20 @@ class Merk(QMainWindow):
 
 		self.trayMenu.addSeparator()
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect",self)
-		entry.triggered.connect(self.connectToIrc)
-		self.trayMenu.addAction(entry)
+		if self.is_hidden:
+			entry = QAction(QIcon(TOGGLE_ON_ICON),"Show window",self)
+			entry.triggered.connect(self.toggleHide)
+			self.trayMenu.addAction(entry)
+		else:
+			entry = QAction(QIcon(TOGGLE_OFF_ICON),"Hide window",self)
+			entry.triggered.connect(self.toggleHide)
+			self.trayMenu.addAction(entry)
+
+		self.trayMenu.addSeparator()
+
+		self.trayConnect = QAction(QIcon(CONNECT_ICON),"Connect",self)
+		self.trayConnect.triggered.connect(self.connectToIrc)
+		self.trayMenu.addAction(self.trayConnect)
 
 		windows = self.getAllServerWindows()
 		clean = []
@@ -179,6 +200,9 @@ class Merk(QMainWindow):
 			if c.client.client_id in self.quitting: continue
 			clean.append(w)
 		windows = clean
+
+		if self.is_hidden:
+			self.trayConnect.setEnabled(False)
 
 		if len(windows)>0:
 			self.trayDisconnect = self.trayMenu.addMenu(QIcon(DISCONNECT_ICON),"Disconnect")
