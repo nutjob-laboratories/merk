@@ -264,8 +264,6 @@ class Merk(QMainWindow):
 					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
 					sm.addAction(entry)
 
-					sm.addSeparator()
-
 					for w in wl:
 						c = w.widget()
 
