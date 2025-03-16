@@ -206,6 +206,36 @@ class Merk(QMainWindow):
 			entry.triggered.connect(self.toggleHide)
 			self.trayMenu.addAction(entry)
 
+		self.trayWindow = self.trayMenu.addMenu(QIcon(WINDOW_ICON),"Window")
+
+		entry = QAction(QIcon(MAXIMIZE_ICON),"Maximize",self)
+		entry.triggered.connect(self.menuMax)
+		self.trayWindow.addAction(entry)
+
+		entry = QAction(QIcon(MINIMIZE_ICON),"Minimize",self)
+		entry.triggered.connect(self.menuMin)
+		self.trayWindow.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Restore",self)
+		entry.triggered.connect(self.showNormal)
+		self.trayWindow.addAction(entry)
+
+		self.trayWindow.addSeparator()
+
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade subwindows",self)
+		entry1.triggered.connect(self.MDI.cascadeSubWindows)
+		self.trayWindow.addAction(entry1)
+
+		entry2 = QAction(QIcon(TILE_ICON),"Tile subwindows",self)
+		entry2.triggered.connect(self.MDI.tileSubWindows)
+		self.trayWindow.addAction(entry2)
+
+		# Disable subwindow menu entries if there
+		# aren't any subwindows
+		if len(self.MDI.subWindowList())==0:
+			entry1.setEnabled(False)
+			entry2.setEnabled(False)
+
 		self.trayMenu.addSeparator()
 
 		self.trayConnect = QAction(QIcon(CONNECT_ICON),"Connect",self)
@@ -285,52 +315,22 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.openSettings)
 		self.trayMenu.addAction(entry)
 
-		self.trayWindow = self.trayMenu.addMenu(QIcon(WINDOW_ICON),"Window")
-
-		entry = QAction(QIcon(MAXIMIZE_ICON),"Maximize",self)
-		entry.triggered.connect(self.menuMax)
-		self.trayWindow.addAction(entry)
-
-		entry = QAction(QIcon(MINIMIZE_ICON),"Minimize",self)
-		entry.triggered.connect(self.menuMin)
-		self.trayWindow.addAction(entry)
-
-		entry = QAction(QIcon(WINDOW_ICON),"Restore",self)
-		entry.triggered.connect(self.showNormal)
-		self.trayWindow.addAction(entry)
-
-		self.trayWindow.addSeparator()
-
-		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade subwindows",self)
-		entry1.triggered.connect(self.MDI.cascadeSubWindows)
-		self.trayWindow.addAction(entry1)
-
-		entry2 = QAction(QIcon(TILE_ICON),"Tile subwindows",self)
-		entry2.triggered.connect(self.MDI.tileSubWindows)
-		self.trayWindow.addAction(entry2)
-
-		# Disable subwindow menu entries if there
-		# aren't any subwindows
-		if len(self.MDI.subWindowList())==0:
-			entry1.setEnabled(False)
-			entry2.setEnabled(False)
-
 		self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
 
-		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
+		entry = QAction(QIcon(FOLDER_ICON),"Settings",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
-		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+		entry = QAction(QIcon(STYLE_ICON),"Styles",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
-		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+		entry = QAction(QIcon(LOG_ICON),"Logs",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
 		if config.COMMANDLINE_NO_SCRIPT==False:
-			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+			entry = QAction(QIcon(SCRIPT_ICON),"Scripts",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 			self.trayFolder.addAction(entry)
 
@@ -343,6 +343,10 @@ class Merk(QMainWindow):
 
 		entry = QAction(QIcon(LINK_ICON),"GPL v3",self)
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.trayLinks.addAction(entry)
 
 		self.trayMenu.addSeparator()
