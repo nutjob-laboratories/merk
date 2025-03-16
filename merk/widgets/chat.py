@@ -539,6 +539,17 @@ class Window(QMainWindow):
 			if self.window_type==CHANNEL_WINDOW:
 				self.channelUptime.setText("<small>"+prettyUptime(self.uptime)+"</small>")
 
+			if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+				# If the date has changed, add a date message to the chat to reflect that
+				# But only do that on channel and private chat windows
+				cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
+				if cdate!=self.current_date:
+					self.current_date = cdate
+					# there's a new date; create a new date separator
+					m = Message(DATE_MESSAGE,'',cdate)
+					d2 = render.render_message(m,self.style)
+					self.chat.append(d2)
+
 	def refreshBanMenu(self):
 		self.banlist_menu.setMenu(buildBanMenu(self,self.client))
 
@@ -1145,16 +1156,6 @@ class Window(QMainWindow):
 		else:
 
 			t = render.render_message(message,self.style)
-
-			# Mark when it's a new day, for long connections
-			if t!=None:
-				cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
-				if cdate!=self.current_date:
-					self.current_date = cdate
-					# there's a new date; create a new date separator
-					m = Message(DATE_MESSAGE,'',cdate)
-					d2 = render.render_message(m,self.style)
-					self.chat.append(d2)
 
 			# Save entered text to the current log
 			self.log.append(message)
