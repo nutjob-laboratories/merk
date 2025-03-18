@@ -366,8 +366,12 @@ class Window(QMainWindow):
 			# Channel windows will have the chat display split with
 			# the user list display
 			self.horizontalSplitter = QSplitter(Qt.Horizontal)
-			self.horizontalSplitter.addWidget(self.chat)
-			self.horizontalSplitter.addWidget(self.userlist)
+			if config.SHOW_USERLIST_ON_LEFT:
+				self.horizontalSplitter.addWidget(self.userlist)
+				self.horizontalSplitter.addWidget(self.chat)
+			else:
+				self.horizontalSplitter.addWidget(self.chat)
+				self.horizontalSplitter.addWidget(self.userlist)
 			self.horizontalSplitter.splitterMoved.connect(self.splitterResize)
 
 			# Set the initial splitter ratio
@@ -1467,7 +1471,10 @@ class Window(QMainWindow):
 			self.userlist.move(chat_width + 3,self.userlist.y())
 
 			# Move the QSplitter handle to match the new widget sizes
-			self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
+			if config.SHOW_USERLIST_ON_LEFT:
+				self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
+			else:
+				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
 
 			# Move focus back to the input widget
 			self.input.setFocus()

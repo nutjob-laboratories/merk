@@ -95,6 +95,8 @@ SYNTAX_BACKGROUND = "white"
 SYNTAX_FOREGROUND = "black"
 SYSTRAY_MENU = True
 
+SHOW_USERLIST_ON_LEFT = False
+
 def save_settings(filename):
 
 	settings = {
