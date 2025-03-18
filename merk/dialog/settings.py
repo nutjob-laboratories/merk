@@ -96,6 +96,10 @@ class Dialog(QDialog):
 	def changedSetting(self,state):
 		self.changed.show()
 
+	def restartSetting(self,state):
+		self.changed.show()
+		self.restart.show()
+
 	def changedSettingRerender(self,state):
 		self.changed.show()
 		self.rerender = True
@@ -186,6 +190,7 @@ class Dialog(QDialog):
 		self.selector.setFont(f)
 
 		self.changed = QLabel("<small><i>Settings changed.</i></small>")
+		self.restart = QLabel("<small><i>Restart required.</i></small>")
 
 		fm = QFontMetrics(self.font())
 		fwidth = fm.width('X') * 27
@@ -261,12 +266,17 @@ class Dialog(QDialog):
 		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSetting)
 
+		self.minSystray = QCheckBox("Minimize to system tray",self)
+		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
+		self.minSystray.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
+		applicationLayout.addWidget(self.minSystray)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -368,11 +378,18 @@ class Dialog(QDialog):
 
 		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showUserlistLeft = QCheckBox("Display user lists on the left\nhand side of channel windows",self)
+		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
+		self.showUserlistLeft.stateChanged.connect(self.restartSetting)
+
+		self.showUserlistLeft.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		interfaceLayout = QVBoxLayout()
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
 		interfaceLayout.addWidget(self.showUptime)
 		interfaceLayout.addWidget(self.showChanUptime)
 		interfaceLayout.addWidget(self.plainUserLists)
+		interfaceLayout.addWidget(self.showUserlistLeft)
 		interfaceLayout.addWidget(self.showInfo)
 		interfaceLayout.addStretch()
 
@@ -662,6 +679,7 @@ class Dialog(QDialog):
 		self.syntaxPage.setLayout(syntaxLayout)
 
 		self.changed.hide()
+		self.restart.hide()
 
 		# Buttons
 
@@ -674,8 +692,14 @@ class Dialog(QDialog):
 
 		# Finalize layout
 
+		notificationLayout = QVBoxLayout()
+		notificationLayout.addWidget(self.changed)
+		notificationLayout.addWidget(self.restart)
+
 		dialogButtonsLayout = QHBoxLayout()
-		dialogButtonsLayout.addWidget(self.changed)
+		# dialogButtonsLayout.addWidget(self.changed)
+		# dialogButtonsLayout.addWidget(self.restart)
+		dialogButtonsLayout.addLayout(notificationLayout)
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(saveButton)
 		dialogButtonsLayout.addWidget(cancelButton)
@@ -739,6 +763,8 @@ class Dialog(QDialog):
 		config.SYNTAX_BACKGROUND = self.SYNTAX_BACKGROUND
 		config.SYNTAX_FOREGROUND = self.SYNTAX_FOREGROUND
 		config.SYSTRAY_MENU = self.showSystray.isChecked()
+		config.SHOW_USERLIST_ON_LEFT = self.showUserlistLeft.isChecked()
+		config.MINIMIZE_TO_SYSTRAY = self.minSystray.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

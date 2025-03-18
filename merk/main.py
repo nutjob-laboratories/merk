@@ -169,17 +169,16 @@ class Merk(QMainWindow):
 			#print("Single click")
 			pass
 		elif reason == QSystemTrayIcon.ActivationReason.DoubleClick:
-			#print("Double click")
-			pass
+			if self.is_hidden:
+				self.toggleHide()
+				self.showNormal()
 
 	def changeEvent(self, event):
 		if event.type() == QEvent.WindowStateChange:
 			if self.windowState() & Qt.WindowMinimized:
-				#print('Window minimized')
-				pass
-			elif event.oldState() & Qt.WindowMinimized:
-				#print('Window restored')
-				pass
+				if config.MINIMIZE_TO_SYSTRAY==True:
+					if config.SYSTRAY_MENU==True:
+						self.toggleHide()
 		super().changeEvent(event)
 
 	def toggleHide(self):
@@ -216,47 +215,6 @@ class Merk(QMainWindow):
 
 		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,25)
 		self.trayMenu.addAction(entry)
-
-		if self.is_hidden:
-			entry = QAction(QIcon(TOGGLE_ON_ICON),"Show window",self)
-			entry.triggered.connect(self.toggleHide)
-			self.trayMenu.addAction(entry)
-		else:
-			entry = QAction(QIcon(TOGGLE_OFF_ICON),"Hide window",self)
-			entry.triggered.connect(self.toggleHide)
-			self.trayMenu.addAction(entry)
-
-		self.trayWindow = self.trayMenu.addMenu(QIcon(WINDOW_ICON),"Window")
-
-		entry = QAction(QIcon(MAXIMIZE_ICON),"Maximize",self)
-		entry.triggered.connect(self.menuMax)
-		self.trayWindow.addAction(entry)
-
-		entry = QAction(QIcon(MINIMIZE_ICON),"Minimize",self)
-		entry.triggered.connect(self.menuMin)
-		self.trayWindow.addAction(entry)
-
-		entry = QAction(QIcon(WINDOW_ICON),"Restore",self)
-		entry.triggered.connect(self.showNormal)
-		self.trayWindow.addAction(entry)
-
-		self.trayWindow.addSeparator()
-
-		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade subwindows",self)
-		entry1.triggered.connect(self.MDI.cascadeSubWindows)
-		self.trayWindow.addAction(entry1)
-
-		entry2 = QAction(QIcon(TILE_ICON),"Tile subwindows",self)
-		entry2.triggered.connect(self.MDI.tileSubWindows)
-		self.trayWindow.addAction(entry2)
-
-		# Disable subwindow menu entries if there
-		# aren't any subwindows
-		if len(self.MDI.subWindowList())==0:
-			entry1.setEnabled(False)
-			entry2.setEnabled(False)
-
-		self.trayMenu.addSeparator()
 
 		self.trayConnect = QAction(QIcon(CONNECT_ICON),"Connect",self)
 		self.trayConnect.triggered.connect(self.connectToIrc)

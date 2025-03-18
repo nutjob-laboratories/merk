@@ -96,6 +96,7 @@ SYNTAX_FOREGROUND = "black"
 SYSTRAY_MENU = True
 
 SHOW_USERLIST_ON_LEFT = False
+MINIMIZE_TO_SYSTRAY = False
 
 def save_settings(filename):
 
@@ -156,12 +157,15 @@ def save_settings(filename):
 		"syntax_foreground_color": SYNTAX_FOREGROUND,
 		"systray_menu": SYSTRAY_MENU,
 		"show_userlist_on_left": SHOW_USERLIST_ON_LEFT,
+		"minimize_to_system_tray": MINIMIZE_TO_SYSTRAY,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "minimize_to_system_tray" in settings:
+		settings["minimize_to_system_tray"] = MINIMIZE_TO_SYSTRAY
 	if not "show_userlist_on_left" in settings:
 		settings["show_userlist_on_left"] = SHOW_USERLIST_ON_LEFT
 	if not "systray_menu" in settings:
@@ -334,6 +338,7 @@ def load_settings(filename):
 	global SYNTAX_FOREGROUND
 	global SYSTRAY_MENU
 	global SHOW_USERLIST_ON_LEFT
+	global MINIMIZE_TO_SYSTRAY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -343,6 +348,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MINIMIZE_TO_SYSTRAY = settings["minimize_to_system_tray"]
 		SHOW_USERLIST_ON_LEFT = settings["show_userlist_on_left"]
 		SYSTRAY_MENU = settings["systray_menu"]
 		AUTOCOMPLETE_CHANNELS = settings["autocomplete_channels"]
