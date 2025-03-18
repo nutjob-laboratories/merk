@@ -127,6 +127,8 @@ class Merk(QMainWindow):
 		self.tray.setContextMenu(self.trayMenu)
 		self.buildSystrayMenu()
 
+		self.tray.activated.connect(self.systray_clicked)
+
 		if config.SYSTRAY_MENU==False:
 			self.tray.hide()
 
@@ -161,6 +163,14 @@ class Merk(QMainWindow):
 			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',commands.help_display)
 
 	# SYSTRAY MENU
+
+	def systray_clicked(self,reason):
+		if reason == QSystemTrayIcon.ActivationReason.Trigger:
+			#print("Single click")
+			pass
+		elif reason == QSystemTrayIcon.ActivationReason.DoubleClick:
+			#print("Double click")
+			pass
 
 	def toggleHide(self):
 		if self.is_hidden:
