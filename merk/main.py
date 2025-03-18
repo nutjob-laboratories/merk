@@ -172,6 +172,16 @@ class Merk(QMainWindow):
 			#print("Double click")
 			pass
 
+	def changeEvent(self, event):
+		if event.type() == QEvent.WindowStateChange:
+			if self.windowState() & Qt.WindowMinimized:
+				#print('Window minimized')
+				pass
+			elif event.oldState() & Qt.WindowMinimized:
+				#print('Window restored')
+				pass
+		super().changeEvent(event)
+
 	def toggleHide(self):
 		if self.is_hidden:
 			self.show()
