@@ -155,12 +155,15 @@ def save_settings(filename):
 		"syntax_background_color": SYNTAX_BACKGROUND,
 		"syntax_foreground_color": SYNTAX_FOREGROUND,
 		"systray_menu": SYSTRAY_MENU,
+		"show_userlist_on_left": SHOW_USERLIST_ON_LEFT,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_userlist_on_left" in settings:
+		settings["show_userlist_on_left"] = SHOW_USERLIST_ON_LEFT
 	if not "systray_menu" in settings:
 		settings["systray_menu"] = SYSTRAY_MENU
 	if not "syntax_comment_color" in settings:
@@ -330,6 +333,7 @@ def load_settings(filename):
 	global SYNTAX_BACKGROUND
 	global SYNTAX_FOREGROUND
 	global SYSTRAY_MENU
+	global SHOW_USERLIST_ON_LEFT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -339,6 +343,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_USERLIST_ON_LEFT = settings["show_userlist_on_left"]
 		SYSTRAY_MENU = settings["systray_menu"]
 		AUTOCOMPLETE_CHANNELS = settings["autocomplete_channels"]
 		SHOW_USER_INFO_ON_CHAT_WINDOWS = settings["show_user_info_on_chat_windows"]
@@ -399,71 +404,6 @@ def load_settings(filename):
 			save_settings(filename)
 	else:
 		save_settings(filename)
-
-# def check_settings(filename):
-# 	if os.path.isfile(filename):
-# 		with open(filename, "r") as read_settings:
-# 			settings = json.load(read_settings)
-
-# 			if not "systray_menu" in settings: return False
-# 			if not "syntax_comment_color" in settings: return False
-# 			if not "syntax_comment_style" in settings: return False
-# 			if not "syntax_command_color" in settings: return False
-# 			if not "syntax_command_style" in settings: return False
-# 			if not "syntax_channel_color" in settings: return False
-# 			if not "syntax_channel_style" in settings: return False
-# 			if not "syntax_background_color" in settings: return False
-# 			if not "syntax_foreground_color" in settings: return False
-# 			if not "mdi_background_image" in settings: return False
-# 			if not "application_font" in settings: return False
-# 			if not "display_name" in settings: return False
-# 			if not "display_icon" in settings: return False
-# 			if not "default_subwindow_width" in settings: return False
-# 			if not "default_subwindow_height" in settings: return False
-# 			if not "command_history_length" in settings: return False
-# 			if not "dictionary" in settings: return False
-# 			if not "nickname_pad_length" in settings: return False
-# 			if not "display_timestamp" in settings: return False
-# 			if not "timestamp_format" in settings: return False
-# 			if not "create_window_for_incoming_private_messages" in settings: return False
-# 			if not "write_private_messages_to_server_window" in settings: return False
-# 			if not "issue_command_symbol" in settings: return False
-# 			if not "default_quit_message" in settings: return False
-# 			if not "default_spellcheck_language" in settings: return False
-# 			if not "system_message_prefix" in settings: return False
-# 			if not "display_irc_colors" in settings: return False
-# 			if not "convert_urls_to_links" in settings: return False
-# 			if not "autocomplete_commands" in settings: return False
-# 			if not "autocomplete_nicks" in settings: return False
-# 			if not "autocomplete_emojis" in settings: return False
-# 			if not "maximum_loaded_log_size" in settings: return False
-# 			if not "mark_end_of_loaded_log" in settings: return False
-# 			if not "save_channel_logs" in settings: return False
-# 			if not "load_channel_logs" in settings: return False
-# 			if not "save_private_logs" in settings: return False
-# 			if not "load_private_logs" in settings: return False
-# 			if not "ask_before_disconnect" in settings: return False
-# 			if not "server_toolbar_icon_size" in settings: return False
-# 			if not "server_toolbar_button_size" in settings: return False
-# 			if not "show_connection_uptime" in settings: return False
-# 			if not "show_channel_uptime" in settings: return False
-# 			if not "scroll_chat_to_bottom_on_resize" in settings: return False
-# 			if not "enable_emoji_shortcodes" in settings: return False
-# 			if not "enable_spellcheck" in settings: return False
-# 			if not "ask_before_reconnect" in settings: return False
-# 			if not "notify_on_lost_or_failed_connection" in settings: return False
-# 			if not "always_scroll_to_bottom" in settings: return False
-# 			if not "prompt_on_failed_connection" in settings: return False
-# 			if not "display_active_chat_in_title" in settings: return False
-# 			if not "timestamp_24_hour" in settings: return False
-# 			if not "timestamp_show_seconds" in settings: return False
-# 			if not "plain_user_lists" in settings: return False
-# 			if not "show_user_info_on_chat_windows" in settings: return False
-# 			if not "autocomplete_channels" in settings: return False
-# 	else:
-# 		return False
-
-# 	return True
 
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
