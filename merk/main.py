@@ -1527,7 +1527,6 @@ class Merk(QMainWindow):
 		self.mainMenu.addSeparator()
 
 		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
-		entry.setShortcut('Ctrl+Q')
 		entry.triggered.connect(self.close)
 		self.mainMenu.addAction(entry)
 
