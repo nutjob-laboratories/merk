@@ -95,8 +95,8 @@ class Merk(QMainWindow):
 
 		self.flash = QTimer(self)
 		self.flash.timeout.connect(self.blink)
-		self.alternate = True
-		self.flash_time = 250
+		self.alternate = config.FLASH_SYSTRAY_SPEED
+		self.flash_time = 500
 		self.notifications = False
 
 		# Create the central object of the client,
@@ -176,9 +176,12 @@ class Merk(QMainWindow):
 	# SYSTRAY MENU
 
 	def show_notifications(self):
-		if self.is_hidden:
-			self.notifications = True
-			self.flash.start(self.flash_time)
+		if config.FLASH_SYSTRAY_NOTIFICATION:
+			if self.is_hidden:
+				self.notifications = True
+				self.flash.start(self.flash_time)
+			else:
+				self.notifications = False
 		else:
 			self.notifications = False
 
@@ -413,6 +416,8 @@ class Merk(QMainWindow):
 
 		self.buildMainMenu()
 
+		self.show_notifications()
+
 	def signedOn(self,client):
 
 		w = self.getServerWindow(client)
@@ -529,6 +534,8 @@ class Merk(QMainWindow):
 
 		if target==client.nickname:
 			displayed_private_message = False
+
+			self.show_notifications()
 
 			# It's a private message, so try to write the message
 			# to the private message window, if there is one
@@ -882,6 +889,9 @@ class Merk(QMainWindow):
 
 	def kickedFrom(self,client,channel,kicker,message):
 		
+		self.show_notifications()
+
+
 		w = self.getSubWindow(channel,client)
 		if w:
 			self.MDI.removeSubWindow(w)
@@ -956,6 +966,8 @@ class Merk(QMainWindow):
 				c.writeText(t,False)
 
 	def invited(self,client,user,channel):
+
+		self.show_notifications()
 
 		w = self.MDI.activeSubWindow()
 		if w:
