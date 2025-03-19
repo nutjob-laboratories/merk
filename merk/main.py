@@ -177,8 +177,10 @@ class Merk(QMainWindow):
 
 	def show_notifications(self):
 		if self.is_hidden:
-			self.notifications =True
+			self.notifications = True
 			self.flash.start(self.flash_time)
+		else:
+			self.notifications = False
 
 	def hide_notifications(self):
 		self.notifications = False
