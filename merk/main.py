@@ -176,8 +176,9 @@ class Merk(QMainWindow):
 	# SYSTRAY MENU
 
 	def show_notifications(self):
-		self.notifications =True
-		self.flash.start(self.flash_time)
+		if self.is_hidden:
+			self.notifications =True
+			self.flash.start(self.flash_time)
 
 	def hide_notifications(self):
 		self.notifications = False
