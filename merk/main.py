@@ -93,6 +93,12 @@ class Merk(QMainWindow):
 		self.was_maximized = False
 		self.maximized_window = None
 
+		self.flash = QTimer(self)
+		self.flash.timeout.connect(self.blink)
+		self.alternate = True
+		self.flash_time = 250
+		self.notifications = False
+
 		# Create the central object of the client,
 		# the MDI widget
 		self.MDI = QMdiArea()
@@ -115,13 +121,18 @@ class Merk(QMainWindow):
 		self.menubar = self.menuBar()
 
 		# Systray
+
+		self.tray_blank_icon = QIcon(NORMAL_USER)
+		self.tray_icon = QIcon(APPLICATION_ICON)
+
 		self.tray = QSystemTrayIcon() 
-		self.tray.setIcon(QIcon(APPLICATION_ICON))
+		self.tray.setIcon(self.tray_icon)
 		if config.SYSTRAY_MENU==False:
 			self.tray.setVisible(False)
 		else:
 			self.tray.setVisible(True)
 		self.tray.setToolTip(APPLICATION_NAME+" IRC client")
+
 
 		self.trayMenu = QMenu()
 		self.tray.setContextMenu(self.trayMenu)
@@ -164,6 +175,28 @@ class Merk(QMainWindow):
 
 	# SYSTRAY MENU
 
+	def show_notifications(self):
+		self.notifications =True
+		self.flash.start(self.flash_time)
+
+	def hide_notifications(self):
+		self.notifications = False
+		self.tray.setIcon(self.tray_icon)
+
+	def blink(self):
+		if self.notifications==False:
+			self.flash.stop()
+			self.tray.setIcon(self.tray_icon)
+			return
+		if self.alternate:
+			self.tray.setIcon(self.tray_blank_icon)
+			self.flash.start(self.flash_time)
+			self.alternate = False
+		else:
+			self.tray.setIcon(self.tray_icon)
+			self.flash.start(self.flash_time)
+			self.alternate = True
+
 	def systray_clicked(self,reason):
 		if reason == QSystemTrayIcon.ActivationReason.Trigger:
 			#print("Single click")
@@ -175,6 +208,7 @@ class Merk(QMainWindow):
 			# else:
 			# 	if config.MINIMIZE_TO_SYSTRAY==True:
 			# 		self.toggleHide()
+
 
 	def changeEvent(self, event):
 		if event.type() == QEvent.WindowStateChange:
@@ -188,6 +222,7 @@ class Merk(QMainWindow):
 		if self.is_hidden:
 			self.show()
 			self.is_hidden = False
+			self.hide_notifications()
 
 			if self.maximized_window!=None:
 				self.maximized_window.showMaximized()
