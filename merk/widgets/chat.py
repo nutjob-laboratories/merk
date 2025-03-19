@@ -1394,9 +1394,11 @@ class Window(QMainWindow):
 	def moveChatToBottom(self,force=False):
 
 		if force:
-			sb = self.chat.verticalScrollBar()
-			sb.setValue(sb.maximum())
-			self.chat.ensureCursorVisible()
+			# sb = self.chat.verticalScrollBar()
+			# sb.setValue(sb.maximum())
+			# self.chat.ensureCursorVisible()
+
+			self.chat.moveCursor(QTextCursor.End)
 
 		fm = QFontMetrics(self.chat.font())
 		fheight = fm.height() * 1.5
@@ -1405,8 +1407,10 @@ class Window(QMainWindow):
 		if sb.value()>=sb.maximum()-fheight: is_at_bottom = True
 
 		if is_at_bottom:
-			sb.setValue(sb.maximum())
-			self.chat.ensureCursorVisible()
+			# sb.setValue(sb.maximum())
+			# self.chat.ensureCursorVisible()
+
+			self.chat.moveCursor(QTextCursor.End)
 
 	def changeEvent(self, event):
 		if event.type() == QEvent.WindowStateChange:
