@@ -312,10 +312,6 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
 		self.systrayKick.stateChanged.connect(self.changedSetting)
 
-		self.systrayNotice = QCheckBox("IRC notice message",self)
-		if config.FLASH_SYSTRAY_INVITE: self.systrayNotice.setChecked(True)
-		self.systrayNotice.stateChanged.connect(self.changedSetting)
-
 		nickLay = QHBoxLayout()
 		nickLay.addWidget(QLabel("  "))
 		nickLay.addWidget(self.systrayNickname)
@@ -336,12 +332,6 @@ class Dialog(QDialog):
 		chanLay.addWidget(self.systrayKick)
 		chanLay.addStretch()
 
-		notLay = QHBoxLayout()
-		notLay.addWidget(QLabel("  "))
-		notLay.addWidget(self.systrayNotice)
-		notLay.addStretch()
-
-
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>systray settings</b>"))
 		systrayLayout.addWidget(self.showSystray)
@@ -352,7 +342,6 @@ class Dialog(QDialog):
 		systrayLayout.addLayout(discLay)
 		systrayLayout.addLayout(privLay)
 		systrayLayout.addLayout(chanLay)
-		systrayLayout.addLayout(notLay)
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
