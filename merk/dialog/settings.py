@@ -262,6 +262,28 @@ class Dialog(QDialog):
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
+		applicationLayout = QVBoxLayout()
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
+		applicationLayout.addLayout(fontLayout)
+		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addWidget(self.showChatInTitle)
+		applicationLayout.addStretch()
+
+		self.applicationPage.setLayout(applicationLayout)
+
+		# Systray page
+
+		self.systrayPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("System Tray")
+		entry.widget = self.systrayPage
+		entry.setIcon(QIcon(SETTINGS_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.systrayPage)
+
 		self.showSystray = QCheckBox("Show system tray icon and menu",self)
 		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSetting)
@@ -270,16 +292,44 @@ class Dialog(QDialog):
 		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
 		self.minSystray.stateChanged.connect(self.changedSetting)
 
-		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
-		applicationLayout.addLayout(fontLayout)
-		applicationLayout.addLayout(sizeLayout)
-		applicationLayout.addWidget(self.showChatInTitle)
-		applicationLayout.addWidget(self.showSystray)
-		applicationLayout.addWidget(self.minSystray)
-		applicationLayout.addStretch()
+		self.systrayNotify = QCheckBox("Show system tray notifications",self)
+		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
+		self.systrayNotify.stateChanged.connect(self.changedSetting)
 
-		self.applicationPage.setLayout(applicationLayout)
+		self.systrayNickname = QCheckBox("Nickname mentions",self)
+		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
+		self.systrayNickname.stateChanged.connect(self.changedSetting)
+
+		self.systrayDisconnect = QCheckBox("Disconnections",self)
+		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
+		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
+
+		self.systrayPrivate = QCheckBox("Private messages",self)
+		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
+		self.systrayPrivate.stateChanged.connect(self.changedSetting)
+
+		self.systrayKick = QCheckBox("Channel kick",self)
+		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
+		self.systrayKick.stateChanged.connect(self.changedSetting)
+
+		self.systrayNotice = QCheckBox("IRC notice message",self)
+		if config.FLASH_SYSTRAY_INVITE: self.systrayNotice.setChecked(True)
+		self.systrayNotice.stateChanged.connect(self.changedSetting)
+
+		systrayLayout = QVBoxLayout()
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>systray settings</b>"))
+		systrayLayout.addWidget(self.showSystray)
+		systrayLayout.addWidget(self.minSystray)
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>systray notifications</b>"))
+		systrayLayout.addWidget(self.systrayNotify)
+		systrayLayout.addWidget(self.systrayNickname)
+		systrayLayout.addWidget(self.systrayDisconnect)
+		systrayLayout.addWidget(self.systrayPrivate)
+		systrayLayout.addWidget(self.systrayKick)
+		systrayLayout.addWidget(self.systrayNotice)
+		systrayLayout.addStretch()
+
+		self.systrayPage.setLayout(systrayLayout)
 
 		# Connection page
 
@@ -765,6 +815,12 @@ class Dialog(QDialog):
 		config.SYSTRAY_MENU = self.showSystray.isChecked()
 		config.SHOW_USERLIST_ON_LEFT = self.showUserlistLeft.isChecked()
 		config.MINIMIZE_TO_SYSTRAY = self.minSystray.isChecked()
+		config.FLASH_SYSTRAY_NOTIFICATION = self.systrayNotify.isChecked()
+		config.FLASH_SYSTRAY_NICKNAME = self.systrayNickname.isChecked()
+		config.FLASH_SYSTRAY_DISCONNECT = self.systrayDisconnect.isChecked()
+		config.FLASH_SYSTRAY_PRIVATE = self.systrayPrivate.isChecked()
+		config.FLASH_SYSTRAY_KICK = self.systrayKick.isChecked()
+		config.FLASH_SYSTRAY_INVITE = self.systrayNotice.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
