@@ -640,6 +640,8 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
+		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications()
+
 		# Try and send the message to the right window
 		w = self.getWindow(nickname,client)
 		if w:
@@ -860,6 +862,9 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
+		if client.nickname in argument:
+			if config.FLASH_SYSTRAY_MODE: self.show_notifications()
+
 	def unsetMode(self,client,user,target,mode,argument):
 		self.refreshModeDisplay(client)
 
@@ -880,6 +885,9 @@ class Merk(QMainWindow):
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
+
+		if client.nickname in argument:
+			if config.FLASH_SYSTRAY_MODE: self.show_notifications()
 
 	def userKicked(self,client,kickee,channel,kicker,message):
 		

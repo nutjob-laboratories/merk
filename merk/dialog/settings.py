@@ -316,6 +316,24 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
 		self.systrayInvite.stateChanged.connect(self.changedSetting)
 
+		self.systrayNotice = QCheckBox("Notice message",self)
+		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
+		self.systrayNotice.stateChanged.connect(self.changedSetting)
+
+		self.systrayMode = QCheckBox("User mode",self)
+		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
+		self.systrayMode.stateChanged.connect(self.changedSetting)
+
+		noticeLay = QHBoxLayout()
+		noticeLay.addWidget(QLabel("  "))
+		noticeLay.addWidget(self.systrayNotice)
+		noticeLay.addStretch()
+
+		modeLay = QHBoxLayout()
+		modeLay.addWidget(QLabel("  "))
+		modeLay.addWidget(self.systrayMode)
+		modeLay.addStretch()
+
 		nickLay = QHBoxLayout()
 		nickLay.addWidget(QLabel("  "))
 		nickLay.addWidget(self.systrayNickname)
@@ -352,6 +370,8 @@ class Dialog(QDialog):
 		systrayLayout.addLayout(privLay)
 		systrayLayout.addLayout(chanLay)
 		systrayLayout.addLayout(inviteLay)
+		systrayLayout.addLayout(noticeLay)
+		systrayLayout.addLayout(modeLay)
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
@@ -846,6 +866,8 @@ class Dialog(QDialog):
 		config.FLASH_SYSTRAY_PRIVATE = self.systrayPrivate.isChecked()
 		config.FLASH_SYSTRAY_KICK = self.systrayKick.isChecked()
 		config.FLASH_SYSTRAY_INVITE = self.systrayInvite.isChecked()
+		config.FLASH_SYSTRAY_NOTICE = self.systrayNotice.isChecked()
+		config.FLASH_SYSTRAY_MODE = self.systrayMode.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

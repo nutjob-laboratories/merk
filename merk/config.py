@@ -105,6 +105,9 @@ FLASH_SYSTRAY_PRIVATE = True
 FLASH_SYSTRAY_KICK = True
 FLASH_SYSTRAY_INVITE = True
 
+FLASH_SYSTRAY_NOTICE = True
+FLASH_SYSTRAY_MODE = True
+
 def save_settings(filename):
 
 	settings = {
@@ -172,12 +175,18 @@ def save_settings(filename):
 		"systray_notification_private": FLASH_SYSTRAY_PRIVATE,
 		"systray_notification_kick": FLASH_SYSTRAY_KICK,
 		"systray_notification_invite": FLASH_SYSTRAY_INVITE,
+		"systray_notification_notice": FLASH_SYSTRAY_NOTICE,
+		"systray_notification_mode": FLASH_SYSTRAY_MODE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "systray_notification_notice" in settings:
+		settings["systray_notification_notice"] = FLASH_SYSTRAY_NOTICE
+	if not "systray_notification_mode" in settings:
+		settings["systray_notification_mode"] = FLASH_SYSTRAY_MODE
 	if not "minimize_to_system_tray" in settings:
 		settings["minimize_to_system_tray"] = MINIMIZE_TO_SYSTRAY
 	if not "show_userlist_on_left" in settings:
@@ -374,6 +383,8 @@ def load_settings(filename):
 	global FLASH_SYSTRAY_PRIVATE
 	global FLASH_SYSTRAY_KICK
 	global FLASH_SYSTRAY_INVITE
+	global FLASH_SYSTRAY_NOTICE
+	global FLASH_SYSTRAY_MODE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -447,6 +458,8 @@ def load_settings(filename):
 		FLASH_SYSTRAY_PRIVATE = settings["systray_notification_private"]
 		FLASH_SYSTRAY_KICK = settings["systray_notification_kick"]
 		FLASH_SYSTRAY_INVITE = settings["systray_notification_invite"]
+		FLASH_SYSTRAY_NOTICE = settings["systray_notification_notice"]
+		FLASH_SYSTRAY_MODE = settings["systray_notification_mode"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
