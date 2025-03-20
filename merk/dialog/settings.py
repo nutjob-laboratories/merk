@@ -316,17 +316,43 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_INVITE: self.systrayNotice.setChecked(True)
 		self.systrayNotice.stateChanged.connect(self.changedSetting)
 
+		nickLay = QHBoxLayout()
+		nickLay.addWidget(QLabel("  "))
+		nickLay.addWidget(self.systrayNickname)
+		nickLay.addStretch()
+
+		discLay = QHBoxLayout()
+		discLay.addWidget(QLabel("  "))
+		discLay.addWidget(self.systrayDisconnect)
+		discLay.addStretch()
+
+		privLay = QHBoxLayout()
+		privLay.addWidget(QLabel("  "))
+		privLay.addWidget(self.systrayPrivate)
+		privLay.addStretch()
+
+		chanLay = QHBoxLayout()
+		chanLay.addWidget(QLabel("  "))
+		chanLay.addWidget(self.systrayKick)
+		chanLay.addStretch()
+
+		notLay = QHBoxLayout()
+		notLay.addWidget(QLabel("  "))
+		notLay.addWidget(self.systrayNotice)
+		notLay.addStretch()
+
+
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>systray settings</b>"))
 		systrayLayout.addWidget(self.showSystray)
 		systrayLayout.addWidget(self.minSystray)
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>systray notifications</b>"))
 		systrayLayout.addWidget(self.systrayNotify)
-		systrayLayout.addWidget(self.systrayNickname)
-		systrayLayout.addWidget(self.systrayDisconnect)
-		systrayLayout.addWidget(self.systrayPrivate)
-		systrayLayout.addWidget(self.systrayKick)
-		systrayLayout.addWidget(self.systrayNotice)
+		systrayLayout.addLayout(nickLay)
+		systrayLayout.addLayout(discLay)
+		systrayLayout.addLayout(privLay)
+		systrayLayout.addLayout(chanLay)
+		systrayLayout.addLayout(notLay)
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
