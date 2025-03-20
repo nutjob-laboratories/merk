@@ -204,6 +204,8 @@ MAXIMIZE_ICON = ":/icon-maximize.png"
 MINIMIZE_ICON = ":/icon-minimize.png"
 WINDOW_ICON = ":/icon-window.png"
 
+SYSTRAY_ICON = ":/icon-tray.png"
+
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
 with open(EMOJI_ALIAS_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:
