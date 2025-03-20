@@ -312,7 +312,7 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
 		self.systrayKick.stateChanged.connect(self.changedSetting)
 
-		self.systrayInvite = QCheckBox("Channel kick",self)
+		self.systrayInvite = QCheckBox("Channel invite",self)
 		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
 		self.systrayInvite.stateChanged.connect(self.changedSetting)
 
