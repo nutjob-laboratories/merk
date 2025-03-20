@@ -165,6 +165,13 @@ def save_settings(filename):
 		"systray_menu": SYSTRAY_MENU,
 		"show_userlist_on_left": SHOW_USERLIST_ON_LEFT,
 		"minimize_to_system_tray": MINIMIZE_TO_SYSTRAY,
+		"systray_notifications": FLASH_SYSTRAY_NOTIFICATION,
+		"systray_notification_speed": FLASH_SYSTRAY_SPEED,
+		"systray_notification_nickname": FLASH_SYSTRAY_NICKNAME,
+		"systray_notification_disconnect": FLASH_SYSTRAY_DISCONNECT,
+		"systray_notification_private": FLASH_SYSTRAY_PRIVATE,
+		"systray_notification_kick": FLASH_SYSTRAY_KICK,
+		"systray_notification_invite": FLASH_SYSTRAY_INVITE,
 	}
 
 	with open(filename, "w") as write_data:
@@ -285,6 +292,20 @@ def patch_settings(settings):
 		settings["maximum_loaded_log_size"] = MAXIMUM_LOADED_LOG_SIZE
 	if not "mark_end_of_loaded_log" in settings:
 		settings["mark_end_of_loaded_log"] = MARK_END_OF_LOADED_LOG
+	if not "systray_notifications" in settings:
+		settings["systray_notifications"] = FLASH_SYSTRAY_NOTIFICATION
+	if not "systray_notification_speed" in settings:
+		settings["systray_notification_speed"] = FLASH_SYSTRAY_SPEED
+	if not "systray_notification_nickname" in settings:
+		settings["systray_notification_nickname"] = FLASH_SYSTRAY_NICKNAME
+	if not "systray_notification_disconnect" in settings:
+		settings["systray_notification_disconnect"] = FLASH_SYSTRAY_DISCONNECT
+	if not "systray_notification_private" in settings:
+		settings["systray_notification_private"] = FLASH_SYSTRAY_PRIVATE
+	if not "systray_notification_kick" in settings:
+		settings["systray_notification_kick"] = FLASH_SYSTRAY_KICK
+	if not "systray_notification_invite" in settings:
+		settings["systray_notification_invite"] = FLASH_SYSTRAY_INVITE
 
 	return settings
 
@@ -346,6 +367,13 @@ def load_settings(filename):
 	global SYSTRAY_MENU
 	global SHOW_USERLIST_ON_LEFT
 	global MINIMIZE_TO_SYSTRAY
+	global FLASH_SYSTRAY_NOTIFICATION
+	global FLASH_SYSTRAY_SPEED
+	global FLASH_SYSTRAY_NICKNAME
+	global FLASH_SYSTRAY_DISCONNECT
+	global FLASH_SYSTRAY_PRIVATE
+	global FLASH_SYSTRAY_KICK
+	global FLASH_SYSTRAY_INVITE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -412,6 +440,13 @@ def load_settings(filename):
 		SYNTAX_CHANNEL_STYLE = settings["syntax_channel_style"]
 		SYNTAX_BACKGROUND = settings["syntax_background_color"]
 		SYNTAX_FOREGROUND = settings["syntax_foreground_color"]
+		FLASH_SYSTRAY_NOTIFICATION = settings["systray_notifications"]
+		FLASH_SYSTRAY_SPEED = settings["systray_notification_speed"]
+		FLASH_SYSTRAY_NICKNAME = settings["systray_notification_nickname"]
+		FLASH_SYSTRAY_DISCONNECT = settings["systray_notification_disconnect"]
+		FLASH_SYSTRAY_PRIVATE = settings["systray_notification_private"]
+		FLASH_SYSTRAY_KICK = settings["systray_notification_kick"]
+		FLASH_SYSTRAY_INVITE = settings["systray_notification_invite"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)
