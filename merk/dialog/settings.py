@@ -312,6 +312,10 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
 		self.systrayKick.stateChanged.connect(self.changedSetting)
 
+		self.systrayInvite = QCheckBox("Channel kick",self)
+		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
+		self.systrayInvite.stateChanged.connect(self.changedSetting)
+
 		nickLay = QHBoxLayout()
 		nickLay.addWidget(QLabel("  "))
 		nickLay.addWidget(self.systrayNickname)
@@ -332,6 +336,11 @@ class Dialog(QDialog):
 		chanLay.addWidget(self.systrayKick)
 		chanLay.addStretch()
 
+		inviteLay = QHBoxLayout()
+		inviteLay.addWidget(QLabel("  "))
+		inviteLay.addWidget(self.systrayInvite)
+		inviteLay.addStretch()
+
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>systray settings</b>"))
 		systrayLayout.addWidget(self.showSystray)
@@ -342,6 +351,7 @@ class Dialog(QDialog):
 		systrayLayout.addLayout(discLay)
 		systrayLayout.addLayout(privLay)
 		systrayLayout.addLayout(chanLay)
+		systrayLayout.addLayout(inviteLay)
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
@@ -835,7 +845,7 @@ class Dialog(QDialog):
 		config.FLASH_SYSTRAY_DISCONNECT = self.systrayDisconnect.isChecked()
 		config.FLASH_SYSTRAY_PRIVATE = self.systrayPrivate.isChecked()
 		config.FLASH_SYSTRAY_KICK = self.systrayKick.isChecked()
-		config.FLASH_SYSTRAY_INVITE = self.systrayNotice.isChecked()
+		config.FLASH_SYSTRAY_INVITE = self.systrayInvite.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
