@@ -416,7 +416,7 @@ class Merk(QMainWindow):
 
 		self.buildMainMenu()
 
-		self.show_notifications()
+		if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications()
 
 	def signedOn(self,client):
 
@@ -525,6 +525,13 @@ class Merk(QMainWindow):
 			hostmask = None
 
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+
+			# Notify if the message has the user's nick
+			# in it
+			if client.nickname in msg:
+				if config.FLASH_SYSTRAY_NICKNAME:
+					self.show_notifications()
+
 			# Channel message
 			w = self.getWindow(target,client)
 			if w:
@@ -535,7 +542,7 @@ class Merk(QMainWindow):
 		if target==client.nickname:
 			displayed_private_message = False
 
-			self.show_notifications()
+			if config.FLASH_SYSTRAY_PRIVATE: self.show_notifications()
 
 			# It's a private message, so try to write the message
 			# to the private message window, if there is one
@@ -889,7 +896,7 @@ class Merk(QMainWindow):
 
 	def kickedFrom(self,client,channel,kicker,message):
 		
-		self.show_notifications()
+		if config.FLASH_SYSTRAY_KICK: self.show_notifications()
 
 
 		w = self.getSubWindow(channel,client)
@@ -967,7 +974,7 @@ class Merk(QMainWindow):
 
 	def invited(self,client,user,channel):
 
-		self.show_notifications()
+		if config.FLASH_SYSTRAY_INVITE: self.show_notifications()
 
 		w = self.MDI.activeSubWindow()
 		if w:
