@@ -152,6 +152,26 @@ class Dialog(QDialog):
 			self.SYNTAX_BACKGROUND = color
 			self.changed.show()
 
+	def changedSystrayMin(self,state):
+		if self.minSystray.isChecked():
+			self.systrayNotify.setEnabled(True)
+			self.systrayDisconnect.setEnabled(True)
+			self.systrayNickname.setEnabled(True)
+			self.systrayPrivate.setEnabled(True)
+			self.systrayKick.setEnabled(True)
+			self.systrayInvite.setEnabled(True)
+			self.systrayNotice.setEnabled(True)
+			self.systrayMode.setEnabled(True)
+		else:
+			self.systrayNotify.setEnabled(False)
+			self.systrayDisconnect.setEnabled(False)
+			self.systrayNickname.setEnabled(False)
+			self.systrayPrivate.setEnabled(False)
+			self.systrayKick.setEnabled(False)
+			self.systrayInvite.setEnabled(False)
+			self.systrayNotice.setEnabled(False)
+			self.systrayMode.setEnabled(False)
+		self.changed.show()
 
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
@@ -290,7 +310,7 @@ class Dialog(QDialog):
 
 		self.minSystray = QCheckBox("Minimize to system tray",self)
 		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
-		self.minSystray.stateChanged.connect(self.changedSetting)
+		self.minSystray.stateChanged.connect(self.changedSystrayMin)
 
 		self.systrayNotify = QCheckBox("Show system tray notifications",self)
 		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
@@ -304,8 +324,6 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
 		self.systrayNickname.stateChanged.connect(self.changedSetting)
 		self.systrayNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		
 
 		self.systrayPrivate = QCheckBox("Private\nmessages",self)
 		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
@@ -359,6 +377,25 @@ class Dialog(QDialog):
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
+
+		if self.minSystray.isChecked():
+			self.systrayNotify.setEnabled(True)
+			self.systrayDisconnect.setEnabled(True)
+			self.systrayNickname.setEnabled(True)
+			self.systrayPrivate.setEnabled(True)
+			self.systrayKick.setEnabled(True)
+			self.systrayInvite.setEnabled(True)
+			self.systrayNotice.setEnabled(True)
+			self.systrayMode.setEnabled(True)
+		else:
+			self.systrayNotify.setEnabled(False)
+			self.systrayDisconnect.setEnabled(False)
+			self.systrayNickname.setEnabled(False)
+			self.systrayPrivate.setEnabled(False)
+			self.systrayKick.setEnabled(False)
+			self.systrayInvite.setEnabled(False)
+			self.systrayNotice.setEnabled(False)
+			self.systrayMode.setEnabled(False)
 
 		# Connection page
 
