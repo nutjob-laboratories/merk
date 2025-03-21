@@ -51,6 +51,7 @@ class Dialog(QDialog):
 
 			self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
 			self.changed.show()
+		self.selector.setFocus()
 
 	def setWinsize(self):
 		
@@ -60,6 +61,7 @@ class Dialog(QDialog):
 			self.subHeight = x[1]
 			self.sizeLabel.setText(f"Initial window size: <b>{str(self.subWidth)}x{str(self.subHeight)} px</b>")
 			self.changed.show()
+		self.selector.setFocus()
 
 	def setLogSize(self):
 
@@ -68,6 +70,7 @@ class Dialog(QDialog):
 			self.logsize = x
 			self.logLabel.setText(f"Log load size: <b>{str(self.logsize)} lines</b>")
 			self.changed.show()
+		self.selector.setFocus()
 
 	def setHistorySize(self):
 
@@ -76,41 +79,51 @@ class Dialog(QDialog):
 			self.historysize = x
 			self.historyLabel.setText(f"Command history size: <b>{str(self.historysize)} lines</b>")
 			self.changed.show()
+		self.selector.setFocus()
 
 	def selEnglish(self):
 		self.spellLang = "en"
 		self.changed.show()
+		self.selector.setFocus()
 
 	def selFrench(self):
 		self.spellLang = "fr"
 		self.changed.show()
+		self.selector.setFocus()
 
 	def selGerman(self):
 		self.spellLang = "de"
 		self.changed.show()
+		self.selector.setFocus()
 
 	def selSpanish(self):
 		self.spellLang = "es"
 		self.changed.show()
+		self.selector.setFocus()
 
 	def changedSetting(self,state):
 		self.changed.show()
+		self.selector.setFocus()
 
 	def restartSetting(self,state):
 		self.changed.show()
 		self.restart.show()
+		self.selector.setFocus()
 
 	def changedSettingRerender(self,state):
 		self.changed.show()
 		self.rerender = True
+		self.selector.setFocus()
 
 	def changedSettingRerenderUserlists(self,state):
 		self.changed.show()
 		self.rerenderUsers = True
+		self.selector.setFocus()
 
 	def changedSettingRerenderNick(self,state):
 		self.changed.show()
 		self.rerenderNick = True
+		self.selector.setFocus()
 
 	def setQuitMsg(self):
 		info = dialog.QuitPartDialog(self.default_quit_part,self)
@@ -121,6 +134,7 @@ class Dialog(QDialog):
 		self.partMsg.setText("<b>"+str(info)+"</b>")
 
 		self.changed.show()
+		self.selector.setFocus()
 
 	def syntaxChanged(self,data):
 		name = data[0]
@@ -151,6 +165,7 @@ class Dialog(QDialog):
 			color = data[1]
 			self.SYNTAX_BACKGROUND = color
 			self.changed.show()
+		self.selector.setFocus()
 
 	def changedSystrayMin(self,state):
 		if self.minSystray.isChecked():
