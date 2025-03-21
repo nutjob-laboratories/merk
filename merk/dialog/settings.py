@@ -416,14 +416,23 @@ class Dialog(QDialog):
 		self.systrayPage.setLayout(systrayLayout)
 
 		if self.minSystray.isChecked():
-			self.systrayNotify.setEnabled(True)
-			self.systrayDisconnect.setEnabled(True)
-			self.systrayNickname.setEnabled(True)
-			self.systrayPrivate.setEnabled(True)
-			self.systrayKick.setEnabled(True)
-			self.systrayInvite.setEnabled(True)
-			self.systrayNotice.setEnabled(True)
-			self.systrayMode.setEnabled(True)
+			if self.systrayNotify.isChecked():
+				self.systrayNotify.setEnabled(True)
+				self.systrayDisconnect.setEnabled(True)
+				self.systrayNickname.setEnabled(True)
+				self.systrayPrivate.setEnabled(True)
+				self.systrayKick.setEnabled(True)
+				self.systrayInvite.setEnabled(True)
+				self.systrayNotice.setEnabled(True)
+				self.systrayMode.setEnabled(True)
+			else:
+				self.systrayDisconnect.setEnabled(False)
+				self.systrayNickname.setEnabled(False)
+				self.systrayPrivate.setEnabled(False)
+				self.systrayKick.setEnabled(False)
+				self.systrayInvite.setEnabled(False)
+				self.systrayNotice.setEnabled(False)
+				self.systrayMode.setEnabled(False)
 		else:
 			self.systrayNotify.setEnabled(False)
 			self.systrayDisconnect.setEnabled(False)
@@ -541,9 +550,10 @@ class Dialog(QDialog):
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
 		interfaceLayout.addWidget(self.showUptime)
 		interfaceLayout.addWidget(self.showChanUptime)
+		interfaceLayout.addWidget(self.showInfo)
+		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		interfaceLayout.addWidget(self.plainUserLists)
 		interfaceLayout.addWidget(self.showUserlistLeft)
-		interfaceLayout.addWidget(self.showInfo)
 		interfaceLayout.addStretch()
 
 		self.interfacePage.setLayout(interfaceLayout)
