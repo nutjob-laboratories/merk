@@ -313,9 +313,10 @@ class Dialog(QDialog):
 		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
 		self.minSystray.stateChanged.connect(self.changedSystrayMin)
 
-		self.systrayNotify = QCheckBox("Show system tray notifications",self)
+		self.systrayNotify = QCheckBox("Show system tray notifications\nwhen minimized to system tray",self)
 		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
 		self.systrayNotify.stateChanged.connect(self.changedSetting)
+		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
 		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
