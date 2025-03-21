@@ -546,11 +546,18 @@ class Dialog(QDialog):
 
 		self.showUserlistLeft.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.writeScroll = QCheckBox("Always scroll chat to bottom\nwhen displaying text",self)
+		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
+		self.writeScroll.stateChanged.connect(self.changedSetting)
+
+		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		interfaceLayout = QVBoxLayout()
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
 		interfaceLayout.addWidget(self.showUptime)
 		interfaceLayout.addWidget(self.showChanUptime)
 		interfaceLayout.addWidget(self.showInfo)
+		interfaceLayout.addWidget(self.writeScroll)
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		interfaceLayout.addWidget(self.plainUserLists)
 		interfaceLayout.addWidget(self.showUserlistLeft)
@@ -747,19 +754,12 @@ class Dialog(QDialog):
 
 		self.writePrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.writeScroll = QCheckBox("Always scroll to bottom\nwhen displaying text",self)
-		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
-		self.writeScroll.stateChanged.connect(self.changedSetting)
-
-		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.createWindow)
 		messageLayout.addWidget(self.writePrivate)
-		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
