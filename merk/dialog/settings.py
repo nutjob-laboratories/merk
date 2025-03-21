@@ -493,18 +493,19 @@ class Dialog(QDialog):
 		cgbLayout.addWidget(self.partMsg)
 		cgbLayout.addStretch()
 
-		quitPartBox = QGroupBox("Default Quit/Part Message",self)
-		quitPartBox.setLayout(cgbLayout)
+		# quitPartBox = QGroupBox("Default Quit/Part Message",self)
+		# quitPartBox.setLayout(cgbLayout)
 
-		quitPartBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
+		# quitPartBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
 
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
-		connectionsLayout.addWidget(quitPartBox)
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
 		connectionsLayout.addWidget(self.askBeforeReconnect)
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
+		connectionsLayout.addLayout(cgbLayout)
 		connectionsLayout.addStretch()
 
 		self.connectionsPage.setLayout(connectionsLayout)
