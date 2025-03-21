@@ -189,6 +189,26 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 
+	def changedSystrayNotification(self,state):
+		if self.systrayNotify.isChecked():
+			self.systrayDisconnect.setEnabled(True)
+			self.systrayNickname.setEnabled(True)
+			self.systrayPrivate.setEnabled(True)
+			self.systrayKick.setEnabled(True)
+			self.systrayInvite.setEnabled(True)
+			self.systrayNotice.setEnabled(True)
+			self.systrayMode.setEnabled(True)
+		else:
+			self.systrayDisconnect.setEnabled(False)
+			self.systrayNickname.setEnabled(False)
+			self.systrayPrivate.setEnabled(False)
+			self.systrayKick.setEnabled(False)
+			self.systrayInvite.setEnabled(False)
+			self.systrayNotice.setEnabled(False)
+			self.systrayMode.setEnabled(False)
+		self.selector.setFocus()
+		self.changed.show()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -330,7 +350,7 @@ class Dialog(QDialog):
 
 		self.systrayNotify = QCheckBox("Show system tray notifications\nwhen minimized to system tray",self)
 		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
-		self.systrayNotify.stateChanged.connect(self.changedSetting)
+		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
 		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
