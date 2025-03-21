@@ -639,22 +639,17 @@ class Dialog(QDialog):
 		lanSubLayout.addLayout(langLayout)
 		lanSubLayout.addStretch()
 
-		langBox = QGroupBox("Default Spellcheck Language",self)
-		langBox.setLayout(lanSubLayout)
-
-		langBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
-
-
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
+		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(self.enableEmojis)
 		inputLayout.addWidget(self.autocompleteCommands)
 		inputLayout.addWidget(self.autocompleteNicks)
 		inputLayout.addWidget(self.autocompleteChans)
 		inputLayout.addWidget(self.autocompleteEmojis)
-		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(self.enableSpellcheck)
-		inputLayout.addWidget(langBox)
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
+		inputLayout.addLayout(lanSubLayout)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
