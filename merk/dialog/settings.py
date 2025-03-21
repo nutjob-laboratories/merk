@@ -493,11 +493,6 @@ class Dialog(QDialog):
 		cgbLayout.addWidget(self.partMsg)
 		cgbLayout.addStretch()
 
-		# quitPartBox = QGroupBox("Default Quit/Part Message",self)
-		# quitPartBox.setLayout(cgbLayout)
-
-		# quitPartBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
-
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
