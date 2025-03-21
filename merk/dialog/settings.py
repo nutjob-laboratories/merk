@@ -171,6 +171,7 @@ class Dialog(QDialog):
 			self.systrayInvite.setEnabled(False)
 			self.systrayNotice.setEnabled(False)
 			self.systrayMode.setEnabled(False)
+		self.selector.setFocus()
 		self.changed.show()
 
 	def __init__(self,app=None,parent=None):
