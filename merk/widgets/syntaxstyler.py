@@ -120,7 +120,6 @@ class SyntaxColor(QWidget):
 
 		controlsLayout = QHBoxLayout()
 		controlsLayout.addWidget(self.descriptionLabel)
-		controlsLayout.addWidget(QLabel(' '))
 		controlsLayout.addWidget(self.setColor)
 		controlsLayout.addWidget(self.setBold)
 		controlsLayout.addWidget(self.setItalic)
@@ -168,7 +167,6 @@ class SyntaxTextColor(QWidget):
 
 		controlsLayout = QHBoxLayout()
 		controlsLayout.addWidget(self.descriptionLabel)
-		controlsLayout.addWidget(QLabel(' '))
 		controlsLayout.addWidget(self.setColor)
 		controlsLayout.setAlignment(Qt.AlignLeft)
 

@@ -821,10 +821,13 @@ class Dialog(QDialog):
 		self.syntaxfore.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxback.syntaxChanged.connect(self.syntaxChanged)
 
+		tbLay = QHBoxLayout()
+		tbLay.addWidget(self.syntaxfore)
+		tbLay.addWidget(self.syntaxback)
+
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
-		syntaxLayout.addWidget(self.syntaxfore)
-		syntaxLayout.addWidget(self.syntaxback)
+		syntaxLayout.addLayout(tbLay)
 		syntaxLayout.addWidget(self.syntaxcomment)
 		syntaxLayout.addWidget(self.syntaxcommand)
 		syntaxLayout.addWidget(self.syntaxchannel)
