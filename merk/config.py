@@ -108,6 +108,8 @@ FLASH_SYSTRAY_INVITE = True
 FLASH_SYSTRAY_NOTICE = True
 FLASH_SYSTRAY_MODE = True
 
+FLASH_SYSTRAY_LIST = True
+
 def save_settings(filename):
 
 	settings = {
@@ -177,12 +179,15 @@ def save_settings(filename):
 		"systray_notification_invite": FLASH_SYSTRAY_INVITE,
 		"systray_notification_notice": FLASH_SYSTRAY_NOTICE,
 		"systray_notification_mode": FLASH_SYSTRAY_MODE,
+		"systray_notification_list": FLASH_SYSTRAY_LIST,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "systray_notification_list" in settings:
+		settings["systray_notification_list"] = FLASH_SYSTRAY_LIST
 	if not "systray_notification_notice" in settings:
 		settings["systray_notification_notice"] = FLASH_SYSTRAY_NOTICE
 	if not "systray_notification_mode" in settings:
@@ -385,6 +390,7 @@ def load_settings(filename):
 	global FLASH_SYSTRAY_INVITE
 	global FLASH_SYSTRAY_NOTICE
 	global FLASH_SYSTRAY_MODE
+	global FLASH_SYSTRAY_LIST
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -460,6 +466,7 @@ def load_settings(filename):
 		FLASH_SYSTRAY_INVITE = settings["systray_notification_invite"]
 		FLASH_SYSTRAY_NOTICE = settings["systray_notification_notice"]
 		FLASH_SYSTRAY_MODE = settings["systray_notification_mode"]
+		FLASH_SYSTRAY_LIST = settings["systray_notification_list"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)

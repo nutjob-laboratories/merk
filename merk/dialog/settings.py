@@ -191,6 +191,7 @@ class Dialog(QDialog):
 
 	def changedSystrayNotification(self,state):
 		if self.systrayNotify.isChecked():
+			self.listSystray.setEnabled(True)
 			self.systrayDisconnect.setEnabled(True)
 			self.systrayNickname.setEnabled(True)
 			self.systrayPrivate.setEnabled(True)
@@ -199,6 +200,7 @@ class Dialog(QDialog):
 			self.systrayNotice.setEnabled(True)
 			self.systrayMode.setEnabled(True)
 		else:
+			self.listSystray.setEnabled(False)
 			self.systrayDisconnect.setEnabled(False)
 			self.systrayNickname.setEnabled(False)
 			self.systrayPrivate.setEnabled(False)
@@ -353,6 +355,10 @@ class Dialog(QDialog):
 		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
 		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.listSystray = QCheckBox("List notifications in tooltip",self)
+		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
+		self.listSystray.stateChanged.connect(self.changedSetting)
+
 		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
 		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
 		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
@@ -406,6 +412,7 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(self.showSystray)
 		systrayLayout.addWidget(self.minSystray)
 		systrayLayout.addWidget(self.systrayNotify)
+		systrayLayout.addWidget(self.listSystray)
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
 		systrayLayout.addLayout(nickPriv)
 		systrayLayout.addLayout(kickInvite)
@@ -417,6 +424,7 @@ class Dialog(QDialog):
 
 		if self.minSystray.isChecked():
 			if self.systrayNotify.isChecked():
+				self.listSystray.setEnabled(True)
 				self.systrayNotify.setEnabled(True)
 				self.systrayDisconnect.setEnabled(True)
 				self.systrayNickname.setEnabled(True)
@@ -426,6 +434,7 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(True)
 				self.systrayMode.setEnabled(True)
 			else:
+				self.listSystray.setEnabled(False)
 				self.systrayDisconnect.setEnabled(False)
 				self.systrayNickname.setEnabled(False)
 				self.systrayPrivate.setEnabled(False)
@@ -930,6 +939,7 @@ class Dialog(QDialog):
 		config.FLASH_SYSTRAY_INVITE = self.systrayInvite.isChecked()
 		config.FLASH_SYSTRAY_NOTICE = self.systrayNotice.isChecked()
 		config.FLASH_SYSTRAY_MODE = self.systrayMode.isChecked()
+		config.FLASH_SYSTRAY_LIST = self.listSystray.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

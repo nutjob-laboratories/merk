@@ -133,6 +133,8 @@ class Merk(QMainWindow):
 			self.tray.setVisible(True)
 		self.tray.setToolTip(APPLICATION_NAME+" IRC client")
 
+		self.tray_notifications = []
+
 
 		self.trayMenu = QMenu()
 		self.tray.setContextMenu(self.trayMenu)
@@ -175,11 +177,17 @@ class Merk(QMainWindow):
 
 	# SYSTRAY MENU
 
-	def show_notifications(self):
+	def show_notifications(self,note=''):
 		if config.FLASH_SYSTRAY_NOTIFICATION:
 			if self.is_hidden:
 				self.notifications = True
-				self.flash.start(self.flash_time)
+				if config.FLASH_SYSTRAY_LIST:
+					if note!='':
+						self.tray_notifications.append(note)
+					if len(self.tray_notifications)>0:
+						self.tray.setToolTip("\n".join(self.tray_notifications))
+				if not self.flash.isActive():
+					self.flash.start(self.flash_time)
 			else:
 				self.notifications = False
 		else:
@@ -188,6 +196,8 @@ class Merk(QMainWindow):
 	def hide_notifications(self):
 		self.notifications = False
 		self.tray.setIcon(self.tray_icon)
+		self.tray_notifications = []
+		self.tray.setToolTip(APPLICATION_NAME+" IRC client")
 
 	def blink(self):
 		if self.notifications==False:
@@ -416,7 +426,7 @@ class Merk(QMainWindow):
 
 		self.buildMainMenu()
 
-		if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications()
+		if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications("Connection to "+client.hostname+" lost")
 
 	def signedOn(self,client):
 
@@ -531,7 +541,7 @@ class Merk(QMainWindow):
 			# in it
 			if client.nickname in msg:
 				if config.FLASH_SYSTRAY_NICKNAME:
-					self.show_notifications()
+					self.show_notifications("Mentioned by "+nickname+" in "+target)
 
 			# Channel message
 			w = self.getWindow(target,client)
@@ -543,7 +553,7 @@ class Merk(QMainWindow):
 		if target==client.nickname:
 			displayed_private_message = False
 
-			if config.FLASH_SYSTRAY_PRIVATE: self.show_notifications()
+			if config.FLASH_SYSTRAY_PRIVATE: self.show_notifications("Received private message from "+nickname)
 
 			# It's a private message, so try to write the message
 			# to the private message window, if there is one
@@ -641,7 +651,7 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
-		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications()
+		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications("Received a notice from "+nickname)
 
 		# Try and send the message to the right window
 		w = self.getWindow(nickname,client)
@@ -863,8 +873,16 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+
 		if client.nickname in argument:
-			if config.FLASH_SYSTRAY_MODE: self.show_notifications()
+			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
 	def unsetMode(self,client,user,target,mode,argument):
 		self.refreshModeDisplay(client)
@@ -887,8 +905,16 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+
 		if client.nickname in argument:
-			if config.FLASH_SYSTRAY_MODE: self.show_notifications()
+			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
 
 	def userKicked(self,client,kickee,channel,kicker,message):
 		
@@ -905,7 +931,7 @@ class Merk(QMainWindow):
 
 	def kickedFrom(self,client,channel,kicker,message):
 		
-		if config.FLASH_SYSTRAY_KICK: self.show_notifications()
+		if config.FLASH_SYSTRAY_KICK: self.show_notifications("Kicked from "+channel+" by "+kicker+": "+message)
 
 
 		w = self.getSubWindow(channel,client)
@@ -983,7 +1009,7 @@ class Merk(QMainWindow):
 
 	def invited(self,client,user,channel):
 
-		if config.FLASH_SYSTRAY_INVITE: self.show_notifications()
+		if config.FLASH_SYSTRAY_INVITE: self.show_notifications("Invited to "+channel+" by "+user)
 
 		w = self.MDI.activeSubWindow()
 		if w:

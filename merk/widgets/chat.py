@@ -410,7 +410,7 @@ class Window(QMainWindow):
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-			finalLayout.addLayout(serverBar)
+			if self.window_type==SERVER_WINDOW: finalLayout.addLayout(serverBar)
 			finalLayout.addWidget(self.chat)
 			finalLayout.addLayout(inputLayout)
 
