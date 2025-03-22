@@ -168,17 +168,32 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSystrayMin(self,state):
-		if self.minSystray.isChecked():
-			self.systrayNotify.setEnabled(True)
-			self.systrayDisconnect.setEnabled(True)
-			self.systrayNickname.setEnabled(True)
-			self.systrayPrivate.setEnabled(True)
-			self.systrayKick.setEnabled(True)
-			self.systrayInvite.setEnabled(True)
-			self.systrayNotice.setEnabled(True)
-			self.systrayMode.setEnabled(True)
+		if self.showSystray.isChecked():
+			self.minSystray.setEnabled(True)
+			if self.minSystray.isChecked():
+				self.systrayNotify.setEnabled(True)
+				self.listSystray.setEnabled(True)
+				self.systrayDisconnect.setEnabled(True)
+				self.systrayNickname.setEnabled(True)
+				self.systrayPrivate.setEnabled(True)
+				self.systrayKick.setEnabled(True)
+				self.systrayInvite.setEnabled(True)
+				self.systrayNotice.setEnabled(True)
+				self.systrayMode.setEnabled(True)
+			else:
+				self.systrayNotify.setEnabled(False)
+				self.listSystray.setEnabled(False)
+				self.systrayDisconnect.setEnabled(False)
+				self.systrayNickname.setEnabled(False)
+				self.systrayPrivate.setEnabled(False)
+				self.systrayKick.setEnabled(False)
+				self.systrayInvite.setEnabled(False)
+				self.systrayNotice.setEnabled(False)
+				self.systrayMode.setEnabled(False)
 		else:
+			self.minSystray.setEnabled(False)
 			self.systrayNotify.setEnabled(False)
+			self.listSystray.setEnabled(False)
 			self.systrayDisconnect.setEnabled(False)
 			self.systrayNickname.setEnabled(False)
 			self.systrayPrivate.setEnabled(False)
@@ -333,11 +348,16 @@ class Dialog(QDialog):
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
+		self.showSystray = QCheckBox("Show system tray icon and menu",self)
+		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
+		self.showSystray.stateChanged.connect(self.changedSystrayMin)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.showChatInTitle)
+		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -742,10 +762,6 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.systrayPage)
 
-		self.showSystray = QCheckBox("Show system tray icon and menu",self)
-		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
-		self.showSystray.stateChanged.connect(self.changedSetting)
-
 		self.minSystray = QCheckBox("Minimize to system tray",self)
 		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
 		self.minSystray.stateChanged.connect(self.changedSystrayMin)
@@ -809,7 +825,6 @@ class Dialog(QDialog):
 
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
-		systrayLayout.addWidget(self.showSystray)
 		systrayLayout.addWidget(self.minSystray)
 		systrayLayout.addWidget(self.systrayNotify)
 		systrayLayout.addWidget(self.listSystray)
@@ -822,10 +837,11 @@ class Dialog(QDialog):
 
 		self.systrayPage.setLayout(systrayLayout)
 
-		if self.minSystray.isChecked():
-			if self.systrayNotify.isChecked():
-				self.listSystray.setEnabled(True)
+		if self.showSystray.isChecked():
+			self.minSystray.setEnabled(True)
+			if self.minSystray.isChecked():
 				self.systrayNotify.setEnabled(True)
+				self.listSystray.setEnabled(True)
 				self.systrayDisconnect.setEnabled(True)
 				self.systrayNickname.setEnabled(True)
 				self.systrayPrivate.setEnabled(True)
@@ -834,6 +850,7 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(True)
 				self.systrayMode.setEnabled(True)
 			else:
+				self.systrayNotify.setEnabled(False)
 				self.listSystray.setEnabled(False)
 				self.systrayDisconnect.setEnabled(False)
 				self.systrayNickname.setEnabled(False)
@@ -843,8 +860,9 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(False)
 				self.systrayMode.setEnabled(False)
 		else:
-			self.listSystray.setEnabled(False)
+			self.minSystray.setEnabled(False)
 			self.systrayNotify.setEnabled(False)
+			self.listSystray.setEnabled(False)
 			self.systrayDisconnect.setEnabled(False)
 			self.systrayNickname.setEnabled(False)
 			self.systrayPrivate.setEnabled(False)
@@ -852,6 +870,51 @@ class Dialog(QDialog):
 			self.systrayInvite.setEnabled(False)
 			self.systrayNotice.setEnabled(False)
 			self.systrayMode.setEnabled(False)
+
+		# if self.minSystray.isChecked():
+		# 	if self.systrayNotify.isChecked():
+		# 		self.listSystray.setEnabled(True)
+		# 		self.systrayNotify.setEnabled(True)
+		# 		self.systrayDisconnect.setEnabled(True)
+		# 		self.systrayNickname.setEnabled(True)
+		# 		self.systrayPrivate.setEnabled(True)
+		# 		self.systrayKick.setEnabled(True)
+		# 		self.systrayInvite.setEnabled(True)
+		# 		self.systrayNotice.setEnabled(True)
+		# 		self.systrayMode.setEnabled(True)
+		# 	else:
+		# 		self.listSystray.setEnabled(False)
+		# 		self.systrayDisconnect.setEnabled(False)
+		# 		self.systrayNickname.setEnabled(False)
+		# 		self.systrayPrivate.setEnabled(False)
+		# 		self.systrayKick.setEnabled(False)
+		# 		self.systrayInvite.setEnabled(False)
+		# 		self.systrayNotice.setEnabled(False)
+		# 		self.systrayMode.setEnabled(False)
+		# else:
+		# 	self.listSystray.setEnabled(False)
+		# 	self.systrayNotify.setEnabled(False)
+		# 	self.systrayDisconnect.setEnabled(False)
+		# 	self.systrayNickname.setEnabled(False)
+		# 	self.systrayPrivate.setEnabled(False)
+		# 	self.systrayKick.setEnabled(False)
+		# 	self.systrayInvite.setEnabled(False)
+		# 	self.systrayNotice.setEnabled(False)
+		# 	self.systrayMode.setEnabled(False)
+
+		# if self.showSystray.isChecked():
+		# 	pass
+		# else:
+		# 	self.listSystray.setEnabled(False)
+		# 	self.minSystray.setEnabled(False)
+		# 	self.systrayNotify.setEnabled(False)
+		# 	self.systrayDisconnect.setEnabled(False)
+		# 	self.systrayNickname.setEnabled(False)
+		# 	self.systrayPrivate.setEnabled(False)
+		# 	self.systrayKick.setEnabled(False)
+		# 	self.systrayInvite.setEnabled(False)
+		# 	self.systrayNotice.setEnabled(False)
+		# 	self.systrayMode.setEnabled(False)
 
 		# Syntax
 
