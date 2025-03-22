@@ -354,22 +354,12 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
-		self.showSystrayMenu = QCheckBox("Show system tray menu",self)
-		if config.SYSTRAY_MENU: self.showSystrayMenu.setChecked(True)
-		self.showSystrayMenu.stateChanged.connect(self.changedSystrayMin)
-
-		if self.showSystray.isChecked():
-			self.showSystrayMenu.setEnabled(True)
-		else:
-			self.showSystrayMenu.setEnabled(False)
-
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
-		applicationLayout.addWidget(self.showSystrayMenu)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -774,6 +764,10 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.systrayPage)
 
+		self.showSystrayMenu = QCheckBox("Show right click menu",self)
+		if config.SYSTRAY_MENU: self.showSystrayMenu.setChecked(True)
+		self.showSystrayMenu.stateChanged.connect(self.changedSystrayMin)
+
 		self.minSystray = QCheckBox("Minimize to system tray",self)
 		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
 		self.minSystray.stateChanged.connect(self.changedSystrayMin)
@@ -837,6 +831,7 @@ class Dialog(QDialog):
 
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
+		systrayLayout.addWidget(self.showSystrayMenu)
 		systrayLayout.addWidget(self.minSystray)
 		systrayLayout.addWidget(self.systrayNotify)
 		systrayLayout.addWidget(self.listSystray)
@@ -850,6 +845,7 @@ class Dialog(QDialog):
 		self.systrayPage.setLayout(systrayLayout)
 
 		if self.showSystray.isChecked():
+			self.showSystrayMenu.setEnabled(True)
 			self.minSystray.setEnabled(True)
 			if self.minSystray.isChecked():
 				self.systrayNotify.setEnabled(True)
@@ -872,6 +868,7 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(False)
 				self.systrayMode.setEnabled(False)
 		else:
+			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
 			self.systrayNotify.setEnabled(False)
 			self.listSystray.setEnabled(False)
