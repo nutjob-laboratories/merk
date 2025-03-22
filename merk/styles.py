@@ -133,7 +133,7 @@ def read_style_file(filename):
 	f.close()
 
 	# Strip comments
-	text = re.sub(re.compile("/\*.*?\*/",re.DOTALL ) ,"" ,text)
+	text = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,text)
 
 	# Tokenize the file
 	buff = ''

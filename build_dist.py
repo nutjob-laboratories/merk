@@ -15,11 +15,11 @@ else:
 
 # Load and increment version numbers
 
-f = open("./data/major.txt","r")
+f = open("./merk/data/major.txt","r")
 major = f.read()
 f.close()
 
-f = open("./data/minor.txt","r")
+f = open("./merk/data/minor.txt","r")
 minor = f.read()
 f.close()
 
@@ -27,7 +27,7 @@ mi = int(minor)
 mi = mi + 1
 minor = str(mi)
 
-f = open("./data/minor.txt","w")
+f = open("./merk/data/minor.txt","w")
 f.write(minor)
 f.close()
 
@@ -59,7 +59,6 @@ f.close()
 os.mkdir("./dist")
 
 shutil.copytree("./merk", "./dist/merk",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
-shutil.copytree("./data", "./dist/data",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 shutil.copytree("./qt5reactor", "./dist/qt5reactor",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 shutil.copytree("./spellchecker", "./dist/spellchecker",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))
 shutil.copytree("./emoji", "./dist/emoji",ignore=shutil.ignore_patterns('*.pyc', 'tmp*',"__pycache__"))

@@ -311,7 +311,7 @@ def render_message(message,style):
 
 def inject_www_links(txt,style):
 
-	urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', txt)
+	urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', txt)
 	for u in urls:
 		u = re.sub('<[^<]+?>', '', u)
 		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"

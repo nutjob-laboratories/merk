@@ -37,7 +37,8 @@ import math
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
 INSTALL_DIRECTORY = sys.path[0]
-DATA_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "data")
+MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
+DATA_DIRECTORY = os.path.join(MERK_MODULE_DIRECTORY, "data")
 EMOJI_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji2.txt")
 EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji1.txt")
 NETWORK_FILE = os.path.join(DATA_DIRECTORY, "servers.txt")
