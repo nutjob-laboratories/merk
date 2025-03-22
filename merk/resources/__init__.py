@@ -37,15 +37,10 @@ import math
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
 INSTALL_DIRECTORY = sys.path[0]
-MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
-DATA_DIRECTORY = os.path.join(MERK_MODULE_DIRECTORY, "data")
-AUTOCOMPLETE_DIRECTORY = os.path.join(DATA_DIRECTORY, "autocomplete")
-EMOJI_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji2.txt")
-EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(AUTOCOMPLETE_DIRECTORY, "emoji1.txt")
+DATA_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "data")
+EMOJI_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji2.txt")
+EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji1.txt")
 NETWORK_FILE = os.path.join(DATA_DIRECTORY, "servers.txt")
-
-DOCUMENTATION_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "documentation")
-PLUGIN_DOCUMENTATION = os.path.join(DOCUMENTATION_DIRECTORY, "MERK_Plugin_Development_Guide.pdf")
 
 # Load in major and minor version
 f = open(os.path.join(DATA_DIRECTORY, "major.txt"),mode="r",encoding="latin-1",errors="ignore")
