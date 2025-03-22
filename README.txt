@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphicsmerk_splash.png"><br>
+  <img src="https://github.com/nutjob-laboratories/merk/blob/main/graphics/merk_splash.png?raw=true"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a><br>
