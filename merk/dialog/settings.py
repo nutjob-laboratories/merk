@@ -443,6 +443,7 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(False)
 				self.systrayMode.setEnabled(False)
 		else:
+			self.listSystray.setEnabled(False)
 			self.systrayNotify.setEnabled(False)
 			self.systrayDisconnect.setEnabled(False)
 			self.systrayNickname.setEnabled(False)
