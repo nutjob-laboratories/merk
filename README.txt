@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/nutjob-laboratories/merk/blob/main/graphics/merk_splash.png?raw=true"><br>
+  <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/merk_splash.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a><br>
@@ -12,11 +12,11 @@
 # Screenshots
 
 <p align="center">
-<center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphicsscreenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphicsscreenshot1.png"></a></center></br>
+<center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot1.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and a local IRC server, on Windows 11. </small></i></center>
  </p>
  <p align="center">
- <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphicsscreenshot_linux_big.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphicsscreenshot_linux2.png"></a></center></br>
+ <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot_linux_big.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot_linux2.png"></a></center></br>
   <center><i><small>MERK connected to <a href="http://www.efnet.org/">EFnet</a>, <a href="https://freenode.net/">Freenode</a>, and <a href="https://libera.chat/">Libera</a> on Linux Mint 20.2.</small></i></center>
   </p>
   
