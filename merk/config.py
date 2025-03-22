@@ -93,7 +93,7 @@ SYNTAX_CHANNEL_COLOR = "darkRed"
 SYNTAX_CHANNEL_STYLE = "bold"
 SYNTAX_BACKGROUND = "white"
 SYNTAX_FOREGROUND = "black"
-SYSTRAY_MENU = True
+SHOW_SYSTRAY_ICON = True
 SHOW_USERLIST_ON_LEFT = False
 MINIMIZE_TO_SYSTRAY = False
 FLASH_SYSTRAY_NOTIFICATION = True
@@ -164,7 +164,7 @@ def save_settings(filename):
 		"syntax_channel_style": SYNTAX_CHANNEL_STYLE,
 		"syntax_background_color": SYNTAX_BACKGROUND,
 		"syntax_foreground_color": SYNTAX_FOREGROUND,
-		"systray_menu": SYSTRAY_MENU,
+		"show_systray_icon": SHOW_SYSTRAY_ICON,
 		"show_userlist_on_left": SHOW_USERLIST_ON_LEFT,
 		"minimize_to_system_tray": MINIMIZE_TO_SYSTRAY,
 		"systray_notifications": FLASH_SYSTRAY_NOTIFICATION,
@@ -193,8 +193,8 @@ def patch_settings(settings):
 		settings["minimize_to_system_tray"] = MINIMIZE_TO_SYSTRAY
 	if not "show_userlist_on_left" in settings:
 		settings["show_userlist_on_left"] = SHOW_USERLIST_ON_LEFT
-	if not "systray_menu" in settings:
-		settings["systray_menu"] = SYSTRAY_MENU
+	if not "show_systray_icon" in settings:
+		settings["show_systray_icon"] = SHOW_SYSTRAY_ICON
 	if not "syntax_comment_color" in settings:
 		settings["syntax_comment_color"] = SYNTAX_COMMENT_COLOR
 	if not "syntax_comment_style" in settings:
@@ -375,7 +375,7 @@ def load_settings(filename):
 	global SYNTAX_CHANNEL_STYLE
 	global SYNTAX_BACKGROUND
 	global SYNTAX_FOREGROUND
-	global SYSTRAY_MENU
+	global SHOW_SYSTRAY_ICON
 	global SHOW_USERLIST_ON_LEFT
 	global MINIMIZE_TO_SYSTRAY
 	global FLASH_SYSTRAY_NOTIFICATION
@@ -399,7 +399,7 @@ def load_settings(filename):
 
 		MINIMIZE_TO_SYSTRAY = settings["minimize_to_system_tray"]
 		SHOW_USERLIST_ON_LEFT = settings["show_userlist_on_left"]
-		SYSTRAY_MENU = settings["systray_menu"]
+		SHOW_SYSTRAY_ICON = settings["show_systray_icon"]
 		AUTOCOMPLETE_CHANNELS = settings["autocomplete_channels"]
 		SHOW_USER_INFO_ON_CHAT_WINDOWS = settings["show_user_info_on_chat_windows"]
 		PLAIN_USER_LISTS = settings["plain_user_lists"]

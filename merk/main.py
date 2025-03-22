@@ -127,7 +127,7 @@ class Merk(QMainWindow):
 
 		self.tray = QSystemTrayIcon() 
 		self.tray.setIcon(self.tray_icon)
-		if config.SYSTRAY_MENU==False:
+		if config.SHOW_SYSTRAY_ICON==False:
 			self.tray.setVisible(False)
 		else:
 			self.tray.setVisible(True)
@@ -142,7 +142,7 @@ class Merk(QMainWindow):
 
 		self.tray.activated.connect(self.systray_clicked)
 
-		if config.SYSTRAY_MENU==False:
+		if config.SHOW_SYSTRAY_ICON==False:
 			self.tray.hide()
 
 		# Build the main menu
@@ -230,7 +230,7 @@ class Merk(QMainWindow):
 		if event.type() == QEvent.WindowStateChange:
 			if self.windowState() & Qt.WindowMinimized:
 				if config.MINIMIZE_TO_SYSTRAY==True:
-					if config.SYSTRAY_MENU==True:
+					if config.SHOW_SYSTRAY_ICON==True:
 						self.toggleHide()
 		super().changeEvent(event)
 

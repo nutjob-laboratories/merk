@@ -349,7 +349,7 @@ class Dialog(QDialog):
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
 		self.showSystray = QCheckBox("Show system tray icon and menu",self)
-		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
+		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
 		applicationLayout = QVBoxLayout()
@@ -1041,7 +1041,7 @@ class Dialog(QDialog):
 		config.SYNTAX_CHANNEL_STYLE = self.SYNTAX_CHANNEL_STYLE
 		config.SYNTAX_BACKGROUND = self.SYNTAX_BACKGROUND
 		config.SYNTAX_FOREGROUND = self.SYNTAX_FOREGROUND
-		config.SYSTRAY_MENU = self.showSystray.isChecked()
+		config.SHOW_SYSTRAY_ICON = self.showSystray.isChecked()
 		config.SHOW_USERLIST_ON_LEFT = self.showUserlistLeft.isChecked()
 		config.MINIMIZE_TO_SYSTRAY = self.minSystray.isChecked()
 		config.FLASH_SYSTRAY_NOTIFICATION = self.systrayNotify.isChecked()
@@ -1077,7 +1077,7 @@ class Dialog(QDialog):
 
 		self.parent.subWindowActivated(None)
 
-		if config.SYSTRAY_MENU:
+		if config.SHOW_SYSTRAY_ICON:
 			self.parent.tray.setVisible(True)
 			self.parent.tray.show()
 		else:
