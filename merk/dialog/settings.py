@@ -275,7 +275,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Application")
+		entry.setText("MERK")
 		entry.widget = self.applicationPage
 		entry.setIcon(QIcon(APPLICATION_ICON))
 		self.selector.addItem(entry)
@@ -283,6 +283,11 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.applicationPage)
 		self.stack.setCurrentWidget(self.applicationPage)
+
+		logo = QLabel()
+		pixmap = QPixmap(SPLASH_LOGO)
+		logo.setPixmap(pixmap)
+		logo.setAlignment(Qt.AlignCenter)
 
 		f = self.font()
 		fs = f.toString()
@@ -329,137 +334,13 @@ class Dialog(QDialog):
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
 		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
+		applicationLayout.addWidget(logo)
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
-
-		# Systray page
-
-		self.systrayPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("System Tray")
-		entry.widget = self.systrayPage
-		entry.setIcon(QIcon(SYSTRAY_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.systrayPage)
-
-		self.showSystray = QCheckBox("Show system tray icon and menu",self)
-		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
-		self.showSystray.stateChanged.connect(self.changedSetting)
-
-		self.minSystray = QCheckBox("Minimize to system tray",self)
-		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
-		self.minSystray.stateChanged.connect(self.changedSystrayMin)
-
-		self.systrayNotify = QCheckBox("Show system tray notifications\nwhen minimized to system tray",self)
-		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
-		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
-		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.listSystray = QCheckBox("List notifications in tooltip",self)
-		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
-		self.listSystray.stateChanged.connect(self.changedSetting)
-
-		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
-		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
-		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
-
-		self.systrayNickname = QCheckBox("Nickname\nmentions",self)
-		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
-		self.systrayNickname.stateChanged.connect(self.changedSetting)
-		self.systrayNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayPrivate = QCheckBox("Private\nmessages",self)
-		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
-		self.systrayPrivate.stateChanged.connect(self.changedSetting)
-		self.systrayPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayKick = QCheckBox("Channel kick",self)
-		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
-		self.systrayKick.stateChanged.connect(self.changedSetting)
-
-		self.systrayInvite = QCheckBox("Channel\ninvitation",self)
-		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
-		self.systrayInvite.stateChanged.connect(self.changedSetting)
-		self.systrayInvite.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayNotice = QCheckBox("Notice",self)
-		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
-		self.systrayNotice.stateChanged.connect(self.changedSetting)
-
-		self.systrayMode = QCheckBox("Mode set on\nuser",self)
-		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
-		self.systrayMode.stateChanged.connect(self.changedSetting)
-		self.systrayMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		discLay = QHBoxLayout()
-		discLay.addWidget(self.systrayDisconnect)
-		discLay.addStretch()
-
-		nickPriv = QHBoxLayout()
-		nickPriv.addWidget(self.systrayNickname)
-		nickPriv.addWidget(self.systrayPrivate)
-
-		kickInvite = QHBoxLayout()
-		kickInvite.addWidget(self.systrayKick)
-		kickInvite.addWidget(self.systrayInvite)
-
-		noticeMode = QHBoxLayout()
-		noticeMode.addWidget(self.systrayNotice)
-		noticeMode.addWidget(self.systrayMode)
-
-		systrayLayout = QVBoxLayout()
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
-		systrayLayout.addWidget(self.showSystray)
-		systrayLayout.addWidget(self.minSystray)
-		systrayLayout.addWidget(self.systrayNotify)
-		systrayLayout.addWidget(self.listSystray)
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
-		systrayLayout.addLayout(nickPriv)
-		systrayLayout.addLayout(kickInvite)
-		systrayLayout.addLayout(noticeMode)
-		systrayLayout.addLayout(discLay)
-		systrayLayout.addStretch()
-
-		self.systrayPage.setLayout(systrayLayout)
-
-		if self.minSystray.isChecked():
-			if self.systrayNotify.isChecked():
-				self.listSystray.setEnabled(True)
-				self.systrayNotify.setEnabled(True)
-				self.systrayDisconnect.setEnabled(True)
-				self.systrayNickname.setEnabled(True)
-				self.systrayPrivate.setEnabled(True)
-				self.systrayKick.setEnabled(True)
-				self.systrayInvite.setEnabled(True)
-				self.systrayNotice.setEnabled(True)
-				self.systrayMode.setEnabled(True)
-			else:
-				self.listSystray.setEnabled(False)
-				self.systrayDisconnect.setEnabled(False)
-				self.systrayNickname.setEnabled(False)
-				self.systrayPrivate.setEnabled(False)
-				self.systrayKick.setEnabled(False)
-				self.systrayInvite.setEnabled(False)
-				self.systrayNotice.setEnabled(False)
-				self.systrayMode.setEnabled(False)
-		else:
-			self.listSystray.setEnabled(False)
-			self.systrayNotify.setEnabled(False)
-			self.systrayDisconnect.setEnabled(False)
-			self.systrayNickname.setEnabled(False)
-			self.systrayPrivate.setEnabled(False)
-			self.systrayKick.setEnabled(False)
-			self.systrayInvite.setEnabled(False)
-			self.systrayNotice.setEnabled(False)
-			self.systrayMode.setEnabled(False)
 
 		# Connection page
 
@@ -847,6 +728,130 @@ class Dialog(QDialog):
 		timestampLayout.addStretch()
 
 		self.timestampPage.setLayout(timestampLayout)
+
+		# Systray page
+
+		self.systrayPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("System Tray")
+		entry.widget = self.systrayPage
+		entry.setIcon(QIcon(SYSTRAY_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.systrayPage)
+
+		self.showSystray = QCheckBox("Show system tray icon and menu",self)
+		if config.SYSTRAY_MENU: self.showSystray.setChecked(True)
+		self.showSystray.stateChanged.connect(self.changedSetting)
+
+		self.minSystray = QCheckBox("Minimize to system tray",self)
+		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
+		self.minSystray.stateChanged.connect(self.changedSystrayMin)
+
+		self.systrayNotify = QCheckBox("Show system tray notifications\nwhen minimized to system tray",self)
+		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
+		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
+		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.listSystray = QCheckBox("List notifications in tooltip",self)
+		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
+		self.listSystray.stateChanged.connect(self.changedSetting)
+
+		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
+		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
+		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
+
+		self.systrayNickname = QCheckBox("Nickname\nmentions",self)
+		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
+		self.systrayNickname.stateChanged.connect(self.changedSetting)
+		self.systrayNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.systrayPrivate = QCheckBox("Private\nmessages",self)
+		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
+		self.systrayPrivate.stateChanged.connect(self.changedSetting)
+		self.systrayPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.systrayKick = QCheckBox("Channel kick",self)
+		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
+		self.systrayKick.stateChanged.connect(self.changedSetting)
+
+		self.systrayInvite = QCheckBox("Channel\ninvitation",self)
+		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
+		self.systrayInvite.stateChanged.connect(self.changedSetting)
+		self.systrayInvite.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.systrayNotice = QCheckBox("Notice",self)
+		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
+		self.systrayNotice.stateChanged.connect(self.changedSetting)
+
+		self.systrayMode = QCheckBox("Mode set on\nuser",self)
+		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
+		self.systrayMode.stateChanged.connect(self.changedSetting)
+		self.systrayMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		discLay = QHBoxLayout()
+		discLay.addWidget(self.systrayDisconnect)
+		discLay.addStretch()
+
+		nickPriv = QHBoxLayout()
+		nickPriv.addWidget(self.systrayNickname)
+		nickPriv.addWidget(self.systrayPrivate)
+
+		kickInvite = QHBoxLayout()
+		kickInvite.addWidget(self.systrayKick)
+		kickInvite.addWidget(self.systrayInvite)
+
+		noticeMode = QHBoxLayout()
+		noticeMode.addWidget(self.systrayNotice)
+		noticeMode.addWidget(self.systrayMode)
+
+		systrayLayout = QVBoxLayout()
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
+		systrayLayout.addWidget(self.showSystray)
+		systrayLayout.addWidget(self.minSystray)
+		systrayLayout.addWidget(self.systrayNotify)
+		systrayLayout.addWidget(self.listSystray)
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
+		systrayLayout.addLayout(nickPriv)
+		systrayLayout.addLayout(kickInvite)
+		systrayLayout.addLayout(noticeMode)
+		systrayLayout.addLayout(discLay)
+		systrayLayout.addStretch()
+
+		self.systrayPage.setLayout(systrayLayout)
+
+		if self.minSystray.isChecked():
+			if self.systrayNotify.isChecked():
+				self.listSystray.setEnabled(True)
+				self.systrayNotify.setEnabled(True)
+				self.systrayDisconnect.setEnabled(True)
+				self.systrayNickname.setEnabled(True)
+				self.systrayPrivate.setEnabled(True)
+				self.systrayKick.setEnabled(True)
+				self.systrayInvite.setEnabled(True)
+				self.systrayNotice.setEnabled(True)
+				self.systrayMode.setEnabled(True)
+			else:
+				self.listSystray.setEnabled(False)
+				self.systrayDisconnect.setEnabled(False)
+				self.systrayNickname.setEnabled(False)
+				self.systrayPrivate.setEnabled(False)
+				self.systrayKick.setEnabled(False)
+				self.systrayInvite.setEnabled(False)
+				self.systrayNotice.setEnabled(False)
+				self.systrayMode.setEnabled(False)
+		else:
+			self.listSystray.setEnabled(False)
+			self.systrayNotify.setEnabled(False)
+			self.systrayDisconnect.setEnabled(False)
+			self.systrayNickname.setEnabled(False)
+			self.systrayPrivate.setEnabled(False)
+			self.systrayKick.setEnabled(False)
+			self.systrayInvite.setEnabled(False)
+			self.systrayNotice.setEnabled(False)
+			self.systrayMode.setEnabled(False)
 
 		# Syntax
 
