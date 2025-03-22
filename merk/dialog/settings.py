@@ -49,7 +49,7 @@ class Dialog(QDialog):
 			font_name = pfs[0]
 			font_size = pfs[1]
 
-			self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
+			self.fontLabel.setText(f"<b>{font_name}, {font_size} pt</b>")
 			self.changed.show()
 		self.selector.setFocus()
 
@@ -59,7 +59,7 @@ class Dialog(QDialog):
 		if x:
 			self.subWidth = x[0]
 			self.subHeight = x[1]
-			self.sizeLabel.setText(f"Initial window size: <b>{str(self.subWidth)}x{str(self.subHeight)} px</b>")
+			self.sizeLabel.setText(f"<b>{str(self.subWidth)}x{str(self.subHeight)} px</b>")
 			self.changed.show()
 		self.selector.setFocus()
 
@@ -68,7 +68,7 @@ class Dialog(QDialog):
 		x = dialog.LogSizeDialog(self)
 		if x:
 			self.logsize = x
-			self.logLabel.setText(f"Log load size: <b>{str(self.logsize)} lines</b>")
+			self.logLabel.setText(f"<b>{str(self.logsize)} lines</b>")
 			self.changed.show()
 		self.selector.setFocus()
 
@@ -77,7 +77,7 @@ class Dialog(QDialog):
 		x = dialog.HistorySizeDialog(self)
 		if x:
 			self.historysize = x
-			self.historyLabel.setText(f"Command history size: <b>{str(self.historysize)} lines</b>")
+			self.historyLabel.setText(f"<b>{str(self.historysize)} lines</b>")
 			self.changed.show()
 		self.selector.setFocus()
 
