@@ -127,6 +127,12 @@ Several tools are included in [the official **MERK** repository](https://github.
 
  - ***compile_resources.bat*** - This batch file compiles the miscellaneous resources (graphics, fonts, etc) required by **MERK** into a single file, `resources.py`, and inserts the file into the **MERK** source code. This is for development on the Windows platform.
  - ***compile_resources.sh*** - This shell script basically does the same thing that `compile_resources.bat` does, only it's for development on the Linux platform.
+ - ***build_readme.py*** - This is a Python 3 script that rebuilds the README:
+   - Reads`README.txt` into memory and replaces several symbols in it:
+     - `! _VERSION_ !` (without spaces) is replaced with **MERK**'s major version
+     - `! _MINOR_ !` (without spaces) is replaced with **MERK**'s minor version
+     - `! _FULL_VERSION_ !` (without spaces) is replaced with **MERK**'s major and minor version, with a period in between them.
+   - Overwrites `README.md` with the edited contents of `README.txt`
  - ***build_dist.py*** - This is a Python 3 script that, when executed, does several things:
    - Executes either `compile_resources.bat` (if the host system is Windows) or `compile_resources.sh` (if the host system is Linux); if the host system is not running either Windows or Linux, `build_dist.py` will exit with an error
    - Increments the **MERK**'s minor version (which is stored in `merk/data/minor.txt`) and saves it
@@ -138,7 +144,7 @@ Several tools are included in [the official **MERK** repository](https://github.
    - Creates a new directory named `dist`, and copies into it:
      - `merk.py`
      - `LICENSE`
-     - `README.md`
+     - `merk.ico`
      - The `merk` directory and its contents
      - The `qt5reactor` directory and its contents
      - The `spellchecker` directory and its contents

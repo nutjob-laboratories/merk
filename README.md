@@ -2,10 +2,10 @@
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/merk_splash.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
-  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.025.080</a><br>
+  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.025.80</a><br>
 </p>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.025.080**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.025.80**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
 
 **MERK** is in beta, but it works, and can be used for most IRC activities.
 
@@ -127,6 +127,12 @@ Several tools are included in [the official **MERK** repository](https://github.
 
  - ***compile_resources.bat*** - This batch file compiles the miscellaneous resources (graphics, fonts, etc) required by **MERK** into a single file, `resources.py`, and inserts the file into the **MERK** source code. This is for development on the Windows platform.
  - ***compile_resources.sh*** - This shell script basically does the same thing that `compile_resources.bat` does, only it's for development on the Linux platform.
+ - ***build_readme.py*** - This is a Python 3 script that rebuilds the README:
+   - Reads`README.txt` into memory and replaces several symbols in it:
+     - `! _VERSION_ !` (without spaces) is replaced with **MERK**'s major version
+     - `! _MINOR_ !` (without spaces) is replaced with **MERK**'s minor version
+     - `! _FULL_VERSION_ !` (without spaces) is replaced with **MERK**'s major and minor version, with a period in between them.
+   - Overwrites `README.md` with the edited contents of `README.txt`
  - ***build_dist.py*** - This is a Python 3 script that, when executed, does several things:
    - Executes either `compile_resources.bat` (if the host system is Windows) or `compile_resources.sh` (if the host system is Linux); if the host system is not running either Windows or Linux, `build_dist.py` will exit with an error
    - Increments the **MERK**'s minor version (which is stored in `merk/data/minor.txt`) and saves it
@@ -138,7 +144,7 @@ Several tools are included in [the official **MERK** repository](https://github.
    - Creates a new directory named `dist`, and copies into it:
      - `merk.py`
      - `LICENSE`
-     - `README.md`
+     - `merk.ico`
      - The `merk` directory and its contents
      - The `qt5reactor` directory and its contents
      - The `spellchecker` directory and its contents
