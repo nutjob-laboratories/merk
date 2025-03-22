@@ -211,6 +211,14 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 
+	def changedEmoji(self,state):
+		if self.enableEmojis.isChecked():
+			self.autocompleteEmojis.setEnabled(True)
+		else:
+			self.autocompleteEmojis.setEnabled(False)
+		self.selector.setFocus()
+		self.changed.show()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -586,23 +594,7 @@ class Dialog(QDialog):
 
 		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
-		self.enableEmojis.stateChanged.connect(self.changedSetting)
-
-		self.autocompleteCommands = QCheckBox("Autocomplete commands",self)
-		if config.AUTOCOMPLETE_COMMANDS: self.autocompleteCommands.setChecked(True)
-		self.autocompleteCommands.stateChanged.connect(self.changedSetting)
-
-		self.autocompleteNicks = QCheckBox("Autocomplete nicknames",self)
-		if config.AUTOCOMPLETE_NICKS: self.autocompleteNicks.setChecked(True)
-		self.autocompleteNicks.stateChanged.connect(self.changedSetting)
-
-		self.autocompleteChans = QCheckBox("Autocomplete channels",self)
-		if config.AUTOCOMPLETE_CHANNELS: self.autocompleteChans.setChecked(True)
-		self.autocompleteChans.stateChanged.connect(self.changedSetting)
-
-		self.autocompleteEmojis = QCheckBox("Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS: self.autocompleteEmojis.setChecked(True)
-		self.autocompleteEmojis.stateChanged.connect(self.changedSetting)
+		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
 		self.enableSpellcheck = QCheckBox("Enable spellcheck",self)
 		if config.ENABLE_SPELLCHECK: self.enableSpellcheck.setChecked(True)
@@ -656,16 +648,68 @@ class Dialog(QDialog):
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
 		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(self.enableEmojis)
-		inputLayout.addWidget(self.autocompleteCommands)
-		inputLayout.addWidget(self.autocompleteNicks)
-		inputLayout.addWidget(self.autocompleteChans)
-		inputLayout.addWidget(self.autocompleteEmojis)
 		inputLayout.addWidget(self.enableSpellcheck)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		inputLayout.addLayout(lanSubLayout)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
+
+		# Autocomplete page
+
+		self.autocompletePage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Autocomplete")
+		entry.widget = self.autocompletePage
+		entry.setIcon(QIcon(AUTOCOMPLETE_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.autocompletePage)
+
+		self.autocompleteDescription = QLabel("""
+			<small>
+			To use autocomplete, type the first few characters of a command,
+			nickname, channel, or emoji shortcode, and then hit tab to complete
+			the entry.
+			</small>
+			<br>
+			""")
+		self.autocompleteDescription.setWordWrap(True)
+		self.autocompleteDescription.setAlignment(Qt.AlignJustify)
+
+		self.autocompleteCommands = QCheckBox("Autocomplete commands",self)
+		if config.AUTOCOMPLETE_COMMANDS: self.autocompleteCommands.setChecked(True)
+		self.autocompleteCommands.stateChanged.connect(self.changedSetting)
+
+		self.autocompleteNicks = QCheckBox("Autocomplete nicknames",self)
+		if config.AUTOCOMPLETE_NICKS: self.autocompleteNicks.setChecked(True)
+		self.autocompleteNicks.stateChanged.connect(self.changedSetting)
+
+		self.autocompleteChans = QCheckBox("Autocomplete channels",self)
+		if config.AUTOCOMPLETE_CHANNELS: self.autocompleteChans.setChecked(True)
+		self.autocompleteChans.stateChanged.connect(self.changedSetting)
+
+		self.autocompleteEmojis = QCheckBox("Autocomplete emoji shortcodes",self)
+		if config.AUTOCOMPLETE_EMOJIS: self.autocompleteEmojis.setChecked(True)
+		self.autocompleteEmojis.stateChanged.connect(self.changedSetting)
+
+		if config.ENABLE_EMOJI_SHORTCODES:
+			self.autocompleteEmojis.setEnabled(True)
+		else:
+			self.autocompleteEmojis.setEnabled(False)
+
+		autocompleteLayout = QVBoxLayout()
+		autocompleteLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete settings</b>"))
+		autocompleteLayout.addWidget(self.autocompleteDescription)
+		autocompleteLayout.addWidget(self.autocompleteCommands)
+		autocompleteLayout.addWidget(self.autocompleteNicks)
+		autocompleteLayout.addWidget(self.autocompleteChans)
+		autocompleteLayout.addWidget(self.autocompleteEmojis)
+		autocompleteLayout.addStretch()
+
+		self.autocompletePage.setLayout(autocompleteLayout)
 
 		# Log page
 

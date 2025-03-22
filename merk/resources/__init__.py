@@ -205,6 +205,7 @@ MINIMIZE_ICON = ":/icon-minimize.png"
 WINDOW_ICON = ":/icon-window.png"
 
 SYSTRAY_ICON = ":/icon-tray.png"
+AUTOCOMPLETE_ICON = ":/icon-autocomplete.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
