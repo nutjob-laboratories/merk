@@ -432,6 +432,7 @@ class Merk(QMainWindow):
 			w.nick_button.setEnabled(True)
 			w.join_button.setEnabled(True)
 			w.info_button.setEnabled(True)
+			if config.COMMANDLINE_NO_SCRIPT==False: w.script_button.setEnabled(True)
 
 			self.buildWindowsMenu()
 		

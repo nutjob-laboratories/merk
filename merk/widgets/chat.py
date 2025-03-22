@@ -102,67 +102,71 @@ class Window(QMainWindow):
 		if self.window_type==PRIVATE_WINDOW: self.nicks = [ self.name ]
 
 		if self.window_type==SERVER_WINDOW:
-			self.toolbar = QToolBar(self)
-			self.addToolBar(Qt.TopToolBarArea,self.toolbar)
-			self.toolbar.setFloatable(False)
-
-			self.toolbar.setIconSize(QSize(15, 15))
+			
+			sep = QFrame()
+			sep.setFrameShape(QFrame.VLine)
+			sep.setFrameShadow(QFrame.Sunken)
+			sep.setLineWidth(1)
 
 			if self.client.kwargs["ssl"]:
 				icon = QIcon(VISITED_SECURE_ICON)
 			else:
 				icon = QIcon(VISITED_BOOKMARK_ICON)
 
-			self.infoMenuButton = QPushButton("")
-			self.infoMenuButton.setIcon(icon)
-			self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
-			self.infoMenuButton.setStyleSheet("QPushButton::menu-indicator { image: none; }")
-			self.infoMenuButton.setToolTip("Server information")
-			self.infoMenuButton.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-			self.infoMenuButton.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
-			self.infoMenuButton.setFlat(True)
-			self.info_button = self.toolbar.addWidget(self.infoMenuButton)
+			self.info_button = QPushButton("")
+			self.info_button.setIcon(icon)
+			self.info_button.setMenu(buildServerSettingsMenu(self,self.client))
+			self.info_button.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+			self.info_button.setToolTip("Server information")
+			self.info_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.info_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.info_button.setFlat(True)
 
-			self.toolbar.addSeparator()
+			serverBar = QHBoxLayout()
+			serverBar.addWidget(self.info_button)
+			serverBar.addWidget(sep)
 
-			entry = QPushButton("")
-			entry.setIcon(QIcon(CHANNEL_ICON))
-			entry.clicked.connect(self.joinChannel)
-			entry.setToolTip("Join a channel")
-			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
-			entry.setFlat(True)
-			self.join_button = self.toolbar.addWidget(entry)
+			self.join_button = QPushButton("")
+			self.join_button.setIcon(QIcon(CHANNEL_ICON))
+			self.join_button.clicked.connect(self.joinChannel)
+			self.join_button.setToolTip("Join a channel")
+			self.join_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.join_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.join_button.setFlat(True)
+			serverBar.addWidget(self.join_button)
 
-			entry = QPushButton("")
-			entry.setIcon(QIcon(PRIVATE_ICON))
-			entry.clicked.connect(self.changeNick)
-			entry.setToolTip("Change your nickname")
-			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
-			entry.setFlat(True)
-			self.nick_button = self.toolbar.addWidget(entry)
+			self.nick_button = QPushButton("")
+			self.nick_button.setIcon(QIcon(PRIVATE_ICON))
+			self.nick_button.clicked.connect(self.changeNick)
+			self.nick_button.setToolTip("Change your nickname")
+			self.nick_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.nick_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.nick_button.setFlat(True)
+			serverBar.addWidget(self.nick_button)
 
 			if config.COMMANDLINE_NO_SCRIPT==False:
-				entry = QPushButton("")
-				entry.setIcon(QIcon(SCRIPT_ICON))
-				entry.clicked.connect(self.loadScript)
-				entry.setToolTip("Run a script")
-				entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-				entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
-				entry.setFlat(True)
-				self.nick_button = self.toolbar.addWidget(entry)
-
-			self.spacer = QWidget()
-			self.spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-			self.toolbar.addWidget(self.spacer)
-
-			self.serverUptime = QLabel("<b>00:00:00</b>")
-			self.serverUptimeAction = self.toolbar.addWidget(self.serverUptime)
+				self.script_button = QPushButton("")
+				self.script_button.setIcon(QIcon(SCRIPT_ICON))
+				self.script_button.clicked.connect(self.loadScript)
+				self.script_button.setToolTip("Run a script")
+				self.script_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+				self.script_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+				self.script_button.setFlat(True)
+				serverBar.addWidget(self.script_button)
 
 			if not config.SHOW_CONNECTION_UPTIME: self.serverUptimeAction.setVisible(False)
 
-			self.toolbar.addSeparator()
+			serverBar.addStretch()
+
+			self.serverUptime = QLabel("<b>00:00:00</b>")
+			serverBar.addWidget(self.serverUptime)
+
+			sep1 = QFrame()
+			sep1.setFrameShape(QFrame.VLine)
+			sep1.setFrameShadow(QFrame.Sunken)
+			sep1.setLineWidth(1)
+
+			serverBar.addWidget(sep1)
 
 			entry = QPushButton("")
 			entry.setIcon(QIcon(DISCONNECT_ICON))
@@ -171,20 +175,14 @@ class Window(QMainWindow):
 			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
 			entry.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 			entry.setFlat(True)
-			self.disconnect_button = self.toolbar.addWidget(entry)
+			serverBar.addWidget(entry)
 
 			self.nick_button.setEnabled(False)
 			self.join_button.setEnabled(False)
 			self.info_button.setEnabled(False)
+			if config.COMMANDLINE_NO_SCRIPT==False: self.script_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
-
-			self.toolbar = QToolBar(self)
-			self.addToolBar(Qt.TopToolBarArea,self.toolbar)
-			self.toolbar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
-			self.toolbar.setFloatable(False)
-
-			self.toolbar.setIconSize(QSize(15, 15))
 
 			# Channel name display
 			self.channel_mode_display = QLabel("<b>"+self.name+"</b>")
@@ -389,32 +387,21 @@ class Window(QMainWindow):
 			self.banlist_menu.setMenu(buildBanMenu(self,self.client))
 			self.banlist_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.banlist_menu.setToolTip("Channel Bans")
-			self.banlist_menu.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE - 7,config.SERVER_TOOLBAR_BUTTON_SIZE - 7))
-			self.banlist_menu.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE - 8,config.SERVER_TOOLBAR_ICON_SIZE - 8))
+			self.banlist_menu.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.banlist_menu.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 			self.banlist_menu.setFlat(True)
 
-			self.banlist_action = self.toolbar.addWidget(self.banlist_menu)
-			self.banlist_action.setVisible(False)
+			self.banlist_menu.hide()
 
-			# Add small space inbetween channel and topic displays
-			spacer = QWidget()
-			spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-			spacer.setFixedWidth(3)
-			self.toolbar.addWidget(spacer)
-			
-			self.toolbar.addWidget(self.channel_mode_display)
-
-			spacer1 = QWidget()
-			spacer1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-			spacer1.setFixedWidth(5)
-			self.toolbar.addWidget(spacer1)
-
-			self.toolbar.addWidget(self.topic)
-
+			topicLayout = QHBoxLayout()
+			topicLayout.addWidget(self.banlist_menu)
+			topicLayout.addWidget(self.channel_mode_display)
+			topicLayout.addWidget(self.topic)
 
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+			finalLayout.addLayout(topicLayout)
 			finalLayout.addWidget(self.horizontalSplitter)
 			finalLayout.addLayout(inputLayout)
 
@@ -423,6 +410,7 @@ class Window(QMainWindow):
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+			finalLayout.addLayout(serverBar)
 			finalLayout.addWidget(self.chat)
 			finalLayout.addLayout(inputLayout)
 
@@ -561,12 +549,12 @@ class Window(QMainWindow):
 		self.banlist_menu.setMenu(buildBanMenu(self,self.client))
 
 		if len(self.banlist)>0:
-			self.banlist_action.setVisible(True)
+			self.banlist_menu.show()
 		else:
-			self.banlist_action.setVisible(False)
+			self.banlist_menu.hide()
 
 	def refreshInfoMenu(self):
-		self.infoMenuButton.setMenu(buildServerSettingsMenu(self,self.client))
+		self.info_button.setMenu(buildServerSettingsMenu(self,self.client))
 
 	def toggleNickDisplay(self):
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
