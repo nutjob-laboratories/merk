@@ -312,7 +312,7 @@ class Dialog(QDialog):
 		font_name = pfs[0]
 		font_size = pfs[1]
 
-		self.fontLabel = QLabel(f"Font: <b>{font_name}, {font_size} pt</b>",self)
+		self.fontLabel = QLabel(f"<b>{font_name}, {font_size} pt</b>",self)
 
 		fontButton = QPushButton("")
 		fontButton.clicked.connect(self.menuFont)
@@ -329,7 +329,7 @@ class Dialog(QDialog):
 		fontLayout.addWidget(self.fontLabel)
 		fontLayout.addStretch()
 
-		self.sizeLabel = QLabel(f"Initial window size: <b>{str(config.DEFAULT_SUBWINDOW_WIDTH)}x{str(config.DEFAULT_SUBWINDOW_HEIGHT)} px</b>",self)
+		self.sizeLabel = QLabel(f"<b>{str(config.DEFAULT_SUBWINDOW_WIDTH)}x{str(config.DEFAULT_SUBWINDOW_HEIGHT)} px</b>",self)
 
 		sizeButton = QPushButton("")
 		sizeButton.clicked.connect(self.setWinsize)
@@ -356,10 +356,13 @@ class Dialog(QDialog):
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
-		applicationLayout.addLayout(fontLayout)
-		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
+		applicationLayout.addLayout(fontLayout)
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
+		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -503,7 +506,7 @@ class Dialog(QDialog):
 		if config.ENABLE_SPELLCHECK: self.enableSpellcheck.setChecked(True)
 		self.enableSpellcheck.stateChanged.connect(self.changedSetting)
 
-		self.historyLabel = QLabel(f"Command history size: <b>{str(config.COMMAND_HISTORY_LENGTH)} lines</b>",self)
+		self.historyLabel = QLabel(f"<b>{str(config.COMMAND_HISTORY_LENGTH)} lines</b>",self)
 
 		historyButton = QPushButton("")
 		historyButton.clicked.connect(self.setHistorySize)
@@ -549,11 +552,12 @@ class Dialog(QDialog):
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
-		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(self.enableEmojis)
 		inputLayout.addWidget(self.enableSpellcheck)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		inputLayout.addLayout(lanSubLayout)
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
+		inputLayout.addLayout(historyLayout)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -647,7 +651,7 @@ class Dialog(QDialog):
 		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
 		self.markLog.stateChanged.connect(self.changedSetting)
 
-		self.logLabel = QLabel(f"Log load size: <b>{str(config.MAXIMUM_LOADED_LOG_SIZE)} lines</b>",self)
+		self.logLabel = QLabel(f"<b>{str(config.MAXIMUM_LOADED_LOG_SIZE)} lines</b>",self)
 
 		logsizeButton = QPushButton("")
 		logsizeButton.clicked.connect(self.setLogSize)
@@ -671,6 +675,7 @@ class Dialog(QDialog):
 		logLayout.addWidget(self.savePrivLogs)
 		logLayout.addWidget(self.loadPrivLogs)
 		logLayout.addWidget(self.markLog)
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
 		logLayout.addLayout(logsizeLayout)
 		logLayout.addStretch()
 
