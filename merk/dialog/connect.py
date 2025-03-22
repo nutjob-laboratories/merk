@@ -221,7 +221,7 @@ class Dialog(QDialog):
 		self.RECONNECT_OPTION = False
 
 		if self.logo:
-			self.setWindowTitle("Connect to IRC")
+			self.setWindowTitle(APPLICATION_NAME+" "+APPLICATION_VERSION)
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
@@ -377,13 +377,6 @@ class Dialog(QDialog):
 
 		buttons.button(QDialogButtonBox.Ok).setText("Connect")
 
-		banner = QLabel()
-		pixmap = QPixmap(MERK_CONNECT_SPLASH_IMAGE)
-		banner.setPixmap(pixmap)
-		banner.setAlignment(Qt.AlignCenter)
-
-		if not self.logo: banner.hide()
-
 		if self.no_commands:
 			self.tabs.removeTab(2)
 
@@ -397,12 +390,10 @@ class Dialog(QDialog):
 				""")
 
 			bannerTabs = QVBoxLayout()
-			bannerTabs.addWidget(banner)
 			bannerTabs.addWidget(discoMessage)
 			bannerTabs.addWidget(self.tabs)
 		else:
 			bannerTabs = QVBoxLayout()
-			bannerTabs.addWidget(banner)
 			bannerTabs.addWidget(self.tabs)
 
 		finalLayout = QVBoxLayout()

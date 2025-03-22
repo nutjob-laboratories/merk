@@ -194,8 +194,6 @@ MERK_ABOUT_LOGO = ":/gui-about.png"
 SCRIPT_ICON = ":/icon-script.png"
 CLOSE_ICON = ":/icon-close.png"
 
-MERK_CONNECT_SPLASH_IMAGE = ":/gui-connect_splash.png"
-
 MAXIMIZE_ICON = ":/icon-maximize.png"
 MINIMIZE_ICON = ":/icon-minimize.png"
 WINDOW_ICON = ":/icon-window.png"
