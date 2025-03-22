@@ -265,6 +265,13 @@ class Merk(QMainWindow):
 
 	def buildSystrayMenu(self):
 
+		if config.SYSTRAY_MENU==False:
+			self.trayMenu.clear()
+			self.tray.setContextMenu(None)
+			return
+
+		self.tray.setContextMenu(self.trayMenu)
+
 		self.trayMenu.clear()
 
 		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,25)

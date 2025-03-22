@@ -169,6 +169,7 @@ class Dialog(QDialog):
 
 	def changedSystrayMin(self,state):
 		if self.showSystray.isChecked():
+			self.showSystrayMenu.setEnabled(True)
 			self.minSystray.setEnabled(True)
 			if self.minSystray.isChecked():
 				self.systrayNotify.setEnabled(True)
@@ -191,6 +192,7 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(False)
 				self.systrayMode.setEnabled(False)
 		else:
+			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
 			self.systrayNotify.setEnabled(False)
 			self.listSystray.setEnabled(False)
@@ -348,9 +350,18 @@ class Dialog(QDialog):
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
-		self.showSystray = QCheckBox("Show system tray icon and menu",self)
+		self.showSystray = QCheckBox("Show system tray icon",self)
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
+
+		self.showSystrayMenu = QCheckBox("Show system tray menu",self)
+		if config.SYSTRAY_MENU: self.showSystrayMenu.setChecked(True)
+		self.showSystrayMenu.stateChanged.connect(self.changedSystrayMin)
+
+		if self.showSystray.isChecked():
+			self.showSystrayMenu.setEnabled(True)
+		else:
+			self.showSystrayMenu.setEnabled(False)
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
@@ -358,6 +369,7 @@ class Dialog(QDialog):
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
+		applicationLayout.addWidget(self.showSystrayMenu)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -871,51 +883,6 @@ class Dialog(QDialog):
 			self.systrayNotice.setEnabled(False)
 			self.systrayMode.setEnabled(False)
 
-		# if self.minSystray.isChecked():
-		# 	if self.systrayNotify.isChecked():
-		# 		self.listSystray.setEnabled(True)
-		# 		self.systrayNotify.setEnabled(True)
-		# 		self.systrayDisconnect.setEnabled(True)
-		# 		self.systrayNickname.setEnabled(True)
-		# 		self.systrayPrivate.setEnabled(True)
-		# 		self.systrayKick.setEnabled(True)
-		# 		self.systrayInvite.setEnabled(True)
-		# 		self.systrayNotice.setEnabled(True)
-		# 		self.systrayMode.setEnabled(True)
-		# 	else:
-		# 		self.listSystray.setEnabled(False)
-		# 		self.systrayDisconnect.setEnabled(False)
-		# 		self.systrayNickname.setEnabled(False)
-		# 		self.systrayPrivate.setEnabled(False)
-		# 		self.systrayKick.setEnabled(False)
-		# 		self.systrayInvite.setEnabled(False)
-		# 		self.systrayNotice.setEnabled(False)
-		# 		self.systrayMode.setEnabled(False)
-		# else:
-		# 	self.listSystray.setEnabled(False)
-		# 	self.systrayNotify.setEnabled(False)
-		# 	self.systrayDisconnect.setEnabled(False)
-		# 	self.systrayNickname.setEnabled(False)
-		# 	self.systrayPrivate.setEnabled(False)
-		# 	self.systrayKick.setEnabled(False)
-		# 	self.systrayInvite.setEnabled(False)
-		# 	self.systrayNotice.setEnabled(False)
-		# 	self.systrayMode.setEnabled(False)
-
-		# if self.showSystray.isChecked():
-		# 	pass
-		# else:
-		# 	self.listSystray.setEnabled(False)
-		# 	self.minSystray.setEnabled(False)
-		# 	self.systrayNotify.setEnabled(False)
-		# 	self.systrayDisconnect.setEnabled(False)
-		# 	self.systrayNickname.setEnabled(False)
-		# 	self.systrayPrivate.setEnabled(False)
-		# 	self.systrayKick.setEnabled(False)
-		# 	self.systrayInvite.setEnabled(False)
-		# 	self.systrayNotice.setEnabled(False)
-		# 	self.systrayMode.setEnabled(False)
-
 		# Syntax
 
 		self.syntaxPage = QWidget()
@@ -1053,6 +1020,7 @@ class Dialog(QDialog):
 		config.FLASH_SYSTRAY_NOTICE = self.systrayNotice.isChecked()
 		config.FLASH_SYSTRAY_MODE = self.systrayMode.isChecked()
 		config.FLASH_SYSTRAY_LIST = self.listSystray.isChecked()
+		config.SYSTRAY_MENU = self.showSystrayMenu.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
@@ -1080,9 +1048,12 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON:
 			self.parent.tray.setVisible(True)
 			self.parent.tray.show()
+			self.parent.buildSystrayMenu()
 		else:
 			self.parent.tray.setVisible(False)
 			self.parent.tray.hide()
+
+
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
