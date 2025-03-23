@@ -292,7 +292,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("MERK")
+		entry.setText("Miscellaneous")
 		entry.widget = self.applicationPage
 		entry.setIcon(QIcon(APPLICATION_ICON))
 		self.selector.addItem(entry)
