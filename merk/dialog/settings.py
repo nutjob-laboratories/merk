@@ -535,7 +535,6 @@ class Dialog(QDialog):
 		self.germanSC = QRadioButton("Deutsche")
 		self.germanSC.toggled.connect(self.selGerman)
 
-
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="en": self.englishSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="fr": self.frenchSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="es": self.spanishSC.setChecked(True)
@@ -550,6 +549,17 @@ class Dialog(QDialog):
 		lanSubLayout.addLayout(langLayout)
 		lanSubLayout.addStretch()
 
+		self.historyDescription = QLabel("""
+			<small>
+			Any text typed into the text input box is saved to the command history.
+			Use the up and down arrow keys to move backwards and forwards in the 
+			command history to issue any previously issued commands.
+			</small>
+			<br>
+			""")
+		self.historyDescription.setWordWrap(True)
+		self.historyDescription.setAlignment(Qt.AlignJustify)
+
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
 		inputLayout.addWidget(self.enableEmojis)
@@ -557,6 +567,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		inputLayout.addLayout(lanSubLayout)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
+		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyLayout)
 		inputLayout.addStretch()
 
