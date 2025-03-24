@@ -502,10 +502,6 @@ class Dialog(QDialog):
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
 		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
-		self.enableSpellcheck = QCheckBox("Enable spellcheck",self)
-		if config.ENABLE_SPELLCHECK: self.enableSpellcheck.setChecked(True)
-		self.enableSpellcheck.stateChanged.connect(self.changedSetting)
-
 		self.historyLabel = QLabel(f"<b>{str(config.COMMAND_HISTORY_LENGTH)} lines</b>",self)
 
 		historyButton = QPushButton("")
@@ -522,6 +518,44 @@ class Dialog(QDialog):
 		historyLayout.addWidget(historyButton)
 		historyLayout.addWidget(self.historyLabel)
 		historyLayout.addStretch()
+
+		self.historyDescription = QLabel("""
+			<small>
+			Any text typed into the text input box is saved to the command history.
+			Use the up and down arrow keys to move backwards and forwards in the 
+			command history to issue any previously issued commands.
+			</small>
+			<br>
+			""")
+		self.historyDescription.setWordWrap(True)
+		self.historyDescription.setAlignment(Qt.AlignJustify)
+
+		inputLayout = QVBoxLayout()
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
+		inputLayout.addWidget(self.enableEmojis)
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
+		inputLayout.addWidget(self.historyDescription)
+		inputLayout.addLayout(historyLayout)
+		inputLayout.addStretch()
+
+		self.inputPage.setLayout(inputLayout)
+
+		# Spellcheck page
+
+		self.spellcheckPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Spellcheck")
+		entry.widget = self.spellcheckPage
+		entry.setIcon(QIcon(SPELLCHECK_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.spellcheckPage)
+
+		self.enableSpellcheck = QCheckBox("Enable spellcheck",self)
+		if config.ENABLE_SPELLCHECK: self.enableSpellcheck.setChecked(True)
+		self.enableSpellcheck.stateChanged.connect(self.changedSetting)
 
 		self.englishSC = QRadioButton("English")
 		self.englishSC.toggled.connect(self.selEnglish)
@@ -549,29 +583,26 @@ class Dialog(QDialog):
 		lanSubLayout.addLayout(langLayout)
 		lanSubLayout.addStretch()
 
-		self.historyDescription = QLabel("""
+		self.spellcheckDescription = QLabel("""
 			<small>
-			Any text typed into the text input box is saved to the command history.
-			Use the up and down arrow keys to move backwards and forwards in the 
-			command history to issue any previously issued commands.
+			Misspelled words in the input box are marked with a squiggley red
+			underline. Right click on a marked word to get suggestions of proper
+			spelling to replace the word with or to add that word to the built-in dictionary.
 			</small>
 			<br>
 			""")
-		self.historyDescription.setWordWrap(True)
-		self.historyDescription.setAlignment(Qt.AlignJustify)
+		self.spellcheckDescription.setWordWrap(True)
+		self.spellcheckDescription.setAlignment(Qt.AlignJustify)
 
-		inputLayout = QVBoxLayout()
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
-		inputLayout.addWidget(self.enableEmojis)
-		inputLayout.addWidget(self.enableSpellcheck)
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
-		inputLayout.addLayout(lanSubLayout)
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
-		inputLayout.addWidget(self.historyDescription)
-		inputLayout.addLayout(historyLayout)
-		inputLayout.addStretch()
+		spellcheckLayout = QVBoxLayout()
+		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
+		spellcheckLayout.addWidget(self.spellcheckDescription)
+		spellcheckLayout.addWidget(self.enableSpellcheck)
+		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
+		spellcheckLayout.addLayout(lanSubLayout)
+		spellcheckLayout.addStretch()
 
-		self.inputPage.setLayout(inputLayout)
+		self.spellcheckPage.setLayout(spellcheckLayout)
 
 		# Autocomplete page
 
