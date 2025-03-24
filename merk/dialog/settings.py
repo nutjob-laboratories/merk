@@ -585,9 +585,9 @@ class Dialog(QDialog):
 
 		self.spellcheckDescription = QLabel("""
 			<small>
-			Misspelled words in the input box are marked with a squiggley red
-			underline. Right click on a marked word to get suggestions of proper
-			spelling to replace the word with or to add that word to the built-in dictionary.
+			Misspelled words in the input box are marked with a red
+			underline. Right click on a marked word to get suggestions to replace
+			the word with or to add that word to the built-in dictionary.
 			</small>
 			<br>
 			""")
@@ -699,6 +699,17 @@ class Dialog(QDialog):
 		logsizeButton.clicked.connect(self.setLogSize)
 		logsizeButton.setAutoDefault(False)
 
+		self.logDescription = QLabel("""
+			<small>
+			Full logs are not loaded for display. The below settings
+			controls how much of the log is loaded into the application
+			for display.
+			</small>
+			<br>
+			""")
+		self.logDescription.setWordWrap(True)
+		self.logDescription.setAlignment(Qt.AlignJustify)
+
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
 		logsizeButton.setFixedSize(fheight +10,fheight + 10)
@@ -718,6 +729,7 @@ class Dialog(QDialog):
 		logLayout.addWidget(self.loadPrivLogs)
 		logLayout.addWidget(self.markLog)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
+		logLayout.addWidget(self.logDescription)
 		logLayout.addLayout(logsizeLayout)
 		logLayout.addStretch()
 
@@ -954,12 +966,24 @@ class Dialog(QDialog):
 		self.syntaxfore.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxback.syntaxChanged.connect(self.syntaxChanged)
 
+		self.syntaxDescription = QLabel("""
+			<small>
+			Syntax highlighting is applied to both the command section of the
+			connection dialog, and the built-in script editor. Commands,
+			channels, and comments appear in the colors and styles set below.
+			</small>
+			<br>
+			""")
+		self.syntaxDescription.setWordWrap(True)
+		self.syntaxDescription.setAlignment(Qt.AlignJustify)
+
 		tbLay = QHBoxLayout()
 		tbLay.addWidget(self.syntaxfore)
 		tbLay.addWidget(self.syntaxback)
 
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
+		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
 		syntaxLayout.addWidget(self.syntaxcomment)
 		syntaxLayout.addWidget(self.syntaxcommand)
