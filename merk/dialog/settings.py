@@ -420,7 +420,7 @@ class Dialog(QDialog):
 		self.quitpartDescription = QLabel("""
 			<small>
 			This is the default message used for channel parts or
-			server quits if a message is not provided
+			server quits if a message is not provided.
 			</small>
 			<br>
 			""")
