@@ -1662,8 +1662,9 @@ class SpellTextEdit(QPlainTextEdit):
 		sb.setValue(sb.minimum())
 		self.ensureCursorVisible()
 
-		if event.key() == Qt.Key_Return:
+		if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
 			self.returnPressed.emit()
+			return
 		elif event.key() == Qt.Key_Up:
 			self.keyUp.emit()
 		elif event.key() == Qt.Key_Down:
