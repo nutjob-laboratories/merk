@@ -417,6 +417,16 @@ class Dialog(QDialog):
 		cgbLayout.addWidget(self.partMsg)
 		cgbLayout.addStretch()
 
+		self.quitpartDescription = QLabel("""
+			<small>
+			This is the default message used for channel parts or
+			server quits if a message is not provided
+			</small>
+			<br>
+			""")
+		self.quitpartDescription.setWordWrap(True)
+		self.quitpartDescription.setAlignment(Qt.AlignJustify)
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
@@ -424,6 +434,7 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
+		connectionsLayout.addWidget(self.quitpartDescription)
 		connectionsLayout.addLayout(cgbLayout)
 		connectionsLayout.addStretch()
 
@@ -596,8 +607,8 @@ class Dialog(QDialog):
 
 		spellcheckLayout = QVBoxLayout()
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
-		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addWidget(self.enableSpellcheck)
+		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
 		spellcheckLayout.addStretch()
