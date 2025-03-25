@@ -92,6 +92,12 @@ class Window(QMainWindow):
 		self.editor.undoAvailable.connect(self.hasUndo)
 		self.editor.copyAvailable.connect(self.hasCopy)
 
+		self.status = self.statusBar()
+		self.status.setStyleSheet("QStatusBar::item { border: none; }")
+
+		self.status_file = QLabel("<small><b>Untitled script</b></small>")
+		self.status.addPermanentWidget(self.status_file,0)
+
 		self.updateApplicationTitle()
 
 		if self.filename:
@@ -473,6 +479,7 @@ class Window(QMainWindow):
 				self.setWindowTitle("Connection script for "+self.current_user_script)
 			self.name = f"{self.current_user_script}"
 			self.parent.buildWindowsMenu()
+			self.status_file.setText(f"<small><b>Connection script for {self.current_user_script}</b></small>")
 			return
 
 		if self.filename!=None:
@@ -482,9 +489,12 @@ class Window(QMainWindow):
 			else:
 				self.setWindowTitle(base)
 			self.name = f"{base}"
+			self.status_file.setText(f"<small><b>{self.filename}</b></small>")
 		else:
 			self.setWindowTitle(f"Unnamed {APPLICATION_NAME} script")
 			self.name = "Untitled script"
+			self.status_file.setText(f"<small><b>{self.name}</b></small>")
+		
 
 		self.parent.buildWindowsMenu()
 
