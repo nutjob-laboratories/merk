@@ -514,30 +514,30 @@ class Window(QMainWindow):
 		if self.editing_user_script:
 			if self.changed:
 				self.setWindowTitle("Connection script for "+self.current_user_script+"*")
+				self.status_file.setText(f"<small><b>Connection script for {self.current_user_script} - Changed</b></small>")
 			else:
 				self.setWindowTitle("Connection script for "+self.current_user_script)
+				self.status_file.setText(f"<small><b>Connection script for {self.current_user_script}</b></small>")
 			self.name = f"{self.current_user_script}"
 			self.parent.buildWindowsMenu()
-			self.status_file.setText(f"<small><b>Connection script for {self.current_user_script}</b></small>")
+			
 			return
 
 		if self.filename!=None:
 			base = os.path.basename(self.filename)
 			if self.changed:
 				self.setWindowTitle(base+"*")
+				self.status_file.setText(f"<small><b>{self.filename} - Changed</b></small>")
 			else:
 				self.setWindowTitle(base)
+				self.status_file.setText(f"<small><b>{self.filename}</b></small>")
 			self.name = f"{base}"
-			self.status_file.setText(f"<small><b>{self.filename}</b></small>")
 		else:
 			self.setWindowTitle(f"Unnamed {APPLICATION_NAME} script")
 			self.name = "Untitled script"
 			self.status_file.setText(f"<small><b>{self.name}</b></small>")
 		
-
 		self.parent.buildWindowsMenu()
-
-
 
 	def doFileSaveAs(self):
 		options = QFileDialog.Options()
