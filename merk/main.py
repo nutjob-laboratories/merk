@@ -330,7 +330,7 @@ class Merk(QMainWindow):
 					sm.addSeparator()
 
 					entry = QAction(QIcon(CONSOLE_ICON),name,self)
-					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
+					entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
 					sm.addAction(entry)
 
 					for w in wl:
@@ -344,7 +344,7 @@ class Merk(QMainWindow):
 							icon = PRIVATE_ICON
 
 						entry = QAction(QIcon(icon),c.name,self)
-						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+						entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
 						sm.addAction(entry)
 
 		self.trayMenu.addSeparator()
@@ -393,6 +393,11 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
 		entry.triggered.connect(self.close)
 		self.trayMenu.addAction(entry)
+
+	def systrayShowWindow(self,window):
+		self.toggleHide()
+		self.showNormal()
+		self.showSubWindow(window)
 
 	def menuMax(self):
 
