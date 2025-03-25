@@ -275,9 +275,37 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertFocus)
 		self.commandMenu.addAction(entry)
 
+		self.runMenu = self.menubar.addMenu("Run")
+		entry = QAction("No connected servers",self)
+		entry.setEnabled(False)
+		self.runMenu.addAction(entry)
+
+		self.buildRunMenu()
+
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def executeScript(self,window):
+		script = self.editor.toPlainText()
+		window.executeScript(script)
+
+	def buildRunMenu(self):
+		self.runMenu.clear()
+
+		servers = self.parent.getAllServerWindows()
+		if len(servers)>0:
+			for window in servers:
+				c = window.widget()
+				entry = QAction("Run script on "+c.name,self)
+				entry.triggered.connect(lambda state,u=c: self.executeScript(u))
+				self.runMenu.addAction(entry)
+			return
+
+		# If there's no connected servers...
+		entry = QAction("No connected servers",self)
+		entry.setEnabled(False)
+		self.runMenu.addAction(entry)
 
 	def doNewScript(self):
 

@@ -874,6 +874,9 @@ class Window(QMainWindow):
 			sfile.close()
 			commands.executeScript(self.parent,self,script)
 
+	def executeScript(self,script):
+		commands.executeScript(self.parent,self,script)
+
 
 	def pressedStyleButton(self):
 		x = StylerDialog(self.client,self,self.parent)

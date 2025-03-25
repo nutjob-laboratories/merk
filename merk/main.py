@@ -435,6 +435,12 @@ class Merk(QMainWindow):
 
 		if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications("Connection to "+client.hostname+" lost")
 
+		# Update all editor run menus
+		e = self.getAllEditorWindows()
+		for w in e:
+			c = w.widget()
+			c.buildRunMenu()
+
 	def signedOn(self,client):
 
 		w = self.getServerWindow(client)
@@ -467,6 +473,12 @@ class Merk(QMainWindow):
 			for e in self.join_channels:
 				client.join(e[0],e[1])
 			self.join_channels = []
+
+		# Update all editor run menus
+		e = self.getAllEditorWindows()
+		for w in e:
+			c = w.widget()
+			c.buildRunMenu()
 
 	def receivedMOTD(self,client,motd):
 
