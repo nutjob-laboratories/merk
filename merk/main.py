@@ -277,10 +277,6 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,25)
 		self.trayMenu.addAction(entry)
 
-		# self.trayConnect = QAction(QIcon(CONNECT_ICON),"Connect",self)
-		# self.trayConnect.triggered.connect(self.connectToIrc)
-		# self.trayMenu.addAction(self.trayConnect)
-
 		windows = self.getAllServerWindows()
 		clean = []
 		for w in windows:
@@ -288,17 +284,6 @@ class Merk(QMainWindow):
 			if c.client.client_id in self.quitting: continue
 			clean.append(w)
 		windows = clean
-
-		# if self.is_hidden:
-		# 	self.trayConnect.setEnabled(False)
-
-		# if len(windows)>1:
-		# 	self.trayDisconnectAll = QAction(QIcon(DISCONNECT_ICON),"Disconnect all",self)
-		# 	self.trayDisconnectAll.triggered.connect(self.disconnectAll)
-		# 	self.trayMenu.addAction(self.trayDisconnectAll)
-
-		# self.trayMenu.addSeparator()
-
 
 		listOfConnections = {}
 		for i in irc.CONNECTIONS:
@@ -323,15 +308,11 @@ class Merk(QMainWindow):
 				if len(total)>0:
 					sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
 
-					entry = QAction(QIcon(CLOSE_ICON),"Disconnect "+name,self)
-					entry.triggered.connect(lambda state,u=c: u.disconnect())
-					sm.addAction(entry)
-
-					sm.addSeparator()
-
 					entry = QAction(QIcon(CONSOLE_ICON),name,self)
 					entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
 					sm.addAction(entry)
+
+					if len(wl)>0: sm.addSeparator()
 
 					for w in wl:
 						c = w.widget()

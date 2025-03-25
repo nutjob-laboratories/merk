@@ -301,14 +301,14 @@ class Window(QMainWindow):
 		if len(servers)>0:
 			for window in servers:
 				c = window.widget()
-				entry = QAction(QIcon(RUN_ICON),"Execute on "+c.name,self)
+				entry = QAction(QIcon(RUN_ICON),"Run script on "+c.name,self)
 				entry.triggered.connect(lambda state,u=c: self.executeScript(u))
 				self.runMenu.addAction(entry)
 
 			if len(servers)>1:
 				self.runMenu.addSeparator()
 
-				entry = QAction(QIcon(RUN_ICON),"Execute on all servers",self)
+				entry = QAction(QIcon(RUN_ICON),"Run script on all servers",self)
 				entry.triggered.connect(self.executeScriptOnAll)
 				self.runMenu.addAction(entry)
 			return
