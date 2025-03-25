@@ -419,7 +419,11 @@ class Merk(QMainWindow):
 
 		self.buildMainMenu()
 
-		if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications("Connection to "+client.hostname+" lost")
+		# If the flash doesn't work, just ignore the error
+		try:
+			if config.FLASH_SYSTRAY_DISCONNECT: self.show_notifications("Connection to "+client.hostname+" lost")
+		except:
+			pass
 
 		# Update all editor run menus
 		e = self.getAllEditorWindows()
