@@ -1165,21 +1165,24 @@ class Window(QMainWindow):
 
 	def writeText(self,message,write_to_log=True):
 
-		if type(message)==type(str()):
-			self.chat.append(message)
-		else:
+		try:
+			if type(message)==type(str()):
+				self.chat.append(message)
+			else:
 
-			t = render.render_message(message,self.style)
+				t = render.render_message(message,self.style)
 
-			# Save entered text to the current log
-			self.log.append(message)
+				# Save entered text to the current log
+				self.log.append(message)
 
-			# Save entered text to the new log for saving
-			if write_to_log: self.new_log.append(message)
+				# Save entered text to the new log for saving
+				if write_to_log: self.new_log.append(message)
 
-			self.chat.append(t)
+				self.chat.append(t)
 
-		self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)
+			self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)
+		except:
+			pass
 
 	def closeEvent(self, event):
 

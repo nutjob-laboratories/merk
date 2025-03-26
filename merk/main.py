@@ -154,13 +154,14 @@ class Merk(QMainWindow):
 		if config.COMMANDLINE_NO_SCRIPT==False:
 			# Add /script to autocomplete
 			commands.AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"script"] = config.ISSUE_COMMAND_SYMBOL+"script "
+			commands.AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"edit"] = config.ISSUE_COMMAND_SYMBOL+"edit "
 
 			# Add the /script command to the /help display
 			entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script [FILENAME]</b>", "Executes a list of commands in a file" ]
 			commands.COMMAND_HELP_INFORMATION.append(entry)
 
-			# entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script edit [FILENAME]</b>", "Opens a script in the editor" ]
-			# commands.COMMAND_HELP_INFORMATION.append(entry)
+			entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit FILENAME</b>", "Opens a script in the editor" ]
+			commands.COMMAND_HELP_INFORMATION.append(entry)
 
 			# Rebuild the command help, with the "/script" command added
 			hdisplay = []

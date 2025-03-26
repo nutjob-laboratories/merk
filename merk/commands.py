@@ -88,7 +88,6 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"clear": config.ISSUE_COMMAND_SYMBOL+"clear",
 		config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
 		config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
-		config.ISSUE_COMMAND_SYMBOL+"edit": config.ISSUE_COMMAND_SYMBOL+"edit ",
 		config.ISSUE_COMMAND_SYMBOL+"connect": config.ISSUE_COMMAND_SYMBOL+"connect ",
 		config.ISSUE_COMMAND_SYMBOL+"connectssl": config.ISSUE_COMMAND_SYMBOL+"connectssl ",
 	}
@@ -116,10 +115,8 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"raw TEXT...</b>", "Sends unprocessed data to the server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"time</b>", "Requests server time" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"version [SERVER]</b>", "Requests server version" ],
-
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL" ],
-
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print TEXT...</b>", "Prints text to the current window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
@@ -130,7 +127,6 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
-	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit FILENAME</b>", "Opens a script in the editor" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -455,7 +451,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			filename = tokens.pop(0)
 
 			filename = find_script(filename)
-			if filename:
+			if filename!=None:
 				gui.newEditorWindowFile(filename)
 
 			else:
@@ -830,35 +826,6 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
 				window.writeText(t)
 			return True
-
-
-		# if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)==3:
-
-		# 	if config.COMMANDLINE_NO_SCRIPT==True:
-		# 		t = Message(ERROR_MESSAGE,'',"The "+config.ISSUE_COMMAND_SYMBOL+"script command has been disabled.")
-		# 		window.writeText(t)
-		# 		return True
-
-		# 	tokens.pop(0)
-		# 	command = tokens.pop(0)
-		# 	if command.lower() == "edit":
-		# 		pass
-		# 	else:
-		# 		t = Message(ERROR_MESSAGE,'',"Unrecognized argument: \""+command+"\"")
-		# 		window.writeText(t)
-		# 		return True
-
-		# 	filename = tokens.pop(0)
-
-		# 	filename = find_script(filename)
-		# 	if filename:
-		# 		gui.newEditorWindowFile(filename)
-
-		# 	else:
-		# 		t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
-		# 		window.writeText(t)
-		# 	return True
-
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
 
