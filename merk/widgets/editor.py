@@ -125,6 +125,21 @@ class Window(QMainWindow):
 		entry.setShortcut("Ctrl+O")
 		self.fileMenu.addAction(entry)
 
+		entry = QAction(QIcon(CONNECT_ICON),"New connection script",self)
+		entry.triggered.connect(self.doNewScript)
+		self.fileMenu.addAction(entry)
+
+		if len(user.COMMANDS)>0:
+
+			self.cscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open connection script")
+
+			for host in user.COMMANDS:
+				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
+				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
+				self.cscript_menu.addAction(entry)
+
+		self.fileMenu.addSeparator()
+
 		self.menuSave = QAction(QIcon(SAVEFILE_ICON),"Save",self)
 		self.menuSave.triggered.connect(self.doFileSave)
 		if self.filename: self.menuSave.setShortcut("Ctrl+S")
@@ -137,23 +152,8 @@ class Window(QMainWindow):
 		self.menuSaveAs.triggered.connect(self.doFileSaveAs)
 		if not self.filename: self.menuSaveAs.setShortcut("Ctrl+S")
 		self.fileMenu.addAction(self.menuSaveAs)
-
+		
 		self.fileMenu.addSeparator()
-
-		entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
-		entry.triggered.connect(self.doNewScript)
-		self.fileMenu.addAction(entry)
-
-		if len(user.COMMANDS)>0:
-
-			self.cscript_menu = self.fileMenu.addMenu(QIcon(CONNECT_ICON),"Open connection script")
-
-			for host in user.COMMANDS:
-				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
-				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
-				self.cscript_menu.addAction(entry)
-
-			self.fileMenu.addSeparator()
 
 
 		entry = QAction(QIcon(CLOSE_ICON),"Close",self)
