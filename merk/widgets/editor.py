@@ -307,7 +307,14 @@ class Window(QMainWindow):
 					network = c.client.network
 				else:
 					network = "Unknown network"
-				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run script","<b>Server:</b> "+c.name+"<br><b>Network:</b> "+network+"<br><b>Nickname:</b> "+c.client.nickname,25) )
+				if hasattr(c.client,"server"):
+					if hasattr(c.client,"port"):
+						cname = f"{c.client.server}:{c.client.port}"
+					else:
+						cname = f"{c.client.server}"
+				else:
+					cname = c.name
+				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+cname,"<b>Server:</b> "+c.name+"<br><b>Network:</b> "+network+"<br><b>Nickname:</b> "+c.client.nickname,25) )
 				runmenuAction = QWidgetAction(self)
 				runmenuAction.setDefaultWidget(runmenuLabel)
 				runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
