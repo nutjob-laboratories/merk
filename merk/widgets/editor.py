@@ -318,7 +318,7 @@ class Window(QMainWindow):
 					sec = "Yes"
 				else:
 					sec = "No"
-				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+cname,"<b>Server:</b> "+c.name+"<br><b>Network:</b> "+network+"<br><b>Nickname:</b> "+c.client.nickname+"<br><b>Encrypted:</b> "+sec,25) )
+				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+cname+"&nbsp;","<b>Server:</b> "+c.name+"<br><b>Network:</b> "+network+"<br><b>Nickname:</b> "+c.client.nickname+"<br><b>Encrypted:</b> "+sec,25) )
 				runmenuAction = QWidgetAction(self)
 				runmenuAction.setDefaultWidget(runmenuLabel)
 				runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
