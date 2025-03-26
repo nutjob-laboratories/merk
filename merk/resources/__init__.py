@@ -204,6 +204,7 @@ AUTOCOMPLETE_ICON = ":/icon-autocomplete.png"
 SPLASH_LOGO = ":/gui-splash.png"
 
 RUN_ICON = ":/icon-run.png"
+RUN_MENU_ICON = ":/icon-run_menu.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []

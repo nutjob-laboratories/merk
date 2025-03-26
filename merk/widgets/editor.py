@@ -37,6 +37,7 @@ from .. import syntax
 from .. import commands
 from .. import user
 from .text_separator import textSeparatorLabel,textSeparator
+from .extendedmenuitem import MenuLabel,menuHtml
 
 class Window(QMainWindow):
 
@@ -286,6 +287,7 @@ class Window(QMainWindow):
 	def executeScript(self,window):
 		script = self.editor.toPlainText()
 		window.executeScript(script)
+		self.runMenu.close()
 
 	def executeScriptOnAll(self):
 		servers = self.parent.getAllServerWindows()
@@ -301,9 +303,15 @@ class Window(QMainWindow):
 		if len(servers)>0:
 			for window in servers:
 				c = window.widget()
-				entry = QAction(QIcon(RUN_ICON),"Run script on "+c.name,self)
-				entry.triggered.connect(lambda state,u=c: self.executeScript(u))
-				self.runMenu.addAction(entry)
+				if hasattr(c.client,"network"):
+					network = c.client.network
+				else:
+					network = "Unknown network"
+				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run script","<b>Server:</b> "+c.name+"<br><b>Network:</b> "+network+"<br><b>Nickname:</b> "+c.client.nickname,25) )
+				runmenuAction = QWidgetAction(self)
+				runmenuAction.setDefaultWidget(runmenuLabel)
+				runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
+				self.runMenu.addAction(runmenuAction)
 
 			if len(servers)>1:
 				self.runMenu.addSeparator()
