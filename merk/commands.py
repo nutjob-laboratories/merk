@@ -830,6 +830,36 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
 				window.writeText(t)
 			return True
+
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)==3:
+
+			if config.COMMANDLINE_NO_SCRIPT==True:
+				t = Message(ERROR_MESSAGE,'',"The "+config.ISSUE_COMMAND_SYMBOL+"script command has been disabled.")
+				window.writeText(t)
+				return True
+
+			tokens.pop(0)
+			command = tokens.pop(0)
+			if command.lower() == "edit":
+				pass
+			else:
+				t = Message(ERROR_MESSAGE,'',"Unrecognized argument: \""+command+"\"")
+				window.writeText(t)
+				return True
+
+			filename = tokens.pop(0)
+
+			filename = find_script(filename)
+			if filename:
+				gui.newEditorWindowFile(filename)
+
+			else:
+				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
+				window.writeText(t)
+			return True
+
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
 
 			if config.COMMANDLINE_NO_SCRIPT==True:

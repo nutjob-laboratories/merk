@@ -159,6 +159,9 @@ class Merk(QMainWindow):
 			entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script [FILENAME]</b>", "Executes a list of commands in a file" ]
 			commands.COMMAND_HELP_INFORMATION.append(entry)
 
+			entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script edit [FILENAME]</b>", "Opens a script in the editor" ]
+			commands.COMMAND_HELP_INFORMATION.append(entry)
+
 			# Rebuild the command help, with the "/script" command added
 			hdisplay = []
 			for e in commands.COMMAND_HELP_INFORMATION:
@@ -1447,6 +1450,18 @@ class Merk(QMainWindow):
 	def newEditorWindow(self):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.MDI.addSubWindow(w)
+		self.toolsMenu.close()
+		self.buildWindowsMenu()
+		w.show()
+
+		return w
+
+	def newEditorWindowFile(self,filename):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(filename,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		self.MDI.addSubWindow(w)
