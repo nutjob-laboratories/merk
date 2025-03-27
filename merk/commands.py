@@ -458,8 +458,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
 				window.writeText(t)
 			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)==1:
+			gui.newEditorWindow()
+			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"edit FILENAME")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]")
 			window.writeText(t,False)
 			return True
 
