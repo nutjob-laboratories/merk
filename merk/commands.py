@@ -384,10 +384,6 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	# |-------------|
 	if len(tokens)>=1:
 		# /connectssl HOST
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==1:
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connectssl HOST [PORT] [PASSWORD]")
-			window.writeText(t)
-			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
@@ -409,16 +405,16 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			password = tokens.pop(0)
 			connect_to_irc(gui,window,host,port,password,True,False)
 			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connectssl HOST [PORT] [PASSWORD]")
+			window.writeText(t)
+			return True
 
 	# |----------|
 	# | /connect |
 	# |----------|
 	if len(tokens)>=1:
 		# /connect HOST
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==1:
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
-			window.writeText(t)
-			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
@@ -439,6 +435,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			port = tokens.pop(0)
 			password = tokens.pop(0)
 			connect_to_irc(gui,window,host,port,password,False,False)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
+			window.writeText(t)
 			return True
 
 	# |-------|
