@@ -73,12 +73,14 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"version",
 			cmdsymbol+"connect",
 			cmdsymbol+"connectssl",
+			cmdsymbol+"alias",
 		]
 
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),
 			'merk': format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE),
 			'channel': format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE),
+			'alias': format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE),
 		}
 
 		# Comments
@@ -96,6 +98,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			(r'(\&\w+)', 0, STYLES['channel']),
 			(r'(\!\w+)', 0, STYLES['channel']),
 			(r'(\+\w+)', 0, STYLES['channel']),
+			(r'(\$\w+)', 0, STYLES['alias']),
 		]
 
 		# Build a QRegExp for each pattern
