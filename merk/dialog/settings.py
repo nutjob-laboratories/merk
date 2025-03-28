@@ -145,33 +145,41 @@ class Dialog(QDialog):
 			self.SYNTAX_COMMENT_COLOR = color
 			self.SYNTAX_COMMENT_STYLE = style
 			self.changed.show()
+			self.rerenderEditor = True
 		elif name=="command":
 			color = data[1][0]
 			style = data[1][1]
 			self.SYNTAX_COMMAND_COLOR = color
 			self.SYNTAX_COMMAND_STYLE = style
 			self.changed.show()
+			self.rerenderEditor = True
 		elif name=="channel":
 			color = data[1][0]
 			style = data[1][1]
 			self.SYNTAX_CHANNEL_COLOR = color
 			self.SYNTAX_CHANNEL_STYLE = style
 			self.changed.show()
-		elif name=="fore":
-			color = data[1]
-			self.SYNTAX_FOREGROUND = color
-			self.changed.show()
-		elif name=="back":
-			color = data[1]
-			self.SYNTAX_BACKGROUND = color
-			self.changed.show()
+			self.rerenderEditor = True
 		elif name=="alias":
 			color = data[1][0]
 			style = data[1][1]
 			self.SYNTAX_ALIAS_COLOR = color
 			self.SYNTAX_ALIAS_STYLE = style
 			self.changed.show()
+			self.rerenderEditor = True
+		elif name=="fore":
+			color = data[1]
+			self.SYNTAX_FOREGROUND = color
+			self.changed.show()
+			self.rerenderEditor = True
+		elif name=="back":
+			color = data[1]
+			self.SYNTAX_BACKGROUND = color
+			self.changed.show()
+			self.rerenderEditor = True
+		
 		self.selector.setFocus()
+		
 
 	def changedSystrayMin(self,state):
 		if self.showSystray.isChecked():
@@ -258,6 +266,7 @@ class Dialog(QDialog):
 		self.default_quit_part = config.DEFAULT_QUIT_MESSAGE
 		self.rerenderUsers = False
 		self.rerenderNick = False
+		self.rerenderEditor = False
 
 		self.SYNTAX_COMMENT_COLOR = config.SYNTAX_COMMENT_COLOR
 		self.SYNTAX_COMMENT_STYLE = config.SYNTAX_COMMENT_STYLE
@@ -983,6 +992,7 @@ class Dialog(QDialog):
 		self.syntaxcomment.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxcommand.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxchannel.syntaxChanged.connect(self.syntaxChanged)
+		self.syntaxalias.syntaxChanged.connect(self.syntaxChanged)
 
 		self.syntaxfore.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxback.syntaxChanged.connect(self.syntaxChanged)
@@ -1131,6 +1141,7 @@ class Dialog(QDialog):
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		if self.rerender: self.parent.reRenderAll()
 		if self.rerenderUsers: self.parent.rerenderUserlists()
+		if self.rerenderEditor: self.parent.reRenderAllEditors()
 
 		if self.rerenderNick:
 			self.parent.toggleNickDisplay()

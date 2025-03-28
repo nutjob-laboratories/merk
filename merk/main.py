@@ -1231,6 +1231,16 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"rerenderChatLog"):
 				c.rerenderChatLog()
+			if hasattr(c,"rerenderEditor"):
+				c.rerenderEditor()
+		self.MDI.setActiveSubWindow(w)
+
+	def reRenderAllEditors(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"rerenderEditor"):
+				c.rerenderEditor()
 		self.MDI.setActiveSubWindow(w)
 
 	def reApplyStyle(self):

@@ -284,6 +284,13 @@ class Window(QMainWindow):
 
 		self.editor.setFocus()
 
+	def rerenderEditor(self):
+
+		script = self.editor.toPlainText()
+		self.editor.clear()
+		self.editor.insertPlainText(script)
+		self.editor.moveCursor(QTextCursor.End)
+
 	def executeScript(self,window):
 		script = self.editor.toPlainText()
 		window.executeScript(script)
