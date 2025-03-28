@@ -991,7 +991,7 @@ class Dialog(QDialog):
 			<small>
 			Syntax highlighting is applied to both the command section of the
 			connection dialog, and the built-in script editor. Commands,
-			channels, and comments appear in the colors and styles set below.
+			channels, comments, and aliases appear in the colors and styles set below.
 			</small>
 			<br>
 			""")
@@ -1002,14 +1002,20 @@ class Dialog(QDialog):
 		tbLay.addWidget(self.syntaxfore)
 		tbLay.addWidget(self.syntaxback)
 
+		scLine1 = QHBoxLayout()
+		scLine1.addWidget(self.syntaxcomment)
+		scLine1.addWidget(self.syntaxcommand)
+
+		scLine2 = QHBoxLayout()
+		scLine2.addWidget(self.syntaxchannel)
+		scLine2.addWidget(self.syntaxalias)
+
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
-		syntaxLayout.addWidget(self.syntaxcomment)
-		syntaxLayout.addWidget(self.syntaxcommand)
-		syntaxLayout.addWidget(self.syntaxchannel)
-		syntaxLayout.addWidget(self.syntaxalias)
+		syntaxLayout.addLayout(scLine1)
+		syntaxLayout.addLayout(scLine2)
 		syntaxLayout.addStretch()
 
 		self.syntaxPage.setLayout(syntaxLayout)

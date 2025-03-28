@@ -118,14 +118,19 @@ class SyntaxColor(QWidget):
 		else:
 			self.setItalic.setCheckState(Qt.Unchecked)
 
+		
+
 		controlsLayout = QHBoxLayout()
-		controlsLayout.addWidget(self.descriptionLabel)
 		controlsLayout.addWidget(self.setColor)
 		controlsLayout.addWidget(self.setBold)
 		controlsLayout.addWidget(self.setItalic)
 		controlsLayout.setAlignment(Qt.AlignLeft)
 
-		self.setLayout(controlsLayout)
+		mainLayout = QVBoxLayout()
+		mainLayout.addWidget(self.descriptionLabel)
+		mainLayout.addLayout(controlsLayout)
+
+		self.setLayout(mainLayout)
 
 class SyntaxTextColor(QWidget):
 
