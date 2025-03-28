@@ -107,6 +107,10 @@ FLASH_SYSTRAY_NOTICE = True
 FLASH_SYSTRAY_MODE = True
 FLASH_SYSTRAY_LIST = True
 SYSTRAY_MENU = True
+ALIAS_INTERPOLATION_SYMBOL = '$'
+
+SYNTAX_ALIAS_COLOR = "Red"
+SYNTAX_ALIAS_STYLE = "bold italic"
 
 def save_settings(filename):
 
@@ -179,12 +183,21 @@ def save_settings(filename):
 		"systray_notification_mode": FLASH_SYSTRAY_MODE,
 		"systray_notification_list": FLASH_SYSTRAY_LIST,
 		"show_systray_menu": SYSTRAY_MENU,
+		"alias_interpolation_symbol": ALIAS_INTERPOLATION_SYMBOL,
+		"syntax_alias_color": SYNTAX_ALIAS_COLOR,
+		"syntax_alias_style": SYNTAX_ALIAS_STYLE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "syntax_alias_color" in settings:
+		settings["syntax_alias_color"] = SYNTAX_ALIAS_COLOR
+	if not "syntax_alias_style" in settings:
+		settings["syntax_alias_style"] = SYNTAX_ALIAS_STYLE
+	if not "alias_interpolation_symbol" in settings:
+		settings["alias_interpolation_symbol"] = ALIAS_INTERPOLATION_SYMBOL
 	if not "systray_notification_list" in settings:
 		settings["systray_notification_list"] = FLASH_SYSTRAY_LIST
 	if not "systray_notification_notice" in settings:
@@ -393,6 +406,9 @@ def load_settings(filename):
 	global FLASH_SYSTRAY_MODE
 	global FLASH_SYSTRAY_LIST
 	global SYSTRAY_MENU
+	global ALIAS_INTERPOLATION_SYMBOL
+	global SYNTAX_ALIAS_COLOR
+	global SYNTAX_ALIAS_STYLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -402,6 +418,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SYNTAX_ALIAS_COLOR = settings["syntax_alias_color"]
+		SYNTAX_ALIAS_STYLE = settings["syntax_alias_style"]
+		ALIAS_INTERPOLATION_SYMBOL = settings["alias_interpolation_symbol"]
 		MINIMIZE_TO_SYSTRAY = settings["minimize_to_system_tray"]
 		SHOW_USERLIST_ON_LEFT = settings["show_userlist_on_left"]
 		SHOW_SYSTRAY_ICON = settings["show_systray_icon"]

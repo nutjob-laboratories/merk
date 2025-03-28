@@ -43,6 +43,8 @@ from . import user as USER
 CONFIG_DIRECTORY = None
 SCRIPTS_DIRECTORY = None
 
+ALIAS = {}
+
 def initialize(directory,directory_name):
 	global SCRIPTS_DIRECTORY
 
@@ -90,6 +92,7 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
 		config.ISSUE_COMMAND_SYMBOL+"connect": config.ISSUE_COMMAND_SYMBOL+"connect ",
 		config.ISSUE_COMMAND_SYMBOL+"connectssl": config.ISSUE_COMMAND_SYMBOL+"connectssl ",
+		config.ISSUE_COMMAND_SYMBOL+"alias": config.ISSUE_COMMAND_SYMBOL+"alias ",
 	}
 
 # The command help system
@@ -127,6 +130,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -146,9 +150,11 @@ help_display = HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
 HELP = Message(RAW_SYSTEM_MESSAGE,'',help_display)
 
 def handleChatCommands(gui,window,user_input,is_script):
+	user_input = interpolateAliases(user_input)
 	return executeChatCommands(gui,window,user_input,is_script)
 
 def handleCommonCommands(gui,window,user_input,is_script):
+	user_input = interpolateAliases(user_input)
 	return executeCommonCommands(gui,window,user_input,is_script)
 
 def executeChatCommands(gui,window,user_input,is_script):
@@ -376,8 +382,50 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 	)
 	gui.connectToIrc(i)
 
+def addAlias(name,value):
+	ALIAS[name] = value
+
+def interpolateAliases(text):
+	for a in ALIAS:
+		text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,ALIAS[a])
+	return text
+
 def executeCommonCommands(gui,window,user_input,is_script):
 	tokens = user_input.split()
+
+	# |--------|
+	# | /alias |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=3:
+
+			tokens.pop(0)
+			a = tokens.pop(0)
+
+			# Alias tokens cannot be numbers
+			is_number = True
+			try:
+				a = int(a)
+			except:
+				is_number = False
+			if is_number:
+				t = Message(ERROR_MESSAGE,'',"Alias tokens cannot be numbers")
+				window.writeText(t,False)
+				return True
+
+
+			value = ' '.join(tokens)
+			addAlias(a,value)
+
+			if not is_script:
+				t = Message(SYSTEM_MESSAGE,'',"Alias "+config.ALIAS_INTERPOLATION_SYMBOL+a+" set to \""+value+"\"")
+				window.writeText(t,False)
+			
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...")
+			window.writeText(t,False)
+			return True
 
 	# |-------------|
 	# | /connectssl |
