@@ -165,12 +165,6 @@ class Dialog(QDialog):
 			color = data[1]
 			self.SYNTAX_BACKGROUND = color
 			self.changed.show()
-		elif name=="alias":
-			color = data[1][0]
-			style = data[1][1]
-			self.SYNTAX_ALIAS_COLOR = color
-			self.SYNTAX_ALIAS_STYLE = style
-			self.changed.show()
 		self.selector.setFocus()
 
 	def changedSystrayMin(self,state):
@@ -267,9 +261,6 @@ class Dialog(QDialog):
 		self.SYNTAX_CHANNEL_STYLE = config.SYNTAX_CHANNEL_STYLE
 		self.SYNTAX_BACKGROUND = config.SYNTAX_BACKGROUND
 		self.SYNTAX_FOREGROUND = config.SYNTAX_FOREGROUND
-
-		self.SYNTAX_ALIAS_COLOR = config.SYNTAX_ALIAS_COLOR
-		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -975,7 +966,6 @@ class Dialog(QDialog):
 		self.syntaxcomment = widgets.SyntaxColor('comment', "Comments   ",self.SYNTAX_COMMENT_COLOR,self.SYNTAX_COMMENT_STYLE,self)
 		self.syntaxcommand = widgets.SyntaxColor('command', "Commands   ",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
 		self.syntaxchannel = widgets.SyntaxColor('channel', "Channels   ",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
-		self.syntaxalias = widgets.SyntaxColor('alias', "Aliases    ",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
 
 		self.syntaxfore = widgets.SyntaxTextColor('fore', "Text       ",self.SYNTAX_FOREGROUND,self)
 		self.syntaxback = widgets.SyntaxTextColor('back', "Background ",self.SYNTAX_BACKGROUND,self)
@@ -1009,7 +999,6 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(self.syntaxcomment)
 		syntaxLayout.addWidget(self.syntaxcommand)
 		syntaxLayout.addWidget(self.syntaxchannel)
-		syntaxLayout.addWidget(self.syntaxalias)
 		syntaxLayout.addStretch()
 
 		self.syntaxPage.setLayout(syntaxLayout)
@@ -1111,8 +1100,6 @@ class Dialog(QDialog):
 		config.FLASH_SYSTRAY_MODE = self.systrayMode.isChecked()
 		config.FLASH_SYSTRAY_LIST = self.listSystray.isChecked()
 		config.SYSTRAY_MENU = self.showSystrayMenu.isChecked()
-		config.SYNTAX_ALIAS_COLOR = self.SYNTAX_ALIAS_COLOR
-		config.SYNTAX_ALIAS_STYLE = self.SYNTAX_ALIAS_STYLE
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
