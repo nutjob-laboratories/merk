@@ -1,3 +1,4 @@
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/merk_splash.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -28,6 +29,9 @@
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
     - Multiple channel and server windows can be open for viewing and chatting at once
     - All chat windows are contained in a single "parent" window
+- Very configurable, without having to manually edit a configuration file
+  - Nearly all settings are configurable in the settings dialog
+  - Control application behavior, logging, features, and more!
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
     - Text customization can be saved to importable files
