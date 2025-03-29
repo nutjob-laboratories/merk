@@ -1706,7 +1706,7 @@ class Merk(QMainWindow):
 
 	def menuDocked(self,is_floating):
 		if not is_floating:
-			p = self.toolBarArea(self.menubar)
+			p = self.toolBarArea(self.menuTool)
 			if p == Qt.TopToolBarArea:
 				# it's at the top
 				config.MENUBAR_DOCKED_AT_TOP = True
