@@ -1702,14 +1702,30 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.close)
 		self.mainMenu.addAction(entry)
 
+	def menuDocked(self,is_floating):
+		if not is_floating:
+			p = self.toolBarArea(self.menubar)
+			if p == Qt.TopToolBarArea:
+				# it's at the top
+				config.MENUBAR_DOCKED_AT_TOP = True
+				config.save_settings(config.CONFIG_FILE)
+			else:
+				# it's at the bottom
+				config.MENUBAR_DOCKED_AT_TOP = False
+				config.save_settings(config.CONFIG_FILE)
+
 	def buildMenu(self):
 
 		# Create menu bar
 		#self.menubar = self.menuBar()
 		self.menubar = menubar.generate_menu_toolbar(self)
-		self.addToolBar(Qt.TopToolBarArea,self.menubar)
+		if config.MENUBAR_DOCKED_AT_TOP:
+			self.addToolBar(Qt.TopToolBarArea,self.menubar)
+		else:
+			self.addToolBar(Qt.BottomToolBarArea,self.menubar)
 		self.menubar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
 		self.menubar.setContextMenuPolicy(Qt.PreventContextMenu)
+		self.menubar.topLevelChanged.connect(self.menuDocked)
 
 		# Main menu
 		#self.mainMenu = self.menubar.addMenu("IRC")
