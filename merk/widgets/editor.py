@@ -59,6 +59,79 @@ class Window(QMainWindow):
 		self.changed = False
 		self.updateApplicationTitle()
 
+	def toggleWordwrap(self):
+		if self.wordwrap:
+			self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
+			self.wordwrap = False
+		else:
+			self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+			self.wordwrap = True
+		self.buildEditMenu()
+
+
+	def buildEditMenu(self):
+
+		self.editMenu.clear()
+
+		entry = QAction(QIcon(SELECTALL_ICON),"Select All",self)
+		entry.triggered.connect(self.editor.selectAll)
+		entry.setShortcut("Ctrl+A")
+		self.editMenu.addAction(entry)
+
+		self.editMenu.addSeparator()
+
+		self.menuUndo = QAction(QIcon(UNDO_ICON),"Undo",self)
+		self.menuUndo.triggered.connect(self.editor.undo)
+		self.menuUndo.setShortcut("Ctrl+Z")
+		self.editMenu.addAction(self.menuUndo)
+		self.menuUndo.setEnabled(False)
+
+		self.menuRedo = QAction(QIcon(REDO_ICON),"Redo",self)
+		self.menuRedo.triggered.connect(self.editor.redo)
+		self.menuRedo.setShortcut("Ctrl+Y")
+		self.editMenu.addAction(self.menuRedo)
+		self.menuRedo.setEnabled(False)
+
+		self.editMenu.addSeparator()
+
+		self.menuCut = QAction(QIcon(CUT_ICON),"Cut",self)
+		self.menuCut.triggered.connect(self.editor.cut)
+		self.menuCut.setShortcut("Ctrl+X")
+		self.editMenu.addAction(self.menuCut)
+		self.menuCut.setEnabled(False)
+
+		self.menuCopy = QAction(QIcon(COPY_ICON),"Copy",self)
+		self.menuCopy.triggered.connect(self.editor.copy)
+		self.menuCopy.setShortcut("Ctrl+C")
+		self.editMenu.addAction(self.menuCopy)
+		self.menuCopy.setEnabled(False)
+
+		self.menuPaste = QAction(QIcon(CLIPBOARD_ICON),"Paste",self)
+		self.menuPaste.triggered.connect(self.editor.paste)
+		self.menuPaste.setShortcut("Ctrl+V")
+		self.editMenu.addAction(self.menuPaste)
+
+		self.editMenu.addSeparator()
+
+		self.menuZoomIn = QAction(QIcon(PLUS_ICON),"Zoom in",self)
+		self.menuZoomIn.triggered.connect(self.editor.zoomIn)
+		self.menuZoomIn.setShortcut("Ctrl++")
+		self.editMenu.addAction(self.menuZoomIn)
+
+		self.menuZoomOut = QAction(QIcon(MINUS_ICON),"Zoom out",self)
+		self.menuZoomOut.triggered.connect(self.editor.zoomOut)
+		self.menuZoomOut.setShortcut("Ctrl+-")
+		self.editMenu.addAction(self.menuZoomOut)
+
+		self.editMenu.addSeparator()
+
+		if self.wordwrap:
+			entry = QAction(QIcon(CHECKED_ICON),"Word wrap",self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Word wrap",self)
+		entry.triggered.connect(self.toggleWordwrap)
+		self.editMenu.addAction(entry)
+
 	def __init__(self,filename=None,parent=None):
 		super(Window, self).__init__(parent)
 
@@ -80,6 +153,11 @@ class Window(QMainWindow):
 
 		self.editor = QPlainTextEdit(self)
 		self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
+
+		self.wordwrap = True
+		self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+		# else:
+		# 	self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
 
 		p = self.editor.palette()
 		p.setColor(QPalette.Base, QColor(config.SYNTAX_BACKGROUND))
@@ -160,57 +238,9 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.close)
 		self.fileMenu.addAction(entry)
 
-		editMenu = self.menubar.addMenu("Edit")
+		self.editMenu = self.menubar.addMenu("Edit")
 
-		entry = QAction(QIcon(SELECTALL_ICON),"Select All",self)
-		entry.triggered.connect(self.editor.selectAll)
-		entry.setShortcut("Ctrl+A")
-		editMenu.addAction(entry)
-
-		editMenu.addSeparator()
-
-		self.menuUndo = QAction(QIcon(UNDO_ICON),"Undo",self)
-		self.menuUndo.triggered.connect(self.editor.undo)
-		self.menuUndo.setShortcut("Ctrl+Z")
-		editMenu.addAction(self.menuUndo)
-		self.menuUndo.setEnabled(False)
-
-		self.menuRedo = QAction(QIcon(REDO_ICON),"Redo",self)
-		self.menuRedo.triggered.connect(self.editor.redo)
-		self.menuRedo.setShortcut("Ctrl+Y")
-		editMenu.addAction(self.menuRedo)
-		self.menuRedo.setEnabled(False)
-
-		editMenu.addSeparator()
-
-		self.menuCut = QAction(QIcon(CUT_ICON),"Cut",self)
-		self.menuCut.triggered.connect(self.editor.cut)
-		self.menuCut.setShortcut("Ctrl+X")
-		editMenu.addAction(self.menuCut)
-		self.menuCut.setEnabled(False)
-
-		self.menuCopy = QAction(QIcon(COPY_ICON),"Copy",self)
-		self.menuCopy.triggered.connect(self.editor.copy)
-		self.menuCopy.setShortcut("Ctrl+C")
-		editMenu.addAction(self.menuCopy)
-		self.menuCopy.setEnabled(False)
-
-		self.menuPaste = QAction(QIcon(CLIPBOARD_ICON),"Paste",self)
-		self.menuPaste.triggered.connect(self.editor.paste)
-		self.menuPaste.setShortcut("Ctrl+V")
-		editMenu.addAction(self.menuPaste)
-
-		editMenu.addSeparator()
-
-		self.menuZoomIn = QAction(QIcon(PLUS_ICON),"Zoom in",self)
-		self.menuZoomIn.triggered.connect(self.editor.zoomIn)
-		self.menuZoomIn.setShortcut("Ctrl++")
-		editMenu.addAction(self.menuZoomIn)
-
-		self.menuZoomOut = QAction(QIcon(MINUS_ICON),"Zoom out",self)
-		self.menuZoomOut.triggered.connect(self.editor.zoomOut)
-		self.menuZoomOut.setShortcut("Ctrl+-")
-		editMenu.addAction(self.menuZoomOut)
+		self.buildEditMenu()
 
 		self.commandMenu = self.menubar.addMenu("Insert")
 
