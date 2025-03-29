@@ -850,7 +850,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	# | /script |
 	# |---------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)==2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)>=2:
 
 			if config.COMMANDLINE_NO_SCRIPT==True:
 				t = Message(ERROR_MESSAGE,'',"The "+config.ISSUE_COMMAND_SYMBOL+"script command has been disabled.")
@@ -858,7 +858,8 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				return True
 
 			tokens.pop(0)
-			filename = tokens.pop(0)
+			# Filename might have spaces in it
+			filename = ' '.join(tokens)
 
 			filename = find_script(filename)
 			if filename:

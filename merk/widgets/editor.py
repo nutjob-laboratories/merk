@@ -276,6 +276,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertFocus)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
+		entry.triggered.connect(self.insertScript)
+		self.commandMenu.addAction(entry)
+
 		self.runMenu = self.menubar.addMenu("Run")
 
 		self.buildRunMenu()
@@ -445,6 +449,15 @@ class Window(QMainWindow):
 		if not e: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"nick "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertScript(self):
+		x = SetScript(self)
+		e = x.get_script_information(self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"script "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertNotice(self):

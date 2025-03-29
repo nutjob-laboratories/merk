@@ -995,6 +995,7 @@ class Dialog(QDialog):
 			Syntax highlighting is applied to both the command section of the
 			connection dialog, and the built-in script editor. Commands,
 			channels, comments, and aliases appear in the colors and styles set below.
+			Close and reopen any open editor windows to see changes.
 			</small>
 			<br>
 			""")
