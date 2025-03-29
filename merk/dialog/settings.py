@@ -372,23 +372,11 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
-		self.menubar = QCheckBox("Use main menu toolbar",self)
-		if config.USE_MENUBAR: self.menubar.setChecked(True)
-		self.menubar.stateChanged.connect(self.changedMenubarSetting)
-
-		self.menubarFloat = QCheckBox("Main menu toolbar can \"float\"",self)
-		if config.MENUBAR_CAN_FLOAT: self.menubarFloat.setChecked(True)
-		self.menubarFloat.stateChanged.connect(self.changedSetting)
-
-		if not config.USE_MENUBAR: self.menubarFloat.setEnabled(False)
-
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
-		applicationLayout.addWidget(self.menubar)
-		applicationLayout.addWidget(self.menubarFloat)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
@@ -396,6 +384,51 @@ class Dialog(QDialog):
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
+
+		# Menubar page
+
+		self.menuPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Menubar")
+		entry.widget = self.menuPage
+		entry.setIcon(QIcon(MENU_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.menuPage)
+
+		self.menubarDescription = QLabel("""
+			<small>
+			The menubar is a widget that takes the place of the menus of a
+			"normal" application. The menubar can be moved to either the top
+			of the main window, the bottom of the main window, or can optionally
+			float above all the subwindows. The menubar is turned on by default,
+			but can be turned off if normal application menus are desired.
+			</small>
+			<br>
+			""")
+		self.menubarDescription.setWordWrap(True)
+		self.menubarDescription.setAlignment(Qt.AlignJustify)
+
+		self.menubar = QCheckBox("Use menubar",self)
+		if config.USE_MENUBAR: self.menubar.setChecked(True)
+		self.menubar.stateChanged.connect(self.changedMenubarSetting)
+
+		self.menubarFloat = QCheckBox("Menubar can \"float\"",self)
+		if config.MENUBAR_CAN_FLOAT: self.menubarFloat.setChecked(True)
+		self.menubarFloat.stateChanged.connect(self.changedSetting)
+
+		if not config.USE_MENUBAR: self.menubarFloat.setEnabled(False)
+
+		menuLayout = QVBoxLayout()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
+		menuLayout.addWidget(self.menubarDescription)
+		menuLayout.addWidget(self.menubar)
+		menuLayout.addWidget(self.menubarFloat)
+		menuLayout.addStretch()
+
+		self.menuPage.setLayout(menuLayout)
 
 		# Connection page
 
