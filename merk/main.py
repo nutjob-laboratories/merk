@@ -43,6 +43,8 @@ from . import user
 from .dialog import *
 from . import commands
 
+from .widgets import menubar
+
 class Merk(QMainWindow):
 
 	# ===========
@@ -1653,7 +1655,7 @@ class Merk(QMainWindow):
 
 		self.mainMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server',25,self.connectMainMenu)
+		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server  ',25,self.connectMainMenu)
 		self.mainMenu.addAction(entry)
 
 		windows = self.getAllServerWindows()
@@ -1703,31 +1705,44 @@ class Merk(QMainWindow):
 	def buildMenu(self):
 
 		# Create menu bar
-		self.menubar = self.menuBar()
+		#self.menubar = self.menuBar()
+		self.menubar = menubar.generate_menu_toolbar(self)
+		self.addToolBar(Qt.TopToolBarArea,self.menubar)
+		self.menubar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
 
 		# Main menu
-		self.mainMenu = self.menubar.addMenu("IRC")
+		#self.mainMenu = self.menubar.addMenu("IRC")
+		self.mainMenu = QMenu()
 
 		self.buildMainMenu()
+		menubar.add_toolbar_menu(self.menubar,"IRC",self.mainMenu)
 
 		# Tools menu
-		self.settingsMenu = self.menubar.addMenu("Settings")
+		#self.settingsMenu = self.menubar.addMenu("Settings")
+		self.settingsMenu = QMenu()
 
 		self.buildSettingsMenu()
+		menubar.add_toolbar_menu(self.menubar,"Settings",self.settingsMenu)
 
-		self.toolsMenu = self.menubar.addMenu("Tools")
+		#self.toolsMenu = self.menubar.addMenu("Tools")
+		self.toolsMenu = QMenu()
 
 		self.buildToolsMenu()
+		menubar.add_toolbar_menu(self.menubar,"Tools",self.toolsMenu)
 
 		# Windows menu
-		self.windowsMenu = self.menubar.addMenu("Windows")
+		#self.windowsMenu = self.menubar.addMenu("Windows")
+		self.windowsMenu = QMenu()
 
 		self.buildWindowsMenu()
+		menubar.add_toolbar_menu(self.menubar,"Windows",self.windowsMenu)
 
 		# Help menu
-		self.helpMenu = self.menubar.addMenu("Help")
+		#self.helpMenu = self.menubar.addMenu("Help")
+		self.helpMenu = QMenu()
 
 		self.buildHelpMenu()
+		menubar.add_toolbar_menu(self.menubar,"Help",self.helpMenu)
 
 	def menuEditStyle(self):
 		x = StylerDefaultDialog(self)
