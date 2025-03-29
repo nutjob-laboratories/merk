@@ -221,7 +221,7 @@ class Dialog(QDialog):
 		self.RECONNECT_OPTION = False
 
 		if self.logo:
-			self.setWindowTitle(APPLICATION_NAME+" "+APPLICATION_VERSION)
+			self.setWindowTitle(APPLICATION_NAME+" IRC Client "+APPLICATION_VERSION)
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
