@@ -1,4 +1,5 @@
 
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/merk_splash.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -35,12 +36,16 @@
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
     - Text customization can be saved to importable files
+    - Individual styles are saved and loaded automatically
+      - Channels styles are saved and loaded by network, so they work no matter what server you connect to.
     - Individual channels can have their own color schemes
+    - Easy to use GUI text style editor is built-in
+    - Changes to text style are immediate, without having to restart!
 -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, and German)
 -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
     -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
     -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
--   Command/nickname auto-completion
+-   Command/nickname/channel auto-completion
 -   Full IRC color support
 -   Scripting
     - Includes a built in script editor, with scripting macros and syntax highlighting
