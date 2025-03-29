@@ -961,6 +961,8 @@ class Merk(QMainWindow):
 
 	def receivedError(self,client,message):
 
+		if not client.registered: return
+
 		t = Message(ERROR_MESSAGE,'',message)
 
 		w = self.getServerWindow(client)
