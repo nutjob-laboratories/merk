@@ -241,6 +241,7 @@ class Dialog(QDialog):
 			self.menubarFloat.setEnabled(True)
 		else:
 			self.menubarFloat.setEnabled(False)
+		self.selector.setFocus()
 		self.changed.show()
 
 	def changedEmoji(self,state):
