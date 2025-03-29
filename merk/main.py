@@ -1709,6 +1709,7 @@ class Merk(QMainWindow):
 		self.menubar = menubar.generate_menu_toolbar(self)
 		self.addToolBar(Qt.TopToolBarArea,self.menubar)
 		self.menubar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
+		self.menubar.setContextMenuPolicy(Qt.PreventContextMenu)
 
 		# Main menu
 		#self.mainMenu = self.menubar.addMenu("IRC")
