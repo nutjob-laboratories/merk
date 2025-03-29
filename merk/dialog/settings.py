@@ -236,6 +236,10 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 
+	def changedMenubarSetting(self,state):
+		self.menuFloat = True
+		self.changed.show()
+
 	def changedEmoji(self,state):
 		if self.enableEmojis.isChecked():
 			self.autocompleteEmojis.setEnabled(True)
@@ -272,6 +276,8 @@ class Dialog(QDialog):
 
 		self.SYNTAX_ALIAS_COLOR = config.SYNTAX_ALIAS_COLOR
 		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
+
+		self.menuFloat = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -365,11 +371,16 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
+		self.menubarFloat = QCheckBox("Main menu toolbar can \"float\"",self)
+		if config.MENUBAR_CAN_FLOAT: self.menubarFloat.setChecked(True)
+		self.menubarFloat.stateChanged.connect(self.changedMenubarSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
+		applicationLayout.addWidget(self.menubarFloat)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
@@ -1123,6 +1134,7 @@ class Dialog(QDialog):
 		config.SYSTRAY_MENU = self.showSystrayMenu.isChecked()
 		config.SYNTAX_ALIAS_COLOR = self.SYNTAX_ALIAS_COLOR
 		config.SYNTAX_ALIAS_STYLE = self.SYNTAX_ALIAS_STYLE
+		config.MENUBAR_CAN_FLOAT = self.menubarFloat.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
@@ -1155,7 +1167,7 @@ class Dialog(QDialog):
 			self.parent.tray.setVisible(False)
 			self.parent.tray.hide()
 
-
+		if self.menuFloat: self.parent.buildMenu()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

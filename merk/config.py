@@ -110,8 +110,8 @@ SYSTRAY_MENU = True
 ALIAS_INTERPOLATION_SYMBOL = '$'
 SYNTAX_ALIAS_COLOR = "Red"
 SYNTAX_ALIAS_STYLE = "bold italic"
-
 MENUBAR_DOCKED_AT_TOP = True
+MENUBAR_CAN_FLOAT = False
 
 def save_settings(filename):
 
@@ -188,12 +188,15 @@ def save_settings(filename):
 		"syntax_alias_color": SYNTAX_ALIAS_COLOR,
 		"syntax_alias_style": SYNTAX_ALIAS_STYLE,
 		"menubar_docked_at_top": MENUBAR_DOCKED_AT_TOP,
+		"menubar_can_float": MENUBAR_CAN_FLOAT,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "menubar_can_float" in settings:
+		settings["menubar_can_float"] = MENUBAR_CAN_FLOAT
 	if not "menubar_docked_at_top" in settings:
 		settings["menubar_docked_at_top"] = MENUBAR_DOCKED_AT_TOP
 	if not "syntax_alias_color" in settings:
@@ -414,6 +417,7 @@ def load_settings(filename):
 	global SYNTAX_ALIAS_COLOR
 	global SYNTAX_ALIAS_STYLE
 	global MENUBAR_DOCKED_AT_TOP
+	global MENUBAR_CAN_FLOAT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -423,6 +427,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MENUBAR_CAN_FLOAT = settings["menubar_can_float"]
 		MENUBAR_DOCKED_AT_TOP = settings["menubar_docked_at_top"]
 		SYNTAX_ALIAS_COLOR = settings["syntax_alias_color"]
 		SYNTAX_ALIAS_STYLE = settings["syntax_alias_style"]

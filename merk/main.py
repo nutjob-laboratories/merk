@@ -1716,6 +1716,8 @@ class Merk(QMainWindow):
 
 	def buildMenu(self):
 
+		if hasattr(self,"menubar"): self.removeToolBar(self.menubar)
+
 		# Create menu bar
 		#self.menubar = self.menuBar()
 		self.menubar = menubar.generate_menu_toolbar(self)
@@ -1726,6 +1728,7 @@ class Merk(QMainWindow):
 		self.menubar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
 		self.menubar.setContextMenuPolicy(Qt.PreventContextMenu)
 		self.menubar.topLevelChanged.connect(self.menuDocked)
+		self.menubar.setFloatable(config.MENUBAR_CAN_FLOAT)
 
 		# Main menu
 		#self.mainMenu = self.menubar.addMenu("IRC")
