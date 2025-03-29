@@ -37,7 +37,7 @@
 -   All text colors (and backgrounds) can be customized
     - Text customization can be saved to importable files
     - Individual styles are saved and loaded automatically
-      - Channels styles are saved and loaded by network, so they work no matter what server you connect to.
+      - Channel styles are saved and loaded by network, so they work no matter what server you connect to.
     - Individual channels can have their own color schemes
     - Easy to use GUI text style editor is built-in
     - Changes to text style are immediate, without having to restart!
