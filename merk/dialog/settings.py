@@ -237,7 +237,10 @@ class Dialog(QDialog):
 		self.changed.show()
 
 	def changedMenubarSetting(self,state):
-		self.menuFloat = True
+		if self.menubar.isChecked():
+			self.menubarFloat.setEnabled(True)
+		else:
+			self.menubarFloat.setEnabled(False)
 		self.changed.show()
 
 	def changedEmoji(self,state):
@@ -276,8 +279,6 @@ class Dialog(QDialog):
 
 		self.SYNTAX_ALIAS_COLOR = config.SYNTAX_ALIAS_COLOR
 		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
-
-		self.menuFloat = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -371,15 +372,22 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
+		self.menubar = QCheckBox("Use main menu toolbar",self)
+		if config.USE_MENUBAR: self.menubar.setChecked(True)
+		self.menubar.stateChanged.connect(self.changedMenubarSetting)
+
 		self.menubarFloat = QCheckBox("Main menu toolbar can \"float\"",self)
 		if config.MENUBAR_CAN_FLOAT: self.menubarFloat.setChecked(True)
-		self.menubarFloat.stateChanged.connect(self.changedMenubarSetting)
+		self.menubarFloat.stateChanged.connect(self.changedSetting)
+
+		if not config.USE_MENUBAR: self.menubarFloat.setEnabled(False)
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
+		applicationLayout.addWidget(self.menubar)
 		applicationLayout.addWidget(self.menubarFloat)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -1135,6 +1143,7 @@ class Dialog(QDialog):
 		config.SYNTAX_ALIAS_COLOR = self.SYNTAX_ALIAS_COLOR
 		config.SYNTAX_ALIAS_STYLE = self.SYNTAX_ALIAS_STYLE
 		config.MENUBAR_CAN_FLOAT = self.menubarFloat.isChecked()
+		config.USE_MENUBAR = self.menubar.isChecked()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
@@ -1167,7 +1176,7 @@ class Dialog(QDialog):
 			self.parent.tray.setVisible(False)
 			self.parent.tray.hide()
 
-		if self.menuFloat: self.parent.buildMenu()
+		self.parent.buildMenu()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

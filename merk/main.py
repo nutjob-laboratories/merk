@@ -1718,53 +1718,51 @@ class Merk(QMainWindow):
 
 	def buildMenu(self):
 
-		if hasattr(self,"menubar"): self.removeToolBar(self.menubar)
+		if hasattr(self,"menuTool"): self.removeToolBar(self.menuTool)
 
-		# Create menu bar
-		#self.menubar = self.menuBar()
-		self.menubar = menubar.generate_menu_toolbar(self)
-		if config.MENUBAR_DOCKED_AT_TOP:
-			self.addToolBar(Qt.TopToolBarArea,self.menubar)
+		if not config.USE_MENUBAR:
+			if hasattr(self,"menubar"):
+				self.menubar.clear()
+				self.menubar.show()
+			else:
+				self.menubar = self.menuBar()
+			self.mainMenu = self.menubar.addMenu("IRC")
+			self.settingsMenu = self.menubar.addMenu("Settings")
+			self.toolsMenu = self.menubar.addMenu("Tools")
+			self.windowsMenu = self.menubar.addMenu("Windows")
+			self.helpMenu = self.menubar.addMenu("Help")
 		else:
-			self.addToolBar(Qt.BottomToolBarArea,self.menubar)
-		self.menubar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
-		self.menubar.setContextMenuPolicy(Qt.PreventContextMenu)
-		self.menubar.topLevelChanged.connect(self.menuDocked)
-		self.menubar.setFloatable(config.MENUBAR_CAN_FLOAT)
+			if hasattr(self,"menubar"):
+				self.menubar.clear()
+				self.menubar.hide()
+			self.mainMenu = QMenu()
+			self.settingsMenu = QMenu()
+			self.toolsMenu = QMenu()
+			self.windowsMenu = QMenu()
+			self.helpMenu = QMenu()
 
-		# Main menu
-		#self.mainMenu = self.menubar.addMenu("IRC")
-		self.mainMenu = QMenu()
+			self.menuTool = menubar.generate_menu_toolbar(self)
+			if config.MENUBAR_DOCKED_AT_TOP:
+				self.addToolBar(Qt.TopToolBarArea,self.menuTool)
+			else:
+				self.addToolBar(Qt.BottomToolBarArea,self.menuTool)
+			self.menuTool.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
+			self.menuTool.setContextMenuPolicy(Qt.PreventContextMenu)
+			self.menuTool.topLevelChanged.connect(self.menuDocked)
+			self.menuTool.setFloatable(config.MENUBAR_CAN_FLOAT)
+
+			menubar.add_toolbar_menu(self.menuTool,"IRC",self.mainMenu)
+			menubar.add_toolbar_menu(self.menuTool,"Settings",self.settingsMenu)
+			menubar.add_toolbar_menu(self.menuTool,"Tools",self.toolsMenu)
+			menubar.add_toolbar_menu(self.menuTool,"Windows",self.windowsMenu)
+			menubar.add_toolbar_menu(self.menuTool,"Help",self.helpMenu)
+
 
 		self.buildMainMenu()
-		menubar.add_toolbar_menu(self.menubar,"IRC",self.mainMenu)
-
-		# Tools menu
-		#self.settingsMenu = self.menubar.addMenu("Settings")
-		self.settingsMenu = QMenu()
-
 		self.buildSettingsMenu()
-		menubar.add_toolbar_menu(self.menubar,"Settings",self.settingsMenu)
-
-		#self.toolsMenu = self.menubar.addMenu("Tools")
-		self.toolsMenu = QMenu()
-
 		self.buildToolsMenu()
-		menubar.add_toolbar_menu(self.menubar,"Tools",self.toolsMenu)
-
-		# Windows menu
-		#self.windowsMenu = self.menubar.addMenu("Windows")
-		self.windowsMenu = QMenu()
-
 		self.buildWindowsMenu()
-		menubar.add_toolbar_menu(self.menubar,"Windows",self.windowsMenu)
-
-		# Help menu
-		#self.helpMenu = self.menubar.addMenu("Help")
-		self.helpMenu = QMenu()
-
 		self.buildHelpMenu()
-		menubar.add_toolbar_menu(self.menubar,"Help",self.helpMenu)
 
 	def menuEditStyle(self):
 		x = StylerDefaultDialog(self)
