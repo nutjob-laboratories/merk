@@ -117,9 +117,6 @@ class Merk(QMainWindow):
 		self.setWindowTitle(config.DISPLAY_NAME)
 		self.setWindowIcon(QIcon(config.DISPLAY_ICON))
 
-		# Menubar
-		self.menubar = self.menuBar()
-
 		# Systray
 
 		self.tray_blank_icon = QIcon(NORMAL_USER)
@@ -1498,16 +1495,9 @@ class Merk(QMainWindow):
 	# | MENU METHODS |
 	# |--------------|
 
-	def buildMenu(self):
-		self.menubar.clear()
+	def buildSettingsMenu(self):
 
-		# Main menu
-		self.mainMenu = self.menubar.addMenu("IRC")
-
-		self.buildMainMenu()
-
-		# Tools menu
-		self.settingsMenu = self.menubar.addMenu("Settings")
+		self.settingsMenu.clear()
 
 		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Edit settings',25,self.openSettings)
 		self.settingsMenu.addAction(entry)
@@ -1536,7 +1526,9 @@ class Merk(QMainWindow):
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 			sm.addAction(entry)
 
-		self.toolsMenu = self.menubar.addMenu("Tools")
+	def buildToolsMenu(self):
+
+		self.toolsMenu.clear()
 
 		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',25,self.newEditorWindow)
 		self.toolsMenu.addAction(entry)
@@ -1544,13 +1536,9 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
 		self.toolsMenu.addAction(entry)
 
-		# Windows menu
-		self.windowsMenu = self.menubar.addMenu("Windows")
+	def buildHelpMenu(self):
 
-		self.buildWindowsMenu()
-
-		# Help menu
-		self.helpMenu = self.menubar.addMenu("Help")
+		self.helpMenu.clear()
 
 		entry = widgets.ExtendedMenuItem(self,ABOUT_MENU_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION,25,self.showAbout)
 		self.helpMenu.addAction(entry)
@@ -1569,43 +1557,94 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-	def menuEditStyle(self):
-		x = StylerDefaultDialog(self)
+	def buildWindowsMenu(self):
 
-	def disconnectAll(self):
-		windows = self.getAllServerWindows()
-		if len(windows)>0:
+		# Rebuild systray menu
+		self.buildSystrayMenu()
 
-			dc = []
-			for w in windows:
-				c = w.widget()
-				dc.append(c.client)
+		self.windowsMenu.clear()
 
-			if self.askDisconnectMulti(dc):
-				for w in windows:
-					c = w.widget()
+		listOfConnections = {}
+		for i in irc.CONNECTIONS:
+			add_to_list = True
+			for j in self.hiding:
+				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
-					no_hostname = False
-					if not hasattr(c.client,"hostname"): no_hostname = True
-					if not c.client.hostname: no_hostname = True
+			# Reset application title, due to there being
+			# no connections
+			self.subWindowActivated(None)
 
-					if no_hostname:
-						self.quitting[c.client.client_id] = 0
-						c.client.quit()
-						self.hideServerWindow(c.client)
-					else:
-						self.quitting[c.client.client_id] = 0
-						c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+		if len(listOfConnections)>0:
 
-		self.mainMenu.close()
+			for i in listOfConnections:
+				entry = listOfConnections[i]
+				if entry.hostname:
+					name = entry.hostname
+				else:
+					name = entry.server+":"+str(entry.port)
 
-	def connectMainMenu(self):
-		self.connectToIrc()
-		self.mainMenu.close()
+				sw = self.getServerSubWindow(entry)
+				wl = self.getAllSubChatWindows(entry)
+				total = self.getAllSubWindows(entry)
 
-	def disconnectAllMainMenu(self):
-		self.disconnectAll()
-		self.mainMenu.close()
+				if len(total)>0:
+					sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
+
+					entry = QAction(QIcon(CONSOLE_ICON),name,self)
+					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
+					sm.addAction(entry)
+
+					sm.addSeparator()
+
+					for w in wl:
+						c = w.widget()
+
+						if c.window_type==CHANNEL_WINDOW:
+							icon = CHANNEL_ICON
+						elif c.window_type==SERVER_WINDOW:
+							icon = CONSOLE_ICON
+						elif c.window_type==PRIVATE_WINDOW:
+							icon = PRIVATE_ICON
+
+						entry = QAction(QIcon(icon),c.name,self)
+						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+						sm.addAction(entry)
+
+		edwins = self.getAllEditorWindows()
+		if len(edwins)>0:
+
+			for win in edwins:
+				c = win.widget()
+				entry = QAction(QIcon(SCRIPT_ICON),c.name,self)
+				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
+				self.windowsMenu.addAction(entry)
+
+		self.windowsMenu.addSeparator()
+
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
+		entry1.triggered.connect(self.MDI.cascadeSubWindows)
+		self.windowsMenu.addAction(entry1)
+
+		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
+		entry2.triggered.connect(self.MDI.tileSubWindows)
+		self.windowsMenu.addAction(entry2)
+
+		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
+		entry3.setShortcut('Ctrl++')
+		entry3.triggered.connect(self.MDI.activateNextSubWindow)
+		self.windowsMenu.addAction(entry3)
+
+		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+		entry4.setShortcut('Ctrl+-')
+		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
+		self.windowsMenu.addAction(entry4)
+
+		if len(self.MDI.subWindowList())==0:
+			entry1.setEnabled(False)
+			entry2.setEnabled(False)
+			entry3.setEnabled(False)
+			entry4.setEnabled(False)
 
 	def buildMainMenu(self):
 
@@ -1660,6 +1699,73 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(QUIT_ICON),"Quit",self)
 		entry.triggered.connect(self.close)
 		self.mainMenu.addAction(entry)
+
+	def buildMenu(self):
+
+		# Create menu bar
+		self.menubar = self.menuBar()
+
+		# Main menu
+		self.mainMenu = self.menubar.addMenu("IRC")
+
+		self.buildMainMenu()
+
+		# Tools menu
+		self.settingsMenu = self.menubar.addMenu("Settings")
+
+		self.buildSettingsMenu()
+
+		self.toolsMenu = self.menubar.addMenu("Tools")
+
+		self.buildToolsMenu()
+
+		# Windows menu
+		self.windowsMenu = self.menubar.addMenu("Windows")
+
+		self.buildWindowsMenu()
+
+		# Help menu
+		self.helpMenu = self.menubar.addMenu("Help")
+
+		self.buildHelpMenu()
+
+	def menuEditStyle(self):
+		x = StylerDefaultDialog(self)
+
+	def disconnectAll(self):
+		windows = self.getAllServerWindows()
+		if len(windows)>0:
+
+			dc = []
+			for w in windows:
+				c = w.widget()
+				dc.append(c.client)
+
+			if self.askDisconnectMulti(dc):
+				for w in windows:
+					c = w.widget()
+
+					no_hostname = False
+					if not hasattr(c.client,"hostname"): no_hostname = True
+					if not c.client.hostname: no_hostname = True
+
+					if no_hostname:
+						self.quitting[c.client.client_id] = 0
+						c.client.quit()
+						self.hideServerWindow(c.client)
+					else:
+						self.quitting[c.client.client_id] = 0
+						c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+
+		self.mainMenu.close()
+
+	def connectMainMenu(self):
+		self.connectToIrc()
+		self.mainMenu.close()
+
+	def disconnectAllMainMenu(self):
+		self.disconnectAll()
+		self.mainMenu.close()
 
 	def askDisconnect(self,client):
 
@@ -1779,95 +1885,6 @@ class Merk(QMainWindow):
 				if c.window_type==EDITOR_WINDOW:
 					retval.append(window)
 		return retval
-
-	def buildWindowsMenu(self):
-
-		# Rebuild systray menu
-		self.buildSystrayMenu()
-
-		self.windowsMenu.clear()
-
-		listOfConnections = {}
-		for i in irc.CONNECTIONS:
-			add_to_list = True
-			for j in self.hiding:
-				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
-			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
-
-			# Reset application title, due to there being
-			# no connections
-			self.subWindowActivated(None)
-
-		if len(listOfConnections)>0:
-
-			for i in listOfConnections:
-				entry = listOfConnections[i]
-				if entry.hostname:
-					name = entry.hostname
-				else:
-					name = entry.server+":"+str(entry.port)
-
-				sw = self.getServerSubWindow(entry)
-				wl = self.getAllSubChatWindows(entry)
-				total = self.getAllSubWindows(entry)
-
-				if len(total)>0:
-					sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
-
-					entry = QAction(QIcon(CONSOLE_ICON),name,self)
-					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
-					sm.addAction(entry)
-
-					sm.addSeparator()
-
-					for w in wl:
-						c = w.widget()
-
-						if c.window_type==CHANNEL_WINDOW:
-							icon = CHANNEL_ICON
-						elif c.window_type==SERVER_WINDOW:
-							icon = CONSOLE_ICON
-						elif c.window_type==PRIVATE_WINDOW:
-							icon = PRIVATE_ICON
-
-						entry = QAction(QIcon(icon),c.name,self)
-						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
-						sm.addAction(entry)
-
-		edwins = self.getAllEditorWindows()
-		if len(edwins)>0:
-
-			for win in edwins:
-				c = win.widget()
-				entry = QAction(QIcon(SCRIPT_ICON),c.name,self)
-				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
-				self.windowsMenu.addAction(entry)
-
-		self.windowsMenu.addSeparator()
-
-		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
-		entry1.triggered.connect(self.MDI.cascadeSubWindows)
-		self.windowsMenu.addAction(entry1)
-
-		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
-		entry2.triggered.connect(self.MDI.tileSubWindows)
-		self.windowsMenu.addAction(entry2)
-
-		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
-		entry3.setShortcut('Ctrl++')
-		entry3.triggered.connect(self.MDI.activateNextSubWindow)
-		self.windowsMenu.addAction(entry3)
-
-		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
-		entry4.setShortcut('Ctrl+-')
-		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
-		self.windowsMenu.addAction(entry4)
-
-		if len(self.MDI.subWindowList())==0:
-			entry1.setEnabled(False)
-			entry2.setEnabled(False)
-			entry3.setEnabled(False)
-			entry4.setEnabled(False)
 
 			
 	# |---------------|
