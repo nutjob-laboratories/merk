@@ -188,29 +188,44 @@ if __name__ == '__main__':
 		# Load in user settings
 		user.load_user(user.USER_FILE)
 
+		user_info_changed = False
 		if args.nickname=='':
 			if len(user.NICKNAME.strip())==0:
 				print("No nickname set!")
 				sys.exit(1)
 			args.nickname = user.NICKNAME
+		else:
+			user.NICKNAME = args.nickname
+			user_info_changed = True
 
 		if args.username=='':
 			if len(user.USERNAME.strip())==0:
 				args.username = args.nickname
 			else:
 				args.username = user.USERNAME
+		else:
+			user.USERNAME = args.username
+			user_info_changed = True
 
 		if args.alternate=='':
 			if len(user.ALTERNATE.strip())==0:
 				args.alternate = args.nickname + str(random.randint(1,999))
 			else:
 				args.alternate = user.ALTERNATE
+		else:
+			user.ALTERNATE = args.alternate
+			user_info_changed = True
 
 		if args.realname=='':
 			if len(user.REALNAME.strip())==0:
 				args.realname = APPLICATION_NAME +" "+APPLICATION_VERSION
 			else:
 				args.realname = user.REALNAME
+		else:
+			user.REALNAME = args.realname
+			user_info_changed = True
+
+		if user_info_changed: user.save_user(user.USER_FILE)
 
 		i = ConnectInfo(
 			args.nickname,
