@@ -112,8 +112,9 @@ SYNTAX_ALIAS_COLOR = "Red"
 SYNTAX_ALIAS_STYLE = "bold italic"
 MENUBAR_DOCKED_AT_TOP = True
 MENUBAR_CAN_FLOAT = False
-
 USE_MENUBAR = True
+
+QT_WINDOW_STYLE = 'Windows'
 
 def save_settings(filename):
 
@@ -192,12 +193,15 @@ def save_settings(filename):
 		"menubar_docked_at_top": MENUBAR_DOCKED_AT_TOP,
 		"menubar_can_float": MENUBAR_CAN_FLOAT,
 		"use_menubar": USE_MENUBAR,
+		"qt_window_style": QT_WINDOW_STYLE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "qt_window_style" in settings:
+		settings["qt_window_style"] = QT_WINDOW_STYLE
 	if not "use_menubar" in settings:
 		settings["use_menubar"] = USE_MENUBAR
 	if not "menubar_can_float" in settings:
@@ -424,6 +428,7 @@ def load_settings(filename):
 	global MENUBAR_DOCKED_AT_TOP
 	global MENUBAR_CAN_FLOAT
 	global USE_MENUBAR
+	global QT_WINDOW_STYLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -507,6 +512,7 @@ def load_settings(filename):
 		FLASH_SYSTRAY_MODE = settings["systray_notification_mode"]
 		FLASH_SYSTRAY_LIST = settings["systray_notification_list"]
 		SYSTRAY_MENU = settings["show_systray_menu"]
+		QT_WINDOW_STYLE = settings["qt_window_style"]
 
 		if prepatch_length!=postpatch_length:
 			save_settings(filename)

@@ -27,6 +27,7 @@ import argparse
 import os
 import random
 import shutil
+import sys
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -87,7 +88,7 @@ configuration_group = parser.add_argument_group('Configuration')
 configuration_group.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "-L","--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
-configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="Windows")
+configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
 configuration_group.add_argument("-s","--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 
 misc_group = parser.add_argument_group('Miscellaneous')
@@ -99,6 +100,18 @@ misc_group.add_argument( "-S","--noscripts", help=f"Don't allow script execution
 args = parser.parse_args()
 
 if __name__ == '__main__':
+
+	# If the user passes us a new Qt window style...
+	if args.qtstyle!="":
+		# Check to see if it's a valid style
+		if args.qtstyle in QStyleFactory.keys():
+			# Style is valid
+			pass
+		else:
+			# Tell user the style is invalid and exit
+			sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
+			sys.stdout.write(f"Valid available styles: {", ".join(QStyleFactory.keys())}\n")
+			exit(1)
 
 	app = QApplication([])
 
@@ -143,8 +156,14 @@ if __name__ == '__main__':
 		font = QFont(_fontstr,BUNDLED_FONT_SIZE)
 		app.setFont(font)
 
-	# Set Qt widget style
-	app.setStyle(args.qtstyle)
+	# If a new Qt window style has been passed...
+	if args.qtstyle!="":
+		# Set new style and save it to the config
+		config.QT_WINDOW_STYLE = args.qtstyle
+		config.save_settings(config.CONFIG_FILE)
+
+	# Apply new style
+	app.setStyle(config.QT_WINDOW_STYLE)
 
 	# Handle connecting to a server if one has been provided
 	if args.server:
