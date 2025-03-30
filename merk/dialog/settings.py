@@ -252,6 +252,13 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 
+	def styleChange(self, i):
+		self.qt_style = self.qtStyle.itemText(i)
+
+		self.selector.setFocus()
+		self.changed.show()
+
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -280,6 +287,8 @@ class Dialog(QDialog):
 
 		self.SYNTAX_ALIAS_COLOR = config.SYNTAX_ALIAS_COLOR
 		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
+
+		self.qt_style = config.QT_WINDOW_STYLE
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -373,8 +382,16 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
+		versionLabel = QLabel('<b>Version '+APPLICATION_VERSION+"</b>")
+		versionLayout = QHBoxLayout()
+		versionLayout.addStretch()
+		versionLayout.addWidget(versionLabel)
+		versionLayout.addStretch()
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
+		applicationLayout.addLayout(versionLayout)
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
@@ -510,7 +527,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Windows")
+		entry.setText("Interface")
 		entry.widget = self.interfacePage
 		entry.setIcon(QIcon(INTERFACE_ICON))
 		self.selector.addItem(entry)
@@ -559,6 +576,52 @@ class Dialog(QDialog):
 		interfaceLayout.addStretch()
 
 		self.interfacePage.setLayout(interfaceLayout)
+
+		# Subwindow page
+
+		self.appearancePage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Subwindows")
+		entry.widget = self.appearancePage
+		entry.setIcon(QIcon(WINDOW_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.appearancePage)
+
+		self.styleDescription = QLabel("""
+			<small>
+			This setting controls how subwindows look. Different styles
+			use different sets of widgets. Qt comes with a number of them
+			pre-installed, and you can select which one to use here. The selected
+			subwindow style will be applied immediately without having
+			to restart the application.
+			</small>
+			<br>
+			""")
+		self.styleDescription.setWordWrap(True)
+		self.styleDescription.setAlignment(Qt.AlignJustify)
+
+		self.qtStyle = QComboBox(self)
+		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
+		for s in QStyleFactory.keys():
+			if s==config.QT_WINDOW_STYLE: continue
+			self.qtStyle.addItem(s)
+		self.qtStyle.currentIndexChanged.connect(self.styleChange)
+
+		styleLayout = QHBoxLayout()
+		styleLayout.addWidget(QLabel("<b>Subwindow Style</b> "))
+		styleLayout.addWidget(self.qtStyle)
+		styleLayout.addStretch()
+
+		appearanceLayout = QVBoxLayout()
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
+		appearanceLayout.addWidget(self.styleDescription)
+		appearanceLayout.addLayout(styleLayout)
+		appearanceLayout.addStretch()
+
+		self.appearancePage.setLayout(appearanceLayout)
 
 		# Input page
 
@@ -975,6 +1038,8 @@ class Dialog(QDialog):
 		systrayLayout.addLayout(noticeMode)
 		systrayLayout.addLayout(discLay)
 		systrayLayout.addStretch()
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(QLabel(' '))
 
 		self.systrayPage.setLayout(systrayLayout)
 
@@ -1178,6 +1243,9 @@ class Dialog(QDialog):
 		config.SYNTAX_ALIAS_STYLE = self.SYNTAX_ALIAS_STYLE
 		config.MENUBAR_CAN_FLOAT = self.menubarFloat.isChecked()
 		config.USE_MENUBAR = self.menubar.isChecked()
+		config.QT_WINDOW_STYLE = self.qt_style
+
+		self.parent.app.setStyle(self.qt_style)
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'
