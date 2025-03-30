@@ -1,7 +1,8 @@
 
 
+
 <p align="center">
-  <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/merk_splash.png"><br>
+  <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a><br>
@@ -33,6 +34,7 @@
 - Very configurable, without having to manually edit a configuration file
   - Nearly all settings are configurable in the settings dialog
   - Control application behavior, logging, features, and more!
+  - Configuration data is stored in JSON
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
     - Text customization can be saved to importable files
@@ -47,12 +49,13 @@
     -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
 -   Command/nickname/channel auto-completion
 -   Full IRC color support
--   Scripting
+-   Full scripting engine
     - Includes a built in script editor, with scripting macros and syntax highlighting
-- Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
+  - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
 - Multithreaded
 -   Automatic logging of channel and private chats
   - Includes a utility to export logs to JSON, CSV, or your own custom format
+  - Logs are stored in JSON, so parsing/scraping your own logs in easy
 
 # Requirements
 
