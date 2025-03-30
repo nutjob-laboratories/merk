@@ -583,19 +583,19 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Subwindows")
+		entry.setText("Widget Style")
 		entry.widget = self.appearancePage
-		entry.setIcon(QIcon(WINDOW_ICON))
+		entry.setIcon(QIcon(WIDGET_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.appearancePage)
 
 		self.styleDescription = QLabel("""
 			<small>
-			This setting controls how subwindows look. Different styles
+			This setting controls how subwindows and widgets look. Different styles
 			use different sets of widgets. Qt comes with a number of them
 			pre-installed, and you can select which one to use here. The selected
-			subwindow style will be applied immediately without having
+			widget style will be applied immediately without having
 			to restart the application.
 			</small>
 			<br>
@@ -611,12 +611,12 @@ class Dialog(QDialog):
 		self.qtStyle.currentIndexChanged.connect(self.styleChange)
 
 		styleLayout = QHBoxLayout()
-		styleLayout.addWidget(QLabel("<b>Subwindow Style</b> "))
+		styleLayout.addWidget(QLabel("<b>Widget Style</b> "))
 		styleLayout.addWidget(self.qtStyle)
 		styleLayout.addStretch()
 
 		appearanceLayout = QVBoxLayout()
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(styleLayout)
 		appearanceLayout.addStretch()

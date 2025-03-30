@@ -207,6 +207,7 @@ RUN_ICON = ":/icon-run.png"
 RUN_MENU_ICON = ":/icon-run_menu.png"
 
 MENU_ICON = ":/icon-menu.png"
+WIDGET_ICON = ":/icon-widget.png"
 
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
