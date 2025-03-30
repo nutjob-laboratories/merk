@@ -32,15 +32,15 @@
     - Multiple channel and server windows can be open for viewing and chatting at once
     - All chat windows are contained in a single "parent" window
 - Very configurable, without having to manually edit a configuration file
-  - Nearly all settings are configurable in the settings dialog
-  - Control application behavior, logging, features, and more!
-  - Configuration data is stored in JSON
+    - Nearly all settings are configurable in the settings dialog
+    - Control application behavior, logging, features, and more!
+    - Configuration data is stored in JSON
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
     - Text customization can be saved to importable files
-    - Individual styles are saved and loaded automatically
-      - Channel styles are saved and loaded by network, so they work no matter what server you connect to.
     - Individual channels can have their own color schemes
+    - Styles are saved and loaded automatically
+      - Channel styles are saved and loaded by network, so they work no matter what server you connect to.
     - Easy to use GUI text style editor is built-in
     - Changes to text style are immediate, without having to restart!
 -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, and German)
@@ -51,11 +51,11 @@
 -   Full IRC color support
 -   Full scripting engine
     - Includes a built in script editor, with scripting macros and syntax highlighting
-  - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
+    - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
 - Multithreaded
 -   Automatic logging of channel and private chats
-  - Includes a utility to export logs to JSON, CSV, or your own custom format
-  - Logs are stored in JSON, so parsing/scraping your own logs in easy
+    - Includes a utility to export logs to JSON, CSV, or your own custom format
+    - Logs are stored in JSON, so parsing/scraping your own logs in easy
 
 # Requirements
 
