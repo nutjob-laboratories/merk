@@ -220,7 +220,7 @@ class Window(QMainWindow):
 
 		self.menuSave = QAction(QIcon(SAVEFILE_ICON),"Save",self)
 		self.menuSave.triggered.connect(self.doFileSave)
-		if self.filename: self.menuSave.setShortcut("Ctrl+S")
+		self.menuSave.setShortcut("Ctrl+S")
 		self.fileMenu.addAction(self.menuSave)
 
 		if self.filename==None:
@@ -228,7 +228,7 @@ class Window(QMainWindow):
 
 		self.menuSaveAs = QAction(QIcon(SAVEASFILE_ICON),"Save as...",self)
 		self.menuSaveAs.triggered.connect(self.doFileSaveAs)
-		if not self.filename: self.menuSaveAs.setShortcut("Ctrl+S")
+		if not self.filename: self.menuSaveAs.setShortcut("Ctrl+Shift+S")
 		self.fileMenu.addAction(self.menuSaveAs)
 		
 		self.fileMenu.addSeparator()

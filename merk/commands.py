@@ -539,7 +539,13 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
-			window.writeText(t)
+			# Get the current active window
+			w = gui.MDI.activeSubWindow()
+			c = w.widget()
+			if hasattr(c,"writeText"):
+				c.writeText(t,False)
+			else:
+				window.writeText(t,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'print' and len(tokens)==1:
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"print TEXT")
