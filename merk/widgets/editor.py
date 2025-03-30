@@ -310,6 +310,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(SCRIPT_ICON),"Alias",self)
+		entry.triggered.connect(self.insertAlias)
+		self.commandMenu.addAction(entry)
+
 		self.runMenu = self.menubar.addMenu("Run")
 
 		self.buildRunMenu()
@@ -454,6 +458,21 @@ class Window(QMainWindow):
 		if not e: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"maximize "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertAlias(self):
+		x = SetAlias(self)
+		e = x.get_alias_information(self)
+
+		if not e: return
+
+		aname = e[0]
+		avalue = e[1]
+
+		if len(aname)==0: return
+		if len(avalue)==0: avalue = 'X'
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"alias "+aname+" "+avalue+"\n")
 		self.updateApplicationTitle()
 
 	def insertPart(self):

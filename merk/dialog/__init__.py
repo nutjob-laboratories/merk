@@ -46,6 +46,7 @@ from .set_quit import Dialog as SetQuit
 from .connect_server import Dialog as ConnectServer
 from .new_connect_script import Dialog as NewConnectScript
 from .set_script import Dialog as SetScript
+from .set_alias import Dialog as SetAlias
 
 def SetWindowDialog(win,obj):
 	x = SetWindow(win,obj)
