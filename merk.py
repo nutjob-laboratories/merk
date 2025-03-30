@@ -55,15 +55,9 @@ parser = argparse.ArgumentParser(
 	prog=f"python {os.path.basename(__file__)}",
 	formatter_class=argparse.RawDescriptionHelpFormatter,
 	description=f'''
-███╗   ███╗██████╗ ██████╗ ██╗  ██╗
-████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝
-██╔████╔██║███████║██████╔╝█████╔╝
-██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
-██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
-╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-Version {APPLICATION_VERSION}
-
-An open source, cross-platform IRC client
+┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┓ ┳┏┓┳┓┏┳┓ Version
+┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  {APPLICATION_VERSION} 
+┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛┗┛┻┗┛┛┗ ┻                               
 https://github.com/nutjob-laboratories/merk
 
 Available Qt widget styles: {", ".join(QStyleFactory.keys())}
