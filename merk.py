@@ -254,6 +254,28 @@ if __name__ == '__main__':
 
 	else:
 
+		# Load in user settings
+		user.load_user(user.USER_FILE)
+
+		user_info_changed = False
+		if args.nickname!='':
+			user.NICKNAME = args.nickname
+			user_info_changed = True
+
+		if args.username!='':
+			user.USERNAME = args.username
+			user_info_changed = True
+
+		if args.alternate!='':
+			user.ALTERNATE = args.alternate
+			user_info_changed = True
+
+		if args.realname!='':
+			user.REALNAME = args.realname
+			user_info_changed = True
+
+		if user_info_changed: user.save_user(user.USER_FILE)
+
 		if args.noask:
 			# Create the main GUI and show it
 			GUI = Merk(
