@@ -1388,9 +1388,9 @@ class Window(QMainWindow):
 	def moveChatToBottom(self,force=False):
 
 		if force:
-			# sb = self.chat.verticalScrollBar()
-			# sb.setValue(sb.maximum())
-			# self.chat.ensureCursorVisible()
+			sb = self.chat.verticalScrollBar()
+			sb.setValue(sb.maximum())
+			self.chat.ensureCursorVisible()
 
 			self.chat.moveCursor(QTextCursor.End)
 
@@ -1401,8 +1401,8 @@ class Window(QMainWindow):
 		if sb.value()>=sb.maximum()-fheight: is_at_bottom = True
 
 		if is_at_bottom:
-			# sb.setValue(sb.maximum())
-			# self.chat.ensureCursorVisible()
+			sb.setValue(sb.maximum())
+			self.chat.ensureCursorVisible()
 
 			self.chat.moveCursor(QTextCursor.End)
 
