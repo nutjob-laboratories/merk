@@ -1605,6 +1605,11 @@ class TopicEdit(QLineEdit):
 		self.parent = parent
 		self.is_enabled = True
 
+		if config.CHANNEL_TOPIC_BOLD:
+			font = QFont()
+			font.setBold(True)
+			self.setFont(font)
+
 	def refresh(self):
 		self.setText(self.parent.channel_topic)
 

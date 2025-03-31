@@ -113,8 +113,9 @@ SYNTAX_ALIAS_STYLE = "bold italic"
 MENUBAR_DOCKED_AT_TOP = True
 MENUBAR_CAN_FLOAT = False
 USE_MENUBAR = True
-
 QT_WINDOW_STYLE = 'Windows'
+
+CHANNEL_TOPIC_BOLD = True
 
 def save_settings(filename):
 
