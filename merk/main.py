@@ -1398,6 +1398,13 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showTopic()
 
+	def refreshAllTopic(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					c.topic.refresh()
+
 	def getAllChatNames(self):
 		retval = []
 		for window in self.MDI.subWindowList():

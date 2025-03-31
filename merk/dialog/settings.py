@@ -258,12 +258,26 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 
+	def topicChange(self, i):
+		self.refreshTopics = True
+
+		self.selector.setFocus()
+		self.changed.show()
+
+	def titleChange(self, i):
+		self.refreshTitles = True
+
+		self.selector.setFocus()
+		self.changed.show()
+
 
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
 		self.parent = parent
+
+		self.setFont(self.parent.application_font)
 
 		self.newfont = None
 		self.subWidth = config.DEFAULT_SUBWINDOW_WIDTH
@@ -289,6 +303,9 @@ class Dialog(QDialog):
 		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
 
 		self.qt_style = config.QT_WINDOW_STYLE
+
+		self.refreshTopics = False
+		self.refreshTitles = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -566,7 +583,11 @@ class Dialog(QDialog):
 
 		self.topicDisplay = QCheckBox("Show channel info/topic display",self)
 		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
-		self.topicDisplay.stateChanged.connect(self.changedSetting)
+		self.topicDisplay.stateChanged.connect(self.topicChange)
+
+		self.topicTitleDisplay = QCheckBox("Show channel topic in window title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
+		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
 
 		interfaceLayout = QVBoxLayout()
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
@@ -574,6 +595,7 @@ class Dialog(QDialog):
 		interfaceLayout.addWidget(self.showChanUptime)
 		interfaceLayout.addWidget(self.showInfo)
 		interfaceLayout.addWidget(self.topicDisplay)
+		interfaceLayout.addWidget(self.topicTitleDisplay)
 		interfaceLayout.addWidget(self.writeScroll)
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		interfaceLayout.addWidget(self.plainUserLists)
@@ -1250,6 +1272,7 @@ class Dialog(QDialog):
 		config.USE_MENUBAR = self.menubar.isChecked()
 		config.QT_WINDOW_STYLE = self.qt_style
 		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
+		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
 
 		self.parent.app.setStyle(self.qt_style)
 
@@ -1286,10 +1309,14 @@ class Dialog(QDialog):
 
 		self.parent.buildMenu()
 
-		if config.SHOW_CHANNEL_TOPIC:
-			self.parent.showAllTopic()
-		else:
-			self.parent.hideAllTopic()
+		if self.topicChange:
+			if config.SHOW_CHANNEL_TOPIC:
+				self.parent.showAllTopic()
+			else:
+				self.parent.hideAllTopic()
+
+		if self.titleChange:
+			self.parent.refreshAllTopic()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

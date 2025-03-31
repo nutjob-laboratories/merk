@@ -114,9 +114,9 @@ MENUBAR_DOCKED_AT_TOP = True
 MENUBAR_CAN_FLOAT = False
 USE_MENUBAR = True
 QT_WINDOW_STYLE = 'Windows'
-
 CHANNEL_TOPIC_BOLD = True
 SHOW_CHANNEL_TOPIC = True
+SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = False
 
 def save_settings(filename):
 
@@ -198,12 +198,15 @@ def save_settings(filename):
 		"qt_window_style": QT_WINDOW_STYLE,
 		"show_channel_topic_bold": CHANNEL_TOPIC_BOLD,
 		"show_channel_topic_bar": SHOW_CHANNEL_TOPIC,
+		"show_channel_topic_in_window_title": SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_channel_topic_in_window_title" in settings:
+		settings["show_channel_topic_in_window_title"] = SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 	if not "show_channel_topic_bold" in settings:
 		settings["show_channel_topic_bold"] = CHANNEL_TOPIC_BOLD
 	if not "show_channel_topic_bar" in settings:
@@ -439,6 +442,7 @@ def load_settings(filename):
 	global QT_WINDOW_STYLE
 	global CHANNEL_TOPIC_BOLD
 	global SHOW_CHANNEL_TOPIC
+	global SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -448,6 +452,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = settings["show_channel_topic_in_window_title"]
 		CHANNEL_TOPIC_BOLD = settings["show_channel_topic_bold"]
 		SHOW_CHANNEL_TOPIC = settings["show_channel_topic_bar"]
 		USE_MENUBAR = settings["use_menubar"]

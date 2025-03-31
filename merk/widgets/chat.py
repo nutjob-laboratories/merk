@@ -1638,6 +1638,15 @@ class TopicEdit(QLineEdit):
 		else:
 			QLineEdit.setText(self,text)
 
+		# Handle window title
+		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE:
+			if len(text)>0:
+				self.parent.setWindowTitle(self.parent.name+" - "+text)
+			else:
+				self.parent.setWindowTitle(self.parent.name)
+		else:
+			self.parent.setWindowTitle(self.parent.name)
+
 	def mousePressEvent(self, e, Parent=None):
 		super(QLineEdit, self).mousePressEvent(e) #required to deselect on 2e click
 		if not self.is_enabled: return
