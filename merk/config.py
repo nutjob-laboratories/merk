@@ -116,6 +116,7 @@ USE_MENUBAR = True
 QT_WINDOW_STYLE = 'Windows'
 
 CHANNEL_TOPIC_BOLD = True
+SHOW_CHANNEL_TOPIC = True
 
 def save_settings(filename):
 

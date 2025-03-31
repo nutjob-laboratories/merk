@@ -398,6 +398,9 @@ class Window(QMainWindow):
 			topicLayout.addWidget(self.channel_mode_display)
 			topicLayout.addWidget(self.topic)
 
+			if not config.SHOW_CHANNEL_TOPIC:
+				self.hideTopic()
+
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
@@ -523,6 +526,16 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
+
+	def hideTopic(self):
+		self.banlist_menu.hide()
+		self.channel_mode_display.hide()
+		self.topic.hide()
+
+	def showTopic(self):
+		self.banlist_menu.show()
+		self.channel_mode_display.show()
+		self.topic.show()
 
 	def tickUptime(self,uptime):
 		
