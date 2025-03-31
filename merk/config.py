@@ -196,12 +196,18 @@ def save_settings(filename):
 		"menubar_can_float": MENUBAR_CAN_FLOAT,
 		"use_menubar": USE_MENUBAR,
 		"qt_window_style": QT_WINDOW_STYLE,
+		"show_channel_topic_bold": CHANNEL_TOPIC_BOLD,
+		"show_channel_topic_bar": SHOW_CHANNEL_TOPIC,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_channel_topic_bold" in settings:
+		settings["show_channel_topic_bold"] = CHANNEL_TOPIC_BOLD
+	if not "show_channel_topic_bar" in settings:
+		settings["show_channel_topic_bar"] = SHOW_CHANNEL_TOPIC
 	if not "qt_window_style" in settings:
 		settings["qt_window_style"] = QT_WINDOW_STYLE
 	if not "use_menubar" in settings:
@@ -431,6 +437,8 @@ def load_settings(filename):
 	global MENUBAR_CAN_FLOAT
 	global USE_MENUBAR
 	global QT_WINDOW_STYLE
+	global CHANNEL_TOPIC_BOLD
+	global SHOW_CHANNEL_TOPIC
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -440,6 +448,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		CHANNEL_TOPIC_BOLD = settings["show_channel_topic_bold"]
+		SHOW_CHANNEL_TOPIC = settings["show_channel_topic_bar"]
 		USE_MENUBAR = settings["use_menubar"]
 		MENUBAR_CAN_FLOAT = settings["menubar_can_float"]
 		MENUBAR_DOCKED_AT_TOP = settings["menubar_docked_at_top"]
