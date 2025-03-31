@@ -345,6 +345,10 @@ class Merk(QMainWindow):
 
 		self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
 
+		entry = QAction(QIcon(FOLDER_ICON),APPLICATION_NAME+" Install",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+		self.trayFolder.addAction(entry)
+
 		entry = QAction(QIcon(FOLDER_ICON),"Settings",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 		self.trayFolder.addAction(entry)
