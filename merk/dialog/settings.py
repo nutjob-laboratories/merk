@@ -527,7 +527,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Interface")
+		entry.setText("Chat Windows")
 		entry.widget = self.interfacePage
 		entry.setIcon(QIcon(INTERFACE_ICON))
 		self.selector.addItem(entry)
@@ -564,11 +564,16 @@ class Dialog(QDialog):
 
 		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.topicDisplay = QCheckBox("Show channel info/topic display",self)
+		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
+		self.topicDisplay.stateChanged.connect(self.changedSetting)
+
 		interfaceLayout = QVBoxLayout()
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
 		interfaceLayout.addWidget(self.showUptime)
 		interfaceLayout.addWidget(self.showChanUptime)
 		interfaceLayout.addWidget(self.showInfo)
+		interfaceLayout.addWidget(self.topicDisplay)
 		interfaceLayout.addWidget(self.writeScroll)
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		interfaceLayout.addWidget(self.plainUserLists)
@@ -1244,6 +1249,7 @@ class Dialog(QDialog):
 		config.MENUBAR_CAN_FLOAT = self.menubarFloat.isChecked()
 		config.USE_MENUBAR = self.menubar.isChecked()
 		config.QT_WINDOW_STYLE = self.qt_style
+		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
 
 		self.parent.app.setStyle(self.qt_style)
 
@@ -1279,6 +1285,11 @@ class Dialog(QDialog):
 			self.parent.tray.hide()
 
 		self.parent.buildMenu()
+
+		if config.SHOW_CHANNEL_TOPIC:
+			self.parent.showAllTopic()
+		else:
+			self.parent.hideAllTopic()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

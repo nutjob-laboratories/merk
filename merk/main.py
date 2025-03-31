@@ -1384,21 +1384,19 @@ class Merk(QMainWindow):
 						retval.append(window)
 		return retval
 
-	def hideAllTopic(self,client):
+	def hideAllTopic(self):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
-			if hasattr(c,"client"):
-				if c.client.client_id == client.client_id:
-					if c.window_type==CHANNEL_WINDOW:
-						c.hideTopic()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					c.hideTopic()
 
-	def showAllTopic(self,client):
+	def showAllTopic(self):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
-			if hasattr(c,"client"):
-				if c.client.client_id == client.client_id:
-					if c.window_type==CHANNEL_WINDOW:
-						c.showTopic()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					c.showTopic()
 
 	def getAllChatNames(self):
 		retval = []
