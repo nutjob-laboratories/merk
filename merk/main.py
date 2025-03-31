@@ -133,7 +133,8 @@ class Merk(QMainWindow):
 		self.tray.setToolTip(APPLICATION_NAME+" IRC client")
 
 		self.tray_notifications = []
-
+		self.tray_width = self.width()
+		self.tray_height = self.height()
 
 		self.trayMenu = QMenu()
 		self.tray.setContextMenu(self.trayMenu)
@@ -240,6 +241,7 @@ class Merk(QMainWindow):
 	def toggleHide(self):
 		if self.is_hidden:
 			self.show()
+			self.resize(self.tray_width,self.tray_height)
 			self.is_hidden = False
 			self.hide_notifications()
 
@@ -261,6 +263,9 @@ class Merk(QMainWindow):
 					self.maximized_window = None
 			else:
 				self.maximized_window = None
+
+			self.tray_width = self.width()
+			self.tray_height = self.height()
 
 			self.hide()
 			self.is_hidden = True
