@@ -540,15 +540,19 @@ class Window(QMainWindow):
 	def tickUptime(self,uptime):
 
 		if config.SHOW_CHANNEL_UPTIME:
-			if hasattr(self,"channelUptime"): self.channelUptime.show()
+			if hasattr(self,"channelUptime"): 
+				if not self.channelUptime.isVisible(): self.channelUptime.show()
 		else:
-			if hasattr(self,"channelUptime"): self.channelUptime.hide()
+			if hasattr(self,"channelUptime"):
+				if self.channelUptime.isVisible(): self.channelUptime.hide()
 
 		if config.SHOW_CONNECTION_UPTIME:
-			if hasattr(self,"serverUptime"): self.serverUptime.show()
+			if hasattr(self,"serverUptime"):
+				if not self.serverUptime.isVisible(): self.serverUptime.show()
 		else:
-			if hasattr(self,"serverUptime"): self.serverUptime.hide()
-		
+			if hasattr(self,"serverUptime"):
+				if self.serverUptime.isVisible(): self.serverUptime.hide()
+
 		if self.window_type==SERVER_WINDOW:
 			self.uptime = uptime
 			self.serverUptime.setText("<b>"+prettyUptime(self.uptime)+"</b>")
