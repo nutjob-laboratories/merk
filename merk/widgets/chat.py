@@ -154,8 +154,6 @@ class Window(QMainWindow):
 				self.script_button.setFlat(True)
 				serverBar.addWidget(self.script_button)
 
-			if not config.SHOW_CONNECTION_UPTIME: self.serverUptimeAction.setVisible(False)
-
 			serverBar.addStretch()
 
 			self.serverUptime = QLabel("<b>00:00:00</b>")
