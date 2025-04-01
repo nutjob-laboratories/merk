@@ -1321,5 +1321,11 @@ class Dialog(QDialog):
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
+		# Set the application font
+		self.parent.app.setFont(self.parent.application_font)
+
+		# Set the widget font
+		self.parent.setFont(self.parent.application_font)
+
 		# Close the dialog
 		self.close()

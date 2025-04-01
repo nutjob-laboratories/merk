@@ -538,6 +538,16 @@ class Window(QMainWindow):
 		self.topic.show()
 
 	def tickUptime(self,uptime):
+
+		if config.SHOW_CHANNEL_UPTIME:
+			if hasattr(self,"channelUptime"): self.channelUptime.show()
+		else:
+			if hasattr(self,"channelUptime"): self.channelUptime.hide()
+
+		if config.SHOW_CONNECTION_UPTIME:
+			if hasattr(self,"serverUptime"): self.serverUptime.show()
+		else:
+			if hasattr(self,"serverUptime"): self.serverUptime.hide()
 		
 		if self.window_type==SERVER_WINDOW:
 			self.uptime = uptime
