@@ -391,6 +391,7 @@ class Merk(QMainWindow):
 		self.toggleHide()
 		self.showNormal()
 		self.showSubWindow(window)
+		window.showMaximized()
 
 	def menuMax(self):
 
