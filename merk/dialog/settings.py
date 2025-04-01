@@ -337,7 +337,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Miscellaneous")
+		entry.setText("General")
 		entry.widget = self.applicationPage
 		entry.setIcon(QIcon(APPLICATION_ICON))
 		self.selector.addItem(entry)
@@ -419,6 +419,52 @@ class Dialog(QDialog):
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
+
+		# Widget page
+
+		self.appearancePage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Widgets")
+		entry.widget = self.appearancePage
+		entry.setIcon(QIcon(WIDGET_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.appearancePage)
+
+		self.styleDescription = QLabel("""
+			<small>
+			This setting controls how subwindows and widgets look. Different styles
+			use different sets of widgets. Qt comes with a number of them
+			pre-installed, and you can select which one to use here. The selected
+			widget style will be applied immediately without having
+			to restart the application.
+			</small>
+			<br>
+			""")
+		self.styleDescription.setWordWrap(True)
+		self.styleDescription.setAlignment(Qt.AlignJustify)
+
+		self.qtStyle = QComboBox(self)
+		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
+		for s in QStyleFactory.keys():
+			if s==config.QT_WINDOW_STYLE: continue
+			self.qtStyle.addItem(s)
+		self.qtStyle.currentIndexChanged.connect(self.styleChange)
+
+		styleLayout = QHBoxLayout()
+		styleLayout.addWidget(QLabel("<b>Widget Style</b> "))
+		styleLayout.addWidget(self.qtStyle)
+		styleLayout.addStretch()
+
+		appearanceLayout = QVBoxLayout()
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
+		appearanceLayout.addWidget(self.styleDescription)
+		appearanceLayout.addLayout(styleLayout)
+		appearanceLayout.addStretch()
+
+		self.appearancePage.setLayout(appearanceLayout)
 
 		# Menubar page
 
@@ -610,51 +656,6 @@ class Dialog(QDialog):
 
 		self.interfacePage.setLayout(interfaceLayout)
 
-		# Subwindow page
-
-		self.appearancePage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Widget Style")
-		entry.widget = self.appearancePage
-		entry.setIcon(QIcon(WIDGET_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.appearancePage)
-
-		self.styleDescription = QLabel("""
-			<small>
-			This setting controls how subwindows and widgets look. Different styles
-			use different sets of widgets. Qt comes with a number of them
-			pre-installed, and you can select which one to use here. The selected
-			widget style will be applied immediately without having
-			to restart the application.
-			</small>
-			<br>
-			""")
-		self.styleDescription.setWordWrap(True)
-		self.styleDescription.setAlignment(Qt.AlignJustify)
-
-		self.qtStyle = QComboBox(self)
-		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
-		for s in QStyleFactory.keys():
-			if s==config.QT_WINDOW_STYLE: continue
-			self.qtStyle.addItem(s)
-		self.qtStyle.currentIndexChanged.connect(self.styleChange)
-
-		styleLayout = QHBoxLayout()
-		styleLayout.addWidget(QLabel("<b>Widget Style</b> "))
-		styleLayout.addWidget(self.qtStyle)
-		styleLayout.addStretch()
-
-		appearanceLayout = QVBoxLayout()
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
-		appearanceLayout.addWidget(self.styleDescription)
-		appearanceLayout.addLayout(styleLayout)
-		appearanceLayout.addStretch()
-
-		self.appearancePage.setLayout(appearanceLayout)
 
 		# Input page
 
