@@ -544,7 +544,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Chat Windows")
+		entry.setText("Subwindows")
 		entry.widget = self.interfacePage
 		entry.setIcon(QIcon(INTERFACE_ICON))
 		self.selector.addItem(entry)
@@ -1065,6 +1065,7 @@ class Dialog(QDialog):
 		systrayLayout.addLayout(noticeMode)
 		systrayLayout.addLayout(discLay)
 		systrayLayout.addStretch()
+		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(QLabel(' '))
 
