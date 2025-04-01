@@ -585,11 +585,11 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
 		self.topicDisplay.stateChanged.connect(self.topicChange)
 
-		self.topicTitleDisplay = QCheckBox("Show channel topic in window title",self)
+		self.topicTitleDisplay = QCheckBox("Show channel topic in subwindow title",self)
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
 		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
 
-		self.topicBold = QCheckBox("Show channel topic in bold",self)
+		self.topicBold = QCheckBox("Show channel topic display in bold",self)
 		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
 		self.topicBold.stateChanged.connect(self.titleChange)
 
@@ -601,8 +601,8 @@ class Dialog(QDialog):
 		interfaceLayout.addWidget(self.writeScroll)
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel topic display</b>"))
 		interfaceLayout.addWidget(self.topicDisplay)
-		interfaceLayout.addWidget(self.topicTitleDisplay)
 		interfaceLayout.addWidget(self.topicBold)
+		interfaceLayout.addWidget(self.topicTitleDisplay)
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		interfaceLayout.addWidget(self.plainUserLists)
 		interfaceLayout.addWidget(self.showUserlistLeft)
