@@ -1283,6 +1283,9 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
 		config.CHANNEL_TOPIC_BOLD = self.topicBold.isChecked()
 
+		# Get current active window
+		current_window = self.parent.MDI.activeSubWindow()
+
 		self.parent.app.setStyle(self.qt_style)
 
 		if config.TIMESTAMP_24_HOUR:
@@ -1335,6 +1338,9 @@ class Dialog(QDialog):
 
 		# Set the widget font
 		self.parent.setFont(self.parent.application_font)
+
+		# Set active window back
+		self.parent.MDI.setActiveSubWindow(current_window)
 
 		# Close the dialog
 		self.close()
