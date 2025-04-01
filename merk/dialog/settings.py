@@ -627,17 +627,11 @@ class Dialog(QDialog):
 
 		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.topicDisplay = QCheckBox("Show channel info/topic display",self)
-		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
-		self.topicDisplay.stateChanged.connect(self.topicChange)
-
 		self.topicTitleDisplay = QCheckBox("Show channel topic in subwindow title",self)
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
 		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
 
-		self.topicBold = QCheckBox("Show channel topic display in bold",self)
-		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
-		self.topicBold.stateChanged.connect(self.titleChange)
+		
 
 		interfaceLayout = QVBoxLayout()
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
@@ -645,9 +639,6 @@ class Dialog(QDialog):
 		interfaceLayout.addWidget(self.showChanUptime)
 		interfaceLayout.addWidget(self.showInfo)
 		interfaceLayout.addWidget(self.writeScroll)
-		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel topic display</b>"))
-		interfaceLayout.addWidget(self.topicDisplay)
-		interfaceLayout.addWidget(self.topicBold)
 		interfaceLayout.addWidget(self.topicTitleDisplay)
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		interfaceLayout.addWidget(self.plainUserLists)
@@ -656,6 +647,59 @@ class Dialog(QDialog):
 
 		self.interfacePage.setLayout(interfaceLayout)
 
+		# Channel info page
+
+		self.channelInfoPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Channels")
+		entry.widget = self.channelInfoPage
+		entry.setIcon(QIcon(CHANNEL_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.channelInfoPage)
+
+		self.topicDisplay = QCheckBox("Show channel information display",self)
+		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
+		self.topicDisplay.stateChanged.connect(self.topicChange)
+
+		self.topicBold = QCheckBox("Show channel topic in bold",self)
+		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
+		self.topicBold.stateChanged.connect(self.titleChange)
+
+		self.channelName = QCheckBox("Show channel name and modes",self)
+		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
+		self.channelName.stateChanged.connect(self.topicChange)
+
+		self.showBanlist = QCheckBox("Show channel banlist",self)
+		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
+		self.showBanlist.stateChanged.connect(self.topicChange)
+
+		self.channelDescription = QLabel("""
+			<small>
+			The channel information display is a bar shown at the top of
+			every channel window that displays the channel name, the channel
+			topic, and the channel banlist. The channel topic can be changed
+			or edited with it (if you have the right permissions) by clicking
+			on the topic and editing it. Here, the
+			channel information display can be customized or turned off.
+			</small>
+			<br>
+			""")
+		self.channelDescription.setWordWrap(True)
+		self.channelDescription.setAlignment(Qt.AlignJustify)
+
+		menuLayout = QVBoxLayout()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel info display</b>"))
+		menuLayout.addWidget(self.channelDescription)
+		menuLayout.addWidget(self.topicDisplay)
+		menuLayout.addWidget(self.topicBold)
+		menuLayout.addWidget(self.channelName)
+		menuLayout.addWidget(self.showBanlist)
+		menuLayout.addStretch()
+
+		self.channelInfoPage.setLayout(menuLayout)
 
 		# Input page
 
@@ -1075,6 +1119,7 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(QLabel(' '))
 
 		self.systrayPage.setLayout(systrayLayout)
 
@@ -1282,6 +1327,8 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
 		config.CHANNEL_TOPIC_BOLD = self.topicBold.isChecked()
+		config.SHOW_CHANNEL_NAME_AND_MODES = self.channelName.isChecked()
+		config.SHOW_BANLIST_MENU = self.showBanlist.isChecked()
 
 		# Get current active window
 		current_window = self.parent.MDI.activeSubWindow()
@@ -1329,6 +1376,7 @@ class Dialog(QDialog):
 
 		if self.titleChange:
 			self.parent.refreshAllTopic()
+			self.parent.showAllTopic()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

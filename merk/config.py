@@ -118,6 +118,9 @@ CHANNEL_TOPIC_BOLD = True
 SHOW_CHANNEL_TOPIC = True
 SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = False
 
+SHOW_CHANNEL_NAME_AND_MODES = True
+SHOW_BANLIST_MENU = True
+
 def save_settings(filename):
 
 	settings = {
@@ -199,12 +202,18 @@ def save_settings(filename):
 		"show_channel_topic_bold": CHANNEL_TOPIC_BOLD,
 		"show_channel_topic_bar": SHOW_CHANNEL_TOPIC,
 		"show_channel_topic_in_window_title": SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE,
+		"show_channel_name_and_modes": SHOW_CHANNEL_NAME_AND_MODES,
+		"show_channel_banlist_menu": SHOW_BANLIST_MENU,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_channel_name_and_modes" in settings:
+		settings["show_channel_name_and_modes"] = SHOW_CHANNEL_NAME_AND_MODES
+	if not "show_channel_banlist_menu" in settings:
+		settings["show_channel_banlist_menu"] = SHOW_BANLIST_MENU
 	if not "show_channel_topic_in_window_title" in settings:
 		settings["show_channel_topic_in_window_title"] = SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 	if not "show_channel_topic_bold" in settings:
@@ -443,6 +452,8 @@ def load_settings(filename):
 	global CHANNEL_TOPIC_BOLD
 	global SHOW_CHANNEL_TOPIC
 	global SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
+	global SHOW_CHANNEL_NAME_AND_MODES
+	global SHOW_BANLIST_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -452,6 +463,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_NAME_AND_MODES = settings["show_channel_name_and_modes"]
+		SHOW_BANLIST_MENU = settings["show_channel_banlist_menu"]
 		SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = settings["show_channel_topic_in_window_title"]
 		CHANNEL_TOPIC_BOLD = settings["show_channel_topic_bold"]
 		SHOW_CHANNEL_TOPIC = settings["show_channel_topic_bar"]

@@ -399,6 +399,12 @@ class Window(QMainWindow):
 			if not config.SHOW_CHANNEL_TOPIC:
 				self.hideTopic()
 
+			if not config.SHOW_CHANNEL_NAME_AND_MODES:
+				self.channel_mode_display.hide()
+
+			if not config.SHOW_BANLIST_MENU:
+				self.banlist_menu.hide()
+
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
@@ -531,8 +537,15 @@ class Window(QMainWindow):
 		self.topic.hide()
 
 	def showTopic(self):
-		self.banlist_menu.show()
+		if config.SHOW_BANLIST_MENU:
+			if len(self.banlist)>0: self.banlist_menu.show()
+		else:
+			self.banlist_menu.hide()
 		self.channel_mode_display.show()
+		if config.SHOW_CHANNEL_NAME_AND_MODES:
+			self.channel_mode_display.show()
+		else:
+			self.channel_mode_display.hide()
 		self.topic.show()
 
 	def tickUptime(self,uptime):
@@ -574,7 +587,7 @@ class Window(QMainWindow):
 		self.banlist_menu.setMenu(buildBanMenu(self,self.client))
 
 		if len(self.banlist)>0:
-			self.banlist_menu.show()
+			if config.SHOW_BANLIST_MENU: self.banlist_menu.show()
 		else:
 			self.banlist_menu.hide()
 
