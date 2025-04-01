@@ -679,7 +679,8 @@ class Dialog(QDialog):
 		self.channelDescription = QLabel("""
 			<small>
 			The channel information display is a bar shown at the top of
-			every channel window that displays the channel name, the channel
+			every channel window that displays the channel name, any modes set
+			on the channel, the channel
 			topic, and the channel banlist. The channel topic can be changed
 			or edited with it (if you have the right permissions) by clicking
 			on the topic and editing it. Here, the
@@ -691,7 +692,7 @@ class Dialog(QDialog):
 		self.channelDescription.setAlignment(Qt.AlignJustify)
 
 		menuLayout = QVBoxLayout()
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel info display</b>"))
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
 		menuLayout.addWidget(self.topicDisplay)
 		menuLayout.addWidget(self.topicBold)
