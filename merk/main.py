@@ -1404,6 +1404,16 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
+
+					if config.CHANNEL_TOPIC_BOLD:
+						font = QFont()
+						font.setBold(True)
+						c.topic.setFont(font)
+					else:
+						font = QFont()
+						font.setBold(False)
+						c.topic.setFont(font)
+
 					c.topic.refresh()
 
 	def getAllChatNames(self):

@@ -589,6 +589,10 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
 		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
 
+		self.topicBold = QCheckBox("Show channel topic in bold",self)
+		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
+		self.topicBold.stateChanged.connect(self.titleChange)
+
 		interfaceLayout = QVBoxLayout()
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
 		interfaceLayout.addWidget(self.showUptime)
@@ -596,6 +600,7 @@ class Dialog(QDialog):
 		interfaceLayout.addWidget(self.showInfo)
 		interfaceLayout.addWidget(self.topicDisplay)
 		interfaceLayout.addWidget(self.topicTitleDisplay)
+		interfaceLayout.addWidget(self.topicBold)
 		interfaceLayout.addWidget(self.writeScroll)
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		interfaceLayout.addWidget(self.plainUserLists)
@@ -1274,6 +1279,7 @@ class Dialog(QDialog):
 		config.QT_WINDOW_STYLE = self.qt_style
 		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
+		config.CHANNEL_TOPIC_BOLD = self.topicBold.isChecked()
 
 		self.parent.app.setStyle(self.qt_style)
 
