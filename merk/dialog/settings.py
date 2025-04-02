@@ -420,6 +420,12 @@ class Dialog(QDialog):
 		versionLayout.addWidget(versionLabel)
 		versionLayout.addStretch()
 
+		self.showInfo = QCheckBox("Show user info on all chat\nwindows",self)
+		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
+		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
+
+		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
 		applicationLayout.addLayout(versionLayout)
@@ -427,6 +433,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
+		applicationLayout.addWidget(self.showInfo)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
@@ -598,50 +605,6 @@ class Dialog(QDialog):
 		connectionsLayout.addStretch()
 
 		self.connectionsPage.setLayout(connectionsLayout)
-
-		# Interface page
-
-		self.interfacePage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Subwindows")
-		entry.widget = self.interfacePage
-		entry.setIcon(QIcon(INTERFACE_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.interfacePage)
-
-		self.showUptime = QCheckBox("Show connection uptime",self)
-		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
-		self.showUptime.stateChanged.connect(self.changedSetting)
-
-		self.showChanUptime = QCheckBox("Show channel uptime",self)
-		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
-		self.showChanUptime.stateChanged.connect(self.changedSetting)
-
-		self.showInfo = QCheckBox("Show user info on all chat\nwindows",self)
-		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
-		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
-
-		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		
-		self.writeScroll = QCheckBox("Always scroll chat to bottom\nwhen displaying text",self)
-		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
-		self.writeScroll.stateChanged.connect(self.changedSetting)
-
-		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		interfaceLayout = QVBoxLayout()
-		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
-		interfaceLayout.addWidget(self.showUptime)
-		interfaceLayout.addWidget(self.showChanUptime)
-		interfaceLayout.addWidget(self.showInfo)
-		interfaceLayout.addWidget(self.writeScroll)
-		interfaceLayout.addStretch()
-
-		self.interfacePage.setLayout(interfaceLayout)
 
 		# Channel info page
 
@@ -1003,12 +966,19 @@ class Dialog(QDialog):
 
 		self.writePrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.writeScroll = QCheckBox("Always scroll chat to bottom\nwhen displaying text",self)
+		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
+		self.writeScroll.stateChanged.connect(self.changedSetting)
+
+		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.createWindow)
 		messageLayout.addWidget(self.writePrivate)
+		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -1019,7 +989,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Timestamps")
+		entry.setText("Time")
 		entry.widget = self.timestampPage
 		entry.setIcon(QIcon(TIMESTAMP_ICON))
 		self.selector.addItem(entry)
@@ -1038,11 +1008,22 @@ class Dialog(QDialog):
 		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
 		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
 
+		self.showUptime = QCheckBox("Show connection uptime",self)
+		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
+		self.showUptime.stateChanged.connect(self.changedSetting)
+
+		self.showChanUptime = QCheckBox("Show channel uptime",self)
+		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
+		self.showChanUptime.stateChanged.connect(self.changedSetting)
+
 		timestampLayout = QVBoxLayout()
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
 		timestampLayout.addWidget(self.showTimestamps)
 		timestampLayout.addWidget(self.timestamp24hour)
 		timestampLayout.addWidget(self.timestampSeconds)
+		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime display</b>"))
+		timestampLayout.addWidget(self.showUptime)
+		timestampLayout.addWidget(self.showChanUptime)
 		timestampLayout.addStretch()
 
 		self.timestampPage.setLayout(timestampLayout)
