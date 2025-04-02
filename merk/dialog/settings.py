@@ -1366,15 +1366,11 @@ class Dialog(QDialog):
 
 		self.parent.buildMenu()
 
-		if self.topicChange:
-			if config.SHOW_CHANNEL_TOPIC:
-				self.parent.showAllTopic()
-			else:
-				self.parent.hideAllTopic()
-
-		if self.titleChange:
-			self.parent.refreshAllTopic()
+		self.parent.refreshAllTopic()
+		if config.SHOW_CHANNEL_TOPIC:
 			self.parent.showAllTopic()
+		else:
+			self.parent.hideAllTopic()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
