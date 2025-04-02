@@ -420,11 +420,9 @@ class Dialog(QDialog):
 		versionLayout.addWidget(versionLabel)
 		versionLayout.addStretch()
 
-		self.showInfo = QCheckBox("Show user info on all chat\nwindows",self)
+		self.showInfo = QCheckBox("Show user info on all chat windows",self)
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
 		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
-
-		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
