@@ -590,6 +590,7 @@ class Window(QMainWindow):
 
 		if len(self.banlist)>0:
 			if config.SHOW_BANLIST_MENU: self.banlist_menu.show()
+			if not config.SHOW_CHANNEL_TOPIC: self.banlist_menu.hide()
 		else:
 			self.banlist_menu.hide()
 

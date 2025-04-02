@@ -345,7 +345,7 @@ class Merk(QMainWindow):
 
 		self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
 
-		entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" Install",self)
+		entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
