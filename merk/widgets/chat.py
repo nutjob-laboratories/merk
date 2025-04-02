@@ -159,6 +159,8 @@ class Window(QMainWindow):
 			self.serverUptime = QLabel("<b>00:00:00</b>")
 			serverBar.addWidget(self.serverUptime)
 
+			if not config.SHOW_CONNECTION_UPTIME: self.serverUptime.hide()
+
 			sep1 = QFrame()
 			sep1.setFrameShape(QFrame.VLine)
 			sep1.setFrameShadow(QFrame.Sunken)
