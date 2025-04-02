@@ -343,10 +343,6 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.openSettings)
 		self.trayMenu.addAction(entry)
 
-		entry = QAction(QIcon(ABOUT_ICON),"About",self)
-		entry.triggered.connect(self.showAbout)
-		self.trayMenu.addAction(entry)
-
 		self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
 
 		entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME,self)
@@ -386,6 +382,10 @@ class Merk(QMainWindow):
 		self.trayLinks.addAction(entry)
 
 		self.trayMenu.addSeparator()
+
+		entry = QAction(QIcon(ABOUT_ICON),"About",self)
+		entry.triggered.connect(self.showAbout)
+		self.trayMenu.addAction(entry)
 
 		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
 		entry.triggered.connect(self.close)
