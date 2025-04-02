@@ -270,6 +270,21 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 
+	def mainTopicChange(self, i):
+		self.refreshTopics = True
+
+		if self.topicDisplay.isChecked():
+			self.topicBold.setEnabled(True)
+			self.channelName.setEnabled(True)
+			self.showBanlist.setEnabled(True)
+		else:
+			self.topicBold.setEnabled(False)
+			self.channelName.setEnabled(False)
+			self.showBanlist.setEnabled(False)
+
+		self.selector.setFocus()
+		self.changed.show()
+
 
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
@@ -662,7 +677,7 @@ class Dialog(QDialog):
 
 		self.topicDisplay = QCheckBox("Show channel information display",self)
 		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
-		self.topicDisplay.stateChanged.connect(self.topicChange)
+		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
 
 		self.topicBold = QCheckBox("Show channel topic in bold",self)
 		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
@@ -675,6 +690,11 @@ class Dialog(QDialog):
 		self.showBanlist = QCheckBox("Show channel banlist",self)
 		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
 		self.showBanlist.stateChanged.connect(self.topicChange)
+
+		if not config.SHOW_CHANNEL_TOPIC:
+			self.topicBold.setEnabled(False)
+			self.channelName.setEnabled(False)
+			self.showBanlist.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
