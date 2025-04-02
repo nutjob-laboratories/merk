@@ -1509,8 +1509,13 @@ class Window(QMainWindow):
 			# Move the userlist so it's along side the chat display
 			self.userlist.move(chat_width + 3,self.userlist.y())
 
+			ulistIndex = self.horizontalSplitter.indexOf(self.userlist)
+			cIndex = self.horizontalSplitter.indexOf(self.chat)
+
 			# Move the QSplitter handle to match the new widget sizes
 			if config.SHOW_USERLIST_ON_LEFT:
+				#self.horizontalSplitter.replaceWidget(index1, widget2)
+				#self.horizontalSplitter.replaceWidget(index2, widget1)
 				self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
 			else:
 				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
