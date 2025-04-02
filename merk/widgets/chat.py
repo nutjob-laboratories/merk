@@ -1509,13 +1509,8 @@ class Window(QMainWindow):
 			# Move the userlist so it's along side the chat display
 			self.userlist.move(chat_width + 3,self.userlist.y())
 
-			ulistIndex = self.horizontalSplitter.indexOf(self.userlist)
-			cIndex = self.horizontalSplitter.indexOf(self.chat)
-
 			# Move the QSplitter handle to match the new widget sizes
 			if config.SHOW_USERLIST_ON_LEFT:
-				#self.horizontalSplitter.replaceWidget(index1, widget2)
-				#self.horizontalSplitter.replaceWidget(index2, widget1)
 				self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
 			else:
 				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
@@ -1524,6 +1519,36 @@ class Window(QMainWindow):
 			self.input.setFocus()
 
 		return super(Window, self).resizeEvent(event)
+
+	def swapUserlist(self):
+		self.userlist.setParent(None)
+		self.chat.setParent(None)
+		if config.SHOW_USERLIST_ON_LEFT:
+			self.horizontalSplitter.addWidget(self.userlist)
+			self.horizontalSplitter.addWidget(self.chat)
+		else:
+			self.horizontalSplitter.addWidget(self.chat)
+			self.horizontalSplitter.addWidget(self.userlist)
+
+		# Calculate the width of the chat display widget
+		chat_width = self.width() - self.userlist_width - (CHAT_WINDOW_WIDGET_SPACING * 3)
+
+		# Resize the userlist widget with the width value saved in
+		# the splitter resize event
+		self.userlist.resize(self.userlist_width,self.userlist.height())
+
+		# Resize the chat display to compensate for the changed
+		# userlist size
+		self.chat.resize(chat_width,self.chat.height())
+
+		# Move the userlist so it's along side the chat display
+		self.userlist.move(chat_width + 3,self.userlist.y())
+
+		# Move the QSplitter handle to match the new widget sizes
+		if config.SHOW_USERLIST_ON_LEFT:
+			self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
+		else:
+			self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
 
 def buildBanMenu(self,client):
 

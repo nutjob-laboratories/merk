@@ -1539,6 +1539,13 @@ class Merk(QMainWindow):
 		u.setUrl(url)
 		QDesktopServices.openUrl(u)
 
+	def swapAllUserlists(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					c.swapUserlist()
+
 
 	# |--------------|
 	# | MENU METHODS |

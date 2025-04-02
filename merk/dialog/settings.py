@@ -105,9 +105,9 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.selector.setFocus()
 
-	def restartSetting(self,state):
+	def swapUserlistSetting(self,state):
 		self.changed.show()
-		self.restart.show()
+		self.swapUserlists = True
 		self.selector.setFocus()
 
 	def changedSettingRerender(self,state):
@@ -321,6 +321,7 @@ class Dialog(QDialog):
 
 		self.refreshTopics = False
 		self.refreshTitles = False
+		self.swapUserlists = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -332,8 +333,7 @@ class Dialog(QDialog):
 		f.setBold(True)
 		self.selector.setFont(f)
 
-		self.changed = QLabel("<small><i>Settings changed.</i></small>")
-		self.restart = QLabel("<small><i>Restart required.</i></small>")
+		self.changed = QLabel("<i>Settings changed.</i>")
 
 		fm = QFontMetrics(self.font())
 		fwidth = fm.width('X') * 27
@@ -659,7 +659,7 @@ class Dialog(QDialog):
 
 		self.showUserlistLeft = QCheckBox("Display user lists on the left\nhand side of channel windows",self)
 		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
-		self.showUserlistLeft.stateChanged.connect(self.restartSetting)
+		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
 
 		self.showUserlistLeft.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
@@ -1219,7 +1219,6 @@ class Dialog(QDialog):
 		self.syntaxPage.setLayout(syntaxLayout)
 
 		self.changed.hide()
-		self.restart.hide()
 
 		# Buttons
 
@@ -1234,11 +1233,8 @@ class Dialog(QDialog):
 
 		notificationLayout = QVBoxLayout()
 		notificationLayout.addWidget(self.changed)
-		notificationLayout.addWidget(self.restart)
 
 		dialogButtonsLayout = QHBoxLayout()
-		# dialogButtonsLayout.addWidget(self.changed)
-		# dialogButtonsLayout.addWidget(self.restart)
 		dialogButtonsLayout.addLayout(notificationLayout)
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(saveButton)
@@ -1326,6 +1322,9 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_NAME_AND_MODES = self.channelName.isChecked()
 		config.SHOW_BANLIST_MENU = self.showBanlist.isChecked()
 
+		# Save new settings to the config file
+		config.save_settings(config.CONFIG_FILE)
+
 		# Get current active window
 		current_window = self.parent.MDI.activeSubWindow()
 
@@ -1370,8 +1369,7 @@ class Dialog(QDialog):
 		else:
 			self.parent.hideAllTopic()
 
-		# Save new settings to the config file
-		config.save_settings(config.CONFIG_FILE)
+		if self.swapUserlists: self.parent.swapAllUserlists()
 
 		# Set the application font
 		self.parent.app.setFont(self.parent.application_font)
