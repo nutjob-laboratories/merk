@@ -620,33 +620,18 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
-		self.plainUserLists = QCheckBox("Plain user lists",self)
-		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
-		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
-
 		self.showInfo = QCheckBox("Show user info on all chat\nwindows",self)
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
 		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
 
 		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showUserlistLeft = QCheckBox("Display user lists on the left\nhand side of channel windows",self)
-		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
-		self.showUserlistLeft.stateChanged.connect(self.restartSetting)
-
-		self.showUserlistLeft.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.writeScroll = QCheckBox("Always scroll chat to bottom\nwhen displaying text",self)
 		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
 		self.writeScroll.stateChanged.connect(self.changedSetting)
 
 		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.topicTitleDisplay = QCheckBox("Show channel topic in subwindow title",self)
-		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
-		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
-
-		
 
 		interfaceLayout = QVBoxLayout()
 		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>window settings</b>"))
@@ -654,10 +639,6 @@ class Dialog(QDialog):
 		interfaceLayout.addWidget(self.showChanUptime)
 		interfaceLayout.addWidget(self.showInfo)
 		interfaceLayout.addWidget(self.writeScroll)
-		interfaceLayout.addWidget(self.topicTitleDisplay)
-		interfaceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
-		interfaceLayout.addWidget(self.plainUserLists)
-		interfaceLayout.addWidget(self.showUserlistLeft)
 		interfaceLayout.addStretch()
 
 		self.interfacePage.setLayout(interfaceLayout)
@@ -711,6 +692,20 @@ class Dialog(QDialog):
 		self.channelDescription.setWordWrap(True)
 		self.channelDescription.setAlignment(Qt.AlignJustify)
 
+		self.topicTitleDisplay = QCheckBox("Show channel topic in subwindow title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
+		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
+
+		self.showUserlistLeft = QCheckBox("Display user lists on the left\nhand side of channel windows",self)
+		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
+		self.showUserlistLeft.stateChanged.connect(self.restartSetting)
+
+		self.showUserlistLeft.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.plainUserLists = QCheckBox("Plain user lists",self)
+		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
+		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -718,6 +713,11 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.topicBold)
 		menuLayout.addWidget(self.channelName)
 		menuLayout.addWidget(self.showBanlist)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
+		menuLayout.addWidget(self.plainUserLists)
+		menuLayout.addWidget(self.showUserlistLeft)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -1137,10 +1137,6 @@ class Dialog(QDialog):
 		systrayLayout.addLayout(noticeMode)
 		systrayLayout.addLayout(discLay)
 		systrayLayout.addStretch()
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(QLabel(' '))
 
 		self.systrayPage.setLayout(systrayLayout)
 
