@@ -800,29 +800,6 @@ class Dialog(QDialog):
 		self.historyDescription.setWordWrap(True)
 		self.historyDescription.setAlignment(Qt.AlignJustify)
 
-		inputLayout = QVBoxLayout()
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
-		inputLayout.addWidget(self.enableEmojis)
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
-		inputLayout.addWidget(self.historyDescription)
-		inputLayout.addLayout(historyLayout)
-		inputLayout.addStretch()
-
-		self.inputPage.setLayout(inputLayout)
-
-		# Spellcheck page
-
-		self.spellcheckPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Spellcheck")
-		entry.widget = self.spellcheckPage
-		entry.setIcon(QIcon(SPELLCHECK_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.spellcheckPage)
-
 		self.enableSpellcheck = QCheckBox("Enable spellcheck",self)
 		if config.ENABLE_SPELLCHECK: self.enableSpellcheck.setChecked(True)
 		self.enableSpellcheck.stateChanged.connect(self.changedSpellcheck)
@@ -870,15 +847,20 @@ class Dialog(QDialog):
 		self.spellcheckDescription.setWordWrap(True)
 		self.spellcheckDescription.setAlignment(Qt.AlignJustify)
 
-		spellcheckLayout = QVBoxLayout()
-		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
-		spellcheckLayout.addWidget(self.enableSpellcheck)
-		spellcheckLayout.addWidget(self.spellcheckDescription)
-		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
-		spellcheckLayout.addLayout(lanSubLayout)
-		spellcheckLayout.addStretch()
+		inputLayout = QVBoxLayout()
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
+		inputLayout.addWidget(self.enableEmojis)
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
+		inputLayout.addWidget(self.historyDescription)
+		inputLayout.addLayout(historyLayout)
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
+		inputLayout.addWidget(self.enableSpellcheck)
+		inputLayout.addWidget(self.spellcheckDescription)
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
+		inputLayout.addLayout(lanSubLayout)
+		inputLayout.addStretch()
 
-		self.spellcheckPage.setLayout(spellcheckLayout)
+		self.inputPage.setLayout(inputLayout)
 
 		# Autocomplete page
 
