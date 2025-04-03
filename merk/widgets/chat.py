@@ -512,6 +512,10 @@ class Window(QMainWindow):
 
 		self.settingsMenu.clear()
 
+		entry = QAction(QIcon(STYLE_ICON),"Edit style",self)
+		entry.triggered.connect(self.pressedStyleButton)
+		self.settingsMenu.addAction(entry)
+
 		if config.ENABLE_SPELLCHECK:
 		# Spellcheck Button
 			self.spellcheckMenu = QMenu("Spellcheck")
@@ -538,11 +542,7 @@ class Window(QMainWindow):
 			if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
 			if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
 
-		entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
-		entry.triggered.connect(self.pressedStyleButton)
-		self.settingsMenu.addAction(entry)
-
-		if config.ENABLE_SPELLCHECK: self.settingsMenu.addMenu(self.spellcheckMenu)
+			self.settingsMenu.addMenu(self.spellcheckMenu)
 
 	def hideTopic(self):
 		self.banlist_menu.hide()
