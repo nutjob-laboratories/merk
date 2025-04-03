@@ -424,11 +424,6 @@ class Dialog(QDialog):
 		self.stack.addWidget(self.applicationPage)
 		self.stack.setCurrentWidget(self.applicationPage)
 
-		logo = QLabel()
-		pixmap = QPixmap(SPLASH_LOGO)
-		logo.setPixmap(pixmap)
-		logo.setAlignment(Qt.AlignCenter)
-
 		f = self.font()
 		fs = f.toString()
 		pfs = fs.split(',')
@@ -477,20 +472,31 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
-		versionLabel = QLabel('<b>Version '+APPLICATION_VERSION+"</b>")
-		versionLayout = QHBoxLayout()
-		versionLayout.addStretch()
-		versionLayout.addWidget(versionLabel)
-		versionLayout.addStretch()
-
 		self.showInfo = QCheckBox("Show user info on all chat windows",self)
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
 		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
 
+		self.showTimestamps = QCheckBox("Show timestamps",self)
+		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
+		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
+
+		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
+		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
+		self.timestamp24hour.stateChanged.connect(self.changedSettingRerender)
+
+		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
+		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
+		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
+
+		self.showUptime = QCheckBox("Show connection uptime",self)
+		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
+		self.showUptime.stateChanged.connect(self.changedSetting)
+
+		self.showChanUptime = QCheckBox("Show channel uptime",self)
+		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
+		self.showChanUptime.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(logo)
-		applicationLayout.addLayout(versionLayout)
-		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
@@ -499,6 +505,13 @@ class Dialog(QDialog):
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
 		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
+		applicationLayout.addWidget(self.showTimestamps)
+		applicationLayout.addWidget(self.timestamp24hour)
+		applicationLayout.addWidget(self.timestampSeconds)
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime display</b>"))
+		applicationLayout.addWidget(self.showUptime)
+		applicationLayout.addWidget(self.showChanUptime)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -1041,51 +1054,6 @@ class Dialog(QDialog):
 
 		self.messagePage.setLayout(messageLayout)
 
-		# Timestamps
-
-		self.timestampPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Time")
-		entry.widget = self.timestampPage
-		entry.setIcon(QIcon(TIMESTAMP_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.timestampPage)
-
-		self.showTimestamps = QCheckBox("Show timestamps",self)
-		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
-		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
-
-		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
-		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
-		self.timestamp24hour.stateChanged.connect(self.changedSettingRerender)
-
-		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
-		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
-		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
-
-		self.showUptime = QCheckBox("Show connection uptime",self)
-		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
-		self.showUptime.stateChanged.connect(self.changedSetting)
-
-		self.showChanUptime = QCheckBox("Show channel uptime",self)
-		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
-		self.showChanUptime.stateChanged.connect(self.changedSetting)
-
-		timestampLayout = QVBoxLayout()
-		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
-		timestampLayout.addWidget(self.showTimestamps)
-		timestampLayout.addWidget(self.timestamp24hour)
-		timestampLayout.addWidget(self.timestampSeconds)
-		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime display</b>"))
-		timestampLayout.addWidget(self.showUptime)
-		timestampLayout.addWidget(self.showChanUptime)
-		timestampLayout.addStretch()
-
-		self.timestampPage.setLayout(timestampLayout)
-
 		# Systray page
 
 		self.systrayPage = QWidget()
@@ -1291,6 +1259,11 @@ class Dialog(QDialog):
 
 		# Finalize layout
 
+		logo = QLabel()
+		pixmap = QPixmap(VERTICAL_SPLASH_LOGO)
+		logo.setPixmap(pixmap)
+		logo.setAlignment(Qt.AlignCenter)
+
 		notificationLayout = QVBoxLayout()
 		notificationLayout.addWidget(self.changed)
 
@@ -1300,8 +1273,14 @@ class Dialog(QDialog):
 		dialogButtonsLayout.addWidget(self.saveButton)
 		dialogButtonsLayout.addWidget(cancelButton)
 
+		leftLayout = QVBoxLayout()
+		leftLayout.addWidget(self.selector)
+		leftLayout.addWidget(logo)
+		leftLayout.addWidget(QLabel("<small><center><b>Version "+APPLICATION_VERSION+"</b></center></small>"))
+
 		mainLayout = QHBoxLayout()
-		mainLayout.addWidget(self.selector)
+		# mainLayout.addWidget(self.selector)
+		mainLayout.addLayout(leftLayout)
 		mainLayout.addWidget(self.stack)
 
 		finalLayout = QVBoxLayout()

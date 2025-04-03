@@ -209,6 +209,8 @@ RUN_MENU_ICON = ":/icon-run_menu.png"
 MENU_ICON = ":/icon-menu.png"
 WIDGET_ICON = ":/icon-widget.png"
 
+VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
+
 # Load in autocomplete data
 EMOJI_AUTOCOMPLETE = []
 with open(EMOJI_ALIAS_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:
