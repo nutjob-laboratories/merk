@@ -215,6 +215,8 @@ class Window(QMainWindow):
 
 			if not config.SHOW_CHANNEL_UPTIME: self.channelUptime.hide()
 
+			if not config.SHOW_USERLIST: self.userlist.hide()
+
 		# Create chat display widget
 		self.chat = QTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
@@ -1515,10 +1517,18 @@ class Window(QMainWindow):
 			else:
 				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
 
+			if not config.SHOW_USERLIST: self.userlist.hide()
+
 			# Move focus back to the input widget
 			self.input.setFocus()
 
 		return super(Window, self).resizeEvent(event)
+
+	def showHideUserlist(self):
+		if config.SHOW_USERLIST:
+			self.userlist.show()
+		else:
+			self.userlist.hide()
 
 	def swapUserlist(self):
 		self.userlist.setParent(None)

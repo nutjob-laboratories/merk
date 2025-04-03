@@ -1546,6 +1546,13 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					c.swapUserlist()
 
+	def toggleAllUserlists(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					c.showHideUserlist()
+
 
 	# |--------------|
 	# | MENU METHODS |
