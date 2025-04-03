@@ -526,7 +526,7 @@ class Window(QMainWindow):
 		self.settingsMenu.clear()
 
 		if self.window_type!=SERVER_WINDOW:
-			entry = QAction(QIcon(STYLE_ICON),self.name+"'s style",self)
+			entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
 			entry.triggered.connect(self.pressedStyleButton)
 			self.settingsMenu.addAction(entry)
 
@@ -537,6 +537,10 @@ class Window(QMainWindow):
 					entry = QAction(QIcon(INTERFACE_ICON),"Show userlist",self)
 				entry.triggered.connect(self.menuHideUserlist)
 				self.settingsMenu.addAction(entry)
+
+		entry = QAction(QIcon(RUN_ICON),"Run script",self)
+		entry.triggered.connect(self.loadScript)
+		self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
 		# Spellcheck Button
