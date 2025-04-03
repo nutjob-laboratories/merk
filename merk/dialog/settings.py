@@ -319,6 +319,19 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def changedUserlistVisibility(self,i):
+		self.toggleUserlist = True
+
+		if self.showUserlists.isChecked():
+			self.plainUserLists.setEnabled(True)
+			self.showUserlistLeft.setEnabled(True)
+		else:
+			self.plainUserLists.setEnabled(False)
+			self.showUserlistLeft.setEnabled(False)
+
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
 
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
@@ -356,6 +369,7 @@ class Dialog(QDialog):
 		self.refreshTopics = False
 		self.refreshTitles = False
 		self.swapUserlists = False
+		self.toggleUserlist = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -701,6 +715,14 @@ class Dialog(QDialog):
 		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
 		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
+		self.showUserlists = QCheckBox("Show user lists",self)
+		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
+		self.showUserlists.stateChanged.connect(self.changedUserlistVisibility)
+
+		if not config.SHOW_USERLIST:
+			self.plainUserLists.setEnabled(False)
+			self.showUserlistLeft.setEnabled(False)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -709,6 +731,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.channelName)
 		menuLayout.addWidget(self.showBanlist)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
+		menuLayout.addWidget(self.showUserlists)
 		menuLayout.addWidget(self.plainUserLists)
 		menuLayout.addWidget(self.showUserlistLeft)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
@@ -1355,6 +1378,7 @@ class Dialog(QDialog):
 		config.CHANNEL_TOPIC_BOLD = self.topicBold.isChecked()
 		config.SHOW_CHANNEL_NAME_AND_MODES = self.channelName.isChecked()
 		config.SHOW_BANLIST_MENU = self.showBanlist.isChecked()
+		config.SHOW_USERLIST = self.showUserlists.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
@@ -1404,6 +1428,8 @@ class Dialog(QDialog):
 			self.parent.hideAllTopic()
 
 		if self.swapUserlists: self.parent.swapAllUserlists()
+
+		if self.toggleUserlist: self.parent.toggleAllUserlists()
 
 		# Set the application font
 		self.parent.app.setFont(self.parent.application_font)
