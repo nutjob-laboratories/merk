@@ -526,7 +526,7 @@ class Window(QMainWindow):
 		self.settingsMenu.clear()
 
 		if self.window_type!=SERVER_WINDOW:
-			entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+			entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s' style",self)
 			entry.triggered.connect(self.pressedStyleButton)
 			self.settingsMenu.addAction(entry)
 
@@ -1555,6 +1555,7 @@ class Window(QMainWindow):
 			if not config.SHOW_USERLIST:
 				self.userlist.hide()
 				self.userlist_visible = False
+				self.buildInputOptionsMenu()
 
 			# Move focus back to the input widget
 			self.input.setFocus()
@@ -1565,9 +1566,11 @@ class Window(QMainWindow):
 		if config.SHOW_USERLIST:
 			self.userlist.show()
 			self.userlist_visible = True
+			self.buildInputOptionsMenu()
 		else:
 			self.userlist.hide()
 			self.userlist_visible = False
+			self.buildInputOptionsMenu()
 
 	def swapUserlist(self):
 		self.userlist.setParent(None)
