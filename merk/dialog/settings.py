@@ -35,6 +35,12 @@ from .. import widgets
 
 class Dialog(QDialog):
 
+	def boldApply(self):
+		font = QFont()
+		font.setBold(True)
+		if hasattr(self,"saveButton"):
+			self.saveButton.setFont(font)
+
 	def selectorClick(self,item):
 		self.stack.setCurrentWidget(item.widget)
 
@@ -51,6 +57,7 @@ class Dialog(QDialog):
 
 			self.fontLabel.setText(f"<b>{font_name}, {font_size} pt</b>")
 			self.changed.show()
+			self.boldApply()
 		self.selector.setFocus()
 
 	def setWinsize(self):
@@ -61,6 +68,7 @@ class Dialog(QDialog):
 			self.subHeight = x[1]
 			self.sizeLabel.setText(f"<b>{str(self.subWidth)}x{str(self.subHeight)} px</b>")
 			self.changed.show()
+			self.boldApply()
 		self.selector.setFocus()
 
 	def setLogSize(self):
@@ -70,6 +78,7 @@ class Dialog(QDialog):
 			self.logsize = x
 			self.logLabel.setText(f"<b>{str(self.logsize)} lines</b>")
 			self.changed.show()
+			self.boldApply()
 		self.selector.setFocus()
 
 	def setHistorySize(self):
@@ -79,49 +88,59 @@ class Dialog(QDialog):
 			self.historysize = x
 			self.historyLabel.setText(f"<b>{str(self.historysize)} lines</b>")
 			self.changed.show()
+			self.boldApply()
 		self.selector.setFocus()
 
 	def selEnglish(self):
 		self.spellLang = "en"
 		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def selFrench(self):
 		self.spellLang = "fr"
 		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def selGerman(self):
 		self.spellLang = "de"
 		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def selSpanish(self):
 		self.spellLang = "es"
 		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def changedSetting(self,state):
 		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def swapUserlistSetting(self,state):
 		self.changed.show()
+		self.boldApply()
 		self.swapUserlists = True
 		self.selector.setFocus()
 
 	def changedSettingRerender(self,state):
 		self.changed.show()
+		self.boldApply()
 		self.rerender = True
 		self.selector.setFocus()
 
 	def changedSettingRerenderUserlists(self,state):
 		self.changed.show()
+		self.boldApply()
 		self.rerenderUsers = True
 		self.selector.setFocus()
 
 	def changedSettingRerenderNick(self,state):
 		self.changed.show()
+		self.boldApply()
 		self.rerenderNick = True
 		self.selector.setFocus()
 
@@ -134,6 +153,7 @@ class Dialog(QDialog):
 		self.partMsg.setText("<b>"+str(info)+"</b>")
 
 		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def syntaxChanged(self,data):
@@ -145,32 +165,38 @@ class Dialog(QDialog):
 			self.SYNTAX_COMMENT_COLOR = color
 			self.SYNTAX_COMMENT_STYLE = style
 			self.changed.show()
+			self.boldApply()
 		elif name=="command":
 			color = data[1][0]
 			style = data[1][1]
 			self.SYNTAX_COMMAND_COLOR = color
 			self.SYNTAX_COMMAND_STYLE = style
 			self.changed.show()
+			self.boldApply()
 		elif name=="channel":
 			color = data[1][0]
 			style = data[1][1]
 			self.SYNTAX_CHANNEL_COLOR = color
 			self.SYNTAX_CHANNEL_STYLE = style
 			self.changed.show()
+			self.boldApply()
 		elif name=="alias":
 			color = data[1][0]
 			style = data[1][1]
 			self.SYNTAX_ALIAS_COLOR = color
 			self.SYNTAX_ALIAS_STYLE = style
 			self.changed.show()
+			self.boldApply()
 		elif name=="fore":
 			color = data[1]
 			self.SYNTAX_FOREGROUND = color
 			self.changed.show()
+			self.boldApply()
 		elif name=="back":
 			color = data[1]
 			self.SYNTAX_BACKGROUND = color
 			self.changed.show()
+			self.boldApply()
 		
 		self.selector.setFocus()
 		
@@ -213,6 +239,7 @@ class Dialog(QDialog):
 			self.systrayMode.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 	def changedSystrayNotification(self,state):
 		if self.systrayNotify.isChecked():
@@ -235,6 +262,7 @@ class Dialog(QDialog):
 			self.systrayMode.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 	def changedMenubarSetting(self,state):
 		if self.menubar.isChecked():
@@ -243,6 +271,7 @@ class Dialog(QDialog):
 			self.menubarFloat.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 	def changedEmoji(self,state):
 		if self.enableEmojis.isChecked():
@@ -251,24 +280,28 @@ class Dialog(QDialog):
 			self.autocompleteEmojis.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 	def styleChange(self, i):
 		self.qt_style = self.qtStyle.itemText(i)
 
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 	def topicChange(self, i):
 		self.refreshTopics = True
 
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 	def titleChange(self, i):
 		self.refreshTitles = True
 
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 	def mainTopicChange(self, i):
 		self.refreshTopics = True
@@ -284,6 +317,7 @@ class Dialog(QDialog):
 
 		self.selector.setFocus()
 		self.changed.show()
+		self.boldApply()
 
 
 	def __init__(self,app=None,parent=None):
@@ -1222,9 +1256,9 @@ class Dialog(QDialog):
 
 		# Buttons
 
-		saveButton = QPushButton("Apply")
-		saveButton.clicked.connect(self.save)
-		saveButton.setAutoDefault(False)
+		self.saveButton = QPushButton("Apply")
+		self.saveButton.clicked.connect(self.save)
+		self.saveButton.setAutoDefault(False)
 
 		cancelButton = QPushButton("Cancel")
 		cancelButton.clicked.connect(self.close)
@@ -1237,7 +1271,7 @@ class Dialog(QDialog):
 		dialogButtonsLayout = QHBoxLayout()
 		dialogButtonsLayout.addLayout(notificationLayout)
 		dialogButtonsLayout.addStretch()
-		dialogButtonsLayout.addWidget(saveButton)
+		dialogButtonsLayout.addWidget(self.saveButton)
 		dialogButtonsLayout.addWidget(cancelButton)
 
 		mainLayout = QHBoxLayout()
