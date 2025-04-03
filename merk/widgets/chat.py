@@ -83,6 +83,8 @@ class Window(QMainWindow):
 
 		self.banlist = []
 
+		self.userlist_visible = True
+
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
 		self.setWindowTitle(self.name)
@@ -215,7 +217,9 @@ class Window(QMainWindow):
 
 			if not config.SHOW_CHANNEL_UPTIME: self.channelUptime.hide()
 
-			if not config.SHOW_USERLIST: self.userlist.hide()
+			if not config.SHOW_USERLIST:
+				self.userlist.hide()
+				self.userlist_visible = False
 
 		# Create chat display widget
 		self.chat = QTextBrowser(self)
@@ -508,6 +512,15 @@ class Window(QMainWindow):
 				self.rerenderChatLog()
 
 
+	def menuHideUserlist(self):
+		if self.userlist.isVisible():
+			self.userlist.hide()
+			self.userlist_visible = False
+		else:
+			self.userlist.show()
+			self.userlist_visible = True
+		self.buildInputOptionsMenu()
+
 	def buildInputOptionsMenu(self):
 
 		self.settingsMenu.clear()
@@ -516,6 +529,14 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(STYLE_ICON),self.name+"'s style",self)
 			entry.triggered.connect(self.pressedStyleButton)
 			self.settingsMenu.addAction(entry)
+
+			if self.window_type==CHANNEL_WINDOW:
+				if self.userlist_visible:
+					entry = QAction(QIcon(INTERFACE_ICON),"Hide userlist",self)
+				else:
+					entry = QAction(QIcon(INTERFACE_ICON),"Show userlist",self)
+				entry.triggered.connect(self.menuHideUserlist)
+				self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
 		# Spellcheck Button
@@ -1527,7 +1548,9 @@ class Window(QMainWindow):
 			else:
 				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
 
-			if not config.SHOW_USERLIST: self.userlist.hide()
+			if not config.SHOW_USERLIST:
+				self.userlist.hide()
+				self.userlist_visible = False
 
 			# Move focus back to the input widget
 			self.input.setFocus()
@@ -1537,8 +1560,10 @@ class Window(QMainWindow):
 	def showHideUserlist(self):
 		if config.SHOW_USERLIST:
 			self.userlist.show()
+			self.userlist_visible = True
 		else:
 			self.userlist.hide()
+			self.userlist_visible = False
 
 	def swapUserlist(self):
 		self.userlist.setParent(None)
