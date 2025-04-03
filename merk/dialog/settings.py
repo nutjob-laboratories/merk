@@ -333,6 +333,21 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def changedSpellcheck(self,i):
+		if self.enableSpellcheck.isChecked():
+			self.englishSC.setEnabled(True)
+			self.frenchSC.setEnabled(True)
+			self.spanishSC.setEnabled(True)
+			self.germanSC.setEnabled(True)
+		else:
+			self.englishSC.setEnabled(False)
+			self.frenchSC.setEnabled(False)
+			self.spanishSC.setEnabled(False)
+			self.germanSC.setEnabled(False)
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -810,7 +825,7 @@ class Dialog(QDialog):
 
 		self.enableSpellcheck = QCheckBox("Enable spellcheck",self)
 		if config.ENABLE_SPELLCHECK: self.enableSpellcheck.setChecked(True)
-		self.enableSpellcheck.stateChanged.connect(self.changedSetting)
+		self.enableSpellcheck.stateChanged.connect(self.changedSpellcheck)
 
 		self.englishSC = QRadioButton("English")
 		self.englishSC.toggled.connect(self.selEnglish)
@@ -828,6 +843,12 @@ class Dialog(QDialog):
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="fr": self.frenchSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="es": self.spanishSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="de": self.germanSC.setChecked(True)
+
+		if not config.ENABLE_SPELLCHECK:
+			self.englishSC.setEnabled(False)
+			self.frenchSC.setEnabled(False)
+			self.spanishSC.setEnabled(False)
+			self.germanSC.setEnabled(False)
 
 		langLayout = QFormLayout()
 		langLayout.addRow(self.englishSC, self.frenchSC)
