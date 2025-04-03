@@ -526,7 +526,7 @@ class Window(QMainWindow):
 		self.settingsMenu.clear()
 
 		if self.window_type!=SERVER_WINDOW:
-			entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s' style",self)
+			entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
 			entry.triggered.connect(self.pressedStyleButton)
 			self.settingsMenu.addAction(entry)
 
