@@ -512,9 +512,10 @@ class Window(QMainWindow):
 
 		self.settingsMenu.clear()
 
-		entry = QAction(QIcon(STYLE_ICON),"Edit style",self)
-		entry.triggered.connect(self.pressedStyleButton)
-		self.settingsMenu.addAction(entry)
+		if self.window_type!=SERVER_WINDOW:
+			entry = QAction(QIcon(STYLE_ICON),"Style "+self.name,self)
+			entry.triggered.connect(self.pressedStyleButton)
+			self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
 		# Spellcheck Button
