@@ -253,38 +253,10 @@ class Window(QMainWindow):
 		if self.window_type==SERVER_WINDOW: self.nick_display.hide()
 		if self.window_type==SERVER_WINDOW: self.mode_display.hide()
 
-		# Spellcheck Button
-		self.spellcheckMenu = QMenu("Spellcheck")
-		self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
-
-		self.languageEnglish = QAction(QIcon(ROUND_UNCHECKED_ICON),"English",self)
-		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageEnglish)
-
-		self.languageFrench = QAction(QIcon(ROUND_UNCHECKED_ICON),"Française",self)
-		self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageFrench)
-
-		self.languageSpanish = QAction(QIcon(ROUND_UNCHECKED_ICON),"Español",self)
-		self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageSpanish)
-
-		self.languageGerman = QAction(QIcon(ROUND_UNCHECKED_ICON),"Deutsche",self)
-		self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageGerman)
-
-		if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
 
 		self.settingsMenu = QMenu("")
 
-		entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
-		entry.triggered.connect(self.pressedStyleButton)
-		self.settingsMenu.addAction(entry)
-
-		self.settingsMenu.addMenu(self.spellcheckMenu)
+		self.buildInputOptionsMenu()
 
 		self.settingsButton = QPushButton(QIcon(OPTIONS_ICON),"")
 		self.settingsButton.setIconSize(QSize(self.input.height()-10,self.input.height()))
@@ -534,6 +506,43 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
+
+
+	def buildInputOptionsMenu(self):
+
+		self.settingsMenu.clear()
+
+		if config.ENABLE_SPELLCHECK:
+		# Spellcheck Button
+			self.spellcheckMenu = QMenu("Spellcheck")
+			self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
+
+			self.languageEnglish = QAction(QIcon(ROUND_UNCHECKED_ICON),"English",self)
+			self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageEnglish)
+
+			self.languageFrench = QAction(QIcon(ROUND_UNCHECKED_ICON),"Française",self)
+			self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageFrench)
+
+			self.languageSpanish = QAction(QIcon(ROUND_UNCHECKED_ICON),"Español",self)
+			self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageSpanish)
+
+			self.languageGerman = QAction(QIcon(ROUND_UNCHECKED_ICON),"Deutsche",self)
+			self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageGerman)
+
+			if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
+			if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
+			if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
+			if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
+
+		entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+		entry.triggered.connect(self.pressedStyleButton)
+		self.settingsMenu.addAction(entry)
+
+		if config.ENABLE_SPELLCHECK: self.settingsMenu.addMenu(self.spellcheckMenu)
 
 	def hideTopic(self):
 		self.banlist_menu.hide()

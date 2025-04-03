@@ -1431,6 +1431,8 @@ class Dialog(QDialog):
 
 		if self.toggleUserlist: self.parent.toggleAllUserlists()
 
+		self.parent.toggleSpellcheck()
+
 		# Set the application font
 		self.parent.app.setFont(self.parent.application_font)
 

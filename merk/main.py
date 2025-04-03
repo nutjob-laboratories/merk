@@ -1553,6 +1553,13 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showHideUserlist()
 
+	def toggleSpellcheck(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if hasattr(c,"buildInputOptionsMenu"):
+					c.buildInputOptionsMenu()
+
 
 	# |--------------|
 	# | MENU METHODS |
