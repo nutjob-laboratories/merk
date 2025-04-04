@@ -225,10 +225,6 @@ class Merk(QMainWindow):
 			if self.is_hidden:
 				self.toggleHide()
 				self.showNormal()
-			# else:
-			# 	if config.MINIMIZE_TO_SYSTRAY==True:
-			# 		self.toggleHide()
-
 
 	def changeEvent(self, event):
 		if event.type() == QEvent.WindowStateChange:
