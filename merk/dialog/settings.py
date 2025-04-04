@@ -496,7 +496,7 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
-		self.showInputMenu = QCheckBox("Show input menu",self)
+		self.showInputMenu = QCheckBox("Show input menu button",self)
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSetting)
 
@@ -1269,11 +1269,8 @@ class Dialog(QDialog):
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
-		notificationLayout = QVBoxLayout()
-		notificationLayout.addWidget(self.changed)
-
 		dialogButtonsLayout = QHBoxLayout()
-		dialogButtonsLayout.addLayout(notificationLayout)
+		dialogButtonsLayout.addWidget(self.changed)
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.saveButton)
 		dialogButtonsLayout.addWidget(cancelButton)
