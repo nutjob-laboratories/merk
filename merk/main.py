@@ -1540,25 +1540,40 @@ class Merk(QMainWindow):
 		QDesktopServices.openUrl(u)
 
 	def swapAllUserlists(self):
+		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.swapUserlist()
+		self.MDI.setActiveSubWindow(w)
 
 	def toggleAllUserlists(self):
+		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showHideUserlist()
+		self.MDI.setActiveSubWindow(w)
 
 	def toggleSpellcheck(self):
+		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"window_type"):
 				if hasattr(c,"buildInputOptionsMenu"):
 					c.buildInputOptionsMenu()
+		self.MDI.setActiveSubWindow(w)
+
+	def toggleInputMenu(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if hasattr(c,"toggleInputMenu"):
+					c.toggleInputMenu()
+		self.MDI.setActiveSubWindow(w)
 
 
 	# |--------------|

@@ -119,8 +119,9 @@ SHOW_CHANNEL_TOPIC = True
 SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = False
 SHOW_CHANNEL_NAME_AND_MODES = True
 SHOW_BANLIST_MENU = True
-
 SHOW_USERLIST = True
+
+SHOW_INPUT_MENU = True
 
 def save_settings(filename):
 
@@ -206,12 +207,15 @@ def save_settings(filename):
 		"show_channel_name_and_modes": SHOW_CHANNEL_NAME_AND_MODES,
 		"show_channel_banlist_menu": SHOW_BANLIST_MENU,
 		"show_userlists": SHOW_USERLIST,
+		"show_input_menu": SHOW_INPUT_MENU,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_input_menu" in settings:
+		settings["show_input_menu"] = SHOW_INPUT_MENU
 	if not "show_userlists" in settings:
 		settings["show_userlists"] = SHOW_USERLIST
 	if not "show_channel_name_and_modes" in settings:
@@ -459,6 +463,7 @@ def load_settings(filename):
 	global SHOW_CHANNEL_NAME_AND_MODES
 	global SHOW_BANLIST_MENU
 	global SHOW_USERLIST
+	global SHOW_INPUT_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -468,6 +473,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_INPUT_MENU = settings["show_input_menu"]
 		SHOW_USERLIST = settings["show_userlists"]
 		SHOW_CHANNEL_NAME_AND_MODES = settings["show_channel_name_and_modes"]
 		SHOW_BANLIST_MENU = settings["show_channel_banlist_menu"]

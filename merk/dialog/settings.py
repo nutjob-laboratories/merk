@@ -496,11 +496,16 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
+		self.showInputMenu = QCheckBox("Show input menu",self)
+		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
+		self.showInputMenu.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addWidget(self.showInfo)
+		applicationLayout.addWidget(self.showInputMenu)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
@@ -1361,6 +1366,7 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_NAME_AND_MODES = self.channelName.isChecked()
 		config.SHOW_BANLIST_MENU = self.showBanlist.isChecked()
 		config.SHOW_USERLIST = self.showUserlists.isChecked()
+		config.SHOW_INPUT_MENU = self.showInputMenu.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
@@ -1414,6 +1420,8 @@ class Dialog(QDialog):
 		if self.toggleUserlist: self.parent.toggleAllUserlists()
 
 		self.parent.toggleSpellcheck()
+
+		self.parent.toggleInputMenu()
 
 		# Set the application font
 		self.parent.app.setFont(self.parent.application_font)

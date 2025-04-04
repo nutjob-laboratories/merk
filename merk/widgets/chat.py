@@ -273,6 +273,8 @@ class Window(QMainWindow):
 			QPushButton:pressed { border: none;}
 		""")
 
+		if not config.SHOW_INPUT_MENU: self.settingsButton.hide()
+
 		if self.window_type!=SERVER_WINDOW:
 
 			fm = QFontMetrics(self.app.font())
@@ -633,6 +635,12 @@ class Window(QMainWindow):
 
 	def refreshInfoMenu(self):
 		self.info_button.setMenu(buildServerSettingsMenu(self,self.client))
+
+	def toggleInputMenu(self):
+		if config.SHOW_INPUT_MENU: 
+			self.settingsButton.show()
+		else:
+			self.settingsButton.hide()
 
 	def toggleNickDisplay(self):
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
