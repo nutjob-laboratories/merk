@@ -94,7 +94,7 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
                       [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-D DIRECTORY] [-L]
-                      [--config-name NAME] [--qtstyle NAME] [-s DIRECTORY] [-N] [-X] [-S]
+                      [--config-name NAME] [--qtstyle NAME] [-s DIRECTORY] [-N] [-X]
                       [SERVER] [PORT]
 
 optional arguments:
