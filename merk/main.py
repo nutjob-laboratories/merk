@@ -1627,7 +1627,7 @@ class Merk(QMainWindow):
 
 		self.helpMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,ABOUT_MENU_ICON,'About',APPLICATION_NAME+" "+APPLICATION_VERSION,25,self.showAbout)
+		entry = widgets.ExtendedMenuItem(self,ABOUT_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,25,self.showAbout)
 		self.helpMenu.addAction(entry)
 
 		self.helpMenu.addSeparator()
