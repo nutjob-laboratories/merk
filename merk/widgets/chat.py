@@ -645,13 +645,15 @@ class Window(QMainWindow):
 
 	def toggleNickDisplay(self):
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
-			if hasattr(self,"name_spacer"): self.name_spacer.show()
-			self.nick_display.show()
-			self.mode_display.show()
+			if self.window_type!=SERVER_WINDOW:
+				if hasattr(self,"name_spacer"): self.name_spacer.show()
+				self.nick_display.show()
+				self.mode_display.show()
 		else:
-			if hasattr(self,"name_spacer"): self.name_spacer.hide()
-			self.nick_display.hide()
-			self.mode_display.hide()
+			if self.window_type!=SERVER_WINDOW:
+				if hasattr(self,"name_spacer"): self.name_spacer.hide()
+				self.nick_display.hide()
+				self.mode_display.hide()
 
 	def clearChat(self):
 		self.log = []
