@@ -1386,20 +1386,25 @@ class Merk(QMainWindow):
 		return retval
 
 	def hideAllTopic(self):
+		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.hideTopic()
+		self.MDI.setActiveSubWindow(w)
 
 	def showAllTopic(self):
+		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showTopic()
+		self.MDI.setActiveSubWindow(w)
 
 	def refreshAllTopic(self):
+		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"window_type"):
@@ -1415,6 +1420,7 @@ class Merk(QMainWindow):
 						c.topic.setFont(font)
 
 					c.topic.refresh()
+		self.MDI.setActiveSubWindow(w)
 
 	def getAllChatNames(self):
 		retval = []
