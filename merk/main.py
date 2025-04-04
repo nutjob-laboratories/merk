@@ -1586,7 +1586,7 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Edit settings',25,self.openSettings)
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Configure '+APPLICATION_NAME+' preferences&nbsp;&nbsp;',25,self.openSettings)
 		self.settingsMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
