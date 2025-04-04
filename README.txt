@@ -131,8 +131,9 @@ Configuration:
 Miscellaneous:
   -N, --noask           Don't ask for connection information on start
   -X, --nocommands      Don't auto-execute commands on connection
-  -S, --noscripts       Don't allow script execution
 ```
+# Why does MERK exist?
+It's simple. I don't currently like any of the other IRC client. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted an IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, MERK was born!
 # Developing MERK
 
 Several tools are included in [the official **MERK** repository](https://github.com/nutjob-laboratories/merk) for developing **MERK**. The [`pyrcc5` utility](https://manpages.ubuntu.com/manpages/xenial/man1/pyrcc5.1.html) is required, and should be installed automatically when you install PyQt. These are only needed if you're developing **MERK**, and can be ignored if you're only using the **MERK** IRC client.
@@ -170,5 +171,6 @@ Several tools are included in [the official **MERK** repository](https://github.
    - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
 
 [//]: # (End of document)
+
 
 

@@ -151,34 +151,6 @@ class Merk(QMainWindow):
 		if connection_info:
 			self.connectToIrc(connection_info)
 
-		if config.COMMANDLINE_NO_SCRIPT==False:
-			# Add /script to autocomplete
-			commands.AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"script"] = config.ISSUE_COMMAND_SYMBOL+"script "
-			commands.AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"edit"] = config.ISSUE_COMMAND_SYMBOL+"edit "
-
-			# Add the /script command to the /help display
-			entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>", "Executes a list of commands in a file" ]
-			commands.COMMAND_HELP_INFORMATION.append(entry)
-
-			entry = [ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ]
-			commands.COMMAND_HELP_INFORMATION.append(entry)
-
-			# Rebuild the command help, with the "/script" command added
-			hdisplay = []
-			for e in commands.COMMAND_HELP_INFORMATION:
-				t = commands.HELP_ENTRY_TEMPLATE
-				t = t.replace("%_USAGE_%",e[0])
-				t = t.replace("%_DESCRIPTION_%",e[1])
-				hdisplay.append(t)
-			commands.help_display = commands.HELP_DISPLAY_TEMPLATE.replace("%_LIST_%","\n".join(hdisplay))
-
-			commands.help_display = commands.help_display.replace("%_SCRIPTING_%", "")
-
-			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',commands.help_display)
-		else:
-			commands.help_display = commands.help_display.replace("%_SCRIPTING_%", "Scripting is turned off.")
-			commands.HELP = Message(RAW_SYSTEM_MESSAGE,'',commands.help_display)
-
 	# SYSTRAY MENU
 
 	def show_notifications(self,note=''):
@@ -357,10 +329,9 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
-		if config.COMMANDLINE_NO_SCRIPT==False:
-			entry = QAction(QIcon(SCRIPT_ICON),"Scripts",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-			self.trayFolder.addAction(entry)
+		entry = QAction(QIcon(SCRIPT_ICON),"Scripts",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+		self.trayFolder.addAction(entry)
 
 
 		self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
@@ -458,7 +429,7 @@ class Merk(QMainWindow):
 			w.nick_button.setEnabled(True)
 			w.join_button.setEnabled(True)
 			w.info_button.setEnabled(True)
-			if config.COMMANDLINE_NO_SCRIPT==False: w.script_button.setEnabled(True)
+			w.script_button.setEnabled(True)
 
 			self.buildWindowsMenu()
 		
@@ -468,9 +439,8 @@ class Merk(QMainWindow):
 			w = self.getServerWindow(client)
 			if w:
 				hostid = client.server+":"+str(client.port)
-				if config.COMMANDLINE_NO_SCRIPT==False:
-					if hostid in user.COMMANDS:
-						commands.executeScript(self,w,user.COMMANDS[hostid])
+				if hostid in user.COMMANDS:
+					commands.executeScript(self,w,user.COMMANDS[hostid])
 
 		if len(self.join_channels)>0:
 			for e in self.join_channels:
@@ -1618,10 +1588,9 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 		sm.addAction(entry)
 
-		if config.COMMANDLINE_NO_SCRIPT==False:
-			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-			sm.addAction(entry)
+		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+		sm.addAction(entry)
 
 	def buildHelpMenu(self):
 

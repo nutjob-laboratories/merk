@@ -93,6 +93,8 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"connect": config.ISSUE_COMMAND_SYMBOL+"connect ",
 		config.ISSUE_COMMAND_SYMBOL+"connectssl": config.ISSUE_COMMAND_SYMBOL+"connectssl ",
 		config.ISSUE_COMMAND_SYMBOL+"alias": config.ISSUE_COMMAND_SYMBOL+"alias ",
+		config.ISSUE_COMMAND_SYMBOL+"script" : config.ISSUE_COMMAND_SYMBOL+"script ",
+		config.ISSUE_COMMAND_SYMBOL+"edit" : config.ISSUE_COMMAND_SYMBOL+"edit ",
 	}
 
 # The command help system
@@ -131,6 +133,8 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>", "Executes a list of commands in a file" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -859,11 +863,6 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)>=2:
 
-			if config.COMMANDLINE_NO_SCRIPT==True:
-				t = Message(ERROR_MESSAGE,'',"The "+config.ISSUE_COMMAND_SYMBOL+"script command has been disabled.")
-				window.writeText(t)
-				return True
-
 			tokens.pop(0)
 			# Filename might have spaces in it
 			filename = ' '.join(tokens)
@@ -887,11 +886,6 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
-
-			if config.COMMANDLINE_NO_SCRIPT==True:
-				t = Message(ERROR_MESSAGE,'',"The "+config.ISSUE_COMMAND_SYMBOL+"script command has been disabled.")
-				window.writeText(t)
-				return True
 
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
 			window.writeText(t,False)

@@ -55,9 +55,9 @@ parser = argparse.ArgumentParser(
 	prog=f"python {os.path.basename(__file__)}",
 	formatter_class=argparse.RawDescriptionHelpFormatter,
 	description=f'''
-┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┓ ┳┏┓┳┓┏┳┓ Version
-┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  {APPLICATION_VERSION} 
-┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛┗┛┻┗┛┛┗ ┻                               
+┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┓ ┳┏┓┳┓┏┳┓ 
+┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  Version
+┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛┗┛┻┗┛┛┗ ┻  {APPLICATION_VERSION}                              
 https://github.com/nutjob-laboratories/merk
 
 Available Qt widget styles: {", ".join(QStyleFactory.keys())}
@@ -89,7 +89,6 @@ misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-X","--nocommands", help=f"Don't auto-execute commands on connection", action="store_true")
-misc_group.add_argument( "-S","--noscripts", help=f"Don't allow script execution", action="store_true")
 
 args = parser.parse_args()
 
@@ -131,9 +130,6 @@ if __name__ == '__main__':
 
 	# Initialize the scripts system
 	commands.initialize(args.configdir,args.configname,args.scriptdir)
-
-	# See if the noscript flag is set
-	if args.noscripts: config.COMMANDLINE_NO_SCRIPT = True
 
 	# Set the application font
 	if config.APPLICATION_FONT!=None:

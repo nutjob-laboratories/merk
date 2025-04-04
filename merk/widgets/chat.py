@@ -146,15 +146,14 @@ class Window(QMainWindow):
 			self.nick_button.setFlat(True)
 			serverBar.addWidget(self.nick_button)
 
-			if config.COMMANDLINE_NO_SCRIPT==False:
-				self.script_button = QPushButton("")
-				self.script_button.setIcon(QIcon(SCRIPT_ICON))
-				self.script_button.clicked.connect(self.loadScript)
-				self.script_button.setToolTip("Run a script")
-				self.script_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-				self.script_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
-				self.script_button.setFlat(True)
-				serverBar.addWidget(self.script_button)
+			self.script_button = QPushButton("")
+			self.script_button.setIcon(QIcon(SCRIPT_ICON))
+			self.script_button.clicked.connect(self.loadScript)
+			self.script_button.setToolTip("Run a script")
+			self.script_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.script_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.script_button.setFlat(True)
+			serverBar.addWidget(self.script_button)
 
 			serverBar.addStretch()
 
@@ -182,7 +181,7 @@ class Window(QMainWindow):
 			self.nick_button.setEnabled(False)
 			self.join_button.setEnabled(False)
 			self.info_button.setEnabled(False)
-			if config.COMMANDLINE_NO_SCRIPT==False: self.script_button.setEnabled(False)
+			self.script_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
 
