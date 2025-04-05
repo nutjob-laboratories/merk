@@ -1799,7 +1799,7 @@ class Merk(QMainWindow):
 			self.menuTool.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
 			self.menuTool.setContextMenuPolicy(Qt.PreventContextMenu)
 			self.menuTool.topLevelChanged.connect(self.menuDocked)
-			self.menuTool.setFloatable(config.MENUBAR_CAN_FLOAT)
+			self.menuTool.setMovable(config.MENUBAR_CAN_FLOAT)
 
 			menubar.add_toolbar_menu(self.menuTool,"IRC",self.mainMenu)
 			menubar.add_toolbar_menu(self.menuTool,"Tools",self.settingsMenu)
