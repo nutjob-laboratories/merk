@@ -33,6 +33,8 @@ import sys
 import os
 import math
 
+from .version import *
+
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
@@ -43,23 +45,8 @@ EMOJI_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji2.txt")
 EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji1.txt")
 NETWORK_FILE = os.path.join(DATA_DIRECTORY, "servers.txt")
 
-# Load in major and minor version
-f = open(os.path.join(DATA_DIRECTORY, "major.txt"),mode="r",encoding="latin-1",errors="ignore")
-major = f.read()
-f.close()
 
-f = open(os.path.join(DATA_DIRECTORY, "minor.txt"),mode="r",encoding="latin-1",errors="ignore")
-minor = f.read()
-f.close()
 
-# Format minor version so it is always
-# at least three digits long
-if len(minor)==1:
-	minor = f"00{minor}"
-elif len(minor)==2:
-	minor = f"0{minor}"
-
-APPLICATION_VERSION = major+"."+minor
 APPLICATION_NAME = "MERK"
 APPLICATION_SOURCE = "https://github.com/nutjob-laboratories/merk"
 SCRIPT_FILE_EXTENSION = "merk"

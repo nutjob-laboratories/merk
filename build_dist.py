@@ -27,8 +27,20 @@ mi = int(minor)
 mi = mi + 1
 minor = str(mi)
 
+# Format minor version so it is always
+# at least three digits long
+if len(minor)==1:
+	minor = f"00{minor}"
+elif len(minor)==2:
+	minor = f"0{minor}"
+
 f = open("./merk/data/minor.txt","w")
 f.write(minor)
+f.close()
+
+# Write version to python file to be loaded in
+f = open("./merk/resources/version.py","w")
+f.write(f"APPLICATION_VERSION = \"{major}.{minor}\"")
 f.close()
 
 # Format minor version so it is always
