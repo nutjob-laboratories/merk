@@ -306,6 +306,20 @@ class Merk(QMainWindow):
 		if config.WINDOWBAR_JUSTIFY.lower()=='center':
 			menubar.add_toolbar_stretch(self.windowbar)
 
+		self.windowbar.topLevelChanged.connect(self.windowDocked)
+
+	def windowDocked(self,is_floating):
+		if not is_floating:
+			p = self.toolBarArea(self.windowbar)
+			if p == Qt.TopToolBarArea:
+				# it's at the top
+				config.WINDOWBAR_TOP_OF_SCREEN = True
+				config.save_settings(config.CONFIG_FILE)
+			else:
+				# it's at the bottom
+				config.WINDOWBAR_TOP_OF_SCREEN = False
+				config.save_settings(config.CONFIG_FILE)
+
 	# SYSTRAY MENU
 
 	def show_notifications(self,note=''):
