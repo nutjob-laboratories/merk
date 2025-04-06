@@ -348,6 +348,39 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def changedWindowbarSetting(self,i):
+		if self.windowBar.isChecked():
+			self.windowBarFloat.setEnabled(True)
+			self.windowBarTop.setEnabled(True)
+			self.windowBarServers.setEnabled(True)
+			self.windowbarJustify.setEnabled(True)
+			self.windowBarIcons.setEnabled(True)
+		else:
+			self.windowBarFloat.setEnabled(False)
+			self.windowBarTop.setEnabled(False)
+			self.windowBarServers.setEnabled(False)
+			self.windowbarJustify.setEnabled(False)
+			self.windowBarIcons.setEnabled(False)
+		self.windowbar_change = True
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
+
+	def justifyChange(self, i):
+		self.windowbar_justify = self.windowbarJustify.itemText(i)
+
+		self.windowbar_change = True
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
+	def windowbarChange(self):
+		self.windowbar_change = True
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -380,6 +413,9 @@ class Dialog(QDialog):
 		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
 
 		self.qt_style = config.QT_WINDOW_STYLE
+
+		self.windowbar_justify = config.WINDOWBAR_JUSTIFY
+		self.windowbar_change = False
 
 		self.refreshTopics = False
 		self.refreshTitles = False
@@ -573,7 +609,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Menubar")
+		entry.setText("Toolbars")
 		entry.widget = self.menuPage
 		entry.setIcon(QIcon(MENU_ICON))
 		self.selector.addItem(entry)
@@ -582,7 +618,7 @@ class Dialog(QDialog):
 
 		self.menubarDescription = QLabel("""
 			<small>
-			The menubar is a widget that takes the place of the menus of a
+			The menubar is a toolbar widget that takes the place of the menus of a
 			"normal" application. The menubar can be moved to either the top
 			of the main window, the bottom of the main window, or can optionally
 			float above all the subwindows. The menubar is turned on by default,
@@ -603,11 +639,68 @@ class Dialog(QDialog):
 
 		if not config.USE_MENUBAR: self.menubarFloat.setEnabled(False)
 
+
+		self.windowbarDescription = QLabel("""
+			<small>
+			The windowbar is a toolbar widget that lists all of the currently open
+			subwindows and allows you to switch between them by clicking on
+			the subwindow's name, and displays only open chat windows
+			by default. It can be displayed at the top of the main window or
+			at the bottom, and can optionally float. The entries in the window
+			bar can be left, right, or center justified. The windowbar is
+			turned on by default.
+			</small>
+			<br>
+			""")
+		self.windowbarDescription.setWordWrap(True)
+		self.windowbarDescription.setAlignment(Qt.AlignJustify)
+
+		self.windowBar = QCheckBox("Use windowbar",self)
+		if config.SHOW_WINDOWBAR: self.windowBar.setChecked(True)
+		self.windowBar.stateChanged.connect(self.changedWindowbarSetting)
+
+		self.windowBarTop = QCheckBox("Show windowbar at top of window",self)
+		if config.WINDOWBAR_TOP_OF_SCREEN: self.windowBarTop.setChecked(True)
+		self.windowBarTop.stateChanged.connect(self.windowbarChange)
+
+		self.windowBarServers = QCheckBox("Windowbar includes server windows",self)
+		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
+		self.windowBarServers.stateChanged.connect(self.windowbarChange)
+
+		self.windowBarIcons = QCheckBox("Windowbar shows window type icons",self)
+		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
+		self.windowBarIcons.stateChanged.connect(self.windowbarChange)
+
+		self.windowBarFloat = QCheckBox("Windowbar can \"float\"",self)
+		if config.WINDOWBAR_CAN_FLOAT: self.windowBarFloat.setChecked(True)
+		self.windowBarFloat.stateChanged.connect(self.windowbarChange)
+
+		self.windowbarJustify = QComboBox(self)
+		self.windowbarJustify.addItem(config.WINDOWBAR_JUSTIFY)
+		if config.WINDOWBAR_JUSTIFY!='center': self.windowbarJustify.addItem('center')
+		if config.WINDOWBAR_JUSTIFY!='left': self.windowbarJustify.addItem('left')
+		if config.WINDOWBAR_JUSTIFY!='right': self.windowbarJustify.addItem('right')
+		self.windowbarJustify.currentIndexChanged.connect(self.justifyChange)
+
+		justifyLayout = QHBoxLayout()
+		justifyLayout.addWidget(QLabel("Windowbar entry justify: "))
+		justifyLayout.addWidget(self.windowbarJustify)
+		justifyLayout.addStretch()
+
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addWidget(self.menubar)
 		menuLayout.addWidget(self.menubarFloat)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
+		menuLayout.addWidget(self.windowbarDescription)
+		menuLayout.addWidget(self.windowBar)
+		menuLayout.addWidget(self.windowBarFloat)
+		menuLayout.addWidget(self.windowBarTop)
+		menuLayout.addWidget(self.windowBarServers)
+		menuLayout.addWidget(self.windowBarIcons)
+		menuLayout.addLayout(justifyLayout)
 		menuLayout.addStretch()
 
 		self.menuPage.setLayout(menuLayout)
@@ -1280,6 +1373,7 @@ class Dialog(QDialog):
 		leftLayout.addWidget(logo)
 		leftLayout.addWidget(QLabel("<small><center><b>Version "+APPLICATION_VERSION+"</b></center></small>"))
 
+		
 		mainLayout = QHBoxLayout()
 		# mainLayout.addWidget(self.selector)
 		mainLayout.addLayout(leftLayout)
@@ -1364,6 +1458,12 @@ class Dialog(QDialog):
 		config.SHOW_BANLIST_MENU = self.showBanlist.isChecked()
 		config.SHOW_USERLIST = self.showUserlists.isChecked()
 		config.SHOW_INPUT_MENU = self.showInputMenu.isChecked()
+		config.SHOW_WINDOWBAR = self.windowBar.isChecked()
+		config.WINDOWBAR_TOP_OF_SCREEN = self.windowBarTop.isChecked()
+		config.WINDOWBAR_INCLUDE_SERVERS = self.windowBarServers.isChecked()
+		config.WINDOWBAR_CAN_FLOAT = self.windowBarFloat.isChecked()
+		config.WINDOWBAR_JUSTIFY = self.windowbar_justify
+		config.WINDOWBAR_SHOW_ICONS = self.windowBarIcons.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
@@ -1425,6 +1525,9 @@ class Dialog(QDialog):
 
 		# Set the widget font
 		self.parent.setFont(self.parent.application_font)
+
+		# Set the windowbar
+		if self.windowbar_change: self.parent.initWindowbar()
 
 		# Set active window back
 		self.parent.MDI.setActiveSubWindow(current_window)

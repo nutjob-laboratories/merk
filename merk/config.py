@@ -120,6 +120,13 @@ SHOW_CHANNEL_NAME_AND_MODES = True
 SHOW_BANLIST_MENU = True
 SHOW_USERLIST = True
 SHOW_INPUT_MENU = True
+SHOW_WINDOWBAR = True
+WINDOWBAR_TOP_OF_SCREEN = True
+WINDOWBAR_INCLUDE_SERVERS = False
+# center, left, or right
+WINDOWBAR_JUSTIFY = 'center'
+WINDOWBAR_CAN_FLOAT = False
+WINDOWBAR_SHOW_ICONS = False
 
 def save_settings(filename):
 
@@ -206,12 +213,30 @@ def save_settings(filename):
 		"show_channel_banlist_menu": SHOW_BANLIST_MENU,
 		"show_userlists": SHOW_USERLIST,
 		"show_input_menu": SHOW_INPUT_MENU,
+		"show_windowbar": SHOW_WINDOWBAR,
+		"windowbar_on_top": WINDOWBAR_TOP_OF_SCREEN,
+		"windowbar_include_servers": WINDOWBAR_INCLUDE_SERVERS,
+		"windowbar_justify": WINDOWBAR_JUSTIFY,
+		"windowbar_can_float": WINDOWBAR_CAN_FLOAT,
+		"windowbar_show_icons": WINDOWBAR_SHOW_ICONS,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "windowbar_show_icons" in settings:
+		settings["windowbar_show_icons"] = WINDOWBAR_SHOW_ICONS
+	if not "show_windowbar" in settings:
+		settings["show_windowbar"] = SHOW_WINDOWBAR
+	if not "windowbar_on_top" in settings:
+		settings["windowbar_on_top"] = WINDOWBAR_TOP_OF_SCREEN
+	if not "windowbar_include_servers" in settings:
+		settings["windowbar_include_servers"] = WINDOWBAR_INCLUDE_SERVERS
+	if not "windowbar_justify" in settings:
+		settings["windowbar_justify"] = WINDOWBAR_JUSTIFY
+	if not "windowbar_can_float" in settings:
+		settings["windowbar_can_float"] = WINDOWBAR_CAN_FLOAT
 	if not "show_input_menu" in settings:
 		settings["show_input_menu"] = SHOW_INPUT_MENU
 	if not "show_userlists" in settings:
@@ -462,6 +487,12 @@ def load_settings(filename):
 	global SHOW_BANLIST_MENU
 	global SHOW_USERLIST
 	global SHOW_INPUT_MENU
+	global SHOW_WINDOWBAR
+	global WINDOWBAR_TOP_OF_SCREEN
+	global WINDOWBAR_INCLUDE_SERVERS
+	global WINDOWBAR_JUSTIFY
+	global WINDOWBAR_CAN_FLOAT
+	global WINDOWBAR_SHOW_ICONS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -471,6 +502,12 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_SHOW_ICONS = settings["windowbar_show_icons"]
+		SHOW_WINDOWBAR = settings["show_windowbar"]
+		WINDOWBAR_TOP_OF_SCREEN = settings["windowbar_on_top"]
+		WINDOWBAR_INCLUDE_SERVERS = settings["windowbar_include_servers"]
+		WINDOWBAR_JUSTIFY = settings["windowbar_justify"]
+		WINDOWBAR_CAN_FLOAT = settings["windowbar_can_float"]
 		SHOW_INPUT_MENU = settings["show_input_menu"]
 		SHOW_USERLIST = settings["show_userlists"]
 		SHOW_CHANNEL_NAME_AND_MODES = settings["show_channel_name_and_modes"]

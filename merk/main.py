@@ -148,8 +148,120 @@ class Merk(QMainWindow):
 		# Build the main menu
 		self.buildMenu()
 
+		# Add toolbar break, if needed
+		#self.addToolBarBreak(Qt.TopToolBarArea)
+
+		# Windowbar
+		self.initWindowbar()
+		
+
 		if connection_info:
 			self.connectToIrc(connection_info)
+
+	# Windowbar
+
+	def initWindowbar(self):
+
+		# Build the main menu
+		self.buildMenu()
+
+		if hasattr(self,"windowbar"): self.removeToolBar(self.windowbar)
+
+		if hasattr(self,"menuTool"):
+			self.insertToolBarBreak(self.menuTool)
+
+		self.addToolBarBreak(Qt.TopToolBarArea)
+
+		self.windowbar = menubar.generate_menu_toolbar(self)
+		self.windowbar.setMovable(config.WINDOWBAR_CAN_FLOAT)
+		if config.WINDOWBAR_TOP_OF_SCREEN:
+			self.addToolBar(Qt.TopToolBarArea,self.windowbar)
+		else:
+			self.addToolBar(Qt.BottomToolBarArea,self.windowbar)
+		self.windowbar.setContextMenuPolicy(Qt.PreventContextMenu)
+		self.windowbar.hide()
+		self.MDI.subWindowActivated.connect(self.buildWindowbar)
+
+		self.buildWindowbar()
+
+	def buildWindowbar(self):
+
+		if not hasattr(self,"windowbar"): return
+
+		if config.SHOW_WINDOWBAR==False:
+			self.windowbar.hide()
+			return
+
+		self.windowbar.clear()
+
+		listOfConnections = {}
+		for i in irc.CONNECTIONS:
+			add_to_list = True
+			for j in self.hiding:
+				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+
+		window_list = []
+		for i in listOfConnections:
+			entry = listOfConnections[i]
+
+			if config.WINDOWBAR_INCLUDE_SERVERS:
+				window_list.append(self.getServerSubWindow(entry))
+
+			for window in self.getAllSubChatWindows(entry):
+				window_list.append(window)
+
+		if len(listOfConnections)>0:
+			self.windowbar.show()
+		else:
+			self.windowbar.hide()
+			return
+
+		if len(window_list)==0:
+			self.windowbar.hide()
+			return
+
+		if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
+			menubar.add_toolbar_stretch(self.windowbar)
+
+		for window in window_list:
+			if hasattr(window,"widget"):
+				c = window.widget()
+
+				if c.window_type==CHANNEL_WINDOW:
+					icon = CHANNEL_ICON
+				elif c.window_type==PRIVATE_WINDOW:
+					icon = PRIVATE_ICON
+				elif c.window_type==SERVER_WINDOW:
+					icon = CONSOLE_ICON
+
+				if config.WINDOWBAR_SHOW_ICONS:
+					button = menubar.get_icon_toolbar_button(icon,c.name)
+				else:
+					button = menubar.get_toolbar_button(icon,c.name)
+				button.clicked.connect(lambda state,u=window: self.showSubWindow(u))
+				button.setFixedHeight(18)
+
+				current_font = button.font()
+				current_font_size = current_font.pointSize()
+				current_font.setPointSize(current_font_size-2)
+				
+
+				x = self.MDI.activeSubWindow()
+				if hasattr(x,"widget"):
+					y = x.widget()
+					if hasattr(y,"subwindow_id"):
+						if y.subwindow_id == c.subwindow_id:
+							# currently active window
+							current_font.setUnderline(True)
+							current_font.setBold(True)
+
+				button.setFont(current_font)
+
+				self.windowbar.addWidget(button)
+
+		if config.WINDOWBAR_JUSTIFY.lower()=='center':
+			menubar.add_toolbar_stretch(self.windowbar)
 
 	# SYSTRAY MENU
 
@@ -1618,6 +1730,9 @@ class Merk(QMainWindow):
 		# Rebuild systray menu
 		self.buildSystrayMenu()
 
+		# Rebuild windowbar
+		self.buildWindowbar()
+
 		self.windowsMenu.clear()
 
 		listOfConnections = {}
@@ -1770,7 +1885,9 @@ class Merk(QMainWindow):
 
 	def buildMenu(self):
 
-		if hasattr(self,"menuTool"): self.removeToolBar(self.menuTool)
+		if hasattr(self,"menuTool"):
+			self.removeToolBar(self.menuTool)
+			self.addToolBarBreak()
 
 		if not config.USE_MENUBAR:
 			if hasattr(self,"menubar"):

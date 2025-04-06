@@ -130,6 +130,31 @@ def add_toolbar_menu(toolbar,name,menu):
 	toolMenuButton.setMenu(menu)
 	toolbar.addWidget(toolMenuButton)
 
+def get_icon_toolbar_button(icon,name):
+
+	toolMenuButton = IconMenuButton(
+			icon,
+			toolbar_button_style,
+			toolbar_button_style_hover,
+			" "+name+" "
+			)
+
+	toolMenuButton.setStyleSheet(toolbar_button_style)
+	
+	return toolMenuButton
+
+def get_toolbar_button(icon,name):
+
+	toolMenuButton = MenuButton(
+			toolbar_button_style,
+			toolbar_button_style_hover,
+			" "+name+" "
+			)
+
+	toolMenuButton.setStyleSheet(toolbar_button_style)
+	
+	return toolMenuButton
+
 def add_toolbar_spacer(toolbar):
 	toolbar.addWidget(QLabel(' '))
 
@@ -157,6 +182,25 @@ class MenuButton(QPushButton):
 	def __init__(self,normal_style,hover_style,parent=None):
 		QLabel.__init__(self, parent)
 		self.installEventFilter(self)
+
+		self.normal_style = normal_style
+		self.hover_style = hover_style
+
+	def eventFilter(self, object, event):
+		if event.type() == QEvent.Enter:
+			self.setStyleSheet(self.hover_style)
+			return True
+		elif event.type() == QEvent.Leave:
+			self.setStyleSheet(self.normal_style)
+		return False
+
+class IconMenuButton(QPushButton):
+
+	def __init__(self,icon,normal_style,hover_style,parent=None):
+		QLabel.__init__(self, parent)
+		self.installEventFilter(self)
+
+		self.setIcon(QIcon(icon))
 
 		self.normal_style = normal_style
 		self.hover_style = hover_style
