@@ -147,19 +147,28 @@ NEWFILE_ICON = ":/icon-new_file.png"
 OPENFILE_ICON = ":/icon-file_open.png"
 SAVEFILE_ICON = ":/icon-save_file.png"
 SAVEASFILE_ICON = ":/icon-save_as.png"
-
 UNDO_ICON = ":/icon-undo.png"
 REDO_ICON = ":/icon-redo.png"
 CUT_ICON = ":/icon-cut.png"
 COPY_ICON = ":/icon-copy.png"
 SELECTALL_ICON = ":/icon-select_all.png"
-
 SCRIPT_MENU_ICON = ":/icon-script_menu.png"
 SETTINGS_MENU_ICON = ":/icon-settings_menu.png"
 STYLE_MENU_ICON = ":/icon-style_menu.png"
 LOG_MENU_ICON = ":/icon-log_menu.png"
 ABOUT_MENU_ICON = ":/icon-about_menu.png"
 APPLICATION_MENU_ICON = ":/icon-app_menu.png"
+SCRIPT_ICON = ":/icon-script.png"
+CLOSE_ICON = ":/icon-close.png"
+MAXIMIZE_ICON = ":/icon-maximize.png"
+MINIMIZE_ICON = ":/icon-minimize.png"
+WINDOW_ICON = ":/icon-window.png"
+SYSTRAY_ICON = ":/icon-tray.png"
+AUTOCOMPLETE_ICON = ":/icon-autocomplete.png"
+RUN_ICON = ":/icon-run.png"
+RUN_MENU_ICON = ":/icon-run_menu.png"
+MENU_ICON = ":/icon-menu.png"
+WIDGET_ICON = ":/icon-widget.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
@@ -167,36 +176,14 @@ OP_USER = ":/gui-op.png"
 OWNER_USER = ":/gui-owner.png"
 VOICE_USER = ":/gui-voice.png"
 NORMAL_USER = ":/gui-normal.png"
-
 HORIZONTAL_DOTTED_BACKGROUND = ":/gui-horizontal_dotted.png"
 HORIZONTAL_RULE_BACKGROUND = ":/gui-horizontal_rule.png"
 LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
 LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
-
 DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
-
 NUTJOB_LOGO = ":/gui-nutjob.png"
-
 MERK_ABOUT_LOGO = ":/gui-about.png"
-
-SCRIPT_ICON = ":/icon-script.png"
-CLOSE_ICON = ":/icon-close.png"
-
-MAXIMIZE_ICON = ":/icon-maximize.png"
-MINIMIZE_ICON = ":/icon-minimize.png"
-WINDOW_ICON = ":/icon-window.png"
-
-SYSTRAY_ICON = ":/icon-tray.png"
-AUTOCOMPLETE_ICON = ":/icon-autocomplete.png"
-
 SPLASH_LOGO = ":/gui-splash.png"
-
-RUN_ICON = ":/icon-run.png"
-RUN_MENU_ICON = ":/icon-run_menu.png"
-
-MENU_ICON = ":/icon-menu.png"
-WIDGET_ICON = ":/icon-widget.png"
-
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
 
 HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
