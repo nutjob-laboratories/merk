@@ -13,6 +13,8 @@
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
+Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!
+
 # Screenshots
 
 <p align="center">
