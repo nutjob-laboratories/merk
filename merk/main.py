@@ -228,6 +228,14 @@ class Merk(QMainWindow):
 			if hasattr(window,"widget"):
 				c = window.widget()
 
+				if c.client.hostname:
+					serv_name = name = c.client.hostname
+				else:
+					serv_name = c.client.server+":"+str(entry.port)
+
+				if c.client.network:
+					serv_name = serv_name + " ("+c.client.network+")"
+
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
 				elif c.window_type==PRIVATE_WINDOW:
@@ -244,6 +252,8 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
 				else:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
+				if c.window_type!=SERVER_WINDOW:
+					button.setToolTip(serv_name)
 				button.setFixedHeight(18)
 
 				current_font = button.font()
