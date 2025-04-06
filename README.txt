@@ -9,9 +9,9 @@
   <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a><br>
 </p>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
-**MERK** is in beta, but it works, and can be used for most IRC activities.
+**MERK** is still in development, but it works, and can be used for most IRC activities.
 
 # Screenshots
 
@@ -35,6 +35,8 @@
 - Very configurable, without having to manually edit a configuration file
     - Nearly all settings are configurable in the settings dialog
     - Control application behavior, logging, features, and more!
+    - Over 50 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
+    - Most settings can be set in the app without requiring a restart. Have fun testing different options!
     - Configuration data is stored in JSON
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
@@ -176,6 +178,7 @@ Several tools are included in [the official **MERK** repository](https://github.
    - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
 
 [//]: # (End of document)
+
 
 
 

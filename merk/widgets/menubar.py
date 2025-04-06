@@ -143,7 +143,7 @@ def get_icon_toolbar_button(icon,name):
 	
 	return toolMenuButton
 
-def get_toolbar_button(icon,name):
+def get_toolbar_button(name):
 
 	toolMenuButton = MenuButton(
 			toolbar_button_style,
@@ -204,6 +204,97 @@ class IconMenuButton(QPushButton):
 
 		self.normal_style = normal_style
 		self.hover_style = hover_style
+
+	def eventFilter(self, object, event):
+		if event.type() == QEvent.Enter:
+			self.setStyleSheet(self.hover_style)
+			return True
+		elif event.type() == QEvent.Leave:
+			self.setStyleSheet(self.normal_style)
+		return False
+
+def get_icon_windowbar_button(icon,name):
+
+	toolMenuButton = wIconMenuButton(
+			icon,
+			toolbar_button_style,
+			toolbar_button_style_hover,
+			" "+name+" "
+			)
+
+	toolMenuButton.setStyleSheet(toolbar_button_style)
+	
+	return toolMenuButton
+
+def get_windowbar_button(name):
+
+	toolMenuButton = wMenuButton(
+			toolbar_button_style,
+			toolbar_button_style_hover,
+			" "+name+" "
+			)
+
+	toolMenuButton.setStyleSheet(toolbar_button_style)
+	
+	return toolMenuButton
+
+class wMenuButton(QPushButton):
+	doubleClicked = pyqtSignal()
+	clicked = pyqtSignal()
+
+	def __init__(self,normal_style,hover_style,parent=None):
+		QLabel.__init__(self, parent)
+		self.installEventFilter(self)
+
+		self.normal_style = normal_style
+		self.hover_style = hover_style
+
+		self.timer = QTimer()
+		self.timer.setSingleShot(True)
+		self.timer.timeout.connect(self.clicked.emit)
+		super().clicked.connect(self.checkDoubleClick)
+
+	@pyqtSlot()
+	def checkDoubleClick(self):
+		if self.timer.isActive():
+			self.doubleClicked.emit()
+			self.timer.stop()
+		else:
+			self.timer.start(250)
+
+	def eventFilter(self, object, event):
+		if event.type() == QEvent.Enter:
+			self.setStyleSheet(self.hover_style)
+			return True
+		elif event.type() == QEvent.Leave:
+			self.setStyleSheet(self.normal_style)
+		return False
+
+class wIconMenuButton(QPushButton):
+	doubleClicked = pyqtSignal()
+	clicked = pyqtSignal()
+
+	def __init__(self,icon,normal_style,hover_style,parent=None):
+		QLabel.__init__(self, parent)
+		self.installEventFilter(self)
+
+		self.setIcon(QIcon(icon))
+
+		self.normal_style = normal_style
+		self.hover_style = hover_style
+
+		self.timer = QTimer()
+		self.timer.setSingleShot(True)
+		self.timer.timeout.connect(self.clicked.emit)
+		super().clicked.connect(self.checkDoubleClick)
+
+	@pyqtSlot()
+	def checkDoubleClick(self):
+		if self.timer.isActive():
+			self.doubleClicked.emit()
+			self.timer.stop()
+		else:
+			self.timer.start(250)
 
 	def eventFilter(self, object, event):
 		if event.type() == QEvent.Enter:

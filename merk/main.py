@@ -236,10 +236,14 @@ class Merk(QMainWindow):
 					icon = CONSOLE_ICON
 
 				if config.WINDOWBAR_SHOW_ICONS:
-					button = menubar.get_icon_toolbar_button(icon,c.name)
+					button = menubar.get_icon_windowbar_button(icon,c.name)
 				else:
-					button = menubar.get_toolbar_button(icon,c.name)
-				button.clicked.connect(lambda state,u=window: self.showSubWindow(u))
+					button = menubar.get_windowbar_button(c.name)
+				button.clicked.connect(lambda u=window: self.showSubWindow(u))
+				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
+					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
+				else:
+					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
 				button.setFixedHeight(18)
 
 				current_font = button.font()
@@ -1534,6 +1538,13 @@ class Merk(QMainWindow):
 
 	def showSubWindow(self,window):
 		window.showNormal()
+		self.MDI.setActiveSubWindow(window)
+
+	def showSubWindowMaximized(self,window):
+		if window.isMaximized():
+			window.showNormal()
+		else:
+			window.showMaximized()
 		self.MDI.setActiveSubWindow(window)
 
 	def hideSubWindow(self,subwindow_id):

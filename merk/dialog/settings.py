@@ -355,12 +355,14 @@ class Dialog(QDialog):
 			self.windowBarServers.setEnabled(True)
 			self.windowbarJustify.setEnabled(True)
 			self.windowBarIcons.setEnabled(True)
+			self.windowbarClick.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
 			self.windowBarServers.setEnabled(False)
 			self.windowbarJustify.setEnabled(False)
 			self.windowBarIcons.setEnabled(False)
+			self.windowbarClick.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -687,6 +689,9 @@ class Dialog(QDialog):
 		justifyLayout.addWidget(self.windowbarJustify)
 		justifyLayout.addStretch()
 
+		self.windowbarClick = QCheckBox("Double click to maximize chat",self)
+		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
+		self.windowbarClick.stateChanged.connect(self.windowbarChange)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
@@ -700,6 +705,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.windowBarTop)
 		menuLayout.addWidget(self.windowBarServers)
 		menuLayout.addWidget(self.windowBarIcons)
+		menuLayout.addWidget(self.windowbarClick)
 		menuLayout.addLayout(justifyLayout)
 		menuLayout.addStretch()
 
@@ -1464,6 +1470,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_CAN_FLOAT = self.windowBarFloat.isChecked()
 		config.WINDOWBAR_JUSTIFY = self.windowbar_justify
 		config.WINDOWBAR_SHOW_ICONS = self.windowBarIcons.isChecked()
+		config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = self.windowbarClick.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
