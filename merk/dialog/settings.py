@@ -670,7 +670,7 @@ class Dialog(QDialog):
 			The windowbar is a toolbar widget that lists all of the open chat
 			subwindows and allows you to switch between them by clicking on
 			the subwindow's name. Optionally, the windowbar can also display
-			server and script editor window. It can be displayed at the top of
+			server and script editor windows. It can be displayed at the top of
 			the main window or at the bottom, and can optionally float. The entries
 			in the window bar can be left, right, or center justified. The
 			windowbar is turned on by default.
@@ -712,7 +712,7 @@ class Dialog(QDialog):
 		justifyLayout.addWidget(self.windowbarJustify)
 		justifyLayout.addStretch()
 
-		self.windowbarClick = QCheckBox("Double click to maximize chat",self)
+		self.windowbarClick = QCheckBox("Double click to maximize subwindow",self)
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
 		self.windowbarClick.stateChanged.connect(self.windowbarChange)
 
