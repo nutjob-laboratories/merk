@@ -1,4 +1,4 @@
-irc.2600.net:6667:2600net:normal
+NETWORK_LIST = """irc.2600.net:6667:2600net:normal
 irc.accessirc.net:6667:AccessIRC:normal
 irc.afternet.org:6667:AfterNET:normal
 irc.data.lt:6667:Aitvaras:normal
@@ -94,4 +94,4 @@ irc.techtronix.net:6667:Techtronix:normal
 irc.servx.ru:6667:TURLINet:normal
 us.undernet.org:6667:UnderNet:normal
 irc.worldnet.net:6667:Worldnet:normal
-irc.xertion.org:6667:Xertion:normal
+irc.xertion.org:6667:Xertion:normal"""

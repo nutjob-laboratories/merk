@@ -1,4 +1,4 @@
-:ab:
+EMOJI_AUTOCOMPLETE_DATA=""":ab:
 :ab_button_blood_type:
 :atm:
 :atm_sign:
@@ -141,13 +141,13 @@
 :croatia:
 :flag_for_Cuba:
 :cuba:
-:flag_for_Curaçao:
+:flag_for_CuraÃ§ao:
 :curacao:
 :flag_for_Cyprus:
 :cyprus:
 :flag_for_Czech_Republic:
 :czech_republic:
-:flag_for_Côte_d’Ivoire:
+:flag_for_CÃ´te_dâ€™Ivoire:
 :cote_divoire:
 :flag_for_Denmark:
 :denmark:
@@ -481,7 +481,7 @@
 :ru:
 :flag_for_Rwanda:
 :rwanda:
-:flag_for_Réunion:
+:flag_for_RÃ©union:
 :reunion:
 :soon:
 :soon_arrow:
@@ -532,7 +532,7 @@
 :es:
 :flag_for_Sri_Lanka:
 :sri_lanka:
-:flag_for_St._Barthélemy:
+:flag_for_St._BarthÃ©lemy:
 :st_barthelemy:
 :flag_for_St._Helena:
 :st_helena:
@@ -559,7 +559,7 @@
 :switzerland:
 :flag_for_Syria:
 :syria:
-:flag_for_São_Tomé_&_Príncipe:
+:flag_for_SÃ£o_TomÃ©_&_PrÃ­ncipe:
 :sao_tome_principe:
 :t-rex:
 :t_rex:
@@ -1639,5 +1639,5 @@
 :yen:
 :yo_yo:
 :zipper_mouth_face:
-:flag_for_Åland_Islands:
-:aland_islands:
+:flag_for_Ã…land_Islands:
+:aland_islands:"""

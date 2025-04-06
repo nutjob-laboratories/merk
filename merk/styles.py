@@ -121,16 +121,18 @@ def initialize(directory,directory_name):
 	# Check to see if the default file exists
 	if not os.path.isfile(STYLE_FILE):
 		# The file doesn't exist, so create it
-		backup = os.path.join(DATA_DIRECTORY, "default.style")
-		style = read_style_file(backup)
+		style = read_style_file('',DEFAULT_STYLE)
 		write_style_file(style,STYLE_FILE)
 
-def read_style_file(filename):
+def read_style_file(filename,raw=None):
 
-	# Read in the file
-	f=open(filename, "r",encoding="utf-8",errors="ignore")
-	text = f.read()
-	f.close()
+	if raw!=None:
+		text = raw
+	else:
+		# Read in the file
+		f=open(filename, "r",encoding="utf-8",errors="ignore")
+		text = f.read()
+		f.close()
 
 	# Strip comments
 	text = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,text)

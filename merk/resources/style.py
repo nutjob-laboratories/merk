@@ -1,4 +1,4 @@
-timestamp {
+DEFAULT_STYLE="""timestamp {
 	font-weight: bold;
 }
 
@@ -59,4 +59,4 @@ server {
 }
 
 raw {
-}
+}"""

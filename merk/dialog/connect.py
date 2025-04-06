@@ -499,12 +499,8 @@ class Dialog(QDialog):
 
 def get_network_list():
 	servlist = []
-	with open(NETWORK_FILE) as fp:
-		line = fp.readline()
-		line=line.strip()
-		while line:
-			line=line.strip()
-			p = line.split(':')
-			servlist.append(p)
-			line = fp.readline()
+	for line in NETWORK_LIST.split("\n"):
+		line = line.strip()
+		p = line.split(":")
+		servlist.append(p)
 	return servlist

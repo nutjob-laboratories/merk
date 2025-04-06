@@ -34,22 +34,23 @@ import os
 import math
 
 from .version import *
+from .servers import *
+from .emoji1 import *
+from .emoji2 import *
+from .style import *
 
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
 INSTALL_DIRECTORY = sys.path[0]
 MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
-DATA_DIRECTORY = os.path.join(MERK_MODULE_DIRECTORY, "data")
-EMOJI_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji2.txt")
-EMOJI_ALIAS_AUTOCOMPLETE_FILE = os.path.join(DATA_DIRECTORY, "emoji1.txt")
-NETWORK_FILE = os.path.join(DATA_DIRECTORY, "servers.txt")
-
-
 
 APPLICATION_NAME = "MERK"
 APPLICATION_SOURCE = "https://github.com/nutjob-laboratories/merk"
 SCRIPT_FILE_EXTENSION = "merk"
+
+EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")
+EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")
 
 MDI_BACKGROUND = ":/gui-background.png"
 
@@ -197,21 +198,6 @@ MENU_ICON = ":/icon-menu.png"
 WIDGET_ICON = ":/icon-widget.png"
 
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
-
-# Load in autocomplete data
-EMOJI_AUTOCOMPLETE = []
-with open(EMOJI_ALIAS_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:
-	line = fp.readline()
-	while line:
-		e = line.strip()
-		EMOJI_AUTOCOMPLETE.append(e)
-		line = fp.readline()
-with open(EMOJI_AUTOCOMPLETE_FILE,mode="r",encoding="latin-1",errors="ignore") as fp:
-	line = fp.readline()
-	while line:
-		e = line.strip()
-		EMOJI_AUTOCOMPLETE.append(e)
-		line = fp.readline()
 
 HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
 

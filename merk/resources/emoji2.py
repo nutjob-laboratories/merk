@@ -1,4 +1,4 @@
-:1st_place_medal:
+EMOJI_AUTOCOMPLETE_ALIAS_DATA=""":1st_place_medal:
 :2nd_place_medal:
 :3rd_place_medal:
 :AB_button_(blood_type):
@@ -75,10 +75,10 @@
 :Costa_Rica:
 :Croatia:
 :Cuba:
-:Curaçao:
+:CuraÃ§ao:
 :Cyprus:
 :Czechia:
-:Côte_d’Ivoire:
+:CÃ´te_dâ€™Ivoire:
 :Denmark:
 :Diego_Garcia:
 :Djibouti:
@@ -264,7 +264,7 @@
 :Romania:
 :Russia:
 :Rwanda:
-:Réunion:
+:RÃ©union:
 :SOON_arrow:
 :SOS_button:
 :Sagittarius:
@@ -296,7 +296,7 @@
 :South_Sudan:
 :Spain:
 :Sri_Lanka:
-:St._Barthélemy:
+:St._BarthÃ©lemy:
 :St._Helena:
 :St._Kitts_&_Nevis:
 :St._Lucia:
@@ -310,7 +310,7 @@
 :Sweden:
 :Switzerland:
 :Syria:
-:São_Tomé_&_Príncipe:
+:SÃ£o_TomÃ©_&_PrÃ­ncipe:
 :T-Rex:
 :TOP_arrow:
 :Taiwan:
@@ -329,7 +329,7 @@
 :Turkmenistan:
 :Turks_&_Caicos_Islands:
 :Tuvalu:
-:Türkiye:
+:TÃ¼rkiye:
 :U.S._Outlying_Islands:
 :U.S._Virgin_Islands:
 :UP!_button:
@@ -1079,14 +1079,14 @@
 :eight-spoked_asterisk:
 :eight-spoked_asterisk:
 :eight-thirty:
-:eight_o’clock:
+:eight_oâ€™clock:
 :eject_button:
 :eject_button:
 :electric_plug:
 :elephant:
 :elevator:
 :eleven-thirty:
-:eleven_o’clock:
+:eleven_oâ€™clock:
 :elf:
 :elf_dark_skin_tone:
 :elf_light_skin_tone:
@@ -1228,7 +1228,7 @@
 :fish_cake_with_swirl:
 :fishing_pole:
 :five-thirty:
-:five_o’clock:
+:five_oâ€™clock:
 :flag_in_hole:
 :flamingo:
 :flashlight:
@@ -1276,7 +1276,7 @@
 :fountain_pen:
 :four-thirty:
 :four_leaf_clover:
-:four_o’clock:
+:four_oâ€™clock:
 :fox:
 :framed_picture:
 :framed_picture:
@@ -2716,7 +2716,7 @@
 :mantelpiece_clock:
 :mantelpiece_clock:
 :manual_wheelchair:
-:man’s_shoe:
+:manâ€™s_shoe:
 :map_of_Japan:
 :maple_leaf:
 :maracas:
@@ -2773,7 +2773,7 @@
 :mending_heart:
 :mending_heart:
 :menorah:
-:men’s_room:
+:menâ€™s_room:
 :mermaid:
 :mermaid:
 :mermaid_dark_skin_tone:
@@ -2886,7 +2886,7 @@
 :next_track_button:
 :night_with_stars:
 :nine-thirty:
-:nine_o’clock:
+:nine_oâ€™clock:
 :ninja:
 :ninja_dark_skin_tone:
 :ninja_light_skin_tone:
@@ -2957,7 +2957,7 @@
 :oncoming_taxi:
 :one-piece_swimsuit:
 :one-thirty:
-:one_o’clock:
+:one_oâ€™clock:
 :onion:
 :open_book:
 :open_file_folder:
@@ -3479,7 +3479,7 @@
 :pirate_flag:
 :pirate_flag:
 :pizza:
-:piñata:
+:piÃ±ata:
 :placard:
 :place_of_worship:
 :play_button:
@@ -3621,8 +3621,8 @@
 :reminder_ribbon:
 :repeat_button:
 :repeat_single_button:
-:rescue_worker’s_helmet:
-:rescue_worker’s_helmet:
+:rescue_workerâ€™s_helmet:
+:rescue_workerâ€™s_helmet:
 :restroom:
 :reverse_button:
 :reverse_button:
@@ -3720,7 +3720,7 @@
 :selfie_medium_skin_tone:
 :service_dog:
 :seven-thirty:
-:seven_o’clock:
+:seven_oâ€™clock:
 :sewing_needle:
 :shaking_face:
 :shallow_pan_of_food:
@@ -3758,7 +3758,7 @@
 :singer_medium-light_skin_tone:
 :singer_medium_skin_tone:
 :six-thirty:
-:six_o’clock:
+:six_oâ€™clock:
 :skateboard:
 :skier:
 :skier:
@@ -3934,7 +3934,7 @@
 :telescope:
 :television:
 :ten-thirty:
-:ten_o’clock:
+:ten_oâ€™clock:
 :tennis:
 :tent:
 :test_tube:
@@ -3945,7 +3945,7 @@
 :thought_balloon:
 :thread:
 :three-thirty:
-:three_o’clock:
+:three_oâ€™clock:
 :thumbs_down:
 :thumbs_down_dark_skin_tone:
 :thumbs_down_light_skin_tone:
@@ -4001,11 +4001,11 @@
 :turkey:
 :turtle:
 :twelve-thirty:
-:twelve_o’clock:
+:twelve_oâ€™clock:
 :two-hump_camel:
 :two-thirty:
 :two_hearts:
-:two_o’clock:
+:two_oâ€™clock:
 :umbrella:
 :umbrella:
 :umbrella_on_ground:
@@ -4975,10 +4975,10 @@
 :woman_with_white_cane_medium_skin_tone:
 :woman_zombie:
 :woman_zombie:
-:woman’s_boot:
-:woman’s_clothes:
-:woman’s_hat:
-:woman’s_sandal:
+:womanâ€™s_boot:
+:womanâ€™s_clothes:
+:womanâ€™s_hat:
+:womanâ€™s_sandal:
 :women_holding_hands:
 :women_holding_hands_dark_skin_tone:
 :women_holding_hands_dark_skin_tone_light_skin_tone:
@@ -5009,7 +5009,7 @@
 :women_with_bunny_ears:
 :women_wrestling:
 :women_wrestling:
-:women’s_room:
+:womenâ€™s_room:
 :wood:
 :woozy_face:
 :world_map:
@@ -5039,4 +5039,4 @@
 :zebra:
 :zipper-mouth_face:
 :zombie:
-:Åland_Islands:
+:Ã…land_Islands:"""
