@@ -127,8 +127,8 @@ WINDOWBAR_INCLUDE_SERVERS = False
 WINDOWBAR_JUSTIFY = 'center'
 WINDOWBAR_CAN_FLOAT = False
 WINDOWBAR_SHOW_ICONS = False
-
 WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = True
+WINDOWBAR_INCLUDE_EDITORS = False
 
 def save_settings(filename):
 
@@ -222,12 +222,15 @@ def save_settings(filename):
 		"windowbar_can_float": WINDOWBAR_CAN_FLOAT,
 		"windowbar_show_icons": WINDOWBAR_SHOW_ICONS,
 		"windowbar_doubleclick_to_maximize": WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED,
+		"windowbar_include_editors": WINDOWBAR_INCLUDE_EDITORS,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "windowbar_include_editors" in settings:
+		settings["windowbar_include_editors"] = WINDOWBAR_INCLUDE_EDITORS
 	if not "windowbar_doubleclick_to_maximize" in settings:
 		settings["windowbar_doubleclick_to_maximize"] = WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED
 	if not "windowbar_show_icons" in settings:
@@ -499,6 +502,7 @@ def load_settings(filename):
 	global WINDOWBAR_CAN_FLOAT
 	global WINDOWBAR_SHOW_ICONS
 	global WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED
+	global WINDOWBAR_INCLUDE_EDITORS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -508,6 +512,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_INCLUDE_EDITORS = settings["windowbar_include_editors"]
 		WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = settings["windowbar_doubleclick_to_maximize"]
 		WINDOWBAR_SHOW_ICONS = settings["windowbar_show_icons"]
 		SHOW_WINDOWBAR = settings["show_windowbar"]

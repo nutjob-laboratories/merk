@@ -211,13 +211,13 @@ class Merk(QMainWindow):
 			for window in self.getAllSubChatWindows(entry):
 				window_list.append(window)
 
-		if len(listOfConnections)>0:
+		if config.WINDOWBAR_INCLUDE_EDITORS:
+			for window in self.getAllEditorWindows():
+				window_list.append(window)
+
+		if len(window_list)>0:
 			self.windowbar.show()
 		else:
-			self.windowbar.hide()
-			return
-
-		if len(window_list)==0:
 			self.windowbar.hide()
 			return
 
@@ -228,31 +228,63 @@ class Merk(QMainWindow):
 			if hasattr(window,"widget"):
 				c = window.widget()
 
-				if c.client.hostname:
-					serv_name = name = c.client.hostname
-				else:
-					serv_name = c.client.server+":"+str(entry.port)
-
-				if c.client.network:
-					serv_name = serv_name + " ("+c.client.network+")"
-
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
+					wname = c.name
+					if c.client.hostname:
+						serv_name = name = c.client.hostname
+					else:
+						serv_name = c.client.server+":"+str(entry.port)
+
+					if c.client.network:
+						serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==PRIVATE_WINDOW:
 					icon = PRIVATE_ICON
+					wname = c.name
+					if c.client.hostname:
+						serv_name = name = c.client.hostname
+					else:
+						serv_name = c.client.server+":"+str(entry.port)
+
+					if c.client.network:
+						serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==SERVER_WINDOW:
 					icon = CONSOLE_ICON
+					wname = c.name
+					if c.client.hostname:
+						serv_name = name = c.client.hostname
+					else:
+						serv_name = c.client.server+":"+str(entry.port)
+
+					if c.client.network:
+						serv_name = serv_name + " ("+c.client.network+")"
+				elif c.window_type==EDITOR_WINDOW:
+					icon = SCRIPT_ICON
+					if c.editing_user_script:
+						wname = c.current_user_script
+						serv_name = c.current_user_script
+					else:
+						if c.filename==None:
+							wname = "Untitled script"
+							serv_name = "Unsaved"
+						else:
+							wname = os.path.basename(c.filename)
+							serv_name = c.filename
 
 				if config.WINDOWBAR_SHOW_ICONS:
-					button = menubar.get_icon_windowbar_button(icon,c.name)
+					button = menubar.get_icon_windowbar_button(icon,wname)
 				else:
-					button = menubar.get_windowbar_button(c.name)
+					button = menubar.get_windowbar_button(wname)
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
 				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
 				else:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
-				if c.window_type!=SERVER_WINDOW:
+				if c.window_type==CHANNEL_WINDOW:
+					button.setToolTip(serv_name)
+				if c.window_type==PRIVATE_WINDOW:
+					button.setToolTip(serv_name)
+				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(serv_name)
 				button.setFixedHeight(18)
 

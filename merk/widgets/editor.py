@@ -29,6 +29,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 import uuid
+import os
 
 from ..resources import *
 from ..dialog import *

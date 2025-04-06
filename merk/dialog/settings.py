@@ -356,6 +356,7 @@ class Dialog(QDialog):
 			self.windowbarJustify.setEnabled(True)
 			self.windowBarIcons.setEnabled(True)
 			self.windowbarClick.setEnabled(True)
+			self.windowBarEditor.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -363,6 +364,7 @@ class Dialog(QDialog):
 			self.windowbarJustify.setEnabled(False)
 			self.windowBarIcons.setEnabled(False)
 			self.windowbarClick.setEnabled(False)
+			self.windowBarEditor.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -434,7 +436,7 @@ class Dialog(QDialog):
 		f.setBold(True)
 		self.selector.setFont(f)
 
-		self.changed = QLabel("<i>Settings changed.</i>")
+		self.changed = QLabel("<i><b>Settings changed.</b></i>")
 
 		fm = QFontMetrics(self.font())
 		fwidth = fm.width('X') * 27
@@ -611,7 +613,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Toolbars")
+		entry.setText("Menubar")
 		entry.widget = self.menuPage
 		entry.setIcon(QIcon(MENU_ICON))
 		self.selector.addItem(entry)
@@ -641,16 +643,37 @@ class Dialog(QDialog):
 
 		if not config.USE_MENUBAR: self.menubarFloat.setEnabled(False)
 
+		menuLayout = QVBoxLayout()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
+		menuLayout.addWidget(self.menubarDescription)
+		menuLayout.addWidget(self.menubar)
+		menuLayout.addWidget(self.menubarFloat)
+		menuLayout.addStretch()
+
+		self.menuPage.setLayout(menuLayout)
+
+		# Windowbar page
+
+		self.windowbarPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Windowbar")
+		entry.widget = self.windowbarPage
+		entry.setIcon(QIcon(WINDOW_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.windowbarPage)
 
 		self.windowbarDescription = QLabel("""
 			<small>
-			The windowbar is a toolbar widget that lists all of the currently open
+			The windowbar is a toolbar widget that lists all of the open chat
 			subwindows and allows you to switch between them by clicking on
-			the subwindow's name, and displays only open chat windows
-			by default. It can be displayed at the top of the main window or
-			at the bottom, and can optionally float. The entries in the window
-			bar can be left, right, or center justified. The windowbar is
-			turned on by default.
+			the subwindow's name. Optionally, the windowbar can also display
+			server and script editor window. It can be displayed at the top of
+			the main window or at the bottom, and can optionally float. The entries
+			in the window bar can be left, right, or center justified. The
+			windowbar is turned on by default.
 			</small>
 			<br>
 			""")
@@ -693,23 +716,33 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
 		self.windowbarClick.stateChanged.connect(self.windowbarChange)
 
-		menuLayout = QVBoxLayout()
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
-		menuLayout.addWidget(self.menubarDescription)
-		menuLayout.addWidget(self.menubar)
-		menuLayout.addWidget(self.menubarFloat)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
-		menuLayout.addWidget(self.windowbarDescription)
-		menuLayout.addWidget(self.windowBar)
-		menuLayout.addWidget(self.windowBarFloat)
-		menuLayout.addWidget(self.windowBarTop)
-		menuLayout.addWidget(self.windowBarServers)
-		menuLayout.addWidget(self.windowBarIcons)
-		menuLayout.addWidget(self.windowbarClick)
-		menuLayout.addLayout(justifyLayout)
-		menuLayout.addStretch()
+		self.windowBarEditor = QCheckBox("Windowbar includes editor windows",self)
+		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
+		self.windowBarEditor.stateChanged.connect(self.windowbarChange)
 
-		self.menuPage.setLayout(menuLayout)
+		if not config.SHOW_WINDOWBAR:
+			self.windowBarFloat.setEnabled(False)
+			self.windowBarTop.setEnabled(False)
+			self.windowBarServers.setEnabled(False)
+			self.windowbarJustify.setEnabled(False)
+			self.windowBarIcons.setEnabled(False)
+			self.windowbarClick.setEnabled(False)
+			self.windowBarEditor.setEnabled(False)
+
+		windowbarLayout = QVBoxLayout()
+		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
+		windowbarLayout.addWidget(self.windowbarDescription)
+		windowbarLayout.addWidget(self.windowBar)
+		windowbarLayout.addWidget(self.windowBarFloat)
+		windowbarLayout.addWidget(self.windowBarTop)
+		windowbarLayout.addWidget(self.windowBarServers)
+		windowbarLayout.addWidget(self.windowBarEditor)
+		windowbarLayout.addWidget(self.windowBarIcons)
+		windowbarLayout.addWidget(self.windowbarClick)
+		windowbarLayout.addLayout(justifyLayout)
+		windowbarLayout.addStretch()
+
+		self.windowbarPage.setLayout(windowbarLayout)
 
 		# Connection page
 
@@ -1369,6 +1402,7 @@ class Dialog(QDialog):
 		logo.setAlignment(Qt.AlignCenter)
 
 		dialogButtonsLayout = QHBoxLayout()
+		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.changed)
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.saveButton)
@@ -1471,6 +1505,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_JUSTIFY = self.windowbar_justify
 		config.WINDOWBAR_SHOW_ICONS = self.windowBarIcons.isChecked()
 		config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = self.windowbarClick.isChecked()
+		config.WINDOWBAR_INCLUDE_EDITORS = self.windowBarEditor.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
