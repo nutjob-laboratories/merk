@@ -257,9 +257,6 @@ class Merk(QMainWindow):
 				button.setFixedHeight(18)
 
 				current_font = button.font()
-				current_font_size = current_font.pointSize()
-				current_font.setPointSize(current_font_size-2)
-				
 
 				x = self.MDI.activeSubWindow()
 				if hasattr(x,"widget"):
