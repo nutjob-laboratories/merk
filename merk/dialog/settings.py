@@ -692,7 +692,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
 		self.windowBarServers.stateChanged.connect(self.windowbarChange)
 
-		self.windowBarIcons = QCheckBox("Windowbar shows window type icons",self)
+		self.windowBarIcons = QCheckBox("Windowbar shows window icons",self)
 		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
 		self.windowBarIcons.stateChanged.connect(self.windowbarChange)
 
