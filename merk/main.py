@@ -24,6 +24,7 @@
 #
 
 import os
+import sys
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -101,6 +102,10 @@ class Merk(QMainWindow):
 		self.flash_time = 500
 		self.notifications = False
 
+		self.resize_timer = QTimer(self)
+		self.resize_timer.timeout.connect(self.on_resize_complete)
+		self.resize_delay = 200
+
 		# Create the central object of the client,
 		# the MDI widget
 		self.MDI = QMdiArea()
@@ -159,6 +164,15 @@ class Merk(QMainWindow):
 			self.connectToIrc(connection_info)
 
 	# Windowbar
+	def resizeEvent(self, event):
+		super().resizeEvent(event)
+		self.resize_timer.start(self.resize_delay)
+
+	def on_resize_complete(self):
+		self.resize_timer.stop()
+		#self.resized.emit()
+
+		self.buildWindowbar()
 
 	def initWindowbar(self):
 
@@ -232,7 +246,7 @@ class Merk(QMainWindow):
 				window_titles.append(c.name)
 		all_windows = ' '.join(window_titles)
 		fm = QFontMetrics(self.font())
-		window_width = fm.horizontalAdvance(all_windows) + (len(window_list) * 7)
+		window_width = fm.horizontalAdvance(all_windows) + (len(window_list) * 20)
 		if config.WINDOWBAR_SHOW_ICONS: window_width + (len(window_list)*16)
 		if self.width()<window_width:
 			WINDOWBAR_TOO_SMALL = True
@@ -301,12 +315,21 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
 				if c.window_type==CHANNEL_WINDOW:
 					button.setToolTip(serv_name)
+					if WINDOWBAR_TOO_SMALL:
+						button.setToolTip(c.name + "\n" + serv_name)
 				if c.window_type==PRIVATE_WINDOW:
 					button.setToolTip(serv_name)
+					if WINDOWBAR_TOO_SMALL:
+						button.setToolTip(c.name + "\n" + serv_name)
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(serv_name)
-				if WINDOWBAR_TOO_SMALL:
-					button.setToolTip(c.name)
+					if WINDOWBAR_TOO_SMALL:
+						button.setToolTip(c.name + "\n" + serv_name)
+				if c.window_type==SERVER_WINDOW:
+					button.setToolTip(serv_name)
+				if c.window_type==EDITOR_WINDOW:
+					button.setToolTip(wname)
+
 				button.setFixedHeight(18)
 
 				current_font = button.font()
@@ -320,15 +343,11 @@ class Merk(QMainWindow):
 							current_font.setUnderline(True)
 							current_font.setBold(True)
 							if WINDOWBAR_TOO_SMALL:
-								if c.window_type==CHANNEL_WINDOW:
-									pass
-								if c.window_type==PRIVATE_WINDOW:
-									pass
-								if c.window_type==EDITOR_WINDOW:
-									pass
 								button.setToolTip(c.name)
 								button.setText(wname)
 								skip_add = True
+								current_font.setUnderline(False)
+								current_font.setBold(False)
 
 				button.setFont(current_font)
 
