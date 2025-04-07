@@ -233,6 +233,7 @@ class Merk(QMainWindow):
 		all_windows = ' '.join(window_titles)
 		fm = QFontMetrics(self.font())
 		window_width = fm.horizontalAdvance(all_windows)
+		if config.WINDOWBAR_SHOW_ICONS: window_width + (len(window_list)*16)
 		if self.width()<window_width:
 			WINDOWBAR_TOO_SMALL = True
 		else:
