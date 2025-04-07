@@ -232,7 +232,7 @@ class Merk(QMainWindow):
 				window_titles.append(c.name)
 		all_windows = ' '.join(window_titles)
 		fm = QFontMetrics(self.font())
-		window_width = fm.horizontalAdvance(all_windows)
+		window_width = fm.horizontalAdvance(all_windows) + (len(window_list) * 5)
 		if config.WINDOWBAR_SHOW_ICONS: window_width + (len(window_list)*16)
 		if self.width()<window_width:
 			WINDOWBAR_TOO_SMALL = True
@@ -290,6 +290,8 @@ class Merk(QMainWindow):
 					button = menubar.get_icon_windowbar_button(icon,wname)
 				else:
 					button = menubar.get_windowbar_button(wname)
+				if WINDOWBAR_TOO_SMALL:
+					button = menubar.get_icon_windowbar_button(icon,'')
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
 				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
@@ -301,6 +303,8 @@ class Merk(QMainWindow):
 					button.setToolTip(serv_name)
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(serv_name)
+				if WINDOWBAR_TOO_SMALL:
+					button.setToolTip(c.name)
 				button.setFixedHeight(18)
 
 				current_font = button.font()
