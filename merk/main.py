@@ -346,8 +346,6 @@ class Merk(QMainWindow):
 								button.setToolTip(c.name)
 								button.setText(wname)
 								skip_add = True
-								current_font.setUnderline(False)
-								current_font.setBold(False)
 
 				button.setFont(current_font)
 
