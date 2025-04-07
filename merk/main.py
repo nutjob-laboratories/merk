@@ -224,6 +224,20 @@ class Merk(QMainWindow):
 		if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
 			menubar.add_toolbar_stretch(self.windowbar)
 
+		# Get length of entries
+		window_titles = []
+		for window in window_list:
+			if hasattr(window,"widget"):
+				c = window.widget()
+				window_titles.append(c.name)
+		all_windows = ' '.join(window_titles)
+		fm = QFontMetrics(self.font())
+		window_width = fm.horizontalAdvance(all_windows)
+		if self.width()<window_width:
+			WINDOWBAR_TOO_SMALL = True
+		else:
+			WINDOWBAR_TOO_SMALL = False
+
 		for window in window_list:
 			if hasattr(window,"widget"):
 				c = window.widget()
