@@ -143,6 +143,18 @@ def get_icon_toolbar_button(icon,name):
 	
 	return toolMenuButton
 
+def get_icon_only_toolbar_button(icon):
+
+	toolMenuButton = wIconMenuButton(
+			icon,
+			toolbar_button_style,
+			toolbar_button_style_hover
+			)
+
+	toolMenuButton.setStyleSheet(toolbar_button_style)
+	
+	return toolMenuButton
+
 def get_toolbar_button(name):
 
 	toolMenuButton = MenuButton(

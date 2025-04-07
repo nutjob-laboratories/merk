@@ -291,7 +291,7 @@ class Merk(QMainWindow):
 				else:
 					button = menubar.get_windowbar_button(wname)
 				if WINDOWBAR_TOO_SMALL:
-					button = menubar.get_icon_windowbar_button(icon,'')
+					button = menubar.get_icon_only_toolbar_button(icon)
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
 				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
