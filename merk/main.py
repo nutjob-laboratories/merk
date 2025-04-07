@@ -232,16 +232,18 @@ class Merk(QMainWindow):
 				window_titles.append(c.name)
 		all_windows = ' '.join(window_titles)
 		fm = QFontMetrics(self.font())
-		window_width = fm.horizontalAdvance(all_windows) + (len(window_list) * 5)
+		window_width = fm.horizontalAdvance(all_windows) + (len(window_list) * 7)
 		if config.WINDOWBAR_SHOW_ICONS: window_width + (len(window_list)*16)
 		if self.width()<window_width:
 			WINDOWBAR_TOO_SMALL = True
 		else:
 			WINDOWBAR_TOO_SMALL = False
 
+		button_list = []
 		for window in window_list:
 			if hasattr(window,"widget"):
 				c = window.widget()
+				skip_add = False
 
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
@@ -317,10 +319,26 @@ class Merk(QMainWindow):
 							# currently active window
 							current_font.setUnderline(True)
 							current_font.setBold(True)
+							if WINDOWBAR_TOO_SMALL:
+								if c.window_type==CHANNEL_WINDOW:
+									pass
+								if c.window_type==PRIVATE_WINDOW:
+									pass
+								if c.window_type==EDITOR_WINDOW:
+									pass
+								button.setToolTip(c.name)
+								button.setText(wname)
+								skip_add = True
 
 				button.setFont(current_font)
 
-				self.windowbar.addWidget(button)
+				if skip_add:
+					button_list.insert(0, button)
+				else:
+					button_list.append(button)
+		
+		for b in button_list:
+			self.windowbar.addWidget(b)
 
 		if config.WINDOWBAR_JUSTIFY.lower()=='center':
 			menubar.add_toolbar_stretch(self.windowbar)
