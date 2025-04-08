@@ -524,26 +524,31 @@ class Window(QMainWindow):
 
 		if self.window_type==SERVER_WINDOW:
 
-			entry = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
-			entry.triggered.connect(self.changeNick)
-			menu.addAction(entry)
+			self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+			self.contextNick.triggered.connect(self.changeNick)
+			menu.addAction(self.contextNick)
 
-			entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
-			entry.triggered.connect(self.joinChannel)
-			menu.addAction(entry)
+			self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+			self.contextJoin.triggered.connect(self.joinChannel)
+			menu.addAction(self.contextJoin)
+
+			self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
+			self.contextRun.triggered.connect(self.loadScript)
+			menu.addAction(self.contextRun)
 
 			hostid = self.client.server+":"+str(self.client.port)
 			entry = QAction(QIcon(SCRIPT_ICON),"Edit connect script",self)
 			entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
 			menu.addAction(entry)
 
-			entry = QAction(QIcon(RUN_ICON),"Run script",self)
-			entry.triggered.connect(self.loadScript)
-			menu.addAction(entry)
-
 			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
 			entry.triggered.connect(self.disconnect)
 			menu.addAction(entry)
+
+			if self.client.hostname==None:
+				self.contextNick.setEnabled(False)
+				self.contextJoin.setEnabled(False)
+				self.contextRun.setEnabled(False)
 
 		if self.window_type!=SERVER_WINDOW:
 
