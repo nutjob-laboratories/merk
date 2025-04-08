@@ -198,6 +198,47 @@ class Merk(QMainWindow):
 
 		self.buildWindowbar()
 
+	def size_of_list(self,wl):
+		window_titles = []
+		for window in wl:
+			if hasattr(window,"widget"):
+				c = window.widget()
+				window_titles.append(c.name)
+		all_windows = ' '.join(window_titles)
+		fm = QFontMetrics(self.font())
+		window_width = fm.horizontalAdvance(all_windows) + (len(wl) * 20)
+		if config.WINDOWBAR_SHOW_ICONS: window_width = window_width + (len(wl)*16)
+
+		return window_width
+
+	def raw_size_of_list(self,wl):
+		all_windows = ' '.join(wl)
+		fm = QFontMetrics(self.font())
+		window_width = fm.horizontalAdvance(all_windows) + (len(wl) * 20)
+		if config.WINDOWBAR_SHOW_ICONS: window_width = window_width + (len(wl)*16)
+
+		return window_width
+
+	def split_up_windowbar(self,windows):
+		# Get length of entries
+		window_width = self.size_of_list(windows)
+		if self.width()>window_width:
+			return [ windows, [] ]
+
+		full = []
+		abbv = []
+		window_titles = []
+		for window in windows:
+			if hasattr(window,"widget"):
+				c = window.widget()
+				window_titles.append(c.name)
+
+				if self.raw_size_of_list(window_titles)<(self.width()/2):
+					full.append(window)
+				else:
+					abbv.append(window)
+		return [full,abbv]
+
 	def buildWindowbar(self):
 
 		if not hasattr(self,"windowbar"): return
@@ -238,26 +279,27 @@ class Merk(QMainWindow):
 		if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
 			menubar.add_toolbar_stretch(self.windowbar)
 
-		# Get length of entries
-		window_titles = []
-		for window in window_list:
-			if hasattr(window,"widget"):
-				c = window.widget()
-				window_titles.append(c.name)
-		all_windows = ' '.join(window_titles)
-		fm = QFontMetrics(self.font())
-		window_width = fm.horizontalAdvance(all_windows) + (len(window_list) * 20)
-		if config.WINDOWBAR_SHOW_ICONS: window_width + (len(window_list)*16)
-		if self.width()<window_width:
-			WINDOWBAR_TOO_SMALL = True
-		else:
-			WINDOWBAR_TOO_SMALL = False
+		# Rearrange the windowlist so that the current
+		# window is always first
+		x = self.MDI.activeSubWindow()
+		rearranged = []
+		for w in window_list:
+			if w==x:
+				rearranged.insert(0,w)
+			else:
+				rearranged.append(w)
+		window_list = rearranged
 
+		te = self.split_up_windowbar(window_list)
+		
+		full_display = te[0]
+		partial_display = te[1]
+		
 		button_list = []
-		for window in window_list:
+
+		for window in full_display:
 			if hasattr(window,"widget"):
 				c = window.widget()
-				skip_add = False
 
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
@@ -306,8 +348,6 @@ class Merk(QMainWindow):
 					button = menubar.get_icon_windowbar_button(icon,wname)
 				else:
 					button = menubar.get_windowbar_button(wname)
-				if WINDOWBAR_TOO_SMALL:
-					button = menubar.get_icon_only_toolbar_button(icon)
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
 				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
@@ -315,44 +355,86 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
 				if c.window_type==CHANNEL_WINDOW:
 					button.setToolTip(serv_name)
-					if WINDOWBAR_TOO_SMALL:
-						button.setToolTip(c.name + "\n" + serv_name)
 				if c.window_type==PRIVATE_WINDOW:
 					button.setToolTip(serv_name)
-					if WINDOWBAR_TOO_SMALL:
-						button.setToolTip(c.name + "\n" + serv_name)
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(serv_name)
-					if WINDOWBAR_TOO_SMALL:
-						button.setToolTip(c.name + "\n" + serv_name)
 				if c.window_type==SERVER_WINDOW:
 					button.setToolTip(serv_name)
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(wname)
 
 				button.setFixedHeight(18)
+				button_list.append(button)
 
-				current_font = button.font()
 
-				x = self.MDI.activeSubWindow()
-				if hasattr(x,"widget"):
-					y = x.widget()
-					if hasattr(y,"subwindow_id"):
-						if y.subwindow_id == c.subwindow_id:
-							# currently active window
-							current_font.setUnderline(True)
-							current_font.setBold(True)
-							if WINDOWBAR_TOO_SMALL:
-								button.setToolTip(c.name)
-								button.setText(wname)
-								skip_add = True
+		for window in partial_display:
+			if hasattr(window,"widget"):
+				c = window.widget()
 
-				button.setFont(current_font)
+				if c.window_type==CHANNEL_WINDOW:
+					icon = CHANNEL_ICON
+					wname = c.name
+					if c.client.hostname:
+						serv_name = name = c.client.hostname
+					else:
+						serv_name = c.client.server+":"+str(entry.port)
 
-				if skip_add:
-					button_list.insert(0, button)
+					if c.client.network:
+						serv_name = serv_name + " ("+c.client.network+")"
+				elif c.window_type==PRIVATE_WINDOW:
+					icon = PRIVATE_ICON
+					wname = c.name
+					if c.client.hostname:
+						serv_name = name = c.client.hostname
+					else:
+						serv_name = c.client.server+":"+str(entry.port)
+
+					if c.client.network:
+						serv_name = serv_name + " ("+c.client.network+")"
+				elif c.window_type==SERVER_WINDOW:
+					icon = CONSOLE_ICON
+					wname = c.name
+					if c.client.hostname:
+						serv_name = name = c.client.hostname
+					else:
+						serv_name = c.client.server+":"+str(entry.port)
+
+					if c.client.network:
+						serv_name = serv_name + " ("+c.client.network+")"
+				elif c.window_type==EDITOR_WINDOW:
+					icon = SCRIPT_ICON
+					if c.editing_user_script:
+						wname = c.current_user_script
+						serv_name = c.current_user_script
+					else:
+						if c.filename==None:
+							wname = "Untitled script"
+							serv_name = "Unsaved"
+						else:
+							wname = os.path.basename(c.filename)
+							serv_name = c.filename
+
+				button = menubar.get_icon_only_toolbar_button(icon)
+				button.clicked.connect(lambda u=window: self.showSubWindow(u))
+				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
+					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
 				else:
-					button_list.append(button)
+					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
+				if c.window_type==CHANNEL_WINDOW:
+					button.setToolTip(c.name + "\n" + serv_name)
+				if c.window_type==PRIVATE_WINDOW:
+					button.setToolTip(serv_name)
+					button.setToolTip(c.name + "\n" + serv_name)
+				if c.window_type==EDITOR_WINDOW:
+					button.setToolTip(c.name + "\n" + serv_name)
+				if c.window_type==SERVER_WINDOW:
+					button.setToolTip(serv_name)
+				if c.window_type==EDITOR_WINDOW:
+					button.setToolTip(wname)
+
+				button.setFixedHeight(18)
+				button_list.append(button)
 		
 		for b in button_list:
 			self.windowbar.addWidget(b)
