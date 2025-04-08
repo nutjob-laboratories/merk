@@ -520,8 +520,6 @@ class Window(QMainWindow):
 
 		menu = self.chat.createStandardContextMenu()
 
-		menu.addSeparator()
-
 		if self.window_type==SERVER_WINDOW:
 
 			self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
@@ -540,6 +538,8 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(SCRIPT_ICON),"Edit connect script",self)
 			entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
 			menu.addAction(entry)
+
+			menu.addSeparator()
 
 			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
 			entry.triggered.connect(self.disconnect)
