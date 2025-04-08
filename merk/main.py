@@ -376,6 +376,12 @@ class Merk(QMainWindow):
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(wname)
 
+				# if window == self.MDI.activeSubWindow():
+				# 	font = QFont()
+				# 	font.setBold(True)
+				# 	font.setUnderline(True)
+				# 	button.setFont(font)
+
 				button.setFixedHeight(18)
 				button_list.append(button)
 
