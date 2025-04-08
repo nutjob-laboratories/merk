@@ -89,7 +89,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		rules = []
 
 		# Commands
-		rules += [(r'%s' % o, 0, STYLES['merk'])
+		rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
 			for o in merk]
 
 		# Channel names

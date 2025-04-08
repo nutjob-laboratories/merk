@@ -162,6 +162,7 @@ def handleCommonCommands(gui,window,user_input,is_script):
 	return executeCommonCommands(gui,window,user_input,is_script)
 
 def executeChatCommands(gui,window,user_input,is_script):
+	user_input = user_input.lstrip()
 	tokens = user_input.split()
 
 	# |--------|
@@ -395,6 +396,7 @@ def interpolateAliases(text):
 	return text
 
 def executeCommonCommands(gui,window,user_input,is_script):
+	user_input = user_input.lstrip()
 	tokens = user_input.split()
 
 	# |--------|
