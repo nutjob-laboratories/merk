@@ -436,6 +436,12 @@ class Merk(QMainWindow):
 				button.setFixedHeight(18)
 				button_list.append(button)
 		
+		if len(button_list)>0:
+			font = QFont()
+			font.setBold(True)
+			font.setUnderline(True)
+			button_list[0].setFont(font)
+
 		for b in button_list:
 			self.windowbar.addWidget(b)
 
