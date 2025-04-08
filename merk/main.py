@@ -294,6 +294,18 @@ class Merk(QMainWindow):
 		
 		full_display = te[0]
 		partial_display = te[1]
+
+		# Make sure the current active window is
+		# in the full display list
+		# x = self.MDI.activeSubWindow()
+		# aw = 0
+		# domove = False
+		# for w in partial_display:
+		# 	if w==x:
+		# 		full_display.append(partial_display.pop(aw))
+		# 		domove = True
+		# 	aw = aw + 1
+		# if domove: partial_display.append(full_display.pop(0))
 		
 		button_list = []
 
