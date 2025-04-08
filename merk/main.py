@@ -1842,6 +1842,21 @@ class Merk(QMainWindow):
 
 		return w
 
+	def newEditorWindowConnect(self,hostid):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(None,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.MDI.addSubWindow(w)
+		self.settingsMenu.close()
+		self.buildWindowsMenu()
+		w.show()
+
+		c = w.widget()
+		c.readConnect(hostid,user.COMMANDS[hostid])
+
+		return w
+
 	def openLinkInBrowser(self,url):
 		u = QUrl()
 		u.setUrl(url)

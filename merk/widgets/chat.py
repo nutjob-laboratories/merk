@@ -225,6 +225,9 @@ class Window(QMainWindow):
 		self.chat.setFocusPolicy(Qt.NoFocus)
 		self.chat.anchorClicked.connect(self.linkClicked)
 
+		self.chat.setContextMenuPolicy(Qt.CustomContextMenu)
+		self.chat.customContextMenuRequested.connect(self.chatMenu)
+
 		# Create text input widget
 		self.input = SpellTextEdit(self)
 		self.input.returnPressed.connect(self.handleUserInput)
@@ -512,6 +515,43 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
+
+	def chatMenu(self,location):
+
+		menu = self.chat.createStandardContextMenu()
+
+		menu.addSeparator()
+
+		if self.window_type==SERVER_WINDOW:
+
+			entry = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+			entry.triggered.connect(self.changeNick)
+			menu.addAction(entry)
+
+			entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+			entry.triggered.connect(self.joinChannel)
+			menu.addAction(entry)
+
+			hostid = self.client.server+":"+str(self.client.port)
+			entry = QAction(QIcon(SCRIPT_ICON),"Edit connect script",self)
+			entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
+			menu.addAction(entry)
+
+			entry = QAction(QIcon(RUN_ICON),"Run script",self)
+			entry.triggered.connect(self.loadScript)
+			menu.addAction(entry)
+
+			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
+			entry.triggered.connect(self.disconnect)
+			menu.addAction(entry)
+
+		if self.window_type!=SERVER_WINDOW:
+
+			entry = QAction(QIcon(STYLE_ICON),"Edit style",self)
+			entry.triggered.connect(self.pressedStyleButton)
+			menu.addAction(entry)
+
+		action = menu.exec_(self.chat.mapToGlobal(location))
 
 
 	def menuHideUserlist(self):
