@@ -267,8 +267,10 @@ class Dialog(QDialog):
 	def changedMenubarSetting(self,state):
 		if self.menubar.isChecked():
 			self.menubarFloat.setEnabled(True)
+			self.menubarJustify.setEnabled(True)
 		else:
 			self.menubarFloat.setEnabled(False)
+			self.menubarJustify.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -381,6 +383,15 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def menuJustifyChange(self,i):
+
+		self.menubar_justify = self.menubarJustify.itemText(i)
+
+		self.windowbar_change = True
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
 	def windowbarChange(self):
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -422,6 +433,8 @@ class Dialog(QDialog):
 
 		self.windowbar_justify = config.WINDOWBAR_JUSTIFY
 		self.windowbar_change = False
+
+		self.menubar_justify = config.MENUBAR_JUSTIFY
 
 		self.refreshTopics = False
 		self.refreshTitles = False
@@ -648,13 +661,28 @@ class Dialog(QDialog):
 		if config.MENUBAR_CAN_FLOAT: self.menubarFloat.setChecked(True)
 		self.menubarFloat.stateChanged.connect(self.changedSetting)
 
-		if not config.USE_MENUBAR: self.menubarFloat.setEnabled(False)
+		self.menubarJustify = QComboBox(self)
+		self.menubarJustify.addItem(config.MENUBAR_JUSTIFY)
+		if config.MENUBAR_JUSTIFY!='center': self.menubarJustify.addItem('center')
+		if config.MENUBAR_JUSTIFY!='left': self.menubarJustify.addItem('left')
+		if config.MENUBAR_JUSTIFY!='right': self.menubarJustify.addItem('right')
+		self.menubarJustify.currentIndexChanged.connect(self.menuJustifyChange)
+
+		if not config.USE_MENUBAR:
+			self.menubarFloat.setEnabled(False)
+			self.menubarJustify.setEnabled(False)
+
+		justifyLayout = QHBoxLayout()
+		justifyLayout.addWidget(QLabel("<b>Menubar justify</b> "))
+		justifyLayout.addWidget(self.menubarJustify)
+		justifyLayout.addStretch()
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addWidget(self.menubar)
 		menuLayout.addWidget(self.menubarFloat)
+		menuLayout.addLayout(justifyLayout)
 		menuLayout.addStretch()
 
 		self.menuPage.setLayout(menuLayout)
@@ -1528,6 +1556,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_INCLUDE_EDITORS = self.windowBarEditor.isChecked()
 		config.SHOW_CHAT_CONTEXT_MENUS = self.showContext.isChecked()
 		config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = self.windowBarFirst.isChecked()
+		config.MENUBAR_JUSTIFY = self.menubar_justify
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

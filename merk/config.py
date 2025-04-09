@@ -131,7 +131,6 @@ WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = True
 WINDOWBAR_INCLUDE_EDITORS = True
 SHOW_CHAT_CONTEXT_MENUS = True
 ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
-
 MENUBAR_JUSTIFY = 'left'
 
 def save_settings(filename):
@@ -229,12 +228,15 @@ def save_settings(filename):
 		"windowbar_include_editors": WINDOWBAR_INCLUDE_EDITORS,
 		"show_chat_context_menu_options": SHOW_CHAT_CONTEXT_MENUS,
 		"always_show_current_first_in_windowbar": ALWAYS_SHOW_CURRENT_WINDOW_FIRST,
+		"menubar_justify": MENUBAR_JUSTIFY,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "menubar_justify" in settings:
+		settings["menubar_justify"] = MENUBAR_JUSTIFY
 	if not "always_show_current_first_in_windowbar" in settings:
 		settings["always_show_current_first_in_windowbar"] = ALWAYS_SHOW_CURRENT_WINDOW_FIRST
 	if not "show_chat_context_menu_options" in settings:
@@ -515,6 +517,7 @@ def load_settings(filename):
 	global WINDOWBAR_INCLUDE_EDITORS
 	global SHOW_CHAT_CONTEXT_MENUS
 	global ALWAYS_SHOW_CURRENT_WINDOW_FIRST
+	global MENUBAR_JUSTIFY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -524,6 +527,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MENUBAR_JUSTIFY = settings["menubar_justify"]
 		ALWAYS_SHOW_CURRENT_WINDOW_FIRST = settings["always_show_current_first_in_windowbar"]
 		SHOW_CHAT_CONTEXT_MENUS = settings["show_chat_context_menu_options"]
 		WINDOWBAR_INCLUDE_EDITORS = settings["windowbar_include_editors"]
