@@ -644,7 +644,7 @@ class Dialog(QDialog):
 		if config.USE_MENUBAR: self.menubar.setChecked(True)
 		self.menubar.stateChanged.connect(self.changedMenubarSetting)
 
-		self.menubarFloat = QCheckBox("Menubar can \"float\"",self)
+		self.menubarFloat = QCheckBox("Can \"float\"",self)
 		if config.MENUBAR_CAN_FLOAT: self.menubarFloat.setChecked(True)
 		self.menubarFloat.stateChanged.connect(self.changedSetting)
 
@@ -691,19 +691,19 @@ class Dialog(QDialog):
 		if config.SHOW_WINDOWBAR: self.windowBar.setChecked(True)
 		self.windowBar.stateChanged.connect(self.changedWindowbarSetting)
 
-		self.windowBarTop = QCheckBox("Show windowbar at top of window",self)
+		self.windowBarTop = QCheckBox("Display at top of window",self)
 		if config.WINDOWBAR_TOP_OF_SCREEN: self.windowBarTop.setChecked(True)
 		self.windowBarTop.stateChanged.connect(self.windowbarChange)
 
-		self.windowBarServers = QCheckBox("Windowbar includes server windows",self)
+		self.windowBarServers = QCheckBox("Includes server windows",self)
 		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
 		self.windowBarServers.stateChanged.connect(self.windowbarChange)
 
-		self.windowBarIcons = QCheckBox("Windowbar shows window icons",self)
+		self.windowBarIcons = QCheckBox("Shows window icons",self)
 		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
 		self.windowBarIcons.stateChanged.connect(self.windowbarChange)
 
-		self.windowBarFloat = QCheckBox("Windowbar can \"float\"",self)
+		self.windowBarFloat = QCheckBox("Can \"float\"",self)
 		if config.WINDOWBAR_CAN_FLOAT: self.windowBarFloat.setChecked(True)
 		self.windowBarFloat.stateChanged.connect(self.windowbarChange)
 
@@ -723,7 +723,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
 		self.windowbarClick.stateChanged.connect(self.windowbarChange)
 
-		self.windowBarEditor = QCheckBox("Windowbar includes editor windows",self)
+		self.windowBarEditor = QCheckBox("Includes editor windows",self)
 		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
 		self.windowBarEditor.stateChanged.connect(self.windowbarChange)
 
@@ -975,19 +975,19 @@ class Dialog(QDialog):
 		self.autocompleteDescription.setWordWrap(True)
 		self.autocompleteDescription.setAlignment(Qt.AlignJustify)
 
-		self.autocompleteCommands = QCheckBox("Autocomplete commands",self)
+		self.autocompleteCommands = QCheckBox("Commands",self)
 		if config.AUTOCOMPLETE_COMMANDS: self.autocompleteCommands.setChecked(True)
 		self.autocompleteCommands.stateChanged.connect(self.changedSetting)
 
-		self.autocompleteNicks = QCheckBox("Autocomplete nicknames",self)
+		self.autocompleteNicks = QCheckBox("Nicknames",self)
 		if config.AUTOCOMPLETE_NICKS: self.autocompleteNicks.setChecked(True)
 		self.autocompleteNicks.stateChanged.connect(self.changedSetting)
 
-		self.autocompleteChans = QCheckBox("Autocomplete channels",self)
+		self.autocompleteChans = QCheckBox("Channels",self)
 		if config.AUTOCOMPLETE_CHANNELS: self.autocompleteChans.setChecked(True)
 		self.autocompleteChans.stateChanged.connect(self.changedSetting)
 
-		self.autocompleteEmojis = QCheckBox("Autocomplete emoji shortcodes",self)
+		self.autocompleteEmojis = QCheckBox("Emoji shortcodes",self)
 		if config.AUTOCOMPLETE_EMOJIS: self.autocompleteEmojis.setChecked(True)
 		self.autocompleteEmojis.stateChanged.connect(self.changedSetting)
 
@@ -995,6 +995,14 @@ class Dialog(QDialog):
 			self.autocompleteEmojis.setEnabled(True)
 		else:
 			self.autocompleteEmojis.setEnabled(False)
+
+		autoLayout1 = QHBoxLayout()
+		autoLayout1.addWidget(self.autocompleteCommands)
+		autoLayout1.addWidget(self.autocompleteNicks)
+
+		autoLayout2 = QHBoxLayout()
+		autoLayout2.addWidget(self.autocompleteChans)
+		autoLayout2.addWidget(self.autocompleteEmojis)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
@@ -1004,10 +1012,8 @@ class Dialog(QDialog):
 		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
-		inputLayout.addWidget(self.autocompleteCommands)
-		inputLayout.addWidget(self.autocompleteNicks)
-		inputLayout.addWidget(self.autocompleteChans)
-		inputLayout.addWidget(self.autocompleteEmojis)
+		inputLayout.addLayout(autoLayout1)
+		inputLayout.addLayout(autoLayout2)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
