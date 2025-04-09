@@ -520,41 +520,43 @@ class Window(QMainWindow):
 
 		menu = self.chat.createStandardContextMenu()
 
-		if self.window_type==SERVER_WINDOW:
+		if config.SHOW_CHAT_CONTEXT_MENUS:
 
-			self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
-			self.contextNick.triggered.connect(self.changeNick)
-			menu.addAction(self.contextNick)
+			if self.window_type==SERVER_WINDOW:
 
-			self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
-			self.contextJoin.triggered.connect(self.joinChannel)
-			menu.addAction(self.contextJoin)
+				self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+				self.contextNick.triggered.connect(self.changeNick)
+				menu.addAction(self.contextNick)
 
-			self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
-			self.contextRun.triggered.connect(self.loadScript)
-			menu.addAction(self.contextRun)
+				self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+				self.contextJoin.triggered.connect(self.joinChannel)
+				menu.addAction(self.contextJoin)
 
-			hostid = self.client.server+":"+str(self.client.port)
-			entry = QAction(QIcon(SCRIPT_ICON),"Edit connect script",self)
-			entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
-			menu.addAction(entry)
+				self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
+				self.contextRun.triggered.connect(self.loadScript)
+				menu.addAction(self.contextRun)
 
-			menu.addSeparator()
+				hostid = self.client.server+":"+str(self.client.port)
+				entry = QAction(QIcon(SCRIPT_ICON),"Edit connect script",self)
+				entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
+				menu.addAction(entry)
 
-			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
-			entry.triggered.connect(self.disconnect)
-			menu.addAction(entry)
+				menu.addSeparator()
 
-			if self.client.hostname==None:
-				self.contextNick.setEnabled(False)
-				self.contextJoin.setEnabled(False)
-				self.contextRun.setEnabled(False)
+				entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
+				entry.triggered.connect(self.disconnect)
+				menu.addAction(entry)
 
-		if self.window_type!=SERVER_WINDOW:
+				if self.client.hostname==None:
+					self.contextNick.setEnabled(False)
+					self.contextJoin.setEnabled(False)
+					self.contextRun.setEnabled(False)
 
-			entry = QAction(QIcon(STYLE_ICON),"Edit style",self)
-			entry.triggered.connect(self.pressedStyleButton)
-			menu.addAction(entry)
+			if self.window_type!=SERVER_WINDOW:
+
+				entry = QAction(QIcon(STYLE_ICON),"Edit style",self)
+				entry.triggered.connect(self.pressedStyleButton)
+				menu.addAction(entry)
 
 		action = menu.exec_(self.chat.mapToGlobal(location))
 

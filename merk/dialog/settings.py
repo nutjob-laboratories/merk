@@ -540,12 +540,17 @@ class Dialog(QDialog):
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSetting)
 
+		self.showContext = QCheckBox("Show chat context menu options",self)
+		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
+		self.showContext.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addWidget(self.showInfo)
 		applicationLayout.addWidget(self.showInputMenu)
+		applicationLayout.addWidget(self.showContext)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
@@ -1506,6 +1511,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_SHOW_ICONS = self.windowBarIcons.isChecked()
 		config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = self.windowbarClick.isChecked()
 		config.WINDOWBAR_INCLUDE_EDITORS = self.windowBarEditor.isChecked()
+		config.SHOW_CHAT_CONTEXT_MENUS = self.showContext.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
