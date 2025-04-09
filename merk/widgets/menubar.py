@@ -29,6 +29,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 from ..resources import *
+from .. import config
 
 toolbar_button_style = '''
 	QPushButton {
@@ -315,3 +316,175 @@ class wIconMenuButton(QPushButton):
 		elif event.type() == QEvent.Leave:
 			self.setStyleSheet(self.normal_style)
 		return False
+
+def generate_window_toolbar(self):
+
+	toolbar = Windowbar(self)
+
+	# Match menu colors to the host's desktop palette
+	mbcolor = self.palette().color(QPalette.Window).name()
+	mfcolor = self.palette().color(QPalette.WindowText).name()
+	mhigh = self.palette().color(QPalette.Highlight).name()
+	mlow = self.palette().color(QPalette.HighlightedText).name()
+
+	global toolbar_button_style
+	toolbar_button_style = toolbar_button_style.replace('$FOREGROUND',mfcolor)
+	toolbar_button_style = toolbar_button_style.replace('$BACKGROUND',mbcolor)
+	toolbar_button_style = toolbar_button_style.replace('$LOW',mlow)
+	toolbar_button_style = toolbar_button_style.replace('$HIGH',mhigh)
+
+	global toolbar_button_style_hover
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$FOREGROUND',mfcolor)
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$BACKGROUND',mbcolor)
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$LOW',mlow)
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$HIGH',mhigh)
+
+	global toolbar_menu_style
+	toolbar_menu_style = toolbar_menu_style.replace('$FOREGROUND',mfcolor)
+	toolbar_menu_style = toolbar_menu_style.replace('$BACKGROUND',mbcolor)
+	toolbar_menu_style = toolbar_menu_style.replace('$LOW',mlow)
+	toolbar_menu_style = toolbar_menu_style.replace('$HIGH',mhigh)
+
+	toolbar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
+	toolbar.setStyleSheet(''' QToolBar { spacing: 8px; } ''')
+
+	f = toolbar.font()
+	fm = QFontMetrics(f)
+	fheight = fm.height()
+		
+	toolbar.setFixedHeight(fheight+8)
+
+	return toolbar
+
+class Windowbar(QToolBar):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		self.parent = parent
+
+	def contextMenuEvent(self, event):
+		menu = QMenu(self)
+
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			entry = QAction(QIcon(CHECKED_ICON),"Show active first", self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Show active first", self)
+		entry.triggered.connect(self.first)
+		menu.addAction(entry)
+
+		if config.WINDOWBAR_CAN_FLOAT:
+			entry = QAction(QIcon(CHECKED_ICON),"Can float", self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Can float", self)
+		entry.triggered.connect(self.float)
+		menu.addAction(entry)
+		
+		if config.WINDOWBAR_SHOW_ICONS:
+			entry = QAction(QIcon(CHECKED_ICON),"Show icons", self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Show icons", self)
+		entry.triggered.connect(self.icons)
+		menu.addAction(entry)
+		
+		if config.WINDOWBAR_INCLUDE_SERVERS:
+			entry = QAction(QIcon(CHECKED_ICON),"Server windows", self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Server windows", self)
+		entry.triggered.connect(self.servers)
+		menu.addAction(entry)
+
+		if config.WINDOWBAR_INCLUDE_EDITORS:
+			entry = QAction(QIcon(CHECKED_ICON),"Editor windows", self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Editor windows", self)
+		entry.triggered.connect(self.editors)
+		menu.addAction(entry)
+
+		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
+			entry = QAction(QIcon(CHECKED_ICON),"Doubleclick to maximize", self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Doubleclick to maximize", self)
+		entry.triggered.connect(self.doubleclick)
+		menu.addAction(entry)
+
+		self.justifyMenu = QMenu("Justify")
+		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+
+		if config.WINDOWBAR_JUSTIFY=='left':
+			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Left",self)
+		else:
+			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Left",self)
+		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='center':
+			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Center",self)
+		else:
+			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Center",self)
+		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='right':
+			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Right",self)
+		else:
+			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Right",self)
+		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+	
+		menu.addMenu(self.justifyMenu)
+
+		menu.exec_(self.mapToGlobal(event.pos()))
+
+	def setJustify(self,justify):
+		config.WINDOWBAR_JUSTIFY = justify
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildWindowbar()
+
+	def first(self):
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = False
+		else:
+			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildWindowbar()
+
+	def float(self):
+		if config.WINDOWBAR_CAN_FLOAT:
+			config.WINDOWBAR_CAN_FLOAT = False
+		else:
+			config.WINDOWBAR_CAN_FLOAT = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildWindowbar()
+
+	def doubleclick(self):
+		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
+			config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = False
+		else:
+			config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildWindowbar()
+
+	def editors(self):
+		if config.WINDOWBAR_INCLUDE_EDITORS:
+			config.WINDOWBAR_INCLUDE_EDITORS = False
+		else:
+			config.WINDOWBAR_INCLUDE_EDITORS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildWindowbar()
+
+	def servers(self):
+		if config.WINDOWBAR_INCLUDE_SERVERS:
+			config.WINDOWBAR_INCLUDE_SERVERS = False
+		else:
+			config.WINDOWBAR_INCLUDE_SERVERS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildWindowbar()
+		
+	def icons(self):
+		if config.WINDOWBAR_SHOW_ICONS:
+			config.WINDOWBAR_SHOW_ICONS = False
+		else:
+			config.WINDOWBAR_SHOW_ICONS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildWindowbar()
+

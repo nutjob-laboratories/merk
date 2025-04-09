@@ -186,13 +186,13 @@ class Merk(QMainWindow):
 
 		self.addToolBarBreak(Qt.TopToolBarArea)
 
-		self.windowbar = menubar.generate_menu_toolbar(self)
+		self.windowbar = menubar.generate_window_toolbar(self)
 		self.windowbar.setMovable(config.WINDOWBAR_CAN_FLOAT)
 		if config.WINDOWBAR_TOP_OF_SCREEN:
 			self.addToolBar(Qt.TopToolBarArea,self.windowbar)
 		else:
 			self.addToolBar(Qt.BottomToolBarArea,self.windowbar)
-		self.windowbar.setContextMenuPolicy(Qt.PreventContextMenu)
+		#self.windowbar.setContextMenuPolicy(Qt.PreventContextMenu)
 		self.windowbar.hide()
 		self.MDI.subWindowActivated.connect(self.buildWindowbar)
 

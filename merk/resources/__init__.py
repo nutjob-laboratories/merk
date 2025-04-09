@@ -169,6 +169,7 @@ RUN_ICON = ":/icon-run.png"
 RUN_MENU_ICON = ":/icon-run_menu.png"
 MENU_ICON = ":/icon-menu.png"
 WIDGET_ICON = ":/icon-widget.png"
+JUSTIFY_ICON = ":/icon-justify.png"
 
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
