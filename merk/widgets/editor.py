@@ -403,6 +403,23 @@ class Window(QMainWindow):
 		self.current_user_script = cscript
 		self.updateApplicationTitle()
 
+	def openScript(self,hostid):
+
+		# If the connection script already exists, open it
+		if hostid in user.COMMANDS:
+			self.readConnect(hostid,user.COMMANDS[hostid])
+			return
+
+		self.filename = None
+		self.editor.clear()
+		self.menuSave.setEnabled(True)
+		self.changed = False
+		self.menuSave.setShortcut(QKeySequence())
+		self.menuSaveAs.setShortcut("Ctrl+S")
+		self.editing_user_script = True
+		self.current_user_script = hostid
+		self.updateApplicationTitle()
+
 	def insertConnect(self):
 		x = ConnectServer(self)
 		e = x.get_server_information(self)

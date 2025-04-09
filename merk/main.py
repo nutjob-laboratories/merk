@@ -1853,7 +1853,7 @@ class Merk(QMainWindow):
 		w.show()
 
 		c = w.widget()
-		c.readConnect(hostid,user.COMMANDS[hostid])
+		c.openScript(hostid)
 
 		return w
 
