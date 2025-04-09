@@ -993,7 +993,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyLayout)
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete settings</b>"))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addWidget(self.autocompleteCommands)
 		inputLayout.addWidget(self.autocompleteNicks)
