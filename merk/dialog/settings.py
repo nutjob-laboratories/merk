@@ -1065,8 +1065,8 @@ class Dialog(QDialog):
 
 		spellcheckLayout = QVBoxLayout()
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
-		spellcheckLayout.addWidget(self.enableSpellcheck)
 		spellcheckLayout.addWidget(self.spellcheckDescription)
+		spellcheckLayout.addWidget(self.enableSpellcheck)
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
 		spellcheckLayout.addStretch()
