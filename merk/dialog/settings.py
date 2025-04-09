@@ -715,7 +715,7 @@ class Dialog(QDialog):
 		self.windowbarJustify.currentIndexChanged.connect(self.justifyChange)
 
 		justifyLayout = QHBoxLayout()
-		justifyLayout.addWidget(QLabel("Windowbar entry justify: "))
+		justifyLayout.addWidget(QLabel("<b>Windowbar entry justify</b> "))
 		justifyLayout.addWidget(self.windowbarJustify)
 		justifyLayout.addStretch()
 
