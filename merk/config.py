@@ -132,6 +132,8 @@ WINDOWBAR_INCLUDE_EDITORS = True
 SHOW_CHAT_CONTEXT_MENUS = True
 ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
 
+MENUBAR_JUSTIFY = 'left'
+
 def save_settings(filename):
 
 	settings = {

@@ -2161,10 +2161,16 @@ class Merk(QMainWindow):
 			self.menuTool.topLevelChanged.connect(self.menuDocked)
 			self.menuTool.setMovable(config.MENUBAR_CAN_FLOAT)
 
+			if config.MENUBAR_JUSTIFY.lower()=='center' or config.MENUBAR_JUSTIFY.lower()=='right':
+				menubar.add_toolbar_stretch(self.menuTool)
+
 			menubar.add_toolbar_menu(self.menuTool,"IRC",self.mainMenu)
 			menubar.add_toolbar_menu(self.menuTool,"Tools",self.settingsMenu)
 			menubar.add_toolbar_menu(self.menuTool,"Windows",self.windowsMenu)
 			menubar.add_toolbar_menu(self.menuTool,"Help",self.helpMenu)
+
+			if config.MENUBAR_JUSTIFY.lower()=='center':
+				menubar.add_toolbar_stretch(self.menuTool)
 
 
 		self.buildMainMenu()
