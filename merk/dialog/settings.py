@@ -357,6 +357,7 @@ class Dialog(QDialog):
 			self.windowBarIcons.setEnabled(True)
 			self.windowbarClick.setEnabled(True)
 			self.windowBarEditor.setEnabled(True)
+			self.windowBarFirst.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -365,6 +366,7 @@ class Dialog(QDialog):
 			self.windowBarIcons.setEnabled(False)
 			self.windowbarClick.setEnabled(False)
 			self.windowBarEditor.setEnabled(False)
+			self.windowBarFirst.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -725,6 +727,11 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
 		self.windowBarEditor.stateChanged.connect(self.windowbarChange)
 
+		self.windowBarFirst = QCheckBox("Always show active window first",self)
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST: self.windowBarFirst.setChecked(True)
+		self.windowBarFirst.stateChanged.connect(self.windowbarChange)
+
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -733,6 +740,7 @@ class Dialog(QDialog):
 			self.windowBarIcons.setEnabled(False)
 			self.windowbarClick.setEnabled(False)
 			self.windowBarEditor.setEnabled(False)
+			self.windowBarFirst.setEnabled(False)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -740,6 +748,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBar)
 		windowbarLayout.addWidget(self.windowBarFloat)
 		windowbarLayout.addWidget(self.windowBarTop)
+		windowbarLayout.addWidget(self.windowBarFirst)
 		windowbarLayout.addWidget(self.windowBarServers)
 		windowbarLayout.addWidget(self.windowBarEditor)
 		windowbarLayout.addWidget(self.windowBarIcons)
@@ -1512,6 +1521,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = self.windowbarClick.isChecked()
 		config.WINDOWBAR_INCLUDE_EDITORS = self.windowBarEditor.isChecked()
 		config.SHOW_CHAT_CONTEXT_MENUS = self.showContext.isChecked()
+		config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = self.windowBarFirst.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

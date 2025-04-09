@@ -233,7 +233,7 @@ class Merk(QMainWindow):
 				c = window.widget()
 				window_titles.append(c.name)
 
-				if self.raw_size_of_list(window_titles)<(self.width()/2):
+				if self.raw_size_of_list(window_titles)<(self.width()*0.75):
 					full.append(window)
 				else:
 					abbv.append(window)
@@ -281,14 +281,15 @@ class Merk(QMainWindow):
 
 		# Rearrange the windowlist so that the current
 		# window is always first
-		x = self.MDI.activeSubWindow()
-		rearranged = []
-		for w in window_list:
-			if w==x:
-				rearranged.insert(0,w)
-			else:
-				rearranged.append(w)
-		window_list = rearranged
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			x = self.MDI.activeSubWindow()
+			rearranged = []
+			for w in window_list:
+				if w==x:
+					rearranged.insert(0,w)
+				else:
+					rearranged.append(w)
+			window_list = rearranged
 
 		te = self.split_up_windowbar(window_list)
 		
@@ -296,16 +297,17 @@ class Merk(QMainWindow):
 		partial_display = te[1]
 
 		# Make sure the current active window is
-		# in the full display list
-		# x = self.MDI.activeSubWindow()
-		# aw = 0
-		# domove = False
-		# for w in partial_display:
-		# 	if w==x:
-		# 		full_display.append(partial_display.pop(aw))
-		# 		domove = True
-		# 	aw = aw + 1
-		# if domove: partial_display.append(full_display.pop(0))
+		# in the full display list if it's not first
+		if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			x = self.MDI.activeSubWindow()
+			aw = 0
+			domove = False
+			for w in partial_display:
+				if w==x:
+					full_display.append(partial_display.pop(aw))
+					domove = True
+				aw = aw + 1
+			if domove: partial_display.append(full_display.pop(0))
 		
 		button_list = []
 
@@ -376,11 +378,12 @@ class Merk(QMainWindow):
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(wname)
 
-				# if window == self.MDI.activeSubWindow():
-				# 	font = QFont()
-				# 	font.setBold(True)
-				# 	font.setUnderline(True)
-				# 	button.setFont(font)
+				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+					if window == self.MDI.activeSubWindow():
+						font = QFont()
+						font.setBold(True)
+						font.setUnderline(True)
+						button.setFont(font)
 
 				button.setFixedHeight(18)
 				button_list.append(button)
@@ -454,11 +457,12 @@ class Merk(QMainWindow):
 				button.setFixedHeight(18)
 				button_list.append(button)
 		
-		if len(button_list)>0:
-			font = QFont()
-			font.setBold(True)
-			font.setUnderline(True)
-			button_list[0].setFont(font)
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			if len(button_list)>0:
+				font = QFont()
+				font.setBold(True)
+				font.setUnderline(True)
+				button_list[0].setFont(font)
 
 		for b in button_list:
 			self.windowbar.addWidget(b)

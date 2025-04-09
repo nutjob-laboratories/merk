@@ -130,6 +130,7 @@ WINDOWBAR_SHOW_ICONS = False
 WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = True
 WINDOWBAR_INCLUDE_EDITORS = True
 SHOW_CHAT_CONTEXT_MENUS = True
+ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
 
 def save_settings(filename):
 
@@ -225,12 +226,15 @@ def save_settings(filename):
 		"windowbar_doubleclick_to_maximize": WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED,
 		"windowbar_include_editors": WINDOWBAR_INCLUDE_EDITORS,
 		"show_chat_context_menu_options": SHOW_CHAT_CONTEXT_MENUS,
+		"always_show_current_first_in_windowbar": ALWAYS_SHOW_CURRENT_WINDOW_FIRST,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "always_show_current_first_in_windowbar" in settings:
+		settings["always_show_current_first_in_windowbar"] = ALWAYS_SHOW_CURRENT_WINDOW_FIRST
 	if not "show_chat_context_menu_options" in settings:
 		settings["show_chat_context_menu_options"] = SHOW_CHAT_CONTEXT_MENUS
 	if not "windowbar_include_editors" in settings:
@@ -508,6 +512,7 @@ def load_settings(filename):
 	global WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED
 	global WINDOWBAR_INCLUDE_EDITORS
 	global SHOW_CHAT_CONTEXT_MENUS
+	global ALWAYS_SHOW_CURRENT_WINDOW_FIRST
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -517,6 +522,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ALWAYS_SHOW_CURRENT_WINDOW_FIRST = settings["always_show_current_first_in_windowbar"]
 		SHOW_CHAT_CONTEXT_MENUS = settings["show_chat_context_menu_options"]
 		WINDOWBAR_INCLUDE_EDITORS = settings["windowbar_include_editors"]
 		WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = settings["windowbar_doubleclick_to_maximize"]
