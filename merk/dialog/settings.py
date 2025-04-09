@@ -673,7 +673,7 @@ class Dialog(QDialog):
 			self.menubarJustify.setEnabled(False)
 
 		justifyLayout = QHBoxLayout()
-		justifyLayout.addWidget(QLabel("<b>Menubar justify</b> "))
+		justifyLayout.addWidget(QLabel("<b>Menubar alignment</b> "))
 		justifyLayout.addWidget(self.menubarJustify)
 		justifyLayout.addStretch()
 
@@ -743,7 +743,7 @@ class Dialog(QDialog):
 		self.windowbarJustify.currentIndexChanged.connect(self.justifyChange)
 
 		justifyLayout = QHBoxLayout()
-		justifyLayout.addWidget(QLabel("<b>Windowbar entry justify</b> "))
+		justifyLayout.addWidget(QLabel("<b>Windowbar alignment</b> "))
 		justifyLayout.addWidget(self.windowbarJustify)
 		justifyLayout.addStretch()
 

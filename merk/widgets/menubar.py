@@ -407,7 +407,7 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.doubleclick)
 		menu.addAction(entry)
 
-		self.justifyMenu = QMenu("Justify")
+		self.justifyMenu = QMenu("Alignment")
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
 		if config.WINDOWBAR_JUSTIFY=='left':
