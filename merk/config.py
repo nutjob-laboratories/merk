@@ -135,6 +135,11 @@ MENUBAR_JUSTIFY = 'left'
 MENUBAR_MENU = True
 WINDOWBAR_MENU = True
 
+MAIN_MENU_IRC_NAME = "IRC"
+MAIN_MENU_TOOLS_NAME = "Tools"
+MAIN_MENU_WINDOWS_NAME = "Windows"
+MAIN_MENU_HELP_NAME = "Help"
+
 def save_settings(filename):
 
 	settings = {
@@ -233,12 +238,24 @@ def save_settings(filename):
 		"menubar_justify": MENUBAR_JUSTIFY,
 		"show_menubar_context_menu": MENUBAR_MENU,
 		"show_windowbar_context_menu": WINDOWBAR_MENU,
+		"main_menu_irc_name": MAIN_MENU_IRC_NAME,
+		"main_menu_tools_name": MAIN_MENU_TOOLS_NAME,
+		"main_menu_windows_name": MAIN_MENU_WINDOWS_NAME,
+		"main_menu_help_name": MAIN_MENU_HELP_NAME,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "main_menu_irc_name" in settings:
+		settings["main_menu_irc_name"] = MAIN_MENU_IRC_NAME
+	if not "main_menu_tools_name" in settings:
+		settings["main_menu_tools_name"] = MAIN_MENU_TOOLS_NAME
+	if not "main_menu_windows_name" in settings:
+		settings["main_menu_windows_name"] = MAIN_MENU_WINDOWS_NAME
+	if not "main_menu_help_name" in settings:
+		settings["main_menu_help_name"] = MAIN_MENU_HELP_NAME
 	if not "show_menubar_context_menu" in settings:
 		settings["show_menubar_context_menu"] = MENUBAR_MENU
 	if not "show_windowbar_context_menu" in settings:
@@ -528,6 +545,10 @@ def load_settings(filename):
 	global MENUBAR_JUSTIFY
 	global MENUBAR_MENU
 	global WINDOWBAR_MENU
+	global MAIN_MENU_IRC_NAME
+	global MAIN_MENU_TOOLS_NAME
+	global MENUBAR_MENU
+	global MAIN_MENU_HELP_NAME
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -537,6 +558,10 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MAIN_MENU_IRC_NAME = settings["main_menu_irc_name"]
+		MAIN_MENU_TOOLS_NAME = settings["main_menu_tools_name"]
+		MAIN_MENU_WINDOWS_NAME = settings["main_menu_windows_name"]
+		MAIN_MENU_HELP_NAME = settings["main_menu_help_name"]
 		MENUBAR_MENU = settings["show_menubar_context_menu"]
 		WINDOWBAR_MENU = settings["show_windowbar_context_menu"]
 		MENUBAR_JUSTIFY = settings["menubar_justify"]

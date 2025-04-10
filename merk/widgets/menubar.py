@@ -550,7 +550,6 @@ class Windowbar(QToolBar):
 		config.WINDOWBAR_JUSTIFY = justify
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
-		
 
 	def first(self):
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:

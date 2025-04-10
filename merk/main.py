@@ -2140,10 +2140,10 @@ class Merk(QMainWindow):
 				self.menubar.show()
 			else:
 				self.menubar = self.menuBar()
-			self.mainMenu = self.menubar.addMenu("IRC")
-			self.settingsMenu = self.menubar.addMenu("Tools")
-			self.windowsMenu = self.menubar.addMenu("Windows")
-			self.helpMenu = self.menubar.addMenu("Help")
+			self.mainMenu = self.menubar.addMenu(config.MAIN_MENU_IRC_NAME)
+			self.settingsMenu = self.menubar.addMenu(config.MAIN_MENU_TOOLS_NAME)
+			self.windowsMenu = self.menubar.addMenu(config.MAIN_MENU_WINDOWS_NAME)
+			self.helpMenu = self.menubar.addMenu(config.MAIN_MENU_HELP_NAME)
 		else:
 			if hasattr(self,"menubar"):
 				self.menubar.clear()
@@ -2165,10 +2165,10 @@ class Merk(QMainWindow):
 			if config.MENUBAR_JUSTIFY.lower()=='center' or config.MENUBAR_JUSTIFY.lower()=='right':
 				menubar.add_toolbar_stretch(self.menuTool)
 
-			menubar.add_toolbar_menu(self.menuTool,"IRC",self.mainMenu)
-			menubar.add_toolbar_menu(self.menuTool,"Tools",self.settingsMenu)
-			menubar.add_toolbar_menu(self.menuTool,"Windows",self.windowsMenu)
-			menubar.add_toolbar_menu(self.menuTool,"Help",self.helpMenu)
+			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_IRC_NAME,self.mainMenu)
+			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_TOOLS_NAME,self.settingsMenu)
+			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_WINDOWS_NAME,self.windowsMenu)
+			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_HELP_NAME,self.helpMenu)
 
 			if config.MENUBAR_JUSTIFY.lower()=='center':
 				menubar.add_toolbar_stretch(self.menuTool)
