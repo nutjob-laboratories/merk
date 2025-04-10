@@ -637,7 +637,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Menubar")
+		entry.setText("Menu")
 		entry.widget = self.menuPage
 		entry.setIcon(QIcon(MENU_ICON))
 		self.selector.addItem(entry)
