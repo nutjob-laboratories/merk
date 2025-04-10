@@ -30,6 +30,7 @@ from PyQt5 import QtCore
 
 from ..resources import *
 from .. import config
+from .text_separator import textSeparatorLabel,textSeparator
 
 toolbar_button_style = '''
 	QPushButton {
@@ -407,6 +408,9 @@ class Menubar(QToolBar):
 
 		menu = QMenu(self)
 
+		e = textSeparator(self,"Menubar Settings")
+		menu.addAction(e)
+
 		if config.MENUBAR_CAN_FLOAT:
 			entry = QAction(QIcon(CHECKED_ICON),"Can float", self)
 		else:
@@ -466,6 +470,9 @@ class Windowbar(QToolBar):
 		if config.WINDOWBAR_MENU==False: return
 
 		menu = QMenu(self)
+
+		e = textSeparator(self,"Windowbar Settings")
+		menu.addAction(e)
 
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			entry = QAction(QIcon(CHECKED_ICON),"Show active first", self)
