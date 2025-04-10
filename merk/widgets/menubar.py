@@ -356,6 +356,102 @@ def generate_window_toolbar(self):
 
 	return toolbar
 
+def generate_menubar(self):
+
+	toolbar = Menubar(self)
+
+	# Match menu colors to the host's desktop palette
+	mbcolor = self.palette().color(QPalette.Window).name()
+	mfcolor = self.palette().color(QPalette.WindowText).name()
+	mhigh = self.palette().color(QPalette.Highlight).name()
+	mlow = self.palette().color(QPalette.HighlightedText).name()
+
+	global toolbar_button_style
+	toolbar_button_style = toolbar_button_style.replace('$FOREGROUND',mfcolor)
+	toolbar_button_style = toolbar_button_style.replace('$BACKGROUND',mbcolor)
+	toolbar_button_style = toolbar_button_style.replace('$LOW',mlow)
+	toolbar_button_style = toolbar_button_style.replace('$HIGH',mhigh)
+
+	global toolbar_button_style_hover
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$FOREGROUND',mfcolor)
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$BACKGROUND',mbcolor)
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$LOW',mlow)
+	toolbar_button_style_hover = toolbar_button_style_hover.replace('$HIGH',mhigh)
+
+	global toolbar_menu_style
+	toolbar_menu_style = toolbar_menu_style.replace('$FOREGROUND',mfcolor)
+	toolbar_menu_style = toolbar_menu_style.replace('$BACKGROUND',mbcolor)
+	toolbar_menu_style = toolbar_menu_style.replace('$LOW',mlow)
+	toolbar_menu_style = toolbar_menu_style.replace('$HIGH',mhigh)
+
+	toolbar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
+	toolbar.setStyleSheet(''' QToolBar { spacing: 8px; } ''')
+
+	f = toolbar.font()
+	fm = QFontMetrics(f)
+	fheight = fm.height()
+		
+	toolbar.setFixedHeight(fheight+8)
+
+	return toolbar
+
+class Menubar(QToolBar):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		self.parent = parent
+
+	def contextMenuEvent(self, event):
+		menu = QMenu(self)
+
+		if config.MENUBAR_CAN_FLOAT:
+			entry = QAction(QIcon(CHECKED_ICON),"Can float", self)
+		else:
+			entry = QAction(QIcon(UNCHECKED_ICON),"Can float", self)
+		entry.triggered.connect(self.float)
+		menu.addAction(entry)
+
+		self.justifyMenu = QMenu("Alignment")
+		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+
+		if config.MENUBAR_JUSTIFY=='left':
+			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Left",self)
+		else:
+			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Left",self)
+		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.MENUBAR_JUSTIFY=='center':
+			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Center",self)
+		else:
+			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Center",self)
+		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.MENUBAR_JUSTIFY=='right':
+			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Right",self)
+		else:
+			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Right",self)
+		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+	
+		menu.addMenu(self.justifyMenu)
+
+		menu.exec_(self.mapToGlobal(event.pos()))
+
+	def setJustify(self,justify):
+		config.MENUBAR_JUSTIFY = justify
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildMenu()
+
+	def float(self):
+		if config.MENUBAR_CAN_FLOAT:
+			config.MENUBAR_CAN_FLOAT = False
+		else:
+			config.MENUBAR_CAN_FLOAT = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildMenu()
+
 class Windowbar(QToolBar):
 	def __init__(self, parent=None):
 		super().__init__(parent)

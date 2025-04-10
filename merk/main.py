@@ -2151,13 +2151,12 @@ class Merk(QMainWindow):
 			self.windowsMenu = QMenu()
 			self.helpMenu = QMenu()
 
-			self.menuTool = menubar.generate_menu_toolbar(self)
+			self.menuTool = menubar.generate_menubar(self)
 			if config.MENUBAR_DOCKED_AT_TOP:
 				self.addToolBar(Qt.TopToolBarArea,self.menuTool)
 			else:
 				self.addToolBar(Qt.BottomToolBarArea,self.menuTool)
 			self.menuTool.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
-			self.menuTool.setContextMenuPolicy(Qt.PreventContextMenu)
 			self.menuTool.topLevelChanged.connect(self.menuDocked)
 			self.menuTool.setMovable(config.MENUBAR_CAN_FLOAT)
 
