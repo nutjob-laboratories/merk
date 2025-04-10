@@ -197,6 +197,12 @@ class Merk(QMainWindow):
 
 		self.buildWindowbar()
 
+	def keepBarsOnTop(self):
+		if config.RESET_BARS_ON_CHANGE:
+			self.addToolBar(Qt.TopToolBarArea,self.menuTool)
+			self.addToolBarBreak(Qt.TopToolBarArea)
+			self.addToolBar(Qt.TopToolBarArea,self.windowbar)
+
 	def size_of_list(self,wl):
 		window_titles = []
 		for window in wl:

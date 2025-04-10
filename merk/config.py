@@ -135,6 +135,8 @@ MENUBAR_JUSTIFY = 'left'
 MENUBAR_MENU = True
 WINDOWBAR_MENU = True
 
+RESET_BARS_ON_CHANGE = True
+
 def save_settings(filename):
 
 	settings = {

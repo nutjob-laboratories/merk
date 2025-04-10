@@ -451,6 +451,7 @@ class Menubar(QToolBar):
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.keepBarsOnTop()
 
 	def float(self):
 		if config.MENUBAR_CAN_FLOAT:
@@ -460,6 +461,7 @@ class Menubar(QToolBar):
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.keepBarsOnTop()
 
 class Windowbar(QToolBar):
 	def __init__(self, parent=None):
@@ -549,8 +551,10 @@ class Windowbar(QToolBar):
 	def setJustify(self,justify):
 		config.WINDOWBAR_JUSTIFY = justify
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.buildMenu()
+		self.parent.keepBarsOnTop()
+		
 
 	def first(self):
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
@@ -558,8 +562,9 @@ class Windowbar(QToolBar):
 		else:
 			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.buildMenu()
+		self.parent.keepBarsOnTop()
 
 	def float(self):
 		if config.WINDOWBAR_CAN_FLOAT:
@@ -567,8 +572,9 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_CAN_FLOAT = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.buildMenu()
+		self.parent.keepBarsOnTop()
 
 	def doubleclick(self):
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
@@ -576,8 +582,9 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.buildMenu()
+		self.parent.keepBarsOnTop()
 
 	def editors(self):
 		if config.WINDOWBAR_INCLUDE_EDITORS:
@@ -585,8 +592,9 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_INCLUDE_EDITORS = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.buildMenu()
+		self.parent.keepBarsOnTop()
 
 	def servers(self):
 		if config.WINDOWBAR_INCLUDE_SERVERS:
@@ -594,8 +602,9 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_INCLUDE_SERVERS = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.buildMenu()
+		self.parent.keepBarsOnTop()
 		
 	def icons(self):
 		if config.WINDOWBAR_SHOW_ICONS:
@@ -603,6 +612,7 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_SHOW_ICONS = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.buildWindowbar()
+		self.parent.buildMenu()
+		self.parent.keepBarsOnTop()
 
