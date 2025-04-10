@@ -37,7 +37,7 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 - Very configurable, without having to manually edit a configuration file
     - Nearly all settings are configurable in the settings dialog
     - Control application behavior, logging, features, and more!
-    - Over 50 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
+    - Over 80 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
     - Most settings can be set in the app without requiring a restart. Have fun testing different options!
     - Configuration data is stored in JSON
 -   A built-in list of over 80 IRC servers to connect to
