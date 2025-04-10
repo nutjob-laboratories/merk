@@ -268,9 +268,11 @@ class Dialog(QDialog):
 		if self.menubar.isChecked():
 			self.menubarFloat.setEnabled(True)
 			self.menubarJustify.setEnabled(True)
+			self.menubarMenu.setEnabled(True)
 		else:
 			self.menubarFloat.setEnabled(False)
 			self.menubarJustify.setEnabled(False)
+			self.menubarMenu.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -360,6 +362,7 @@ class Dialog(QDialog):
 			self.windowbarClick.setEnabled(True)
 			self.windowBarEditor.setEnabled(True)
 			self.windowBarFirst.setEnabled(True)
+			self.windowbarMenu.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -369,6 +372,7 @@ class Dialog(QDialog):
 			self.windowbarClick.setEnabled(False)
 			self.windowBarEditor.setEnabled(False)
 			self.windowBarFirst.setEnabled(False)
+			self.windowbarMenu.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -668,9 +672,14 @@ class Dialog(QDialog):
 		if config.MENUBAR_JUSTIFY!='right': self.menubarJustify.addItem('right')
 		self.menubarJustify.currentIndexChanged.connect(self.menuJustifyChange)
 
+		self.menubarMenu = QCheckBox("Use context settings menu",self)
+		if config.MENUBAR_MENU: self.menubarMenu.setChecked(True)
+		self.menubarMenu.stateChanged.connect(self.changedSetting)
+
 		if not config.USE_MENUBAR:
 			self.menubarFloat.setEnabled(False)
 			self.menubarJustify.setEnabled(False)
+			self.menubarMenu.setEnabled(False)
 
 		justifyLayout = QHBoxLayout()
 		justifyLayout.addWidget(QLabel("<b>Menubar alignment</b> "))
@@ -682,6 +691,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addWidget(self.menubar)
 		menuLayout.addWidget(self.menubarFloat)
+		menuLayout.addWidget(self.menubarMenu)
 		menuLayout.addLayout(justifyLayout)
 		menuLayout.addStretch()
 
@@ -759,6 +769,10 @@ class Dialog(QDialog):
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST: self.windowBarFirst.setChecked(True)
 		self.windowBarFirst.stateChanged.connect(self.windowbarChange)
 
+		self.windowbarMenu = QCheckBox("Use context settings menu",self)
+		if config.WINDOWBAR_MENU: self.windowbarMenu.setChecked(True)
+		self.windowbarMenu.stateChanged.connect(self.changedSetting)
+
 
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
@@ -769,6 +783,7 @@ class Dialog(QDialog):
 			self.windowbarClick.setEnabled(False)
 			self.windowBarEditor.setEnabled(False)
 			self.windowBarFirst.setEnabled(False)
+			self.windowbarMenu.setEnabled(False)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -781,6 +796,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarEditor)
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
+		windowbarLayout.addWidget(self.windowbarMenu)
 		windowbarLayout.addLayout(justifyLayout)
 		windowbarLayout.addStretch()
 
@@ -1557,6 +1573,8 @@ class Dialog(QDialog):
 		config.SHOW_CHAT_CONTEXT_MENUS = self.showContext.isChecked()
 		config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = self.windowBarFirst.isChecked()
 		config.MENUBAR_JUSTIFY = self.menubar_justify
+		config.MENUBAR_MENU = self.menubarMenu.isChecked()
+		config.WINDOWBAR_MENU = self.windowbarMenu.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

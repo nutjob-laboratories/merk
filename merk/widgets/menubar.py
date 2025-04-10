@@ -402,6 +402,9 @@ class Menubar(QToolBar):
 		self.parent = parent
 
 	def contextMenuEvent(self, event):
+
+		if config.MENUBAR_MENU==False: return
+
 		menu = QMenu(self)
 
 		if config.MENUBAR_CAN_FLOAT:
@@ -459,6 +462,9 @@ class Windowbar(QToolBar):
 		self.parent = parent
 
 	def contextMenuEvent(self, event):
+
+		if config.WINDOWBAR_MENU==False: return
+
 		menu = QMenu(self)
 
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:

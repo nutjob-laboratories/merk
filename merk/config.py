@@ -133,6 +133,9 @@ SHOW_CHAT_CONTEXT_MENUS = True
 ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
 MENUBAR_JUSTIFY = 'left'
 
+MENUBAR_MENU = True
+WINDOWBAR_MENU = True
+
 def save_settings(filename):
 
 	settings = {
@@ -229,12 +232,18 @@ def save_settings(filename):
 		"show_chat_context_menu_options": SHOW_CHAT_CONTEXT_MENUS,
 		"always_show_current_first_in_windowbar": ALWAYS_SHOW_CURRENT_WINDOW_FIRST,
 		"menubar_justify": MENUBAR_JUSTIFY,
+		"show_menubar_context_menu": MENUBAR_MENU,
+		"show_windowbar_context_menu": WINDOWBAR_MENU,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_menubar_context_menu" in settings:
+		settings["show_menubar_context_menu"] = MENUBAR_MENU
+	if not "show_windowbar_context_menu" in settings:
+		settings["show_windowbar_context_menu"] = WINDOWBAR_MENU
 	if not "menubar_justify" in settings:
 		settings["menubar_justify"] = MENUBAR_JUSTIFY
 	if not "always_show_current_first_in_windowbar" in settings:
@@ -518,6 +527,8 @@ def load_settings(filename):
 	global SHOW_CHAT_CONTEXT_MENUS
 	global ALWAYS_SHOW_CURRENT_WINDOW_FIRST
 	global MENUBAR_JUSTIFY
+	global MENUBAR_MENU
+	global WINDOWBAR_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -527,6 +538,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MENUBAR_MENU = settings["show_menubar_context_menu"]
+		WINDOWBAR_MENU = settings["show_windowbar_context_menu"]
 		MENUBAR_JUSTIFY = settings["menubar_justify"]
 		ALWAYS_SHOW_CURRENT_WINDOW_FIRST = settings["always_show_current_first_in_windowbar"]
 		SHOW_CHAT_CONTEXT_MENUS = settings["show_chat_context_menu_options"]

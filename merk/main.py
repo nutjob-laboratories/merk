@@ -192,7 +192,6 @@ class Merk(QMainWindow):
 			self.addToolBar(Qt.TopToolBarArea,self.windowbar)
 		else:
 			self.addToolBar(Qt.BottomToolBarArea,self.windowbar)
-		#self.windowbar.setContextMenuPolicy(Qt.PreventContextMenu)
 		self.windowbar.hide()
 		self.MDI.subWindowActivated.connect(self.buildWindowbar)
 
@@ -248,6 +247,8 @@ class Merk(QMainWindow):
 			return
 
 		self.windowbar.clear()
+
+		self.windowbar.setMovable(config.WINDOWBAR_CAN_FLOAT)
 
 		listOfConnections = {}
 		for i in irc.CONNECTIONS:
