@@ -549,7 +549,6 @@ class Windowbar(QToolBar):
 	def setJustify(self,justify):
 		config.WINDOWBAR_JUSTIFY = justify
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.initWindowbar()
 		
 
@@ -559,7 +558,6 @@ class Windowbar(QToolBar):
 		else:
 			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.initWindowbar()
 
 	def float(self):
@@ -568,7 +566,6 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_CAN_FLOAT = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.initWindowbar()
 
 	def doubleclick(self):
@@ -577,7 +574,6 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.initWindowbar()
 
 	def editors(self):
@@ -586,7 +582,6 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_INCLUDE_EDITORS = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.initWindowbar()
 
 	def servers(self):
@@ -595,7 +590,6 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_INCLUDE_SERVERS = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.initWindowbar()
 		
 	def icons(self):
@@ -604,6 +598,5 @@ class Windowbar(QToolBar):
 		else:
 			config.WINDOWBAR_SHOW_ICONS = True
 		config.save_settings(config.CONFIG_FILE)
-		self.parent.buildMenu()
 		self.parent.initWindowbar()
 
