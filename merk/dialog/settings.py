@@ -402,6 +402,54 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def setMainMenu(self):
+		info = dialog.SetMenuNameDialog(self.default_main_menu,self)
+
+		if not info: return None
+
+		self.default_main_menu = info
+		self.mainName.setText("<b>"+str(info)+"</b>")
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def setToolsMenu(self):
+		info = dialog.SetMenuNameDialog(self.default_tools_menu,self)
+
+		if not info: return None
+
+		self.default_tools_menu = info
+		self.toolsName.setText("<b>"+str(info)+"</b>")
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def setWindowsMenu(self):
+		info = dialog.SetMenuNameDialog(self.default_windows_menu,self)
+
+		if not info: return None
+
+		self.default_windows_menu = info
+		self.windowsName.setText("<b>"+str(info)+"</b>")
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def setHelpMenu(self):
+		info = dialog.SetMenuNameDialog(self.default_help_menu,self)
+
+		if not info: return None
+
+		self.default_help_menu = info
+		self.helpName.setText("<b>"+str(info)+"</b>")
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -444,6 +492,11 @@ class Dialog(QDialog):
 		self.refreshTitles = False
 		self.swapUserlists = False
 		self.toggleUserlist = False
+
+		self.default_main_menu = config.MAIN_MENU_IRC_NAME
+		self.default_tools_menu = config.MAIN_MENU_TOOLS_NAME
+		self.default_windows_menu = config.MAIN_MENU_WINDOWS_NAME
+		self.default_help_menu = config.MAIN_MENU_HELP_NAME
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -686,7 +739,121 @@ class Dialog(QDialog):
 		justifyLayout.addWidget(self.menubarJustify)
 		justifyLayout.addStretch()
 
+		self.mainName = QLabel("<b>"+self.default_main_menu+"</b>")
+
+		self.setMainName = QPushButton("")
+		self.setMainName.clicked.connect(self.setMainMenu)
+		self.setMainName.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.setMainName.setFixedSize(fheight +10,fheight + 10)
+		self.setMainName.setIcon(QIcon(EDIT_ICON))
+		self.setMainName.setToolTip("Set main menu name")
+
+		setMainLayout = QHBoxLayout()
+		
+		setMainLayout.addWidget(self.setMainName)
+		setMainLayout.addWidget(self.mainName)
+		setMainLayout.addStretch()
+
+		self.toolsName = QLabel("<b>"+self.default_tools_menu+"</b>")
+
+		self.setToolsName = QPushButton("")
+		self.setToolsName.clicked.connect(self.setToolsMenu)
+		self.setToolsName.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.setToolsName.setFixedSize(fheight +10,fheight + 10)
+		self.setToolsName.setIcon(QIcon(EDIT_ICON))
+		self.setToolsName.setToolTip("Set tools menu name")
+
+		setToolsLayout = QHBoxLayout()
+		
+		setToolsLayout.addWidget(self.setToolsName)
+		setToolsLayout.addWidget(self.toolsName)
+		setToolsLayout.addStretch()
+
+		self.windowsName = QLabel("<b>"+self.default_windows_menu+"</b>")
+
+		self.setWindowsName = QPushButton("")
+		self.setWindowsName.clicked.connect(self.setWindowsMenu)
+		self.setWindowsName.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.setWindowsName.setFixedSize(fheight +10,fheight + 10)
+		self.setWindowsName.setIcon(QIcon(EDIT_ICON))
+		self.setWindowsName.setToolTip("Set windows menu name")
+
+		setWindowsLayout = QHBoxLayout()
+		
+		setWindowsLayout.addWidget(self.setWindowsName)
+		setWindowsLayout.addWidget(self.windowsName)
+		setWindowsLayout.addStretch()
+
+		self.helpName = QLabel("<b>"+self.default_help_menu+"</b>")
+
+		self.setHelpName = QPushButton("")
+		self.setHelpName.clicked.connect(self.setHelpMenu)
+		self.setHelpName.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.setHelpName.setFixedSize(fheight +10,fheight + 10)
+		self.setHelpName.setIcon(QIcon(EDIT_ICON))
+		self.setHelpName.setToolTip("Set help menu name")
+
+		setHelpLayout = QHBoxLayout()
+		
+		setHelpLayout.addWidget(self.setHelpName)
+		setHelpLayout.addWidget(self.helpName)
+		setHelpLayout.addStretch()
+
+		mainMenuEntry = QVBoxLayout()
+		mainMenuEntry.addWidget(QLabel("Main menu"))
+		mainMenuEntry.addLayout(setMainLayout)
+		
+		toolsMenuEntry = QVBoxLayout()
+		toolsMenuEntry.addWidget(QLabel("Tools menu"))
+		toolsMenuEntry.addLayout(setToolsLayout)
+
+		windowsMenuEntry = QVBoxLayout()
+		windowsMenuEntry.addWidget(QLabel("Windows menu"))
+		windowsMenuEntry.addLayout(setWindowsLayout)
+
+		helpMenuEntry = QVBoxLayout()
+		helpMenuEntry.addWidget(QLabel("Help menu"))
+		helpMenuEntry.addLayout(setHelpLayout)
+
+		menuLineOne = QHBoxLayout()
+		menuLineOne.addLayout(mainMenuEntry)
+		menuLineOne.addLayout(toolsMenuEntry)
+
+		menuLineTwo = QHBoxLayout()
+		menuLineTwo.addLayout(windowsMenuEntry)
+		menuLineTwo.addLayout(helpMenuEntry)
+
+		nameMenuEntries = QVBoxLayout()
+		nameMenuEntries.addLayout(menuLineOne)
+		nameMenuEntries.addLayout(menuLineTwo)
+
+		self.menuNameDescription = QLabel("""
+			<small>
+			Here, you can set the names used to display the main application
+			menu. These are purely cosmetic, and don't change functionality at
+			all.
+			</small>
+			<br>
+			""")
+		self.menuNameDescription.setWordWrap(True)
+		self.menuNameDescription.setAlignment(Qt.AlignJustify)
+
 		menuLayout = QVBoxLayout()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
+		menuLayout.addWidget(self.menuNameDescription)
+		menuLayout.addLayout(nameMenuEntries)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addWidget(self.menubar)
@@ -1575,6 +1742,10 @@ class Dialog(QDialog):
 		config.MENUBAR_JUSTIFY = self.menubar_justify
 		config.MENUBAR_MENU = self.menubarMenu.isChecked()
 		config.WINDOWBAR_MENU = self.windowbarMenu.isChecked()
+		config.MAIN_MENU_IRC_NAME = self.default_main_menu
+		config.MAIN_MENU_TOOLS_NAME = self.default_tools_menu
+		config.MAIN_MENU_WINDOWS_NAME = self.default_windows_menu
+		config.MAIN_MENU_HELP_NAME = self.default_help_menu
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
