@@ -344,8 +344,9 @@ class Merk(QMainWindow):
 					else:
 						serv_name = c.client.server+":"+str(entry.port)
 
-					if c.client.network:
-						serv_name = serv_name + " ("+c.client.network+")"
+					if hasattr(c.client,"network"):
+						if c.client.network:
+							serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==EDITOR_WINDOW:
 					icon = SCRIPT_ICON
 					if c.editing_user_script:
