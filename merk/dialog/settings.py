@@ -621,6 +621,7 @@ class Dialog(QDialog):
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(QLabel(' '))
