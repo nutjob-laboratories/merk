@@ -617,16 +617,18 @@ class Dialog(QDialog):
 		self.showContext.stateChanged.connect(self.changedSetting)
 
 		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
+		applicationLayout.addLayout(fontLayout)
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
+		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application</b>"))
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addWidget(self.showInfo)
 		applicationLayout.addWidget(self.showInputMenu)
 		applicationLayout.addWidget(self.showContext)
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
-		applicationLayout.addLayout(fontLayout)
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
-		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
 		applicationLayout.addWidget(self.showTimestamps)
 		applicationLayout.addWidget(self.timestamp24hour)
@@ -690,7 +692,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Menu")
+		entry.setText("Menus")
 		entry.widget = self.menuPage
 		entry.setIcon(QIcon(MENU_ICON))
 		self.selector.addItem(entry)
@@ -892,7 +894,6 @@ class Dialog(QDialog):
 			in the window bar can be left, right, or center justified. The
 			windowbar is turned on by default.
 			</small>
-			<br>
 			""")
 		self.windowbarDescription.setWordWrap(True)
 		self.windowbarDescription.setAlignment(Qt.AlignJustify)
@@ -1092,7 +1093,6 @@ class Dialog(QDialog):
 			on the topic and editing it. Here, the
 			channel information display can be customized or turned off.
 			</small>
-			<br>
 			""")
 		self.channelDescription.setWordWrap(True)
 		self.channelDescription.setAlignment(Qt.AlignJustify)
@@ -1126,10 +1126,12 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.topicBold)
 		menuLayout.addWidget(self.channelName)
 		menuLayout.addWidget(self.showBanlist)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		menuLayout.addWidget(self.showUserlists)
 		menuLayout.addWidget(self.plainUserLists)
 		menuLayout.addWidget(self.showUserlistLeft)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addStretch()
@@ -1301,6 +1303,7 @@ class Dialog(QDialog):
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addWidget(self.enableSpellcheck)
+		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
 		spellcheckLayout.addStretch()
