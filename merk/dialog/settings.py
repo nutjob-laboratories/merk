@@ -1830,18 +1830,18 @@ class Dialog(QDialog):
 		# Set active window back
 		self.parent.MDI.setActiveSubWindow(current_window)
 
-		# if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
-		# 	if hasattr(current_window,"widget"):
-		# 		w = current_window.widget()
-		# 		if hasattr(w,"client"):
-		# 				if w.client.hostname:
-		# 					server = w.client.hostname
-		# 				else:
-		# 					server = w.client.server+":"+str(w.client.port)
-		# 				if w.window_type==SERVER_WINDOW:
-		# 					self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+server)
-		# 				else:
-		# 					self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
+		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
+			if hasattr(current_window,"widget"):
+				w = current_window.widget()
+				if hasattr(w,"client"):
+					if w.client.hostname:
+						server = w.client.hostname
+					else:
+						server = w.client.server+":"+str(w.client.port)
+					if w.window_type==SERVER_WINDOW:
+						self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+server)
+					else:
+						self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
 
 		# Close the dialog
 		self.close()
