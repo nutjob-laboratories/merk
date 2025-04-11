@@ -565,9 +565,13 @@ class Window(QMainWindow):
 		if self.userlist.isVisible():
 			self.userlist.hide()
 			self.userlist_visible = False
+			config.SHOW_USERLIST = False
+			config.save_settings(config.CONFIG_FILE)
 		else:
 			self.userlist.show()
 			self.userlist_visible = True
+			config.SHOW_USERLIST = True
+			config.save_settings(config.CONFIG_FILE)
 		self.buildInputOptionsMenu()
 
 	def buildInputOptionsMenu(self):
