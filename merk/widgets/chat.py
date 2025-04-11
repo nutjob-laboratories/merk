@@ -560,20 +560,6 @@ class Window(QMainWindow):
 
 		action = menu.exec_(self.chat.mapToGlobal(location))
 
-
-	def menuHideUserlist(self):
-		if self.userlist.isVisible():
-			self.userlist.hide()
-			self.userlist_visible = False
-			config.SHOW_USERLIST = False
-			config.save_settings(config.CONFIG_FILE)
-		else:
-			self.userlist.show()
-			self.userlist_visible = True
-			config.SHOW_USERLIST = True
-			config.save_settings(config.CONFIG_FILE)
-		self.buildInputOptionsMenu()
-
 	def buildInputOptionsMenu(self):
 
 		self.settingsMenu.clear()
@@ -582,14 +568,6 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
 			entry.triggered.connect(self.pressedStyleButton)
 			self.settingsMenu.addAction(entry)
-
-			if self.window_type==CHANNEL_WINDOW:
-				if self.userlist_visible:
-					entry = QAction(QIcon(INTERFACE_ICON),"Hide userlist",self)
-				else:
-					entry = QAction(QIcon(INTERFACE_ICON),"Show userlist",self)
-				entry.triggered.connect(self.menuHideUserlist)
-				self.settingsMenu.addAction(entry)
 
 		entry = QAction(QIcon(RUN_ICON),"Run script",self)
 		entry.triggered.connect(self.loadScript)
