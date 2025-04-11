@@ -1830,6 +1830,7 @@ class Dialog(QDialog):
 		# Set active window back
 		self.parent.MDI.setActiveSubWindow(current_window)
 
+		# Reset the main window name if needed
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
 			if hasattr(current_window,"widget"):
 				w = current_window.widget()
@@ -1842,6 +1843,8 @@ class Dialog(QDialog):
 						self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+server)
 					else:
 						self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
+		else:
+			self.parent.setWindowTitle(config.DISPLAY_NAME)
 
 		# Close the dialog
 		self.close()
