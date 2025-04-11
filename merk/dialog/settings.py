@@ -705,7 +705,6 @@ class Dialog(QDialog):
 			float above all the subwindows. The menubar is turned on by default,
 			but can be turned off if normal application menus are desired.
 			</small>
-			<br>
 			""")
 		self.menubarDescription.setWordWrap(True)
 		self.menubarDescription.setAlignment(Qt.AlignJustify)
@@ -828,12 +827,18 @@ class Dialog(QDialog):
 		helpMenuEntry.addLayout(setHelpLayout)
 
 		menuLineOne = QHBoxLayout()
+		menuLineOne.addStretch()
 		menuLineOne.addLayout(mainMenuEntry)
+		menuLineOne.addStretch()
 		menuLineOne.addLayout(toolsMenuEntry)
+		menuLineOne.addStretch()
 
 		menuLineTwo = QHBoxLayout()
+		menuLineTwo.addStretch()
 		menuLineTwo.addLayout(windowsMenuEntry)
+		menuLineTwo.addStretch()
 		menuLineTwo.addLayout(helpMenuEntry)
+		menuLineTwo.addStretch()
 
 		nameMenuEntries = QVBoxLayout()
 		nameMenuEntries.addLayout(menuLineOne)
@@ -845,7 +850,6 @@ class Dialog(QDialog):
 			menu. These are purely cosmetic, and don't change functionality at
 			all.
 			</small>
-			<br>
 			""")
 		self.menuNameDescription.setWordWrap(True)
 		self.menuNameDescription.setAlignment(Qt.AlignJustify)
@@ -854,6 +858,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
 		menuLayout.addWidget(self.menuNameDescription)
 		menuLayout.addLayout(nameMenuEntries)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addWidget(self.menubar)
@@ -1035,6 +1040,7 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.askBeforeReconnect)
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
+		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		connectionsLayout.addWidget(self.quitpartDescription)
 		connectionsLayout.addLayout(cgbLayout)
@@ -1216,11 +1222,13 @@ class Dialog(QDialog):
 		autoLayout2.addWidget(self.autocompleteEmojis)
 
 		inputLayout = QVBoxLayout()
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>text input settings</b>"))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
 		inputLayout.addWidget(self.enableEmojis)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyLayout)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addLayout(autoLayout1)
@@ -1367,6 +1375,7 @@ class Dialog(QDialog):
 		logLayout.addWidget(self.savePrivLogs)
 		logLayout.addWidget(self.loadPrivLogs)
 		logLayout.addWidget(self.markLog)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
 		logLayout.addWidget(self.logDescription)
 		logLayout.addLayout(logsizeLayout)
@@ -1506,6 +1515,7 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(self.minSystray)
 		systrayLayout.addWidget(self.systrayNotify)
 		systrayLayout.addWidget(self.listSystray)
+		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
 		systrayLayout.addLayout(nickPriv)
 		systrayLayout.addLayout(kickInvite)
