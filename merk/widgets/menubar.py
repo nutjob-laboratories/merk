@@ -544,6 +544,16 @@ class Windowbar(QToolBar):
 	
 		menu.addMenu(self.justifyMenu)
 
+		menu.addSeparator()
+
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
+		entry1.triggered.connect(self.parent.MDI.cascadeSubWindows)
+		menu.addAction(entry1)
+
+		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
+		entry2.triggered.connect(self.parent.MDI.tileSubWindows)
+		menu.addAction(entry2)
+
 		menu.exec_(self.mapToGlobal(event.pos()))
 
 	def setJustify(self,justify):
