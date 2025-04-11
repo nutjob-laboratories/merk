@@ -555,6 +555,7 @@ class Dialog(QDialog):
 		fontButton.setToolTip("Change font")
 
 		fontLayout = QHBoxLayout()
+		fontLayout.addStretch()
 		fontLayout.addWidget(fontButton)
 		fontLayout.addWidget(self.fontLabel)
 		fontLayout.addStretch()
@@ -572,6 +573,7 @@ class Dialog(QDialog):
 		sizeButton.setToolTip("Change default window size")
 
 		sizeLayout = QHBoxLayout()
+		sizeLayout.addStretch()
 		sizeLayout.addWidget(sizeButton)
 		sizeLayout.addWidget(self.sizeLabel)
 		sizeLayout.addStretch()
