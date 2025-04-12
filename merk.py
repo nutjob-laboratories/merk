@@ -138,7 +138,8 @@ if __name__ == '__main__':
 		font.fromString(config.APPLICATION_FONT)
 		app.setFont(font)
 	else:
-		# Load in fonts from the resources file
+		# Load in fonts from the resources 
+		from merk.resources import *
 		fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
 		for f in OTHER_BUNDLED_FONTS:
 			QFontDatabase.addApplicationFont(f)
