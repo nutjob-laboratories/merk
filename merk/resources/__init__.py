@@ -52,8 +52,6 @@ SCRIPT_FILE_EXTENSION = "merk"
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")
 
-MDI_BACKGROUND = ":/gui-background.png"
-
 BUNDLED_FONT = ":/font-FiraMono-Regular.ttf"
 OTHER_BUNDLED_FONTS = [
 	":/font-FiraMono-Medium.ttf",
@@ -171,6 +169,7 @@ MENU_ICON = ":/icon-menu.png"
 WIDGET_ICON = ":/icon-widget.png"
 JUSTIFY_ICON = ":/icon-justify.png"
 
+MDI_BACKGROUND = ":/gui-background.png"
 MERK_ABOUT_LOGO = ":/gui-about.png"
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
