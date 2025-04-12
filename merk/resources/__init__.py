@@ -171,6 +171,11 @@ MENU_ICON = ":/icon-menu.png"
 WIDGET_ICON = ":/icon-widget.png"
 JUSTIFY_ICON = ":/icon-justify.png"
 
+MERK_ABOUT_LOGO = ":/gui-about.png"
+SPLASH_LOGO = ":/gui-splash.png"
+VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
+DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
+
 ADMIN_USER = ":/gui-admin.png"
 HALFOP_USER = ":/gui-halfop.png"
 OP_USER = ":/gui-op.png"
@@ -181,11 +186,8 @@ HORIZONTAL_DOTTED_BACKGROUND = ":/gui-horizontal_dotted.png"
 HORIZONTAL_RULE_BACKGROUND = ":/gui-horizontal_rule.png"
 LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
 LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
-DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
 NUTJOB_LOGO = ":/gui-nutjob.png"
-MERK_ABOUT_LOGO = ":/gui-about.png"
-SPLASH_LOGO = ":/gui-splash.png"
-VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
+
 
 HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
 

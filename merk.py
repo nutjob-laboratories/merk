@@ -42,7 +42,7 @@ qt5reactor.install()
 from twisted.internet import reactor
 
 from merk.main import Merk
-from merk.resources import *
+from merk.resources.version import *
 from merk.dialog import *
 import merk.config as config
 import merk.styles as styles
