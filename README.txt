@@ -98,11 +98,10 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 ```
 
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-D DIRECTORY] [-L]
-                      [--config-name NAME] [--qtstyle NAME] [-s DIRECTORY] [-N] [-X]
-                      [SERVER] [PORT]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-C NAME] [-D DIRECTORY] [-L]
+                      [-S DIRECTORY] [-Q NAME] [-N] [-X] [SERVER] [PORT]
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 
 Connection:
@@ -110,30 +109,30 @@ Connection:
   PORT                  Server port to connect to (6667)
   --ssl, --tls          Use SSL/TLS to connect to IRC
   --reconnect           Reconnect to servers on disconnection
-  -p PASSWORD, --password PASSWORD
+  -p, --password PASSWORD
                         Use server password to connect
-  -c CHANNEL[:KEY], --channel CHANNEL[:KEY]
+  -c, --channel CHANNEL[:KEY]
                         Join channel on connection
-  -n NICKNAME, --nickname NICKNAME
+  -n, --nickname NICKNAME
                         Use this nickname to connect
-  -u USERNAME, --username USERNAME
+  -u, --username USERNAME
                         Use this username to connect
-  -a NICKNAME, --alternate NICKNAME
+  -a, --alternate NICKNAME
                         Use this alternate nickname to connect
-  -r REALNAME, --realname REALNAME
+  -r, --realname REALNAME
                         Use this realname to connect
 
 Configuration:
+  -C, --config-name NAME
+                        Name of the configuration file directory (default: .merk)
   -D, --config-directory DIRECTORY
                         Location to store configuration files
   -L, --config-local    Store configuration files in install directory
-  --config-name NAME    Name of the configuration file directory (default:
-                        .merk)
-  --qtstyle NAME        Set Qt widget style (default: Windows)
-  -s, --scripts-directory DIRECTORY
+  -S, --scripts-directory DIRECTORY
                         Location to look for script files
 
 Miscellaneous:
+  -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
   -N, --noask           Don't ask for connection information on start
   -X, --nocommands      Don't auto-execute commands on connection
 ```

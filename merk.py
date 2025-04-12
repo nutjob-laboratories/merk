@@ -79,14 +79,14 @@ congroup.add_argument("-r","--realname", type=str,help="Use this realname to con
 
 configuration_group = parser.add_argument_group('Configuration')
 
-configuration_group.add_argument("-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
+configuration_group.add_argument( "-C","--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
+configuration_group.add_argument( "-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "-L","--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
-configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
-configuration_group.add_argument("--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
-configuration_group.add_argument("-s","--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
+configuration_group.add_argument( "-S","--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 
 misc_group = parser.add_argument_group('Miscellaneous')
 
+misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-X","--nocommands", help=f"Don't auto-execute commands on connection", action="store_true")
 
