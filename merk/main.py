@@ -52,13 +52,6 @@ class Merk(QMainWindow):
 	# Constructor
 	# ===========
 
-	# Arguments:
-	# 	app (QApplication)
-	#	configuration_location (string: config directory path, default: none)
-	#	configuration_directory_name (string: config directory name, default: .merk)
-	#	configuration_file (string: config filename, default: none)
-	# 	parent (parent window, default: None)
-
 	def __init__(
 			self,
 			app,
@@ -96,12 +89,6 @@ class Merk(QMainWindow):
 		self.was_maximized = False
 		self.maximized_window = None
 
-		self.flash = QTimer(self)
-		self.flash.timeout.connect(self.blink)
-		self.alternate = config.FLASH_SYSTRAY_SPEED
-		self.flash_time = 500
-		self.notifications = False
-
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
 		self.resize_delay = 200
@@ -125,6 +112,12 @@ class Merk(QMainWindow):
 		self.setWindowIcon(QIcon(config.DISPLAY_ICON))
 
 		# Systray
+
+		self.flash = QTimer(self)
+		self.flash.timeout.connect(self.blink)
+		self.alternate = config.FLASH_SYSTRAY_SPEED
+		self.flash_time = 500
+		self.notifications = False
 
 		self.tray_blank_icon = QIcon(NORMAL_USER)
 		self.tray_icon = QIcon(APPLICATION_ICON)
@@ -153,12 +146,8 @@ class Merk(QMainWindow):
 		# Build the main menu
 		self.buildMenu()
 
-		# Add toolbar break, if needed
-		#self.addToolBarBreak(Qt.TopToolBarArea)
-
 		# Windowbar
 		self.initWindowbar()
-		
 
 		if connection_info:
 			self.connectToIrc(connection_info)
@@ -170,7 +159,6 @@ class Merk(QMainWindow):
 
 	def on_resize_complete(self):
 		self.resize_timer.stop()
-		#self.resized.emit()
 
 		self.buildWindowbar()
 
