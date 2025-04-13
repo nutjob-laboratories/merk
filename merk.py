@@ -86,7 +86,7 @@ configuration_group.add_argument( "-S","--scripts-directory",dest="scriptdir",ty
 
 misc_group = parser.add_argument_group('Miscellaneous')
 
-misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
+misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Fusion)", metavar="NAME", default="")
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-X","--nocommands", help=f"Don't auto-execute commands on connection", action="store_true")
 
