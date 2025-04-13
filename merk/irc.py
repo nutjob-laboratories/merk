@@ -926,7 +926,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(msg)
 			msgBox.setInformativeText(reason.getErrorMessage())
 			msgBox.setWindowTitle("Connection lost")
@@ -948,7 +948,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-				msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 				msgBox.setText(msg)
 				msgBox.setWindowTitle("Connection failed")
 				msgBox.setStandardButtons(QMessageBox.Ok)
@@ -978,7 +978,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(msg)
 			msgBox.setInformativeText(reason.getErrorMessage())
 			msgBox.setWindowTitle("Connection lost")
@@ -1012,7 +1012,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-					msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 					msgBox.setText(msg)
 					msgBox.setWindowTitle("Connection failed")
 					msgBox.setStandardButtons(QMessageBox.Ok)

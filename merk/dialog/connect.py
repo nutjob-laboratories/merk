@@ -69,7 +69,7 @@ class Dialog(QDialog):
 		if len(errors)>=1:
 			msg = QMessageBox()
 			msg.setIcon(QMessageBox.Critical)
-			msg.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msg.setWindowIcon(QIcon(APPLICATION_ICON))
 			msg.setText("Can't connect to server!")
 			msg.setInformativeText("\n".join(errors))
 			msg.setWindowTitle("Error")

@@ -108,8 +108,8 @@ class Merk(QMainWindow):
 		self.MDI.setBackground(backgroundBrush)
 
 		# Set the window title
-		self.setWindowTitle(config.DISPLAY_NAME)
-		self.setWindowIcon(QIcon(config.DISPLAY_ICON))
+		self.setWindowTitle(APPLICATION_NAME)
+		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
 		# Systray
 
@@ -2216,7 +2216,7 @@ class Merk(QMainWindow):
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			if no_hostname:
 				msgBox.setText("Are you sure you want to disconnect from "+client.server+":"+str(client.port)+"?")
 			else:
@@ -2262,7 +2262,7 @@ class Merk(QMainWindow):
 		if config.ASK_BEFORE_DISCONNECT:
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(config.DISPLAY_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText("Are you sure you want to disconnect from "+cstr+"?")
 			msgBox.setWindowTitle("Disconnect")
 			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
@@ -2342,7 +2342,7 @@ class Merk(QMainWindow):
 	def subWindowActivated(self,subwindow):
 
 		# Reset the window title
-		self.setWindowTitle(config.DISPLAY_NAME)
+		self.setWindowTitle(APPLICATION_NAME)
 
 		if subwindow==None: return
 
@@ -2356,9 +2356,9 @@ class Merk(QMainWindow):
 					else:
 						server = w.client.server+":"+str(w.client.port)
 					if w.window_type==SERVER_WINDOW:
-						self.setWindowTitle(config.DISPLAY_NAME+" - "+server)
+						self.setWindowTitle(APPLICATION_NAME+" - "+server)
 					else:
-						self.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
+						self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
 			pass
 
 		if hasattr(w,"input"):

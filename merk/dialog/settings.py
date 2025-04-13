@@ -1840,11 +1840,11 @@ class Dialog(QDialog):
 					else:
 						server = w.client.server+":"+str(w.client.port)
 					if w.window_type==SERVER_WINDOW:
-						self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+server)
+						self.parent.setWindowTitle(APPLICATION_NAME+" - "+server)
 					else:
-						self.parent.setWindowTitle(config.DISPLAY_NAME+" - "+w.name+" ("+server+")")
+						self.parent.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
 		else:
-			self.parent.setWindowTitle(config.DISPLAY_NAME)
+			self.parent.setWindowTitle(APPLICATION_NAME)
 
 		# Close the dialog
 		self.close()

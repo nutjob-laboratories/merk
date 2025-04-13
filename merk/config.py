@@ -35,8 +35,6 @@ CONFIG_FILE = None
 
 MDI_BACKGROUND_IMAGE = None
 APPLICATION_FONT = None
-DISPLAY_NAME = APPLICATION_NAME
-DISPLAY_ICON = APPLICATION_ICON
 DEFAULT_SUBWINDOW_WIDTH = 640
 DEFAULT_SUBWINDOW_HEIGHT = 480
 COMMAND_HISTORY_LENGTH = 20
@@ -144,8 +142,6 @@ def save_settings(filename):
 	settings = {
 		"mdi_background_image": MDI_BACKGROUND_IMAGE,
 		"application_font": APPLICATION_FONT,
-		"display_name": DISPLAY_NAME,
-		"display_icon": DISPLAY_ICON,
 		"default_subwindow_width": DEFAULT_SUBWINDOW_WIDTH,
 		"default_subwindow_height": DEFAULT_SUBWINDOW_HEIGHT,
 		"command_history_length": COMMAND_HISTORY_LENGTH,
@@ -385,10 +381,6 @@ def patch_settings(settings):
 		settings["mdi_background_image"] = MDI_BACKGROUND_IMAGE
 	if not "application_font" in settings:
 		settings["application_font"] = APPLICATION_FONT
-	if not "display_name" in settings:
-		settings["display_name"] = DISPLAY_NAME
-	if not "display_icon" in settings:
-		settings["display_icon"] = DISPLAY_ICON
 	if not "default_subwindow_width" in settings:
 		settings["default_subwindow_width"] = DEFAULT_SUBWINDOW_WIDTH
 	if not "default_subwindow_height" in settings:
@@ -451,8 +443,6 @@ def patch_settings(settings):
 def load_settings(filename):
 	global MDI_BACKGROUND_IMAGE
 	global APPLICATION_FONT
-	global DISPLAY_NAME
-	global DISPLAY_ICON
 	global DEFAULT_SUBWINDOW_WIDTH
 	global DEFAULT_SUBWINDOW_HEIGHT
 	global COMMAND_HISTORY_LENGTH
@@ -614,8 +604,6 @@ def load_settings(filename):
 		LOAD_CHANNEL_LOGS = settings["load_channel_logs"]
 		MDI_BACKGROUND_IMAGE = settings["mdi_background_image"]
 		APPLICATION_FONT = settings["application_font"]
-		DISPLAY_NAME = settings["display_name"]
-		DISPLAY_ICON = settings["display_icon"]
 		DEFAULT_SUBWINDOW_WIDTH = settings["default_subwindow_width"]
 		DEFAULT_SUBWINDOW_HEIGHT = settings["default_subwindow_height"]
 		COMMAND_HISTORY_LENGTH = settings["command_history_length"]
