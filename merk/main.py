@@ -631,11 +631,6 @@ class Merk(QMainWindow):
 
 		self.trayMenu.addSeparator()
 
-
-		entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
-		entry.triggered.connect(self.openSettings)
-		self.trayMenu.addAction(entry)
-
 		self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
 
 		entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME,self)
