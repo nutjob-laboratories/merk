@@ -61,6 +61,7 @@ class Merk(QMainWindow):
 			application_font=None,
 			no_commands=False,
 			channels=[],
+			dark_mode = False,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -73,6 +74,7 @@ class Merk(QMainWindow):
 		self.application_font = application_font
 		self.no_commands = no_commands
 		self.join_channels = channels
+		self.dark_mode = dark_mode
 
 		# Set the application font
 		self.app.setFont(self.application_font)
