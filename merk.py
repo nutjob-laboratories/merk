@@ -157,6 +157,10 @@ if __name__ == '__main__':
 	# Apply new style
 	app.setStyle(config.QT_WINDOW_STYLE)
 
+	# Set dark mode if it's in the config file
+	if config.DARK_MODE==True:
+		args.darkmode = True
+
 	# Handle connecting to a server if one has been provided
 	if args.server:
 

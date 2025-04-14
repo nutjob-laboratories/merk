@@ -136,6 +136,7 @@ MAIN_MENU_IRC_NAME = "IRC"
 MAIN_MENU_TOOLS_NAME = "Tools"
 MAIN_MENU_WINDOWS_NAME = "Windows"
 MAIN_MENU_HELP_NAME = "Help"
+DARK_MODE = False
 
 def save_settings(filename):
 
@@ -237,12 +238,15 @@ def save_settings(filename):
 		"main_menu_tools_name": MAIN_MENU_TOOLS_NAME,
 		"main_menu_windows_name": MAIN_MENU_WINDOWS_NAME,
 		"main_menu_help_name": MAIN_MENU_HELP_NAME,
+		"dark_mode": DARK_MODE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "dark_mode" in settings:
+		settings["dark_mode"] = DARK_MODE
 	if not "main_menu_irc_name" in settings:
 		settings["main_menu_irc_name"] = MAIN_MENU_IRC_NAME
 	if not "main_menu_tools_name" in settings:
@@ -538,6 +542,7 @@ def load_settings(filename):
 	global MAIN_MENU_TOOLS_NAME
 	global MENUBAR_MENU
 	global MAIN_MENU_HELP_NAME
+	global DARK_MODE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -547,6 +552,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DARK_MODE = settings["dark_mode"]
 		MAIN_MENU_IRC_NAME = settings["main_menu_irc_name"]
 		MAIN_MENU_TOOLS_NAME = settings["main_menu_tools_name"]
 		MAIN_MENU_WINDOWS_NAME = settings["main_menu_windows_name"]
