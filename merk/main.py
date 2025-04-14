@@ -641,15 +641,15 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
-		entry = QAction(QIcon(STYLE_ICON),"Styles",self)
+		entry = QAction(QIcon(FOLDER_ICON),"Styles",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
-		entry = QAction(QIcon(LOG_ICON),"Logs",self)
+		entry = QAction(QIcon(FOLDER_ICON),"Logs",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Scripts",self)
+		entry = QAction(QIcon(FOLDER_ICON),"Scripts",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 		self.trayFolder.addAction(entry)
 
