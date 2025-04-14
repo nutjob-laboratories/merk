@@ -673,10 +673,6 @@ class Merk(QMainWindow):
 
 		self.trayMenu.addSeparator()
 
-		entry = QAction(QIcon(ABOUT_ICON),"About",self)
-		entry.triggered.connect(self.showAbout)
-		self.trayMenu.addAction(entry)
-
 		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
 		entry.triggered.connect(self.close)
 		self.trayMenu.addAction(entry)
