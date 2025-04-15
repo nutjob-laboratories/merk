@@ -167,6 +167,33 @@ class Merk(QMainWindow):
 		if connection_info:
 			self.connectToIrc(connection_info)
 
+	def set_darkmode_icons(self):
+		if self.dark_mode:
+			self.checked_icon = CHECKED_ICON
+			self.unchecked_icon = UNCHECKED_ICON
+			self.round_checked_icon = ROUND_CHECKED_ICON
+			self.round_unchecked_icon = ROUND_UNCHECKED_ICON
+			self.options_icon = OPTIONS_ICON
+		else:
+			self.checked_icon = CHECKED_ICON
+			self.unchecked_icon = UNCHECKED_ICON
+			self.round_checked_icon = ROUND_CHECKED_ICON
+			self.round_unchecked_icon = ROUND_UNCHECKED_ICON
+			self.options_icon = OPTIONS_ICON
+
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					if hasattr(c,"settingsButton"):
+						c.settingsButton.setIcon(self.options_icon)
+				if c.window_type==CHANNEL_WINDOW:
+					if hasattr(c,"settingsButton"):
+						c.settingsButton.setIcon(self.options_icon)
+				elif c.window_type==PRIVATE_WINDOW:
+					if hasattr(c,"settingsButton"):
+						c.settingsButton.setIcon(self.options_icon)
+
 	# Windowbar
 	def resizeEvent(self, event):
 		super().resizeEvent(event)
