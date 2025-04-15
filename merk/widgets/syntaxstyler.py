@@ -104,7 +104,7 @@ class SyntaxColor(QWidget):
 		self.setColor.setFixedSize(fheight+8,fheight+8)
 
 		self.setBold = QCheckBox("",self)
-		self.setBold.setIcon(QIcon(BOLD_ICON))
+		self.setBold.setIcon(QIcon(self.parent.parent.bold_icon))
 		self.setBold.setToolTip("Bold")
 		self.setBold.stateChanged.connect(self.checkBold)
 		if self.bold:
@@ -113,7 +113,7 @@ class SyntaxColor(QWidget):
 			self.setBold.setCheckState(Qt.Unchecked)
 
 		self.setItalic = QCheckBox("",self)
-		self.setItalic.setIcon(QIcon(ITALIC_ICON))
+		self.setItalic.setIcon(QIcon(self.parent.parent.italic_icon))
 		self.setItalic.setToolTip("Italic")
 		self.setItalic.stateChanged.connect(self.checkItalic)
 		if self.italic:

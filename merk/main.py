@@ -84,12 +84,16 @@ class Merk(QMainWindow):
 			self.round_checked_icon = DARK_ROUND_CHECKED_ICON
 			self.round_unchecked_icon = DARK_ROUND_UNCHECKED_ICON
 			self.options_icon = DARK_OPTIONS_ICON
+			self.bold_icon = DARK_BOLD_ICON
+			self.italic_icon = DARK_ITALIC_ICON
 		else:
 			self.checked_icon = CHECKED_ICON
 			self.unchecked_icon = UNCHECKED_ICON
 			self.round_checked_icon = ROUND_CHECKED_ICON
 			self.round_unchecked_icon = ROUND_UNCHECKED_ICON
 			self.options_icon = OPTIONS_ICON
+			self.bold_icon = BOLD_ICON
+			self.italic_icon = ITALIC_ICON
 
 		# Set the application font
 		self.app.setFont(self.application_font)
@@ -176,6 +180,8 @@ class Merk(QMainWindow):
 			self.round_checked_icon = DARK_ROUND_CHECKED_ICON
 			self.round_unchecked_icon = DARK_ROUND_UNCHECKED_ICON
 			self.options_icon = DARK_OPTIONS_ICON
+			self.bold_icon = DARK_BOLD_ICON
+			self.italic_icon = DARK_ITALIC_ICON
 
 			dark_palette = QPalette()
 			dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
@@ -210,6 +216,8 @@ class Merk(QMainWindow):
 			self.round_checked_icon = ROUND_CHECKED_ICON
 			self.round_unchecked_icon = ROUND_UNCHECKED_ICON
 			self.options_icon = OPTIONS_ICON
+			self.bold_icon = BOLD_ICON
+			self.italic_icon = ITALIC_ICON
 
 			self.app.setPalette(self.default_palette)
 			self.app.setStyleSheet('')
