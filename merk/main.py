@@ -77,11 +77,11 @@ class Merk(QMainWindow):
 		self.dark_mode = dark_mode
 
 		if self.dark_mode:
-			self.checked_icon = CHECKED_ICON
-			self.unchecked_icon = UNCHECKED_ICON
-			self.round_checked_icon = ROUND_CHECKED_ICON
-			self.round_unchecked_icon = ROUND_UNCHECKED_ICON
-			self.options_icon = OPTIONS_ICON
+			self.checked_icon = DARK_CHECKED_ICON
+			self.unchecked_icon = DARK_UNCHECKED_ICON
+			self.round_checked_icon = DARK_ROUND_CHECKED_ICON
+			self.round_unchecked_icon = DARK_ROUND_UNCHECKED_ICON
+			self.options_icon = DARK_OPTIONS_ICON
 		else:
 			self.checked_icon = CHECKED_ICON
 			self.unchecked_icon = UNCHECKED_ICON
@@ -169,11 +169,11 @@ class Merk(QMainWindow):
 
 	def set_darkmode_icons(self):
 		if self.dark_mode:
-			self.checked_icon = CHECKED_ICON
-			self.unchecked_icon = UNCHECKED_ICON
-			self.round_checked_icon = ROUND_CHECKED_ICON
-			self.round_unchecked_icon = ROUND_UNCHECKED_ICON
-			self.options_icon = OPTIONS_ICON
+			self.checked_icon = DARK_CHECKED_ICON
+			self.unchecked_icon = DARK_UNCHECKED_ICON
+			self.round_checked_icon = DARK_ROUND_CHECKED_ICON
+			self.round_unchecked_icon = DARK_ROUND_UNCHECKED_ICON
+			self.options_icon = DARK_OPTIONS_ICON
 		else:
 			self.checked_icon = CHECKED_ICON
 			self.unchecked_icon = UNCHECKED_ICON
