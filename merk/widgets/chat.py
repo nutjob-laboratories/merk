@@ -264,7 +264,7 @@ class Window(QMainWindow):
 
 		self.buildInputOptionsMenu()
 
-		self.settingsButton = QPushButton(QIcon(OPTIONS_ICON),"")
+		self.settingsButton = QPushButton(QIcon(self.parent.options_icon),"")
 		self.settingsButton.setIconSize(QSize(self.input.height()-10,self.input.height()))
 		self.settingsButton.setFixedSize(self.input.height()-10,self.input.height())
 		self.settingsButton.setToolTip("Options")
@@ -578,26 +578,26 @@ class Window(QMainWindow):
 			self.spellcheckMenu = QMenu("Spellcheck")
 			self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
 
-			self.languageEnglish = QAction(QIcon(ROUND_UNCHECKED_ICON),"English",self)
+			self.languageEnglish = QAction(QIcon(self.parent.round_unchecked_icon),"English",self)
 			self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageEnglish)
 
-			self.languageFrench = QAction(QIcon(ROUND_UNCHECKED_ICON),"Française",self)
+			self.languageFrench = QAction(QIcon(self.parent.round_unchecked_icon),"Française",self)
 			self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageFrench)
 
-			self.languageSpanish = QAction(QIcon(ROUND_UNCHECKED_ICON),"Español",self)
+			self.languageSpanish = QAction(QIcon(self.parent.round_unchecked_icon),"Español",self)
 			self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageSpanish)
 
-			self.languageGerman = QAction(QIcon(ROUND_UNCHECKED_ICON),"Deutsche",self)
+			self.languageGerman = QAction(QIcon(self.parent.round_unchecked_icon),"Deutsche",self)
 			self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageGerman)
 
-			if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
-			if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
-			if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
-			if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
+			if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
 
 			self.settingsMenu.addMenu(self.spellcheckMenu)
 
@@ -1364,15 +1364,15 @@ class Window(QMainWindow):
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)
 
-		self.languageEnglish.setIcon(QIcon(ROUND_UNCHECKED_ICON))
-		self.languageFrench.setIcon(QIcon(ROUND_UNCHECKED_ICON))
-		self.languageSpanish.setIcon(QIcon(ROUND_UNCHECKED_ICON))
-		self.languageGerman.setIcon(QIcon(ROUND_UNCHECKED_ICON))
+		self.languageEnglish.setIcon(QIcon(self.parent.round_unchecked_icon))
+		self.languageFrench.setIcon(QIcon(self.parent.round_unchecked_icon))
+		self.languageSpanish.setIcon(QIcon(self.parent.round_unchecked_icon))
+		self.languageGerman.setIcon(QIcon(self.parent.round_unchecked_icon))
 
-		if self.language=="en": self.languageEnglish.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="fr": self.languageFrench.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="es": self.languageSpanish.setIcon(QIcon(ROUND_CHECKED_ICON))
-		if self.language=="de": self.languageGerman.setIcon(QIcon(ROUND_CHECKED_ICON))
+		if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
 
 		if config.ENABLE_SPELLCHECK:
 			self.languageEnglish.setEnabled(True)

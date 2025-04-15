@@ -412,9 +412,9 @@ class Menubar(QToolBar):
 		menu.addAction(e)
 
 		if config.MENUBAR_CAN_FLOAT:
-			entry = QAction(QIcon(CHECKED_ICON),"Can float", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Can float", self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Can float", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Can float", self)
 		entry.triggered.connect(self.float)
 		menu.addAction(entry)
 
@@ -422,23 +422,23 @@ class Menubar(QToolBar):
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
 		if config.MENUBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Left",self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Left",self)
 		else:
-			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Left",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
 		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Center",self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Center",self)
 		else:
-			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Center",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
 		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Right",self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Right",self)
 		else:
-			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Right",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
 		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 	
@@ -477,44 +477,44 @@ class Windowbar(QToolBar):
 		menu.addAction(e)
 
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
-			entry = QAction(QIcon(CHECKED_ICON),"Show active first", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Show active first", self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Show active first", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active first", self)
 		entry.triggered.connect(self.first)
 		menu.addAction(entry)
 
 		if config.WINDOWBAR_CAN_FLOAT:
-			entry = QAction(QIcon(CHECKED_ICON),"Can float", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Can float", self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Can float", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Can float", self)
 		entry.triggered.connect(self.float)
 		menu.addAction(entry)
 		
 		if config.WINDOWBAR_SHOW_ICONS:
-			entry = QAction(QIcon(CHECKED_ICON),"Show icons", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Show icons", self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Show icons", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show icons", self)
 		entry.triggered.connect(self.icons)
 		menu.addAction(entry)
 		
 		if config.WINDOWBAR_INCLUDE_SERVERS:
-			entry = QAction(QIcon(CHECKED_ICON),"Server windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Server windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Server windows", self)
 		entry.triggered.connect(self.servers)
 		menu.addAction(entry)
 
 		if config.WINDOWBAR_INCLUDE_EDITORS:
-			entry = QAction(QIcon(CHECKED_ICON),"Editor windows", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Editor windows", self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Editor windows", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Editor windows", self)
 		entry.triggered.connect(self.editors)
 		menu.addAction(entry)
 
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
-			entry = QAction(QIcon(CHECKED_ICON),"Doubleclick to maximize", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Doubleclick to maximize", self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Doubleclick to maximize", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Doubleclick to maximize", self)
 		entry.triggered.connect(self.doubleclick)
 		menu.addAction(entry)
 
@@ -522,23 +522,23 @@ class Windowbar(QToolBar):
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
 		if config.WINDOWBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Left",self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Left",self)
 		else:
-			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Left",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
 		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.WINDOWBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Center",self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Center",self)
 		else:
-			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Center",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
 		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.WINDOWBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(ROUND_CHECKED_ICON),"Right",self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Right",self)
 		else:
-			entry = QAction(QIcon(ROUND_UNCHECKED_ICON),"Right",self)
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
 		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 	

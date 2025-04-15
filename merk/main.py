@@ -76,6 +76,12 @@ class Merk(QMainWindow):
 		self.join_channels = channels
 		self.dark_mode = dark_mode
 
+		self.checked_icon = CHECKED_ICON
+		self.unchecked_icon = UNCHECKED_ICON
+		self.round_checked_icon = ROUND_CHECKED_ICON
+		self.round_unchecked_icon = ROUND_UNCHECKED_ICON
+		self.options_icon = OPTIONS_ICON
+
 		# Set the application font
 		self.app.setFont(self.application_font)
 
