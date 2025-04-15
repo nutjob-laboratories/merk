@@ -97,6 +97,7 @@ class SyntaxColor(QWidget):
 
 		self.setColor = QPushButton("")
 		self.setColor.clicked.connect(self.buttonColor)
+		self.setColor.setToolTip("Set color")
 		self.setColor.setStyleSheet(f'background-color: {self.color};')
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
