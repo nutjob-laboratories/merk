@@ -89,8 +89,6 @@ UNKNOWN_NETWORK = "UNKNOWN"
 # Icons
 
 APPLICATION_ICON = ":/icon-app.png"
-CASCADE_ICON = ":/icon-cascade.png"
-TILE_ICON = ":/icon-tile.png"
 NEXT_ICON = ":/icon-next.png"
 PREVIOUS_ICON = ":/icon-previous.png"
 CONSOLE_ICON = ":/icon-console.png"

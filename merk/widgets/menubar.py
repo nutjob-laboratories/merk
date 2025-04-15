@@ -546,11 +546,11 @@ class Windowbar(QToolBar):
 
 		menu.addSeparator()
 
-		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
+		entry1 = QAction("Cascade windows",self)
 		entry1.triggered.connect(self.parent.MDI.cascadeSubWindows)
 		menu.addAction(entry1)
 
-		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
+		entry2 = QAction("Tile windows",self)
 		entry2.triggered.connect(self.parent.MDI.tileSubWindows)
 		menu.addAction(entry2)
 
