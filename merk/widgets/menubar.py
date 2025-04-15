@@ -422,21 +422,21 @@ class Menubar(QToolBar):
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
 		if config.MENUBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.checked_icon),"Left",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
 		else:
 			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
 		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.checked_icon),"Center",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
 		else:
 			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
 		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.MENUBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.checked_icon),"Right",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
 		else:
 			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
 		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
@@ -522,21 +522,21 @@ class Windowbar(QToolBar):
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
 		if config.WINDOWBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.checked_icon),"Left",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
 		else:
 			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
 		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.WINDOWBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.checked_icon),"Center",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
 		else:
 			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
 		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
 		self.justifyMenu.addAction(entry)
 
 		if config.WINDOWBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.checked_icon),"Right",self)
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
 		else:
 			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
 		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
