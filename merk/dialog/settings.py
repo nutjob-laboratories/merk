@@ -32,6 +32,7 @@ from ..resources import *
 from .. import config
 from .. import dialog
 from .. import widgets
+from .. import user
 
 class Dialog(QDialog):
 
@@ -520,6 +521,9 @@ class Dialog(QDialog):
 		self.selector.itemClicked.connect(self.selectorClick)
 
 		self.selector.setStyleSheet("background-color: transparent; border-width: 0px; border-color: transparent;")
+
+		# Load in user settings
+		user.load_user(user.USER_FILE)
 
 		# Application page
 
