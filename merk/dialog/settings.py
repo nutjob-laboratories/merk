@@ -677,8 +677,8 @@ class Dialog(QDialog):
 		self.userDescription = QLabel("""
 			<small>
 			You can set the default settings needed to connect to
-			an IRC server here. You can still change these settings
-			in the connection dialog. If both your nickname and alternate
+			an IRC server here. These options can be set or changed
+			in the server connection dialog. If both your nickname and alternate
 			nickname are taken, a random number will be generated and
 			attached to your alternate nickname for use.
 			<br>
@@ -713,9 +713,16 @@ class Dialog(QDialog):
 
 		userSettingsLayout = QFormLayout()
 		userSettingsLayout.addRow(nickl, self.nick)
+		userSettingsLayout.addRow(QLabel("<center><small>The nickname you wish to use on the server</small></center>"))
+		userSettingsLayout.addRow(QLabel(' '))
 		userSettingsLayout.addRow(altl, self.alternative)
+		userSettingsLayout.addRow(QLabel("<center><small>Alternate nickname if your first<br>choice is already taken</small></center>"))
+		userSettingsLayout.addRow(QLabel(' '))
 		userSettingsLayout.addRow(usrl, self.username)
+		userSettingsLayout.addRow(QLabel("<center><small>The username you wish to use</small></center>"))
+		userSettingsLayout.addRow(QLabel(' '))
 		userSettingsLayout.addRow(reall, self.realname)
+		userSettingsLayout.addRow(QLabel("<center><small>Your real name or other descriptive text</small></center>"))
 
 		userLayout = QVBoxLayout()
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user defaults</b>"))
@@ -898,38 +905,32 @@ class Dialog(QDialog):
 		setHelpLayout.addStretch()
 
 		mainMenuEntry = QVBoxLayout()
-		mainMenuEntry.addWidget(QLabel("Main menu"))
+		mainMenuEntry.addWidget(QLabel("<b>Main menu</b>"))
 		mainMenuEntry.addLayout(setMainLayout)
 		
 		toolsMenuEntry = QVBoxLayout()
-		toolsMenuEntry.addWidget(QLabel("Tools menu"))
+		toolsMenuEntry.addWidget(QLabel("<b>Tools menu</b>"))
 		toolsMenuEntry.addLayout(setToolsLayout)
 
 		windowsMenuEntry = QVBoxLayout()
-		windowsMenuEntry.addWidget(QLabel("Windows menu"))
+		windowsMenuEntry.addWidget(QLabel("<b>Windows menu</b>"))
 		windowsMenuEntry.addLayout(setWindowsLayout)
 
 		helpMenuEntry = QVBoxLayout()
-		helpMenuEntry.addWidget(QLabel("Help menu"))
+		helpMenuEntry.addWidget(QLabel("<b>Help menu</b>"))
 		helpMenuEntry.addLayout(setHelpLayout)
 
 		menuLineOne = QHBoxLayout()
-		menuLineOne.addStretch()
 		menuLineOne.addLayout(mainMenuEntry)
-		menuLineOne.addStretch()
 		menuLineOne.addLayout(toolsMenuEntry)
-		menuLineOne.addStretch()
 
 		menuLineTwo = QHBoxLayout()
-		menuLineTwo.addStretch()
 		menuLineTwo.addLayout(windowsMenuEntry)
-		menuLineTwo.addStretch()
 		menuLineTwo.addLayout(helpMenuEntry)
-		menuLineTwo.addStretch()
 
-		nameMenuEntries = QVBoxLayout()
-		nameMenuEntries.addLayout(menuLineOne)
-		nameMenuEntries.addLayout(menuLineTwo)
+		nameMenuEntries = QFormLayout()
+		nameMenuEntries.addRow(menuLineOne)
+		nameMenuEntries.addRow(menuLineTwo)
 
 		self.menuNameDescription = QLabel("""
 			<small>
