@@ -402,12 +402,6 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
-	def windowbarChange(self):
-		self.windowbar_change = True
-		self.selector.setFocus()
-		self.changed.show()
-		self.boldApply()
-
 	def setMainMenu(self):
 		info = dialog.SetMenuNameDialog(self.default_main_menu,self)
 
@@ -490,7 +484,6 @@ class Dialog(QDialog):
 		self.qt_style = config.QT_WINDOW_STYLE
 
 		self.windowbar_justify = config.WINDOWBAR_JUSTIFY
-		self.windowbar_change = False
 
 		self.menubar_justify = config.MENUBAR_JUSTIFY
 
@@ -920,19 +913,19 @@ class Dialog(QDialog):
 
 		self.windowBarTop = QCheckBox("Display at top of window",self)
 		if config.WINDOWBAR_TOP_OF_SCREEN: self.windowBarTop.setChecked(True)
-		self.windowBarTop.stateChanged.connect(self.windowbarChange)
+		self.windowBarTop.stateChanged.connect(self.changedSetting)
 
 		self.windowBarServers = QCheckBox("Includes server windows",self)
 		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
-		self.windowBarServers.stateChanged.connect(self.windowbarChange)
+		self.windowBarServers.stateChanged.connect(self.changedSetting)
 
 		self.windowBarIcons = QCheckBox("Shows window icons",self)
 		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
-		self.windowBarIcons.stateChanged.connect(self.windowbarChange)
+		self.windowBarIcons.stateChanged.connect(self.changedSetting)
 
 		self.windowBarFloat = QCheckBox("Can \"float\"",self)
 		if config.WINDOWBAR_CAN_FLOAT: self.windowBarFloat.setChecked(True)
-		self.windowBarFloat.stateChanged.connect(self.windowbarChange)
+		self.windowBarFloat.stateChanged.connect(self.changedSetting)
 
 		self.windowbarJustify = QComboBox(self)
 		self.windowbarJustify.addItem(config.WINDOWBAR_JUSTIFY)
@@ -948,15 +941,15 @@ class Dialog(QDialog):
 
 		self.windowbarClick = QCheckBox("Double click to maximize subwindow",self)
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
-		self.windowbarClick.stateChanged.connect(self.windowbarChange)
+		self.windowbarClick.stateChanged.connect(self.changedSetting)
 
 		self.windowBarEditor = QCheckBox("Includes editor windows",self)
 		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
-		self.windowBarEditor.stateChanged.connect(self.windowbarChange)
+		self.windowBarEditor.stateChanged.connect(self.changedSetting)
 
 		self.windowBarFirst = QCheckBox("Always show active window first",self)
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST: self.windowBarFirst.setChecked(True)
-		self.windowBarFirst.stateChanged.connect(self.windowbarChange)
+		self.windowBarFirst.stateChanged.connect(self.changedSetting)
 
 		self.windowbarMenu = QCheckBox("Use context settings menu",self)
 		if config.WINDOWBAR_MENU: self.windowbarMenu.setChecked(True)
@@ -1841,7 +1834,7 @@ class Dialog(QDialog):
 		self.parent.setFont(self.parent.application_font)
 
 		# Set the windowbar
-		if self.windowbar_change: self.parent.initWindowbar()
+		self.parent.initWindowbar()
 
 		# Set active window back
 		self.parent.MDI.setActiveSubWindow(current_window)
