@@ -163,6 +163,7 @@ if __name__ == '__main__':
 	if config.DARK_MODE==True:
 		args.darkmode = True
 
+	# Set dark mode palette if it's turned on
 	if args.darkmode:
 		dark_palette = QPalette()
 		dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
@@ -185,10 +186,11 @@ if __name__ == '__main__':
 		dark_palette.setColor(QPalette.Disabled, QPalette.Light, QColor(53, 53, 53))
 		app.setPalette(dark_palette)
 
+		# Make sure that menu separators are visible
 		app.setStyleSheet("""
 			QMenu::separator {
-				background-color: darkGrey;
-				height: 1px; /* Adjust height as needed */
+				background-color: darkGray;
+				height: 1px;
 			}
 			""")
 
