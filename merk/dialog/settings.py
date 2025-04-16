@@ -120,6 +120,12 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def setDarkMode(self,state):
+		self.changed.show()
+		self.restart.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def swapUserlistSetting(self,state):
 		self.changed.show()
 		self.boldApply()
@@ -509,6 +515,7 @@ class Dialog(QDialog):
 		self.selector.setFont(f)
 
 		self.changed = QLabel("<i><b>Settings changed.</b></i>")
+		self.restart = QLabel("<i><b>Restart required.</b></i>")
 
 		fm = QFontMetrics(self.font())
 		fwidth = fm.width('X') * 27
@@ -618,6 +625,11 @@ class Dialog(QDialog):
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
 
+		self.darkMode = QCheckBox("Run in \"dark mode\"",self)
+		if config.DARK_MODE: self.darkMode.setChecked(True)
+		self.darkMode.stateChanged.connect(self.setDarkMode)
+
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -631,6 +643,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showInfo)
 		applicationLayout.addWidget(self.showInputMenu)
 		applicationLayout.addWidget(self.showContext)
+		applicationLayout.addWidget(self.darkMode)
 		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
 		applicationLayout.addWidget(self.showTimestamps)
@@ -1631,6 +1644,7 @@ class Dialog(QDialog):
 		self.syntaxPage.setLayout(syntaxLayout)
 
 		self.changed.hide()
+		self.restart.hide()
 
 		# Buttons
 
@@ -1651,6 +1665,7 @@ class Dialog(QDialog):
 		dialogButtonsLayout = QHBoxLayout()
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.changed)
+		dialogButtonsLayout.addWidget(self.restart)
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.saveButton)
 		dialogButtonsLayout.addWidget(cancelButton)
@@ -1762,6 +1777,7 @@ class Dialog(QDialog):
 		config.MAIN_MENU_TOOLS_NAME = self.default_tools_menu
 		config.MAIN_MENU_WINDOWS_NAME = self.default_windows_menu
 		config.MAIN_MENU_HELP_NAME = self.default_help_menu
+		config.DARK_MODE = self.darkMode.isChecked()
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

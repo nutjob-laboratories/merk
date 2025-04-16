@@ -6,10 +6,10 @@
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
-  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.031.027</a><br>
+  <a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.032.002</a><br>
 </p>
 
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.031.027**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.032.002**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
@@ -34,6 +34,7 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
     - Multiple channel and server windows can be open for viewing and chatting at once
     - All chat windows are contained in a single "parent" window
+- Dark mode! Dark mode can be enabled from the commandline, or from the settings dialog (restart required).
 - Very configurable, without having to manually edit a configuration file
     - Nearly all settings are configurable in the settings dialog
     - Control application behavior, logging, features, and more!
@@ -99,7 +100,9 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
                       [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-C NAME] [-D DIRECTORY] [-L]
-                      [-S DIRECTORY] [-Q NAME] [-N] [-X] [SERVER] [PORT]
+                      [-S DIRECTORY] [-Q NAME] [-N] [-X][-M]
+                      [SERVER] [PORT]
+
 
 options:
   -h, --help            show this help message and exit
@@ -109,32 +112,35 @@ Connection:
   PORT                  Server port to connect to (6667)
   --ssl, --tls          Use SSL/TLS to connect to IRC
   --reconnect           Reconnect to servers on disconnection
-  -p, --password PASSWORD
+  -p PASSWORD, --password PASSWORD
                         Use server password to connect
-  -c, --channel CHANNEL[:KEY]
+  -c CHANNEL[:KEY], --channel CHANNEL[:KEY]
                         Join channel on connection
-  -n, --nickname NICKNAME
+  -n NICKNAME, --nickname NICKNAME
                         Use this nickname to connect
-  -u, --username USERNAME
+  -u USERNAME, --username USERNAME
                         Use this username to connect
-  -a, --alternate NICKNAME
+  -a NICKNAME, --alternate NICKNAME
                         Use this alternate nickname to connect
-  -r, --realname REALNAME
+  -r REALNAME, --realname REALNAME
                         Use this realname to connect
 
 Configuration:
-  -C, --config-name NAME
+  -C NAME, --config-name NAME
                         Name of the configuration file directory (default: .merk)
-  -D, --config-directory DIRECTORY
+  -D DIRECTORY, --config-directory DIRECTORY
                         Location to store configuration files
   -L, --config-local    Store configuration files in install directory
-  -S, --scripts-directory DIRECTORY
+  -S DIRECTORY, --scripts-directory DIRECTORY
                         Location to look for script files
 
 Miscellaneous:
-  -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
+  -Q NAME, --qtstyle NAME
+                        Set Qt widget style (default: Fusion)
   -N, --noask           Don't ask for connection information on start
   -X, --nocommands      Don't auto-execute commands on connection
+  -M, --dark            Run in dark mode
+
 ```
 # Why does MERK exist?
 It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
