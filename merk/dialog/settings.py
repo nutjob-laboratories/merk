@@ -151,6 +151,12 @@ class Dialog(QDialog):
 		self.rerenderNick = True
 		self.selector.setFocus()
 
+	def changeUser(self,state):
+		self.user_changed = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def setQuitMsg(self):
 		info = dialog.QuitPartDialog(self.default_quit_part,self)
 
@@ -488,6 +494,8 @@ class Dialog(QDialog):
 
 		self.menubar_justify = config.MENUBAR_JUSTIFY
 
+		self.user_changed = False
+
 		self.refreshTopics = False
 		self.refreshTitles = False
 		self.swapUserlists = False
@@ -652,6 +660,68 @@ class Dialog(QDialog):
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
+
+		# User page
+
+		self.userPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("User")
+		entry.widget = self.userPage
+		entry.setIcon(QIcon(PRIVATE_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.userPage)
+
+		self.userDescription = QLabel("""
+			<small>
+			You can set the default settings needed to connect to
+			and IRC server here. You can still change these settings
+			in the connection dialog.
+			<br>
+			""")
+		self.userDescription.setWordWrap(True)
+		self.userDescription.setAlignment(Qt.AlignJustify)
+
+		if user.USERNAME=='':
+			username = "MERK"
+		else:
+			username = user.USERNAME
+
+		if user.REALNAME=='':
+			realname = APPLICATION_NAME+" "+APPLICATION_VERSION
+		else:
+			realname = user.REALNAME
+
+		self.nick = QNoSpaceLineEdit(user.NICKNAME)
+		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
+		self.username = QNoSpaceLineEdit(username)
+		self.realname = QLineEdit(realname)
+
+		self.nick.textChanged.connect(self.changeUser)
+		self.alternative.textChanged.connect(self.changeUser)
+		self.username.textChanged.connect(self.changeUser)
+		self.realname.textChanged.connect(self.changeUser)
+
+		nickl = QLabel("<b>Nickname:</b>")
+		altl = QLabel("<b>Alternate:</b>")
+		usrl = QLabel("<b>Username:</b>")
+		reall = QLabel("<b>Real name:</b>")
+
+		userSettingsLayout = QFormLayout()
+		userSettingsLayout.addRow(nickl, self.nick)
+		userSettingsLayout.addRow(altl, self.alternative)
+		userSettingsLayout.addRow(usrl, self.username)
+		userSettingsLayout.addRow(reall, self.realname)
+
+		userLayout = QVBoxLayout()
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user defaults</b>"))
+		userLayout.addWidget(self.userDescription)
+		userLayout.addLayout(userSettingsLayout)
+		userLayout.addStretch()
+
+		self.userPage.setLayout(userLayout)
 
 		# Widget page
 
@@ -1775,6 +1845,13 @@ class Dialog(QDialog):
 		config.MAIN_MENU_WINDOWS_NAME = self.default_windows_menu
 		config.MAIN_MENU_HELP_NAME = self.default_help_menu
 		config.DARK_MODE = self.darkMode.isChecked()
+
+		if self.user_changed:
+			user.NICKNAME = self.nick.text()
+			user.ALTERNATE = self.alternative.text()
+			user.USERNAME = self.username.text()
+			user.REALNAME = self.realname.text()
+			user.save_user(user.USER_FILE)
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
