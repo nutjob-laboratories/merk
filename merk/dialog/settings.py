@@ -155,7 +155,7 @@ class Dialog(QDialog):
 		self.user_changed = True
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
+		#self.selector.setFocus()
 
 	def setQuitMsg(self):
 		info = dialog.QuitPartDialog(self.default_quit_part,self)
