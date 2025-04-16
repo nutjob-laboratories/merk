@@ -97,20 +97,20 @@ class Dialog(QDialog):
 
 		# https://github.com/elementary/icons/
 
-		icons_credit = QLabel(f"<small>Icons by <a href=\"https://material.io/resources/icons/\">Google</a> and <a href=\"https://github.com/elementary/icons/\">elementaryOS</a></small>")
+		icons_credit = QLabel(f"<small><b>Icons by <a href=\"https://material.io/resources/icons/\">Google</a> and <a href=\"https://github.com/elementary/icons/\">elementaryOS</a></small></b>")
 		icons_credit.setAlignment(Qt.AlignCenter)
 		icons_credit.setOpenExternalLinks(True)
 
-		font_credit = QLabel(f"<small>Default font by </small></small><a href=\"http://www.carrois.com/\"><small>Carrois Apostrophe</small></a><small> (<a href=\"https://bboxtype.com/typefaces/FiraSans/\">Fira Mono</a>)</small>")
+		font_credit = QLabel(f"<small><b>Default font by <a href=\"http://www.carrois.com/\">Carrois Apostrophe</small></a> (<a href=\"https://bboxtype.com/typefaces/FiraSans/\">Fira Mono</a>)</small></b>")
 		font_credit.setAlignment(Qt.AlignCenter)
 		font_credit.setOpenExternalLinks(True)
 
 
-		spellcheck_credit = QLabel(f"<a href=\"https://github.com/barrust/pyspellchecker\"><small>pyspellchecker</small></a><small> by </small><a href=\"mailto:barrust@gmail.com\"><small>Tyler Barrus</small></a>")
+		spellcheck_credit = QLabel(f"<b><small><a href=\"https://github.com/barrust/pyspellchecker\">pyspellchecker</a> by <a href=\"mailto:barrust@gmail.com\">Tyler Barrus</small></a></b>")
 		spellcheck_credit.setAlignment(Qt.AlignCenter)
 		spellcheck_credit.setOpenExternalLinks(True)
 
-		emoji_credit = QLabel(f"<a href=\"https://github.com/carpedm20/emoji\"><small>emoji</small></a><small> by </small><a href=\"http://carpedm20.github.io/about/\"><small>Taehoon Kim</small></a><small> and </small><a href=\"http://twitter.com/geowurster/\"><small>Kevin Wurster</small></a>")
+		emoji_credit = QLabel(f"<b><small><a href=\"https://github.com/carpedm20/emoji\">emoji</a> by <a href=\"http://carpedm20.github.io/about/\">Taehoon Kim</a> and <a href=\"http://twitter.com/geowurster/\">Kevin Wurster</a></small></b>")
 		emoji_credit.setAlignment(Qt.AlignCenter)
 		emoji_credit.setOpenExternalLinks(True)
 
@@ -118,7 +118,7 @@ class Dialog(QDialog):
 		gnu_credit.setAlignment(Qt.AlignCenter)
 		gnu_credit.setOpenExternalLinks(True)
 
-		qr_credit = QLabel(f"<a href=\"https://github.com/twisted/qt5reactor\"><small>qt5reactor</small></a> <small>by Twisted Matrix Labs</small>")
+		qr_credit = QLabel(f"<b><small><a href=\"https://github.com/twisted/qt5reactor\">qt5reactor</a> by Twisted Matrix Labs</small></b>")
 		qr_credit.setAlignment(Qt.AlignCenter)
 		qr_credit.setOpenExternalLinks(True)
 

@@ -667,7 +667,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("User Defaults")
+		entry.setText("User")
 		entry.widget = self.userPage
 		entry.setIcon(QIcon(PRIVATE_ICON))
 		self.selector.addItem(entry)
