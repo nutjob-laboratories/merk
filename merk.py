@@ -166,13 +166,15 @@ if __name__ == '__main__':
 	# Set dark mode palette if it's turned on
 	if args.darkmode:
 		dark_palette = QPalette()
+
+		dark_palette.setColor(QPalette.Text, Qt.white)
+		dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
+
 		dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
 		dark_palette.setColor(QPalette.WindowText, Qt.white)
-		dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
 		dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
 		dark_palette.setColor(QPalette.ToolTipBase, QColor(25, 25, 25))
 		dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-		dark_palette.setColor(QPalette.Text, Qt.white)
 		dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
 		dark_palette.setColor(QPalette.ButtonText, Qt.white)
 		dark_palette.setColor(QPalette.BrightText, Qt.red)
@@ -325,7 +327,7 @@ if __name__ == '__main__':
 			GUI.show()
 		else:
 			# Bring up the connection dialog
-			connection_info = ConnectDialog(app,None,'','',args.nocommands)
+			connection_info = ConnectDialog(app,None,'','',args.nocommands,args.darkmode)
 			if connection_info:
 				# Create the main GUI and show it
 				GUI = Merk(

@@ -132,7 +132,10 @@ class Merk(QMainWindow):
 		if config.MDI_BACKGROUND_IMAGE!=None:
 			backgroundPix = QPixmap(config.MDI_BACKGROUND_IMAGE)
 		else:
-			backgroundPix = QPixmap(MDI_BACKGROUND)
+			if self.dark_mode:
+				backgroundPix = QPixmap(DARK_MDI_BACKGROUND)
+			else:
+				backgroundPix = QPixmap(MDI_BACKGROUND)
 		backgroundBrush = QBrush(backgroundPix)
 		self.MDI.setBackground(backgroundBrush)
 
@@ -1377,7 +1380,7 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.no_commands)
+		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.no_commands,self.dark_mode)
 
 		if connection:
 			
@@ -1440,7 +1443,7 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			connection = ConnectDialogNoLogo(self.app,self,'','',self.no_commands)
+			connection = ConnectDialogNoLogo(self.app,self,'','',self.no_commands,self.dark_mode)
 		if connection:
 			
 			if connection.reconnect:

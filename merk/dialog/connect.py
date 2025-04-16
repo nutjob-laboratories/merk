@@ -44,8 +44,8 @@ from .. import syntax
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,nocommands=False):
-		dialog = Dialog(app,parent,dismsg,reason,logo,nocommands)
+	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,nocommands=False,darkmode=False):
+		dialog = Dialog(app,parent,dismsg,reason,logo,nocommands,darkmode)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -201,7 +201,7 @@ class Dialog(QDialog):
 		else:
 			self.commands.clear()
 
-	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,nocommands=False):
+	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,nocommands=False,darkmode=False):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
@@ -210,6 +210,7 @@ class Dialog(QDialog):
 		self.reason = reason
 		self.logo = logo
 		self.no_commands = nocommands
+		self.darkmode = darkmode
 
 		self.StoredData = []
 		self.StoredServer = 0
