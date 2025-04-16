@@ -97,7 +97,7 @@ class Dialog(QDialog):
 
 		# https://github.com/elementary/icons/
 
-		icons_credit = QLabel(f"<small>Icons by </small></small><a href=\"https://material.io/resources/icons/\"><small>Google</small></a><small> and other public domain sources</small>")
+		icons_credit = QLabel(f"<small>Icons by <a href=\"https://material.io/resources/icons/\">Google</a> and <a href=\"https://github.com/elementary/icons/\">elementaryOS</a></small>")
 		icons_credit.setAlignment(Qt.AlignCenter)
 		icons_credit.setOpenExternalLinks(True)
 
