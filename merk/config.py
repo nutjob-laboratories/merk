@@ -604,7 +604,6 @@ def load_settings(filename):
 		LOAD_PRIVATE_LOGS = settings["load_private_logs"]
 		SAVE_CHANNEL_LOGS = settings["save_channel_logs"]
 		LOAD_CHANNEL_LOGS = settings["load_channel_logs"]
-		MDI_BACKGROUND_IMAGE = settings["mdi_background_image"]
 		APPLICATION_FONT = settings["application_font"]
 		DEFAULT_SUBWINDOW_WIDTH = settings["default_subwindow_width"]
 		DEFAULT_SUBWINDOW_HEIGHT = settings["default_subwindow_height"]
