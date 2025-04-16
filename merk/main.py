@@ -173,68 +173,6 @@ class Merk(QMainWindow):
 		if connection_info:
 			self.connectToIrc(connection_info)
 
-	def set_darkmode_icons(self):
-		if self.dark_mode:
-			self.checked_icon = DARK_CHECKED_ICON
-			self.unchecked_icon = DARK_UNCHECKED_ICON
-			self.round_checked_icon = DARK_ROUND_CHECKED_ICON
-			self.round_unchecked_icon = DARK_ROUND_UNCHECKED_ICON
-			self.options_icon = DARK_OPTIONS_ICON
-			self.bold_icon = DARK_BOLD_ICON
-			self.italic_icon = DARK_ITALIC_ICON
-
-			dark_palette = QPalette()
-			dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-			dark_palette.setColor(QPalette.WindowText, Qt.white)
-			dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
-			dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-			dark_palette.setColor(QPalette.ToolTipBase, QColor(25, 25, 25))
-			dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-			dark_palette.setColor(QPalette.Text, Qt.white)
-			dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-			dark_palette.setColor(QPalette.ButtonText, Qt.white)
-			dark_palette.setColor(QPalette.BrightText, Qt.red)
-			dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-			dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-			dark_palette.setColor(QPalette.HighlightedText, QColor(35, 35, 35))
-			dark_palette.setColor(QPalette.Active, QPalette.Button, QColor(53, 53, 53))
-			dark_palette.setColor(QPalette.Disabled, QPalette.ButtonText, Qt.darkGray)
-			dark_palette.setColor(QPalette.Disabled, QPalette.WindowText, Qt.darkGray)
-			dark_palette.setColor(QPalette.Disabled, QPalette.Text, Qt.darkGray)
-			dark_palette.setColor(QPalette.Disabled, QPalette.Light, QColor(53, 53, 53))
-			self.app.setPalette(dark_palette)
-
-			self.app.setStyleSheet("""
-				QMenu::separator {
-					background-color: darkGrey;
-					height: 1px; /* Adjust height as needed */
-				}
-				""")
-		else:
-			self.checked_icon = CHECKED_ICON
-			self.unchecked_icon = UNCHECKED_ICON
-			self.round_checked_icon = ROUND_CHECKED_ICON
-			self.round_unchecked_icon = ROUND_UNCHECKED_ICON
-			self.options_icon = OPTIONS_ICON
-			self.bold_icon = BOLD_ICON
-			self.italic_icon = ITALIC_ICON
-
-			self.app.setPalette(self.default_palette)
-			self.app.setStyleSheet('')
-
-		for window in self.MDI.subWindowList():
-			c = window.widget()
-			if hasattr(c,"window_type"):
-				if c.window_type==SERVER_WINDOW:
-					if hasattr(c,"settingsButton"):
-						c.settingsButton.setIcon(self.options_icon)
-				if c.window_type==CHANNEL_WINDOW:
-					if hasattr(c,"settingsButton"):
-						c.settingsButton.setIcon(self.options_icon)
-				elif c.window_type==PRIVATE_WINDOW:
-					if hasattr(c,"settingsButton"):
-						c.settingsButton.setIcon(self.options_icon)
-
 	# Windowbar
 	def resizeEvent(self, event):
 		super().resizeEvent(event)
