@@ -129,13 +129,10 @@ class Merk(QMainWindow):
 		self.MDI.subWindowActivated.connect(self.subWindowActivated)
 
 		# Set the background image of the MDI widget
-		if config.MDI_BACKGROUND_IMAGE!=None:
-			backgroundPix = QPixmap(config.MDI_BACKGROUND_IMAGE)
+		if self.dark_mode:
+			backgroundPix = QPixmap(DARK_MDI_BACKGROUND)
 		else:
-			if self.dark_mode:
-				backgroundPix = QPixmap(DARK_MDI_BACKGROUND)
-			else:
-				backgroundPix = QPixmap(MDI_BACKGROUND)
+			backgroundPix = QPixmap(MDI_BACKGROUND)
 		backgroundBrush = QBrush(backgroundPix)
 		self.MDI.setBackground(backgroundBrush)
 

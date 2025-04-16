@@ -33,7 +33,6 @@ from .resources import *
 CONFIG_DIRECTORY = None
 CONFIG_FILE = None
 
-MDI_BACKGROUND_IMAGE = None
 APPLICATION_FONT = None
 DEFAULT_SUBWINDOW_WIDTH = 640
 DEFAULT_SUBWINDOW_HEIGHT = 480
@@ -141,7 +140,6 @@ DARK_MODE = False
 def save_settings(filename):
 
 	settings = {
-		"mdi_background_image": MDI_BACKGROUND_IMAGE,
 		"application_font": APPLICATION_FONT,
 		"default_subwindow_width": DEFAULT_SUBWINDOW_WIDTH,
 		"default_subwindow_height": DEFAULT_SUBWINDOW_HEIGHT,
@@ -381,8 +379,6 @@ def patch_settings(settings):
 		settings["save_channel_logs"] = SAVE_CHANNEL_LOGS
 	if not "load_channel_logs" in settings:
 		settings["load_channel_logs"] = LOAD_CHANNEL_LOGS
-	if not "mdi_background_image" in settings:
-		settings["mdi_background_image"] = MDI_BACKGROUND_IMAGE
 	if not "application_font" in settings:
 		settings["application_font"] = APPLICATION_FONT
 	if not "default_subwindow_width" in settings:
