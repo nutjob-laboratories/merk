@@ -710,7 +710,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Menus")
 		entry.widget = self.menuPage
-		entry.setIcon(QIcon(MENU_ICON))
+		entry.setIcon(QIcon(self.parent.menu_icon))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.menuPage)
@@ -895,7 +895,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Windowbar")
 		entry.widget = self.windowbarPage
-		entry.setIcon(QIcon(WINDOW_ICON))
+		entry.setIcon(QIcon(self.parent.window_icon))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.windowbarPage)
@@ -1458,7 +1458,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("System Tray")
 		entry.widget = self.systrayPage
-		entry.setIcon(QIcon(SYSTRAY_ICON))
+		entry.setIcon(QIcon(self.parent.systray_icon))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.systrayPage)

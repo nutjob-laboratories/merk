@@ -87,6 +87,9 @@ class Merk(QMainWindow):
 			self.bold_icon = DARK_BOLD_ICON
 			self.italic_icon = DARK_ITALIC_ICON
 			self.spellcheck_icon = DARK_SPELLCHECK_ICON
+			self.menu_icon = DARK_MENU_ICON
+			self.window_icon = DARK_WINDOW_ICON
+			self.systray_icon = DARK_SYSTRAY_ICON
 		else:
 			self.checked_icon = CHECKED_ICON
 			self.unchecked_icon = UNCHECKED_ICON
@@ -96,6 +99,9 @@ class Merk(QMainWindow):
 			self.bold_icon = BOLD_ICON
 			self.italic_icon = ITALIC_ICON
 			self.spellcheck_icon = SPELLCHECK_ICON
+			self.menu_icon = MENU_ICON
+			self.window_icon = WINDOW_ICON
+			self.systray_icon = SYSTRAY_ICON
 
 		# Set the application font
 		self.app.setFont(self.application_font)
