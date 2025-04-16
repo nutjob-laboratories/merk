@@ -1811,7 +1811,11 @@ class Dialog(QDialog):
 			self.parent.tray.setVisible(False)
 			self.parent.tray.hide()
 
+		# Build menubar/menus
 		self.parent.buildMenu()
+
+		# Set the windowbar
+		self.parent.initWindowbar()
 
 		self.parent.refreshAllTopic()
 		if config.SHOW_CHANNEL_TOPIC:
@@ -1832,9 +1836,6 @@ class Dialog(QDialog):
 
 		# Set the widget font
 		self.parent.setFont(self.parent.application_font)
-
-		# Set the windowbar
-		self.parent.initWindowbar()
 
 		# Set active window back
 		self.parent.MDI.setActiveSubWindow(current_window)
