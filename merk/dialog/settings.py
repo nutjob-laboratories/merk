@@ -667,7 +667,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("User")
+		entry.setText("User Defaults")
 		entry.widget = self.userPage
 		entry.setIcon(QIcon(PRIVATE_ICON))
 		self.selector.addItem(entry)
@@ -677,8 +677,10 @@ class Dialog(QDialog):
 		self.userDescription = QLabel("""
 			<small>
 			You can set the default settings needed to connect to
-			and IRC server here. You can still change these settings
-			in the connection dialog.
+			an IRC server here. You can still change these settings
+			in the connection dialog. If both your nickname and alternate
+			nickname are taken, a random number will be generated and
+			attached to your alternate nickname for use.
 			<br>
 			""")
 		self.userDescription.setWordWrap(True)
