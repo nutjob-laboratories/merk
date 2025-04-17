@@ -936,7 +936,7 @@ class Dialog(QDialog):
 			<small>
 			Here, you can set the names used to display the main application
 			menu. These are purely cosmetic, and don't change functionality at
-			all.
+			all. These names will be displayed even if the menubar is disabled.
 			</small>
 			""")
 		self.menuNameDescription.setWordWrap(True)
