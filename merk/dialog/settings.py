@@ -1528,7 +1528,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("System Tray")
 		entry.widget = self.systrayPage
-		entry.setIcon(QIcon(self.parent.systray_icon))
+		entry.setIcon(QIcon(SYSTRAY_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.systrayPage)
