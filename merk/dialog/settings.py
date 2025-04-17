@@ -786,7 +786,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Menus")
 		entry.widget = self.menuPage
-		entry.setIcon(QIcon(self.parent.menu_icon))
+		entry.setIcon(QIcon(MENU_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.menuPage)
