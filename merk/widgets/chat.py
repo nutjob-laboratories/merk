@@ -876,7 +876,7 @@ class Window(QMainWindow):
 				ICON = HALFOP_USER
 				OTHER_TEXT = "Channel half-operator"
 			else:
-				ICON = NORMAL_USER
+				ICON = PRIVATE_ICON
 				OTHER_TEXT = "Normal user"
 			statusLayout.addStretch()
 
