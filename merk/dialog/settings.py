@@ -1333,7 +1333,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Spellcheck")
 		entry.widget = self.spellcheckPage
-		entry.setIcon(QIcon(self.parent.spellcheck_icon))
+		entry.setIcon(QIcon(SPELLCHECK_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.spellcheckPage)

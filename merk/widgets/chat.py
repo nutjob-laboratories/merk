@@ -576,7 +576,7 @@ class Window(QMainWindow):
 		if config.ENABLE_SPELLCHECK:
 		# Spellcheck Button
 			self.spellcheckMenu = QMenu("Spellcheck")
-			self.spellcheckMenu.setIcon(QIcon(self.parent.spellcheck_icon))
+			self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
 
 			self.languageEnglish = QAction(QIcon(self.parent.round_unchecked_icon),"English",self)
 			self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
