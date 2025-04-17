@@ -602,7 +602,7 @@ class Merk(QMainWindow):
 
 		self.trayMenu.clear()
 
-		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,25)
+		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE)
 		self.trayMenu.addAction(entry)
 
 		windows = self.getAllServerWindows()
@@ -1921,16 +1921,16 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Configure '+APPLICATION_NAME+' preferences&nbsp;&nbsp;',25,self.openSettings)
+		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Configure '+APPLICATION_NAME+' preferences&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openSettings)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style','Edit default text style&nbsp;&nbsp;',25,self.menuEditStyle)
+		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',25,self.newEditorWindow)
+		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',25,self.menuExportLog)
+		entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 		self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
@@ -1961,7 +1961,7 @@ class Merk(QMainWindow):
 
 		self.helpMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,25,self.showAbout)
+		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE,self.showAbout)
 		self.helpMenu.addAction(entry)
 
 		self.helpMenu.addSeparator()
@@ -2077,7 +2077,7 @@ class Merk(QMainWindow):
 
 		self.mainMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server  ',25,self.connectMainMenu)
+		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server  ',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
 		self.mainMenu.addAction(entry)
 
 		windows = self.getAllServerWindows()
@@ -2105,7 +2105,7 @@ class Merk(QMainWindow):
 				self.mainMenu.addAction(entry)
 			else:
 				title = "Disconnect from all servers"
-				entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,"Disconnect","Disconnect from all servers",25,self.disconnectAllMainMenu)
+				entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,"Disconnect","Disconnect from all servers",CUSTOM_MENU_ICON_SIZE,self.disconnectAllMainMenu)
 				self.mainMenu.addAction(entry)
 
 				self.mainMenu.addSeparator()

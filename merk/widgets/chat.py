@@ -881,10 +881,10 @@ class Window(QMainWindow):
 			statusLayout.addStretch()
 
 			if user_hostmask:
-				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,25)
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
 				menu.addAction(entry)
 			else:
-				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,25)
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
 				menu.addAction(entry)
 
 			menu.addSeparator()
