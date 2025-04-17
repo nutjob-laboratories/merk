@@ -965,7 +965,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Windowbar")
 		entry.widget = self.windowbarPage
-		entry.setIcon(QIcon(self.parent.window_icon))
+		entry.setIcon(QIcon(WINDOW_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.windowbarPage)

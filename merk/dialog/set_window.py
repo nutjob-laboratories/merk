@@ -55,7 +55,7 @@ class Dialog(QDialog):
 		self.op = op
 
 		self.setWindowTitle(f"{self.op} window")
-		self.setWindowIcon(QIcon(self.parent.parent.window_icon))
+		self.setWindowIcon(QIcon(WINDOW_ICON))
 
 		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Window:</b>")

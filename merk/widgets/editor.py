@@ -295,15 +295,15 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertWrite)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(self.parent.window_icon),"Maximize window",self)
+		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
 		entry.triggered.connect(self.insertMax)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(self.parent.window_icon),"Minimize window",self)
+		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
 		entry.triggered.connect(self.insertMin)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(self.parent.window_icon),"Set focus on window",self)
+		entry = QAction(QIcon(WINDOW_ICON),"Set focus on window",self)
 		entry.triggered.connect(self.insertFocus)
 		self.commandMenu.addAction(entry)
 
