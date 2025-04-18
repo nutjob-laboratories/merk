@@ -42,11 +42,15 @@ from .style import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
-import sip
+#import sip
 
 def is_deleted(obj):
+		# if self.subwindow.isMinimized() or not self.subwindow.isVisible():
 		try:
-				sip.unwrapinstance(obj)
+				#sip.unwrapinstance(obj)
+				if not obj.isVisible():
+					if obj.isMinimized():
+						return True
 				return False
 		except RuntimeError:
 				return True
