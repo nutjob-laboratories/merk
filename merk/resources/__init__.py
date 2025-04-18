@@ -48,9 +48,9 @@ def is_deleted(obj):
 			if hasattr(obj,"isMinimized"):
 				if obj.isMinimized():
 					return True
-		if hasattr(obj,"isVisible"):
-			if not obj.isVisible():
-				return True
+	if hasattr(obj,"isVisible"):
+		if not obj.isVisible():
+			return True
 	return False
 
 
