@@ -42,6 +42,15 @@ from .style import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
+import sip
+
+def is_deleted(obj):
+		try:
+				sip.unwrapinstance(obj)
+				return False
+		except RuntimeError:
+				return True
+
 INSTALL_DIRECTORY = sys.path[0]
 MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
 
@@ -197,30 +206,30 @@ HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>
 
 HELP_DISPLAY_TEMPLATE='''<table style="width: 100%" border="0">
 	<tbody>
-        <tr>
-          <td><center><b>Commands</b></center></td>
-        </tr>
-        <tr>
-          <td><small>
-          Arguments inside brackets are optional. If called from a channel window,
-          channel windows can be omitted to apply the command to the current channel.
-          %_AUTOCOMPLETE_%
-          </small></td>
-        </tr>
-        <tr>
-          <td>&nbsp;</center></td>
-        </tr>
-        <tr>
-          <td>
-            <table style="width: 100%" border="0">
-              <tbody>
-                %_LIST_%
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table>'''
+				<tr>
+					<td><center><b>Commands</b></center></td>
+				</tr>
+				<tr>
+					<td><small>
+					Arguments inside brackets are optional. If called from a channel window,
+					channel windows can be omitted to apply the command to the current channel.
+					%_AUTOCOMPLETE_%
+					</small></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</center></td>
+				</tr>
+				<tr>
+					<td>
+						<table style="width: 100%" border="0">
+							<tbody>
+								%_LIST_%
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>'''
 
 # Classes
 
