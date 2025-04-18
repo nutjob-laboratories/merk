@@ -199,37 +199,35 @@ if __name__ == '__main__':
 				border: 1px solid darkGray;
 			}
 
-			/*
-			QMdiSubWindow::title {
-				background-color: #a0a0a0;
-				color: #ffffff;
-				padding: 5px;
-				border-top-left-radius: 5px;
-				border-top-right-radius: 5px;
-			}
-
-			QMdiSubWindow::close-button {
-				subcontrol-position: top-right;
-				subcontrol-origin: padding;
-				image: url(path/to/close_icon.png); /* Replace with your close icon path */
-			}
-
-			QMdiSubWindow::minimize-button {
-				subcontrol-position: top-right;
-				subcontrol-origin: padding;
-				image: url(path/to/minimize_icon.png); /* Replace with your minimize icon path */
-				right: 16px;
-			}
-
-			QMdiSubWindow::maximize-button {
-				subcontrol-position: top-right;
-				subcontrol-origin: padding;
-				image: url(path/to/maximize_icon.png); /* Replace with your maximize icon path */
-				right: 32px;
-			}
-			*/
-
 			""")
+
+			# QMdiSubWindow::title {
+			# 	background-color: #a0a0a0;
+			# 	color: #ffffff;
+			# 	padding: 5px;
+			# 	border-top-left-radius: 5px;
+			# 	border-top-right-radius: 5px;
+			# }
+
+			# QMdiSubWindow::close-button {
+			# 	subcontrol-position: top-right;
+			# 	subcontrol-origin: padding;
+			# 	image: url(path/to/close_icon.png); /* Replace with your close icon path */
+			# }
+
+			# QMdiSubWindow::minimize-button {
+			# 	subcontrol-position: top-right;
+			# 	subcontrol-origin: padding;
+			# 	image: url(path/to/minimize_icon.png); /* Replace with your minimize icon path */
+			# 	right: 16px;
+			# }
+
+			# QMdiSubWindow::maximize-button {
+			# 	subcontrol-position: top-right;
+			# 	subcontrol-origin: padding;
+			# 	image: url(path/to/maximize_icon.png); /* Replace with your maximize icon path */
+			# 	right: 32px;
+			}
 
 	# Handle connecting to a server if one has been provided
 	if args.server:
