@@ -1497,7 +1497,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if c.client.client_id == client.client_id:
 					c.refreshModeDisplay()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def setAllFont(self,newfont):
 		w = self.MDI.activeSubWindow()
@@ -1515,7 +1515,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"status"): c.status.setFont(newfont)
 			if hasattr(c,"status_server"): c.status_server.setFont(newfont)
 			if hasattr(c,"key_value"): c.key_value.setFont(newfont)
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def rerenderUserlists(self):
 		w = self.MDI.activeSubWindow()
@@ -1523,7 +1523,7 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"userlist"):
 				c.rerenderUserlist()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def toggleNickDisplay(self):
 		w = self.MDI.activeSubWindow()
@@ -1531,7 +1531,7 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"nick_display"):
 				c.toggleNickDisplay()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def setAllLanguage(self,newlang):
 		w = self.MDI.activeSubWindow()
@@ -1539,7 +1539,7 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"menuSetLanguage"):
 				c.menuSetLanguage(newlang)
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def reRenderAll(self):
 		w = self.MDI.activeSubWindow()
@@ -1549,7 +1549,7 @@ class Merk(QMainWindow):
 				c.rerenderChatLog()
 			if hasattr(c,"rerenderEditor"):
 				c.rerenderEditor()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def reApplyStyle(self):
 		w = self.MDI.activeSubWindow()
@@ -1557,7 +1557,7 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"applyStyle"):
 				c.applyStyle()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def handleUserInput(self,window,user_input):
 
@@ -1697,7 +1697,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.hideTopic()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def showAllTopic(self):
 		w = self.MDI.activeSubWindow()
@@ -1706,7 +1706,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showTopic()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def refreshAllTopic(self):
 		w = self.MDI.activeSubWindow()
@@ -1725,7 +1725,7 @@ class Merk(QMainWindow):
 						c.topic.setFont(font)
 
 					c.topic.refresh()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def getAllChatNames(self):
 		retval = []
@@ -1875,7 +1875,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.swapUserlist()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def toggleAllUserlists(self):
 		w = self.MDI.activeSubWindow()
@@ -1884,7 +1884,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showHideUserlist()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def toggleSpellcheck(self):
 		w = self.MDI.activeSubWindow()
@@ -1893,7 +1893,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if hasattr(c,"buildInputOptionsMenu"):
 					c.buildInputOptionsMenu()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 	def toggleInputMenu(self):
 		w = self.MDI.activeSubWindow()
@@ -1902,7 +1902,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if hasattr(c,"toggleInputMenu"):
 					c.toggleInputMenu()
-		self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
 
 
 	# |--------------|
