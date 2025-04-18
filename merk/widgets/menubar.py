@@ -452,7 +452,8 @@ class Menubar(QToolBar):
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.buildMenu()
 		self.parent.initWindowbar()
-		self.parent.MDI.setActiveSubWindow(w)
+		if len(self.parent.MDI.subWindowList())>0:
+			self.parent.MDI.setActiveSubWindow(w)
 
 	def float(self):
 		w = self.parent.MDI.activeSubWindow()
@@ -463,7 +464,8 @@ class Menubar(QToolBar):
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.buildMenu()
 		self.parent.initWindowbar()
-		self.parent.MDI.setActiveSubWindow(w)
+		if len(self.parent.MDI.subWindowList())>0:
+			self.parent.MDI.setActiveSubWindow(w)
 
 class Windowbar(QToolBar):
 	def __init__(self, parent=None):

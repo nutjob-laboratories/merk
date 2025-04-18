@@ -1921,8 +1921,9 @@ class Dialog(QDialog):
 		# Set the widget font
 		self.parent.setFont(self.parent.application_font)
 
-		# Set active window back
-		self.parent.MDI.setActiveSubWindow(current_window)
+		# Set active window back if there's open windows
+		if len(self.parent.MDI.subWindowList())>0:
+			self.parent.MDI.setActiveSubWindow(current_window)
 
 		# Reset the main window name if needed
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
