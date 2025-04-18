@@ -42,18 +42,17 @@ from .style import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
-#import sip
-
 def is_deleted(obj):
-		# if self.subwindow.isMinimized() or not self.subwindow.isVisible():
-		try:
-				#sip.unwrapinstance(obj)
-				if not obj.isVisible():
-					if obj.isMinimized():
-						return True
-				return False
-		except RuntimeError:
+	if hasattr(obj,"isVisible"):
+		if not obj.isVisible():
+			if hasattr(obj,"isMinimized"):
+				if obj.isMinimized():
+					return True
+		if hasattr(obj,"isVisible"):
+			if not obj.isVisible():
 				return True
+	return False
+
 
 INSTALL_DIRECTORY = sys.path[0]
 MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
