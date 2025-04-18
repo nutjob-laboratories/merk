@@ -195,6 +195,9 @@ if __name__ == '__main__':
 				background-color: darkGray;
 				height: 1px;
 			}
+			QGroupBox { 
+				border: 1px solid darkGray;
+			}
 			""")
 
 	# Handle connecting to a server if one has been provided
