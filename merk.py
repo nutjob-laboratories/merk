@@ -227,7 +227,7 @@ if __name__ == '__main__':
 			# 	subcontrol-origin: padding;
 			# 	image: url(path/to/maximize_icon.png); /* Replace with your maximize icon path */
 			# 	right: 32px;
-			}
+			# }
 
 	# Handle connecting to a server if one has been provided
 	if args.server:
