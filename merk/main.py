@@ -1790,6 +1790,8 @@ class Merk(QMainWindow):
 					# Pass the *SUBWINDOW* widget to actually
 					# delete it from the MDI area
 					self.MDI.removeSubWindow(window)
+			if hasattr(c,"hide"):
+				c.hide()
 		self.buildWindowsMenu()
 
 	def newChannelWindow(self,name,client):
