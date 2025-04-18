@@ -554,9 +554,22 @@ class Window(QMainWindow):
 
 			if self.window_type!=SERVER_WINDOW:
 
-				entry = QAction(QIcon(STYLE_ICON),"Edit style",self)
+				menu.addSeparator()
+
+				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
 				entry.triggered.connect(self.pressedStyleButton)
 				menu.addAction(entry)
+
+				entry = QAction(QIcon(CLOSE_ICON),"Clear chat",self)
+				entry.triggered.connect(self.clearChat)
+				menu.addAction(entry)
+
+			if self.window_type==CHANNEL_WINDOW:
+
+				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
+				entry.triggered.connect(lambda state,u=self.name,w=config.DEFAULT_QUIT_MESSAGE: self.client.leave(u,w))
+				menu.addAction(entry)
+
 
 		action = menu.exec_(self.chat.mapToGlobal(location))
 
@@ -567,6 +580,16 @@ class Window(QMainWindow):
 		if self.window_type!=SERVER_WINDOW:
 			entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
 			entry.triggered.connect(self.pressedStyleButton)
+			self.settingsMenu.addAction(entry)
+
+			entry = QAction(QIcon(CLOSE_ICON),"Clear chat",self)
+			entry.triggered.connect(self.clearChat)
+			self.settingsMenu.addAction(entry)
+
+		if self.window_type==CHANNEL_WINDOW:
+
+			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
+			entry.triggered.connect(lambda state,u=self.name,w=config.DEFAULT_QUIT_MESSAGE: self.client.leave(u,w))
 			self.settingsMenu.addAction(entry)
 
 		entry = QAction(QIcon(RUN_ICON),"Run script",self)
