@@ -447,12 +447,15 @@ class Menubar(QToolBar):
 		menu.exec_(self.mapToGlobal(event.pos()))
 
 	def setJustify(self,justify):
+		w = self.parent.MDI.activeSubWindow()
 		config.MENUBAR_JUSTIFY = justify
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.buildMenu()
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
 	def float(self):
+		w = self.parent.MDI.activeSubWindow()
 		if config.MENUBAR_CAN_FLOAT:
 			config.MENUBAR_CAN_FLOAT = False
 		else:
@@ -460,6 +463,7 @@ class Menubar(QToolBar):
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.buildMenu()
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
 class Windowbar(QToolBar):
 	def __init__(self, parent=None):
@@ -557,55 +561,69 @@ class Windowbar(QToolBar):
 		menu.exec_(self.mapToGlobal(event.pos()))
 
 	def setJustify(self,justify):
+		w = self.parent.MDI.activeSubWindow()
 		config.WINDOWBAR_JUSTIFY = justify
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
 	def first(self):
+		w = self.parent.MDI.activeSubWindow()
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = False
 		else:
 			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
 	def float(self):
+		w = self.parent.MDI.activeSubWindow()
 		if config.WINDOWBAR_CAN_FLOAT:
 			config.WINDOWBAR_CAN_FLOAT = False
 		else:
 			config.WINDOWBAR_CAN_FLOAT = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
 	def doubleclick(self):
+		w = self.parent.MDI.activeSubWindow()
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 			config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = False
 		else:
 			config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
 	def editors(self):
+		w = self.parent.MDI.activeSubWindow()
 		if config.WINDOWBAR_INCLUDE_EDITORS:
 			config.WINDOWBAR_INCLUDE_EDITORS = False
 		else:
 			config.WINDOWBAR_INCLUDE_EDITORS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
 	def servers(self):
+		w = self.parent.MDI.activeSubWindow()
 		if config.WINDOWBAR_INCLUDE_SERVERS:
 			config.WINDOWBAR_INCLUDE_SERVERS = False
 		else:
 			config.WINDOWBAR_INCLUDE_SERVERS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 		
 	def icons(self):
+		w = self.parent.MDI.activeSubWindow()
 		if config.WINDOWBAR_SHOW_ICONS:
 			config.WINDOWBAR_SHOW_ICONS = False
 		else:
 			config.WINDOWBAR_SHOW_ICONS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
 
