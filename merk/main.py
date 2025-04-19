@@ -1960,16 +1960,16 @@ class Merk(QMainWindow):
 
 		self.helpMenu.addSeparator()
 
-		entry = QAction(QIcon(LINK_ICON),"Supported emoji shortcodes",self)
-		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
-
 		entry = QAction(QIcon(LINK_ICON),"Source code repository",self)
 		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 		entry = QAction(QIcon(LINK_ICON),"GPLv3 License",self)
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"Supported emoji shortcodes",self)
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 	def buildWindowsMenu(self):
