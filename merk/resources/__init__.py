@@ -186,6 +186,8 @@ WIDGET_ICON = ":/icon-widget.png"
 JUSTIFY_ICON = ":/icon-justify.png"
 PRIVATE_MENU_ICON = ":/icon-private_menu.png"
 CLEAR_ICON = ":/icon-clear.png"
+CONNECT_MENU_ICON = ":/icon-connect_menu.png"
+DISCONNECT_MENU_ICON = ":/icon-disconnect_menu.png"
 
 MERK_ABOUT_LOGO = ":/gui-about.png"
 SPLASH_LOGO = ":/gui-splash.png"

@@ -2071,7 +2071,7 @@ class Merk(QMainWindow):
 
 		self.mainMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,CONNECT_ICON,'Connect','Connect to a server  ',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
+		entry = widgets.ExtendedMenuItem(self,CONNECT_MENU_ICON,'Connect','Connect to a server  ',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
 		self.mainMenu.addAction(entry)
 
 		windows = self.getAllServerWindows()
@@ -2099,7 +2099,7 @@ class Merk(QMainWindow):
 				self.mainMenu.addAction(entry)
 			else:
 				title = "Disconnect from all servers"
-				entry = widgets.ExtendedMenuItem(self,DISCONNECT_ICON,"Disconnect","Disconnect from all servers",CUSTOM_MENU_ICON_SIZE,self.disconnectAllMainMenu)
+				entry = widgets.ExtendedMenuItem(self,DISCONNECT_MENU_ICON,"Disconnect","Disconnect from all servers",CUSTOM_MENU_ICON_SIZE,self.disconnectAllMainMenu)
 				self.mainMenu.addAction(entry)
 
 				self.mainMenu.addSeparator()
