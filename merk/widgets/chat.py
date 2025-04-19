@@ -1364,6 +1364,9 @@ class Window(QMainWindow):
 		# has been closed by the user
 		self.parent.closeSubWindow(self.subwindow_id)
 
+		event.accept()
+		self.close()
+
 	def saveLogs(self):
 		save_logs = True
 
