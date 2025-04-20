@@ -239,6 +239,11 @@ class Dialog(QDialog):
 		if self.logo:
 			self.setWindowTitle(APPLICATION_NAME+" IRC Client "+APPLICATION_VERSION)
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
+
+			splash = QLabel()
+			pixmap = QPixmap(SPLASH_LOGO)
+			splash.setPixmap(pixmap)
+			splash.setAlignment(Qt.AlignCenter)
 		else:
 			if self.disconnect_message=='':
 				self.setWindowTitle("Connect to IRC")
@@ -355,8 +360,9 @@ class Dialog(QDialog):
 		self.userDescription = QLabel(f"""
 			<small>
 			Enter your user information here. <b>Nickname</b> is the nickname you'd like to be known by, and
-			<b>alternate</b> is the nickname to use if your primary choice is taken. When
-			you're done, click the <b>Server</b> tab to select or enter a server.
+			<b>alternate</b> is the nickname to use if your primary choice is taken. If both your <b>nickname</b>
+			and <b>alternate</b> are taken, a random number will be attached to your <b>alternate</b>, and that
+			will be used as your <b>nickname</b>. When you're done, click the <b>Server</b> tab to select or enter a server.
 			</small>
 
 			""")
@@ -405,6 +411,7 @@ class Dialog(QDialog):
 			bannerTabs.addWidget(self.tabs)
 
 		finalLayout = QVBoxLayout()
+		if self.logo: finalLayout.addWidget(splash)
 		finalLayout.addLayout(bannerTabs)
 		finalLayout.addWidget(buttons)
 
