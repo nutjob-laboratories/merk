@@ -59,7 +59,6 @@ class Merk(QMainWindow):
 			configuration_directory_name=".merk",
 			connection_info=None,
 			application_font=None,
-			no_commands=False,
 			channels=[],
 			dark_mode = False,
 			default_palette=None,
@@ -73,7 +72,6 @@ class Merk(QMainWindow):
 		self.configuration_location = configuration_location
 		self.configuration_directory_name = configuration_directory_name
 		self.application_font = application_font
-		self.no_commands = no_commands
 		self.join_channels = channels
 		self.dark_mode = dark_mode
 		self.default_palette = default_palette
@@ -770,12 +768,11 @@ class Merk(QMainWindow):
 		
 		self.nickChanged(client)
 
-		if not self.no_commands:
-			w = self.getServerWindow(client)
-			if w:
-				hostid = client.server+":"+str(client.port)
-				if hostid in user.COMMANDS:
-					commands.executeScript(self,w,user.COMMANDS[hostid])
+		w = self.getServerWindow(client)
+		if w:
+			hostid = client.server+":"+str(client.port)
+			if hostid in user.COMMANDS:
+				commands.executeScript(self,w,user.COMMANDS[hostid])
 
 		if len(self.join_channels)>0:
 			for e in self.join_channels:
@@ -1369,7 +1366,7 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.no_commands,self.dark_mode)
+		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.dark_mode)
 
 		if connection:
 			
@@ -1432,7 +1429,7 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			connection = ConnectDialogNoLogo(self.app,self,'','',self.no_commands,self.dark_mode)
+			connection = ConnectDialogNoLogo(self.app,self,'','',self.dark_mode)
 		if connection:
 			
 			if connection.reconnect:

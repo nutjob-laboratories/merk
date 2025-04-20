@@ -137,17 +137,17 @@ def JoinChannelDialog(obj):
 	if not info: return None
 	return info
 
-def ConnectDialog(obj,parent=None,dismsg='',reason='',no_commands=False,darkmode=False):
-	x = Connect(obj,parent,dismsg,reason,True,no_commands,darkmode)
-	info = x.get_connect_information(obj,parent,dismsg,reason,True,no_commands,darkmode)
+def ConnectDialog(obj,parent=None,dismsg='',reason='',darkmode=False):
+	x = Connect(obj,parent,dismsg,reason,True,darkmode)
+	info = x.get_connect_information(obj,parent,dismsg,reason,True,darkmode)
 	del x
 
 	if not info: return None
 	return info
 
-def ConnectDialogNoLogo(obj,parent=None,dismsg='',reason='',no_commands=False,darkmode=False):
-	x = Connect(obj,parent,dismsg,reason,False,no_commands,darkmode)
-	info = x.get_connect_information(obj,parent,dismsg,reason,False,no_commands,darkmode)
+def ConnectDialogNoLogo(obj,parent=None,dismsg='',reason='',darkmode=False):
+	x = Connect(obj,parent,dismsg,reason,False,darkmode)
+	info = x.get_connect_information(obj,parent,dismsg,reason,False,darkmode)
 	del x
 
 	if not info: return None

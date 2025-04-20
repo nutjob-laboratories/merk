@@ -88,8 +88,7 @@ misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Fusion)", metavar="NAME", default="")
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
-misc_group.add_argument( "-X","--nocommands", help=f"Don't auto-execute commands on connection", action="store_true")
-misc_group.add_argument( "-M","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
+misc_group.add_argument( "-X","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
 
 args = parser.parse_args()
 
@@ -309,7 +308,6 @@ if __name__ == '__main__':
 				args.configname,	# Config directory name, default ".merk"
 				i,					# Connection info
 				font,				# Application font
-				args.nocommands,	# Disable connection commands
 				chans,				# Channels
 				args.darkmode,		# Dark mode
 				default_palette,
@@ -350,7 +348,6 @@ if __name__ == '__main__':
 					args.configname,	# Config directory name, default ".merk"
 					None,				# Connection info
 					font,				# Application font
-					args.nocommands,	# Disable connection commands
 					[],					# Channels
 					args.darkmode,		# Dark mode
 					default_palette,
@@ -360,7 +357,7 @@ if __name__ == '__main__':
 			GUI.show()
 		else:
 			# Bring up the connection dialog
-			connection_info = ConnectDialog(app,None,'','',args.nocommands,args.darkmode)
+			connection_info = ConnectDialog(app,None,'','',args.darkmode)
 			if connection_info:
 				# Create the main GUI and show it
 				GUI = Merk(
@@ -369,7 +366,6 @@ if __name__ == '__main__':
 						args.configname,	# Config directory name, default ".merk"
 						connection_info,	# Connection info
 						font,				# Application font
-						args.nocommands,	# Disable connection commands
 						[],					# Channels
 						args.darkmode,		# Dark mode
 						default_palette,

@@ -101,7 +101,7 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
                       [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-C NAME] [-D DIRECTORY] [-L]
-                      [-S DIRECTORY] [-Q NAME] [-N] [-X][-M]
+                      [-S DIRECTORY] [-Q NAME] [-N][-X]
                       [SERVER] [PORT]
 
 
@@ -139,8 +139,7 @@ Miscellaneous:
   -Q NAME, --qtstyle NAME
                         Set Qt widget style (default: Fusion)
   -N, --noask           Don't ask for connection information on start
-  -X, --nocommands      Don't auto-execute commands on connection
-  -M, --dark            Run in dark mode
+  -X, --dark            Run in dark mode
 
 ```
 # Why does MERK exist?
