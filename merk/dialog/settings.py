@@ -1658,7 +1658,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Highlighting")
 		entry.widget = self.syntaxPage
-		entry.setIcon(QIcon(SCRIPT_ICON))
+		entry.setIcon(QIcon(STYLE_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.syntaxPage)
@@ -1681,7 +1681,7 @@ class Dialog(QDialog):
 
 		self.syntaxDescription = QLabel("""
 			<small>
-			Syntax highlighting is applied to both the command section of the
+			Syntax highlighting is applied to both the script section of the
 			connection dialog, and the built-in script editor. Commands,
 			channels, comments, and aliases appear in the colors and styles set below.
 			Close and reopen any open editor windows to see changes.
