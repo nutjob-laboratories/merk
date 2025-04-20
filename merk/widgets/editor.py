@@ -133,6 +133,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.toggleWordwrap)
 		self.editMenu.addAction(entry)
 
+	def generateStylesheet(self,obj,fore,back):
+
+		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
+
 	def __init__(self,filename=None,parent=None):
 		super(Window, self).__init__(parent)
 
@@ -157,13 +161,8 @@ class Window(QMainWindow):
 
 		self.wordwrap = True
 		self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
-		# else:
-		# 	self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
 
-		p = self.editor.palette()
-		p.setColor(QPalette.Base, QColor(config.SYNTAX_BACKGROUND))
-		p.setColor(QPalette.Text, QColor(config.SYNTAX_FOREGROUND))
-		self.editor.setPalette(p)
+		self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 

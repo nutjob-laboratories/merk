@@ -208,6 +208,10 @@ class Dialog(QDialog):
 		else:
 			self.commands.clear()
 
+	def generateStylesheet(self,obj,fore,back):
+
+		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
+
 	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,darkmode=False):
 		super(Dialog,self).__init__(parent)
 
@@ -342,10 +346,7 @@ class Dialog(QDialog):
 		self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
 
 		# Set background/foreground
-		p = self.commands.palette()
-		p.setColor(QPalette.Base, QColor(config.SYNTAX_BACKGROUND))
-		p.setColor(QPalette.Text, QColor(config.SYNTAX_FOREGROUND))
-		self.commands.setPalette(p)
+		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
 		height = height + serverLayout.sizeHint().height() + 70
