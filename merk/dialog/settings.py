@@ -1069,7 +1069,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Connection")
 		entry.widget = self.connectionsPage
-		entry.setIcon(QIcon(CONNECT_ICON))
+		entry.setIcon(QIcon(NETWORK_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.connectionsPage)
