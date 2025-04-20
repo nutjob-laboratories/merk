@@ -77,6 +77,7 @@ congroup.add_argument("-u","--username", type=str,help="Use this username to con
 congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
 congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
 congroup.add_argument("-q","--quiet", help=f"Do not execute connection script", action="store_true")
+congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 
 
 configuration_group = parser.add_argument_group('Configuration')
@@ -262,7 +263,9 @@ if __name__ == '__main__':
 			user.REALNAME = args.realname
 			user_info_changed = True
 
-		if user_info_changed: user.save_user(user.USER_FILE)
+		if user_info_changed:
+			if not args.donotsave:
+				user.save_user(user.USER_FILE)
 
 		if args.quiet==True:
 			EXECUTE_CONNECTION_SCRIPT = False

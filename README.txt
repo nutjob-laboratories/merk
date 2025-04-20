@@ -3,6 +3,7 @@
 
 
 
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -35,12 +36,13 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
     - Multiple channel and server windows can be open for viewing and chatting at once
     - All chat windows are contained in a single "parent" window
-- Dark mode! Dark mode can be enabled from the commandline, or from the settings dialog (restart required).
+- Dark mode!
+  - Dark mode can be enabled from the commandline, or from the settings dialog
+  - If dark mode is enabled from the settings dialog, an application restart is required
 - Very configurable, without having to manually edit a configuration file
-    - Nearly all settings are configurable in the settings dialog
     - Control application behavior, logging, features, and more!
     - Over 80 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
-    - Most settings can be set in the app without requiring a restart. Have fun testing different options!
+    - Almost all settings can be changed in the settings dialog without a restart. Have fun testing different options!
     - Configuration data is stored in JSON
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
@@ -98,10 +100,10 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 # Usage
 
 ```
-
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-C NAME] [-D DIRECTORY]
-                      [-L] [-S DIRECTORY] [-Q NAME] [-N] [-X]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C NAME]
+                      [-D DIRECTORY] [-L] [-S DIRECTORY] [-Q NAME]
+                      [-N] [-X]
                       [SERVER] [PORT]
 
 options:
@@ -125,6 +127,7 @@ Connection:
   -r, --realname REALNAME
                         Use this realname to connect
   -q, --quiet           Do not execute connection script
+  -d, --donotsave       Do not save new user settings
 
 Configuration:
   -C, --config-name NAME
@@ -141,6 +144,16 @@ Miscellaneous:
   -X, --dark            Run in dark mode
 
 ```
+# Example Commandline Usage
+Let's assume that you want to use the commandline to connect **MERK** to the `2600.net` network and join the `#linux` channel:
+```
+python merk.py --channel "#linux" irc.2600.net 6667
+```
+Easy, right? Now let's try something a little more complex. Let's say you want to connect the the `Libera` network, which uses SSL/TLS. You want to use a different nickname than you normally use; you want to use the nickname `merker`, but you don't want to save this nickname as your default. When you join the network, you want to join two channels: `#python` and `#merk`:
+```
+python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
+```
+All commandline options are what they say on the tin: _optional_. Just running the script with no commandline options will initally open up the connection dialog, and you can do just about everything completely inside the GUI.
 # Why does MERK exist?
 It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
 
