@@ -1034,7 +1034,7 @@ class Window(QMainWindow):
 
 			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-			self.input.setStyleSheet(self.generateStylesheet('QLineEdit',foreground,background))
+			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
 
 			if self.window_type==CHANNEL_WINDOW:
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
@@ -1059,7 +1059,7 @@ class Window(QMainWindow):
 
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-		self.input.setStyleSheet(self.generateStylesheet('QLineEdit',foreground,background))
+		self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
 
 		if self.window_type==CHANNEL_WINDOW:
 			self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
