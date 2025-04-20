@@ -1019,6 +1019,9 @@ class Window(QMainWindow):
 	def executeScript(self,script):
 		commands.executeScript(self.parent,self,script)
 
+	def generateStylesheet(self,obj,fore,back):
+
+		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
 	def pressedStyleButton(self):
 		x = StylerDialog(self.client,self,self.parent)
@@ -1029,21 +1032,12 @@ class Window(QMainWindow):
 			# Apply style background and forground colors
 			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
-			p = self.chat.palette()
-			p.setColor(QPalette.Base, QColor(background))
-			p.setColor(QPalette.Text, QColor(foreground))
-			self.chat.setPalette(p)
+			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-			p = self.input.palette()
-			p.setColor(QPalette.Base, QColor(background))
-			p.setColor(QPalette.Text, QColor(foreground))
-			self.input.setPalette(p)
+			self.input.setStyleSheet(self.generateStylesheet('QLineEdit',foreground,background))
 
 			if self.window_type==CHANNEL_WINDOW:
-				p = self.userlist.palette()
-				p.setColor(QPalette.Base, QColor(background))
-				p.setColor(QPalette.Text, QColor(foreground))
-				self.userlist.setPalette(p)
+				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
 
 			self.rerenderChatLog()
 
@@ -1063,21 +1057,12 @@ class Window(QMainWindow):
 		# Apply style background and forground colors
 		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
-		p = self.chat.palette()
-		p.setColor(QPalette.Base, QColor(background))
-		p.setColor(QPalette.Text, QColor(foreground))
-		self.chat.setPalette(p)
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-		p = self.input.palette()
-		p.setColor(QPalette.Base, QColor(background))
-		p.setColor(QPalette.Text, QColor(foreground))
-		self.input.setPalette(p)
+		self.input.setStyleSheet(self.generateStylesheet('QLineEdit',foreground,background))
 
 		if self.window_type==CHANNEL_WINDOW:
-			p = self.userlist.palette()
-			p.setColor(QPalette.Base, QColor(background))
-			p.setColor(QPalette.Text, QColor(foreground))
-			self.userlist.setPalette(p)
+			self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
 
 		self.rerenderChatLog()
 
