@@ -768,11 +768,12 @@ class Merk(QMainWindow):
 		
 		self.nickChanged(client)
 
-		w = self.getServerWindow(client)
-		if w:
-			hostid = client.server+":"+str(client.port)
-			if hostid in user.COMMANDS:
-				commands.executeScript(self,w,user.COMMANDS[hostid])
+		if client.kwargs["execute_script"]==True:
+			w = self.getServerWindow(client)
+			if w:
+				hostid = client.server+":"+str(client.port)
+				if hostid in user.COMMANDS:
+					commands.executeScript(self,w,user.COMMANDS[hostid])
 
 		if len(self.join_channels)>0:
 			for e in self.join_channels:
@@ -1383,6 +1384,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 				else:
 					irc.reconnect(
@@ -1396,6 +1398,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 			else:
 				if connection.ssl:
@@ -1410,6 +1413,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 				else:
 					irc.connect(
@@ -1423,6 +1427,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 
 	def connectToIrc(self,connection_info=None):
@@ -1445,6 +1450,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 				else:
 					irc.reconnect(
@@ -1458,6 +1464,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 			else:
 				if connection.ssl:
@@ -1472,6 +1479,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 				else:
 					irc.connect(
@@ -1485,6 +1493,7 @@ class Merk(QMainWindow):
 						ssl=connection.ssl,
 						gui=self,
 						failreconnect=True,
+						execute_script=connection.execute_script,
 					)
 
 	def refreshModeDisplay(self,client):

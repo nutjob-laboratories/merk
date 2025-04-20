@@ -204,7 +204,7 @@ class Window(QMainWindow):
 		entry.setShortcut("Ctrl+O")
 		self.fileMenu.addAction(entry)
 
-		entry = QAction(QIcon(CONNECT_ICON),"New connection script",self)
+		entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
 		entry.triggered.connect(self.doNewScript)
 		self.fileMenu.addAction(entry)
 

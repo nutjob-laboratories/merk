@@ -138,6 +138,7 @@ class Dialog(QDialog):
 				self.password.text(),
 				self.RECONNECT_OPTION,
 				self.CONNECT_VIA_SSL,
+				self.EXECUTE,	# execute script
 			)
 
 			return retval
@@ -180,6 +181,12 @@ class Dialog(QDialog):
 		else:
 			self.CONNECT_VIA_SSL = False
 
+	def clickExe(self,state):
+		if state == Qt.Checked:
+			self.EXECUTE = True
+		else:
+			self.EXECUTE = False
+
 	def clickReconnect(self,state):
 		if state == Qt.Checked:
 			self.RECONNECT_OPTION = True
@@ -194,7 +201,7 @@ class Dialog(QDialog):
 			hostid = "Unknown"
 		else:
 			hostid = host+":"+port
-		self.commandHost.setText(f"<center><big><b>{hostid}</b></big></center>")
+		self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
 
 		if hostid in user.COMMANDS:
 			self.commands.setPlainText(user.COMMANDS[hostid])
@@ -219,6 +226,15 @@ class Dialog(QDialog):
 
 		self.CONNECT_VIA_SSL = False
 		self.RECONNECT_OPTION = False
+		self.EXECUTE = True
+
+		self.exeTemplate = f"""
+			<small>
+			Execute these commands upon connection to <b>%__SERVER__%</b>. To insert a pause in between commands,
+			use the <b>{config.ISSUE_COMMAND_SYMBOL}wait</b> command, passing the number
+			of seconds to pause as an argument.
+			</small>
+		"""
 
 		if self.logo:
 			self.setWindowTitle(APPLICATION_NAME+" IRC Client "+APPLICATION_VERSION)
@@ -283,6 +299,10 @@ class Dialog(QDialog):
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
 		self.ssl.stateChanged.connect(self.clickSSL)
 
+		self.exe = QCheckBox("Execute connection script",self)
+		self.exe.stateChanged.connect(self.clickExe)
+		self.exe.toggle()
+
 		if user.LAST_SSL: self.ssl.toggle()
 
 		self.reconnect = QCheckBox("Reconnect",self)
@@ -306,18 +326,11 @@ class Dialog(QDialog):
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addWidget(self.ssl)
 		serverInfoLayout.addWidget(self.reconnect)
+		serverInfoLayout.addWidget(self.exe)
 
-		self.commandHost = QLabel("<center><big><b>Unknown</b></big></center>")
-		self.commandDescription = QLabel(f"""
-			<small>
-			Execute these commands upon connection to the server. To insert a pause in between commands,
-			use the <b>{config.ISSUE_COMMAND_SYMBOL}wait</b> command, passing the number
-			of seconds to pause as an argument.
-			</small>
-
-			""")
-		self.commandDescription.setWordWrap(True)
-		self.commandDescription.setAlignment(Qt.AlignJustify)
+		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
+		self.commandHost.setWordWrap(True)
+		self.commandHost.setAlignment(Qt.AlignJustify)
 		self.commands = QPlainTextEdit()
 
 		# Add syntax highlighting
@@ -330,12 +343,11 @@ class Dialog(QDialog):
 		self.commands.setPalette(p)
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
-		height = height + serverLayout.sizeHint().height() + 25
+		height = height + serverLayout.sizeHint().height() + 70
 		self.commands.setFixedHeight(height)
 
 		commandsLayout = QVBoxLayout()
 		commandsLayout.addWidget(self.commandHost)
-		commandsLayout.addWidget(self.commandDescription)
 		commandsLayout.addWidget(self.commands)
 
 		self.tabs = QTabWidget()

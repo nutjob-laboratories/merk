@@ -92,6 +92,8 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
 		config.ISSUE_COMMAND_SYMBOL+"connect": config.ISSUE_COMMAND_SYMBOL+"connect ",
 		config.ISSUE_COMMAND_SYMBOL+"connectssl": config.ISSUE_COMMAND_SYMBOL+"connectssl ",
+		config.ISSUE_COMMAND_SYMBOL+"xconnect": config.ISSUE_COMMAND_SYMBOL+"xconnect ",
+		config.ISSUE_COMMAND_SYMBOL+"xconnectssl": config.ISSUE_COMMAND_SYMBOL+"xconnectssl ",
 		config.ISSUE_COMMAND_SYMBOL+"alias": config.ISSUE_COMMAND_SYMBOL+"alias ",
 		config.ISSUE_COMMAND_SYMBOL+"script" : config.ISSUE_COMMAND_SYMBOL+"script ",
 		config.ISSUE_COMMAND_SYMBOL+"edit" : config.ISSUE_COMMAND_SYMBOL+"edit ",
@@ -122,6 +124,8 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"version [SERVER]</b>", "Requests server version" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server & executes connection script" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print TEXT...</b>", "Prints text to the current window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
@@ -366,7 +370,7 @@ def executeScript(gui,window,text):
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
 	gui.scripts[script_id].start()
 
-def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=False):
+def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=False,execute=False):
 	try:
 		port = int(port)
 	except:
@@ -384,6 +388,7 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 		password,
 		reconnect,
 		ssl,
+		execute, # execute script
 	)
 	gui.connectToIrc(i)
 
@@ -442,14 +447,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = 6667
-			connect_to_irc(gui,window,host,port,None,True,False)
+			connect_to_irc(gui,window,host,port,None,True,False,False)
 			return True
 		# /connectssl HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==3:
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
-			connect_to_irc(gui,window,host,port,None,True,False)
+			connect_to_irc(gui,window,host,port,None,True,False,False)
 			return True
 		# /connectssl HOST PORT PASSWORD
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==4:
@@ -457,7 +462,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			host = tokens.pop(0)
 			port = tokens.pop(0)
 			password = tokens.pop(0)
-			connect_to_irc(gui,window,host,port,password,True,False)
+			connect_to_irc(gui,window,host,port,password,True,False,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connectssl HOST [PORT] [PASSWORD]")
@@ -473,14 +478,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = 6667
-			connect_to_irc(gui,window,host,port,None,False,False)
+			connect_to_irc(gui,window,host,port,None,False,False,False)
 			return True
 		# /connect HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==3:
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
-			connect_to_irc(gui,window,host,port,None,False,False)
+			connect_to_irc(gui,window,host,port,None,False,False,False)
 			return True
 		# /connect HOST PORT PASSWORD
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==4:
@@ -488,10 +493,72 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			host = tokens.pop(0)
 			port = tokens.pop(0)
 			password = tokens.pop(0)
-			connect_to_irc(gui,window,host,port,password,False,False)
+			connect_to_irc(gui,window,host,port,password,False,False,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
+			window.writeText(t)
+			return True
+
+	# |--------------|
+	# | /xconnectssl |
+	# |--------------|
+	if len(tokens)>=1:
+		# /connectssl HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			connect_to_irc(gui,window,host,port,None,True,False,True)
+			return True
+		# /connectssl HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			connect_to_irc(gui,window,host,port,None,True,False,True)
+			return True
+		# /connectssl HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			password = tokens.pop(0)
+			connect_to_irc(gui,window,host,port,password,True,False,True)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xconnectssl HOST [PORT] [PASSWORD]")
+			window.writeText(t)
+			return True
+
+	# |-----------|
+	# | /xconnect |
+	# |-----------|
+	if len(tokens)>=1:
+		# /connect HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			connect_to_irc(gui,window,host,port,None,False,False,True)
+			return True
+		# /connect HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			connect_to_irc(gui,window,host,port,None,False,False,True)
+			return True
+		# /connect HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			password = tokens.pop(0)
+			connect_to_irc(gui,window,host,port,password,False,False,True)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xconnect HOST [PORT] [PASSWORD]")
 			window.writeText(t)
 			return True
 

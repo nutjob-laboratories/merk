@@ -249,7 +249,7 @@ class Message:
 		self.contents = contents
 
 class ConnectInfo:
-	def __init__(self,nick,alt,username,realname,host,port,password,reconnect,ssl):
+	def __init__(self,nick,alt,username,realname,host,port,password,reconnect,ssl,execute_script):
 		self.nickname = nick
 		self.alternate = alt
 		self.username = username
@@ -259,6 +259,7 @@ class ConnectInfo:
 		self.password = password
 		self.reconnect = reconnect
 		self.ssl = ssl
+		self.execute_script = execute_script
 
 class WhoisData:
 	def __init__(self):

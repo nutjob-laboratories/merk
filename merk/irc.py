@@ -906,6 +906,9 @@ def objectconfig(obj,**kwargs):
 		if key=="failreconnect":
 			obj.failreconnect = value
 
+		if key=="execute_script":
+			obj.execute_script = value
+
 class IRC_Connection_Factory(protocol.ClientFactory):
 	def __init__(self,**kwargs):
 		self.kwargs = kwargs

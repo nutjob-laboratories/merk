@@ -76,6 +76,8 @@ congroup.add_argument("-n","--nickname", type=str,help="Use this nickname to con
 congroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
 congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
 congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
+congroup.add_argument("-q","--quiet", help=f"Do not execute connection script", action="store_true")
+
 
 configuration_group = parser.add_argument_group('Configuration')
 
@@ -200,34 +202,6 @@ if __name__ == '__main__':
 
 			""")
 
-			# QMdiSubWindow::title {
-			# 	background-color: #a0a0a0;
-			# 	color: #ffffff;
-			# 	padding: 5px;
-			# 	border-top-left-radius: 5px;
-			# 	border-top-right-radius: 5px;
-			# }
-
-			# QMdiSubWindow::close-button {
-			# 	subcontrol-position: top-right;
-			# 	subcontrol-origin: padding;
-			# 	image: url(path/to/close_icon.png); /* Replace with your close icon path */
-			# }
-
-			# QMdiSubWindow::minimize-button {
-			# 	subcontrol-position: top-right;
-			# 	subcontrol-origin: padding;
-			# 	image: url(path/to/minimize_icon.png); /* Replace with your minimize icon path */
-			# 	right: 16px;
-			# }
-
-			# QMdiSubWindow::maximize-button {
-			# 	subcontrol-position: top-right;
-			# 	subcontrol-origin: padding;
-			# 	image: url(path/to/maximize_icon.png); /* Replace with your maximize icon path */
-			# 	right: 32px;
-			# }
-
 	# Handle connecting to a server if one has been provided
 	if args.server:
 
@@ -290,6 +264,11 @@ if __name__ == '__main__':
 
 		if user_info_changed: user.save_user(user.USER_FILE)
 
+		if args.quiet==True:
+			EXECUTE_CONNECTION_SCRIPT = False
+		else:
+			EXECUTE_CONNECTION_SCRIPT = True
+
 		i = ConnectInfo(
 			args.nickname,
 			args.alternate,
@@ -300,6 +279,7 @@ if __name__ == '__main__':
 			pword,
 			args.reconnect,
 			args.ssl,
+			EXECUTE_CONNECTION_SCRIPT, # execute script
 		)
 
 		GUI = Merk(
