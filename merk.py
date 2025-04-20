@@ -171,7 +171,6 @@ if __name__ == '__main__':
 
 		dark_palette.setColor(QPalette.Text, Qt.white)
 		dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
-
 		dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
 		dark_palette.setColor(QPalette.WindowText, Qt.white)
 		dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
@@ -182,7 +181,6 @@ if __name__ == '__main__':
 		dark_palette.setColor(QPalette.BrightText, Qt.red)
 		dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
 		dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-		# dark_palette.setColor(QPalette.HighlightedText, QColor(35, 35, 35))
 		dark_palette.setColor(QPalette.HighlightedText, Qt.white)
 		dark_palette.setColor(QPalette.Active, QPalette.Button, QColor(53, 53, 53))
 		dark_palette.setColor(QPalette.Disabled, QPalette.ButtonText, Qt.darkGray)
