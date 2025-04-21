@@ -824,7 +824,8 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			if hasattr(c,"saveLogs"): c.saveLogs()
-			self.MDI.removeSubWindow(w)
+			#self.MDI.removeSubWindow(w)
+			c.close()
 			self.buildWindowsMenu()
 
 		w = self.getServerWindow(client)
