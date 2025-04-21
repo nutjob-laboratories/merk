@@ -537,7 +537,7 @@ class Window(QMainWindow):
 				menu.addAction(self.contextRun)
 
 				hostid = self.client.server+":"+str(self.client.port)
-				entry = QAction(QIcon(SCRIPT_ICON),"Edit connect script",self)
+				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
 				menu.addAction(entry)
 
