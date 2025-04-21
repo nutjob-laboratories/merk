@@ -395,9 +395,19 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 def addAlias(name,value):
 	ALIAS[name] = value
 
+def detect_alias(text):
+  pattern = r"\$([^\d]+)"
+  match = re.search(pattern, text)
+  return bool(match)
+
 def interpolateAliases(text):
-	for a in ALIAS:
-		text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,ALIAS[a])
+	if not detect_alias(text): return text
+	counter = 0
+	while detect_alias(text):
+		for a in ALIAS:
+			text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,ALIAS[a])
+		counter = counter + 1
+		if counter>=99: break
 	return text
 
 def executeCommonCommands(gui,window,user_input,is_script):
