@@ -1261,7 +1261,7 @@ class Merk(QMainWindow):
 
 		w = self.getSubWindow(channel,client)
 		if w:
-			self.MDI.removeSubWindow(w)
+			w.close()
 			self.buildWindowsMenu()
 
 		w = self.getServerWindow(client)
