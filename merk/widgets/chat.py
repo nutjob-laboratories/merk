@@ -570,6 +570,12 @@ class Window(QMainWindow):
 				entry.triggered.connect(lambda state,u=self.name,w=config.DEFAULT_QUIT_MESSAGE: self.client.leave(u,w))
 				menu.addAction(entry)
 
+			if self.window_type==PRIVATE_WINDOW:
+
+				entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
+				entry.triggered.connect(self.close)
+				menu.addAction(entry)
+
 
 		action = menu.exec_(self.chat.mapToGlobal(location))
 
