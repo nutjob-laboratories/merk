@@ -1121,7 +1121,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			# Write the message to the server window
 			w = gui.getServerWindow(window.client)
 			if w:
-				t = Message(SELF_MESSAGE,"->"+target,+msg)
+				t = Message(SELF_MESSAGE,"->"+target,msg)
 				w.writeText(t)
 
 			return True
