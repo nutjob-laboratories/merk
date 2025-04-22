@@ -230,7 +230,7 @@ if __name__ == '__main__':
 		user_info_changed = False
 		if args.nickname=='':
 			if len(user.NICKNAME.strip())==0:
-				print("No nickname set!")
+				sys.stdout.write("No nickname set!\n")
 				sys.exit(1)
 			args.nickname = user.NICKNAME
 		else:
