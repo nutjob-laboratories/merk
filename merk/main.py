@@ -60,8 +60,6 @@ class Merk(QMainWindow):
 			connection_info=None,
 			application_font=None,
 			channels=[],
-			dark_mode = False,
-			default_palette=None,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -73,10 +71,8 @@ class Merk(QMainWindow):
 		self.configuration_directory_name = configuration_directory_name
 		self.application_font = application_font
 		self.join_channels = channels
-		self.dark_mode = dark_mode
-		self.default_palette = default_palette
 
-		if self.dark_mode:
+		if not test_if_window_background_is_light(self):
 			self.checked_icon = DARK_CHECKED_ICON
 			self.unchecked_icon = DARK_UNCHECKED_ICON
 			self.round_checked_icon = DARK_ROUND_CHECKED_ICON
@@ -84,6 +80,7 @@ class Merk(QMainWindow):
 			self.options_icon = DARK_OPTIONS_ICON
 			self.bold_icon = DARK_BOLD_ICON
 			self.italic_icon = DARK_ITALIC_ICON
+			self.dark_mode = True
 		else:
 			self.checked_icon = CHECKED_ICON
 			self.unchecked_icon = UNCHECKED_ICON
@@ -92,6 +89,7 @@ class Merk(QMainWindow):
 			self.options_icon = OPTIONS_ICON
 			self.bold_icon = BOLD_ICON
 			self.italic_icon = ITALIC_ICON
+			self.dark_mode = False
 
 		# Set the application font
 		self.app.setFont(self.application_font)
@@ -1367,7 +1365,7 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.dark_mode)
+		connection = ConnectDialogNoLogo(self.app,self,message,reason)
 
 		if connection:
 			
@@ -1434,7 +1432,7 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			connection = ConnectDialogNoLogo(self.app,self,'','',self.dark_mode)
+			connection = ConnectDialogNoLogo(self.app,self,'','')
 		if connection:
 			
 			if connection.reconnect:

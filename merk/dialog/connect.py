@@ -44,8 +44,8 @@ from .. import syntax
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,darkmode=False):
-		dialog = Dialog(app,parent,dismsg,reason,logo,darkmode)
+	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True):
+		dialog = Dialog(app,parent,dismsg,reason,logo)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -212,7 +212,7 @@ class Dialog(QDialog):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
-	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,darkmode=False):
+	def __init__(self,app,parent=None,dismsg='',reason='',logo=True):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
@@ -220,7 +220,6 @@ class Dialog(QDialog):
 		self.disconnect_message = dismsg
 		self.reason = reason
 		self.logo = logo
-		self.darkmode = darkmode
 
 		self.StoredData = []
 		self.StoredServer = 0

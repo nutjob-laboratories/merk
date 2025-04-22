@@ -159,8 +159,6 @@ if __name__ == '__main__':
 	# Apply new style
 	app.setStyle(config.QT_WINDOW_STYLE)
 
-	default_palette = app.palette()
-
 	# Set dark mode if it's in the config file
 	if config.DARK_MODE==True:
 		args.darkmode = True
@@ -290,8 +288,6 @@ if __name__ == '__main__':
 				i,					# Connection info
 				font,				# Application font
 				chans,				# Channels
-				args.darkmode,		# Dark mode
-				default_palette,
 				None,				# Parent
 			)
 
@@ -330,15 +326,13 @@ if __name__ == '__main__':
 					None,				# Connection info
 					font,				# Application font
 					[],					# Channels
-					args.darkmode,		# Dark mode
-					default_palette,
 					None,				# Parent
 				)
 
 			GUI.show()
 		else:
 			# Bring up the connection dialog
-			connection_info = ConnectDialog(app,None,'','',args.darkmode)
+			connection_info = ConnectDialog(app,None,'','')
 			if connection_info:
 				# Create the main GUI and show it
 				GUI = Merk(
@@ -348,8 +342,6 @@ if __name__ == '__main__':
 						connection_info,	# Connection info
 						font,				# Application font
 						[],					# Channels
-						args.darkmode,		# Dark mode
-						default_palette,
 						None,				# Parent
 					)
 
