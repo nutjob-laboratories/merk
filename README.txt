@@ -119,7 +119,7 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
                       [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C NAME]
                       [-D DIRECTORY] [-L] [-S DIRECTORY] [-Q NAME]
-                      [-N] [-X]
+                      [-N] [-X] [-Y]
                       [SERVER] [PORT]
 
 options:
@@ -158,6 +158,7 @@ Miscellaneous:
   -Q, --qtstyle NAME    Set Qt widget style (default: Fusion)
   -N, --noask           Don't ask for connection information on start
   -X, --dark            Run in dark mode
+  -Y, --light           Run in light mode
 
 ```
 # Example Commandline Usage

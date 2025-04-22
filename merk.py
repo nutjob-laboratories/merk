@@ -92,6 +92,7 @@ misc_group = parser.add_argument_group('Miscellaneous')
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Fusion)", metavar="NAME", default="")
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-X","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
+misc_group.add_argument( "-Y","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
 
 args = parser.parse_args()
 
@@ -163,6 +164,10 @@ if __name__ == '__main__':
 	if config.DARK_MODE==True:
 		args.darkmode = True
 
+	# Set light mode if it's turned on
+	if args.lightmode:
+		args.darkmode = False
+
 	# Set dark mode palette if it's turned on
 	if args.darkmode:
 		dark_palette = QPalette()
@@ -190,11 +195,11 @@ if __name__ == '__main__':
 		# Make sure that menu separators are visible
 		app.setStyleSheet("""
 			QMenu::separator {
-				background-color: darkGray;
+				background-color: #A9A9A9;
 				height: 1px;
 			}
 			QGroupBox { 
-				border: 1px solid darkGray;
+				border: 1px solid #A9A9A9;
 			}
 
 			""")
