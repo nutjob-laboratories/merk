@@ -44,8 +44,8 @@ from .. import syntax
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True):
-		dialog = Dialog(app,parent,dismsg,reason,logo)
+	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,noexecute=False):
+		dialog = Dialog(app,parent,dismsg,reason,logo,noexecute)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -212,7 +212,7 @@ class Dialog(QDialog):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
-	def __init__(self,app,parent=None,dismsg='',reason='',logo=True):
+	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
@@ -220,6 +220,7 @@ class Dialog(QDialog):
 		self.disconnect_message = dismsg
 		self.reason = reason
 		self.logo = logo
+		self.noexecute = noexecute
 
 		self.StoredData = []
 		self.StoredServer = 0
@@ -310,6 +311,8 @@ class Dialog(QDialog):
 		self.exe = QCheckBox("Execute connection script",self)
 		self.exe.stateChanged.connect(self.clickExe)
 		self.exe.toggle()
+
+		if self.noexecute: self.exe.toggle()
 
 		if user.LAST_SSL: self.ssl.toggle()
 

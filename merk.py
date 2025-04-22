@@ -293,6 +293,7 @@ if __name__ == '__main__':
 				i,					# Connection info
 				font,				# Application font
 				chans,				# Channels
+				args.quiet,			# Do not execute script default
 				None,				# Parent
 			)
 
@@ -331,13 +332,14 @@ if __name__ == '__main__':
 					None,				# Connection info
 					font,				# Application font
 					[],					# Channels
+					args.quiet,			# Do not execute script default
 					None,				# Parent
 				)
 
 			GUI.show()
 		else:
 			# Bring up the connection dialog
-			connection_info = ConnectDialog(app,None,'','')
+			connection_info = ConnectDialog(app,None,'','',args.quiet)
 			if connection_info:
 				# Create the main GUI and show it
 				GUI = Merk(
@@ -347,6 +349,7 @@ if __name__ == '__main__':
 						connection_info,	# Connection info
 						font,				# Application font
 						[],					# Channels
+						args.quiet,			# Do not execute script default
 						None,				# Parent
 					)
 
