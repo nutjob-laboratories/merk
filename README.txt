@@ -172,7 +172,7 @@ python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.ch
 ```
 You can do some things with the commandline that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the "C:\Merk_Scripts" folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
 ```
-python merk.py --light -C .mymerk -S C:\Merk_Scripts --noask
+python merk.py --light -C .mymerk -S "C:\Merk_Scripts" --noask
 ```
 All commandline options are what they say on the tin: _optional_. Just running the script with no commandline options will initally open up the connection dialog, and you can do just about everything completely inside the GUI.
 
