@@ -560,6 +560,10 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.pressedStyleButton)
 				menu.addAction(entry)
 
+				entry = QAction(QIcon(RUN_ICON),"Run script",self)
+				entry.triggered.connect(self.loadScript)
+				menu.addAction(entry)
+
 				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
