@@ -107,6 +107,7 @@ class Merk(QMainWindow):
 		self.is_hidden = False
 		self.was_maximized = False
 		self.maximized_window = None
+		self.connected_to_something = False
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -282,6 +283,7 @@ class Merk(QMainWindow):
 			self.windowbar.show()
 		else:
 			self.windowbar.hide()
+			self.connected_to_something = False
 			return
 
 		if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
@@ -748,7 +750,11 @@ class Merk(QMainWindow):
 			c = w.widget()
 			c.buildRunMenu()
 
+		if len(self.getAllServerWindows())==0: self.connected_to_something = False
+
 	def signedOn(self,client):
+
+		self.connected_to_something = True
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1998,6 +2004,8 @@ class Merk(QMainWindow):
 			# Reset application title, due to there being
 			# no connections
 			self.subWindowActivated(None)
+
+		if len(listOfConnections)==0: self.connected_to_something = False
 
 		if len(listOfConnections)>0:
 
