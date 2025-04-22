@@ -556,29 +556,17 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
-				entry.triggered.connect(self.pressedStyleButton)
-				menu.addAction(entry)
-
-				entry = QAction(QIcon(RUN_ICON),"Run script",self)
-				entry.triggered.connect(self.loadScript)
-				menu.addAction(entry)
-
 				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
 			if self.window_type==CHANNEL_WINDOW:
 
-				menu.addSeparator()
-
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
 				entry.triggered.connect(lambda state,u=self.name,w=config.DEFAULT_QUIT_MESSAGE: self.client.leave(u,w))
 				menu.addAction(entry)
 
 			if self.window_type==PRIVATE_WINDOW:
-
-				menu.addSeparator()
 
 				entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
 				entry.triggered.connect(self.close)
