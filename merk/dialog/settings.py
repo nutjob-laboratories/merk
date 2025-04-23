@@ -1902,8 +1902,6 @@ class Dialog(QDialog):
 			self.parent.app.setFont(self.newfont)
 			self.parent.setAllFont(self.newfont)
 
-		self.parent.subWindowActivated(None)
-
 		if config.SHOW_SYSTRAY_ICON:
 			self.parent.tray.setVisible(True)
 			self.parent.tray.show()

@@ -118,7 +118,7 @@ class Merk(QMainWindow):
 		# the MDI widget
 		self.MDI = QMdiArea()
 		self.setCentralWidget(self.MDI)
-		self.MDI.subWindowActivated.connect(self.subWindowActivated)
+		self.MDI.subWindowActivated.connect(self.merk_subWindowActivated)
 
 		# Set the background image of the MDI widget
 		if self.dark_mode:
@@ -2016,7 +2016,7 @@ class Merk(QMainWindow):
 
 			# Reset application title, due to there being
 			# no connections
-			self.subWindowActivated(None)
+			self.merk_subWindowActivated(None)
 
 		if len(listOfConnections)==0: self.connected_to_something = False
 
@@ -2379,9 +2379,9 @@ class Merk(QMainWindow):
 		self.closeAndRemoveAllWindows()
 		self.app.quit()
 
-	# subWindowActivated()
+	# merk_subWindowActivated()
 	# Triggered whenever a subwindow is activated
-	def subWindowActivated(self,subwindow):
+	def merk_subWindowActivated(self,subwindow):
 
 		self.saveActive()
 		self.buildWindowbar()
