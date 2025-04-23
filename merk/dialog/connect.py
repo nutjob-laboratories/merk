@@ -342,8 +342,8 @@ class Dialog(QDialog):
 		self.serverDescription = QLabel("""
 			<small>
 			Select a server below, or enter connection information by hand. To automatically
-			reconnect on disconnection, check the <b>Reconnect</b> checkbox. If the <b>Execute Connection
-			Script</b> option is enabled, the commands entered in the <b>Script</b> tab will be executed
+			reconnect on disconnection, check the <b>Reconnect</b> checkbox. If the <b>Execute connection
+			script</b> option is enabled, the commands entered in the <b>Script</b> tab will be executed
 			when connection to the server is complete.
 			</small>
 
@@ -406,7 +406,7 @@ class Dialog(QDialog):
 			<b>alternate</b> is the nickname to use if your primary choice is taken. If both your <b>nickname</b>
 			and <b>alternate</b> are taken, a random number will be attached to your <b>alternate</b>, and that
 			will be used as your <b>nickname</b>. When you're done, click the <b>Server</b> tab to select or enter a server.
-			All settings will be saved automatically, unless you uncheck the "save to user settings file" checkbox below.<br>
+			All settings will be saved automatically, unless you uncheck the <b>Save to user settings file</b> checkbox below.<br>
 			</small>
 
 			""")
