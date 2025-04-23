@@ -85,7 +85,7 @@ class Window(QMainWindow):
 
 		self.userlist_visible = True
 
-		#self.is_hidden = False
+		self.is_hidden = False
 
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 

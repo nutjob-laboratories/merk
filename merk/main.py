@@ -1997,6 +1997,15 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
+	def toggleConsoleHide(self,window):
+		c = window.widget()
+		if c.is_hidden:
+			window.show()
+			c.is_hidden = False
+		else:
+			window.hide()
+			c.is_hidden = True
+
 	def buildWindowsMenu(self):
 
 		# Rebuild systray menu
@@ -2040,15 +2049,9 @@ class Merk(QMainWindow):
 					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
 					sm.addAction(entry)
 
-					# c = sw.widget()
-					# if c.is_hidden:
-					# 	entry = QAction("Show "+name,self)
-					# 	entry.triggered.connect(lambda state,u=c: u.doShow())
-					# 	sm.addAction(entry)
-					# else:
-					# 	entry = QAction("Hide "+name,self)
-					# 	entry.triggered.connect(lambda state,u=c: u.doHide())
-					# 	sm.addAction(entry)
+					entry = QAction("Show/Hide "+name,self)
+					entry.triggered.connect(lambda state,u=sw: self.toggleConsoleHide(u))
+					sm.addAction(entry)
 
 					sm.addSeparator()
 
