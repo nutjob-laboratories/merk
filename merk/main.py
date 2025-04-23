@@ -2005,6 +2005,14 @@ class Merk(QMainWindow):
 		else:
 			window.hide()
 			c.is_hidden = True
+		self.buildWindowsMenu()
+
+	def isConsoleHidded(self,window):
+		c = window.widget()
+		if c.is_hidden:
+			return True
+		else:
+			return False
 
 	def buildWindowsMenu(self):
 
@@ -2049,9 +2057,14 @@ class Merk(QMainWindow):
 					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
 					sm.addAction(entry)
 
-					entry = QAction("Show/Hide "+name,self)
-					entry.triggered.connect(lambda state,u=sw: self.toggleConsoleHide(u))
-					sm.addAction(entry)
+					if self.isConsoleHidded(sw):
+						entry = QAction("Show "+name,self)
+						entry.triggered.connect(lambda state,u=sw: self.toggleConsoleHide(u))
+						sm.addAction(entry)
+					else:
+						entry = QAction("Hide "+name,self)
+						entry.triggered.connect(lambda state,u=sw: self.toggleConsoleHide(u))
+						sm.addAction(entry)
 
 					sm.addSeparator()
 
