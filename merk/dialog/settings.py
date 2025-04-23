@@ -1963,8 +1963,8 @@ class Dialog(QDialog):
 		# 					self.parent.setWindowTitle(APPLICATION_NAME+" - "+server)
 		# 				else:
 		# 					self.parent.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
-		else:
-			self.parent.setWindowTitle(APPLICATION_NAME)
+		# else:
+		# 	self.parent.setWindowTitle(APPLICATION_NAME)
 
 		# Close the dialog
 		self.close()
