@@ -215,7 +215,6 @@ class Merk(QMainWindow):
 		else:
 			self.addToolBar(Qt.BottomToolBarArea,self.windowbar)
 		self.windowbar.hide()
-		self.MDI.subWindowActivated.connect(self.buildWindowbar)
 
 		self.buildWindowbar()
 
@@ -2383,6 +2382,9 @@ class Merk(QMainWindow):
 	# subWindowActivated()
 	# Triggered whenever a subwindow is activated
 	def subWindowActivated(self,subwindow):
+
+		self.saveActive()
+		self.buildWindowbar()
 
 		# Reset the window title
 		self.setWindowTitle(APPLICATION_NAME)
