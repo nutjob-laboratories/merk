@@ -1879,12 +1879,6 @@ class Dialog(QDialog):
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
-		# Get current active window
-		# if self.parent.connected_to_something:
-		# 	current_window = self.parent.MDI.activeSubWindow()
-		# else:
-		# 	current_window = None
-
 		self.parent.app.setStyle(self.qt_style)
 
 		if config.TIMESTAMP_24_HOUR:
@@ -1944,12 +1938,6 @@ class Dialog(QDialog):
 
 		# Set the widget font
 		self.parent.setFont(self.parent.application_font)
-
-		# Set active window back if there's open windows
-		# if len(self.parent.MDI.subWindowList())>0:
-		# 	if is_deleted(current_window)==False:
-		# 		if self.parent.connected_to_something:
-		# 			self.parent.MDI.setActiveSubWindow(current_window)
 
 		# Reset the main window name if needed
 		if self.parent.connected_to_something:

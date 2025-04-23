@@ -179,7 +179,8 @@ class Merk(QMainWindow):
 		return self.saved_window
 
 	def saveActive(self):
-		self.saved_window = self.MDI.activeSubWindow()
+		if self.saved_window==None:
+			self.saved_window = self.MDI.activeSubWindow()
 
 	def restoreActive(self):
 		if self.saved_window!= None:
@@ -2315,6 +2316,7 @@ class Merk(QMainWindow):
 		return do_disconnect
 
 	def openSettings(self):
+		self.saveActive()
 		self.settingsDialog = SettingsDialog(self.app,self)
 
 	def showAbout(self):
