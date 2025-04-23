@@ -243,11 +243,6 @@ class Dialog(QDialog):
 		if self.logo:
 			self.setWindowTitle(APPLICATION_NAME+" IRC Client "+APPLICATION_VERSION)
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
-
-			splash = QLabel()
-			pixmap = QPixmap(SPLASH_LOGO)
-			splash.setPixmap(pixmap)
-			splash.setAlignment(Qt.AlignCenter)
 		else:
 			if self.disconnect_message=='':
 				self.setWindowTitle("Connect to IRC")
@@ -331,7 +326,17 @@ class Dialog(QDialog):
 		self.serverDescription.setWordWrap(True)
 		self.serverDescription.setAlignment(Qt.AlignJustify)
 
+		banner = QLabel()
+		pixmap = QPixmap(CONNECT_MENU_ICON)
+		banner.setPixmap(pixmap)
+
+		bannerLayout = QHBoxLayout()
+		bannerLayout.addWidget(banner)
+		bannerLayout.addWidget(QLabel("<big><b>Internet Relay Chat Server</b></big>"))
+		bannerLayout.addStretch()
+
 		serverInfoLayout = QVBoxLayout()
+		serverInfoLayout.addLayout(bannerLayout)
 		serverInfoLayout.addWidget(self.serverDescription)
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
@@ -354,7 +359,17 @@ class Dialog(QDialog):
 		height = height + serverLayout.sizeHint().height() + 70
 		self.commands.setFixedHeight(height)
 
+		banner = QLabel()
+		pixmap = QPixmap(SCRIPT_MENU_ICON)
+		banner.setPixmap(pixmap)
+
+		bannerLayout = QHBoxLayout()
+		bannerLayout.addWidget(banner)
+		bannerLayout.addWidget(QLabel("<big><b>Connection Script</b></big>"))
+		bannerLayout.addStretch()
+
 		commandsLayout = QVBoxLayout()
+		commandsLayout.addLayout(bannerLayout)
 		commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
 
@@ -372,11 +387,19 @@ class Dialog(QDialog):
 		self.userDescription.setWordWrap(True)
 		self.userDescription.setAlignment(Qt.AlignJustify)
 
+		banner = QLabel()
+		pixmap = QPixmap(PRIVATE_MENU_ICON)
+		banner.setPixmap(pixmap)
+
+		bannerLayout = QHBoxLayout()
+		bannerLayout.addWidget(banner)
+		bannerLayout.addWidget(QLabel("<big><b>User Information</b></big>"))
+		bannerLayout.addStretch()
+
 		userPageLayout = QVBoxLayout()
+		userPageLayout.addLayout(bannerLayout)
 		userPageLayout.addWidget(self.userDescription)
 		userPageLayout.addLayout(userLayout)
-		userPageLayout.addStretch()
-		
 
 		self.user_tab = QWidget()
 		self.user_tab.setLayout(userPageLayout)
@@ -388,7 +411,7 @@ class Dialog(QDialog):
 
 		self.commands_tab = QWidget()
 		self.commands_tab.setLayout(commandsLayout)
-		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Connection Script")
+		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -414,7 +437,6 @@ class Dialog(QDialog):
 			bannerTabs.addWidget(self.tabs)
 
 		finalLayout = QVBoxLayout()
-		if self.logo: finalLayout.addWidget(splash)
 		finalLayout.addLayout(bannerTabs)
 		finalLayout.addWidget(buttons)
 
