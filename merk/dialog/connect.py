@@ -268,7 +268,7 @@ class Dialog(QDialog):
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
-				self.setWindowTitle("Connect to IRC")
+				self.setWindowTitle("Connect")
 			else:
 				self.setWindowTitle("Connection failed")
 			self.setWindowIcon(QIcon(CONNECT_ICON))
