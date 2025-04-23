@@ -383,7 +383,7 @@ class Dialog(QDialog):
 		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
-		height = height + serverLayout.sizeHint().height() + 100
+		height = height + serverLayout.sizeHint().height() + 105
 		self.commands.setFixedHeight(height)
 
 		banner = QLabel()
@@ -408,7 +408,8 @@ class Dialog(QDialog):
 			<b>alternate</b> is the nickname to use if your primary choice is taken. If both your <b>nickname</b>
 			and <b>alternate</b> are taken, a random number will be attached to your <b>alternate</b>, and that
 			will be used as your <b>nickname</b>. When you're done, click the <b>Server</b> tab to select or enter a server.
-			All settings will be saved automatically, unless you uncheck the <b>Save to user settings file</b> checkbox below.<br>
+			All settings will be saved when you click the <b>Connect</b> button, unless you uncheck the <b>Save to user
+			settings file</b> checkbox below.<br>
 			</small>
 
 			""")
