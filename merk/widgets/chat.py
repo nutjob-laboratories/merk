@@ -85,6 +85,8 @@ class Window(QMainWindow):
 
 		self.userlist_visible = True
 
+		#self.is_hidden = False
+
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
 		self.setWindowTitle(self.name)
@@ -515,6 +517,16 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
+
+	# def doHide(self):
+	# 	if self.is_hidden: return
+	# 	self.is_hidden = True
+	# 	self.hide()
+
+	# def doShow(self):
+	# 	if self.is_hidden:
+	# 		self.show()
+	# 		self.is_hidden = False
 
 	def chatMenu(self,location):
 

@@ -2040,13 +2040,14 @@ class Merk(QMainWindow):
 					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
 					sm.addAction(entry)
 
-					# if sw.isVisible():
-					# 	entry = QAction("Hide "+name,self)
-					# 	entry.triggered.connect(lambda state,u=sw: u.hide())
+					# c = sw.widget()
+					# if c.is_hidden:
+					# 	entry = QAction("Show "+name,self)
+					# 	entry.triggered.connect(lambda state,u=c: u.doShow())
 					# 	sm.addAction(entry)
 					# else:
-					# 	entry = QAction("Show "+name,self)
-					# 	entry.triggered.connect(lambda state,u=sw: u.show())
+					# 	entry = QAction("Hide "+name,self)
+					# 	entry.triggered.connect(lambda state,u=c: u.doHide())
 					# 	sm.addAction(entry)
 
 					sm.addSeparator()
