@@ -1129,10 +1129,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				w.writeText(t)
 
 			# Write the message to the server window
-			w = gui.getServerWindow(window.client)
-			if w:
-				t = Message(SELF_MESSAGE,"->"+target,msg)
-				w.writeText(t)
+			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
+				w = gui.getServerWindow(window.client)
+				if w:
+					t = Message(SELF_MESSAGE,"->"+target,msg)
+					w.writeText(t)
 
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
