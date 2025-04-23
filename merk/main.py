@@ -108,6 +108,7 @@ class Merk(QMainWindow):
 		self.was_maximized = False
 		self.maximized_window = None
 		self.connected_to_something = False
+		self.saved_window = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -173,6 +174,18 @@ class Merk(QMainWindow):
 			self.connectToIrc(connection_info)
 
 	# Windowbar
+
+	def getActive(self):
+		return self.saved_window
+
+	def saveActive(self):
+		self.saved_window = self.MDI.activeSubWindow()
+
+	def restoreActive(self):
+		if self.saved_window!= None:
+			self.MDI.setActiveSubWindow(self.saved_window)
+		self.saved_window = None
+
 	def resizeEvent(self, event):
 		super().resizeEvent(event)
 		self.resize_timer.start(self.resize_delay)
