@@ -388,7 +388,7 @@ class Dialog(QDialog):
 
 		self.commands_tab = QWidget()
 		self.commands_tab.setLayout(commandsLayout)
-		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
+		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Connection Script")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
