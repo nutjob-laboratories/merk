@@ -101,47 +101,63 @@ class Dialog(QDialog):
 				else:
 					ussl = "normal"
 				entry = [ self.host.text(),self.port.text(),UNKNOWN_NETWORK,ussl,self.password.text() ]
-				user_history.append(entry)
+				if self.SAVE: user_history.append(entry)
 
-			# Save user settings
-			user.NICKNAME = self.nick.text()
-			user.ALTERNATE = self.alternative.text()
-			user.USERNAME = self.username.text()
-			user.REALNAME = self.realname.text()
-			user.LAST_HOST = self.host.text()
-			user.LAST_PORT = self.port.text()
-			user.LAST_PASSWORD = self.password.text()
-			user.LAST_SSL = self.CONNECT_VIA_SSL
-			user.LAST_RECONNECT = self.RECONNECT_OPTION
-			user.HISTORY = user_history
+			if self.SAVE:
+				# Save user settings
+				user.NICKNAME = self.nick.text()
+				user.ALTERNATE = self.alternative.text()
+				user.USERNAME = self.username.text()
+				user.REALNAME = self.realname.text()
+				user.LAST_HOST = self.host.text()
+				user.LAST_PORT = self.port.text()
+				user.LAST_PASSWORD = self.password.text()
+				user.LAST_SSL = self.CONNECT_VIA_SSL
+				user.LAST_RECONNECT = self.RECONNECT_OPTION
+				user.HISTORY = user_history
 
-			commands = self.commands.toPlainText()
-			hostid = self.host.text()+":"+self.port.text()
-			if hostid in user.COMMANDS:
-				if len(commands.strip())==0:
-					del user.COMMANDS[hostid]
+				commands = self.commands.toPlainText()
+				hostid = self.host.text()+":"+self.port.text()
+				if hostid in user.COMMANDS:
+					if len(commands.strip())==0:
+						del user.COMMANDS[hostid]
+					else:
+						user.COMMANDS[hostid] = self.commands.toPlainText()
 				else:
-					user.COMMANDS[hostid] = self.commands.toPlainText()
+					if len(commands.strip())>0:
+						user.COMMANDS[hostid] = self.commands.toPlainText()
+
+				user.save_user(user.USER_FILE)
+
+				retval = ConnectInfo(
+					self.nick.text(),
+					self.alternative.text(),
+					self.username.text(),
+					self.realname.text(),
+					self.host.text(),
+					int(self.port.text()),
+					self.password.text(),
+					self.RECONNECT_OPTION,
+					self.CONNECT_VIA_SSL,
+					self.EXECUTE,	# execute script
+				)
+
+				return retval
 			else:
-				if len(commands.strip())>0:
-					user.COMMANDS[hostid] = self.commands.toPlainText()
+				retval = ConnectInfo(
+					self.nick.text(),
+					self.alternative.text(),
+					self.username.text(),
+					self.realname.text(),
+					self.host.text(),
+					int(self.port.text()),
+					self.password.text(),
+					self.RECONNECT_OPTION,
+					self.CONNECT_VIA_SSL,
+					self.EXECUTE,	# execute script
+				)
 
-			user.save_user(user.USER_FILE)
-
-			retval = ConnectInfo(
-				self.nick.text(),
-				self.alternative.text(),
-				self.username.text(),
-				self.realname.text(),
-				self.host.text(),
-				int(self.port.text()),
-				self.password.text(),
-				self.RECONNECT_OPTION,
-				self.CONNECT_VIA_SSL,
-				self.EXECUTE,	# execute script
-			)
-
-			return retval
+				return retval
 
 	def setServer(self):
 
@@ -187,6 +203,12 @@ class Dialog(QDialog):
 		else:
 			self.EXECUTE = False
 
+	def clickSave(self,state):
+		if state == Qt.Checked:
+			self.SAVE = True
+		else:
+			self.SAVE = False
+
 	def clickReconnect(self,state):
 		if state == Qt.Checked:
 			self.RECONNECT_OPTION = True
@@ -231,6 +253,7 @@ class Dialog(QDialog):
 		self.CONNECT_VIA_SSL = False
 		self.RECONNECT_OPTION = False
 		self.EXECUTE = True
+		self.SAVE = True
 
 		self.exeTemplate = f"""
 			<small>
@@ -356,7 +379,7 @@ class Dialog(QDialog):
 		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
-		height = height + serverLayout.sizeHint().height() + 70
+		height = height + serverLayout.sizeHint().height() + 100
 		self.commands.setFixedHeight(height)
 
 		banner = QLabel()
@@ -386,6 +409,10 @@ class Dialog(QDialog):
 			""")
 		self.userDescription.setWordWrap(True)
 		self.userDescription.setAlignment(Qt.AlignJustify)
+
+		self.saveU = QCheckBox("Save to user settings file",self)
+		self.saveU.stateChanged.connect(self.clickSave)
+		self.saveU.toggle()
 
 		banner = QLabel()
 		pixmap = QPixmap(PRIVATE_MENU_ICON)
@@ -438,6 +465,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(bannerTabs)
+		finalLayout.addWidget(self.saveU)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
