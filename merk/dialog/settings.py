@@ -1878,7 +1878,10 @@ class Dialog(QDialog):
 		config.save_settings(config.CONFIG_FILE)
 
 		# Get current active window
-		current_window = self.parent.MDI.activeSubWindow()
+		if self.parent.connected_to_something:
+			current_window = self.parent.MDI.activeSubWindow()
+		else:
+			current_window = None
 
 		self.parent.app.setStyle(self.qt_style)
 
@@ -1948,17 +1951,18 @@ class Dialog(QDialog):
 
 		# Reset the main window name if needed
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
-			if hasattr(current_window,"widget"):
-				w = current_window.widget()
-				if hasattr(w,"client"):
-					if w.client.hostname:
-						server = w.client.hostname
-					else:
-						server = w.client.server+":"+str(w.client.port)
-					if w.window_type==SERVER_WINDOW:
-						self.parent.setWindowTitle(APPLICATION_NAME+" - "+server)
-					else:
-						self.parent.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
+			if current_window!=None:
+				if hasattr(current_window,"widget"):
+					w = current_window.widget()
+					if hasattr(w,"client"):
+						if w.client.hostname:
+							server = w.client.hostname
+						else:
+							server = w.client.server+":"+str(w.client.port)
+						if w.window_type==SERVER_WINDOW:
+							self.parent.setWindowTitle(APPLICATION_NAME+" - "+server)
+						else:
+							self.parent.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
 		else:
 			self.parent.setWindowTitle(APPLICATION_NAME)
 
