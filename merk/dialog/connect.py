@@ -360,14 +360,16 @@ class Dialog(QDialog):
 		bannerLayout.addWidget(QLabel("<big><b>Internet Relay Chat Server</b></big>"))
 		bannerLayout.addStretch()
 
+		optionLayout = QFormLayout()
+		optionLayout.addRow(self.ssl,self.reconnect)
+		optionLayout.addRow(self.exe,QLabel(''))
+
 		serverInfoLayout = QVBoxLayout()
 		serverInfoLayout.addLayout(bannerLayout)
 		serverInfoLayout.addWidget(self.serverDescription)
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
-		serverInfoLayout.addWidget(self.ssl)
-		serverInfoLayout.addWidget(self.reconnect)
-		serverInfoLayout.addWidget(self.exe)
+		serverInfoLayout.addLayout(optionLayout)
 
 		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
 		self.commandHost.setWordWrap(True)
@@ -381,7 +383,7 @@ class Dialog(QDialog):
 		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
-		height = height + serverLayout.sizeHint().height() + 125
+		height = height + serverLayout.sizeHint().height() + 100
 		self.commands.setFixedHeight(height)
 
 		banner = QLabel()
