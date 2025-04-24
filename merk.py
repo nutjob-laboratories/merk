@@ -156,7 +156,7 @@ if __name__ == '__main__':
 	if args.qtstyle!="":
 		# Set new style and save it to the config
 		config.QT_WINDOW_STYLE = args.qtstyle
-		config.save_settings(config.CONFIG_FILE)
+		if not args.donotsave: config.save_settings(config.CONFIG_FILE)
 
 	# Apply new style
 	app.setStyle(config.QT_WINDOW_STYLE)
