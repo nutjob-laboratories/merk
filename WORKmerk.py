@@ -433,7 +433,7 @@ if __name__ == '__main__':
 						app,				# Application
 						args.configdir,		# Config directory, default None for home directory storage
 						args.configname,	# Config directory name, default ".merk"
-						connections,	# Connection info
+						connections,		# Connection info
 						font,				# Application font
 						[],					# Channels
 						args.quiet,			# Do not execute script default
