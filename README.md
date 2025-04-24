@@ -14,9 +14,9 @@
  - [What does MERK mean?](#what-does-merk-mean)
  - [Developing MERK](#developing-merk)
 
- <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.033.086</a></b></h1></p>
+ <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.033.088</a></b></h1></p>
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.033.086**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.033.088**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
@@ -116,10 +116,10 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 # Usage
 
 ```
+
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C NAME]
-                      [-D DIRECTORY] [-L] [-S DIRECTORY] [-Q NAME]
-                      [-N] [-X] [-Y]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C NAME] [-D DIRECTORY]
+                      [-L] [-S DIRECTORY] [-Q NAME] [-N] [-X] [-Y] [-Z]
                       [SERVER] [PORT]
 
 options:
@@ -130,35 +130,37 @@ Connection:
   PORT                  Server port to connect to (6667)
   --ssl, --tls          Use SSL/TLS to connect to IRC
   --reconnect           Reconnect to servers on disconnection
-  -p, --password PASSWORD
+  -p PASSWORD, --password PASSWORD
                         Use server password to connect
-  -c, --channel CHANNEL[:KEY]
+  -c CHANNEL[:KEY], --channel CHANNEL[:KEY]
                         Join channel on connection
-  -n, --nickname NICKNAME
+  -n NICKNAME, --nickname NICKNAME
                         Use this nickname to connect
-  -u, --username USERNAME
+  -u USERNAME, --username USERNAME
                         Use this username to connect
-  -a, --alternate NICKNAME
+  -a NICKNAME, --alternate NICKNAME
                         Use this alternate nickname to connect
-  -r, --realname REALNAME
+  -r REALNAME, --realname REALNAME
                         Use this realname to connect
   -q, --quiet           Do not execute connection script
   -d, --donotsave       Do not save new user settings
 
 Configuration:
-  -C, --config-name NAME
+  -C NAME, --config-name NAME
                         Name of the configuration file directory (default: .merk)
-  -D, --config-directory DIRECTORY
+  -D DIRECTORY, --config-directory DIRECTORY
                         Location to store configuration files
   -L, --config-local    Store configuration files in install directory
-  -S, --scripts-directory DIRECTORY
+  -S DIRECTORY, --scripts-directory DIRECTORY
                         Location to look for script files
 
 Miscellaneous:
-  -Q, --qtstyle NAME    Set Qt widget style (default: Fusion)
+  -Q NAME, --qtstyle NAME
+                        Set Qt widget style (default: Fusion)
   -N, --noask           Don't ask for connection information on start
   -X, --dark            Run in dark mode
   -Y, --light           Run in light mode
+  -Z, --simple          Show simplified connection dialog
 
 ```
 # Example Commandline Usage

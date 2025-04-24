@@ -116,10 +116,10 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 # Usage
 
 ```
+
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C NAME]
-                      [-D DIRECTORY] [-L] [-S DIRECTORY] [-Q NAME]
-                      [-N] [-X] [-Y]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C NAME] [-D DIRECTORY]
+                      [-L] [-S DIRECTORY] [-Q NAME] [-N] [-X] [-Y] [-Z]
                       [SERVER] [PORT]
 
 options:
@@ -130,35 +130,37 @@ Connection:
   PORT                  Server port to connect to (6667)
   --ssl, --tls          Use SSL/TLS to connect to IRC
   --reconnect           Reconnect to servers on disconnection
-  -p, --password PASSWORD
+  -p PASSWORD, --password PASSWORD
                         Use server password to connect
-  -c, --channel CHANNEL[:KEY]
+  -c CHANNEL[:KEY], --channel CHANNEL[:KEY]
                         Join channel on connection
-  -n, --nickname NICKNAME
+  -n NICKNAME, --nickname NICKNAME
                         Use this nickname to connect
-  -u, --username USERNAME
+  -u USERNAME, --username USERNAME
                         Use this username to connect
-  -a, --alternate NICKNAME
+  -a NICKNAME, --alternate NICKNAME
                         Use this alternate nickname to connect
-  -r, --realname REALNAME
+  -r REALNAME, --realname REALNAME
                         Use this realname to connect
   -q, --quiet           Do not execute connection script
   -d, --donotsave       Do not save new user settings
 
 Configuration:
-  -C, --config-name NAME
+  -C NAME, --config-name NAME
                         Name of the configuration file directory (default: .merk)
-  -D, --config-directory DIRECTORY
+  -D DIRECTORY, --config-directory DIRECTORY
                         Location to store configuration files
   -L, --config-local    Store configuration files in install directory
-  -S, --scripts-directory DIRECTORY
+  -S DIRECTORY, --scripts-directory DIRECTORY
                         Location to look for script files
 
 Miscellaneous:
-  -Q, --qtstyle NAME    Set Qt widget style (default: Fusion)
+  -Q NAME, --qtstyle NAME
+                        Set Qt widget style (default: Fusion)
   -N, --noask           Don't ask for connection information on start
   -X, --dark            Run in dark mode
   -Y, --light           Run in light mode
+  -Z, --simple          Show simplified connection dialog
 
 ```
 # Example Commandline Usage

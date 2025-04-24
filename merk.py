@@ -93,6 +93,7 @@ misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt w
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-X","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
 misc_group.add_argument( "-Y","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
+misc_group.add_argument( "-Z","--simple", help=f"Show simplified connection dialog", action="store_true")
 
 args = parser.parse_args()
 
@@ -341,7 +342,10 @@ if __name__ == '__main__':
 			GUI.show()
 		else:
 			# Bring up the connection dialog
-			connection_info = ConnectDialog(app,None,'','',args.quiet,args.donotsave)
+			if args.simple:
+				connection_info = ConnectDialogNoLogo(app,None,'','',args.quiet,args.donotsave)
+			else:
+				connection_info = ConnectDialog(app,None,'','',args.quiet,args.donotsave)
 			if connection_info:
 				# Create the main GUI and show it
 				GUI = Merk(
