@@ -388,7 +388,7 @@ class Dialog(QDialog):
 		if self.logo:
 			height = height + serverLayout.sizeHint().height() + 105
 		else:
-			height = height + serverLayout.sizeHint().height() + 50
+			height = height + serverLayout.sizeHint().height() + 65
 		self.commands.setFixedHeight(height)
 
 		banner = QLabel()
