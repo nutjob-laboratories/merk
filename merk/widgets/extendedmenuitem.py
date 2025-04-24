@@ -101,9 +101,32 @@ class MenuLabel(QLabel):
 			return True
 		return False
 
+class DisabledMenuLabel(QLabel):
+	clicked=pyqtSignal()
+
+	def __init__(self, parent=None):
+		QLabel.__init__(self, parent)
+		self.installEventFilter(self)
+
+	def mousePressEvent(self, ev):
+		self.clicked.emit()
+
+	def eventFilter(self, object, event):
+		
+		return False
+
 def ExtendedMenuItem(self,icon,title,description,icon_size,func):
 
 	erkmenuLabel = MenuLabel( menuHtml(icon,title,description,icon_size) )
+	erkmenuAction = QWidgetAction(self)
+	erkmenuAction.setDefaultWidget(erkmenuLabel)
+	erkmenuLabel.clicked.connect(func)
+
+	return erkmenuAction
+
+def DisabledExtendedMenuItem(self,icon,title,description,icon_size,func):
+
+	erkmenuLabel = DisabledMenuLabel( menuHtml(icon,title,description,icon_size) )
 	erkmenuAction = QWidgetAction(self)
 	erkmenuAction.setDefaultWidget(erkmenuLabel)
 	erkmenuLabel.clicked.connect(func)
