@@ -1368,6 +1368,7 @@ class Window(QMainWindow):
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 			if save_logs:
 				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+				self.parent.buildSettingsMenu()
 
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)

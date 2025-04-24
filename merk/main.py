@@ -1954,8 +1954,9 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
 		self.settingsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
-		self.settingsMenu.addAction(entry)
+		if(len(os.listdir(logs.LOG_DIRECTORY))>=1):
+			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+			self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
 
