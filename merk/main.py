@@ -61,6 +61,7 @@ class Merk(QMainWindow):
 			application_font=None,
 			channels=[],
 			noexecute=False,
+			donotsave=False,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -73,6 +74,7 @@ class Merk(QMainWindow):
 		self.application_font = application_font
 		self.join_channels = channels
 		self.noexecute = noexecute
+		self.donotsave = donotsave
 
 		if not test_if_window_background_is_light(self):
 			self.checked_icon = DARK_CHECKED_ICON
@@ -1386,7 +1388,7 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.noexecute)
+		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.noexecute,self.donotsave)
 
 		if connection:
 			
@@ -1453,7 +1455,7 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			connection = ConnectDialogNoLogo(self.app,self,'','',self.noexecute)
+			connection = ConnectDialogNoLogo(self.app,self,'','',self.noexecute,self.donotsave)
 		if connection:
 			
 			if connection.reconnect:

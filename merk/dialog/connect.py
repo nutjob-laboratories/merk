@@ -44,8 +44,8 @@ from .. import syntax
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,noexecute=False):
-		dialog = Dialog(app,parent,dismsg,reason,logo,noexecute)
+	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False):
+		dialog = Dialog(app,parent,dismsg,reason,logo,noexecute,donotsave)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -234,7 +234,7 @@ class Dialog(QDialog):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
-	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False):
+	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
@@ -243,6 +243,7 @@ class Dialog(QDialog):
 		self.reason = reason
 		self.logo = logo
 		self.noexecute = noexecute
+		self.donotsave = donotsave
 
 		self.StoredData = []
 		self.StoredServer = 0
@@ -419,6 +420,8 @@ class Dialog(QDialog):
 		self.saveU = QCheckBox("Save to user settings file",self)
 		self.saveU.stateChanged.connect(self.clickSave)
 		self.saveU.toggle()
+
+		if self.donotsave: self.saveU.toggle()
 
 		banner = QLabel()
 		pixmap = QPixmap(PRIVATE_MENU_ICON)
