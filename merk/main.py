@@ -1955,7 +1955,7 @@ class Merk(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		if(len(os.listdir(logs.LOG_DIRECTORY))==0):
-			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','No logs to export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 			entry.setEnabled(False)
 		else:
 			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
