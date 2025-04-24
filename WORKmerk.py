@@ -80,8 +80,8 @@ congroup.add_argument("-q","--quiet", help=f"Do not execute connection script", 
 congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 
 
-congroup.add_argument('--connect', action='append', help='Connect to SERVER:PORT[:PASSWORD] via TCP/IP')
-congroup.add_argument('--connectssl','--connecttls', action='append', help='Connect to SERVER:PORT[:PASSWORD] via SSL/TLS')
+congroup.add_argument('--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
+congroup.add_argument('--connectssl','--connecttls', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
 
 
 configuration_group = parser.add_argument_group('Configuration')
@@ -351,8 +351,8 @@ if __name__ == '__main__':
 			GUI.show()
 		else:
 
+			connections = []
 			if args.connect:
-				connections = []
 				for c in args.connect:
 					serv = c.split(':')
 					if len(serv)==3:
@@ -374,9 +374,64 @@ if __name__ == '__main__':
 						sys.stdout.write("Port must be a number!\n")
 						sys.exit(1)
 
+					port = int(port)
+
 					i = create_connection(server,port,password,False)
 					connections.append(i)
 
+			if args.connectssl:
+				for c in args.connectssl:
+					serv = c.split(':')
+					if len(serv)==3:
+						server = serv[0]
+						port = serv[1]
+						password = serv[2]
+					elif len(serv)==2:
+						server = serv[0]
+						port = serv[1]
+						password = ''
+					else:
+						server = c
+						port = 6667
+						password = ''
+
+					try:
+						int(port)
+					except:
+						sys.stdout.write("Port must be a number!\n")
+						sys.exit(1)
+
+					port = int(port)
+
+					i = create_connection(server,port,password,True)
+					connections.append(i)
+
+
+			# Bring up the connection dialog
+			if len(connections)==0:
+				if args.simple:
+					connection_info = ConnectDialogNoLogo(app,None,'','',args.quiet,args.donotsave)
+				else:
+					connection_info = ConnectDialog(app,None,'','',args.quiet,args.donotsave)
+				if connection_info:
+					# Create the main GUI and show it
+					GUI = Merk(
+							app,				# Application
+							args.configdir,		# Config directory, default None for home directory storage
+							args.configname,	# Config directory name, default ".merk"
+							connection_info,	# Connection info
+							font,				# Application font
+							[],					# Channels
+							args.quiet,			# Do not execute script default
+							args.donotsave,		# Do not save default
+							None,				# Parent
+						)
+
+					GUI.show()
+				else:
+					app.quit()
+			else:
+				# Create the main GUI and show it
 				GUI = Merk(
 						app,				# Application
 						args.configdir,		# Config directory, default None for home directory storage
@@ -390,30 +445,6 @@ if __name__ == '__main__':
 					)
 
 				GUI.show()
-
-
-			# Bring up the connection dialog
-			if args.simple:
-				connection_info = ConnectDialogNoLogo(app,None,'','',args.quiet,args.donotsave)
-			else:
-				connection_info = ConnectDialog(app,None,'','',args.quiet,args.donotsave)
-			if connection_info:
-				# Create the main GUI and show it
-				GUI = Merk(
-						app,				# Application
-						args.configdir,		# Config directory, default None for home directory storage
-						args.configname,	# Config directory name, default ".merk"
-						connection_info,	# Connection info
-						font,				# Application font
-						[],					# Channels
-						args.quiet,			# Do not execute script default
-						args.donotsave,		# Do not save default
-						None,				# Parent
-					)
-
-				GUI.show()
-			else:
-				app.quit()
 
 	# Start the reactor!
 	reactor.run()
