@@ -367,7 +367,8 @@ class Dialog(QDialog):
 
 		serverInfoLayout = QVBoxLayout()
 		serverInfoLayout.addLayout(bannerLayout)
-		serverInfoLayout.addWidget(self.serverDescription)
+		if self.logo:
+			serverInfoLayout.addWidget(self.serverDescription)
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)
@@ -384,7 +385,10 @@ class Dialog(QDialog):
 		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
-		height = height + serverLayout.sizeHint().height() + 105
+		if self.logo:
+			height = height + serverLayout.sizeHint().height() + 105
+		else:
+			height = height + serverLayout.sizeHint().height() + 50
 		self.commands.setFixedHeight(height)
 
 		banner = QLabel()
@@ -398,7 +402,8 @@ class Dialog(QDialog):
 
 		commandsLayout = QVBoxLayout()
 		commandsLayout.addLayout(bannerLayout)
-		commandsLayout.addWidget(self.commandHost)
+		if self.logo:
+			commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
 
 		self.tabs = QTabWidget()
@@ -434,7 +439,10 @@ class Dialog(QDialog):
 
 		userPageLayout = QVBoxLayout()
 		userPageLayout.addLayout(bannerLayout)
-		userPageLayout.addWidget(self.userDescription)
+		if self.logo:
+			userPageLayout.addWidget(self.userDescription)
+		else:
+			userPageLayout.addStretch()
 		userPageLayout.addLayout(userLayout)
 		userPageLayout.addStretch()
 
