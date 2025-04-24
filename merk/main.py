@@ -174,7 +174,8 @@ class Merk(QMainWindow):
 
 		if connection_info:
 			if isinstance(connection_info, list):
-				pass
+				for c in connection_info:
+					self.connectToIrc(c)
 			else:
 				self.connectToIrc(connection_info)
 
