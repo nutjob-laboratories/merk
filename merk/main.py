@@ -173,7 +173,10 @@ class Merk(QMainWindow):
 		self.initWindowbar()
 
 		if connection_info:
-			self.connectToIrc(connection_info)
+			if isinstance(connection_info, list):
+				pass
+			else:
+				self.connectToIrc(connection_info)
 
 	# Windowbar
 
