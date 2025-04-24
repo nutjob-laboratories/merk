@@ -78,22 +78,24 @@ congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nick
 congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
 congroup.add_argument("-q","--quiet", help=f"Do not execute connection script", action="store_true")
 congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
+congroup.add_argument('-C','--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
+congroup.add_argument('-S','--connectssl', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
 
 
 configuration_group = parser.add_argument_group('Configuration')
 
-configuration_group.add_argument( "-C","--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
-configuration_group.add_argument( "-D","--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
-configuration_group.add_argument( "-L","--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
-configuration_group.add_argument( "-S","--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
+configuration_group.add_argument( "--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
+configuration_group.add_argument( "--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
+configuration_group.add_argument( "--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
+configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Fusion)", metavar="NAME", default="")
 misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
-misc_group.add_argument( "-X","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
-misc_group.add_argument( "-Y","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
-misc_group.add_argument( "-Z","--simple", help=f"Show simplified connection dialog", action="store_true")
+misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
+misc_group.add_argument( "-L","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
+misc_group.add_argument( "-E","--simple", help=f"Show simplified connection dialog", action="store_true")
 
 args = parser.parse_args()
 
@@ -205,25 +207,11 @@ if __name__ == '__main__':
 
 			""")
 
-	# Handle connecting to a server if one has been provided
-	if args.server:
-
-		if args.password=='':
+	def create_connection(host,port,password,ssl):
+		if password=='':
 			pword = None
 		else:
-			pword = args.password
-
-		chans = []
-		if args.channel:
-			for c in args.channel:
-				if type(c)==list:
-					chans.append(c)
-				else:
-					p = c.split(':')
-					if len(p)==2:
-						chans.append(p)
-					else:
-						chans.append( [c,''] )
+			pword = password
 
 		# Load in user settings
 		user.load_user(user.USER_FILE)
@@ -279,13 +267,32 @@ if __name__ == '__main__':
 			args.alternate,
 			args.username,
 			args.realname,
-			args.server,
-			args.port,
+			host,
+			port,
 			pword,
 			args.reconnect,
-			args.ssl,
+			ssl,
 			EXECUTE_CONNECTION_SCRIPT, # execute script
-		)
+			)
+
+		return i
+
+	# Handle connecting to a server if one has been provided
+	if args.server:
+
+		chans = []
+		if args.channel:
+			for c in args.channel:
+				if type(c)==list:
+					chans.append(c)
+				else:
+					p = c.split(':')
+					if len(p)==2:
+						chans.append(p)
+					else:
+						chans.append( [c,''] )
+
+		i = create_connection(args.server,args.port,args.password,args.ssl)
 
 		GUI = Merk(
 				app,				# Application
@@ -341,18 +348,92 @@ if __name__ == '__main__':
 
 			GUI.show()
 		else:
+
+			connections = []
+			if args.connect:
+				for c in args.connect:
+					serv = c.split(':')
+					if len(serv)==3:
+						server = serv[0]
+						port = serv[1]
+						password = serv[2]
+					elif len(serv)==2:
+						server = serv[0]
+						port = serv[1]
+						password = ''
+					else:
+						server = c
+						port = 6667
+						password = ''
+
+					try:
+						int(port)
+					except:
+						sys.stdout.write("Port must be a number!\n")
+						sys.exit(1)
+
+					port = int(port)
+
+					i = create_connection(server,port,password,False)
+					connections.append(i)
+
+			if args.connectssl:
+				for c in args.connectssl:
+					serv = c.split(':')
+					if len(serv)==3:
+						server = serv[0]
+						port = serv[1]
+						password = serv[2]
+					elif len(serv)==2:
+						server = serv[0]
+						port = serv[1]
+						password = ''
+					else:
+						server = c
+						port = 6697
+						password = ''
+
+					try:
+						int(port)
+					except:
+						sys.stdout.write("Port must be a number!\n")
+						sys.exit(1)
+
+					port = int(port)
+
+					i = create_connection(server,port,password,True)
+					connections.append(i)
+
 			# Bring up the connection dialog
-			if args.simple:
-				connection_info = ConnectDialogNoLogo(app,None,'','',args.quiet,args.donotsave)
+			if len(connections)==0:
+				if args.simple:
+					connection_info = ConnectDialogNoLogo(app,None,'','',args.quiet,args.donotsave)
+				else:
+					connection_info = ConnectDialog(app,None,'','',args.quiet,args.donotsave)
+				if connection_info:
+					# Create the main GUI and show it
+					GUI = Merk(
+							app,				# Application
+							args.configdir,		# Config directory, default None for home directory storage
+							args.configname,	# Config directory name, default ".merk"
+							connection_info,	# Connection info
+							font,				# Application font
+							[],					# Channels
+							args.quiet,			# Do not execute script default
+							args.donotsave,		# Do not save default
+							None,				# Parent
+						)
+
+					GUI.show()
+				else:
+					app.quit()
 			else:
-				connection_info = ConnectDialog(app,None,'','',args.quiet,args.donotsave)
-			if connection_info:
 				# Create the main GUI and show it
 				GUI = Merk(
 						app,				# Application
 						args.configdir,		# Config directory, default None for home directory storage
 						args.configname,	# Config directory name, default ".merk"
-						connection_info,	# Connection info
+						connections,		# Connection info
 						font,				# Application font
 						[],					# Channels
 						args.quiet,			# Do not execute script default
@@ -361,8 +442,6 @@ if __name__ == '__main__':
 					)
 
 				GUI.show()
-			else:
-				app.quit()
 
 	# Start the reactor!
 	reactor.run()

@@ -14,9 +14,9 @@
  - [What does MERK mean?](#what-does-merk-mean)
  - [Developing MERK](#developing-merk)
 
- <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.033.089</a></b></h1></p>
+ <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.034.001</a></b></h1></p>
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.033.089**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.034.001**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
@@ -118,8 +118,9 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 ```
 
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C NAME] [-D DIRECTORY]
-                      [-L] [-S DIRECTORY] [-Q NAME] [-N] [-X] [-Y] [-Z]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C SERVER:PORT[:PASSWORD]]
+                      [-S SERVER:PORT[:PASSWORD]] [--config-name NAME] [--config-directory DIRECTORY]
+                      [--config-local] [--scripts-directory DIRECTORY] [-Q NAME] [-N] [-D] [-L] [-E]
                       [SERVER] [PORT]
 
 options:
@@ -130,37 +131,39 @@ Connection:
   PORT                  Server port to connect to (6667)
   --ssl, --tls          Use SSL/TLS to connect to IRC
   --reconnect           Reconnect to servers on disconnection
-  -p PASSWORD, --password PASSWORD
+  -p, --password PASSWORD
                         Use server password to connect
-  -c CHANNEL[:KEY], --channel CHANNEL[:KEY]
+  -c, --channel CHANNEL[:KEY]
                         Join channel on connection
-  -n NICKNAME, --nickname NICKNAME
+  -n, --nickname NICKNAME
                         Use this nickname to connect
-  -u USERNAME, --username USERNAME
+  -u, --username USERNAME
                         Use this username to connect
-  -a NICKNAME, --alternate NICKNAME
+  -a, --alternate NICKNAME
                         Use this alternate nickname to connect
-  -r REALNAME, --realname REALNAME
+  -r, --realname REALNAME
                         Use this realname to connect
   -q, --quiet           Do not execute connection script
   -d, --donotsave       Do not save new user settings
+  -C, --connect SERVER:PORT[:PASSWORD]
+                        Connect to server via TCP/IP
+  -S, --connectssl SERVER:PORT[:PASSWORD]
+                        Connect to server via SSL/TLS
 
 Configuration:
-  -C NAME, --config-name NAME
-                        Name of the configuration file directory (default: .merk)
-  -D DIRECTORY, --config-directory DIRECTORY
+  --config-name NAME    Name of the configuration file directory (default: .merk)
+  --config-directory DIRECTORY
                         Location to store configuration files
-  -L, --config-local    Store configuration files in install directory
-  -S DIRECTORY, --scripts-directory DIRECTORY
+  --config-local        Store configuration files in install directory
+  --scripts-directory DIRECTORY
                         Location to look for script files
 
 Miscellaneous:
-  -Q NAME, --qtstyle NAME
-                        Set Qt widget style (default: Fusion)
+  -Q, --qtstyle NAME    Set Qt widget style (default: Fusion)
   -N, --noask           Don't ask for connection information on start
-  -X, --dark            Run in dark mode
-  -Y, --light           Run in light mode
-  -Z, --simple          Show simplified connection dialog
+  -D, --dark            Run in dark mode
+  -L, --light           Run in light mode
+  -E, --simple          Show simplified connection dialog
 
 ```
 # Example Commandline Usage
@@ -174,8 +177,14 @@ python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.ch
 ```
 You can do some things with the commandline that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the "C:\Merk_Scripts" folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
 ```
-python merk.py --light -C .mymerk -S "C:\Merk_Scripts" --noask
+python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --noask
 ```
+Now, let's try something that commonly done with other IRC client.. You want to use your standard settings, but connect to two different IRC servers as soon as you run **MERK**: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:
+```
+python merk.py -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
+```
+This command will start up **MERK** and connect to three of these servers without any extra effort!
+
 All commandline options are what they say on the tin: _optional_. Just running the script with no commandline options will initally open up the connection dialog, and you can do just about everything completely inside the GUI.
 
 # Why does MERK exist?
