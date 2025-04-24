@@ -285,7 +285,10 @@ class Merk(QMainWindow):
 			entry = listOfConnections[i]
 
 			if config.WINDOWBAR_INCLUDE_SERVERS:
-				window_list.append(self.getServerSubWindow(entry))
+				w = self.getServerSubWindow(entry)
+				if hasattr(w,"isVisible"):
+					if w.isVisible():
+						window_list.append(self.getServerSubWindow(entry))
 
 			for window in self.getAllSubChatWindows(entry):
 				window_list.append(window)

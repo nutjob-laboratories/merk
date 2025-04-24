@@ -1315,6 +1315,7 @@ class Window(QMainWindow):
 		if self.window_type==SERVER_WINDOW:
 			event.ignore()
 			self.parent.hideSubWindow(self.subwindow_id)
+			self.parent.MDI.activateNextSubWindow()
 			return
 
 		# If this is a channel window, sent a part command
