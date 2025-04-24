@@ -78,8 +78,6 @@ congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nick
 congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
 congroup.add_argument("-q","--quiet", help=f"Do not execute connection script", action="store_true")
 congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
-
-
 congroup.add_argument('--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
 congroup.add_argument('--connectssl','--connecttls', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
 
@@ -392,7 +390,7 @@ if __name__ == '__main__':
 						password = ''
 					else:
 						server = c
-						port = 6667
+						port = 6697
 						password = ''
 
 					try:
@@ -405,7 +403,6 @@ if __name__ == '__main__':
 
 					i = create_connection(server,port,password,True)
 					connections.append(i)
-
 
 			# Bring up the connection dialog
 			if len(connections)==0:
