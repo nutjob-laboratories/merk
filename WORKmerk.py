@@ -79,7 +79,7 @@ congroup.add_argument("-r","--realname", type=str,help="Use this realname to con
 congroup.add_argument("-q","--quiet", help=f"Do not execute connection script", action="store_true")
 congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 congroup.add_argument('--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
-congroup.add_argument('--connectssl','--connecttls', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
+congroup.add_argument('--connectssl', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
 
 
 configuration_group = parser.add_argument_group('Configuration')
