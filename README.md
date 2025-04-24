@@ -179,7 +179,7 @@ You can do some things with the commandline that you can't do with the GUI. Let'
 ```
 python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --noask
 ```
-Now, let's try something that commonly done with other IRC client.. You want to use your standard settings, but connect to three different IRC servers as soon as you run **MERK**: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:
+Now, let's try something that commonly done with other IRC clients: connecting to multiple servers automatically on startup. You want to use your standard settings, but connect to three different IRC servers as soon as you run **MERK**: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:
 ```
 python merk.py -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
 ```
