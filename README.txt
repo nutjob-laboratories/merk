@@ -118,9 +118,9 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 ```
 
 usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-q] [-d] [-C SERVER:PORT[:PASSWORD]]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-x] [-d] [-C SERVER:PORT[:PASSWORD]]
                       [-S SERVER:PORT[:PASSWORD]] [--config-name NAME] [--config-directory DIRECTORY]
-                      [--config-local] [--scripts-directory DIRECTORY] [-Q NAME] [-N] [-D] [-L] [-E]
+                      [--config-local] [--scripts-directory DIRECTORY] [-Q NAME] [-R] [-D] [-L] [-E]
                       [SERVER] [PORT]
 
 options:
@@ -143,7 +143,7 @@ Connection:
                         Use this alternate nickname to connect
   -r, --realname REALNAME
                         Use this realname to connect
-  -q, --quiet           Do not execute connection script
+  -x, --donotexecute    Do not execute connection script
   -d, --donotsave       Do not save new user settings
   -C, --connect SERVER:PORT[:PASSWORD]
                         Connect to server via TCP/IP
@@ -160,7 +160,7 @@ Configuration:
 
 Miscellaneous:
   -Q, --qtstyle NAME    Set Qt widget style (default: Fusion)
-  -N, --noask           Don't ask for connection information on start
+  -R, --run             Don't ask for connection information on start
   -D, --dark            Run in dark mode
   -L, --light           Run in light mode
   -E, --simple          Show simplified connection dialog
@@ -177,7 +177,7 @@ python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.ch
 ```
 You can do some things with the commandline that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the "C:\Merk_Scripts" folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
 ```
-python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --noask
+python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
 ```
 Now, let's try something that commonly done with other IRC clients: connecting to multiple servers automatically on startup. You want to use your standard settings, but connect to three different IRC servers as soon as you run **MERK**: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:
 ```

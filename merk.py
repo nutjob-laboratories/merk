@@ -76,7 +76,7 @@ congroup.add_argument("-n","--nickname", type=str,help="Use this nickname to con
 congroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
 congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
 congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
-congroup.add_argument("-q","--quiet", help=f"Do not execute connection script", action="store_true")
+congroup.add_argument("-x","--donotexecute",dest="quiet", help=f"Do not execute connection script", action="store_true")
 congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 congroup.add_argument('-C','--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
 congroup.add_argument('-S','--connectssl', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
@@ -92,7 +92,7 @@ configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=st
 misc_group = parser.add_argument_group('Miscellaneous')
 
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Fusion)", metavar="NAME", default="")
-misc_group.add_argument( "-N","--noask", help=f"Don't ask for connection information on start", action="store_true")
+misc_group.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
 misc_group.add_argument( "-L","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
 misc_group.add_argument( "-E","--simple", help=f"Show simplified connection dialog", action="store_true")
