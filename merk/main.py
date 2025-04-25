@@ -840,6 +840,7 @@ class Merk(QMainWindow):
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
 			c.writeText(t)
+			self.saveActive()
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1836,6 +1837,7 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
+		self.saveActive()
 
 		return w
 
@@ -1846,6 +1848,7 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
+		self.saveActive()
 
 		return w
 
@@ -1857,6 +1860,7 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
+		self.saveActive()
 
 		return w
 
