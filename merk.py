@@ -277,6 +277,10 @@ if __name__ == '__main__':
 
 		return i
 
+	def startMERK(app,gui):
+		gui.show()
+		reactor.run()
+
 	# Handle connecting to a server if one has been provided
 	if args.server:
 
@@ -301,12 +305,12 @@ if __name__ == '__main__':
 				i,					# Connection info
 				font,				# Application font
 				chans,				# Channels
-				args.donotexecute,			# Do not execute script default
+				args.donotexecute,	# Do not execute script default
 				args.donotsave,		# Do not save default
 				None,				# Parent
 			)
 
-		GUI.show()
+		startMERK(app,GUI)
 
 	else:
 
@@ -341,12 +345,12 @@ if __name__ == '__main__':
 					None,				# Connection info
 					font,				# Application font
 					[],					# Channels
-					args.donotexecute,			# Do not execute script default
+					args.donotexecute,	# Do not execute script default
 					args.donotsave,		# Do not save default
 					None,				# Parent
 				)
 
-			GUI.show()
+			startMERK(app,GUI)
 		else:
 
 			connections = []
@@ -419,12 +423,12 @@ if __name__ == '__main__':
 							connection_info,	# Connection info
 							font,				# Application font
 							[],					# Channels
-							args.donotexecute,			# Do not execute script default
+							args.donotexecute,	# Do not execute script default
 							args.donotsave,		# Do not save default
 							None,				# Parent
 						)
 
-					GUI.show()
+					startMERK(app,GUI)
 				else:
 					app.quit()
 			else:
@@ -453,12 +457,9 @@ if __name__ == '__main__':
 						connections,		# Connection info
 						font,				# Application font
 						chans,				# Channels
-						args.donotexecute,			# Do not execute script default
+						args.donotexecute,	# Do not execute script default
 						args.donotsave,		# Do not save default
 						None,				# Parent
 					)
 
-				GUI.show()
-
-	# Start the reactor!
-	reactor.run()
+				startMERK(app,GUI)
