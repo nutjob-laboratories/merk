@@ -428,6 +428,23 @@ if __name__ == '__main__':
 				else:
 					app.quit()
 			else:
+
+				# If the --channel argument is used,
+				# make sure the channels are passed
+				# I'm not sure why someone would do this,
+				# but who am I to judge?
+				chans = []
+				if args.channel:
+					for c in args.channel:
+						if type(c)==list:
+							chans.append(c)
+						else:
+							p = c.split(':')
+							if len(p)==2:
+								chans.append(p)
+							else:
+								chans.append( [c,''] )
+
 				# Create the main GUI and show it
 				GUI = Merk(
 						app,				# Application
@@ -435,7 +452,7 @@ if __name__ == '__main__':
 						args.configname,	# Config directory name, default ".merk"
 						connections,		# Connection info
 						font,				# Application font
-						[],					# Channels
+						chans,				# Channels
 						args.quiet,			# Do not execute script default
 						args.donotsave,		# Do not save default
 						None,				# Parent
