@@ -560,6 +560,10 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
+				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
+				entry.triggered.connect(self.pressedStyleButton)
+				menu.addAction(entry)
+
 			if self.window_type==CHANNEL_WINDOW:
 
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
