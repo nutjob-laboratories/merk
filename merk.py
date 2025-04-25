@@ -76,7 +76,7 @@ congroup.add_argument("-n","--nickname", type=str,help="Use this nickname to con
 congroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
 congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
 congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
-congroup.add_argument("-x","--donotexecute",dest="quiet", help=f"Do not execute connection script", action="store_true")
+congroup.add_argument("-x","--donotexecute", help=f"Do not execute connection script", action="store_true")
 congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 congroup.add_argument('-C','--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
 congroup.add_argument('-S','--connectssl', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
@@ -257,7 +257,7 @@ if __name__ == '__main__':
 			if not args.donotsave:
 				user.save_user(user.USER_FILE)
 
-		if args.quiet==True:
+		if args.donotexecute==True:
 			EXECUTE_CONNECTION_SCRIPT = False
 		else:
 			EXECUTE_CONNECTION_SCRIPT = True
@@ -301,7 +301,7 @@ if __name__ == '__main__':
 				i,					# Connection info
 				font,				# Application font
 				chans,				# Channels
-				args.quiet,			# Do not execute script default
+				args.donotexecute,			# Do not execute script default
 				args.donotsave,		# Do not save default
 				None,				# Parent
 			)
@@ -341,7 +341,7 @@ if __name__ == '__main__':
 					None,				# Connection info
 					font,				# Application font
 					[],					# Channels
-					args.quiet,			# Do not execute script default
+					args.donotexecute,			# Do not execute script default
 					args.donotsave,		# Do not save default
 					None,				# Parent
 				)
@@ -407,9 +407,9 @@ if __name__ == '__main__':
 			# Bring up the connection dialog
 			if len(connections)==0:
 				if args.simple:
-					connection_info = ConnectDialogNoLogo(app,None,'','',args.quiet,args.donotsave)
+					connection_info = ConnectDialogSimplified(app,None,'','',args.donotexecute,args.donotsave)
 				else:
-					connection_info = ConnectDialog(app,None,'','',args.quiet,args.donotsave)
+					connection_info = ConnectDialog(app,None,'','',args.donotexecute,args.donotsave)
 				if connection_info:
 					# Create the main GUI and show it
 					GUI = Merk(
@@ -419,7 +419,7 @@ if __name__ == '__main__':
 							connection_info,	# Connection info
 							font,				# Application font
 							[],					# Channels
-							args.quiet,			# Do not execute script default
+							args.donotexecute,			# Do not execute script default
 							args.donotsave,		# Do not save default
 							None,				# Parent
 						)
@@ -453,7 +453,7 @@ if __name__ == '__main__':
 						connections,		# Connection info
 						font,				# Application font
 						chans,				# Channels
-						args.quiet,			# Do not execute script default
+						args.donotexecute,			# Do not execute script default
 						args.donotsave,		# Do not save default
 						None,				# Parent
 					)

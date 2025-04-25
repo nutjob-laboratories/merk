@@ -145,7 +145,7 @@ def ConnectDialog(obj,parent=None,dismsg='',reason='',noexecute=False,donotsave=
 	if not info: return None
 	return info
 
-def ConnectDialogNoLogo(obj,parent=None,dismsg='',reason='',noexecute=False,donotsave=False):
+def ConnectDialogSimplified(obj,parent=None,dismsg='',reason='',noexecute=False,donotsave=False):
 	x = Connect(obj,parent,dismsg,reason,False,noexecute,donotsave)
 	info = x.get_connect_information(obj,parent,dismsg,reason,False,noexecute,donotsave)
 	del x

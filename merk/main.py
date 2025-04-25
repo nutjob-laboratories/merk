@@ -1396,7 +1396,7 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		connection = ConnectDialogNoLogo(self.app,self,message,reason,self.noexecute,self.donotsave)
+		connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
 
 		if connection:
 			
@@ -1463,7 +1463,7 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			connection = ConnectDialogNoLogo(self.app,self,'','',self.noexecute,self.donotsave)
+			connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
 		if connection:
 			
 			if connection.reconnect:
