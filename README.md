@@ -38,6 +38,10 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
     - Over 80 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
     - Almost all settings can be changed in the settings dialog without a restart. Have fun testing different options!
     - Configuration data is stored in JSON
+ -  Extensive commandline options
+    - Set defaults and settings
+    - Connect to one or multiple servers automatically on start-up
+    - Almost everything about how **MERK** starts up can be customized
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
     - Text customization can be saved to importable files
