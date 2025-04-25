@@ -723,7 +723,7 @@ class Dialog(QDialog):
 			as those are set and controlled by the text style system.
 			<br><br>
 			<b>If dark mode is enabled or disabled, the application must be restarted to use the
-			new application palette.</b>
+			new palette.</b>
 			</small>
 			<br>
 			""")
