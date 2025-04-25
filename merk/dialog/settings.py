@@ -652,6 +652,9 @@ class Dialog(QDialog):
 		if config.DARK_MODE: self.darkMode.setChecked(True)
 		self.darkMode.stateChanged.connect(self.setDarkMode)
 
+		self.simpleConnect = QCheckBox("Simplified connection dialog",self)
+		if config.SIMPLIFIED_CONNECT_DIALOG: self.simpleConnect.setChecked(True)
+		self.simpleConnect.stateChanged.connect(self.changedSetting)
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
@@ -666,6 +669,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showInfo)
 		applicationLayout.addWidget(self.showInputMenu)
 		applicationLayout.addWidget(self.showContext)
+		applicationLayout.addWidget(self.simpleConnect)
 		applicationLayout.addWidget(self.darkMode)
 		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
@@ -1868,6 +1872,7 @@ class Dialog(QDialog):
 		config.MAIN_MENU_WINDOWS_NAME = self.default_windows_menu
 		config.MAIN_MENU_HELP_NAME = self.default_help_menu
 		config.DARK_MODE = self.darkMode.isChecked()
+		config.SIMPLIFIED_CONNECT_DIALOG = self.simpleConnect.isChecked()
 
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()

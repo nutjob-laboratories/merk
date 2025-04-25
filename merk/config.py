@@ -137,6 +137,8 @@ MAIN_MENU_WINDOWS_NAME = "Windows"
 MAIN_MENU_HELP_NAME = "Help"
 DARK_MODE = False
 
+SIMPLIFIED_CONNECT_DIALOG = False
+
 def save_settings(filename):
 
 	settings = {
@@ -237,12 +239,15 @@ def save_settings(filename):
 		"main_menu_windows_name": MAIN_MENU_WINDOWS_NAME,
 		"main_menu_help_name": MAIN_MENU_HELP_NAME,
 		"dark_mode": DARK_MODE,
+		"simplified_connection_dialog": SIMPLIFIED_CONNECT_DIALOG,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "simplified_connection_dialog" in settings:
+		settings["simplified_connection_dialog"] = SIMPLIFIED_CONNECT_DIALOG
 	if not "dark_mode" in settings:
 		settings["dark_mode"] = DARK_MODE
 	if not "main_menu_irc_name" in settings:
@@ -539,6 +544,7 @@ def load_settings(filename):
 	global MENUBAR_MENU
 	global MAIN_MENU_HELP_NAME
 	global DARK_MODE
+	global SIMPLIFIED_CONNECT_DIALOG
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -548,6 +554,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SIMPLIFIED_CONNECT_DIALOG = settings["simplified_connection_dialog"]
 		DARK_MODE = settings["dark_mode"]
 		MAIN_MENU_IRC_NAME = settings["main_menu_irc_name"]
 		MAIN_MENU_TOOLS_NAME = settings["main_menu_tools_name"]
