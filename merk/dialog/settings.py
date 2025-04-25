@@ -721,8 +721,8 @@ class Dialog(QDialog):
 			Dark mode changes the application palette to darker colors, which
 			is supposed to decrease eye strain. Text display colors are unchanged,
 			as those are set and controlled by the text style system.
-			<br><br><b>If dark mode
-			is enabled or disabled, the application must be restarted to use the
+			<br><br>
+			<b>If dark mode is enabled or disabled, the application must be restarted to use the
 			new application palette.</b>
 			</small>
 			<br>
