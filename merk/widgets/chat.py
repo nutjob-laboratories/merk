@@ -1412,6 +1412,9 @@ class Window(QMainWindow):
 		user_input = self.input.text()
 		self.input.setText('')
 
+		# Save active window
+		self.parent.saveActive()
+
 		# ================================
 		# BEGIN COMMAND HISTORY MANAGEMENT
 		# ================================
