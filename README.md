@@ -117,10 +117,12 @@ First, make sure that all the requirements are installed. Next, [download **MERK
 
 ```
 
-usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-x] [-d] [-C SERVER:PORT[:PASSWORD]]
-                      [-S SERVER:PORT[:PASSWORD]] [--config-name NAME] [--config-directory DIRECTORY]
-                      [--config-local] [--scripts-directory DIRECTORY] [-Q NAME] [-R] [-D] [-L] [-E]
+usage: python merk.py [-h] [--ssl] [--reconnect] [-p PASSWORD] [-c CHANNEL[:KEY]]
+                      [-n NICKNAME] [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-x]
+                      [-d] [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
+                      [--config-name NAME] [--config-directory DIRECTORY]
+                      [--config-local] [--scripts-directory DIRECTORY] [-Q NAME]
+                      [-R] [-D] [-L] [-E]
                       [SERVER] [PORT]
 
 options:
