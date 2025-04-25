@@ -2401,6 +2401,9 @@ class Merk(QMainWindow):
 
 		self.closeAndRemoveAllWindows()
 		self.app.quit()
+		
+		# Another way to exit the app...
+		#sys.exit(0)
 
 	# merk_subWindowActivated()
 	# Triggered whenever a subwindow is activated
