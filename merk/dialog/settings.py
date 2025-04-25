@@ -648,10 +648,6 @@ class Dialog(QDialog):
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
 
-		self.darkMode = QCheckBox("Run in \"dark mode\"",self)
-		if config.DARK_MODE: self.darkMode.setChecked(True)
-		self.darkMode.stateChanged.connect(self.setDarkMode)
-
 		self.simpleConnect = QCheckBox("Simplified connection dialog",self)
 		if config.SIMPLIFIED_CONNECT_DIALOG: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
@@ -670,8 +666,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showInputMenu)
 		applicationLayout.addWidget(self.showContext)
 		applicationLayout.addWidget(self.simpleConnect)
-		applicationLayout.addWidget(self.darkMode)
-		applicationLayout.addWidget(QLabel(' '))
+		#applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
 		applicationLayout.addWidget(self.showTimestamps)
 		applicationLayout.addWidget(self.timestamp24hour)
@@ -682,6 +677,73 @@ class Dialog(QDialog):
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
+
+		# Widget page
+
+		self.appearancePage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Appearance")
+		entry.widget = self.appearancePage
+		entry.setIcon(QIcon(WIDGET_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.appearancePage)
+
+		self.styleDescription = QLabel("""
+			<small>
+			This setting controls how subwindows and widgets look. Different styles
+			use different sets of widgets. Qt comes with a number of them
+			pre-installed, and you can select which one to use here. The selected
+			widget style will be applied immediately without having
+			to restart the application.
+			</small>
+			<br>
+			""")
+		self.styleDescription.setWordWrap(True)
+		self.styleDescription.setAlignment(Qt.AlignJustify)
+
+		self.qtStyle = QComboBox(self)
+		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
+		for s in QStyleFactory.keys():
+			if s==config.QT_WINDOW_STYLE: continue
+			self.qtStyle.addItem(s)
+		self.qtStyle.currentIndexChanged.connect(self.styleChange)
+
+		styleLayout = QHBoxLayout()
+		styleLayout.addWidget(QLabel("<b>Widget Style</b> "))
+		styleLayout.addWidget(self.qtStyle)
+		styleLayout.addStretch()
+
+		self.darkDescription = QLabel("""
+			<small>
+			Dark mode changes the application palette to darker colors, which
+			is supposed to decrease eye strain. Text display colors are unchanged,
+			as those are set and controlled by the text style system. <b>If dark mode
+			is enabled or disabled, the application must be restarted to use the
+			new application palette.</b>
+			</small>
+			<br>
+			""")
+		self.darkDescription.setWordWrap(True)
+		self.darkDescription.setAlignment(Qt.AlignJustify)
+
+		self.darkMode = QCheckBox("Enable dark mode",self)
+		if config.DARK_MODE: self.darkMode.setChecked(True)
+		self.darkMode.stateChanged.connect(self.setDarkMode)
+
+		appearanceLayout = QVBoxLayout()
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
+		appearanceLayout.addWidget(self.styleDescription)
+		appearanceLayout.addLayout(styleLayout)
+		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
+		appearanceLayout.addWidget(self.darkDescription)
+		appearanceLayout.addWidget(self.darkMode)
+		appearanceLayout.addStretch()
+
+		self.appearancePage.setLayout(appearanceLayout)
 
 		# User page
 
@@ -753,52 +815,6 @@ class Dialog(QDialog):
 		userLayout.addStretch()
 
 		self.userPage.setLayout(userLayout)
-
-		# Widget page
-
-		self.appearancePage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Widgets")
-		entry.widget = self.appearancePage
-		entry.setIcon(QIcon(WIDGET_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.appearancePage)
-
-		self.styleDescription = QLabel("""
-			<small>
-			This setting controls how subwindows and widgets look. Different styles
-			use different sets of widgets. Qt comes with a number of them
-			pre-installed, and you can select which one to use here. The selected
-			widget style will be applied immediately without having
-			to restart the application.
-			</small>
-			<br>
-			""")
-		self.styleDescription.setWordWrap(True)
-		self.styleDescription.setAlignment(Qt.AlignJustify)
-
-		self.qtStyle = QComboBox(self)
-		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
-		for s in QStyleFactory.keys():
-			if s==config.QT_WINDOW_STYLE: continue
-			self.qtStyle.addItem(s)
-		self.qtStyle.currentIndexChanged.connect(self.styleChange)
-
-		styleLayout = QHBoxLayout()
-		styleLayout.addWidget(QLabel("<b>Widget Style</b> "))
-		styleLayout.addWidget(self.qtStyle)
-		styleLayout.addStretch()
-
-		appearanceLayout = QVBoxLayout()
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
-		appearanceLayout.addWidget(self.styleDescription)
-		appearanceLayout.addLayout(styleLayout)
-		appearanceLayout.addStretch()
-
-		self.appearancePage.setLayout(appearanceLayout)
 
 		# Menubar page
 
