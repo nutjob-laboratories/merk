@@ -184,9 +184,11 @@ class Merk(QMainWindow):
 	def getActive(self):
 		return self.saved_window
 
-	def saveActive(self):
-		if self.saved_window==None:
+	def saveActive(self,window=None):
+		if window==None:
 			self.saved_window = self.MDI.activeSubWindow()
+		else:
+			self.saved_window = window
 
 	def restoreActive(self):
 		if self.saved_window!= None:
@@ -1799,6 +1801,7 @@ class Merk(QMainWindow):
 	def showSubWindow(self,window):
 		window.showNormal()
 		self.MDI.setActiveSubWindow(window)
+		self.saveActive(window)
 
 	def showSubWindowMaximized(self,window):
 		if window.isMaximized():
@@ -1806,6 +1809,7 @@ class Merk(QMainWindow):
 		else:
 			window.showMaximized()
 		self.MDI.setActiveSubWindow(window)
+		self.saveActive(window)
 
 	def hideSubWindow(self,subwindow_id):
 		for window in self.MDI.subWindowList():

@@ -1901,6 +1901,8 @@ class Dialog(QDialog):
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
+		self.parent.saveActive()
+
 		self.parent.app.setStyle(self.qt_style)
 
 		if config.TIMESTAMP_24_HOUR:
