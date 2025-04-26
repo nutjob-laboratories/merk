@@ -842,7 +842,7 @@ class Merk(QMainWindow):
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
 			c.writeText(t)
-			self.saveActive()
+			self.MDI.setActiveSubWindow(w)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1540,7 +1540,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if c.client.client_id == client.client_id:
 					c.refreshModeDisplay()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def setAllFont(self,newfont):
 		w = self.MDI.activeSubWindow()
@@ -1558,7 +1559,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"status"): c.status.setFont(newfont)
 			if hasattr(c,"status_server"): c.status_server.setFont(newfont)
 			if hasattr(c,"key_value"): c.key_value.setFont(newfont)
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def rerenderUserlists(self):
 		w = self.MDI.activeSubWindow()
@@ -1566,7 +1568,8 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"userlist"):
 				c.rerenderUserlist()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def toggleNickDisplay(self):
 		w = self.MDI.activeSubWindow()
@@ -1574,7 +1577,8 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"nick_display"):
 				c.toggleNickDisplay()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def setAllLanguage(self,newlang):
 		w = self.MDI.activeSubWindow()
@@ -1582,7 +1586,8 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"menuSetLanguage"):
 				c.menuSetLanguage(newlang)
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def reRenderAll(self):
 		w = self.MDI.activeSubWindow()
@@ -1592,7 +1597,8 @@ class Merk(QMainWindow):
 				c.rerenderChatLog()
 			if hasattr(c,"rerenderEditor"):
 				c.rerenderEditor()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def reApplyStyle(self):
 		w = self.MDI.activeSubWindow()
@@ -1600,7 +1606,8 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"applyStyle"):
 				c.applyStyle()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def handleUserInput(self,window,user_input):
 
@@ -1740,7 +1747,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.hideTopic()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def showAllTopic(self):
 		w = self.MDI.activeSubWindow()
@@ -1749,7 +1757,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showTopic()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def refreshAllTopic(self):
 		w = self.MDI.activeSubWindow()
@@ -1768,7 +1777,8 @@ class Merk(QMainWindow):
 						c.topic.setFont(font)
 
 					c.topic.refresh()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def getAllChatNames(self):
 		retval = []
@@ -1801,7 +1811,6 @@ class Merk(QMainWindow):
 	def showSubWindow(self,window):
 		window.showNormal()
 		self.MDI.setActiveSubWindow(window)
-		self.saveActive(window)
 
 	def showSubWindowMaximized(self,window):
 		if window.isMaximized():
@@ -1809,7 +1818,6 @@ class Merk(QMainWindow):
 		else:
 			window.showMaximized()
 		self.MDI.setActiveSubWindow(window)
-		self.saveActive(window)
 
 	def hideSubWindow(self,subwindow_id):
 		for window in self.MDI.subWindowList():
@@ -1847,7 +1855,6 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
-		self.saveActive()
 
 		return w
 
@@ -1858,7 +1865,6 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
-		self.saveActive()
 
 		return w
 
@@ -1870,7 +1876,6 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
-		self.saveActive()
 
 		return w
 
@@ -1925,7 +1930,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.swapUserlist()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def toggleAllUserlists(self):
 		w = self.MDI.activeSubWindow()
@@ -1934,7 +1940,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showHideUserlist()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def toggleSpellcheck(self):
 		w = self.MDI.activeSubWindow()
@@ -1943,7 +1950,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if hasattr(c,"buildInputOptionsMenu"):
 					c.buildInputOptionsMenu()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def toggleInputMenu(self):
 		w = self.MDI.activeSubWindow()
@@ -1952,7 +1960,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if hasattr(c,"toggleInputMenu"):
 					c.toggleInputMenu()
-		if is_deleted(w)==False: self.MDI.setActiveSubWindow(w)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 
 	# |--------------|
@@ -2342,7 +2351,6 @@ class Merk(QMainWindow):
 		return do_disconnect
 
 	def openSettings(self):
-		self.saveActive()
 		self.settingsDialog = SettingsDialog(self.app,self)
 
 	def showAbout(self):
@@ -2413,7 +2421,7 @@ class Merk(QMainWindow):
 	# Triggered whenever a subwindow is activated
 	def merk_subWindowActivated(self,subwindow):
 
-		self.saveActive()
+		self.saveActive(subwindow)
 		self.buildWindowbar()
 
 		# Reset the window title
