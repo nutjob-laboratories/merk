@@ -102,7 +102,7 @@ First, make sure that all the requirements are installed. Next, [download **MERK
  </p>
  <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot_linux_big.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot_linux2.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="http://www.efnet.org/">EFnet</a>, <a href="https://freenode.net/">Freenode</a>, and <a href="https://libera.chat/">Libera</a> on Linux Mint 20.2 in "dark mode", using the "fusion" widget set.</small></i></center>
+  <center><i><small>MERK connected to <a href="https://www.dal.net/">DALnet</a>, <a href="https://freenode.net/">Freenode</a>, and <a href="https://libera.chat/">Libera</a> on Linux Mint 20.2 in "dark mode", using the "windows" widget set.</small></i></center>
   </p>
   <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_1.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_1_small.png"></a><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_2.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_2_small.png"></a><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_3.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_3_small.png"></a></center></br>
