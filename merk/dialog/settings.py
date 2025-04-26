@@ -212,6 +212,7 @@ class Dialog(QDialog):
 			self.changed.show()
 			self.boldApply()
 		
+		self.syntax_did_change = True
 		self.selector.setFocus()
 		
 
@@ -523,6 +524,8 @@ class Dialog(QDialog):
 		self.default_tools_menu = config.MAIN_MENU_TOOLS_NAME
 		self.default_windows_menu = config.MAIN_MENU_WINDOWS_NAME
 		self.default_help_menu = config.MAIN_MENU_HELP_NAME
+
+		self.syntax_did_change = False
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -1960,6 +1963,13 @@ class Dialog(QDialog):
 
 		# Set the widget font
 		self.parent.setFont(self.parent.application_font)
+
+		if self.syntax_did_change:
+			for window in self.parent.getAllEditorWindows():
+				if hasattr(window,"widget"):
+					c = window.widget()
+					if hasattr(c,"refreshHighlighter"):
+						c.refreshHighlighter()
 
 		# Reset the main window name if needed
 		if self.parent.connected_to_something:

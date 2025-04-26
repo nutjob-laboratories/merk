@@ -137,6 +137,10 @@ class Window(QMainWindow):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
+	def refreshHighlighter(self):
+		self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
+		self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+
 	def __init__(self,filename=None,parent=None):
 		super(Window, self).__init__(parent)
 
