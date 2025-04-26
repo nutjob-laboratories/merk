@@ -1806,7 +1806,8 @@ class Dialog(QDialog):
 
 	def save(self):
 
-		self.parent.saveActive()
+		# Save the current focused window
+		current_open_window = self.parent.MDI.activeSubWindow()
 
 		config.DISPLAY_ACTIVE_CHAT_IN_TITLE = self.showChatInTitle.isChecked()
 		config.PROMPT_ON_FAILED_CONNECTION = self.promptFail.isChecked()
@@ -1904,8 +1905,6 @@ class Dialog(QDialog):
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
-		current_open_window = self.parent.MDI.activeSubWindow()
-
 		self.parent.app.setStyle(self.qt_style)
 
 		if config.TIMESTAMP_24_HOUR:
@@ -1964,6 +1963,7 @@ class Dialog(QDialog):
 		# Set the widget font
 		self.parent.setFont(self.parent.application_font)
 
+		# Refresh editor windows with any changes to syntax highlighting
 		if self.syntax_did_change:
 			for window in self.parent.getAllEditorWindows():
 				if hasattr(window,"widget"):

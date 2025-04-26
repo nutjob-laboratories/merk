@@ -40,9 +40,32 @@ from .. import user
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import MenuLabel,menuHtml
 
+
 class Window(QMainWindow):
 
 	def closeEvent(self, event):
+
+		if config.EDITOR_PROMPT_SAVE:
+			if self.changed:
+				msgBox = QMessageBox()
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setIconPixmap(QPixmap(SAVEFILE_ICON))
+				if self.editing_user_script:
+					msgBox.setText("Do you want to save this connection script?")
+				else:
+					msgBox.setText("Do you want to save this file?")
+				msgBox.setWindowTitle("Save")
+				msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+
+				rval = msgBox.exec()
+				if rval == QMessageBox.Yes:
+					if self.editing_user_script:
+						self.doFileSave()
+					else:
+						if self.filename==None:
+							self.doFileSaveAs()
+						else:
+							self.doFileSave()
 
 		# Make sure the MDI window is closed
 		self.parent.closeSubWindow(self.subwindow_id)
@@ -127,9 +150,9 @@ class Window(QMainWindow):
 		self.editMenu.addSeparator()
 
 		if self.wordwrap:
-			entry = QAction(QIcon(CHECKED_ICON),"Word wrap",self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Word wrap",self)
 		else:
-			entry = QAction(QIcon(UNCHECKED_ICON),"Word wrap",self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Word wrap",self)
 		entry.triggered.connect(self.toggleWordwrap)
 		self.editMenu.addAction(entry)
 
@@ -140,6 +163,15 @@ class Window(QMainWindow):
 	def refreshHighlighter(self):
 		self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
 		self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+
+	def togglePrompt(self):
+		if config.EDITOR_PROMPT_SAVE:
+			config.EDITOR_PROMPT_SAVE = False
+			self.menuPrompt.setIcon(QIcon(self.parent.unchecked_icon))
+		else:
+			config.EDITOR_PROMPT_SAVE = True
+			self.menuPrompt.setIcon(QIcon(self.parent.checked_icon))
+		config.save_settings(config.CONFIG_FILE)
 
 	def __init__(self,filename=None,parent=None):
 		super(Window, self).__init__(parent)
@@ -161,6 +193,7 @@ class Window(QMainWindow):
 		self.subwindow_id = str(uuid.uuid4())
 
 		self.editor = QPlainTextEdit(self)
+
 		self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
 
 		self.wordwrap = True
@@ -234,9 +267,16 @@ class Window(QMainWindow):
 		self.menuSaveAs.triggered.connect(self.doFileSaveAs)
 		if not self.filename: self.menuSaveAs.setShortcut("Ctrl+Shift+S")
 		self.fileMenu.addAction(self.menuSaveAs)
+
+		menuPromptText = "Prompt to save on close"
+		if config.EDITOR_PROMPT_SAVE:
+			self.menuPrompt = QAction(QIcon(self.parent.checked_icon),menuPromptText,self)
+		else:
+			self.menuPrompt = QAction(QIcon(self.parent.unchecked_icon),menuPromptText,self)
+		self.menuPrompt.triggered.connect(self.togglePrompt)
+		self.fileMenu.addAction(self.menuPrompt)
 		
 		self.fileMenu.addSeparator()
-
 
 		entry = QAction(QIcon(CLOSE_ICON),"Close",self)
 		entry.triggered.connect(self.close)

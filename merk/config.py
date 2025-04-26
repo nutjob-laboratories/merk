@@ -136,8 +136,9 @@ MAIN_MENU_TOOLS_NAME = "Tools"
 MAIN_MENU_WINDOWS_NAME = "Windows"
 MAIN_MENU_HELP_NAME = "Help"
 DARK_MODE = False
-
 SIMPLIFIED_CONNECT_DIALOG = False
+
+EDITOR_PROMPT_SAVE = True
 
 def save_settings(filename):
 
@@ -240,12 +241,15 @@ def save_settings(filename):
 		"main_menu_help_name": MAIN_MENU_HELP_NAME,
 		"dark_mode": DARK_MODE,
 		"simplified_connection_dialog": SIMPLIFIED_CONNECT_DIALOG,
+		"editor_prompt_save_on_close": EDITOR_PROMPT_SAVE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "editor_prompt_save_on_close" in settings:
+		settings["editor_prompt_save_on_close"] = EDITOR_PROMPT_SAVE
 	if not "simplified_connection_dialog" in settings:
 		settings["simplified_connection_dialog"] = SIMPLIFIED_CONNECT_DIALOG
 	if not "dark_mode" in settings:
@@ -545,6 +549,7 @@ def load_settings(filename):
 	global MAIN_MENU_HELP_NAME
 	global DARK_MODE
 	global SIMPLIFIED_CONNECT_DIALOG
+	global EDITOR_PROMPT_SAVE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -554,6 +559,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		EDITOR_PROMPT_SAVE = settings["editor_prompt_save_on_close"]
 		SIMPLIFIED_CONNECT_DIALOG = settings["simplified_connection_dialog"]
 		DARK_MODE = settings["dark_mode"]
 		MAIN_MENU_IRC_NAME = settings["main_menu_irc_name"]
