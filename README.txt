@@ -106,7 +106,7 @@ First, make sure that all the requirements are installed. Next, [download **MERK
   </p>
   <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_1.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_1_small.png"></a><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_2.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_2_small.png"></a><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_3.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/connect_3_small.png"></a></center></br>
-  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script.</small></i></center>
+  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text describing how the individual settings work can be removed in settings, or with a commandline flag.</small></i></center>
   </p>
   <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/styler.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/styler_small.png"></a></center></br>
