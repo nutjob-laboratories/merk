@@ -1901,7 +1901,7 @@ class Dialog(QDialog):
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
-		self.parent.saveActive()
+		current_open_window = self.parent.MDI.activeSubWindow()
 
 		self.parent.app.setStyle(self.qt_style)
 
@@ -1980,6 +1980,7 @@ class Dialog(QDialog):
 			else:
 				self.parent.setWindowTitle(APPLICATION_NAME)
 
+		self.parent.saveActive(current_open_window)
 		self.parent.restoreActive()
 
 		# Close the dialog
