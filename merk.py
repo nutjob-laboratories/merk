@@ -69,33 +69,37 @@ congroup = parser.add_argument_group('Connection')
 congroup.add_argument("server", type=str,help="Server to connect to", metavar="SERVER", nargs='?')
 congroup.add_argument("port", type=int,help="Server port to connect to (6667)", default=6667, nargs='?', metavar="PORT")
 congroup.add_argument( "--ssl","--tls", help=f"Use SSL/TLS to connect to IRC", action="store_true")
-congroup.add_argument( "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
 congroup.add_argument("-p","--password", type=str,help="Use server password to connect", metavar="PASSWORD", default='')
 congroup.add_argument("-c","--channel", type=str,help="Join channel on connection", metavar="CHANNEL[:KEY]", action='append')
-congroup.add_argument("-n","--nickname", type=str,help="Use this nickname to connect", metavar="NICKNAME", default='')
-congroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
-congroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
-congroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
-congroup.add_argument("-x","--donotexecute", help=f"Do not execute connection script", action="store_true")
-congroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 congroup.add_argument('-C','--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
 congroup.add_argument('-S','--connectssl', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
 
+optiongroup = parser.add_argument_group('Options')
+optiongroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
+optiongroup.add_argument("-x","--donotexecute", help=f"Do not execute connection script", action="store_true")
+optiongroup.add_argument("-t", "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
+optiongroup.add_argument( "-E","--simple", help=f"Show simplified connection dialog", action="store_true")
+optiongroup.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
 
-configuration_group = parser.add_argument_group('Configuration')
+usergroup = parser.add_argument_group('User Information')
+usergroup.add_argument("-n","--nickname", type=str,help="Use this nickname to connect", metavar="NICKNAME", default='')
+usergroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
+usergroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
+usergroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
+
+configuration_group = parser.add_argument_group('Files and Directories')
 
 configuration_group.add_argument( "--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument( "--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 
-misc_group = parser.add_argument_group('Miscellaneous')
+misc_group = parser.add_argument_group('Appearance')
 
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Fusion)", metavar="NAME", default="")
-misc_group.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
 misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
 misc_group.add_argument( "-L","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
-misc_group.add_argument( "-E","--simple", help=f"Show simplified connection dialog", action="store_true")
+
 
 args = parser.parse_args()
 
