@@ -200,6 +200,7 @@ OP_USER = ":/gui-op.png"
 OWNER_USER = ":/gui-owner.png"
 VOICE_USER = ":/gui-voice.png"
 NORMAL_USER = ":/gui-normal.png"
+
 HORIZONTAL_DOTTED_BACKGROUND = ":/gui-horizontal_dotted.png"
 HORIZONTAL_RULE_BACKGROUND = ":/gui-horizontal_rule.png"
 LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
