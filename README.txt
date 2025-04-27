@@ -15,11 +15,10 @@
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
  - [Does MERK need any help?](#does-merk-need-any-help)
- - [Developing MERK](#developing-merk)
 
- <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a></b></h1></p>
+ <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a></b></p>
 
-  <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK !_WIN_VERSION_! for Windows</a></b></h1></p>
+  <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK !_WIN_VERSION_! for Windows</a></b></p>
   
 **MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
@@ -231,7 +230,7 @@ Well, if you were to pronounce "IRC" as a word and not an acronym, it would prob
 Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetrick), a software developer that can not do everything that this piece of software needs. There's few things I need help with!
 
  - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for **MERK**. I'm doing my best, here, but I'm a computer programmer, not an artist!
- - **Packaging**. I'd like to make **MERK** easier to use, especially for those not necessarily proficient in Python. I have tried to get [PyInstaller](https://www.pyinstaller.org/) working, but it's a little over my head. I'm going to keep trying, but I'd love to have some help in this regard. Also, I know next to nothing about making Python packages for use with  `pip`, which is another thing I'd love help with!
+ - **Packaging**. **MERK** now has a [PyInstaller](https://www.pyinstaller.org/)-based distribution! I know next to nothing about making Python packages for use with  `pip`, but that's another thing I'd love help with!
  - **Using MERK and giving me feedback**. Let me know what you love about **MERK** and what you hate about **MERK**! Got ideas for ways you'd like to customize the client? Features you'd like? Let me know! I can't guarantee that I'll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using **MERK**!
 
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
