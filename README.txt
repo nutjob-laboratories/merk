@@ -6,8 +6,9 @@
 </p>
 
  - [Features](#Features)
- - [Requirements](#Requirements)
- - [Running MERK](#running-merk)
+ - [Python Requirements](#python-requirements)
+ - [Running MERK on Windows](#running-merk-on-windows)
+ - [Running MERK with Python](#running-merk-with-python)
  - [Screenshots](#screenshots)
  - [Usage](#usage)
  - [Example commandline usage](#example-commandline-usage)
@@ -17,6 +18,8 @@
  - [Developing MERK](#developing-merk)
 
  <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a></b></h1></p>
+
+  <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK !_WIN_VERSION_! for Windows</a></b></h1></p>
   
 **MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
@@ -66,7 +69,15 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
     - Includes a utility to export logs to JSON, CSV, or your own custom format
     - Logs are stored in JSON, so parsing/scraping your own logs in easy
 
-# Requirements
+# Running MERK on Windows
+
+If you're running Windows, you can run **MERK*** without having to install Python or its requirements! First, [download the standalone version of MERK !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
+
+The standalone version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
+
+A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
+
+# Python Requirements
 
 **MERK** requires Python 3, [PyQt5](https://pypi.org/project/PyQt5/), and [Twisted](https://twistedmatrix.com/trac/). PyQt5 and Twisted can be installed by using [**pip**](https://pypi.org/project/pip/):
 
@@ -91,7 +102,7 @@ There are three libraries that comes bundled with **MERK**:
  - [pyspellchecker](https://github.com/barrust/pyspellchecker)
  - [emoji](https://github.com/carpedm20/emoji)
 
-# Running MERK
+# Running MERK with Python
 
 First, make sure that all the requirements are installed. Next, [download **MERK**](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
 
@@ -224,42 +235,6 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
  - **Using MERK and giving me feedback**. Let me know what you love about **MERK** and what you hate about **MERK**! Got ideas for ways you'd like to customize the client? Features you'd like? Let me know! I can't guarantee that I'll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using **MERK**!
 
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
-
-# Developing MERK
-
-Several tools are included in [the official **MERK** repository](https://github.com/nutjob-laboratories/merk) for developing **MERK**. The [`pyrcc5` utility](https://manpages.ubuntu.com/manpages/xenial/man1/pyrcc5.1.html) is required, and should be installed automatically when you install PyQt. These are only needed if you're developing **MERK**, and can be ignored if you're only using the **MERK** IRC client.
-
- - ***compile_resources.bat*** - This batch file compiles the miscellaneous resources (graphics, fonts, etc) required by **MERK** into a single file, `resources.py`, and inserts the file into the **MERK** source code. This is for development on the Windows platform.
- - ***compile_resources.sh*** - This shell script basically does the same thing that `compile_resources.bat` does, only it's for development on the Linux platform.
- - ***build_readme.py*** - This is a Python 3 script that rebuilds the README:
-   - Reads`README.txt` into memory and replaces several symbols in it:
-     - `! _VERSION_ !` (without spaces) is replaced with **MERK**'s major version
-     - `! _MINOR_ !` (without spaces) is replaced with **MERK**'s minor version
-     - `! _FULL_VERSION_ !` (without spaces) is replaced with **MERK**'s major and minor version, with a period in between them.
-   - Overwrites `README.md` with the edited contents of `README.txt`
- - ***build_dist.py*** - This is a Python 3 script that, when executed, does several things:
-   - Executes either `compile_resources.bat` (if the host system is Windows) or `compile_resources.sh` (if the host system is Linux); if the host system is not running either Windows or Linux, `build_dist.py` will exit with an error
-   - Increments the **MERK**'s minor version (which is stored in `merk/data/minor.txt`) and saves it
-   - Reads`README.txt` into memory and replaces several symbols in it:
-     - `! _VERSION_ !` (without spaces) is replaced with **MERK**'s major version
-     - `! _MINOR_ !` (without spaces) is replaced with **MERK**'s minor version
-     - `! _FULL_VERSION_ !` (without spaces) is replaced with **MERK**'s major and minor version, with a period in between them.
-   - Overwrites `README.md` with the edited contents of `README.txt`
-   - Creates a new directory named `dist`, and copies into it:
-     - `merk.py`
-     - `LICENSE`
-     - `merk.ico`
-     - The `merk` directory and its contents
-     - The `qt5reactor` directory and its contents
-     - The `spellchecker` directory and its contents
-     - The `emoji` directory and its contents
-     
-   - Zips up the `dist` directory either using [PowerShell](https://en.wikipedia.org/wiki/PowerShell) (if the host system is Windows) or the [zip](https://linux.die.net/man/1/zip) utility (if the host system is Linux) into a file named `dist.zip`
-   - Deletes the `dist` directory and its contents
-   - Renames `dist.zip` to "merk-*MAJOR VERSION*.zip", referred to as `merk.zip` in this description.
-   - If `merk.zip` exists in the `downloads` directory, the version in the `downloads` directory is deleted
-   - If `merk-latest.zip` exists in the `downloads` directory, it is deleted
-   - `merk.zip` is copied into the `downloads` directory, and is copied to `merk-latest.zip`
 
 [//]: # (End of document)
 
