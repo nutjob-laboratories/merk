@@ -9,9 +9,7 @@
 
   <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK !_WIN_VERSION_! for Windows</a></b></p>
 
-  <table><tbody>
-  <tr>
-    <td>
+ - [Summary](#Summary)
  - [Features](#Features)
  - [Python Requirements](#python-requirements)
  - [Running MERK on Windows](#running-merk-on-windows)
@@ -22,22 +20,16 @@
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
  - [Does MERK need any help?](#does-merk-need-any-help)
-    </td>
 
-    <td>
+# Summary
+  
 **MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
+For those that don't want to install Python or all the requirements, you can [download **MERK** standalone for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip).
+
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!
-    </td>
-  </tr>
-</tbody>
-</table
-
- 
-  
-
 
 # Features
 
