@@ -39,6 +39,7 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
     - Multiple channel and server windows can be open for viewing and chatting at once
     - All chat windows are contained in a single "parent" window
+-   If you're using Windows, [you can run **MERK** without installing Python](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)!
 - Dark mode!
   - Dark mode can be enabled from the commandline, or from the settings dialog
   - If dark mode is enabled from the settings dialog, an application restart is required
@@ -75,7 +76,7 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK*** without having to install Python or its requirements! First, [download the standalone version of MERK !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the standalone version of MERK !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
 
 The standalone version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
