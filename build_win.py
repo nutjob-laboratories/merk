@@ -30,7 +30,7 @@ f.close()
 
 os.system("make_multiple.bat")
 
-archive_name = f"merk-windows-{major}.{minor}.zip"
+archive_name = f"merk-windows-{major}.zip"
 
 os.rename('merk.zip', archive_name)
 

@@ -27,7 +27,7 @@ x.close()
 readme = readme.replace("!_VERSION_!",major)
 readme = readme.replace("!_MINOR_!",minor)
 readme = readme.replace("!_FULL_VERSION_!",major+"."+minor)
-readme = readme.replace("!_WIN_VERSION_!",win_major+"."+win_minor)
+readme = readme.replace("!_WIN_VERSION_!",win_major)
 
 os.remove("README.md")
 f = open("README.md",mode="w", encoding='latin-1')

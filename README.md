@@ -17,11 +17,11 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
  - [Developing MERK](#developing-merk)
 
- <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.035.001</a></b></h1></p>
+ <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.035.002</a></b></h1></p>
 
-  <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK 0.035.001 for Windows</a></b></h1></p>
+  <p align="center"><h1><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK 0.035 for Windows</a></b></h1></p>
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.035.001**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.035.002**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
@@ -71,7 +71,7 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK*** without having to install Python or its requirements! First, [download the standalone version of MERK 0.035.001](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
+If you're running Windows, you can run **MERK*** without having to install Python or its requirements! First, [download the standalone version of MERK 0.035](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
 
 The standalone version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
