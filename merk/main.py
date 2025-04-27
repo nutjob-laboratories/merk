@@ -1694,6 +1694,7 @@ class Merk(QMainWindow):
 					if hasattr(c,"client"):
 						if c.client.client_id == client.client_id:
 							window.hide()
+							window.close()
 							self.hiding[client.client_id] = client
 							self.buildWindowsMenu()
 
