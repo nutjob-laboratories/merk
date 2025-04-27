@@ -5,6 +5,10 @@
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
 </p>
 
+ <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a></b></p>
+
+  <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK !_WIN_VERSION_! for Windows</a></b></p>
+
  - [Features](#Features)
  - [Python Requirements](#python-requirements)
  - [Running MERK on Windows](#running-merk-on-windows)
@@ -15,10 +19,6 @@
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
  - [Does MERK need any help?](#does-merk-need-any-help)
-
- <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK !_FULL_VERSION_!</a></b></p>
-
-  <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK !_WIN_VERSION_! for Windows</a></b></p>
   
 **MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
