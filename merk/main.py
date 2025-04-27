@@ -192,7 +192,14 @@ class Merk(QMainWindow):
 
 	def restoreActive(self):
 		if self.saved_window!= None:
-			self.MDI.setActiveSubWindow(self.saved_window)
+			if not is_deleted(self.saved_window):
+				w = self.saved_window.widget()
+
+				if hasattr(w,"client"):
+					if w.client.client_id in self.quitting:
+						self.saved_window = None
+						return
+				self.MDI.setActiveSubWindow(self.saved_window)
 		self.saved_window = None
 
 	def resizeEvent(self, event):
@@ -2421,15 +2428,20 @@ class Merk(QMainWindow):
 	# Triggered whenever a subwindow is activated
 	def merk_subWindowActivated(self,subwindow):
 
+		if subwindow==None: return
+
+		w = subwindow.widget()
+
+		if hasattr(w,"client"):
+			if w.client.client_id in self.quitting:
+				return
+
 		self.saveActive(subwindow)
 		self.buildWindowbar()
 
 		# Reset the window title
 		self.setWindowTitle(APPLICATION_NAME)
 
-		if subwindow==None: return
-
-		w = subwindow.widget()
 		if hasattr(w,"name"):
 			# It's a named subwindow
 			if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
