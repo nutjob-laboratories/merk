@@ -66,7 +66,7 @@ class Dialog(QDialog):
 		self.tabs.addTab(self.credits_tab, "Credits")
 
 		logo = QLabel()
-		pixmap = QPixmap(MERK_ABOUT_LOGO)
+		pixmap = QPixmap(SPLASH_LOGO)
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
@@ -90,6 +90,28 @@ class Dialog(QDialog):
 		descriptionLayout.addWidget(line3)
 		descriptionLayout.addWidget(line2)
 		descriptionLayout.addWidget(line4)
+
+		qt_logo = QLabel()
+		pixmap = QPixmap(QT_ICON)
+		qt_logo.setPixmap(pixmap)
+		qt_logo.setAlignment(Qt.AlignCenter)
+
+		python_logo = QLabel()
+		pixmap = QPixmap(PYTHON_ICON)
+		python_logo.setPixmap(pixmap)
+		python_logo.setAlignment(Qt.AlignCenter)
+
+		twisted_logo = QLabel()
+		pixmap = QPixmap(TWISTED_BUTTON_ICON)
+		twisted_logo.setPixmap(pixmap)
+		twisted_logo.setAlignment(Qt.AlignCenter)
+
+		logoBar = QHBoxLayout()
+		logoBar.addStretch()
+		logoBar.addWidget(python_logo)
+		logoBar.addWidget(twisted_logo)
+		logoBar.addWidget(qt_logo)
+		logoBar.addStretch()
 
 		titleLayout = QVBoxLayout()
 		titleLayout.addWidget(logo)
@@ -135,7 +157,7 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		pyv_credit = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>" + " - " + f"<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>" + " - " + f"<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>")
+		pyv_credit = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>" + " - " + f"<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>" + " - " + f"<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>")
 		pyv_credit.setAlignment(Qt.AlignCenter)
 
 		nutjob_credit = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories\">NUTJOB</a> <a href=\"https://github.com/nutjob-laboratories\">LABORATORIES</a></b></big>")
@@ -166,6 +188,7 @@ class Dialog(QDialog):
 		aboutLayout.addStretch()
 		aboutLayout.addLayout(titleLayout)
 		aboutLayout.addWidget(gnu_credit)
+		aboutLayout.addLayout(logoBar)
 		aboutLayout.addWidget(pyv_credit)
 		aboutLayout.addWidget(platform_credit)
 		aboutLayout.addStretch()

@@ -2035,7 +2035,7 @@ class Merk(QMainWindow):
 
 		self.helpMenu.addSeparator()
 
-		entry = QAction(QIcon(LINK_ICON),"Source code repository",self)
+		entry = QAction(QIcon(LINK_ICON),APPLICATION_NAME+" source code repository",self)
 		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
@@ -2045,6 +2045,20 @@ class Merk(QMainWindow):
 
 		entry = QAction(QIcon(LINK_ICON),"Supported emoji shortcodes",self)
 		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		self.helpMenu.addSeparator()
+
+		entry = QAction(QIcon(QT_ICON),"PyQt",self)
+		entry.triggered.connect(lambda state,u="https://www.riverbankcomputing.com/software/pyqt/": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(PYTHON_ICON),"Python",self)
+		entry.triggered.connect(lambda state,u="https://www.python.org/": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(TWISTED_ICON),"Twisted",self)
+		entry.triggered.connect(lambda state,u="https://twisted.org/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 	def buildWindowsMenu(self):

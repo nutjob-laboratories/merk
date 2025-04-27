@@ -189,7 +189,11 @@ CLEAR_ICON = ":/icon-clear.png"
 CONNECT_MENU_ICON = ":/icon-connect_menu.png"
 DISCONNECT_MENU_ICON = ":/icon-disconnect_menu.png"
 
-MERK_ABOUT_LOGO = ":/gui-about.png"
+QT_ICON = ":/icon-qt.png"
+PYTHON_ICON = ":/icon-python.png"
+TWISTED_ICON = ":/icon-twisted.png"
+TWISTED_BUTTON_ICON = ":/icon-twisted_button.png"
+
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
 DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
