@@ -9,6 +9,14 @@
 
   <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK 0.035 for Windows</a></b></p>
 
+  <table><tbody>
+  <tr>
+    <td>This is a test</td>
+    <td>Another test</td>
+  </tr>
+</tbody>
+</table
+
  - [Features](#Features)
  - [Python Requirements](#python-requirements)
  - [Running MERK on Windows](#running-merk-on-windows)
