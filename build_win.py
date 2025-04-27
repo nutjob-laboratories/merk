@@ -41,3 +41,15 @@ shutil.copy(archive_name, "./downloads/"+archive_name)
 shutil.copy(archive_name, "./downloads/merk-windows-latest.zip")
 
 os.remove(archive_name)
+
+os.system("make_single.bat")
+
+archive_name = f"merk-windows-standalone.exe"
+
+os.rename('merk.exe', archive_name)
+
+if os.path.isfile(f"./downloads/{archive_name}"): os.remove(f"./downloads/{archive_name}")
+
+shutil.copy(archive_name, "./downloads/"+archive_name)
+
+os.remove(archive_name)

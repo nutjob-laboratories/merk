@@ -9,6 +9,8 @@
 
   <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK !_WIN_VERSION_! for Windows</a></b></p>
 
+  <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe">Download MERK !_WIN_VERSION_! for Windows Standalone Executable</a></b></p>
+
  - [Summary](#Summary)
  - [Features](#Features)
  - [Python Requirements](#python-requirements)
