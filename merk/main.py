@@ -1693,6 +1693,7 @@ class Merk(QMainWindow):
 				if c.window_type==SERVER_WINDOW:
 					if hasattr(c,"client"):
 						if c.client.client_id == client.client_id:
+							if hasattr(c,"force_close"): c.force_close = True
 							window.hide()
 							window.close()
 							self.hiding[client.client_id] = client

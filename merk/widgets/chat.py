@@ -85,6 +85,8 @@ class Window(QMainWindow):
 
 		self.userlist_visible = True
 
+		self.force_close = False
+
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
 		self.setWindowTitle(self.name)
@@ -1312,6 +1314,15 @@ class Window(QMainWindow):
 			pass
 
 	def closeEvent(self, event):
+
+		if self.force_close:
+			# Let the parent know that this subwindow
+			# has been closed by the user
+			self.parent.closeSubWindow(self.subwindow_id)
+
+			event.accept()
+			self.close()
+			return
 
 		# Server windows are never closed unless
 		# the server has been disconnected; they
