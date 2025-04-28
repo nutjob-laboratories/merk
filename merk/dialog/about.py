@@ -195,6 +195,24 @@ class Dialog(QDialog):
 				pyiCredit.addWidget(pyi_logo)
 				pyiCredit.addWidget(QLabel("<center><small><b><a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>"))
 
+				line1 = QHBoxLayout()
+				line1.addStretch()
+				line1.addLayout(pyCred)
+				line1.addStretch()
+				line1.addLayout(qtCred)
+				line1.addStretch()
+
+				line2 = QHBoxLayout()
+				line2.addStretch()
+				line2.addLayout(twCred)
+				line2.addStretch()
+				line2.addLayout(pyiCredit)
+				line2.addStretch()
+
+				credBlock = QVBoxLayout()
+				credBlock.addLayout(line1)
+				credBlock.addLayout(line2)
+
 		logoBar = QHBoxLayout()
 		logoBar.addStretch()
 		logoBar.addLayout(pyCred)
