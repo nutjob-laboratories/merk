@@ -42,6 +42,9 @@ from .style import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
+def is_running_from_pyinstaller():
+	return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
+
 def is_deleted(obj):
 	if hasattr(obj,"isVisible"):
 		if not obj.isVisible():
