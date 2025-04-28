@@ -2073,6 +2073,11 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://twisted.org/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
+		if is_running_from_pyinstaller():
+			entry = QAction(QIcon(PYTHON_ICON),"PyInstaller",self)
+			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
+			self.helpMenu.addAction(entry)
+
 	def buildWindowsMenu(self):
 
 		# Rebuild systray menu
