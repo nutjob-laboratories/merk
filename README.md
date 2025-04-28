@@ -81,9 +81,11 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the standalone version of MERK 0.035.030](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the zip archive of MERK for Windows 0.035.030](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
 
-The standalone version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
+For an even easier "install", [download the "standalone" executable](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe) to wherever you want, and double click on the downloaded file.
+
+The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
 A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
 
