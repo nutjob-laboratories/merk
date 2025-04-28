@@ -62,6 +62,7 @@ class Merk(QMainWindow):
 			channels=[],
 			noexecute=False,
 			donotsave=False,
+			simpleconn=False,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -75,6 +76,7 @@ class Merk(QMainWindow):
 		self.join_channels = channels
 		self.noexecute = noexecute
 		self.donotsave = donotsave
+		self.simpleconn = simpleconn
 
 		if not test_if_window_background_is_light(self):
 			self.checked_icon = DARK_CHECKED_ICON
@@ -1408,7 +1410,10 @@ class Merk(QMainWindow):
 		if config.SIMPLIFIED_CONNECT_DIALOG:
 			connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
 		else:
-			connection = ConnectDialog(self.app,self,message,reason,self.noexecute,self.donotsave)
+			if self.simpleconn:
+				connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
+			else:
+				connection = ConnectDialog(self.app,self,message,reason,self.noexecute,self.donotsave)
 
 		if connection:
 			
@@ -1478,7 +1483,10 @@ class Merk(QMainWindow):
 			if config.SIMPLIFIED_CONNECT_DIALOG:
 				connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
 			else:
-				connection = ConnectDialog(self.app,self,'','',self.noexecute,self.donotsave)
+				if self.simpleconn:
+					connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
+				else:
+					connection = ConnectDialog(self.app,self,'','',self.noexecute,self.donotsave)
 		if connection:
 			
 			if connection.reconnect:

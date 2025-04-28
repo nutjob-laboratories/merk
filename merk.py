@@ -311,6 +311,7 @@ if __name__ == '__main__':
 				chans,				# Channels
 				args.donotexecute,	# Do not execute script default
 				args.donotsave,		# Do not save default
+				args.simple,		# Simple connect default
 				None,				# Parent
 			)
 
@@ -351,6 +352,7 @@ if __name__ == '__main__':
 					[],					# Channels
 					args.donotexecute,	# Do not execute script default
 					args.donotsave,		# Do not save default
+					args.simple,		# Simple connect default
 					None,				# Parent
 				)
 
@@ -429,6 +431,7 @@ if __name__ == '__main__':
 							[],					# Channels
 							args.donotexecute,	# Do not execute script default
 							args.donotsave,		# Do not save default
+							args.simple,		# Simple connect default
 							None,				# Parent
 						)
 
@@ -463,6 +466,7 @@ if __name__ == '__main__':
 						chans,				# Channels
 						args.donotexecute,	# Do not execute script default
 						args.donotsave,		# Do not save default
+						args.simple,		# Simple connect default
 						None,				# Parent
 					)
 
