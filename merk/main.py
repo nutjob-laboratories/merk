@@ -2017,9 +2017,10 @@ class Merk(QMainWindow):
 
 		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
 
-		entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
-		sm.addAction(entry)
+		if not is_running_from_pyinstaller():
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+			sm.addAction(entry)
 
 		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
