@@ -106,13 +106,6 @@ class Dialog(QDialog):
 		twisted_logo.setPixmap(pixmap)
 		twisted_logo.setAlignment(Qt.AlignCenter)
 
-		logoBar = QHBoxLayout()
-		logoBar.addStretch()
-		logoBar.addWidget(python_logo)
-		logoBar.addWidget(twisted_logo)
-		logoBar.addWidget(qt_logo)
-		logoBar.addStretch()
-
 		titleLayout = QVBoxLayout()
 		titleLayout.addWidget(logo)
 		titleLayout.addLayout(descriptionLayout)
@@ -157,9 +150,6 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		pyv_credit = QLabel(f"<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>" + " - " + f"<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>" + " - " + f"<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>")
-		pyv_credit.setAlignment(Qt.AlignCenter)
-
 		nutjob_credit = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories\">NUTJOB</a> <a href=\"https://github.com/nutjob-laboratories\">LABORATORIES</a></b></big>")
 		nutjob_credit.setAlignment(Qt.AlignCenter)
 		nutjob_credit.setOpenExternalLinks(True)
@@ -168,7 +158,26 @@ class Dialog(QDialog):
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
 
+		pyCred = QVBoxLayout()
+		pyCred.addWidget(python_logo)
+		pyCred.addWidget(QLabel("<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>"))
 
+		twCred = QVBoxLayout()
+		twCred.addWidget(twisted_logo)
+		twCred.addWidget(QLabel("<small><b><a href=\"https://twistedmatrix.com/\">Twisted</a> " + tv +"</b></small>"))
+
+		qtCred = QVBoxLayout()
+		qtCred.addWidget(qt_logo)
+		qtCred.addWidget(QLabel("<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>"))
+
+		logoBar = QHBoxLayout()
+		logoBar.addStretch()
+		logoBar.addLayout(pyCred)
+		logoBar.addStretch()
+		logoBar.addLayout(qtCred)
+		logoBar.addStretch()
+		logoBar.addLayout(twCred)
+		logoBar.addStretch()
 
 		creditsBox = QGroupBox()
 		creditsBox.setAlignment(Qt.AlignHCenter)
@@ -189,7 +198,6 @@ class Dialog(QDialog):
 		aboutLayout.addLayout(titleLayout)
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addLayout(logoBar)
-		aboutLayout.addWidget(pyv_credit)
 		aboutLayout.addWidget(platform_credit)
 		aboutLayout.addStretch()
 
