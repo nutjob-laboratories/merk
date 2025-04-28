@@ -20,15 +20,11 @@
 
 # Downloads
 
-<div style="text-align: center;">
-
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
 | Zip Archive|  Cross-platform  | [Download MERK !_FULL_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
 | Zip Archive|  Windows | [Download MERK !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
 |   Single Executable|  Windows | [Download MERK !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe)|
-
-</div>
 
 # Summary
   
