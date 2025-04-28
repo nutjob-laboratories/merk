@@ -655,6 +655,8 @@ class Dialog(QDialog):
 		if config.SIMPLIFIED_CONNECT_DIALOG: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
 
+		if self.parent.simpleconn: self.simpleConnect.setEnabled(False)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -669,6 +671,8 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showInputMenu)
 		applicationLayout.addWidget(self.showContext)
 		applicationLayout.addWidget(self.simpleConnect)
+		if self.parent.simpleconn:
+			applicationLayout.addWidget(QLabel("<small><i>Simplified connections dialogs turned on</i></small>"))
 		#applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
 		applicationLayout.addWidget(self.showTimestamps)
