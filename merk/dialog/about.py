@@ -199,6 +199,8 @@ class Dialog(QDialog):
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addLayout(logoBar)
 		aboutLayout.addWidget(platform_credit)
+		if is_running_from_pyinstaller():
+			aboutLayout.addWidget(QLabel("<center><small><b>Running under <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>"))
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
