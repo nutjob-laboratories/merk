@@ -30,8 +30,15 @@ from PyQt5 import QtCore
 
 import platform
 import twisted
+import pkg_resources
 
 from ..resources import *
+
+def get_pyinstaller_version():
+	try:
+		return pkg_resources.get_distribution('pyinstaller').version
+	except pkg_resources.DistributionNotFound:
+		return None
 
 class Dialog(QDialog):
 
@@ -106,6 +113,12 @@ class Dialog(QDialog):
 		twisted_logo.setPixmap(pixmap)
 		twisted_logo.setAlignment(Qt.AlignCenter)
 
+		if is_running_from_pyinstaller():
+			pyi_logo = QLabel()
+			pixmap = QPixmap(PYINSTALLER_ICON)
+			pyi_logo.setPixmap(pixmap)
+			pyi_logo.setAlignment(Qt.AlignCenter)
+
 		titleLayout = QVBoxLayout()
 		titleLayout.addWidget(logo)
 		titleLayout.addLayout(descriptionLayout)
@@ -136,6 +149,11 @@ class Dialog(QDialog):
 		qr_credit = QLabel(f"<b><small><a href=\"https://github.com/twisted/qt5reactor\">qt5reactor</a> by Twisted Matrix Labs</small></b>")
 		qr_credit.setAlignment(Qt.AlignCenter)
 		qr_credit.setOpenExternalLinks(True)
+
+		if is_running_from_pyinstaller():
+			pi_credit = QLabel(f"<b><small><a href=\"https://pyinstaller.org/\">PyInstaller</a> by David Cortesi</small></b>")
+			pi_credit.setAlignment(Qt.AlignCenter)
+			pi_credit.setOpenExternalLinks(True)
 
 		platform_credit = QLabel(f"<small><b>Running on "+ platform.system().strip() + " " + platform.release().strip() +"</b></small>")
 		platform_credit.setAlignment(Qt.AlignCenter)
@@ -170,6 +188,13 @@ class Dialog(QDialog):
 		qtCred.addWidget(qt_logo)
 		qtCred.addWidget(QLabel("<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>"))
 
+		if is_running_from_pyinstaller():
+			version = get_pyinstaller_version()
+			if version != None:
+				pyiCredit = QVBoxLayout()
+				pyiCredit.addWidget(pyi_logo)
+				pyiCredit.addWidget(QLabel("<center><small><b><a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>"))
+
 		logoBar = QHBoxLayout()
 		logoBar.addStretch()
 		logoBar.addLayout(pyCred)
@@ -188,6 +213,8 @@ class Dialog(QDialog):
 		creditsLayout.addWidget(spellcheck_credit)
 		creditsLayout.addWidget(emoji_credit)
 		creditsLayout.addWidget(qr_credit)
+		if is_running_from_pyinstaller():
+			creditsLayout.addWidget(pi_credit)
 		creditsBox.setLayout(creditsLayout)
 
 		okButton = QPushButton("Ok")
@@ -198,9 +225,9 @@ class Dialog(QDialog):
 		aboutLayout.addLayout(titleLayout)
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addLayout(logoBar)
-		aboutLayout.addWidget(platform_credit)
 		if is_running_from_pyinstaller():
-			aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a>!</b></small></center>"))
+			aboutLayout.addLayout(pyiCredit)
+		aboutLayout.addWidget(platform_credit)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
