@@ -2074,7 +2074,7 @@ class Merk(QMainWindow):
 		self.helpMenu.addAction(entry)
 
 		if is_running_from_pyinstaller():
-			entry = QAction(QIcon(PYTHON_ICON),"PyInstaller",self)
+			entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
 			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
 			self.helpMenu.addAction(entry)
 

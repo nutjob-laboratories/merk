@@ -196,6 +196,7 @@ QT_ICON = ":/icon-qt.png"
 PYTHON_ICON = ":/icon-python.png"
 TWISTED_ICON = ":/icon-twisted.png"
 TWISTED_BUTTON_ICON = ":/icon-twisted_button.png"
+PYINSTALLER_ICON = ":/icon-pyinstaller.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
