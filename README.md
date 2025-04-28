@@ -1,4 +1,5 @@
 
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -7,10 +8,10 @@
 
  - [Downloads](#Downloads)
  - [Summary](#Summary)
- - [Features](#Features)
- - [Python Requirements](#python-requirements)
  - [Running MERK on Windows](#running-merk-on-windows)
  - [Running MERK with Python](#running-merk-with-python)
+ - [Python Requirements](#python-requirements)
+ - [Features](#Features)
  - [Screenshots](#screenshots)
  - [Usage](#usage)
  - [Example commandline usage](#example-commandline-usage)
@@ -36,8 +37,48 @@ For those that don't want to install Python or all the requirements, you can [do
 
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!
 
-# Features
+# Running MERK on Windows
 
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the zip archive of **MERK** 0.035.030 for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
+
+For an even easier "install", [download the "standalone" executable of **MERK** 0.035.030](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe) to wherever you want, and double click on the downloaded file.
+
+The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
+
+A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
+
+# Running MERK with Python
+
+First, make sure that all the [requirements](#python-requirements) are installed. Next, [download **MERK**](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+
+    python merk.py
+
+# Python Requirements
+
+**MERK** requires Python 3, [PyQt5](https://pypi.org/project/PyQt5/), and [Twisted](https://twistedmatrix.com/trac/). PyQt5 and Twisted can be installed by using [**pip**](https://pypi.org/project/pip/):
+
+    pip install pyqt5
+    pip install Twisted
+
+To connect to IRC servers via SSL, two additional libraries may be needed:
+
+    pip install pyOpenSSL
+    pip install service_identity
+
+**MERK** is being developed with Python 3.13 on Windows 11 and Linux Mint.
+
+If you're running Windows, and you're getting errors when trying to run **MERK**, you may have to install another library, [pywin32](https://pypi.org/project/pywin32/). You can also install this with [**pip**](https://pypi.org/project/pip/):
+
+    pip install pywin32
+
+To run properly on Linux, the latest version of all required software is recommended.
+
+There are three libraries that comes bundled with **MERK**:
+ - [qt5reactor](https://github.com/twisted/qt5reactor)
+ - [pyspellchecker](https://github.com/barrust/pyspellchecker)
+ - [emoji](https://github.com/carpedm20/emoji)
+
+# Features
 -   Runs on Windows and Linux
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
@@ -79,46 +120,6 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
     - Includes a utility to export logs to JSON, CSV, or your own custom format
     - Logs are stored in JSON, so parsing/scraping your own logs in easy
 
-# Running MERK on Windows
-
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the zip archive of **MERK** 0.035.030 for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
-
-For an even easier "install", [download the "standalone" executable of **MERK** 0.035.030](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe) to wherever you want, and double click on the downloaded file.
-
-The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
-
-A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
-
-# Python Requirements
-
-**MERK** requires Python 3, [PyQt5](https://pypi.org/project/PyQt5/), and [Twisted](https://twistedmatrix.com/trac/). PyQt5 and Twisted can be installed by using [**pip**](https://pypi.org/project/pip/):
-
-    pip install pyqt5
-    pip install Twisted
-
-To connect to IRC servers via SSL, two additional libraries may be needed:
-
-    pip install pyOpenSSL
-    pip install service_identity
-
-**MERK** is being developed with Python 3.13 on Windows 11 and Linux Mint.
-
-If you're running Windows, and you're getting errors when trying to run **MERK**, you may have to install another library, [pywin32](https://pypi.org/project/pywin32/). You can also install this with [**pip**](https://pypi.org/project/pip/):
-
-    pip install pywin32
-
-To run properly on Linux, the latest version of all required software is recommended.
-
-There are three libraries that comes bundled with **MERK**:
- - [qt5reactor](https://github.com/twisted/qt5reactor)
- - [pyspellchecker](https://github.com/barrust/pyspellchecker)
- - [emoji](https://github.com/carpedm20/emoji)
-
-# Running MERK with Python
-
-First, make sure that all the requirements are installed. Next, [download **MERK**](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
-
-    python merk.py
 # Screenshots
 
 <p align="center">
@@ -249,8 +250,3 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
 
 [//]: # (End of document)
-
-
-
-
-
