@@ -5,12 +5,7 @@
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
 </p>
 
- <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip">Download MERK 0.035.030</a></b></p>
-
-  <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip">Download MERK 0.035.030 for Windows</a></b></p>
-
-  <p align="center"><b><a href="https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe">Download MERK 0.035.030 for Windows Standalone Executable</a></b></p>
-
+ - [Downloads](#Downloads)
  - [Summary](#Summary)
  - [Features](#Features)
  - [Python Requirements](#python-requirements)
@@ -22,6 +17,14 @@
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
  - [Does MERK need any help?](#does-merk-need-any-help)
+
+# Downloads
+
+| Type| Platform  | Download  |
+| :----:    | :----:    | :----:    |
+| Zip Archive|  Cross-platform  | [Download MERK 0.035.030](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
+| Zip Archive|  Windows | [Download MERK 0.035.030](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
+|   Single Executable|  Windows | [Download MERK 0.035.030](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe)|
 
 # Summary
   
@@ -244,6 +247,7 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
 
 [//]: # (End of document)
+
 
 
 
