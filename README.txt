@@ -39,7 +39,7 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the zip archive of **MERK** !_WIN_VERSION_! for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extra the zip archive to any folder you want to store **MERK**. To run **MERK**, double click on `merk.exe`. That's it!
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the zip archive of **MERK** !_WIN_VERSION_! for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extract the zip archive to any folder you want to store **MERK** in. To run **MERK**, double click on `merk.exe`. That's it!
 
 For an even easier "install", [download the "standalone" executable of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe) to wherever you want, and double click on the downloaded file.
 
@@ -136,7 +136,7 @@ There are three libraries that comes bundled with **MERK**:
   </p>
   <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/styler.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/styler_small.png"></a></center></br>
-  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server is connected to. Changes, once saved, are automatically and instantly applied.</small></i></center>
+  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center>
   </p>
   <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/settings.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/settings_small.png"></a></center></br>
