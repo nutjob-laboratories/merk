@@ -879,7 +879,7 @@ class Dialog(QDialog):
 		if config.MENUBAR_JUSTIFY!='right': self.menubarJustify.addItem('right')
 		self.menubarJustify.currentIndexChanged.connect(self.menuJustifyChange)
 
-		self.menubarMenu = QCheckBox("Use context settings menu",self)
+		self.menubarMenu = QCheckBox("Context menu settings",self)
 		if config.MENUBAR_MENU: self.menubarMenu.setChecked(True)
 		self.menubarMenu.stateChanged.connect(self.menuChange)
 
@@ -1004,16 +1004,16 @@ class Dialog(QDialog):
 		self.menuNameDescription.setAlignment(Qt.AlignJustify)
 
 		menuLayout = QVBoxLayout()
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
-		menuLayout.addWidget(self.menuNameDescription)
-		menuLayout.addLayout(nameMenuEntries)
-		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addWidget(self.menubar)
 		menuLayout.addWidget(self.menubarFloat)
 		menuLayout.addWidget(self.menubarMenu)
 		menuLayout.addLayout(justifyLayout)
+		menuLayout.addWidget(QLabel(' '))
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
+		menuLayout.addWidget(self.menuNameDescription)
+		menuLayout.addLayout(nameMenuEntries)
 		menuLayout.addStretch()
 
 		self.menuPage.setLayout(menuLayout)
@@ -1089,7 +1089,7 @@ class Dialog(QDialog):
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST: self.windowBarFirst.setChecked(True)
 		self.windowBarFirst.stateChanged.connect(self.menuChange)
 
-		self.windowbarMenu = QCheckBox("Use context settings menu",self)
+		self.windowbarMenu = QCheckBox("Context menu settings",self)
 		if config.WINDOWBAR_MENU: self.windowbarMenu.setChecked(True)
 		self.windowbarMenu.stateChanged.connect(self.menuChange)
 
