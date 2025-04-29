@@ -482,18 +482,18 @@ class Windowbar(QToolBar):
 		e = textSeparator(self,"Windowbar Settings")
 		menu.addAction(e)
 
-		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
-			entry = QAction(QIcon(self.parent.checked_icon),"Show active first", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active first", self)
-		entry.triggered.connect(self.first)
-		menu.addAction(entry)
-
 		if config.WINDOWBAR_CAN_FLOAT:
 			entry = QAction(QIcon(self.parent.checked_icon),"Movable", self)
 		else:
 			entry = QAction(QIcon(self.parent.unchecked_icon),"Movable", self)
 		entry.triggered.connect(self.float)
+		menu.addAction(entry)
+
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show active first", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active first", self)
+		entry.triggered.connect(self.first)
 		menu.addAction(entry)
 		
 		if config.WINDOWBAR_SHOW_ICONS:
