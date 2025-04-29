@@ -301,6 +301,17 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def prependChange(self,i):
+		self.system_prepend = self.sysPrepend.itemText(i)
+
+		self.setSystemPrepend.setText(f"Prefix system messages with: <big>{self.system_prepend}</big>")
+
+		self.rerender = True
+
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
 	def styleChange(self, i):
 		self.qt_style = self.qtStyle.itemText(i)
 
@@ -510,6 +521,8 @@ class Dialog(QDialog):
 		self.windowbar_justify = config.WINDOWBAR_JUSTIFY
 
 		self.menubar_justify = config.MENUBAR_JUSTIFY
+
+		self.system_prepend = config.SYSTEM_MESSAGE_PREFIX
 
 		self.user_changed = False
 
@@ -1555,6 +1568,29 @@ class Dialog(QDialog):
 
 		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+
+
+
+
+		self.sysPrepend = QComboBox(self)
+		self.sysPrepend.addItem(config.SYSTEM_MESSAGE_PREFIX)
+		for s in SYSTEM_PREPEND_OPTIONS:
+			if s==config.SYSTEM_MESSAGE_PREFIX: continue
+			self.sysPrepend.addItem(s)
+		self.sysPrepend.currentIndexChanged.connect(self.prependChange)
+
+
+		self.setSystemPrepend = QLabel(f"Prefix system messages with: <big>{self.system_prepend}</big>")
+
+		prepSel = QHBoxLayout()
+		prepSel.addWidget(QLabel("Select a symbol:"))
+		prepSel.addWidget(self.sysPrepend)
+
+		prepLayout = QVBoxLayout()
+		prepLayout.addWidget(self.setSystemPrepend)
+		prepLayout.addLayout(prepSel)
+
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -1562,6 +1598,9 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.createWindow)
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
+		messageLayout.addWidget(QLabel(' '))
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system messages</b>"))
+		messageLayout.addLayout(prepLayout)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -1898,6 +1937,7 @@ class Dialog(QDialog):
 		config.MAIN_MENU_HELP_NAME = self.default_help_menu
 		config.DARK_MODE = self.darkMode.isChecked()
 		config.SIMPLIFIED_CONNECT_DIALOG = self.simpleConnect.isChecked()
+		config.SYSTEM_MESSAGE_PREFIX = self.system_prepend
 
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()

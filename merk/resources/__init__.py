@@ -42,6 +42,19 @@ from .style import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
+SYSTEM_PREPEND_OPTIONS = [
+	"&diams;",
+	"&loz;",
+	"&rarr;",
+	"&dagger;",
+	"&Dagger;",
+	"&lambda;",
+	"&Delta;",
+	"&there4;",
+	"&infin;",
+	"&sect;",
+]
+
 def is_running_from_pyinstaller():
 	return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
 
