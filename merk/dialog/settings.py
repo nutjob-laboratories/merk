@@ -306,6 +306,8 @@ class Dialog(QDialog):
 
 		self.setSystemPrepend.setText(f"Prefix system messages with: <big>{self.system_prepend}</big>")
 
+		if self.system_prepend=="Nothing": self.system_prepend = ''
+
 		self.rerender = True
 
 		self.selector.setFocus()
@@ -1568,19 +1570,19 @@ class Dialog(QDialog):
 
 		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-
-
-
-
 		self.sysPrepend = QComboBox(self)
-		self.sysPrepend.addItem(config.SYSTEM_MESSAGE_PREFIX)
+		if config.SYSTEM_MESSAGE_PREFIX=='':
+			current = "Nothing"
+		else:
+			current = config.SYSTEM_MESSAGE_PREFIX
+		self.sysPrepend.addItem(current)
 		for s in SYSTEM_PREPEND_OPTIONS:
-			if s==config.SYSTEM_MESSAGE_PREFIX: continue
+			if s==current: continue
 			self.sysPrepend.addItem(s)
 		self.sysPrepend.currentIndexChanged.connect(self.prependChange)
 
 
-		self.setSystemPrepend = QLabel(f"Prefix system messages with: <big>{self.system_prepend}</big>")
+		self.setSystemPrepend = QLabel(f"Prefix system messages with: <big>{current}</big>")
 
 		prepSel = QHBoxLayout()
 		prepSel.addWidget(QLabel("Select a symbol:"))
@@ -1589,7 +1591,6 @@ class Dialog(QDialog):
 		prepLayout = QVBoxLayout()
 		prepLayout.addWidget(self.setSystemPrepend)
 		prepLayout.addLayout(prepSel)
-
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))

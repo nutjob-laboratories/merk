@@ -43,6 +43,7 @@ from .style import *
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
 SYSTEM_PREPEND_OPTIONS = [
+	"Nothing",
 	"&diams;",
 	"&loz;",
 	"&rarr;",
