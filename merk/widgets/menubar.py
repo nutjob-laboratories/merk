@@ -502,6 +502,20 @@ class Windowbar(QToolBar):
 			entry = QAction(QIcon(self.parent.unchecked_icon),"Show icons", self)
 		entry.triggered.connect(self.icons)
 		menu.addAction(entry)
+
+		if config.WINDOWBAR_INCLUDE_CHANNELS:
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel windows", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel windows", self)
+		entry.triggered.connect(self.channels)
+		menu.addAction(entry)
+
+		if config.WINDOWBAR_INCLUDE_PRIVATE:
+			entry = QAction(QIcon(self.parent.checked_icon),"Private windows", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Private windows", self)
+		entry.triggered.connect(self.privates)
+		menu.addAction(entry)
 		
 		if config.WINDOWBAR_INCLUDE_SERVERS:
 			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
@@ -625,6 +639,26 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_SHOW_ICONS = False
 		else:
 			config.WINDOWBAR_SHOW_ICONS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def channels(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_INCLUDE_CHANNELS:
+			config.WINDOWBAR_INCLUDE_CHANNELS = False
+		else:
+			config.WINDOWBAR_INCLUDE_CHANNELS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def privates(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_INCLUDE_PRIVATE:
+			config.WINDOWBAR_INCLUDE_PRIVATE = False
+		else:
+			config.WINDOWBAR_INCLUDE_PRIVATE = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)

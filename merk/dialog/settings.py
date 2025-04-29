@@ -391,6 +391,8 @@ class Dialog(QDialog):
 			self.windowBarEditor.setEnabled(True)
 			self.windowBarFirst.setEnabled(True)
 			self.windowbarMenu.setEnabled(True)
+			self.windowbarPrivate.setEnabled(True)
+			self.windowbarChannels.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -401,6 +403,8 @@ class Dialog(QDialog):
 			self.windowBarEditor.setEnabled(False)
 			self.windowBarFirst.setEnabled(False)
 			self.windowbarMenu.setEnabled(False)
+			self.windowbarPrivate.setEnabled(False)
+			self.windowbarChannels.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -1093,6 +1097,14 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_MENU: self.windowbarMenu.setChecked(True)
 		self.windowbarMenu.stateChanged.connect(self.menuChange)
 
+		self.windowbarChannels = QCheckBox("Include channel windows",self)
+		if config.WINDOWBAR_INCLUDE_CHANNELS: self.windowbarChannels.setChecked(True)
+		self.windowbarChannels.stateChanged.connect(self.menuChange)
+
+		self.windowbarPrivate = QCheckBox("Include private chat windows",self)
+		if config.WINDOWBAR_INCLUDE_PRIVATE: self.windowbarPrivate.setChecked(True)
+		self.windowbarPrivate.stateChanged.connect(self.menuChange)
+
 
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
@@ -1104,6 +1116,8 @@ class Dialog(QDialog):
 			self.windowBarEditor.setEnabled(False)
 			self.windowBarFirst.setEnabled(False)
 			self.windowbarMenu.setEnabled(False)
+			self.windowbarPrivate.setEnabled(False)
+			self.windowbarChannels.setEnabled(False)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -1112,6 +1126,8 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarFloat)
 		windowbarLayout.addWidget(self.windowBarTop)
 		windowbarLayout.addWidget(self.windowBarFirst)
+		windowbarLayout.addWidget(self.windowbarChannels)
+		windowbarLayout.addWidget(self.windowbarPrivate)
 		windowbarLayout.addWidget(self.windowBarServers)
 		windowbarLayout.addWidget(self.windowBarEditor)
 		windowbarLayout.addWidget(self.windowBarIcons)
@@ -1939,6 +1955,8 @@ class Dialog(QDialog):
 		config.DARK_MODE = self.darkMode.isChecked()
 		config.SIMPLIFIED_CONNECT_DIALOG = self.simpleConnect.isChecked()
 		config.SYSTEM_MESSAGE_PREFIX = self.system_prepend
+		config.WINDOWBAR_INCLUDE_CHANNELS = self.windowbarChannels.isChecked()
+		config.WINDOWBAR_INCLUDE_PRIVATE = self.windowbarPrivate.isChecked()
 
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()
