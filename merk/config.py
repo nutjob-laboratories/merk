@@ -141,6 +141,9 @@ EDITOR_PROMPT_SAVE = True
 WINDOWBAR_INCLUDE_CHANNELS = True
 WINDOWBAR_INCLUDE_PRIVATE = True
 
+SAVE_LOGS_PERIODICALLY = True
+SAVE_LOG_TIMER = 300000	# Five minutes
+
 def save_settings(filename):
 
 	settings = {
