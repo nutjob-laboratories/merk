@@ -137,7 +137,6 @@ MAIN_MENU_WINDOWS_NAME = "Windows"
 MAIN_MENU_HELP_NAME = "Help"
 DARK_MODE = False
 SIMPLIFIED_CONNECT_DIALOG = False
-
 EDITOR_PROMPT_SAVE = True
 
 def save_settings(filename):
