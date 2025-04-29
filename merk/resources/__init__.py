@@ -53,6 +53,18 @@ SYSTEM_PREPEND_OPTIONS = [
 	"&there4;",
 	"&infin;",
 	"&sect;",
+	"&lt;",
+	"&gt;",
+	"&sum;",
+	"&le;",
+	"&ge;",
+	"&oplus;",
+	"&harr;",
+	"&spades;",
+	"&clubs;",
+	"&hearts;",
+	"&bull;",
+	"&mdash;",
 ]
 
 def is_running_from_pyinstaller():
