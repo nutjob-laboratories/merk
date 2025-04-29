@@ -29,6 +29,22 @@ readme = readme.replace("!_MINOR_!",minor)
 readme = readme.replace("!_FULL_VERSION_!",major+"."+minor)
 readme = readme.replace("!_WIN_VERSION_!",win_major+"."+win_minor)
 
+# !_PYSIZE_!
+dist_file_size =  os.path.getsize("./downloads/merk-latest.zip")
+file_size_kb = dist_file_size / 1024
+file_size_mb = file_size_kb / 1024
+readme = readme.replace("!_PYSIZE_!",f"{file_size_mb:.2f} MB")
+# !_WINZIP_!
+win_latest_file_size =  os.path.getsize("./downloads/merk-windows-latest.zip")
+file_size_kb = win_latest_file_size / 1024
+file_size_mb = file_size_kb / 1024
+readme = readme.replace("!_WINZIP_!",f"{file_size_mb:.2f} MB")
+# !_WINEXE_!
+win_single_file_size =  os.path.getsize("./downloads/merk-windows-standalone.exe")
+file_size_kb = win_single_file_size / 1024
+file_size_mb = file_size_kb / 1024
+readme = readme.replace("!_WINEXE_!",f"{file_size_mb:.2f} MB")
+
 os.remove("README.md")
 f = open("README.md",mode="w", encoding='latin-1')
 f.write(readme)
