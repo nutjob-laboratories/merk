@@ -1037,11 +1037,11 @@ class Dialog(QDialog):
 
 		self.windowbarDescription = QLabel("""
 			<small>
-			The windowbar is a toolbar widget that lists all of the open chat
+			The windowbar is a toolbar widget that lists all (or some) of the open
 			subwindows and allows you to switch between them by clicking on
-			the subwindow's name. Optionally, the windowbar can also display
-			server and script editor windows. It can be displayed at the top of
-			the main window or at the bottom, and can optionally float. The entries
+			the subwindow's name. The windowbar can show channel, private chat,
+			server, or script editor windows. It can be displayed at the top of
+			the main window or at the bottom, or can be moved. The entries
 			in the window bar can be left, right, or center justified. The
 			windowbar is turned on by default.
 			</small>
