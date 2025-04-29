@@ -866,7 +866,7 @@ class Dialog(QDialog):
 		if config.USE_MENUBAR: self.menubar.setChecked(True)
 		self.menubar.stateChanged.connect(self.changedMenubarSetting)
 
-		self.menubarFloat = QCheckBox("Can \"float\"",self)
+		self.menubarFloat = QCheckBox("Movable",self)
 		if config.MENUBAR_CAN_FLOAT: self.menubarFloat.setChecked(True)
 		self.menubarFloat.stateChanged.connect(self.menuChange)
 
@@ -1059,7 +1059,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
 		self.windowBarIcons.stateChanged.connect(self.menuChange)
 
-		self.windowBarFloat = QCheckBox("Can \"float\"",self)
+		self.windowBarFloat = QCheckBox("Movable",self)
 		if config.WINDOWBAR_CAN_FLOAT: self.windowBarFloat.setChecked(True)
 		self.windowBarFloat.stateChanged.connect(self.menuChange)
 

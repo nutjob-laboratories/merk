@@ -412,9 +412,9 @@ class Menubar(QToolBar):
 		menu.addAction(e)
 
 		if config.MENUBAR_CAN_FLOAT:
-			entry = QAction(QIcon(self.parent.checked_icon),"Can float", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Movable", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Can float", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Movable", self)
 		entry.triggered.connect(self.float)
 		menu.addAction(entry)
 
@@ -490,9 +490,9 @@ class Windowbar(QToolBar):
 		menu.addAction(entry)
 
 		if config.WINDOWBAR_CAN_FLOAT:
-			entry = QAction(QIcon(self.parent.checked_icon),"Can float", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Movable", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Can float", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Movable", self)
 		entry.triggered.connect(self.float)
 		menu.addAction(entry)
 		
