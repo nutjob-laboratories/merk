@@ -305,8 +305,16 @@ class Merk(QMainWindow):
 					if w.isVisible():
 						window_list.append(self.getServerSubWindow(entry))
 
+			
 			for window in self.getAllSubChatWindows(entry):
-				window_list.append(window)
+				if hasattr(window,"widget"):
+					c = window.widget()
+					if c.window_type==CHANNEL_WINDOW:
+						if config.WINDOWBAR_INCLUDE_CHANNELS:
+							window_list.append(window)
+					elif c.window_type==PRIVATE_WINDOW:
+						if config.WINDOWBAR_INCLUDE_PRIVATE:
+							window_list.append(window)
 
 		if config.WINDOWBAR_INCLUDE_EDITORS:
 			for window in self.getAllEditorWindows():
@@ -508,8 +516,11 @@ class Merk(QMainWindow):
 				font.setUnderline(True)
 				button_list[0].setFont(font)
 
-		for b in button_list:
-			self.windowbar.addWidget(b)
+		if len(button_list)>0:
+			for b in button_list:
+				self.windowbar.addWidget(b)
+		else:
+			self.windowbar.hide()
 
 		if config.WINDOWBAR_JUSTIFY.lower()=='center':
 			menubar.add_toolbar_stretch(self.windowbar)

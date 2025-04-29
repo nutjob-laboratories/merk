@@ -864,7 +864,7 @@ class Dialog(QDialog):
 		self.menubarDescription.setWordWrap(True)
 		self.menubarDescription.setAlignment(Qt.AlignJustify)
 
-		self.menubar = QCheckBox("Use menubar",self)
+		self.menubar = QCheckBox("Enable menubar",self)
 		if config.USE_MENUBAR: self.menubar.setChecked(True)
 		self.menubar.stateChanged.connect(self.changedMenubarSetting)
 
@@ -1045,7 +1045,7 @@ class Dialog(QDialog):
 		self.windowbarDescription.setWordWrap(True)
 		self.windowbarDescription.setAlignment(Qt.AlignJustify)
 
-		self.windowBar = QCheckBox("Use windowbar",self)
+		self.windowBar = QCheckBox("Enable windowbar",self)
 		if config.SHOW_WINDOWBAR: self.windowBar.setChecked(True)
 		self.windowBar.stateChanged.connect(self.changedWindowbarSetting)
 
@@ -1053,7 +1053,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_TOP_OF_SCREEN: self.windowBarTop.setChecked(True)
 		self.windowBarTop.stateChanged.connect(self.menuChange)
 
-		self.windowBarServers = QCheckBox("Includes server windows",self)
+		self.windowBarServers = QCheckBox("Include server windows",self)
 		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
 		self.windowBarServers.stateChanged.connect(self.menuChange)
 
@@ -1081,7 +1081,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
 		self.windowbarClick.stateChanged.connect(self.menuChange)
 
-		self.windowBarEditor = QCheckBox("Includes editor windows",self)
+		self.windowBarEditor = QCheckBox("Include editor windows",self)
 		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
 		self.windowBarEditor.stateChanged.connect(self.menuChange)
 

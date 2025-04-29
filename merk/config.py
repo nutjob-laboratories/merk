@@ -138,6 +138,8 @@ MAIN_MENU_HELP_NAME = "Help"
 DARK_MODE = False
 SIMPLIFIED_CONNECT_DIALOG = False
 EDITOR_PROMPT_SAVE = True
+WINDOWBAR_INCLUDE_CHANNELS = True
+WINDOWBAR_INCLUDE_PRIVATE = True
 
 def save_settings(filename):
 
@@ -241,12 +243,18 @@ def save_settings(filename):
 		"dark_mode": DARK_MODE,
 		"simplified_connection_dialog": SIMPLIFIED_CONNECT_DIALOG,
 		"editor_prompt_save_on_close": EDITOR_PROMPT_SAVE,
+		"windowbar_include_channels": WINDOWBAR_INCLUDE_CHANNELS,
+		"windowbar_include_private": WINDOWBAR_INCLUDE_PRIVATE,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "windowbar_include_private" in settings:
+		settings["windowbar_include_private"] = WINDOWBAR_INCLUDE_PRIVATE
+	if not "windowbar_include_channels" in settings:
+		settings["windowbar_include_channels"] = WINDOWBAR_INCLUDE_CHANNELS
 	if not "editor_prompt_save_on_close" in settings:
 		settings["editor_prompt_save_on_close"] = EDITOR_PROMPT_SAVE
 	if not "simplified_connection_dialog" in settings:
@@ -549,6 +557,8 @@ def load_settings(filename):
 	global DARK_MODE
 	global SIMPLIFIED_CONNECT_DIALOG
 	global EDITOR_PROMPT_SAVE
+	global WINDOWBAR_INCLUDE_CHANNELS
+	global WINDOWBAR_INCLUDE_PRIVATE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -558,6 +568,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_INCLUDE_CHANNELS = settings["windowbar_include_channels"]
+		WINDOWBAR_INCLUDE_PRIVATE = settings["windowbar_include_private"]
 		EDITOR_PROMPT_SAVE = settings["editor_prompt_save_on_close"]
 		SIMPLIFIED_CONNECT_DIALOG = settings["simplified_connection_dialog"]
 		DARK_MODE = settings["dark_mode"]
