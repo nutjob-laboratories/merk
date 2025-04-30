@@ -2110,7 +2110,9 @@ class Merk(QMainWindow):
 			# no connections
 			self.merk_subWindowActivated(None)
 
-		if len(listOfConnections)==0: self.connected_to_something = False
+		if len(listOfConnections)==0:
+			self.connected_to_something = False
+			self.setWindowTitle(APPLICATION_NAME)
 
 		if len(listOfConnections)>0:
 
