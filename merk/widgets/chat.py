@@ -72,9 +72,6 @@ class Window(QMainWindow):
 		self.log = []
 		self.new_log = []
 
-		self.save_log_timer = QTimer(self)
-		self.save_log_timer.timeout.connect(self.save_log_period)
-
 		self.users = []
 		self.nicks = []
 		self.hostmasks = {}
@@ -520,25 +517,6 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
-
-		# If periodic log saving is turned on,
-		# uh, turn it on
-		if config.SAVE_LOGS_PERIODICALLY:
-			save_logs = True
-
-			if self.window_type==CHANNEL_WINDOW:
-				if config.SAVE_CHANNEL_LOGS:
-					save_logs=True
-				else:
-					save_logs=False
-
-			if self.window_type==PRIVATE_WINDOW:
-				if config.SAVE_PRIVATE_LOGS:
-					save_logs=True
-				else:
-					save_logs=False
-
-			if save_logs: self.save_log_timer.start(config.SAVE_LOG_TIMER)
 
 	def chatMenu(self,location):
 
@@ -1385,34 +1363,6 @@ class Window(QMainWindow):
 
 		event.accept()
 		self.close()
-
-	def save_log_period(self):
-
-		if config.SAVE_LOGS_PERIODICALLY:
-			save_logs = True
-
-			if self.window_type==CHANNEL_WINDOW:
-				if config.SAVE_CHANNEL_LOGS:
-					save_logs=True
-				else:
-					save_logs=False
-
-			if self.window_type==PRIVATE_WINDOW:
-				if config.SAVE_PRIVATE_LOGS:
-					save_logs=True
-				else:
-					save_logs=False
-
-			# Save logs
-			if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
-				if save_logs:
-					if len(self.new_log)>0:
-						logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
-						self.parent.buildSettingsMenu()
-
-						self.new_log = []
-
-					self.save_log_timer.start(config.SAVE_LOG_TIMER)
 
 
 	def saveLogs(self):
