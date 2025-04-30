@@ -566,9 +566,10 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
-				entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
-				entry.triggered.connect(self.doSaveLog)
-				menu.addAction(entry)
+				if config.ALLOW_LOG_SAVE_FROM_MENU:
+					entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
+					entry.triggered.connect(self.doSaveLog)
+					menu.addAction(entry)
 
 			if self.window_type==CHANNEL_WINDOW:
 
@@ -598,9 +599,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.clearChat)
 			self.settingsMenu.addAction(entry)
 
-			entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
-			entry.triggered.connect(self.doSaveLog)
-			self.settingsMenu.addAction(entry)
+			if config.ALLOW_LOG_SAVE_FROM_MENU:
+				entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
+				entry.triggered.connect(self.doSaveLog)
+				self.settingsMenu.addAction(entry)
 
 		entry = QAction(QIcon(RUN_ICON),"Run script",self)
 		entry.triggered.connect(self.loadScript)

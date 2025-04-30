@@ -1506,6 +1506,13 @@ class Dialog(QDialog):
 		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
 		self.markLog.stateChanged.connect(self.changedSetting)
 
+		self.allowLogSave = QCheckBox("Show option to save logs\nin context menus",self)
+		if config.ALLOW_LOG_SAVE_FROM_MENU: self.allowLogSave.setChecked(True)
+		self.allowLogSave.stateChanged.connect(self.changedSetting)
+
+		self.allowLogSave.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+
 		self.logLabel = QLabel(f"<b>{str(config.MAXIMUM_LOADED_LOG_SIZE)} lines</b>",self)
 
 		logsizeButton = QPushButton("")
@@ -1541,6 +1548,7 @@ class Dialog(QDialog):
 		logLayout.addWidget(self.savePrivLogs)
 		logLayout.addWidget(self.loadPrivLogs)
 		logLayout.addWidget(self.markLog)
+		logLayout.addWidget(self.allowLogSave)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
 		logLayout.addWidget(self.logDescription)
@@ -1957,6 +1965,7 @@ class Dialog(QDialog):
 		config.SYSTEM_MESSAGE_PREFIX = self.system_prepend
 		config.WINDOWBAR_INCLUDE_CHANNELS = self.windowbarChannels.isChecked()
 		config.WINDOWBAR_INCLUDE_PRIVATE = self.windowbarPrivate.isChecked()
+		config.ALLOW_LOG_SAVE_FROM_MENU = self.allowLogSave.isChecked()
 
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()
@@ -2053,8 +2062,9 @@ class Dialog(QDialog):
 			else:
 				self.parent.setWindowTitle(APPLICATION_NAME)
 
-		self.parent.saveActive(current_open_window)
-		self.parent.restoreActive()
+		if self.parent.connected_to_something:
+			self.parent.saveActive(current_open_window)
+			self.parent.restoreActive()
 
 		# Close the dialog
 		self.close()
