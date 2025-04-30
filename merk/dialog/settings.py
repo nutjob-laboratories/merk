@@ -2062,7 +2062,6 @@ class Dialog(QDialog):
 			else:
 				self.parent.setWindowTitle(APPLICATION_NAME)
 
-		if self.parent.connected_to_something:
 			self.parent.saveActive(current_open_window)
 			self.parent.restoreActive()
 
