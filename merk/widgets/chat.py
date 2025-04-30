@@ -594,6 +594,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.clearChat)
 			self.settingsMenu.addAction(entry)
 
+			entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
+			entry.triggered.connect(self.doSaveLog)
+			self.settingsMenu.addAction(entry)
+
 		entry = QAction(QIcon(RUN_ICON),"Run script",self)
 		entry.triggered.connect(self.loadScript)
 		self.settingsMenu.addAction(entry)
@@ -1385,6 +1389,11 @@ class Window(QMainWindow):
 			if save_logs:
 				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 				self.parent.buildSettingsMenu()
+
+	def doSaveLog(self):
+		logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+		self.new_log = []
+		self.parent.buildSettingsMenu()
 
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)
