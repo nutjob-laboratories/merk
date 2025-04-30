@@ -1042,7 +1042,7 @@ class Window(QMainWindow):
 			self.style = x
 
 			# Apply style background and forground colors
-			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+			background,foreground,image = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
 			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
@@ -1067,7 +1067,7 @@ class Window(QMainWindow):
 				return False
 
 		# Apply style background and forground colors
-		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		background,foreground,image = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 

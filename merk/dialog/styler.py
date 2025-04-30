@@ -153,7 +153,7 @@ class Dialog(QDialog):
 		if fileName:
 			self.style = styles.read_style_file(fileName)
 
-			self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+			self.bgcolor,self.fgcolor,self.background_image = styles.parseBackgroundAndForegroundColor(self.style["all"])
 			self.system_style.setQss(self.style['system'])
 			self.link_style.setQss(self.style['hyperlink'])
 			self.action_style.setQss(self.style['action'])
@@ -192,7 +192,7 @@ class Dialog(QDialog):
 		
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
-		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		self.bgcolor,self.fgcolor,self.background_image = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
 		self.system_style = widgets.MiniStyler('system', "System messages    ",self.style['system'],False,self)
 		self.link_style = widgets.MiniStyler('hyperlink','Hyperlinks         ',self.style['hyperlink'],True,self)

@@ -71,6 +71,7 @@ hyperlink {
 all {
 	background-color: #FFFFFF;
 	color: #000000;
+	image: None;
 }
 
 error {
