@@ -45,9 +45,11 @@ class Dialog(QDialog):
 
 		self.close()
 
-	def generateStylesheet(self,obj,fore,back):
-
-		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
+	def generateStylesheet(self,obj,fore,back,image=None):
+		if image!=None:
+			return obj+"{ background-color:"+back+"; color: "+fore +"; background-image: url("+image+"); }";
+		else:
+			return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
 	def return_info(self):
 
@@ -111,7 +113,7 @@ class Dialog(QDialog):
 
 			self.style["all"] = gcode
 
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor,self.background_image))
 
 	def setBackground(self):
 
@@ -125,7 +127,7 @@ class Dialog(QDialog):
 
 			self.style["all"] = gcode
 
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor,self.background_image))
 
 	def saveAsStyle(self):
 		options = QFileDialog.Options()
@@ -215,7 +217,7 @@ class Dialog(QDialog):
 		self.chat = QTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
 
-		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor,self.background_image))
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
