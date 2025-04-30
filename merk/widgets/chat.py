@@ -1397,8 +1397,7 @@ class Window(QMainWindow):
 				self.parent.buildSettingsMenu()
 
 	def doSaveLog(self):
-		logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
-		self.new_log = []
+		logs.saveLog(self.client.network,self.name,self.log,logs.LOG_DIRECTORY)
 		self.parent.buildSettingsMenu()
 
 	def menuSetLanguage(self,language):
