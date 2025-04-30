@@ -45,11 +45,8 @@ class Dialog(QDialog):
 
 		self.close()
 
-	def generateStylesheet(self,obj,fore,back,image=None):
-		if image!=None:
-			return obj+"{ background-color:"+back+"; color: "+fore +"; background-image: url("+image+"); }";
-		else:
-			return obj+"{ background-color:"+back+"; color: "+fore +"; }";
+	def generateStylesheet(self,obj,fore,back):
+		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
 	def return_info(self):
 
@@ -113,7 +110,7 @@ class Dialog(QDialog):
 
 			self.style["all"] = gcode
 
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor,self.background_image))
+			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
 
 	def setBackground(self):
 
@@ -127,7 +124,7 @@ class Dialog(QDialog):
 
 			self.style["all"] = gcode
 
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor,self.background_image))
+			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
 
 	def saveAsStyle(self):
 		options = QFileDialog.Options()
@@ -155,7 +152,7 @@ class Dialog(QDialog):
 		if fileName:
 			self.style = styles.read_style_file(fileName)
 
-			self.bgcolor,self.fgcolor,self.background_image = styles.parseBackgroundAndForegroundColor(self.style["all"])
+			self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 			self.system_style.setQss(self.style['system'])
 			self.link_style.setQss(self.style['hyperlink'])
 			self.action_style.setQss(self.style['action'])
@@ -194,7 +191,7 @@ class Dialog(QDialog):
 		
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
-		self.bgcolor,self.fgcolor,self.background_image = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
 		self.system_style = widgets.MiniStyler('system', "System messages    ",self.style['system'],False,self)
 		self.link_style = widgets.MiniStyler('hyperlink','Hyperlinks         ',self.style['hyperlink'],True,self)
@@ -217,7 +214,7 @@ class Dialog(QDialog):
 		self.chat = QTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
 
-		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor,self.background_image))
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()

@@ -88,7 +88,6 @@ def loadStyle(client,channel):
 def parseBackgroundAndForegroundColor(style):
 		background_color = "#FFFFFF"
 		text_color = "#000000"
-		image = None
 		ps = style.split(";")
 		for e in ps:
 			px = e.split(':')
@@ -97,12 +96,8 @@ def parseBackgroundAndForegroundColor(style):
 					background_color = px[1].strip()
 				if px[0].strip().lower()=='color':
 					text_color = px[1].strip()
-				if px[0].strip().lower()=='image':
-					image = px[1].strip()
 
-		if str(image).lower()=='none': image = None
-
-		return background_color,text_color,image
+		return background_color,text_color
 
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY

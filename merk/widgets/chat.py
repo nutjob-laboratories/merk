@@ -1031,12 +1031,9 @@ class Window(QMainWindow):
 	def executeScript(self,script):
 		commands.executeScript(self.parent,self,script)
 
-	def generateStylesheet(self,obj,fore,back,image=None):
+	def generateStylesheet(self,obj,fore,back):
 
-		if image!=None:
-			return obj+"{ background-color:"+back+"; color: "+fore +"; background-image: url("+image+"); }";
-		else:
-			return obj+"{ background-color:"+back+"; color: "+fore +"; }";
+		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
 	def pressedStyleButton(self):
 		x = StylerDialog(self.client,self,self.parent)
@@ -1045,14 +1042,14 @@ class Window(QMainWindow):
 			self.style = x
 
 			# Apply style background and forground colors
-			background,foreground,image = styles.parseBackgroundAndForegroundColor(self.style["all"])
+			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background,image))
+			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background,image))
+			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
 
 			if self.window_type==CHANNEL_WINDOW:
-				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background,image))
+				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
 
 			self.rerenderChatLog()
 
@@ -1070,14 +1067,14 @@ class Window(QMainWindow):
 				return False
 
 		# Apply style background and forground colors
-		background,foreground,image = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
-		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background,image))
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-		self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background,image))
+		self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
 
 		if self.window_type==CHANNEL_WINDOW:
-			self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background,image))
+			self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
 
 		self.rerenderChatLog()
 
