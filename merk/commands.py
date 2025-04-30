@@ -1324,7 +1324,7 @@ class ScriptThread(QThread):
 			tokens = line.split()
 
 			if len(tokens)==2:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' or tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'sleep':
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
 					count = tokens[1]
 					try:
 						count = int(count)
@@ -1340,7 +1340,7 @@ class ScriptThread(QThread):
 				tokens = line.split()
 
 				if len(tokens)==2:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' or tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'sleep':
+					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
 						count = tokens[1]
 						count = int(count)
 						time.sleep(count)
