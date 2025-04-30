@@ -558,12 +558,16 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
+				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
+				entry.triggered.connect(self.pressedStyleButton)
+				menu.addAction(entry)
+
 				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
-				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
-				entry.triggered.connect(self.pressedStyleButton)
+				entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
+				entry.triggered.connect(self.doSaveLog)
 				menu.addAction(entry)
 
 			if self.window_type==CHANNEL_WINDOW:
