@@ -648,6 +648,10 @@ class Window(QMainWindow):
 			del self.hostmasks[oldnick]
 			self.hostmasks[newnick] = hm
 
+	def hasNickHostmask(self,nick):
+		if nick in self.hostmasks: return True
+		return False
+
 	def hideTopic(self):
 		self.banlist_menu.hide()
 		self.channel_mode_display.hide()

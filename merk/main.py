@@ -1373,8 +1373,6 @@ class Merk(QMainWindow):
 			for msg in wd:
 				c.writeText(msg,False)
 
-		self.updateHostmask(client,displaynick,whoisdata.username+"@"+whoisdata.host)
-
 	def who(self,client,nick,whodata):
 
 		w = self.MDI.activeSubWindow()
@@ -1383,8 +1381,6 @@ class Merk(QMainWindow):
 			for entry in whodata:
 				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.channel+"\x0F ("+entry.server+")")
 				c.writeText(t,False)
-
-		self.updateHostmask(client,nick,entry.username+"@"+entry.host)
 
 	def whowas(self,client,nick,whodata):
 
@@ -1431,6 +1427,14 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"updateHostmask"):
 				c.updateHostmask(nick,hostmask)
+
+	def doesChannelHaveHostmask(self,client,channel,nick):
+		w = self.getWindow(channel,client)
+		if w:
+			if hasattr(w,"hasNickHostmask"):
+				return w.hasNickHostmask(nick)
+		return True
+
 
 	def swapHostmask(self,client,oldnick,newnick):
 		for window in self.getAllSubChatWindows(client):

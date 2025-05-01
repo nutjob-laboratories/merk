@@ -1286,6 +1286,10 @@ class Dialog(QDialog):
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
 
+		self.autoHostmasks = QCheckBox("Fetch hostmasks on channel join",self)
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
+		self.autoHostmasks.stateChanged.connect(self.changedSetting)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -1302,6 +1306,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
+		menuLayout.addWidget(self.autoHostmasks)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -1963,6 +1968,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_INCLUDE_CHANNELS = self.windowbarChannels.isChecked()
 		config.WINDOWBAR_INCLUDE_PRIVATE = self.windowbarPrivate.isChecked()
 		config.JOIN_ON_INVITE = self.autoJoin.isChecked()
+		config.GET_HOSTMASKS_ON_CHANNEL_JOIN = self.autoHostmasks.isChecked()
 
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()

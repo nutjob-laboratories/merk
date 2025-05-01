@@ -119,6 +119,8 @@ class IRC_Connection(irc.IRCClient):
 		self.modes = 0
 		self.maxmodes = []
 		self.is_away = False
+		self.request_whois = []
+		self.do_whois = []
 
 		self.banlists = defaultdict(list)
 
@@ -126,6 +128,13 @@ class IRC_Connection(irc.IRCClient):
 	def uptime_beat(self):
 
 		self.uptime = self.uptime + 1
+
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+			if len(self.do_whois)>0:
+				nick = self.do_whois.pop(0)
+				if len(nick.strip())>0:
+					self.request_whois.append(nick)
+					self.sendLine("WHOIS "+nick)
 
 		self.gui.uptime(self,self.uptime)
 
@@ -328,6 +337,14 @@ class IRC_Connection(irc.IRCClient):
 		if user.split('!')[0] == self.nickname:
 			return
 
+		p = user.split('!')
+		if len(p)==2:
+			if p[0] == self.nickname: return
+			self.gui.updateHostmask(self,p[0],p[1])
+		else:
+			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+				self.do_whois.append(user)
+
 		self.sendLine("NAMES "+channel)
 
 		self.gui.userJoined(self,user,channel)
@@ -409,6 +426,15 @@ class IRC_Connection(irc.IRCClient):
 		channel = params[2].lower()
 		nicklist = params[3].split(' ')
 
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+			for u in nicklist:
+				p = u.split('!')
+				if len(p)!=2:
+					u = u.replace('@','')
+					u = u.replace('+','')
+					if not self.gui.doesChannelHaveHostmask(self,channel,u):
+						self.do_whois.append(u)
+
 		if channel in self.names:
 			for nick in nicklist:
 				self.names[channel].append(nick)
@@ -446,6 +472,8 @@ class IRC_Connection(irc.IRCClient):
 		nick = params.pop(0)
 		channels = ", ".join(params)
 
+		if nick in self.request_whois: return
+
 		if nick in self.whoisdata:
 			self.whoisdata[nick].channels = channels
 		else:
@@ -458,6 +486,10 @@ class IRC_Connection(irc.IRCClient):
 		username = params[2]
 		host = params[3]
 		realname = params[5]
+
+		if nick in self.request_whois:
+			self.gui.updateHostmask(self,nick,username+"@"+host)
+			return
 
 		if nick in self.whoisdata:
 			self.whoisdata[nick].username = username
@@ -476,6 +508,8 @@ class IRC_Connection(irc.IRCClient):
 		idle_time = params.pop(0)
 		signed_on = params.pop(0)
 
+		if nick in self.request_whois: return
+
 		if nick in self.whoisdata:
 			self.whoisdata[nick].idle = idle_time
 			self.whoisdata[nick].signon = signed_on
@@ -489,6 +523,8 @@ class IRC_Connection(irc.IRCClient):
 		nick = params[1]
 		server = params[2]
 
+		if nick in self.request_whois: return
+
 		if nick in self.whoisdata:
 			self.whoisdata[nick].server = server
 		else:
@@ -500,6 +536,8 @@ class IRC_Connection(irc.IRCClient):
 		nick = params[1]
 		privs = params[2]
 
+		if nick in self.request_whois: return
+
 		if nick in self.whoisdata:
 			self.whoisdata[nick].privs = privs
 		else:
@@ -509,6 +547,13 @@ class IRC_Connection(irc.IRCClient):
 
 	def irc_RPL_ENDOFWHOIS(self, prefix, params):
 		nick = params[1]
+
+		if nick in self.request_whois:
+			try:
+				self.request_whois.remove(nick)
+			except:
+				pass
+			return
 
 		if nick in self.whoisdata:
 			self.gui.whois(self,self.whoisdata[nick])
