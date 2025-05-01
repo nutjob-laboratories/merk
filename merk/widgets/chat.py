@@ -526,6 +526,10 @@ class Window(QMainWindow):
 
 			if self.window_type==SERVER_WINDOW:
 
+				entry = QAction(QIcon(CLEAR_ICON),"Clear log",self)
+				entry.triggered.connect(self.clearChat)
+				menu.addAction(entry)
+
 				self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
 				self.contextNick.triggered.connect(self.changeNick)
 				menu.addAction(self.contextNick)
@@ -562,9 +566,9 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.pressedStyleButton)
 				menu.addAction(entry)
 
-			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
-			entry.triggered.connect(self.clearChat)
-			menu.addAction(entry)
+				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
+				entry.triggered.connect(self.clearChat)
+				menu.addAction(entry)
 
 			if self.window_type==CHANNEL_WINDOW:
 
