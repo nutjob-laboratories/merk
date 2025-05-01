@@ -339,7 +339,6 @@ class IRC_Connection(irc.IRCClient):
 
 		p = user.split('!')
 		if len(p)==2:
-			if p[0] == self.nickname: return
 			self.gui.updateHostmask(self,p[0],p[1])
 		else:
 			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
@@ -350,6 +349,14 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.userJoined(self,user,channel)
 
 	def userLeft(self, user, channel):
+
+		p = user.split('!')
+		if len(p)==2:
+			if p[0] == self.nickname: return
+			self.gui.updateHostmask(self,p[0],None)
+		else:
+			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+				self.do_whois.append(user)
 
 		self.sendLine("NAMES "+channel)
 

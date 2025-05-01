@@ -640,12 +640,13 @@ class Window(QMainWindow):
 			if nick in self.nicks:
 				self.hostmasks[nick] = hostmask
 		else:
-			if nick in self.hostmasks: del self.hostmasks[nick]
+			if nick in self.hostmasks:
+				self.hostmasks.pop(nick)
 
 	def swapHostmask(self,oldnick,newnick):
 		if oldnick in self.hostmasks:
 			hm =  self.hostmasks[oldnick]
-			del self.hostmasks[oldnick]
+			self.hostmasks.pop(oldnick)
 			self.hostmasks[newnick] = hm
 
 	def hasNickHostmask(self,nick):
