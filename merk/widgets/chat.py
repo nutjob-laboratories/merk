@@ -566,11 +566,6 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
-				if config.ALLOW_LOG_SAVE_FROM_MENU:
-					entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
-					entry.triggered.connect(self.doSaveLog)
-					menu.addAction(entry)
-
 			if self.window_type==CHANNEL_WINDOW:
 
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
@@ -598,11 +593,6 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.clearChat)
 			self.settingsMenu.addAction(entry)
-
-			if config.ALLOW_LOG_SAVE_FROM_MENU:
-				entry = QAction(QIcon(LOG_ICON),"Save chat log",self)
-				entry.triggered.connect(self.doSaveLog)
-				self.settingsMenu.addAction(entry)
 
 		entry = QAction(QIcon(RUN_ICON),"Run script",self)
 		entry.triggered.connect(self.loadScript)
@@ -1397,8 +1387,20 @@ class Window(QMainWindow):
 				self.parent.buildSettingsMenu()
 
 	def doSaveLog(self):
-		logs.saveLog(self.client.network,self.name,self.log,logs.LOG_DIRECTORY)
-		self.parent.buildSettingsMenu()
+
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,"Save Log As...","",f"{APPLICATION_NAME} Log (*.txt);;All Files (*)", options=options)
+		if fileName:
+			efl = len(SCRIPT_FILE_EXTENSION)+1
+			if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+			code = open(fileName,"w",encoding="utf-8",errors="ignore")
+			code.write(logs.dumpRawLog(self.log))
+			code.close()
+
+
+		#logs.saveLog(self.client.network,self.name,self.log,logs.LOG_DIRECTORY)
+		#self.parent.buildSettingsMenu()
 
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)

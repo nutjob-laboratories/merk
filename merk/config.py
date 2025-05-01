@@ -140,7 +140,6 @@ SIMPLIFIED_CONNECT_DIALOG = False
 EDITOR_PROMPT_SAVE = True
 WINDOWBAR_INCLUDE_CHANNELS = True
 WINDOWBAR_INCLUDE_PRIVATE = True
-ALLOW_LOG_SAVE_FROM_MENU = True
 
 def save_settings(filename):
 
@@ -246,15 +245,12 @@ def save_settings(filename):
 		"editor_prompt_save_on_close": EDITOR_PROMPT_SAVE,
 		"windowbar_include_channels": WINDOWBAR_INCLUDE_CHANNELS,
 		"windowbar_include_private": WINDOWBAR_INCLUDE_PRIVATE,
-		"allow_log_save_from_menus": ALLOW_LOG_SAVE_FROM_MENU,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
-	if not "allow_log_save_from_menus" in settings:
-		settings["allow_log_save_from_menus"] = ALLOW_LOG_SAVE_FROM_MENU
 	if not "windowbar_include_private" in settings:
 		settings["windowbar_include_private"] = WINDOWBAR_INCLUDE_PRIVATE
 	if not "windowbar_include_channels" in settings:
@@ -563,7 +559,6 @@ def load_settings(filename):
 	global EDITOR_PROMPT_SAVE
 	global WINDOWBAR_INCLUDE_CHANNELS
 	global WINDOWBAR_INCLUDE_PRIVATE
-	global ALLOW_LOG_SAVE_FROM_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -573,7 +568,6 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		ALLOW_LOG_SAVE_FROM_MENU = settings["allow_log_save_from_menus"]
 		WINDOWBAR_INCLUDE_CHANNELS = settings["windowbar_include_channels"]
 		WINDOWBAR_INCLUDE_PRIVATE = settings["windowbar_include_private"]
 		EDITOR_PROMPT_SAVE = settings["editor_prompt_save_on_close"]

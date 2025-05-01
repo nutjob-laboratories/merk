@@ -121,6 +121,21 @@ def readLog(network,name,logdir=LOG_DIRECTORY):
 	logs = array_to_log(logs)
 	return logs
 
+def dumpRawLog(logs):
+	delimiter = "\t"
+	logs = log_to_array(logs)
+
+	out = []
+	for l in logs:
+		l[2] = l[2].strip()
+		l[3] = l[3].strip()
+		if l[2]=='': l[2] = '***'
+
+		pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%a, %d %b %Y %H:%M:%S')
+		entry = pretty_timestamp+delimiter+l[2]+delimiter+l[3]
+		out.append(entry)
+	return "\n".join(out)
+
 # Loads an AoA from disk, converts it to a string
 def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 	if os.path.isfile(filename):
