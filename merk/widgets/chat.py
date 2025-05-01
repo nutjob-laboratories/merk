@@ -594,9 +594,14 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.pressedStyleButton)
 			self.settingsMenu.addAction(entry)
 
-		entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
-		entry.triggered.connect(self.clearChat)
-		self.settingsMenu.addAction(entry)
+			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
+			entry.triggered.connect(self.clearChat)
+			self.settingsMenu.addAction(entry)
+
+		if self.window_type==SERVER_WINDOW:
+			entry = QAction(QIcon(CLEAR_ICON),"Clear log",self)
+			entry.triggered.connect(self.clearChat)
+			self.settingsMenu.addAction(entry)
 
 		entry = QAction(QIcon(RUN_ICON),"Run script",self)
 		entry.triggered.connect(self.loadScript)
