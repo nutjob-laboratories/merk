@@ -1401,6 +1401,10 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'', user+" invited you to "+channel)
 			w.writeText(t)
 
+		# window.client.join(channel)
+		if config.JOIN_ON_INVITE:
+			client.join(channel)
+
 	def inviting(self,client,user,channel):
 		w = self.MDI.activeSubWindow()
 		if w:

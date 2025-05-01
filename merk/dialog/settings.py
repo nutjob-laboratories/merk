@@ -1282,6 +1282,10 @@ class Dialog(QDialog):
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 
+		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
+		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
+		self.autoJoin.stateChanged.connect(self.changedSetting)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -1297,6 +1301,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
+		menuLayout.addWidget(self.autoJoin)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -1957,6 +1962,7 @@ class Dialog(QDialog):
 		config.SYSTEM_MESSAGE_PREFIX = self.system_prepend
 		config.WINDOWBAR_INCLUDE_CHANNELS = self.windowbarChannels.isChecked()
 		config.WINDOWBAR_INCLUDE_PRIVATE = self.windowbarPrivate.isChecked()
+		config.JOIN_ON_INVITE = self.autoJoin.isChecked()
 
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()
