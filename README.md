@@ -204,21 +204,35 @@ Appearance:
 
 ```
 # Example Commandline Usage
+In the following examples, the first commandline is how you would do the task using **MERK** as a [Python script](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip), and second commandline is how you would do it using the [**MERK** Windows executable](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Note that the commandlines, other than the initial executable, are the same!
+
 Let's assume that you want to use the commandline to connect **MERK** to the `2600.net` network and join the `#linux` channel:
 ```
 python merk.py --channel "#linux" irc.2600.net 6667
+```
+```
+merk.exe --channel "#linux" irc.2600.net 6667
 ```
 Easy, right? Now let's try something a little more complex. Let's say you want to connect the the `Libera` network, which uses SSL/TLS. You want to use a different nickname than you normally use; you want to use the nickname `merker`, but you don't want to save this nickname as your default. When you join the network, you want to join two channels: `#python` and `#merk`:
 ```
 python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
 ```
+```
+merk.exe --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
+```
 You can do some things with the commandline that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the "C:\Merk_Scripts" folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
 ```
 python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
 ```
+```
+merk.exe --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
+```
 Now, let's try something that commonly done with other IRC clients: connecting to multiple servers automatically on startup. You want to use your standard settings, but connect to three different IRC servers as soon as you run **MERK**: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:
 ```
 python merk.py -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
+```
+```
+merk.exe -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
 ```
 This command will start up **MERK** and connect to three of these servers without any extra effort!
 
@@ -234,6 +248,9 @@ You can do a lot of things from the commandline. For a really complicated exampl
 Here's the set of arguments that will make all of that happen:
 ```
 python merk.py -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
+```
+```
+merk.exe -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
 ```
 
 All commandline options are what they say on the tin: _optional_. Just running the script with no commandline options will initally open up the connection dialog, and you can do just about everything completely inside the GUI.
@@ -254,3 +271,4 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
 
 [//]: # (End of document)
+
