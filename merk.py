@@ -419,7 +419,10 @@ if __name__ == '__main__':
 				if args.simple:
 					connection_info = ConnectDialogSimplified(app,None,'','',args.donotexecute,args.donotsave)
 				else:
-					connection_info = ConnectDialog(app,None,'','',args.donotexecute,args.donotsave)
+					if config.SIMPLIFIED_CONNECT_DIALOG:
+						connection_info = ConnectDialogSimplified(app,None,'','',args.donotexecute,args.donotsave)
+					else:
+						connection_info = ConnectDialog(app,None,'','',args.donotexecute,args.donotsave)
 				if connection_info:
 					# Create the main GUI and show it
 					GUI = Merk(
