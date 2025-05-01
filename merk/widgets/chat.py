@@ -635,6 +635,19 @@ class Window(QMainWindow):
 
 			self.settingsMenu.addMenu(self.spellcheckMenu)
 
+	def updateHostmask(self,nick,hostmask):
+		if hostmask!=None:
+			if nick in self.nicks:
+				self.hostmasks[nick] = hostmask
+		else:
+			if nick in self.hostmasks: del self.hostmasks[nick]
+
+	def swapHostmask(self,oldnick,newnick):
+		if oldnick in self.hostmasks:
+			hm =  self.hostmasks[oldnick]
+			del self.hostmasks[oldnick]
+			self.hostmasks[newnick] = hm
+
 	def hideTopic(self):
 		self.banlist_menu.hide()
 		self.channel_mode_display.hide()
@@ -914,12 +927,16 @@ class Window(QMainWindow):
 				OTHER_TEXT = "Normal user"
 			statusLayout.addStretch()
 
-			if user_hostmask:
-				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
+			if user_nick==self.client.nickname:
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
 				menu.addAction(entry)
 			else:
-				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
-				menu.addAction(entry)
+				if user_hostmask:
+					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
+					menu.addAction(entry)
+				else:
+					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
+					menu.addAction(entry)
 
 			menu.addSeparator()
 

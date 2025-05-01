@@ -912,6 +912,8 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
+		self.updateHostmask(client,nickname,hostmask)
+
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 
 			# Notify if the message has the user's nick
@@ -978,6 +980,8 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
+		self.updateHostmask(client,nickname,hostmask)
+
 		# Channel message
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 			w = self.getWindow(target,client)
@@ -1012,6 +1016,8 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
+		self.updateHostmask(client,nickname,hostmask)
+
 		# Server notices get written to the server window only
 		if target=='*':
 			w = self.getServerWindow(client)
@@ -1019,14 +1025,6 @@ class Merk(QMainWindow):
 				t = Message(NOTICE_MESSAGE,'',msg)
 				w.writeText(t)
 			return
-
-		p = user.split("!")
-		if len(p)==2:
-			nickname = p[0]
-			hostmask = p[1]
-		else:
-			nickname = user
-			hostmask = None
 
 		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications("Received a notice from "+nickname)
 
@@ -1133,6 +1131,8 @@ class Merk(QMainWindow):
 	def userRenamed(self,client,oldname,newname):
 		windows = self.getAllSubWindows(client)
 
+		self.swapHostmask(client,oldname,newname)
+
 		for subwindow in windows:
 			c = subwindow.widget()
 			if hasattr(c,"client"):
@@ -1156,6 +1156,8 @@ class Merk(QMainWindow):
 
 	def irc_QUIT(self,client,nickname,msg):
 		windows = self.getAllSubWindows(client)
+
+		self.updateHostmask(client,nickname,None)
 
 		for subwindow in windows:
 			c = subwindow.widget()
@@ -1224,6 +1226,16 @@ class Merk(QMainWindow):
 	def setMode(self,client,user,target,mode,argument):
 		self.refreshModeDisplay(client)
 
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+
+		self.updateHostmask(client,nickname,hostmask)
+
 		if len(mode.strip())==0: return
 
 		if argument:
@@ -1250,6 +1262,12 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
+		if client.nickname in argument:
+			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
+
+	def unsetMode(self,client,user,target,mode,argument):
+		self.refreshModeDisplay(client)
+
 		p = user.split("!")
 		if len(p)==2:
 			nickname = p[0]
@@ -1258,11 +1276,7 @@ class Merk(QMainWindow):
 			nickname = user
 			hostmask = None
 
-		if client.nickname in argument:
-			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
-
-	def unsetMode(self,client,user,target,mode,argument):
-		self.refreshModeDisplay(client)
+		self.updateHostmask(client,nickname,hostmask)
 
 		if len(mode.strip())==0: return
 
@@ -1281,14 +1295,6 @@ class Merk(QMainWindow):
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
-
-		p = user.split("!")
-		if len(p)==2:
-			nickname = p[0]
-			hostmask = p[1]
-		else:
-			nickname = user
-			hostmask = None
 
 		if client.nickname in argument:
 			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
@@ -1344,7 +1350,6 @@ class Merk(QMainWindow):
 
 	def uptime(self,client,uptime):
 
-		# getAllSubWindows(self,client):
 		for w in self.getAllSubWindows(client):
 			c = w.widget()
 			c.tickUptime(uptime)
@@ -1368,6 +1373,8 @@ class Merk(QMainWindow):
 			for msg in wd:
 				c.writeText(msg,False)
 
+		self.updateHostmask(client,displaynick,whoisdata.username+"@"+whoisdata.host)
+
 	def who(self,client,nick,whodata):
 
 		w = self.MDI.activeSubWindow()
@@ -1376,6 +1383,8 @@ class Merk(QMainWindow):
 			for entry in whodata:
 				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.channel+"\x0F ("+entry.server+")")
 				c.writeText(t,False)
+
+		self.updateHostmask(client,nick,entry.username+"@"+entry.host)
 
 	def whowas(self,client,nick,whodata):
 
@@ -1416,6 +1425,18 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(SYSTEM_MESSAGE,'', "You invited "+user+" to "+channel)
 			w.writeText(t)
+
+	def updateHostmask(self,client,nick,hostmask):
+		for window in self.getAllSubChatWindows(client):
+			c = window.widget()
+			if hasattr(c,"updateHostmask"):
+				c.updateHostmask(nick,hostmask)
+
+	def swapHostmask(self,client,oldnick,newnick):
+		for window in self.getAllSubChatWindows(client):
+			c = window.widget()
+			if hasattr(c,"swapHostmask"):
+				c.swapHostmask(oldnick,newnick)
 
 
 	# |================|
