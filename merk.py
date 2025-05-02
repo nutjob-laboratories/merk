@@ -177,39 +177,48 @@ if __name__ == '__main__':
 
 	# Set dark mode palette if it's turned on
 	if args.darkmode:
-		dark_palette = QPalette()
+		application_palette = 'dark'
+	else:
+		application_palette = 'default'
 
-		dark_palette.setColor(QPalette.Text, QColor("#FFFFFF"))
-		dark_palette.setColor(QPalette.Base, QColor("#232323"))
-		dark_palette.setColor(QPalette.Window, QColor("#353535"))
-		dark_palette.setColor(QPalette.WindowText, QColor("#FFFFFF"))
-		dark_palette.setColor(QPalette.AlternateBase, QColor("#353535"))
-		dark_palette.setColor(QPalette.ToolTipBase, QColor("#191919"))
-		dark_palette.setColor(QPalette.ToolTipText, QColor("#FFFFFF"))
-		dark_palette.setColor(QPalette.Button, QColor("#353535"))
-		dark_palette.setColor(QPalette.ButtonText, QColor("#FFFFFF"))
-		dark_palette.setColor(QPalette.BrightText, QColor("#FF0000"))
-		dark_palette.setColor(QPalette.Link, QColor("#2B82DA"))
-		dark_palette.setColor(QPalette.Highlight, QColor("#2B82DA"))
-		dark_palette.setColor(QPalette.HighlightedText, QColor("#FFFFFF"))
-		dark_palette.setColor(QPalette.Active, QPalette.Button, QColor("#353535"))
-		dark_palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor("#A9A9A9"))
-		dark_palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor("#A9A9A9"))
-		dark_palette.setColor(QPalette.Disabled, QPalette.Text, QColor("#A9A9A9"))
-		dark_palette.setColor(QPalette.Disabled, QPalette.Light, QColor("#353535"))
-		app.setPalette(dark_palette)
+	# Load in the appropriate application palette
+	style = styles.loadPalette(application_palette)
 
-		# Make sure that menu separators are visible
-		app.setStyleSheet("""
-			QMenu::separator {
-				background-color: #A9A9A9;
-				height: 1px;
-			}
-			QGroupBox { 
-				border: 1px solid #A9A9A9;
-			}
+	# Create a new application palette with the loaded settings
+	merk_app_palette = QPalette()
+	merk_app_palette.setColor(QPalette.Text, QColor(styles.parseColor(style["text"])))
+	merk_app_palette.setColor(QPalette.Base, QColor(styles.parseColor(style["base"])))
+	merk_app_palette.setColor(QPalette.Window, QColor(styles.parseColor(style["window"])))
+	merk_app_palette.setColor(QPalette.WindowText, QColor(styles.parseColor(style["window_text"])))
+	merk_app_palette.setColor(QPalette.AlternateBase, QColor(styles.parseColor(style["alternate_base"])))
+	merk_app_palette.setColor(QPalette.ToolTipBase, QColor(styles.parseColor(style["tooltip_base"])))
+	merk_app_palette.setColor(QPalette.ToolTipText, QColor(styles.parseColor(style["tooltip_text"])))
+	merk_app_palette.setColor(QPalette.Button, QColor(styles.parseColor(style["button"])))
+	merk_app_palette.setColor(QPalette.ButtonText, QColor(styles.parseColor(style["button_text"])))
+	merk_app_palette.setColor(QPalette.BrightText, QColor(styles.parseColor(style["bright_text"])))
+	merk_app_palette.setColor(QPalette.Link, QColor(styles.parseColor(style["link"])))
+	merk_app_palette.setColor(QPalette.Highlight, QColor(styles.parseColor(style["highlight"])))
+	merk_app_palette.setColor(QPalette.HighlightedText, QColor(styles.parseColor(style["highlighted_text"])))
+	merk_app_palette.setColor(QPalette.Active, QPalette.Button, QColor(styles.parseColor(style["active_button"])))
+	merk_app_palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(styles.parseColor(style["disabled_button_text"])))
+	merk_app_palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(styles.parseColor(style["disabled_window_text"])))
+	merk_app_palette.setColor(QPalette.Disabled, QPalette.Text, QColor(styles.parseColor(style["disabled_text"])))
+	merk_app_palette.setColor(QPalette.Disabled, QPalette.Light, QColor(styles.parseColor(style["disabled_light"])))
 
-			""")
+	# Apply palette to the app
+	app.setPalette(merk_app_palette)
+
+	# Make sure that menu separators have the palette colors
+	# applied to them
+	app.setStyleSheet(f"""
+		QMenu::separator {{
+			background-color: {styles.parseColor(style["separator"])};
+			height: 1px;
+		}}
+		QGroupBox {{
+			border: 1px solid {styles.parseColor(style["separator"])};
+		}}
+		""")
 
 	def create_connection(host,port,password,ssl):
 		if password=='':

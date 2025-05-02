@@ -23,6 +23,162 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+DARK_PALETTE="""
+text {
+	color: #FFFFFF;
+}
+
+base {
+	color: #232323;
+}
+
+window {
+	color: #353535;
+}
+
+window_text {
+	color: #FFFFFF;
+}
+
+alternate_base {
+	color: #353535;
+}
+
+tooltip_base {
+	color: #191919;
+}
+
+tooltip_text {
+	color: #FFFFFF;
+}
+
+button {
+	color: #353535;
+}
+
+button_text {
+	color: #FFFFFF;
+}
+
+bright_text {
+	color: #FF0000;
+}
+
+link {
+	color: #2B82DA;
+}
+
+highlight {
+	color: #2B82DA;
+}
+
+highlighted_text {
+	color: #FFFFFF;
+}
+
+active_button {
+	color: #353535;
+}
+
+disabled_button_text {
+	color: #A9A9A9;
+}
+
+disabled_window_text {
+	color: #A9A9A9;
+}
+
+disabled_text {
+	color: #A9A9A9;
+}
+
+disabled_light {
+	color: #353535;
+}
+
+separator {
+	color: #A9A9A9;
+}
+"""
+
+DEFAULT_PALETTE="""
+text {
+	color: #000000;
+}
+
+base {
+	color: #ffffff;
+}
+
+window {
+	color: #f0f0f0;
+}
+
+window_text {
+	color: #000000;
+}
+
+alternate_base {
+	color: #f5f5f5;
+}
+
+tooltip_base {
+	color: #ffffdc;
+}
+
+tooltip_text {
+	color: #000000;
+}
+
+button {
+	color: #f0f0f0;
+}
+
+button_text {
+	color: #000000;
+}
+
+bright_text {
+	color: #ffffff;
+}
+
+link {
+	color: #0000ff;
+}
+
+highlight {
+	color: #0078d7;
+}
+
+highlighted_text {
+	color: #ffffff;
+}
+
+active_button {
+	color: #f0f0f0;
+}
+
+disabled_button_text {
+	color: #787878;
+}
+
+disabled_window_text {
+	color: #787878;
+}
+
+disabled_text {
+	color: #787878;
+}
+
+disabled_light {
+	color: #ffffff;
+}
+
+separator {
+	color: #f0f0f0;
+}
+"""
+
 DEFAULT_STYLE="""timestamp {
 	font-weight: bold;
 }
