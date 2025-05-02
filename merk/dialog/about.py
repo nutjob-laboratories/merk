@@ -82,8 +82,6 @@ class Dialog(QDialog):
 		nutjob.setPixmap(pixmap)
 		nutjob.setAlignment(Qt.AlignCenter)
 
-		#line1 = QLabel("<big><b>"+APPLICATION_NAME+"</b></big>")
-		#line1.setAlignment(Qt.AlignCenter)
 		line2 = QLabel("<b>Free and Open Source IRC Client</b>")
 		line2.setAlignment(Qt.AlignCenter)
 		line3 = QLabel("<big><b>MERK "+APPLICATION_VERSION+"</b></big>")
@@ -93,7 +91,6 @@ class Dialog(QDialog):
 		line4.setOpenExternalLinks(True)
 
 		descriptionLayout = QVBoxLayout()
-		#descriptionLayout.addWidget(line1)
 		descriptionLayout.addWidget(line3)
 		descriptionLayout.addWidget(line2)
 		descriptionLayout.addWidget(line4)

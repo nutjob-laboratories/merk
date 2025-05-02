@@ -35,6 +35,8 @@ from .. import widgets
 from .. import user
 from .. import irc
 
+import os,sys
+
 class Dialog(QDialog):
 
 	def boldApply(self):
@@ -491,6 +493,15 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def do_restart(self, link):
+		self.save()
+		os.execl(sys.executable, sys.executable, *sys.argv)
+
+	def do_restart_pyi(self, link):
+		self.save()
+		self.app.quit()
+		status = QProcess.startDetached(sys.executable, sys.argv)
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -556,8 +567,17 @@ class Dialog(QDialog):
 		f.setBold(True)
 		self.selector.setFont(f)
 
-		self.changed = QLabel("<i><b>Settings changed.</b></i>")
-		self.restart = QLabel("<i><b>Restart required.</b></i>")
+		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
+
+		if is_running_from_pyinstaller():
+			#self.restart = QLabel("<b>Restart required.</b>")
+			self.restart = QLabel(f"<b><a href=\"restart\">Apply & restart {APPLICATION_NAME}.</a></b>")
+			self.restart.setOpenExternalLinks(False)
+			self.restart.linkActivated.connect(self.do_restart_pyi)
+		else:
+			self.restart = QLabel(f"<b><a href=\"restart\">Apply & restart {APPLICATION_NAME}.</a></b>")
+			self.restart.setOpenExternalLinks(False)
+			self.restart.linkActivated.connect(self.do_restart)
 
 		fm = QFontMetrics(self.font())
 		fwidth = fm.width('X') * 27
