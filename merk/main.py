@@ -193,6 +193,7 @@ class Merk(QMainWindow):
 			self.saved_window = window
 
 	def restoreActive(self):
+		if not self.connected_to_something: return
 		if self.saved_window!= None:
 			if not is_deleted(self.saved_window):
 				w = self.saved_window.widget()
@@ -295,6 +296,8 @@ class Merk(QMainWindow):
 				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
 			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
+		if len(listOfConnections)==0: self.connected_to_something = False
+
 		window_list = []
 		for i in listOfConnections:
 			entry = listOfConnections[i]
@@ -324,7 +327,6 @@ class Merk(QMainWindow):
 			self.windowbar.show()
 		else:
 			self.windowbar.hide()
-			self.connected_to_something = False
 			return
 
 		if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
