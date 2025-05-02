@@ -2085,8 +2085,8 @@ class Dialog(QDialog):
 			else:
 				self.parent.setWindowTitle(APPLICATION_NAME)
 
-			self.parent.saveActive(current_open_window)
-			self.parent.restoreActive()
+			# self.parent.saveActive(current_open_window)
+			# self.parent.restoreActive()
 
 		# Close the dialog
 		self.close()
