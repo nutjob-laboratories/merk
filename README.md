@@ -128,7 +128,7 @@ There are three libraries that comes bundled with **MERK**:
 
 <p align="center">
 <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot_big.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/screenshot1.png"></a></center></br>
- <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and a local IRC server, on Windows 11, using the "fusion" widget set. </small></i></center>
+ <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "fusion" widget set. </small></i></center>
  </p>
  
  <p align="center">
