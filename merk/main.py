@@ -2052,6 +2052,10 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
 			sm.addAction(entry)
+		else:
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+			sm.addAction(entry)
 
 		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
