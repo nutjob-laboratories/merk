@@ -44,7 +44,7 @@ from . import user
 from .dialog import *
 from . import commands
 
-from .widgets import menubar
+from .widgets import menubar,textSeparatorLabel,textSeparator
 
 class Merk(QMainWindow):
 
@@ -2090,14 +2090,19 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		self.helpMenu.addSeparator()
-
-		entry = QAction(QIcon(QT_ICON),"PyQt",self)
-		entry.triggered.connect(lambda state,u="https://www.riverbankcomputing.com/software/pyqt/": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		e = textSeparator(self,"Supporting Technology")
+		self.helpMenu.addAction(e)
 
 		entry = QAction(QIcon(PYTHON_ICON),"Python",self)
 		entry.triggered.connect(lambda state,u="https://www.python.org/": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(QT_ICON),"Qt",self)
+		entry.triggered.connect(lambda state,u="https://www.qt.io/": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(PYQT_ICON),"PyQt",self)
+		entry.triggered.connect(lambda state,u="https://www.riverbankcomputing.com/software/pyqt/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 		entry = QAction(QIcon(TWISTED_ICON),"Twisted",self)
