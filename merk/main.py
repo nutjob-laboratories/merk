@@ -2053,33 +2053,6 @@ class Merk(QMainWindow):
 
 		self.helpMenu.addSeparator()
 
-		sm = self.helpMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
-
-		if not is_running_from_pyinstaller():
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
-			sm.addAction(entry)
-		else:
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
-			sm.addAction(entry)
-
-		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
-		sm.addAction(entry)
-
-		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
-		sm.addAction(entry)
-
-		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
-		sm.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-		sm.addAction(entry)
-
 		entry = QAction(QIcon(LINK_ICON),APPLICATION_NAME+" source code repository",self)
 		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
@@ -2115,6 +2088,35 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
 			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
 			self.helpMenu.addAction(entry)
+
+		self.helpMenu.addSeparator()
+
+		sm = self.helpMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
+
+		if not is_running_from_pyinstaller():
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+			sm.addAction(entry)
+		else:
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+			sm.addAction(entry)
+
+		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+		sm.addAction(entry)
 
 	def buildWindowsMenu(self):
 
