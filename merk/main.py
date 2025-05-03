@@ -865,7 +865,6 @@ class Merk(QMainWindow):
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
 			c.writeText(t)
-			#self.MDI.setActiveSubWindow(w)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -961,7 +960,6 @@ class Merk(QMainWindow):
 					c = w.widget()
 					t = Message(CHAT_MESSAGE,user,msg)
 					c.writeText(t)
-					#self.MDI.setActiveSubWindow(w)
 					return
 
 			# Client has received a private message, and will

@@ -1325,6 +1325,8 @@ class Window(QMainWindow):
 
 	def writeText(self,message,write_to_log=True):
 
+		if self.client.client_id in self.parent.quitting: return
+
 		try:
 			if type(message)==type(str()):
 				self.chat.append(message)
@@ -1354,6 +1356,13 @@ class Window(QMainWindow):
 			event.accept()
 			self.close()
 			return
+
+		if self.client.client_id in self.parent.quitting:
+			if self.window_type==SERVER_WINDOW:
+				self.parent.closeSubWindow(self.subwindow_id)
+				event.accept()
+				self.close()
+				return
 
 		# Server windows are never closed unless
 		# the server has been disconnected; they

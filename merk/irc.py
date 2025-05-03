@@ -400,7 +400,7 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.action(self,user,channel,data)
 
 	def userKicked(self, kickee, channel, kicker, message):
-		self.sendLine("NAMES "+channel)
+		if kickee!=self.nickname: self.sendLine("NAMES "+channel)
 
 		self.gui.userKicked(self,kickee,channel,kicker,message)
 
@@ -641,14 +641,12 @@ class IRC_Connection(irc.IRCClient):
 		target = params[0]
 		channel = params[1]
 
-		#events.erk_invited(self.gui,self,prefix,channel)
 		self.gui.invited(self,prefix,channel)
 		
 	def irc_RPL_INVITING(self,prefix,params):
 		user = params[1]
 		channel = params[2]
 
-		#events.erk_inviting(self.gui,self,user,channel)
 		self.gui.inviting(self,user,channel)
 
 	def sendLine(self,line):
