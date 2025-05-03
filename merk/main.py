@@ -1341,15 +1341,6 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
-		a = self.MDI.activeSubWindow()
-		c = a.widget()
-
-		if hasattr(c,"subwindow_id"):
-			if c.subwindow_id==w.subwindow_id:
-				return
-
-			c.writeText(t)
-
 	def uptime(self,client,uptime):
 
 		for w in self.getAllSubWindows(client):
