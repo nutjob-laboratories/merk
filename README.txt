@@ -25,9 +25,7 @@
 | :----:    | :----:    | :----:    |
 | Zip Archive|  Cross-platform  | [Download MERK !_FULL_VERSION_! (!_PYSIZE_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
 | Zip Archive|  Windows | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
-
 |   Windows Installer|  Windows | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe)|
-
 |   Single Executable|  Windows | [Download MERK !_WIN_VERSION_! (!_WINEXE_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe)|
 
 # Summary
