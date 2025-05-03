@@ -145,15 +145,6 @@ def initialize(directory,directory_name):
 
 	# Check to see if the dark palette exists, and
 	# if not, create it
-	DEFAULT_PALETTE_FILE = os.path.join(STYLE_DIRECTORY, "default.palette")
-
-	if not os.path.isfile(DEFAULT_PALETTE_FILE):
-		# The file doesn't exist, so create it
-		style = read_style_file('',DEFAULT_PALETTE)
-		write_palette_file(style,DEFAULT_PALETTE_FILE)
-
-	# Check to see if the dark palette exists, and
-	# if not, create it
 	DARK_MODE_PALETTE_FILE = os.path.join(STYLE_DIRECTORY, "dark.palette")
 
 	if not os.path.isfile(DARK_MODE_PALETTE_FILE):
