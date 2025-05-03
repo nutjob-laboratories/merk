@@ -28,6 +28,16 @@ f = open("./merk/data/win_minor.txt","w")
 f.write(minor)
 f.close()
 
+f = open("merk_setup.txt","r")
+setup = f.read()
+f.close()
+
+setup = setup.replace("!_WIN_VERSION_!",major+"."+minor)
+
+f = open("merk_setup.iss","w")
+f.write(setup)
+f.close()
+
 os.system("make_multiple.bat")
 
 archive_name = f"merk-windows-{major}.zip"
@@ -51,3 +61,9 @@ if os.path.isfile(f"./downloads/{archive_name}"): os.remove(f"./downloads/{archi
 shutil.copy(archive_name, "./downloads/"+archive_name)
 
 os.remove(archive_name)
+
+if os.path.isfile(f"./downloads/merk_setup.exe"): os.remove(f"./downloads/merk_setup.exe")
+
+shutil.copy("merk_setup.exe", "./downloads/merk_setup.exe")
+
+os.remove("merk_setup.exe")

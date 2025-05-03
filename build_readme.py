@@ -44,6 +44,11 @@ win_single_file_size =  os.path.getsize("./downloads/merk-windows-standalone.exe
 file_size_kb = win_single_file_size / 1024
 file_size_mb = file_size_kb / 1024
 readme = readme.replace("!_WINEXE_!",f"{file_size_mb:.2f} MB")
+# !_WINSETUP_!
+win_setup_file_size =  os.path.getsize("./downloads/merk_setup.exe")
+file_size_kb = win_setup_file_size / 1024
+file_size_mb = file_size_kb / 1024
+readme = readme.replace("!_WINSETUP_!",f"{file_size_mb:.2f} MB")
 
 os.remove("README.md")
 f = open("README.md",mode="w", encoding='latin-1')
