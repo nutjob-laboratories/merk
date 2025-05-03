@@ -2044,9 +2044,16 @@ class Merk(QMainWindow):
 			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 		self.settingsMenu.addAction(entry)
 
-		self.settingsMenu.addSeparator()
+	def buildHelpMenu(self):
 
-		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
+		self.helpMenu.clear()
+
+		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE,self.showAbout)
+		self.helpMenu.addAction(entry)
+
+		self.helpMenu.addSeparator()
+
+		sm = self.helpMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
 
 		if not is_running_from_pyinstaller():
 			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
@@ -2072,15 +2079,6 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 		sm.addAction(entry)
-
-	def buildHelpMenu(self):
-
-		self.helpMenu.clear()
-
-		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE,self.showAbout)
-		self.helpMenu.addAction(entry)
-
-		self.helpMenu.addSeparator()
 
 		entry = QAction(QIcon(LINK_ICON),APPLICATION_NAME+" source code repository",self)
 		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
