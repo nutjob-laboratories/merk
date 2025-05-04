@@ -1831,7 +1831,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Highlighting")
 		entry.widget = self.syntaxPage
-		entry.setIcon(QIcon(STYLE_ICON))
+		entry.setIcon(QIcon(SCRIPT_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.syntaxPage)
