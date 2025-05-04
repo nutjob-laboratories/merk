@@ -2205,7 +2205,7 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		e = textSeparator(self,"Supporting Technology")
+		e = textSeparator(self,"Supporting Technologies")
 		self.helpMenu.addAction(e)
 
 		entry = QAction(QIcon(PYTHON_ICON),"Python",self)
