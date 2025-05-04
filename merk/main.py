@@ -2024,18 +2024,6 @@ class Merk(QMainWindow):
 	# | MENU METHODS |
 	# |--------------|
 
-	def settingsSystemtray(self):
-		if config.SHOW_SYSTRAY_ICON:
-			config.SHOW_SYSTRAY_ICON = False
-			self.tray.setVisible(False)
-			self.tray.hide()
-		else:
-			config.SHOW_SYSTRAY_ICON = True
-			self.tray.setVisible(True)
-			self.tray.show()
-			self.buildSystrayMenu()
-		self.buildSettingsMenu()
-
 	def settingsAskDisco(self):
 		if config.ASK_BEFORE_DISCONNECT:
 			config.ASK_BEFORE_DISCONNECT = False
@@ -2057,26 +2045,12 @@ class Merk(QMainWindow):
 			config.MINIMIZE_TO_SYSTRAY = True
 		self.buildSettingsMenu()
 
-	def settingsEmoji(self):
-		if config.ENABLE_EMOJI_SHORTCODES:
-			config.ENABLE_EMOJI_SHORTCODES = False
-		else:
-			config.ENABLE_EMOJI_SHORTCODES = True
-		self.buildSettingsMenu()
-
 	def settingsSpell(self):
 		if config.ENABLE_SPELLCHECK:
 			config.ENABLE_SPELLCHECK = False
 		else:
 			config.ENABLE_SPELLCHECK = True
 		self.toggleSpellcheck()
-		self.buildSettingsMenu()
-
-	def settingsSimple(self):
-		if config.SIMPLIFIED_CONNECT_DIALOG:
-			config.SIMPLIFIED_CONNECT_DIALOG = False
-		else:
-			config.SIMPLIFIED_CONNECT_DIALOG = True
 		self.buildSettingsMenu()
 
 	def settingsSaveChan(self):
@@ -2107,14 +2081,6 @@ class Merk(QMainWindow):
 			config.LOAD_PRIVATE_LOGS = True
 		self.buildSettingsMenu()
 
-	def settingsTimestamps(self):
-		if config.DISPLAY_TIMESTAMP:
-			config.DISPLAY_TIMESTAMP = False
-		else:
-			config.DISPLAY_TIMESTAMP = True
-		self.buildSettingsMenu()
-		self.reRenderAll()
-
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2124,13 +2090,6 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.addSeparator()
 
-		if config.DISPLAY_TIMESTAMP:
-			entry = QAction(QIcon(self.checked_icon),"Display timestamps", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Display timestamps", self)
-		entry.triggered.connect(self.settingsTimestamps)
-		self.settingsMenu.addAction(entry)
-
 		if config.ENABLE_SPELLCHECK:
 			entry = QAction(QIcon(self.checked_icon),"Spellcheck", self)
 		else:
@@ -2138,19 +2097,14 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsSpell)
 		self.settingsMenu.addAction(entry)
 
-		if config.ENABLE_EMOJI_SHORTCODES:
-			entry = QAction(QIcon(self.checked_icon),"Emoji shortcodes", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Emoji shortcodes", self)
-		entry.triggered.connect(self.settingsEmoji)
-		self.settingsMenu.addAction(entry)
-
-		if config.SIMPLIFIED_CONNECT_DIALOG:
-			entry = QAction(QIcon(self.checked_icon),"Simple connection dialogs", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Simple connection dialogs", self)
-		entry.triggered.connect(self.settingsSimple)
-		self.settingsMenu.addAction(entry)
+		if config.SHOW_SYSTRAY_ICON:
+			if config.MINIMIZE_TO_SYSTRAY:
+				entry = QAction(QIcon(self.checked_icon),"Minimize to system tray", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Minimize to system tray", self)
+			entry.triggered.connect(self.settingsMinimToTray)
+			if not config.SHOW_SYSTRAY_ICON: entry.setEnabled(False)
+			self.settingsMenu.addAction(entry)
 
 		if config.ASK_BEFORE_DISCONNECT:
 			entry = QAction(QIcon(self.checked_icon),"Ask before disconnecting", self)
@@ -2164,21 +2118,6 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Ask before reconnecting", self)
 		entry.triggered.connect(self.settingsAskRecon)
-		self.settingsMenu.addAction(entry)
-
-		if config.SHOW_SYSTRAY_ICON:
-			entry = QAction(QIcon(self.checked_icon),"System tray icon", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"System tray icon", self)
-		entry.triggered.connect(self.settingsSystemtray)
-		self.settingsMenu.addAction(entry)
-
-		if config.MINIMIZE_TO_SYSTRAY:
-			entry = QAction(QIcon(self.checked_icon),"Minimize to system tray", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Minimize to system tray", self)
-		entry.triggered.connect(self.settingsMinimToTray)
-		if not config.SHOW_SYSTRAY_ICON: entry.setEnabled(False)
 		self.settingsMenu.addAction(entry)
 
 		if config.SAVE_CHANNEL_LOGS:
