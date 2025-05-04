@@ -451,6 +451,20 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def setSettingsMenu(self):
+		info = dialog.SetMenuNameDialog(self.default_settings_menu,self)
+
+		if not info: return None
+
+		self.default_settings_menu = info
+		self.settingsName.setText("<b>"+str(info)+"</b>")
+
+		self.windowbar_change = True
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def setToolsMenu(self):
 		info = dialog.SetMenuNameDialog(self.default_tools_menu,self)
 
@@ -554,6 +568,7 @@ class Dialog(QDialog):
 		self.default_tools_menu = config.MAIN_MENU_TOOLS_NAME
 		self.default_windows_menu = config.MAIN_MENU_WINDOWS_NAME
 		self.default_help_menu = config.MAIN_MENU_HELP_NAME
+		self.default_settings_menu = config.MAIN_MENU_SETTINGS_NAME
 
 		self.syntax_did_change = False
 
@@ -1005,17 +1020,43 @@ class Dialog(QDialog):
 		helpMenuEntry.addWidget(QLabel("<b>Help menu</b>"))
 		helpMenuEntry.addLayout(setHelpLayout)
 
+		self.settingsName = QLabel("<b>"+self.default_settings_menu+"</b>")
+
+		self.setSettingsName = QPushButton("")
+		self.setSettingsName.clicked.connect(self.setSettingsMenu)
+		self.setSettingsName.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		self.setSettingsName.setFixedSize(fheight +10,fheight + 10)
+		self.setSettingsName.setIcon(QIcon(EDIT_ICON))
+		self.setSettingsName.setToolTip("Set settings menu name")
+
+		setMainLayout = QHBoxLayout()
+		
+		setMainLayout.addWidget(self.setSettingsName)
+		setMainLayout.addWidget(self.settingsName)
+		setMainLayout.addStretch()
+
+		settingsMenuEntry = QVBoxLayout()
+		settingsMenuEntry.addWidget(QLabel("<b>Settings menu</b>"))
+		settingsMenuEntry.addLayout(setMainLayout)
+
 		menuLineOne = QHBoxLayout()
 		menuLineOne.addLayout(mainMenuEntry)
-		menuLineOne.addLayout(toolsMenuEntry)
+		menuLineOne.addLayout(settingsMenuEntry)
 
 		menuLineTwo = QHBoxLayout()
+		menuLineTwo.addLayout(toolsMenuEntry)
 		menuLineTwo.addLayout(windowsMenuEntry)
-		menuLineTwo.addLayout(helpMenuEntry)
+
+		menuLineThree = QHBoxLayout()
+		menuLineThree.addLayout(helpMenuEntry)
 
 		nameMenuEntries = QFormLayout()
 		nameMenuEntries.addRow(menuLineOne)
 		nameMenuEntries.addRow(menuLineTwo)
+		nameMenuEntries.addRow(menuLineThree)
 
 		self.menuNameDescription = QLabel("""
 			<small>
@@ -1989,6 +2030,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_INCLUDE_PRIVATE = self.windowbarPrivate.isChecked()
 		config.JOIN_ON_INVITE = self.autoJoin.isChecked()
 		config.GET_HOSTMASKS_ON_CHANNEL_JOIN = self.autoHostmasks.isChecked()
+		config.MAIN_MENU_SETTINGS_NAME = self.default_settings_menu
 
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()

@@ -142,6 +142,7 @@ WINDOWBAR_INCLUDE_CHANNELS = True
 WINDOWBAR_INCLUDE_PRIVATE = True
 JOIN_ON_INVITE = True
 GET_HOSTMASKS_ON_CHANNEL_JOIN = True
+MAIN_MENU_SETTINGS_NAME = "Settings"
 
 def save_settings(filename):
 
@@ -249,12 +250,15 @@ def save_settings(filename):
 		"windowbar_include_private": WINDOWBAR_INCLUDE_PRIVATE,
 		"auto_join_on_invite": JOIN_ON_INVITE,
 		"get_hostmasks_on_channel_join": GET_HOSTMASKS_ON_CHANNEL_JOIN,
+		"main_menu_settings_name": MAIN_MENU_SETTINGS_NAME,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "main_menu_settings_name" in settings:
+		settings["main_menu_settings_name"] = MAIN_MENU_SETTINGS_NAME
 	if not "get_hostmasks_on_channel_join" in settings:
 		settings["get_hostmasks_on_channel_join"] = GET_HOSTMASKS_ON_CHANNEL_JOIN
 	if not "auto_join_on_invite" in settings:
@@ -569,6 +573,7 @@ def load_settings(filename):
 	global WINDOWBAR_INCLUDE_PRIVATE
 	global JOIN_ON_INVITE
 	global GET_HOSTMASKS_ON_CHANNEL_JOIN
+	global MAIN_MENU_SETTINGS_NAME
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -578,6 +583,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MAIN_MENU_SETTINGS_NAME = settings["main_menu_settings_name"]
 		GET_HOSTMASKS_ON_CHANNEL_JOIN = settings["get_hostmasks_on_channel_join"]
 		JOIN_ON_INVITE = settings["auto_join_on_invite"]
 		WINDOWBAR_INCLUDE_CHANNELS = settings["windowbar_include_channels"]

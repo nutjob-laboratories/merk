@@ -1939,7 +1939,7 @@ class Merk(QMainWindow):
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
-		self.settingsMenu.close()
+		self.toolsMenu.close()
 		self.buildWindowsMenu()
 		w.show()
 
@@ -1952,7 +1952,7 @@ class Merk(QMainWindow):
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
-		self.settingsMenu.close()
+		self.toolsMenu.close()
 		self.buildWindowsMenu()
 		w.show()
 
@@ -1965,7 +1965,7 @@ class Merk(QMainWindow):
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
-		self.settingsMenu.close()
+		self.toolsMenu.close()
 		self.buildWindowsMenu()
 		w.show()
 
@@ -2031,18 +2031,51 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Configure '+APPLICATION_NAME+' preferences&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openSettings)
 		self.settingsMenu.addAction(entry)
 
+		self.settingsMenu.addSeparator()
+
+		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
+
+		if not is_running_from_pyinstaller():
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+			sm.addAction(entry)
+		else:
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+			sm.addAction(entry)
+
+		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+		sm.addAction(entry)
+
+	def buildToolsMenu(self):
+
+		self.toolsMenu.clear()
+
 		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
-		self.settingsMenu.addAction(entry)
+		self.toolsMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
-		self.settingsMenu.addAction(entry)
+		self.toolsMenu.addAction(entry)
 
 		if(len(os.listdir(logs.LOG_DIRECTORY))==0):
 			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','No logs to export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 			entry.setEnabled(False)
 		else:
 			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Export Logs','Export logs to text or JSON&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
-		self.settingsMenu.addAction(entry)
+		self.toolsMenu.addAction(entry)
 
 	def buildHelpMenu(self):
 
@@ -2088,35 +2121,6 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
 			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
 			self.helpMenu.addAction(entry)
-
-		self.helpMenu.addSeparator()
-
-		sm = self.helpMenu.addMenu(QIcon(FOLDER_ICON),"Application folders")
-
-		if not is_running_from_pyinstaller():
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
-			sm.addAction(entry)
-		else:
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
-			sm.addAction(entry)
-
-		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
-		sm.addAction(entry)
-
-		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
-		sm.addAction(entry)
-
-		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
-		sm.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-		sm.addAction(entry)
 
 	def buildWindowsMenu(self):
 
@@ -2293,7 +2297,8 @@ class Merk(QMainWindow):
 			else:
 				self.menubar = self.menuBar()
 			self.mainMenu = self.menubar.addMenu(config.MAIN_MENU_IRC_NAME)
-			self.settingsMenu = self.menubar.addMenu(config.MAIN_MENU_TOOLS_NAME)
+			self.settingsMenu = self.menubar.addMenu(config.MAIN_MENU_SETTINGS_NAME)
+			self.toolsMenu = self.menubar.addMenu(config.MAIN_MENU_TOOLS_NAME)
 			self.windowsMenu = self.menubar.addMenu(config.MAIN_MENU_WINDOWS_NAME)
 			self.helpMenu = self.menubar.addMenu(config.MAIN_MENU_HELP_NAME)
 		else:
@@ -2302,6 +2307,7 @@ class Merk(QMainWindow):
 				self.menubar.hide()
 			self.mainMenu = QMenu()
 			self.settingsMenu = QMenu()
+			self.toolsMenu = QMenu()
 			self.windowsMenu = QMenu()
 			self.helpMenu = QMenu()
 
@@ -2318,7 +2324,8 @@ class Merk(QMainWindow):
 				menubar.add_toolbar_stretch(self.menuTool)
 
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_IRC_NAME,self.mainMenu)
-			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_TOOLS_NAME,self.settingsMenu)
+			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_SETTINGS_NAME,self.settingsMenu)
+			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_TOOLS_NAME,self.toolsMenu)
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_WINDOWS_NAME,self.windowsMenu)
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_HELP_NAME,self.helpMenu)
 
@@ -2328,6 +2335,7 @@ class Merk(QMainWindow):
 
 		self.buildMainMenu()
 		self.buildSettingsMenu()
+		self.buildToolsMenu()
 		self.buildWindowsMenu()
 		self.buildHelpMenu()
 
