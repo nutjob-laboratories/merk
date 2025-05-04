@@ -2079,6 +2079,42 @@ class Merk(QMainWindow):
 			config.SIMPLIFIED_CONNECT_DIALOG = True
 		self.buildSettingsMenu()
 
+	def settingsSaveChan(self):
+		if config.SAVE_CHANNEL_LOGS:
+			config.SAVE_CHANNEL_LOGS = False
+		else:
+			config.SAVE_CHANNEL_LOGS = True
+		self.buildSettingsMenu()
+
+	def settingsLoadChan(self):
+		if config.LOAD_CHANNEL_LOGS:
+			config.LOAD_CHANNEL_LOGS = False
+		else:
+			config.LOAD_CHANNEL_LOGS = True
+		self.buildSettingsMenu()
+
+	def settingsSavePriv(self):
+		if config.SAVE_PRIVATE_LOGS:
+			config.SAVE_PRIVATE_LOGS = False
+		else:
+			config.SAVE_PRIVATE_LOGS = True
+		self.buildSettingsMenu()
+
+	def settingsLoadPriv(self):
+		if config.LOAD_PRIVATE_LOGS:
+			config.LOAD_PRIVATE_LOGS = False
+		else:
+			config.LOAD_PRIVATE_LOGS = True
+		self.buildSettingsMenu()
+
+	def settingsTimestamps(self):
+		if config.DISPLAY_TIMESTAMP:
+			config.DISPLAY_TIMESTAMP = False
+		else:
+			config.DISPLAY_TIMESTAMP = True
+		self.buildSettingsMenu()
+		self.reRenderAll()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2087,6 +2123,13 @@ class Merk(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
+
+		if config.DISPLAY_TIMESTAMP:
+			entry = QAction(QIcon(self.checked_icon),"Display timestamps", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Display timestamps", self)
+		entry.triggered.connect(self.settingsTimestamps)
+		self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
 			entry = QAction(QIcon(self.checked_icon),"Spellcheck", self)
@@ -2100,6 +2143,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Emoji shortcodes", self)
 		entry.triggered.connect(self.settingsEmoji)
+		self.settingsMenu.addAction(entry)
+
+		if config.SIMPLIFIED_CONNECT_DIALOG:
+			entry = QAction(QIcon(self.checked_icon),"Simple connection dialogs", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Simple connection dialogs", self)
+		entry.triggered.connect(self.settingsSimple)
 		self.settingsMenu.addAction(entry)
 
 		if config.ASK_BEFORE_DISCONNECT:
@@ -2131,11 +2181,32 @@ class Merk(QMainWindow):
 		if not config.SHOW_SYSTRAY_ICON: entry.setEnabled(False)
 		self.settingsMenu.addAction(entry)
 
-		if config.SIMPLIFIED_CONNECT_DIALOG:
-			entry = QAction(QIcon(self.checked_icon),"Simple connection dialogs", self)
+		if config.SAVE_CHANNEL_LOGS:
+			entry = QAction(QIcon(self.checked_icon),"Save channel logs", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Simple connection dialogs", self)
-		entry.triggered.connect(self.settingsSimple)
+			entry = QAction(QIcon(self.unchecked_icon),"Save channel logs", self)
+		entry.triggered.connect(self.settingsSaveChan)
+		self.settingsMenu.addAction(entry)
+
+		if config.LOAD_CHANNEL_LOGS:
+			entry = QAction(QIcon(self.checked_icon),"Load channel logs", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Load channel logs", self)
+		entry.triggered.connect(self.settingsLoadChan)
+		self.settingsMenu.addAction(entry)
+
+		if config.SAVE_PRIVATE_LOGS:
+			entry = QAction(QIcon(self.checked_icon),"Save private chat logs", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Save private chat logs", self)
+		entry.triggered.connect(self.settingsSavePriv)
+		self.settingsMenu.addAction(entry)
+
+		if config.LOAD_PRIVATE_LOGS:
+			entry = QAction(QIcon(self.checked_icon),"Load private chat logs", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Load private chat logs", self)
+		entry.triggered.connect(self.settingsLoadPriv)
 		self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()

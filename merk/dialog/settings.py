@@ -2032,6 +2032,8 @@ class Dialog(QDialog):
 		config.GET_HOSTMASKS_ON_CHANNEL_JOIN = self.autoHostmasks.isChecked()
 		config.MAIN_MENU_SETTINGS_NAME = self.default_settings_menu
 
+		self.parent.buildSettingsMenu()
+
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()
 			user.ALTERNATE = self.alternative.text()
