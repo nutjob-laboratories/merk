@@ -42,7 +42,6 @@ qt5reactor.install()
 from twisted.internet import reactor
 
 from merk.main import Merk
-from merk.resources.version import *
 from merk.resources import *
 from merk.dialog import *
 import merk.config as config
@@ -75,18 +74,18 @@ congroup.add_argument("-c","--channel", type=str,help="Join channel on connectio
 congroup.add_argument('-C','--connect', metavar="SERVER:PORT[:PASSWORD]", action='append', help='Connect to server via TCP/IP')
 congroup.add_argument('-S','--connectssl', metavar="SERVER:PORT[:PASSWORD]",  action='append', help='Connect to server via SSL/TLS')
 
+usergroup = parser.add_argument_group('User Information')
+usergroup.add_argument("-n","--nickname", type=str,help="Use this nickname to connect", metavar="NICKNAME", default='')
+usergroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
+usergroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
+usergroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
+
 optiongroup = parser.add_argument_group('Options')
 optiongroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 optiongroup.add_argument("-x","--donotexecute", help=f"Do not execute connection script", action="store_true")
 optiongroup.add_argument("-t", "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
 optiongroup.add_argument( "-E","--simple", help=f"Show simplified connection dialog", action="store_true")
 optiongroup.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
-
-usergroup = parser.add_argument_group('User Information')
-usergroup.add_argument("-n","--nickname", type=str,help="Use this nickname to connect", metavar="NICKNAME", default='')
-usergroup.add_argument("-u","--username", type=str,help="Use this username to connect", metavar="USERNAME", default='')
-usergroup.add_argument("-a","--alternate", type=str,help="Use this alternate nickname to connect", metavar="NICKNAME", default='')
-usergroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
 
 configuration_group = parser.add_argument_group('Files and Directories')
 

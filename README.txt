@@ -176,13 +176,6 @@ Connection:
   -S, --connectssl SERVER:PORT[:PASSWORD]
                         Connect to server via SSL/TLS
 
-Options:
-  -d, --donotsave       Do not save new user settings
-  -x, --donotexecute    Do not execute connection script
-  -t, --reconnect       Reconnect to servers on disconnection
-  -E, --simple          Show simplified connection dialog
-  -R, --run             Don't ask for connection information on start
-
 User Information:
   -n, --nickname NICKNAME
                         Use this nickname to connect
@@ -193,6 +186,13 @@ User Information:
   -r, --realname REALNAME
                         Use this realname to connect
 
+Options:
+  -d, --donotsave       Do not save new user settings
+  -x, --donotexecute    Do not execute connection script
+  -t, --reconnect       Reconnect to servers on disconnection
+  -E, --simple          Show simplified connection dialog
+  -R, --run             Don't ask for connection information on start
+
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)
   --config-directory DIRECTORY
@@ -202,10 +202,9 @@ Files and Directories:
                         Location to look for script files
 
 Appearance:
-  -Q, --qtstyle NAME    Set Qt widget style (default: Fusion)
+  -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
   -D, --dark            Run in dark mode
   -L, --light           Run in light mode
-
 ```
 # Example Commandline Usage
 In the following examples, the first commandline is how you would do the task using **MERK** as a [Python script](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip), and second commandline is how you would do it using the [**MERK** Windows executable](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Note that the commandlines, other than the initial executable, are the same!
