@@ -122,7 +122,10 @@ if __name__ == '__main__':
 	# If user wants to store config data in the install
 	# directory, then set that up here
 	if args.configinstall:
-		args.configdir = config.INSTALL_DIRECTORY
+		if not is_running_from_pyinstaller():
+			args.configdir = config.INSTALL_DIRECTORY
+		else:
+			args.configdir = os.path.dirname(sys.executable)
 
 	# Initialize the config system
 	config.initialize(args.configdir,args.configname)

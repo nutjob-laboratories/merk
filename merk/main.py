@@ -2081,6 +2081,18 @@ class Merk(QMainWindow):
 			config.LOAD_PRIVATE_LOGS = True
 		self.buildSettingsMenu()
 
+	def settingsNotifyLost(self):
+		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
+			config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = False
+		else:
+			config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
+		self.buildSettingsMenu()
+
+	def menuSetLanguage(self,lang):
+		config.DEFAULT_SPELLCHECK_LANGUAGE = lang
+		self.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2089,13 +2101,6 @@ class Merk(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
-
-		if config.ENABLE_SPELLCHECK:
-			entry = QAction(QIcon(self.checked_icon),"Spellcheck", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Spellcheck", self)
-		entry.triggered.connect(self.settingsSpell)
-		self.settingsMenu.addAction(entry)
 
 		if config.SHOW_SYSTRAY_ICON:
 			if config.MINIMIZE_TO_SYSTRAY:
@@ -2106,49 +2111,100 @@ class Merk(QMainWindow):
 			if not config.SHOW_SYSTRAY_ICON: entry.setEnabled(False)
 			self.settingsMenu.addAction(entry)
 
+		self.settingsMenu.addSeparator()
+
+		sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
+
+		if config.ENABLE_SPELLCHECK:
+			entry = QAction(QIcon(self.checked_icon),"Spellcheck", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Spellcheck", self)
+		entry.triggered.connect(self.settingsSpell)
+		sm.addAction(entry)
+
+		e = textSeparator(self,"Language")
+		sm.addAction(e)
+
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="en":
+			entry = QAction(QIcon(self.round_checked_icon),"English", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"English", self)
+			entry.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="fr":
+			entry = QAction(QIcon(self.round_checked_icon),"Française", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Française", self)
+			entry.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="es":
+			entry = QAction(QIcon(self.round_checked_icon),"Español", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Español", self)
+			entry.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="de":
+			entry = QAction(QIcon(self.round_checked_icon),"Deutsche", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Deutsche", self)
+			entry.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(CONNECT_ICON),"Connections")
+
 		if config.ASK_BEFORE_DISCONNECT:
 			entry = QAction(QIcon(self.checked_icon),"Ask before disconnecting", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Ask before disconnecting", self)
 		entry.triggered.connect(self.settingsAskDisco)
-		self.settingsMenu.addAction(entry)
+		sm.addAction(entry)
 
 		if config.ASK_BEFORE_RECONNECT:
 			entry = QAction(QIcon(self.checked_icon),"Ask before reconnecting", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Ask before reconnecting", self)
 		entry.triggered.connect(self.settingsAskRecon)
-		self.settingsMenu.addAction(entry)
+		sm.addAction(entry)
+
+		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
+			entry = QAction(QIcon(self.checked_icon),"Notify on lost/failed connection", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Notify on lost/failed connection", self)
+		entry.triggered.connect(self.settingsNotifyLost)
+		sm.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(LOG_ICON),"Logs")
 
 		if config.SAVE_CHANNEL_LOGS:
 			entry = QAction(QIcon(self.checked_icon),"Save channel logs", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Save channel logs", self)
 		entry.triggered.connect(self.settingsSaveChan)
-		self.settingsMenu.addAction(entry)
+		sm.addAction(entry)
 
 		if config.LOAD_CHANNEL_LOGS:
 			entry = QAction(QIcon(self.checked_icon),"Load channel logs", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Load channel logs", self)
 		entry.triggered.connect(self.settingsLoadChan)
-		self.settingsMenu.addAction(entry)
+		sm.addAction(entry)
 
 		if config.SAVE_PRIVATE_LOGS:
 			entry = QAction(QIcon(self.checked_icon),"Save private chat logs", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Save private chat logs", self)
 		entry.triggered.connect(self.settingsSavePriv)
-		self.settingsMenu.addAction(entry)
+		sm.addAction(entry)
 
 		if config.LOAD_PRIVATE_LOGS:
 			entry = QAction(QIcon(self.checked_icon),"Load private chat logs", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Load private chat logs", self)
 		entry.triggered.connect(self.settingsLoadPriv)
-		self.settingsMenu.addAction(entry)
-
-		self.settingsMenu.addSeparator()
+		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
