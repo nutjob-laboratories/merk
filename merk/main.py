@@ -2153,6 +2153,24 @@ class Merk(QMainWindow):
 		self.reRenderAll()
 		self.buildSettingsMenu()
 
+	def settingsWindowbar(self):
+		if config.SHOW_WINDOWBAR:
+			config.SHOW_WINDOWBAR = False
+		else:
+			config.SHOW_WINDOWBAR = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildMenu()
+		self.initWindowbar()
+		#self.buildSettingsMenu()
+
+	def settingsEmoji(self):
+		if config.ENABLE_EMOJI_SHORTCODES:
+			config.ENABLE_EMOJI_SHORTCODES = False
+		else:
+			config.ENABLE_EMOJI_SHORTCODES = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsDarkMode(self):
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(SETTINGS_ICON))
@@ -2202,6 +2220,20 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
 		entry.triggered.connect(self.settingsLinks)
+		self.settingsMenu.addAction(entry)
+
+		if config.SHOW_WINDOWBAR:
+			entry = QAction(QIcon(self.checked_icon),"Enable windowbar", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable windowbar", self)
+		entry.triggered.connect(self.settingsWindowbar)
+		self.settingsMenu.addAction(entry)
+
+		if config.ENABLE_EMOJI_SHORTCODES:
+			entry = QAction(QIcon(self.checked_icon),"Emoji shortcodes", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Emoji shortcodes", self)
+		entry.triggered.connect(self.settingsEmoji)
 		self.settingsMenu.addAction(entry)
 
 		if not is_running_from_pyinstaller():
