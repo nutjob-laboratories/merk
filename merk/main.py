@@ -2088,9 +2088,53 @@ class Merk(QMainWindow):
 			config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
 		self.buildSettingsMenu()
 
+	def settingsAutoCommands(self):
+		if config.AUTOCOMPLETE_COMMANDS:
+			config.AUTOCOMPLETE_COMMANDS = False
+		else:
+			config.AUTOCOMPLETE_COMMANDS = True
+		self.buildSettingsMenu()
+
 	def menuSetLanguage(self,lang):
 		config.DEFAULT_SPELLCHECK_LANGUAGE = lang
 		self.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
+		self.buildSettingsMenu()
+
+	def settingsAutoNicks(self):
+		if config.AUTOCOMPLETE_NICKS:
+			config.AUTOCOMPLETE_NICKS = False
+		else:
+			config.AUTOCOMPLETE_NICKS = True
+		self.buildSettingsMenu()
+
+	def settingsAutoChannels(self):
+		if config.AUTOCOMPLETE_CHANNELS:
+			config.AUTOCOMPLETE_CHANNELS = False
+		else:
+			config.AUTOCOMPLETE_CHANNELS = True
+		self.buildSettingsMenu()
+
+	def settingsAutoEmojis(self):
+		if config.AUTOCOMPLETE_EMOJIS:
+			config.AUTOCOMPLETE_EMOJIS = False
+		else:
+			config.AUTOCOMPLETE_EMOJIS = True
+		self.buildSettingsMenu()
+
+	def settingsIrcColors(self):
+		if config.DISPLAY_IRC_COLORS:
+			config.DISPLAY_IRC_COLORS = False
+		else:
+			config.DISPLAY_IRC_COLORS = True
+		self.reRenderAll()
+		self.buildSettingsMenu()
+
+	def settingsLinks(self):
+		if config.CONVERT_URLS_TO_LINKS:
+			config.CONVERT_URLS_TO_LINKS = False
+		else:
+			config.CONVERT_URLS_TO_LINKS = True
+		self.reRenderAll()
 		self.buildSettingsMenu()
 
 	def buildSettingsMenu(self):
@@ -2108,10 +2152,54 @@ class Merk(QMainWindow):
 			else:
 				entry = QAction(QIcon(self.unchecked_icon),"Minimize to system tray", self)
 			entry.triggered.connect(self.settingsMinimToTray)
-			if not config.SHOW_SYSTRAY_ICON: entry.setEnabled(False)
 			self.settingsMenu.addAction(entry)
 
+		if config.DISPLAY_IRC_COLORS:
+			entry = QAction(QIcon(self.checked_icon),"Show IRC colors", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Show IRC colors", self)
+		entry.triggered.connect(self.settingsIrcColors)
+		self.settingsMenu.addAction(entry)
+
+		if config.CONVERT_URLS_TO_LINKS:
+			entry = QAction(QIcon(self.checked_icon),"Convert URLs to hyperlinks", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
+		entry.triggered.connect(self.settingsLinks)
+		self.settingsMenu.addAction(entry)
+
 		self.settingsMenu.addSeparator()
+
+		sm = self.settingsMenu.addMenu(QIcon(INPUT_ICON),"Autocomplete")
+
+		if config.AUTOCOMPLETE_COMMANDS:
+			entry = QAction(QIcon(self.checked_icon),"Commands", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Commands", self)
+		entry.triggered.connect(self.settingsAutoCommands)
+		sm.addAction(entry)
+
+		if config.AUTOCOMPLETE_NICKS:
+			entry = QAction(QIcon(self.checked_icon),"Nicknames", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Nicknames", self)
+		entry.triggered.connect(self.settingsAutoNicks)
+		sm.addAction(entry)
+
+		if config.AUTOCOMPLETE_CHANNELS:
+			entry = QAction(QIcon(self.checked_icon),"Channels", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Channels", self)
+		entry.triggered.connect(self.settingsAutoChannels)
+		sm.addAction(entry)
+
+		if config.ENABLE_EMOJI_SHORTCODES:
+			if config.AUTOCOMPLETE_EMOJIS:
+				entry = QAction(QIcon(self.checked_icon),"Emoji shortcodes", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Emoji shortcodes", self)
+			entry.triggered.connect(self.settingsAutoEmojis)
+			sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
 
