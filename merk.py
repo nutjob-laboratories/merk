@@ -43,6 +43,7 @@ from twisted.internet import reactor
 
 from merk.main import Merk
 from merk.resources.version import *
+from merk.resources import *
 from merk.dialog import *
 import merk.config as config
 import merk.styles as styles
@@ -123,7 +124,7 @@ if __name__ == '__main__':
 	# directory, then set that up here
 	if args.configinstall:
 		if not is_running_from_pyinstaller():
-			args.configdir = config.INSTALL_DIRECTORY
+			args.configdir = INSTALL_DIRECTORY
 		else:
 			args.configdir = os.path.dirname(sys.executable)
 
