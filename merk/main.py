@@ -2029,6 +2029,7 @@ class Merk(QMainWindow):
 			config.ASK_BEFORE_DISCONNECT = False
 		else:
 			config.ASK_BEFORE_DISCONNECT = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsAskRecon(self):
@@ -2036,6 +2037,7 @@ class Merk(QMainWindow):
 			config.ASK_BEFORE_RECONNECT = False
 		else:
 			config.ASK_BEFORE_RECONNECT = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsMinimToTray(self):
@@ -2043,6 +2045,7 @@ class Merk(QMainWindow):
 			config.MINIMIZE_TO_SYSTRAY = False
 		else:
 			config.MINIMIZE_TO_SYSTRAY = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsSpell(self):
@@ -2050,6 +2053,7 @@ class Merk(QMainWindow):
 			config.ENABLE_SPELLCHECK = False
 		else:
 			config.ENABLE_SPELLCHECK = True
+		config.save_settings(config.CONFIG_FILE)
 		self.toggleSpellcheck()
 		self.buildSettingsMenu()
 
@@ -2058,6 +2062,7 @@ class Merk(QMainWindow):
 			config.SAVE_CHANNEL_LOGS = False
 		else:
 			config.SAVE_CHANNEL_LOGS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsLoadChan(self):
@@ -2065,6 +2070,7 @@ class Merk(QMainWindow):
 			config.LOAD_CHANNEL_LOGS = False
 		else:
 			config.LOAD_CHANNEL_LOGS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsSavePriv(self):
@@ -2072,6 +2078,7 @@ class Merk(QMainWindow):
 			config.SAVE_PRIVATE_LOGS = False
 		else:
 			config.SAVE_PRIVATE_LOGS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsLoadPriv(self):
@@ -2079,6 +2086,7 @@ class Merk(QMainWindow):
 			config.LOAD_PRIVATE_LOGS = False
 		else:
 			config.LOAD_PRIVATE_LOGS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsNotifyLost(self):
@@ -2086,6 +2094,7 @@ class Merk(QMainWindow):
 			config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = False
 		else:
 			config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsAutoCommands(self):
@@ -2093,10 +2102,12 @@ class Merk(QMainWindow):
 			config.AUTOCOMPLETE_COMMANDS = False
 		else:
 			config.AUTOCOMPLETE_COMMANDS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def menuSetLanguage(self,lang):
 		config.DEFAULT_SPELLCHECK_LANGUAGE = lang
+		config.save_settings(config.CONFIG_FILE)
 		self.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		self.buildSettingsMenu()
 
@@ -2105,6 +2116,7 @@ class Merk(QMainWindow):
 			config.AUTOCOMPLETE_NICKS = False
 		else:
 			config.AUTOCOMPLETE_NICKS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsAutoChannels(self):
@@ -2112,6 +2124,7 @@ class Merk(QMainWindow):
 			config.AUTOCOMPLETE_CHANNELS = False
 		else:
 			config.AUTOCOMPLETE_CHANNELS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsAutoEmojis(self):
@@ -2119,6 +2132,7 @@ class Merk(QMainWindow):
 			config.AUTOCOMPLETE_EMOJIS = False
 		else:
 			config.AUTOCOMPLETE_EMOJIS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsIrcColors(self):
@@ -2126,6 +2140,7 @@ class Merk(QMainWindow):
 			config.DISPLAY_IRC_COLORS = False
 		else:
 			config.DISPLAY_IRC_COLORS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
 		self.buildSettingsMenu()
 
@@ -2134,8 +2149,29 @@ class Merk(QMainWindow):
 			config.CONVERT_URLS_TO_LINKS = False
 		else:
 			config.CONVERT_URLS_TO_LINKS = True
+		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
 		self.buildSettingsMenu()
+
+	def settingsDarkMode(self):
+		msgBox = QMessageBox()
+		msgBox.setIconPixmap(QPixmap(SETTINGS_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		if config.DARK_MODE:
+			msgBox.setText(APPLICATION_NAME+" requires a restart to deactivate dark mode.\nDeactivate dark mode and restart now?")
+		else:
+			msgBox.setText(APPLICATION_NAME+" requires a restart to activate dark mode.\nActivate dark mode and restart now?")
+		msgBox.setWindowTitle("Restart")
+		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		rval = msgBox.exec()
+		if rval != QMessageBox.Cancel:
+			if config.DARK_MODE:
+				config.DARK_MODE = False
+			else:
+				config.DARK_MODE = True
+			config.save_settings(config.CONFIG_FILE)
+			os.execl(sys.executable, sys.executable, *sys.argv)
 
 	def buildSettingsMenu(self):
 
@@ -2167,6 +2203,14 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
 		entry.triggered.connect(self.settingsLinks)
 		self.settingsMenu.addAction(entry)
+
+		if not is_running_from_pyinstaller():
+			if config.DARK_MODE:
+				entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
+			entry.triggered.connect(self.settingsDarkMode)
+			self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
 
