@@ -97,7 +97,7 @@ configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=st
 
 misc_group = parser.add_argument_group('Appearance')
 
-misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Fusion)", metavar="NAME", default="")
+misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
 misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
 misc_group.add_argument( "-L","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
 
