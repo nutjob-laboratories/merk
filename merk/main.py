@@ -2205,6 +2205,15 @@ class Merk(QMainWindow):
 			self.noexecute = True
 		self.buildSettingsMenu()
 
+	def settingsTimestamps(self):
+		if config.DISPLAY_TIMESTAMP:
+			config.DISPLAY_TIMESTAMP = False
+		else:
+			config.DISPLAY_TIMESTAMP = True
+		config.save_settings(config.CONFIG_FILE)
+		self.reRenderAll()
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2214,19 +2223,18 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.addSeparator()
 
-		if config.SHOW_SYSTRAY_ICON:
-			if config.MINIMIZE_TO_SYSTRAY:
-				entry = QAction(QIcon(self.checked_icon),"Minimize to system tray", self)
-			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Minimize to system tray", self)
-			entry.triggered.connect(self.settingsMinimToTray)
-			self.settingsMenu.addAction(entry)
-
 		if config.DISPLAY_IRC_COLORS:
 			entry = QAction(QIcon(self.checked_icon),"Show IRC colors", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Show IRC colors", self)
 		entry.triggered.connect(self.settingsIrcColors)
+		self.settingsMenu.addAction(entry)
+
+		if config.DISPLAY_TIMESTAMP:
+			entry = QAction(QIcon(self.checked_icon),"Show timestamps", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Show timestamps", self)
+		entry.triggered.connect(self.settingsTimestamps)
 		self.settingsMenu.addAction(entry)
 
 		if config.CONVERT_URLS_TO_LINKS:
@@ -2236,29 +2244,15 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsLinks)
 		self.settingsMenu.addAction(entry)
 
-		if config.SHOW_WINDOWBAR:
-			entry = QAction(QIcon(self.checked_icon),"Enable windowbar", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable windowbar", self)
-		entry.triggered.connect(self.settingsWindowbar)
-		self.settingsMenu.addAction(entry)
+		e = textSeparator(self,"Input Settings")
+		self.settingsMenu.addAction(e)
 
 		if config.ENABLE_EMOJI_SHORTCODES:
-			entry = QAction(QIcon(self.checked_icon),"Emoji shortcodes", self)
+			entry = QAction(QIcon(self.checked_icon),"Enable emoji shortcodes", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Emoji shortcodes", self)
+			entry = QAction(QIcon(self.unchecked_icon),"Enable emoji shortcodes", self)
 		entry.triggered.connect(self.settingsEmoji)
 		self.settingsMenu.addAction(entry)
-
-		if not is_running_from_pyinstaller():
-			if config.DARK_MODE:
-				entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
-			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
-			entry.triggered.connect(self.settingsDarkMode)
-			self.settingsMenu.addAction(entry)
-
-		self.settingsMenu.addSeparator()
 
 		sm = self.settingsMenu.addMenu(QIcon(INPUT_ICON),"Autocomplete")
 
@@ -2330,6 +2324,32 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.round_unchecked_icon),"Deutsche", self)
 			entry.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
 		sm.addAction(entry)
+
+		e = textSeparator(self,"Miscellaneous Settings")
+		self.settingsMenu.addAction(e)
+
+		if config.SHOW_SYSTRAY_ICON:
+			if config.MINIMIZE_TO_SYSTRAY:
+				entry = QAction(QIcon(self.checked_icon),"Minimize to system tray", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Minimize to system tray", self)
+			entry.triggered.connect(self.settingsMinimToTray)
+			self.settingsMenu.addAction(entry)
+
+		if config.SHOW_WINDOWBAR:
+			entry = QAction(QIcon(self.checked_icon),"Enable windowbar", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable windowbar", self)
+		entry.triggered.connect(self.settingsWindowbar)
+		self.settingsMenu.addAction(entry)
+
+		if not is_running_from_pyinstaller():
+			if config.DARK_MODE:
+				entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
+			entry.triggered.connect(self.settingsDarkMode)
+			self.settingsMenu.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(CONNECT_ICON),"Connections")
 
