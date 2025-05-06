@@ -2191,6 +2191,20 @@ class Merk(QMainWindow):
 			config.save_settings(config.CONFIG_FILE)
 			os.execl(sys.executable, sys.executable, *sys.argv)
 
+	def settingsDoNotSave(self):
+		if self.donotsave:
+			self.donotsave = False
+		else:
+			self.donotsave = True
+		self.buildSettingsMenu()
+
+	def settingsDoNoExecute(self):
+		if self.noexecute:
+			self.noexecute = False
+		else:
+			self.noexecute = True
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2338,6 +2352,23 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Notify on lost/failed connection", self)
 		entry.triggered.connect(self.settingsNotifyLost)
+		sm.addAction(entry)
+
+		e = textSeparator(self,"Dialog Defaults")
+		sm.addAction(e)
+
+		if self.donotsave:
+			entry = QAction(QIcon(self.checked_icon),"Do not save connection to user file", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Do not save connection to user file", self)
+		entry.triggered.connect(self.settingsDoNotSave)
+		sm.addAction(entry)
+
+		if self.noexecute:
+			entry = QAction(QIcon(self.checked_icon),"Do not execute connection script", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Do not execute connection script", self)
+		entry.triggered.connect(self.settingsDoNoExecute)
 		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(LOG_ICON),"Logs")
