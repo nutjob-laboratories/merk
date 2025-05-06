@@ -2214,6 +2214,14 @@ class Merk(QMainWindow):
 		self.reRenderAll()
 		self.buildSettingsMenu()
 
+	def settingsSimplified(self):
+		if config.SIMPLIFIED_CONNECT_DIALOG:
+			config.SIMPLIFIED_CONNECT_DIALOG = False
+		else:
+			config.SIMPLIFIED_CONNECT_DIALOG = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2341,6 +2349,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Enable windowbar", self)
 		entry.triggered.connect(self.settingsWindowbar)
+		self.settingsMenu.addAction(entry)
+
+		if config.SIMPLIFIED_CONNECT_DIALOG:
+			entry = QAction(QIcon(self.checked_icon),"Simplified connection dialog", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Simplified connection dialog", self)
+		entry.triggered.connect(self.settingsSimplified)
 		self.settingsMenu.addAction(entry)
 
 		if not is_running_from_pyinstaller():
