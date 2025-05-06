@@ -2636,7 +2636,7 @@ class Merk(QMainWindow):
 				c = windows[0].widget()
 				sname = c.client.server+":"+str(c.client.port)
 				title = 'Disconnect from ' + sname
-				entry = QAction(QIcon(CLOSE_ICON),title,self)
+				entry = QAction(QIcon(DISCONNECT_ICON),title,self)
 				entry.triggered.connect(self.disconnectAll)
 				self.mainMenu.addAction(entry)
 			else:
@@ -2650,7 +2650,7 @@ class Merk(QMainWindow):
 				for w in windows:
 					c = w.widget()
 					sname = c.client.server+":"+str(c.client.port)
-					entry = QAction(QIcon(CLOSE_ICON),"Disconnect from "+sname,self)
+					entry = QAction(QIcon(DISCONNECT_ICON),"Disconnect from "+sname,self)
 					entry.triggered.connect(lambda state,u=c: u.disconnect())
 					self.mainMenu.addAction(entry)
 
