@@ -225,6 +225,9 @@ TWISTED_BUTTON_ICON = ":/icon-twisted_button.png"
 PYINSTALLER_ICON = ":/icon-pyinstaller.png"
 PYQT_ICON = ":/icon-pyqt.png"
 
+CONNECT_DIALOG_ICON = ":/icon-connect_connect_dialog.png"
+
+
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
 DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"

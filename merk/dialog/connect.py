@@ -353,7 +353,7 @@ class Dialog(QDialog):
 		self.serverDescription.setAlignment(Qt.AlignJustify)
 
 		banner = QLabel()
-		pixmap = QPixmap(CONNECT_MENU_ICON)
+		pixmap = QPixmap(CONNECT_DIALOG_ICON)
 		banner.setPixmap(pixmap)
 
 		bannerLayout = QHBoxLayout()
