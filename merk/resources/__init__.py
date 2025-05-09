@@ -93,6 +93,9 @@ SCRIPT_FILE_EXTENSION = "merk"
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")
 
+# Sort the emoji autocomplete list by length
+EMOJI_AUTOCOMPLETE.sort(key=len)
+
 BUNDLED_FONT = ":/font-FiraMono-Regular.ttf"
 OTHER_BUNDLED_FONTS = [
 	":/font-FiraMono-Medium.ttf",
