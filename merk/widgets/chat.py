@@ -89,6 +89,10 @@ class Window(QMainWindow):
 
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
+		self.dosave = QTimer(self)
+		self.dosave.timeout.connect(self.saveLogs)
+		self.dosave.start(config.LOG_SAVE_INTERVAL)
+
 		self.setWindowTitle(self.name)
 
 		if self.window_type==CHANNEL_WINDOW:
@@ -1413,25 +1417,30 @@ class Window(QMainWindow):
 
 
 	def saveLogs(self):
-		save_logs = True
+		if config.DO_INTERMITTENT_LOG_SAVES:
+			save_logs = True
 
-		if self.window_type==CHANNEL_WINDOW:
-			if config.SAVE_CHANNEL_LOGS:
-				save_logs=True
-			else:
-				save_logs=False
+			if self.window_type==CHANNEL_WINDOW:
+				if config.SAVE_CHANNEL_LOGS:
+					save_logs=True
+				else:
+					save_logs=False
 
-		if self.window_type==PRIVATE_WINDOW:
-			if config.SAVE_PRIVATE_LOGS:
-				save_logs=True
-			else:
-				save_logs=False
+			if self.window_type==PRIVATE_WINDOW:
+				if config.SAVE_PRIVATE_LOGS:
+					save_logs=True
+				else:
+					save_logs=False
 
-		# Save logs
-		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
-			if save_logs:
-				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
-				self.parent.buildSettingsMenu()
+			# Save logs
+			if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+				if save_logs:
+					if len(self.new_log)>0:
+						logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+						self.new_log = []
+					self.parent.buildSettingsMenu()
+
+		self.dosave.start(config.LOG_SAVE_INTERVAL)
 
 	def menuSaveLogs(self):
 		# Save logs

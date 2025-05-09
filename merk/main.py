@@ -2222,6 +2222,14 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsIntermittent(self):
+		if config.DO_INTERMITTENT_LOG_SAVES:
+			config.DO_INTERMITTENT_LOG_SAVES = False
+		else:
+			config.DO_INTERMITTENT_LOG_SAVES = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2434,6 +2442,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Load private chat logs", self)
 		entry.triggered.connect(self.settingsLoadPriv)
+		sm.addAction(entry)
+
+		if config.DO_INTERMITTENT_LOG_SAVES:
+			entry = QAction(QIcon(self.checked_icon),"Save logs every 30 minutes", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Save logs every 30 minutes", self)
+		entry.triggered.connect(self.settingsIntermittent)
 		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")

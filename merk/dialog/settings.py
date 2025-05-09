@@ -1583,6 +1583,10 @@ class Dialog(QDialog):
 		logsizeButton.clicked.connect(self.setLogSize)
 		logsizeButton.setAutoDefault(False)
 
+		self.intermittentLog = QCheckBox("Save logs every 30 minutes",self)
+		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
+		self.intermittentLog.stateChanged.connect(self.changedSetting)
+
 		self.logDescription = QLabel("""
 			<small>
 			Full logs are not loaded for display. The below settings
@@ -1611,6 +1615,7 @@ class Dialog(QDialog):
 		logLayout.addWidget(self.loadChanLogs)
 		logLayout.addWidget(self.savePrivLogs)
 		logLayout.addWidget(self.loadPrivLogs)
+		logLayout.addWidget(self.intermittentLog)
 		logLayout.addWidget(self.markLog)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
@@ -2033,6 +2038,7 @@ class Dialog(QDialog):
 		config.JOIN_ON_INVITE = self.autoJoin.isChecked()
 		config.GET_HOSTMASKS_ON_CHANNEL_JOIN = self.autoHostmasks.isChecked()
 		config.MAIN_MENU_SETTINGS_NAME = self.default_settings_menu
+		config.DO_INTERMITTENT_LOG_SAVES = self.intermittentLog.isChecked()
 
 		self.parent.buildSettingsMenu()
 

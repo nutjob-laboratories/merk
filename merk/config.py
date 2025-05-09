@@ -143,6 +143,8 @@ WINDOWBAR_INCLUDE_PRIVATE = True
 JOIN_ON_INVITE = True
 GET_HOSTMASKS_ON_CHANNEL_JOIN = True
 MAIN_MENU_SETTINGS_NAME = "Settings"
+DO_INTERMITTENT_LOG_SAVES = True
+LOG_SAVE_INTERVAL = 1800000
 
 def save_settings(filename):
 
@@ -251,12 +253,18 @@ def save_settings(filename):
 		"auto_join_on_invite": JOIN_ON_INVITE,
 		"get_hostmasks_on_channel_join": GET_HOSTMASKS_ON_CHANNEL_JOIN,
 		"main_menu_settings_name": MAIN_MENU_SETTINGS_NAME,
+		"do_intermittent_log_saves": DO_INTERMITTENT_LOG_SAVES,
+		"intermittent_log_save_interval": LOG_SAVE_INTERVAL,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "do_intermittent_log_saves" in settings:
+		settings["do_intermittent_log_saves"] = DO_INTERMITTENT_LOG_SAVES
+	if not "intermittent_log_save_interval" in settings:
+		settings["intermittent_log_save_interval"] = LOG_SAVE_INTERVAL
 	if not "main_menu_settings_name" in settings:
 		settings["main_menu_settings_name"] = MAIN_MENU_SETTINGS_NAME
 	if not "get_hostmasks_on_channel_join" in settings:
@@ -574,6 +582,8 @@ def load_settings(filename):
 	global JOIN_ON_INVITE
 	global GET_HOSTMASKS_ON_CHANNEL_JOIN
 	global MAIN_MENU_SETTINGS_NAME
+	global DO_INTERMITTENT_LOG_SAVES
+	global LOG_SAVE_INTERVAL
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -583,6 +593,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DO_INTERMITTENT_LOG_SAVES = settings["do_intermittent_log_saves"]
+		LOG_SAVE_INTERVAL = settings["intermittent_log_save_interval"]
 		MAIN_MENU_SETTINGS_NAME = settings["main_menu_settings_name"]
 		GET_HOSTMASKS_ON_CHANNEL_JOIN = settings["get_hostmasks_on_channel_join"]
 		JOIN_ON_INVITE = settings["auto_join_on_invite"]
