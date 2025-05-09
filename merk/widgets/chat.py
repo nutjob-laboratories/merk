@@ -570,6 +570,10 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
+				entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+				entry.triggered.connect(self.menuSaveLogs)
+				menu.addAction(entry)
+
 			if self.window_type==CHANNEL_WINDOW:
 
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
@@ -596,6 +600,10 @@ class Window(QMainWindow):
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.clearChat)
+			self.settingsMenu.addAction(entry)
+
+			entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+			entry.triggered.connect(self.menuSaveLogs)
 			self.settingsMenu.addAction(entry)
 
 		if self.window_type==SERVER_WINDOW:
@@ -1426,21 +1434,17 @@ class Window(QMainWindow):
 				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 				self.parent.buildSettingsMenu()
 
-	def doSaveLog(self):
-
-		options = QFileDialog.Options()
-		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getSaveFileName(self,"Save Log As...","",f"{APPLICATION_NAME} Log (*.txt);;All Files (*)", options=options)
-		if fileName:
-			efl = len(SCRIPT_FILE_EXTENSION)+1
-			if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
-			code = open(fileName,"w",encoding="utf-8",errors="ignore")
-			code.write(logs.dumpRawLog(self.log))
-			code.close()
-
-
-		#logs.saveLog(self.client.network,self.name,self.log,logs.LOG_DIRECTORY)
-		#self.parent.buildSettingsMenu()
+	def menuSaveLogs(self):
+		# Save logs
+		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+			options = QFileDialog.Options()
+			options |= QFileDialog.DontUseNativeDialog
+			fileName, _ = QFileDialog.getSaveFileName(self,"Save Log As...","",f"{APPLICATION_NAME} Log (*.json);;All Files (*)", options=options)
+			if fileName:
+				efl = len('json')+1
+				if fileName[-efl:].lower()!=".json": fileName = fileName+".json"
+				logs.saveLogFile(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY,fileName)
+				self.parent.buildSettingsMenu()
 
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)

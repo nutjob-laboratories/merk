@@ -102,6 +102,20 @@ def saveLog(network,name,logs,logdir=LOG_DIRECTORY):
 	with open(logfile, "w",encoding="utf-8",errors="ignore") as writelog:
 		json.dump(slog, writelog, indent=4, sort_keys=True)
 
+# Takes an array of Message() objects, converts it to
+# an AoA, and appens the AoA to a file containing
+# AoAs on disk
+def saveLogFile(network,name,logs,logdir=LOG_DIRECTORY,logfile=None):
+
+	logs = log_to_array(logs)
+
+	slog = loadLog(network,name,logdir)
+	for e in logs:
+		slog.append(e)
+
+	with open(logfile, "w",encoding="utf-8",errors="ignore") as writelog:
+		json.dump(slog, writelog, indent=4, sort_keys=True)
+
 # Loads an AoA from disk and returns it
 def loadLog(network,name,logdir=LOG_DIRECTORY):
 	f = encodeLogName(network,name)
