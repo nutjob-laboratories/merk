@@ -1128,7 +1128,6 @@ class Window(QMainWindow):
 
 		self.userlist.clear()
 
-		# Sort the user list
 		owners = []
 		admins = []
 		ops = []
@@ -1170,12 +1169,12 @@ class Window(QMainWindow):
 		self.nicks = owners + admins + halfops + ops + voiced + normal
 
 		# Alphabetize
-		owners.sort()
-		admins.sort()
-		halfops.sort()
-		ops.sort()
-		voiced.sort()
-		normal.sort()
+		owners.sort(key=str.lower)
+		admins.sort(key=str.lower)
+		ops.sort(key=str.lower)
+		halfops.sort(key=str.lower)
+		voiced.sort(key=str.lower)
+		normal.sort(key=str.lower)
 
 		# Add owners
 		for u in owners:
