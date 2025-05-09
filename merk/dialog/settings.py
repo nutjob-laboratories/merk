@@ -1938,7 +1938,9 @@ class Dialog(QDialog):
 	def save(self):
 
 		# Save the current focused window
-		current_open_window = self.parent.MDI.activeSubWindow()
+		current_open_window = self.parent.getActive()
+		if current_open_window==None:
+			current_open_window = self.parent.MDI.activeSubWindow()
 
 		config.DISPLAY_ACTIVE_CHAT_IN_TITLE = self.showChatInTitle.isChecked()
 		config.PROMPT_ON_FAILED_CONNECTION = self.promptFail.isChecked()
@@ -2129,8 +2131,8 @@ class Dialog(QDialog):
 			else:
 				self.parent.setWindowTitle(APPLICATION_NAME)
 
-			# self.parent.saveActive(current_open_window)
-			# self.parent.restoreActive()
+		self.parent.saveActive(current_open_window)
+		self.parent.restoreActive()
 
 		# Close the dialog
 		self.close()
