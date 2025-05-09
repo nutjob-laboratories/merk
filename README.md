@@ -1,6 +1,7 @@
 
 
 
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -10,6 +11,7 @@
  - [Downloads](#Downloads)
  - [Summary](#Summary)
  - [Running MERK on Windows](#running-merk-on-windows)
+ - [Making MERK Portable on Windows](#making-merk-portable-on-windows)
  - [Running MERK with Python](#running-merk-with-python)
  - [Python Requirements](#python-requirements)
  - [Features](#Features)
@@ -50,6 +52,15 @@ For an even easier "install", [download the "standalone" executable of **MERK** 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
 A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
+
+# Making MERK Portable on Windows
+If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.036.046 for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
+
+```merk.exe --config-local```
+
+Save this file to wherever you extracted **MERK** to. You can give it any name you'd like, as long as the file extension you save the file to is `BAT`. So, if you'd like to name the file "MyMerk", you'd save the file with the name `MyMerk.bat`. You're done! You've made **MERK** portable.
+
+Whenever you want to run **MERK** off of your USB stick, double click the `.bat` file you created instead of `merk.exe`. This will run **MERK** completely normally, only all configuration files will be saved to the same directory **MERK** "lives" in. So, you can take **MERK** with you on your USB stick, and it will keep all the configuration files and logs on the USB stick.
 
 # Running MERK with Python
 
