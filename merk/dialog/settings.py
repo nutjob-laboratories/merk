@@ -328,6 +328,8 @@ class Dialog(QDialog):
 		if newInterval=="30 minutes": self.interval = 1800000
 		if newInterval=="hour": self.interval = 3600000
 		if newInterval=="15 minutes": self.interval = 900000
+		if newInterval=="2 hours": self.interval = 7200000
+		if newInterval=="3 hours": self.interval = 10800000
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -1605,11 +1607,15 @@ class Dialog(QDialog):
 		if config.LOG_SAVE_INTERVAL==7200000:
 			self.logInterval.addItem("2 hours")
 			added = True
+		if config.LOG_SAVE_INTERVAL==10800000:
+			self.logInterval.addItem("3 hours")
+			added = True
 		if added==False: self.logInterval.addItem(f"{config.LOG_SAVE_INTERVAL} ms")
 		if config.LOG_SAVE_INTERVAL!=900000: self.logInterval.addItem("15 minutes")
 		if config.LOG_SAVE_INTERVAL!=1800000: self.logInterval.addItem("30 minutes")
 		if config.LOG_SAVE_INTERVAL!=3600000: self.logInterval.addItem("hour")
 		if config.LOG_SAVE_INTERVAL!=7200000: self.logInterval.addItem("2 hours")
+		if config.LOG_SAVE_INTERVAL!=10800000: self.logInterval.addItem("3 hours")
 		self.logInterval.currentIndexChanged.connect(self.intervalChange)
 
 		intervalBox = QHBoxLayout()
