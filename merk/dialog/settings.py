@@ -323,6 +323,16 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def intervalChange(self,i):
+		newInterval = self.logInterval.itemText(i)
+		if newInterval=="30 minutes": self.interval = 1800000
+		if newInterval=="hour": self.interval = 3600000
+		if newInterval=="15 minutes": self.interval = 900000
+
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
 	def topicChange(self, i):
 		self.refreshTopics = True
 
@@ -569,6 +579,8 @@ class Dialog(QDialog):
 		self.default_windows_menu = config.MAIN_MENU_WINDOWS_NAME
 		self.default_help_menu = config.MAIN_MENU_HELP_NAME
 		self.default_settings_menu = config.MAIN_MENU_SETTINGS_NAME
+
+		self.interval = config.LOG_SAVE_INTERVAL
 
 		self.syntax_did_change = False
 
@@ -1583,9 +1595,30 @@ class Dialog(QDialog):
 		logsizeButton.clicked.connect(self.setLogSize)
 		logsizeButton.setAutoDefault(False)
 
-		self.intermittentLog = QCheckBox("Save logs every 30 minutes",self)
+		self.intermittentLog = QCheckBox("Save logs every ",self)
 		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
 		self.intermittentLog.stateChanged.connect(self.changedSetting)
+
+		self.logInterval = QComboBox(self)
+		added = False
+		if config.LOG_SAVE_INTERVAL==900000:
+			self.logInterval.addItem("15 minutes")
+			added = True
+		if config.LOG_SAVE_INTERVAL==1800000:
+			self.logInterval.addItem("30 minutes")
+			added = True
+		if config.LOG_SAVE_INTERVAL==3600000:
+			self.logInterval.addItem("hour")
+			added = True
+		if added==False: self.logInterval.addItem(f"{config.LOG_SAVE_INTERVAL} ms")
+		if config.LOG_SAVE_INTERVAL!=900000: self.logInterval.addItem("15 minutes")
+		if config.LOG_SAVE_INTERVAL!=1800000: self.logInterval.addItem("30 minutes")
+		if config.LOG_SAVE_INTERVAL!=3600000: self.logInterval.addItem("hour")
+		self.logInterval.currentIndexChanged.connect(self.intervalChange)
+
+		intervalBox = QHBoxLayout()
+		intervalBox.addWidget(self.intermittentLog)
+		intervalBox.addWidget(self.logInterval)
 
 		self.logDescription = QLabel("""
 			<small>
@@ -1615,8 +1648,8 @@ class Dialog(QDialog):
 		logLayout.addWidget(self.loadChanLogs)
 		logLayout.addWidget(self.savePrivLogs)
 		logLayout.addWidget(self.loadPrivLogs)
-		logLayout.addWidget(self.intermittentLog)
 		logLayout.addWidget(self.markLog)
+		logLayout.addLayout(intervalBox)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
 		logLayout.addWidget(self.logDescription)
@@ -2039,6 +2072,10 @@ class Dialog(QDialog):
 		config.GET_HOSTMASKS_ON_CHANNEL_JOIN = self.autoHostmasks.isChecked()
 		config.MAIN_MENU_SETTINGS_NAME = self.default_settings_menu
 		config.DO_INTERMITTENT_LOG_SAVES = self.intermittentLog.isChecked()
+
+		if self.interval!=config.LOG_SAVE_INTERVAL:
+			config.LOG_SAVE_INTERVAL = self.interval
+			self.parent.updateInterval()
 
 		self.parent.buildSettingsMenu()
 

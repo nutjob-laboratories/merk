@@ -1656,6 +1656,15 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def updateInterval(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"newLogInterval"):
+				c.newLogInterval()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def handleUserInput(self,window,user_input):
 
 		# Handle chat commands
@@ -2445,9 +2454,13 @@ class Merk(QMainWindow):
 		sm.addAction(entry)
 
 		if config.DO_INTERMITTENT_LOG_SAVES:
-			entry = QAction(QIcon(self.checked_icon),"Save logs every 30 minutes", self)
+			interval = str(config.LOG_SAVE_INTERVAL)+" ms"
+			if config.LOG_SAVE_INTERVAL==900000: interval = "15 minutes"
+			if config.LOG_SAVE_INTERVAL==1800000: interval = "30 minutes"
+			if config.LOG_SAVE_INTERVAL==3600000: interval = "hour"
+			entry = QAction(QIcon(self.checked_icon),"Save logs every "+interval, self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Save logs every 30 minutes", self)
+			entry = QAction(QIcon(self.unchecked_icon),"Save logs every "+interval, self)
 		entry.triggered.connect(self.settingsIntermittent)
 		sm.addAction(entry)
 

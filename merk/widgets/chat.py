@@ -1415,6 +1415,9 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
+	def newLogInterval(self):
+		self.dosave.stop()
+		self.dosave.start(config.LOG_SAVE_INTERVAL)
 
 	def saveLogs(self):
 		if config.DO_INTERMITTENT_LOG_SAVES:
