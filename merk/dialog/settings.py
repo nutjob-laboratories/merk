@@ -1595,7 +1595,7 @@ class Dialog(QDialog):
 		logsizeButton.clicked.connect(self.setLogSize)
 		logsizeButton.setAutoDefault(False)
 
-		self.intermittentLog = QCheckBox("Save logs every ",self)
+		self.intermittentLog = QCheckBox("Save logs every",self)
 		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
 		self.intermittentLog.stateChanged.connect(self.changedSetting)
 
@@ -1610,15 +1610,20 @@ class Dialog(QDialog):
 		if config.LOG_SAVE_INTERVAL==3600000:
 			self.logInterval.addItem("hour")
 			added = True
+		if config.LOG_SAVE_INTERVAL==7200000:
+			self.logInterval.addItem("2 hours")
+			added = True
 		if added==False: self.logInterval.addItem(f"{config.LOG_SAVE_INTERVAL} ms")
 		if config.LOG_SAVE_INTERVAL!=900000: self.logInterval.addItem("15 minutes")
 		if config.LOG_SAVE_INTERVAL!=1800000: self.logInterval.addItem("30 minutes")
 		if config.LOG_SAVE_INTERVAL!=3600000: self.logInterval.addItem("hour")
+		if config.LOG_SAVE_INTERVAL!=7200000: self.logInterval.addItem("2 hours")
 		self.logInterval.currentIndexChanged.connect(self.intervalChange)
 
 		intervalBox = QHBoxLayout()
 		intervalBox.addWidget(self.intermittentLog)
 		intervalBox.addWidget(self.logInterval)
+		intervalBox.addStretch()
 
 		self.logDescription = QLabel("""
 			<small>

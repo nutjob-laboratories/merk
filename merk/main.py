@@ -2458,6 +2458,7 @@ class Merk(QMainWindow):
 			if config.LOG_SAVE_INTERVAL==900000: interval = "15 minutes"
 			if config.LOG_SAVE_INTERVAL==1800000: interval = "30 minutes"
 			if config.LOG_SAVE_INTERVAL==3600000: interval = "hour"
+			if config.LOG_SAVE_INTERVAL==7200000: interval = "2 hours"
 			entry = QAction(QIcon(self.checked_icon),"Save logs every "+interval, self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Save logs every "+interval, self)
