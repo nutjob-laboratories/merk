@@ -521,11 +521,6 @@ class Dialog(QDialog):
 		self.save()
 		os.execl(sys.executable, sys.executable, *sys.argv)
 
-	def do_restart_pyi(self, link):
-		self.save()
-		self.app.quit()
-		status = QProcess.startDetached(sys.executable, sys.argv)
-
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -597,10 +592,7 @@ class Dialog(QDialog):
 		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
 
 		if is_running_from_pyinstaller():
-			#self.restart = QLabel("<b>Restart required.</b>")
-			self.restart = QLabel(f"<b><a href=\"restart\">Apply & restart {APPLICATION_NAME}.</a></b>")
-			self.restart.setOpenExternalLinks(False)
-			self.restart.linkActivated.connect(self.do_restart_pyi)
+			self.restart = QLabel("<b>Restart required.</b>")
 		else:
 			self.restart = QLabel(f"<b><a href=\"restart\">Apply & restart {APPLICATION_NAME}.</a></b>")
 			self.restart.setOpenExternalLinks(False)
