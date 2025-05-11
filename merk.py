@@ -65,7 +65,6 @@ Available Qt widget styles: {", ".join(QStyleFactory.keys())}
 )
 
 congroup = parser.add_argument_group('Connection')
-
 congroup.add_argument("server", type=str,help="Server to connect to", metavar="SERVER", nargs='?')
 congroup.add_argument("port", type=int,help="Server port to connect to (6667)", default=6667, nargs='?', metavar="PORT")
 congroup.add_argument( "--ssl","--tls", help=f"Use SSL/TLS to connect to IRC", action="store_true")
@@ -88,18 +87,15 @@ optiongroup.add_argument( "-E","--simple", help=f"Show simplified connection dia
 optiongroup.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
 
 configuration_group = parser.add_argument_group('Files and Directories')
-
 configuration_group.add_argument( "--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument( "--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 
 misc_group = parser.add_argument_group('Appearance')
-
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
 misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
 misc_group.add_argument( "-L","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
-
 
 args = parser.parse_args()
 
