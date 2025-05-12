@@ -162,16 +162,34 @@ class Dialog(QDialog):
 			self.user_style.setQss(self.style['username'])
 			self.server_style.setQss(self.style['server'])
 
-			p = self.chat.palette()
-			p.setColor(QPalette.Base, QColor(self.bgcolor))
-			p.setColor(QPalette.Text, QColor(self.fgcolor))
-			self.chat.setPalette(p)
+			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
 
 			self.chat.clear()
 
 			for line in self.messages:
 				t = render.render_message(line,self.style)
 				self.chat.append(t)
+
+	def loadDefault(self):
+		self.style = styles.read_style_file('',DEFAULT_STYLE)
+
+		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		self.system_style.setQss(self.style['system'])
+		self.link_style.setQss(self.style['hyperlink'])
+		self.action_style.setQss(self.style['action'])
+		self.error_style.setQss(self.style['error'])
+		self.notice_style.setQss(self.style['notice'])
+		self.self_style.setQss(self.style['self'])
+		self.user_style.setQss(self.style['username'])
+		self.server_style.setQss(self.style['server'])
+
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+
+		self.chat.clear()
+
+		for line in self.messages:
+			t = render.render_message(line,self.style)
+			self.chat.append(t)
 
 	def __init__(self,client,chat,parent=None,default=False):
 		super(Dialog,self).__init__(parent)
@@ -284,7 +302,11 @@ class Dialog(QDialog):
 		loadButton = QPushButton("Open style")
 		loadButton.clicked.connect(self.loadStyle)
 
+		defaultButton = QPushButton("Set to app default")
+		defaultButton.clicked.connect(self.loadDefault)
+
 		buttonLayout = QHBoxLayout()
+		buttonLayout.addWidget(defaultButton)
 		buttonLayout.addWidget(loadButton)
 		buttonLayout.addWidget(saveAsButton)
 		buttonLayout.addWidget(buttons)
