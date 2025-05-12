@@ -419,6 +419,41 @@ class Window(QMainWindow):
 
 		self.input.setFocus()
 
+		if self.window_type==SERVER_WINDOW:
+			# Create the status bar, and give it a "flat" style
+			self.status = self.statusBar()
+			self.status.setStyleSheet("QStatusBar::item { border: none; }")
+
+			# Here, we display the server the chat window is associated
+			# with, as well as how the client is connected to it (using
+			# SSL/TLS or not) and other information
+			fm = QFontMetrics(self.app.font())
+			if self.client.kwargs["ssl"]:
+				self.secure_icon = QLabel(self)
+				pixmap = QPixmap(VISITED_SECURE_ICON)
+				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+				self.secure_icon.setPixmap(pixmap)
+				self.status.addPermanentWidget(self.secure_icon,0)
+				self.status_server = QLabel(f"<small><b>{self.client.server}:{self.client.port}</b></small>")
+			else:
+				self.secure_icon = QLabel(self)
+				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
+				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+				self.secure_icon.setPixmap(pixmap)
+				self.status.addPermanentWidget(self.secure_icon,0)
+				self.status_server = QLabel(f"<small><b>{self.client.server}:{self.client.port}</b></small>")
+			self.status.addPermanentWidget(self.status_server,0)
+
+			# Spacer
+			self.status.addPermanentWidget(QLabel(),1)
+
+			self.statusServerUptime = QLabel("<small>00:00:00</small>")
+
+			self.status.addPermanentWidget(self.statusServerUptime,0)
+			self.status.addPermanentWidget(QLabel(' '),0)
+
+			if not config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.status.hide()
+
 		# Channel and private chat windows get a status bar
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 
@@ -463,6 +498,8 @@ class Window(QMainWindow):
 				self.key_spacer.hide()
 				self.status.addPermanentWidget(self.channelUptime,0)
 				self.status.addPermanentWidget(QLabel(' '),0)
+
+			if not config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.status.hide()
 
 		# Load and apply default style
 		self.applyStyle()
@@ -521,6 +558,18 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
+
+	def toggleStatusBar(self):
+		if self.window_type==SERVER_WINDOW:
+			if not config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS:
+				self.status.hide()
+			else:
+				self.status.show()
+			return
+		if not config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS:
+			self.status.hide()
+		else:
+			self.status.show()
 
 	def chatMenu(self,location):
 
@@ -694,13 +743,16 @@ class Window(QMainWindow):
 		if config.SHOW_CONNECTION_UPTIME:
 			if hasattr(self,"serverUptime"):
 				if not self.serverUptime.isVisible(): self.serverUptime.show()
+				if not self.statusServerUptime.isVisible(): self.statusServerUptime.show()
 		else:
 			if hasattr(self,"serverUptime"):
 				if self.serverUptime.isVisible(): self.serverUptime.hide()
+				if self.statusServerUptime.isVisible(): self.statusServerUptime.hide()
 
 		if self.window_type==SERVER_WINDOW:
 			self.uptime = uptime
 			self.serverUptime.setText("<b>"+prettyUptime(self.uptime)+"</b>")
+			self.statusServerUptime.setText("<small>"+prettyUptime(self.uptime)+"</small>")
 		else:
 			self.uptime = self.uptime + 1
 			if self.window_type==CHANNEL_WINDOW:
@@ -786,6 +838,12 @@ class Window(QMainWindow):
 					self.key_spacer.hide()
 		
 	def updateTitle(self):
+
+		if self.window_type==SERVER_WINDOW:
+			if hasattr(self.client,"network"):
+				self.status_server.setText(f"<small><b>{self.client.hostname}</b> ({self.client.network})</small>")
+			else:
+				self.status_server.setText(f"<small><b>{self.client.hostname}</b></small>")
 
 		if self.window_type==CHANNEL_WINDOW:
 			if self.name in self.client.channelmodes:

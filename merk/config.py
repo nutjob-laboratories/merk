@@ -145,10 +145,14 @@ GET_HOSTMASKS_ON_CHANNEL_JOIN = True
 MAIN_MENU_SETTINGS_NAME = "Settings"
 DO_INTERMITTENT_LOG_SAVES = True
 LOG_SAVE_INTERVAL = 1800000
+SHOW_STATUS_BAR_ON_SERVER_WINDOWS = False
+SHOW_STATUS_BAR_ON_CHAT_WINDOWS = True
 
 def save_settings(filename):
 
 	settings = {
+		"show_status_bar_on_server_windows": SHOW_STATUS_BAR_ON_SERVER_WINDOWS,
+		"show_status_bar_on_chat_windows": SHOW_STATUS_BAR_ON_CHAT_WINDOWS,
 		"application_font": APPLICATION_FONT,
 		"default_subwindow_width": DEFAULT_SUBWINDOW_WIDTH,
 		"default_subwindow_height": DEFAULT_SUBWINDOW_HEIGHT,
@@ -261,6 +265,10 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_status_bar_on_server_windows" in settings:
+		settings["show_status_bar_on_server_windows"] = SHOW_STATUS_BAR_ON_SERVER_WINDOWS
+	if not "show_status_bar_on_chat_windows" in settings:
+		settings["show_status_bar_on_chat_windows"] = SHOW_STATUS_BAR_ON_CHAT_WINDOWS
 	if not "do_intermittent_log_saves" in settings:
 		settings["do_intermittent_log_saves"] = DO_INTERMITTENT_LOG_SAVES
 	if not "intermittent_log_save_interval" in settings:
@@ -584,6 +592,8 @@ def load_settings(filename):
 	global MAIN_MENU_SETTINGS_NAME
 	global DO_INTERMITTENT_LOG_SAVES
 	global LOG_SAVE_INTERVAL
+	global SHOW_STATUS_BAR_ON_SERVER_WINDOWS
+	global SHOW_STATUS_BAR_ON_CHAT_WINDOWS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -593,6 +603,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_STATUS_BAR_ON_SERVER_WINDOWS = settings["show_status_bar_on_server_windows"]
+		SHOW_STATUS_BAR_ON_CHAT_WINDOWS = settings["show_status_bar_on_chat_windows"]
 		DO_INTERMITTENT_LOG_SAVES = settings["do_intermittent_log_saves"]
 		LOG_SAVE_INTERVAL = settings["intermittent_log_save_interval"]
 		MAIN_MENU_SETTINGS_NAME = settings["main_menu_settings_name"]

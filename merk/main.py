@@ -1678,6 +1678,15 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def updateStatusBar(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"toggleStatusBar"):
+				c.toggleStatusBar()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def handleUserInput(self,window,user_input):
 
 		# Handle chat commands

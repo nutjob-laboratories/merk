@@ -717,6 +717,14 @@ class Dialog(QDialog):
 
 		if self.parent.simpleconn: self.simpleConnect.setEnabled(False)
 
+		self.showStatusServer = QCheckBox("Status bar on server windows",self)
+		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
+		self.showStatusServer.stateChanged.connect(self.changedSetting)
+
+		self.showStatusChat = QCheckBox("Status bar on chat windows",self)
+		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
+		self.showStatusChat.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -733,7 +741,8 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.simpleConnect)
 		if self.parent.simpleconn:
 			applicationLayout.addWidget(QLabel("<small><i>Simplified connections dialogs turned on</i></small>"))
-		#applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addWidget(self.showStatusServer)
+		applicationLayout.addWidget(self.showStatusChat)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
 		applicationLayout.addWidget(self.showTimestamps)
 		applicationLayout.addWidget(self.timestamp24hour)
@@ -1959,7 +1968,6 @@ class Dialog(QDialog):
 		leftLayout.addWidget(logo)
 		leftLayout.addWidget(QLabel("<small><center><b>Version "+APPLICATION_VERSION+"</b></center></small>"))
 
-		
 		mainLayout = QHBoxLayout()
 		# mainLayout.addWidget(self.selector)
 		mainLayout.addLayout(leftLayout)
@@ -2075,6 +2083,8 @@ class Dialog(QDialog):
 		config.GET_HOSTMASKS_ON_CHANNEL_JOIN = self.autoHostmasks.isChecked()
 		config.MAIN_MENU_SETTINGS_NAME = self.default_settings_menu
 		config.DO_INTERMITTENT_LOG_SAVES = self.intermittentLog.isChecked()
+		config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS = self.showStatusServer.isChecked()
+		config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS = self.showStatusChat.isChecked()
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval
@@ -2143,6 +2153,8 @@ class Dialog(QDialog):
 		self.parent.toggleSpellcheck()
 
 		self.parent.toggleInputMenu()
+
+		self.parent.updateStatusBar()
 
 		# Set the application font
 		self.parent.app.setFont(self.parent.application_font)
