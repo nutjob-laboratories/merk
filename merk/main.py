@@ -643,6 +643,12 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE)
 		self.trayMenu.addAction(entry)
 
+		entry = QAction(QIcon(ABOUT_ICON),"About "+APPLICATION_NAME,self)
+		entry.triggered.connect(self.showAbout)
+		self.trayMenu.addAction(entry)
+
+		self.trayMenu.addSeparator()
+
 		windows = self.getAllServerWindows()
 		clean = []
 		for w in windows:
@@ -696,6 +702,28 @@ class Merk(QMainWindow):
 
 		self.trayMenu.addSeparator()
 
+		entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
+		entry.triggered.connect(self.openSettings)
+		self.trayMenu.addAction(entry)
+
+		entry = QAction(QIcon(LOG_ICON),"Export Logs",self)
+		entry.triggered.connect(self.menuExportLog)
+		self.trayMenu.addAction(entry)
+
+		self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
+
+		entry = QAction(QIcon(LINK_ICON),"Source code",self)
+		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"GPL v3",self)
+		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
+		self.trayLinks.addAction(entry)
+
 		self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
 
 		if not is_running_from_pyinstaller():
@@ -718,21 +746,6 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(SCRIPT_ICON),"Scripts",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 		self.trayFolder.addAction(entry)
-
-
-		self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
-
-		entry = QAction(QIcon(LINK_ICON),"Source code",self)
-		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
-		self.trayLinks.addAction(entry)
-
-		entry = QAction(QIcon(LINK_ICON),"GPL v3",self)
-		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
-		self.trayLinks.addAction(entry)
-
-		entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
-		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
-		self.trayLinks.addAction(entry)
 
 		self.trayMenu.addSeparator()
 

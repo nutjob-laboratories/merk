@@ -207,7 +207,6 @@ SCRIPT_MENU_ICON = ":/icon-script_menu.png"
 SETTINGS_MENU_ICON = ":/icon-settings_menu.png"
 STYLE_MENU_ICON = ":/icon-style_menu.png"
 LOG_MENU_ICON = ":/icon-log_menu.png"
-ABOUT_MENU_ICON = ":/icon-about_menu.png"
 APPLICATION_MENU_ICON = ":/icon-app_menu.png"
 SCRIPT_ICON = ":/icon-script.png"
 CLOSE_ICON = ":/icon-close.png"
@@ -220,14 +219,12 @@ PRIVATE_MENU_ICON = ":/icon-private_menu.png"
 CLEAR_ICON = ":/icon-clear.png"
 CONNECT_MENU_ICON = ":/icon-connect_menu.png"
 DISCONNECT_MENU_ICON = ":/icon-disconnect_menu.png"
-
 QT_ICON = ":/icon-qt.png"
 PYTHON_ICON = ":/icon-python.png"
 TWISTED_ICON = ":/icon-twisted.png"
 TWISTED_BUTTON_ICON = ":/icon-twisted_button.png"
 PYINSTALLER_ICON = ":/icon-pyinstaller.png"
 PYQT_ICON = ":/icon-pyqt.png"
-
 CONNECT_DIALOG_ICON = ":/icon-connect_connect_dialog.png"
 
 
