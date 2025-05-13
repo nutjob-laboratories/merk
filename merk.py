@@ -91,6 +91,7 @@ configuration_group.add_argument( "--config-name",dest="configname",type=str,hel
 configuration_group.add_argument( "--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
+configuration_group.add_argument( "--user-file",dest="userfile",type=str,help="File to use for user data", metavar="FILENAME", default=None)
 
 misc_group = parser.add_argument_group('Appearance')
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
@@ -133,7 +134,10 @@ if __name__ == '__main__':
 	logs.initialize(args.configdir,args.configname)
 
 	# Initialize the user system
-	user.initialize(args.configdir,args.configname)
+	if args.userfile!=None:
+		user.initialize_file(args.configdir,args.configname,args.userfile)
+	else:
+		user.initialize(args.configdir,args.configname)
 
 	# Load the config file
 	config.load_settings(config.CONFIG_FILE)

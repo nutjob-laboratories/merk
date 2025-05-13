@@ -26,14 +26,14 @@
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
-| Zip Archive|  Cross-platform  | [Download MERK 0.036.072 (3.36 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
-| Zip Archive|  Windows | [Download MERK 0.036.072 (47.72 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
-|   Windows Installer|  Windows | [Download MERK 0.036.072 (35.83 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe)|
-|   Single Executable|  Windows | [Download MERK 0.036.072 (47.63 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.036.073 (3.36 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
+| Zip Archive|  Windows | [Download MERK 0.036.073 (47.72 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
+|   Windows Installer|  Windows | [Download MERK 0.036.073 (35.82 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe)|
+|   Single Executable|  Windows | [Download MERK 0.036.073 (47.63 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.036.072**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.036.073**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
@@ -43,18 +43,18 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.036.072](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe). Double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.036.073](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe). Double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
 
-For a "portable" version of **MERK**, [download the zip file of **MERK** 0.036.072 for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
+For a "portable" version of **MERK**, [download the zip file of **MERK** 0.036.073 for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
 
-For an even easier "install", [download the "standalone" executable of **MERK** 0.036.072](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe) to wherever you want, and double click on the downloaded file.
+For an even easier "install", [download the "standalone" executable of **MERK** 0.036.073](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe) to wherever you want, and double click on the downloaded file.
 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
 A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
 
 # Making MERK Portable on Windows
-If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.036.072 for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
+If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.036.073 for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
 
 ```merk.exe --config-local```
 
@@ -164,12 +164,13 @@ There are three libraries that comes bundled with **MERK**:
   
 # Usage
 ```
-usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME] 
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x] [-t] 
-                      [-S SERVER:PORT[:PASSWORD]] [-C SERVER:PORT[:PASSWORD]]
-                      [-E] [-R] [--config-name NAME] [--config-directory DIRECTORY]
-                      [--config-local] [--scripts-directory DIRECTORY] [-Q NAME]
-                      [-D] [-L] [SERVER] [PORT]
+usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
+                      [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x]
+                      [-t] [-E] [-R] [--config-name NAME] [-Q NAME] [-D] [-L]
+                      [--config-directory DIRECTORY] [--config-local]
+                      [--scripts-directory DIRECTORY] [--user-file FILENAME]
+                      [SERVER] [PORT]
 
 options:
   -h, --help            show this help message and exit
@@ -211,6 +212,7 @@ Files and Directories:
   --config-local        Store configuration files in install directory
   --scripts-directory DIRECTORY
                         Location to look for script files
+  --user-file FILENAME  File to use for user data
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)

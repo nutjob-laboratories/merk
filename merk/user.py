@@ -143,3 +143,18 @@ def initialize(directory,directory_name):
 	if not os.path.isdir(CONFIG_DIRECTORY): os.mkdir(CONFIG_DIRECTORY)
 
 	USER_FILE = os.path.join(CONFIG_DIRECTORY,"user.json")
+
+def initialize_file(directory,directory_name,filename):
+	global CONFIG_DIRECTORY
+	global USER_FILE
+
+	# If the passed directory is set to None,
+	# set the storage directory to the user's
+	# home directory
+	if directory==None:
+		directory = str(Path.home())
+
+	CONFIG_DIRECTORY = os.path.join(directory,directory_name)
+	if not os.path.isdir(CONFIG_DIRECTORY): os.mkdir(CONFIG_DIRECTORY)
+
+	USER_FILE = filename

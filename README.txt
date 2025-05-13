@@ -164,12 +164,13 @@ There are three libraries that comes bundled with **MERK**:
   
 # Usage
 ```
-usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME] 
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x] [-t] 
-                      [-S SERVER:PORT[:PASSWORD]] [-C SERVER:PORT[:PASSWORD]]
-                      [-E] [-R] [--config-name NAME] [--config-directory DIRECTORY]
-                      [--config-local] [--scripts-directory DIRECTORY] [-Q NAME]
-                      [-D] [-L] [SERVER] [PORT]
+usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
+                      [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x]
+                      [-t] [-E] [-R] [--config-name NAME] [-Q NAME] [-D] [-L]
+                      [--config-directory DIRECTORY] [--config-local]
+                      [--scripts-directory DIRECTORY] [--user-file FILENAME]
+                      [SERVER] [PORT]
 
 options:
   -h, --help            show this help message and exit
@@ -211,6 +212,7 @@ Files and Directories:
   --config-local        Store configuration files in install directory
   --scripts-directory DIRECTORY
                         Location to look for script files
+  --user-file FILENAME  File to use for user data
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
