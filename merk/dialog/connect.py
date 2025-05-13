@@ -411,9 +411,9 @@ class Dialog(QDialog):
 		self.userDescription = QLabel(f"""
 			<small>
 			<b>Nickname</b> is the nickname you want to use, and
-			<b>alternate</b> is used to use if your primary choice is taken. If both <b>nickname</b>
+			<b>alternate</b> is used if your primary choice is taken. If both <b>nickname</b>
 			and <b>alternate</b> are taken, a random number will be attached to <b>alternate</b>, and that
-			will be used instead. When you're done, click the <b>Server</b> tab to select or enter a server.
+			will be used as the nickname. When you're done, click the <b>Server</b> tab to select or enter a server.
 			All settings are saved when you click <b>Connect</b>, unless you uncheck <b>Save to user
 			settings file</b> below.<br>
 			</small>
