@@ -167,6 +167,7 @@ class Window(QMainWindow):
 			serverBar.addWidget(self.serverUptime)
 
 			if not config.SHOW_CONNECTION_UPTIME: self.serverUptime.hide()
+			if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.serverUptime.hide()
 
 			sep1 = QFrame()
 			sep1.setFrameShape(QFrame.VLine)
@@ -743,11 +744,20 @@ class Window(QMainWindow):
 		if config.SHOW_CONNECTION_UPTIME:
 			if hasattr(self,"serverUptime"):
 				if not self.serverUptime.isVisible(): self.serverUptime.show()
-				if not self.statusServerUptime.isVisible(): self.statusServerUptime.show()
 		else:
 			if hasattr(self,"serverUptime"):
 				if self.serverUptime.isVisible(): self.serverUptime.hide()
+
+		if config.SHOW_CONNECTION_UPTIME:
+			if hasattr(self,"statusServerUptime"):
+				if not self.statusServerUptime.isVisible(): self.statusServerUptime.show()
+		else:
+			if hasattr(self,"statusServerUptime"):
 				if self.statusServerUptime.isVisible(): self.statusServerUptime.hide()
+
+		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS:
+			if hasattr(self,"serverUptime"):
+				if self.serverUptime.isVisible(): self.serverUptime.hide()
 
 		if self.window_type==SERVER_WINDOW:
 			self.uptime = uptime
