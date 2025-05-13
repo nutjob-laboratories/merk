@@ -170,6 +170,7 @@ usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME
                       [-t] [-E] [-R] [--config-name NAME] [-Q NAME] [-D] [-L]
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
+                      [--config-file FILENAME]
                       [SERVER] [PORT]
 
 options:
@@ -213,6 +214,8 @@ Files and Directories:
   --scripts-directory DIRECTORY
                         Location to look for script files
   --user-file FILENAME  File to use for user data
+  --config-file FILENAME
+                        File to use for configuration data
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)

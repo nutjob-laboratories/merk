@@ -93,6 +93,8 @@ configuration_group.add_argument( "--config-local",dest="configinstall",help=f"S
 configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "--user-file",dest="userfile",type=str,help="File to use for user data", metavar="FILENAME", default=None)
 
+configuration_group.add_argument( "--config-file",dest="configfile",type=str,help="File to use for configuration data", metavar="FILENAME", default=None)
+
 misc_group = parser.add_argument_group('Appearance')
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
 misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode", action="store_true")
@@ -124,8 +126,12 @@ if __name__ == '__main__':
 		else:
 			args.configdir = os.path.dirname(sys.executable)
 
-	# Initialize the config system
-	config.initialize(args.configdir,args.configname)
+	if args.configfile:
+		# Initialize the config system
+		config.initialize_file(args.configdir,args.configname,args.configfile)
+	else:
+		# Initialize the config system
+		config.initialize(args.configdir,args.configname)
 
 	# Initialize the styles system
 	styles.initialize(args.configdir,args.configname)
