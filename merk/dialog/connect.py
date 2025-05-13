@@ -410,12 +410,12 @@ class Dialog(QDialog):
 
 		self.userDescription = QLabel(f"""
 			<small>
-			Enter your user information here. <b>Nickname</b> is the nickname you'd like to be known by, and
-			<b>alternate</b> is the nickname to use if your primary choice is taken. If both your <b>nickname</b>
-			and <b>alternate</b> are taken, a random number will be attached to your <b>alternate</b>, and that
-			will be used as your <b>nickname</b>. When you're done, click the <b>Server</b> tab to select or enter a server.
-			All settings will be saved when you click the <b>Connect</b> button, unless you uncheck the <b>Save to user
-			settings file</b> checkbox below.<br>
+			<b>Nickname</b> is the nickname you want to use, and
+			<b>alternate</b> is used to use if your primary choice is taken. If both <b>nickname</b>
+			and <b>alternate</b> are taken, a random number will be attached to <b>alternate</b>, and that
+			will be used instead. When you're done, click the <b>Server</b> tab to select or enter a server.
+			All settings are saved when you click <b>Connect</b>, unless you uncheck <b>Save to user
+			settings file</b> below.<br>
 			</small>
 
 			""")
@@ -482,6 +482,17 @@ class Dialog(QDialog):
 			bannerTabs.addWidget(self.tabs)
 
 		finalLayout = QVBoxLayout()
+		if self.logo:
+			splash = QLabel()
+			pixmap = QPixmap(SPLASH_LOGO)
+			splash.setPixmap(pixmap)
+
+			spLayout = QHBoxLayout()
+			spLayout.addStretch()
+			spLayout.addWidget(splash)
+			spLayout.addStretch()
+
+			finalLayout.addLayout(spLayout)
 		finalLayout.addLayout(bannerTabs)
 		finalLayout.addWidget(self.saveU)
 		finalLayout.addWidget(buttons)
