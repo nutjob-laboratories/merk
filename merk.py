@@ -92,7 +92,6 @@ configuration_group.add_argument( "--config-directory",dest="configdir",type=str
 configuration_group.add_argument( "--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "--user-file",dest="userfile",type=str,help="File to use for user data", metavar="FILENAME", default=None)
-
 configuration_group.add_argument( "--config-file",dest="configfile",type=str,help="File to use for configuration data", metavar="FILENAME", default=None)
 
 misc_group = parser.add_argument_group('Appearance')
