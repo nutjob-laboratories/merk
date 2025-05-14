@@ -436,6 +436,7 @@ class Window(QMainWindow):
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
 				self.status_server = QLabel(f"<small><b>{self.client.server}:{self.client.port}</b></small>")
+				self.status_server.setOpenExternalLinks(True)
 			else:
 				self.secure_icon = QLabel(self)
 				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
@@ -443,6 +444,7 @@ class Window(QMainWindow):
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
 				self.status_server = QLabel(f"<small><b>{self.client.server}:{self.client.port}</b></small>")
+				self.status_server.setOpenExternalLinks(True)
 			self.status.addPermanentWidget(self.status_server,0)
 
 			# Spacer
@@ -472,14 +474,24 @@ class Window(QMainWindow):
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
+				netlink = get_network_link(self.client.network)
+				if netlink!=None:
+					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+				else:
+					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
+				self.status_server.setOpenExternalLinks(True)
 			else:
 				self.secure_icon = QLabel(self)
 				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-				self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
+				netlink = get_network_link(self.client.network)
+				if netlink!=None:
+					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+				else:
+					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
+				self.status_server.setOpenExternalLinks(True)
 			self.status.addPermanentWidget(self.status_server,0)
 
 			# Spacer
@@ -851,7 +863,12 @@ class Window(QMainWindow):
 
 		if self.window_type==SERVER_WINDOW:
 			if hasattr(self.client,"network"):
-				self.status_server.setText(f"<small><b>{self.client.hostname}</b> ({self.client.network})</small>")
+				#self.status_server.setText(f"<small><b>{self.client.hostname}</b> ({self.client.network})</small>")
+				netlink = get_network_link(self.client.network)
+				if netlink!=None:
+					self.status_server.setText("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+				else:
+					self.status_server.setText("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 			else:
 				self.status_server.setText(f"<small><b>{self.client.hostname}</b></small>")
 

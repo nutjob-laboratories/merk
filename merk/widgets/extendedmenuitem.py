@@ -136,6 +136,7 @@ def DisabledExtendedMenuItem(self,icon,title,description,icon_size,func):
 def ExtendedMenuItemNoAction(self,icon,title,description,icon_size):
 
 	erkmenuLabel = QLabel( menuHtmlSpaced(icon,title,description,icon_size) )
+	erkmenuLabel.setOpenExternalLinks(True)
 	erkmenuAction = QWidgetAction(self)
 	erkmenuAction.setDefaultWidget(erkmenuLabel)
 

@@ -685,7 +685,13 @@ class Merk(QMainWindow):
 					else:
 						mynet = "Unknown"
 
-					entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,"IRC Network",CUSTOM_MENU_ICON_SIZE)
+					netlink = get_network_link(mynet)
+					if netlink!=None:
+						desc = f"<a href=\"{netlink}\">IRC Network</a>"
+					else:
+						desc = "IRC Network"
+
+					entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 					sm.addAction(entry)
 
 					sm.addSeparator()
@@ -896,6 +902,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',"You joined "+channel)
 			w.writeText(t)
+
 
 	def left(self,client,channel):
 

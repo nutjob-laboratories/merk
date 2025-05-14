@@ -93,6 +93,17 @@ SCRIPT_FILE_EXTENSION = "merk"
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE + EMOJI_AUTOCOMPLETE_ALIAS_DATA.split("\n")
 
+LIST_OF_NETWORK_LINKS = []
+for line in NETWORK_LINKS.split("\n"):
+		line = line.strip()
+		p = line.split(":",1)
+		LIST_OF_NETWORK_LINKS.append(p)
+
+def get_network_link(network):
+	for ent in LIST_OF_NETWORK_LINKS:
+		if ent[0].lower()==network.lower(): return ent[1]
+	return None
+
 # Sort the emoji autocomplete list by length
 EMOJI_AUTOCOMPLETE.sort(key=len)
 
@@ -227,8 +238,6 @@ PYINSTALLER_ICON = ":/icon-pyinstaller.png"
 PYQT_ICON = ":/icon-pyqt.png"
 CONNECT_DIALOG_ICON = ":/icon-connect_connect_dialog.png"
 NETWORK_MENU_ICON = ":/icon-network_menu.png"
-
-
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

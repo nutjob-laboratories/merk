@@ -23,6 +23,40 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+NETWORK_LINKS="""Abjects:https://abjects.net/
+AfterNET:https://www.afternet.org/
+AllNightCafe:https://allnightcafe.org/
+BrasIRC:https://www.brasirc.org/
+Chatzona:https://www.chatzona.net/
+DigitalIRC:https://www.digitalirc.org/
+EuropNet:https://www.europnet.org/
+Freenode:https://freenode.net/
+FurNet:https://furrent.org/
+IRCCloud:https://irccloud.com/
+IRCHighWay:https://www.irchighway.net/
+LewdChat:https://lewdchat.com/
+LinkNet:https://www.link-net.org/
+MozillaIRC:https://wiki.mozilla.org/IRC
+Libera.Chat:https://libera.chat/
+OFTC:https://www.oftc.net/
+Undernet:https://www.undernet.org/
+IRCnet:http://www.ircnet.org/
+EFnet:http://www.efnet.org/
+DALnet:http://www.dal.net/
+QuakeNet:http://www.quakenet.org/
+Rizon:http://www.rizon.net/
+Snoonet:https://snoonet.org/
+GameSurge:http://www.gamesurge.net/
+SwiftIRC:http://www.swiftirc.net/
+EsperNet:https://www.esper.net/
+IRC-Hispano:https://www.irc-hispano.es/
+DarkMyst:http://www.darkmyst.org/
+GeekShed:https://www.geeksh.ed/
+GimpNet:https://www.gimpnet.org/
+Ogame:https://www.ogame.org/
+SlashNET:https://slashnet.org/
+"""
+
 NETWORK_LIST = """irc.2600.net:6667:2600net:normal
 irc.accessirc.net:6667:AccessIRC:normal
 irc.afternet.org:6667:AfterNET:normal
