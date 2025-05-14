@@ -645,12 +645,6 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE)
 		self.trayMenu.addAction(entry)
 
-		entry = QAction(QIcon(ABOUT_ICON),"About "+APPLICATION_NAME,self)
-		entry.triggered.connect(self.showAbout)
-		self.trayMenu.addAction(entry)
-
-		self.trayMenu.addSeparator()
-
 		windows = self.getAllServerWindows()
 		clean = []
 		for w in windows:
@@ -667,6 +661,9 @@ class Merk(QMainWindow):
 			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
 		if len(listOfConnections)>0:
+
+			e = textSeparator(self,"Connections")
+			self.trayMenu.addAction(e)
 
 			for i in listOfConnections:
 				entry = listOfConnections[i]
@@ -702,7 +699,8 @@ class Merk(QMainWindow):
 						entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
 						sm.addAction(entry)
 
-		self.trayMenu.addSeparator()
+		e = textSeparator(self,"Options & Tools")
+		self.trayMenu.addAction(e)
 
 		entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
 		entry.triggered.connect(self.openSettings)
@@ -748,6 +746,10 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(SCRIPT_ICON),"Scripts",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 		self.trayFolder.addAction(entry)
+
+		entry = QAction(QIcon(ABOUT_ICON),"About "+APPLICATION_NAME,self)
+		entry.triggered.connect(self.showAbout)
+		self.trayMenu.addAction(entry)
 
 		self.trayMenu.addSeparator()
 
