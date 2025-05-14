@@ -147,6 +147,7 @@ DO_INTERMITTENT_LOG_SAVES = True
 LOG_SAVE_INTERVAL = 1800000
 SHOW_STATUS_BAR_ON_SERVER_WINDOWS = False
 SHOW_STATUS_BAR_ON_CHAT_WINDOWS = True
+MAXIMIZE_ON_STARTUP = False
 
 def save_settings(filename):
 
@@ -259,6 +260,7 @@ def save_settings(filename):
 		"main_menu_settings_name": MAIN_MENU_SETTINGS_NAME,
 		"do_intermittent_log_saves": DO_INTERMITTENT_LOG_SAVES,
 		"intermittent_log_save_interval": LOG_SAVE_INTERVAL,
+		"maximize_app_on_startup": MAXIMIZE_ON_STARTUP,
 	}
 
 	with open(filename, "w") as write_data:
@@ -481,6 +483,8 @@ def patch_settings(settings):
 		settings["systray_notification_invite"] = FLASH_SYSTRAY_INVITE
 	if not "show_systray_menu" in settings:
 		settings["show_systray_menu"] = SYSTRAY_MENU
+	if not "maximize_app_on_startup" in settings:
+		settings["maximize_app_on_startup"] = MAXIMIZE_ON_STARTUP
 
 	return settings
 
@@ -594,6 +598,7 @@ def load_settings(filename):
 	global LOG_SAVE_INTERVAL
 	global SHOW_STATUS_BAR_ON_SERVER_WINDOWS
 	global SHOW_STATUS_BAR_ON_CHAT_WINDOWS
+	global MAXIMIZE_ON_STARTUP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -603,6 +608,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MAXIMIZE_ON_STARTUP = settings["maximize_app_on_startup"]
 		SHOW_STATUS_BAR_ON_SERVER_WINDOWS = settings["show_status_bar_on_server_windows"]
 		SHOW_STATUS_BAR_ON_CHAT_WINDOWS = settings["show_status_bar_on_chat_windows"]
 		DO_INTERMITTENT_LOG_SAVES = settings["do_intermittent_log_saves"]

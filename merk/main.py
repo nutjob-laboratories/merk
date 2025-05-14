@@ -136,8 +136,10 @@ class Merk(QMainWindow):
 		self.setWindowTitle(APPLICATION_NAME)
 		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
-		# Systray
+		if config.MAXIMIZE_ON_STARTUP:
+			self.showMaximized()
 
+		# Systray
 		self.flash = QTimer(self)
 		self.flash.timeout.connect(self.blink)
 		self.alternate = config.FLASH_SYSTRAY_SPEED

@@ -699,9 +699,7 @@ class Dialog(QDialog):
 		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
 		self.showUptime.stateChanged.connect(self.changedSetting)
 
-		self.showChanUptime = QCheckBox("Show channel uptime",self)
-		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
-		self.showChanUptime.stateChanged.connect(self.changedSetting)
+		
 
 		self.showInputMenu = QCheckBox("Show input menu button",self)
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
@@ -725,6 +723,10 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
 		self.showStatusChat.stateChanged.connect(self.changedSetting)
 
+		self.maxOnStart = QCheckBox("Maximize window on startup",self)
+		if config.MAXIMIZE_ON_STARTUP: self.maxOnStart.setChecked(True)
+		self.maxOnStart.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -733,6 +735,7 @@ class Dialog(QDialog):
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application</b>"))
+		applicationLayout.addWidget(self.maxOnStart)
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addWidget(self.showInfo)
@@ -743,13 +746,11 @@ class Dialog(QDialog):
 			applicationLayout.addWidget(QLabel("<small><i>Simplified connections dialogs turned on</i></small>"))
 		applicationLayout.addWidget(self.showStatusServer)
 		applicationLayout.addWidget(self.showStatusChat)
+		applicationLayout.addWidget(self.showUptime)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
 		applicationLayout.addWidget(self.showTimestamps)
 		applicationLayout.addWidget(self.timestamp24hour)
 		applicationLayout.addWidget(self.timestampSeconds)
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime display</b>"))
-		applicationLayout.addWidget(self.showUptime)
-		applicationLayout.addWidget(self.showChanUptime)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -1366,6 +1367,10 @@ class Dialog(QDialog):
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
 		self.autoHostmasks.stateChanged.connect(self.changedSetting)
 
+		self.showChanUptime = QCheckBox("Show channel uptime",self)
+		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
+		self.showChanUptime.stateChanged.connect(self.changedSetting)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -1383,6 +1388,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
 		menuLayout.addWidget(self.autoHostmasks)
+		menuLayout.addWidget(self.showChanUptime)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -2085,6 +2091,7 @@ class Dialog(QDialog):
 		config.DO_INTERMITTENT_LOG_SAVES = self.intermittentLog.isChecked()
 		config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS = self.showStatusServer.isChecked()
 		config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS = self.showStatusChat.isChecked()
+		config.MAXIMIZE_ON_STARTUP = self.maxOnStart.isChecked()
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval
