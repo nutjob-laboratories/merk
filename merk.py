@@ -49,12 +49,17 @@ import merk.config as config
 import merk.styles as styles
 import merk.logs as logs
 import merk.user as user
-
 import merk.commands as commands
 
+if not is_running_from_pyinstaller():
+	myprog = f"python {os.path.basename(__file__)}"
+else:
+	myprog = "merk.exe"
+
 parser = argparse.ArgumentParser(
-	prog=f"python {os.path.basename(__file__)}",
+	prog=myprog,
 	formatter_class=argparse.RawDescriptionHelpFormatter,
+	add_help=False,
 	description=f'''
 ┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┓ ┳┏┓┳┓┏┳┓ 
 ┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  Version
@@ -86,6 +91,7 @@ usergroup.add_argument("-a","--alternate", type=str,help="Use this alternate nic
 usergroup.add_argument("-r","--realname", type=str,help="Use this realname to connect", metavar="REALNAME", default='')
 
 optiongroup = parser.add_argument_group('Options')
+optiongroup.add_argument("-h","--help", help=f"Show help and usage information", action="help")
 optiongroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 optiongroup.add_argument("-x","--donotexecute", help=f"Do not execute connection script", action="store_true")
 optiongroup.add_argument("-t", "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
