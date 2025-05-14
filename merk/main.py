@@ -679,11 +679,20 @@ class Merk(QMainWindow):
 				if len(total)>0:
 					sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
 
+					c = sw.widget()
+					if hasattr(c.client,"network"):
+						mynet = c.client.network
+					else:
+						mynet = "Unknown"
+
+					entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,"IRC Network",CUSTOM_MENU_ICON_SIZE)
+					sm.addAction(entry)
+
+					sm.addSeparator()
+
 					entry = QAction(QIcon(CONSOLE_ICON),name,self)
 					entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
 					sm.addAction(entry)
-
-					if len(wl)>0: sm.addSeparator()
 
 					for w in wl:
 						c = w.widget()
