@@ -474,9 +474,12 @@ class Window(QMainWindow):
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-				netlink = get_network_link(self.client.network)
-				if netlink!=None:
-					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+					netlink = get_network_link(self.client.network)
+					if netlink!=None:
+						self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+					else:
+						self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 				else:
 					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 				self.status_server.setOpenExternalLinks(True)
@@ -486,9 +489,12 @@ class Window(QMainWindow):
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-				netlink = get_network_link(self.client.network)
-				if netlink!=None:
-					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+					netlink = get_network_link(self.client.network)
+					if netlink!=None:
+						self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+					else:
+						self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 				else:
 					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 				self.status_server.setOpenExternalLinks(True)
@@ -863,10 +869,12 @@ class Window(QMainWindow):
 
 		if self.window_type==SERVER_WINDOW:
 			if hasattr(self.client,"network"):
-				#self.status_server.setText(f"<small><b>{self.client.hostname}</b> ({self.client.network})</small>")
-				netlink = get_network_link(self.client.network)
-				if netlink!=None:
-					self.status_server.setText("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+					netlink = get_network_link(self.client.network)
+					if netlink!=None:
+						self.status_server.setText("<small><b>"+self.client.hostname+"</b> (<a href=\""+netlink+"\">"+self.client.network+"</a>)</small>")
+					else:
+						self.status_server.setText("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 				else:
 					self.status_server.setText("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 			else:

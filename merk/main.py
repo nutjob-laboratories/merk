@@ -685,9 +685,12 @@ class Merk(QMainWindow):
 					else:
 						mynet = "Unknown"
 
-					netlink = get_network_link(mynet)
-					if netlink!=None:
-						desc = f"<a href=\"{netlink}\">IRC Network</a>"
+					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+						netlink = get_network_link(mynet)
+						if netlink!=None:
+							desc = f"<a href=\"{netlink}\">IRC Network</a>"
+						else:
+							desc = "IRC Network"
 					else:
 						desc = "IRC Network"
 

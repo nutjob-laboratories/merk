@@ -727,6 +727,10 @@ class Dialog(QDialog):
 		if config.MAXIMIZE_ON_STARTUP: self.maxOnStart.setChecked(True)
 		self.maxOnStart.stateChanged.connect(self.changedSetting)
 
+		self.showNetLinks = QCheckBox("Show known links to network homepages",self)
+		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
+		self.showNetLinks.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -747,6 +751,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showStatusServer)
 		applicationLayout.addWidget(self.showStatusChat)
 		applicationLayout.addWidget(self.showUptime)
+		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
 		applicationLayout.addWidget(self.showTimestamps)
 		applicationLayout.addWidget(self.timestamp24hour)
@@ -2092,6 +2097,7 @@ class Dialog(QDialog):
 		config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS = self.showStatusServer.isChecked()
 		config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS = self.showStatusChat.isChecked()
 		config.MAXIMIZE_ON_STARTUP = self.maxOnStart.isChecked()
+		config.SHOW_LINKS_TO_NETWORK_WEBPAGES = self.showNetLinks.isChecked()
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval
