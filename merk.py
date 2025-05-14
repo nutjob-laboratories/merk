@@ -28,6 +28,7 @@ import os
 import random
 import shutil
 import sys
+import datetime
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -59,9 +60,14 @@ parser = argparse.ArgumentParser(
 ┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  Version
 ┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛┗┛┻┗┛┛┗ ┻  {APPLICATION_VERSION}                              
 https://github.com/nutjob-laboratories/merk
+https://github.com/danhetrick
 
 Available Qt widget styles: {", ".join(QStyleFactory.keys())}
 ''',
+	epilog=f'''
+© {datetime.now().year} Copyright Daniel Hetrick
+https://www.gnu.org/licenses/gpl-3.0.en.html
+	''',
 )
 
 congroup = parser.add_argument_group('Connection')
