@@ -264,7 +264,10 @@ class Window(QMainWindow):
 			self.mode_display.hide()
 
 		# Hide the nickname display on server windows
-		if self.window_type==SERVER_WINDOW: self.nick_display.hide()
+		#if self.window_type==SERVER_WINDOW: self.nick_display.hide()
+		if self.window_type==SERVER_WINDOW:
+			if not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
+				self.nick_display.hide()
 		if self.window_type==SERVER_WINDOW: self.mode_display.hide()
 
 
@@ -590,6 +593,13 @@ class Window(QMainWindow):
 			self.status.hide()
 		else:
 			self.status.show()
+
+	def toggleServNicks(self):
+		if self.window_type==SERVER_WINDOW:
+			if not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
+				self.nick_display.hide()
+			else:
+				self.nick_display.show()
 
 	def chatMenu(self,location):
 

@@ -1663,6 +1663,15 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def toggleServNickDisplay(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"toggleServNicks"):
+				c.toggleServNicks()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def setAllLanguage(self,newlang):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():

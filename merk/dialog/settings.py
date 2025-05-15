@@ -683,24 +683,6 @@ class Dialog(QDialog):
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
 		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
 
-		self.showTimestamps = QCheckBox("Show timestamps",self)
-		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
-		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
-
-		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
-		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
-		self.timestamp24hour.stateChanged.connect(self.changedSettingRerender)
-
-		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
-		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
-		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
-
-		self.showUptime = QCheckBox("Show connection uptime",self)
-		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
-		self.showUptime.stateChanged.connect(self.changedSetting)
-
-		
-
 		self.showInputMenu = QCheckBox("Show input menu button",self)
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSetting)
@@ -731,6 +713,10 @@ class Dialog(QDialog):
 		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
 
+		self.displayServNicks = QCheckBox("Display nicknames on server windows",self)
+		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
+		self.displayServNicks.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -750,12 +736,8 @@ class Dialog(QDialog):
 			applicationLayout.addWidget(QLabel("<small><i>Simplified connections dialogs turned on</i></small>"))
 		applicationLayout.addWidget(self.showStatusServer)
 		applicationLayout.addWidget(self.showStatusChat)
-		applicationLayout.addWidget(self.showUptime)
 		applicationLayout.addWidget(self.showNetLinks)
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamps</b>"))
-		applicationLayout.addWidget(self.showTimestamps)
-		applicationLayout.addWidget(self.timestamp24hour)
-		applicationLayout.addWidget(self.timestampSeconds)
+		applicationLayout.addWidget(self.displayServNicks)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -1220,6 +1202,52 @@ class Dialog(QDialog):
 
 		self.windowbarPage.setLayout(windowbarLayout)
 
+		# Time
+
+		self.timestampPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Time")
+		entry.widget = self.timestampPage
+		entry.setIcon(QIcon(TIMESTAMP_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.timestampPage)
+
+		self.showTimestamps = QCheckBox("Show timestamps",self)
+		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
+		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
+
+		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
+		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
+		self.timestamp24hour.stateChanged.connect(self.changedSettingRerender)
+
+		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
+		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
+		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
+
+		self.showUptime = QCheckBox("Show connection uptime",self)
+		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
+		self.showUptime.stateChanged.connect(self.changedSetting)
+
+		self.showChanUptime = QCheckBox("Show channel uptime",self)
+		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
+		self.showChanUptime.stateChanged.connect(self.changedSetting)
+
+		timestampLayout = QVBoxLayout()
+		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
+		timestampLayout.addWidget(self.showTimestamps)
+		timestampLayout.addWidget(self.timestamp24hour)
+		timestampLayout.addWidget(self.timestampSeconds)
+		timestampLayout.addWidget(QLabel(' '))
+		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime displays</b>"))
+		timestampLayout.addWidget(self.showUptime)
+		timestampLayout.addWidget(self.showChanUptime)
+		timestampLayout.addStretch()
+
+		self.timestampPage.setLayout(timestampLayout)
+
 		# Connection page
 
 		self.connectionsPage = QWidget()
@@ -1372,10 +1400,6 @@ class Dialog(QDialog):
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
 		self.autoHostmasks.stateChanged.connect(self.changedSetting)
 
-		self.showChanUptime = QCheckBox("Show channel uptime",self)
-		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
-		self.showChanUptime.stateChanged.connect(self.changedSetting)
-
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -1393,7 +1417,6 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
 		menuLayout.addWidget(self.autoHostmasks)
-		menuLayout.addWidget(self.showChanUptime)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -2098,6 +2121,7 @@ class Dialog(QDialog):
 		config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS = self.showStatusChat.isChecked()
 		config.MAXIMIZE_ON_STARTUP = self.maxOnStart.isChecked()
 		config.SHOW_LINKS_TO_NETWORK_WEBPAGES = self.showNetLinks.isChecked()
+		config.DISPLAY_NICK_ON_SERVER_WINDOWS = self.displayServNicks.isChecked()
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval
@@ -2166,6 +2190,8 @@ class Dialog(QDialog):
 		self.parent.toggleSpellcheck()
 
 		self.parent.toggleInputMenu()
+
+		self.parent.toggleServNickDisplay()
 
 		self.parent.updateStatusBar()
 

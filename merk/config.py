@@ -149,10 +149,12 @@ SHOW_STATUS_BAR_ON_SERVER_WINDOWS = False
 SHOW_STATUS_BAR_ON_CHAT_WINDOWS = True
 MAXIMIZE_ON_STARTUP = False
 SHOW_LINKS_TO_NETWORK_WEBPAGES = True
+DISPLAY_NICK_ON_SERVER_WINDOWS = False
 
 def save_settings(filename):
 
 	settings = {
+		"display_nick_on_server_windows": DISPLAY_NICK_ON_SERVER_WINDOWS,
 		"show_links_to_known_irc_networks": SHOW_LINKS_TO_NETWORK_WEBPAGES,
 		"show_status_bar_on_server_windows": SHOW_STATUS_BAR_ON_SERVER_WINDOWS,
 		"show_status_bar_on_chat_windows": SHOW_STATUS_BAR_ON_CHAT_WINDOWS,
@@ -269,6 +271,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "display_nick_on_server_windows" in settings:
+		settings["display_nick_on_server_windows"] = DISPLAY_NICK_ON_SERVER_WINDOWS
 	if not "show_links_to_known_irc_networks" in settings:
 		settings["show_links_to_known_irc_networks"] = SHOW_LINKS_TO_NETWORK_WEBPAGES
 	if not "show_status_bar_on_server_windows" in settings:
@@ -604,6 +608,7 @@ def load_settings(filename):
 	global SHOW_STATUS_BAR_ON_CHAT_WINDOWS
 	global MAXIMIZE_ON_STARTUP
 	global SHOW_LINKS_TO_NETWORK_WEBPAGES
+	global DISPLAY_NICK_ON_SERVER_WINDOWS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -613,6 +618,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISPLAY_NICK_ON_SERVER_WINDOWS = settings["display_nick_on_server_windows"]
 		SHOW_LINKS_TO_NETWORK_WEBPAGES = settings["show_links_to_known_irc_networks"]
 		MAXIMIZE_ON_STARTUP = settings["maximize_app_on_startup"]
 		SHOW_STATUS_BAR_ON_SERVER_WINDOWS = settings["show_status_bar_on_server_windows"]
