@@ -74,6 +74,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"connect",
 			cmdsymbol+"connectssl",
 			cmdsymbol+"alias",
+			cmdsymbol+"play",
 		]
 
 		STYLES = {

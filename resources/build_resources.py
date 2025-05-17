@@ -24,6 +24,11 @@ for file in glob.glob(target):
 	b = os.path.basename(file)
 	fl.append(f"<file alias=\"font-{b}\">{file}</file>")
 
+target = os.path.join("sound", "*.wav")
+for file in glob.glob(target):
+	b = os.path.basename(file)
+	fl.append(f"<file alias=\"sound-{b}\">{file}</file>")
+
 rfiles = "\n".join(fl)
 
 out = f"""

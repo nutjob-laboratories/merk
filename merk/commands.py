@@ -27,6 +27,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
+from PyQt5.QtMultimedia import QSound
 
 import os
 import time
@@ -97,6 +98,7 @@ AUTOCOMPLETE = {
 		config.ISSUE_COMMAND_SYMBOL+"alias": config.ISSUE_COMMAND_SYMBOL+"alias ",
 		config.ISSUE_COMMAND_SYMBOL+"script" : config.ISSUE_COMMAND_SYMBOL+"script ",
 		config.ISSUE_COMMAND_SYMBOL+"edit" : config.ISSUE_COMMAND_SYMBOL+"edit ",
+		config.ISSUE_COMMAND_SYMBOL+"play" : config.ISSUE_COMMAND_SYMBOL+"play ",
 	}
 
 # The command help system
@@ -139,6 +141,7 @@ COMMAND_HELP_INFORMATION = [
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>", "Executes a list of commands in a file" ],
 	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
+	[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
 ]
 
 global HELP_DISPLAY_TEMPLATE
@@ -410,9 +413,91 @@ def interpolateAliases(text):
 		if counter>=99: break
 	return text
 
+def is_wav_file(file_path):
+	if not os.path.isfile(file_path):
+		return False
+	
+	try:
+		with open(file_path, 'rb') as f:
+			header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
+			return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
+	except Exception:
+		return False
+
+def find_sound_file(filename):
+
+	# Check if it's a complete filename
+	if os.path.isfile(filename): return filename
+
+	# Look for the WAV in the scripts directory
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, filename)): return os.path.join(SCRIPTS_DIRECTORY, filename)
+
+	# Look for the WAV in the config directory
+	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return os.path.join(config.CONFIG_DIRECTORY, filename)
+
+	# Look for the WAV in the install directory
+	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
+
+	# Add the default file extension and see if we find it
+
+	efilename = filename + "." + "wav"
+
+	# Check if it's a complete filename
+	if os.path.isfile(efilename): return filename
+
+	# Look for the WAV in the scripts directory
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
+
+	# Look for the WAV in the config directory
+	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
+
+	# Look for the WAV in the install directory
+	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
+
+	efilename = filename + "." + "WAV"
+
+	# Check if it's a complete filename
+	if os.path.isfile(efilename): return filename
+
+	# Look for the WAV in the scripts directory
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
+
+	# Look for the WAV in the config directory
+	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
+
+	# Look for the WAV in the install directory
+	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
+
+	return None
+
 def executeCommonCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
 	tokens = user_input.split()
+
+	# |-------|
+	# | /play |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'play' and len(tokens)==2:
+
+			tokens.pop(0)
+			filename = tokens.pop(0)
+
+			efilename = find_sound_file(filename)
+			if efilename!=None:
+				if is_wav_file(efilename):
+					QSound.play(efilename)
+				else:
+					t = Message(ERROR_MESSAGE,'',"\""+filename+"\" is not a WAV file.")
+					window.writeText(t)
+			else:
+				t = Message(ERROR_MESSAGE,'',"Audio file \""+filename+"\" cannot be found.")
+				window.writeText(t)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'play':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"play FILENAME")
+			window.writeText(t,False)
+			return True
 
 	# |--------|
 	# | /alias |

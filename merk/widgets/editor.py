@@ -358,6 +358,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertAlias)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(NOTIFICATION_ICON),"Play a sound",self)
+		entry.triggered.connect(self.insertPlay)
+		self.commandMenu.addAction(entry)
+
 		self.runMenu = self.menubar.addMenu("Run")
 
 		self.buildRunMenu()
@@ -520,6 +524,40 @@ class Window(QMainWindow):
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"maximize "+str(e)+"\n")
 		self.updateApplicationTitle()
+
+	def is_wav_file(self,file_path):
+		if not os.path.isfile(file_path):
+			return False
+		
+		try:
+			with open(file_path, 'rb') as f:
+				header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
+				return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
+		except Exception:
+			return False
+
+	def show_error_message(self,title, message):
+		msg_box = QMessageBox()
+		msg_box.setIcon(QMessageBox.Critical)
+		msg_box.setWindowTitle(title)
+		msg_box.setWindowIcon(QIcon(APPLICATION_ICON))
+		msg_box.setText(message)
+		msg_box.setStandardButtons(QMessageBox.Ok)
+		msg_box.exec_()
+
+	def insertPlay(self):
+		desktop =  os.path.join(os.path.expanduser("~"), "Desktop")
+		if not os.path.isdir(desktop): desktop = os.path.expanduser("~")
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Open WAV", desktop, f"WAV file (*.wav)", options=options)
+		if fileName:
+			if self.is_wav_file(fileName):
+				self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"play "+fileName+"\n")
+				self.updateApplicationTitle()
+			else:
+				self.show_error_message("Wrong file type","File is not a WAV file!\nOnly WAV files can be used with the "+config.ISSUE_COMMAND_SYMBOL+"play command.\nPlease select a valid file.")
+
 
 	def insertAlias(self):
 		x = SetAlias(self)

@@ -27,6 +27,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
+from PyQt5.QtMultimedia import QSound
 
 from ..resources import *
 from .. import config
@@ -215,6 +216,27 @@ class Dialog(QDialog):
 			self.boldApply()
 		
 		self.syntax_did_change = True
+		self.selector.setFocus()
+
+	def changedNotifications(self,state):
+		if not self.audioNotifications.isChecked():
+			self.notifyDisco.setEnabled(False)
+			self.notifyNickname.setEnabled(False)
+			self.notifyPrivate.setEnabled(False)
+			self.notifyNotice.setEnabled(False)
+			self.notifyKick.setEnabled(False)
+			self.notifyInvite.setEnabled(False)
+			self.notifyMode.setEnabled(False)
+		else:
+			self.notifyDisco.setEnabled(True)
+			self.notifyNickname.setEnabled(True)
+			self.notifyPrivate.setEnabled(True)
+			self.notifyNotice.setEnabled(True)
+			self.notifyKick.setEnabled(True)
+			self.notifyInvite.setEnabled(True)
+			self.notifyMode.setEnabled(True)
+		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 		
 
@@ -523,6 +545,58 @@ class Dialog(QDialog):
 		self.save()
 		os.execl(sys.executable, sys.executable, *sys.argv)
 
+	def playSound(self):
+		QSound.play(self.sound)
+		self.selector.setFocus()
+	
+	def soundDefault(self):
+		self.sound = BELL_NOTIFICATION
+
+		bname = os.path.basename(self.sound)
+		self.soundLabel.setText("<b>"+bname+"</b>")
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def is_wav_file(self,file_path):
+		if not os.path.isfile(file_path):
+			return False
+		
+		try:
+			with open(file_path, 'rb') as f:
+				header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
+				return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
+		except Exception:
+			return False
+
+	def show_error_message(self,title, message):
+		msg_box = QMessageBox()
+		msg_box.setIcon(QMessageBox.Critical)
+		msg_box.setWindowTitle(title)
+		msg_box.setWindowIcon(QIcon(APPLICATION_ICON))
+		msg_box.setText(message)
+		msg_box.setStandardButtons(QMessageBox.Ok)
+		msg_box.exec_()
+
+	def setSound(self):
+		desktop =  os.path.join(os.path.expanduser("~"), "Desktop")
+		if not os.path.isdir(desktop): desktop = os.path.expanduser("~")
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Open WAV", desktop, f"WAV file (*.wav)", options=options)
+		if fileName:
+			if self.is_wav_file(fileName):
+				self.sound = fileName
+				bname = os.path.basename(self.sound)
+				self.soundLabel.setText("<b>"+bname+"</b>")
+
+				self.changed.show()
+				self.boldApply()
+			else:
+				self.show_error_message("Wrong file type","File is not a WAV file!\nOnly WAV files can be used as a notification.\nPlease select a valid file.")
+		self.selector.setFocus()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -578,6 +652,8 @@ class Dialog(QDialog):
 		self.default_settings_menu = config.MAIN_MENU_SETTINGS_NAME
 
 		self.interval = config.LOG_SAVE_INTERVAL
+
+		self.sound = config.SOUND_NOTIFICATION_FILE
 
 		self.syntax_did_change = False
 
@@ -1970,6 +2046,145 @@ class Dialog(QDialog):
 
 		self.syntaxPage.setLayout(syntaxLayout)
 
+		# Notifications
+
+		self.notificationsPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Notifications")
+		entry.widget = self.notificationsPage
+		entry.setIcon(QIcon(NOTIFICATION_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.notificationsPage)
+
+		self.audioNotifications = QCheckBox("Play audio notifications",self)
+		if config.SOUND_NOTIFICATIONS: self.audioNotifications.setChecked(True)
+		self.audioNotifications.stateChanged.connect(self.changedNotifications)
+
+		self.notifyDisco = QCheckBox("Disconnection from server",self)
+		if config.SOUND_NOTIFICATION_DISCONNECT: self.notifyDisco.setChecked(True)
+		self.notifyDisco.stateChanged.connect(self.changedSetting)
+
+		self.notifyNickname = QCheckBox("Nickname\nmention",self)
+		if config.SOUND_NOTIFICATION_NICKNAME: self.notifyNickname.setChecked(True)
+		self.notifyNickname.stateChanged.connect(self.changedSetting)
+		self.notifyNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.notifyPrivate = QCheckBox("Private\nmessage",self)
+		if config.SOUND_NOTIFICATION_PRIVATE: self.notifyPrivate.setChecked(True)
+		self.notifyPrivate.stateChanged.connect(self.changedSetting)
+		self.notifyPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.notifyNotice = QCheckBox("Notice",self)
+		if config.SOUND_NOTIFICATION_NOTICE: self.notifyNotice.setChecked(True)
+		self.notifyNotice.stateChanged.connect(self.changedSetting)
+
+		self.notifyKick = QCheckBox("Kick",self)
+		if config.SOUND_NOTIFICATION_KICK: self.notifyKick.setChecked(True)
+		self.notifyKick.stateChanged.connect(self.changedSetting)
+
+		self.notifyInvite = QCheckBox("Invite",self)
+		if config.SOUND_NOTIFICATION_INVITE: self.notifyInvite.setChecked(True)
+		self.notifyInvite.stateChanged.connect(self.changedSetting)
+
+		self.notifyMode = QCheckBox("Channel mode\nchange",self)
+		if config.SOUND_NOTIFICATION_MODE: self.notifyMode.setChecked(True)
+		self.notifyMode.stateChanged.connect(self.changedSetting)
+		self.notifyMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if not self.audioNotifications.isChecked():
+			self.notifyDisco.setEnabled(False)
+			self.notifyNickname.setEnabled(False)
+			self.notifyPrivate.setEnabled(False)
+			self.notifyNotice.setEnabled(False)
+			self.notifyKick.setEnabled(False)
+			self.notifyInvite.setEnabled(False)
+			self.notifyMode.setEnabled(False)
+		
+		self.notifyDescription = QLabel("""
+			<small>
+			Audio notifications, when enabled, play a sound (by default, a bell) every time
+			one of the listed events occur. Any file of any length can be used for the notification
+			sound; the only limitation is that the file must be a WAV file.
+			</small>
+			<br>
+			""")
+		self.notifyDescription.setWordWrap(True)
+		self.notifyDescription.setAlignment(Qt.AlignJustify)
+
+		adiscLay = QHBoxLayout()
+		adiscLay.addWidget(self.notifyDisco)
+		adiscLay.addStretch()
+
+		anickPriv = QHBoxLayout()
+		anickPriv.addWidget(self.notifyNickname)
+		anickPriv.addWidget(self.notifyPrivate)
+
+		akickInvite = QHBoxLayout()
+		akickInvite.addWidget(self.notifyKick)
+		akickInvite.addWidget(self.notifyInvite)
+
+		anoticeMode = QHBoxLayout()
+		anoticeMode.addWidget(self.notifyNotice)
+		anoticeMode.addWidget(self.notifyMode)
+
+		bname = os.path.basename(self.sound)
+		self.soundLabel = QLabel("<b>"+bname+"</b>")
+
+		soundButton = QPushButton("")
+		soundButton.clicked.connect(self.setSound)
+		soundButton.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		soundButton.setFixedSize(fheight +10,fheight + 10)
+		soundButton.setIcon(QIcon(EDIT_ICON))
+		soundButton.setToolTip("Set notification sound file")
+
+		playButton = QPushButton(" Play")
+		playButton.clicked.connect(self.playSound)
+		playButton.setAutoDefault(False)
+		playButton.setIcon(QIcon(RUN_ICON))
+		playButton.setToolTip("Play sound")
+
+		soundDefault = QPushButton("Set to default")
+		soundDefault.clicked.connect(self.soundDefault)
+		soundDefault.setAutoDefault(False)
+		soundDefault.setToolTip("Set to default")
+
+		sbLayout = QHBoxLayout()
+		sbLayout.addStretch()
+		sbLayout.addWidget(soundButton)
+		sbLayout.addWidget(self.soundLabel)
+		sbLayout.addStretch()
+
+		sbLayout2 = QHBoxLayout()
+		sbLayout2.addStretch()
+		sbLayout2.addWidget(playButton)
+		sbLayout2.addWidget(soundDefault)
+		sbLayout2.addStretch()
+
+
+		audioLayout = QVBoxLayout()
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
+		audioLayout.addWidget(self.notifyDescription)
+		audioLayout.addWidget(self.audioNotifications)
+		audioLayout.addWidget(QLabel(' '))
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
+		audioLayout.addLayout(anickPriv)
+		audioLayout.addLayout(akickInvite)
+		audioLayout.addLayout(anoticeMode)
+		audioLayout.addLayout(adiscLay)
+		audioLayout.addWidget(QLabel(' '))
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>sound file</b>"))
+		audioLayout.addLayout(sbLayout)
+		audioLayout.addLayout(sbLayout2)
+		audioLayout.addStretch()
+
+		self.notificationsPage.setLayout(audioLayout)
+
 		self.changed.hide()
 		self.restart.hide()
 
@@ -2122,6 +2337,15 @@ class Dialog(QDialog):
 		config.MAXIMIZE_ON_STARTUP = self.maxOnStart.isChecked()
 		config.SHOW_LINKS_TO_NETWORK_WEBPAGES = self.showNetLinks.isChecked()
 		config.DISPLAY_NICK_ON_SERVER_WINDOWS = self.displayServNicks.isChecked()
+		config.SOUND_NOTIFICATIONS = self.audioNotifications.isChecked()
+		config.SOUND_NOTIFICATION_DISCONNECT = self.notifyDisco.isChecked()
+		config.SOUND_NOTIFICATION_NICKNAME = self.notifyNickname.isChecked()
+		config.SOUND_NOTIFICATION_PRIVATE = self.notifyPrivate.isChecked()
+		config.SOUND_NOTIFICATION_NOTICE = self.notifyNotice.isChecked()
+		config.SOUND_NOTIFICATION_KICK = self.notifyKick.isChecked()
+		config.SOUND_NOTIFICATION_INVITE = self.notifyInvite.isChecked()
+		config.SOUND_NOTIFICATION_MODE = self.notifyMode.isChecked()
+		config.SOUND_NOTIFICATION_FILE = self.sound
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval

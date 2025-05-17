@@ -150,10 +150,28 @@ SHOW_STATUS_BAR_ON_CHAT_WINDOWS = True
 MAXIMIZE_ON_STARTUP = False
 SHOW_LINKS_TO_NETWORK_WEBPAGES = True
 DISPLAY_NICK_ON_SERVER_WINDOWS = False
+SOUND_NOTIFICATION_NICKNAME = True
+SOUND_NOTIFICATION_DISCONNECT = True
+SOUND_NOTIFICATION_PRIVATE = True
+SOUND_NOTIFICATION_KICK = True
+SOUND_NOTIFICATION_INVITE = True
+SOUND_NOTIFICATION_NOTICE = True
+SOUND_NOTIFICATION_MODE = True
+SOUND_NOTIFICATION_FILE = BELL_NOTIFICATION
+SOUND_NOTIFICATIONS = False
 
 def save_settings(filename):
 
 	settings = {
+		"sound_notification_nickname": SOUND_NOTIFICATION_NICKNAME,
+		"sound_notification_disconnect": SOUND_NOTIFICATION_DISCONNECT,
+		"sound_notification_private": SOUND_NOTIFICATION_PRIVATE,
+		"sound_notification_kick": SOUND_NOTIFICATION_KICK,
+		"sound_notification_invite": SOUND_NOTIFICATION_INVITE,
+		"sound_notification_notice": SOUND_NOTIFICATION_NOTICE,
+		"sound_notification_mode": SOUND_NOTIFICATION_MODE,
+		"sound_notification_file": SOUND_NOTIFICATION_FILE,
+		"sound_notifications": SOUND_NOTIFICATIONS,
 		"display_nick_on_server_windows": DISPLAY_NICK_ON_SERVER_WINDOWS,
 		"show_links_to_known_irc_networks": SHOW_LINKS_TO_NETWORK_WEBPAGES,
 		"show_status_bar_on_server_windows": SHOW_STATUS_BAR_ON_SERVER_WINDOWS,
@@ -271,6 +289,24 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "sound_notification_notice" in settings:
+		settings["sound_notification_notice"] = SOUND_NOTIFICATION_INVITE
+	if not "sound_notification_mode" in settings:
+		settings["sound_notification_mode"] = SOUND_NOTIFICATION_MODE
+	if not "sound_notification_nickname" in settings:
+		settings["sound_notification_nickname"] = SOUND_NOTIFICATION_NICKNAME
+	if not "sound_notification_disconnect" in settings:
+		settings["sound_notification_disconnect"] = SOUND_NOTIFICATION_DISCONNECT
+	if not "sound_notification_private" in settings:
+		settings["sound_notification_private"] = SOUND_NOTIFICATION_PRIVATE
+	if not "sound_notification_kick" in settings:
+		settings["sound_notification_kick"] = SOUND_NOTIFICATION_KICK
+	if not "sound_notification_invite" in settings:
+		settings["sound_notification_invite"] = SOUND_NOTIFICATION_NOTICE
+	if not "sound_notification_file" in settings:
+		settings["sound_notification_file"] = SOUND_NOTIFICATION_FILE
+	if not "sound_notifications" in settings:
+		settings["sound_notifications"] = SOUND_NOTIFICATIONS
 	if not "display_nick_on_server_windows" in settings:
 		settings["display_nick_on_server_windows"] = DISPLAY_NICK_ON_SERVER_WINDOWS
 	if not "show_links_to_known_irc_networks" in settings:
@@ -609,6 +645,15 @@ def load_settings(filename):
 	global MAXIMIZE_ON_STARTUP
 	global SHOW_LINKS_TO_NETWORK_WEBPAGES
 	global DISPLAY_NICK_ON_SERVER_WINDOWS
+	global SOUND_NOTIFICATION_NICKNAME
+	global SOUND_NOTIFICATION_DISCONNECT
+	global SOUND_NOTIFICATION_PRIVATE
+	global SOUND_NOTIFICATION_KICK
+	global SOUND_NOTIFICATION_INVITE
+	global SOUND_NOTIFICATION_NOTICE
+	global SOUND_NOTIFICATION_MODE
+	global SOUND_NOTIFICATION_FILE
+	global SOUND_NOTIFICATIONS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -618,6 +663,15 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SOUND_NOTIFICATION_NICKNAME = settings["sound_notification_nickname"]
+		SOUND_NOTIFICATION_DISCONNECT = settings["sound_notification_disconnect"]
+		SOUND_NOTIFICATION_PRIVATE = settings["sound_notification_private"]
+		SOUND_NOTIFICATION_KICK = settings["sound_notification_kick"]
+		SOUND_NOTIFICATION_INVITE = settings["sound_notification_invite"]
+		SOUND_NOTIFICATION_NOTICE = settings["sound_notification_notice"]
+		SOUND_NOTIFICATION_MODE = settings["sound_notification_mode"]
+		SOUND_NOTIFICATION_FILE = settings["sound_notification_file"]
+		SOUND_NOTIFICATIONS = settings["sound_notifications"]
 		DISPLAY_NICK_ON_SERVER_WINDOWS = settings["display_nick_on_server_windows"]
 		SHOW_LINKS_TO_NETWORK_WEBPAGES = settings["show_links_to_known_irc_networks"]
 		MAXIMIZE_ON_STARTUP = settings["maximize_app_on_startup"]

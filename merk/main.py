@@ -30,6 +30,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
+from PyQt5.QtMultimedia import QSound
 
 import emoji
 
@@ -826,6 +827,13 @@ class Merk(QMainWindow):
 		except:
 			pass
 
+		try:
+			if config.SOUND_NOTIFICATIONS:
+				if config.SOUND_NOTIFICATION_DISCONNECT:
+					QSound.play(config.SOUND_NOTIFICATION_FILE)
+		except:
+			pass
+
 		# Update all editor run menus
 		e = self.getAllEditorWindows()
 		for w in e:
@@ -958,6 +966,9 @@ class Merk(QMainWindow):
 			if client.nickname in msg:
 				if config.FLASH_SYSTRAY_NICKNAME:
 					self.show_notifications("Mentioned by "+nickname+" in "+target)
+				if config.SOUND_NOTIFICATIONS:
+					if config.SOUND_NOTIFICATION_NICKNAME:
+						QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 			# Channel message
 			w = self.getWindow(target,client)
@@ -970,6 +981,10 @@ class Merk(QMainWindow):
 			displayed_private_message = False
 
 			if config.FLASH_SYSTRAY_PRIVATE: self.show_notifications("Received private message from "+nickname)
+
+			if config.SOUND_NOTIFICATIONS:
+				if config.SOUND_NOTIFICATION_PRIVATE:
+					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 			# It's a private message, so try to write the message
 			# to the private message window, if there is one
@@ -1063,6 +1078,10 @@ class Merk(QMainWindow):
 			return
 
 		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications("Received a notice from "+nickname)
+
+		if config.SOUND_NOTIFICATIONS:
+			if config.SOUND_NOTIFICATION_NOTICE:
+				QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 		# Try and send the message to the right window
 		w = self.getWindow(nickname,client)
@@ -1301,6 +1320,10 @@ class Merk(QMainWindow):
 		if client.nickname in argument:
 			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
+			if config.SOUND_NOTIFICATIONS:
+				if config.SOUND_NOTIFICATION_MODE:
+					QSound.play(config.SOUND_NOTIFICATION_FILE)
+
 	def unsetMode(self,client,user,target,mode,argument):
 		self.refreshModeDisplay(client)
 
@@ -1335,6 +1358,10 @@ class Merk(QMainWindow):
 		if client.nickname in argument:
 			if config.FLASH_SYSTRAY_MODE: self.show_notifications(nickname+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
 
+			if config.SOUND_NOTIFICATIONS:
+				if config.SOUND_NOTIFICATION_MODE:
+					QSound.play(config.SOUND_NOTIFICATION_FILE)
+
 	def userKicked(self,client,kickee,channel,kicker,message):
 		
 		if len(message)>0:
@@ -1351,6 +1378,10 @@ class Merk(QMainWindow):
 	def kickedFrom(self,client,channel,kicker,message):
 		
 		if config.FLASH_SYSTRAY_KICK: self.show_notifications("Kicked from "+channel+" by "+kicker+": "+message)
+
+		if config.SOUND_NOTIFICATIONS:
+			if config.SOUND_NOTIFICATION_KICK:
+				QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 
 		w = self.getSubWindow(channel,client)
@@ -1421,6 +1452,10 @@ class Merk(QMainWindow):
 	def invited(self,client,user,channel):
 
 		if config.FLASH_SYSTRAY_INVITE: self.show_notifications("Invited to "+channel+" by "+user)
+
+		if config.SOUND_NOTIFICATIONS:
+			if config.SOUND_NOTIFICATION_INVITE:
+				QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 		w = self.MDI.activeSubWindow()
 		if w:
@@ -2216,6 +2251,14 @@ class Merk(QMainWindow):
 		self.reRenderAll()
 		self.buildSettingsMenu()
 
+	def settingsAudio(self):
+		if config.SOUND_NOTIFICATIONS:
+			config.SOUND_NOTIFICATIONS = False
+		else:
+			config.SOUND_NOTIFICATIONS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsWindowbar(self):
 		if config.SHOW_WINDOWBAR:
 			config.SHOW_WINDOWBAR = False
@@ -2427,6 +2470,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Simplified connection dialog", self)
 		entry.triggered.connect(self.settingsSimplified)
+		self.settingsMenu.addAction(entry)
+
+		if config.SOUND_NOTIFICATIONS:
+			entry = QAction(QIcon(self.checked_icon),"Audio notifications", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Audio notifications", self)
+		entry.triggered.connect(self.settingsAudio)
 		self.settingsMenu.addAction(entry)
 
 		if not is_running_from_pyinstaller():
