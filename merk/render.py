@@ -190,14 +190,19 @@ def render_message(message,style):
 	else:
 		nick = message.sender
 
+	if config.FORCE_MONOSPACE_RENDERING:
+		msg_to_display = "<tt>"+msg_to_display+"</tt>"
+
 	if message.type==SYSTEM_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["system"]
-		msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
+		if config.SYSTEM_MESSAGE_PREFIX!='':
+			msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
 	elif message.type==ERROR_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["error"]
-		msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
+		if config.SYSTEM_MESSAGE_PREFIX!='':
+			msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
 	elif message.type==ACTION_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["action"]

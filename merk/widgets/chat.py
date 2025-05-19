@@ -645,9 +645,10 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
-				entry.triggered.connect(self.pressedStyleButton)
-				menu.addAction(entry)
+				if not config.FORCE_DEFAULT_STYLE:
+					entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
+					entry.triggered.connect(self.pressedStyleButton)
+					menu.addAction(entry)
 
 				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 				entry.triggered.connect(self.clearChat)
@@ -677,9 +678,10 @@ class Window(QMainWindow):
 		self.settingsMenu.clear()
 
 		if self.window_type!=SERVER_WINDOW:
-			entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
-			entry.triggered.connect(self.pressedStyleButton)
-			self.settingsMenu.addAction(entry)
+			if not config.FORCE_DEFAULT_STYLE:
+				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
+				entry.triggered.connect(self.pressedStyleButton)
+				self.settingsMenu.addAction(entry)
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.clearChat)
@@ -1191,17 +1193,20 @@ class Window(QMainWindow):
 			self.rerenderChatLog()
 
 	def applyStyle(self,filename=None):
-		if filename == None:
-			if self.window_type==SERVER_WINDOW:
-				self.style = styles.loadStyleServer(self.client)
+		if not config.FORCE_DEFAULT_STYLE:
+			if filename == None:
+				if self.window_type==SERVER_WINDOW:
+					self.style = styles.loadStyleServer(self.client)
+				else:
+					self.style = styles.loadStyle(self.client,self.name)
 			else:
-				self.style = styles.loadStyle(self.client,self.name)
+				s = styles.loadStyleFile(filename)
+				if s:
+					self.style = s
+				else:
+					return False
 		else:
-			s = styles.loadStyleFile(filename)
-			if s:
-				self.style = s
-			else:
-				return False
+			self.style = styles.loadDefault()
 
 		# Apply style background and forground colors
 		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])

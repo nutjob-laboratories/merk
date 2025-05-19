@@ -159,10 +159,13 @@ SOUND_NOTIFICATION_NOTICE = True
 SOUND_NOTIFICATION_MODE = True
 SOUND_NOTIFICATION_FILE = BELL_NOTIFICATION
 SOUND_NOTIFICATIONS = False
+FORCE_MONOSPACE_RENDERING = False
+FORCE_DEFAULT_STYLE = False
 
 def save_settings(filename):
 
 	settings = {
+		"force_all_windows_to_use_default_style": FORCE_DEFAULT_STYLE,
 		"sound_notification_nickname": SOUND_NOTIFICATION_NICKNAME,
 		"sound_notification_disconnect": SOUND_NOTIFICATION_DISCONNECT,
 		"sound_notification_private": SOUND_NOTIFICATION_PRIVATE,
@@ -283,12 +286,15 @@ def save_settings(filename):
 		"do_intermittent_log_saves": DO_INTERMITTENT_LOG_SAVES,
 		"intermittent_log_save_interval": LOG_SAVE_INTERVAL,
 		"maximize_app_on_startup": MAXIMIZE_ON_STARTUP,
+		"force_monospace_text_rendering": FORCE_MONOSPACE_RENDERING,
 	}
 
 	with open(filename, "w") as write_data:
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "force_all_windows_to_use_default_style" in settings:
+		settings["force_all_windows_to_use_default_style"] = FORCE_DEFAULT_STYLE
 	if not "sound_notification_notice" in settings:
 		settings["sound_notification_notice"] = SOUND_NOTIFICATION_INVITE
 	if not "sound_notification_mode" in settings:
@@ -529,6 +535,8 @@ def patch_settings(settings):
 		settings["show_systray_menu"] = SYSTRAY_MENU
 	if not "maximize_app_on_startup" in settings:
 		settings["maximize_app_on_startup"] = MAXIMIZE_ON_STARTUP
+	if not "force_monospace_text_rendering" in settings:
+		settings["force_monospace_text_rendering"] = FORCE_MONOSPACE_RENDERING
 
 	return settings
 
@@ -654,6 +662,8 @@ def load_settings(filename):
 	global SOUND_NOTIFICATION_MODE
 	global SOUND_NOTIFICATION_FILE
 	global SOUND_NOTIFICATIONS
+	global FORCE_MONOSPACE_RENDERING
+	global FORCE_DEFAULT_STYLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -663,6 +673,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		FORCE_DEFAULT_STYLE = settings["force_all_windows_to_use_default_style"]
+		FORCE_MONOSPACE_RENDERING = settings["force_monospace_text_rendering"]
 		SOUND_NOTIFICATION_NICKNAME = settings["sound_notification_nickname"]
 		SOUND_NOTIFICATION_DISCONNECT = settings["sound_notification_disconnect"]
 		SOUND_NOTIFICATION_PRIVATE = settings["sound_notification_private"]

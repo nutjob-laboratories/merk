@@ -527,6 +527,13 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changeSettingStyle(self,state):
+		self.rerenderStyle = True
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def setHelpMenu(self):
 		info = dialog.SetMenuNameDialog(self.default_help_menu,self)
 
@@ -631,6 +638,7 @@ class Dialog(QDialog):
 		self.refreshTitles = False
 		self.swapUserlists = False
 		self.toggleUserlist = False
+		self.rerenderStyle = False
 
 		self.windowbar_change = False
 
@@ -782,6 +790,13 @@ class Dialog(QDialog):
 		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
 		self.displayServNicks.stateChanged.connect(self.changedSetting)
 
+		self.forceDefault = QCheckBox("Force all chat windows to use\nthe default text style",self)
+		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
+		self.forceDefault.stateChanged.connect(self.changeSettingStyle)
+
+		self.forceDefault.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -803,6 +818,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showStatusChat)
 		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.displayServNicks)
+		applicationLayout.addWidget(self.forceDefault)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -1817,7 +1833,6 @@ class Dialog(QDialog):
 			self.sysPrepend.addItem(s)
 		self.sysPrepend.currentIndexChanged.connect(self.prependChange)
 
-
 		self.setSystemPrepend = QLabel(f"Prefix system messages with: <big>{current}</big>")
 
 		prepSel = QHBoxLayout()
@@ -1828,6 +1843,12 @@ class Dialog(QDialog):
 		prepLayout.addWidget(self.setSystemPrepend)
 		prepLayout.addLayout(prepSel)
 
+		self.forceMono = QCheckBox("Force monospace rendering\nof all message text",self)
+		if config.FORCE_MONOSPACE_RENDERING: self.forceMono.setChecked(True)
+		self.forceMono.stateChanged.connect(self.changedSettingRerender)
+
+		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -1835,6 +1856,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.createWindow)
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
+		messageLayout.addWidget(self.forceMono)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system messages</b>"))
 		messageLayout.addLayout(prepLayout)
@@ -2334,6 +2356,8 @@ class Dialog(QDialog):
 		config.SOUND_NOTIFICATION_INVITE = self.notifyInvite.isChecked()
 		config.SOUND_NOTIFICATION_MODE = self.notifyMode.isChecked()
 		config.SOUND_NOTIFICATION_FILE = self.sound
+		config.FORCE_MONOSPACE_RENDERING = self.forceMono.isChecked()
+		config.FORCE_DEFAULT_STYLE = self.forceDefault.isChecked()
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval
@@ -2364,6 +2388,7 @@ class Dialog(QDialog):
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		if self.rerender: self.parent.reRenderAll()
 		if self.rerenderUsers: self.parent.rerenderUserlists()
+		if self.rerenderStyle: self.parent.reApplyStyle()
 
 		if self.rerenderNick:
 			self.parent.toggleNickDisplay()
