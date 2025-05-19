@@ -82,6 +82,16 @@ def is_deleted(obj):
 			return True
 	return False
 
+def is_wav_file(file_path):
+	if not os.path.isfile(file_path):
+		return False
+	
+	try:
+		with open(file_path, 'rb') as f:
+			header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
+			return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
+	except Exception:
+		return False
 
 INSTALL_DIRECTORY = sys.path[0]
 MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")

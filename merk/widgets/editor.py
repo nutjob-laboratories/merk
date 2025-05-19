@@ -525,17 +525,6 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"maximize "+str(e)+"\n")
 		self.updateApplicationTitle()
 
-	def is_wav_file(self,file_path):
-		if not os.path.isfile(file_path):
-			return False
-		
-		try:
-			with open(file_path, 'rb') as f:
-				header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
-				return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
-		except Exception:
-			return False
-
 	def show_error_message(self,title, message):
 		msg_box = QMessageBox()
 		msg_box.setIcon(QMessageBox.Critical)
@@ -552,7 +541,7 @@ class Window(QMainWindow):
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Open WAV", desktop, f"WAV file (*.wav)", options=options)
 		if fileName:
-			if self.is_wav_file(fileName):
+			if is_wav_file(fileName):
 				self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"play "+fileName+"\n")
 				self.updateApplicationTitle()
 			else:

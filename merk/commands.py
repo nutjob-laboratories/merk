@@ -413,17 +413,6 @@ def interpolateAliases(text):
 		if counter>=99: break
 	return text
 
-def is_wav_file(file_path):
-	if not os.path.isfile(file_path):
-		return False
-	
-	try:
-		with open(file_path, 'rb') as f:
-			header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
-			return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
-	except Exception:
-		return False
-
 def find_sound_file(filename):
 
 	# Check if it's a complete filename
