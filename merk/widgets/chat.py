@@ -177,7 +177,7 @@ class Window(QMainWindow):
 			serverBar.addWidget(sep1)
 
 			entry = QPushButton("")
-			entry.setIcon(QIcon(DISCONNECT_ICON))
+			entry.setIcon(QIcon(DISCONNECT_WINDOW_ICON))
 			entry.clicked.connect(self.disconnect)
 			entry.setToolTip("Disconnect from server")
 			entry.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
