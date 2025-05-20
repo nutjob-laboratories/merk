@@ -796,6 +796,9 @@ class Dialog(QDialog):
 
 		self.forceDefault.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.alwaysOnTop = QCheckBox("Main window always on top",self)
+		if config.ALWAYS_ON_TOP: self.alwaysOnTop.setChecked(True)
+		self.alwaysOnTop.stateChanged.connect(self.changedSetting)
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
@@ -818,6 +821,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showStatusChat)
 		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.displayServNicks)
+		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.forceDefault)
 		applicationLayout.addStretch()
 
@@ -2205,8 +2209,8 @@ class Dialog(QDialog):
 		self.saveButton.clicked.connect(self.save)
 		self.saveButton.setAutoDefault(False)
 
-		cancelButton = QPushButton("Cancel")
-		cancelButton.clicked.connect(self.close)
+		self.cancelButton = QPushButton("Cancel")
+		self.cancelButton.clicked.connect(self.close)
 
 		# Finalize layout
 
@@ -2221,7 +2225,7 @@ class Dialog(QDialog):
 		dialogButtonsLayout.addWidget(self.restart)
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.saveButton)
-		dialogButtonsLayout.addWidget(cancelButton)
+		dialogButtonsLayout.addWidget(self.cancelButton)
 
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
@@ -2232,16 +2236,16 @@ class Dialog(QDialog):
 		mainLayout.addLayout(leftLayout)
 		mainLayout.addWidget(self.stack)
 
-		finalLayout = QVBoxLayout()
-		finalLayout.addLayout(mainLayout)
-		finalLayout.addLayout(dialogButtonsLayout)
+		self.finalLayout = QVBoxLayout()
+		self.finalLayout.addLayout(mainLayout)
+		self.finalLayout.addLayout(dialogButtonsLayout)
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
-		self.setLayout(finalLayout)
+		self.setLayout(self.finalLayout)
 
-		self.setFixedSize(finalLayout.sizeHint())
+		self.setFixedSize(self.finalLayout.sizeHint())
 
 	def save(self):
 
@@ -2358,6 +2362,21 @@ class Dialog(QDialog):
 		config.SOUND_NOTIFICATION_FILE = self.sound
 		config.FORCE_MONOSPACE_RENDERING = self.forceMono.isChecked()
 		config.FORCE_DEFAULT_STYLE = self.forceDefault.isChecked()
+
+		if self.alwaysOnTop.isChecked():
+			if not config.ALWAYS_ON_TOP:
+				config.ALWAYS_ON_TOP = True
+				if not self.parent.ontop:
+					self.parent.setWindowFlags(self.parent.windowFlags() | Qt.WindowStaysOnTopHint)
+					if not self.parent.is_hidden:
+						self.parent.show()
+		else:
+			if config.ALWAYS_ON_TOP:
+				config.ALWAYS_ON_TOP = False
+				if not self.parent.ontop:
+					self.parent.setWindowFlags(self.parent.windowFlags() & ~Qt.WindowStaysOnTopHint)
+					if not self.parent.is_hidden:
+						self.parent.show()
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval

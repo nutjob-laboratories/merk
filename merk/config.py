@@ -161,10 +161,12 @@ SOUND_NOTIFICATION_FILE = BELL_NOTIFICATION
 SOUND_NOTIFICATIONS = False
 FORCE_MONOSPACE_RENDERING = False
 FORCE_DEFAULT_STYLE = False
+ALWAYS_ON_TOP = False
 
 def save_settings(filename):
 
 	settings = {
+		"main_window_always_on_top": ALWAYS_ON_TOP,
 		"force_all_windows_to_use_default_style": FORCE_DEFAULT_STYLE,
 		"sound_notification_nickname": SOUND_NOTIFICATION_NICKNAME,
 		"sound_notification_disconnect": SOUND_NOTIFICATION_DISCONNECT,
@@ -293,6 +295,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "main_window_always_on_top" in settings:
+		settings["main_window_always_on_top"] = ALWAYS_ON_TOP
 	if not "force_all_windows_to_use_default_style" in settings:
 		settings["force_all_windows_to_use_default_style"] = FORCE_DEFAULT_STYLE
 	if not "sound_notification_notice" in settings:
@@ -664,6 +668,7 @@ def load_settings(filename):
 	global SOUND_NOTIFICATIONS
 	global FORCE_MONOSPACE_RENDERING
 	global FORCE_DEFAULT_STYLE
+	global ALWAYS_ON_TOP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -673,6 +678,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ALWAYS_ON_TOP = settings["main_window_always_on_top"]
 		FORCE_DEFAULT_STYLE = settings["force_all_windows_to_use_default_style"]
 		FORCE_MONOSPACE_RENDERING = settings["force_monospace_text_rendering"]
 		SOUND_NOTIFICATION_NICKNAME = settings["sound_notification_nickname"]

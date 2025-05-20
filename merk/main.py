@@ -64,6 +64,7 @@ class Merk(QMainWindow):
 			noexecute=False,
 			donotsave=False,
 			simpleconn=False,
+			ontop=False,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -78,6 +79,7 @@ class Merk(QMainWindow):
 		self.noexecute = noexecute
 		self.donotsave = donotsave
 		self.simpleconn = simpleconn
+		self.ontop = ontop
 
 		if not test_if_window_background_is_light(self):
 			self.checked_icon = DARK_CHECKED_ICON
@@ -139,6 +141,13 @@ class Merk(QMainWindow):
 
 		if config.MAXIMIZE_ON_STARTUP:
 			self.showMaximized()
+
+		if config.ALWAYS_ON_TOP:
+			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+
+		if self.ontop:
+			if not config.ALWAYS_ON_TOP:
+				self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
 
 		# Systray
 		self.flash = QTimer(self)
@@ -2259,6 +2268,18 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsTop(self):
+		if config.ALWAYS_ON_TOP:
+			config.ALWAYS_ON_TOP = False
+			self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+			self.show()
+		else:
+			config.ALWAYS_ON_TOP = True
+			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+			self.show()
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsWindowbar(self):
 		if config.SHOW_WINDOWBAR:
 			config.SHOW_WINDOWBAR = False
@@ -2449,6 +2470,17 @@ class Merk(QMainWindow):
 
 		e = textSeparator(self,"Miscellaneous Settings")
 		self.settingsMenu.addAction(e)
+
+		if config.ALWAYS_ON_TOP:
+			entry = QAction(QIcon(self.checked_icon),"Always on top", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Always on top", self)
+		entry.triggered.connect(self.settingsTop)
+		self.settingsMenu.addAction(entry)
+
+		if self.ontop:
+			entry.setIcon(QIcon(self.checked_icon))
+			entry.setEnabled(False)
 
 		if config.SHOW_SYSTRAY_ICON:
 			if config.MINIMIZE_TO_SYSTRAY:

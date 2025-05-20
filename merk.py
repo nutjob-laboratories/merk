@@ -97,6 +97,7 @@ optiongroup.add_argument("-x","--donotexecute", help=f"Do not execute connection
 optiongroup.add_argument("-t", "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
 optiongroup.add_argument( "-E","--simple", help=f"Show simplified connection dialog", action="store_true")
 optiongroup.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
+optiongroup.add_argument( "-o","--on-top",dest="ontop", help=f"Application window always on top", action="store_true")
 
 configuration_group = parser.add_argument_group('Files and Directories')
 configuration_group.add_argument( "--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
@@ -342,6 +343,7 @@ if __name__ == '__main__':
 				args.donotexecute,	# Do not execute script default
 				args.donotsave,		# Do not save default
 				args.simple,		# Simple connect default
+				args.ontop,			# Always on top
 				None,				# Parent
 			)
 
@@ -383,6 +385,7 @@ if __name__ == '__main__':
 					args.donotexecute,	# Do not execute script default
 					args.donotsave,		# Do not save default
 					args.simple,		# Simple connect default
+					args.ontop,			# Always on top
 					None,				# Parent
 				)
 
@@ -465,6 +468,7 @@ if __name__ == '__main__':
 							args.donotexecute,	# Do not execute script default
 							args.donotsave,		# Do not save default
 							args.simple,		# Simple connect default
+							args.ontop,			# Always on top
 							None,				# Parent
 						)
 
@@ -500,6 +504,7 @@ if __name__ == '__main__':
 						args.donotexecute,	# Do not execute script default
 						args.donotsave,		# Do not save default
 						args.simple,		# Simple connect default
+						args.ontop,			# Always on top
 						None,				# Parent
 					)
 
