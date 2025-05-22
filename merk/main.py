@@ -1794,7 +1794,6 @@ class Merk(QMainWindow):
 	def closeAndRemoveAllWindows(self):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
-			#if hasattr(c,"saveLogs"): c.saveLogs()
 			if hasattr(c,"client"):
 				c.client.quit(config.DEFAULT_QUIT_MESSAGE)
 			if window:
@@ -3075,7 +3074,35 @@ class Merk(QMainWindow):
 	# any method 
 	def closeEvent(self, event):
 
+		do_close = True
+
+		# This will be true if the window is closed
+		# with the window bar "X" button or if Alt-F4
+		# is pressed
+		if event.spontaneous():
+			pass
+
+		do_ask = False
+		if config.ASK_BEFORE_CLOSE: do_ask = True
+
+		if do_ask:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(QUIT_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText("Are you sure you want to exit?")
+			msgBox.setWindowTitle("Exit")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				do_close = False
+
+		if not do_close:
+			event.ignore()
+			return
+
 		self.closeAndRemoveAllWindows()
+		event.accept()
 		self.app.quit()
 
 	# merk_subWindowActivated()

@@ -1468,6 +1468,12 @@ class Window(QMainWindow):
 
 	def closeEvent(self, event):
 
+		# This will be true if the window is closed
+		# with the window bar "X" button or if Alt-F4
+		# is pressed
+		if event.spontaneous():
+			pass
+
 		if self.force_close:
 			# Let the parent know that this subwindow
 			# has been closed by the user
