@@ -751,33 +751,13 @@ class Dialog(QDialog):
 		self.showSystray = QCheckBox("Show system tray icon",self)
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
-
-		self.showInfo = QCheckBox("Show user info on all chat windows",self)
-		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
-		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
-
-		self.showInputMenu = QCheckBox("Show input menu button",self)
-		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
-		self.showInputMenu.stateChanged.connect(self.changedSetting)
-
-		self.showContext = QCheckBox("Show chat context menu options",self)
-		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
-		self.showContext.stateChanged.connect(self.changedSetting)
-
+		
 		self.simpleConnect = QCheckBox("Simplified connection dialog",self)
 		if config.SIMPLIFIED_CONNECT_DIALOG: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
 
 		if self.parent.simpleconn: self.simpleConnect.setEnabled(False)
-
-		self.showStatusServer = QCheckBox("Status bar on server windows",self)
-		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
-		self.showStatusServer.stateChanged.connect(self.changedSetting)
-
-		self.showStatusChat = QCheckBox("Status bar on chat windows",self)
-		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
-		self.showStatusChat.stateChanged.connect(self.changedSetting)
-
+		
 		self.maxOnStart = QCheckBox("Maximize window on startup",self)
 		if config.MAXIMIZE_ON_STARTUP: self.maxOnStart.setChecked(True)
 		self.maxOnStart.stateChanged.connect(self.changedSetting)
@@ -785,10 +765,6 @@ class Dialog(QDialog):
 		self.showNetLinks = QCheckBox("Show known links to network homepages",self)
 		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
-
-		self.displayServNicks = QCheckBox("Display nicknames on server windows",self)
-		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
-		self.displayServNicks.stateChanged.connect(self.changedSetting)
 
 		self.forceDefault = QCheckBox("Force all chat windows to use\nthe default text style",self)
 		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
@@ -811,21 +787,64 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.maxOnStart)
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
-		applicationLayout.addWidget(self.showInfo)
-		applicationLayout.addWidget(self.showInputMenu)
-		applicationLayout.addWidget(self.showContext)
 		applicationLayout.addWidget(self.simpleConnect)
 		if self.parent.simpleconn:
 			applicationLayout.addWidget(QLabel("<small><i>Simplified connections dialogs turned on</i></small>"))
-		applicationLayout.addWidget(self.showStatusServer)
-		applicationLayout.addWidget(self.showStatusChat)
 		applicationLayout.addWidget(self.showNetLinks)
-		applicationLayout.addWidget(self.displayServNicks)
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.forceDefault)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
+
+		# Subwindows
+
+		self.subwindowPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Subwindows")
+		entry.widget = self.subwindowPage
+		entry.setIcon(QIcon(SUBWINDOW_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.subwindowPage)
+
+		self.showInfo = QCheckBox("Show user info on all chat windows",self)
+		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
+		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
+
+		self.showInputMenu = QCheckBox("Show input menu button",self)
+		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
+		self.showInputMenu.stateChanged.connect(self.changedSetting)
+
+		self.showContext = QCheckBox("Show chat context menu options",self)
+		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
+		self.showContext.stateChanged.connect(self.changedSetting)
+
+		self.showStatusServer = QCheckBox("Status bar on server windows",self)
+		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
+		self.showStatusServer.stateChanged.connect(self.changedSetting)
+
+		self.showStatusChat = QCheckBox("Status bar on chat windows",self)
+		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
+		self.showStatusChat.stateChanged.connect(self.changedSetting)
+
+		self.displayServNicks = QCheckBox("Show user info on server windows",self)
+		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
+		self.displayServNicks.stateChanged.connect(self.changedSetting)
+
+		subwindowLayout = QVBoxLayout()
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
+		subwindowLayout.addWidget(self.showInfo)
+		subwindowLayout.addWidget(self.displayServNicks)
+		subwindowLayout.addWidget(self.showInputMenu)
+		subwindowLayout.addWidget(self.showContext)
+		subwindowLayout.addWidget(self.showStatusServer)
+		subwindowLayout.addWidget(self.showStatusChat)
+		subwindowLayout.addStretch()
+
+		self.subwindowPage.setLayout(subwindowLayout)
 
 		# Widget page
 
