@@ -659,6 +659,14 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE)
 		self.trayMenu.addAction(entry)
 
+		if config.MINIMIZE_TO_SYSTRAY:
+			if self.is_hidden:
+				entry = QAction(QIcon(self.show_icon),"Show window",self)
+			else:
+				entry = QAction(QIcon(self.hide_icon),"Hide window",self)
+			entry.triggered.connect(self.toggleHide)
+			self.trayMenu.addAction(entry)
+
 		windows = self.getAllServerWindows()
 		clean = []
 		for w in windows:
@@ -730,14 +738,6 @@ class Merk(QMainWindow):
 						entry = QAction(QIcon(icon),c.name,self)
 						entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
 						sm.addAction(entry)
-
-		if config.MINIMIZE_TO_SYSTRAY:
-			if self.is_hidden:
-				entry = QAction(QIcon(self.show_icon),"Show window",self)
-			else:
-				entry = QAction(QIcon(self.hide_icon),"Hide window",self)
-			entry.triggered.connect(self.toggleHide)
-			self.trayMenu.addAction(entry)
 
 		e = textSeparator(self,"Options")
 		self.trayMenu.addAction(e)
@@ -2641,6 +2641,8 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 		sm.addAction(entry)
+
+		self.buildSystrayMenu()
 
 	def buildToolsMenu(self):
 
