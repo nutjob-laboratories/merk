@@ -288,6 +288,33 @@ if __name__ == '__main__':
 			user.REALNAME = args.realname
 			user_info_changed = True
 
+		# Add connection to history
+		user_history = list(user.HISTORY)
+
+		# Check to make sure that the connection isn't
+		# already in the user's history
+		inhistory = False
+		for s in user_history:
+			if s[0]==host:
+				if s[1]==port:
+					inhistory = True
+
+		# If the connection isn't already in the user's
+		# history, then add it
+		if inhistory==False:
+			if ssl:
+				ussl = "ssl"
+			else:
+				ussl = "normal"
+			if pword==None:
+				spass = ''
+			else:
+				spass = pword
+			entry = [ host,str(port),UNKNOWN_NETWORK,ussl,spass ]
+			user_history.append(entry)
+			user.HISTORY = user_history
+			user_info_changed = True
+
 		if user_info_changed:
 			if not args.donotsave:
 				user.save_user(user.USER_FILE)
