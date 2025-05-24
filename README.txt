@@ -2,6 +2,7 @@
 
 
 
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -23,13 +24,14 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted.
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
 | Zip Archive|  Cross-platform  | [Download MERK !_FULL_VERSION_! (!_PYSIZE_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
 | Zip Archive|  Windows | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
-|   Windows Installer|  Windows | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe)|
-|   Single Executable|  Windows | [Download MERK !_WIN_VERSION_! (!_WINEXE_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe)|
+|   Windows Installer|  Windows | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip)|
+|   Single Executable|  Windows | [Download MERK !_WIN_VERSION_! (!_WINEXE_!)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.zip)|
 
 # Summary
   
