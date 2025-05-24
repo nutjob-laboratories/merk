@@ -2247,6 +2247,14 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsAutoAliases(self):
+		if config.AUTOCOMPLETE_ALIAS:
+			config.AUTOCOMPLETE_ALIAS = False
+		else:
+			config.AUTOCOMPLETE_ALIAS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsAutoEmojis(self):
 		if config.AUTOCOMPLETE_EMOJIS:
 			config.AUTOCOMPLETE_EMOJIS = False
@@ -2440,6 +2448,13 @@ class Merk(QMainWindow):
 				entry = QAction(QIcon(self.unchecked_icon),"Emoji shortcodes", self)
 			entry.triggered.connect(self.settingsAutoEmojis)
 			sm.addAction(entry)
+
+		if config.AUTOCOMPLETE_ALIAS:
+			entry = QAction(QIcon(self.checked_icon),"Aliases", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Aliases", self)
+		entry.triggered.connect(self.settingsAutoAliases)
+		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
 

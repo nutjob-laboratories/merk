@@ -1578,7 +1578,7 @@ class Dialog(QDialog):
 		self.autocompleteDescription = QLabel("""
 			<small>
 			To use autocomplete, type the first few characters of a command,
-			nickname, channel, or emoji shortcode, and then hit tab to complete
+			nickname, channel, alias, or emoji shortcode, and then hit tab to complete
 			the entry.
 			</small>
 			<br>
@@ -1607,6 +1607,10 @@ class Dialog(QDialog):
 		else:
 			self.autocompleteEmojis.setEnabled(False)
 
+		self.autocompleteAlias = QCheckBox("Aliases",self)
+		if config.AUTOCOMPLETE_ALIAS: self.autocompleteAlias.setChecked(True)
+		self.autocompleteAlias.stateChanged.connect(self.changedSetting)
+
 		autoLayout1 = QHBoxLayout()
 		autoLayout1.addWidget(self.autocompleteCommands)
 		autoLayout1.addWidget(self.autocompleteNicks)
@@ -1627,6 +1631,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addLayout(autoLayout1)
 		inputLayout.addLayout(autoLayout2)
+		inputLayout.addWidget(self.autocompleteAlias)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -2387,6 +2392,7 @@ class Dialog(QDialog):
 		config.FORCE_MONOSPACE_RENDERING = self.forceMono.isChecked()
 		config.FORCE_DEFAULT_STYLE = self.forceDefault.isChecked()
 		config.ASK_BEFORE_CLOSE = self.askBeforeExit.isChecked()
+		config.AUTOCOMPLETE_ALIAS = self.autocompleteAlias.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:

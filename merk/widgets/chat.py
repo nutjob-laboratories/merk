@@ -2072,6 +2072,25 @@ class SpellTextEdit(QPlainTextEdit):
 
 			if self.toPlainText().strip()=='': return
 
+			if config.AUTOCOMPLETE_ALIAS:
+				# Auto-complete channel/server
+				cursor.select(QTextCursor.WordUnderCursor)
+				oldpos = cursor.position()
+				cursor.select(QTextCursor.WordUnderCursor)
+				newpos = cursor.selectionStart() - 1
+				cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+				cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+				self.setTextCursor(cursor)
+				if self.textCursor().hasSelection():
+					text = self.textCursor().selectedText()
+
+					for a in commands.ALIAS:
+						if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+							cursor.beginEditBlock()
+							cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+							cursor.endEditBlock()
+							return
+
 			if config.AUTOCOMPLETE_COMMANDS:
 				# Auto-complete commands
 				cursor.select(QTextCursor.BlockUnderCursor)
