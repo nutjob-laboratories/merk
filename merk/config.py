@@ -164,10 +164,12 @@ FORCE_DEFAULT_STYLE = False
 ALWAYS_ON_TOP = False
 ASK_BEFORE_CLOSE = False
 AUTOCOMPLETE_ALIAS = True
+INTERPOLATE_ALIASES_INTO_INPUT = True
 
 def save_settings(filename):
 
 	settings = {
+		"interpolate_aliases_into_user_input": INTERPOLATE_ALIASES_INTO_INPUT,
 		"autocomplete_aliases": AUTOCOMPLETE_ALIAS,
 		"ask_before_exit": ASK_BEFORE_CLOSE,
 		"main_window_always_on_top": ALWAYS_ON_TOP,
@@ -299,6 +301,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "interpolate_aliases_into_user_input" in settings:
+		settings["interpolate_aliases_into_user_input"] = INTERPOLATE_ALIASES_INTO_INPUT
 	if not "autocomplete_aliases" in settings:
 		settings["autocomplete_aliases"] = AUTOCOMPLETE_ALIAS
 	if not "ask_before_exit" in settings:
@@ -679,6 +683,7 @@ def load_settings(filename):
 	global ALWAYS_ON_TOP
 	global ASK_BEFORE_CLOSE
 	global AUTOCOMPLETE_ALIAS
+	global INTERPOLATE_ALIASES_INTO_INPUT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -688,6 +693,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		INTERPOLATE_ALIASES_INTO_INPUT = settings["interpolate_aliases_into_user_input"]
 		AUTOCOMPLETE_ALIAS = settings["autocomplete_aliases"]
 		ASK_BEFORE_CLOSE = settings["ask_before_exit"]
 		ALWAYS_ON_TOP = settings["main_window_always_on_top"]

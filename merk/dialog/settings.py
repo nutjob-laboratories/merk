@@ -125,6 +125,15 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedInterpolate(self,state):
+		if self.interpolateAlias.isChecked():
+			self.autocompleteAlias.setEnabled(True)
+		else:
+			self.autocompleteAlias.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def setDarkMode(self,state):
 		self.changed.show()
 		self.restart.show()
@@ -1611,6 +1620,12 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_ALIAS: self.autocompleteAlias.setChecked(True)
 		self.autocompleteAlias.stateChanged.connect(self.changedSetting)
 
+		self.interpolateAlias = QCheckBox("Interpolate aliases into input",self)
+		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
+		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
+
+		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
+
 		autoLayout1 = QHBoxLayout()
 		autoLayout1.addWidget(self.autocompleteCommands)
 		autoLayout1.addWidget(self.autocompleteNicks)
@@ -1632,6 +1647,9 @@ class Dialog(QDialog):
 		inputLayout.addLayout(autoLayout1)
 		inputLayout.addLayout(autoLayout2)
 		inputLayout.addWidget(self.autocompleteAlias)
+		inputLayout.addWidget(QLabel(' '))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		inputLayout.addWidget(self.interpolateAlias)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -2393,6 +2411,7 @@ class Dialog(QDialog):
 		config.FORCE_DEFAULT_STYLE = self.forceDefault.isChecked()
 		config.ASK_BEFORE_CLOSE = self.askBeforeExit.isChecked()
 		config.AUTOCOMPLETE_ALIAS = self.autocompleteAlias.isChecked()
+		config.INTERPOLATE_ALIASES_INTO_INPUT = self.interpolateAlias.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:

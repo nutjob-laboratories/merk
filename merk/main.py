@@ -1779,6 +1779,10 @@ class Merk(QMainWindow):
 
 	def handleUserInput(self,window,user_input):
 
+		# Interpolate aliases into user input
+		if config.INTERPOLATE_ALIASES_INTO_INPUT:
+			user_input = commands.interpolateAliases(user_input)
+
 		# Handle chat commands
 		if commands.handleChatCommands(self,window,user_input,False): return
 
@@ -2449,12 +2453,13 @@ class Merk(QMainWindow):
 			entry.triggered.connect(self.settingsAutoEmojis)
 			sm.addAction(entry)
 
-		if config.AUTOCOMPLETE_ALIAS:
-			entry = QAction(QIcon(self.checked_icon),"Aliases", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Aliases", self)
-		entry.triggered.connect(self.settingsAutoAliases)
-		sm.addAction(entry)
+		if config.INTERPOLATE_ALIASES_INTO_INPUT:
+			if config.AUTOCOMPLETE_ALIAS:
+				entry = QAction(QIcon(self.checked_icon),"Aliases", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Aliases", self)
+			entry.triggered.connect(self.settingsAutoAliases)
+			sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
 
