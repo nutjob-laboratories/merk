@@ -18,6 +18,7 @@
  - [Features](#Features)
  - [Screenshots](#screenshots)
  - [Usage](#usage)
+ - [Commands](#commands)
  - [Example commandline usage](#example-commandline-usage)
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
@@ -227,6 +228,56 @@ Appearance:
   -D, --dark            Run in dark mode
   -L, --light           Run in light mode
 ```
+# Commands
+All of these commands can be issued from the text input widget, or from scripts.
+
+| Commands                                | Description                                                                                                 |
+|-----------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| `/help`                                 | Displays command usage information                                                                          |
+| `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                             |
+| `/msg TARGET MESSAGE...`                | Sends a message                                                                                             |
+| `/notice TARGET MESSAGE...`             | Sends a notice                                                                                              |
+| `/join CHANNEL [KEY]`                   | Joins a channel                                                                                             |
+| `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                            |
+| `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                       |
+| `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                        |
+| `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                            |
+| `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                  |
+| `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                                                                 |
+| `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                   |
+| `/who NICKNAME [o]`                     | Requests user information from the server                                                                   |
+| `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                       |
+| `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                     |
+| `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                               |
+| `/away [MESSAGE]`                       | Sets status as "away"                                                                                       |
+| `/back`                                 | Sets status as "back"                                                                                       |
+| `/raw TEXT...`                          | Sends unprocessed data to the server                                                                        |
+| `/time`                                 | Requests server time                                                                                        |
+| `/version [SERVER]`                     | Requests server version                                                                                     |
+| `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                   |
+| `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                           |
+| `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server & executes connection script                                                      |
+| `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL & executes connection script                                              |
+| `/print TEXT...`                        | Prints text to the current window                                                                           |
+| `/focus [SERVER] WINDOW`                | Switches focus to another window                                                                            |
+| `/maximize [SERVER] WINDOW`             | Maximizes a window                                                                                          |
+| `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                          |
+| `/restore [SERVER] WINDOW`              | Restores a window                                                                                           |
+| `/cascade`                              | Cascades all subwindows                                                                                     |
+| `/tile`                                 | Tiles all subwindows                                                                                        |
+| `/clear [WINDOW]`                       | Clears a window's chat display                                                                              |
+| `/settings`                             | Opens the settings dialog                                                                                   |
+| `/style`                                | Edits the current window's style                                                                            |
+| `/alias TOKEN TEXT...`                  | Creates an alias that can be referenced by `$TOKEN`                                                           |
+| `/alias`                                | Prints a list of all current aliases                                                                        |
+| `/script FILENAME`                      | Executes a list of commands in a file                                                                       |
+| `/edit [FILENAME]`                      | Opens a script in the editor                                                                                |
+| `/play FILENAME`                        | Plays a WAV file                                                                                            |
+| `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character |
+| `/refresh`                              | Requests a new list of channels from the server                                                             |
+| `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                        |
+
+
 # Example Commandline Usage
 In the following examples, the first commandline is how you would do the task using **MERK** as a [Python script](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip), and second commandline is how you would do it using the [**MERK** Windows executable](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Note that the commandlines, other than the initial executable, are the same!
 
