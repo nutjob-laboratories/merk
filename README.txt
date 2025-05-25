@@ -1,8 +1,3 @@
-
-
-
-
-
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -40,17 +35,17 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
-For those that don't want to install Python or all the requirements, you can [download the **MERK** installer for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe).
+For those that don't want to install Python or all the requirements, you can [download the **MERK** installer for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip).
 
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.exe). Double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
 
 For a "portable" version of **MERK**, [download the zip file of **MERK** !_WIN_VERSION_! for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
 
-For an even easier "install", [download the "standalone" executable of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.exe) to wherever you want, and double click on the downloaded file.
+For an even easier "install", [download the "standalone" executable of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.zip) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
