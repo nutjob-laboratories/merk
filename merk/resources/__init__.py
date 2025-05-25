@@ -68,6 +68,16 @@ SYSTEM_PREPEND_OPTIONS = [
 	"&mdash;",
 ]
 
+def remove_duplicate_sublists(list_of_lists):
+	seen = set()
+	new_list = []
+	for sublist in list_of_lists:
+		tuple_sublist = tuple(sublist)
+		if tuple_sublist not in seen:
+			new_list.append(sublist)
+			seen.add(tuple_sublist)
+	return new_list
+
 def is_running_from_pyinstaller():
 	return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
 

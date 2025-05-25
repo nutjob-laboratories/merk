@@ -165,10 +165,12 @@ ALWAYS_ON_TOP = False
 ASK_BEFORE_CLOSE = False
 AUTOCOMPLETE_ALIAS = True
 INTERPOLATE_ALIASES_INTO_INPUT = True
+REQUEST_CHANNEL_LIST_ON_CONNECTION = True
 
 def save_settings(filename):
 
 	settings = {
+		"request_channel_list_on_connection": REQUEST_CHANNEL_LIST_ON_CONNECTION,
 		"interpolate_aliases_into_user_input": INTERPOLATE_ALIASES_INTO_INPUT,
 		"autocomplete_aliases": AUTOCOMPLETE_ALIAS,
 		"ask_before_exit": ASK_BEFORE_CLOSE,
@@ -301,6 +303,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "request_channel_list_on_connection" in settings:
+		settings["request_channel_list_on_connection"] = REQUEST_CHANNEL_LIST_ON_CONNECTION
 	if not "interpolate_aliases_into_user_input" in settings:
 		settings["interpolate_aliases_into_user_input"] = INTERPOLATE_ALIASES_INTO_INPUT
 	if not "autocomplete_aliases" in settings:
@@ -684,6 +688,7 @@ def load_settings(filename):
 	global ASK_BEFORE_CLOSE
 	global AUTOCOMPLETE_ALIAS
 	global INTERPOLATE_ALIASES_INTO_INPUT
+	global REQUEST_CHANNEL_LIST_ON_CONNECTION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -693,6 +698,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		REQUEST_CHANNEL_LIST_ON_CONNECTION = settings["request_channel_list_on_connection"]
 		INTERPOLATE_ALIASES_INTO_INPUT = settings["interpolate_aliases_into_user_input"]
 		AUTOCOMPLETE_ALIAS = settings["autocomplete_aliases"]
 		ASK_BEFORE_CLOSE = settings["ask_before_exit"]

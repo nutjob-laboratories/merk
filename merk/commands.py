@@ -34,6 +34,7 @@ import time
 import uuid
 import re
 from pathlib import Path
+import fnmatch
 
 import emoji
 
@@ -107,6 +108,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"script" : config.ISSUE_COMMAND_SYMBOL+"script ",
 			config.ISSUE_COMMAND_SYMBOL+"edit" : config.ISSUE_COMMAND_SYMBOL+"edit ",
 			config.ISSUE_COMMAND_SYMBOL+"play" : config.ISSUE_COMMAND_SYMBOL+"play ",
+			config.ISSUE_COMMAND_SYMBOL+"list" : config.ISSUE_COMMAND_SYMBOL+"list ",
+			config.ISSUE_COMMAND_SYMBOL+"refresh" : config.ISSUE_COMMAND_SYMBOL+"refresh",
 		}
 
 	if new_autocomplete!=None:
@@ -150,9 +153,12 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>", "Prints a list of all current aliases" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>", "Executes a list of commands in a file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"list [TERMS]</b>", "Lists or searches channels on the server; use \"*\" for multi-character wildcard, \"?\" for single character" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"refresh</b>", "Requests a new list of channels from the server" ],
 	]
 
 	if new_help!=None:
@@ -480,6 +486,92 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
 	tokens = user_input.split()
 
+	# |----------|
+	# | /refresh |
+	# |----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'refresh' and len(tokens)==1:
+
+			window.client.doing_list_refresh = True
+			window.client.sendLine('LIST')
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'refresh':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"refresh")
+			window.writeText(t,False)
+			return True
+
+	# |-------|
+	# | /list |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)==1:
+
+			if len(window.client.server_channel_list)==0:
+				t = Message(ERROR_MESSAGE,'',"Channel list is empty, please use "+config.ISSUE_COMMAND_SYMBOL+"refresh to populate it.")
+				window.writeText(t)
+				return True
+
+			if len(window.client.server_channel_list)==1:
+				t = Message(SYSTEM_MESSAGE,'',"1 channel found.")
+			else:
+				t = Message(SYSTEM_MESSAGE,'',str(len(window.client.server_channel_list))+" channels found.")
+			window.writeText(t,False)
+			for entry in window.client.server_channel_list:
+				channel_name = entry[0]
+				channel_count = entry[1]
+				channel_topic = entry[2]
+				hlstyle = window.style["hyperlink"]
+				link = f"<a href=\"{channel_name}\"><span style=\"{hlstyle}\">{channel_name}</span></a>"
+				if len(channel_topic)>0:
+					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users) - \""+channel_topic+"\"")
+				else:
+					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users)")
+				window.writeText(t,False)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
+
+			if len(window.client.server_channel_list)==0:
+				t = Message(ERROR_MESSAGE,'',"Channel list is empty, please use "+config.ISSUE_COMMAND_SYMBOL+"refresh to populate it.")
+				window.writeText(t)
+				return True
+
+			tokens.pop(0)
+			target = ' '.join(tokens)
+			results = []
+			t = Message(SYSTEM_MESSAGE,'',"Searching for \""+target+"\"...")
+			window.writeText(t,False)
+			for entry in window.client.server_channel_list:
+				channel_name = entry[0]
+				channel_count = entry[1]
+				channel_topic = entry[2]
+				if fnmatch.fnmatch(channel_name,f"{target}"):
+					results.append(entry)
+				if fnmatch.fnmatch(channel_topic,f"{target}"):
+					results.append(entry)
+
+			results = remove_duplicate_sublists(results)
+
+			if len(results)==0:
+				t = Message(ERROR_MESSAGE,'',"No results found.")
+				window.writeText(t)
+				return True
+
+			for entry in results:
+				channel_name = entry[0]
+				channel_count = entry[1]
+				channel_topic = entry[2]
+				hlstyle = window.style["hyperlink"]
+				link = f"<a href=\"{channel_name}\"><span style=\"{hlstyle}\">{channel_name}</span></a>"
+				if len(channel_topic)>0:
+					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users) - \""+channel_topic+"\"")
+				else:
+					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users)")
+				window.writeText(t,False)
+			t = Message(SYSTEM_MESSAGE,'',"Search for \""+target+"\" complete, "+str(len(results))+" entries found.")
+			window.writeText(t,False)
+			return True
+
 	# |-------|
 	# | /play |
 	# |-------|
@@ -525,7 +617,6 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				window.writeText(t,False)
 				return True
 
-
 			value = ' '.join(tokens)
 			addAlias(a,value)
 
@@ -534,6 +625,19 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				window.writeText(t,False)
 			
 			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=1:
+
+			if len(ALIAS)==0:
+				t = Message(SYSTEM_MESSAGE,'',"No aliases are currently defined.")
+				window.writeText(t,False)
+				return True
+
+			for a in ALIAS:
+				t = Message(SYSTEM_MESSAGE,'',config.ALIAS_INTERPOLATION_SYMBOL+a+" = \""+ALIAS[a]+"\"")
+				window.writeText(t,False)
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...")
 			window.writeText(t,False)

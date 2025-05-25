@@ -1527,6 +1527,12 @@ class Merk(QMainWindow):
 			if hasattr(c,"swapHostmask"):
 				c.swapHostmask(oldnick,newnick)
 
+	def gotRefreshEnd(self,client):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,"",f"Channel list refresh is complete!")
+			w.writeText(t)
+
 
 	# |================|
 	# | END IRC EVENTS |

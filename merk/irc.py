@@ -122,8 +122,26 @@ class IRC_Connection(irc.IRCClient):
 		self.request_whois = []
 		self.do_whois = []
 
+		self.server_channel_list = []
+		self.doing_list_refresh = False
+
 		self.banlists = defaultdict(list)
 
+
+	def irc_RPL_LIST(self,prefix,params):
+		server = prefix
+		channel_name = params[1]
+		channel_count = params[2]
+		channel_topic = params[3].strip()
+		self.server_channel_list.append( [channel_name,channel_count,channel_topic] )
+
+	def irc_RPL_LISTEND(self,prefix,params):
+		if self.doing_list_refresh:
+			self.gui.gotRefreshEnd(self)
+			self.doing_list_refresh = False
+
+	def irc_RPL_LISTSTART(self,prefix,params):
+		self.server_channel_list = []
 
 	def uptime_beat(self):
 
@@ -171,6 +189,9 @@ class IRC_Connection(irc.IRCClient):
 		self.uptimeTimer.start()
 
 		self.registered = True
+
+		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
+			self.sendLine(f"LIST")
 
 		self.gui.signedOn(self)
 

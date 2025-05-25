@@ -231,6 +231,7 @@ class Window(QMainWindow):
 		self.chat = QTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
 		self.chat.anchorClicked.connect(self.linkClicked)
+		self.chat.setReadOnly(True)
 
 		self.chat.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.chat.customContextMenuRequested.connect(self.chatMenu)
@@ -1598,13 +1599,25 @@ class Window(QMainWindow):
 
 	def linkClicked(self,url):
 		if url.host():
-
+			# It's an internet link, so open it
+			# in the default browser
 			sb = self.chat.verticalScrollBar()
 			og_value = sb.value()
 
 			QDesktopServices.openUrl(url)
 			self.chat.setSource(QUrl())
 			sb.setValue(og_value)
+		else:
+			# It's a link to a channel, so
+			# join the channel
+			sb = self.chat.verticalScrollBar()
+			og_value = sb.value()
+    		
+			chan = url.toString()
+			self.client.join(chan)
+			self.chat.setSource(QUrl())
+			sb.setValue(og_value)
+	
 
 	def handleUserInput(self):
 		user_input = self.input.text()

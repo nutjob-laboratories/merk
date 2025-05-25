@@ -1377,12 +1377,19 @@ class Dialog(QDialog):
 		self.quitpartDescription.setWordWrap(True)
 		self.quitpartDescription.setAlignment(Qt.AlignJustify)
 
+		self.requestList = QCheckBox("Fetch channel list from\nserver on connection",self)
+		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
+		self.requestList.stateChanged.connect(self.changedSetting)
+
+		self.requestList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
 		connectionsLayout.addWidget(self.askBeforeReconnect)
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
+		connectionsLayout.addWidget(self.requestList)
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		connectionsLayout.addWidget(self.quitpartDescription)
@@ -2412,6 +2419,7 @@ class Dialog(QDialog):
 		config.ASK_BEFORE_CLOSE = self.askBeforeExit.isChecked()
 		config.AUTOCOMPLETE_ALIAS = self.autocompleteAlias.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_INPUT = self.interpolateAlias.isChecked()
+		config.REQUEST_CHANNEL_LIST_ON_CONNECTION = self.requestList.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:
