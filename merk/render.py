@@ -170,8 +170,17 @@ def render_message(message,style):
 	
 	msg_to_display = message.contents
 
+	# Messages from /list results are special, and thus have their message built here
+	# rather than being built from the default Message() object
+	if message.type==LIST_MESSAGE:
+		link = f"<a href=\"{message.channel}\"><span style=\"{style["hyperlink"]}\">{message.channel}</span></a>"
+		if len(message.channel_topic)>0:
+			msg_to_display = link+" ("+message.channel_count+" users) - \""+message.channel_topic+"\""
+		else:
+			msg_to_display = link+" ("+message.channel_count+" users)"
+
 	# Escape all HTML
-	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=PLUGIN_MESSAGE:
+	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
 		msg_to_display = html.escape(msg_to_display)
 
 	if config.CONVERT_URLS_TO_LINKS:
@@ -263,7 +272,7 @@ def render_message(message,style):
 			output = LIGHT_DATE_MESSAGE_TEMPLATE
 
 		style = style["message"]
-	elif message.type==PLUGIN_MESSAGE:
+	elif message.type==LIST_MESSAGE:
 		output = SYSTEM_TEMPLATE
 		output_style = style["message"]
 

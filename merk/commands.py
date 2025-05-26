@@ -511,22 +511,25 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				window.writeText(t)
 				return True
 
+			for entry in window.client.server_channel_list:
+				channel_name = entry[0]
+				channel_count = entry[1]
+				channel_topic = entry[2]
+				if len(channel_topic)>0:
+					t = Message(LIST_MESSAGE,'','')
+					t.channel = channel_name
+					t.channel_count = channel_count
+					t.channel_topic = channel_topic
+				else:
+					t = Message(LIST_MESSAGE,'','')
+					t.channel = channel_name
+					t.channel_count = channel_count
+				window.writeText(t,False)
 			if len(window.client.server_channel_list)==1:
 				t = Message(SYSTEM_MESSAGE,'',"1 channel found.")
 			else:
 				t = Message(SYSTEM_MESSAGE,'',str(len(window.client.server_channel_list))+" channels found.")
 			window.writeText(t,False)
-			for entry in window.client.server_channel_list:
-				channel_name = entry[0]
-				channel_count = entry[1]
-				channel_topic = entry[2]
-				hlstyle = window.style["hyperlink"]
-				link = f"<a href=\"{channel_name}\"><span style=\"{hlstyle}\">{channel_name}</span></a>"
-				if len(channel_topic)>0:
-					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users) - \""+channel_topic+"\"")
-				else:
-					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users)")
-				window.writeText(t,False)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
@@ -561,12 +564,15 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				channel_name = entry[0]
 				channel_count = entry[1]
 				channel_topic = entry[2]
-				hlstyle = window.style["hyperlink"]
-				link = f"<a href=\"{channel_name}\"><span style=\"{hlstyle}\">{channel_name}</span></a>"
 				if len(channel_topic)>0:
-					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users) - \""+channel_topic+"\"")
+					t = Message(LIST_MESSAGE,'','')
+					t.channel = channel_name
+					t.channel_count = channel_count
+					t.channel_topic = channel_topic
 				else:
-					t = Message(SYSTEM_MESSAGE,'',link+" ("+channel_count+" users)")
+					t = Message(LIST_MESSAGE,'','')
+					t.channel = channel_name
+					t.channel_count = channel_count
 				window.writeText(t,False)
 			t = Message(SYSTEM_MESSAGE,'',"Search for \""+target+"\" complete, "+str(len(results))+" entries found.")
 			window.writeText(t,False)

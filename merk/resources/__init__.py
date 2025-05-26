@@ -157,7 +157,7 @@ HARD_HORIZONTAL_RULE_MESSAGE = 10
 TEXT_HORIZONTAL_RULE_MESSAGE = 11
 WHOIS_MESSAGE = 12
 DATE_MESSAGE = 13
-PLUGIN_MESSAGE = 14
+LIST_MESSAGE = 14
 
 UNKNOWN_NETWORK = "UNKNOWN"
 
@@ -326,6 +326,9 @@ class Message:
 		self.type = mtype
 		self.sender = sender
 		self.contents = contents
+		self.channel = ''
+		self.channel_count = ''
+		self.channel_topic = ''
 
 class ConnectInfo:
 	def __init__(self,nick,alt,username,realname,host,port,password,reconnect,ssl,execute_script):
