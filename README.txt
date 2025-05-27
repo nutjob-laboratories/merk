@@ -41,18 +41,18 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-setup.zip). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
 
-For a "portable" version of **MERK**, [download the zip file of **MERK** !_WIN_VERSION_! for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
+For a "portable" version of **MERK**, [download the zip file of **MERK** !_WIN_VERSION_! for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
 
-For an even easier "install", [download the "standalone" executable of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.zip) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
+For an even easier "install", [download the "standalone" executable of **MERK** !_WIN_VERSION_!](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-standalone.zip) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
 A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
 
 # Making MERK Portable on Windows
-If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** !_WIN_VERSION_! for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
+If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** !_WIN_VERSION_! for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
 
 ```merk.exe --config-local```
 
@@ -62,7 +62,7 @@ Whenever you want to run **MERK** off of your USB stick, double click the `.bat`
 
 # Running MERK with Python
 
-First, make sure that all the [requirements](#python-requirements) are installed. Next, [download **MERK**](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+First, make sure that all the [requirements](#python-requirements) are installed. Next, [download **MERK**](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
 
     python merk.py
 
@@ -98,7 +98,7 @@ There are three libraries that comes bundled with **MERK**:
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
     - Multiple channel and server windows can be open for viewing and chatting at once
     - All chat windows are contained in a single "parent" window
--   If you're using Windows, [you can run **MERK** without installing Python](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)!
+-   If you're using Windows, [you can run **MERK** without installing Python](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip)!
 - Dark mode!
   - Dark mode can be enabled from the commandline, or from the settings dialog
   - If dark mode is enabled from the settings dialog, an application restart is required
@@ -161,7 +161,12 @@ There are three libraries that comes bundled with **MERK**:
 
   <p align="center">
  <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/settings.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/settings_small.png"></a></center></br>
-  <center><i><small>The first "page" of the settings dialog. MERK features over 80 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center>
+  <center><i><small>The first "page" of the settings dialog. MERK features over 100 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center>
+  </p>
+
+  <p align="center">
+ <center><a href="https://github.com/nutjob-laboratories/merk//raw/main/graphics/channels.png"><img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/channels_small.png"></a></center></br>
+  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera</a> network.</small></i></center>
   </p>
   
 # Usage
@@ -274,7 +279,7 @@ All of these commands can be issued from the text input widget, or from scripts.
 
 
 # Example Commandline Usage
-In the following examples, the first commandline is how you would do the task using **MERK** as a [Python script](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip), and second commandline is how you would do it using the [**MERK** Windows executable](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip). Note that the commandlines, other than the initial executable, are the same!
+In the following examples, the first commandline is how you would do the task using **MERK** as a [Python script](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-latest.zip), and second commandline is how you would do it using the [**MERK** Windows executable](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip). Note that the commandlines, other than the initial executable, are the same!
 
 Let's assume that you want to use the commandline to connect **MERK** to the `2600.net` network and join the `#linux` channel:
 ```
