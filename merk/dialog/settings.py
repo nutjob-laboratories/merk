@@ -164,6 +164,12 @@ class Dialog(QDialog):
 		self.rerenderNick = True
 		self.selector.setFocus()
 
+	def changedMenuOption(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.windowbar_change = True
+		self.selector.setFocus()
+
 	def changeUser(self,state):
 		self.user_changed = True
 		self.changed.show()
@@ -797,6 +803,15 @@ class Dialog(QDialog):
 
 		self.examineTopic.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+
+		self.showChannelList = QCheckBox("Show channel list option in\nthe windows menu",self)
+		if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU: self.showChannelList.setChecked(True)
+		self.showChannelList.stateChanged.connect(self.changedMenuOption)
+
+		self.showChannelList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -815,6 +830,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.examineTopic)
+		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.forceDefault)
 		applicationLayout.addStretch()
 
@@ -2437,6 +2453,7 @@ class Dialog(QDialog):
 		config.REQUEST_CHANNEL_LIST_ON_CONNECTION = self.requestList.isChecked()
 		config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = self.examineTopic.isChecked()
 		config.WINDOWBAR_INCLUDE_LIST = self.windowbarLists.isChecked()
+		config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU = self.showChannelList.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:

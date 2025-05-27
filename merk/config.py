@@ -168,10 +168,12 @@ INTERPOLATE_ALIASES_INTO_INPUT = True
 REQUEST_CHANNEL_LIST_ON_CONNECTION = True
 EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = True
 WINDOWBAR_INCLUDE_LIST = False
+SHOW_CHANNEL_LIST_IN_WINDOWS_MENU = True
 
 def save_settings(filename):
 
 	settings = {
+		"show_channel_list_entry_in_windows_menu": SHOW_CHANNEL_LIST_IN_WINDOWS_MENU,
 		"windowbar_include_channel_lists": WINDOWBAR_INCLUDE_LIST,
 		"examine_topic_in_channel_list_search": EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH,
 		"request_channel_list_on_connection": REQUEST_CHANNEL_LIST_ON_CONNECTION,
@@ -307,6 +309,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_channel_list_entry_in_windows_menu" in settings:
+		settings["show_channel_list_entry_in_windows_menu"] = SHOW_CHANNEL_LIST_IN_WINDOWS_MENU
 	if not "windowbar_include_channel_lists" in settings:
 		settings["windowbar_include_channel_lists"] = WINDOWBAR_INCLUDE_LIST
 	if not "examine_topic_in_channel_list_search" in settings:
@@ -699,6 +703,7 @@ def load_settings(filename):
 	global REQUEST_CHANNEL_LIST_ON_CONNECTION
 	global EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH
 	global WINDOWBAR_INCLUDE_LIST
+	global SHOW_CHANNEL_LIST_IN_WINDOWS_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -708,6 +713,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_LIST_IN_WINDOWS_MENU = settings["show_channel_list_entry_in_windows_menu"]
 		WINDOWBAR_INCLUDE_LIST = settings["windowbar_include_channel_lists"]
 		EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = settings["examine_topic_in_channel_list_search"]
 		REQUEST_CHANNEL_LIST_ON_CONNECTION = settings["request_channel_list_on_connection"]

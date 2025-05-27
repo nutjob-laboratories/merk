@@ -2804,6 +2804,13 @@ class Merk(QMainWindow):
 			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
 			self.helpMenu.addAction(entry)
 
+	def menuChannelList(self,sw):
+		c = sw.widget()
+		if c.client.channel_list_window==None:
+			self.newListWindow(c.client,sw)
+		else:
+			self.showSubWindow(c.client.channel_list_window)
+
 	def buildWindowsMenu(self):
 
 		# Rebuild systray menu
@@ -2845,11 +2852,34 @@ class Merk(QMainWindow):
 				if len(total)>0:
 					sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
 
-					entry = QAction(QIcon(CONSOLE_ICON),name,self)
-					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
+					c = sw.widget()
+					if hasattr(c.client,"network"):
+						mynet = c.client.network
+					else:
+						mynet = "Unknown"
+
+					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+						netlink = get_network_link(mynet)
+						if netlink!=None:
+							desc = f"<a href=\"{netlink}\">IRC Network</a>"
+						else:
+							desc = "IRC Network"
+					else:
+						desc = "IRC Network"
+
+					entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 					sm.addAction(entry)
 
 					sm.addSeparator()
+
+					if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
+						entry = QAction(QIcon(LIST_ICON),"Server channel list",self)
+						entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
+						sm.addAction(entry)
+
+					entry = QAction(QIcon(CONSOLE_ICON),name,self)
+					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
+					sm.addAction(entry)
 
 					for w in wl:
 						c = w.widget()
