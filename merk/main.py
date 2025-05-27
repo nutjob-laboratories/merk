@@ -324,6 +324,13 @@ class Merk(QMainWindow):
 					if w.isVisible():
 						window_list.append(self.getServerSubWindow(entry))
 
+			if config.WINDOWBAR_INCLUDE_LIST:
+				w = self.getServerSubWindow(entry)
+				if hasattr(w,"widget"):
+					c = w.widget()
+					if c.client.channel_list_window!=None:
+						if self.hasSubWindow(c.client.channel_list_window):
+							window_list.append(c.client.channel_list_window)
 			
 			for window in self.getAllSubChatWindows(entry):
 				if hasattr(window,"widget"):
@@ -427,6 +434,13 @@ class Merk(QMainWindow):
 						else:
 							wname = os.path.basename(c.filename)
 							serv_name = c.filename
+				elif c.window_type==LIST_WINDOW:
+					icon = LIST_ICON
+					serv_name = "Channel list"
+					if c.client.hostname:
+						wname = c.client.hostname
+					else:
+						wname = c.client.server+":"+str(entry.port)
 
 				if config.WINDOWBAR_SHOW_ICONS:
 					button = menubar.get_icon_windowbar_button(icon,wname)
@@ -446,6 +460,8 @@ class Merk(QMainWindow):
 				if c.window_type==SERVER_WINDOW:
 					button.setToolTip(serv_name)
 				if c.window_type==EDITOR_WINDOW:
+					button.setToolTip(wname)
+				if c.window_type==LIST_WINDOW:
 					button.setToolTip(wname)
 
 				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
@@ -505,6 +521,16 @@ class Merk(QMainWindow):
 						else:
 							wname = os.path.basename(c.filename)
 							serv_name = c.filename
+				elif c.window_type==LIST_WINDOW:
+					icon = LIST_ICON
+					serv_name = "Channel list"
+					if c.client.hostname:
+						wname = name = c.client.hostname
+					else:
+						wname = c.client.server+":"+str(entry.port)
+
+					if c.client.network:
+						serv_name = serv_name + " ("+c.client.network+")"
 
 				button = menubar.get_icon_only_toolbar_button(icon)
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
@@ -522,6 +548,8 @@ class Merk(QMainWindow):
 				if c.window_type==SERVER_WINDOW:
 					button.setToolTip(serv_name)
 				if c.window_type==EDITOR_WINDOW:
+					button.setToolTip(wname)
+				if c.window_type==LIST_WINDOW:
 					button.setToolTip(wname)
 
 				button.setFixedHeight(18)
@@ -2046,6 +2074,11 @@ class Merk(QMainWindow):
 						c.hide()
 		self.buildWindowsMenu()
 
+	def hasSubWindow(self,subwindow):
+		for window in self.MDI.subWindowList():
+			if window==subwindow: return True
+		return False
+
 	def newChannelWindow(self,name,client):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
@@ -2132,6 +2165,9 @@ class Merk(QMainWindow):
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
 		w.show()
+
+		client.channel_list_window = w
+		self.buildWindowsMenu()
 
 		return w
 

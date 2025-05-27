@@ -167,10 +167,12 @@ AUTOCOMPLETE_ALIAS = True
 INTERPOLATE_ALIASES_INTO_INPUT = True
 REQUEST_CHANNEL_LIST_ON_CONNECTION = True
 EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = True
+WINDOWBAR_INCLUDE_LIST = False
 
 def save_settings(filename):
 
 	settings = {
+		"windowbar_include_channel_lists": WINDOWBAR_INCLUDE_LIST,
 		"examine_topic_in_channel_list_search": EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH,
 		"request_channel_list_on_connection": REQUEST_CHANNEL_LIST_ON_CONNECTION,
 		"interpolate_aliases_into_user_input": INTERPOLATE_ALIASES_INTO_INPUT,
@@ -305,6 +307,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "windowbar_include_channel_lists" in settings:
+		settings["windowbar_include_channel_lists"] = WINDOWBAR_INCLUDE_LIST
 	if not "examine_topic_in_channel_list_search" in settings:
 		settings["examine_topic_in_channel_list_search"] = EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH
 	if not "request_channel_list_on_connection" in settings:
@@ -694,6 +698,7 @@ def load_settings(filename):
 	global INTERPOLATE_ALIASES_INTO_INPUT
 	global REQUEST_CHANNEL_LIST_ON_CONNECTION
 	global EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH
+	global WINDOWBAR_INCLUDE_LIST
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -703,6 +708,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_INCLUDE_LIST = settings["windowbar_include_channel_lists"]
 		EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = settings["examine_topic_in_channel_list_search"]
 		REQUEST_CHANNEL_LIST_ON_CONNECTION = settings["request_channel_list_on_connection"]
 		INTERPOLATE_ALIASES_INTO_INPUT = settings["interpolate_aliases_into_user_input"]

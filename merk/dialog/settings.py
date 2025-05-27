@@ -438,6 +438,7 @@ class Dialog(QDialog):
 			self.windowbarMenu.setEnabled(True)
 			self.windowbarPrivate.setEnabled(True)
 			self.windowbarChannels.setEnabled(True)
+			self.windowbarLists.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -450,6 +451,7 @@ class Dialog(QDialog):
 			self.windowbarMenu.setEnabled(False)
 			self.windowbarPrivate.setEnabled(False)
 			self.windowbarChannels.setEnabled(False)
+			self.windowbarLists.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -1245,6 +1247,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_PRIVATE: self.windowbarPrivate.setChecked(True)
 		self.windowbarPrivate.stateChanged.connect(self.menuChange)
 
+		self.windowbarLists = QCheckBox("Include server channel lists",self)
+		if config.WINDOWBAR_INCLUDE_LIST: self.windowbarLists.setChecked(True)
+		self.windowbarLists.stateChanged.connect(self.menuChange)
+
 
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
@@ -1258,6 +1264,7 @@ class Dialog(QDialog):
 			self.windowbarMenu.setEnabled(False)
 			self.windowbarPrivate.setEnabled(False)
 			self.windowbarChannels.setEnabled(False)
+			self.windowbarLists.setEnabled(False)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -1270,6 +1277,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowbarPrivate)
 		windowbarLayout.addWidget(self.windowBarServers)
 		windowbarLayout.addWidget(self.windowBarEditor)
+		windowbarLayout.addWidget(self.windowbarLists)
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarMenu)
@@ -2428,6 +2436,7 @@ class Dialog(QDialog):
 		config.INTERPOLATE_ALIASES_INTO_INPUT = self.interpolateAlias.isChecked()
 		config.REQUEST_CHANNEL_LIST_ON_CONNECTION = self.requestList.isChecked()
 		config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = self.examineTopic.isChecked()
+		config.WINDOWBAR_INCLUDE_LIST = self.windowbarLists.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:

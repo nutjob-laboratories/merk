@@ -599,7 +599,7 @@ class Window(QMainWindow):
 			self.client.sendLine("LIST")
 			return
 		if self.client.channel_list_window==None:
-			self.client.channel_list_window = self.parent.newListWindow(self.client,self)
+			self.parent.newListWindow(self.client,self)
 		else:
 			self.parent.showSubWindow(self.client.channel_list_window)
 
