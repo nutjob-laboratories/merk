@@ -143,9 +143,14 @@ class Window(QMainWindow):
 		#self.refresh_list()
 		pass
 
+	def doExternalSearch(self,search_terms):
+		self.search_terms.setText(search_terms)
+		self.doSearch()
+
 	def doSearch(self):
 
 		self.table_widget.clear()
+
 		target = self.search_terms.text()
 
 		results = []

@@ -126,6 +126,7 @@ class IRC_Connection(irc.IRCClient):
 		self.channel_list_window = None
 		self.did_delayed_channel_list = False
 		self.need_to_get_list = False
+		self.list_search_terms = None
 
 		self.banlists = defaultdict(list)
 

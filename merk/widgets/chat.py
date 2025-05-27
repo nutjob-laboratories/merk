@@ -603,6 +603,21 @@ class Window(QMainWindow):
 		else:
 			self.parent.showSubWindow(self.client.channel_list_window)
 
+	def showChannelListSearch(self,search_terms):
+		if len(self.client.server_channel_list)==0:
+			self.client.need_to_get_list = True
+			self.client.sendLine("LIST")
+			self.client.list_search_terms = search_terms
+			return
+		if self.client.channel_list_window==None:
+			w = self.parent.newListWindow(self.client,self)
+			c = w.widget()
+			c.doExternalSearch(search_terms)
+		else:
+			self.parent.showSubWindow(self.client.channel_list_window)
+			c = self.client.channel_list_window.widget()
+			c.doExternalSearch(search_terms)
+
 	def toggleStatusBar(self):
 		if self.window_type==SERVER_WINDOW:
 			if not config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS:

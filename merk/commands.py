@@ -515,49 +515,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
 
-			if len(window.client.server_channel_list)==0:
-				t = Message(ERROR_MESSAGE,'',"Channel list is empty, please use "+config.ISSUE_COMMAND_SYMBOL+"refresh to populate it.")
-				window.writeText(t)
-				return True
-
 			tokens.pop(0)
 			target = ' '.join(tokens)
-			results = []
-			t = Message(SYSTEM_MESSAGE,'',"Searching for \""+target+"\"...")
-			window.writeText(t,False)
-			for entry in window.client.server_channel_list:
-				channel_name = entry[0]
-				channel_count = entry[1]
-				channel_topic = entry[2]
-				if fnmatch.fnmatch(channel_name,f"{target}"):
-					results.append(entry)
-				if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH:
-					if fnmatch.fnmatch(channel_topic,f"{target}"):
-						results.append(entry)
 
-			results = remove_duplicate_sublists(results)
-
-			if len(results)==0:
-				t = Message(ERROR_MESSAGE,'',"No results found.")
-				window.writeText(t)
-				return True
-
-			for entry in results:
-				channel_name = entry[0]
-				channel_count = entry[1]
-				channel_topic = entry[2]
-				if len(channel_topic)>0:
-					t = Message(LIST_MESSAGE,'','')
-					t.channel = channel_name
-					t.channel_count = channel_count
-					t.channel_topic = channel_topic
-				else:
-					t = Message(LIST_MESSAGE,'','')
-					t.channel = channel_name
-					t.channel_count = channel_count
-				window.writeText(t,False)
-			t = Message(SYSTEM_MESSAGE,'',"Search for \""+target+"\" complete, "+str(len(results))+" entries found.")
-			window.writeText(t,False)
+			# Show the channel list window and inject search
+			window.showChannelListSearch(target)
 			return True
 
 	# |-------|
