@@ -78,13 +78,18 @@ class Window(QMainWindow):
 		self.table_widget.setTextElideMode(Qt.ElideRight)
 
 		self.table_widget.itemDoubleClicked.connect(self.on_double_click)
-		self.populate_table(self.data)
 
-		
 		self.search_terms = QLineEdit('')
 		self.search_button = QPushButton("Search")
-		self.reset_button = QPushButton("Reset")
-		self.refresh = QPushButton("Refresh")
+		self.reset_button = QPushButton("Filter/Reset")
+		self.refresh = QPushButton("Fetch List")
+
+		self.moreFive = QCheckBox("5+",self)
+		self.moreFive.stateChanged.connect(self.moreFiveClick)
+
+		self.moreTwo = QCheckBox("2+",self)
+		self.moreTen = QCheckBox("10+",self)
+		self.moreTwenty = QCheckBox("20+",self)
 
 		self.search_terms.setPlaceholderText("Enter search terms here")
 		self.search_button.setDefault(True) 
@@ -99,14 +104,23 @@ class Window(QMainWindow):
 		self.sLayout.addWidget(self.reset_button)
 		self.sLayout.addWidget(self.refresh)
 
+		self.cLayout = QHBoxLayout()
+		self.cLayout.addWidget(QLabel('<b>Channel user count:</b>'))
+		self.cLayout.addWidget(self.moreTwo)
+		self.cLayout.addWidget(self.moreFive)
+		self.cLayout.addWidget(self.moreTen)
+		self.cLayout.addWidget(self.moreTwenty)
+		self.cLayout.addStretch()
+
 		self.windowDescription = QLabel(f"""
 			<small>
-			This is a list of channels on <b>{self.server_name}</b>. To join a channel in the
+			This is a list of channels on <b>{self.server_name} ({self.network})</b>. To join a channel in the
 			list, double click on the line the channel appears on. To search the
 			list, enter search terms below, using <b>*</b> for multi-character wildcards,
 			and <b>?</b> for single character wildcards, and press the <b>Search</b> button.
-			To reset the list after a search, press <b>Reset</b> to re-display all channels.
-			Press <b>Refresh</b> to request a fresh channel list from the server.
+			To reset the list after a search, press <b>Filter/Reset</b> to re-display all channels or
+			to filter list on channel user count.
+			Press <b>Fetch List</b> to request a fresh channel list from the server.
 			</small>
 			""")
 		self.windowDescription.setWordWrap(True)
@@ -115,12 +129,19 @@ class Window(QMainWindow):
 		self.layout = QVBoxLayout()
 		self.layout.addWidget(self.windowDescription)
 		self.layout.addLayout(self.sLayout)
+		self.layout.addLayout(self.cLayout)
 		self.layout.addWidget(self.table_widget)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()
 		self.centralWidget.setLayout(self.layout)
 		self.setCentralWidget(self.centralWidget)
+
+		self.populate_table(self.data)
+
+	def moreFiveClick(self):
+		#self.refresh_list()
+		pass
 
 	def doSearch(self):
 
@@ -140,11 +161,30 @@ class Window(QMainWindow):
 
 		results = remove_duplicate_sublists(results)
 
+		data_count = 0
 		for entry in results:
-			if int(entry[1])==1:
-				count = "1 user"
-			else:
-				count = f"{entry[1]} users"
+			try:
+				if int(entry[1])==1:
+					count = "(1 user)"
+				else:
+					count = f"({entry[1]} users)"
+				icount = int(entry[1])
+			except:
+				count = ""
+				icount = 0
+			add_entry = True
+			if self.moreTwo.isChecked():
+				if icount<2:
+					add_entry = False
+			if self.moreFive.isChecked():
+				if icount<5:
+					add_entry = False
+			if self.moreTen.isChecked():
+				if icount<10:
+					add_entry = False
+			if self.moreTwenty.isChecked():
+				if icount<20:
+					add_entry = False
 			if len(entry[2])==0:
 				e = f"{entry[0]} ({count})"
 			else:
@@ -155,9 +195,11 @@ class Window(QMainWindow):
 			font.setBold(True)
 			i.setFont(font)
 			i.channel = entry[0]
-			self.table_widget.addItem(i)
+			if add_entry:
+				self.table_widget.addItem(i)
+				data_count = data_count + 1
 
-		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {len(results)} channels")
+		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {data_count} channels")
 
 	def doRefresh(self):
 		self.client.doing_list_refresh = True
@@ -176,14 +218,30 @@ class Window(QMainWindow):
 		self.client.join(item.channel)
 
 	def populate_table(self, data):
+		data_count = 0
 		for entry in data:
 			try:
 				if int(entry[1])==1:
 					count = "(1 user)"
 				else:
 					count = f"({entry[1]} users)"
+				icount = int(entry[1])
 			except:
 				count = ""
+				icount = 0
+			add_entry = True
+			if self.moreTwo.isChecked():
+				if icount<2:
+					add_entry = False
+			if self.moreFive.isChecked():
+				if icount<5:
+					add_entry = False
+			if self.moreTen.isChecked():
+				if icount<10:
+					add_entry = False
+			if self.moreTwenty.isChecked():
+				if icount<20:
+					add_entry = False
 			if len(entry[2])==0:
 				e = f"{entry[0]} {count}"
 			else:
@@ -194,8 +252,10 @@ class Window(QMainWindow):
 			font.setBold(True)
 			i.setFont(font)
 			i.channel = entry[0]
-			self.table_widget.addItem(i)
+			if add_entry:
+				self.table_widget.addItem(i)
+				data_count = data_count + 1
 
-		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {len(data)} channels")
+		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {data_count} channels")
 
 	

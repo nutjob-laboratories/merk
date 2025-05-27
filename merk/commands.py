@@ -509,25 +509,8 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				window.writeText(t)
 				return True
 
-			for entry in window.client.server_channel_list:
-				channel_name = entry[0]
-				channel_count = entry[1]
-				channel_topic = entry[2]
-				if len(channel_topic)>0:
-					t = Message(LIST_MESSAGE,'','')
-					t.channel = channel_name
-					t.channel_count = channel_count
-					t.channel_topic = channel_topic
-				else:
-					t = Message(LIST_MESSAGE,'','')
-					t.channel = channel_name
-					t.channel_count = channel_count
-				window.writeText(t,False)
-			if len(window.client.server_channel_list)==1:
-				t = Message(SYSTEM_MESSAGE,'',"1 channel found.")
-			else:
-				t = Message(SYSTEM_MESSAGE,'',str(len(window.client.server_channel_list))+" channels found.")
-			window.writeText(t,False)
+			# No search terms, so open the channel list window
+			window.showChannelList()
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
