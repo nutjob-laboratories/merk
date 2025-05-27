@@ -198,7 +198,7 @@ class Window(QMainWindow):
 			self.join_button.setEnabled(False)
 			self.info_button.setEnabled(False)
 			self.script_button.setEnabled(False)
-			#self.list_button.setEnabled(False)
+			self.list_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
 

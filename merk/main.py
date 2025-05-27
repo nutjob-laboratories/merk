@@ -882,6 +882,7 @@ class Merk(QMainWindow):
 			w.join_button.setEnabled(True)
 			w.info_button.setEnabled(True)
 			w.script_button.setEnabled(True)
+			w.list_button.setEnabled(True)
 
 			self.buildWindowsMenu()
 		
@@ -1536,7 +1537,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(SYSTEM_MESSAGE,"",f"Channel list refresh is complete!")
 			w.writeText(t)
-			
+
 			if client.need_to_get_list:
 				client.need_to_get_list = False
 				w.showChannelList()

@@ -66,7 +66,7 @@ class Window(QMainWindow):
 		else:
 			self.network = "Unknown network"
 
-		self.setWindowTitle(f"Channel list for {self.server_name} ({self.network}) - {len(self.data)} channels")
+		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {len(self.data)} channels")
 
 		self.window_type = LIST_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
@@ -74,6 +74,8 @@ class Window(QMainWindow):
 		self.table_widget = QListWidget()
 
 		self.table_widget.setAlternatingRowColors(True)
+		# self.table_widget.setWordWrap(True)
+		self.table_widget.setTextElideMode(Qt.ElideRight)
 
 		self.table_widget.itemDoubleClicked.connect(self.on_double_click)
 		self.populate_table(self.data)
@@ -155,7 +157,7 @@ class Window(QMainWindow):
 			i.channel = entry[0]
 			self.table_widget.addItem(i)
 
-		self.setWindowTitle(f"Channel list for {self.server_name} ({self.network}) - {len(results)} channels")
+		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {len(results)} channels")
 
 	def doRefresh(self):
 		self.client.doing_list_refresh = True
@@ -194,6 +196,6 @@ class Window(QMainWindow):
 			i.channel = entry[0]
 			self.table_widget.addItem(i)
 
-		self.setWindowTitle(f"Channel list for {self.server_name} ({self.network}) - {len(data)} channels")
+		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {len(data)} channels")
 
 	
