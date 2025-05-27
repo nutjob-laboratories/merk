@@ -3226,10 +3226,10 @@ class Merk(QMainWindow):
 			if w.client.client_id in self.quitting:
 				return
 
-		if w.window_type==LIST_WINDOW: return
-
 		self.saveActive(subwindow)
 		self.buildWindowbar()
+
+		if w.window_type==LIST_WINDOW: return
 
 		# Reset the window title
 		self.setWindowTitle(APPLICATION_NAME)

@@ -531,6 +531,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.editors)
 		menu.addAction(entry)
 
+		if config.WINDOWBAR_INCLUDE_LIST:
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel lists", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel lists", self)
+		entry.triggered.connect(self.list_window)
+		menu.addAction(entry)
+
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 			entry = QAction(QIcon(self.parent.checked_icon),"Doubleclick to maximize", self)
 		else:
@@ -619,6 +626,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_INCLUDE_EDITORS = False
 		else:
 			config.WINDOWBAR_INCLUDE_EDITORS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def list_window(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_INCLUDE_LIST:
+			config.WINDOWBAR_INCLUDE_LIST = False
+		else:
+			config.WINDOWBAR_INCLUDE_LIST = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)
