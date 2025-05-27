@@ -2877,6 +2877,9 @@ class Merk(QMainWindow):
 						entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
 						sm.addAction(entry)
 
+						if not c.list_button.isEnabled():
+							entry.setEnabled(False)
+
 					entry = QAction(QIcon(CONSOLE_ICON),name,self)
 					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
 					sm.addAction(entry)
