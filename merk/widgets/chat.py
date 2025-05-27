@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -161,6 +161,15 @@ class Window(QMainWindow):
 			self.script_button.setFlat(True)
 			serverBar.addWidget(self.script_button)
 
+			self.list_button = QPushButton("")
+			self.list_button.setIcon(QIcon(LIST_ICON))
+			self.list_button.clicked.connect(self.showChannelList)
+			self.list_button.setToolTip("Server channel list")
+			self.list_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.list_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.list_button.setFlat(True)
+			serverBar.addWidget(self.list_button)
+
 			serverBar.addStretch()
 
 			self.serverUptime = QLabel("<b>00:00:00</b>")
@@ -189,6 +198,7 @@ class Window(QMainWindow):
 			self.join_button.setEnabled(False)
 			self.info_button.setEnabled(False)
 			self.script_button.setEnabled(False)
+			#self.list_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
 
@@ -583,6 +593,16 @@ class Window(QMainWindow):
 				# the loaded log data is displayed
 				self.rerenderChatLog()
 
+	def showChannelList(self):
+		if len(self.client.server_channel_list)==0:
+			self.client.need_to_get_list = True
+			self.client.sendLine("LIST")
+			return
+		if self.client.channel_list_window==None:
+			self.client.channel_list_window = self.parent.newListWindow(self.client,self)
+		else:
+			self.parent.showSubWindow(self.client.channel_list_window)
+
 	def toggleStatusBar(self):
 		if self.window_type==SERVER_WINDOW:
 			if not config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS:
@@ -624,6 +644,10 @@ class Window(QMainWindow):
 
 				self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
 				self.contextRun.triggered.connect(self.loadScript)
+				menu.addAction(self.contextRun)
+
+				self.contextRun = QAction(QIcon(LIST_ICON),"Server channel list",self)
+				self.contextRun.triggered.connect(self.showChannelList)
 				menu.addAction(self.contextRun)
 
 				hostid = self.client.server+":"+str(self.client.port)

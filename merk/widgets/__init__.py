@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -30,3 +30,4 @@ from .plain_text import plainTextAction
 from .extendedmenuitem import ExtendedMenuItem,ExtendedMenuItemNoAction,DisabledExtendedMenuItem
 from .syntaxstyler import SyntaxColor,SyntaxTextColor
 from .editor import Window as ScriptEditor
+from .channel_list import Window as ChannelList

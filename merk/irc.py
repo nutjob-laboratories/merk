@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -123,7 +123,9 @@ class IRC_Connection(irc.IRCClient):
 		self.do_whois = []
 
 		self.server_channel_list = []
-		self.doing_list_refresh = False
+		self.channel_list_window = None
+		self.did_delayed_channel_list = False
+		self.need_to_get_list = False
 
 		self.banlists = defaultdict(list)
 
@@ -136,9 +138,7 @@ class IRC_Connection(irc.IRCClient):
 		self.server_channel_list.append( [channel_name,channel_count,channel_topic] )
 
 	def irc_RPL_LISTEND(self,prefix,params):
-		if self.doing_list_refresh:
-			self.gui.gotRefreshEnd(self)
-			self.doing_list_refresh = False
+		self.gui.gotRefreshEnd(self)
 
 	def irc_RPL_LISTSTART(self,prefix,params):
 		self.server_channel_list = []
@@ -146,6 +146,14 @@ class IRC_Connection(irc.IRCClient):
 	def uptime_beat(self):
 
 		self.uptime = self.uptime + 1
+
+		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
+			if self.uptime>=60:
+				if len(self.server_channel_list)==0:
+					if not self.did_delayed_channel_list:
+						self.did_delayed_channel_list = True
+						self.sendLine(f"LIST")
+
 
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
 			if len(self.do_whois)>0:
@@ -189,9 +197,6 @@ class IRC_Connection(irc.IRCClient):
 		self.uptimeTimer.start()
 
 		self.registered = True
-
-		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
-			self.sendLine(f"LIST")
 
 		self.gui.signedOn(self)
 

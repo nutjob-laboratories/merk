@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -166,10 +166,12 @@ ASK_BEFORE_CLOSE = False
 AUTOCOMPLETE_ALIAS = True
 INTERPOLATE_ALIASES_INTO_INPUT = True
 REQUEST_CHANNEL_LIST_ON_CONNECTION = True
+EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = True
 
 def save_settings(filename):
 
 	settings = {
+		"examine_topic_in_channel_list_search": EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH,
 		"request_channel_list_on_connection": REQUEST_CHANNEL_LIST_ON_CONNECTION,
 		"interpolate_aliases_into_user_input": INTERPOLATE_ALIASES_INTO_INPUT,
 		"autocomplete_aliases": AUTOCOMPLETE_ALIAS,
@@ -303,6 +305,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "examine_topic_in_channel_list_search" in settings:
+		settings["examine_topic_in_channel_list_search"] = EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH
 	if not "request_channel_list_on_connection" in settings:
 		settings["request_channel_list_on_connection"] = REQUEST_CHANNEL_LIST_ON_CONNECTION
 	if not "interpolate_aliases_into_user_input" in settings:
@@ -689,6 +693,7 @@ def load_settings(filename):
 	global AUTOCOMPLETE_ALIAS
 	global INTERPOLATE_ALIASES_INTO_INPUT
 	global REQUEST_CHANNEL_LIST_ON_CONNECTION
+	global EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -698,6 +703,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = settings["examine_topic_in_channel_list_search"]
 		REQUEST_CHANNEL_LIST_ON_CONNECTION = settings["request_channel_list_on_connection"]
 		INTERPOLATE_ALIASES_INTO_INPUT = settings["interpolate_aliases_into_user_input"]
 		AUTOCOMPLETE_ALIAS = settings["autocomplete_aliases"]

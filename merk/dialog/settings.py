@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -789,6 +789,12 @@ class Dialog(QDialog):
 		if config.ASK_BEFORE_CLOSE: self.askBeforeExit.setChecked(True)
 		self.askBeforeExit.stateChanged.connect(self.changedSetting)
 
+		self.examineTopic = QCheckBox("Examine topics in channel\nlist searches",self)
+		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.examineTopic.setChecked(True)
+		self.examineTopic.stateChanged.connect(self.changedSetting)
+
+		self.examineTopic.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -806,6 +812,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
+		applicationLayout.addWidget(self.examineTopic)
 		applicationLayout.addWidget(self.forceDefault)
 		applicationLayout.addStretch()
 
@@ -2420,6 +2427,7 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_ALIAS = self.autocompleteAlias.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_INPUT = self.interpolateAlias.isChecked()
 		config.REQUEST_CHANNEL_LIST_ON_CONNECTION = self.requestList.isChecked()
+		config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = self.examineTopic.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:

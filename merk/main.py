@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -905,6 +905,9 @@ class Merk(QMainWindow):
 			c = w.widget()
 			c.buildRunMenu()
 
+		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
+			client.sendLine(f"LIST")
+
 	def receivedMOTD(self,client,motd):
 
 		m = "<br>".join(motd)
@@ -1433,7 +1436,8 @@ class Merk(QMainWindow):
 
 		for w in self.getAllSubWindows(client):
 			c = w.widget()
-			c.tickUptime(uptime)
+			if hasattr(c,"tickUptime"):
+				c.tickUptime(uptime)
 
 	def whois(self,client,whoisdata):
 
@@ -1532,7 +1536,12 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(SYSTEM_MESSAGE,"",f"Channel list refresh is complete!")
 			w.writeText(t)
-
+			
+			if client.need_to_get_list:
+				client.need_to_get_list = False
+				w.showChannelList()
+		self.refreshChannelList(client)
+		self.buildWindowsMenu()
 
 	# |================|
 	# | END IRC EVENTS |
@@ -1686,7 +1695,17 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"client"):
 				if c.client.client_id == client.client_id:
-					c.refreshModeDisplay()
+					if hasattr(c,"refreshModeDisplay"): c.refreshModeDisplay()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
+	def refreshChannelList(self,client):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					if hasattr(c,"refresh_list"): c.refresh_list()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
@@ -2101,6 +2120,17 @@ class Merk(QMainWindow):
 
 		c = w.widget()
 		c.openScript(hostid)
+
+		return w
+
+	def newListWindow(self,client,parent):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ChannelList(client,client.server_channel_list,self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(LIST_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		w.show()
 
 		return w
 
@@ -3158,6 +3188,8 @@ class Merk(QMainWindow):
 		if hasattr(w,"client"):
 			if w.client.client_id in self.quitting:
 				return
+
+		if w.window_type==LIST_WINDOW: return
 
 		self.saveActive(subwindow)
 		self.buildWindowbar()

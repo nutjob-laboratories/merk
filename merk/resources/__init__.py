@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -140,6 +140,7 @@ CHANNEL_WINDOW = 0
 SERVER_WINDOW = 1
 PRIVATE_WINDOW = 2
 EDITOR_WINDOW = 3
+LIST_WINDOW = 4
 
 CHAT_WINDOW_WIDGET_SPACING = 5
 
@@ -265,6 +266,7 @@ DARK_SHOW_ICON = ":/gui-dark_show.png"
 SHOW_ICON = ":/icon-show.png"
 DARK_HIDE_ICON = ":/gui-dark_hide.png"
 HIDE_ICON = ":/icon-hide.png"
+LIST_ICON = ":/icon-list.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

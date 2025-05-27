@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2021  Daniel Hetrick
+# Copyright (C) 2025  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -491,8 +491,6 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	# |----------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'refresh' and len(tokens)==1:
-
-			window.client.doing_list_refresh = True
 			window.client.sendLine('LIST')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'refresh':
@@ -550,8 +548,9 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				channel_topic = entry[2]
 				if fnmatch.fnmatch(channel_name,f"{target}"):
 					results.append(entry)
-				if fnmatch.fnmatch(channel_topic,f"{target}"):
-					results.append(entry)
+				if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH:
+					if fnmatch.fnmatch(channel_topic,f"{target}"):
+						results.append(entry)
 
 			results = remove_duplicate_sublists(results)
 
