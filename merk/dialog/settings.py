@@ -769,8 +769,8 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 		
-		self.simpleConnect = QCheckBox("Simplified connection dialog",self)
-		if config.SIMPLIFIED_CONNECT_DIALOG: self.simpleConnect.setChecked(True)
+		self.simpleConnect = QCheckBox("Simplified dialogs",self)
+		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
 
 		if self.parent.simpleconn: self.simpleConnect.setEnabled(False)
@@ -825,7 +825,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addWidget(self.simpleConnect)
 		if self.parent.simpleconn:
-			applicationLayout.addWidget(QLabel("<small><i>Simplified connections dialogs turned on</i></small>"))
+			applicationLayout.addWidget(QLabel("<small><i>Simplified dialogs turned on</i></small>"))
 		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
@@ -2423,7 +2423,7 @@ class Dialog(QDialog):
 		config.MAIN_MENU_WINDOWS_NAME = self.default_windows_menu
 		config.MAIN_MENU_HELP_NAME = self.default_help_menu
 		config.DARK_MODE = self.darkMode.isChecked()
-		config.SIMPLIFIED_CONNECT_DIALOG = self.simpleConnect.isChecked()
+		config.SIMPLIFIED_DIALOGS = self.simpleConnect.isChecked()
 		config.SYSTEM_MESSAGE_PREFIX = self.system_prepend
 		config.WINDOWBAR_INCLUDE_CHANNELS = self.windowbarChannels.isChecked()
 		config.WINDOWBAR_INCLUDE_PRIVATE = self.windowbarPrivate.isChecked()

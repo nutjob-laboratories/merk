@@ -95,7 +95,7 @@ optiongroup.add_argument("-h","--help", help=f"Show help and usage information",
 optiongroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 optiongroup.add_argument("-x","--donotexecute", help=f"Do not execute connection script", action="store_true")
 optiongroup.add_argument("-t", "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
-optiongroup.add_argument( "-E","--simple", help=f"Show simplified connection dialog", action="store_true")
+optiongroup.add_argument( "-E","--simple", help=f"Show simplified dialogs", action="store_true")
 optiongroup.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
 optiongroup.add_argument( "-o","--on-top",dest="ontop", help=f"Application window always on top", action="store_true")
 
@@ -479,7 +479,7 @@ if __name__ == '__main__':
 				if args.simple:
 					connection_info = ConnectDialogSimplified(app,None,'','',args.donotexecute,args.donotsave)
 				else:
-					if config.SIMPLIFIED_CONNECT_DIALOG:
+					if config.SIMPLIFIED_DIALOGS:
 						connection_info = ConnectDialogSimplified(app,None,'','',args.donotexecute,args.donotsave)
 					else:
 						connection_info = ConnectDialog(app,None,'','',args.donotexecute,args.donotsave)

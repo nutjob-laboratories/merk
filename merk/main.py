@@ -81,6 +81,8 @@ class Merk(QMainWindow):
 		self.simpleconn = simpleconn
 		self.ontop = ontop
 
+		if config.SIMPLIFIED_DIALOGS: self.simpleconn = True
+
 		if not test_if_window_background_is_light(self):
 			self.checked_icon = DARK_CHECKED_ICON
 			self.unchecked_icon = DARK_UNCHECKED_ICON
@@ -1582,7 +1584,7 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		if config.SIMPLIFIED_CONNECT_DIALOG:
+		if config.SIMPLIFIED_DIALOGS:
 			connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
 		else:
 			if self.simpleconn:
@@ -1655,7 +1657,7 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			if config.SIMPLIFIED_CONNECT_DIALOG:
+			if config.SIMPLIFIED_DIALOGS:
 				connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
 			else:
 				if self.simpleconn:
@@ -2445,10 +2447,10 @@ class Merk(QMainWindow):
 		self.buildSettingsMenu()
 
 	def settingsSimplified(self):
-		if config.SIMPLIFIED_CONNECT_DIALOG:
-			config.SIMPLIFIED_CONNECT_DIALOG = False
+		if config.SIMPLIFIED_DIALOGS:
+			config.SIMPLIFIED_DIALOGS = False
 		else:
-			config.SIMPLIFIED_CONNECT_DIALOG = True
+			config.SIMPLIFIED_DIALOGS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
@@ -2608,12 +2610,13 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsWindowbar)
 		self.settingsMenu.addAction(entry)
 
-		if config.SIMPLIFIED_CONNECT_DIALOG:
-			entry = QAction(QIcon(self.checked_icon),"Simplified connection dialog", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Simplified connection dialog", self)
-		entry.triggered.connect(self.settingsSimplified)
-		self.settingsMenu.addAction(entry)
+		if not self.simpleconn:
+			if config.SIMPLIFIED_DIALOGS:
+				entry = QAction(QIcon(self.checked_icon),"Simplified dialogs", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Simplified dialogs", self)
+			entry.triggered.connect(self.settingsSimplified)
+			self.settingsMenu.addAction(entry)
 
 		if config.SOUND_NOTIFICATIONS:
 			entry = QAction(QIcon(self.checked_icon),"Audio notifications", self)

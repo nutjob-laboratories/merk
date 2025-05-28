@@ -85,11 +85,13 @@ class Window(QMainWindow):
 		self.refresh = QPushButton("Fetch List")
 
 		self.moreFive = QCheckBox("5+",self)
-		self.moreFive.stateChanged.connect(self.moreFiveClick)
-
 		self.moreTwo = QCheckBox("2+",self)
 		self.moreTen = QCheckBox("10+",self)
 		self.moreTwenty = QCheckBox("20+",self)
+
+		self.searchTopic = QCheckBox("Also search topics",self)
+		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.searchTopic.setChecked(True)
+		self.searchTopic.stateChanged.connect(self.changedSearchTopic)
 
 		self.search_terms.setPlaceholderText("Enter search terms here")
 		self.search_button.setDefault(True) 
@@ -110,24 +112,28 @@ class Window(QMainWindow):
 		self.cLayout.addWidget(self.moreFive)
 		self.cLayout.addWidget(self.moreTen)
 		self.cLayout.addWidget(self.moreTwenty)
+		self.cLayout.addWidget(QLabel(" <b>|</b> "))
+		self.cLayout.addWidget(self.searchTopic)
 		self.cLayout.addStretch()
 
-		self.windowDescription = QLabel(f"""
-			<small>
-			This is a list of channels on <b>{self.server_name} ({self.network})</b>. To join a channel in the
-			list, double click on the line the channel appears on. To search the
-			list, enter search terms below, using <b>*</b> for multi-character wildcards,
-			and <b>?</b> for single character wildcards, and press the <b>Search</b> button.
-			To reset the list after a search, press <b>Filter/Reset</b> to re-display all channels or
-			to filter list on channel user count.
-			Press <b>Fetch List</b> to request a fresh channel list from the server.
-			</small>
-			""")
-		self.windowDescription.setWordWrap(True)
-		self.windowDescription.setAlignment(Qt.AlignJustify)
+		if not self.parent.simpleconn:
+			self.windowDescription = QLabel(f"""
+				<small>
+				This is a list of channels on <b>{self.server_name} ({self.network})</b>. To join a channel in the
+				list, double click on the line the channel appears on. To search the
+				list, enter search terms below, using <b>*</b> for multi-character wildcards,
+				and <b>?</b> for single character wildcards, and press the <b>Search</b> button.
+				To reset the list after a search, press <b>Filter/Reset</b> to re-display all channels or
+				to filter list on channel user count.
+				Press <b>Fetch List</b> to request a fresh channel list from the server.
+				</small>
+				""")
+			self.windowDescription.setWordWrap(True)
+			self.windowDescription.setAlignment(Qt.AlignJustify)
 
 		self.layout = QVBoxLayout()
-		self.layout.addWidget(self.windowDescription)
+		if not self.parent.simpleconn:
+			self.layout.addWidget(self.windowDescription)
 		self.layout.addLayout(self.sLayout)
 		self.layout.addLayout(self.cLayout)
 		self.layout.addWidget(self.table_widget)
@@ -139,9 +145,12 @@ class Window(QMainWindow):
 
 		self.populate_table(self.data)
 
-	def moreFiveClick(self):
-		#self.refresh_list()
-		pass
+	def changedSearchTopic(self,i):
+		if self.searchTopic.isChecked():
+			config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = True
+		else:
+			config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = False
+		config.save_settings(config.CONFIG_FILE)
 
 	def doExternalSearch(self,search_terms):
 		self.search_terms.setText(search_terms)

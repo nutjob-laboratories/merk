@@ -136,7 +136,7 @@ MAIN_MENU_TOOLS_NAME = "Tools"
 MAIN_MENU_WINDOWS_NAME = "Windows"
 MAIN_MENU_HELP_NAME = "Help"
 DARK_MODE = False
-SIMPLIFIED_CONNECT_DIALOG = False
+SIMPLIFIED_DIALOGS = False
 EDITOR_PROMPT_SAVE = True
 WINDOWBAR_INCLUDE_CHANNELS = True
 WINDOWBAR_INCLUDE_PRIVATE = True
@@ -292,7 +292,7 @@ def save_settings(filename):
 		"main_menu_windows_name": MAIN_MENU_WINDOWS_NAME,
 		"main_menu_help_name": MAIN_MENU_HELP_NAME,
 		"dark_mode": DARK_MODE,
-		"simplified_connection_dialog": SIMPLIFIED_CONNECT_DIALOG,
+		"simplified_dialogs": SIMPLIFIED_DIALOGS,
 		"editor_prompt_save_on_close": EDITOR_PROMPT_SAVE,
 		"windowbar_include_channels": WINDOWBAR_INCLUDE_CHANNELS,
 		"windowbar_include_private": WINDOWBAR_INCLUDE_PRIVATE,
@@ -369,8 +369,8 @@ def patch_settings(settings):
 		settings["windowbar_include_channels"] = WINDOWBAR_INCLUDE_CHANNELS
 	if not "editor_prompt_save_on_close" in settings:
 		settings["editor_prompt_save_on_close"] = EDITOR_PROMPT_SAVE
-	if not "simplified_connection_dialog" in settings:
-		settings["simplified_connection_dialog"] = SIMPLIFIED_CONNECT_DIALOG
+	if not "simplified_dialogs" in settings:
+		settings["simplified_dialogs"] = SIMPLIFIED_DIALOGS
 	if not "dark_mode" in settings:
 		settings["dark_mode"] = DARK_MODE
 	if not "main_menu_irc_name" in settings:
@@ -671,7 +671,7 @@ def load_settings(filename):
 	global MENUBAR_MENU
 	global MAIN_MENU_HELP_NAME
 	global DARK_MODE
-	global SIMPLIFIED_CONNECT_DIALOG
+	global SIMPLIFIED_DIALOGS
 	global EDITOR_PROMPT_SAVE
 	global WINDOWBAR_INCLUDE_CHANNELS
 	global WINDOWBAR_INCLUDE_PRIVATE
@@ -745,7 +745,7 @@ def load_settings(filename):
 		WINDOWBAR_INCLUDE_CHANNELS = settings["windowbar_include_channels"]
 		WINDOWBAR_INCLUDE_PRIVATE = settings["windowbar_include_private"]
 		EDITOR_PROMPT_SAVE = settings["editor_prompt_save_on_close"]
-		SIMPLIFIED_CONNECT_DIALOG = settings["simplified_connection_dialog"]
+		SIMPLIFIED_DIALOGS = settings["simplified_dialogs"]
 		DARK_MODE = settings["dark_mode"]
 		MAIN_MENU_IRC_NAME = settings["main_menu_irc_name"]
 		MAIN_MENU_TOOLS_NAME = settings["main_menu_tools_name"]

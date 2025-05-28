@@ -208,7 +208,7 @@ Options:
   -d, --donotsave       Do not save new user settings
   -x, --donotexecute    Do not execute connection script
   -t, --reconnect       Reconnect to servers on disconnection
-  -E, --simple          Show simplified connection dialog
+  -E, --simple          Show simplified dialogs
   -R, --run             Don't ask for connection information on start
   -o, --on-top          Application window always on top
 
