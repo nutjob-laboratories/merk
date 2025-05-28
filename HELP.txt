@@ -43,7 +43,7 @@ pip <span class="hljs-keyword">install</span> service_identity
 <pre><code>usage: python merk.py [-h] [<span class="hljs-comment">--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]</span>
                       [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
                       [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x] [-o]
-                      [-t] [-E] [-R] [<span class="hljs-comment">--config-name NAME] [-Q NAME] [-D] [-L]</span>
+                      [-t] [-R] [<span class="hljs-comment">--config-name NAME] [-Q NAME] [-D] [-L]</span>
                       [<span class="hljs-comment">--config-directory DIRECTORY] [--config-local]</span>
                       [<span class="hljs-comment">--scripts-directory DIRECTORY] [--user-file FILENAME]</span>
                       [<span class="hljs-comment">--config-file FILENAME]</span>
@@ -77,7 +77,6 @@ Options:
   -d, <span class="hljs-comment">--donotsave       Do not save new user settings</span>
   -x, <span class="hljs-comment">--donotexecute    Do not execute connection script</span>
   -t, <span class="hljs-comment">--reconnect       Reconnect to servers on disconnection</span>
-  -E, <span class="hljs-comment">--simple          Show simplified dialogs</span>
   -R, <span class="hljs-comment">--run             Don't ask for connection information on start</span>
   -o, <span class="hljs-comment">--on-top          Application window always on top</span>
 
