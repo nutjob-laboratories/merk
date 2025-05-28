@@ -81,8 +81,6 @@ class Merk(QMainWindow):
 		self.simpleconn = simpleconn
 		self.ontop = ontop
 
-		if config.SIMPLIFIED_DIALOGS: self.simpleconn = True
-
 		if not test_if_window_background_is_light(self):
 			self.checked_icon = DARK_CHECKED_ICON
 			self.unchecked_icon = DARK_UNCHECKED_ICON
@@ -2449,8 +2447,10 @@ class Merk(QMainWindow):
 	def settingsSimplified(self):
 		if config.SIMPLIFIED_DIALOGS:
 			config.SIMPLIFIED_DIALOGS = False
+			self.simpleconn = False
 		else:
 			config.SIMPLIFIED_DIALOGS = True
+			self.simpleconn = True
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
@@ -2610,13 +2610,12 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsWindowbar)
 		self.settingsMenu.addAction(entry)
 
-		if not self.simpleconn:
-			if config.SIMPLIFIED_DIALOGS:
-				entry = QAction(QIcon(self.checked_icon),"Simplified dialogs", self)
-			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Simplified dialogs", self)
-			entry.triggered.connect(self.settingsSimplified)
-			self.settingsMenu.addAction(entry)
+		if config.SIMPLIFIED_DIALOGS:
+			entry = QAction(QIcon(self.checked_icon),"Simplified dialogs", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Simplified dialogs", self)
+		entry.triggered.connect(self.settingsSimplified)
+		self.settingsMenu.addAction(entry)
 
 		if config.SOUND_NOTIFICATIONS:
 			entry = QAction(QIcon(self.checked_icon),"Audio notifications", self)

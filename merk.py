@@ -95,7 +95,6 @@ optiongroup.add_argument("-h","--help", help=f"Show help and usage information",
 optiongroup.add_argument("-d","--donotsave", help=f"Do not save new user settings", action="store_true")
 optiongroup.add_argument("-x","--donotexecute", help=f"Do not execute connection script", action="store_true")
 optiongroup.add_argument("-t", "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
-optiongroup.add_argument( "-E","--simple", help=f"Show simplified dialogs", action="store_true")
 optiongroup.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
 optiongroup.add_argument( "-o","--on-top",dest="ontop", help=f"Application window always on top", action="store_true")
 
@@ -361,17 +360,17 @@ if __name__ == '__main__':
 		i = create_connection(args.server,args.port,args.password,args.ssl)
 
 		GUI = Merk(
-				app,				# Application
-				args.configdir,		# Config directory, default None for home directory storage
-				args.configname,	# Config directory name, default ".merk"
-				i,					# Connection info
-				font,				# Application font
-				chans,				# Channels
-				args.donotexecute,	# Do not execute script default
-				args.donotsave,		# Do not save default
-				args.simple,		# Simple connect default
-				args.ontop,			# Always on top
-				None,				# Parent
+				app,							# Application
+				args.configdir,					# Config directory, default None for home directory storage
+				args.configname,				# Config directory name, default ".merk"
+				i,								# Connection info
+				font,							# Application font
+				chans,							# Channels
+				args.donotexecute,				# Do not execute script default
+				args.donotsave,					# Do not save default
+				config.SIMPLIFIED_DIALOGS,		# Simple connect default
+				args.ontop,						# Always on top
+				None,							# Parent
 			)
 
 		startMERK(app,GUI)
@@ -403,17 +402,17 @@ if __name__ == '__main__':
 		if args.noask:
 			# Create the main GUI and show it
 			GUI = Merk(
-					app,				# Application
-					args.configdir,		# Config directory, default None for home directory storage
-					args.configname,	# Config directory name, default ".merk"
-					None,				# Connection info
-					font,				# Application font
-					[],					# Channels
-					args.donotexecute,	# Do not execute script default
-					args.donotsave,		# Do not save default
-					args.simple,		# Simple connect default
-					args.ontop,			# Always on top
-					None,				# Parent
+					app,							# Application
+					args.configdir,					# Config directory, default None for home directory storage
+					args.configname,				# Config directory name, default ".merk"
+					None,							# Connection info
+					font,							# Application font
+					[],								# Channels
+					args.donotexecute,				# Do not execute script default
+					args.donotsave,					# Do not save default
+					config.SIMPLIFIED_DIALOGS,		# Simple connect default
+					args.ontop,						# Always on top
+					None,							# Parent
 				)
 
 			startMERK(app,GUI)
@@ -476,27 +475,24 @@ if __name__ == '__main__':
 
 			# Bring up the connection dialog
 			if len(connections)==0:
-				if args.simple:
+				if config.SIMPLIFIED_DIALOGS:
 					connection_info = ConnectDialogSimplified(app,None,'','',args.donotexecute,args.donotsave)
 				else:
-					if config.SIMPLIFIED_DIALOGS:
-						connection_info = ConnectDialogSimplified(app,None,'','',args.donotexecute,args.donotsave)
-					else:
-						connection_info = ConnectDialog(app,None,'','',args.donotexecute,args.donotsave)
+					connection_info = ConnectDialog(app,None,'','',args.donotexecute,args.donotsave)
 				if connection_info:
 					# Create the main GUI and show it
 					GUI = Merk(
-							app,				# Application
-							args.configdir,		# Config directory, default None for home directory storage
-							args.configname,	# Config directory name, default ".merk"
-							connection_info,	# Connection info
-							font,				# Application font
-							[],					# Channels
-							args.donotexecute,	# Do not execute script default
-							args.donotsave,		# Do not save default
-							args.simple,		# Simple connect default
-							args.ontop,			# Always on top
-							None,				# Parent
+							app,							# Application
+							args.configdir,					# Config directory, default None for home directory storage
+							args.configname,				# Config directory name, default ".merk"
+							connection_info,				# Connection info
+							font,							# Application font
+							[],								# Channels
+							args.donotexecute,				# Do not execute script default
+							args.donotsave,					# Do not save default
+							config.SIMPLIFIED_DIALOGS,		# Simple connect default
+							args.ontop,						# Always on top
+							None,							# Parent
 						)
 
 					startMERK(app,GUI)
@@ -522,17 +518,17 @@ if __name__ == '__main__':
 
 				# Create the main GUI and show it
 				GUI = Merk(
-						app,				# Application
-						args.configdir,		# Config directory, default None for home directory storage
-						args.configname,	# Config directory name, default ".merk"
-						connections,		# Connection info
-						font,				# Application font
-						chans,				# Channels
-						args.donotexecute,	# Do not execute script default
-						args.donotsave,		# Do not save default
-						args.simple,		# Simple connect default
-						args.ontop,			# Always on top
-						None,				# Parent
+						app,							# Application
+						args.configdir,					# Config directory, default None for home directory storage
+						args.configname,				# Config directory name, default ".merk"
+						connections,					# Connection info
+						font,							# Application font
+						chans,							# Channels
+						args.donotexecute,				# Do not execute script default
+						args.donotsave,					# Do not save default
+						config.SIMPLIFIED_DIALOGS,		# Simple connect default
+						args.ontop,						# Always on top
+						None,							# Parent
 					)
 
 				startMERK(app,GUI)

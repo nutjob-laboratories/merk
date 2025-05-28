@@ -772,8 +772,6 @@ class Dialog(QDialog):
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
-
-		if self.parent.simpleconn: self.simpleConnect.setEnabled(False)
 		
 		self.maxOnStart = QCheckBox("Maximize window on startup",self)
 		if config.MAXIMIZE_ON_STARTUP: self.maxOnStart.setChecked(True)
@@ -810,8 +808,6 @@ class Dialog(QDialog):
 
 		self.showChannelList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-
-
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -824,8 +820,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(self.showSystray)
 		applicationLayout.addWidget(self.simpleConnect)
-		if self.parent.simpleconn:
-			applicationLayout.addWidget(QLabel("<small><i>Simplified dialogs turned on</i></small>"))
 		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
@@ -2454,6 +2448,11 @@ class Dialog(QDialog):
 		config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = self.examineTopic.isChecked()
 		config.WINDOWBAR_INCLUDE_LIST = self.windowbarLists.isChecked()
 		config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU = self.showChannelList.isChecked()
+
+		if self.simpleConnect.isChecked():
+			self.parent.simpleconn = True
+		else:
+			self.parent.simpleconn = False
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:
