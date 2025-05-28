@@ -1,0 +1,322 @@
+<h1>MERK 0.039.033</h1>
+
+<p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
+<h1 id="table-of-contents">Table of contents</h1>
+<ul>
+<li><a href="#Summary">Summary</a></li>
+<li><a href="#making-merk-portable-on-windows">Making MERK Portable on Windows</a></li>
+<li><a href="#python-requirements">Python Requirements</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#example-commandline-usage">Example commandline usage</a></li>
+<li><a href="#why-does-merk-exist">Why does MERK exist?</a></li>
+<li><a href="#what-does-merk-mean">What does MERK mean?</a></li>
+<li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
+</ul>
+<h1 id="summary">Summary</h1>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.039.033</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>.  <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
+<p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at <strong>irc.libera.chat</strong>, port <strong>6667</strong> (you can also connect via SSL on port <strong>6697</strong>). Honestly, I work a lot, so I&#39;m almost always idle, but I pop in and chat a few times a day!</p>
+<h1 id="making-merk-portable-on-windows">Making MERK Portable on Windows</h1>
+<p>If you want to run <strong>MERK</strong> from a USB stick, and save all configuration and user data to the USB stick (or wherever you&#39;re running <strong>MERK</strong> from), it&#39;s really easy. First, open <a href="https://en.wikipedia.org/wiki/Windows_Notepad">Notepad</a>, and enter this into a new document:</p>
+<p><code>merk.exe --config-local</code></p>
+<p>Save this file to wherever you extracted <strong>MERK</strong> to. You can give it any name you&#39;d like, as long as the file extension you save the file to is <code>BAT</code>. So, if you&#39;d like to name the file &quot;MyMerk&quot;, you&#39;d save the file with the name <code>MyMerk.bat</code>. You&#39;re done! You&#39;ve made <strong>MERK</strong> portable.</p>
+<p>Whenever you want to run <strong>MERK</strong> off of your USB stick, double click the <code>.bat</code> file you created instead of <code>merk.exe</code>. This will run <strong>MERK</strong> completely normally, only all configuration files will be saved to the same directory <strong>MERK</strong> &quot;lives&quot; in. So, you can take <strong>MERK</strong> with you on your USB stick, and it will keep all the configuration files and logs on the USB stick.</p>
+<h1 id="python-requirements">Python Requirements</h1>
+<p><strong>MERK</strong> requires Python 3, <a href="https://pypi.org/project/PyQt5/">PyQt5</a>, and <a href="https://twistedmatrix.com/trac/">Twisted</a>. PyQt5 and Twisted can be installed by using <a href="https://pypi.org/project/pip/"><strong>pip</strong></a>:</p>
+<pre><code>pip <span class="hljs-keyword">install</span> pyqt5
+pip <span class="hljs-keyword">install</span> Twisted
+</code></pre><p>To connect to IRC servers via SSL, two additional libraries may be needed:</p>
+<pre><code>pip <span class="hljs-keyword">install</span> pyOpenSSL
+pip <span class="hljs-keyword">install</span> service_identity
+</code></pre><p><strong>MERK</strong> is being developed with Python 3.13 on Windows 11 and Linux Mint.</p>
+<p>If you&#39;re running Windows, and you&#39;re getting errors when trying to run <strong>MERK</strong>, you may have to install another library, <a href="https://pypi.org/project/pywin32/">pywin32</a>. You can also install this with <a href="https://pypi.org/project/pip/"><strong>pip</strong></a>:</p>
+<pre><code>pip <span class="hljs-keyword">install</span> pywin32
+</code></pre><p>To run properly on Linux, the latest version of all required software is recommended.</p>
+<p>There are three libraries that comes bundled with <strong>MERK</strong>:</p>
+<ul>
+<li><a href="https://github.com/twisted/qt5reactor">qt5reactor</a></li>
+<li><a href="https://github.com/barrust/pyspellchecker">pyspellchecker</a></li>
+<li><a href="https://github.com/carpedm20/emoji">emoji</a></li>
+</ul>
+<h1 id="usage">Usage</h1>
+<pre><code>usage: python merk.py [-h] [<span class="hljs-comment">--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]</span>
+                      [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
+                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x] [-o]
+                      [-t] [-E] [-R] [<span class="hljs-comment">--config-name NAME] [-Q NAME] [-D] [-L]</span>
+                      [<span class="hljs-comment">--config-directory DIRECTORY] [--config-local]</span>
+                      [<span class="hljs-comment">--scripts-directory DIRECTORY] [--user-file FILENAME]</span>
+                      [<span class="hljs-comment">--config-file FILENAME]</span>
+                      [SERVER] [PORT]
+
+Connection:
+  SERVER                Server to connect to
+  PORT                  Server port to connect to (6667)
+  <span class="hljs-comment">--ssl, --tls          Use SSL/TLS to connect to IRC</span>
+  -p, <span class="hljs-comment">--password PASSWORD</span>
+                        <span class="hljs-keyword">Use</span> <span class="hljs-keyword">server</span> <span class="hljs-keyword">password</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">connect</span>
+  -c, <span class="hljs-comment">--channel CHANNEL[:KEY]</span>
+                        <span class="hljs-keyword">Join</span> channel <span class="hljs-keyword">on</span> <span class="hljs-keyword">connection</span>
+  -C, <span class="hljs-comment">--connect SERVER:PORT[:PASSWORD]</span>
+                        <span class="hljs-keyword">Connect</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">server</span> via TCP/IP
+  -S, <span class="hljs-comment">--connectssl SERVER:PORT[:PASSWORD]</span>
+                        <span class="hljs-keyword">Connect</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">server</span> via SSL/TLS
+
+<span class="hljs-keyword">User</span> Information:
+  -n, <span class="hljs-comment">--nickname NICKNAME</span>
+                        <span class="hljs-keyword">Use</span> this nickname <span class="hljs-keyword">to</span> <span class="hljs-keyword">connect</span>
+  -u, <span class="hljs-comment">--username USERNAME</span>
+                        <span class="hljs-keyword">Use</span> this username <span class="hljs-keyword">to</span> <span class="hljs-keyword">connect</span>
+  -a, <span class="hljs-comment">--alternate NICKNAME</span>
+                        <span class="hljs-keyword">Use</span> this alternate nickname <span class="hljs-keyword">to</span> <span class="hljs-keyword">connect</span>
+  -r, <span class="hljs-comment">--realname REALNAME</span>
+                        <span class="hljs-keyword">Use</span> this realname <span class="hljs-keyword">to</span> <span class="hljs-keyword">connect</span>
+
+Options:
+  -h, <span class="hljs-comment">--help            Show help and usage information</span>
+  -d, <span class="hljs-comment">--donotsave       Do not save new user settings</span>
+  -x, <span class="hljs-comment">--donotexecute    Do not execute connection script</span>
+  -t, <span class="hljs-comment">--reconnect       Reconnect to servers on disconnection</span>
+  -E, <span class="hljs-comment">--simple          Show simplified dialogs</span>
+  -R, <span class="hljs-comment">--run             Don't ask for connection information on start</span>
+  -o, <span class="hljs-comment">--on-top          Application window always on top</span>
+
+Files <span class="hljs-keyword">and</span> Directories:
+  <span class="hljs-comment">--config-name NAME    Name of the configuration file directory (default: .merk)</span>
+  <span class="hljs-comment">--config-directory DIRECTORY</span>
+                        Location <span class="hljs-keyword">to</span> <span class="hljs-keyword">store</span> configuration files
+  <span class="hljs-comment">--config-local        Store configuration files in install directory</span>
+  <span class="hljs-comment">--scripts-directory DIRECTORY</span>
+                        Location <span class="hljs-keyword">to</span> look <span class="hljs-keyword">for</span> script files
+  <span class="hljs-comment">--user-file FILENAME  File to use for user data</span>
+  <span class="hljs-comment">--config-file FILENAME</span>
+                        <span class="hljs-keyword">File</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> <span class="hljs-keyword">for</span> configuration <span class="hljs-keyword">data</span>
+
+Appearance:
+  -Q, <span class="hljs-comment">--qtstyle NAME    Set Qt widget style (default: Windows)</span>
+  -D, <span class="hljs-comment">--dark            Run in dark mode</span>
+  -L, <span class="hljs-comment">--light           Run in light mode</span>
+</code></pre><h1 id="commands">Commands</h1>
+<p>All of these commands can be issued from the text input widget, or from scripts.</p>
+<table>
+<thead>
+<tr>
+<th>Commands</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/help</code></td>
+<td>Displays command usage information</td>
+</tr>
+<tr>
+<td><code>/me MESSAGE...</code></td>
+<td>Sends a CTCP action message to the current chat</td>
+</tr>
+<tr>
+<td><code>/msg TARGET MESSAGE...</code></td>
+<td>Sends a message</td>
+</tr>
+<tr>
+<td><code>/notice TARGET MESSAGE...</code></td>
+<td>Sends a notice</td>
+</tr>
+<tr>
+<td><code>/join CHANNEL [KEY]</code></td>
+<td>Joins a channel</td>
+</tr>
+<tr>
+<td><code>/part CHANNEL [MESSAGE]</code></td>
+<td>Leaves a channel</td>
+</tr>
+<tr>
+<td><code>/nick NEW_NICKNAME</code></td>
+<td>Changes your nickname</td>
+</tr>
+<tr>
+<td><code>/topic CHANNEL NEW_TOPIC</code></td>
+<td>Sets a channel topic</td>
+</tr>
+<tr>
+<td><code>/mode TARGET MODE...</code></td>
+<td>Sets a mode on a channel or user</td>
+</tr>
+<tr>
+<td><code>/invite NICKNAME CHANNEL</code></td>
+<td>Sends a channel invitation</td>
+</tr>
+<tr>
+<td><code>/kick CHANNEL NICKNAME [MESSAGE]</code></td>
+<td>Kicks a user from a channel</td>
+</tr>
+<tr>
+<td><code>/whois NICKNAME [SERVER]</code></td>
+<td>Requests user information from the server</td>
+</tr>
+<tr>
+<td><code>/who NICKNAME [o]</code></td>
+<td>Requests user information from the server</td>
+</tr>
+<tr>
+<td><code>/whowas NICKNAME [COUNT] [SERVER]</code></td>
+<td>Requests information about previously connected users</td>
+</tr>
+<tr>
+<td><code>/quit [MESSAGE]</code></td>
+<td>Disconnects from the current IRC server</td>
+</tr>
+<tr>
+<td><code>/oper USERNAME PASSWORD</code></td>
+<td>Logs into an operator account</td>
+</tr>
+<tr>
+<td><code>/away [MESSAGE]</code></td>
+<td>Sets status as &quot;away&quot;</td>
+</tr>
+<tr>
+<td><code>/back</code></td>
+<td>Sets status as &quot;back&quot;</td>
+</tr>
+<tr>
+<td><code>/raw TEXT...</code></td>
+<td>Sends unprocessed data to the server</td>
+</tr>
+<tr>
+<td><code>/time</code></td>
+<td>Requests server time</td>
+</tr>
+<tr>
+<td><code>/version [SERVER]</code></td>
+<td>Requests server version</td>
+</tr>
+<tr>
+<td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server</td>
+</tr>
+<tr>
+<td><code>/connectssl SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server via SSL</td>
+</tr>
+<tr>
+<td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server &amp; executes connection script</td>
+</tr>
+<tr>
+<td><code>/xconnectssl SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server via SSL &amp; executes connection script</td>
+</tr>
+<tr>
+<td><code>/print TEXT...</code></td>
+<td>Prints text to the current window</td>
+</tr>
+<tr>
+<td><code>/focus [SERVER] WINDOW</code></td>
+<td>Switches focus to another window</td>
+</tr>
+<tr>
+<td><code>/maximize [SERVER] WINDOW</code></td>
+<td>Maximizes a window</td>
+</tr>
+<tr>
+<td><code>/minimize [SERVER] WINDOW</code></td>
+<td>Minimizes a window</td>
+</tr>
+<tr>
+<td><code>/restore [SERVER] WINDOW</code></td>
+<td>Restores a window</td>
+</tr>
+<tr>
+<td><code>/cascade</code></td>
+<td>Cascades all subwindows</td>
+</tr>
+<tr>
+<td><code>/tile</code></td>
+<td>Tiles all subwindows</td>
+</tr>
+<tr>
+<td><code>/clear [WINDOW]</code></td>
+<td>Clears a window&#39;s chat display</td>
+</tr>
+<tr>
+<td><code>/settings</code></td>
+<td>Opens the settings dialog</td>
+</tr>
+<tr>
+<td><code>/style</code></td>
+<td>Edits the current window&#39;s style</td>
+</tr>
+<tr>
+<td><code>/alias TOKEN TEXT...</code></td>
+<td>Creates an alias that can be referenced by <code>$TOKEN</code></td>
+</tr>
+<tr>
+<td><code>/alias</code></td>
+<td>Prints a list of all current aliases</td>
+</tr>
+<tr>
+<td><code>/script FILENAME</code></td>
+<td>Executes a list of commands in a file</td>
+</tr>
+<tr>
+<td><code>/edit [FILENAME]</code></td>
+<td>Opens a script in the editor</td>
+</tr>
+<tr>
+<td><code>/play FILENAME</code></td>
+<td>Plays a WAV file</td>
+</tr>
+<tr>
+<td><code>/list [TERMS]</code></td>
+<td>Lists or searches channels on the server; use &quot;*&quot; for multi-character wildcard and &quot;?&quot; for single character</td>
+</tr>
+<tr>
+<td><code>/refresh</code></td>
+<td>Requests a new list of channels from the server</td>
+</tr>
+<tr>
+<td><code>/wait SECONDS</code></td>
+<td>Pauses script execution for <code>SECONDS</code>; can only be called from scripts</td>
+</tr>
+</tbody>
+</table>
+<h1 id="example-commandline-usage">Example Commandline Usage</h1>
+<p>In the following examples, the first commandline is how you would do the task using <strong>MERK</strong> as a Python script, and second commandline is how you would do it using the <strong>MERK</strong> Windows executable. Note that the commandlines, other than the initial executable, are the same!</p>
+<p>Let&#39;s assume that you want to use the commandline to connect <strong>MERK</strong> to the <code>2600.net</code> network and join the <code>#linux</code> channel:</p>
+<pre><code>python merk<span class="hljs-selector-class">.py</span> --channel <span class="hljs-string">"#linux"</span> irc.<span class="hljs-number">2600</span><span class="hljs-selector-class">.net</span> <span class="hljs-number">6667</span>
+</code></pre><pre><code>merk<span class="hljs-selector-class">.exe</span> --channel <span class="hljs-string">"#linux"</span> irc.<span class="hljs-number">2600</span><span class="hljs-selector-class">.net</span> <span class="hljs-number">6667</span>
+</code></pre><p>Easy, right? Now let&#39;s try something a little more complex. Let&#39;s say you want to connect the the <code>Libera</code> network, which uses SSL/TLS. You want to use a different nickname than you normally use; you want to use the nickname <code>merker</code>, but you don&#39;t want to save this nickname as your default. When you join the network, you want to join two channels: <code>#python</code> and <code>#merk</code>:</p>
+<pre><code>python merk<span class="hljs-selector-class">.py</span> --donotsave -n merker -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span> --ssl irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span> <span class="hljs-number">6697</span>
+</code></pre><pre><code>merk<span class="hljs-selector-class">.exe</span> --donotsave -n merker -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span> --ssl irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span> <span class="hljs-number">6697</span>
+</code></pre><p>You can do some things with the commandline that you can&#39;t do with the GUI. Let&#39;s say that you&#39;re using <strong>MERK</strong> on a computer that someone else also uses for <strong>MERK</strong>. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you&#39;ve stored some <strong>MERK</strong> scripts in the &quot;C:\Merk_Scripts&quot; folder. You don&#39;t want <strong>MERK</strong> to ask you for a server to connect to, you just want it to start up, and you can choose a server from the &quot;IRC&quot; menu:</p>
+<pre><code>python merk<span class="hljs-selector-class">.py</span> --light --config-name <span class="hljs-selector-class">.mymerk</span> --scripts-directory <span class="hljs-string">"C:\Merk_Scripts"</span> --run
+</code></pre><pre><code>merk<span class="hljs-selector-class">.exe</span> --light --config-name <span class="hljs-selector-class">.mymerk</span> --scripts-directory <span class="hljs-string">"C:\Merk_Scripts"</span> --run
+</code></pre><p>Now, let&#39;s try something that commonly done with other IRC clients: connecting to multiple servers automatically on startup. You want to use your standard settings, but connect to three different IRC servers as soon as you run <strong>MERK</strong>: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:</p>
+<pre><code><span class="hljs-selector-tag">python</span> <span class="hljs-selector-tag">merk</span><span class="hljs-selector-class">.py</span> <span class="hljs-selector-tag">-C</span> <span class="hljs-selector-tag">irc</span><span class="hljs-selector-class">.2600</span><span class="hljs-selector-class">.net</span><span class="hljs-selector-pseudo">:6667</span> <span class="hljs-selector-tag">-S</span> <span class="hljs-selector-tag">irc</span><span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span><span class="hljs-selector-pseudo">:6697</span> <span class="hljs-selector-tag">-C</span> <span class="hljs-selector-tag">us</span><span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span><span class="hljs-selector-pseudo">:6667</span>
+</code></pre><pre><code><span class="hljs-selector-tag">merk</span><span class="hljs-selector-class">.exe</span> <span class="hljs-selector-tag">-C</span> <span class="hljs-selector-tag">irc</span><span class="hljs-selector-class">.2600</span><span class="hljs-selector-class">.net</span><span class="hljs-selector-pseudo">:6667</span> <span class="hljs-selector-tag">-S</span> <span class="hljs-selector-tag">irc</span><span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span><span class="hljs-selector-pseudo">:6697</span> <span class="hljs-selector-tag">-C</span> <span class="hljs-selector-tag">us</span><span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span><span class="hljs-selector-pseudo">:6667</span>
+</code></pre><p>This command will start up <strong>MERK</strong> and connect to three of these servers without any extra effort!</p>
+<p>You can do a lot of things from the commandline. For a really complicated example, let&#39;s try this scenario. Here&#39;s what this commandline will do:</p>
+<ul>
+<li>Connect to Libera via SSL/TLS</li>
+<li>Connect to DALnet via TCP/IP</li>
+<li>Make sure that we reconnect automatically if we get disconnected from either of these servers</li>
+<li>Join the <code>#merk</code> and <code>#python</code> channels on both networks</li>
+<li>Make sure that we don&#39;t execute any connection scripts we have set up</li>
+<li>Run in &quot;light mode&quot;, regardless of what the configuration settings say</li>
+</ul>
+<p>Here&#39;s the set of arguments that will make all of that happen:</p>
+<pre><code>python merk<span class="hljs-selector-class">.py</span> -Ltx -S irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span>:<span class="hljs-number">6697</span> -C us<span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span>:<span class="hljs-number">6667</span> -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span>
+</code></pre><pre><code>merk<span class="hljs-selector-class">.exe</span> -Ltx -S irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span>:<span class="hljs-number">6697</span> -C us<span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span>:<span class="hljs-number">6667</span> -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span>
+</code></pre><p>All commandline options are what they say on the tin: <em>optional</em>. Just running the script with no commandline options will initally open up the connection dialog, and you can do just about everything completely inside the GUI.</p>
+<h1 id="why-does-merk-exist-">Why does MERK exist?</h1>
+<p>It&#39;s simple. I don&#39;t currently like any of the other IRC clients. I&#39;ve used many, <em>many</em> other IRC clients for Windows and Linux, and they just didn&#39;t feel <em>right</em>. They weren&#39;t customizable enough, didn&#39;t have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called <a href="https://github.com/nutjob-laboratories/erk"><strong>Ərk</strong></a>, and although I liked developing it and working on it, I honestly didn&#39;t use it that much. I fell out of love with the &quot;single window&quot; interface that so many other IRC clients use, and decided to try something &quot;new&quot; (and by &quot;new&quot; I mean 30 years old). I remembered using <a href="https://www.mirc.com/">mIRC</a> back when I was younger, and decided to try and write a new client that used the <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a> style I remember fondly. And thus, <strong>MERK</strong> was born!</p>
+<h1 id="what-does-merk-mean-">What does MERK mean?</h1>
+<p>Well, if you were to pronounce &quot;IRC&quot; as a word and not an acronym, it would probably be pronounced <em>/Ərk/</em>. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the &quot;M&quot; stands for. Either that, or &quot;multiple-document interface&quot;. &quot;MDIIRC&quot; doesn&#39;t exactly roll off the tongue, so we combined the &quot;M&quot; with the word-pronunciation of IRC, and came up with <strong>MERK</strong>!</p>
+<h1 id="does-merk-need-any-help-">Does MERK need any help?</h1>
+<p>Yes! <strong>MERK</strong> is being written by me, <a href="https://github.com/danhetrick">Dan Hetrick</a>, a software developer that can not do everything that this piece of software needs. There&#39;s few things I need help with!</p>
+<ul>
+<li><strong>Icons and other graphics work</strong>. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for <strong>MERK</strong>. I&#39;m doing my best, here, but I&#39;m a computer programmer, not an artist!</li>
+<li><strong>Packaging</strong>. <strong>MERK</strong> now has a <a href="https://www.pyinstaller.org/">PyInstaller</a>-based distribution! However, I can&#39;t seem to get PyInstaller working on a Linux binary for reasons that are beyond me. I&#39;d love some help on getting packaging for Linux, be it with PyInstaller or anything else that&#39;s easy for end-users to use. I also know next to nothing about making Python packages for use with  <code>pip</code>, but that&#39;s another thing I&#39;d love help with!</li>
+<li><strong>Using MERK and giving me feedback</strong>. Let me know what you love about <strong>MERK</strong> and what you hate about <strong>MERK</strong>! Got ideas for ways you&#39;d like to customize the client? Features you&#39;d like? Let me know! I can&#39;t guarantee that I&#39;ll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using <strong>MERK</strong>!</li>
+</ul>
+<p>Contacting me is easy! Drop me an <a href="mailto:dhetrick@gmail.com">email</a> or say hi in the official <strong>MERK</strong> IRC channel: <code>#merk</code> on the Libera network (<code>irc.libera.chat</code>, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I&#39;m not always active, but I idle in <code>#merk</code> everyday, and pop in to talk to people when I have a spare minute.</p>

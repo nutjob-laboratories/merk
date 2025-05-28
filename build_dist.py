@@ -74,6 +74,20 @@ f = open("README.md",mode="w", encoding='latin-1')
 f.write(readme)
 f.close()
 
+x = open("HELP.txt",mode="r", encoding='latin-1')
+helptext = str(x.read())
+x.close()
+
+helptext = helptext.replace("!_VERSION_!",major)
+helptext = helptext.replace("!_MINOR_!",minor)
+helptext = helptext.replace("!_FULL_VERSION_!",major+"."+minor)
+helptext = helptext.replace("!_WIN_VERSION_!",win_major+"."+win_minor)
+
+os.remove("README.html")
+f = open("README.html",mode="w", encoding='latin-1')
+f.write(helptext)
+f.close()
+
 # Build distribution zips
 
 os.mkdir("./dist")
@@ -86,6 +100,7 @@ shutil.copytree("./emoji", "./dist/emoji",ignore=shutil.ignore_patterns('*.pyc',
 shutil.copy("./merk.py", "./dist/merk.py")
 shutil.copy("./LICENSE", "./dist/LICENSE")
 shutil.copy("./merk.ico", "./dist/merk.ico")
+shutil.copy("./README.html", "./dist/README.html")
 
 if "Windows" in devp:
 	os.system("powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('dist', 'dist.zip'); }\" ")
