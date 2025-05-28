@@ -2870,8 +2870,6 @@ class Merk(QMainWindow):
 					entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 					sm.addAction(entry)
 
-					sm.addSeparator()
-
 					if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
 						entry = QAction(QIcon(LIST_ICON),"Server channel list",self)
 						entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
@@ -2879,6 +2877,8 @@ class Merk(QMainWindow):
 
 						if not c.list_button.isEnabled():
 							entry.setEnabled(False)
+
+					sm.addSeparator()
 
 					entry = QAction(QIcon(CONSOLE_ICON),name,self)
 					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
