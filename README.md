@@ -20,18 +20,18 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. If you're having trouble downloading any of the files, I have all of the files [mirrored on my public Dropbox](https://www.dropbox.com/scl/fo/7s6fjes5stuxu471e35mr/AO9Y6L9wkCs4QCu2XGtobo8?rlkey=itmf22qmnazzh5ok16tb9ljan&st=sb7gsrsl&dl=0).
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. If you're having trouble downloading any of the files, here is a [mirror of all files on Dropbox](https://www.dropbox.com/scl/fo/7s6fjes5stuxu471e35mr/AO9Y6L9wkCs4QCu2XGtobo8?rlkey=itmf22qmnazzh5ok16tb9ljan&st=sb7gsrsl&dl=0).
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
-| Zip Archive|  Cross-platform  | [Download MERK 0.039.034 (3.51 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
-| Zip Archive|  Windows | [Download MERK 0.039.034 (50.38 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
-|   Windows Installer|  Windows | [Download MERK 0.039.034 (37.15 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip)|
-|   Single Executable|  Windows | [Download MERK 0.039.034 (49.97 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.zip)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.039.035 (3.51 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
+| Zip Archive|  Windows | [Download MERK 0.039.035 (50.38 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
+|   Windows Installer|  Windows | [Download MERK 0.039.035 (37.15 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip)|
+|   Single Executable|  Windows | [Download MERK 0.039.035 (49.97 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.zip)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.039.034**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.039.035**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
@@ -41,18 +41,18 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.039.034](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-setup.zip). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.039.035](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-setup.zip). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
 
-For a "portable" version of **MERK**, [download the zip file of **MERK** 0.039.034 for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
+For a "portable" version of **MERK**, [download the zip file of **MERK** 0.039.035 for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
 
-For an even easier "install", [download the "standalone" executable of **MERK** 0.039.034](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-standalone.zip) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
+For an even easier "install", [download the "standalone" executable of **MERK** 0.039.035](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-standalone.zip) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
 A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
 
 # Making MERK Portable on Windows
-If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.039.034 for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
+If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.039.035 for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
 
 ```merk.exe --config-local```
 

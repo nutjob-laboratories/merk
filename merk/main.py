@@ -2880,6 +2880,13 @@ class Merk(QMainWindow):
 						if not c.list_button.isEnabled():
 							entry.setEnabled(False)
 
+					ssetting = sm.addMenu(c.server_info_menu)
+					if c.client.kwargs["ssl"]:
+						icon = QIcon(VISITED_SECURE_ICON)
+					else:
+						icon = QIcon(VISITED_BOOKMARK_ICON)
+					ssetting.setIcon(icon)
+
 					sm.addSeparator()
 
 					entry = QAction(QIcon(CONSOLE_ICON),name,self)

@@ -121,9 +121,11 @@ class Window(QMainWindow):
 			else:
 				icon = QIcon(VISITED_BOOKMARK_ICON)
 
+			self.server_info_menu = buildServerSettingsMenu(self,self.client)
+
 			self.info_button = QPushButton("")
 			self.info_button.setIcon(icon)
-			self.info_button.setMenu(buildServerSettingsMenu(self,self.client))
+			self.info_button.setMenu(self.server_info_menu)
 			self.info_button.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.info_button.setToolTip("Server information")
 			self.info_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
@@ -860,7 +862,8 @@ class Window(QMainWindow):
 			self.banlist_menu.hide()
 
 	def refreshInfoMenu(self):
-		self.info_button.setMenu(buildServerSettingsMenu(self,self.client))
+		self.server_info_menu = buildServerSettingsMenu(self,self.client)
+		self.info_button.setMenu(self.server_info_menu)
 
 	def toggleInputMenu(self):
 		if config.SHOW_INPUT_MENU: 

@@ -20,7 +20,7 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. If you're having trouble downloading any of the files, I have all of the files [mirrored on my public Dropbox](https://www.dropbox.com/scl/fo/7s6fjes5stuxu471e35mr/AO9Y6L9wkCs4QCu2XGtobo8?rlkey=itmf22qmnazzh5ok16tb9ljan&st=sb7gsrsl&dl=0).
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. If you're having trouble downloading any of the files, here is a [mirror of all files on Dropbox](https://www.dropbox.com/scl/fo/7s6fjes5stuxu471e35mr/AO9Y6L9wkCs4QCu2XGtobo8?rlkey=itmf22qmnazzh5ok16tb9ljan&st=sb7gsrsl&dl=0).
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
