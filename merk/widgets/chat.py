@@ -80,6 +80,7 @@ class Window(QMainWindow):
 		self.owner = False
 		self.admin = False
 		self.halfop = False
+		self.protected = False
 
 		self.banlist = []
 
@@ -335,12 +336,18 @@ class Window(QMainWindow):
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.key_icon.setPixmap(pixmap)
 
+			self.protected_icon = QLabel(self)
+			pixmap = QPixmap(PROTECTED_USER)
+			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			self.protected_icon.setPixmap(pixmap)
+
 			self.op_icon.hide()
 			self.voice_icon.hide()
 			self.owner_icon.hide()
 			self.admin_icon.hide()
 			self.halfop_icon.hide()
 			self.key_icon.hide()
+			self.protected_icon.hide()
 
 			self.name_spacer = QLabel("")
 
@@ -351,6 +358,7 @@ class Window(QMainWindow):
 			nickLayout.addWidget(self.owner_icon)
 			nickLayout.addWidget(self.admin_icon)
 			nickLayout.addWidget(self.halfop_icon)
+			nickLayout.addWidget(self.protected_icon)
 			nickLayout.addWidget(self.name_spacer)
 		nickLayout.addWidget(self.nick_display)
 		nickLayout.addWidget(self.mode_display)
@@ -977,6 +985,7 @@ class Window(QMainWindow):
 			user_is_admin = False
 			user_is_owner = False
 			user_is_halfop = False
+			user_is_protected = False
 
 			raw_user = None
 
@@ -1014,6 +1023,11 @@ class Window(QMainWindow):
 					nick = nick.replace('%','')
 				else:
 					is_halfop = False
+				if '!' in nick:
+					is_protected = True
+					nick = nick.replace('!','')
+				else:
+					is_protected = False
 				if nick==user:
 					raw_user = u
 					user_nick = nick
@@ -1027,6 +1041,7 @@ class Window(QMainWindow):
 					user_is_owner = is_owner
 					user_is_admin = is_admin
 					user_is_halfop = is_halfop
+					user_is_protected = is_protected
 					break
 
 			if len(user_nick.strip())==0:
@@ -1045,6 +1060,9 @@ class Window(QMainWindow):
 				if '%' in user:
 					user_is_halfop = True
 					user = user.replace('%','')
+				if '!' in user:
+					user_is_protected = True
+					user = user.replace('!','')
 				user_nick = user
 
 				if user_nick in self.hostmasks:
@@ -1088,6 +1106,9 @@ class Window(QMainWindow):
 			elif user_is_halfop:
 				ICON = HALFOP_USER
 				OTHER_TEXT = "Channel half-operator"
+			elif user_is_protected:
+				ICON = PROTECTED_USER
+				OTHER_TEXT = "Protected user"
 			else:
 				ICON = PRIVATE_MENU_ICON
 				OTHER_TEXT = "Normal user"
@@ -1281,6 +1302,7 @@ class Window(QMainWindow):
 		self.owner = False
 		self.admin = False
 		self.halfop = False
+		self.protected = False
 
 		self.userlist.clear()
 
@@ -1290,6 +1312,7 @@ class Window(QMainWindow):
 		halfops = []
 		voiced = []
 		normal = []
+		protected = []
 
 		for u in users:
 			if len(u)<1: continue
@@ -1318,6 +1341,9 @@ class Window(QMainWindow):
 			elif '%' in nickname:
 				halfops.append(nickname.replace('%',''))
 				if nickname.replace('%','')==self.client.nickname: self.halfop = True
+			elif '!' in nickname:
+				protected.append(nickname.replace('!',''))
+				if nickname.replace('!','')==self.client.nickname: self.protected = True
 			else:
 				normal.append(nickname)
 
@@ -1331,6 +1357,7 @@ class Window(QMainWindow):
 		halfops.sort(key=str.lower)
 		voiced.sort(key=str.lower)
 		normal.sort(key=str.lower)
+		protected.sort(key=str.lower)
 
 		# Add owners
 		for u in owners:
@@ -1407,6 +1434,21 @@ class Window(QMainWindow):
 
 			self.userlist.addItem(ui)
 
+		# Add protected
+		for u in protected:
+			ui = QListWidgetItem()
+			if config.PLAIN_USER_LISTS:
+				ui.setText('! '+u)
+			else:
+				ui.setIcon(QIcon(PROTECTED_USER))
+				ui.setText(u)
+
+			if u==self.client.nickname:
+				if self.client.is_away:
+					self.change_to_away_display(ui)
+
+			self.userlist.addItem(ui)
+
 		# Add normal
 		for u in normal:
 			ui = QListWidgetItem()
@@ -1429,6 +1471,7 @@ class Window(QMainWindow):
 		self.owner_icon.hide()
 		self.admin_icon.hide()
 		self.halfop_icon.hide()
+		self.protected_icon.hide()
 
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
 			need_spacer = True
@@ -1446,6 +1489,9 @@ class Window(QMainWindow):
 				need_spacer = False
 			if self.halfop:
 				self.halfop_icon.show()
+				need_spacer = False
+			if self.protected:
+				self.protected_icon.show()
 				need_spacer = False
 
 			if need_spacer:
@@ -1946,6 +1992,34 @@ def buildServerSettingsMenu(self,client):
 
 	optionsMenu = QMenu("Server settings")
 
+	e = textSeparator(self,"Server")
+	optionsMenu.addAction(e)
+
+	if client.hostname:
+		name = client.hostname
+	else:
+		name = client.server+":"+str(client.port)
+
+	if hasattr(client,"network"):
+		mynet = client.network
+	else:
+		mynet = "Unknown"
+
+	e = plainTextAction(self,"<b>Host"+f":</b> {name}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Port"+f":</b> {client.port}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Network"+f":</b> {mynet}")
+	optionsMenu.addAction(e)
+
+	if client.kwargs["ssl"]:
+		e = plainTextAction(self,"<b>Connection:</b> SSL/TLS")
+	else:
+		e = plainTextAction(self,"<b>Connection:</b> TCP/IP")
+	optionsMenu.addAction(e)
+
 	e = textSeparator(self,"Limits")
 	optionsMenu.addAction(e)
 
@@ -2026,6 +2100,7 @@ def buildServerSettingsMenu(self,client):
 			if m=="a": e.setIcon(QIcon(ADMIN_USER))
 			if m=="q": e.setIcon(QIcon(OWNER_USER))
 			if m=="h": e.setIcon(QIcon(HALFOP_USER))
+			if m=="Y": e.setIcon(QIcon(PROTECTED_USER))
 			prefixmenu.addAction(e)
 		optionsMenu.addMenu(prefixmenu)
 
