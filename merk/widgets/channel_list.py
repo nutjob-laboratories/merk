@@ -74,7 +74,6 @@ class Window(QMainWindow):
 		self.table_widget = QListWidget()
 
 		self.table_widget.setAlternatingRowColors(True)
-		# self.table_widget.setWordWrap(True)
 		self.table_widget.setTextElideMode(Qt.ElideRight)
 
 		self.table_widget.itemDoubleClicked.connect(self.on_double_click)
@@ -89,7 +88,7 @@ class Window(QMainWindow):
 		self.moreTen = QCheckBox("10+",self)
 		self.moreTwenty = QCheckBox("20+",self)
 
-		self.searchTopic = QCheckBox("Also search topics",self)
+		self.searchTopic = QCheckBox("Search topics",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.searchTopic.setChecked(True)
 		self.searchTopic.stateChanged.connect(self.changedSearchTopic)
 
@@ -100,6 +99,10 @@ class Window(QMainWindow):
 		self.refresh.clicked.connect(self.doRefresh)
 		self.reset_button.clicked.connect(self.doReset)
 
+		self.allTerms = QCheckBox("Search all terms",self)
+		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.allTerms.setChecked(True)
+		self.allTerms.stateChanged.connect(self.changedAllTerms)
+
 		self.sLayout = QHBoxLayout()
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
@@ -107,12 +110,13 @@ class Window(QMainWindow):
 		self.sLayout.addWidget(self.refresh)
 
 		self.cLayout = QHBoxLayout()
-		self.cLayout.addWidget(QLabel('<b>Channel user count:</b>'))
+		self.cLayout.addWidget(QLabel("<b>User count:</b>"))
 		self.cLayout.addWidget(self.moreTwo)
 		self.cLayout.addWidget(self.moreFive)
 		self.cLayout.addWidget(self.moreTen)
 		self.cLayout.addWidget(self.moreTwenty)
 		self.cLayout.addWidget(QLabel(" <b>|</b> "))
+		self.cLayout.addWidget(self.allTerms)
 		self.cLayout.addWidget(self.searchTopic)
 		self.cLayout.addStretch()
 
@@ -145,6 +149,13 @@ class Window(QMainWindow):
 
 		self.populate_table(self.data)
 
+	def changedAllTerms(self,i):
+		if self.allTerms.isChecked():
+			config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST = True
+		else:
+			config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST = False
+		config.save_settings(config.CONFIG_FILE)
+
 	def changedSearchTopic(self,i):
 		if self.searchTopic.isChecked():
 			config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = True
@@ -167,6 +178,12 @@ class Window(QMainWindow):
 			channel_name = entry[0]
 			channel_count = entry[1]
 			channel_topic = entry[2]
+
+			if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
+				target = " ".join(target.split())
+				target = f"*{target}*"
+				target = target.replace(' ','*')
+
 			if fnmatch.fnmatch(channel_name,f"{target}"):
 				results.append(entry)
 			if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH:
