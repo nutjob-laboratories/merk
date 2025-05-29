@@ -165,6 +165,11 @@ There are three libraries that comes bundled with **MERK**:
   </p>
 
   <p align="center">
+ <center><a href="./graphics/menu.png"><img src="./graphics/menu.png"></a></center></br>
+  <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center>
+  </p>
+
+  <p align="center">
  <center><a href="./graphics/channels.png"><img src="./graphics/channels_small.png"></a></center></br>
   <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera</a> network.</small></i></center>
   </p>
