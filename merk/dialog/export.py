@@ -126,10 +126,11 @@ class Dialog(QDialog):
 				log = os.path.join(self.logdir, x)
 				if os.path.isfile(log):
 					p = os.path.basename(log).replace('.json','')
-					p = p.split('-')
+
+					p = p.split(LOG_AND_STYLE_FILENAME_DELIMITER,1)
 					if len(p)==2:
-						netname = p[0]
-						channel = p[1]
+						netname = deescape_for_filename(p[0])
+						channel = deescape_for_filename(p[1])
 
 						is_a_server_log = False
 						if len(netname)>1:

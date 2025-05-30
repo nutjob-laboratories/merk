@@ -41,6 +41,18 @@ def loadStyleFile(filename):
 	else:
 		return None
 
+def encodeStyleName(network,name=None):
+	network = network.replace(":","-")
+	network = network.lower()
+
+	network = escape_for_filename(network)
+
+	if name==None:
+		return f"{network}.style"
+	else:
+		name = escape_for_filename(name)
+		return f"{network}{LOG_AND_STYLE_FILENAME_DELIMITER}{name}.style"
+
 def saveStyle(client,channel,style,is_server_window=False):
 
 	if hasattr(client,"network"):
@@ -49,9 +61,10 @@ def saveStyle(client,channel,style,is_server_window=False):
 		starter = client.server+"-"+str(client.port)
 
 	if is_server_window:
-		fname = os.path.join(STYLE_DIRECTORY,client.server+"-"+str(client.port)+".style")
+		escaped_filename = encodeStyleName(client.server+"-"+str(client.port))
+		fname = os.path.join(STYLE_DIRECTORY,escaped_filename)
 	else:
-		fname = starter+"-"+channel+".style"
+		fname = encodeStyleName(starter,channel)
 		fname = os.path.join(STYLE_DIRECTORY,fname)
 
 	write_style_file(style,fname)
@@ -63,7 +76,7 @@ def loadDefault():
 	return read_style_file(STYLE_FILE)
 
 def loadStyleServer(client):
-	fname = os.path.join(STYLE_DIRECTORY,client.server+"-"+str(client.port)+".style")
+	fname = os.path.join(STYLE_DIRECTORY,encodeStyleName(client.server+"-"+str(client.port)))
 
 	if os.path.isfile(fname):
 		return read_style_file(fname)
@@ -85,7 +98,7 @@ def loadStyle(client,channel):
 	else:
 		starter = client.server+"-"+str(client.port)
 
-	fname = starter+"-"+channel+".style"
+	fname = encodeStyleName(starter,channel)
 	fname = os.path.join(STYLE_DIRECTORY,fname)
 
 	if os.path.isfile(fname):

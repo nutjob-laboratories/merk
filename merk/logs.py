@@ -81,10 +81,14 @@ def trimLog(ilog,maxsize):
 def encodeLogName(network,name=None):
 	network = network.replace(":","-")
 	network = network.lower()
+
+	network = escape_for_filename(network)
+
 	if name==None:
 		return f"{network}.json"
 	else:
-		return f"{network}-{name}.json"
+		name = escape_for_filename(name)
+		return f"{network}{LOG_AND_STYLE_FILENAME_DELIMITER}{name}.json"
 
 # Takes an array of Message() objects, converts it to
 # an AoA, and appens the AoA to a file containing

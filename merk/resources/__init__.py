@@ -68,6 +68,36 @@ SYSTEM_PREPEND_OPTIONS = [
 	"&mdash;",
 ]
 
+LOG_AND_STYLE_FILENAME_DELIMITER = "-"
+
+def escape_for_filename(filename):
+	filename = filename.replace('<','_lt_')
+	filename = filename.replace('>','_gt_')
+	filename = filename.replace(':','_cn_')
+	filename = filename.replace('"','_qu_')
+	filename = filename.replace('/','_fs_')
+	filename = filename.replace('\\','_bs_')
+	filename = filename.replace('|','_pp_')
+	filename = filename.replace('?','_qm_')
+	filename = filename.replace('*','_ax_')
+	filename = filename.replace(LOG_AND_STYLE_FILENAME_DELIMITER,'_dm_')
+
+	return filename
+
+def deescape_for_filename(filename):
+	filename = filename.replace('_lt_','<')
+	filename = filename.replace('_gt_','>')
+	filename = filename.replace('_cn_',':')
+	filename = filename.replace('_qu_','"')
+	filename = filename.replace('_fs_','/')
+	filename = filename.replace('_bs_','\\')
+	filename = filename.replace('_pp_','|')
+	filename = filename.replace('_qm_','?')
+	filename = filename.replace('_ax_','*')
+	filename = filename.replace('_dm_',LOG_AND_STYLE_FILENAME_DELIMITER)
+
+	return filename
+
 def remove_duplicate_sublists(list_of_lists):
 	seen = set()
 	new_list = []

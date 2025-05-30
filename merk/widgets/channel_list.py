@@ -80,13 +80,22 @@ class Window(QMainWindow):
 
 		self.search_terms = QLineEdit('')
 		self.search_button = QPushButton("Search")
-		self.reset_button = QPushButton("Filter/Reset")
+		self.reset_button = QPushButton("Reset")
 		self.refresh = QPushButton("Fetch List")
 
-		self.moreFive = QCheckBox("5+",self)
-		self.moreTwo = QCheckBox("2+",self)
-		self.moreTen = QCheckBox("10+",self)
-		self.moreTwenty = QCheckBox("20+",self)
+		self.moreFive = QRadioButton("5+",self)
+		self.moreTwo = QRadioButton("2+",self)
+		self.moreTen = QRadioButton("10+",self)
+		self.moreTwenty = QRadioButton("20+",self)
+		self.moreAny = QRadioButton("1+",self)
+
+		self.moreAny.setChecked(True)
+
+		self.moreTwo.toggled.connect(self.doReset)
+		self.moreFive.toggled.connect(self.doReset)
+		self.moreTen.toggled.connect(self.doReset)
+		self.moreTwenty.toggled.connect(self.doReset)
+		self.moreAny.toggled.connect(self.doReset)
 
 		self.searchTopic = QCheckBox("Search topics",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.searchTopic.setChecked(True)
@@ -97,7 +106,7 @@ class Window(QMainWindow):
 
 		self.search_button.clicked.connect(self.doSearch)
 		self.refresh.clicked.connect(self.doRefresh)
-		self.reset_button.clicked.connect(self.doReset)
+		self.reset_button.clicked.connect(self.doResetButton)
 
 		self.allTerms = QCheckBox("Search all terms",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.allTerms.setChecked(True)
@@ -111,6 +120,7 @@ class Window(QMainWindow):
 
 		self.cLayout = QHBoxLayout()
 		self.cLayout.addWidget(QLabel("<b>User count:</b>"))
+		self.cLayout.addWidget(self.moreAny)
 		self.cLayout.addWidget(self.moreTwo)
 		self.cLayout.addWidget(self.moreFive)
 		self.cLayout.addWidget(self.moreTen)
@@ -230,6 +240,8 @@ class Window(QMainWindow):
 				self.table_widget.addItem(i)
 				data_count = data_count + 1
 
+		self.table_widget.sortItems()
+
 		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {data_count} channels")
 
 	def doRefresh(self):
@@ -237,6 +249,11 @@ class Window(QMainWindow):
 		self.client.sendLine('LIST')
 
 	def doReset(self):
+		self.search_terms.setText('')
+		self.refresh_list()
+
+	def doResetButton(self):
+		self.moreAny.setChecked(True)
 		self.search_terms.setText('')
 		self.refresh_list()
 
@@ -286,6 +303,8 @@ class Window(QMainWindow):
 			if add_entry:
 				self.table_widget.addItem(i)
 				data_count = data_count + 1
+
+		self.table_widget.sortItems()
 
 		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {data_count} channels")
 
