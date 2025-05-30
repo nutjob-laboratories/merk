@@ -3180,19 +3180,20 @@ class Merk(QMainWindow):
 		d = ExportLogDialog(logs.LOG_DIRECTORY,None)
 		if d:
 			elog = d[0]
-			dlog = d[1]
-			llog = d[2]
-			do_json = d[3]
-			do_epoch = d[4]
+			channel = d[1]
+			dlog = d[2]
+			llog = d[3]
+			do_json = d[4]
+			do_epoch = d[5]
 			if not do_json:
 				options = QFileDialog.Options()
 				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
+				fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
 				if fileName:
-					# extension = os.path.splitext(fileName)[1]
-					# if extension.lower()!='txt': fileName = fileName + ".txt"
-					efl = len("txt")+1
-					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+					_, file_extension = os.path.splitext(fileName)
+					if file_extension=='':
+						efl = len("txt")+1
+						if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
 					dump = logs.dumpLog(elog,dlog,llog,do_epoch)
 					code = open(fileName,mode="w",encoding="utf-8")
 					code.write(dump)
@@ -3200,12 +3201,12 @@ class Merk(QMainWindow):
 			else:
 				options = QFileDialog.Options()
 				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getSaveFileName(self,"Save export As...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
+				fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
 				if fileName:
-					# extension = os.path.splitext(fileName)[1]
-					# if extension.lower()!='json': fileName = fileName + ".json"
-					efl = len("json")+1
-					if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
+					_, file_extension = os.path.splitext(fileName)
+					if file_extension=='':
+						efl = len("json")+1
+						if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
 					dump = logs.dumpLogJson(elog,do_epoch)
 					code = open(fileName,mode="w",encoding="utf-8")
 					code.write(dump)

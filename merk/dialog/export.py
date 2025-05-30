@@ -32,6 +32,7 @@ import sys
 import os
 from pathlib import Path
 import operator
+from .. import logs
 
 from ..resources import *
 
@@ -51,7 +52,7 @@ class Dialog(QDialog):
 
 		item = self.packlist.currentItem()
 		if item:
-			retval = [item.file,self.delimiter,self.linedelim, self.do_json, self.epoch]
+			retval = [item.file,item.channel,self.delimiter,self.linedelim, self.do_json, self.epoch]
 		else:
 			msg = QMessageBox()
 			msg.setIcon(QMessageBox.Critical)
@@ -62,7 +63,6 @@ class Dialog(QDialog):
 			return None
 
 		return retval
-
 
 	def clickTime(self,state):
 		if state == Qt.Checked:
@@ -99,6 +99,63 @@ class Dialog(QDialog):
 		event.accept()
 		self.close()
 
+	def show_context_menu(self, position: QPoint):
+		menu = QMenu(self)
+		item = self.packlist.itemAt(position)
+
+		if item is not None:
+
+			open_action = QAction(QIcon(OPENFILE_ICON),"Open native JSON log", self)
+			open_action.triggered.connect(lambda: self.open_item(item))
+			menu.addAction(open_action)
+
+			dir_action = QAction(QIcon(FOLDER_ICON),"Open log location", self)
+			dir_action.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+			menu.addAction(dir_action)
+
+			file_action = QAction(QIcon(CLIPBOARD_ICON),"Copy file name to clipboard", self)
+			file_action.triggered.connect(lambda: self.copy_file_to_clipboard(item))
+			menu.addAction(file_action)
+
+			channel_action = QAction(QIcon(CLIPBOARD_ICON),"Copy channel name to clipboard", self)
+			channel_action.triggered.connect(lambda: self.copy_channel_to_clipboard(item))
+			menu.addAction(channel_action)
+
+			menu.addSeparator()
+
+			delete_action = QAction(QIcon(CLOSE_ICON),"Delete log file", self)
+			delete_action.triggered.connect(lambda: self.delete_log(item))
+			menu.addAction(delete_action)
+
+			menu.exec_(self.packlist.mapToGlobal(position))
+
+	def open_item(self,item):
+		file_url = QUrl.fromLocalFile(item.file)
+		QDesktopServices.openUrl(file_url)
+
+	def copy_channel_to_clipboard(self,item):
+		cb = QApplication.clipboard()
+		cb.clear(mode=cb.Clipboard)
+		cb.setText(f"{item.channel}", mode=cb.Clipboard)
+
+	def copy_file_to_clipboard(self,item):
+		cb = QApplication.clipboard()
+		cb.clear(mode=cb.Clipboard)
+		cb.setText(f"{item.file}", mode=cb.Clipboard)
+
+	def delete_log(self, item):
+		msgBox = QMessageBox()
+		msgBox.setIconPixmap(QPixmap(LOG_ICON))
+		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		msgBox.setText("Are you sure you want to delete this log?")
+		msgBox.setWindowTitle("Delete log for "+item.channel+" ("+item.network+")")
+		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		rval = msgBox.exec()
+		if rval != QMessageBox.Cancel:
+			self.packlist.takeItem(self.packlist.row(item))
+			os.remove(item.file)
+
 	def __init__(self,logdir,parent=None,app=None):
 		super(Dialog,self).__init__(parent)
 
@@ -117,6 +174,9 @@ class Dialog(QDialog):
 		self.title = QLabel("<b>Select a log to export</b>")
 
 		self.packlist = QListWidget(self)
+
+		self.packlist.setContextMenuPolicy(Qt.CustomContextMenu)
+		self.packlist.customContextMenuRequested.connect(self.show_context_menu)
 
 		servers = []
 		others = []
@@ -146,6 +206,12 @@ class Dialog(QDialog):
 							netname = netname.upper()
 
 							item = QListWidgetItem(channel+" ("+netname+")")
+
+							if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
+								item.setIcon(QIcon(PRIVATE_WINDOW_ICON))
+							else:
+								item.setIcon(QIcon(CHANNEL_WINDOW_ICON))
+
 							item.file = log
 							item.network = netname
 							item.channel = channel
@@ -213,20 +279,13 @@ class Dialog(QDialog):
 		self.time.stateChanged.connect(self.clickTime)
 		self.time.toggle()
 
-		# f = self.time.font()
-		# f.setBold(True)
-		# self.time.setFont(f)
-
 		self.time.setLayoutDirection(Qt.RightToLeft)
 
 		self.menubar = QMenuBar(self)
 		BOLD_FONT = self.font()
 		BOLD_FONT.setBold(True)
-		# self.menubar.setFont(BOLD_FONT)
-		#self.menubar.setStyleSheet(f"QMenuBar {{ background-color:transparent;  }}")
 
-
-		fileMenu = self.menubar.addMenu ("Export As...")
+		fileMenu = self.menubar.addMenu ("Export log as...")
 
 		self.menuJson = QAction(QIcon(ROUND_CHECKED_ICON),"JSON",self)
 		self.menuJson.triggered.connect(lambda state,s="json": self.toggleSetting(s))
@@ -259,7 +318,7 @@ class Dialog(QDialog):
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
 
