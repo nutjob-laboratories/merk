@@ -145,8 +145,11 @@ class Dialog(QDialog):
 
 	def delete_log(self, item):
 		msgBox = QMessageBox()
-		msgBox.setIconPixmap(QPixmap(LOG_ICON))
-		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+		if item.channel[:1]!='#' and item.channel[:1]!='&' and item.channel[:1]!='!' and item.channel[:1]!='+':
+			msgBox.setIconPixmap(QPixmap(PRIVATE_WINDOW_ICON))
+		else:
+			msgBox.setIconPixmap(QPixmap(CHANNEL_WINDOW_ICON))
+		msgBox.setWindowIcon(QIcon(LOG_ICON))
 		msgBox.setText("Are you sure you want to delete this log?")
 		msgBox.setWindowTitle("Delete log for "+item.channel+" ("+item.network+")")
 		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)

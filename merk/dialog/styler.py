@@ -129,7 +129,7 @@ class Dialog(QDialog):
 	def saveAsStyle(self):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getSaveFileName(self,"Save Style As...","","Style File (*.style);;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getSaveFileName(self,"Save style as...","","Style File (*.style);;All Files (*)", options=options)
 		if fileName:
 			efl = len("style")+1
 			if fileName[-efl:].lower()!=f".style": fileName = fileName+f".style"
