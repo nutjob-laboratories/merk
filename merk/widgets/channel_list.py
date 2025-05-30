@@ -119,7 +119,7 @@ class Window(QMainWindow):
 		self.sLayout.addWidget(self.refresh)
 
 		self.cLayout = QHBoxLayout()
-		self.cLayout.addWidget(QLabel("<b>User count:</b>"))
+		self.cLayout.addWidget(QLabel("<b>Users:</b>"))
 		self.cLayout.addWidget(self.moreAny)
 		self.cLayout.addWidget(self.moreTwo)
 		self.cLayout.addWidget(self.moreFive)
