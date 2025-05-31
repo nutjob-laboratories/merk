@@ -164,6 +164,18 @@ class Window(QMainWindow):
 			self.script_button.setFlat(True)
 			serverBar.addWidget(self.script_button)
 
+			self.refresh_button = QPushButton("")
+			self.refresh_button.setIcon(QIcon(REFRESH_ICON))
+			self.refresh_button.clicked.connect(self.refreshChannelList)
+			self.refresh_button.setToolTip("Refresh channel list")
+			self.refresh_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.refresh_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.refresh_button.setFlat(True)
+			serverBar.addWidget(self.refresh_button)
+
+			if not config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
+				self.refresh_button.hide()
+
 			self.list_button = QPushButton("")
 			self.list_button.setIcon(QIcon(LIST_ICON))
 			self.list_button.clicked.connect(self.showChannelList)
@@ -202,6 +214,7 @@ class Window(QMainWindow):
 			self.info_button.setEnabled(False)
 			self.script_button.setEnabled(False)
 			self.list_button.setEnabled(False)
+			self.refresh_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
 
@@ -613,6 +626,9 @@ class Window(QMainWindow):
 		else:
 			self.parent.showSubWindow(self.client.channel_list_window)
 
+	def refreshChannelList(self):
+		self.client.sendLine("LIST")
+
 	def showChannelListSearch(self,search_terms):
 		if len(self.client.server_channel_list)==0:
 			self.client.need_to_get_list = True
@@ -627,6 +643,13 @@ class Window(QMainWindow):
 			self.parent.showSubWindow(self.client.channel_list_window)
 			c = self.client.channel_list_window.widget()
 			c.doExternalSearch(search_terms)
+
+	def toggleRefreshButton(self):
+		if self.window_type==SERVER_WINDOW:
+			if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
+				self.refresh_button.show()
+			else:
+				self.refresh_button.hide()
 
 	def toggleStatusBar(self):
 		if self.window_type==SERVER_WINDOW:
@@ -1992,7 +2015,7 @@ def buildServerSettingsMenu(self,client):
 	casemapping = client.casemapping
 	maxmodes = client.maxmodes
 
-	optionsMenu = QMenu("Server settings")
+	optionsMenu = QMenu("Server information")
 
 	e = textSeparator(self,"Server")
 	optionsMenu.addAction(e)
@@ -2020,6 +2043,12 @@ def buildServerSettingsMenu(self,client):
 		e = plainTextAction(self,"<b>Connection:</b> SSL/TLS")
 	else:
 		e = plainTextAction(self,"<b>Connection:</b> TCP/IP")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Users"+f":</b> {client.server_user_count:,}")
+	optionsMenu.addAction(e)
+
+	e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,}")
 	optionsMenu.addAction(e)
 
 	e = textSeparator(self,"Limits")

@@ -127,6 +127,8 @@ class IRC_Connection(irc.IRCClient):
 		self.did_delayed_channel_list = False
 		self.need_to_get_list = False
 		self.list_search_terms = None
+		self.server_user_count = 0
+		self.server_channel_count = 0
 
 		self.banlists = defaultdict(list)
 
@@ -136,12 +138,20 @@ class IRC_Connection(irc.IRCClient):
 		channel_name = params[1]
 		channel_count = params[2]
 		channel_topic = params[3].strip()
+		try:
+			uc = int(channel_count)
+			self.server_user_count = self.server_user_count + uc
+		except:
+			pass
+		self.server_channel_count = self.server_channel_count + 1
 		self.server_channel_list.append( [channel_name,channel_count,channel_topic] )
 
 	def irc_RPL_LISTEND(self,prefix,params):
 		self.gui.gotRefreshEnd(self)
 
 	def irc_RPL_LISTSTART(self,prefix,params):
+		self.server_user_count = 0
+		self.server_channel_count = 0
 		self.server_channel_list = []
 
 	def uptime_beat(self):

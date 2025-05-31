@@ -297,6 +297,7 @@ SHOW_ICON = ":/icon-show.png"
 DARK_HIDE_ICON = ":/gui-dark_hide.png"
 HIDE_ICON = ":/icon-hide.png"
 LIST_ICON = ":/icon-list.png"
+REFRESH_ICON = ":/icon-refresh.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

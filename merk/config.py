@@ -171,10 +171,14 @@ WINDOWBAR_INCLUDE_LIST = False
 SHOW_CHANNEL_LIST_IN_WINDOWS_MENU = True
 SEARCH_ALL_TERMS_IN_CHANNEL_LIST = True
 CLOSING_WINDOW_MINIMIZES_TO_TRAY = True
+SHOW_SERVER_INFO_IN_WINDOWS_MENU = True
+SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = False
 
 def save_settings(filename):
 
 	settings = {
+		"show_list_refresh_button_on_server_windows": SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS,
+		"show_server_information_in_windows_menu": SHOW_SERVER_INFO_IN_WINDOWS_MENU,
 		"closing_main_window_minimizes_to_tray": CLOSING_WINDOW_MINIMIZES_TO_TRAY,
 		"search_for_all_terms_in_channel_list_search": SEARCH_ALL_TERMS_IN_CHANNEL_LIST,
 		"show_channel_list_entry_in_windows_menu": SHOW_CHANNEL_LIST_IN_WINDOWS_MENU,
@@ -313,6 +317,10 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_list_refresh_button_on_server_windows" in settings:
+		settings["show_list_refresh_button_on_server_windows"] = SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS
+	if not "show_server_information_in_windows_menu" in settings:
+		settings["show_server_information_in_windows_menu"] = SHOW_SERVER_INFO_IN_WINDOWS_MENU
 	if not "closing_main_window_minimizes_to_tray" in settings:
 		settings["closing_main_window_minimizes_to_tray"] = CLOSING_WINDOW_MINIMIZES_TO_TRAY
 	if not "search_for_all_terms_in_channel_list_search" in settings:
@@ -714,6 +722,8 @@ def load_settings(filename):
 	global SHOW_CHANNEL_LIST_IN_WINDOWS_MENU
 	global SEARCH_ALL_TERMS_IN_CHANNEL_LIST
 	global CLOSING_WINDOW_MINIMIZES_TO_TRAY
+	global SHOW_SERVER_INFO_IN_WINDOWS_MENU
+	global SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -723,6 +733,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = settings["show_list_refresh_button_on_server_windows"]
+		SHOW_SERVER_INFO_IN_WINDOWS_MENU = settings["show_server_information_in_windows_menu"]
 		CLOSING_WINDOW_MINIMIZES_TO_TRAY = settings["closing_main_window_minimizes_to_tray"]
 		SEARCH_ALL_TERMS_IN_CHANNEL_LIST = settings["search_for_all_terms_in_channel_list_search"]
 		SHOW_CHANNEL_LIST_IN_WINDOWS_MENU = settings["show_channel_list_entry_in_windows_menu"]

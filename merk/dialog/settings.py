@@ -767,10 +767,6 @@ class Dialog(QDialog):
 		self.showChatInTitle = QCheckBox("Show active chat in window title",self)
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
-
-		self.showSystray = QCheckBox("Show system tray icon",self)
-		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
-		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 		
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
@@ -780,9 +776,12 @@ class Dialog(QDialog):
 		if config.MAXIMIZE_ON_STARTUP: self.maxOnStart.setChecked(True)
 		self.maxOnStart.stateChanged.connect(self.changedSetting)
 
-		self.showNetLinks = QCheckBox("Show known links to network homepages",self)
+		self.showNetLinks = QCheckBox("Show known links to network\nhomepages",self)
 		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
+
+		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 
 		self.forceDefault = QCheckBox("Force all chat windows to use\nthe default text style",self)
 		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
@@ -804,9 +803,9 @@ class Dialog(QDialog):
 
 		self.examineTopic.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showChannelList = QCheckBox("Show channel list option in\nthe windows menu",self)
+		self.showChannelList = QCheckBox("Show channel list options in\nthe windows menu",self)
 		if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU: self.showChannelList.setChecked(True)
-		self.showChannelList.stateChanged.connect(self.changedMenuOption)
+		self.showChannelList.stateChanged.connect(self.changedSetting)
 
 		self.showChannelList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
@@ -815,6 +814,12 @@ class Dialog(QDialog):
 		self.searchAllTerms.stateChanged.connect(self.changedSetting)
 
 		self.searchAllTerms.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showServerInfo = QCheckBox("Show server information in\nthe windows menu",self)
+		if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU: self.showServerInfo.setChecked(True)
+		self.showServerInfo.stateChanged.connect(self.changedSetting)
+
+		self.showServerInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
@@ -825,15 +830,15 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application</b>"))
 		applicationLayout.addWidget(self.maxOnStart)
-		applicationLayout.addWidget(self.showChatInTitle)
-		applicationLayout.addWidget(self.showSystray)
-		applicationLayout.addWidget(self.simpleConnect)
-		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
+		applicationLayout.addWidget(self.showChatInTitle)
+		applicationLayout.addWidget(self.simpleConnect)
+		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.examineTopic)
 		applicationLayout.addWidget(self.searchAllTerms)
 		applicationLayout.addWidget(self.showChannelList)
+		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.forceDefault)
 		applicationLayout.addStretch()
 
@@ -1469,10 +1474,17 @@ class Dialog(QDialog):
 		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
 		self.displayServNicks.stateChanged.connect(self.changedSetting)
 
+		self.showServRefresh = QCheckBox("Show channel list refresh button\non server windows",self)
+		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
+		self.showServRefresh.stateChanged.connect(self.changedSetting)
+
+		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showInfo)
 		subwindowLayout.addWidget(self.displayServNicks)
+		subwindowLayout.addWidget(self.showServRefresh)
 		subwindowLayout.addWidget(self.showInputMenu)
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showStatusServer)
@@ -2023,6 +2035,9 @@ class Dialog(QDialog):
 		self.systrayMinOnClose.stateChanged.connect(self.changedSetting)
 		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showSystray = QCheckBox("Show system tray icon",self)
+		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
+		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
 		discLay = QHBoxLayout()
 		discLay.addWidget(self.systrayDisconnect)
@@ -2042,6 +2057,7 @@ class Dialog(QDialog):
 
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
+		systrayLayout.addWidget(self.showSystray)
 		systrayLayout.addWidget(self.showSystrayMenu)
 		systrayLayout.addWidget(self.minSystray)
 		systrayLayout.addWidget(self.systrayNotify)
@@ -2459,6 +2475,8 @@ class Dialog(QDialog):
 		config.WINDOWBAR_INCLUDE_LIST = self.windowbarLists.isChecked()
 		config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU = self.showChannelList.isChecked()
 		config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST = self.searchAllTerms.isChecked()
+		config.SHOW_SERVER_INFO_IN_WINDOWS_MENU = self.showServerInfo.isChecked()
+		config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = self.showServRefresh.isChecked()
 
 		if self.simpleConnect.isChecked():
 			self.parent.simpleconn = True
@@ -2503,6 +2521,7 @@ class Dialog(QDialog):
 		config.save_settings(config.CONFIG_FILE)
 
 		self.parent.buildSettingsMenu()
+		self.parent.buildWindowsMenu()
 
 		self.parent.app.setStyle(self.qt_style)
 
@@ -2550,6 +2569,8 @@ class Dialog(QDialog):
 		self.parent.toggleInputMenu()
 
 		self.parent.toggleServNickDisplay()
+
+		self.parent.toggleRefreshButton()
 
 		self.parent.updateStatusBar()
 
