@@ -3237,7 +3237,12 @@ class Merk(QMainWindow):
 		# with the window bar "X" button or if Alt-F4
 		# is pressed
 		if event.spontaneous():
-			pass
+			if config.SHOW_SYSTRAY_ICON:
+				if config.MINIMIZE_TO_SYSTRAY:
+					if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY:
+						self.toggleHide()
+						event.ignore()
+						return
 
 		do_ask = False
 		if config.ASK_BEFORE_CLOSE: do_ask = True
