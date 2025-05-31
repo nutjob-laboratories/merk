@@ -327,6 +327,8 @@ class Dialog(QDialog):
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
 		self.ssl.stateChanged.connect(self.clickSSL)
 
+		if not SSL_AVAILABLE: self.ssl.hide()
+
 		self.exe = QCheckBox("Execute connection script",self)
 		self.exe.stateChanged.connect(self.clickExe)
 		self.exe.toggle()
@@ -362,7 +364,10 @@ class Dialog(QDialog):
 		bannerLayout.addStretch()
 
 		optionLayout = QFormLayout()
-		optionLayout.addRow(self.ssl,self.reconnect)
+		if not SSL_AVAILABLE:
+			optionLayout.addRow(self.reconnect)
+		else:
+			optionLayout.addRow(self.ssl,self.reconnect)
 		optionLayout.addRow(self.exe,QLabel(''))
 
 		serverInfoLayout = QVBoxLayout()
@@ -384,11 +389,11 @@ class Dialog(QDialog):
 		# Set background/foreground
 		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
-		height = self.servers.height()+self.ssl.height()+self.reconnect.height()
+		height = self.servers.height()+self.reconnect.height()
 		if self.logo:
-			height = height + serverLayout.sizeHint().height() + 105
+			height = height + serverLayout.sizeHint().height() + 115
 		else:
-			height = height + serverLayout.sizeHint().height() + 70
+			height = height + serverLayout.sizeHint().height() + 80
 		self.commands.setFixedHeight(height)
 
 		banner = QLabel()

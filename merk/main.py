@@ -2890,11 +2890,7 @@ class Merk(QMainWindow):
 
 					if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU:
 						ssetting = sm.addMenu(c.server_info_menu)
-						if c.client.kwargs["ssl"]:
-							icon = QIcon(VISITED_SECURE_ICON)
-						else:
-							icon = QIcon(VISITED_BOOKMARK_ICON)
-						ssetting.setIcon(icon)
+						ssetting.setIcon(QIcon(CONNECT_ICON))
 
 					if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
 						entry = QAction(QIcon(LIST_ICON),"Server channel list",self)

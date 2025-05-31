@@ -274,6 +274,10 @@ Appearance:
 <td>Requests a new list of channels from the server</td>
 </tr>
 <tr>
+<td><code>/knock CHANNEL [MESSAGE]</code></td>
+<td>Requests an invitation to a channel</td>
+</tr>
+<tr>
 <td><code>/wait SECONDS</code></td>
 <td>Pauses script execution for <code>SECONDS</code>; can only be called from scripts</td>
 </tr>

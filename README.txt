@@ -279,6 +279,7 @@ All of these commands can be issued from the text input widget, or from scripts.
 | `/play FILENAME`                        | Plays a WAV file                                                                                            |
 | `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character |
 | `/refresh`                              | Requests a new list of channels from the server                                                             |
+| `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                         |
 | `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                        |
 
 

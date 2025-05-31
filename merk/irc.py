@@ -365,7 +365,7 @@ class IRC_Connection(irc.IRCClient):
 
 
 					# mode removed
-					self.gui.serverUnsetMode(self,target,m,[])
+					self.gui.serverUnsetMode(self,target,m)
 
 	def nickChanged(self,nick):
 		self.nickname = nick

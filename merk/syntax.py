@@ -77,6 +77,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"play",
 			cmdsymbol+"list",
 			cmdsymbol+"refresh",
+			cmdsymbol+"knock",
 		]
 
 		STYLES = {
