@@ -249,7 +249,7 @@ class Dialog(QDialog):
 		self.parent = parent
 		self.disconnect_message = dismsg
 		self.reason = reason
-		self.logo = logo
+		self.not_simplified = logo
 		self.noexecute = noexecute
 		self.donotsave = donotsave
 		self.initial = initial
@@ -275,7 +275,7 @@ class Dialog(QDialog):
 		"""
 
 		if self.initial:
-			self.setWindowTitle(APPLICATION_NAME+" IRC Client "+APPLICATION_VERSION)
+			self.setWindowTitle(APPLICATION_NAME+" "+APPLICATION_VERSION)
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
@@ -382,7 +382,7 @@ class Dialog(QDialog):
 
 		serverInfoLayout = QVBoxLayout()
 		serverInfoLayout.addLayout(bannerLayout)
-		if self.logo:
+		if self.not_simplified:
 			serverInfoLayout.addWidget(self.serverDescription)
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
@@ -400,7 +400,7 @@ class Dialog(QDialog):
 		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		height = self.servers.height()+self.reconnect.height()
-		if self.logo:
+		if self.not_simplified:
 			height = height + serverLayout.sizeHint().height() + 115
 		else:
 			height = height + serverLayout.sizeHint().height() + 80
@@ -417,12 +417,11 @@ class Dialog(QDialog):
 
 		commandsLayout = QVBoxLayout()
 		commandsLayout.addLayout(bannerLayout)
-		if self.logo:
+		if self.not_simplified:
 			commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
 
 		self.tabs = QTabWidget()
-		#self.tabs.setStyleSheet('''QTabWidget::tab-bar { alignment: center; }''')
 
 		self.userDescription = QLabel(f"""
 			<small>
@@ -455,7 +454,7 @@ class Dialog(QDialog):
 
 		userPageLayout = QVBoxLayout()
 		userPageLayout.addLayout(bannerLayout)
-		if self.logo:
+		if self.not_simplified:
 			userPageLayout.addWidget(self.userDescription)
 		else:
 			userPageLayout.addStretch()
@@ -511,7 +510,7 @@ class Dialog(QDialog):
 			bannerTabs.addWidget(self.tabs)
 
 		finalLayout = QVBoxLayout()
-		if self.logo:
+		if self.initial:
 			splash = QLabel()
 			pixmap = QPixmap(SPLASH_LOGO)
 			splash.setPixmap(pixmap)
@@ -521,7 +520,11 @@ class Dialog(QDialog):
 			spLayout.addWidget(splash)
 			spLayout.addStretch()
 
-			finalLayout.addLayout(spLayout)
+			vLayout = QVBoxLayout()
+			vLayout.addLayout(spLayout)
+			vLayout.addWidget(QLabel("<center><small><b>Internet Relay Chat Client</b></small></center>"))
+
+			finalLayout.addLayout(vLayout)
 		finalLayout.addLayout(bannerTabs)
 		finalLayout.addWidget(self.saveU)
 		finalLayout.addWidget(buttons)

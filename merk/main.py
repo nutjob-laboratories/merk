@@ -2971,7 +2971,7 @@ class Merk(QMainWindow):
 
 		self.mainMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,CONNECT_MENU_ICON,'Connect','Connect to a server  ',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
+		entry = widgets.ExtendedMenuItem(self,CONNECT_MENU_ICON,'Connect','Connect to an IRC server  ',CUSTOM_MENU_ICON_SIZE,self.connectMainMenu)
 		self.mainMenu.addAction(entry)
 
 		windows = self.getAllServerWindows()
