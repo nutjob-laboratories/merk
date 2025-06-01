@@ -43,9 +43,13 @@ from .. import syntax
 
 class Dialog(QDialog):
 
+	def doSkip(self):
+		self.skipping = True
+		self.accept()
+
 	@staticmethod
-	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False):
-		dialog = Dialog(app,parent,dismsg,reason,logo,noexecute,donotsave)
+	def get_connect_information(app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False,initial=False):
+		dialog = Dialog(app,parent,dismsg,reason,logo,noexecute,donotsave,initial)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -79,6 +83,10 @@ class Dialog(QDialog):
 		return True
 
 	def return_info(self):
+
+		if self.skipping:
+			retval = ConnectInfo(None,None,None,None,None,None,None,None,None,None)
+			return retval
 
 		if self.check_input():
 
@@ -234,7 +242,7 @@ class Dialog(QDialog):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
-	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False):
+	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False,initial=False):
 		super(Dialog,self).__init__(parent)
 
 		self.app = app
@@ -244,6 +252,8 @@ class Dialog(QDialog):
 		self.logo = logo
 		self.noexecute = noexecute
 		self.donotsave = donotsave
+		self.initial = initial
+		self.skipping = False
 
 		self.StoredData = []
 		self.StoredServer = 0
@@ -264,15 +274,15 @@ class Dialog(QDialog):
 			</small>
 		"""
 
-		if self.logo:
+		if self.initial:
 			self.setWindowTitle(APPLICATION_NAME+" IRC Client "+APPLICATION_VERSION)
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
-				self.setWindowTitle("Connect")
+				self.setWindowTitle("Connect to server")
 			else:
 				self.setWindowTitle("Connection failed")
-			self.setWindowIcon(QIcon(CONNECT_ICON))
+			self.setWindowIcon(QIcon(CONNECT_MENU_ICON))
 
 		if user.USERNAME=='':
 			username = "MERK"
@@ -346,7 +356,7 @@ class Dialog(QDialog):
 			<small>
 			Select a server below, or enter connection information by hand. To automatically
 			reconnect on disconnection, check the <b>Reconnect</b> checkbox. If the <b>Execute connection
-			script</b> option is enabled, the commands entered in the <b>Script</b> tab will be executed
+			script</b> option is enabled, the commands entered in the <b>Connection Script</b> tab will be executed
 			when connection to the server is complete.
 			</small>
 
@@ -412,6 +422,7 @@ class Dialog(QDialog):
 		commandsLayout.addWidget(self.commands)
 
 		self.tabs = QTabWidget()
+		#self.tabs.setStyleSheet('''QTabWidget::tab-bar { alignment: center; }''')
 
 		self.userDescription = QLabel(f"""
 			<small>
@@ -461,14 +472,27 @@ class Dialog(QDialog):
 
 		self.commands_tab = QWidget()
 		self.commands_tab.setLayout(commandsLayout)
-		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
+		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Connection Script")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
+		ok_button = buttons.button(QDialogButtonBox.Ok)
+		cancel_button = buttons.button(QDialogButtonBox.Cancel)
+
 		buttons.button(QDialogButtonBox.Ok).setText("Connect")
+
+		if self.initial:
+			buttons.button(QDialogButtonBox.Cancel).setText("Exit")
+		else:
+			buttons.button(QDialogButtonBox.Cancel).setText("Cancel")
+
+		if self.initial:
+			self.skip = QPushButton(" Open "+APPLICATION_NAME+" ")
+			buttons.addButton(self.skip,QDialogButtonBox.ActionRole)
+			self.skip.clicked.connect(self.doSkip)
 
 		if self.disconnect_message!='':
 

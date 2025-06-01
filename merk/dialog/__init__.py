@@ -138,16 +138,32 @@ def JoinChannelDialog(obj):
 	return info
 
 def ConnectDialog(obj,parent=None,dismsg='',reason='',noexecute=False,donotsave=False):
-	x = Connect(obj,parent,dismsg,reason,True,noexecute,donotsave)
-	info = x.get_connect_information(obj,parent,dismsg,reason,True,noexecute,donotsave)
+	x = Connect(obj,parent,dismsg,reason,True,noexecute,donotsave,False)
+	info = x.get_connect_information(obj,parent,dismsg,reason,True,noexecute,donotsave,False)
 	del x
 
 	if not info: return None
 	return info
 
 def ConnectDialogSimplified(obj,parent=None,dismsg='',reason='',noexecute=False,donotsave=False):
-	x = Connect(obj,parent,dismsg,reason,False,noexecute,donotsave)
-	info = x.get_connect_information(obj,parent,dismsg,reason,False,noexecute,donotsave)
+	x = Connect(obj,parent,dismsg,reason,False,noexecute,donotsave,False)
+	info = x.get_connect_information(obj,parent,dismsg,reason,False,noexecute,donotsave,False)
+	del x
+
+	if not info: return None
+	return info
+
+def ConnectDialogInitial(obj,parent=None,dismsg='',reason='',noexecute=False,donotsave=False):
+	x = Connect(obj,parent,dismsg,reason,True,noexecute,donotsave,True)
+	info = x.get_connect_information(obj,parent,dismsg,reason,True,noexecute,donotsave,True)
+	del x
+
+	if not info: return None
+	return info
+
+def ConnectDialogSimplifiedInitial(obj,parent=None,dismsg='',reason='',noexecute=False,donotsave=False):
+	x = Connect(obj,parent,dismsg,reason,False,noexecute,donotsave,True)
+	info = x.get_connect_information(obj,parent,dismsg,reason,False,noexecute,donotsave,True)
 	del x
 
 	if not info: return None

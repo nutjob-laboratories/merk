@@ -195,7 +195,8 @@ class Merk(QMainWindow):
 				for c in connection_info:
 					self.connectToIrc(c)
 			else:
-				self.connectToIrc(connection_info)
+				if connection_info.nickname!=None:
+					self.connectToIrc(connection_info)
 
 	# Windowbar
 
