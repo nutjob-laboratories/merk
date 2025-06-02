@@ -2950,11 +2950,11 @@ class Merk(QMainWindow):
 		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
 		self.windowsMenu.addAction(entry4)
 
-		entry1 = QAction("Cascade windows",self)
+		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
 		entry1.triggered.connect(self.MDI.cascadeSubWindows)
 		self.windowsMenu.addAction(entry1)
 
-		entry2 = QAction("Tile windows",self)
+		entry2 = QAction(QIcon(TILE_ICON),"Tile windows",self)
 		entry2.triggered.connect(self.MDI.tileSubWindows)
 		self.windowsMenu.addAction(entry2)
 
