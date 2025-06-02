@@ -179,6 +179,8 @@ class Window(QMainWindow):
 
 	def doSearch(self):
 
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+
 		self.table_widget.clear()
 
 		target = self.search_terms.text()
@@ -243,6 +245,8 @@ class Window(QMainWindow):
 		self.table_widget.sortItems()
 
 		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {data_count} channels")
+
+		QApplication.restoreOverrideCursor()
 
 	def doRefresh(self):
 		self.client.doing_list_refresh = True

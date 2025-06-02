@@ -2359,6 +2359,8 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+
 		# Save the current focused window
 		current_open_window = self.parent.getActive()
 		if current_open_window==None:
@@ -2617,6 +2619,8 @@ class Dialog(QDialog):
 
 		self.parent.saveActive(current_open_window)
 		self.parent.restoreActive()
+
+		QApplication.restoreOverrideCursor()
 
 		# Close the dialog
 		self.close()

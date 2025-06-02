@@ -1813,6 +1813,7 @@ class Merk(QMainWindow):
 			self.MDI.setActiveSubWindow(w)
 
 	def reApplyStyle(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
@@ -1820,6 +1821,7 @@ class Merk(QMainWindow):
 				c.applyStyle()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
+		QApplication.restoreOverrideCursor()
 
 	def updateInterval(self):
 		w = self.MDI.activeSubWindow()
@@ -2369,6 +2371,7 @@ class Merk(QMainWindow):
 		self.buildSettingsMenu()
 
 	def settingsIrcColors(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
 		if config.DISPLAY_IRC_COLORS:
 			config.DISPLAY_IRC_COLORS = False
 		else:
@@ -2376,8 +2379,10 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
 		self.buildSettingsMenu()
+		QApplication.restoreOverrideCursor()
 
 	def settingsLinks(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
 		if config.CONVERT_URLS_TO_LINKS:
 			config.CONVERT_URLS_TO_LINKS = False
 		else:
@@ -2385,6 +2390,7 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
 		self.buildSettingsMenu()
+		QApplication.restoreOverrideCursor()
 
 	def settingsAudio(self):
 		if config.SOUND_NOTIFICATIONS:
@@ -2414,7 +2420,6 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildMenu()
 		self.initWindowbar()
-		#self.buildSettingsMenu()
 
 	def settingsEmoji(self):
 		if config.ENABLE_EMOJI_SHORTCODES:
@@ -2459,6 +2464,7 @@ class Merk(QMainWindow):
 		self.buildSettingsMenu()
 
 	def settingsTimestamps(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
 		if config.DISPLAY_TIMESTAMP:
 			config.DISPLAY_TIMESTAMP = False
 		else:
@@ -2466,6 +2472,7 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
 		self.buildSettingsMenu()
+		QApplication.restoreOverrideCursor()
 
 	def settingsSimplified(self):
 		if config.SIMPLIFIED_DIALOGS:
