@@ -209,6 +209,14 @@ class Window(QMainWindow):
 			entry.setFlat(True)
 			serverBar.addWidget(entry)
 
+			serverBar.setContentsMargins(1,1,1,1)
+			self.server_window_toolbar = QWidget()
+			self.server_window_toolbar.setLayout(serverBar)
+			self.server_window_toolbar.setMinimumHeight(config.SERVER_TOOLBAR_BUTTON_SIZE)
+			self.server_window_toolbar.setMaximumHeight(config.SERVER_TOOLBAR_BUTTON_SIZE)
+
+			if not config.SHOW_SERVER_WINDOW_TOOLBAR: self.server_window_toolbar.hide()
+
 			self.nick_button.setEnabled(False)
 			self.join_button.setEnabled(False)
 			self.info_button.setEnabled(False)
@@ -447,7 +455,8 @@ class Window(QMainWindow):
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-			if self.window_type==SERVER_WINDOW: finalLayout.addLayout(serverBar)
+			#if self.window_type==SERVER_WINDOW: finalLayout.addLayout(serverBar)
+			if self.window_type==SERVER_WINDOW: finalLayout.addWidget(self.server_window_toolbar)
 			finalLayout.addWidget(self.chat)
 			finalLayout.addLayout(inputLayout)
 
@@ -650,6 +659,13 @@ class Window(QMainWindow):
 				self.refresh_button.show()
 			else:
 				self.refresh_button.hide()
+
+	def toggleServerToolbar(self):
+		if hasattr(self,"server_window_toolbar"):
+			if config.SHOW_SERVER_WINDOW_TOOLBAR:
+				self.server_window_toolbar.show()
+			else:
+				self.server_window_toolbar.hide()
 
 	def toggleStatusBar(self):
 		if self.window_type==SERVER_WINDOW:

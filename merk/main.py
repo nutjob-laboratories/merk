@@ -2234,6 +2234,16 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def toggleServerToolbar(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if hasattr(c,"toggleServerToolbar"):
+					c.toggleServerToolbar()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 
 	# |--------------|
 	# | MENU METHODS |

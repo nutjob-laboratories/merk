@@ -280,9 +280,16 @@ class Dialog(QDialog):
 		ln5.addWidget(self.fg_button)
 
 		if not self.simple:
-			self.styleDescription = QLabel("""
+			if self.default:
+				namedesc = "all chat and server windows"
+			else:
+				if hasattr(self.wchat.client,"network"):
+					namedesc = f"<b>"+self.wchat.name+"</b> on <b>"+self.wchat.client.network+"</b>"
+				else:
+					namedesc = f"<b>"+self.wchat.name+"</b>"
+			self.styleDescription = QLabel(f"""
 				<small>
-				Here, you can set how text looks in all chat and server windows. Click the colored
+				Here, you can set how text looks in {namedesc}. Click the colored
 				boxes to set the various text colors, and the <b>bold</b> and <i>italic</i> check
 				boxes set the style of the given text. The <b>Background Color</b> button sets the color of
 				the text window background, the input widget, and the channel user list, and the <b>Text Color</b> 

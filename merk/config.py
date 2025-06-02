@@ -173,10 +173,12 @@ SEARCH_ALL_TERMS_IN_CHANNEL_LIST = True
 CLOSING_WINDOW_MINIMIZES_TO_TRAY = True
 SHOW_SERVER_INFO_IN_WINDOWS_MENU = True
 SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = False
+SHOW_SERVER_WINDOW_TOOLBAR = True
 
 def save_settings(filename):
 
 	settings = {
+		"show_server_window_toolbar": SHOW_SERVER_WINDOW_TOOLBAR,
 		"show_list_refresh_button_on_server_windows": SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS,
 		"show_server_information_in_windows_menu": SHOW_SERVER_INFO_IN_WINDOWS_MENU,
 		"closing_main_window_minimizes_to_tray": CLOSING_WINDOW_MINIMIZES_TO_TRAY,
@@ -317,6 +319,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_server_window_toolbar" in settings:
+		settings["show_server_window_toolbar"] = SHOW_SERVER_WINDOW_TOOLBAR
 	if not "show_list_refresh_button_on_server_windows" in settings:
 		settings["show_list_refresh_button_on_server_windows"] = SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS
 	if not "show_server_information_in_windows_menu" in settings:
@@ -724,6 +728,7 @@ def load_settings(filename):
 	global CLOSING_WINDOW_MINIMIZES_TO_TRAY
 	global SHOW_SERVER_INFO_IN_WINDOWS_MENU
 	global SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS
+	global SHOW_SERVER_WINDOW_TOOLBAR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -733,6 +738,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_SERVER_WINDOW_TOOLBAR = settings["show_server_window_toolbar"]
 		SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = settings["show_list_refresh_button_on_server_windows"]
 		SHOW_SERVER_INFO_IN_WINDOWS_MENU = settings["show_server_information_in_windows_menu"]
 		CLOSING_WINDOW_MINIMIZES_TO_TRAY = settings["closing_main_window_minimizes_to_tray"]
