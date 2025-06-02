@@ -36,8 +36,8 @@ from .. import render
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_style_information(client,chat,parent=None,default=False):
-		dialog = Dialog(client,chat,parent,default)
+	def get_style_information(client,chat,parent=None,simple=False,default=False):
+		dialog = Dialog(client,chat,parent,simple,default)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -191,13 +191,14 @@ class Dialog(QDialog):
 			t = render.render_message(line,self.style)
 			self.chat.append(t)
 
-	def __init__(self,client,chat,parent=None,default=False):
+	def __init__(self,client,chat,parent=None,simple=False,default=False):
 		super(Dialog,self).__init__(parent)
 
 		self.client = client
 		self.wchat = chat
 		self.parent = parent
 		self.default = default
+		self.simple = simple
 
 		if default:
 			self.style = styles.loadDefault()
@@ -206,7 +207,6 @@ class Dialog(QDialog):
 			self.style = self.wchat.style
 			self.setWindowTitle("Edit text style for "+self.wchat.name)
 
-		
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
@@ -279,14 +279,33 @@ class Dialog(QDialog):
 		ln5.addWidget(self.bg_button)
 		ln5.addWidget(self.fg_button)
 
+		if not self.simple:
+			self.styleDescription = QLabel("""
+				<small>
+				Here, you can set how text looks in all chat and server windows. Click the colored
+				boxes to set the various text colors, and the <b>bold</b> and <i>italic</i> check
+				boxes set the style of the given text. The <b>Background Color</b> button sets the color of
+				the text window background, the input widget, and the channel user list, and the <b>Text Color</b> 
+				sets the color of the text in the same areas.
+				Click <b>Set to app default</b> to reset all colors and styles to the default.
+				<b>Open style</b> allows you to open an existing style file and load its settings.
+				<b>Save style as...</b> allows you to save the style set here to a file. Clicking
+				<b>Save</b> saves the style and immediately applies it. Click <b>Cancel</b> to exit.
+				</small>
+				<br>
+				""")
+			self.styleDescription.setWordWrap(True)
+			self.styleDescription.setAlignment(Qt.AlignJustify)
+
 		styleLayout = QVBoxLayout()
+		if not self.simple: styleLayout.addWidget(self.styleDescription)
 		styleLayout.addWidget(self.chat)
 		styleLayout.addLayout(ln1)
 		styleLayout.addLayout(ln2)
 		styleLayout.addLayout(ln3)
 		styleLayout.addLayout(ln4)
 		styleLayout.addLayout(ln5)
-		styleLayout.addStretch()
+		if self.simple: styleLayout.addStretch()
 
 		# Buttons
 		buttons = QDialogButtonBox(self)

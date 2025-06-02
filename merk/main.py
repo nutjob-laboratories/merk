@@ -2761,7 +2761,7 @@ class Merk(QMainWindow):
 
 		self.toolsMenu.clear()
 
-		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
+		entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Text Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
 		self.toolsMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
@@ -3086,7 +3086,10 @@ class Merk(QMainWindow):
 		self.buildHelpMenu()
 
 	def menuEditStyle(self):
-		x = StylerDefaultDialog(self)
+		if config.SIMPLIFIED_DIALOGS:
+			x = SimpleStylerDefaultDialog(self)
+		else:
+			x = StylerDefaultDialog(self)
 
 	def disconnectAll(self):
 		windows = self.getAllServerWindows()

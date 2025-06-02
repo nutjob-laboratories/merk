@@ -719,7 +719,7 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				if not config.FORCE_DEFAULT_STYLE:
-					entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
+					entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
 					entry.triggered.connect(self.pressedStyleButton)
 					menu.addAction(entry)
 
@@ -752,7 +752,7 @@ class Window(QMainWindow):
 
 		if self.window_type!=SERVER_WINDOW:
 			if not config.FORCE_DEFAULT_STYLE:
-				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s style",self)
+				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
 				entry.triggered.connect(self.pressedStyleButton)
 				self.settingsMenu.addAction(entry)
 
@@ -1262,7 +1262,10 @@ class Window(QMainWindow):
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
 	def pressedStyleButton(self):
-		x = StylerDialog(self.client,self,self.parent)
+		if config.SIMPLIFIED_DIALOGS:
+			x = SimpleStylerDialog(self.client,self,self.parent)
+		else:
+			x = StylerDialog(self.client,self,self.parent)
 		if x:
 
 			self.style = x

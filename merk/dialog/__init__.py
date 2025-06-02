@@ -114,16 +114,33 @@ def SettingsDialog(app,obj):
 	return x
 
 def StylerDialog(client,chat,obj):
-	x = Styler(client,chat,obj)
-	info = x.get_style_information(client,chat,obj)
+	x = Styler(client,chat,obj,False)
+	info = x.get_style_information(client,chat,obj,False)
 	del x
 
 	if not info: return None
 	return info
 
 def StylerDefaultDialog(obj):
-	x = Styler(None,None,obj,True)
-	info = x.get_style_information(None,None,obj,True)
+	x = Styler(None,None,obj,False,True)
+	info = x.get_style_information(None,None,obj,False,True)
+	del x
+
+	if not info: return None
+	return info
+
+
+def SimpleStylerDialog(client,chat,obj):
+	x = Styler(client,chat,obj,True)
+	info = x.get_style_information(client,chat,obj,True)
+	del x
+
+	if not info: return None
+	return info
+
+def SimpleStylerDefaultDialog(obj):
+	x = Styler(None,None,obj,True,True)
+	info = x.get_style_information(None,None,obj,True,True)
 	del x
 
 	if not info: return None
