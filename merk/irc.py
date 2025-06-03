@@ -35,6 +35,7 @@ import random
 import time
 import uuid
 from collections import defaultdict
+from datetime import datetime
 
 from twisted.internet import reactor, protocol
 
@@ -129,6 +130,7 @@ class IRC_Connection(irc.IRCClient):
 		self.list_search_terms = None
 		self.server_user_count = 0
 		self.server_channel_count = 0
+		self.last_list_fetch = ''
 
 		self.banlists = defaultdict(list)
 
@@ -147,12 +149,14 @@ class IRC_Connection(irc.IRCClient):
 		self.server_channel_list.append( [channel_name,channel_count,channel_topic] )
 
 	def irc_RPL_LISTEND(self,prefix,params):
+		self.last_list_fetch = datetime.now().strftime("%Y-%m-%d "+config.TIMESTAMP_FORMAT)
 		self.gui.gotRefreshEnd(self)
 
 	def irc_RPL_LISTSTART(self,prefix,params):
 		self.server_user_count = 0
 		self.server_channel_count = 0
 		self.server_channel_list = []
+		self.last_list_fetch = ''
 
 	def uptime_beat(self):
 

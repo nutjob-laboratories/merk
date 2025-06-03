@@ -79,9 +79,20 @@ class Window(QMainWindow):
 		self.table_widget.itemDoubleClicked.connect(self.on_double_click)
 
 		self.search_terms = QLineEdit('')
-		self.search_button = QPushButton("Search")
+		self.search_terms.returnPressed.connect(self.doSearch)
+		self.search_button = QPushButton('')
+		self.search_button.setIcon(QIcon(LIST_ICON))
+		self.search_button.setToolTip("Search channel list")
 		self.reset_button = QPushButton("Reset")
-		self.refresh = QPushButton("Fetch List")
+		self.refresh = QPushButton('')
+		self.refresh.setIcon(QIcon(REFRESH_ICON))
+		self.refresh.setToolTip("Request new channel list")
+
+		self.search_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+		self.search_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+
+		self.refresh.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+		self.refresh.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 
 		self.moreFive = QRadioButton("5+",self)
 		self.moreTwo = QRadioButton("2+",self)
@@ -102,21 +113,30 @@ class Window(QMainWindow):
 		self.searchTopic.stateChanged.connect(self.changedSearchTopic)
 
 		self.search_terms.setPlaceholderText("Enter search terms here")
-		self.search_button.setDefault(True) 
 
 		self.search_button.clicked.connect(self.doSearch)
 		self.refresh.clicked.connect(self.doRefresh)
 		self.reset_button.clicked.connect(self.doResetButton)
 
+		self.search_button.setFlat(True)
+		self.refresh.setFlat(True)
+
 		self.allTerms = QCheckBox("Search all terms",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.allTerms.setChecked(True)
 		self.allTerms.stateChanged.connect(self.changedAllTerms)
 
+
+		self.status = self.statusBar()
+		self.status.setStyleSheet("QStatusBar::item { border: none; }")
+		self.lastFetch = QLabel("<small>List received at "+self.client.last_list_fetch+"</small>")
+		self.status.addPermanentWidget(self.lastFetch,0)
+
 		self.sLayout = QHBoxLayout()
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
-		self.sLayout.addWidget(self.reset_button)
 		self.sLayout.addWidget(self.refresh)
+		self.sLayout.addWidget(self.reset_button)
+		self.sLayout.setContentsMargins(1,1,1,1)
 
 		self.cLayout = QHBoxLayout()
 		self.cLayout.addWidget(QLabel("<b>Users:</b>"))
@@ -253,7 +273,6 @@ class Window(QMainWindow):
 		self.client.sendLine('LIST')
 
 	def doReset(self):
-		self.search_terms.setText('')
 		self.refresh_list()
 
 	def doResetButton(self):
@@ -265,6 +284,10 @@ class Window(QMainWindow):
 		self.table_widget.clear()
 		self.data = self.client.server_channel_list
 		self.populate_table(self.data)
+		if self.client.last_list_fetch=='':
+			self.lastFetch.setText("<small>List received at an unknown time</small>")
+		else:
+			self.lastFetch.setText("<small>List received at "+self.client.last_list_fetch+"</small>")
 
 	def on_double_click(self,item):
 		self.client.join(item.channel)
