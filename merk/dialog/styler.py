@@ -244,7 +244,7 @@ class Dialog(QDialog):
 			Message(SYSTEM_MESSAGE,'','This is a system message'),
 			Message(ERROR_MESSAGE,'','This is an error message'),
 			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
-			Message(CHAT_MESSAGE,'other_nicks',"Here's a message with a link: http://google.com"),
+			Message(CHAT_MESSAGE,'other_nicks',"A message with a link: http://google.com"),
 			Message(SELF_MESSAGE,'your_nick',"Here's a message without a link!"),
 			Message(ACTION_MESSAGE,'nickname','sends a CTCP action message'),
 		]
@@ -262,57 +262,38 @@ class Dialog(QDialog):
 		ln1 = QHBoxLayout()
 		ln1.addWidget(self.system_style)
 		ln1.addWidget(self.error_style)
+		ln1.setContentsMargins(1,1,1,1)
 
 		ln2 = QHBoxLayout()
 		ln2.addWidget(self.link_style)
 		ln2.addWidget(self.server_style)
+		ln2.setContentsMargins(1,1,1,1)
 
 		ln3 = QHBoxLayout()
 		ln3.addWidget(self.self_style)
 		ln3.addWidget(self.user_style)
+		ln3.setContentsMargins(1,1,1,1)
 
 		ln4 = QHBoxLayout()
 		ln4.addWidget(self.action_style)
 		ln4.addWidget(self.notice_style)
+		ln4.setContentsMargins(1,1,1,1)
 
 		ln5 = QHBoxLayout()
 		ln5.addWidget(self.bg_button)
 		ln5.addWidget(self.fg_button)
+		ln5.setContentsMargins(1,1,1,1)
 
-		if not self.simple:
-			if self.default:
-				namedesc = "all chat and server windows"
-			else:
-				if hasattr(self.wchat.client,"network"):
-					namedesc = f"<b>"+self.wchat.name+"</b> on <b>"+self.wchat.client.network+"</b>"
-				else:
-					namedesc = f"<b>"+self.wchat.name+"</b>"
-			self.styleDescription = QLabel(f"""
-				<small>
-				Here, you can set how text looks in {namedesc}. Click the colored
-				boxes to set the various text colors, and the <b>bold</b> and <i>italic</i> check
-				boxes set the style of the given text. The <b>Background Color</b> button sets the color of
-				the text window background, the input widget, and the channel user list, and the <b>Text Color</b> 
-				sets the color of the text in the same areas.
-				Click <b>Set to app default</b> to reset all colors and styles to the default.
-				<b>Open style</b> allows you to open an existing style file and load its settings.
-				<b>Save style as...</b> allows you to save the style set here to a file. Clicking
-				<b>Save</b> saves the style and immediately applies it. Click <b>Cancel</b> to exit.
-				</small>
-				<br>
-				""")
-			self.styleDescription.setWordWrap(True)
-			self.styleDescription.setAlignment(Qt.AlignJustify)
+		editstyleLayout = QVBoxLayout()
+		editstyleLayout.addLayout(ln1)
+		editstyleLayout.addLayout(ln2)
+		editstyleLayout.addLayout(ln3)
+		editstyleLayout.addLayout(ln4)
+		editstyleLayout.addLayout(ln5)
 
 		styleLayout = QVBoxLayout()
-		if not self.simple: styleLayout.addWidget(self.styleDescription)
 		styleLayout.addWidget(self.chat)
-		styleLayout.addLayout(ln1)
-		styleLayout.addLayout(ln2)
-		styleLayout.addLayout(ln3)
-		styleLayout.addLayout(ln4)
-		styleLayout.addLayout(ln5)
-		if self.simple: styleLayout.addStretch()
+		styleLayout.addLayout(editstyleLayout)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -337,6 +318,7 @@ class Dialog(QDialog):
 		buttonLayout.addWidget(saveAsButton)
 		buttonLayout.addWidget(buttons)
 		buttonLayout.setAlignment(Qt.AlignRight)
+		buttonLayout.setContentsMargins(1,1,1,1)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(styleLayout)
