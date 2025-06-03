@@ -185,6 +185,9 @@ class Window(QMainWindow):
 			self.list_button.setFlat(True)
 			serverBar.addWidget(self.list_button)
 
+			if not config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
+				self.list_button.hide()
+
 			serverBar.addStretch()
 
 			self.serverUptime = QLabel("<b>00:00:00</b>")
@@ -455,7 +458,6 @@ class Window(QMainWindow):
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
 			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-			#if self.window_type==SERVER_WINDOW: finalLayout.addLayout(serverBar)
 			if self.window_type==SERVER_WINDOW: finalLayout.addWidget(self.server_window_toolbar)
 			finalLayout.addWidget(self.chat)
 			finalLayout.addLayout(inputLayout)
@@ -659,6 +661,10 @@ class Window(QMainWindow):
 				self.refresh_button.show()
 			else:
 				self.refresh_button.hide()
+			if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
+				self.list_button.show()
+			else:
+				self.list_button.hide()
 
 	def toggleServerToolbar(self):
 		if hasattr(self,"server_window_toolbar"):
@@ -710,14 +716,24 @@ class Window(QMainWindow):
 				self.contextRun.triggered.connect(self.loadScript)
 				menu.addAction(self.contextRun)
 
-				self.contextRun = QAction(QIcon(LIST_ICON),"Server channel list",self)
-				self.contextRun.triggered.connect(self.showChannelList)
-				menu.addAction(self.contextRun)
-
 				hostid = self.client.server+":"+str(self.client.port)
 				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
 				entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
 				menu.addAction(entry)
+
+				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
+					if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
+						menu.addSeparator()
+
+				if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
+					self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",self)
+					self.contextList.triggered.connect(self.showChannelList)
+					menu.addAction(self.contextList)
+
+				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
+					self.contextRefresh = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
+					self.contextRefresh.triggered.connect(self.refreshChannelList)
+					menu.addAction(self.contextRefresh)
 
 				menu.addSeparator()
 

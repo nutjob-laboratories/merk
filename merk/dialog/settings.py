@@ -1478,17 +1478,25 @@ class Dialog(QDialog):
 		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
 		self.showServToolbar.stateChanged.connect(self.changedSetting)
 
-		self.showServRefresh = QCheckBox("Show channel list refresh button\non server window toolbars",self)
+		self.showServRefresh = QCheckBox("Show channel list refresh button\non server window toolbars and menus",self)
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
 		self.showServRefresh.stateChanged.connect(self.changedSetting)
 
 		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showServList = QCheckBox("Show channel list button\non server window toolbars and menus",self)
+		if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS: self.showServList.setChecked(True)
+		self.showServList.stateChanged.connect(self.changedSetting)
+
+		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showInfo)
 		subwindowLayout.addWidget(self.displayServNicks)
 		subwindowLayout.addWidget(self.showServToolbar)
+		subwindowLayout.addWidget(self.showServList)
 		subwindowLayout.addWidget(self.showServRefresh)
 		subwindowLayout.addWidget(self.showInputMenu)
 		subwindowLayout.addWidget(self.showContext)
@@ -2485,6 +2493,7 @@ class Dialog(QDialog):
 		config.SHOW_SERVER_INFO_IN_WINDOWS_MENU = self.showServerInfo.isChecked()
 		config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = self.showServRefresh.isChecked()
 		config.SHOW_SERVER_WINDOW_TOOLBAR = self.showServToolbar.isChecked()
+		config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS = self.showServList.isChecked()
 
 		if self.simpleConnect.isChecked():
 			self.parent.simpleconn = True

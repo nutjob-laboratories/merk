@@ -356,7 +356,7 @@ class Dialog(QDialog):
 			<small>
 			Select a server below, or enter connection information by hand. To automatically
 			reconnect on disconnection, check the <b>Reconnect</b> checkbox. If the <b>Execute connection
-			script</b> option is enabled, the commands entered in the <b>Connection Script</b> tab will be executed
+			script</b> option is enabled, the commands entered in the <b>Script</b> tab will be executed
 			when connection to the server is complete.
 			</small>
 
@@ -387,6 +387,7 @@ class Dialog(QDialog):
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)
+		serverInfoLayout.setContentsMargins(5,5,5,5)
 
 		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
 		self.commandHost.setWordWrap(True)
@@ -420,8 +421,10 @@ class Dialog(QDialog):
 		if self.not_simplified:
 			commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
+		commandsLayout.setContentsMargins(5,5,5,5)
 
 		self.tabs = QTabWidget()
+		self.tabs.setStyleSheet("QTabWidget::tab-bar { alignment: center; }")
 
 		self.userDescription = QLabel(f"""
 			<small>
@@ -460,6 +463,7 @@ class Dialog(QDialog):
 			userPageLayout.addStretch()
 		userPageLayout.addLayout(userLayout)
 		userPageLayout.addStretch()
+		userPageLayout.setContentsMargins(5,5,5,5)
 
 		self.user_tab = QWidget()
 		self.user_tab.setLayout(userPageLayout)
@@ -471,7 +475,7 @@ class Dialog(QDialog):
 
 		self.commands_tab = QWidget()
 		self.commands_tab.setLayout(commandsLayout)
-		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Connection Script")
+		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -522,7 +526,6 @@ class Dialog(QDialog):
 
 			vLayout = QVBoxLayout()
 			vLayout.addLayout(spLayout)
-			vLayout.addWidget(QLabel("<center><small><b>Internet Relay Chat Client</b></small></center>"))
 
 			finalLayout.addLayout(vLayout)
 		finalLayout.addLayout(bannerTabs)
