@@ -85,6 +85,33 @@ class Dialog(QDialog):
 			errors.append("Port must be a number")
 			bad_info = True
 
+		if self.SAVE:
+			# Save user settings
+			user.NICKNAME = self.nick.text()
+			user.ALTERNATE = self.alternative.text()
+			user.USERNAME = self.username.text()
+			user.REALNAME = self.realname.text()
+			user.LAST_HOST = self.host.text()
+			if not bad_info:
+				user.LAST_PORT = self.port.text()
+			user.LAST_PASSWORD = self.password.text()
+			user.LAST_SSL = self.CONNECT_VIA_SSL
+			user.LAST_RECONNECT = self.RECONNECT_OPTION
+			user.HISTORY = list(user.HISTORY)
+
+			commands = self.commands.toPlainText()
+			hostid = self.host.text()+":"+self.port.text()
+			if hostid in user.COMMANDS:
+				if len(commands.strip())==0:
+					del user.COMMANDS[hostid]
+				else:
+					user.COMMANDS[hostid] = self.commands.toPlainText()
+			else:
+				if len(commands.strip())>0:
+					user.COMMANDS[hostid] = self.commands.toPlainText()
+
+			user.save_user(user.USER_FILE)
+
 		if len(errors)>=1:
 
 			msg = QMessageBox()
