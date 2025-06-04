@@ -53,30 +53,59 @@ class Dialog(QDialog):
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
-		return None
+		return ConnectInfo(CONNECTION_DIALOG_CANCELED,None,None,None,None,None,None,None,None,None)
 
 	def check_input(self):
 
 		errors = []
 
-		if len(self.nick.text().strip())==0: errors.append("No nickname entered")
-		if len(self.username.text().strip())==0: errors.append("No username entered")
-		if len(self.realname.text().strip())==0: errors.append("No realname entered")
-		if len(self.alternative.text().strip())==0: errors.append("No alternate nickname entered")
-		if len(self.host.text().strip())==0: errors.append("No host entered")
+		missing_info = False
+		missing_host = False
+		if len(self.nick.text().strip())==0:
+			errors.append("No nickname entered")
+			missing_info = True
+		if len(self.username.text().strip())==0:
+			errors.append("No username entered")
+			missing_info = True
+		if len(self.realname.text().strip())==0:
+			errors.append("No realname entered")
+			missing_info = True
+		if len(self.alternative.text().strip())==0:
+			errors.append("No alternate nickname entered")
+			missing_info = True
+		if len(self.host.text().strip())==0:
+			errors.append("No host entered")
+			missing_info = True
+			missing_host = True
 
+		bad_info = False
 		try:
 			sp = int(self.port.text())
 		except:
 			errors.append("Port must be a number")
+			bad_info = True
 
 		if len(errors)>=1:
+
 			msg = QMessageBox()
 			msg.setIcon(QMessageBox.Critical)
 			msg.setWindowIcon(QIcon(APPLICATION_ICON))
-			msg.setText("Can't connect to server!")
-			msg.setInformativeText("\n".join(errors))
+			if bad_info and missing_info:
+				msg.setText("<big><b>Bad/Missing connection information</b></big>")
+				msg.setInformativeText("<b>Can't connect to server!</b><br><br>Please enter all information needed and try again.")
+			elif bad_info:
+				msg.setText("<big><b>Bad connection information</b></big>")
+				msg.setInformativeText("<b>Server port must be a number!</b><br><br>Please enter all information needed and try again.")
+			elif missing_info:
+				msg.setText("<big><b>Missing connection information</b></big>")
+				if missing_host:
+					msg.setInformativeText("<b>Missing server host!</b><br><br>Please enter all information needed and try again.")
+				else:
+					msg.setInformativeText("<b>User information needed!</b><br><br>Please enter all information needed and try again.")
+			msg.setDetailedText("\n".join(errors))
 			msg.setWindowTitle("Error")
+			msg.setStandardButtons(QMessageBox.Ok)
+
 			msg.exec_()
 
 			return False
@@ -166,6 +195,8 @@ class Dialog(QDialog):
 				)
 
 				return retval
+
+		return ConnectInfo(CONNECTION_MISSING_INFO_ERROR,None,None,None,None,None,None,None,None,None)
 
 	def setServer(self):
 

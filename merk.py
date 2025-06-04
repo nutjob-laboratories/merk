@@ -475,27 +475,32 @@ if __name__ == '__main__':
 
 			# Bring up the connection dialog
 			if len(connections)==0:
-				if config.SIMPLIFIED_DIALOGS:
-					connection_info = ConnectDialogSimplifiedInitial(app,None,'','',args.donotexecute,args.donotsave)
-				else:
-					connection_info = ConnectDialogInitial(app,None,'','',args.donotexecute,args.donotsave)
+				connection_info = ConnectInfo(CONNECTION_MISSING_INFO_ERROR,None,None,None,None,None,None,None,None,None)
+				while connection_info.nickname==CONNECTION_MISSING_INFO_ERROR:
+					if config.SIMPLIFIED_DIALOGS:
+						connection_info = ConnectDialogSimplifiedInitial(app,None,'','',args.donotexecute,args.donotsave)
+					else:
+						connection_info = ConnectDialogInitial(app,None,'','',args.donotexecute,args.donotsave)
 				if connection_info:
 					# Create the main GUI and show it
-					GUI = Merk(
-							app,							# Application
-							args.configdir,					# Config directory, default None for home directory storage
-							args.configname,				# Config directory name, default ".merk"
-							connection_info,				# Connection info
-							font,							# Application font
-							[],								# Channels
-							args.donotexecute,				# Do not execute script default
-							args.donotsave,					# Do not save default
-							config.SIMPLIFIED_DIALOGS,		# Simple connect default
-							args.ontop,						# Always on top
-							None,							# Parent
-						)
+					if connection_info.nickname==CONNECTION_DIALOG_CANCELED:
+						app.quit()
+					else:
+						GUI = Merk(
+								app,							# Application
+								args.configdir,					# Config directory, default None for home directory storage
+								args.configname,				# Config directory name, default ".merk"
+								connection_info,				# Connection info
+								font,							# Application font
+								[],								# Channels
+								args.donotexecute,				# Do not execute script default
+								args.donotsave,					# Do not save default
+								config.SIMPLIFIED_DIALOGS,		# Simple connect default
+								args.ontop,						# Always on top
+								None,							# Parent
+							)
 
-					startMERK(app,GUI)
+						startMERK(app,GUI)
 				else:
 					app.quit()
 			else:

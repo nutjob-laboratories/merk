@@ -1585,15 +1585,21 @@ class Merk(QMainWindow):
 	# |================|
 
 	def connectToIrcFail(self,message,reason):
-		if config.SIMPLIFIED_DIALOGS:
-			connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
-		else:
-			if self.simpleconn:
+		connection = ConnectInfo(CONNECTION_MISSING_INFO_ERROR,None,None,None,None,None,None,None,None,None)
+		while connection.nickname==CONNECTION_MISSING_INFO_ERROR:
+			if config.SIMPLIFIED_DIALOGS:
 				connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
 			else:
-				connection = ConnectDialog(self.app,self,message,reason,self.noexecute,self.donotsave)
+				if self.simpleconn:
+					connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
+				else:
+					connection = ConnectDialog(self.app,self,message,reason,self.noexecute,self.donotsave)
 
 		if connection:
+
+			# User has canceled the dialog, so
+			# we return without connecting to anything
+			if connection.nickname==CONNECTION_DIALOG_CANCELED: return
 			
 			if connection.reconnect:
 				if connection.ssl:
@@ -1658,14 +1664,20 @@ class Merk(QMainWindow):
 		if connection_info:
 			connection = connection_info
 		else:
-			if config.SIMPLIFIED_DIALOGS:
-				connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
-			else:
-				if self.simpleconn:
+			connection = ConnectInfo(CONNECTION_MISSING_INFO_ERROR,None,None,None,None,None,None,None,None,None)
+			while connection.nickname==CONNECTION_MISSING_INFO_ERROR:
+				if config.SIMPLIFIED_DIALOGS:
 					connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
 				else:
-					connection = ConnectDialog(self.app,self,'','',self.noexecute,self.donotsave)
+					if self.simpleconn:
+						connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
+					else:
+						connection = ConnectDialog(self.app,self,'','',self.noexecute,self.donotsave)
 		if connection:
+
+			# User has canceled the dialog, so
+			# we return without connecting to anything
+			if connection.nickname==CONNECTION_DIALOG_CANCELED: return
 			
 			if connection.reconnect:
 				if connection.ssl:
