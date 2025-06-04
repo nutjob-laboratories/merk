@@ -420,10 +420,19 @@ class IRC_Connection(irc.IRCClient):
 
 		oldnick = params[1]
 
-		if self.last_tried_nickname=='':
-			self.last_tried_nickname = self.alternate
-			self.setNick(self.alternate)
-			return
+		if self.alternate!='':
+			if self.last_tried_nickname=='':
+				self.last_tried_nickname = self.alternate
+				self.setNick(self.alternate)
+				return
+		else:
+			# Alternate nicknames are optional, so if
+			# our primary choice is taken, attach a random
+			# number to our primary choice and try again
+			if self.last_tried_nickname=='':
+				self.last_tried_nickname = self.nickname+str(random.randrange(1,99))
+				self.setNick(self.last_tried_nickname)
+				return
 
 		rannum = random.randrange(1,99)
 

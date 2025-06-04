@@ -70,9 +70,6 @@ class Dialog(QDialog):
 		if len(self.realname.text().strip())==0:
 			errors.append("No realname entered")
 			missing_info = True
-		if len(self.alternative.text().strip())==0:
-			errors.append("No alternate nickname entered")
-			missing_info = True
 		if len(self.host.text().strip())==0:
 			errors.append("No host entered")
 			missing_info = True
@@ -460,7 +457,7 @@ class Dialog(QDialog):
 
 		height = self.servers.height()+self.reconnect.height()
 		if self.not_simplified:
-			height = height + serverLayout.sizeHint().height() + 115
+			height = height + serverLayout.sizeHint().height() + 130
 		else:
 			height = height + serverLayout.sizeHint().height() + 80
 		self.commands.setFixedHeight(height)
@@ -487,11 +484,10 @@ class Dialog(QDialog):
 		self.userDescription = QLabel(f"""
 			<small>
 			<b>Nickname</b> is the nickname you want to use, and
-			<b>alternate</b> is used if your primary choice is taken. If both <b>nickname</b>
-			and <b>alternate</b> are taken, a random number will be attached to <b>alternate</b>, and that
-			will be used as the nickname. When you're done, click the <b>Server</b> tab to select or enter a server.
-			All settings are saved when you click <b>Connect</b>, unless you uncheck <b>Save to user
-			settings file</b> below.<br>
+			<b>alternate</b> (optional) is used if your primary choice is taken. If both <b>nickname</b>
+			and <b>alternate</b> are taken, a random number will be attached to <b>nickname</b>, and that
+			will be used as the nickname. All settings are saved when you click <b>Connect</b>,
+			unless you uncheck <b>Save to user settings file</b> below.<br>
 			</small>
 
 			""")
@@ -521,7 +517,7 @@ class Dialog(QDialog):
 			userPageLayout.addStretch()
 		userPageLayout.addLayout(userLayout)
 		userPageLayout.addStretch()
-		userPageLayout.setContentsMargins(5,5,5,5)
+		userPageLayout.setContentsMargins(6,6,6,6)
 
 		self.user_tab = QWidget()
 		self.user_tab.setLayout(userPageLayout)
@@ -597,7 +593,7 @@ class Dialog(QDialog):
 
 		self.setFixedSize(finalLayout.sizeHint())
 
-		if user.NICKNAME=='' or user.ALTERNATE=='' or user.USERNAME=='' or user.REALNAME=='':
+		if user.NICKNAME=='' or user.USERNAME=='' or user.REALNAME=='':
 			self.tabs.setCurrentWidget(self.user_tab)
 		else:
 			self.tabs.setCurrentWidget(self.server_tab)
