@@ -1495,6 +1495,9 @@ class Dialog(QDialog):
 
 		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showStatusList = QCheckBox("Status bar on channed lists",self)
+		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
+		self.showStatusList.stateChanged.connect(self.changedSetting)
 
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
@@ -1507,6 +1510,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showStatusServer)
 		subwindowLayout.addWidget(self.showStatusChat)
+		subwindowLayout.addWidget(self.showStatusList)
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
@@ -2494,6 +2498,7 @@ class Dialog(QDialog):
 		config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = self.showServRefresh.isChecked()
 		config.SHOW_SERVER_WINDOW_TOOLBAR = self.showServToolbar.isChecked()
 		config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS = self.showServList.isChecked()
+		config.SHOW_STATUS_BAR_ON_LIST_WINDOWS = self.showStatusList.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:

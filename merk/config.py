@@ -175,10 +175,12 @@ SHOW_SERVER_INFO_IN_WINDOWS_MENU = True
 SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = False
 SHOW_SERVER_WINDOW_TOOLBAR = True
 SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS = True
+SHOW_STATUS_BAR_ON_LIST_WINDOWS = True
 
 def save_settings(filename):
 
 	settings = {
+		"show_status_bar_on_list_windows": SHOW_STATUS_BAR_ON_LIST_WINDOWS,
 		"show_channel_list_button_on_server_windows": SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS,
 		"show_server_window_toolbar": SHOW_SERVER_WINDOW_TOOLBAR,
 		"show_list_refresh_button_on_server_windows": SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS,
@@ -321,6 +323,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_status_bar_on_list_windows" in settings:
+		settings["show_status_bar_on_list_windows"] = SHOW_STATUS_BAR_ON_LIST_WINDOWS
 	if not "show_channel_list_button_on_server_windows" in settings:
 		settings["show_channel_list_button_on_server_windows"] = SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS
 	if not "show_server_window_toolbar" in settings:
@@ -734,6 +738,7 @@ def load_settings(filename):
 	global SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS
 	global SHOW_SERVER_WINDOW_TOOLBAR
 	global SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS
+	global SHOW_STATUS_BAR_ON_LIST_WINDOWS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -743,6 +748,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_STATUS_BAR_ON_LIST_WINDOWS = settings["show_status_bar_on_list_windows"]
 		SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS = settings["show_channel_list_button_on_server_windows"]
 		SHOW_SERVER_WINDOW_TOOLBAR = settings["show_server_window_toolbar"]
 		SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS = settings["show_list_refresh_button_on_server_windows"]

@@ -138,6 +138,9 @@ class Window(QMainWindow):
 		self.lastFetch = QLabel("<small>List received at "+self.client.last_list_fetch+"</small>")
 		self.status.addPermanentWidget(self.lastFetch,0)
 
+		if not config.SHOW_STATUS_BAR_ON_LIST_WINDOWS:
+			self.status.hide()
+
 		self.sLayout = QHBoxLayout()
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
@@ -185,6 +188,12 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.centralWidget)
 
 		self.populate_table(self.data)
+
+	def toggleStatusBar(self):
+		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS:
+			self.status.show()
+		else:
+			self.status.hide()
 
 	def changedAllTerms(self,i):
 		if self.allTerms.isChecked():
