@@ -185,6 +185,7 @@ class Window(QMainWindow):
 		else:
 			config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST = False
 		config.save_settings(config.CONFIG_FILE)
+		self.refresh_list()
 
 	def changedSearchTopic(self,i):
 		if self.searchTopic.isChecked():
@@ -192,6 +193,7 @@ class Window(QMainWindow):
 		else:
 			config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH = False
 		config.save_settings(config.CONFIG_FILE)
+		self.refresh_list()
 
 	def doExternalSearch(self,search_terms):
 		self.search_terms.setText(search_terms)
@@ -278,12 +280,17 @@ class Window(QMainWindow):
 	def doResetButton(self):
 		self.moreAny.setChecked(True)
 		self.search_terms.setText('')
+		self.moreAny.setChecked(True)
 		self.refresh_list()
 
 	def refresh_list(self):
-		self.table_widget.clear()
-		self.data = self.client.server_channel_list
-		self.populate_table(self.data)
+		if len(self.search_terms.text().strip())>0:
+			self.data = self.client.server_channel_list
+			self.doSearch()
+		else:
+			self.table_widget.clear()
+			self.data = self.client.server_channel_list
+			self.populate_table(self.data)
 		if self.client.last_list_fetch=='':
 			self.lastFetch.setText("<small>List received at an unknown time</small>")
 		else:
