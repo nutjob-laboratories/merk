@@ -66,7 +66,7 @@ class Window(QMainWindow):
 		else:
 			self.network = "Unknown network"
 
-		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {len(self.data)} channels")
+		self.setWindowTitle(f"Channels on {self.server_name} ({self.network})")
 
 		self.window_type = LIST_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
@@ -128,6 +128,13 @@ class Window(QMainWindow):
 
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
+
+		self.status_counts = QLabel(self.format_status_count(client.server_channel_count,client.server_user_count))
+
+		self.status.addPermanentWidget(self.status_counts,0)
+
+		self.status.addPermanentWidget(QLabel(),1)
+
 		self.lastFetch = QLabel("<small>List received at "+self.client.last_list_fetch+"</small>")
 		self.status.addPermanentWidget(self.lastFetch,0)
 
@@ -227,6 +234,7 @@ class Window(QMainWindow):
 		results = remove_duplicate_sublists(results)
 
 		data_count = 0
+		user_count = 0
 		for entry in results:
 			try:
 				if int(entry[1])==1:
@@ -263,10 +271,11 @@ class Window(QMainWindow):
 			if add_entry:
 				self.table_widget.addItem(i)
 				data_count = data_count + 1
+				user_count = user_count + icount
 
 		self.table_widget.sortItems()
 
-		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {data_count} channels")
+		self.status_counts.setText(self.format_status_count(data_count,user_count))
 
 		QApplication.restoreOverrideCursor()
 
@@ -299,8 +308,12 @@ class Window(QMainWindow):
 	def on_double_click(self,item):
 		self.client.join(item.channel)
 
+	def format_status_count(self,channels,users):
+		return f"<small><i>{channels:,} channels with {users:,} users</i></small>"
+
 	def populate_table(self, data):
 		data_count = 0
+		user_count = 0
 		for entry in data:
 			try:
 				if int(entry[1])==1:
@@ -337,9 +350,10 @@ class Window(QMainWindow):
 			if add_entry:
 				self.table_widget.addItem(i)
 				data_count = data_count + 1
+				user_count = user_count + icount
 
 		self.table_widget.sortItems()
 
-		self.setWindowTitle(f"Channels on {self.server_name} ({self.network}) - {data_count} channels")
+		self.status_counts.setText(self.format_status_count(data_count,user_count))
 
 	
