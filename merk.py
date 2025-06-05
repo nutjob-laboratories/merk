@@ -61,9 +61,9 @@ parser = argparse.ArgumentParser(
 	formatter_class=argparse.RawDescriptionHelpFormatter,
 	add_help=False,
 	description=f'''
-┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┓ ┳┏┓┳┓┏┳┓ 
-┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  Version
-┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛┗┛┻┗┛┛┗ ┻  {APPLICATION_VERSION}                              
+╔╦╗╔═╗╦═╗╦╔═  ╦╦═╗╔═╗  ╔═╗╦  ╦╔═╗╔╗╔╔╦╗
+║║║║╣ ╠╦╝╠╩╗  ║╠╦╝║    ║  ║  ║║╣ ║║║ ║  Version
+╩ ╩╚═╝╩╚═╩ ╩  ╩╩╚═╚═╝  ╚═╝╩═╝╩╚═╝╝╚╝ ╩  {APPLICATION_VERSION}
 https://github.com/nutjob-laboratories/merk
 https://github.com/danhetrick
 
@@ -112,6 +112,7 @@ misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode"
 misc_group.add_argument( "-L","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
 
 args = parser.parse_args()
+# help_string = parser.format_help()
 
 if __name__ == '__main__':
 
@@ -271,7 +272,7 @@ if __name__ == '__main__':
 
 		if args.alternate=='':
 			if len(user.ALTERNATE.strip())==0:
-				args.alternate = args.nickname + str(random.randint(1,999))
+				args.alternate = args.nickname + str(random.randint(1,99))
 			else:
 				args.alternate = user.ALTERNATE
 		else:
@@ -368,7 +369,6 @@ if __name__ == '__main__':
 				chans,							# Channels
 				args.donotexecute,				# Do not execute script default
 				args.donotsave,					# Do not save default
-				config.SIMPLIFIED_DIALOGS,		# Simple connect default
 				args.ontop,						# Always on top
 				None,							# Parent
 			)
@@ -410,7 +410,6 @@ if __name__ == '__main__':
 					[],								# Channels
 					args.donotexecute,				# Do not execute script default
 					args.donotsave,					# Do not save default
-					config.SIMPLIFIED_DIALOGS,		# Simple connect default
 					args.ontop,						# Always on top
 					None,							# Parent
 				)
@@ -495,7 +494,6 @@ if __name__ == '__main__':
 								[],								# Channels
 								args.donotexecute,				# Do not execute script default
 								args.donotsave,					# Do not save default
-								config.SIMPLIFIED_DIALOGS,		# Simple connect default
 								args.ontop,						# Always on top
 								None,							# Parent
 							)
@@ -531,7 +529,6 @@ if __name__ == '__main__':
 						chans,							# Channels
 						args.donotexecute,				# Do not execute script default
 						args.donotsave,					# Do not save default
-						config.SIMPLIFIED_DIALOGS,		# Simple connect default
 						args.ontop,						# Always on top
 						None,							# Parent
 					)

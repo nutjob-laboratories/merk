@@ -63,7 +63,6 @@ class Merk(QMainWindow):
 			channels=[],
 			noexecute=False,
 			donotsave=False,
-			simpleconn=False,
 			ontop=False,
 			parent=None,
 		):
@@ -78,7 +77,6 @@ class Merk(QMainWindow):
 		self.join_channels = channels
 		self.noexecute = noexecute
 		self.donotsave = donotsave
-		self.simpleconn = simpleconn
 		self.ontop = ontop
 
 		if not test_if_window_background_is_light(self):
@@ -1590,10 +1588,7 @@ class Merk(QMainWindow):
 			if config.SIMPLIFIED_DIALOGS:
 				connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
 			else:
-				if self.simpleconn:
-					connection = ConnectDialogSimplified(self.app,self,message,reason,self.noexecute,self.donotsave)
-				else:
-					connection = ConnectDialog(self.app,self,message,reason,self.noexecute,self.donotsave)
+				connection = ConnectDialog(self.app,self,message,reason,self.noexecute,self.donotsave)
 
 		if connection:
 
@@ -1669,10 +1664,7 @@ class Merk(QMainWindow):
 				if config.SIMPLIFIED_DIALOGS:
 					connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
 				else:
-					if self.simpleconn:
-						connection = ConnectDialogSimplified(self.app,self,'','',self.noexecute,self.donotsave)
-					else:
-						connection = ConnectDialog(self.app,self,'','',self.noexecute,self.donotsave)
+					connection = ConnectDialog(self.app,self,'','',self.noexecute,self.donotsave)
 		if connection:
 
 			# User has canceled the dialog, so
@@ -2489,10 +2481,8 @@ class Merk(QMainWindow):
 	def settingsSimplified(self):
 		if config.SIMPLIFIED_DIALOGS:
 			config.SIMPLIFIED_DIALOGS = False
-			self.simpleconn = False
 		else:
 			config.SIMPLIFIED_DIALOGS = True
-			self.simpleconn = True
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 

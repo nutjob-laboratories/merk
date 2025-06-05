@@ -230,9 +230,9 @@ def read_style_file(filename,raw=None):
 def write_style_file(style,filename):
 	output = f'''/*
 
-\t┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┏┳┓┓┏┓ ┏┓  ┏┓┳┓ ┏┓
-\t┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┗┓ ┃ ┗┫┃ ┣   ┣ ┃┃ ┣ 
-\t┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛ ┻ ┗┛┗┛┗┛  ┻ ┻┗┛┗┛                                                 
+\t╔╦╗╔═╗╦═╗╦╔═  ╔═╗╔╦╗╦ ╦╦  ╔═╗  ╔═╗╦╦  ╔═╗
+\t║║║║╣ ╠╦╝╠╩╗  ╚═╗ ║ ╚╦╝║  ║╣   ╠╣ ║║  ║╣ 
+\t╩ ╩╚═╝╩╚═╩ ╩  ╚═╝ ╩  ╩ ╩═╝╚═╝  ╚  ╩╩═╝╚═╝
 \thttps://github.com/nutjob-laboratories/merk
 
 \tText Style Configuration File
@@ -263,9 +263,9 @@ def write_style_file(style,filename):
 def write_palette_file(style,filename):
 	output = f'''/*
 
-\t┳┳┓┏┓┳┓┓┏┓  ┏┓┏┓┓ ┏┓┏┳┓┏┳┓┏┓  ┏┓┳┓ ┏┓
-\t┃┃┃┣ ┣┫┃┫   ┃┃┣┫┃ ┣  ┃  ┃ ┣   ┣ ┃┃ ┣ 
-\t┛ ┗┗┛┛┗┛┗┛  ┣┛┛┗┗┛┗┛ ┻  ┻ ┗┛  ┻ ┻┗┛┗┛
+\t╔╦╗╔═╗╦═╗╦╔═  ╔═╗╔═╗╦  ╔═╗╔╦╗╔╦╗╔═╗  ╔═╗╦╦  ╔═╗
+\t║║║║╣ ╠╦╝╠╩╗  ╠═╝╠═╣║  ║╣  ║  ║ ║╣   ╠╣ ║║  ║╣ 
+\t╩ ╩╚═╝╩╚═╩ ╩  ╩  ╩ ╩╩═╝╚═╝ ╩  ╩ ╚═╝  ╚  ╩╩═╝╚═╝
 \thttps://github.com/nutjob-laboratories/merk
 
 \tApplication Palette Configuration File
