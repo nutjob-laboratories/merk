@@ -2495,11 +2495,6 @@ class Dialog(QDialog):
 		config.SHOW_SERVER_WINDOW_TOOLBAR = self.showServToolbar.isChecked()
 		config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS = self.showServList.isChecked()
 
-		if self.simpleConnect.isChecked():
-			self.parent.simpleconn = True
-		else:
-			self.parent.simpleconn = False
-
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:
 				config.ALWAYS_ON_TOP = True

@@ -150,7 +150,7 @@ class Window(QMainWindow):
 		self.cLayout.addWidget(self.searchTopic)
 		self.cLayout.addStretch()
 
-		if not self.parent.simpleconn:
+		if not config.SIMPLIFIED_DIALOGS:
 			self.windowDescription = QLabel(f"""
 				<small>
 				This is a list of channels on <b>{self.server_name} ({self.network})</b>. To join a channel in the
@@ -166,7 +166,7 @@ class Window(QMainWindow):
 			self.windowDescription.setAlignment(Qt.AlignJustify)
 
 		self.layout = QVBoxLayout()
-		if not self.parent.simpleconn:
+		if not config.SIMPLIFIED_DIALOGS:
 			self.layout.addWidget(self.windowDescription)
 		self.layout.addLayout(self.sLayout)
 		self.layout.addLayout(self.cLayout)
