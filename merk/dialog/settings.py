@@ -1495,7 +1495,7 @@ class Dialog(QDialog):
 
 		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showStatusList = QCheckBox("Status bar on channed lists",self)
+		self.showStatusList = QCheckBox("Status bar on channel lists",self)
 		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
 		self.showStatusList.stateChanged.connect(self.changedSetting)
 
