@@ -768,9 +768,15 @@ class Dialog(QDialog):
 		sizeLayout.addWidget(self.sizeLabel)
 		sizeLayout.addStretch()
 
-		self.showChatInTitle = QCheckBox("Show active chat in window title",self)
+		self.showChatInTitle = QCheckBox("Show active subwindow in window title",self)
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
+
+		self.showTopicInTitle = QCheckBox("Show current channel topic in\nwindow title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
+		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
+
+		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
@@ -837,6 +843,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.showChatInTitle)
+		applicationLayout.addWidget(self.showTopicInTitle)
 		applicationLayout.addWidget(self.simpleConnect)
 		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.examineTopic)
@@ -1311,13 +1318,13 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarTop)
 		windowbarLayout.addWidget(self.windowBarFirst)
 		windowbarLayout.addWidget(self.windowBarUnderline)
+		windowbarLayout.addWidget(self.windowBarHover)
 		windowbarLayout.addWidget(self.windowbarChannels)
 		windowbarLayout.addWidget(self.windowbarPrivate)
 		windowbarLayout.addWidget(self.windowBarServers)
 		windowbarLayout.addWidget(self.windowBarEditor)
 		windowbarLayout.addWidget(self.windowbarLists)
 		windowbarLayout.addWidget(self.windowBarIcons)
-		windowbarLayout.addWidget(self.windowBarHover)
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarMenu)
 		windowbarLayout.addLayout(justifyLayout)
@@ -2516,6 +2523,7 @@ class Dialog(QDialog):
 		config.SHOW_STATUS_BAR_ON_LIST_WINDOWS = self.showStatusList.isChecked()
 		config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = self.windowBarUnderline.isChecked()
 		config.WINDOWBAR_HOVER_EFFECT = self.windowBarHover.isChecked()
+		config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = self.showTopicInTitle.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:
@@ -2626,6 +2634,9 @@ class Dialog(QDialog):
 
 		self.parent.saveActive(current_open_window)
 		self.parent.restoreActive()
+
+		w = self.parent.MDI.activeSubWindow()
+		self.parent.merk_subWindowActivated(w)
 
 		QApplication.restoreOverrideCursor()
 

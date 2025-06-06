@@ -3363,4 +3363,19 @@ class Merk(QMainWindow):
 					elif w.window_type==PRIVATE_WINDOW:
 						self.setWindowTitle(APPLICATION_NAME+" - Private chat with "+w.name+" ("+server+")")
 					else:
-						self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
+						if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
+							if hasattr(w,'topic'):
+								if hasattr(w.topic,"text"):
+									if w.topic.text().strip()!='':
+										self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+") - "+w.topic.text().strip())
+									else:
+										self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
+						else:
+							self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
+			elif config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
+				if hasattr(w,'topic'):
+					if hasattr(w.topic,"text"):
+						if w.topic.text().strip()!='':
+							self.setWindowTitle(APPLICATION_NAME+" - "+w.topic.text().strip())
+						else:
+							self.setWindowTitle(APPLICATION_NAME)

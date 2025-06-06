@@ -1854,6 +1854,12 @@ class Window(QMainWindow):
 		self.topic.setText(topic)
 		self.topic.setCursorPosition(0)
 
+		w = self.parent.getSubWindow(self.name,self.client)
+		a = self.parent.MDI.activeSubWindow()
+		if w==a:
+			self.parent.merk_subWindowActivated(w)			
+
+
 	def handleDoubleClick(self,item):
 		item.setSelected(False)
 		user = item.text()
