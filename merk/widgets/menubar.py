@@ -278,7 +278,10 @@ class wMenuButton(QPushButton):
 
 	def eventFilter(self, object, event):
 		if event.type() == QEvent.Enter:
-			self.setStyleSheet(self.hover_style)
+			if config.WINDOWBAR_HOVER_EFFECT:
+				self.setStyleSheet(self.hover_style)
+			else:
+				self.setStyleSheet(self.normal_style)
 			return True
 		elif event.type() == QEvent.Leave:
 			self.setStyleSheet(self.normal_style)
@@ -312,7 +315,10 @@ class wIconMenuButton(QPushButton):
 
 	def eventFilter(self, object, event):
 		if event.type() == QEvent.Enter:
-			self.setStyleSheet(self.hover_style)
+			if config.WINDOWBAR_HOVER_EFFECT:
+				self.setStyleSheet(self.hover_style)
+			else:
+				self.setStyleSheet(self.normal_style)
 			return True
 		elif event.type() == QEvent.Leave:
 			self.setStyleSheet(self.normal_style)

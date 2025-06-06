@@ -449,6 +449,7 @@ class Dialog(QDialog):
 			self.windowbarChannels.setEnabled(True)
 			self.windowbarLists.setEnabled(True)
 			self.windowBarUnderline.setEnabled(True)
+			self.windowBarHover.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -463,6 +464,7 @@ class Dialog(QDialog):
 			self.windowbarChannels.setEnabled(False)
 			self.windowbarLists.setEnabled(False)
 			self.windowBarUnderline.setEnabled(False)
+			self.windowBarHover.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -1281,6 +1283,9 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: self.windowBarUnderline.setChecked(True)
 		self.windowBarUnderline.stateChanged.connect(self.menuChange)
 
+		self.windowBarHover = QCheckBox("Bold entries on mouse hover",self)
+		if config.WINDOWBAR_HOVER_EFFECT: self.windowBarHover.setChecked(True)
+		self.windowBarHover.stateChanged.connect(self.menuChange)
 
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
@@ -1296,6 +1301,7 @@ class Dialog(QDialog):
 			self.windowbarChannels.setEnabled(False)
 			self.windowbarLists.setEnabled(False)
 			self.windowBarUnderline.setEnabled(False)
+			self.windowBarHover.setEnabled(False)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -1311,6 +1317,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarEditor)
 		windowbarLayout.addWidget(self.windowbarLists)
 		windowbarLayout.addWidget(self.windowBarIcons)
+		windowbarLayout.addWidget(self.windowBarHover)
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarMenu)
 		windowbarLayout.addLayout(justifyLayout)
@@ -2508,6 +2515,7 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS = self.showServList.isChecked()
 		config.SHOW_STATUS_BAR_ON_LIST_WINDOWS = self.showStatusList.isChecked()
 		config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = self.windowBarUnderline.isChecked()
+		config.WINDOWBAR_HOVER_EFFECT = self.windowBarHover.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:
