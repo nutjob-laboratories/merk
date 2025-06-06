@@ -437,9 +437,11 @@ class Merk(QMainWindow):
 					icon = LIST_ICON
 					serv_name = "Channel list"
 					if c.client.hostname:
-						wname = c.client.hostname
+						wname = c.client.hostname + " channels"
+						serv_name = c.client.hostname
 					else:
-						wname = c.client.server+":"+str(entry.port)
+						wname = c.client.server+":"+str(entry.port) + " channels"
+						serv_name = c.client.server+":"+str(entry.port)
 
 				if config.WINDOWBAR_SHOW_ICONS:
 					button = menubar.get_icon_windowbar_button(icon,wname)
@@ -461,13 +463,13 @@ class Merk(QMainWindow):
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(wname)
 				if c.window_type==LIST_WINDOW:
-					button.setToolTip(wname)
+					button.setToolTip(serv_name)
 
 				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 					if window == self.MDI.activeSubWindow():
 						font = QFont()
 						font.setBold(True)
-						font.setUnderline(True)
+						if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: font.setUnderline(True)
 						button.setFont(font)
 
 				button.setFixedHeight(18)
@@ -558,7 +560,7 @@ class Merk(QMainWindow):
 			if len(button_list)>0:
 				font = QFont()
 				font.setBold(True)
-				font.setUnderline(True)
+				if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: font.setUnderline(True)
 				button_list[0].setFont(font)
 
 		if len(button_list)>0:

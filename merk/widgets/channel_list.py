@@ -54,12 +54,12 @@ class Window(QMainWindow):
 		self.data = channel_data
 		self.parent = parent
 
-		self.name = "CHANNEL_LIST_WINDOW"
-
 		if self.client.hostname:
 			self.server_name = self.client.hostname
 		else:
 			self.server_name = self.client.server+":"+str(self.client.port)
+
+		self.name = self.server_name + " channels"
 
 		if hasattr(self.client,"network"):
 			self.network = self.client.network

@@ -495,6 +495,13 @@ class Windowbar(QToolBar):
 			entry = QAction(QIcon(self.parent.unchecked_icon),"Show active first", self)
 		entry.triggered.connect(self.first)
 		menu.addAction(entry)
+
+		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW:
+			entry = QAction(QIcon(self.parent.checked_icon),"Underline active window", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Underline active window", self)
+		entry.triggered.connect(self.underline)
+		menu.addAction(entry)
 		
 		if config.WINDOWBAR_SHOW_ICONS:
 			entry = QAction(QIcon(self.parent.checked_icon),"Show icons", self)
@@ -596,6 +603,16 @@ class Windowbar(QToolBar):
 			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = False
 		else:
 			config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def underline(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW:
+			config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = False
+		else:
+			config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)
