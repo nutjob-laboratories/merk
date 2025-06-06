@@ -173,7 +173,7 @@ class Window(QMainWindow):
 			self.menuPrompt.setIcon(QIcon(self.parent.checked_icon))
 		config.save_settings(config.CONFIG_FILE)
 
-	def __init__(self,filename=None,parent=None):
+	def __init__(self,filename=None,parent=None,subwindow=None):
 		super(Window, self).__init__(parent)
 
 		self.filename = filename
@@ -181,6 +181,7 @@ class Window(QMainWindow):
 		self.changed = False
 		self.cscript_menu = None
 		self.window_type = EDITOR_WINDOW
+		self.subwindow = subwindow
 
 		self.editing_user_script = False
 		self.current_user_script = None
@@ -689,7 +690,6 @@ class Window(QMainWindow):
 				self.status_file.setText(f"<small><b>Connection script for {self.current_user_script}</b></small>")
 			self.name = f"{self.current_user_script}"
 			self.parent.buildWindowsMenu()
-			
 			return
 
 		if self.filename!=None:
@@ -707,6 +707,7 @@ class Window(QMainWindow):
 			self.status_file.setText(f"<small><b>{self.name}</b></small>")
 		
 		self.parent.buildWindowsMenu()
+
 
 	def doFileSaveAs(self):
 		options = QFileDialog.Options()

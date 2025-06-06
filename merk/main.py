@@ -2131,7 +2131,7 @@ class Merk(QMainWindow):
 
 	def newEditorWindow(self):
 		w = QMdiSubWindow(self)
-		w.setWidget(widgets.ScriptEditor(None,self))
+		w.setWidget(widgets.ScriptEditor(None,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
@@ -2144,7 +2144,7 @@ class Merk(QMainWindow):
 
 	def newEditorWindowFile(self,filename):
 		w = QMdiSubWindow(self)
-		w.setWidget(widgets.ScriptEditor(filename,self))
+		w.setWidget(widgets.ScriptEditor(filename,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
@@ -2157,7 +2157,7 @@ class Merk(QMainWindow):
 
 	def newEditorWindowConnect(self,hostid):
 		w = QMdiSubWindow(self)
-		w.setWidget(widgets.ScriptEditor(None,self))
+		w.setWidget(widgets.ScriptEditor(None,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
@@ -3319,14 +3319,29 @@ class Merk(QMainWindow):
 
 		w = subwindow.widget()
 
+		# If the window belongs to a client that
+		# is quitting, don't do anything
 		if hasattr(w,"client"):
 			if w.client.client_id in self.quitting:
 				return
 
+		# If the window has a text input widget,
+		# give it focus
+		if hasattr(w,"input"):
+			w.input.setFocus()
+
+		# If the window is a channel list search window,
+		# then give the search terms widget focus
+		if hasattr(w,"search_terms"):
+			w.search_terms.setFocus()
+
+		# If the window is a script editor window,
+		# then give the editor widget focus
+		if hasattr(w,"editor"):
+			w.editor.setFocus()
+
 		self.saveActive(subwindow)
 		self.buildWindowbar()
-
-		if w.window_type==LIST_WINDOW: return
 
 		# Reset the window title
 		self.setWindowTitle(APPLICATION_NAME)
@@ -3341,9 +3356,9 @@ class Merk(QMainWindow):
 						server = w.client.server+":"+str(w.client.port)
 					if w.window_type==SERVER_WINDOW:
 						self.setWindowTitle(APPLICATION_NAME+" - "+server)
+					elif w.window_type==LIST_WINDOW:
+						self.setWindowTitle(APPLICATION_NAME+" - Channels on "+server)
+					elif w.window_type==PRIVATE_WINDOW:
+						self.setWindowTitle(APPLICATION_NAME+" - Private chat with "+w.name+" ("+server+")")
 					else:
 						self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
-			pass
-
-		if hasattr(w,"input"):
-			w.input.setFocus()
