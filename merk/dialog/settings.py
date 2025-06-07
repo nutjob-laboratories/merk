@@ -792,13 +792,6 @@ class Dialog(QDialog):
 
 		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-
-		self.forceDefault = QCheckBox("Force all chat windows to use\nthe default text style",self)
-		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
-		self.forceDefault.stateChanged.connect(self.changeSettingStyle)
-
-		self.forceDefault.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.alwaysOnTop = QCheckBox("Main window always on top",self)
 		if config.ALWAYS_ON_TOP: self.alwaysOnTop.setChecked(True)
 		self.alwaysOnTop.stateChanged.connect(self.changedSetting)
@@ -850,7 +843,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.searchAllTerms)
 		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.showServerInfo)
-		applicationLayout.addWidget(self.forceDefault)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -911,6 +903,19 @@ class Dialog(QDialog):
 		if config.DARK_MODE: self.darkMode.setChecked(True)
 		self.darkMode.stateChanged.connect(self.setDarkMode)
 
+		self.forceDefault = QCheckBox("Force all chat windows to use\nthe default text style",self)
+		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
+		self.forceDefault.stateChanged.connect(self.changeSettingStyle)
+
+		self.forceDefault.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.notInputWidget = QCheckBox("Do not apply text style to the\ntext input widget",self)
+		if config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET: self.notInputWidget.setChecked(True)
+		self.notInputWidget.stateChanged.connect(self.changeSettingStyle)
+
+		self.notInputWidget.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
@@ -919,6 +924,10 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addWidget(self.darkMode)
+		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		appearanceLayout.addWidget(self.forceDefault)
+		appearanceLayout.addWidget(self.notInputWidget)
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
@@ -2524,6 +2533,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = self.windowBarUnderline.isChecked()
 		config.WINDOWBAR_HOVER_EFFECT = self.windowBarHover.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = self.showTopicInTitle.isChecked()
+		config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = self.notInputWidget.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:

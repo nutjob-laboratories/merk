@@ -264,7 +264,7 @@ class Dialog(QDialog):
 		self.userlist.setFont(f)
 
 		fm = self.chat.fontMetrics()
-		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*11)
+		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*10)
 
 		self.userlist.setFixedHeight((fheight*9)+10)
 		self.userlist.setFixedWidth(ulwidth)
@@ -372,6 +372,7 @@ class Dialog(QDialog):
 		else:
 			dispLayout.addWidget(self.chat)
 			dispLayout.addWidget(self.userlist)
+		dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
 		
 		styleLayout = QVBoxLayout()
 		styleLayout.addLayout(dispLayout)

@@ -1314,7 +1314,12 @@ class Window(QMainWindow):
 
 			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
+			if not config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET:
+				self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
+			else:
+				d = styles.loadDefault()
+				b,f = styles.parseBackgroundAndForegroundColor(d["all"])
+				self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',f,b))
 
 			if self.window_type==CHANNEL_WINDOW:
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
@@ -1344,7 +1349,12 @@ class Window(QMainWindow):
 
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-		self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
+		if not config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET:
+			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
+		else:
+			d = styles.loadDefault()
+			b,f = styles.parseBackgroundAndForegroundColor(d["all"])
+			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',f,b))
 
 		if self.window_type==CHANNEL_WINDOW:
 			self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))

@@ -179,10 +179,12 @@ SHOW_STATUS_BAR_ON_LIST_WINDOWS = True
 WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = True
 WINDOWBAR_HOVER_EFFECT = True
 SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = False
+DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = False
 
 def save_settings(filename):
 
 	settings = {
+		"do_not_apply_text_style_to_input_widget": DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET,
 		"show_channel_topic_in_title": SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE,
 		"windowbar_bold_on_hover": WINDOWBAR_HOVER_EFFECT,
 		"windowbar_underline_active_window": WINDOWBAR_UNDERLINE_ACTIVE_WINDOW,
@@ -329,6 +331,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "do_not_apply_text_style_to_input_widget" in settings:
+		settings["do_not_apply_text_style_to_input_widget"] = DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET
 	if not "show_channel_topic_in_title" in settings:
 		settings["show_channel_topic_in_title"] = SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE
 	if not "windowbar_bold_on_hover" in settings:
@@ -754,6 +758,7 @@ def load_settings(filename):
 	global WINDOWBAR_UNDERLINE_ACTIVE_WINDOW
 	global WINDOWBAR_HOVER_EFFECT
 	global SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE
+	global DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -763,6 +768,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = settings["do_not_apply_text_style_to_input_widget"]
 		SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = settings["show_channel_topic_in_title"]
 		WINDOWBAR_HOVER_EFFECT = settings["windowbar_bold_on_hover"]
 		WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = settings["windowbar_underline_active_window"]
