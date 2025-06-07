@@ -97,34 +97,23 @@ class Dialog(QDialog):
 		for line in self.messages:
 			t = render.render_message(line,self.style)
 			self.chat.append(t)
-	
-	def setTextColor(self):
 
-		newcolor = QColorDialog.getColor(QColor(self.fgcolor))
-		if newcolor.isValid():
+	def syntaxChanged(self,data):
+		name = data[0]
 
-			self.fgcolor = newcolor.name()
+		if name=="fore":
+			color = data[1]
+			self.fgcolor = color
+		elif name=="back":
+			color = data[1]
+			self.bgcolor = color
 
-			gcode = f'color: {self.fgcolor};'
-			gcode = gcode + f' background-color: {self.bgcolor};'
+		gcode = f'color: {self.fgcolor};'
+		gcode = gcode + f' background-color: {self.bgcolor};'
 
-			self.style["all"] = gcode
+		self.style["all"] = gcode
 
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
-
-	def setBackground(self):
-
-		newcolor = QColorDialog.getColor(QColor(self.bgcolor))
-		if newcolor.isValid():
-
-			self.bgcolor = newcolor.name()
-
-			gcode = f'color: {self.fgcolor};'
-			gcode = gcode + f' background-color: {self.bgcolor};'
-
-			self.style["all"] = gcode
-
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
 
 	def saveAsStyle(self):
 		options = QFileDialog.Options()
@@ -162,6 +151,9 @@ class Dialog(QDialog):
 			self.user_style.setQss(self.style['username'])
 			self.server_style.setQss(self.style['server'])
 
+			self.fore.applyColor(self.fgcolor)
+			self.back.applyColor(self.bgcolor)
+
 			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
 
 			self.chat.clear()
@@ -182,6 +174,9 @@ class Dialog(QDialog):
 		self.self_style.setQss(self.style['self'])
 		self.user_style.setQss(self.style['username'])
 		self.server_style.setQss(self.style['server'])
+
+		self.fore.applyColor(self.fgcolor)
+		self.back.applyColor(self.bgcolor)
 
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
 
@@ -253,11 +248,12 @@ class Dialog(QDialog):
 			t = render.render_message(line,self.style)
 			self.chat.append(t)
 
-		self.bg_button = QPushButton("Background Color")
-		self.bg_button.clicked.connect(self.setBackground)
+		self.fore = widgets.SyntaxTextColor('fore', "Text Color",self.fgcolor,self)
+		self.back = widgets.SyntaxTextColor('back', "Background Color",self.bgcolor,self)
 
-		self.fg_button = QPushButton("Text Color")
-		self.fg_button.clicked.connect(self.setTextColor)
+		self.fore.syntaxChanged.connect(self.syntaxChanged)
+		self.back.syntaxChanged.connect(self.syntaxChanged)
+
 
 		ln1 = QHBoxLayout()
 		ln1.addWidget(self.system_style)
@@ -280,17 +276,20 @@ class Dialog(QDialog):
 		ln4.setContentsMargins(1,1,1,1)
 
 		ln5 = QHBoxLayout()
-		ln5.addWidget(self.bg_button)
-		ln5.addWidget(self.fg_button)
+		ln5.addStretch()
+		ln5.addWidget(self.fore)
+		ln5.addStretch()
+		ln5.addWidget(self.back)
+		ln5.addStretch()
 		ln5.setContentsMargins(1,1,1,1)
 
 		editstyleLayout = QVBoxLayout()
+		editstyleLayout.addLayout(ln5)
 		editstyleLayout.addLayout(ln1)
 		editstyleLayout.addLayout(ln2)
 		editstyleLayout.addLayout(ln3)
 		editstyleLayout.addLayout(ln4)
-		editstyleLayout.addLayout(ln5)
-
+		
 		styleLayout = QVBoxLayout()
 		styleLayout.addWidget(self.chat)
 		styleLayout.addLayout(editstyleLayout)
@@ -303,13 +302,13 @@ class Dialog(QDialog):
 
 		buttons.button(QDialogButtonBox.Ok).setText("Save")
 
-		saveAsButton = QPushButton("Save style as...")
+		saveAsButton = QPushButton("Save as...")
 		saveAsButton.clicked.connect(self.saveAsStyle)
 
 		loadButton = QPushButton("Open style")
 		loadButton.clicked.connect(self.loadStyle)
 
-		defaultButton = QPushButton("Set to app default")
+		defaultButton = QPushButton("Set default")
 		defaultButton.clicked.connect(self.loadDefault)
 
 		buttonLayout = QHBoxLayout()

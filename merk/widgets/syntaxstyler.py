@@ -98,7 +98,27 @@ class SyntaxColor(QWidget):
 		self.setColor = QPushButton("")
 		self.setColor.clicked.connect(self.buttonColor)
 		self.setColor.setToolTip("Set color")
-		self.setColor.setStyleSheet(f'background-color: {self.color};')
+		if self.parent.parent.dark_mode:
+			buttonStyleSheet = f"""
+				QPushButton {{ 
+					background-color: {self.color};
+				}}
+				QToolTip {{
+			        background-color: black;
+			        color: white;
+			    }}
+			"""
+		else:
+			buttonStyleSheet = f"""
+				QPushButton {{ 
+					background-color: {self.color};
+				}}
+				QToolTip {{
+			        background-color: white;
+			        color: black;
+			    }}
+			"""
+		self.setColor.setStyleSheet(buttonStyleSheet)
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
 		self.setColor.setFixedSize(fheight+8,fheight+8)
@@ -155,6 +175,12 @@ class SyntaxTextColor(QWidget):
 
 			self.syntaxChanged.emit([self.name,self.exportSettings()])
 
+	def applyColor(self,color):
+
+		self.color = color
+
+		self.setColor.setStyleSheet(f'background-color: {self.color};')
+
 
 	def __init__(self,name,description,color,parent=None):
 		super(SyntaxTextColor,self).__init__(parent)
@@ -168,7 +194,28 @@ class SyntaxTextColor(QWidget):
 
 		self.setColor = QPushButton("")
 		self.setColor.clicked.connect(self.buttonColor)
-		self.setColor.setStyleSheet(f'background-color: {self.color};')
+		self.setColor.setToolTip("Set color")
+		if self.parent.parent.dark_mode:
+			buttonStyleSheet = f"""
+				QPushButton {{ 
+					background-color: {self.color};
+				}}
+				QToolTip {{
+			        background-color: black;
+			        color: white;
+			    }}
+			"""
+		else:
+			buttonStyleSheet = f"""
+				QPushButton {{ 
+					background-color: {self.color};
+				}}
+				QToolTip {{
+			        background-color: white;
+			        color: black;
+			    }}
+			"""
+		self.setColor.setStyleSheet(buttonStyleSheet)
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
 		self.setColor.setFixedSize(fheight+8,fheight+8)
