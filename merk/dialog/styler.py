@@ -330,6 +330,32 @@ class Dialog(QDialog):
 
 		self.userlist.update()
 
+		dispLayout = QHBoxLayout()
+		if config.SHOW_USERLIST_ON_LEFT:
+			dispLayout.addWidget(self.userlist)
+			dispLayout.addWidget(self.chat)
+		else:
+			dispLayout.addWidget(self.chat)
+			dispLayout.addWidget(self.userlist)
+		dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+
+		# Buttons
+		buttons = QDialogButtonBox(self)
+		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+		buttons.accepted.connect(self.accept)
+		buttons.rejected.connect(self.reject)
+
+		buttons.button(QDialogButtonBox.Ok).setText("Save")
+
+		saveAsButton = QPushButton(" Save style as... ")
+		saveAsButton.clicked.connect(self.saveAsStyle)
+
+		loadButton = QPushButton(" Open style ")
+		loadButton.clicked.connect(self.loadStyle)
+
+		defaultButton = QPushButton(" Set colors to app default ")
+		defaultButton.clicked.connect(self.loadDefault)
+
 		ln1 = QHBoxLayout()
 		ln1.addWidget(self.system_style)
 		ln1.addWidget(self.error_style)
@@ -351,11 +377,10 @@ class Dialog(QDialog):
 		ln4.setContentsMargins(1,1,1,1)
 
 		ln5 = QHBoxLayout()
-		ln5.addStretch()
 		ln5.addWidget(self.fore)
-		ln5.addStretch()
 		ln5.addWidget(self.back)
 		ln5.addStretch()
+		ln5.addWidget(defaultButton)
 		ln5.setContentsMargins(1,1,1,1)
 
 		editstyleLayout = QVBoxLayout()
@@ -365,38 +390,11 @@ class Dialog(QDialog):
 		editstyleLayout.addLayout(ln3)
 		editstyleLayout.addLayout(ln4)
 
-		dispLayout = QHBoxLayout()
-		if config.SHOW_USERLIST_ON_LEFT:
-			dispLayout.addWidget(self.userlist)
-			dispLayout.addWidget(self.chat)
-		else:
-			dispLayout.addWidget(self.chat)
-			dispLayout.addWidget(self.userlist)
-		dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-		
 		styleLayout = QVBoxLayout()
 		styleLayout.addLayout(dispLayout)
 		styleLayout.addLayout(editstyleLayout)
 
-		# Buttons
-		buttons = QDialogButtonBox(self)
-		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-		buttons.accepted.connect(self.accept)
-		buttons.rejected.connect(self.reject)
-
-		buttons.button(QDialogButtonBox.Ok).setText("Save")
-
-		saveAsButton = QPushButton("Save as...")
-		saveAsButton.clicked.connect(self.saveAsStyle)
-
-		loadButton = QPushButton("Open style")
-		loadButton.clicked.connect(self.loadStyle)
-
-		defaultButton = QPushButton("Set default")
-		defaultButton.clicked.connect(self.loadDefault)
-
 		buttonLayout = QHBoxLayout()
-		buttonLayout.addWidget(defaultButton)
 		buttonLayout.addWidget(loadButton)
 		buttonLayout.addWidget(saveAsButton)
 		buttonLayout.addWidget(buttons)
