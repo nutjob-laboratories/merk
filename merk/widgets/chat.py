@@ -590,6 +590,9 @@ class Window(QMainWindow):
 		# Only channel and private chat windows load logs
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 			if load_logs:
+
+				QApplication.setOverrideCursor(Qt.WaitCursor)
+
 				# Load log from disk
 				loadLog = logs.readLog(self.client.network,self.name,logs.LOG_DIRECTORY)
 				# If the log is too long (which, after a while, it *will* be), we
@@ -626,6 +629,8 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
+
+				QApplication.restoreOverrideCursor()
 
 	def showChannelList(self):
 		if len(self.client.server_channel_list)==0:
@@ -1300,6 +1305,8 @@ class Window(QMainWindow):
 			x = StylerDialog(self.client,self,self.parent)
 		if x:
 
+			QApplication.setOverrideCursor(Qt.WaitCursor)
+
 			self.style = x
 
 			# Apply style background and forground colors
@@ -1313,6 +1320,8 @@ class Window(QMainWindow):
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
 
 			self.rerenderChatLog()
+
+			QApplication.restoreOverrideCursor()
 
 	def applyStyle(self,filename=None):
 		if not config.FORCE_DEFAULT_STYLE:

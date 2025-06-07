@@ -32,6 +32,7 @@ from ..resources import *
 from .. import widgets
 from .. import styles
 from .. import render
+from .. import config
 
 class Dialog(QDialog):
 
@@ -114,6 +115,7 @@ class Dialog(QDialog):
 		self.style["all"] = gcode
 
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+		self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',self.fgcolor,self.bgcolor))
 
 	def saveAsStyle(self):
 		options = QFileDialog.Options()
@@ -155,6 +157,7 @@ class Dialog(QDialog):
 			self.back.applyColor(self.bgcolor)
 
 			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+			self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',self.fgcolor,self.bgcolor))
 
 			self.chat.clear()
 
@@ -239,7 +242,7 @@ class Dialog(QDialog):
 			Message(SYSTEM_MESSAGE,'','This is a system message'),
 			Message(ERROR_MESSAGE,'','This is an error message'),
 			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
-			Message(CHAT_MESSAGE,'other_nicks',"A message with a link: http://google.com"),
+			Message(CHAT_MESSAGE,'other_nicks',"Here's a link: http://google.com"),
 			Message(SELF_MESSAGE,'your_nick',"Here's a message without a link!"),
 			Message(ACTION_MESSAGE,'nickname','sends a CTCP action message'),
 		]
@@ -254,6 +257,78 @@ class Dialog(QDialog):
 		self.fore.syntaxChanged.connect(self.syntaxChanged)
 		self.back.syntaxChanged.connect(self.syntaxChanged)
 
+		self.userlist = QListWidget(self)
+		self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',self.fgcolor,self.bgcolor))
+		f = self.userlist.font()
+		f.setBold(True)
+		self.userlist.setFont(f)
+
+		fm = self.chat.fontMetrics()
+		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*11)
+
+		self.userlist.setFixedHeight((fheight*9)+10)
+		self.userlist.setFixedWidth(ulwidth)
+
+		if not config.SHOW_USERLIST:
+			self.userlist.hide()
+
+		ui = QListWidgetItem()
+		if config.PLAIN_USER_LISTS:
+			ui.setText('~ '+'owner')
+		else:
+			ui.setIcon(QIcon(OWNER_USER))
+			ui.setText('owner')
+		self.userlist.addItem(ui)
+
+		ui = QListWidgetItem()
+		if config.PLAIN_USER_LISTS:
+			ui.setText('% '+'admin')
+		else:
+			ui.setIcon(QIcon(ADMIN_USER))
+			ui.setText('admin')
+		self.userlist.addItem(ui)
+
+		ui = QListWidgetItem()
+		if config.PLAIN_USER_LISTS:
+			ui.setText('@ '+'chanop')
+		else:
+			ui.setIcon(QIcon(OP_USER))
+			ui.setText('chanop')
+		self.userlist.addItem(ui)
+
+		ui = QListWidgetItem()
+		if config.PLAIN_USER_LISTS:
+			ui.setText('% '+'halfop')
+		else:
+			ui.setIcon(QIcon(HALFOP_USER))
+			ui.setText('halfop')
+		self.userlist.addItem(ui)
+
+		ui = QListWidgetItem()
+		if config.PLAIN_USER_LISTS:
+			ui.setText('+ '+'voiced')
+		else:
+			ui.setIcon(QIcon(VOICE_USER))
+			ui.setText('voiced')
+		self.userlist.addItem(ui)
+
+		ui = QListWidgetItem()
+		if config.PLAIN_USER_LISTS:
+			ui.setText('  '+'user1')
+		else:
+			ui.setIcon(QIcon(NORMAL_USER))
+			ui.setText('user1')
+		self.userlist.addItem(ui)
+
+		ui = QListWidgetItem()
+		if config.PLAIN_USER_LISTS:
+			ui.setText('  '+'user2')
+		else:
+			ui.setIcon(QIcon(NORMAL_USER))
+			ui.setText('user2')
+		self.userlist.addItem(ui)
+
+		self.userlist.update()
 
 		ln1 = QHBoxLayout()
 		ln1.addWidget(self.system_style)
@@ -289,9 +364,17 @@ class Dialog(QDialog):
 		editstyleLayout.addLayout(ln2)
 		editstyleLayout.addLayout(ln3)
 		editstyleLayout.addLayout(ln4)
+
+		dispLayout = QHBoxLayout()
+		if config.SHOW_USERLIST_ON_LEFT:
+			dispLayout.addWidget(self.userlist)
+			dispLayout.addWidget(self.chat)
+		else:
+			dispLayout.addWidget(self.chat)
+			dispLayout.addWidget(self.userlist)
 		
 		styleLayout = QVBoxLayout()
-		styleLayout.addWidget(self.chat)
+		styleLayout.addLayout(dispLayout)
 		styleLayout.addLayout(editstyleLayout)
 
 		# Buttons
