@@ -1,3 +1,4 @@
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -20,14 +21,14 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. If you're having trouble downloading any of the files, here is a [mirror of all files on Dropbox](https://www.dropbox.com/scl/fo/7s6fjes5stuxu471e35mr/AO9Y6L9wkCs4QCu2XGtobo8?rlkey=itmf22qmnazzh5ok16tb9ljan&st=sb7gsrsl&dl=0).
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted.
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
-| Zip Archive|  Cross-platform  | [Download MERK 0.040.091 (3.53 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-latest.zip)  |
-| Zip Archive|  Windows | [Download MERK 0.040.091 (49.65 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-latest.zip)|
-|   Windows Installer|  Windows | [Download MERK 0.040.091 (36.77 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip)|
-|   Single Executable|  Windows | [Download MERK 0.040.091 (49.25 MB)](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-windows-standalone.zip)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.040.091 (3.53 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.040.091 (49.65 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.040.091 (36.77 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
+|   Single Executable|  Windows | [Download MERK 0.040.091 (49.25 MB)](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1)|
 
 # Summary
   
@@ -35,24 +36,24 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
-For those that don't want to install Python or all the requirements, you can [download the **MERK** installer for Windows](https://github.com/nutjob-laboratories/merk/raw/main/downloads/merk-setup.zip).
+For those that don't want to install Python or all the requirements, you can [download the **MERK** installer for Windows](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1).
 
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.040.091](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-setup.zip). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.040.091](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
 
-For a "portable" version of **MERK**, [download the zip file of **MERK** 0.040.091 for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
+For a "portable" version of **MERK**, [download the zip file of **MERK** 0.040.091 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
 
-For an even easier "install", [download the "standalone" executable of **MERK** 0.040.091](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-standalone.zip) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
+For an even easier "install", [download the "standalone" executable of **MERK** 0.040.091](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
 A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
 
 # Making MERK Portable on Windows
-If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.040.091 for Windows](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
+If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.040.091 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
 
 ```merk.exe --config-local```
 
@@ -62,7 +63,7 @@ Whenever you want to run **MERK** off of your USB stick, double click the `.bat`
 
 # Running MERK with Python
 
-First, make sure that all the [requirements](#python-requirements) are installed. Next, [download **MERK**](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-latest.zip). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+First, make sure that all the [requirements](#python-requirements) are installed. Next, [download **MERK**](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
 
     python merk.py
 
