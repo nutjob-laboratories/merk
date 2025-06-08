@@ -690,6 +690,11 @@ class Window(QMainWindow):
 				self.status_file.setText(f"<small><b>Connection script for {self.current_user_script}</b></small>")
 			self.name = f"{self.current_user_script}"
 			self.parent.buildWindowsMenu()
+
+			w = self.parent.getEditorWindow(self.subwindow_id)
+			a = self.parent.MDI.activeSubWindow()
+			if w==a: self.parent.merk_subWindowActivated(w)
+
 			return
 
 		if self.filename!=None:
@@ -708,14 +713,20 @@ class Window(QMainWindow):
 		
 		self.parent.buildWindowsMenu()
 
+		w = self.parent.getEditorWindow(self.subwindow_id)
+		a = self.parent.MDI.activeSubWindow()
+		if w==a: self.parent.merk_subWindowActivated(w)
+
 
 	def doFileSaveAs(self):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getSaveFileName(self,"Save script as...",commands.SCRIPTS_DIRECTORY,f"{APPLICATION_NAME} Script (*.{SCRIPT_FILE_EXTENSION});;All Files (*)", options=options)
 		if fileName:
-			efl = len(SCRIPT_FILE_EXTENSION)+1
-			if fileName[-efl:].lower()!=f".{SCRIPT_FILE_EXTENSION}": fileName = fileName+f".{SCRIPT_FILE_EXTENSION}"
+			_, file_extension = os.path.splitext(fileName)
+			if file_extension=='':
+				efl = len(SCRIPT_FILE_EXTENSION)+1
+				if fileName[-efl:].lower()!=f".{SCRIPT_FILE_EXTENSION}": fileName = fileName+f".{SCRIPT_FILE_EXTENSION}"
 			self.filename = fileName
 			code = open(self.filename,"w",encoding="utf-8",errors="ignore")
 			code.write(self.editor.toPlainText())
@@ -763,7 +774,6 @@ class Window(QMainWindow):
 			else:
 				user.COMMANDS[self.current_user_script] = contents
 			user.save_user(user.USER_FILE)
-
 
 			self.cscript_menu.clear()
 

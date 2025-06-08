@@ -768,10 +768,12 @@ class Dialog(QDialog):
 		sizeLayout.addWidget(self.sizeLabel)
 		sizeLayout.addStretch()
 
-		self.showChatInTitle = QCheckBox("Show active subwindow in window title",self)
+		self.showChatInTitle = QCheckBox("Show active subwindow information\nin window title",self)
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
+		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
 		self.showTopicInTitle = QCheckBox("Show current channel topic in\nwindow title",self)
 		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
 		self.showTopicInTitle.stateChanged.connect(self.changedSetting)

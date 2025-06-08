@@ -3267,6 +3267,15 @@ class Merk(QMainWindow):
 					retval.append(window)
 		return retval
 
+	def getEditorWindow(self,subwindow_id):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==EDITOR_WINDOW:
+					if c.subwindow_id==subwindow_id:
+						return window
+		return None
+
 			
 	# |---------------|
 	# | EVENT METHODS |
@@ -3347,6 +3356,11 @@ class Merk(QMainWindow):
 
 		# Reset the window title
 		self.setWindowTitle(APPLICATION_NAME)
+
+		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
+			if w.window_type==EDITOR_WINDOW:
+				self.setWindowTitle(APPLICATION_NAME+" - Editing \""+w.name+"\"")
+				return
 
 		if hasattr(w,"name"):
 			# It's a named subwindow
