@@ -235,7 +235,15 @@ class Dialog(QDialog):
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
 
-		self.chat.setFixedHeight((fheight*9)+10)
+		app_style = self.parent.app.style().metaObject().className()
+		if app_style.lower()=="qfusionstyle":
+			display_height = (fheight*9)+38
+			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*13)
+		else:
+			display_height = (fheight*9)+10
+			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*10)
+
+		self.chat.setFixedHeight(display_height)
 
 		self.messages = [
 			Message(SERVER_MESSAGE,'','This is a server message'),
@@ -263,10 +271,7 @@ class Dialog(QDialog):
 		f.setBold(True)
 		self.userlist.setFont(f)
 
-		fm = self.chat.fontMetrics()
-		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*10)
-
-		self.userlist.setFixedHeight((fheight*9)+10)
+		self.userlist.setFixedHeight(display_height)
 		self.userlist.setFixedWidth(ulwidth)
 
 		if not config.SHOW_USERLIST:
@@ -314,18 +319,10 @@ class Dialog(QDialog):
 
 		ui = QListWidgetItem()
 		if config.PLAIN_USER_LISTS:
-			ui.setText('  '+'user1')
+			ui.setText('  '+'user')
 		else:
 			ui.setIcon(QIcon(NORMAL_USER))
-			ui.setText('user1')
-		self.userlist.addItem(ui)
-
-		ui = QListWidgetItem()
-		if config.PLAIN_USER_LISTS:
-			ui.setText('  '+'user2')
-		else:
-			ui.setIcon(QIcon(NORMAL_USER))
-			ui.setText('user2')
+			ui.setText('user')
 		self.userlist.addItem(ui)
 
 		self.userlist.update()
