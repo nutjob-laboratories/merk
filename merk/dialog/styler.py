@@ -337,7 +337,11 @@ class Dialog(QDialog):
 		else:
 			dispLayout.addWidget(self.chat)
 			dispLayout.addWidget(self.userlist)
-		dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+		if not self.simple:
+			dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+		else:
+			dispLayout.setContentsMargins(1,1,1,1)
+
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -389,10 +393,12 @@ class Dialog(QDialog):
 		editstyleLayout.addLayout(ln2)
 		editstyleLayout.addLayout(ln3)
 		editstyleLayout.addLayout(ln4)
+		editstyleLayout.setContentsMargins(0,0,0,0)
 
 		styleLayout = QVBoxLayout()
 		styleLayout.addLayout(dispLayout)
 		styleLayout.addLayout(editstyleLayout)
+		styleLayout.setContentsMargins(1,1,1,1)
 
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(loadButton)
@@ -401,7 +407,29 @@ class Dialog(QDialog):
 		buttonLayout.setAlignment(Qt.AlignRight)
 		buttonLayout.setContentsMargins(1,1,1,1)
 
+		if not self.simple:
+			if self.default:
+				dname = "<b>default text style</b>"
+			else:
+				dname = f"<b>text style for {self.wchat.name}</b>"
+			self.stylerDescription = QLabel(f"""
+				<small>
+				Here, you can edit the {dname}. Below are an example chat display and
+				userlist so that you can see what your style looks like. Click <b>Text Color</b> to set the color
+				of text, and <b>Background Color</b> to set the color of the chat and userlist
+				background. Clicking <b>Set colors to app default</b> will set all colors to the
+				default text style built into <b>{APPLICATION_NAME}</b>. <b>Open style</b> will
+				allow you to open a previously saved style file, and <b>Save style as...</b>
+				will save the current style to a file. Click <b>Save</b> to save and apply the
+				current settings as the {dname}. Click <b>Cancel</b> to exit.
+				</small>
+				""")
+			self.stylerDescription.setWordWrap(True)
+			self.stylerDescription.setAlignment(Qt.AlignJustify)
+
 		finalLayout = QVBoxLayout()
+		if not self.simple:
+			finalLayout.addWidget(self.stylerDescription)
 		finalLayout.addLayout(styleLayout)
 		finalLayout.addLayout(buttonLayout)
 
@@ -410,4 +438,4 @@ class Dialog(QDialog):
 
 		self.setLayout(finalLayout)
 
-		self.setFixedSize(finalLayout.sizeHint())
+		self.setFixedSize(self.sizeHint())
