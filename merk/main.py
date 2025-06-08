@@ -1823,6 +1823,8 @@ class Merk(QMainWindow):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
+			if hasattr(c,"default_style"):
+				c.default_style = styles.loadDefault()
 			if hasattr(c,"applyStyle"):
 				c.applyStyle()
 		if is_deleted(w)==False:

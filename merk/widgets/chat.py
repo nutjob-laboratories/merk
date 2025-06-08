@@ -58,6 +58,7 @@ class Window(QMainWindow):
 		self.parent = parent
 
 		self.subwindow_id = str(uuid.uuid4())
+		self.default_style = styles.loadDefault()
 
 		self.uptime = 0
 
@@ -1317,16 +1318,14 @@ class Window(QMainWindow):
 			if not config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET:
 				self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
 			else:
-				d = styles.loadDefault()
-				b,f = styles.parseBackgroundAndForegroundColor(d["all"])
+				b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
 				self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',f,b))
 
 			if self.window_type==CHANNEL_WINDOW:
 				if not config.DO_NOT_APPLY_STYLE_TO_USERLIST:
 					self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
 				else:
-					d = styles.loadDefault()
-					b,f = styles.parseBackgroundAndForegroundColor(d["all"])
+					b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
 					self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
 
 			self.rerenderChatLog()
@@ -1347,7 +1346,7 @@ class Window(QMainWindow):
 				else:
 					return False
 		else:
-			self.style = styles.loadDefault()
+			self.style = self.default_style
 
 		# Apply style background and forground colors
 		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
@@ -1357,16 +1356,14 @@ class Window(QMainWindow):
 		if not config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET:
 			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
 		else:
-			d = styles.loadDefault()
-			b,f = styles.parseBackgroundAndForegroundColor(d["all"])
+			b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
 			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',f,b))
 
 		if self.window_type==CHANNEL_WINDOW:
 			if not config.DO_NOT_APPLY_STYLE_TO_USERLIST:
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
 			else:
-				d = styles.loadDefault()
-				b,f = styles.parseBackgroundAndForegroundColor(d["all"])
+				b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
 
 

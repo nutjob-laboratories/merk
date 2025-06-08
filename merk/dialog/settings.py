@@ -918,13 +918,13 @@ class Dialog(QDialog):
 
 		self.forceDefault.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.notInputWidget = QCheckBox("Do not apply text style to the\ntext input widget",self)
+		self.notInputWidget = QCheckBox("Force default text style on\nthe text input widget",self)
 		if config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET: self.notInputWidget.setChecked(True)
 		self.notInputWidget.stateChanged.connect(self.changeSettingStyle)
 
 		self.notInputWidget.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.notUserlist = QCheckBox("Do not apply text style to the\nuserlist",self)
+		self.notUserlist = QCheckBox("Force default text style on\nthe userlist",self)
 		if config.DO_NOT_APPLY_STYLE_TO_USERLIST: self.notUserlist.setChecked(True)
 		self.notUserlist.stateChanged.connect(self.changeSettingStyle)
 
