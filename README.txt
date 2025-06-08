@@ -109,7 +109,7 @@ There are three libraries that comes bundled with **MERK**:
   - Uses any WAV file as the notification sound, and can be set in the GUI
 - Very configurable, without having to manually edit a configuration file
     - Control application behavior, logging, features, and more!
-    - Over 100 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
+    - Over 120 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
     - Almost all settings can be changed in the settings dialog without a restart. Have fun testing different options!
     - Configuration data is stored in JSON
  -  Extensive commandline options

@@ -277,6 +277,9 @@ class Dialog(QDialog):
 		if not config.SHOW_USERLIST:
 			self.userlist.hide()
 
+		if config.DO_NOT_APPLY_STYLE_TO_USERLIST:
+			self.userlist.hide()
+
 		ui = QListWidgetItem()
 		if config.PLAIN_USER_LISTS:
 			ui.setText('~ '+'owner')

@@ -554,6 +554,13 @@ class Dialog(QDialog):
 	def changeSettingStyle(self,state):
 		self.rerenderStyle = True
 
+		if self.forceDefault.isChecked():
+			self.notInputWidget.setEnabled(False)
+			self.notUserlist.setEnabled(False)
+		else:
+			self.notInputWidget.setEnabled(True)
+			self.notUserlist.setEnabled(True)
+
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -917,6 +924,16 @@ class Dialog(QDialog):
 
 		self.notInputWidget.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.notUserlist = QCheckBox("Do not apply text style to the\nuserlist",self)
+		if config.DO_NOT_APPLY_STYLE_TO_USERLIST: self.notUserlist.setChecked(True)
+		self.notUserlist.stateChanged.connect(self.changeSettingStyle)
+
+		self.notUserlist.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if self.forceDefault.isChecked():
+			self.notInputWidget.setEnabled(False)
+			self.notUserlist.setEnabled(False)
+
 
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
@@ -930,6 +947,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		appearanceLayout.addWidget(self.forceDefault)
 		appearanceLayout.addWidget(self.notInputWidget)
+		appearanceLayout.addWidget(self.notUserlist)
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
@@ -2536,6 +2554,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_HOVER_EFFECT = self.windowBarHover.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = self.showTopicInTitle.isChecked()
 		config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = self.notInputWidget.isChecked()
+		config.DO_NOT_APPLY_STYLE_TO_USERLIST = self.notUserlist.isChecked()
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:
