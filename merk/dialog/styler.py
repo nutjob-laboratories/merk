@@ -415,13 +415,14 @@ class Dialog(QDialog):
 			self.stylerDescription = QLabel(f"""
 				<small>
 				Here, you can edit the {dname}. Below are an example chat display and
-				userlist so that you can see what your style looks like. Click <b>Text Color</b> to set the color
-				of text, and <b>Background Color</b> to set the color of the chat and userlist
-				background. Clicking <b>Set colors to app default</b> will set all colors to the
-				default text style built into <b>{APPLICATION_NAME}</b>. <b>Open style</b> will
-				allow you to open a previously saved style file, and <b>Save style as...</b>
-				will save the current style to a file. Click <b>Save</b> to save and apply the
-				current settings as the {dname}. Click <b>Cancel</b> to exit.
+				userlist so that you can see what the current style looks like in action.
+				Click <b>Text Color</b> to set the color of text, and <b>Background Color</b>
+				to set the color of the chat and userlist background. Clicking <b>Set colors
+				to app default</b> will set all colors to the default text style built into
+				<b>{APPLICATION_NAME}</b>. Clicking <b>Open style</b> will allow you to open a previously
+				saved style file, and <b>Save style as...</b> will save the current style to a
+				file. Click <b>Save</b> to save and apply the current settings as the {dname}.
+				Click <b>Cancel</b> to exit.
 				</small>
 				""")
 			self.stylerDescription.setWordWrap(True)
