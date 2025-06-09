@@ -30,15 +30,16 @@ from PyQt5 import QtCore
 
 import platform
 import twisted
-import pkg_resources
+from importlib import metadata
 
 from ..resources import *
 
 def get_pyinstaller_version():
 	try:
-		return pkg_resources.get_distribution('pyinstaller').version
-	except pkg_resources.DistributionNotFound:
+		return metadata.version('pyinstaller')
+	except:
 		return None
+	return None
 
 class Dialog(QDialog):
 
