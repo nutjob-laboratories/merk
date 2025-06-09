@@ -326,6 +326,7 @@ BELL_NOTIFICATION = ":/sound-notification.wav"
 
 
 HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
+HELP_ENTRY_COMMAND_TEMPLATE='''%_USAGE_%&nbsp;&nbsp;-&nbsp;&nbsp;%_DESCRIPTION_%'''
 
 HELP_DISPLAY_TEMPLATE='''<table style="width: 100%" border="0">
 	<tbody>

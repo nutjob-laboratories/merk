@@ -517,7 +517,6 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
 	tokens = user_input.split()
 
-
 	# |--------|
 	# | /knock |
 	# |--------|
@@ -1358,6 +1357,22 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	# | /help |
 	# |-------|
 	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'help' and len(tokens)==2:
+			tokens.pop(0)
+			cmd = tokens.pop(0)
+			if cmd[0]!=config.ISSUE_COMMAND_SYMBOL:
+				cmd = config.ISSUE_COMMAND_SYMBOL+cmd
+			for entry in COMMAND_HELP_INFORMATION:
+				if cmd in entry[0]:
+					h = HELP_ENTRY_COMMAND_TEMPLATE
+					h = h.replace("%_USAGE_%",entry[0])
+					h = h.replace("%_DESCRIPTION_%",entry[1])
+					t = Message(SYSTEM_MESSAGE,'',h)
+					window.writeText(t,False)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Command "+cmd+" not found.")
+			window.writeText(t,False)
+			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'help':
 			window.writeText(HELP,False)
 			return True
