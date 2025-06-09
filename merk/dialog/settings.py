@@ -174,15 +174,18 @@ class Dialog(QDialog):
 		self.user_changed = True
 		self.changed.show()
 		self.boldApply()
-		#self.selector.setFocus()
 
 	def setQuitMsg(self):
 		info = dialog.QuitPartDialog(self.default_quit_part,self)
 
-		if not info: return None
+		if info==None: return None
 
-		self.default_quit_part = info
-		self.partMsg.setText("<b>"+str(info)+"</b>")
+		if info.strip()=='':
+			self.default_quit_part = ''
+			self.partMsg.setText("<i>Blank quit message</i>")
+		else:
+			self.default_quit_part = info
+			self.partMsg.setText("<b>"+str(info)+"</b>")
 
 		self.changed.show()
 		self.boldApply()
@@ -757,7 +760,7 @@ class Dialog(QDialog):
 		fontLayout.addWidget(self.fontLabel)
 		fontLayout.addStretch()
 
-		self.sizeLabel = QLabel(f"<b>{str(config.DEFAULT_SUBWINDOW_WIDTH)}x{str(config.DEFAULT_SUBWINDOW_HEIGHT)} px</b>",self)
+		self.sizeLabel = QLabel(f"<b>{str(self.subWidth)}x{str(self.subHeight)} px</b>",self)
 
 		sizeButton = QPushButton("")
 		sizeButton.clicked.connect(self.setWinsize)
@@ -1707,7 +1710,7 @@ class Dialog(QDialog):
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
 		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
-		self.historyLabel = QLabel(f"<b>{str(config.COMMAND_HISTORY_LENGTH)} lines</b>",self)
+		self.historyLabel = QLabel(f"<b>{str(self.historysize)} lines</b>",self)
 
 		historyButton = QPushButton("")
 		historyButton.clicked.connect(self.setHistorySize)
@@ -1909,7 +1912,7 @@ class Dialog(QDialog):
 		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
 		self.markLog.stateChanged.connect(self.changedSetting)
 		
-		self.logLabel = QLabel(f"<b>{str(config.MAXIMUM_LOADED_LOG_SIZE)} lines</b>",self)
+		self.logLabel = QLabel(f"<b>{str(self.logsize)} lines</b>",self)
 
 		logsizeButton = QPushButton("")
 		logsizeButton.clicked.connect(self.setLogSize)
