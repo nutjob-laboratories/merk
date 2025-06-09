@@ -821,6 +821,13 @@ class Dialog(QDialog):
 
 		self.showServerInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.noAppNameTitle = QCheckBox("Do not show application name in\nwindow title",self)
+		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE: self.noAppNameTitle.setChecked(True)
+		self.noAppNameTitle.stateChanged.connect(self.changedSetting)
+
+		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -838,6 +845,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.searchAllTerms)
 		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.showServerInfo)
+		applicationLayout.addWidget(self.noAppNameTitle)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -2457,9 +2465,7 @@ class Dialog(QDialog):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 
 		# Save the current focused window
-		current_open_window = self.parent.getActive()
-		if current_open_window==None:
-			current_open_window = self.parent.MDI.activeSubWindow()
+		current_open_window = self.parent.MDI.activeSubWindow()
 
 		config.DISPLAY_ACTIVE_CHAT_IN_TITLE = self.showChatInTitle.isChecked()
 		config.PROMPT_ON_FAILED_CONNECTION = self.promptFail.isChecked()
@@ -2587,6 +2593,12 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = self.showTopicInTitle.isChecked()
 		config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = self.notInputWidget.isChecked()
 		config.DO_NOT_APPLY_STYLE_TO_USERLIST = self.notUserlist.isChecked()
+		config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = self.noAppNameTitle.isChecked()
+
+		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+			self.parent.setWindowTitle(' ')
+		else:
+			self.parent.setWindowTitle(APPLICATION_NAME)
 
 		if self.alwaysOnTop.isChecked():
 			if not config.ALWAYS_ON_TOP:
@@ -2695,11 +2707,11 @@ class Dialog(QDialog):
 					if hasattr(c,"refreshHighlighter"):
 						c.refreshHighlighter()
 
-		self.parent.saveActive(current_open_window)
-		self.parent.restoreActive()
-
 		w = self.parent.MDI.activeSubWindow()
 		self.parent.merk_subWindowActivated(w)
+
+		self.parent.MDI.setActiveSubWindow(current_open_window)
+		self.parent.merk_subWindowActivated(current_open_window)
 
 		QApplication.restoreOverrideCursor()
 

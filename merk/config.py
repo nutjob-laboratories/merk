@@ -181,10 +181,12 @@ WINDOWBAR_HOVER_EFFECT = True
 SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = False
 DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = False
 DO_NOT_APPLY_STYLE_TO_USERLIST = False
+DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = False
 
 def save_settings(filename):
 
 	settings = {
+		"do_not_show_application_name_in_title": DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE,
 		"do_not_apply_text_style_to_userlist": DO_NOT_APPLY_STYLE_TO_USERLIST,
 		"do_not_apply_text_style_to_input_widget": DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET,
 		"show_channel_topic_in_title": SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE,
@@ -333,6 +335,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "do_not_show_application_name_in_title" in settings:
+		settings["do_not_show_application_name_in_title"] = DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE
 	if not "do_not_apply_text_style_to_userlist" in settings:
 		settings["do_not_apply_text_style_to_userlist"] = DO_NOT_APPLY_STYLE_TO_USERLIST
 	if not "do_not_apply_text_style_to_input_widget" in settings:
@@ -764,6 +768,7 @@ def load_settings(filename):
 	global SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE
 	global DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET
 	global DO_NOT_APPLY_STYLE_TO_USERLIST
+	global DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -773,6 +778,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = settings["do_not_show_application_name_in_title"]
 		DO_NOT_APPLY_STYLE_TO_USERLIST = settings["do_not_apply_text_style_to_userlist"]
 		DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = settings["do_not_apply_text_style_to_input_widget"]
 		SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = settings["show_channel_topic_in_title"]

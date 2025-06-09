@@ -118,6 +118,7 @@ class Merk(QMainWindow):
 		self.maximized_window = None
 		self.connected_to_something = False
 		self.saved_window = None
+		self.application_title_name = APPLICATION_NAME
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -138,7 +139,10 @@ class Merk(QMainWindow):
 		self.MDI.setBackground(backgroundBrush)
 
 		# Set the window title
-		self.setWindowTitle(APPLICATION_NAME)
+		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+			self.setWindowTitle(' ')
+		else:
+			self.setWindowTitle(self.application_title_name)
 		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
 		if config.MAXIMIZE_ON_STARTUP:
@@ -193,32 +197,14 @@ class Merk(QMainWindow):
 				for c in connection_info:
 					self.connectToIrc(c)
 			else:
-				if connection_info.nickname!=None:
-					self.connectToIrc(connection_info)
+				do_not_connect = False
+				if connection_info.nickname==CONNECTION_MISSING_INFO_ERROR: do_not_connect = True
+				if connection_info.nickname==CONNECTION_DIALOG_CANCELED: do_not_connect = True
+				if not do_not_connect:
+					if connection_info.nickname!=None:
+						self.connectToIrc(connection_info)
 
 	# Windowbar
-
-	def getActive(self):
-		return self.saved_window
-
-	def saveActive(self,window=None):
-		if window==None:
-			self.saved_window = self.MDI.activeSubWindow()
-		else:
-			self.saved_window = window
-
-	def restoreActive(self):
-		if not self.connected_to_something: return
-		if self.saved_window!= None:
-			if not is_deleted(self.saved_window):
-				w = self.saved_window.widget()
-
-				if hasattr(w,"client"):
-					if w.client.client_id in self.quitting:
-						self.saved_window = None
-						return
-				self.MDI.setActiveSubWindow(self.saved_window)
-		self.saved_window = None
 
 	def resizeEvent(self, event):
 		super().resizeEvent(event)
@@ -2876,7 +2862,10 @@ class Merk(QMainWindow):
 
 		if len(listOfConnections)==0:
 			self.connected_to_something = False
-			self.setWindowTitle(APPLICATION_NAME)
+			if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+				self.setWindowTitle(' ')
+			else:
+				self.setWindowTitle(self.application_title_name)
 
 		if len(listOfConnections)>0:
 
@@ -3353,15 +3342,20 @@ class Merk(QMainWindow):
 		if hasattr(w,"editor"):
 			w.editor.setFocus()
 
-		self.saveActive(subwindow)
 		self.buildWindowbar()
 
 		# Reset the window title
-		self.setWindowTitle(APPLICATION_NAME)
+		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+			self.setWindowTitle(' ')
+		else:
+			self.setWindowTitle(self.application_title_name)
 
 		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE:
 			if w.window_type==EDITOR_WINDOW:
-				self.setWindowTitle(APPLICATION_NAME+" - Editing \""+w.name+"\"")
+				if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+					self.setWindowTitle("Editing \""+w.name+"\"")
+				else:
+					self.setWindowTitle(self.application_title_name+" - Editing \""+w.name+"\"")
 				return
 
 		if hasattr(w,"name"):
@@ -3373,25 +3367,49 @@ class Merk(QMainWindow):
 					else:
 						server = w.client.server+":"+str(w.client.port)
 					if w.window_type==SERVER_WINDOW:
-						self.setWindowTitle(APPLICATION_NAME+" - "+server)
+						if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+							self.setWindowTitle(server)
+						else:
+							self.setWindowTitle(self.application_title_name+" - "+server)
 					elif w.window_type==LIST_WINDOW:
-						self.setWindowTitle(APPLICATION_NAME+" - Channels on "+server)
+						if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+							self.setWindowTitle("Channels on "+server)
+						else:
+							self.setWindowTitle(self.application_title_name+" - Channels on "+server)
 					elif w.window_type==PRIVATE_WINDOW:
-						self.setWindowTitle(APPLICATION_NAME+" - Private chat with "+w.name+" ("+server+")")
+						if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+							self.setWindowTitle("Private chat with "+w.name+" ("+server+")")
+						else:
+							self.setWindowTitle(self.application_title_name+" - Private chat with "+w.name+" ("+server+")")
 					else:
 						if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
 							if hasattr(w,'topic'):
 								if hasattr(w.topic,"text"):
 									if w.topic.text().strip()!='':
-										self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+") - "+w.topic.text().strip())
+										if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+											self.setWindowTitle(w.name+" ("+server+") - "+w.topic.text().strip())
+										else:
+											self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+") - "+w.topic.text().strip())
 									else:
-										self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
+										if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+											self.setWindowTitle(w.name+" ("+server+")")
+										else:
+											self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
 						else:
-							self.setWindowTitle(APPLICATION_NAME+" - "+w.name+" ("+server+")")
+							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+								self.setWindowTitle(w.name+" ("+server+")")
+							else:
+								self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
 			elif config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
 				if hasattr(w,'topic'):
 					if hasattr(w.topic,"text"):
 						if w.topic.text().strip()!='':
-							self.setWindowTitle(APPLICATION_NAME+" - "+w.topic.text().strip())
+							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+								self.setWindowTitle(w.topic.text().strip())
+							else:
+								self.setWindowTitle(self.application_title_name+" - "+w.topic.text().strip())
 						else:
-							self.setWindowTitle(APPLICATION_NAME)
+							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+								self.setWindowTitle(' ')
+							else:
+								self.setWindowTitle(self.application_title_name)
