@@ -49,6 +49,9 @@ ALIAS = {}
 AUTOCOMPLETE = {}
 COMMAND_HELP_INFORMATION = []
 HELP = None
+HELP_PREFIX = None
+HELP_POSTFIX = None
+HELP_EPILOGUE = None
 
 def initialize(directory,directory_name):
 	global SCRIPTS_DIRECTORY
@@ -66,6 +69,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	global AUTOCOMPLETE
 	global COMMAND_HELP_INFORMATION
 	global HELP
+	global HELP_PREFIX
+	global HELP_POSTFIX
+	global HELP_EPILOGUE
 
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
@@ -114,7 +120,12 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		}
 
 	if new_autocomplete!=None:
-		AUTOCOMPLETE.update(new_autocomplete)
+		
+		if isinstance(new_autocomplete, list):
+			for a in new_autocomplete:
+				AUTOCOMPLETE.update(a)
+		else:
+			AUTOCOMPLETE.update(new_autocomplete)
 
 	# The command help system
 	COMMAND_HELP_INFORMATION = [
@@ -164,14 +175,32 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	]
 
 	if new_help!=None:
-		for i in new_help:
-			COMMAND_HELP_INFORMATION.append(i)
+		if isinstance(new_help, list):
+			for i in new_help:
+				COMMAND_HELP_INFORMATION.append(i)
+		else:
+			COMMAND_HELP_INFORMATION.append(new_help)
 
 	global HELP_DISPLAY_TEMPLATE
 	if config.AUTOCOMPLETE_COMMANDS:
 		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned on; to use autocomplete, type the first few characters of a command and press the \"tab\" key to complete the command.")
 	else:
 		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_AUTOCOMPLETE_%","Command autocomplete is turned off.")
+
+	if HELP_PREFIX!=None:
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_PREFIX_%","<tr><td><small>"+HELP_PREFIX+"</small></td></tr>")
+	else:
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_PREFIX_%","")
+
+	if HELP_POSTFIX!=None:
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_POSTFIX_%","<tr><td><small>"+HELP_POSTFIX+"</small></td></tr>")
+	else:
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_POSTFIX_%","")
+
+	if HELP_EPILOGUE!=None:
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_ENDING_%","<tr><td>&nbsp;</center></td></tr><tr><td><small>"+HELP_EPILOGUE+"</small></td></tr>")
+	else:
+		HELP_DISPLAY_TEMPLATE = HELP_DISPLAY_TEMPLATE.replace("%_ENDING_%","")
 
 	hdisplay = []
 	for e in COMMAND_HELP_INFORMATION:

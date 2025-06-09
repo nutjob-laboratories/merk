@@ -332,6 +332,7 @@ HELP_DISPLAY_TEMPLATE='''<table style="width: 100%" border="0">
 				<tr>
 					<td><center><b>Commands</b></center></td>
 				</tr>
+				%_PREFIX_%
 				<tr>
 					<td><small>
 					Arguments inside brackets are optional. If called from a channel window,
@@ -339,9 +340,8 @@ HELP_DISPLAY_TEMPLATE='''<table style="width: 100%" border="0">
 					%_AUTOCOMPLETE_%
 					</small></td>
 				</tr>
-				<tr>
-					<td>&nbsp;</center></td>
-				</tr>
+				%_POSTFIX_%
+				<tr><td>&nbsp;</center></td></tr>
 				<tr>
 					<td>
 						<table style="width: 100%" border="0">
@@ -351,6 +351,7 @@ HELP_DISPLAY_TEMPLATE='''<table style="width: 100%" border="0">
 						</table>
 					</td>
 				</tr>
+				%_ENDING_%
 			</tbody>
 		</table>'''
 
