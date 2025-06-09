@@ -1062,20 +1062,10 @@ class Dialog(QDialog):
 		self.userDescription.setWordWrap(True)
 		self.userDescription.setAlignment(Qt.AlignJustify)
 
-		if user.USERNAME=='':
-			username = "MERK"
-		else:
-			username = user.USERNAME
-
-		if user.REALNAME=='':
-			realname = APPLICATION_NAME+" "+APPLICATION_VERSION
-		else:
-			realname = user.REALNAME
-
 		self.nick = QNoSpaceLineEdit(user.NICKNAME)
 		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
-		self.username = QNoSpaceLineEdit(username)
-		self.realname = QLineEdit(realname)
+		self.username = QNoSpaceLineEdit(user.USERNAME)
+		self.realname = QLineEdit(user.REALNAME)
 
 		self.nick.textChanged.connect(self.changeUser)
 		self.alternative.textChanged.connect(self.changeUser)
@@ -1100,8 +1090,8 @@ class Dialog(QDialog):
 		
 		alternateLayout = QFormLayout()
 		alternateLayout.addRow(self.alternative)
-		alternateLayout.addRow(QLabel("<center><small>Alternate nickname if your first<br>choice is already taken (optional)</small></center>"))
-		alternateBox = QGroupBox("Alternate")
+		alternateLayout.addRow(QLabel("<center><small>Alternate nickname if your first<br>choice is already taken</small></center>"))
+		alternateBox = QGroupBox("Alternate (optional)")
 		alternateBox.setAlignment(Qt.AlignLeft)
 		alternateBox.setLayout(alternateLayout)
 
@@ -1553,7 +1543,7 @@ class Dialog(QDialog):
 
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.partMsg = QLabel("<b>"+str(config.DEFAULT_QUIT_MESSAGE)+"</b>")
+		self.partMsg = QLabel("<b>"+str(self.default_quit_part)+"</b>")
 
 		self.setPartMsg = QPushButton("")
 		self.setPartMsg.clicked.connect(self.setQuitMsg)
@@ -2462,6 +2452,58 @@ class Dialog(QDialog):
 
 	def save(self):
 
+		got_errors = False
+		errors = []
+
+		# Check to make sure the user doesn't try
+		# to save blank user information
+		if self.nick.text()=='':
+			got_errors = True
+			errors.append("Nickname is blank")
+		if self.username.text()=='':
+			got_errors = True
+			errors.append("Username is blank")
+		if self.realname.text().strip()=='':
+			got_errors = True
+			errors.append("Realname is blank")
+
+		# Check to make sure the user isn't trying to
+		# save blank menu names
+		if self.default_main_menu.strip()=='':
+			got_errors = True
+			errors.append("Main menu name is blank or only contains whitespace")
+		if self.default_settings_menu.strip()=='':
+			got_errors = True
+			errors.append("Settings menu name is blank or only contains whitespace")
+		if self.default_tools_menu.strip()=='':
+			got_errors = True
+			errors.append("Tools menu name is blank or only contains whitespace")
+		if self.default_windows_menu.strip()=='':
+			got_errors = True
+			errors.append("Windows menu name is blank or only contains whitespace")
+		if self.default_help_menu.strip()=='':
+			got_errors = True
+			errors.append("Help menu name is blank or only contains whitespace")
+
+		if got_errors:
+
+			detailed = ''
+			for e in errors:
+				detailed = detailed + "* "+e+"\n"
+
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Critical)
+			msg.setWindowIcon(QIcon(APPLICATION_ICON))
+			msg.setText("<big><b>Bad or Missing Settings</b></big>")
+			msg.setInformativeText("Please correct these settings and try again.")
+			msg.setDetailedText(detailed)
+			msg.setWindowTitle("Error")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
+		# Now that we know the settings are "sane", let's
+		# apply the settings
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 
 		# Save the current focused window
