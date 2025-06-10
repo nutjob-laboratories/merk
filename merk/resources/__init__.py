@@ -32,6 +32,7 @@ from datetime import datetime
 import sys
 import os
 import math
+from importlib import metadata
 
 from .version import *
 from .servers import *
@@ -110,6 +111,13 @@ def remove_duplicate_sublists(list_of_lists):
 
 def is_running_from_pyinstaller():
 	return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
+
+def get_pyinstaller_version():
+	try:
+		return metadata.version('pyinstaller')
+	except:
+		return None
+	return None
 
 def is_deleted(obj):
 	if hasattr(obj,"isVisible"):

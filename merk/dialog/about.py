@@ -30,16 +30,8 @@ from PyQt5 import QtCore
 
 import platform
 import twisted
-from importlib import metadata
 
 from ..resources import *
-
-def get_pyinstaller_version():
-	try:
-		return metadata.version('pyinstaller')
-	except:
-		return None
-	return None
 
 class Dialog(QDialog):
 
@@ -111,17 +103,9 @@ class Dialog(QDialog):
 		twisted_logo.setPixmap(pixmap)
 		twisted_logo.setAlignment(Qt.AlignCenter)
 
-		if is_running_from_pyinstaller():
-			pyi_logo = QLabel()
-			pixmap = QPixmap(PYINSTALLER_ICON)
-			pyi_logo.setPixmap(pixmap)
-			pyi_logo.setAlignment(Qt.AlignCenter)
-
 		titleLayout = QVBoxLayout()
 		titleLayout.addWidget(logo)
 		titleLayout.addLayout(descriptionLayout)
-
-		# https://github.com/elementary/icons/
 
 		icons_credit = QLabel(f"<small><b>Icons by <a href=\"https://material.io/resources/icons/\">Google</a>, <a href=\"https://github.com/elementary/icons/\">elementaryOS</a>, and <a href=\"https://github.com/madmaxms/iconpack-obsidian\">Obsidian</a></small></b>")
 		icons_credit.setAlignment(Qt.AlignCenter)
@@ -130,7 +114,6 @@ class Dialog(QDialog):
 		font_credit = QLabel(f"<small><b>Default font by <a href=\"http://www.carrois.com/\">Carrois Apostrophe</small></a> (<a href=\"https://bboxtype.com/typefaces/FiraSans/\">Fira Mono</a>)</small></b>")
 		font_credit.setAlignment(Qt.AlignCenter)
 		font_credit.setOpenExternalLinks(True)
-
 
 		spellcheck_credit = QLabel(f"<b><small><a href=\"https://github.com/barrust/pyspellchecker\">pyspellchecker</a> by <a href=\"mailto:barrust@gmail.com\">Tyler Barrus</small></a></b>")
 		spellcheck_credit.setAlignment(Qt.AlignCenter)
@@ -184,14 +167,8 @@ class Dialog(QDialog):
 
 		qtCred = QVBoxLayout()
 		qtCred.addWidget(qt_logo)
-		qtCred.addWidget(QLabel("<small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small>"))
-
-		if is_running_from_pyinstaller():
-			version = get_pyinstaller_version()
-			if version != None:
-				pyiCredit = QVBoxLayout()
-				pyiCredit.addWidget(pyi_logo)
-				pyiCredit.addWidget(QLabel("<center><small><b><a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>"))
+		qtCred.addWidget(QLabel("<center><small><b><a href=\"https://www.qt.io/\">Qt</a> " + str(QT_VERSION_STR) +"</b></small></center>"))
+		qtCred.addWidget(QLabel("<center><small><b><a href=\"https://www.riverbankcomputing.com/software/pyqt/\">PyQt</a> " + str(PYQT_VERSION_STR) +"</b></small></center>"))
 
 		logoBar = QHBoxLayout()
 		logoBar.addStretch()
@@ -223,10 +200,14 @@ class Dialog(QDialog):
 		aboutLayout.addLayout(titleLayout)
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addWidget(platform_credit)
+		if is_running_from_pyinstaller():
+			version = get_pyinstaller_version()
+			if version != None:
+				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>"))
+			else:
+				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>"))
 		aboutLayout.addStretch()
 		aboutLayout.addLayout(logoBar)
-		if is_running_from_pyinstaller():
-			aboutLayout.addLayout(pyiCredit)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)

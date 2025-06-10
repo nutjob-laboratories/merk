@@ -32,6 +32,9 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 from PyQt5.QtMultimedia import QSound
 
+import twisted
+import platform
+
 import emoji
 
 from .resources import *
@@ -2822,24 +2825,34 @@ class Merk(QMainWindow):
 		e = textSeparator(self,"Supporting Technologies")
 		self.helpMenu.addAction(e)
 
-		entry = QAction(QIcon(PYTHON_ICON),"Python",self)
+		entry = QAction(QIcon(PYTHON_ICON),"Python "+platform.python_version().strip(),self)
 		entry.triggered.connect(lambda state,u="https://www.python.org/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		entry = QAction(QIcon(QT_ICON),"Qt",self)
+		entry = QAction(QIcon(QT_ICON),"Qt "+str(QT_VERSION_STR),self)
 		entry.triggered.connect(lambda state,u="https://www.qt.io/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		entry = QAction(QIcon(PYQT_ICON),"PyQt",self)
+		entry = QAction(QIcon(PYQT_ICON),"PyQt "+str(PYQT_VERSION_STR),self)
 		entry.triggered.connect(lambda state,u="https://www.riverbankcomputing.com/software/pyqt/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		entry = QAction(QIcon(TWISTED_ICON),"Twisted",self)
+		tv = str(twisted.version)
+		tv = tv.replace('[','',1)
+		tv = tv.replace(']','',1)
+		tv = tv.strip()
+		tv = tv.split(',')[1].strip()
+		tv = tv.replace('version ','',1)
+		entry = QAction(QIcon(TWISTED_ICON),"Twisted "+tv,self)
 		entry.triggered.connect(lambda state,u="https://twisted.org/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 		if is_running_from_pyinstaller():
-			entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
+			piv = get_pyinstaller_version()
+			if piv:
+				entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller "+piv,self)
+			else:
+				entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
 			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
 			self.helpMenu.addAction(entry)
 
