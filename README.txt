@@ -1,5 +1,6 @@
 
 
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -16,7 +17,7 @@
  - [Screenshots](#screenshots)
  - [Usage](#usage)
  - [Commands](#commands)
- - [Example commandline usage](#example-commandline-usage)
+ - [Example command-line usage](#example-command-line-usage)
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
  - [Does MERK need any help?](#does-merk-need-any-help)
@@ -51,7 +52,7 @@ For an even easier "install", [download the "standalone" executable of **MERK** 
 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
-A note: all commandline arguments, as documented below, work on the standalone version of **MERK**.
+A note: all command-line arguments, as documented below, work on the standalone version of **MERK**.
 
 # Making MERK Portable on Windows
 If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** !_WIN_VERSION_! for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
@@ -102,7 +103,7 @@ There are three libraries that comes bundled with **MERK**:
     - All chat windows are contained in a single "parent" window
 -   If you're using Windows, [you can run **MERK** without installing Python](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip)!
 - Dark mode!
-  - Dark mode can be enabled from the commandline, or from the settings dialog
+  - Dark mode can be enabled from the command-line, or from the settings dialog
   - If dark mode is enabled from the settings dialog, an application restart is required
 - Audio notifications
   - Audio notifications are turned off by default
@@ -110,10 +111,10 @@ There are three libraries that comes bundled with **MERK**:
   - Uses any WAV file as the notification sound, and can be set in the GUI
 - Very configurable, without having to manually edit a configuration file
     - Control application behavior, logging, features, and more!
-    - Over 120 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
+    - Over 130 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
     - Almost all settings can be changed in the settings dialog without a restart. Have fun testing different options!
     - Configuration data is stored in JSON
- -  Extensive commandline options
+ -  Extensive command-line options
     - Set defaults and settings
     - Connect to one or multiple servers automatically on start-up
     - Almost everything about how **MERK** starts up can be customized
@@ -121,6 +122,7 @@ There are three libraries that comes bundled with **MERK**:
 -   All text colors (and backgrounds) can be customized
     - Text customization can be saved to importable files
     - Individual channels can have their own color schemes
+    - User input text can highlight channels, nicknames, commands, and more as you type!
     - Styles are saved and loaded automatically
       - Channel styles are saved and loaded by network, so they work no matter what server you connect to.
     - Easy to use GUI text style editor is built-in
@@ -153,17 +155,17 @@ There are three libraries that comes bundled with **MERK**:
 
   <p align="center">
  <center><a href="./graphics/connect_1.png"><img src="./graphics/connect_1_small.png"></a><a href="./graphics/connect_2.png"><img src="./graphics/connect_2_small.png"></a><a href="./graphics/connect_3.png"><img src="./graphics/connect_3_small.png"></a></center></br>
-  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text describing how the individual settings work can be removed in settings.</small></i></center>
+  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text describing how the individual settings work can be removed with the "Simplified dialogs" option in settings.</small></i></center>
   </p>
 
   <p align="center">
  <center><a href="./graphics/styler.png"><img src="./graphics/styler_small.png"></a></center></br>
-  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center>
+  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
   </p>
 
   <p align="center">
  <center><a href="./graphics/settings.png"><img src="./graphics/settings_small.png"></a></center></br>
-  <center><i><small>The first "page" of the settings dialog. MERK features over 100 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center>
+  <center><i><small>The first "page" of the settings dialog. MERK features over 130 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center>
   </p>
 
   <p align="center">
@@ -173,7 +175,7 @@ There are three libraries that comes bundled with **MERK**:
 
   <p align="center">
  <center><a href="./graphics/channels.png"><img src="./graphics/channels_small.png"></a></center></br>
-  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera</a> network.</small></i></center>
+  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera</a> network. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
   </p>
   
 # Usage
@@ -286,10 +288,10 @@ All of these commands can be issued from the text input widget, or from scripts.
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                        |
 
 
-# Example Commandline Usage
-In the following examples, the first commandline is how you would do the task using **MERK** as a [Python script](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-latest.zip), and second commandline is how you would do it using the [**MERK** Windows executable](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip). Note that the commandlines, other than the initial executable, are the same!
+# Example Command-line Usage
+In the following examples, the first command-line is how you would do the task using **MERK** as a [Python script](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1), and second command-line is how you would do it using the [**MERK** Windows executable](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1). Note that the command-lines, other than the initial executable, are the same!
 
-Let's assume that you want to use the commandline to connect **MERK** to the `2600.net` network and join the `#linux` channel:
+Let's assume that you want to use the command-line to connect **MERK** to the `2600.net` network and join the `#linux` channel:
 ```
 python merk.py --channel "#linux" irc.2600.net 6667
 ```
@@ -303,7 +305,7 @@ python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.ch
 ```
 merk.exe --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
 ```
-You can do some things with the commandline that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the "C:\Merk_Scripts" folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
+You can do some things with the command-line that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the `C:\Merk_Scripts` folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
 ```
 python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
 ```
@@ -319,7 +321,7 @@ merk.exe -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
 ```
 This command will start up **MERK** and connect to three of these servers without any extra effort!
 
-You can do a lot of things from the commandline. For a really complicated example, let's try this scenario. Here's what this commandline will do:
+You can do a lot of things from the command-line. For a really complicated example, let's try this scenario. Here's what this command-line will do:
 
  - Connect to Libera via SSL/TLS
  - Connect to DALnet via TCP/IP
@@ -336,7 +338,7 @@ python merk.py -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "
 merk.exe -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
 ```
 
-All commandline options are what they say on the tin: _optional_. Just running the script with no commandline options will initally open up the connection dialog, and you can do just about everything completely inside the GUI.
+All command-line options are what they say on the tin: _optional_. Just running the script with no command-line options will initially open up the connection dialog, and you can do just about everything completely inside the GUI.
 
 # Why does MERK exist?
 It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
