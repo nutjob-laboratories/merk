@@ -182,11 +182,19 @@ SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = False
 DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = False
 DO_NOT_APPLY_STYLE_TO_USERLIST = False
 DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = False
-APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = False
+APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = True
+SYNTAX_NICKNAME_COLOR = "darkRed"
+SYNTAX_NICKNAME_STYLE = "bold"
+SYNTAX_EMOJI_COLOR = "Magenta"
+SYNTAX_EMOJI_STYLE = "bold italic"
 
 def save_settings(filename):
 
 	settings = {
+		"syntax_nickname_color": SYNTAX_NICKNAME_COLOR,
+		"syntax_nickname_style": SYNTAX_NICKNAME_STYLE,
+		"syntax_emoji_color": SYNTAX_EMOJI_COLOR,
+		"syntax_emoji_style": SYNTAX_EMOJI_STYLE,
 		"apply_syntax_highlighting_to_input_widget": APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET,
 		"do_not_show_application_name_in_title": DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE,
 		"do_not_apply_text_style_to_userlist": DO_NOT_APPLY_STYLE_TO_USERLIST,
@@ -337,6 +345,14 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "syntax_nickname_color" in settings:
+		settings["syntax_nickname_color"] = SYNTAX_NICKNAME_COLOR
+	if not "syntax_nickname_style" in settings:
+			settings["syntax_nickname_style"] = SYNTAX_NICKNAME_STYLE
+	if not "syntax_emoji_color" in settings:
+			settings["syntax_emoji_color"] = SYNTAX_EMOJI_COLOR
+	if not "syntax_emoji_style" in settings:
+			settings["syntax_emoji_style"] = SYNTAX_EMOJI_STYLE
 	if not "apply_syntax_highlighting_to_input_widget" in settings:
 		settings["apply_syntax_highlighting_to_input_widget"] = APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET
 	if not "do_not_show_application_name_in_title" in settings:
@@ -774,6 +790,10 @@ def load_settings(filename):
 	global DO_NOT_APPLY_STYLE_TO_USERLIST
 	global DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE
 	global APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET
+	global SYNTAX_NICKNAME_COLOR
+	global SYNTAX_NICKNAME_STYLE
+	global SYNTAX_EMOJI_COLOR
+	global SYNTAX_EMOJI_STYLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -783,6 +803,10 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SYNTAX_NICKNAME_COLOR = settings["syntax_nickname_color"]
+		SYNTAX_NICKNAME_STYLE = settings["syntax_nickname_style"]
+		SYNTAX_EMOJI_COLOR = settings["syntax_emoji_color"]
+		SYNTAX_EMOJI_STYLE = settings["syntax_emoji_style"]
 		APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = settings["apply_syntax_highlighting_to_input_widget"]
 		DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = settings["do_not_show_application_name_in_title"]
 		DO_NOT_APPLY_STYLE_TO_USERLIST = settings["do_not_apply_text_style_to_userlist"]

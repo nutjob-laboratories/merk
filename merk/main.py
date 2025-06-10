@@ -2415,6 +2415,14 @@ class Merk(QMainWindow):
 		self.buildMenu()
 		self.initWindowbar()
 
+	def settingsHightlight(self):
+		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = False
+		else:
+			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsEmoji(self):
 		if config.ENABLE_EMOJI_SHORTCODES:
 			config.ENABLE_EMOJI_SHORTCODES = False
@@ -2522,6 +2530,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Enable emoji shortcodes", self)
 		entry.triggered.connect(self.settingsEmoji)
+		self.settingsMenu.addAction(entry)
+
+		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+			entry = QAction(QIcon(self.checked_icon),"Highlight text input", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Highlight text input", self)
+		entry.triggered.connect(self.settingsHightlight)
 		self.settingsMenu.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(INPUT_ICON),"Autocomplete")

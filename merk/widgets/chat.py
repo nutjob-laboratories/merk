@@ -2529,6 +2529,7 @@ class Highlighter(QSyntaxHighlighter):
 	COMMANDS = r"/\w+"
 	ALIASES = r"\$\w+"
 	CHANNELS = r"#\w+"
+	EMOJIS = r":\w+:"
 
 	def __init__(self, *args):
 		QSyntaxHighlighter.__init__(self, *args)
@@ -2544,7 +2545,27 @@ class Highlighter(QSyntaxHighlighter):
 
 	def highlightBlock(self, text):
 
+		do_not_spellcheck = []
+
 		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+
+			# Apply syntax style to emoji shortcodes
+			if config.ENABLE_EMOJI_SHORTCODES:
+				emojiformat = syntax.format(config.SYNTAX_EMOJI_COLOR,config.SYNTAX_EMOJI_STYLE)
+				for word_object in re.finditer(self.EMOJIS, text):
+					for code in EMOJI_AUTOCOMPLETE:
+						if code==word_object.group():
+							self.setFormat(word_object.start(), word_object.end() - word_object.start(), emojiformat)
+
+			# Apply syntax style to nicknames
+			nickformat = syntax.format(config.SYNTAX_NICKNAME_COLOR,config.SYNTAX_NICKNAME_STYLE)
+			for word_object in re.finditer(self.WORDS, text):
+				for nick in self.parent.nicks:
+					if nick==self.parent.client.nickname: continue
+					if nick==word_object.group():
+						do_not_spellcheck.append(nick)
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), nickformat)
+
 			# Apply syntax styles to channels
 			channelformat = syntax.format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE)
 			for word_object in re.finditer(self.CHANNELS, text):
@@ -2580,7 +2601,8 @@ class Highlighter(QSyntaxHighlighter):
 					if len(misspelled)>0:
 						# Make sure that words in the custom dictionary aren't flagged as misspelled
 						if not word_object.group() in config.DICTIONARY:
-							self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
+							if not word_object.group() in do_not_spellcheck:
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
 
 class SpellAction(QAction):
 	correct = pyqtSignal(str)

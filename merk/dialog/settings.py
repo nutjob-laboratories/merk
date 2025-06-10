@@ -232,6 +232,20 @@ class Dialog(QDialog):
 			self.SYNTAX_BACKGROUND = color
 			self.changed.show()
 			self.boldApply()
+		elif name=="nick":
+			color = data[1][0]
+			style = data[1][1]
+			self.SYNTAX_NICKNAME_COLOR = color
+			self.SYNTAX_NICKNAME_STYLE = style
+			self.changed.show()
+			self.boldApply()
+		elif name=="emoji":
+			color = data[1][0]
+			style = data[1][1]
+			self.SYNTAX_EMOJI_COLOR = color
+			self.SYNTAX_EMOJI_STYLE = style
+			self.changed.show()
+			self.boldApply()
 		
 		self.syntax_did_change = True
 		self.selector.setFocus()
@@ -657,6 +671,11 @@ class Dialog(QDialog):
 
 		self.SYNTAX_ALIAS_COLOR = config.SYNTAX_ALIAS_COLOR
 		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
+
+		self.SYNTAX_NICKNAME_COLOR = config.SYNTAX_NICKNAME_COLOR
+		self.SYNTAX_NICKNAME_STYLE = config.SYNTAX_NICKNAME_STYLE
+		self.SYNTAX_EMOJI_COLOR = config.SYNTAX_EMOJI_COLOR
+		self.SYNTAX_EMOJI_STYLE = config.SYNTAX_EMOJI_STYLE
 
 		self.qt_style = config.QT_WINDOW_STYLE
 
@@ -2241,6 +2260,12 @@ class Dialog(QDialog):
 		self.syntaxchannel.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxalias.syntaxChanged.connect(self.syntaxChanged)
 
+		self.syntaxnick = widgets.SyntaxColor('nick', "<b>Nicknames</b>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
+		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Emoji Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
+
+		self.syntaxnick.syntaxChanged.connect(self.syntaxChanged)
+		self.syntaxemoji.syntaxChanged.connect(self.syntaxChanged)
+
 		self.syntaxfore.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxback.syntaxChanged.connect(self.syntaxChanged)
 
@@ -2251,7 +2276,6 @@ class Dialog(QDialog):
 			channels, comments, and aliases appear in the colors and styles set below.
 			Close and reopen any open editor windows to see changes.
 			</small>
-			<br>
 			""")
 		self.syntaxDescription.setWordWrap(True)
 		self.syntaxDescription.setAlignment(Qt.AlignJustify)
@@ -2260,7 +2284,9 @@ class Dialog(QDialog):
 			<small>
 			Syntax highlighting can also be applied to the input widget in
 			all server and chat windows. They will use the same color and
-			format settings as the script highlighting. Text color and background
+			format settings as the script highlighting. Nicknames from the
+			current chat and emoji shortcodes will be highlighted using the
+			colors and format settings below. Text color and background
 			color will be set to the current window's text style.
 			</small>
 			<br>
@@ -2277,14 +2303,17 @@ class Dialog(QDialog):
 		tbLay.addRow(self.syntaxcomment, self.syntaxcommand)
 		tbLay.addRow(self.syntaxchannel, self.syntaxalias)
 
+		sbLay = QFormLayout()
+		sbLay.addRow(self.syntaxnick, self.syntaxemoji)
+
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
-		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addWidget(self.toggleSyntaxInput)
+		syntaxLayout.addLayout(sbLay)
 		syntaxLayout.addStretch()
 
 		self.syntaxPage.setLayout(syntaxLayout)
@@ -2662,6 +2691,10 @@ class Dialog(QDialog):
 		config.DO_NOT_APPLY_STYLE_TO_USERLIST = self.notUserlist.isChecked()
 		config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = self.noAppNameTitle.isChecked()
 		config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = self.toggleSyntaxInput.isChecked()
+		config.SYNTAX_NICKNAME_COLOR = self.SYNTAX_NICKNAME_COLOR
+		config.SYNTAX_NICKNAME_STYLE = self.SYNTAX_NICKNAME_STYLE
+		config.SYNTAX_EMOJI_COLOR = self.SYNTAX_EMOJI_COLOR
+		config.SYNTAX_EMOJI_STYLE = self.SYNTAX_EMOJI_STYLE
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')
