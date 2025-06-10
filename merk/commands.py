@@ -117,6 +117,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"clear": config.ISSUE_COMMAND_SYMBOL+"clear",
 			config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
 			config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
+			config.ISSUE_COMMAND_SYMBOL+"exit": config.ISSUE_COMMAND_SYMBOL+"exit",
 		}
 
 	if new_autocomplete!=None:
@@ -172,6 +173,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"cascade</b>", "Cascades all subwindows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
 	]
 
 	if new_help!=None:
@@ -513,9 +515,43 @@ def find_sound_file(filename):
 
 	return None
 
+def exit_from_command(gui):
+	gui.close()
+
 def executeCommonCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
 	tokens = user_input.split()
+
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'exit' and len(tokens)==2:
+			tokens.pop(0)
+			timer = tokens.pop(0)
+
+			try:
+				timer=int(timer)
+			except:
+				t = Message(ERROR_MESSAGE,'',f"\"{timer}\" is not a number")
+				window.writeText(t,False)
+				return True
+
+			t = Message(SYSTEM_MESSAGE,'',f"Exiting {APPLICATION_NAME} in {timer} seconds...")
+			window.writeText(t,False)
+
+			script_id = str(uuid.uuid4())
+			gui.scripts[script_id] = ExitThread(script_id,gui,timer)
+			gui.scripts[script_id].threadEnd.connect(exit_from_command)
+			gui.scripts[script_id].start()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'exit' and len(tokens)==1:
+			t = Message(SYSTEM_MESSAGE,'',f"Exiting {APPLICATION_NAME}...")
+			window.writeText(t,False)
+
+			script_id = str(uuid.uuid4())
+			gui.scripts[script_id] = ExitThread(script_id,gui,0.5)
+			gui.scripts[script_id].threadEnd.connect(exit_from_command)
+			gui.scripts[script_id].start()
+			return True
 
 	# |--------|
 	# | /knock |
@@ -1522,6 +1558,23 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 
 	return False
+
+class ExitThread(QThread):
+
+	threadEnd = pyqtSignal(object)
+
+	def __init__(self,sid,gui,wait,parent=None):
+		super(ExitThread, self).__init__(parent)
+		self.id = sid
+		self.gui = gui
+		self.time = wait
+
+	def run(self):
+
+		time.sleep(self.time)
+
+		self.threadEnd.emit(self.gui)
+
 
 class ScriptThread(QThread):
 

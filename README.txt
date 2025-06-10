@@ -1,4 +1,5 @@
 
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -282,6 +283,7 @@ All of these commands can be issued from the text input widget, or from scripts.
 | `/refresh`                              | Requests a new list of channels from the server                                                             |
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                         |
 | `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                        |
+| `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                        |
 
 
 # Example Commandline Usage
