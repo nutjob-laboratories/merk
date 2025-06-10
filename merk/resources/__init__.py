@@ -311,6 +311,7 @@ LIST_ICON = ":/icon-list.png"
 REFRESH_ICON = ":/icon-refresh.png"
 TILE_ICON = ":/icon-tile.png"
 CASCADE_ICON = ":/icon-cascade.png"
+CHANNEL_MENU_ICON = ":/icon-channel_menu.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
