@@ -2221,7 +2221,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Script Highlighting")
+		entry.setText("Highlighting")
 		entry.widget = self.syntaxPage
 		entry.setIcon(QIcon(SCRIPT_ICON))
 		self.selector.addItem(entry)
@@ -2256,6 +2256,22 @@ class Dialog(QDialog):
 		self.syntaxDescription.setWordWrap(True)
 		self.syntaxDescription.setAlignment(Qt.AlignJustify)
 
+		self.syntaxInput = QLabel("""
+			<small>
+			Syntax highlighting can also be applied to the input widget in
+			all server and chat windows. They will use the same color and
+			format settings as the script highlighting. Text color and background
+			color will be set to the current window's text style.
+			</small>
+			<br>
+			""")
+		self.syntaxInput.setWordWrap(True)
+		self.syntaxInput.setAlignment(Qt.AlignJustify)
+
+		self.toggleSyntaxInput = QCheckBox("Apply syntax highlighting to input",self)
+		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET: self.toggleSyntaxInput.setChecked(True)
+		self.toggleSyntaxInput.stateChanged.connect(self.changedSetting)
+
 		tbLay = QFormLayout()
 		tbLay.addRow(self.syntaxfore, self.syntaxback)
 		tbLay.addRow(self.syntaxcomment, self.syntaxcommand)
@@ -2265,6 +2281,10 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
+		syntaxLayout.addWidget(QLabel(' '))
+		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
+		syntaxLayout.addWidget(self.syntaxInput)
+		syntaxLayout.addWidget(self.toggleSyntaxInput)
 		syntaxLayout.addStretch()
 
 		self.syntaxPage.setLayout(syntaxLayout)
@@ -2641,6 +2661,7 @@ class Dialog(QDialog):
 		config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = self.notInputWidget.isChecked()
 		config.DO_NOT_APPLY_STYLE_TO_USERLIST = self.notUserlist.isChecked()
 		config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = self.noAppNameTitle.isChecked()
+		config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = self.toggleSyntaxInput.isChecked()
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')

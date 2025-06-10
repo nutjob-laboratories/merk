@@ -182,10 +182,12 @@ SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE = False
 DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = False
 DO_NOT_APPLY_STYLE_TO_USERLIST = False
 DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = False
+APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = False
 
 def save_settings(filename):
 
 	settings = {
+		"apply_syntax_highlighting_to_input_widget": APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET,
 		"do_not_show_application_name_in_title": DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE,
 		"do_not_apply_text_style_to_userlist": DO_NOT_APPLY_STYLE_TO_USERLIST,
 		"do_not_apply_text_style_to_input_widget": DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET,
@@ -335,6 +337,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "apply_syntax_highlighting_to_input_widget" in settings:
+		settings["apply_syntax_highlighting_to_input_widget"] = APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET
 	if not "do_not_show_application_name_in_title" in settings:
 		settings["do_not_show_application_name_in_title"] = DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE
 	if not "do_not_apply_text_style_to_userlist" in settings:
@@ -769,6 +773,7 @@ def load_settings(filename):
 	global DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET
 	global DO_NOT_APPLY_STYLE_TO_USERLIST
 	global DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE
+	global APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -778,6 +783,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = settings["apply_syntax_highlighting_to_input_widget"]
 		DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = settings["do_not_show_application_name_in_title"]
 		DO_NOT_APPLY_STYLE_TO_USERLIST = settings["do_not_apply_text_style_to_userlist"]
 		DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET = settings["do_not_apply_text_style_to_input_widget"]

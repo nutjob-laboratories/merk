@@ -46,6 +46,8 @@ from .extendedmenuitem import ExtendedMenuItemNoAction
 
 from .. import commands
 
+from .. import syntax
+
 class Window(QMainWindow):
 
 	def __init__(self,name,client,window_type,app,parent=None):
@@ -2524,6 +2526,9 @@ class SpellTextEdit(QPlainTextEdit):
 class Highlighter(QSyntaxHighlighter):
 
 	WORDS = u'(?iu)[\\w\']+'
+	COMMANDS = r"/\w+"
+	ALIASES = r"\$\w+"
+	CHANNELS = r"#\w+"
 
 	def __init__(self, *args):
 		QSyntaxHighlighter.__init__(self, *args)
@@ -2538,22 +2543,44 @@ class Highlighter(QSyntaxHighlighter):
 		self.dict = dict
 
 	def highlightBlock(self, text):
-		if not self.dict:
-			return
 
-		format = QTextCharFormat()
-		format.setUnderlineColor(Qt.red)
-		format.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
+		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+			# Apply syntax styles to channels
+			channelformat = syntax.format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE)
+			for word_object in re.finditer(self.CHANNELS, text):
+				for name in self.parent.parent.getAllChatNames():
+					if name==word_object.group():
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
 
-		for word_object in re.finditer(self.WORDS, text):
+			# Apply syntax styles to aliases
+			aliasformat = syntax.format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
+			for word_object in re.finditer(self.ALIASES, text):
+				for a in commands.ALIAS:
+					if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
-			if config.ENABLE_SPELLCHECK:
+			# Apply syntax styles to commands
+			cmdformat = syntax.format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)
+			for word_object in re.finditer(self.COMMANDS, text):
+				for c in commands.AUTOCOMPLETE:
+					if c==word_object.group():
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), cmdformat)
 
-				misspelled = self.dict.unknown([word_object.group()])
-				if len(misspelled)>0:
-					# Make sure that words in the custom dictionary aren't flagged as misspelled
-					if not word_object.group() in config.DICTIONARY:
-						self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
+		# Highlight for spelling
+		if self.dict:
+			format = QTextCharFormat()
+			format.setUnderlineColor(Qt.red)
+			format.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
+
+			for word_object in re.finditer(self.WORDS, text):
+
+				if config.ENABLE_SPELLCHECK:
+
+					misspelled = self.dict.unknown([word_object.group()])
+					if len(misspelled)>0:
+						# Make sure that words in the custom dictionary aren't flagged as misspelled
+						if not word_object.group() in config.DICTIONARY:
+							self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
 
 class SpellAction(QAction):
 	correct = pyqtSignal(str)
