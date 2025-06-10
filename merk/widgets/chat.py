@@ -2571,6 +2571,8 @@ class Highlighter(QSyntaxHighlighter):
 			for word_object in re.finditer(self.CHANNELS, text):
 				for name in self.parent.parent.getAllChatNames():
 					if name==word_object.group():
+						do_not_spellcheck.append(name)
+						do_not_spellcheck.append(name[1:])
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
 
 			# Apply syntax styles to aliases
@@ -2601,7 +2603,10 @@ class Highlighter(QSyntaxHighlighter):
 					if len(misspelled)>0:
 						# Make sure that words in the custom dictionary aren't flagged as misspelled
 						if not word_object.group() in config.DICTIONARY:
-							if not word_object.group() in do_not_spellcheck:
+							if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+								if not word_object.group() in do_not_spellcheck:
+									self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
+							else:
 								self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
 
 class SpellAction(QAction):
