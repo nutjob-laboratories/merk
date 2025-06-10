@@ -987,15 +987,15 @@ class Dialog(QDialog):
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSetting)
 
-		self.showContext = QCheckBox("Show context menu options",self)
+		self.showContext = QCheckBox("Show context menu",self)
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
 
-		self.showStatusServer = QCheckBox("Status bar on server windows",self)
+		self.showStatusServer = QCheckBox("Show status bar on server windows",self)
 		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
 		self.showStatusServer.stateChanged.connect(self.changedSetting)
 
-		self.showStatusChat = QCheckBox("Status bar on chat windows",self)
+		self.showStatusChat = QCheckBox("Show status bar on chat windows",self)
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
 		self.showStatusChat.stateChanged.connect(self.changedSetting)
 
@@ -1019,7 +1019,7 @@ class Dialog(QDialog):
 
 		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showStatusList = QCheckBox("Status bar on channel lists",self)
+		self.showStatusList = QCheckBox("Show status bar on channel lists",self)
 		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
 		self.showStatusList.stateChanged.connect(self.changedSetting)
 
@@ -1687,6 +1687,7 @@ class Dialog(QDialog):
 			or edited with it (if you have the right permissions) by clicking
 			on the <b>topic</b> and editing it. Here, the
 			<b>channel information display</b> can be customized or turned off.
+			<br>
 			</small>
 			""")
 		self.channelDescription.setWordWrap(True)
