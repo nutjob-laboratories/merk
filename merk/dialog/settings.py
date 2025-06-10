@@ -849,7 +849,6 @@ class Dialog(QDialog):
 
 		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -887,10 +886,10 @@ class Dialog(QDialog):
 
 		self.styleDescription = QLabel("""
 			<small>
-			This setting controls how subwindows and widgets look. Different styles
+			This setting controls how <b>subwindows</b> and <b>widgets</b> look. Different <b>styles</b>
 			use different sets of widgets. Qt comes with a number of them
 			pre-installed, and you can select which one to use here. The selected
-			widget style will be applied immediately without having
+			widget <b>style</b> will be applied immediately without having
 			to restart the application.
 			</small>
 			<br>
@@ -912,7 +911,7 @@ class Dialog(QDialog):
 
 		self.darkDescription = QLabel("""
 			<small>
-			Dark mode changes the application palette to darker colors, which
+			<b>Dark mode</b> changes the application palette to darker colors, which
 			is supposed to decrease eye strain. Text display colors are unchanged,
 			as those are set and controlled by the text style system.
 			<br><br>
@@ -949,7 +948,6 @@ class Dialog(QDialog):
 		if self.forceDefault.isChecked():
 			self.notInputWidget.setEnabled(False)
 			self.notUserlist.setEnabled(False)
-
 
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
@@ -1078,9 +1076,9 @@ class Dialog(QDialog):
 			<small>
 			You can set the default settings needed to connect to
 			an IRC server here. These options can be set or changed
-			in the server connection dialog. If both your nickname and alternate
-			nickname are taken (or if you have not set an alternate nickname),
-			a random number will be generated and attached to your nickname for use.
+			in the server connection dialog. If both your <b>nickname</b> and <b>alternate</b>
+			nickname are taken (or if you have not set an <b>alternate</b> nickname),
+			a random number will be generated and attached to your <b>nickname</b> for use.
 			<br>
 			""")
 		self.userDescription.setWordWrap(True)
@@ -1165,10 +1163,10 @@ class Dialog(QDialog):
 
 		self.menubarDescription = QLabel("""
 			<small>
-			The menubar is a toolbar widget that takes the place of the menus of a
-			"normal" application. The menubar can be moved to either the top
-			of the main window, the bottom of the main window, or can optionally
-			float above all the subwindows. The menubar is turned on by default,
+			The <b>menubar</b> is a toolbar widget that takes the place of the menus of a
+			"normal" application. The <b>menubar</b> can be moved to either the <b>top</b>
+			of the main window, the <b>bottom</b> of the main window, or can be optionally
+			<b>movable</b>. The <b>menubar</b> is turned on by default,
 			but can be turned off if normal application menus are desired.
 			</small>
 			""")
@@ -1333,8 +1331,9 @@ class Dialog(QDialog):
 		self.menuNameDescription = QLabel("""
 			<small>
 			Here, you can set the names used to display the main application
-			menu. These are purely cosmetic, and don't change functionality at
-			all. These names will be displayed even if the menubar is disabled.
+			<b>menus</b>. These are purely cosmetic, and don't change functionality at
+			all. These names will be displayed even if the <b>menubar</b> is disabled,
+			and normal menus are used.
 			</small>
 			""")
 		self.menuNameDescription.setWordWrap(True)
@@ -1370,13 +1369,13 @@ class Dialog(QDialog):
 
 		self.windowbarDescription = QLabel("""
 			<small>
-			The windowbar is a toolbar widget that lists all (or some) of the open
+			The <b>windowbar</b> is a toolbar widget that lists all (or some) of the open
 			subwindows and allows you to switch between them by clicking on
-			the subwindow's name. The windowbar can show channel, private chat,
-			server, or script editor windows. It can be displayed at the top of
-			the main window or at the bottom, or can be moved. The entries
-			in the window bar can be left, right, or center justified. The
-			windowbar is turned on by default.
+			the subwindow's name. The <b>windowbar</b> can show channel, private chat,
+			server, or script editor windows. It can be displayed at the <b>top</b> of
+			the main window or at the <b>bottom</b>, or can be optionally <b>movable</b>. The entries
+			in the window bar can be <b>left</b>, <b>right</b>, or <b>center</b> justified. The
+			<b>windowbar</b> is turned on by default.
 			</small>
 			""")
 		self.windowbarDescription.setWordWrap(True)
@@ -1521,13 +1520,38 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_UPTIME: self.showChanUptime.setChecked(True)
 		self.showChanUptime.stateChanged.connect(self.changedSetting)
 
+		self.timestampDescription = QLabel("""
+			<small>
+			<b>Timestamps</b>, if turned on, are shown as the beginning of all displayed
+			messages in the chat display. They are saved to the log regardless of whether
+			they are visible or not.
+			</small>
+			<br>
+			""")
+		self.timestampDescription.setWordWrap(True)
+		self.timestampDescription.setAlignment(Qt.AlignJustify)
+
+		self.uptimeDescription = QLabel("""
+			<small>
+			<b>Uptimes</b> (that is, the length of time you have been connected to a
+			<b>server</b> or been in a <b>channel</b>) are generally displayed in the subwindow's
+			<b>status bar</b>. For <b>server</b> windows, if the <b>status bar</b>
+			is turned off, the connection <b>uptime</b> is displayed in the toolbar.
+			</small>
+			<br>
+			""")
+		self.uptimeDescription.setWordWrap(True)
+		self.uptimeDescription.setAlignment(Qt.AlignJustify)
+
 		timestampLayout = QVBoxLayout()
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
+		timestampLayout.addWidget(self.timestampDescription)
 		timestampLayout.addWidget(self.showTimestamps)
 		timestampLayout.addWidget(self.timestamp24hour)
 		timestampLayout.addWidget(self.timestampSeconds)
 		timestampLayout.addWidget(QLabel(' '))
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime displays</b>"))
+		timestampLayout.addWidget(self.uptimeDescription)
 		timestampLayout.addWidget(self.showUptime)
 		timestampLayout.addWidget(self.showChanUptime)
 		timestampLayout.addStretch()
@@ -1656,13 +1680,13 @@ class Dialog(QDialog):
 
 		self.channelDescription = QLabel("""
 			<small>
-			The channel information display is a bar shown at the top of
-			every channel window that displays the channel name, any modes set
+			The <b>channel information display</b> is a bar shown at the top of
+			every channel window that displays the channel <b>name</b>, any <b>modes</b> set
 			on the channel, the channel
-			topic, and the channel banlist. The channel topic can be changed
+			<b>topic</b>, and the channel <b>banlist</b>. The channel <b>topic</b> can be changed
 			or edited with it (if you have the right permissions) by clicking
-			on the topic and editing it. Here, the
-			channel information display can be customized or turned off.
+			on the <b>topic</b> and editing it. Here, the
+			<b>channel information display</b> can be customized or turned off.
 			</small>
 			""")
 		self.channelDescription.setWordWrap(True)
@@ -1751,7 +1775,7 @@ class Dialog(QDialog):
 		self.historyDescription = QLabel("""
 			<small>
 			Any text typed into the text input box is saved to the command history.
-			Use the up and down arrow keys to move backwards and forwards in the 
+			Use the <b>up and down arrow keys</b> to move backwards and forwards in the 
 			command history to issue any previously issued commands.
 			</small>
 			<br>
@@ -1761,8 +1785,8 @@ class Dialog(QDialog):
 
 		self.autocompleteDescription = QLabel("""
 			<small>
-			To use autocomplete, type the first few characters of a command,
-			nickname, channel, alias, or emoji shortcode, and then hit tab to complete
+			To use autocomplete, type the first few characters of a <b>command</b>,
+			<b>nickname</b>, <b>channel</b>, <b>alias</b>, or <b>emoji shortcode</b>, and then hit <b>tab</b> to complete
 			the entry.
 			</small>
 			<br>
@@ -1880,8 +1904,8 @@ class Dialog(QDialog):
 
 		self.spellcheckDescription = QLabel("""
 			<small>
-			Misspelled words in the input box are marked with a red
-			underline. Right click on a marked word to get suggestions to replace
+			Misspelled words in the input box are marked with a <b>red
+			underline</b>. <b>Right click on a marked word</b> to get suggestions to replace
 			the word with or to add that word to the built-in dictionary.
 			</small>
 			<br>
@@ -1975,8 +1999,8 @@ class Dialog(QDialog):
 
 		self.logDescription = QLabel("""
 			<small>
-			Full logs are not loaded for display. The below settings
-			controls how much of the log is loaded into the application
+			Full <b>logs</b> are not loaded for display. The below settings
+			controls how much of the <b>log</b> is loaded into the application
 			for display.
 			</small>
 			<br>
@@ -2271,7 +2295,7 @@ class Dialog(QDialog):
 
 		self.syntaxDescription = QLabel("""
 			<small>
-			Syntax highlighting is applied to both the script section of the
+			<b>Syntax highlighting</b> is applied to both the script section of the
 			connection dialog, and the built-in script editor. <b>Commands</b>,
 			<b>channels</b>, <b>comments</b>, and <b>aliases</b> appear in the colors and styles set below.
 			</small>
@@ -2281,7 +2305,7 @@ class Dialog(QDialog):
 
 		self.syntaxInput = QLabel("""
 			<small>
-			Syntax highlighting can also be applied to the input widget in
+			<b>Syntax highlighting</b> can also be applied to the input widget in
 			all server and chat windows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
 			current chat and <b>emoji shortcodes</b> will be highlighted using the
@@ -2376,9 +2400,9 @@ class Dialog(QDialog):
 		
 		self.notifyDescription = QLabel("""
 			<small>
-			Audio notifications, when enabled, play a sound (by default, a bell) every time
-			one of the listed events occur. Any file of any length can be used for the notification
-			sound; the only limitation is that the file must be a WAV file.
+			<b>Audio notifications</b>, when enabled, play a sound (by default, a bell) every time
+			one of the listed <b>events</b> occur. Any file of any length can be used for the notification
+			sound; the only limitation is that the file <b>must be a WAV file</b>.
 			</small>
 			<br>
 			""")
