@@ -2272,9 +2272,8 @@ class Dialog(QDialog):
 		self.syntaxDescription = QLabel("""
 			<small>
 			Syntax highlighting is applied to both the script section of the
-			connection dialog, and the built-in script editor. Commands,
-			channels, comments, and aliases appear in the colors and styles set below.
-			Close and reopen any open editor windows to see changes.
+			connection dialog, and the built-in script editor. <b>Commands</b>,
+			<b>channels</b>, <b>comments</b>, and <b>aliases</b> appear in the colors and styles set below.
 			</small>
 			""")
 		self.syntaxDescription.setWordWrap(True)
@@ -2284,8 +2283,8 @@ class Dialog(QDialog):
 			<small>
 			Syntax highlighting can also be applied to the input widget in
 			all server and chat windows. They will use the same color and
-			format settings as the script highlighting. Nicknames from the
-			current chat and emoji shortcodes will be highlighted using the
+			format settings as the script highlighting. <b>Nicknames</b> from the
+			current chat and <b>emoji shortcodes</b> will be highlighted using the
 			colors and format settings below. Text color and background
 			color will be set to the current window's text style.
 			</small>
