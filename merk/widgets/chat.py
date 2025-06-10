@@ -2555,6 +2555,7 @@ class Highlighter(QSyntaxHighlighter):
 				for word_object in re.finditer(self.EMOJIS, text):
 					for code in EMOJI_AUTOCOMPLETE:
 						if code==word_object.group():
+							do_not_spellcheck.append(code[1:-1])
 							self.setFormat(word_object.start(), word_object.end() - word_object.start(), emojiformat)
 
 			# Apply syntax style to nicknames
@@ -2580,6 +2581,7 @@ class Highlighter(QSyntaxHighlighter):
 			for word_object in re.finditer(self.ALIASES, text):
 				for a in commands.ALIAS:
 					if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
+						do_not_spellcheck.append(a)
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
 			# Apply syntax styles to commands
@@ -2587,6 +2589,8 @@ class Highlighter(QSyntaxHighlighter):
 			for word_object in re.finditer(self.COMMANDS, text):
 				for c in commands.AUTOCOMPLETE:
 					if c==word_object.group():
+						do_not_spellcheck.append(c)
+						do_not_spellcheck.append(c[1:])
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), cmdformat)
 
 		# Highlight for spelling

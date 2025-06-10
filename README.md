@@ -27,14 +27,14 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
-| Zip Archive|  Cross-platform  | [Download MERK 0.040.129 (3.53 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
-| Zip Archive|  Windows | [Download MERK 0.040.129 (49.55 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
-|   Windows Installer|  Windows | [Download MERK 0.040.129 (36.67 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
-|   Single Executable|  Windows | [Download MERK 0.040.129 (49.15 MB)](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.040.132 (3.53 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.040.132 (49.55 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.040.132 (36.67 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
+|   Single Executable|  Windows | [Download MERK 0.040.132 (49.14 MB)](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.040.129**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.040.132**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities.
 
@@ -44,18 +44,18 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 
 # Running MERK on Windows
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.040.129](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
+If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.040.132](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
 
-For a "portable" version of **MERK**, [download the zip file of **MERK** 0.040.129 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
+For a "portable" version of **MERK**, [download the zip file of **MERK** 0.040.132 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
 
-For an even easier "install", [download the "standalone" executable of **MERK** 0.040.129](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
+For an even easier "install", [download the "standalone" executable of **MERK** 0.040.132](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
 
 The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
 
 A note: all command-line arguments, as documented below, work on the standalone version of **MERK**.
 
 # Making MERK Portable on Windows
-If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.040.129 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
+If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.040.132 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
 
 ```merk.exe --config-local```
 
@@ -351,9 +351,11 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 
  - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for **MERK**. I'm doing my best, here, but I'm a computer programmer, not an artist!
  - **Packaging**. **MERK** now has a [PyInstaller](https://www.pyinstaller.org/)-based distribution! However, I can't seem to get PyInstaller working on a Linux binary for reasons that are beyond me. I'd love some help on getting packaging for Linux, be it with PyInstaller or anything else that's easy for end-users to use. I also know next to nothing about making Python packages for use with  `pip`, but that's another thing I'd love help with!
+ - **DCC chat and file transfers**. The DCC  functionality in Twisted is undocumented, and I'll be honest, I can't make heads or tails of it. I'd love to be able to add this functionality to **MERK**, but I need help!
  - **Using MERK and giving me feedback**. Let me know what you love about **MERK** and what you hate about **MERK**! Got ideas for ways you'd like to customize the client? Features you'd like? Let me know! I can't guarantee that I'll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using **MERK**!
 
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
 
 [//]: # (End of document)
+
 
