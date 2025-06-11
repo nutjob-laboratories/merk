@@ -296,7 +296,7 @@ if __name__ == '__main__':
 		inhistory = False
 		for s in user_history:
 			if s[0]==host:
-				if s[1]==port:
+				if s[1]==str(port):
 					inhistory = True
 
 		# If the connection isn't already in the user's
