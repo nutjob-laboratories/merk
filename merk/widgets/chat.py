@@ -2526,10 +2526,18 @@ class SpellTextEdit(QPlainTextEdit):
 class Highlighter(QSyntaxHighlighter):
 
 	WORDS = u'(?iu)[\\w\']+'
-	COMMANDS = r"/\w+"
 	ALIASES = r"\$\w+"
 	CHANNELS = r"#\w+"
 	EMOJIS = r":\w+:"
+
+	special = ['\\','^','$','.','|','?','*','+','(',')','{']
+	cmdsymbol = ''
+	for c in config.ISSUE_COMMAND_SYMBOL:
+		if c in special:
+			c = '\\'+c
+		cmdsymbol = cmdsymbol + c
+
+	COMMANDS = fr"{cmdsymbol}\w+"
 
 	def __init__(self, *args):
 		QSyntaxHighlighter.__init__(self, *args)
