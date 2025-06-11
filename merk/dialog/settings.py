@@ -987,7 +987,7 @@ class Dialog(QDialog):
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSetting)
 
-		self.showContext = QCheckBox("Show context menu",self)
+		self.showContext = QCheckBox("Context menu",self)
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
 
@@ -1188,7 +1188,7 @@ class Dialog(QDialog):
 		if config.MENUBAR_JUSTIFY!='right': self.menubarJustify.addItem('right')
 		self.menubarJustify.currentIndexChanged.connect(self.menuJustifyChange)
 
-		self.menubarMenu = QCheckBox("Context menu settings",self)
+		self.menubarMenu = QCheckBox("Context menu",self)
 		if config.MENUBAR_MENU: self.menubarMenu.setChecked(True)
 		self.menubarMenu.stateChanged.connect(self.menuChange)
 
@@ -1425,7 +1425,7 @@ class Dialog(QDialog):
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST: self.windowBarFirst.setChecked(True)
 		self.windowBarFirst.stateChanged.connect(self.menuChange)
 
-		self.windowbarMenu = QCheckBox("Context menu settings",self)
+		self.windowbarMenu = QCheckBox("Context menu",self)
 		if config.WINDOWBAR_MENU: self.windowbarMenu.setChecked(True)
 		self.windowbarMenu.stateChanged.connect(self.menuChange)
 
@@ -1775,9 +1775,9 @@ class Dialog(QDialog):
 
 		self.historyDescription = QLabel("""
 			<small>
-			Any text typed into the text input box is saved to the command history.
-			Use the <b>up and down arrow keys</b> to move backwards and forwards in the 
-			command history to issue any previously issued commands.
+			Any text typed into the text input box is saved to the <b>command history</b>.
+			Use the <b>arrow keys</b> to move backwards (<b>&uarr;</b>) and forwards (<b>&darr;</b>) in the 
+			<b>command history</b> to issue any previously issued commands.
 			</small>
 			<br>
 			""")
@@ -1837,8 +1837,8 @@ class Dialog(QDialog):
 		self.emojiDescription = QLabel("""
 			<small>
 			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
-			your chat by using <a href="https://emojibase.dev/docs/shortcodes/">shortcodes</a>.
-			You can find a complete list of supported shortcodes <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">
+			your chat by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
+			You can find a complete list of supported <b>shortcodes</b> <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">
 			here</a>.
 			</small>
 			<br>
