@@ -2417,7 +2417,7 @@ class Dialog(QDialog):
 			<small>
 			<b>Audio notifications</b>, when enabled, play a sound (by default, a bell) every time
 			one of the listed <b>events</b> occur. Any file of any length can be used for the notification
-			sound; the only limitation is that the file <b>must be a WAV file</b>.
+			sound; the only limitation is that the file <b><i>must</i> be a WAV file</b>.
 			</small>
 			<br>
 			""")

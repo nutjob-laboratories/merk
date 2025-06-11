@@ -2529,15 +2529,7 @@ class Highlighter(QSyntaxHighlighter):
 	ALIASES = r"\$\w+"
 	CHANNELS = r"#\w+"
 	EMOJIS = r":\w+:"
-
-	special = ['\\','^','$','.','|','?','*','+','(',')','{']
-	cmdsymbol = ''
-	for c in config.ISSUE_COMMAND_SYMBOL:
-		if c in special:
-			c = '\\'+c
-		cmdsymbol = cmdsymbol + c
-
-	COMMANDS = fr"{cmdsymbol}\w+"
+	SPECIAL = ['\\','^','$','.','|','?','*','+','(',')','{']
 
 	def __init__(self, *args):
 		QSyntaxHighlighter.__init__(self, *args)
@@ -2593,8 +2585,16 @@ class Highlighter(QSyntaxHighlighter):
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
 			# Apply syntax styles to commands
+			
+			cmdsymbol = ''
+			for c in config.ISSUE_COMMAND_SYMBOL:
+				if c in self.SPECIAL:
+					c = '\\'+c
+				cmdsymbol = cmdsymbol + c
+			COMMANDS = fr"{cmdsymbol}\w+"
+			
 			cmdformat = syntax.format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)
-			for word_object in re.finditer(self.COMMANDS, text):
+			for word_object in re.finditer(COMMANDS, text):
 				for c in commands.AUTOCOMPLETE:
 					if c==word_object.group():
 						do_not_spellcheck.append(c)
