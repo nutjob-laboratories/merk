@@ -79,7 +79,7 @@ class Dialog(QDialog):
 		line2.setAlignment(Qt.AlignCenter)
 		line3 = QLabel("<big><b>MERK "+APPLICATION_VERSION+"</b></big>")
 		line3.setAlignment(Qt.AlignCenter)
-		line4 = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories/merk\">Official Repository</a></b></big>")
+		line4 = QLabel(f"<big><b><a href=\"{APPLICATION_SOURCE}\">Source Code Repository</a></b></big>")
 		line4.setAlignment(Qt.AlignCenter)
 		line4.setOpenExternalLinks(True)
 
