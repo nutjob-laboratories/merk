@@ -220,9 +220,17 @@ def addAlias(name,value):
 	ALIAS[name] = value
 
 def detect_alias(text):
-  pattern = r"\$([^\d]+)"
-  match = re.search(pattern, text)
-  return bool(match)
+
+	# Make sure the alias symbol is properly escaped
+	aliassymbol = ''
+	for c in config.ALIAS_INTERPOLATION_SYMBOL:
+		if c in ['\\','^','$','.','|','?','*','+','(',')','{']:
+			c = '\\'+c
+		aliassymbol = aliassymbol + c
+	pattern = fr"{aliassymbol}([^\d]+)"
+
+	match = re.search(pattern, text)
+	return bool(match)
 
 def interpolateAliases(text):
 	if not detect_alias(text): return text

@@ -2526,7 +2526,6 @@ class SpellTextEdit(QPlainTextEdit):
 class Highlighter(QSyntaxHighlighter):
 
 	WORDS = u'(?iu)[\\w\']+'
-	ALIASES = r"\$\w+"
 	CHANNELS = r"#\w+"
 	EMOJIS = r":\w+:"
 	SPECIAL = ['\\','^','$','.','|','?','*','+','(',')','{']
@@ -2542,6 +2541,14 @@ class Highlighter(QSyntaxHighlighter):
 
 	def setDict(self, dict):
 		self.dict = dict
+
+	def escape_symbol(self,target):
+		symbol = ''
+		for c in target:
+			if c in self.SPECIAL:
+				c = '\\'+c
+			symbol = symbol + c
+		return fr"{symbol}\w+"
 
 	def highlightBlock(self, text):
 
@@ -2577,8 +2584,13 @@ class Highlighter(QSyntaxHighlighter):
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
 
 			# Apply syntax styles to aliases
+
+			# Make sure the alias interpolation symbol
+			# is properly escaped
+			ALIASES = self.escape_symbol(config.ALIAS_INTERPOLATION_SYMBOL)
+
 			aliasformat = syntax.format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
-			for word_object in re.finditer(self.ALIASES, text):
+			for word_object in re.finditer(ALIASES, text):
 				for a in commands.ALIAS:
 					if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
 						do_not_spellcheck.append(a)
@@ -2586,13 +2598,10 @@ class Highlighter(QSyntaxHighlighter):
 
 			# Apply syntax styles to commands
 			
-			cmdsymbol = ''
-			for c in config.ISSUE_COMMAND_SYMBOL:
-				if c in self.SPECIAL:
-					c = '\\'+c
-				cmdsymbol = cmdsymbol + c
-			COMMANDS = fr"{cmdsymbol}\w+"
-			
+			# Make sure the command symbol is
+			# properly escaped
+			COMMANDS = self.escape_symbol(config.ISSUE_COMMAND_SYMBOL)
+
 			cmdformat = syntax.format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)
 			for word_object in re.finditer(COMMANDS, text):
 				for c in commands.AUTOCOMPLETE:
