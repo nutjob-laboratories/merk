@@ -887,9 +887,9 @@ class Dialog(QDialog):
 		self.styleDescription = QLabel("""
 			<small>
 			This setting controls how <b>subwindows</b> and <b>widgets</b> look. Different <b>styles</b>
-			use different sets of widgets. Qt comes with a number of them
+			use different sets of <b>widgets</b>. Qt comes with a number of them
 			pre-installed, and you can select which one to use here. The selected
-			widget <b>style</b> will be applied immediately without having
+			<b>widget style</b> will be applied immediately without having
 			to restart the application.
 			</small>
 			<br>
@@ -1834,8 +1834,22 @@ class Dialog(QDialog):
 		autoLayout2.addWidget(self.autocompleteChans)
 		autoLayout2.addWidget(self.autocompleteEmojis)
 
+		self.emojiDescription = QLabel("""
+			<small>
+			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
+			your chat by using <a href="https://emojibase.dev/docs/shortcodes/">shortcodes</a>.
+			You can find a complete list of supported shortcodes <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">
+			here</a>.
+			</small>
+			<br>
+			""")
+		self.emojiDescription.setWordWrap(True)
+		self.emojiDescription.setAlignment(Qt.AlignJustify)
+		self.emojiDescription.setOpenExternalLinks(True)
+
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
+		inputLayout.addWidget(self.emojiDescription)
 		inputLayout.addWidget(self.enableEmojis)
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
