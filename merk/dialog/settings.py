@@ -842,7 +842,15 @@ class Dialog(QDialog):
 
 		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		logo = QLabel()
+		pixmap = QPixmap(VERTICAL_SPLASH_LOGO)
+		logo.setPixmap(pixmap)
+		logo.setAlignment(Qt.AlignCenter)
+
 		applicationLayout = QVBoxLayout()
+		applicationLayout.addWidget(logo)
+		applicationLayout.addWidget(QLabel('<center><small><b>Open Source IRC Client</b></smal></center>'))
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(QLabel(' '))
@@ -2520,7 +2528,7 @@ class Dialog(QDialog):
 		# Finalize layout
 
 		logo = QLabel()
-		pixmap = QPixmap(VERTICAL_SPLASH_LOGO)
+		pixmap = QPixmap(APPLICATION_ICON)
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
