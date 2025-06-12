@@ -980,9 +980,10 @@ class Dialog(QDialog):
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSetting)
 
-		self.showContext = QCheckBox("Context menu",self)
+		self.showContext = QCheckBox("Context menus on channel, private,\nand server text displays",self)
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
+		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showStatusServer = QCheckBox("Show status bar on server windows",self)
 		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
@@ -1596,8 +1597,10 @@ class Dialog(QDialog):
 
 		self.quitpartDescription = QLabel("""
 			<small>
-			This is the default message used for channel parts or
-			server quits if a message is not provided.
+			This is the default message used for channel <b>parts</b> or
+			server <b>quits</b> if a message is not provided. If left blank,
+			no message will be sent when the client <b>disconnects from
+			a server</b> or <b>leaves a channel</b>.
 			</small>
 			<br>
 			""")
@@ -1911,9 +1914,9 @@ class Dialog(QDialog):
 
 		self.spellcheckDescription = QLabel("""
 			<small>
-			Misspelled words in the input box are marked with a <b>red
-			underline</b>. <b>Right click on a marked word</b> to get suggestions to replace
-			the word with or to add that word to the built-in dictionary.
+			Misspelled words in the input box are marked with a <b><span style='text-decoration: underline; color: red;'>red
+			underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
+			the word with</b> or to <b>add that word to the built-in dictionary</b>.
 			</small>
 			<br>
 			""")
@@ -2026,8 +2029,23 @@ class Dialog(QDialog):
 		logsizeLayout.addWidget(self.logLabel)
 		logsizeLayout.addStretch()
 
+		self.logFullDescription = QLabel(f"""
+			<small>
+			<b>Logs</b> are saved in JavaScript Object Notation (<b>JSON</B>), and use a format that can
+			be read and displayed easily by <b>{APPLICATION_NAME}</b>. If you want to use other
+			software to read or parse your IRC <b>logs</b>, a <b>log</b> export tool is built into
+			<b>{APPLICATION_NAME}</b>. The tool is located in the "<b>{self.default_tools_menu}</b>"
+			menu, under "<b>Export Logs</b>". Your <b>logs</b> can be exported in <b>JSON</b>, <b>CSV</b>, or your
+			own custom <b>ASCII, character delimited format</b>.
+			</small>
+			<br>
+			""")
+		self.logFullDescription.setWordWrap(True)
+		self.logFullDescription.setAlignment(Qt.AlignJustify)
+
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat log settings</b>"))
+		logLayout.addWidget(self.logFullDescription)
 		logLayout.addWidget(self.saveChanLogs)
 		logLayout.addWidget(self.loadChanLogs)
 		logLayout.addWidget(self.savePrivLogs)
