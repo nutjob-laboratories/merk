@@ -1778,7 +1778,7 @@ class Dialog(QDialog):
 
 		self.historyDescription = QLabel("""
 			<small>
-			Any text typed into the text input box is saved to the <b>command history</b>.
+			Any text typed into the text input widget is saved to the <b>command history</b>.
 			Use the <b>arrow keys</b> to move backwards (<b>&uarr;</b>) and forwards (<b>&darr;</b>) in the 
 			<b>command history</b> to issue any previously issued commands.
 			</small>
@@ -1922,7 +1922,7 @@ class Dialog(QDialog):
 
 		self.spellcheckDescription = QLabel("""
 			<small>
-			Misspelled words in the input box are marked with a <b><span style='text-decoration: underline; color: red;'>red
+			Misspelled words in the input widget are marked with a <b><span style='text-decoration: underline; color: red;'>red
 			underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
 			the word with</b> or to <b>add that word to the built-in dictionary</b>.
 			</small>
