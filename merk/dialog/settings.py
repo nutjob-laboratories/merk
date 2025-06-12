@@ -176,20 +176,11 @@ class Dialog(QDialog):
 		self.boldApply()
 
 	def setQuitMsg(self):
-		info = dialog.QuitPartDialog(self.default_quit_part,self)
-
-		if info==None: return None
-
-		if info.strip()=='':
-			self.default_quit_part = ''
-			self.partMsg.setText("<i>Blank quit message</i>")
-		else:
-			self.default_quit_part = info
-			self.partMsg.setText("<b>"+str(info)+"</b>")
+		
+		self.default_quit_part = self.partMsg.text()
 
 		self.changed.show()
 		self.boldApply()
-		self.selector.setFocus()
 
 	def syntaxChanged(self,data):
 		name = data[0]
@@ -1593,22 +1584,15 @@ class Dialog(QDialog):
 
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.partMsg = QLabel("<b>"+str(self.default_quit_part)+"</b>")
+		self.partMsg = QLineEdit(self.default_quit_part)
 
-		self.setPartMsg = QPushButton("")
-		self.setPartMsg.clicked.connect(self.setQuitMsg)
-		self.setPartMsg.setAutoDefault(False)
+		self.partMsg.textChanged.connect(self.setQuitMsg)
 
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		self.setPartMsg.setFixedSize(fheight +10,fheight + 10)
-		self.setPartMsg.setIcon(QIcon(EDIT_ICON))
-		self.setPartMsg.setToolTip("Set quit/part message")
-
-		cgbLayout = QHBoxLayout()
-		cgbLayout.addWidget(self.setPartMsg)
-		cgbLayout.addWidget(self.partMsg)
-		cgbLayout.addStretch()
+		partLayout = QVBoxLayout()
+		partLayout.addWidget(self.partMsg)
+		partBox = QGroupBox("")
+		partBox.setAlignment(Qt.AlignLeft)
+		partBox.setLayout(partLayout)
 
 		self.quitpartDescription = QLabel("""
 			<small>
@@ -1641,9 +1625,8 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		connectionsLayout.addWidget(self.quitpartDescription)
-		connectionsLayout.addLayout(cgbLayout)
+		connectionsLayout.addWidget(partBox)
 		connectionsLayout.addStretch()
-
 		self.connectionsPage.setLayout(connectionsLayout)
 
 		# Channel info page
