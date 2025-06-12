@@ -428,9 +428,11 @@ class Dialog(QDialog):
 		if self.showUserlists.isChecked():
 			self.plainUserLists.setEnabled(True)
 			self.showUserlistLeft.setEnabled(True)
+			self.hideScroll.setEnabled(True)
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
+			self.hideScroll.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -1714,10 +1716,16 @@ class Dialog(QDialog):
 		if not config.SHOW_USERLIST:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
+			self.hideScroll.setEnabled(False)
 
 		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
+
+		self.hideScroll = QCheckBox("Hide horizontal scrollbars on\n all userlists",self)
+		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
+		self.hideScroll.stateChanged.connect(self.changedSetting)
+		self.hideScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
@@ -1731,6 +1739,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.showUserlists)
 		menuLayout.addWidget(self.plainUserLists)
 		menuLayout.addWidget(self.showUserlistLeft)
+		menuLayout.addWidget(self.hideScroll)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
@@ -2733,6 +2742,7 @@ class Dialog(QDialog):
 		config.SYNTAX_NICKNAME_STYLE = self.SYNTAX_NICKNAME_STYLE
 		config.SYNTAX_EMOJI_COLOR = self.SYNTAX_EMOJI_COLOR
 		config.SYNTAX_EMOJI_STYLE = self.SYNTAX_EMOJI_STYLE
+		config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR = self.hideScroll.isChecked()
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')
@@ -2831,6 +2841,8 @@ class Dialog(QDialog):
 		self.parent.updateStatusBar()
 
 		self.parent.toggleServerToolbar()
+
+		self.parent.toggleScrollbar()
 
 		# Set the application font
 		self.parent.app.setFont(self.parent.application_font)

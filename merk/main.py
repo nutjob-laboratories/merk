@@ -2199,6 +2199,19 @@ class Merk(QMainWindow):
 		u.setUrl(url)
 		QDesktopServices.openUrl(u)
 
+	def toggleScrollbar(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR:
+						c.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+					else:
+						c.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def swapAllUserlists(self):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
@@ -2206,6 +2219,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.swapUserlist()
+					c.moveChatToBottom(True)
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
@@ -2216,6 +2230,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showHideUserlist()
+					c.moveChatToBottom(True)
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 

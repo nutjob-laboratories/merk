@@ -187,10 +187,12 @@ SYNTAX_NICKNAME_COLOR = "darkRed"
 SYNTAX_NICKNAME_STYLE = "bold"
 SYNTAX_EMOJI_COLOR = "Magenta"
 SYNTAX_EMOJI_STYLE = "bold italic"
+HIDE_USERLIST_HORIZONTAL_SCROLLBAR = True
 
 def save_settings(filename):
 
 	settings = {
+		"hide_horizontal_scrollbar_on_userlists": HIDE_USERLIST_HORIZONTAL_SCROLLBAR,
 		"syntax_nickname_color": SYNTAX_NICKNAME_COLOR,
 		"syntax_nickname_style": SYNTAX_NICKNAME_STYLE,
 		"syntax_emoji_color": SYNTAX_EMOJI_COLOR,
@@ -345,6 +347,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "hide_horizontal_scrollbar_on_userlists" in settings:
+		settings["hide_horizontal_scrollbar_on_userlists"] = HIDE_USERLIST_HORIZONTAL_SCROLLBAR
 	if not "syntax_nickname_color" in settings:
 		settings["syntax_nickname_color"] = SYNTAX_NICKNAME_COLOR
 	if not "syntax_nickname_style" in settings:
@@ -794,6 +798,7 @@ def load_settings(filename):
 	global SYNTAX_NICKNAME_STYLE
 	global SYNTAX_EMOJI_COLOR
 	global SYNTAX_EMOJI_STYLE
+	global HIDE_USERLIST_HORIZONTAL_SCROLLBAR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -803,6 +808,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIDE_USERLIST_HORIZONTAL_SCROLLBAR = settings["hide_horizontal_scrollbar_on_userlists"]
 		SYNTAX_NICKNAME_COLOR = settings["syntax_nickname_color"]
 		SYNTAX_NICKNAME_STYLE = settings["syntax_nickname_style"]
 		SYNTAX_EMOJI_COLOR = settings["syntax_emoji_color"]

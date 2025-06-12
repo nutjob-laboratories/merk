@@ -255,6 +255,11 @@ class Window(QMainWindow):
 			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
 			self.userlist.installEventFilter(self)
 
+			if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR:
+				self.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+			else:
+				self.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
 			f = self.userlist.font()
 			f.setBold(True)
 			self.userlist.setFont(f)
