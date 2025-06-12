@@ -131,9 +131,9 @@ class IRC_Connection(irc.IRCClient):
 		self.server_user_count = 0
 		self.server_channel_count = 0
 		self.last_list_fetch = ''
+		self.is_listing_channels = False
 
 		self.banlists = defaultdict(list)
-
 
 	def irc_RPL_LIST(self,prefix,params):
 		server = prefix
@@ -149,6 +149,7 @@ class IRC_Connection(irc.IRCClient):
 		self.server_channel_list.append( [channel_name,channel_count,channel_topic] )
 
 	def irc_RPL_LISTEND(self,prefix,params):
+		self.is_listing_channels = False
 		self.last_list_fetch = datetime.now().strftime("%Y-%m-%d "+config.TIMESTAMP_FORMAT)
 		self.gui.gotRefreshEnd(self)
 
@@ -157,6 +158,7 @@ class IRC_Connection(irc.IRCClient):
 		self.server_channel_count = 0
 		self.server_channel_list = []
 		self.last_list_fetch = ''
+		self.is_listing_channels = True
 
 	def uptime_beat(self):
 
@@ -168,7 +170,6 @@ class IRC_Connection(irc.IRCClient):
 					if not self.did_delayed_channel_list:
 						self.did_delayed_channel_list = True
 						self.sendLine(f"LIST")
-
 
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
 			if len(self.do_whois)>0:
@@ -642,7 +643,6 @@ class IRC_Connection(irc.IRCClient):
 			entry.server = server
 			self.who[nick].append(entry)
 
-
 	def irc_RPL_ENDOFWHO(self, prefix, params):
 		nick = params[1]
 
@@ -754,8 +754,6 @@ class IRC_Connection(irc.IRCClient):
 		if len(d) >= 2:
 			if d[1].isalpha(): return irc.IRCClient.lineReceived(self, line)
 
-		#print(line2)
-
 		if "Cannot join channel (+k)" in line2:
 			self.gui.receivedError(self,"Cannot join channel (wrong or missing password)")
 			pass
@@ -772,7 +770,8 @@ class IRC_Connection(irc.IRCClient):
 			self.gui.receivedError(self,"Permission denied (you're not an IRC operator)")
 			pass
 		if "not channel operator" in line2:
-			self.gui.receivedError(self,"Permission denied (you're not channel operator)")
+			if not self.is_listing_channels:
+				self.gui.receivedError(self,"Permission denied (you're not channel operator)")
 			pass
 		if "is already on channel" in line2:
 			self.gui.receivedError(self,"Invite failed (user is already in channel)")
