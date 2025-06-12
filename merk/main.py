@@ -2219,7 +2219,6 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.swapUserlist()
-					c.moveChatToBottom(True)
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
@@ -2230,7 +2229,6 @@ class Merk(QMainWindow):
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.showHideUserlist()
-					c.moveChatToBottom(True)
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 

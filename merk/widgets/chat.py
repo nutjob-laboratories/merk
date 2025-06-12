@@ -2024,6 +2024,7 @@ class Window(QMainWindow):
 			self.userlist.hide()
 			self.userlist_visible = False
 			self.buildInputOptionsMenu()
+		self.moveChatToBottom(True)
 
 	def swapUserlist(self):
 		self.userlist.setParent(None)
@@ -2054,6 +2055,8 @@ class Window(QMainWindow):
 			self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
 		else:
 			self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
+
+		self.moveChatToBottom(True)
 
 def buildBanMenu(self,client):
 

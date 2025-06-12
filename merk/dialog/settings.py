@@ -1713,11 +1713,6 @@ class Dialog(QDialog):
 		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
 		self.showUserlists.stateChanged.connect(self.changedUserlistVisibility)
 
-		if not config.SHOW_USERLIST:
-			self.plainUserLists.setEnabled(False)
-			self.showUserlistLeft.setEnabled(False)
-			self.hideScroll.setEnabled(False)
-
 		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
@@ -1726,6 +1721,11 @@ class Dialog(QDialog):
 		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
 		self.hideScroll.stateChanged.connect(self.changedSetting)
 		self.hideScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if not config.SHOW_USERLIST:
+			self.plainUserLists.setEnabled(False)
+			self.showUserlistLeft.setEnabled(False)
+			self.hideScroll.setEnabled(False)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
