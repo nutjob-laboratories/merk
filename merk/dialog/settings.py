@@ -767,10 +767,8 @@ class Dialog(QDialog):
 		fontButton.setToolTip("Change font")
 
 		fontLayout = QHBoxLayout()
-		fontLayout.addStretch()
 		fontLayout.addWidget(fontButton)
 		fontLayout.addWidget(self.fontLabel)
-		fontLayout.addStretch()
 
 		self.sizeLabel = QLabel(f"<b>{str(self.subWidth)}x{str(self.subHeight)} px</b>",self)
 
@@ -785,10 +783,8 @@ class Dialog(QDialog):
 		sizeButton.setToolTip("Change default window size")
 
 		sizeLayout = QHBoxLayout()
-		sizeLayout.addStretch()
 		sizeLayout.addWidget(sizeButton)
 		sizeLayout.addWidget(self.sizeLabel)
-		sizeLayout.addStretch()
 
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
@@ -797,12 +793,6 @@ class Dialog(QDialog):
 		self.maxOnStart = QCheckBox("Maximize window on startup",self)
 		if config.MAXIMIZE_ON_STARTUP: self.maxOnStart.setChecked(True)
 		self.maxOnStart.stateChanged.connect(self.changedSetting)
-
-		self.showNetLinks = QCheckBox("Show known links to network\nhomepages",self)
-		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
-		self.showNetLinks.stateChanged.connect(self.changedSetting)
-
-		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.alwaysOnTop = QCheckBox("Main window always on top",self)
 		if config.ALWAYS_ON_TOP: self.alwaysOnTop.setChecked(True)
@@ -847,9 +837,13 @@ class Dialog(QDialog):
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
+		sourceLink = QLabel(f'<center><small><b><a href="{APPLICATION_SOURCE}">Source Code</a></b></smal></center>')
+		sourceLink.setOpenExternalLinks(True)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
-		applicationLayout.addWidget(QLabel('<center><small><b>Open Source IRC Client</b></smal></center>'))
+		applicationLayout.addWidget(QLabel('<center><small><b>Open Source IRC Client</b></small></center>'))
+		applicationLayout.addWidget(sourceLink)
 		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -862,7 +856,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.simpleConnect)
-		applicationLayout.addWidget(self.showNetLinks)
 		applicationLayout.addWidget(self.examineTopic)
 		applicationLayout.addWidget(self.searchAllTerms)
 		applicationLayout.addWidget(self.showChannelList)
@@ -1625,6 +1618,11 @@ class Dialog(QDialog):
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
 		self.autoHostmasks.stateChanged.connect(self.changedSetting)
 
+		self.showNetLinks = QCheckBox("Show known links to network\nhomepages",self)
+		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
+		self.showNetLinks.stateChanged.connect(self.changedSetting)
+		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
@@ -1633,6 +1631,7 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.promptFail)
 		connectionsLayout.addWidget(self.requestList)
 		connectionsLayout.addWidget(self.autoHostmasks)
+		connectionsLayout.addWidget(self.showNetLinks)
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		connectionsLayout.addWidget(self.quitpartDescription)
