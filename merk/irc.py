@@ -182,8 +182,14 @@ class IRC_Connection(irc.IRCClient):
 
 	def connectionMade(self):
 
-		# PROTOCTL UHNAMES
 		self.sendLine("PROTOCTL UHNAMES")
+		self.sendLine("CAP REQ :chghost")
+		self.sendLine("CAP REQ :cap-notify")
+		self.sendLine("CAP REQ :userhost-in-names")
+		self.sendLine("CAP REQ :multi-prefix")
+		self.sendLine("CAP REQ :away-notify")
+		self.sendLine("CAP REQ :account-notify")
+		self.sendLine("CAP END")
 
 		irc.IRCClient.connectionMade(self)
 
@@ -718,6 +724,9 @@ class IRC_Connection(irc.IRCClient):
 	def irc_RPL_AWAY(self,prefix,params):
 		user = params[1]
 		msg = params[2]
+
+		# Now this works, but we still need to do something
+		# with this
 
 	def irc_RPL_UNAWAY(self,prefix,params):
 		msg = params[1]
