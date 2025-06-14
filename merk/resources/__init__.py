@@ -478,6 +478,27 @@ def test_if_background_is_light(style):
 		else:
 			return False
 
+def test_if_foreground_is_light(style):
+
+	bg = None
+	style = style.strip()
+	for e in style.split(';'):
+		y = e.split(':')
+		if len(y)==2:
+			c = y[0].strip()
+			if c.lower()=='color':
+				bg = y[1].strip()
+
+	if bg!=None:
+		c = tuple(int(bg[i:i + 2], 16) / 255. for i in (1, 3, 5))
+		luma = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+		luma = luma*100
+
+		if luma>=40:
+			return True
+		else:
+			return False
+
 # Widgets
 
 class QNoSpaceLineEdit(QLineEdit):

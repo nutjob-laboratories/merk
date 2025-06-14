@@ -1436,14 +1436,24 @@ class Window(QMainWindow):
 	def change_to_away_display(self,w):
 		font = QFont()
 		font.setBold(False)
-		font.setItalic(True)
 		w.setFont(font)
+
+		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		c = QColor(foreground)
+		if test_if_foreground_is_light(self.style["all"]):
+			change = c.darker(150)
+		else:
+			change = c.lighter(150)
+		w.setForeground(QBrush(QColor(change)))
+
 
 	def change_to_back_display(self,w):
 		font = QFont()
 		font.setBold(True)
-		font.setItalic(False)
 		w.setFont(font)
+
+		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		w.setForeground(QBrush(QColor(foreground)))
 
 	def got_away(self,username,message):
 
