@@ -190,10 +190,12 @@ SYNTAX_EMOJI_STYLE = "bold italic"
 HIDE_USERLIST_HORIZONTAL_SCROLLBAR = True
 SHOW_CONNECTION_DEBUG_STREAM = False
 SHOW_AWAY_AND_BACK_MESSAGES = True
+SHOW_AWAY_STATUS_IN_USERLISTS = True
 
 def save_settings(filename):
 
 	settings = {
+		"show_away_status_in_userlists": SHOW_AWAY_STATUS_IN_USERLISTS,
 		"show_away_and_back_messages": SHOW_AWAY_AND_BACK_MESSAGES,
 		"debug_server_connection_stream": SHOW_CONNECTION_DEBUG_STREAM,
 		"hide_horizontal_scrollbar_on_userlists": HIDE_USERLIST_HORIZONTAL_SCROLLBAR,
@@ -351,6 +353,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "show_away_status_in_userlists" in settings:
+		settings["show_away_status_in_userlists"] = SHOW_AWAY_STATUS_IN_USERLISTS
 	if not "show_away_and_back_messages" in settings:
 		settings["show_away_and_back_messages"] = SHOW_AWAY_AND_BACK_MESSAGES
 	if not "debug_server_connection_stream" in settings:
@@ -809,6 +813,7 @@ def load_settings(filename):
 	global HIDE_USERLIST_HORIZONTAL_SCROLLBAR
 	global SHOW_CONNECTION_DEBUG_STREAM
 	global SHOW_AWAY_AND_BACK_MESSAGES
+	global SHOW_AWAY_STATUS_IN_USERLISTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -818,6 +823,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_AWAY_STATUS_IN_USERLISTS = settings["show_away_status_in_userlists"]
 		SHOW_AWAY_AND_BACK_MESSAGES = settings["show_away_and_back_messages"]
 		SHOW_CONNECTION_DEBUG_STREAM = settings["debug_server_connection_stream"]
 		HIDE_USERLIST_HORIZONTAL_SCROLLBAR = settings["hide_horizontal_scrollbar_on_userlists"]

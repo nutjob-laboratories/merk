@@ -1725,6 +1725,10 @@ class Dialog(QDialog):
 		self.showAwayBack.stateChanged.connect(self.changedSetting)
 		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showAwayStatus = QCheckBox("Show away status in userlists",self)
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
+		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -1738,6 +1742,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.plainUserLists)
 		menuLayout.addWidget(self.showUserlistLeft)
 		menuLayout.addWidget(self.hideScroll)
+		menuLayout.addWidget(self.showAwayStatus)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
@@ -2758,6 +2763,7 @@ class Dialog(QDialog):
 		config.SYNTAX_EMOJI_STYLE = self.SYNTAX_EMOJI_STYLE
 		config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR = self.hideScroll.isChecked()
 		config.SHOW_AWAY_AND_BACK_MESSAGES = self.showAwayBack.isChecked()
+		config.SHOW_AWAY_STATUS_IN_USERLISTS = self.showAwayStatus.isChecked()
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')

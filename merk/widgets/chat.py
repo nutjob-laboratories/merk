@@ -1241,11 +1241,12 @@ class Window(QMainWindow):
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
 					menu.addAction(entry)
 
-			if user_nick in self.away:
-				away_msg = self.away[user_nick]
+			if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+				if user_nick in self.away:
+					away_msg = self.away[user_nick]
 
-				e = plainTextAction(self,f"<small><i>{away_msg}</i></small>")
-				menu.addAction(e)
+					e = plainTextAction(self,f"<small><i>{away_msg}</i></small>")
+					menu.addAction(e)
 
 			menu.addSeparator()
 
@@ -1434,26 +1435,28 @@ class Window(QMainWindow):
 		self.writeUserlist(self.users)
 
 	def change_to_away_display(self,w):
-		font = QFont()
-		font.setBold(False)
-		w.setFont(font)
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+			font = QFont()
+			font.setBold(False)
+			w.setFont(font)
 
-		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
-		c = QColor(foreground)
-		if test_if_foreground_is_light(self.style["all"]):
-			change = c.darker(150)
-		else:
-			change = c.lighter(150)
-		w.setForeground(QBrush(QColor(change)))
+			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+			c = QColor(foreground)
+			if test_if_foreground_is_light(self.style["all"]):
+				change = c.darker(150)
+			else:
+				change = c.lighter(150)
+			w.setForeground(QBrush(QColor(change)))
 
 
 	def change_to_back_display(self,w):
-		font = QFont()
-		font.setBold(True)
-		w.setFont(font)
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+			font = QFont()
+			font.setBold(True)
+			w.setFont(font)
 
-		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
-		w.setForeground(QBrush(QColor(foreground)))
+			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+			w.setForeground(QBrush(QColor(foreground)))
 
 	def got_away(self,username,message):
 
