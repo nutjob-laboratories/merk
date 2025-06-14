@@ -1667,26 +1667,6 @@ class Dialog(QDialog):
 		intervalBox.addWidget(self.autoawayInterval)
 		intervalBox.addStretch()
 
-		self.awayMsg = QLineEdit(self.default_away)
-
-		self.awayMsg.textChanged.connect(self.setAwayMsg)
-
-		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(self.awayMsg)
-		awayBox = QGroupBox("")
-		awayBox.setAlignment(Qt.AlignLeft)
-		awayBox.setLayout(awayLayout)
-
-		self.partMsg = QLineEdit(self.default_quit_part)
-
-		self.partMsg.textChanged.connect(self.setQuitMsg)
-
-		partLayout = QVBoxLayout()
-		partLayout.addWidget(self.partMsg)
-		partBox = QGroupBox("")
-		partBox.setAlignment(Qt.AlignLeft)
-		partBox.setLayout(partLayout)
-
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
@@ -1698,12 +1678,6 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.showNetLinks)
 		connectionsLayout.addWidget(self.showAwayBack)
 		connectionsLayout.addLayout(intervalBox)
-		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
-		connectionsLayout.addWidget(partBox)
-		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		connectionsLayout.addWidget(awayBox)
 		connectionsLayout.addStretch()
 		self.connectionsPage.setLayout(connectionsLayout)
 
@@ -2204,6 +2178,26 @@ class Dialog(QDialog):
 
 		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.awayMsg = QLineEdit(self.default_away)
+
+		self.awayMsg.textChanged.connect(self.setAwayMsg)
+
+		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(self.awayMsg)
+		awayBox = QGroupBox("")
+		awayBox.setAlignment(Qt.AlignLeft)
+		awayBox.setLayout(awayLayout)
+
+		self.partMsg = QLineEdit(self.default_quit_part)
+
+		self.partMsg.textChanged.connect(self.setQuitMsg)
+
+		partLayout = QVBoxLayout()
+		partLayout.addWidget(self.partMsg)
+		partBox = QGroupBox("")
+		partBox.setAlignment(Qt.AlignLeft)
+		partBox.setLayout(partLayout)
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -2215,6 +2209,12 @@ class Dialog(QDialog):
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system messages</b>"))
 		messageLayout.addLayout(prepLayout)
+		messageLayout.addWidget(QLabel(' '))
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
+		messageLayout.addWidget(partBox)
+		messageLayout.addWidget(QLabel(' '))
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		messageLayout.addWidget(awayBox)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
