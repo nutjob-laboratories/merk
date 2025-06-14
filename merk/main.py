@@ -983,8 +983,9 @@ class Merk(QMainWindow):
 	def away(self,client,msg):
 		w = self.getServerWindow(client)
 		if w:
-			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
-			w.writeText(t)
+			if config.SHOW_AWAY_AND_BACK_MESSAGES:
+				t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
+				w.writeText(t)
 			if hasattr(w,"away_button"):
 				w.away_button.setToolTip("Set status to \"back\"")
 				w.away_button.setIcon(QIcon(GO_BACK_ICON))
@@ -992,8 +993,9 @@ class Merk(QMainWindow):
 	def back(self,client):
 		w = self.getServerWindow(client)
 		if w:
-			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
-			w.writeText(t)
+			if config.SHOW_AWAY_AND_BACK_MESSAGES:
+				t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
+				w.writeText(t)
 			if hasattr(w,"away_button"):
 				w.away_button.setToolTip("Set status to \"away\"")
 				w.away_button.setIcon(QIcon(GO_AWAY_ICON))

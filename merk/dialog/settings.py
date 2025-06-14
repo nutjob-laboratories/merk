@@ -1658,6 +1658,11 @@ class Dialog(QDialog):
 		self.awayDescription.setWordWrap(True)
 		self.awayDescription.setAlignment(Qt.AlignJustify)
 
+		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
+		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
+		self.showAwayBack.stateChanged.connect(self.changedSetting)
+		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
@@ -1667,6 +1672,7 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.requestList)
 		connectionsLayout.addWidget(self.autoHostmasks)
 		connectionsLayout.addWidget(self.showNetLinks)
+		connectionsLayout.addWidget(self.showAwayBack)
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		connectionsLayout.addWidget(self.quitpartDescription)
@@ -1759,11 +1765,6 @@ class Dialog(QDialog):
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 
-		self.showAwayBack = QCheckBox("Show user away and back notification\nmessages",self)
-		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
-		self.showAwayBack.stateChanged.connect(self.changedSetting)
-		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.showAwayStatus = QCheckBox("Show away status in userlists",self)
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
 		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
@@ -1786,7 +1787,6 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
-		menuLayout.addWidget(self.showAwayBack)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
