@@ -86,6 +86,7 @@ class Window(QMainWindow):
 		self.protected = False
 
 		self.banlist = []
+		self.away = {}
 
 		self.userlist_visible = True
 
@@ -463,12 +464,46 @@ class Window(QMainWindow):
 
 		else:
 
-			finalLayout = QVBoxLayout()
-			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
-			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-			if self.window_type==SERVER_WINDOW: finalLayout.addWidget(self.server_window_toolbar)
-			finalLayout.addWidget(self.chat)
-			finalLayout.addLayout(inputLayout)
+			if config.SHOW_CONNECTION_DEBUG_STREAM:
+				
+				self.tabs = QTabWidget()
+
+				self.server_tab = QWidget()
+				self.tabs.addTab(self.server_tab, "Console")
+
+				self.inputoutput = QWidget()
+				self.tabs.addTab(self.inputoutput, "Connection")
+
+
+				serverLayout = QVBoxLayout()
+				serverLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
+				serverLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+				if self.window_type==SERVER_WINDOW: serverLayout.addWidget(self.server_window_toolbar)
+				serverLayout.addWidget(self.chat)
+				serverLayout.addLayout(inputLayout)
+				self.server_tab.setLayout(serverLayout)
+
+				self.connection = QListWidget()
+				self.connection.setAlternatingRowColors(True)
+				self.connection.setTextElideMode(Qt.ElideRight)
+				self.connection.setWordWrap(True)
+
+				connectionLayout = QVBoxLayout()
+				connectionLayout.addWidget(self.connection)
+				self.inputoutput.setLayout(connectionLayout)
+
+				finalLayout = QVBoxLayout()
+				finalLayout.addWidget(self.tabs)
+				finalLayout.setSpacing(0)
+				finalLayout.setContentsMargins(0,0,0,0)
+
+			else:
+				finalLayout = QVBoxLayout()
+				finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
+				finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+				if self.window_type==SERVER_WINDOW: finalLayout.addWidget(self.server_window_toolbar)
+				finalLayout.addWidget(self.chat)
+				finalLayout.addLayout(inputLayout)
 
 		# Finalize the layout
 		interface = QWidget()
@@ -639,6 +674,19 @@ class Window(QMainWindow):
 				self.rerenderChatLog()
 
 				QApplication.restoreOverrideCursor()
+
+	def addInputOutput(self,data):
+
+		if config.SHOW_CONNECTION_DEBUG_STREAM:
+			i = QListWidgetItem()
+
+			font = QFont()
+			font.setBold(True)
+			i.setFont(font)
+			i.setText(data)
+
+			self.connection.addItem(i)
+			self.connection.scrollToBottom()
 
 	def showChannelList(self):
 		if len(self.client.server_channel_list)==0:
@@ -1193,6 +1241,12 @@ class Window(QMainWindow):
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
 					menu.addAction(entry)
 
+			if user_nick in self.away:
+				away_msg = self.away[user_nick]
+
+				e = plainTextAction(self,f"<small><i>{away_msg}</i></small>")
+				menu.addAction(e)
+
 			menu.addSeparator()
 
 			if self.operator:
@@ -1382,7 +1436,75 @@ class Window(QMainWindow):
 	def change_to_away_display(self,w):
 		font = QFont()
 		font.setBold(False)
+		font.setItalic(True)
 		w.setFont(font)
+
+	def change_to_back_display(self,w):
+		font = QFont()
+		font.setBold(True)
+		font.setItalic(False)
+		w.setFont(font)
+
+	def got_away(self,username,message):
+
+		p = username.split('!')
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = username
+
+		self.away[nickname] = message
+
+		for i in range(self.userlist.count()):
+			item = self.userlist.item(i)
+			
+			target = item.text()
+			target = target.replace('@','')
+			target = target.replace('+','')
+			target = target.replace('~','')
+			target = target.replace('&','')
+			target = target.replace('%','')
+			target = target.replace('!','')
+
+			if target==nickname:
+				self.change_to_away_display(item)
+				self.userlist.update()
+
+		if nickname in self.nicks:
+			t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({message})")
+			self.writeText(t)
+
+	def got_back(self,username):
+
+		p = username.split('!')
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = username
+
+		if nickname in self.away:
+			del self.away[nickname]
+
+		for i in range(self.userlist.count()):
+			item = self.userlist.item(i)
+			
+			target = item.text()
+			target = target.replace('@','')
+			target = target.replace('+','')
+			target = target.replace('~','')
+			target = target.replace('&','')
+			target = target.replace('%','')
+			target = target.replace('!','')
+
+			if target==nickname:
+				self.change_to_back_display(item)
+				self.userlist.update()
+
+		if nickname in self.nicks:
+			t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
+			self.writeText(t)
 
 	def writeUserlist(self,users):
 
@@ -1464,6 +1586,9 @@ class Window(QMainWindow):
 				if self.client.is_away:
 					self.change_to_away_display(ui)
 
+			if u in self.away:
+				self.change_to_away_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add admins
@@ -1478,6 +1603,9 @@ class Window(QMainWindow):
 			if u==self.client.nickname:
 				if self.client.is_away:
 					self.change_to_away_display(ui)
+
+			if u in self.away:
+				self.change_to_away_display(ui)
 
 			self.userlist.addItem(ui)
 
@@ -1494,6 +1622,9 @@ class Window(QMainWindow):
 				if self.client.is_away:
 					self.change_to_away_display(ui)
 
+			if u in self.away:
+				self.change_to_away_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add ops
@@ -1508,6 +1639,9 @@ class Window(QMainWindow):
 			if u==self.client.nickname:
 				if self.client.is_away:
 					self.change_to_away_display(ui)
+
+			if u in self.away:
+				self.change_to_away_display(ui)
 
 			self.userlist.addItem(ui)
 
@@ -1524,6 +1658,9 @@ class Window(QMainWindow):
 				if self.client.is_away:
 					self.change_to_away_display(ui)
 
+			if u in self.away:
+				self.change_to_away_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add protected
@@ -1539,6 +1676,9 @@ class Window(QMainWindow):
 				if self.client.is_away:
 					self.change_to_away_display(ui)
 
+			if u in self.away:
+				self.change_to_away_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add normal
@@ -1553,6 +1693,9 @@ class Window(QMainWindow):
 			if u==self.client.nickname:
 				if self.client.is_away:
 					self.change_to_away_display(ui)
+
+			if u in self.away:
+				self.change_to_away_display(ui)
 
 			self.userlist.addItem(ui)
 
@@ -1794,7 +1937,7 @@ class Window(QMainWindow):
 			# join the channel
 			sb = self.chat.verticalScrollBar()
 			og_value = sb.value()
-    		
+			
 			chan = url.toString()
 			self.client.join(chan)
 			self.chat.setSource(QUrl())

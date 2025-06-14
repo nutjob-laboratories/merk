@@ -707,6 +707,8 @@ class IRC_Connection(irc.IRCClient):
 
 	def sendLine(self,line):
 
+		self.gui.got_input_output(self,line)
+
 		return irc.IRCClient.sendLine(self, line)
 
 	def irc_ERR_NOSUCHNICK(self,prefix,params):
@@ -725,8 +727,17 @@ class IRC_Connection(irc.IRCClient):
 		user = params[1]
 		msg = params[2]
 
-		# Now this works, but we still need to do something
-		# with this
+		# Do nothing, because twisted apparently
+		# doesn't ever trigger this event
+
+	def IRC_RPL_AWAY(self,user,message):
+
+		if message=='':
+			# user is back
+			self.gui.gotBack(self,user)
+		else:
+			# user is away
+			self.gui.gotAway(self,user,message)
 
 	def irc_RPL_UNAWAY(self,prefix,params):
 		msg = params[1]
@@ -758,6 +769,22 @@ class IRC_Connection(irc.IRCClient):
 		# IRC events (this fixes an error raised when attempting
 		# to get a channel list from a server)
 		line = line2.encode('utf-8')
+
+		self.gui.got_input_output(self,line.decode())
+
+		# Hack to get away notifications
+		s = line.decode().split(' ')
+		if len(s)>=3:
+			if s[1].lower()=='away':
+				nick = s[0][1:]
+				s.pop(0)
+				s.pop(0)
+				msg = ' '.join(s)[1:]
+				self.IRC_RPL_AWAY(nick,msg)
+		elif len(s)==2:
+			if s[1].lower()=='away':
+				nick = s[0][1:]
+				self.IRC_RPL_AWAY(nick,'')
 
 		d = line2.split(" ")
 		if len(d) >= 2:

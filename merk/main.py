@@ -1573,6 +1573,30 @@ class Merk(QMainWindow):
 		self.refreshChannelList(client)
 		self.buildWindowsMenu()
 
+	def got_input_output(self,client,data):
+		w = self.getServerWindow(client)
+		if w:
+			if hasattr(w,"addInputOutput"):
+				w.addInputOutput(data)
+
+	def gotAway(self,client,nick,msg):
+		windows = self.getAllSubWindows(client)
+
+		for subwindow in windows:
+			c = subwindow.widget()
+			if hasattr(c,"client"):
+				if c.window_type==CHANNEL_WINDOW:
+					c.got_away(nick,msg)
+
+	def gotBack(self,client,nick):
+		windows = self.getAllSubWindows(client)
+
+		for subwindow in windows:
+			c = subwindow.widget()
+			if hasattr(c,"client"):
+				if c.window_type==CHANNEL_WINDOW:
+					c.got_back(nick)
+
 	# |================|
 	# | END IRC EVENTS |
 	# |================|
