@@ -1471,9 +1471,10 @@ class Window(QMainWindow):
 				self.change_to_away_display(item)
 				self.userlist.update()
 
-		if nickname in self.nicks:
-			t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({message})")
-			self.writeText(t)
+		if config.SHOW_AWAY_AND_BACK_MESSAGES:
+			if nickname in self.nicks:
+				t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({message})")
+				self.writeText(t)
 
 	def got_back(self,username):
 
@@ -1502,9 +1503,10 @@ class Window(QMainWindow):
 				self.change_to_back_display(item)
 				self.userlist.update()
 
-		if nickname in self.nicks:
-			t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
-			self.writeText(t)
+		if config.SHOW_AWAY_AND_BACK_MESSAGES:
+			if nickname in self.nicks:
+				t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
+				self.writeText(t)
 
 	def writeUserlist(self,users):
 
