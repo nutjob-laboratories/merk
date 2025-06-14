@@ -312,6 +312,8 @@ REFRESH_ICON = ":/icon-refresh.png"
 TILE_ICON = ":/icon-tile.png"
 CASCADE_ICON = ":/icon-cascade.png"
 CHANNEL_MENU_ICON = ":/icon-channel_menu.png"
+GO_AWAY_ICON = ":/icon-go_away.png"
+GO_BACK_ICON = ":/icon-go_back.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

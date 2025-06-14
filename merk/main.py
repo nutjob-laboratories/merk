@@ -906,6 +906,7 @@ class Merk(QMainWindow):
 			w.script_button.setEnabled(True)
 			w.list_button.setEnabled(True)
 			w.refresh_button.setEnabled(True)
+			w.away_button.setEnabled(True)
 
 			self.buildWindowsMenu()
 		
@@ -984,12 +985,18 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
 			w.writeText(t)
+			if hasattr(w,"away_button"):
+				w.away_button.setToolTip("Set status to \"back\"")
+				w.away_button.setIcon(QIcon(GO_BACK_ICON))
 
 	def back(self,client):
 		w = self.getServerWindow(client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
 			w.writeText(t)
+			if hasattr(w,"away_button"):
+				w.away_button.setToolTip("Set status to \"away\"")
+				w.away_button.setIcon(QIcon(GO_AWAY_ICON))
 
 	def gotVersion(self,client,server,version):
 		w = self.getServerWindow(client)

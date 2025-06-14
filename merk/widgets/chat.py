@@ -159,6 +159,15 @@ class Window(QMainWindow):
 			self.nick_button.setFlat(True)
 			serverBar.addWidget(self.nick_button)
 
+			self.away_button = QPushButton("")
+			self.away_button.setIcon(QIcon(GO_AWAY_ICON))
+			self.away_button.clicked.connect(self.changeAway)
+			self.away_button.setToolTip("Set status to \"away\"")
+			self.away_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
+			self.away_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+			self.away_button.setFlat(True)
+			serverBar.addWidget(self.away_button)
+
 			self.script_button = QPushButton("")
 			self.script_button.setIcon(QIcon(SCRIPT_ICON))
 			self.script_button.clicked.connect(self.loadScript)
@@ -230,6 +239,7 @@ class Window(QMainWindow):
 			self.script_button.setEnabled(False)
 			self.list_button.setEnabled(False)
 			self.refresh_button.setEnabled(False)
+			self.away_button.setEnabled(False)
 
 		if self.window_type==CHANNEL_WINDOW:
 
@@ -1782,6 +1792,17 @@ class Window(QMainWindow):
 		newnick = NewNickDialog(self.client.nickname,self.parent)
 		if newnick:
 			self.client.setNick(newnick)
+
+	def changeAway(self):
+		if self.client.is_away:
+			self.away_button.setToolTip("Set status to \"away\"")
+			self.away_button.setIcon(QIcon(GO_AWAY_ICON))
+			self.client.back()
+		else:
+			self.away_button.setToolTip("Set status to \"back\"")
+			self.away_button.setIcon(QIcon(GO_BACK_ICON))
+			self.client.away(config.DEFAULT_AWAY_MESSAGE)
+			self.client.away_msg = config.DEFAULT_AWAY_MESSAGE
 
 	def joinChannel(self):
 		channel_info = JoinChannelDialog(self.parent)

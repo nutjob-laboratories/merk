@@ -940,7 +940,8 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			window.client.away_msg = msg
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)==1:
-			window.client.away("busy")
+			window.client.away(config.DEFAULT_AWAY_MESSAGE)
+			window.client.away_msg = config.DEFAULT_AWAY_MESSAGE
 			return True
 
 	# |-------|

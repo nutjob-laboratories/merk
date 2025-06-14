@@ -175,6 +175,13 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def setAwayMsg(self):
+
+		self.default_away = self.awayMsg.text()
+
+		self.changed.show()
+		self.boldApply()
+
 	def setQuitMsg(self):
 		
 		self.default_quit_part = self.partMsg.text()
@@ -652,6 +659,7 @@ class Dialog(QDialog):
 		self.default_quit_part = config.DEFAULT_QUIT_MESSAGE
 		self.rerenderUsers = False
 		self.rerenderNick = False
+		self.default_away = config.DEFAULT_AWAY_MESSAGE
 
 		self.SYNTAX_COMMENT_COLOR = config.SYNTAX_COMMENT_COLOR
 		self.SYNTAX_COMMENT_STYLE = config.SYNTAX_COMMENT_STYLE
@@ -1611,7 +1619,6 @@ class Dialog(QDialog):
 			no message will be sent when the client <b>disconnects from
 			a server</b> or <b>leaves a channel</b>.
 			</small>
-			<br>
 			""")
 		self.quitpartDescription.setWordWrap(True)
 		self.quitpartDescription.setAlignment(Qt.AlignJustify)
@@ -1631,6 +1638,26 @@ class Dialog(QDialog):
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
 		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.awayMsg = QLineEdit(self.default_away)
+
+		self.awayMsg.textChanged.connect(self.setAwayMsg)
+
+		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(self.awayMsg)
+		awayBox = QGroupBox("")
+		awayBox.setAlignment(Qt.AlignLeft)
+		awayBox.setLayout(awayLayout)
+
+		self.awayDescription = QLabel(f"""
+			<small>
+			This is the default message used when calling the <b>{config.ISSUE_COMMAND_SYMBOL}away</b> command
+			without an argument, or if the <b>Set status to \"away\"</b> button on the server
+			window toolbar is presssed.
+			</small>
+			""")
+		self.awayDescription.setWordWrap(True)
+		self.awayDescription.setAlignment(Qt.AlignJustify)
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
@@ -1644,6 +1671,10 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		connectionsLayout.addWidget(self.quitpartDescription)
 		connectionsLayout.addWidget(partBox)
+		connectionsLayout.addWidget(QLabel(' '))
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		connectionsLayout.addWidget(self.awayDescription)
+		connectionsLayout.addWidget(awayBox)
 		connectionsLayout.addStretch()
 		self.connectionsPage.setLayout(connectionsLayout)
 
@@ -2773,6 +2804,7 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_AND_BACK_MESSAGES = self.showAwayBack.isChecked()
 		config.SHOW_AWAY_STATUS_IN_USERLISTS = self.showAwayStatus.isChecked()
 		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
+		config.DEFAULT_AWAY_MESSAGE = self.default_away
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')

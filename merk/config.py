@@ -192,10 +192,12 @@ SHOW_CONNECTION_DEBUG_STREAM = False
 SHOW_AWAY_AND_BACK_MESSAGES = True
 SHOW_AWAY_STATUS_IN_USERLISTS = True
 SHOW_AWAY_STATUS_IN_NICK_DISPLAY = True
+DEFAULT_AWAY_MESSAGE = "Busy"
 
 def save_settings(filename):
 
 	settings = {
+		"default_away_message": DEFAULT_AWAY_MESSAGE,
 		"show_away_status_in_nick_display": SHOW_AWAY_STATUS_IN_NICK_DISPLAY,
 		"show_away_status_in_userlists": SHOW_AWAY_STATUS_IN_USERLISTS,
 		"show_away_and_back_messages": SHOW_AWAY_AND_BACK_MESSAGES,
@@ -355,6 +357,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "default_away_message" in settings:
+		settings["default_away_message"] = DEFAULT_AWAY_MESSAGE
 	if not "show_away_status_in_nick_display" in settings:
 		settings["show_away_status_in_nick_display"] = SHOW_AWAY_STATUS_IN_NICK_DISPLAY
 	if not "show_away_status_in_userlists" in settings:
@@ -819,6 +823,7 @@ def load_settings(filename):
 	global SHOW_AWAY_AND_BACK_MESSAGES
 	global SHOW_AWAY_STATUS_IN_USERLISTS
 	global SHOW_AWAY_STATUS_IN_NICK_DISPLAY
+	global DEFAULT_AWAY_MESSAGE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -828,6 +833,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DEFAULT_AWAY_MESSAGE = settings["default_away_message"]
 		SHOW_AWAY_STATUS_IN_NICK_DISPLAY = settings["show_away_status_in_nick_display"]
 		SHOW_AWAY_STATUS_IN_USERLISTS = settings["show_away_status_in_userlists"]
 		SHOW_AWAY_AND_BACK_MESSAGES = settings["show_away_and_back_messages"]
