@@ -1481,6 +1481,13 @@ class Merk(QMainWindow):
 
 	def uptime(self,client,uptime):
 
+		if config.USE_AUTOAWAY:
+			if client.last_interaction!=-1:
+				if client.last_interaction>config.AUTOAWAY_TIME:
+					client.away(config.DEFAULT_AWAY_MESSAGE)
+					client.away_msg = config.DEFAULT_AWAY_MESSAGE
+					client.autoaway = True
+
 		for w in self.getAllSubWindows(client):
 			c = w.widget()
 			if hasattr(c,"tickUptime"):
@@ -2563,6 +2570,14 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsAway(self):
+		if config.USE_AUTOAWAY:
+			config.USE_AUTOAWAY = False
+		else:
+			config.USE_AUTOAWAY = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsIntermittent(self):
 		if config.DO_INTERMITTENT_LOG_SAVES:
 			config.DO_INTERMITTENT_LOG_SAVES = False
@@ -2599,6 +2614,28 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
 		entry.triggered.connect(self.settingsLinks)
+		self.settingsMenu.addAction(entry)
+
+		away_time = f"{config.AUTOAWAY_TIME} seconds"
+
+		if config.AUTOAWAY_TIME==300:
+			away_time = "5 minutes"
+		if config.AUTOAWAY_TIME==900:
+			away_time = "15 minutes"
+		if config.AUTOAWAY_TIME==1800:
+			away_time = "30 minutes"
+		if config.AUTOAWAY_TIME==3600:
+			away_time = "1 hour"
+		if config.AUTOAWAY_TIME==7200:
+			away_time = "2 hours"
+		if config.AUTOAWAY_TIME==10800:
+			away_time = "3 hours"
+
+		if config.USE_AUTOAWAY:
+			entry = QAction(QIcon(self.checked_icon),"Auto-away after "+away_time, self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Auto-away after "+away_time, self)
+		entry.triggered.connect(self.settingsAway)
 		self.settingsMenu.addAction(entry)
 
 		e = textSeparator(self,"Input Settings")

@@ -2485,6 +2485,12 @@ class SpellTextEdit(QPlainTextEdit):
 
 	def keyPressEvent(self,event):
 
+		if config.USE_AUTOAWAY:
+			if self.parent.client.autoaway:
+				self.parent.client.back()
+
+		self.parent.client.last_interaction = 0
+
 		# BUGFIX: the user can "drag" the view "down"
 		# with the mouse; this resets the widget to
 		# "normal" every time the user presses a key

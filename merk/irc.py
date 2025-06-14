@@ -134,6 +134,9 @@ class IRC_Connection(irc.IRCClient):
 		self.last_list_fetch = ''
 		self.is_listing_channels = False
 
+		self.last_interaction = 0
+		self.autoaway = False
+
 		self.banlists = defaultdict(list)
 
 	def irc_RPL_LIST(self,prefix,params):
@@ -164,6 +167,10 @@ class IRC_Connection(irc.IRCClient):
 	def uptime_beat(self):
 
 		self.uptime = self.uptime + 1
+
+		if config.USE_AUTOAWAY:
+			if self.last_interaction!=-1:
+				self.last_interaction = self.last_interaction + 1
 
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			if self.uptime>=60:
@@ -745,9 +752,12 @@ class IRC_Connection(irc.IRCClient):
 
 		self.is_away = False
 		self.away_msg = ''
+		self.autoaway = False
 		self.gui.rerenderUserlists()
 		self.gui.rerenderNickDisplay(self)
 		self.gui.back(self)
+
+		self.last_interaction = 0
 
 	def irc_RPL_NOWAWAY(self,prefix,params):
 
@@ -757,6 +767,8 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.rerenderUserlists()
 		self.gui.rerenderNickDisplay(self)
 		self.gui.away(self,msg)
+
+		self.last_interaction = -1
 
 	def lineReceived(self, line):
 

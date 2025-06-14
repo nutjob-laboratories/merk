@@ -641,6 +641,19 @@ class Dialog(QDialog):
 				self.show_error_message("Wrong file type","File is not a WAV file!\nOnly WAV files can be used as a notification.\nPlease select a valid file.")
 		self.selector.setFocus()
 
+	def autoawayChange(self,i):
+		newInterval = self.autoawayInterval.itemText(i)
+		if newInterval=="5 minutes": self.awayInterval = 300
+		if newInterval=="30 minutes": self.awayInterval = 1800
+		if newInterval=="1 hour": self.awayInterval = 3600
+		if newInterval=="15 minutes": self.awayInterval = 900
+		if newInterval=="2 hours": self.awayInterval = 7200
+		if newInterval=="3 hours": self.awayInterval = 10800
+
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -703,6 +716,7 @@ class Dialog(QDialog):
 		self.default_settings_menu = config.MAIN_MENU_SETTINGS_NAME
 
 		self.interval = config.LOG_SAVE_INTERVAL
+		self.awayInterval = config.AUTOAWAY_TIME
 
 		self.sound = config.SOUND_NOTIFICATION_FILE
 
@@ -840,19 +854,7 @@ class Dialog(QDialog):
 
 		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		logo = QLabel()
-		pixmap = QPixmap(VERTICAL_SPLASH_LOGO)
-		logo.setPixmap(pixmap)
-		logo.setAlignment(Qt.AlignCenter)
-
-		sourceLink = QLabel(f'<center><small><b><a href="{APPLICATION_SOURCE}">Source Code</a></b></smal></center>')
-		sourceLink.setOpenExternalLinks(True)
-
 		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(logo)
-		applicationLayout.addWidget(QLabel('<center><small><b>Open Source IRC Client</b></small></center>'))
-		applicationLayout.addWidget(sourceLink)
-		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addWidget(QLabel(' '))
@@ -995,11 +997,11 @@ class Dialog(QDialog):
 		self.showContext.stateChanged.connect(self.changedSetting)
 		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showStatusServer = QCheckBox("Show status bar on server windows",self)
+		self.showStatusServer = QCheckBox("Server windows",self)
 		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
 		self.showStatusServer.stateChanged.connect(self.changedSetting)
 
-		self.showStatusChat = QCheckBox("Show status bar on chat windows",self)
+		self.showStatusChat = QCheckBox("Chat windows",self)
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
 		self.showStatusChat.stateChanged.connect(self.changedSetting)
 
@@ -1024,7 +1026,7 @@ class Dialog(QDialog):
 
 		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showStatusList = QCheckBox("Show status bar on channel lists",self)
+		self.showStatusList = QCheckBox("Channel lists",self)
 		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
 		self.showStatusList.stateChanged.connect(self.changedSetting)
 
@@ -1045,6 +1047,10 @@ class Dialog(QDialog):
 		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNick)
 		self.showAwayNick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
+		statusLayout = QFormLayout()
+		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
+		statusLayout.addRow(self.showStatusList)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
 		subwindowLayout.addWidget(self.showServToolbar)
@@ -1057,9 +1063,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showTopicInTitle)
 		subwindowLayout.addWidget(QLabel(' '))
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>status bars</b>"))
-		subwindowLayout.addWidget(self.showStatusServer)
-		subwindowLayout.addWidget(self.showStatusChat)
-		subwindowLayout.addWidget(self.showStatusList)
+		subwindowLayout.addLayout(statusLayout)
 		subwindowLayout.addWidget(QLabel(' '))
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		subwindowLayout.addWidget(self.showContext)
@@ -1400,7 +1404,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_TOP_OF_SCREEN: self.windowBarTop.setChecked(True)
 		self.windowBarTop.stateChanged.connect(self.menuChange)
 
-		self.windowBarServers = QCheckBox("Include server windows",self)
+		self.windowBarServers = QCheckBox("Server windows",self)
 		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
 		self.windowBarServers.stateChanged.connect(self.menuChange)
 
@@ -1428,7 +1432,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
 		self.windowbarClick.stateChanged.connect(self.menuChange)
 
-		self.windowBarEditor = QCheckBox("Include editor windows",self)
+		self.windowBarEditor = QCheckBox("Editor windows",self)
 		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
 		self.windowBarEditor.stateChanged.connect(self.menuChange)
 
@@ -1440,15 +1444,15 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_MENU: self.windowbarMenu.setChecked(True)
 		self.windowbarMenu.stateChanged.connect(self.menuChange)
 
-		self.windowbarChannels = QCheckBox("Include channel windows",self)
+		self.windowbarChannels = QCheckBox("Channels",self)
 		if config.WINDOWBAR_INCLUDE_CHANNELS: self.windowbarChannels.setChecked(True)
 		self.windowbarChannels.stateChanged.connect(self.menuChange)
 
-		self.windowbarPrivate = QCheckBox("Include private chat windows",self)
+		self.windowbarPrivate = QCheckBox("Private chats",self)
 		if config.WINDOWBAR_INCLUDE_PRIVATE: self.windowbarPrivate.setChecked(True)
 		self.windowbarPrivate.stateChanged.connect(self.menuChange)
 
-		self.windowbarLists = QCheckBox("Include server channel lists",self)
+		self.windowbarLists = QCheckBox("Channel lists",self)
 		if config.WINDOWBAR_INCLUDE_LIST: self.windowbarLists.setChecked(True)
 		self.windowbarLists.stateChanged.connect(self.menuChange)
 
@@ -1476,6 +1480,11 @@ class Dialog(QDialog):
 			self.windowBarUnderline.setEnabled(False)
 			self.windowBarHover.setEnabled(False)
 
+		includesLayout = QFormLayout()
+		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
+		includesLayout.addRow(self.windowBarServers,self.windowBarEditor)
+		includesLayout.addRow(self.windowbarLists)
+
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
 		windowbarLayout.addWidget(self.windowbarDescription)
@@ -1485,15 +1494,13 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarFirst)
 		windowbarLayout.addWidget(self.windowBarUnderline)
 		windowbarLayout.addWidget(self.windowBarHover)
-		windowbarLayout.addWidget(self.windowbarChannels)
-		windowbarLayout.addWidget(self.windowbarPrivate)
-		windowbarLayout.addWidget(self.windowBarServers)
-		windowbarLayout.addWidget(self.windowBarEditor)
-		windowbarLayout.addWidget(self.windowbarLists)
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarMenu)
 		windowbarLayout.addLayout(justifyLayout)
+		windowbarLayout.addWidget(QLabel(' '))
+		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
+		windowbarLayout.addLayout(includesLayout)
 		windowbarLayout.addStretch()
 
 		self.windowbarPage.setLayout(windowbarLayout)
@@ -1602,27 +1609,6 @@ class Dialog(QDialog):
 
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.partMsg = QLineEdit(self.default_quit_part)
-
-		self.partMsg.textChanged.connect(self.setQuitMsg)
-
-		partLayout = QVBoxLayout()
-		partLayout.addWidget(self.partMsg)
-		partBox = QGroupBox("")
-		partBox.setAlignment(Qt.AlignLeft)
-		partBox.setLayout(partLayout)
-
-		self.quitpartDescription = QLabel("""
-			<small>
-			This is the default message used for channel <b>parts</b> or
-			server <b>quits</b> if a message is not provided. If left blank,
-			no message will be sent when the client <b>disconnects from
-			a server</b> or <b>leaves a channel</b>.
-			</small>
-			""")
-		self.quitpartDescription.setWordWrap(True)
-		self.quitpartDescription.setAlignment(Qt.AlignJustify)
-
 		self.requestList = QCheckBox("Fetch channel list from\nserver on connection",self)
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
 		self.requestList.stateChanged.connect(self.changedSetting)
@@ -1638,6 +1624,49 @@ class Dialog(QDialog):
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
 		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
+		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
+		self.showAwayBack.stateChanged.connect(self.changedSetting)
+		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.autoAway = QCheckBox("Auto-away after",self)
+		if config.USE_AUTOAWAY: self.autoAway.setChecked(True)
+		self.autoAway.stateChanged.connect(self.changedSetting)
+
+		self.autoawayInterval = QComboBox(self)
+		added = False
+		if config.AUTOAWAY_TIME==300:
+			self.autoawayInterval.addItem("5 minutes")
+			added = True
+		if config.AUTOAWAY_TIME==900:
+			self.autoawayInterval.addItem("15 minutes")
+			added = True
+		if config.AUTOAWAY_TIME==1800:
+			self.autoawayInterval.addItem("30 minutes")
+			added = True
+		if config.AUTOAWAY_TIME==3600:
+			self.autoawayInterval.addItem("1 hour")
+			added = True
+		if config.AUTOAWAY_TIME==7200:
+			self.autoawayInterval.addItem("2 hours")
+			added = True
+		if config.AUTOAWAY_TIME==10800:
+			self.autoawayInterval.addItem("3 hours")
+			added = True
+		if added==False: self.autoawayInterval.addItem(f"{config.AUTOAWAY_TIME} sec")
+		if config.AUTOAWAY_TIME!=300: self.autoawayInterval.addItem("5 minutes")
+		if config.AUTOAWAY_TIME!=900: self.autoawayInterval.addItem("15 minutes")
+		if config.AUTOAWAY_TIME!=1800: self.autoawayInterval.addItem("30 minutes")
+		if config.AUTOAWAY_TIME!=3600: self.autoawayInterval.addItem("1 hour")
+		if config.AUTOAWAY_TIME!=7200: self.autoawayInterval.addItem("2 hours")
+		if config.AUTOAWAY_TIME!=10800: self.autoawayInterval.addItem("3 hours")
+		self.autoawayInterval.currentIndexChanged.connect(self.autoawayChange)
+
+		intervalBox = QHBoxLayout()
+		intervalBox.addWidget(self.autoAway)
+		intervalBox.addWidget(self.autoawayInterval)
+		intervalBox.addStretch()
+
 		self.awayMsg = QLineEdit(self.default_away)
 
 		self.awayMsg.textChanged.connect(self.setAwayMsg)
@@ -1648,20 +1677,15 @@ class Dialog(QDialog):
 		awayBox.setAlignment(Qt.AlignLeft)
 		awayBox.setLayout(awayLayout)
 
-		self.awayDescription = QLabel(f"""
-			<small>
-			This is the default message used when calling the <b>{config.ISSUE_COMMAND_SYMBOL}away</b> command
-			without an argument, or if the <b>Set status to \"away\"</b> button on the server
-			window toolbar is presssed.
-			</small>
-			""")
-		self.awayDescription.setWordWrap(True)
-		self.awayDescription.setAlignment(Qt.AlignJustify)
+		self.partMsg = QLineEdit(self.default_quit_part)
 
-		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
-		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
-		self.showAwayBack.stateChanged.connect(self.changedSetting)
-		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.partMsg.textChanged.connect(self.setQuitMsg)
+
+		partLayout = QVBoxLayout()
+		partLayout.addWidget(self.partMsg)
+		partBox = QGroupBox("")
+		partBox.setAlignment(Qt.AlignLeft)
+		partBox.setLayout(partLayout)
 
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
@@ -1673,18 +1697,17 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.autoHostmasks)
 		connectionsLayout.addWidget(self.showNetLinks)
 		connectionsLayout.addWidget(self.showAwayBack)
+		connectionsLayout.addLayout(intervalBox)
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
-		connectionsLayout.addWidget(self.quitpartDescription)
 		connectionsLayout.addWidget(partBox)
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		connectionsLayout.addWidget(self.awayDescription)
 		connectionsLayout.addWidget(awayBox)
 		connectionsLayout.addStretch()
 		self.connectionsPage.setLayout(connectionsLayout)
 
-		# Channel info page
+		# Channels
 
 		self.channelInfoPage = QWidget()
 
@@ -2101,7 +2124,7 @@ class Dialog(QDialog):
 		self.logFullDescription.setAlignment(Qt.AlignJustify)
 
 		logLayout = QVBoxLayout()
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat log settings</b>"))
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
 		logLayout.addWidget(self.saveChanLogs)
 		logLayout.addWidget(self.loadChanLogs)
@@ -2805,6 +2828,10 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_STATUS_IN_USERLISTS = self.showAwayStatus.isChecked()
 		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
+		config.USE_AUTOAWAY = self.autoAway.isChecked()
+
+		if self.awayInterval!=config.AUTOAWAY_TIME:
+			config.AUTOAWAY_TIME = self.awayInterval
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')
