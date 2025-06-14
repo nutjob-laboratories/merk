@@ -311,7 +311,6 @@ class Window(QMainWindow):
 			self.mode_display.hide()
 
 		# Hide the nickname display on server windows
-		#if self.window_type==SERVER_WINDOW: self.nick_display.hide()
 		if self.window_type==SERVER_WINDOW:
 			if not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
 				self.nick_display.hide()
@@ -1780,7 +1779,13 @@ class Window(QMainWindow):
 				self.client.join('#'+channel_info[0],channel_info[1])
 
 	def refreshNickDisplay(self):
-		self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
+			if self.client.is_away:
+				self.nick_display.setText(self.client.nickname+" ")
+			else:
+				self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+		else:
+			self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
 
 	def writeText(self,message,write_to_log=True):
 

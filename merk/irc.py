@@ -744,6 +744,7 @@ class IRC_Connection(irc.IRCClient):
 
 		self.is_away = False
 		self.gui.rerenderUserlists()
+		self.gui.rerenderNickDisplay(self)
 		self.gui.back(self)
 
 	def irc_RPL_NOWAWAY(self,prefix,params):
@@ -752,6 +753,7 @@ class IRC_Connection(irc.IRCClient):
 
 		self.is_away = True
 		self.gui.rerenderUserlists()
+		self.gui.rerenderNickDisplay(self)
 		self.gui.away(self,msg)
 
 	def lineReceived(self, line):

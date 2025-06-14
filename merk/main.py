@@ -1174,6 +1174,20 @@ class Merk(QMainWindow):
 		if w:
 			w.writeUserlist(users)
 
+	def rerenderNickDisplay(self,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					c.refreshNickDisplay()
+
+	def rerenderAllNickDisplays(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if hasattr(c,"refreshNickDisplay"):
+					c.refreshNickDisplay()
+
 	def nickChanged(self,client):
 		for window in self.MDI.subWindowList():
 			c = window.widget()

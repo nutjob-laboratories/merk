@@ -973,9 +973,10 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.subwindowPage)
 
-		self.showInfo = QCheckBox("Show user info on all chat windows",self)
+		self.showInfo = QCheckBox("Show nickname display on all chat\nwindows",self)
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
 		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
+		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showInputMenu = QCheckBox("Show input menu button",self)
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
@@ -994,9 +995,10 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
 		self.showStatusChat.stateChanged.connect(self.changedSetting)
 
-		self.displayServNicks = QCheckBox("Show user info on server windows",self)
+		self.displayServNicks = QCheckBox("Show nickname display on server\nwindows",self)
 		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
 		self.displayServNicks.stateChanged.connect(self.changedSetting)
+		self.displayServNicks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showServToolbar = QCheckBox("Show toolbar on server windows",self)
 		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
@@ -1030,6 +1032,11 @@ class Dialog(QDialog):
 
 		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showAwayNick = QCheckBox("Show away status in nickname\ndisplay",self)
+		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY: self.showAwayNick.setChecked(True)
+		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNick)
+		self.showAwayNick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
 		subwindowLayout.addWidget(self.showServToolbar)
@@ -1050,6 +1057,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showInputMenu)
 		subwindowLayout.addWidget(self.showChatInTitle)
+		subwindowLayout.addWidget(self.showAwayNick)
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
@@ -2764,6 +2772,7 @@ class Dialog(QDialog):
 		config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR = self.hideScroll.isChecked()
 		config.SHOW_AWAY_AND_BACK_MESSAGES = self.showAwayBack.isChecked()
 		config.SHOW_AWAY_STATUS_IN_USERLISTS = self.showAwayStatus.isChecked()
+		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')
@@ -2818,6 +2827,7 @@ class Dialog(QDialog):
 		if self.rerenderStyle: self.parent.reApplyStyle()
 
 		if self.rerenderNick:
+			self.parent.rerenderAllNickDisplays()
 			self.parent.toggleNickDisplay()
 			if not self.rerenderUsers: self.parent.rerenderUserlists()
 
