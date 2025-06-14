@@ -40,7 +40,7 @@ from .. import styles
 from .. import render
 from ..dialog import *
 from .. import logs
-from .plain_text import plainTextAction
+from .plain_text import plainTextAction,noSpacePlainTextAction
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import ExtendedMenuItemNoAction
 
@@ -1230,8 +1230,21 @@ class Window(QMainWindow):
 			statusLayout.addStretch()
 
 			if user_nick==self.client.nickname:
-				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
-				menu.addAction(entry)
+				
+				if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+					if self.client.is_away:
+						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"You are away",CUSTOM_MENU_ICON_SIZE)
+						menu.addAction(entry)
+
+						e = noSpacePlainTextAction(self,f"<small><i>{self.client.away_msg}</i></small>")
+						menu.addAction(e)
+					else:
+						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
+						menu.addAction(entry)
+				else:
+					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
+					menu.addAction(entry)
+
 			else:
 				if user_hostmask:
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
@@ -1244,7 +1257,7 @@ class Window(QMainWindow):
 				if user_nick in self.away:
 					away_msg = self.away[user_nick]
 
-					e = plainTextAction(self,f"<small><i>{away_msg}</i></small>")
+					e = noSpacePlainTextAction(self,f"<small><i>{away_msg}</i></small>")
 					menu.addAction(e)
 
 			menu.addSeparator()

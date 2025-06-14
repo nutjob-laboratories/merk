@@ -44,3 +44,20 @@ def plainTextAction(self,text):
 	tsAction.setDefaultWidget(tsLabel)
 
 	return tsAction
+
+NS_PLAIN_TEXT = f'''
+<table width="100%" border="0" cellspacing="1" cellpadding="1">
+	<tbody>
+		<tr>
+			<td>!TEXT!</td>
+		</tr>
+	</tbody>
+</table>'''
+
+def noSpacePlainTextAction(self,text):
+		
+	tsLabel = QLabel( NS_PLAIN_TEXT.replace("!TEXT!",text) )
+	tsAction = QWidgetAction(self)
+	tsAction.setDefaultWidget(tsLabel)
+
+	return tsAction

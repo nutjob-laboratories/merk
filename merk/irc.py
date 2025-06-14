@@ -120,6 +120,7 @@ class IRC_Connection(irc.IRCClient):
 		self.modes = 0
 		self.maxmodes = []
 		self.is_away = False
+		self.away_msg = ''
 		self.request_whois = []
 		self.do_whois = []
 
@@ -743,6 +744,7 @@ class IRC_Connection(irc.IRCClient):
 		msg = params[1]
 
 		self.is_away = False
+		self.away_msg = ''
 		self.gui.rerenderUserlists()
 		self.gui.rerenderNickDisplay(self)
 		self.gui.back(self)

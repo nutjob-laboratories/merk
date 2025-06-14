@@ -937,6 +937,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			window.client.away(msg)
+			window.client.away_msg = msg
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)==1:
 			window.client.away("busy")
