@@ -2198,6 +2198,11 @@ class Dialog(QDialog):
 		partBox.setAlignment(Qt.AlignLeft)
 		partBox.setLayout(partLayout)
 
+		self.promptAway = QCheckBox(f"Prompt for away message if one is\nnot provided with the {config.ISSUE_COMMAND_SYMBOL}away command\nor when pressing the \"Set status to\naway\" button on the server window\ntoolbar",self)
+		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
+		self.promptAway.stateChanged.connect(self.changedSetting)
+		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -2215,6 +2220,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
 		messageLayout.addWidget(awayBox)
+		messageLayout.addWidget(self.promptAway)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -2828,6 +2834,7 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_STATUS_IN_USERLISTS = self.showAwayStatus.isChecked()
 		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
+		config.PROMPT_FOR_AWAY_MESSAGE = self.promptAway.isChecked()
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()

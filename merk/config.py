@@ -195,10 +195,12 @@ SHOW_AWAY_STATUS_IN_NICK_DISPLAY = True
 DEFAULT_AWAY_MESSAGE = "Busy"
 USE_AUTOAWAY = False
 AUTOAWAY_TIME = 3600
+PROMPT_FOR_AWAY_MESSAGE = False
 
 def save_settings(filename):
 
 	settings = {
+		"prompt_for_away_message": PROMPT_FOR_AWAY_MESSAGE,
 		"autoaway": USE_AUTOAWAY,
 		"autoaway_time": AUTOAWAY_TIME,
 		"default_away_message": DEFAULT_AWAY_MESSAGE,
@@ -361,6 +363,8 @@ def save_settings(filename):
 		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def patch_settings(settings):
+	if not "prompt_for_away_message" in settings:
+		settings["prompt_for_away_message"] = PROMPT_FOR_AWAY_MESSAGE
 	if not "autoaway" in settings:
 		settings["autoaway"] = USE_AUTOAWAY
 	if not "autoaway_time" in settings:
@@ -834,6 +838,7 @@ def load_settings(filename):
 	global DEFAULT_AWAY_MESSAGE
 	global USE_AUTOAWAY
 	global AUTOAWAY_TIME
+	global PROMPT_FOR_AWAY_MESSAGE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -843,6 +848,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PROMPT_FOR_AWAY_MESSAGE = settings["prompt_for_away_message"]
 		USE_AUTOAWAY = settings["autoaway"]
 		AUTOAWAY_TIME = settings["autoaway_time"]
 		DEFAULT_AWAY_MESSAGE = settings["default_away_message"]

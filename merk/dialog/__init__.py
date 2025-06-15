@@ -23,6 +23,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from .away import Dialog as Away
 from .newnick import Dialog as Nick
 from .connect import Dialog as Connect
 from .joinchannel import Dialog as JoinChannel
@@ -38,7 +39,6 @@ from .pause import Dialog as Pause
 from .send_pm import Dialog as SendPM
 from .print import Dialog as PrintMsg
 from .send_notice import Dialog as SendNotice
-from .set_nick import Dialog as SetNick
 from .part_channel import Dialog as PartChannel
 from .set_window import Dialog as SetWindow
 from .set_quit import Dialog as SetQuit
@@ -181,6 +181,14 @@ def ConnectDialogSimplifiedInitial(obj,parent=None,dismsg='',reason='',noexecute
 def NewNickDialog(nick,obj):
 	x = Nick(nick,obj)
 	info = x.get_nick_information(nick,obj)
+	del x
+
+	if not info: return None
+	return info
+
+def AwayDialog(obj):
+	x = Away(obj)
+	info = x.get_away_information(obj)
 	del x
 
 	if not info: return None

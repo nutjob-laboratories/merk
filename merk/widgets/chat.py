@@ -1799,10 +1799,18 @@ class Window(QMainWindow):
 			self.away_button.setIcon(QIcon(GO_AWAY_ICON))
 			self.client.back()
 		else:
-			self.away_button.setToolTip("Set status to \"back\"")
-			self.away_button.setIcon(QIcon(GO_BACK_ICON))
-			self.client.away(config.DEFAULT_AWAY_MESSAGE)
-			self.client.away_msg = config.DEFAULT_AWAY_MESSAGE
+			if config.PROMPT_FOR_AWAY_MESSAGE:
+				msg = AwayDialog(self)
+				if msg:
+					self.away_button.setToolTip("Set status to \"back\"")
+					self.away_button.setIcon(QIcon(GO_BACK_ICON))
+					self.client.away(msg)
+					self.client.away_msg = msg
+			else:
+				self.away_button.setToolTip("Set status to \"back\"")
+				self.away_button.setIcon(QIcon(GO_BACK_ICON))
+				self.client.away(config.DEFAULT_AWAY_MESSAGE)
+				self.client.away_msg = config.DEFAULT_AWAY_MESSAGE
 
 	def joinChannel(self):
 		channel_info = JoinChannelDialog(self.parent)

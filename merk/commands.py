@@ -42,6 +42,8 @@ from .resources import *
 from . import config
 from . import user as USER
 
+from .dialog.away import Dialog as Away
+
 CONFIG_DIRECTORY = None
 SCRIPTS_DIRECTORY = None
 
@@ -940,8 +942,15 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			window.client.away_msg = msg
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)==1:
-			window.client.away(config.DEFAULT_AWAY_MESSAGE)
-			window.client.away_msg = config.DEFAULT_AWAY_MESSAGE
+			if config.PROMPT_FOR_AWAY_MESSAGE:
+				x = Away(gui)
+				msg = x.get_away_information(gui)
+				if msg:
+					window.client.away(msg)
+					window.client.away_msg = msg
+			else:
+				window.client.away(config.DEFAULT_AWAY_MESSAGE)
+				window.client.away_msg = config.DEFAULT_AWAY_MESSAGE
 			return True
 
 	# |-------|
