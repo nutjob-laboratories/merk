@@ -105,6 +105,7 @@ configuration_group.add_argument( "--config-local",dest="configinstall",help=f"S
 configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "--user-file",dest="userfile",type=str,help="File to use for user data", metavar="FILENAME", default=None)
 configuration_group.add_argument( "--config-file",dest="configfile",type=str,help="File to use for configuration data", metavar="FILENAME", default=None)
+configuration_group.add_argument( "--reset",dest="configdefault", help=f"Reset configuration file to default values", action="store_true")
 
 misc_group = parser.add_argument_group('Appearance')
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
@@ -144,6 +145,12 @@ if __name__ == '__main__':
 	else:
 		# Initialize the config system
 		config.initialize(args.configdir,args.configname)
+
+	# Reset the config files to the default values
+	if args.configdefault:
+		sys.stdout.write("Resetting configuration file to defaults\n")
+		config.save_settings(config.CONFIG_FILE)
+		sys.exit(0)
 
 	# Initialize the styles system
 	styles.initialize(args.configdir,args.configname)
