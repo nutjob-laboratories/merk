@@ -1,7 +1,3 @@
-
-
-
-
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -100,44 +96,32 @@ There are three libraries that comes bundled with **MERK**:
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
-    - Multiple channel and server windows can be open for viewing and chatting at once
-    - All chat windows are contained in a single "parent" window
 -   If you're using Windows, [you can run **MERK** without installing Python](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip)!
 - Dark mode!
-  - Dark mode can be enabled from the command-line, or from the settings dialog
-  - If dark mode is enabled from the settings dialog, an application restart is required
 - Audio notifications
-  - Audio notifications are turned off by default
   - Can be triggered by seven different events, with each one able to be turned on and off
   - Uses any WAV file as the notification sound, and can be set in the GUI
 - Very configurable, without having to manually edit a configuration file
     - Control application behavior, logging, features, and more!
-    - Over 130 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
+    - Over 140 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
     - Almost all settings can be changed in the settings dialog without a restart. Have fun testing different options!
     - Configuration data is stored in JSON
  -  Extensive command-line options
-    - Set defaults and settings
-    - Connect to one or multiple servers automatically on start-up
-    - Almost everything about how **MERK** starts up can be customized
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
-    - Text customization can be saved to importable files
     - Individual channels can have their own color schemes
     - User input text can highlight channels, nicknames, commands, and more as you type!
     - Styles are saved and loaded automatically
-      - Channel styles are saved and loaded by network, so they work no matter what server you connect to.
     - Easy to use GUI text style editor is built-in
     - Changes to text style are immediate, without having to restart!
 -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, and German)
 -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
     -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
     -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
--   Command/nickname/channel auto-completion
 -   Full IRC color support
 -   Full scripting engine
     - Includes a built in script editor, with scripting macros and syntax highlighting
     - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
-- Multithreaded
 -   Automatic logging of channel and private chats
     - Includes a utility to export logs to JSON, CSV, or your own custom format
     - Logs are stored in JSON, so parsing/scraping your own logs in easy
@@ -166,7 +150,7 @@ There are three libraries that comes bundled with **MERK**:
 
   <p align="center">
  <center><a href="./graphics/settings.png"><img src="./graphics/settings_small.png"></a></center></br>
-  <center><i><small>The first "page" of the settings dialog. MERK features over 130 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center>
+  <center><i><small>The first "page" of the settings dialog. MERK features over 140 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center>
   </p>
 
   <p align="center">
@@ -344,7 +328,7 @@ All command-line options are what they say on the tin: _optional_. Just running 
 # Why does MERK exist?
 It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
 
-I honestly think that **MERK** may be the most configurable IRC client ever created. With over 130 different settings to work with, you can configure **MERK** to look and operate *exactly* how you want. Want to display all channel userlists on the left, or not display userlists at all? You can do that. Want to turn off all the pretty stuff, and display only raw, (nearly) unaltered text? You can do that. Maybe you want to use text styles only on the chat display, and leave the userlists and text input alone? You can do that. One of the things I hated about [XChat](http://xchat.org/)/[Hexchat](https://hexchat.github.io/) is how un-configurable the UI is, and how most other clients require plugins or scripts to change the client UI. I wanted a client where you could alter or change most aspects of the UI without needed external tools or editing configuration files manually. With **MERK**, you can change all settings in the client and see the effects instantly. There are a few settings that can only be changed by editing the configuration files, but they are for settings most users will probably never change; but you can still change them and **MERK** will compensate, and not break the client!
+I honestly think that **MERK** may be the most configurable IRC client ever created. With over 140 different settings to work with, you can configure **MERK** to look and operate *exactly* how you want. Want to display all channel userlists on the left, or not display userlists at all? You can do that. Want to turn off all the pretty stuff, and display only raw, (nearly) unaltered text? You can do that. Maybe you want to use text styles only on the chat display, and leave the userlists and text input alone? You can do that. One of the things I hated about [XChat](http://xchat.org/)/[Hexchat](https://hexchat.github.io/) is how un-configurable the UI is, and how most other clients require plugins or scripts to change the client UI. I wanted a client where you could alter or change most aspects of the UI without needed external tools or editing configuration files manually. With **MERK**, you can change all settings in the client and see the effects instantly. There are a few settings that can only be changed by editing the configuration files, but they are for settings most users will probably never change; but you can still change them and **MERK** will compensate, and not break the client!
 
 # What does MERK mean?
 Well, if you were to pronounce "IRC" as a word and not an acronym, it would probably be pronounced _/Ərk/_. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the "M" stands for. Either that, or "multiple-document interface". "MDIIRC" doesn't exactly roll off the tongue, so we combined the "M" with the word-pronunciation of IRC, and came up with __MERK__!
