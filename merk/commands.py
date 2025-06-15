@@ -579,6 +579,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					if str(my_value).lower()=='true': my_value = True
 					if str(my_value).lower()=='false': my_value = False
 
+				if type(my_value)!= type(settings[my_setting]):
+					t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid value for \"{my_setting}\" (requires {type(settings[my_setting]).__name__})")
+					window.writeText(t,False)
+					return True
+
 				settings[my_setting] = my_value
 				config.save_settings(config.CONFIG_FILE,settings)
 
