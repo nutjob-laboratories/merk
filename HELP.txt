@@ -286,8 +286,8 @@ Appearance:
 <td>Exits the client, with an optional pause of <code>SECONDS</code> before exit</td>
 </tr>
 <tr>
-<td><code>/config SETTING VALUE...</code></td>
-<td>Changes a setting in the configuration file. <i><b>Caution</b>: use at your own risk!</i></td>
+<td><code>/config [SETTING] [VALUE...]</code></td>
+<td>Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk!</i></td>
 </tr>
 </tbody>
 </table>
