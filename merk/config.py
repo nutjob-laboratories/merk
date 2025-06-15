@@ -197,8 +197,7 @@ USE_AUTOAWAY = False
 AUTOAWAY_TIME = 3600
 PROMPT_FOR_AWAY_MESSAGE = False
 
-def save_settings(filename):
-
+def build_settings():
 	settings = {
 		"prompt_for_away_message": PROMPT_FOR_AWAY_MESSAGE,
 		"autoaway": USE_AUTOAWAY,
@@ -359,8 +358,7 @@ def save_settings(filename):
 		"force_monospace_text_rendering": FORCE_MONOSPACE_RENDERING,
 	}
 
-	with open(filename, "w") as write_data:
-		json.dump(settings, write_data, indent=4, sort_keys=True)
+	return settings
 
 def patch_settings(settings):
 	if not "prompt_for_away_message" in settings:
@@ -1010,6 +1008,16 @@ def load_settings(filename):
 			save_settings(filename)
 	else:
 		save_settings(filename)
+
+def save_settings(filename,dump=None):
+	if dump==None:
+		settings = build_settings()
+
+		with open(filename, "w") as write_data:
+			json.dump(settings, write_data, indent=4, sort_keys=True)
+	else:
+		with open(filename, "w") as write_data:
+			json.dump(dump, write_data, indent=4, sort_keys=True)
 
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY

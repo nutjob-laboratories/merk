@@ -1042,11 +1042,6 @@ class Dialog(QDialog):
 
 		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showAwayNick = QCheckBox("Show away status in nickname\ndisplay",self)
-		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY: self.showAwayNick.setChecked(True)
-		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNick)
-		self.showAwayNick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-	
 		statusLayout = QFormLayout()
 		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
 		statusLayout.addRow(self.showStatusList)
@@ -1069,7 +1064,6 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showInputMenu)
 		subwindowLayout.addWidget(self.showChatInTitle)
-		subwindowLayout.addWidget(self.showAwayNick)
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
@@ -1624,10 +1618,45 @@ class Dialog(QDialog):
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
 		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
-		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
-		self.showAwayBack.stateChanged.connect(self.changedSetting)
-		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		connectionsLayout = QVBoxLayout()
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
+		connectionsLayout.addWidget(self.askBeforeDisconnect)
+		connectionsLayout.addWidget(self.askBeforeReconnect)
+		connectionsLayout.addWidget(self.notifyOnLostConnection)
+		connectionsLayout.addWidget(self.promptFail)
+		connectionsLayout.addWidget(self.requestList)
+		connectionsLayout.addWidget(self.autoHostmasks)
+		connectionsLayout.addWidget(self.showNetLinks)
+		connectionsLayout.addStretch()
+		self.connectionsPage.setLayout(connectionsLayout)
+
+		# Away
+
+		self.awayPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Away")
+		entry.widget = self.awayPage
+		entry.setIcon(QIcon(GO_AWAY_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.awayPage)
+
+		self.awayMsg = QLineEdit(self.default_away)
+
+		self.awayMsg.textChanged.connect(self.setAwayMsg)
+
+		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(self.awayMsg)
+		awayBox = QGroupBox("")
+		awayBox.setAlignment(Qt.AlignLeft)
+		awayBox.setLayout(awayLayout)
+
+		self.promptAway = QCheckBox(f"Prompt for away message if one is\nnot provided with the {config.ISSUE_COMMAND_SYMBOL}away command\nor when pressing the \"Set status to\naway\" button on the server window\ntoolbar",self)
+		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
+		self.promptAway.stateChanged.connect(self.changedSetting)
+		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.autoAway = QCheckBox("Auto-away after",self)
 		if config.USE_AUTOAWAY: self.autoAway.setChecked(True)
@@ -1667,19 +1696,33 @@ class Dialog(QDialog):
 		intervalBox.addWidget(self.autoawayInterval)
 		intervalBox.addStretch()
 
-		connectionsLayout = QVBoxLayout()
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
-		connectionsLayout.addWidget(self.askBeforeDisconnect)
-		connectionsLayout.addWidget(self.askBeforeReconnect)
-		connectionsLayout.addWidget(self.notifyOnLostConnection)
-		connectionsLayout.addWidget(self.promptFail)
-		connectionsLayout.addWidget(self.requestList)
-		connectionsLayout.addWidget(self.autoHostmasks)
-		connectionsLayout.addWidget(self.showNetLinks)
-		connectionsLayout.addWidget(self.showAwayBack)
-		connectionsLayout.addLayout(intervalBox)
-		connectionsLayout.addStretch()
-		self.connectionsPage.setLayout(connectionsLayout)
+		self.showAwayStatus = QCheckBox("Show away status in userlists",self)
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
+		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
+		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
+		self.showAwayBack.stateChanged.connect(self.changedSetting)
+		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showAwayNick = QCheckBox("Show away status in nickname\ndisplay",self)
+		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY: self.showAwayNick.setChecked(True)
+		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNick)
+		self.showAwayNick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
+		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
+		awayLayout.addLayout(intervalBox)
+		awayLayout.addWidget(self.promptAway)
+		awayLayout.addWidget(self.showAwayStatus)
+		awayLayout.addWidget(self.showAwayBack)
+		awayLayout.addWidget(self.showAwayNick)
+		awayLayout.addWidget(QLabel(' '))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		awayLayout.addWidget(awayBox)
+		awayLayout.addStretch()
+
+		self.awayPage.setLayout(awayLayout)
 
 		# Channels
 
@@ -1762,10 +1805,6 @@ class Dialog(QDialog):
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 
-		self.showAwayStatus = QCheckBox("Show away status in userlists",self)
-		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
-		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
-
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -1779,7 +1818,6 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.plainUserLists)
 		menuLayout.addWidget(self.showUserlistLeft)
 		menuLayout.addWidget(self.hideScroll)
-		menuLayout.addWidget(self.showAwayStatus)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
@@ -2178,16 +2216,6 @@ class Dialog(QDialog):
 
 		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.awayMsg = QLineEdit(self.default_away)
-
-		self.awayMsg.textChanged.connect(self.setAwayMsg)
-
-		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(self.awayMsg)
-		awayBox = QGroupBox("")
-		awayBox.setAlignment(Qt.AlignLeft)
-		awayBox.setLayout(awayLayout)
-
 		self.partMsg = QLineEdit(self.default_quit_part)
 
 		self.partMsg.textChanged.connect(self.setQuitMsg)
@@ -2197,11 +2225,6 @@ class Dialog(QDialog):
 		partBox = QGroupBox("")
 		partBox.setAlignment(Qt.AlignLeft)
 		partBox.setLayout(partLayout)
-
-		self.promptAway = QCheckBox(f"Prompt for away message if one is\nnot provided with the {config.ISSUE_COMMAND_SYMBOL}away command\nor when pressing the \"Set status to\naway\" button on the server window\ntoolbar",self)
-		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
-		self.promptAway.stateChanged.connect(self.changedSetting)
-		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
@@ -2217,10 +2240,6 @@ class Dialog(QDialog):
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		messageLayout.addWidget(partBox)
-		messageLayout.addWidget(QLabel(' '))
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		messageLayout.addWidget(awayBox)
-		messageLayout.addWidget(self.promptAway)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -2621,7 +2640,6 @@ class Dialog(QDialog):
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
 		leftLayout.addWidget(logo)
-		leftLayout.addWidget(QLabel("<small><center><b>Version "+APPLICATION_VERSION+"</b></center></small>"))
 
 		mainLayout = QHBoxLayout()
 		mainLayout.addLayout(leftLayout)
