@@ -1627,6 +1627,15 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					c.got_back(nick)
 
+	def resetAllAutoawayTimers(self):
+		for i in irc.CONNECTIONS:
+			add_to_list = True
+			for j in self.hiding:
+				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			if add_to_list:
+				if irc.CONNECTIONS[i].last_interaction!=-1:
+					irc.CONNECTIONS[i].last_interaction = 0
+
 	# |================|
 	# | END IRC EVENTS |
 	# |================|

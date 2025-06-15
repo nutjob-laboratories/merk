@@ -2828,10 +2828,15 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_STATUS_IN_USERLISTS = self.showAwayStatus.isChecked()
 		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
+
+		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
+			self.parent.resetAllAutoawayTimers()
+
 		config.USE_AUTOAWAY = self.autoAway.isChecked()
 
 		if self.awayInterval!=config.AUTOAWAY_TIME:
 			config.AUTOAWAY_TIME = self.awayInterval
+			self.parent.resetAllAutoawayTimers()
 
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
 			self.parent.setWindowTitle(' ')
