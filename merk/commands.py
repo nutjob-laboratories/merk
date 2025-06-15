@@ -120,6 +120,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
 			config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
 			config.ISSUE_COMMAND_SYMBOL+"exit": config.ISSUE_COMMAND_SYMBOL+"exit",
+			config.ISSUE_COMMAND_SYMBOL+"config": config.ISSUE_COMMAND_SYMBOL+"config ",
 		}
 
 	if new_autocomplete!=None:
@@ -176,6 +177,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config SETTING VALUE...</b>", "Changes a setting in the configuration file" ],
 	]
 
 	if new_help!=None:
@@ -532,6 +534,41 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
 	tokens = user_input.split()
 
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)>=2:
+			settings = config.build_settings()
+
+			tokens.pop(0)
+			my_setting = tokens.pop(0)
+			my_value = ' '.join(tokens)
+
+			if my_setting in settings:
+				try:
+					my_value=int(my_value)
+				except:
+					if str(my_value).lower()=='true': my_value = True
+					if str(my_value).lower()=='false': my_value = False
+
+				settings[my_setting] = my_value
+				config.save_settings(config.CONFIG_FILE,settings)
+
+				gui.reload_settings()
+
+				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
+				window.writeText(t,False)
+			else:
+				t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid configuration setting")
+				window.writeText(t,False)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"config SETTING VALUE...")
+			window.writeText(t,False)
+			return True
+
+	# |-------|
+	# | /exit |
+	# |-------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'exit' and len(tokens)==2:
 			tokens.pop(0)

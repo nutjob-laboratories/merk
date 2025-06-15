@@ -1905,6 +1905,17 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def reload_settings(self):
+		config.load_settings(config.CONFIG_FILE)
+
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"reload_settings"):
+				c.reload_settings()
+
+		self.buildSettingsMenu()
+		self.buildWindowsMenu()
+
 	def handleUserInput(self,window,user_input):
 
 		# Interpolate aliases into user input

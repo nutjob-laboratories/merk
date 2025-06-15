@@ -2660,6 +2660,9 @@ class SpellTextEdit(QPlainTextEdit):
 		# Reset the input
 		self.parent.resetInput()
 
+	def reload_config(self):
+		config.load_settings(config.CONFIG_FILE)
+
 	def removeFromDictionary(self,word):
 		# Remove the word from the internal dictionary
 		config.DICTIONARY.remove(word)

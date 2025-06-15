@@ -662,6 +662,12 @@ class Dialog(QDialog):
 
 		self.setFont(self.parent.application_font)
 
+		# Load in user settings
+		user.load_user(user.USER_FILE)
+
+		# Load in config settings
+		config.load_settings(config.CONFIG_FILE)
+
 		self.newfont = None
 		self.subWidth = config.DEFAULT_SUBWINDOW_WIDTH
 		self.subHeight = config.DEFAULT_SUBWINDOW_HEIGHT
@@ -751,9 +757,6 @@ class Dialog(QDialog):
 		self.selector.itemClicked.connect(self.selectorClick)
 
 		self.selector.setStyleSheet("background-color: transparent; border-width: 0px; border-color: transparent;")
-
-		# Load in user settings
-		user.load_user(user.USER_FILE)
 
 		# Application page
 
