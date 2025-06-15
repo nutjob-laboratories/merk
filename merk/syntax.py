@@ -79,6 +79,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"refresh",
 			cmdsymbol+"knock",
 			cmdsymbol+"exit",
+			cmdsymbol+"config",
 		]
 
 		STYLES = {
