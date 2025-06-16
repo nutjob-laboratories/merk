@@ -896,10 +896,25 @@ class Window(QMainWindow):
 			self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageGerman)
 
+			self.languagePortuguese = QAction(QIcon(self.parent.round_unchecked_icon),"Português",self)
+			self.languagePortuguese.triggered.connect(lambda state,u="pt": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languagePortuguese)
+
+			self.languageItalian = QAction(QIcon(self.parent.round_unchecked_icon),"Italiano",self)
+			self.languageItalian.triggered.connect(lambda state,u="it": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageItalian)
+
+			self.languageDutch = QAction(QIcon(self.parent.round_unchecked_icon),"Nederlands",self)
+			self.languageDutch.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageDutch)
+
 			if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="pt": self.languagePortuguese.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="it": self.languageItalian.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
 
 			self.settingsMenu.addMenu(self.spellcheckMenu)
 

@@ -2754,6 +2754,27 @@ class Merk(QMainWindow):
 			entry.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
 		sm.addAction(entry)
 
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="pt":
+			entry = QAction(QIcon(self.round_checked_icon),"Português", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Português", self)
+			entry.triggered.connect(lambda state,u="pt": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="it":
+			entry = QAction(QIcon(self.round_checked_icon),"Italiano", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Italiano", self)
+			entry.triggered.connect(lambda state,u="it": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="nl":
+			entry = QAction(QIcon(self.round_checked_icon),"Nederlands", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Nederlands", self)
+			entry.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
 		e = textSeparator(self,"Miscellaneous Settings")
 		self.settingsMenu.addAction(e)
 
