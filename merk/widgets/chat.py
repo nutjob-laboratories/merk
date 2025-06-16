@@ -2471,6 +2471,9 @@ class TopicEdit(QLineEdit):
 		self.setReadOnly(True)
 		self.setCursorPosition(0)
 
+	def reload_config(self):
+		config.load_settings(config.CONFIG_FILE)
+
 class SpellTextEdit(QPlainTextEdit):
 
 	returnPressed = pyqtSignal()
@@ -2659,9 +2662,6 @@ class SpellTextEdit(QPlainTextEdit):
 
 		# Reset the input
 		self.parent.resetInput()
-
-	def reload_config(self):
-		config.load_settings(config.CONFIG_FILE)
 
 	def removeFromDictionary(self,word):
 		# Remove the word from the internal dictionary

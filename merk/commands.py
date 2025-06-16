@@ -545,7 +545,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			for s in settings:
 				if not type(settings[s]) is list:
-					t = Message(SYSTEM_MESSAGE,'',f"\"{s}\"=\"{settings[s]}\"")
+					t = Message(SYSTEM_MESSAGE,'',f"\"{s}\" = {settings[s]}")
 					window.writeText(t,False)
 			return True
 
@@ -557,7 +557,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
-				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{settings[my_setting]}\"")
+				t = Message(SYSTEM_MESSAGE,'',f"\"{my_setting}\" = {settings[my_setting]}")
 				window.writeText(t,False)
 			else:
 				t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid configuration setting")
@@ -580,7 +580,23 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					if str(my_value).lower()=='false': my_value = False
 
 				if type(my_value)!= type(settings[my_setting]):
-					t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid value for \"{my_setting}\" (requires {type(settings[my_setting]).__name__})")
+					if type(settings[my_setting]).__name__=='bool':
+						dtype = "boolean"
+					elif type(settings[my_setting]).__name__=='int':
+						dtype = "integer"
+					elif type(settings[my_setting]).__name__=='str':
+						dtype = "string"
+					else:
+						dtype = "unknown"
+					if type(my_value).__name__=='bool':
+						itype = "boolean"
+					elif type(my_value).__name__=='int':
+						itype = "integer"
+					elif type(my_value).__name__=='str':
+						itype = "string"
+					else:
+						itype = "unknown"
+					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for \"{my_setting}\" (value is {itype}, requires {dtype})")
 					window.writeText(t,False)
 					return True
 
