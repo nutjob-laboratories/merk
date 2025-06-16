@@ -2705,14 +2705,15 @@ class SpellTextEdit(QPlainTextEdit):
 					misspelled = self.dict.unknown([text])
 					if len(misspelled)>0:
 						unknown_word =True
-						for word in self.dict.candidates(text):
-							if word!=text:
-								action = SpellAction(word, popup_menu)
-								action.correct.connect(self.correctWord)
-								popup_menu.insertAction(popup_menu.actions()[0],action)
-								counter = counter + 1
-						if counter != 0:
-							popup_menu.insertSeparator(popup_menu.actions()[counter])
+						if self.dict.candidates(text)!=None:
+							for word in self.dict.candidates(text):
+								if word!=text:
+									action = SpellAction(word, popup_menu)
+									action.correct.connect(self.correctWord)
+									popup_menu.insertAction(popup_menu.actions()[0],action)
+									counter = counter + 1
+							if counter != 0:
+								popup_menu.insertSeparator(popup_menu.actions()[counter])
 
 			popup_menu.insertSeparator(popup_menu.actions()[counter])
 			counter = counter + 1

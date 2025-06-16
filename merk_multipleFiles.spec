@@ -25,6 +25,13 @@ a = Analysis(
         ('spellchecker/resources/es.json.gz','spellchecker/resources'),
         ('spellchecker/resources/fr.json.gz','spellchecker/resources'),
         ('spellchecker/resources/pt.json.gz','spellchecker/resources'),
+        ('spellchecker/resources/ar.json.gz','spellchecker/resources'),
+        ('spellchecker/resources/eu.json.gz','spellchecker/resources'),
+        ('spellchecker/resources/fa.json.gz','spellchecker/resources'),
+        ('spellchecker/resources/it.json.gz','spellchecker/resources'),
+        ('spellchecker/resources/lv.json.gz','spellchecker/resources'),
+        ('spellchecker/resources/nl.json.gz','spellchecker/resources'),
+        ('spellchecker/resources/ru.json.gz','spellchecker/resources'),
         ('merk/resources/resources.py','merk/resources'),
 
     ],
