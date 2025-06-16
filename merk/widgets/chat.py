@@ -2361,10 +2361,16 @@ def buildServerSettingsMenu(self,client):
 		e = plainTextAction(self,"<b>Connection:</b> TCP/IP")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Users"+f":</b> {client.server_user_count:,}")
+	if client.server_user_count==0:
+		e = plainTextAction(self,"<b>Users"+f":</b> Unknown")
+	else:
+		e = plainTextAction(self,"<b>Users"+f":</b> {client.server_user_count:,}")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,}")
+	if client.server_channel_count==0:
+		e = plainTextAction(self,"<b>Channels"+f":</b> Unknown")
+	else:
+		e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,}")
 	optionsMenu.addAction(e)
 
 	e = textSeparator(self,"Limits")
