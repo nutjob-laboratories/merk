@@ -289,7 +289,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/config [SETTING] [VALUE...]</code></td>
-<td>Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk!</i></td>
+<td>Changes a setting, or searches and displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk!</i></td>
 </tr>
 </tbody>
 </table>

@@ -545,7 +545,15 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			for s in settings:
 				if not type(settings[s]) is list:
-					t = Message(SYSTEM_MESSAGE,'',f"{s} = {settings[s]}")
+					if type(settings[s]).__name__=='bool':
+						dtype = "boolean"
+					elif type(settings[s]).__name__=='int':
+						dtype = "integer"
+					elif type(settings[s]).__name__=='str':
+						dtype = "string"
+					else:
+						dtype = "unknown"
+					t = Message(SYSTEM_MESSAGE,'',f"{s} = \"{settings[s]}\" ({dtype})")
 					window.writeText(t,False)
 			return True
 
@@ -557,10 +565,38 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
-				t = Message(SYSTEM_MESSAGE,'',f"{my_setting} = {settings[my_setting]}")
+				if type(settings[my_setting]).__name__=='bool':
+					dtype = "boolean"
+				elif type(settings[my_setting]).__name__=='int':
+					dtype = "integer"
+				elif type(settings[my_setting]).__name__=='str':
+					dtype = "string"
+				else:
+					dtype = "unknown"
+				t = Message(SYSTEM_MESSAGE,'',f"{my_setting} = \"{settings[my_setting]}\" ({dtype})")
 				window.writeText(t,False)
 			else:
-				t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid configuration setting")
+				results = []
+				for a in settings:
+					if fnmatch.fnmatch(a,f"*{my_setting}*"):
+						results.append(a)
+
+				t = Message(SYSTEM_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
+				window.writeText(t,False)
+				counter = 0
+				for r in results:
+					counter = counter + 1
+					if type(settings[r]).__name__=='bool':
+						dtype = "boolean"
+					elif type(settings[r]).__name__=='int':
+						dtype = "integer"
+					elif type(settings[r]).__name__=='str':
+						dtype = "string"
+					else:
+						dtype = "unknown"
+					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {r} = \"{settings[r]}\" ({dtype})")
+					window.writeText(t,False)
+				t = Message(SYSTEM_MESSAGE,'',f"End config search results")
 				window.writeText(t,False)
 			return True
 
