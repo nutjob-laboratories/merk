@@ -177,7 +177,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file, <i><b>Caution</b>: use at your own risk</i>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 	]
 
 	if new_help!=None:

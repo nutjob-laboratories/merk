@@ -113,7 +113,6 @@ misc_group.add_argument( "-D","--dark",dest="darkmode", help=f"Run in dark mode"
 misc_group.add_argument( "-L","--light",dest="lightmode", help=f"Run in light mode", action="store_true")
 
 args = parser.parse_args()
-# help_string = parser.format_help()
 
 if __name__ == '__main__':
 
