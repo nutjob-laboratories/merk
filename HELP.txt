@@ -46,7 +46,7 @@ pip <span class="hljs-keyword">install</span> service_identity
                       [-t] [-R] [<span class="hljs-comment">--config-name NAME] [-Q NAME] [-D] [-L]</span>
                       [<span class="hljs-comment">--config-directory DIRECTORY] [--config-local]</span>
                       [<span class="hljs-comment">--scripts-directory DIRECTORY] [--user-file FILENAME]</span>
-                      [<span class="hljs-comment">--config-file FILENAME]</span>
+                      [<span class="hljs-comment">--config-file FILENAME] [--reset] [--reset-user]</span>
                       [SERVER] [PORT]
 
 Connection:
@@ -80,6 +80,7 @@ Options:
   -R, <span class="hljs-comment">--run             Don't ask for connection information on start</span>
   -o, <span class="hljs-comment">--on-top          Application window always on top</span>
   <span class="hljs-comment">--reset               Resets configuration file to default values</span>
+  <span class="hljs-comment">--reset-user          Resets user file to default values</span>
 
 Files <span class="hljs-keyword">and</span> Directories:
   <span class="hljs-comment">--config-name NAME    Name of the configuration file directory (default: .merk)</span>

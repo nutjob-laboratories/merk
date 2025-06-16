@@ -861,7 +861,7 @@ class Merk(QMainWindow):
 
 		# Forcibly remove server window
 		w = self.getServerSubWindow(client)
-		self.MDI.removeSubWindow(w)
+		#self.MDI.removeSubWindow(w)
 		self.buildWindowsMenu()
 
 		self.buildMainMenu()
@@ -1953,8 +1953,8 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"client"):
 				c.client.quit(config.DEFAULT_QUIT_MESSAGE)
-			if window:
-				self.MDI.removeSubWindow(window)
+			# if window:
+			# 	self.MDI.removeSubWindow(window)
 
 	def openPrivate(self,client,nick):
 

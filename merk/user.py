@@ -45,8 +45,7 @@ LAST_PASSWORD = ''
 HISTORY = []
 COMMANDS = {}
 
-def save_user(filename):
-
+def build_settings():
 	settings = {
 		"nickname": NICKNAME,
 		"alternate": ALTERNATE,
@@ -61,8 +60,7 @@ def save_user(filename):
 		"commands": COMMANDS,
 	}
 
-	with open(filename, "w") as write_data:
-		json.dump(settings, write_data, indent=4, sort_keys=True)
+	return settings
 
 def patch_user(settings):
 	if not "nickname" in settings:
@@ -128,6 +126,13 @@ def load_user(filename):
 			save_user(filename)
 	else:
 		save_user(filename)
+
+def save_user(filename):
+
+	settings = build_settings()
+
+	with open(filename, "w") as write_data:
+		json.dump(settings, write_data, indent=4, sort_keys=True)
 
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY

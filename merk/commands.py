@@ -545,7 +545,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			for s in settings:
 				if not type(settings[s]) is list:
-					t = Message(SYSTEM_MESSAGE,'',f"\"{s}\" = {settings[s]}")
+					t = Message(SYSTEM_MESSAGE,'',f"{s} = {settings[s]}")
 					window.writeText(t,False)
 			return True
 
@@ -557,7 +557,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
-				t = Message(SYSTEM_MESSAGE,'',f"\"{my_setting}\" = {settings[my_setting]}")
+				t = Message(SYSTEM_MESSAGE,'',f"{my_setting} = {settings[my_setting]}")
 				window.writeText(t,False)
 			else:
 				t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid configuration setting")
