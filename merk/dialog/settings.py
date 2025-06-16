@@ -2028,7 +2028,7 @@ class Dialog(QDialog):
 		self.dutchSC = QRadioButton("Nederlands")
 		self.dutchSC.toggled.connect(self.selDutch)
 
-		self.russianSC = QRadioButton("Русский язык")
+		self.russianSC = QRadioButton("Русский")
 		self.russianSC.toggled.connect(self.selRussian)
 
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="en": self.englishSC.setChecked(True)

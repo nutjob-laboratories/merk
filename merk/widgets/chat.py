@@ -908,7 +908,7 @@ class Window(QMainWindow):
 			self.languageDutch.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageDutch)
 
-			self.languageRussian = QAction(QIcon(self.parent.round_unchecked_icon),"Русский язык",self)
+			self.languageRussian = QAction(QIcon(self.parent.round_unchecked_icon),"Русский",self)
 			self.languageRussian.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageRussian)
 
@@ -1987,22 +1987,38 @@ class Window(QMainWindow):
 		self.languageFrench.setIcon(QIcon(self.parent.round_unchecked_icon))
 		self.languageSpanish.setIcon(QIcon(self.parent.round_unchecked_icon))
 		self.languageGerman.setIcon(QIcon(self.parent.round_unchecked_icon))
+		self.languageDutch.setIcon(QIcon(self.parent.round_unchecked_icon))
+		self.languageItalian.setIcon(QIcon(self.parent.round_unchecked_icon))
+		self.languageRussian.setIcon(QIcon(self.parent.round_unchecked_icon))
+		self.languagePortuguese.setIcon(QIcon(self.parent.round_unchecked_icon))
 
 		if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
 		if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
 		if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
 		if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="it": self.languageItalian.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="pt": self.languagePortuguese.setIcon(QIcon(self.parent.round_checked_icon))
 
 		if config.ENABLE_SPELLCHECK:
 			self.languageEnglish.setEnabled(True)
 			self.languageFrench.setEnabled(True)
 			self.languageSpanish.setEnabled(True)
 			self.languageGerman.setEnabled(True)
+			self.languageDutch.setEnabled(True)
+			self.languageItalian.setEnabled(True)
+			self.languageRussian.setEnabled(True)
+			self.languagePortuguese.setEnabled(True)
 		else:
 			self.languageEnglish.setEnabled(False)
 			self.languageFrench.setEnabled(False)
 			self.languageSpanish.setEnabled(False)
 			self.languageGerman.setEnabled(False)
+			self.languageDutch.setEnabled(False)
+			self.languageItalian.setEnabled(False)
+			self.languageRussian.setEnabled(False)
+			self.languagePortuguese.setEnabled(False)
 
 	def linkClicked(self,url):
 		if url.host():
