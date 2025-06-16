@@ -565,6 +565,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
+				if type(settings[my_setting]) is list:
+					t = Message(SYSTEM_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
+					window.writeText(t,False)
+					t = Message(SYSTEM_MESSAGE,'',f"End config search results")
+					window.writeText(t,False)
+					return True
+
+			if my_setting in settings:
 				if type(settings[my_setting]).__name__=='bool':
 					dtype = "boolean"
 				elif type(settings[my_setting]).__name__=='int':
@@ -578,8 +586,9 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			else:
 				results = []
 				for a in settings:
-					if fnmatch.fnmatch(a,f"*{my_setting}*"):
-						results.append(a)
+					if not type(settings[a]) is list:
+						if fnmatch.fnmatch(a,f"*{my_setting}*"):
+							results.append(a)
 
 				t = Message(SYSTEM_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
 				window.writeText(t,False)
@@ -607,6 +616,12 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			my_setting = tokens.pop(0)
 			my_value = ' '.join(tokens)
+
+			if my_setting in settings:
+				if type(settings[my_setting]) is list:
+					t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" cannot be changed with the {config.ISSUE_COMMAND_SYMBOL}config command")
+					window.writeText(t,False)
+					return True
 
 			if my_setting in settings:
 				try:
