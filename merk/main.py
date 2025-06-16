@@ -2775,6 +2775,13 @@ class Merk(QMainWindow):
 			entry.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
 		sm.addAction(entry)
 
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="ru":
+			entry = QAction(QIcon(self.round_checked_icon),"Русский язык", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Русский язык", self)
+			entry.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
+		sm.addAction(entry)
+
 		e = textSeparator(self,"Miscellaneous Settings")
 		self.settingsMenu.addAction(e)
 

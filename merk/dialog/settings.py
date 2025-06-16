@@ -108,6 +108,12 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def selRussian(self):
+		self.spellLang = "ru"
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def selDutch(self):
 		self.spellLang = "nl"
 		self.changed.show()
@@ -463,6 +469,7 @@ class Dialog(QDialog):
 			self.portugueseSC.setEnabled(True)
 			self.italianSC.setEnabled(True)
 			self.dutchSC.setEnabled(True)
+			self.russianSC.setEnabled(True)
 		else:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -471,6 +478,7 @@ class Dialog(QDialog):
 			self.portugueseSC.setEnabled(False)
 			self.italianSC.setEnabled(False)
 			self.dutchSC.setEnabled(False)
+			self.russianSC.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -2020,6 +2028,9 @@ class Dialog(QDialog):
 		self.dutchSC = QRadioButton("Nederlands")
 		self.dutchSC.toggled.connect(self.selDutch)
 
+		self.russianSC = QRadioButton("Русский язык")
+		self.russianSC.toggled.connect(self.selRussian)
+
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="en": self.englishSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="fr": self.frenchSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="es": self.spanishSC.setChecked(True)
@@ -2027,6 +2038,7 @@ class Dialog(QDialog):
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="pt": self.portugueseSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="it": self.italianSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="nl": self.dutchSC.setChecked(True)
+		if config.DEFAULT_SPELLCHECK_LANGUAGE=="ru": self.russianSC.setChecked(True)
 
 		if not config.ENABLE_SPELLCHECK:
 			self.englishSC.setEnabled(False)
@@ -2036,12 +2048,13 @@ class Dialog(QDialog):
 			self.portugueseSC.setEnabled(False)
 			self.italianSC.setEnabled(False)
 			self.dutchSC.setEnabled(False)
+			self.russianSC.setEnabled(False)
 
 		langLayout = QFormLayout()
 		langLayout.addRow(self.englishSC, self.frenchSC)
 		langLayout.addRow(self.spanishSC, self.germanSC)
 		langLayout.addRow(self.portugueseSC, self.italianSC)
-		langLayout.addRow(self.dutchSC)
+		langLayout.addRow(self.dutchSC,self.russianSC)
 
 		lanSubLayout = QHBoxLayout()
 		lanSubLayout.addStretch()

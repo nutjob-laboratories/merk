@@ -908,6 +908,10 @@ class Window(QMainWindow):
 			self.languageDutch.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
 			self.spellcheckMenu.addAction(self.languageDutch)
 
+			self.languageRussian = QAction(QIcon(self.parent.round_unchecked_icon),"Русский язык",self)
+			self.languageRussian.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageRussian)
+
 			if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
@@ -915,6 +919,7 @@ class Window(QMainWindow):
 			if self.language=="pt": self.languagePortuguese.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="it": self.languageItalian.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
 
 			self.settingsMenu.addMenu(self.spellcheckMenu)
 

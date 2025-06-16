@@ -116,7 +116,7 @@ There are three libraries that comes bundled with **MERK**:
     - Styles are saved and loaded automatically
     - Easy to use GUI text style editor is built-in
     - Changes to text style are immediate, without having to restart!
--   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, German, Portuguese, Italian, and Dutch)
+-   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, German, Portuguese, Italian, Dutch, and Russian)
 -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
     -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
     -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
