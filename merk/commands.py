@@ -532,6 +532,9 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="qt_window_style":
+		if not value in QStyleFactory.keys(): return False
+
 	if setting=="windowbar_justify":
 		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return False
 
@@ -579,6 +582,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			settings = config.build_settings()
 
 			for s in settings:
+				if s=="timestamp_format": continue
 				if not type(settings[s]) is list:
 					if type(settings[s]).__name__=='bool':
 						dtype = "boolean"
@@ -600,7 +604,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list:
+				if type(settings[my_setting]) is list or my_setting=="timestamp_format":
 					t = Message(SYSTEM_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
 					window.writeText(t,False)
 					t = Message(SYSTEM_MESSAGE,'',f"End config search results")
@@ -622,8 +626,9 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				results = []
 				for a in settings:
 					if not type(settings[a]) is list:
-						if fnmatch.fnmatch(a,f"*{my_setting}*"):
-							results.append(a)
+						if a!="timestamp_format":
+							if fnmatch.fnmatch(a,f"*{my_setting}*"):
+								results.append(a)
 
 				t = Message(SYSTEM_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
 				window.writeText(t,False)
@@ -653,7 +658,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			my_value = ' '.join(tokens)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list:
+				if type(settings[my_setting]) is list or my_setting=="timestamp_format":
 					t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" cannot be changed with the {config.ISSUE_COMMAND_SYMBOL}config command")
 					window.writeText(t,False)
 					return True
