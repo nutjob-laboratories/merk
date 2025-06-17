@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 from . import config
+# from . import resources
 
 def format(color, style=''):
 	"""Return a QTextCharFormat with the given attributes.
@@ -83,6 +84,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"xconnect",
 			cmdsymbol+"xconnectssl",
 		]
+
+		# if not resources.is_running_from_pyinstaller():
+		# 	merk.append(cmdsymbol+"nostril")
 
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),

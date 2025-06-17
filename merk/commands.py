@@ -649,8 +649,8 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				window.writeText(t,False)
 			return True
 
-		# Two or more, we're editing config values
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)>=2:
+		# Two and more, we're editing config values
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)>2:
 			settings = config.build_settings()
 
 			tokens.pop(0)

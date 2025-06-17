@@ -84,15 +84,9 @@ class Window(QMainWindow):
 		self.search_button.setIcon(QIcon(LIST_ICON))
 		self.search_button.setToolTip("Search channel list")
 		self.reset_button = QPushButton("Reset")
-		self.refresh = QPushButton('')
-		self.refresh.setIcon(QIcon(REFRESH_ICON))
-		self.refresh.setToolTip("Request new channel list")
 
 		self.search_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
 		self.search_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
-
-		self.refresh.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-		self.refresh.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
 
 		self.moreFive = QRadioButton("5+",self)
 		self.moreTwo = QRadioButton("2+",self)
@@ -108,20 +102,21 @@ class Window(QMainWindow):
 		self.moreTwenty.toggled.connect(self.doReset)
 		self.moreAny.toggled.connect(self.doReset)
 
-		self.searchTopic = QCheckBox("Search topics",self)
+		self.wordwrap = QCheckBox("Word wrap",self)
+		self.wordwrap.stateChanged.connect(self.doWordwrap)
+
+		self.searchTopic = QCheckBox("Topics",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.searchTopic.setChecked(True)
 		self.searchTopic.stateChanged.connect(self.changedSearchTopic)
 
 		self.search_terms.setPlaceholderText("Enter search terms here")
 
 		self.search_button.clicked.connect(self.doSearch)
-		self.refresh.clicked.connect(self.doRefresh)
 		self.reset_button.clicked.connect(self.doResetButton)
 
 		self.search_button.setFlat(True)
-		self.refresh.setFlat(True)
 
-		self.allTerms = QCheckBox("Search all terms",self)
+		self.allTerms = QCheckBox("All terms",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.allTerms.setChecked(True)
 		self.allTerms.stateChanged.connect(self.changedAllTerms)
 
@@ -144,8 +139,8 @@ class Window(QMainWindow):
 		self.sLayout = QHBoxLayout()
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
-		self.sLayout.addWidget(self.refresh)
-		self.sLayout.addWidget(self.reset_button)
+		self.sLayout.addWidget(self.allTerms)
+		self.sLayout.addWidget(self.searchTopic)
 		self.sLayout.setContentsMargins(1,1,1,1)
 
 		self.cLayout = QHBoxLayout()
@@ -155,10 +150,9 @@ class Window(QMainWindow):
 		self.cLayout.addWidget(self.moreFive)
 		self.cLayout.addWidget(self.moreTen)
 		self.cLayout.addWidget(self.moreTwenty)
-		self.cLayout.addWidget(QLabel(" <b>|</b> "))
-		self.cLayout.addWidget(self.allTerms)
-		self.cLayout.addWidget(self.searchTopic)
 		self.cLayout.addStretch()
+		self.cLayout.addWidget(self.wordwrap)
+		self.cLayout.addWidget(self.reset_button)
 
 		if not config.SIMPLIFIED_DIALOGS:
 			self.windowDescription = QLabel(f"""
@@ -193,6 +187,12 @@ class Window(QMainWindow):
 			self.status.show()
 		else:
 			self.status.hide()
+
+	def doWordwrap(self,i):
+		if self.wordwrap.isChecked():
+			self.table_widget.setWordWrap(True)
+		else:
+			self.table_widget.setWordWrap(False)
 
 	def changedAllTerms(self,i):
 		if self.allTerms.isChecked():
@@ -286,10 +286,6 @@ class Window(QMainWindow):
 		self.status_counts.setText(self.format_status_count(data_count,user_count))
 
 		QApplication.restoreOverrideCursor()
-
-	def doRefresh(self):
-		self.client.doing_list_refresh = True
-		self.client.sendLine('LIST')
 
 	def doReset(self):
 		self.refresh_list()
