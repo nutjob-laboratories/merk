@@ -530,6 +530,41 @@ def find_sound_file(filename):
 def exit_from_command(gui):
 	gui.close()
 
+def check_for_sane_values(setting,value):
+
+	if setting=="windowbar_justify":
+		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return False
+
+	if setting=="menubar_justify":
+		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return False
+
+	# Do colors
+	if setting=="syntax_nickname_color":
+		return QColor(value).isValid()
+
+	if setting=="syntax_emoji_color":
+		return QColor(value).isValid()
+
+	if setting=="syntax_alias_color":
+		return QColor(value).isValid()
+
+	if setting=="syntax_background_color":
+		return QColor(value).isValid()
+
+	if setting=="syntax_foreground_color":
+		return QColor(value).isValid()
+
+	if setting=="syntax_channel_color":
+		return QColor(value).isValid()
+
+	if setting=="syntax_command_color":
+		return QColor(value).isValid()
+
+	if setting=="syntax_comment_color":
+		return QColor(value).isValid()
+
+	return True
+
 def executeCommonCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
 	tokens = user_input.split()
@@ -648,6 +683,12 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					else:
 						itype = "unknown"
 					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for \"{my_setting}\" (value is {itype}, requires {dtype})")
+					window.writeText(t,False)
+					return True
+
+				# Check for sanity
+				if not check_for_sane_values(my_setting,my_value):
+					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for \"{my_setting}\"")
 					window.writeText(t,False)
 					return True
 
