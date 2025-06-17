@@ -879,12 +879,6 @@ class Merk(QMainWindow):
 		except:
 			pass
 
-		# Update all editor run menus
-		e = self.getAllEditorWindows()
-		for w in e:
-			c = w.widget()
-			c.buildRunMenu()
-
 		if len(self.getAllServerWindows())==0: self.connected_to_something = False
 
 	def signedOn(self,client):
@@ -923,12 +917,6 @@ class Merk(QMainWindow):
 			for e in self.join_channels:
 				client.join(e[0],e[1])
 			self.join_channels = []
-
-		# Update all editor run menus
-		e = self.getAllEditorWindows()
-		for w in e:
-			c = w.widget()
-			c.buildRunMenu()
 
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			client.sendLine(f"LIST")
@@ -2043,6 +2031,16 @@ class Merk(QMainWindow):
 					retval.append(window)
 		return retval
 
+	def getAllConnectedServerWindows(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					if c.client.registered==True:
+						retval.append(window)
+		return retval
+
 	def getAllSubWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():
@@ -3023,15 +3021,6 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://twisted.org/": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		if is_running_from_pyinstaller():
-			piv = get_pyinstaller_version()
-			if piv:
-				entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller "+piv,self)
-			else:
-				entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
-			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
-			self.helpMenu.addAction(entry)
-
 		entry = QAction(QIcon(PYTHON_ICON),"pyspellchecker 0.8.3",self)
 		entry.triggered.connect(lambda state,u="https://github.com/barrust/pyspellchecker": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
@@ -3043,6 +3032,15 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(PYTHON_ICON),"qt5reactor 0.6.3",self)
 		entry.triggered.connect(lambda state,u="https://github.com/twisted/qt5reactor": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
+
+		if is_running_from_pyinstaller():
+			piv = get_pyinstaller_version()
+			if piv:
+				entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller "+piv,self)
+			else:
+				entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
+			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
+			self.helpMenu.addAction(entry)
 
 	def menuChannelList(self,sw):
 		c = sw.widget()

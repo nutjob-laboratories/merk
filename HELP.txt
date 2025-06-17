@@ -35,7 +35,7 @@ pip <span class="hljs-keyword">install</span> service_identity
 </code></pre><p>To run properly on Linux, the latest version of all required software is recommended.</p>
 <p>There are three libraries that comes bundled with <strong>MERK</strong>:</p>
 <ul>
-<li><a href="https://github.com/twisted/qt5reactor">qt5reactor</a></li>
+<li><a href="https://github.com/twisted/qt5reactor">qt5reactor 0.6.3</a></li>
 <li><a href="https://github.com/barrust/pyspellchecker">pyspellchecker 0.8.3</a></li>
 <li><a href="https://github.com/carpedm20/emoji">emoji 2.14.1</a></li>
 </ul>

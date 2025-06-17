@@ -365,7 +365,7 @@ class Window(QMainWindow):
 
 		self.runMenu = self.menubar.addMenu("Run")
 
-		self.buildRunMenu()
+		self.runMenu.aboutToShow.connect(self.buildRunMenu)
 
 		self.setCentralWidget(self.editor)
 
@@ -386,7 +386,8 @@ class Window(QMainWindow):
 	def buildRunMenu(self):
 		self.runMenu.clear()
 
-		servers = self.parent.getAllServerWindows()
+		servers = self.parent.getAllConnectedServerWindows()
+
 		if len(servers)>0:
 			for window in servers:
 				c = window.widget()
@@ -417,6 +418,7 @@ class Window(QMainWindow):
 				entry = QAction(QIcon(RUN_ICON),"Run script on all servers",self)
 				entry.triggered.connect(self.executeScriptOnAll)
 				self.runMenu.addAction(entry)
+
 			return
 
 		# If there's no connected servers...

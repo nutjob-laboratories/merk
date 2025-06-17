@@ -89,7 +89,7 @@ If you're running Windows, and you're getting errors when trying to run **MERK**
 To run properly on Linux, the latest version of all required software is recommended.
 
 There are three libraries that comes bundled with **MERK**:
- - [qt5reactor](https://github.com/twisted/qt5reactor)
+ - [qt5reactor 0.6.3](https://github.com/twisted/qt5reactor)
  - [pyspellchecker 0.8.3](https://github.com/barrust/pyspellchecker)
  - [emoji 2.14.1](https://github.com/carpedm20/emoji)
 
