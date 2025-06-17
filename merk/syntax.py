@@ -80,6 +80,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"knock",
 			cmdsymbol+"exit",
 			cmdsymbol+"config",
+			cmdsymbol+"xconnect",
+			cmdsymbol+"xconnectssl",
 		]
 
 		STYLES = {
