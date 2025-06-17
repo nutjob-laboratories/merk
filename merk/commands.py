@@ -533,40 +533,40 @@ def exit_from_command(gui):
 def check_for_sane_values(setting,value):
 
 	if setting=="qt_window_style":
-		if not value in QStyleFactory.keys(): return False
+		if not value in QStyleFactory.keys(): return INVALID_STYLE
 
 	if setting=="windowbar_justify":
-		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return False
+		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return INVALID_JUSTIFY
 
 	if setting=="menubar_justify":
-		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return False
+		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return INVALID_JUSTIFY
 
 	# Do colors
 	if setting=="syntax_nickname_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_emoji_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_alias_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_background_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_foreground_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_channel_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_command_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_comment_color":
-		return QColor(value).isValid()
+		if not QColor(value).isValid(): return INVALID_COLOR
 
-	return True
+	return ALL_VALID_SETTINGS
 
 def executeCommonCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
@@ -692,8 +692,20 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					return True
 
 				# Check for sanity
-				if not check_for_sane_values(my_setting,my_value):
+				check = check_for_sane_values(my_setting,my_value)
+				if check!=ALL_VALID_SETTINGS:
+					if check==INVALID_STYLE:
+						qlist = [f"\"{item}\"" for item in QStyleFactory.keys()]
+						reason = f"Invalid Qt style (must be {", ".join(qlist[:-1]) + " or " + qlist[-1]})"
+					elif check==INVALID_JUSTIFY:
+						reason = "Invalid justify value (must be \"center\", \"left\", or \"right\")"
+					elif check==INVALID_COLOR:
+						reason = f"Invalid color (\"{my_value}\" is not a recognized color)"
+					else:
+						reason = "Invalid setting for unknown reasons"
 					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for \"{my_setting}\"")
+					window.writeText(t,False)
+					t = Message(ERROR_MESSAGE,'',f"{reason}")
 					window.writeText(t,False)
 					return True
 
