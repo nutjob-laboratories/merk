@@ -687,15 +687,16 @@ class Window(QMainWindow):
 	def addInputOutput(self,data):
 
 		if config.SHOW_CONNECTION_DEBUG_STREAM:
-			i = QListWidgetItem()
+			if hasattr(self,"connection"):
+				i = QListWidgetItem()
 
-			font = QFont()
-			font.setBold(True)
-			i.setFont(font)
-			i.setText(data)
+				font = QFont()
+				font.setBold(True)
+				i.setFont(font)
+				i.setText(data)
 
-			self.connection.addItem(i)
-			self.connection.scrollToBottom()
+				self.connection.addItem(i)
+				self.connection.scrollToBottom()
 
 	def showChannelList(self):
 		if len(self.client.server_channel_list)==0:
