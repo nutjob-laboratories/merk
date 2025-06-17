@@ -547,9 +547,14 @@ class Dialog(QDialog):
 			buttons.button(QDialogButtonBox.Cancel).setText("Cancel")
 
 		if self.initial:
-			self.skip = QPushButton(" Open "+APPLICATION_NAME+" ")
-			buttons.addButton(self.skip,QDialogButtonBox.ActionRole)
+			self.skip = QPushButton(f" Open {APPLICATION_NAME} ")
+			self.skip.setToolTip(f"Open {APPLICATION_NAME} without connecting")
 			self.skip.clicked.connect(self.doSkip)
+
+			initialLayout = QHBoxLayout()
+			initialLayout.addWidget(self.skip)
+			initialLayout.addStretch()
+			initialLayout.addWidget(buttons)
 
 		if self.disconnect_message!='':
 
@@ -584,7 +589,10 @@ class Dialog(QDialog):
 			finalLayout.addLayout(vLayout)
 		finalLayout.addLayout(bannerTabs)
 		finalLayout.addWidget(self.saveU)
-		finalLayout.addWidget(buttons)
+		if self.initial:
+			finalLayout.addLayout(initialLayout)
+		else:
+			finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
