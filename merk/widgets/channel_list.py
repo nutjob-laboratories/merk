@@ -144,7 +144,7 @@ class Window(QMainWindow):
 		self.sLayout.setContentsMargins(1,1,1,1)
 
 		self.cLayout = QHBoxLayout()
-		self.cLayout.addWidget(QLabel("<b>User count:</b>"))
+		self.cLayout.addWidget(QLabel("<small><b>Filter by user count</b></small> "))
 		self.cLayout.addWidget(self.moreAny)
 		self.cLayout.addWidget(self.moreTwo)
 		self.cLayout.addWidget(self.moreFive)
