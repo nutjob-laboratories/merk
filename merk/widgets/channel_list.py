@@ -144,7 +144,7 @@ class Window(QMainWindow):
 		self.sLayout.setContentsMargins(1,1,1,1)
 
 		self.cLayout = QHBoxLayout()
-		self.cLayout.addWidget(QLabel("<b>Users:</b>"))
+		self.cLayout.addWidget(QLabel("<b>User count:</b>"))
 		self.cLayout.addWidget(self.moreAny)
 		self.cLayout.addWidget(self.moreTwo)
 		self.cLayout.addWidget(self.moreFive)
@@ -267,9 +267,9 @@ class Window(QMainWindow):
 				if icount<20:
 					add_entry = False
 			if len(entry[2])==0:
-				e = f"{entry[0]} ({count})"
+				e = f"{entry[0]} {count}"
 			else:
-				e = f"{entry[0]} ({count}) - {entry[2]}"
+				e = f"{entry[0]} {count} - {entry[2]}"
 			i = QListWidgetItem()
 			i.setText(e)
 			font = QFont()
@@ -284,6 +284,14 @@ class Window(QMainWindow):
 		self.table_widget.sortItems()
 
 		self.status_counts.setText(self.format_status_count(data_count,user_count))
+
+		if self.table_widget.count()==0:
+			i = QListWidgetItem()
+			i.setText("No channels found.")
+			font = QFont()
+			font.setItalic(True)
+			i.setFont(font)
+			self.table_widget.addItem(i)
 
 		QApplication.restoreOverrideCursor()
 
@@ -359,5 +367,13 @@ class Window(QMainWindow):
 		self.table_widget.sortItems()
 
 		self.status_counts.setText(self.format_status_count(data_count,user_count))
+
+		if self.table_widget.count()==0:
+			i = QListWidgetItem()
+			i.setText("No channels found.")
+			font = QFont()
+			font.setItalic(True)
+			i.setFont(font)
+			self.table_widget.addItem(i)
 
 	
