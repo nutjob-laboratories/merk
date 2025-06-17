@@ -3032,6 +3032,18 @@ class Merk(QMainWindow):
 			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
 			self.helpMenu.addAction(entry)
 
+		entry = QAction(QIcon(PYTHON_ICON),"pyspellchecker 0.8.3",self)
+		entry.triggered.connect(lambda state,u="https://github.com/barrust/pyspellchecker": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(PYTHON_ICON),"emoji 2.14.1",self)
+		entry.triggered.connect(lambda state,u="https://github.com/carpedm20/emoji": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
+		entry = QAction(QIcon(PYTHON_ICON),"qt5reactor 0.6.3",self)
+		entry.triggered.connect(lambda state,u="https://github.com/twisted/qt5reactor": self.openLinkInBrowser(u))
+		self.helpMenu.addAction(entry)
+
 	def menuChannelList(self,sw):
 		c = sw.widget()
 		if c.client.channel_list_window==None:
