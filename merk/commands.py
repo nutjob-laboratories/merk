@@ -716,6 +716,8 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
 				window.writeText(t,False)
+				t = Message(SYSTEM_MESSAGE,'',f"Please restart {APPLICATION_NAME} as soon as possible!")
+				window.writeText(t,False)
 			else:
 				t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid configuration setting")
 				window.writeText(t,False)
