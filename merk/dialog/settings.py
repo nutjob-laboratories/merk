@@ -1121,7 +1121,7 @@ class Dialog(QDialog):
 			You can set the default settings needed to connect to
 			an IRC server here. These options can be set or changed
 			in the server connection dialog. If both your <b>nickname</b> and <b>alternate</b>
-			nickname are taken (or if you have not set an <b>alternate</b> nickname),
+			are taken (or if you have not set an <b>alternate</b>),
 			a random number will be generated and attached to your <b>nickname</b> for use.
 			<br>
 			""")

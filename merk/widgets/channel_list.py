@@ -229,9 +229,7 @@ class Window(QMainWindow):
 			channel_topic = entry[2]
 
 			if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
-				target = " ".join(target.split())
-				target = f"*{target}*"
-				target = target.replace(' ','*')
+				target = "*"+"*".join(target.split())+"*"
 
 			if fnmatch.fnmatch(channel_name,f"{target}"):
 				results.append(entry)
