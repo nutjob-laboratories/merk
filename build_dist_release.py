@@ -98,6 +98,12 @@ archive_name = f"merk-{major}.{minor}.zip"
 
 os.rename('dist.zip', archive_name)
 
+if os.path.isfile(f"./downloads/{archive_name}"): os.remove(f"./downloads/{archive_name}")
+if os.path.isfile(f"./downloads/merk-latest.zip"): os.remove("./downloads/merk-latest.zip")
+
 shutil.copy(archive_name, "./downloads/"+archive_name)
+
+shutil.copy(archive_name, "./downloads/"+f"merk-{major}.zip")
+shutil.copy(archive_name, "./downloads/merk-latest.zip")
 
 os.remove(archive_name)
