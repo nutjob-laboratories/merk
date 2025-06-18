@@ -330,7 +330,7 @@ class Dialog(QDialog):
 		"""
 
 		if self.initial:
-			self.setWindowTitle(APPLICATION_NAME+" "+APPLICATION_VERSION)
+			self.setWindowTitle(APPLICATION_NAME+" IRC Client")
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
