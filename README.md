@@ -1,15 +1,14 @@
-
-
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
+  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.042">MERK 0.042</a></big></b><br>
+  <b>Current development version: 0.042.000</b><br>
 </p>
 
  - [Downloads](#Downloads)
  - [Summary](#Summary)
  - [Running MERK on Windows](#running-merk-on-windows)
- - [Making MERK Portable on Windows](#making-merk-portable-on-windows)
  - [Running MERK with Python](#running-merk-with-python)
  - [Python Requirements](#python-requirements)
  - [Features](#Features)
@@ -22,10 +21,11 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted.
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All of these files available for direct download are for the current development version of **MERK**. 
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
+| Current Release |  -  | [MERK 0.042 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.042)  |
 | Zip Archive|  Cross-platform  | [Download MERK 0.042.000 (8.62 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
 | Zip Archive|  Windows | [Download MERK 0.042.000 (54.65 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
 |   Windows Installer|  Windows | [Download MERK 0.042.000 (41.75 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
@@ -35,36 +35,20 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
   
 **MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.042.000**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
-**MERK** is still in development, but it works, and can be used for most IRC activities.
-
-For those that don't want to install Python or all the requirements, you can [download the **MERK** installer for Windows](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1).
+**MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.042](https://github.com/nutjob-laboratories/merk/releases/tag/0.042).
 
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!
 
 # Running MERK on Windows
+**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirement. You can [download the current stable release here](https://github.com/nutjob-laboratories/merk/releases/tag/0.042).
 
-If you're running Windows, you can run **MERK** without having to install Python or its requirements! First, [download the Windows installer of **MERK** 0.042.000](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1). Extract the downloaded zip file and double click on `merk-setup.exe` to install **MERK** to wherever you'd like.
+To run **MERK**, unzip the file you downloaded, and double click on `merk.exe` to run the client. If you downloaded the installer, double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
 
-For a "portable" version of **MERK**, [download the zip file of **MERK** 0.042.000 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1). Extract the zip archive where ever you want, and double click on `merk.exe` to run **MERK**!
-
-For an even easier "install", [download the "standalone" executable of **MERK** 0.042.000](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1) to wherever you want, extract the zipped executable, and double click it to run **MERK**!
-
-The Windows version of **MERK** is being built with [PyInstaller](https://www.pyinstaller.org/).
-
-A note: all command-line arguments, as documented below, work on the standalone version of **MERK**.
-
-# Making MERK Portable on Windows
-If you want to run **MERK** from a USB stick, and save all configuration and user data to the USB stick (or wherever you're running **MERK** from), it's really easy. First, [download the zip file of **MERK** 0.042.000 for Windows](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), and extract it to your USB stick. Then, open [Notepad](https://en.wikipedia.org/wiki/Windows_Notepad), and enter this into a new document:
-
-```merk.exe --config-local```
-
-Save this file to wherever you extracted **MERK** to. You can give it any name you'd like, as long as the file extension you save the file to is `BAT`. So, if you'd like to name the file "MyMerk", you'd save the file with the name `MyMerk.bat`. You're done! You've made **MERK** portable.
-
-Whenever you want to run **MERK** off of your USB stick, double click the `.bat` file you created instead of `merk.exe`. This will run **MERK** completely normally, only all configuration files will be saved to the same directory **MERK** "lives" in. So, you can take **MERK** with you on your USB stick, and it will keep all the configuration files and logs on the USB stick.
+A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
 # Running MERK with Python
 
-First, make sure that all the [requirements](#python-requirements) are installed. Next, [download **MERK**](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1). Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+First, make sure that all the [requirements](#python-requirements) are installed. Next, download **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
 
     python merk.py
 
@@ -279,7 +263,7 @@ All of these commands can be issued from the text input widget, or from scripts.
 
 
 # Example Command-line Usage
-In the following examples, the first command-line is how you would do the task using **MERK** as a [Python script](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1), and second command-line is how you would do it using the [**MERK** Windows executable](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1). Note that the command-lines, other than the initial executable, are the same!
+In the following examples, the first command-line is how you would do the task using **MERK** as a Python script, and second command-line is how you would do it using the **MERK** Windows executable. Note that the command-lines, other than the initial executable, are the same!
 
 Let's assume that you want to use the command-line to connect **MERK** to the `2600.net` network and join the `#linux` channel:
 ```
