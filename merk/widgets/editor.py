@@ -363,6 +363,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertPlay)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(APPLICATION_ICON),"Exit application",self)
+		entry.triggered.connect(self.insertExit)
+		self.commandMenu.addAction(entry)
+
 		self.runMenu = self.menubar.addMenu("Run")
 
 		self.runMenu.aboutToShow.connect(self.buildRunMenu)
@@ -481,6 +485,17 @@ class Window(QMainWindow):
 		password = e[2]
 		ssl = e[3]
 
+		if e[4]==True:
+			if ssl==True:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"xconnectssl"
+			else:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"xconnect"
+		else:
+			if ssl==True:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"connectssl"
+			else:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"connect"
+
 		if len(port)==0: port = "6667"
 
 		if len(password)==0:
@@ -488,12 +503,9 @@ class Window(QMainWindow):
 		else:
 			cmd = host+" "+port+" "+password+"\n"
 
-		if ssl==True:
-			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"connectssl "+cmd)
-			self.updateApplicationTitle()
-		else:
-			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"connect "+cmd)
-			self.updateApplicationTitle()
+		self.editor.insertPlainText(my_command+" "+cmd)
+		self.updateApplicationTitle()
+
 
 	def insertQuit(self):
 		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
@@ -536,6 +548,10 @@ class Window(QMainWindow):
 		msg_box.setText(message)
 		msg_box.setStandardButtons(QMessageBox.Ok)
 		msg_box.exec_()
+
+	def insertExit(self):
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"exit\n")
+		self.updateApplicationTitle()
 
 	def insertPlay(self):
 		desktop =  os.path.join(os.path.expanduser("~"), "Desktop")

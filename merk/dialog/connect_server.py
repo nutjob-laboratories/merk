@@ -44,9 +44,15 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = [self.name.text(),self.key.text(),self.password.text(),self.ssl]
+		retval = [self.name.text(),self.key.text(),self.password.text(),self.ssl,self.execute]
 
 		return retval
+
+	def clickExe(self,state):
+		if state == Qt.Checked:
+			self.execute = True
+		else:
+			self.execute = False
 
 	def clickSSL(self,state):
 		if state == Qt.Checked:
@@ -60,6 +66,7 @@ class Dialog(QDialog):
 		self.parent = parent
 
 		self.ssl = False
+		self.execute = False
 
 		self.setWindowTitle("Connect to Server")
 		self.setWindowIcon(QIcon(CONNECT_ICON))
@@ -90,6 +97,9 @@ class Dialog(QDialog):
 		self.savessl = QCheckBox("Connect via SSL",self)
 		self.savessl.stateChanged.connect(self.clickSSL)
 
+		self.saveexe = QCheckBox("Execute connection script",self)
+		self.saveexe.stateChanged.connect(self.clickExe)
+
 		# Buttons
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -101,7 +111,7 @@ class Dialog(QDialog):
 		chanLayout.addLayout(keyLayout)
 		chanLayout.addLayout(passLayout)
 		chanLayout.addWidget(self.savessl)
-
+		chanLayout.addWidget(self.saveexe)
 		chanInfoBox = QGroupBox("",self)
 		chanInfoBox.setLayout(chanLayout)
 		chanInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
