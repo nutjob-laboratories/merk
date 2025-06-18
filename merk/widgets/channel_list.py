@@ -222,14 +222,14 @@ class Window(QMainWindow):
 
 		target = self.search_terms.text()
 
+		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
+			target = "*"+"*".join(target.split())+"*"
+
 		results = []
 		for entry in self.client.server_channel_list:
 			channel_name = entry[0]
 			channel_count = entry[1]
 			channel_topic = entry[2]
-
-			if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
-				target = "*"+"*".join(target.split())+"*"
 
 			if fnmatch.fnmatch(channel_name,f"{target}"):
 				results.append(entry)

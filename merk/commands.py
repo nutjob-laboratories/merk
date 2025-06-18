@@ -35,6 +35,7 @@ import uuid
 import re
 from pathlib import Path
 import fnmatch
+import datetime
 
 import emoji
 
@@ -823,6 +824,15 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			tokens.pop(0)
 			target = ' '.join(tokens)
+
+			# Check for list "freshness"
+			dt1 = datetime.fromtimestamp(window.client.last_list_timestamp)
+			dt2 = datetime.fromtimestamp(datetime.utcnow().timestamp())
+			time_difference = dt2 - dt1
+			if time_difference.total_seconds() / 60 > 60:
+				# list was last fetched an hour or more ago
+				t = Message(SYSTEM_MESSAGE,'',f"List was last fetched a while ago, you may want to use {config.ISSUE_COMMAND_SYMBOL}refresh to fetch a new one")
+				window.writeText(t,False)
 
 			# Show the channel list window and inject search
 			window.showChannelListSearch(target)

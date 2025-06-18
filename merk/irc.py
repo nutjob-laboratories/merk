@@ -132,6 +132,7 @@ class IRC_Connection(irc.IRCClient):
 		self.server_user_count = 0
 		self.server_channel_count = 0
 		self.last_list_fetch = ''
+		self.last_list_timestamp = 0
 		self.is_listing_channels = False
 
 		self.last_interaction = 0
@@ -155,6 +156,7 @@ class IRC_Connection(irc.IRCClient):
 	def irc_RPL_LISTEND(self,prefix,params):
 		self.is_listing_channels = False
 		self.last_list_fetch = datetime.now().strftime("%Y-%m-%d "+config.TIMESTAMP_FORMAT)
+		self.last_list_timestamp = datetime.utcnow().timestamp()
 		self.gui.gotRefreshEnd(self)
 
 	def irc_RPL_LISTSTART(self,prefix,params):

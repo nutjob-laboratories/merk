@@ -18,6 +18,14 @@ f = open("./merk/data/win_minor.txt","r")
 win_minor = f.read()
 f.close()
 
+f = open("./merk/data/release.txt","r")
+release = f.read()
+f.close()
+
+f = open("./merk/data/url.txt","r")
+rurl = f.read()
+f.close()
+
 # Build README
 
 x = open("README.txt",mode="r", encoding='latin-1')
@@ -28,6 +36,8 @@ readme = readme.replace("!_VERSION_!",major)
 readme = readme.replace("!_MINOR_!",minor)
 readme = readme.replace("!_FULL_VERSION_!",major+"."+minor)
 readme = readme.replace("!_WIN_VERSION_!",win_major+"."+win_minor)
+readme = readme.replace("!_RELEASE_!",release)
+readme = readme.replace("!_RELEASE_URL_!",rurl)
 
 # !_PYSIZE_!
 dist_file_size =  os.path.getsize("./downloads/merk-latest.zip")
