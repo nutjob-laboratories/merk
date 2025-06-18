@@ -21,7 +21,7 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All of these files available for direct download are for the current development version of **MERK**. 
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All files available for direct download are for the current development version of **MERK**. 
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
@@ -40,9 +40,9 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!
 
 # Running MERK on Windows
-**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirement. You can [download the current stable release here](https://github.com/nutjob-laboratories/merk/releases/tag/0.042).
+**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release here](https://github.com/nutjob-laboratories/merk/releases/tag/0.042).
 
-To run **MERK**, unzip the file you downloaded, and double click on `merk.exe` to run the client. If you downloaded the installer, double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
+To run **MERK**, unzip the file you downloaded to any directory, and double click on `merk.exe` to run the client. If you downloaded the installer, double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
 
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
