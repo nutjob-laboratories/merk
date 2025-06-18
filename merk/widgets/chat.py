@@ -711,7 +711,12 @@ class Window(QMainWindow):
 	def refreshChannelList(self):
 		self.client.sendLine("LIST")
 
-	def showChannelListSearch(self,search_terms):
+	def showChannelListSearch(self,search_terms,do_fresh_search=False):
+		if do_fresh_search==True:
+			self.client.need_to_get_list = True
+			self.client.sendLine("LIST")
+			self.client.list_search_terms = search_terms
+			return
 		if len(self.client.server_channel_list)==0:
 			self.client.need_to_get_list = True
 			self.client.sendLine("LIST")

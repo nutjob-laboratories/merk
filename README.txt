@@ -158,6 +158,7 @@ usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
+                      [--reset-all]
                       [SERVER] [PORT]
 
 Connection:
@@ -192,6 +193,7 @@ Options:
   -o, --on-top          Application window always on top
   --reset               Resets configuration file to default values
   --reset-user          Resets user file to default values
+  --reset-all           Resets all configuration files to default values
 
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)

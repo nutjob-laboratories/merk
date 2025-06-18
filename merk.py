@@ -107,6 +107,7 @@ configuration_group.add_argument( "--user-file",dest="userfile",type=str,help="F
 configuration_group.add_argument( "--config-file",dest="configfile",type=str,help="File to use for configuration data", metavar="FILENAME", default=None)
 configuration_group.add_argument( "--reset",dest="configdefault", help=f"Reset configuration file to default values", action="store_true")
 configuration_group.add_argument( "--reset-user",dest="userdefault", help=f"Reset user file to default values", action="store_true")
+configuration_group.add_argument( "--reset-all",dest="alldefault", help=f"Reset all configuration files to default values", action="store_true")
 
 misc_group = parser.add_argument_group('Appearance')
 misc_group.add_argument( "-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)", metavar="NAME", default="")
@@ -139,6 +140,12 @@ if __name__ == '__main__':
 		else:
 			args.configdir = os.path.dirname(sys.executable)
 
+	# If we're resetting all config files, make
+	# sure that happens
+	if args.alldefault:
+		args.configdefault = True
+		args.userdefault = True
+
 	if args.configfile:
 		# Initialize the config system
 		config.initialize_file(args.configdir,args.configname,args.configfile)
@@ -150,7 +157,6 @@ if __name__ == '__main__':
 	if args.configdefault:
 		sys.stdout.write("Resetting configuration file to defaults\n")
 		config.save_settings(config.CONFIG_FILE)
-		sys.exit(0)
 
 	# Initialize the user system
 	if args.userfile!=None:
@@ -161,7 +167,6 @@ if __name__ == '__main__':
 	if args.userdefault:
 		sys.stdout.write("Resetting user file to defaults\n")
 		user.save_user(user.USER_FILE)
-		sys.exit(0)
 
 	# Initialize the styles system
 	styles.initialize(args.configdir,args.configname)

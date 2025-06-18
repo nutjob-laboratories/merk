@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.042">MERK 0.042</a></big></b><br>
-  <b>Current development version: 0.042.002</b><br>
+  <b>Current development version: 0.042.003</b><br>
 </p>
 
  - [Downloads](#Downloads)
@@ -26,14 +26,14 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
 | Current Release |  -  | [MERK 0.042 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.042)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.042.002 (8.62 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
-| Zip Archive|  Windows | [Download MERK 0.042.002 (54.65 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
-|   Windows Installer|  Windows | [Download MERK 0.042.002 (41.75 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
-|   Single Executable|  Windows | [Download MERK 0.042.002 (54.25 MB)](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.042.003 (8.62 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.042.003 (54.65 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.042.003 (41.75 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
+|   Single Executable|  Windows | [Download MERK 0.042.003 (54.25 MB)](https://www.dropbox.com/scl/fi/0r8uq83lrrurh1zoy7g0z/merk-windows-standalone.zip?rlkey=qgowd8ri1qdftuksb152x293l&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.042.002**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.042.003**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.042](https://github.com/nutjob-laboratories/merk/releases/tag/0.042).
 
@@ -158,6 +158,7 @@ usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
+                      [--reset-all]
                       [SERVER] [PORT]
 
 Connection:
@@ -192,6 +193,7 @@ Options:
   -o, --on-top          Application window always on top
   --reset               Resets configuration file to default values
   --reset-user          Resets user file to default values
+  --reset-all           Resets all configuration files to default values
 
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)
