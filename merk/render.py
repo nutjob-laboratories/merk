@@ -29,6 +29,7 @@ import html
 
 from .resources import *
 from . import config
+from . import styles
 
 IRC_00 = "#FFFFFF"
 IRC_01 = "#000000"
@@ -167,6 +168,8 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 </table>'''
 
 def render_message(message,style,client=None):
+
+	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 	
 	msg_to_display = message.contents
 
@@ -185,6 +188,10 @@ def render_message(message,style,client=None):
 
 	if config.CONVERT_CHANNELS_TO_LINKS:
 		if client!=None:
+			if config.DO_NOT_APPLY_STYLES_TO_TEXT:
+				mystyle = f"color:{foreground};"
+			else:
+				mystyle = style["hyperlink"]
 			if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
 				try:
 					d = []
@@ -195,7 +202,7 @@ def render_message(message,style,client=None):
 							# doesn't exist, the channel link will not be created
 							if client.server_has_channel(x) and len(x)>1:
 								o = "<a href=\""+x+"\" "
-								o = o + "style=\""+style["hyperlink"]+"\">"+x+"</a>"
+								o = o + "style=\""+mystyle+"\">"+x+"</a>"
 								w = o
 
 						d.append(w)
@@ -204,7 +211,7 @@ def render_message(message,style,client=None):
 					pass
 
 	if config.CONVERT_URLS_TO_LINKS:
-		msg_to_display = inject_www_links(msg_to_display,style["hyperlink"])
+		msg_to_display = inject_www_links(msg_to_display,style)
 
 	if config.DISPLAY_IRC_COLORS:
 		if string_has_irc_formatting_codes(msg_to_display):
@@ -222,79 +229,134 @@ def render_message(message,style,client=None):
 	if config.FORCE_MONOSPACE_RENDERING:
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 
-	if message.type==SYSTEM_MESSAGE:
-		output = SYSTEM_TEMPLATE
-		output_style = style["system"]
-		if config.SYSTEM_MESSAGE_PREFIX!='':
-			msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
-	elif message.type==ERROR_MESSAGE:
-		output = SYSTEM_TEMPLATE
-		output_style = style["error"]
-		if config.SYSTEM_MESSAGE_PREFIX!='':
-			msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
-	elif message.type==ACTION_MESSAGE:
-		output = SYSTEM_TEMPLATE
-		output_style = style["action"]
-	elif message.type==CHAT_MESSAGE:
-		output = MESSAGE_TEMPLATE
-		output_style = style["message"]
-	elif message.type==SELF_MESSAGE:
-		output = MESSAGE_TEMPLATE
-		output_style = style["message"]
-	elif message.type==NOTICE_MESSAGE:
-		if len(nick)==0:
+	if not config.DO_NOT_APPLY_STYLES_TO_TEXT:
+
+		if message.type==SYSTEM_MESSAGE:
 			output = SYSTEM_TEMPLATE
-			output_style = style["notice"]
-		else:
+			output_style = style["system"]
+			if config.SYSTEM_MESSAGE_PREFIX!='':
+				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
+		elif message.type==ERROR_MESSAGE:
+			output = SYSTEM_TEMPLATE
+			output_style = style["error"]
+			if config.SYSTEM_MESSAGE_PREFIX!='':
+				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
+		elif message.type==ACTION_MESSAGE:
+			output = SYSTEM_TEMPLATE
+			output_style = style["action"]
+		elif message.type==CHAT_MESSAGE:
 			output = MESSAGE_TEMPLATE
 			output_style = style["message"]
-	elif message.type==SERVER_MESSAGE:
-		output = SYSTEM_TEMPLATE
-		output_style = style["server"]
-	elif message.type==PRIVATE_MESSAGE:
-		output = MESSAGE_TEMPLATE
-		output_style = style["message"]
-	elif message.type==RAW_SYSTEM_MESSAGE:
-		output = SYSTEM_TEMPLATE
-		output_style = style["raw"]
-	elif message.type==HORIZONTAL_RULE_MESSAGE:
+		elif message.type==SELF_MESSAGE:
+			output = MESSAGE_TEMPLATE
+			output_style = style["message"]
+		elif message.type==NOTICE_MESSAGE:
+			if len(nick)==0:
+				output = SYSTEM_TEMPLATE
+				output_style = style["notice"]
+			else:
+				output = MESSAGE_TEMPLATE
+				output_style = style["message"]
+		elif message.type==SERVER_MESSAGE:
+			output = SYSTEM_TEMPLATE
+			output_style = style["server"]
+		elif message.type==PRIVATE_MESSAGE:
+			output = MESSAGE_TEMPLATE
+			output_style = style["message"]
+		elif message.type==RAW_SYSTEM_MESSAGE:
+			output = SYSTEM_TEMPLATE
+			output_style = style["raw"]
+		elif message.type==HORIZONTAL_RULE_MESSAGE:
 
-		if test_if_background_is_light(style["all"]):
-			output = HORIZONTAL_RULE
-		else:
-			output = LIGHT_HORIZONTAL_RULE
+			if test_if_background_is_light(style["all"]):
+				output = HORIZONTAL_RULE
+			else:
+				output = LIGHT_HORIZONTAL_RULE
 
-		style = style["message"]
-	elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
+			style = style["message"]
+		elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
 
-		if test_if_background_is_light(style["all"]):
-			output = HARD_HORIZONTAL_RULE
-		else:
-			output = HARD_LIGHT_HORIZONTAL_RULE
+			if test_if_background_is_light(style["all"]):
+				output = HARD_HORIZONTAL_RULE
+			else:
+				output = HARD_LIGHT_HORIZONTAL_RULE
 
-		style = style["message"]
-	elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
+			style = style["message"]
+		elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
 
-		if test_if_background_is_light(style["all"]):
-			output = TEXT_HORIZONTAL_RULE_TEMPLATE
-		else:
-			output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
+			if test_if_background_is_light(style["all"]):
+				output = TEXT_HORIZONTAL_RULE_TEMPLATE
+			else:
+				output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
 
-		style = style["message"]
-	elif message.type==WHOIS_MESSAGE:
-		output = MESSAGE_TEMPLATE
-		output_style = style["server"]
-	elif message.type==DATE_MESSAGE:
+			style = style["message"]
+		elif message.type==WHOIS_MESSAGE:
+			output = MESSAGE_TEMPLATE
+			output_style = style["server"]
+		elif message.type==DATE_MESSAGE:
 
-		if test_if_background_is_light(style["all"]):
-			output = DATE_MESSAGE_TEMPLATE
-		else:
-			output = LIGHT_DATE_MESSAGE_TEMPLATE
+			if test_if_background_is_light(style["all"]):
+				output = DATE_MESSAGE_TEMPLATE
+			else:
+				output = LIGHT_DATE_MESSAGE_TEMPLATE
 
-		style = style["message"]
-	elif message.type==LIST_MESSAGE:
-		output = SYSTEM_TEMPLATE
-		output_style = style["message"]
+			style = style["message"]
+		elif message.type==LIST_MESSAGE:
+			output = SYSTEM_TEMPLATE
+			output_style = style["message"]
+
+	else:
+		if message.type==SYSTEM_MESSAGE:
+			output = SYSTEM_TEMPLATE
+			if config.SYSTEM_MESSAGE_PREFIX!='':
+				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
+		elif message.type==ERROR_MESSAGE:
+			output = SYSTEM_TEMPLATE
+			if config.SYSTEM_MESSAGE_PREFIX!='':
+				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
+		elif message.type==ACTION_MESSAGE:
+			output = SYSTEM_TEMPLATE
+		elif message.type==CHAT_MESSAGE:
+			output = MESSAGE_TEMPLATE
+		elif message.type==SELF_MESSAGE:
+			output = MESSAGE_TEMPLATE
+		elif message.type==NOTICE_MESSAGE:
+			if len(nick)==0:
+				output = SYSTEM_TEMPLATE
+			else:
+				output = MESSAGE_TEMPLATE
+		elif message.type==SERVER_MESSAGE:
+			output = SYSTEM_TEMPLATE
+		elif message.type==PRIVATE_MESSAGE:
+			output = MESSAGE_TEMPLATE
+		elif message.type==RAW_SYSTEM_MESSAGE:
+			output = SYSTEM_TEMPLATE
+		elif message.type==HORIZONTAL_RULE_MESSAGE:
+			if test_if_background_is_light(style["all"]):
+				output = HORIZONTAL_RULE
+			else:
+				output = LIGHT_HORIZONTAL_RULE
+		elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
+			if test_if_background_is_light(style["all"]):
+				output = HARD_HORIZONTAL_RULE
+			else:
+				output = HARD_LIGHT_HORIZONTAL_RULE
+		elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
+			if test_if_background_is_light(style["all"]):
+				output = TEXT_HORIZONTAL_RULE_TEMPLATE
+			else:
+				output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
+		elif message.type==WHOIS_MESSAGE:
+			output = MESSAGE_TEMPLATE
+		elif message.type==DATE_MESSAGE:
+
+			if test_if_background_is_light(style["all"]):
+				output = DATE_MESSAGE_TEMPLATE
+			else:
+				output = LIGHT_DATE_MESSAGE_TEMPLATE
+		elif message.type==LIST_MESSAGE:
+			output = SYSTEM_TEMPLATE
+		output_style = f"color:{foreground};"
 
 	if style=="":
 		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)
@@ -314,24 +376,28 @@ def render_message(message,style,client=None):
 		else:
 			output = output.replace("!TIMESTAMP!",'')
 
-	if message.type==SELF_MESSAGE:
-		user_style = style["self"]
-	elif message.type==CHAT_MESSAGE:
-		user_style = style["username"]
-	elif message.type==NOTICE_MESSAGE:
-		user_style = style["notice"]
-	elif message.type==PRIVATE_MESSAGE:
-		user_style = style["private"]
-	elif message.type==WHOIS_MESSAGE:
-		user_style = style["username"]
-	else:
-		user_style = ''
+	if not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 
-	if message.type!=ACTION_MESSAGE:
-		if message.type!=NOTICE_MESSAGE and len(nick)>0:
-			idl = config.NICKNAME_PAD_LENGTH - len(nick)
-			if idl>0:
-				nick = ('&nbsp;'*idl)+nick
+		if message.type==SELF_MESSAGE:
+			user_style = style["self"]
+		elif message.type==CHAT_MESSAGE:
+			user_style = style["username"]
+		elif message.type==NOTICE_MESSAGE:
+			user_style = style["notice"]
+		elif message.type==PRIVATE_MESSAGE:
+			user_style = style["private"]
+		elif message.type==WHOIS_MESSAGE:
+			user_style = style["username"]
+		else:
+			user_style = ''
+
+		if message.type!=ACTION_MESSAGE:
+			if message.type!=NOTICE_MESSAGE and len(nick)>0:
+				idl = config.NICKNAME_PAD_LENGTH - len(nick)
+				if idl>0:
+					nick = ('&nbsp;'*idl)+nick
+	else:
+		user_style = f"color:{foreground};"
 
 	output = output.replace("!ID_STYLE!",user_style)
 	output = output.replace("!ID!",nick)
@@ -344,6 +410,12 @@ def render_message(message,style,client=None):
 	return output
 
 def inject_www_links(txt,style):
+
+	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
+		background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+		style = f"color:{foreground};"
+	else:
+		style = style["hyperlink"]
 
 	urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', txt)
 	for u in urls:

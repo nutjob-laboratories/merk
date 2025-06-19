@@ -988,6 +988,11 @@ class Dialog(QDialog):
 			self.notInputWidget.setEnabled(False)
 			self.notUserlist.setEnabled(False)
 
+		self.noStyles = QCheckBox("Do not apply text styles to\ndisplayed text",self)
+		if config.DO_NOT_APPLY_STYLES_TO_TEXT: self.noStyles.setChecked(True)
+		self.noStyles.stateChanged.connect(self.changedSettingRerender)
+		self.noStyles.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
@@ -1001,6 +1006,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.forceDefault)
 		appearanceLayout.addWidget(self.notInputWidget)
 		appearanceLayout.addWidget(self.notUserlist)
+		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
@@ -2923,6 +2929,7 @@ class Dialog(QDialog):
 		config.PROMPT_FOR_AWAY_MESSAGE = self.promptAway.isChecked()
 		config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = self.createWindowOut.isChecked()
 		config.CONVERT_CHANNELS_TO_LINKS = self.linkChannel.isChecked()
+		config.DO_NOT_APPLY_STYLES_TO_TEXT = self.noStyles.isChecked()
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()
