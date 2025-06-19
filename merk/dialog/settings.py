@@ -2230,14 +2230,19 @@ class Dialog(QDialog):
 		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
 		self.showLinks.stateChanged.connect(self.changedSettingRerender)
 
-		self.createWindow = QCheckBox("Create windows for private chat",self)
+		self.createWindow = QCheckBox("Create windows for incoming\nprivate chat",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
 		self.createWindow.stateChanged.connect(self.changedSetting)
+		self.createWindow.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.createWindowOut = QCheckBox("Create windows for outgoing\nprivate chat",self)
+		if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES: self.createWindowOut.setChecked(True)
+		self.createWindowOut.stateChanged.connect(self.changedSetting)
+		self.createWindowOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.writePrivate = QCheckBox("Write private messages to\nserver window",self)
 		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
 		self.writePrivate.stateChanged.connect(self.changedSetting)
-
 		self.writePrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.writeScroll = QCheckBox("Always scroll chat to bottom\nwhen displaying text",self)
@@ -2288,6 +2293,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.createWindow)
+		messageLayout.addWidget(self.createWindowOut)
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.forceMono)
@@ -2910,6 +2916,7 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
 		config.PROMPT_FOR_AWAY_MESSAGE = self.promptAway.isChecked()
+		config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = self.createWindowOut.isChecked()
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()

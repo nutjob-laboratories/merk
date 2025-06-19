@@ -196,9 +196,11 @@ DEFAULT_AWAY_MESSAGE = "Busy"
 USE_AUTOAWAY = False
 AUTOAWAY_TIME = 3600
 PROMPT_FOR_AWAY_MESSAGE = False
+CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = False
 
 def build_settings():
 	settings = {
+		"create_window_for_outgoing_private_messages": CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES,
 		"prompt_for_away_message": PROMPT_FOR_AWAY_MESSAGE,
 		"autoaway": USE_AUTOAWAY,
 		"autoaway_time": AUTOAWAY_TIME,
@@ -361,6 +363,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "create_window_for_outgoing_private_messages" in settings:
+		settings["create_window_for_outgoing_private_messages"] = CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES
 	if not "prompt_for_away_message" in settings:
 		settings["prompt_for_away_message"] = PROMPT_FOR_AWAY_MESSAGE
 	if not "autoaway" in settings:
@@ -837,6 +841,7 @@ def load_settings(filename):
 	global USE_AUTOAWAY
 	global AUTOAWAY_TIME
 	global PROMPT_FOR_AWAY_MESSAGE
+	global CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -846,6 +851,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = settings["create_window_for_outgoing_private_messages"]
 		PROMPT_FOR_AWAY_MESSAGE = settings["prompt_for_away_message"]
 		USE_AUTOAWAY = settings["autoaway"]
 		AUTOAWAY_TIME = settings["autoaway_time"]

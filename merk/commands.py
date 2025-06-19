@@ -1604,10 +1604,12 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			# If we have the target's window open, write
 			# the message there
+			displayed_message = False
 			w = gui.getWindow(target,window.client)
 			if w:
 				t = Message(SELF_MESSAGE,window.client.nickname,msg)
 				w.writeText(t)
+				displayed_message = True
 
 			# Write the message to the server window
 			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
@@ -1616,6 +1618,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					if w:
 						t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
 						w.writeText(t)
+
+			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
+				if not displayed_message:
+					w = gui.newPrivateWindow(target,window.client)
+					if w:
+						c = w.widget()
+						t = Message(SELF_MESSAGE,window.client.nickname,msg)
+						c.writeText(t)
 
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
