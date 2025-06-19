@@ -2478,17 +2478,6 @@ class Merk(QMainWindow):
 		self.buildSettingsMenu()
 		QApplication.restoreOverrideCursor()
 
-	def settingsChannel(self):
-		QApplication.setOverrideCursor(Qt.WaitCursor)
-		if config.CONVERT_CHANNELS_TO_LINKS:
-			config.CONVERT_CHANNELS_TO_LINKS = False
-		else:
-			config.CONVERT_CHANNELS_TO_LINKS = True
-		config.save_settings(config.CONFIG_FILE)
-		self.reRenderAll()
-		self.buildSettingsMenu()
-		QApplication.restoreOverrideCursor()
-
 	def settingsLinks(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		if config.CONVERT_URLS_TO_LINKS:
@@ -2642,14 +2631,6 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
 		entry.triggered.connect(self.settingsLinks)
-		self.settingsMenu.addAction(entry)
-
-
-		if config.CONVERT_CHANNELS_TO_LINKS:
-			entry = QAction(QIcon(self.checked_icon),"Convert channel names to links", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Convert channel names to links", self)
-		entry.triggered.connect(self.settingsChannel)
 		self.settingsMenu.addAction(entry)
 
 		away_time = f"{config.AUTOAWAY_TIME} seconds"
