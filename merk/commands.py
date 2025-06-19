@@ -1620,12 +1620,13 @@ def executeCommonCommands(gui,window,user_input,is_script):
 						w.writeText(t)
 
 			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
-				if not displayed_message:
-					w = gui.newPrivateWindow(target,window.client)
-					if w:
-						c = w.widget()
-						t = Message(SELF_MESSAGE,window.client.nickname,msg)
-						c.writeText(t)
+				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
+					if not displayed_message:
+						w = gui.newPrivateWindow(target,window.client)
+						if w:
+							c = w.widget()
+							t = Message(SELF_MESSAGE,window.client.nickname,msg)
+							c.writeText(t)
 
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
