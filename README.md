@@ -2,7 +2,7 @@
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
-  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.042.020">MERK v</a></big></b><br>
+  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.042.020">MERK 0.042.020</a></big></b><br>
   <b>Current development version: 0.042.020</b><br>
 </p>
 
