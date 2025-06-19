@@ -186,6 +186,10 @@ def render_message(message,style):
 	if config.CONVERT_URLS_TO_LINKS:
 		msg_to_display = inject_www_links(msg_to_display,style["hyperlink"])
 
+	if config.CONVERT_CHANNELS_TO_LINKS:
+		if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
+			msg_to_display = inject_channel_links(msg_to_display,style["hyperlink"])
+
 	if config.DISPLAY_IRC_COLORS:
 		if string_has_irc_formatting_codes(msg_to_display):
 			msg_to_display = convert_irc_color_to_html(msg_to_display)
@@ -331,6 +335,16 @@ def inject_www_links(txt,style):
 		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"
 		txt = txt.replace(u,link)
 	return txt
+
+def inject_channel_links(txt,style):
+
+	out = txt
+	for target in txt.split():
+		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+			link = f"<a href=\"{target}\"><span style=\"{style}\">{target}</span></a>"
+			out = out.replace(target,link)
+
+	return out
 
 # IRC COLOR CODES
 

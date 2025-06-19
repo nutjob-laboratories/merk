@@ -602,7 +602,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			window.writeText(t,False)
 			for t in results:
 				window.writeText(t,False)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End config search results")
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} config search results")
 			window.writeText(t,False)
 			return True
 
@@ -617,7 +617,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				if type(settings[my_setting]) is list or my_setting=="timestamp_format":
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
 					window.writeText(t,False)
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End config search results")
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End 0 config search results")
 					window.writeText(t,False)
 					return True
 
@@ -640,7 +640,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 							if fnmatch.fnmatch(a,f"*{my_setting}*"):
 								results.append(a)
 
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
+				if len(results)>1:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
+				else:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config setting containing \"{my_setting}\"")
 				window.writeText(t,False)
 
 				counter = 0
@@ -657,7 +660,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {r} = \"{settings[r]}\" ({dtype})")
 					window.writeText(t,False)
 
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End config search results")
+				if len(results)>1:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} config search results")
+				else:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} config search result")
 				window.writeText(t,False)
 			return True
 
