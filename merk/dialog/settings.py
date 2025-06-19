@@ -36,7 +36,7 @@ from .. import widgets
 from .. import user
 from .. import irc
 
-import os,sys
+import os,sys,subprocess
 
 class Dialog(QDialog):
 
@@ -630,7 +630,12 @@ class Dialog(QDialog):
 
 	def do_restart(self, link):
 		self.save()
-		os.execl(sys.executable, sys.executable, *sys.argv)
+
+		if is_running_from_pyinstaller():
+			subprocess.Popen([sys.executable])
+			sys.exit()
+		else:
+			os.execl(sys.executable, sys.executable, *sys.argv)
 
 	def playSound(self):
 		QSound.play(self.sound)
@@ -771,13 +776,6 @@ class Dialog(QDialog):
 		self.selector.setFont(f)
 
 		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
-
-		if is_running_from_pyinstaller():
-			self.restart = QLabel("<b>Restart required.</b>")
-		else:
-			self.restart = QLabel(f"<b><a href=\"restart\">Apply & restart {APPLICATION_NAME}.</a></b>")
-			self.restart.setOpenExternalLinks(False)
-			self.restart.linkActivated.connect(self.do_restart)
 
 		fm = QFontMetrics(self.font())
 		fwidth = fm.width('X') * 27
@@ -2685,9 +2683,15 @@ class Dialog(QDialog):
 		self.notificationsPage.setLayout(audioLayout)
 
 		self.changed.hide()
-		self.restart.hide()
 
 		# Buttons
+
+		self.restart = QPushButton(" Apply && Restart ")
+		self.restart.clicked.connect(self.do_restart)
+		self.restart.setAutoDefault(False)
+		font = self.restart.font()
+		font.setBold(True)
+		self.restart.setFont(font)
 
 		self.saveButton = QPushButton("Apply")
 		self.saveButton.clicked.connect(self.save)
@@ -2695,6 +2699,8 @@ class Dialog(QDialog):
 
 		self.cancelButton = QPushButton("Cancel")
 		self.cancelButton.clicked.connect(self.close)
+
+		self.restart.hide()
 
 		# Finalize layout
 
@@ -2706,8 +2712,8 @@ class Dialog(QDialog):
 		dialogButtonsLayout = QHBoxLayout()
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.changed)
-		dialogButtonsLayout.addWidget(self.restart)
 		dialogButtonsLayout.addStretch()
+		dialogButtonsLayout.addWidget(self.restart)
 		dialogButtonsLayout.addWidget(self.saveButton)
 		dialogButtonsLayout.addWidget(self.cancelButton)
 

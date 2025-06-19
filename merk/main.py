@@ -34,6 +34,7 @@ from PyQt5.QtMultimedia import QSound
 
 import twisted
 import platform
+import subprocess
 
 import emoji
 
@@ -2550,9 +2551,9 @@ class Merk(QMainWindow):
 		msgBox.setIconPixmap(QPixmap(SETTINGS_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 		if config.DARK_MODE:
-			msgBox.setText(APPLICATION_NAME+" requires a restart to deactivate dark mode.\nDeactivate dark mode and restart now?")
+			msgBox.setText("Deactivating dark mode requires a restart!\nDeactivate dark mode and restart now?")
 		else:
-			msgBox.setText(APPLICATION_NAME+" requires a restart to activate dark mode.\nActivate dark mode and restart now?")
+			msgBox.setText("Activating dark mode requires a restart!\nActivate dark mode and restart now?")
 		msgBox.setWindowTitle("Restart")
 		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
@@ -2563,7 +2564,12 @@ class Merk(QMainWindow):
 			else:
 				config.DARK_MODE = True
 			config.save_settings(config.CONFIG_FILE)
-			os.execl(sys.executable, sys.executable, *sys.argv)
+			if is_running_from_pyinstaller():
+				subprocess.Popen([sys.executable])
+				self.close()
+				app.exit()
+			else:
+				os.execl(sys.executable, sys.executable, *sys.argv)
 
 	def settingsDoNotSave(self):
 		if self.donotsave:
@@ -2840,13 +2846,12 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsAudio)
 		self.settingsMenu.addAction(entry)
 
-		if not is_running_from_pyinstaller():
-			if config.DARK_MODE:
-				entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
-			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
-			entry.triggered.connect(self.settingsDarkMode)
-			self.settingsMenu.addAction(entry)
+		if config.DARK_MODE:
+			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
+		entry.triggered.connect(self.settingsDarkMode)
+		self.settingsMenu.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(CONNECT_ICON),"Connections")
 
