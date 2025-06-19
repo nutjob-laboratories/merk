@@ -582,9 +582,12 @@ def executeCommonCommands(gui,window,user_input,is_script):
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==1:
 			settings = config.build_settings()
 
+			count = 0
+			results = []
 			for s in settings:
 				if s=="timestamp_format": continue
 				if not type(settings[s]) is list:
+					count = count + 1
 					if type(settings[s]).__name__=='bool':
 						dtype = "boolean"
 					elif type(settings[s]).__name__=='int':
@@ -593,8 +596,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 						dtype = "string"
 					else:
 						dtype = "unknown"
-					t = Message(SYSTEM_MESSAGE,'',f"{s} = \"{settings[s]}\" ({dtype})")
-					window.writeText(t,False)
+					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{count}) {s} = \"{settings[s]}\" ({dtype})")
+					results.append(t)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} config settings")
+			window.writeText(t,False)
+			for t in results:
+				window.writeText(t,False)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End config search results")
+			window.writeText(t,False)
 			return True
 
 		# One argument displays the config value
@@ -606,9 +615,9 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			if my_setting in settings:
 				if type(settings[my_setting]) is list or my_setting=="timestamp_format":
-					t = Message(SYSTEM_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
 					window.writeText(t,False)
-					t = Message(SYSTEM_MESSAGE,'',f"End config search results")
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End config search results")
 					window.writeText(t,False)
 					return True
 
@@ -631,8 +640,9 @@ def executeCommonCommands(gui,window,user_input,is_script):
 							if fnmatch.fnmatch(a,f"*{my_setting}*"):
 								results.append(a)
 
-				t = Message(SYSTEM_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
 				window.writeText(t,False)
+
 				counter = 0
 				for r in results:
 					counter = counter + 1
@@ -646,7 +656,8 @@ def executeCommonCommands(gui,window,user_input,is_script):
 						dtype = "unknown"
 					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {r} = \"{settings[r]}\" ({dtype})")
 					window.writeText(t,False)
-				t = Message(SYSTEM_MESSAGE,'',f"End config search results")
+
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End config search results")
 				window.writeText(t,False)
 			return True
 
