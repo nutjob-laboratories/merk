@@ -2288,10 +2288,15 @@ class Dialog(QDialog):
 		partBox.setAlignment(Qt.AlignLeft)
 		partBox.setLayout(partLayout)
 
+		self.linkChannel = QCheckBox("Convert channel names to links",self)
+		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
+		self.linkChannel.stateChanged.connect(self.changedSettingRerender)
+		
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
+		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.createWindow)
 		messageLayout.addWidget(self.createWindowOut)
 		messageLayout.addWidget(self.writePrivate)
@@ -2917,6 +2922,7 @@ class Dialog(QDialog):
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
 		config.PROMPT_FOR_AWAY_MESSAGE = self.promptAway.isChecked()
 		config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = self.createWindowOut.isChecked()
+		config.CONVERT_CHANNELS_TO_LINKS = self.linkChannel.isChecked()
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()

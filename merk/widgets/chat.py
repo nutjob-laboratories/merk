@@ -1050,7 +1050,7 @@ class Window(QMainWindow):
 
 		self.chat.clear()
 		for line in self.log:
-			t = render.render_message(line,self.style)
+			t = render.render_message(line,self.style,self.client)
 			self.chat.append(t)
 
 		self.chat.moveCursor(QTextCursor.End)
@@ -1864,7 +1864,7 @@ class Window(QMainWindow):
 				self.chat.append(message)
 			else:
 
-				t = render.render_message(message,self.style)
+				t = render.render_message(message,self.style,self.client)
 
 				# Save entered text to the current log
 				self.log.append(message)

@@ -166,7 +166,7 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-def render_message(message,style):
+def render_message(message,style,client=None):
 	
 	msg_to_display = message.contents
 
@@ -182,6 +182,26 @@ def render_message(message,style):
 	# Escape all HTML
 	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
 		msg_to_display = html.escape(msg_to_display)
+
+	if config.CONVERT_CHANNELS_TO_LINKS:
+		if client!=None:
+			if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
+				try:
+					d = []
+					for w in msg_to_display.split():
+						x = html.unescape(w)
+						if x[:1]=='#' or x[:1]=='&' or x[:1]=='!' or x[:1]=='+':
+							# Check to make sure the channel exists on the server; if the channel
+							# doesn't exist, the channel link will not be created
+							if client.server_has_channel(x) and len(x)>1:
+								o = "<a href=\""+x+"\" "
+								o = o + "style=\""+style["hyperlink"]+"\">"+x+"</a>"
+								w = o
+
+						d.append(w)
+					msg_to_display = ' '.join(d)
+				except:
+					pass
 
 	if config.CONVERT_URLS_TO_LINKS:
 		msg_to_display = inject_www_links(msg_to_display,style["hyperlink"])

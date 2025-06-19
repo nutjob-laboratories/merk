@@ -140,6 +140,12 @@ class IRC_Connection(irc.IRCClient):
 
 		self.banlists = defaultdict(list)
 
+	def server_has_channel(self,channel):
+		if len(self.server_channel_list)>0:
+			for c in self.server_channel_list:
+				if c[0]==channel: return True
+		return False
+
 	def irc_RPL_LIST(self,prefix,params):
 		server = prefix
 		channel_name = params[1]
