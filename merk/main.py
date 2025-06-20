@@ -3023,10 +3023,10 @@ class Merk(QMainWindow):
 		self.helpMenu.addAction(entry)
 
 		
-		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 1459","Initial IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open1459)
+		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 1459","IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open1459)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 2812","Further IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open2812)
+		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 2812","IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open2812)
 		self.helpMenu.addAction(entry)
 
 
