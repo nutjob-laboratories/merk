@@ -3036,20 +3036,19 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		e = textSeparator(self,"Supporting Technologies")
-		self.helpMenu.addAction(e)
+		sm = self.helpMenu.addMenu(QIcon(LINK_ICON),"Technologies")
 
 		entry = QAction(QIcon(PYTHON_ICON),"Python "+platform.python_version().strip(),self)
 		entry.triggered.connect(lambda state,u="https://www.python.org/": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		sm.addAction(entry)
 
 		entry = QAction(QIcon(QT_ICON),"Qt "+str(QT_VERSION_STR),self)
 		entry.triggered.connect(lambda state,u="https://www.qt.io/": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		sm.addAction(entry)
 
 		entry = QAction(QIcon(PYQT_ICON),"PyQt "+str(PYQT_VERSION_STR),self)
 		entry.triggered.connect(lambda state,u="https://www.riverbankcomputing.com/software/pyqt/": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		sm.addAction(entry)
 
 		tv = str(twisted.version)
 		tv = tv.replace('[','',1)
@@ -3059,19 +3058,19 @@ class Merk(QMainWindow):
 		tv = tv.replace('version ','',1)
 		entry = QAction(QIcon(TWISTED_ICON),"Twisted "+tv,self)
 		entry.triggered.connect(lambda state,u="https://twisted.org/": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		sm.addAction(entry)
 
 		entry = QAction(QIcon(PYTHON_ICON),"pyspellchecker 0.8.3",self)
 		entry.triggered.connect(lambda state,u="https://github.com/barrust/pyspellchecker": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		sm.addAction(entry)
 
 		entry = QAction(QIcon(PYTHON_ICON),"emoji 2.14.1",self)
 		entry.triggered.connect(lambda state,u="https://github.com/carpedm20/emoji": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		sm.addAction(entry)
 
 		entry = QAction(QIcon(PYTHON_ICON),"qt5reactor 0.6.3",self)
 		entry.triggered.connect(lambda state,u="https://github.com/twisted/qt5reactor": self.openLinkInBrowser(u))
-		self.helpMenu.addAction(entry)
+		sm.addAction(entry)
 
 		if is_running_from_pyinstaller():
 			piv = get_pyinstaller_version()
@@ -3080,7 +3079,7 @@ class Merk(QMainWindow):
 			else:
 				entry = QAction(QIcon(PYINSTALLER_ICON),"PyInstaller",self)
 			entry.triggered.connect(lambda state,u="https://pyinstaller.org/": self.openLinkInBrowser(u))
-			self.helpMenu.addAction(entry)
+			sm.addAction(entry)
 
 	def menuChannelList(self,sw):
 		c = sw.widget()
