@@ -1749,9 +1749,21 @@ class Dialog(QDialog):
 		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNick)
 		self.showAwayNick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
+		self.typeCancelInput = QCheckBox("Interacting with the text\ninput widget cancels autoaway",self)
+		if config.TYPING_INPUT_CANCELS_AUTOAWAY: self.typeCancelInput.setChecked(True)
+		self.typeCancelInput.stateChanged.connect(self.changedSetting)
+		self.typeCancelInput.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
+		self.windowCancelAway = QCheckBox("Interacting with subwindows\ncancels autoaway",self)
+		if config.WINDOW_INTERACTION_CANCELS_AUTOAWAY: self.windowCancelAway.setChecked(True)
+		self.windowCancelAway.stateChanged.connect(self.changedSetting)
+		self.windowCancelAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addLayout(intervalBox)
+		awayLayout.addWidget(self.typeCancelInput)
+		awayLayout.addWidget(self.windowCancelAway)
 		awayLayout.addWidget(self.promptAway)
 		awayLayout.addWidget(self.showAwayStatus)
 		awayLayout.addWidget(self.showAwayBack)
@@ -2936,6 +2948,8 @@ class Dialog(QDialog):
 		config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = self.createWindowOut.isChecked()
 		config.CONVERT_CHANNELS_TO_LINKS = self.linkChannel.isChecked()
 		config.DO_NOT_APPLY_STYLES_TO_TEXT = self.noStyles.isChecked()
+		config.TYPING_INPUT_CANCELS_AUTOAWAY = self.typeCancelInput.isChecked()
+		config.WINDOW_INTERACTION_CANCELS_AUTOAWAY = self.windowCancelAway.isChecked()
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()

@@ -51,6 +51,29 @@ from . import commands
 
 from .widgets import menubar,textSeparatorLabel,textSeparator
 
+class GlobalMdiEventFilter(QObject):
+	def eventFilter(self, watched, event):
+		interacted = False
+		if isinstance(watched, QMdiSubWindow):
+			if event.type() == QEvent.MouseButtonPress:
+				interacted = True
+			elif event.type() == QEvent.KeyPress:
+				interacted = True
+			elif event.type() == QEvent.Resize:
+				interacted = True
+			elif event.type() == QEvent.Move:
+				interacted = True
+			elif event.type() == QEvent.Close:
+				interacted = True
+
+			if interacted:
+				if hasattr(watched,"widget"):
+					c = watched.widget()
+					if hasattr(c,"window_interacted_with"):
+						c.window_interacted_with()
+
+		return False
+
 class Merk(QMainWindow):
 
 	# ===========
@@ -82,6 +105,9 @@ class Merk(QMainWindow):
 		self.noexecute = noexecute
 		self.donotsave = donotsave
 		self.ontop = ontop
+
+		self.event_filter = GlobalMdiEventFilter()
+		QApplication.instance().installEventFilter(self.event_filter)
 
 		commands.build_help_and_autocomplete()
 

@@ -50,6 +50,17 @@ from .. import syntax
 
 class Window(QMainWindow):
 
+	def reload_config(self):
+		config.load_settings(config.CONFIG_FILE)
+
+	def window_interacted_with(self):
+		if config.USE_AUTOAWAY:
+			if config.WINDOW_INTERACTION_CANCELS_AUTOAWAY:
+				if self.client.autoaway:
+					self.client.back()
+
+				self.client.last_interaction = 0
+
 	def __init__(self,name,client,window_type,app,parent=None):
 		super(Window, self).__init__(parent)
 
@@ -2519,9 +2530,6 @@ class TopicEdit(QLineEdit):
 		self.setReadOnly(True)
 		self.setCursorPosition(0)
 
-	def reload_config(self):
-		config.load_settings(config.CONFIG_FILE)
-
 class SpellTextEdit(QPlainTextEdit):
 
 	returnPressed = pyqtSignal()
@@ -2545,8 +2553,9 @@ class SpellTextEdit(QPlainTextEdit):
 	def keyPressEvent(self,event):
 
 		if config.USE_AUTOAWAY:
-			if self.parent.client.autoaway:
-				self.parent.client.back()
+			if config.TYPING_INPUT_CANCELS_AUTOAWAY:
+				if self.parent.client.autoaway:
+					self.parent.client.back()
 
 		self.parent.client.last_interaction = 0
 
