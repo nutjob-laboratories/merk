@@ -3019,8 +3019,16 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE,self.showAbout)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,"README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
+		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,APPLICATION_NAME+" README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
 		self.helpMenu.addAction(entry)
+
+		
+		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 1459","Initial IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open1459)
+		self.helpMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 2812","Further IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open2812)
+		self.helpMenu.addAction(entry)
+
 
 		self.helpMenu.addSeparator()
 
@@ -3094,6 +3102,22 @@ class Merk(QMainWindow):
 		else:
 			self.showSubWindow(self.readme_window)
 		self.helpMenu.close()
+
+	def open1459(self):
+		if is_running_from_pyinstaller():
+			filename = resource_path("./merk/resources/rfc1459.pdf")
+		else:
+			filename = "./merk/resources/rfc1459.pdf"
+		url = QUrl.fromLocalFile(filename)
+		QDesktopServices.openUrl(url)
+
+	def open2812(self):
+		if is_running_from_pyinstaller():
+			filename = resource_path("./merk/resources/rfc2812.pdf")
+		else:
+			filename = "./merk/resources/rfc2812.pdf"
+		url = QUrl.fromLocalFile(filename)
+		QDesktopServices.openUrl(url)
 
 	def menuRefreshList(self,sw):
 		c = sw.widget()

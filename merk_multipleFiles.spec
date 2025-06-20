@@ -34,6 +34,9 @@ a = Analysis(
         ('spellchecker/resources/ru.json.gz','spellchecker/resources'),
         ('merk/resources/resources.py','merk/resources'),
         ('merk/resources/README.html','merk/resources'),
+        ('merk/resources/rfc1459.pdf','merk/resources'),
+        ('merk/resources/rfc2812.pdf','merk/resources'),
+
 
     ],
     hiddenimports=[],

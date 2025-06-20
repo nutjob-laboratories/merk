@@ -327,6 +327,8 @@ GO_AWAY_ICON = ":/icon-go_away.png"
 GO_BACK_ICON = ":/icon-go_back.png"
 README_ICON = ":/icon-readme.png"
 README_MENU_ICON = ":/icon-readme_menu.png"
+PDF_ICON = ":/icon-pdf.png"
+PDF_MENU_ICON = ":/icon-pdf_menu.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
