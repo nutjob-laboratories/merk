@@ -43,6 +43,11 @@ from .style import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
+def resource_path(relative_path):
+	if hasattr(sys, '_MEIPASS'):
+		return os.path.join(sys._MEIPASS, relative_path)
+	return os.path.join(os.path.abspath("."), relative_path)
+
 SYSTEM_PREPEND_OPTIONS = [
 	"Nothing",
 	"&diams;",
@@ -179,6 +184,7 @@ SERVER_WINDOW = 1
 PRIVATE_WINDOW = 2
 EDITOR_WINDOW = 3
 LIST_WINDOW = 4
+README_WINDOW = 5
 
 CHAT_WINDOW_WIDGET_SPACING = 5
 
@@ -319,6 +325,8 @@ CASCADE_ICON = ":/icon-cascade.png"
 CHANNEL_MENU_ICON = ":/icon-channel_menu.png"
 GO_AWAY_ICON = ":/icon-go_away.png"
 GO_BACK_ICON = ":/icon-go_back.png"
+README_ICON = ":/icon-readme.png"
+README_MENU_ICON = ":/icon-readme_menu.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

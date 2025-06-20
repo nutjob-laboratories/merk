@@ -88,6 +88,11 @@ f = open("README.html",mode="w", encoding='latin-1')
 f.write(helptext)
 f.close()
 
+os.remove("./merk/resources/README.html")
+f = open("./merk/resources/README.html",mode="w", encoding='latin-1')
+f.write(helptext)
+f.close()
+
 # Build distribution zips
 
 os.mkdir("./dist")

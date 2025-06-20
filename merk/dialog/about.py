@@ -149,7 +149,7 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		nutjob_credit = QLabel(f"<small><b>Open source code for open source people</b></small>")
+		nutjob_credit = QLabel(f"<small><b><i>Open source code for open source people</i></b></small>")
 		nutjob_credit.setAlignment(Qt.AlignCenter)
 		nutjob_credit.setOpenExternalLinks(True)
 

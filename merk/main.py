@@ -125,6 +125,7 @@ class Merk(QMainWindow):
 		self.connected_to_something = False
 		self.saved_window = None
 		self.application_title_name = APPLICATION_NAME
+		self.readme_window = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -2266,6 +2267,20 @@ class Merk(QMainWindow):
 
 		return w
 
+	def newReadmeWindow(self):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ReadMe(self))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(README_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		w.show()
+
+		self.readme_window = w
+		self.buildWindowsMenu()
+
+		return w
+
 	def openLinkInBrowser(self,url):
 		u = QUrl()
 		u.setUrl(url)
@@ -3004,6 +3019,9 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE,self.showAbout)
 		self.helpMenu.addAction(entry)
 
+		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,"README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
+		self.helpMenu.addAction(entry)
+
 		self.helpMenu.addSeparator()
 
 		entry = QAction(QIcon(LINK_ICON),APPLICATION_NAME+" source code repository",self)
@@ -3070,6 +3088,13 @@ class Merk(QMainWindow):
 			self.newListWindow(c.client,sw)
 		else:
 			self.showSubWindow(c.client.channel_list_window)
+
+	def menuReadMe(self):
+		if self.readme_window==None:
+			self.newReadmeWindow()
+		else:
+			self.showSubWindow(self.readme_window)
+		self.helpMenu.close()
 
 	def menuRefreshList(self,sw):
 		c = sw.widget()
