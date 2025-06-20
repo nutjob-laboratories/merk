@@ -2694,6 +2694,13 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsAway)
 		self.settingsMenu.addAction(entry)
 
+		if config.DARK_MODE:
+			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
+		entry.triggered.connect(self.settingsDarkMode)
+		self.settingsMenu.addAction(entry)
+
 		e = textSeparator(self,"Input Settings")
 		self.settingsMenu.addAction(e)
 
@@ -2859,13 +2866,6 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Audio notifications", self)
 		entry.triggered.connect(self.settingsAudio)
-		self.settingsMenu.addAction(entry)
-
-		if config.DARK_MODE:
-			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
-		entry.triggered.connect(self.settingsDarkMode)
 		self.settingsMenu.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(CONNECT_ICON),"Connections")
