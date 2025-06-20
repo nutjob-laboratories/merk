@@ -149,7 +149,7 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		nutjob_credit = QLabel(f"<big><b><a href=\"https://github.com/nutjob-laboratories\">NUTJOB</a> <a href=\"https://github.com/nutjob-laboratories\">LABORATORIES</a></b></big>")
+		nutjob_credit = QLabel(f"<small><b>Open source code for open source people</b></small>")
 		nutjob_credit.setAlignment(Qt.AlignCenter)
 		nutjob_credit.setOpenExternalLinks(True)
 
