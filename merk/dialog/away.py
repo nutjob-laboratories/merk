@@ -169,6 +169,10 @@ class Dialog(QDialog):
 		self.autocomplete = QCheckBox("Autocomplete emoji shortcodes",self)
 		self.autocomplete.setChecked(True)
 
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autocomplete.setChecked(False)
+			self.autocomplete.setVisible(False)
+
 		# Buttons
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)

@@ -1814,10 +1814,6 @@ class Dialog(QDialog):
 		self.emojiAway.stateChanged.connect(self.changedEmojiAway)
 		self.emojiAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.emojiAway.setEnabled(False)
-			self.autoEmojiAway.setEnabled(False)
-
 		self.awayMsg = EmojiAutocomplete(self)
 		self.awayMsg.setText(self.default_away)
 
@@ -1832,6 +1828,10 @@ class Dialog(QDialog):
 		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
 		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
 		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.emojiAway.setEnabled(False)
+			self.autoEmojiAway.setEnabled(False)
 
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(self.awayMsg)
