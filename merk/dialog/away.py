@@ -55,6 +55,8 @@ class EmojiAutocomplete(QPlainTextEdit):
 
 			if not config.ENABLE_EMOJI_SHORTCODES:
 				pass
+			elif not self.parent.autocomplete.isChecked():
+				pass
 			else:
 
 				cursor = self.textCursor()
@@ -143,13 +145,6 @@ class Dialog(QDialog):
 
 		awayLayout = QHBoxLayout()
 		self.awayLabel = QLabel("<b>Away Message:</b>")
-		# self.away = QLineEdit(config.DEFAULT_AWAY_MESSAGE)
-
-		# fm = QFontMetrics(self.font())
-		# wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCD")
-		# self.away.setMinimumWidth(wwidth)
-
-
 
 
 		self.away = EmojiAutocomplete(self)
@@ -164,15 +159,15 @@ class Dialog(QDialog):
 		self.away.setMinimumWidth(wwidth)
 
 
-
-
-
 		awayLayout.addWidget(self.awayLabel)
 		awayLayout.addStretch()
 		awayLayout.addWidget(self.away)
 
 		self.saveaway = QCheckBox("Save away message as default",self)
 		self.saveaway.stateChanged.connect(self.clickSave)
+
+		self.autocomplete = QCheckBox("Autocomplete emoji shortcodes",self)
+		self.autocomplete.setChecked(True)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -186,6 +181,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(awayInfoBox)
+		finalLayout.addWidget(self.autocomplete)
 		finalLayout.addWidget(self.saveaway)
 		finalLayout.addWidget(buttons)
 
