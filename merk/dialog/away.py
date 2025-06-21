@@ -32,6 +32,75 @@ from ..resources import *
 from .. import config
 
 import emoji
+import fnmatch
+
+class EmojiAutocomplete(QPlainTextEdit):
+
+	def __init__(self, *args):
+		QPlainTextEdit.__init__(self, *args)
+
+		self.parent = args[0]
+
+	def keyPressEvent(self,event):
+
+		# BUGFIX: the user can "drag" the view "down"
+		# with the mouse; this resets the widget to
+		# "normal" every time the user presses a key
+		# Man, I wish Qt had a rich-text-enabled QLineEdit :-(
+		sb = self.verticalScrollBar()
+		sb.setValue(sb.minimum())
+		self.ensureCursorVisible()
+
+		if event.key() == Qt.Key_Tab:
+
+			if not config.ENABLE_EMOJI_SHORTCODES:
+				pass
+			else:
+
+				cursor = self.textCursor()
+
+				if self.toPlainText().strip()=='': return
+
+				if config.ENABLE_EMOJI_SHORTCODES:
+					if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
+						# Autocomplete emojis
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - 1
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+
+							for c in EMOJI_AUTOCOMPLETE:
+
+								# Case sensitive
+								if fnmatch.fnmatchcase(c,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									return
+
+								# Case insensitive
+								if fnmatch.fnmatch(c,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									return
+
+				cursor.movePosition(QTextCursor.End)
+				self.setTextCursor(cursor)
+
+		else:
+			return super().keyPressEvent(event)
+
+	def text(self):
+		return self.toPlainText()
+
+	def setText(self,text):
+		self.setPlainText(text)
 
 class Dialog(QDialog):
 
@@ -74,11 +143,29 @@ class Dialog(QDialog):
 
 		awayLayout = QHBoxLayout()
 		self.awayLabel = QLabel("<b>Away Message:</b>")
-		self.away = QLineEdit(config.DEFAULT_AWAY_MESSAGE)
+		# self.away = QLineEdit(config.DEFAULT_AWAY_MESSAGE)
 
-		fm = QFontMetrics(self.font())
+		# fm = QFontMetrics(self.font())
+		# wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCD")
+		# self.away.setMinimumWidth(wwidth)
+
+
+
+
+		self.away = EmojiAutocomplete(self)
+		self.away.setText(config.DEFAULT_AWAY_MESSAGE)
+
+		fm = self.away.fontMetrics()
+		self.away.setFixedHeight(fm.height()+10)
+		self.away.setWordWrapMode(QTextOption.NoWrap)
+		self.away.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.away.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCD")
 		self.away.setMinimumWidth(wwidth)
+
+
+
+
 
 		awayLayout.addWidget(self.awayLabel)
 		awayLayout.addStretch()
