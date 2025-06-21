@@ -1159,6 +1159,9 @@ def executeCommonCommands(gui,window,user_input,is_script):
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)>=2:
 			tokens.pop(0)
 			msg = ' '.join(tokens)
+			if config.ENABLE_EMOJI_SHORTCODES:
+				if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
+					msg = emoji.emojize(msg,language='alias')
 			window.client.away(msg)
 			window.client.away_msg = msg
 			return True
@@ -1167,11 +1170,18 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				x = Away(gui)
 				msg = x.get_away_information(gui)
 				if msg:
+					if config.ENABLE_EMOJI_SHORTCODES:
+						if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
+							msg = emoji.emojize(msg,language='alias')
 					window.client.away(msg)
 					window.client.away_msg = msg
 			else:
-				window.client.away(config.DEFAULT_AWAY_MESSAGE)
-				window.client.away_msg = config.DEFAULT_AWAY_MESSAGE
+				if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
+					msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+				else:
+					msg = config.DEFAULT_AWAY_MESSAGE
+				window.client.away(msg)
+				window.client.away_msg = msg
 			return True
 
 	# |-------|

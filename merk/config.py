@@ -202,9 +202,11 @@ DO_NOT_APPLY_STYLES_TO_TEXT = False
 TYPING_INPUT_CANCELS_AUTOAWAY = True
 WINDOW_INTERACTION_CANCELS_AUTOAWAY = False
 APP_INTERACTION_CANCELS_AUTOAWAY = False
+USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = True
 
 def build_settings():
 	settings = {
+		"use_emoji_shortcodes_in_away_message": USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES,
 		"app_interaction_cancels_autoaway": APP_INTERACTION_CANCELS_AUTOAWAY,
 		"window_interaction_cancels_autoaway": WINDOW_INTERACTION_CANCELS_AUTOAWAY,
 		"typing_input_cancels_autoaway": TYPING_INPUT_CANCELS_AUTOAWAY,
@@ -373,6 +375,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "use_emoji_shortcodes_in_away_message" in settings:
+		settings["use_emoji_shortcodes_in_away_message"] = USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES
 	if not "app_interaction_cancels_autoaway" in settings:
 		settings["app_interaction_cancels_autoaway"] = APP_INTERACTION_CANCELS_AUTOAWAY
 	if not "window_interaction_cancels_autoaway" in settings:
@@ -867,6 +871,7 @@ def load_settings(filename):
 	global TYPING_INPUT_CANCELS_AUTOAWAY
 	global WINDOW_INTERACTION_CANCELS_AUTOAWAY
 	global APP_INTERACTION_CANCELS_AUTOAWAY
+	global USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -876,6 +881,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = settings["use_emoji_shortcodes_in_away_message"]
 		APP_INTERACTION_CANCELS_AUTOAWAY = settings["app_interaction_cancels_autoaway"]
 		WINDOW_INTERACTION_CANCELS_AUTOAWAY = settings["window_interaction_cancels_autoaway"]
 		TYPING_INPUT_CANCELS_AUTOAWAY = settings["typing_input_cancels_autoaway"]

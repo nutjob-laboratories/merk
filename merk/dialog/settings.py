@@ -36,6 +36,8 @@ from .. import widgets
 from .. import user
 from .. import irc
 
+import emoji
+
 import os,sys,subprocess
 
 class Dialog(QDialog):
@@ -376,8 +378,15 @@ class Dialog(QDialog):
 	def changedEmoji(self,state):
 		if self.enableEmojis.isChecked():
 			self.autocompleteEmojis.setEnabled(True)
+			self.emojiAway.setEnabled(True)
+			self.syntaxemoji.setEnabled(True)
+			self.emojiAway.setText("Use emoji shortcodes in all\naway messages")
 		else:
 			self.autocompleteEmojis.setEnabled(False)
+			self.emojiAway.setEnabled(False)
+			self.syntaxemoji.setEnabled(False)
+			self.emojiAway.setText("Emoji shortcodes are disabled")
+
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1682,12 +1691,22 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.awayPage)
 
+		self.emojiAway = QCheckBox("Use emoji shortcodes in all\naway messages",self)
+		if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES: self.emojiAway.setChecked(True)
+		self.emojiAway.stateChanged.connect(self.changedSetting)
+		self.emojiAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.emojiAway.setText("Emoji shortcodes are disabled")
+			self.emojiAway.setEnabled(False)
+
 		self.awayMsg = QLineEdit(self.default_away)
 
 		self.awayMsg.textChanged.connect(self.setAwayMsg)
 
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(self.awayMsg)
+		awayLayout.addWidget(self.emojiAway)
 		awayBox = QGroupBox("")
 		awayBox.setAlignment(Qt.AlignLeft)
 		awayBox.setLayout(awayLayout)
@@ -2515,6 +2534,9 @@ class Dialog(QDialog):
 		self.syntaxfore.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxback.syntaxChanged.connect(self.syntaxChanged)
 
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.syntaxemoji.setEnabled(False)
+
 		self.syntaxDescription = QLabel("""
 			<small>
 			<b>Syntax highlighting</b> is applied to both the script section of the
@@ -2951,7 +2973,6 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_AND_BACK_MESSAGES = self.showAwayBack.isChecked()
 		config.SHOW_AWAY_STATUS_IN_USERLISTS = self.showAwayStatus.isChecked()
 		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
-		config.DEFAULT_AWAY_MESSAGE = self.default_away
 		config.PROMPT_FOR_AWAY_MESSAGE = self.promptAway.isChecked()
 		config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = self.createWindowOut.isChecked()
 		config.CONVERT_CHANNELS_TO_LINKS = self.linkChannel.isChecked()
@@ -2959,6 +2980,8 @@ class Dialog(QDialog):
 		config.TYPING_INPUT_CANCELS_AUTOAWAY = self.typeCancelInput.isChecked()
 		config.WINDOW_INTERACTION_CANCELS_AUTOAWAY = self.windowCancelAway.isChecked()
 		config.APP_INTERACTION_CANCELS_AUTOAWAY = self.appCancelAway.isChecked()
+		config.DEFAULT_AWAY_MESSAGE = self.default_away
+		config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = self.emojiAway.isChecked()
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()

@@ -31,6 +31,8 @@ from PyQt5 import QtCore
 from ..resources import *
 from .. import config
 
+import emoji
+
 class Dialog(QDialog):
 
 	@staticmethod
@@ -48,6 +50,7 @@ class Dialog(QDialog):
 		retval = self.away.text()
 
 		if self.save_as_default:
+
 			config.DEFAULT_AWAY_MESSAGE = retval
 			config.save_settings(config.CONFIG_FILE)
 

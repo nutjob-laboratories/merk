@@ -1846,8 +1846,15 @@ class Window(QMainWindow):
 			else:
 				self.away_button.setToolTip("Set status to \"back\"")
 				self.away_button.setIcon(QIcon(GO_BACK_ICON))
-				self.client.away(config.DEFAULT_AWAY_MESSAGE)
-				self.client.away_msg = config.DEFAULT_AWAY_MESSAGE
+				if config.ENABLE_EMOJI_SHORTCODES:
+					if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
+						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+					else:
+						msg = config.DEFAULT_AWAY_MESSAGE
+				else:
+					msg = config.DEFAULT_AWAY_MESSAGE
+				self.client.away(msg)
+				self.client.away_msg = msg
 
 	def joinChannel(self):
 		channel_info = JoinChannelDialog(self.parent)
