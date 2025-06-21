@@ -2574,7 +2574,7 @@ class Dialog(QDialog):
 		noticeMode.addWidget(self.systrayNotice)
 		noticeMode.addWidget(self.systrayMode)
 
-		self.setFlashInterval = QLabel("Flash icon every ")
+		self.setFlashInterval = QLabel("Flash icon every")
 
 		self.flashInterval = QComboBox(self)
 		added = False
