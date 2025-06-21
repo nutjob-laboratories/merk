@@ -684,12 +684,21 @@ class Merk(QMainWindow):
 
 	def systray_clicked(self,reason):
 		if reason == QSystemTrayIcon.ActivationReason.Trigger:
-			#print("Single click")
-			pass
+			if not config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY:
+				if self.is_hidden:
+					self.toggleHide()
+					self.showNormal()
+				else:
+					if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY:
+						self.toggleHide()
 		elif reason == QSystemTrayIcon.ActivationReason.DoubleClick:
-			if self.is_hidden:
-				self.toggleHide()
-				self.showNormal()
+			if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY:
+				if self.is_hidden:
+					self.toggleHide()
+					self.showNormal()
+				else:
+					if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY:
+						self.toggleHide()
 
 	def changeEvent(self, event):
 		if event.type() == QEvent.WindowStateChange:

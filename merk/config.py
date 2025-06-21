@@ -204,9 +204,13 @@ WINDOW_INTERACTION_CANCELS_AUTOAWAY = False
 APP_INTERACTION_CANCELS_AUTOAWAY = False
 USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = True
 AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = True
+DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = True
+CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = True
 
 def build_settings():
 	settings = {
+		"click_systray_icon_to_minimize_to_tray": CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY,
+		"doubleclick_to_restore_from_systray": DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY,
 		"autocomplete_emojis_in_away_message_widget": AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET,
 		"use_emoji_shortcodes_in_away_message": USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES,
 		"app_interaction_cancels_autoaway": APP_INTERACTION_CANCELS_AUTOAWAY,
@@ -377,6 +381,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "click_systray_icon_to_minimize_to_tray" in settings:
+		settings["click_systray_icon_to_minimize_to_tray"] = CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
+	if not "doubleclick_to_restore_from_systray" in settings:
+		settings["doubleclick_to_restore_from_systray"] = DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
 	if not "autocomplete_emojis_in_away_message_widget" in settings:
 		settings["autocomplete_emojis_in_away_message_widget"] = AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
 	if not "use_emoji_shortcodes_in_away_message" in settings:
@@ -877,6 +885,8 @@ def load_settings(filename):
 	global APP_INTERACTION_CANCELS_AUTOAWAY
 	global USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES
 	global AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
+	global DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
+	global CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -886,6 +896,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = settings["click_systray_icon_to_minimize_to_tray"]
+		DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = settings["doubleclick_to_restore_from_systray"]
 		AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = settings["autocomplete_emojis_in_away_message_widget"]
 		USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = settings["use_emoji_shortcodes_in_away_message"]
 		APP_INTERACTION_CANCELS_AUTOAWAY = settings["app_interaction_cancels_autoaway"]

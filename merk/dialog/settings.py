@@ -412,6 +412,8 @@ class Dialog(QDialog):
 				self.systrayMinOnClose.setEnabled(True)
 				self.setFlashInterval.setEnabled(True)
 				self.flashInterval.setEnabled(True)
+				self.doubleclickRestore.setEnabled(True)
+				self.clickToMinimize.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
 				self.listSystray.setEnabled(False)
@@ -425,6 +427,8 @@ class Dialog(QDialog):
 				self.systrayMinOnClose.setEnabled(False)
 				self.setFlashInterval.setEnabled(False)
 				self.flashInterval.setEnabled(False)
+				self.doubleclickRestore.setEnabled(False)
+				self.clickToMinimize.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
@@ -440,6 +444,8 @@ class Dialog(QDialog):
 			self.systrayMinOnClose.setEnabled(False)
 			self.setFlashInterval.setEnabled(False)
 			self.flashInterval.setEnabled(False)
+			self.doubleclickRestore.setEnabled(False)
+			self.clickToMinimize.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -2602,21 +2608,35 @@ class Dialog(QDialog):
 		flashBox.addWidget(self.flashInterval)
 		flashBox.addStretch()
 
+		self.doubleclickRestore = QCheckBox("Double click to restore window\nfrom system tray",self)
+		if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY: self.doubleclickRestore.setChecked(True)
+		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
+		self.doubleclickRestore.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.clickToMinimize = QCheckBox("Click systray icon to minimize\nto system tray",self)
+		if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY: self.clickToMinimize.setChecked(True)
+		self.clickToMinimize.stateChanged.connect(self.changedSetting)
+		self.clickToMinimize.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
 		systrayLayout.addWidget(self.showSystray)
 		systrayLayout.addWidget(self.showSystrayMenu)
 		systrayLayout.addWidget(self.minSystray)
-		systrayLayout.addWidget(self.systrayNotify)
-		systrayLayout.addWidget(self.listSystray)
 		systrayLayout.addWidget(self.systrayMinOnClose)
+		systrayLayout.addWidget(self.doubleclickRestore)
+		systrayLayout.addWidget(self.clickToMinimize)
+		systrayLayout.addWidget(self.systrayNotify)
 		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
-		systrayLayout.addLayout(flashBox)
 		systrayLayout.addLayout(nickPriv)
 		systrayLayout.addLayout(kickInvite)
 		systrayLayout.addLayout(noticeMode)
 		systrayLayout.addLayout(discLay)
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
+		systrayLayout.addWidget(self.listSystray)
+		systrayLayout.addLayout(flashBox)
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
@@ -2637,6 +2657,8 @@ class Dialog(QDialog):
 				self.systrayMinOnClose.setEnabled(True)
 				self.setFlashInterval.setEnabled(True)
 				self.flashInterval.setEnabled(True)
+				self.doubleclickRestore.setEnabled(True)
+				self.clickToMinimize.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
 				self.listSystray.setEnabled(False)
@@ -2650,6 +2672,8 @@ class Dialog(QDialog):
 				self.systrayMinOnClose.setEnabled(False)
 				self.setFlashInterval.setEnabled(False)
 				self.flashInterval.setEnabled(False)
+				self.doubleclickRestore.setEnabled(False)
+				self.clickToMinimize.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
@@ -2665,6 +2689,8 @@ class Dialog(QDialog):
 			self.systrayMinOnClose.setEnabled(False)
 			self.setFlashInterval.setEnabled(False)
 			self.flashInterval.setEnabled(False)
+			self.doubleclickRestore.setEnabled(False)
+			self.clickToMinimize.setEnabled(False)
 
 		# Syntax
 
@@ -3151,6 +3177,7 @@ class Dialog(QDialog):
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
 		config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = self.emojiAway.isChecked()
 		config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
+		config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = self.doubleclickRestore.isChecked()
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash
