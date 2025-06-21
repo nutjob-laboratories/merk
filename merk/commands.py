@@ -1176,8 +1176,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					window.client.away(msg)
 					window.client.away_msg = msg
 			else:
-				if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-					msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+				if config.ENABLE_EMOJI_SHORTCODES:
+					if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
+						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+					else:
+						msg = config.DEFAULT_AWAY_MESSAGE
 				else:
 					msg = config.DEFAULT_AWAY_MESSAGE
 				window.client.away(msg)
