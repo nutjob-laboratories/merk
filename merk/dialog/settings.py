@@ -2929,7 +2929,7 @@ class Dialog(QDialog):
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
 		leftLayout.addWidget(logo)
-		leftLayout.addWidget(QLabel("<center><b>Version "+APPLICATION_VERSION+"</b></center>"))
+		leftLayout.addWidget(QLabel("<center><b><small>Version "+APPLICATION_VERSION+"</small></b></center>"))
 
 		mainLayout = QHBoxLayout()
 		mainLayout.addLayout(leftLayout)
