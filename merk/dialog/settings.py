@@ -2598,7 +2598,6 @@ class Dialog(QDialog):
 		self.flashInterval.currentIndexChanged.connect(self.flashChange)
 
 		flashBox = QHBoxLayout()
-		flashBox.addStretch()
 		flashBox.addWidget(self.setFlashInterval)
 		flashBox.addWidget(self.flashInterval)
 		flashBox.addStretch()
