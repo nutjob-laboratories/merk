@@ -141,7 +141,7 @@ class Dialog(QDialog):
 			font_name = pfs[0]
 			font_size = pfs[1]
 
-			self.fontLabel.setText(f"<b>{font_name}, {font_size} pt</b>")
+			self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
 			self.changed.show()
 			self.boldApply()
 		self.selector.setFocus()
@@ -152,7 +152,7 @@ class Dialog(QDialog):
 		if x:
 			self.subWidth = x[0]
 			self.subHeight = x[1]
-			self.sizeLabel.setText(f"<b>{str(self.subWidth)}x{str(self.subHeight)} px</b>")
+			self.sizeLabel.setText(f"Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>")
 			self.changed.show()
 			self.boldApply()
 		self.selector.setFocus()
@@ -904,7 +904,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("General")
+		entry.setText("Application")
 		entry.widget = self.applicationPage
 		entry.setIcon(QIcon(SETTINGS_ICON))
 		self.selector.addItem(entry)
@@ -919,7 +919,7 @@ class Dialog(QDialog):
 		font_name = pfs[0]
 		font_size = pfs[1]
 
-		self.fontLabel = QLabel(f"<b>{font_name}, {font_size} pt</b>",self)
+		self.fontLabel = QLabel(f"Font: <b>{font_name}, {font_size} pt</b>",self)
 
 		fontButton = QPushButton("")
 		fontButton.clicked.connect(self.menuFont)
@@ -935,7 +935,7 @@ class Dialog(QDialog):
 		fontLayout.addWidget(fontButton)
 		fontLayout.addWidget(self.fontLabel)
 
-		self.sizeLabel = QLabel(f"<b>{str(self.subWidth)}x{str(self.subHeight)} px</b>",self)
+		self.sizeLabel = QLabel(f"Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
 
 		sizeButton = QPushButton("")
 		sizeButton.clicked.connect(self.setWinsize)
@@ -997,14 +997,27 @@ class Dialog(QDialog):
 
 		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
+		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
+		self.enableEmojis.stateChanged.connect(self.changedEmoji)
+
+		self.emojiDescription = QLabel("""
+			<small>
+			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
+			your chat by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
+			You can find a complete list of supported <b>shortcodes</b> <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">
+			here</a>.
+			</small>
+			<br>
+			""")
+		self.emojiDescription.setWordWrap(True)
+		self.emojiDescription.setAlignment(Qt.AlignJustify)
+		self.emojiDescription.setOpenExternalLinks(True)
+
 		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default font</b>"))
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
-		applicationLayout.addWidget(QLabel(' '))
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>initial window size</b>"))
 		applicationLayout.addLayout(sizeLayout)
-		applicationLayout.addWidget(QLabel(' '))
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application</b>"))
 		applicationLayout.addWidget(self.maxOnStart)
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
@@ -1014,6 +1027,10 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.noAppNameTitle)
+		applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
+		applicationLayout.addWidget(self.emojiDescription)
+		applicationLayout.addWidget(self.enableEmojis)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -2030,10 +2047,6 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.inputPage)
 
-		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
-		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
-		self.enableEmojis.stateChanged.connect(self.changedEmoji)
-
 		self.historyLabel = QLabel(f"<b>{str(self.historysize)} lines</b>",self)
 
 		historyButton = QPushButton("")
@@ -2112,24 +2125,7 @@ class Dialog(QDialog):
 		autoLayout2.addWidget(self.autocompleteChans)
 		autoLayout2.addWidget(self.autocompleteEmojis)
 
-		self.emojiDescription = QLabel("""
-			<small>
-			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
-			your chat by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			You can find a complete list of supported <b>shortcodes</b> <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">
-			here</a>.
-			</small>
-			<br>
-			""")
-		self.emojiDescription.setWordWrap(True)
-		self.emojiDescription.setAlignment(Qt.AlignJustify)
-		self.emojiDescription.setOpenExternalLinks(True)
-
 		inputLayout = QVBoxLayout()
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
-		inputLayout.addWidget(self.emojiDescription)
-		inputLayout.addWidget(self.enableEmojis)
-		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyLayout)
