@@ -1759,11 +1759,13 @@ class Dialog(QDialog):
 		self.windowCancelAway.stateChanged.connect(self.changedSetting)
 		self.windowCancelAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
+		self.appCancelAway = QCheckBox("Interacting with application\ncancels autoaway",self)
+		if config.APP_INTERACTION_CANCELS_AUTOAWAY: self.appCancelAway.setChecked(True)
+		self.appCancelAway.stateChanged.connect(self.changedSetting)
+		self.appCancelAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
-		awayLayout.addLayout(intervalBox)
-		awayLayout.addWidget(self.typeCancelInput)
-		awayLayout.addWidget(self.windowCancelAway)
 		awayLayout.addWidget(self.promptAway)
 		awayLayout.addWidget(self.showAwayStatus)
 		awayLayout.addWidget(self.showAwayBack)
@@ -1771,6 +1773,12 @@ class Dialog(QDialog):
 		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
 		awayLayout.addWidget(awayBox)
+		awayLayout.addWidget(QLabel(' '))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autoaway settiings</b>"))
+		awayLayout.addLayout(intervalBox)
+		awayLayout.addWidget(self.typeCancelInput)
+		awayLayout.addWidget(self.windowCancelAway)
+		awayLayout.addWidget(self.appCancelAway)
 		awayLayout.addStretch()
 
 		self.awayPage.setLayout(awayLayout)
@@ -2950,6 +2958,7 @@ class Dialog(QDialog):
 		config.DO_NOT_APPLY_STYLES_TO_TEXT = self.noStyles.isChecked()
 		config.TYPING_INPUT_CANCELS_AUTOAWAY = self.typeCancelInput.isChecked()
 		config.WINDOW_INTERACTION_CANCELS_AUTOAWAY = self.windowCancelAway.isChecked()
+		config.APP_INTERACTION_CANCELS_AUTOAWAY = self.appCancelAway.isChecked()
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()

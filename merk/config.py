@@ -201,9 +201,11 @@ CONVERT_CHANNELS_TO_LINKS = False
 DO_NOT_APPLY_STYLES_TO_TEXT = False
 TYPING_INPUT_CANCELS_AUTOAWAY = True
 WINDOW_INTERACTION_CANCELS_AUTOAWAY = False
+APP_INTERACTION_CANCELS_AUTOAWAY = False
 
 def build_settings():
 	settings = {
+		"app_interaction_cancels_autoaway": APP_INTERACTION_CANCELS_AUTOAWAY,
 		"window_interaction_cancels_autoaway": WINDOW_INTERACTION_CANCELS_AUTOAWAY,
 		"typing_input_cancels_autoaway": TYPING_INPUT_CANCELS_AUTOAWAY,
 		"do_not_apply_styles_to_text": DO_NOT_APPLY_STYLES_TO_TEXT,
@@ -371,6 +373,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "app_interaction_cancels_autoaway" in settings:
+		settings["app_interaction_cancels_autoaway"] = APP_INTERACTION_CANCELS_AUTOAWAY
 	if not "window_interaction_cancels_autoaway" in settings:
 		settings["window_interaction_cancels_autoaway"] = WINDOW_INTERACTION_CANCELS_AUTOAWAY
 	if not "typing_input_cancels_autoaway" in settings:
@@ -862,6 +866,7 @@ def load_settings(filename):
 	global DO_NOT_APPLY_STYLES_TO_TEXT
 	global TYPING_INPUT_CANCELS_AUTOAWAY
 	global WINDOW_INTERACTION_CANCELS_AUTOAWAY
+	global APP_INTERACTION_CANCELS_AUTOAWAY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -871,6 +876,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		APP_INTERACTION_CANCELS_AUTOAWAY = settings["app_interaction_cancels_autoaway"]
 		WINDOW_INTERACTION_CANCELS_AUTOAWAY = settings["window_interaction_cancels_autoaway"]
 		TYPING_INPUT_CANCELS_AUTOAWAY = settings["typing_input_cancels_autoaway"]
 		DO_NOT_APPLY_STYLES_TO_TEXT = settings["do_not_apply_styles_to_text"]

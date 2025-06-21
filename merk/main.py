@@ -54,6 +54,7 @@ from .widgets import menubar,textSeparatorLabel,textSeparator
 class GlobalMdiEventFilter(QObject):
 	def eventFilter(self, watched, event):
 		interacted = False
+
 		if isinstance(watched, QMdiSubWindow):
 			if event.type() == QEvent.MouseButtonPress:
 				interacted = True
@@ -72,9 +73,44 @@ class GlobalMdiEventFilter(QObject):
 					if hasattr(c,"window_interacted_with"):
 						c.window_interacted_with()
 
+		if isinstance(watched, Merk):
+			if event.type() == QEvent.MouseButtonPress:
+				interacted = True
+			elif event.type() == QEvent.KeyPress:
+				interacted = True
+			elif event.type() == QEvent.WindowActivate:
+				interacted = True
+			elif event.type() == QEvent.MouseMove:
+				interacted = True
+
+			if interacted:
+				watched.window_interacted_with()
+
 		return False
 
 class Merk(QMainWindow):
+
+	def window_interacted_with(self):
+
+		if config.USE_AUTOAWAY:
+			if config.APP_INTERACTION_CANCELS_AUTOAWAY:
+
+				listOfConnections = {}
+				for i in irc.CONNECTIONS:
+					add_to_list = True
+					for j in self.hiding:
+						if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+					if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+
+				if len(listOfConnections)==0: return
+
+				for i in listOfConnections:
+					client = listOfConnections[i]
+
+					if client.autoaway:
+						client.back()
+
+					client.last_interaction = 0
 
 	# ===========
 	# Constructor
@@ -2522,14 +2558,6 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
-	def settingsEmoji(self):
-		if config.ENABLE_EMOJI_SHORTCODES:
-			config.ENABLE_EMOJI_SHORTCODES = False
-		else:
-			config.ENABLE_EMOJI_SHORTCODES = True
-		config.save_settings(config.CONFIG_FILE)
-		self.buildSettingsMenu()
-
 	def settingsDarkMode(self):
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(SETTINGS_ICON))
@@ -2639,13 +2667,6 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Convert channel names to links", self)
 		entry.triggered.connect(self.settingsChanNames)
-		self.settingsMenu.addAction(entry)
-
-		if config.ENABLE_EMOJI_SHORTCODES:
-			entry = QAction(QIcon(self.checked_icon),"Enable emoji shortcodes", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable emoji shortcodes", self)
-		entry.triggered.connect(self.settingsEmoji)
 		self.settingsMenu.addAction(entry)
 
 		away_time = f"{config.AUTOAWAY_TIME} seconds"
