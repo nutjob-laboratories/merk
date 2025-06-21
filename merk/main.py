@@ -73,6 +73,7 @@ class GlobalMdiEventFilter(QObject):
 					if hasattr(c,"window_interacted_with"):
 						c.window_interacted_with()
 
+		interacted = False
 		if isinstance(watched, Merk):
 			if event.type() == QEvent.MouseButtonPress:
 				interacted = True
@@ -227,8 +228,8 @@ class Merk(QMainWindow):
 		# Systray
 		self.flash = QTimer(self)
 		self.flash.timeout.connect(self.blink)
-		self.alternate = config.FLASH_SYSTRAY_SPEED
-		self.flash_time = 500
+		self.alternate = False
+		self.flash_time = config.FLASH_SYSTRAY_SPEED
 		self.notifications = False
 
 		self.tray_blank_icon = QIcon(NORMAL_USER)
