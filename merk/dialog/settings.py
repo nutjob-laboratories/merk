@@ -2914,7 +2914,7 @@ class Dialog(QDialog):
 		# Finalize layout
 
 		logo = QLabel()
-		pixmap = QPixmap(APPLICATION_ICON)
+		pixmap = QPixmap(VERTICAL_SPLASH_LOGO)
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
@@ -2929,6 +2929,7 @@ class Dialog(QDialog):
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
 		leftLayout.addWidget(logo)
+		leftLayout.addWidget(QLabel("<center><b>Version "+APPLICATION_VERSION+"</b></center>"))
 
 		mainLayout = QHBoxLayout()
 		mainLayout.addLayout(leftLayout)
