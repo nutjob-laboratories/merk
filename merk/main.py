@@ -2463,50 +2463,10 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
-	def settingsAutoCommands(self):
-		if config.AUTOCOMPLETE_COMMANDS:
-			config.AUTOCOMPLETE_COMMANDS = False
-		else:
-			config.AUTOCOMPLETE_COMMANDS = True
-		config.save_settings(config.CONFIG_FILE)
-		self.buildSettingsMenu()
-
 	def menuSetLanguage(self,lang):
 		config.DEFAULT_SPELLCHECK_LANGUAGE = lang
 		config.save_settings(config.CONFIG_FILE)
 		self.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
-		self.buildSettingsMenu()
-
-	def settingsAutoNicks(self):
-		if config.AUTOCOMPLETE_NICKS:
-			config.AUTOCOMPLETE_NICKS = False
-		else:
-			config.AUTOCOMPLETE_NICKS = True
-		config.save_settings(config.CONFIG_FILE)
-		self.buildSettingsMenu()
-
-	def settingsAutoChannels(self):
-		if config.AUTOCOMPLETE_CHANNELS:
-			config.AUTOCOMPLETE_CHANNELS = False
-		else:
-			config.AUTOCOMPLETE_CHANNELS = True
-		config.save_settings(config.CONFIG_FILE)
-		self.buildSettingsMenu()
-
-	def settingsAutoAliases(self):
-		if config.AUTOCOMPLETE_ALIAS:
-			config.AUTOCOMPLETE_ALIAS = False
-		else:
-			config.AUTOCOMPLETE_ALIAS = True
-		config.save_settings(config.CONFIG_FILE)
-		self.buildSettingsMenu()
-
-	def settingsAutoEmojis(self):
-		if config.AUTOCOMPLETE_EMOJIS:
-			config.AUTOCOMPLETE_EMOJIS = False
-		else:
-			config.AUTOCOMPLETE_EMOJIS = True
-		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsIrcColors(self):
@@ -2559,23 +2519,6 @@ class Merk(QMainWindow):
 			config.ALWAYS_ON_TOP = True
 			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
 			self.show()
-		config.save_settings(config.CONFIG_FILE)
-		self.buildSettingsMenu()
-
-	def settingsWindowbar(self):
-		if config.SHOW_WINDOWBAR:
-			config.SHOW_WINDOWBAR = False
-		else:
-			config.SHOW_WINDOWBAR = True
-		config.save_settings(config.CONFIG_FILE)
-		self.buildMenu()
-		self.initWindowbar()
-
-	def settingsHightlight(self):
-		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
-			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = False
-		else:
-			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = True
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
@@ -2698,6 +2641,13 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsChanNames)
 		self.settingsMenu.addAction(entry)
 
+		if config.ENABLE_EMOJI_SHORTCODES:
+			entry = QAction(QIcon(self.checked_icon),"Enable emoji shortcodes", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable emoji shortcodes", self)
+		entry.triggered.connect(self.settingsEmoji)
+		self.settingsMenu.addAction(entry)
+
 		away_time = f"{config.AUTOAWAY_TIME} seconds"
 
 		if config.AUTOAWAY_TIME==300:
@@ -2720,68 +2670,38 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsAway)
 		self.settingsMenu.addAction(entry)
 
-		if config.DARK_MODE:
-			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+		if config.ALWAYS_ON_TOP:
+			entry = QAction(QIcon(self.checked_icon),"Always on top", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
-		entry.triggered.connect(self.settingsDarkMode)
+			entry = QAction(QIcon(self.unchecked_icon),"Always on top", self)
+		entry.triggered.connect(self.settingsTop)
 		self.settingsMenu.addAction(entry)
 
-		e = textSeparator(self,"Input Settings")
-		self.settingsMenu.addAction(e)
+		if self.ontop:
+			entry.setIcon(QIcon(self.checked_icon))
+			entry.setEnabled(False)
 
-		if config.ENABLE_EMOJI_SHORTCODES:
-			entry = QAction(QIcon(self.checked_icon),"Enable emoji shortcodes", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable emoji shortcodes", self)
-		entry.triggered.connect(self.settingsEmoji)
-		self.settingsMenu.addAction(entry)
-
-		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
-			entry = QAction(QIcon(self.checked_icon),"Highlight text input", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Highlight text input", self)
-		entry.triggered.connect(self.settingsHightlight)
-		self.settingsMenu.addAction(entry)
-
-		sm = self.settingsMenu.addMenu(QIcon(INPUT_ICON),"Autocomplete")
-
-		if config.AUTOCOMPLETE_COMMANDS:
-			entry = QAction(QIcon(self.checked_icon),"Commands", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Commands", self)
-		entry.triggered.connect(self.settingsAutoCommands)
-		sm.addAction(entry)
-
-		if config.AUTOCOMPLETE_NICKS:
-			entry = QAction(QIcon(self.checked_icon),"Nicknames", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Nicknames", self)
-		entry.triggered.connect(self.settingsAutoNicks)
-		sm.addAction(entry)
-
-		if config.AUTOCOMPLETE_CHANNELS:
-			entry = QAction(QIcon(self.checked_icon),"Channels", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Channels", self)
-		entry.triggered.connect(self.settingsAutoChannels)
-		sm.addAction(entry)
-
-		if config.ENABLE_EMOJI_SHORTCODES:
-			if config.AUTOCOMPLETE_EMOJIS:
-				entry = QAction(QIcon(self.checked_icon),"Emoji shortcodes", self)
+		if config.SHOW_SYSTRAY_ICON:
+			if config.MINIMIZE_TO_SYSTRAY:
+				entry = QAction(QIcon(self.checked_icon),"Minimize to system tray", self)
 			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Emoji shortcodes", self)
-			entry.triggered.connect(self.settingsAutoEmojis)
-			sm.addAction(entry)
+				entry = QAction(QIcon(self.unchecked_icon),"Minimize to system tray", self)
+			entry.triggered.connect(self.settingsMinimToTray)
+			self.settingsMenu.addAction(entry)
 
-		if config.INTERPOLATE_ALIASES_INTO_INPUT:
-			if config.AUTOCOMPLETE_ALIAS:
-				entry = QAction(QIcon(self.checked_icon),"Aliases", self)
-			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Aliases", self)
-			entry.triggered.connect(self.settingsAutoAliases)
-			sm.addAction(entry)
+		if config.SOUND_NOTIFICATIONS:
+			entry = QAction(QIcon(self.checked_icon),"Audio notifications", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Audio notifications", self)
+		entry.triggered.connect(self.settingsAudio)
+		self.settingsMenu.addAction(entry)
+
+		if config.SIMPLIFIED_DIALOGS:
+			entry = QAction(QIcon(self.checked_icon),"Simplified dialogs", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Simplified dialogs", self)
+		entry.triggered.connect(self.settingsSimplified)
+		self.settingsMenu.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
 
@@ -2850,49 +2770,6 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.round_unchecked_icon),"Русский", self)
 			entry.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
 		sm.addAction(entry)
-
-		e = textSeparator(self,"Miscellaneous Settings")
-		self.settingsMenu.addAction(e)
-
-		if config.ALWAYS_ON_TOP:
-			entry = QAction(QIcon(self.checked_icon),"Always on top", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Always on top", self)
-		entry.triggered.connect(self.settingsTop)
-		self.settingsMenu.addAction(entry)
-
-		if self.ontop:
-			entry.setIcon(QIcon(self.checked_icon))
-			entry.setEnabled(False)
-
-		if config.SHOW_SYSTRAY_ICON:
-			if config.MINIMIZE_TO_SYSTRAY:
-				entry = QAction(QIcon(self.checked_icon),"Minimize to system tray", self)
-			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Minimize to system tray", self)
-			entry.triggered.connect(self.settingsMinimToTray)
-			self.settingsMenu.addAction(entry)
-
-		if config.SHOW_WINDOWBAR:
-			entry = QAction(QIcon(self.checked_icon),"Enable windowbar", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable windowbar", self)
-		entry.triggered.connect(self.settingsWindowbar)
-		self.settingsMenu.addAction(entry)
-
-		if config.SIMPLIFIED_DIALOGS:
-			entry = QAction(QIcon(self.checked_icon),"Simplified dialogs", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Simplified dialogs", self)
-		entry.triggered.connect(self.settingsSimplified)
-		self.settingsMenu.addAction(entry)
-
-		if config.SOUND_NOTIFICATIONS:
-			entry = QAction(QIcon(self.checked_icon),"Audio notifications", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Audio notifications", self)
-		entry.triggered.connect(self.settingsAudio)
-		self.settingsMenu.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(CONNECT_ICON),"Connections")
 
@@ -2976,6 +2853,17 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Save logs every "+interval, self)
 		entry.triggered.connect(self.settingsIntermittent)
 		sm.addAction(entry)
+
+		self.settingsMenu.addSeparator()
+
+		if config.DARK_MODE:
+			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
+		entry.triggered.connect(self.settingsDarkMode)
+		self.settingsMenu.addAction(entry)
+
+		self.settingsMenu.addSeparator()
 
 		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
