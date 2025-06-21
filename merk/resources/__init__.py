@@ -72,6 +72,21 @@ SYSTEM_PREPEND_OPTIONS = [
 	"&hearts;",
 	"&bull;",
 	"&mdash;",
+	"*",
+	"**",
+	"***",
+	"#",
+	"##",
+	"###",
+	"@",
+	"@@",
+	"@@@",
+	"&",
+	"&&",
+	"&&&",
+	"$",
+	"$$",
+	"$$$",
 ]
 
 LOG_AND_STYLE_FILENAME_DELIMITER = "-"
