@@ -113,7 +113,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.043.000), and may reflect the current reflect the current development version (0.043.001).</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.043.000), and may reflect the current development version (0.043.001).</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
