@@ -410,6 +410,8 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(True)
 				self.systrayMode.setEnabled(True)
 				self.systrayMinOnClose.setEnabled(True)
+				self.setFlashInterval.setEnabled(True)
+				self.flashInterval.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
 				self.listSystray.setEnabled(False)
@@ -421,6 +423,8 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(False)
 				self.systrayMode.setEnabled(False)
 				self.systrayMinOnClose.setEnabled(False)
+				self.setFlashInterval.setEnabled(False)
+				self.flashInterval.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
@@ -434,6 +438,8 @@ class Dialog(QDialog):
 			self.systrayNotice.setEnabled(False)
 			self.systrayMode.setEnabled(False)
 			self.systrayMinOnClose.setEnabled(False)
+			self.setFlashInterval.setEnabled(False)
+			self.flashInterval.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -448,6 +454,8 @@ class Dialog(QDialog):
 			self.systrayInvite.setEnabled(True)
 			self.systrayNotice.setEnabled(True)
 			self.systrayMode.setEnabled(True)
+			self.setFlashInterval.setEnabled(True)
+			self.flashInterval.setEnabled(True)
 		else:
 			self.listSystray.setEnabled(False)
 			self.systrayDisconnect.setEnabled(False)
@@ -457,6 +465,8 @@ class Dialog(QDialog):
 			self.systrayInvite.setEnabled(False)
 			self.systrayNotice.setEnabled(False)
 			self.systrayMode.setEnabled(False)
+			self.setFlashInterval.setEnabled(False)
+			self.flashInterval.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -505,6 +515,17 @@ class Dialog(QDialog):
 
 	def styleChange(self, i):
 		self.qt_style = self.qtStyle.itemText(i)
+
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
+	def flashChange(self,i):
+		newInterval = self.flashInterval.itemText(i)
+		if newInterval=="250 ms": self.flash = 250
+		if newInterval=="500 ms": self.flash = 500
+		if newInterval=="750 ms": self.flash = 750
+		if newInterval=="1 second": self.flash = 1000
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -870,6 +891,8 @@ class Dialog(QDialog):
 
 		self.interval = config.LOG_SAVE_INTERVAL
 		self.awayInterval = config.AUTOAWAY_TIME
+
+		self.flash = config.FLASH_SYSTRAY_SPEED
 
 		self.sound = config.SOUND_NOTIFICATION_FILE
 
@@ -2551,6 +2574,35 @@ class Dialog(QDialog):
 		noticeMode.addWidget(self.systrayNotice)
 		noticeMode.addWidget(self.systrayMode)
 
+		self.setFlashInterval = QLabel("Flash icon every ")
+
+		self.flashInterval = QComboBox(self)
+		added = False
+		if config.FLASH_SYSTRAY_SPEED==250:
+			self.flashInterval.addItem("250ms")
+			added = True
+		if config.FLASH_SYSTRAY_SPEED==500:
+			self.flashInterval.addItem("500 ms")
+			added = True
+		if config.FLASH_SYSTRAY_SPEED==750:
+			self.flashInterval.addItem("750 ms")
+			added = True
+		if config.FLASH_SYSTRAY_SPEED==1000:
+			self.flashInterval.addItem("1 second")
+			added = True
+		if added==False: self.flashInterval.addItem(f"{config.FLASH_SYSTRAY_SPEED} ms")
+		if config.FLASH_SYSTRAY_SPEED!=250: self.flashInterval.addItem("250 ms")
+		if config.FLASH_SYSTRAY_SPEED!=500: self.flashInterval.addItem("500 ms")
+		if config.FLASH_SYSTRAY_SPEED!=750: self.flashInterval.addItem("750 ms")
+		if config.FLASH_SYSTRAY_SPEED!=1000: self.flashInterval.addItem("1 second")
+		self.flashInterval.currentIndexChanged.connect(self.flashChange)
+
+		flashBox = QHBoxLayout()
+		flashBox.addStretch()
+		flashBox.addWidget(self.setFlashInterval)
+		flashBox.addWidget(self.flashInterval)
+		flashBox.addStretch()
+
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
 		systrayLayout.addWidget(self.showSystray)
@@ -2561,6 +2613,7 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(self.systrayMinOnClose)
 		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
+		systrayLayout.addLayout(flashBox)
 		systrayLayout.addLayout(nickPriv)
 		systrayLayout.addLayout(kickInvite)
 		systrayLayout.addLayout(noticeMode)
@@ -2583,6 +2636,8 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(True)
 				self.systrayMode.setEnabled(True)
 				self.systrayMinOnClose.setEnabled(True)
+				self.setFlashInterval.setEnabled(True)
+				self.flashInterval.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
 				self.listSystray.setEnabled(False)
@@ -2594,6 +2649,8 @@ class Dialog(QDialog):
 				self.systrayNotice.setEnabled(False)
 				self.systrayMode.setEnabled(False)
 				self.systrayMinOnClose.setEnabled(False)
+				self.setFlashInterval.setEnabled(False)
+				self.flashInterval.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
@@ -2607,6 +2664,8 @@ class Dialog(QDialog):
 			self.systrayNotice.setEnabled(False)
 			self.systrayMode.setEnabled(False)
 			self.systrayMinOnClose.setEnabled(False)
+			self.setFlashInterval.setEnabled(False)
+			self.flashInterval.setEnabled(False)
 
 		# Syntax
 
@@ -3092,6 +3151,9 @@ class Dialog(QDialog):
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
 		config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = self.emojiAway.isChecked()
 		config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
+
+		if config.FLASH_SYSTRAY_SPEED!=self.flash:
+			config.FLASH_SYSTRAY_SPEED = self.flash
 
 		if self.autoAway.isChecked()!= config.USE_AUTOAWAY:
 			self.parent.resetAllAutoawayTimers()
