@@ -2580,7 +2580,7 @@ class Dialog(QDialog):
 		noticeMode.addWidget(self.systrayNotice)
 		noticeMode.addWidget(self.systrayMode)
 
-		self.setFlashInterval = QLabel("Flash icon every")
+		self.setFlashInterval = QLabel("Flash icon every ")
 
 		self.flashInterval = QComboBox(self)
 		added = False
@@ -2626,17 +2626,17 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(self.systrayMinOnClose)
 		systrayLayout.addWidget(self.doubleclickRestore)
 		systrayLayout.addWidget(self.clickToMinimize)
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
 		systrayLayout.addWidget(self.systrayNotify)
+		systrayLayout.addWidget(self.listSystray)
+		systrayLayout.addLayout(flashBox)
 		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
 		systrayLayout.addLayout(nickPriv)
 		systrayLayout.addLayout(kickInvite)
 		systrayLayout.addLayout(noticeMode)
 		systrayLayout.addLayout(discLay)
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
-		systrayLayout.addWidget(self.listSystray)
-		systrayLayout.addLayout(flashBox)
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
