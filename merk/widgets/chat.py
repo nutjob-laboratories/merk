@@ -1548,7 +1548,7 @@ class Window(QMainWindow):
 		if config.SHOW_AWAY_AND_BACK_MESSAGES:
 			if nickname in self.nicks:
 				t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({message})")
-				self.writeText(t)
+				self.writeText(t,False)
 
 	def got_back(self,username):
 
@@ -1580,7 +1580,7 @@ class Window(QMainWindow):
 		if config.SHOW_AWAY_AND_BACK_MESSAGES:
 			if nickname in self.nicks:
 				t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
-				self.writeText(t)
+				self.writeText(t,False)
 
 	def writeUserlist(self,users):
 
