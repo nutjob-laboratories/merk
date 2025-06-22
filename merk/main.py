@@ -2683,6 +2683,19 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def menuSetWidget(self,newstyle):
+		self.app.setStyle(newstyle)
+		font = QFont()
+		font.fromString(config.APPLICATION_FONT)
+		self.app.setFont(font)
+		self.setAllFont(font)
+		if config.QT_WINDOW_STYLE:
+			config.QT_WINDOW_STYLE = newstyle
+		else:
+			config.QT_WINDOW_STYLE = newstyle
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -2934,6 +2947,17 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
 		entry.triggered.connect(self.settingsDarkMode)
 		self.settingsMenu.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Widget style")
+
+
+		for s in QStyleFactory.keys():
+			if s==config.QT_WINDOW_STYLE:
+				entry = QAction(QIcon(self.round_checked_icon),s, self)
+			else:
+				entry = QAction(QIcon(self.round_unchecked_icon),s, self)
+			entry.triggered.connect(lambda state,u=f"{s}": self.menuSetWidget(u))
+			sm.addAction(entry)
 
 		self.settingsMenu.addSeparator()
 
