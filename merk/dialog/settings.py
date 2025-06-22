@@ -2373,6 +2373,10 @@ class Dialog(QDialog):
 		self.logFullDescription.setWordWrap(True)
 		self.logFullDescription.setAlignment(Qt.AlignJustify)
 
+		self.topicLog = QCheckBox("Save channel topics to log",self)
+		if config.LOG_CHANNEL_TOPICS: self.topicLog.setChecked(True)
+		self.topicLog.stateChanged.connect(self.changedSetting)
+
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
@@ -2380,6 +2384,7 @@ class Dialog(QDialog):
 		logLayout.addWidget(self.loadChanLogs)
 		logLayout.addWidget(self.savePrivLogs)
 		logLayout.addWidget(self.loadPrivLogs)
+		logLayout.addWidget(self.topicLog)
 		logLayout.addWidget(self.markLog)
 		logLayout.addLayout(intervalBox)
 		logLayout.addWidget(QLabel(' '))
@@ -3178,6 +3183,7 @@ class Dialog(QDialog):
 		config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = self.emojiAway.isChecked()
 		config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
 		config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = self.doubleclickRestore.isChecked()
+		config.LOG_CHANNEL_TOPICS = self.topicLog.isChecked()
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash

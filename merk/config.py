@@ -207,9 +207,11 @@ AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = True
 DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = True
 CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = True
 LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = False
+LOG_CHANNEL_TOPICS = True
 
 def build_settings():
 	settings = {
+		"log_channel_topics": LOG_CHANNEL_TOPICS,
 		"log_absolutely_all_messages_of_any_type": LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE,
 		"click_systray_icon_to_minimize_to_tray": CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY,
 		"doubleclick_to_restore_from_systray": DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY,
@@ -383,6 +385,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "log_channel_topics" in settings:
+		settings["log_channel_topics"] = LOG_CHANNEL_TOPICS
 	if not "log_absolutely_all_messages_of_any_type" in settings:
 		settings["log_absolutely_all_messages_of_any_type"] = LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
 	if not "click_systray_icon_to_minimize_to_tray" in settings:
@@ -892,6 +896,7 @@ def load_settings(filename):
 	global DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
 	global CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
 	global LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
+	global LOG_CHANNEL_TOPICS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -901,6 +906,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_CHANNEL_TOPICS = settings["log_channel_topics"]
 		LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = settings["log_absolutely_all_messages_of_any_type"]
 		CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = settings["click_systray_icon_to_minimize_to_tray"]
 		DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = settings["doubleclick_to_restore_from_systray"]

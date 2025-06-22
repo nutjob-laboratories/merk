@@ -1312,7 +1312,7 @@ class Merk(QMainWindow):
 
 							if user!='':
 								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
-								c.writeText(t)
+								c.writeText(t,config.LOG_CHANNEL_TOPICS)
 
 	def userJoined(self,client,user,channel):
 		w = self.getWindow(channel,client)
