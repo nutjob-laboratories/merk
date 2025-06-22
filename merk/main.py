@@ -1690,20 +1690,44 @@ class Merk(QMainWindow):
 	def gotAway(self,client,nick,msg):
 		windows = self.getAllSubWindows(client)
 
+		p = nick.split('!')
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = nick
+
 		for subwindow in windows:
 			c = subwindow.widget()
 			if hasattr(c,"client"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.got_away(nick,msg)
 
+					if config.SHOW_AWAY_AND_BACK_MESSAGES:
+						if nickname in c.nicks:
+							t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({msg})")
+							c.writeText(t,False)
+
 	def gotBack(self,client,nick):
 		windows = self.getAllSubWindows(client)
+
+		p = nick.split('!')
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = nick
 
 		for subwindow in windows:
 			c = subwindow.widget()
 			if hasattr(c,"client"):
 				if c.window_type==CHANNEL_WINDOW:
 					c.got_back(nick)
+
+					if config.SHOW_AWAY_AND_BACK_MESSAGES:
+						if nickname in c.nicks:
+							t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
+							c.writeText(t,False)
 
 	def resetAllAutoawayTimers(self):
 		for i in irc.CONNECTIONS:
