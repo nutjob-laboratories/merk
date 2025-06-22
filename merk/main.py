@@ -1318,14 +1318,14 @@ class Merk(QMainWindow):
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" joined "+channel)
-			w.writeText(t)
+			w.writeText(t,config.LOG_CHANNEL_JOIN)
 			return
 
 	def userLeft(self,client,user,channel):
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" left "+channel)
-			w.writeText(t)
+			w.writeText(t,config.LOG_CHANNEL_PART)
 			return
 
 	def userRenamed(self,client,oldname,newname):

@@ -2277,19 +2277,19 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.logPage)
 
-		self.saveChanLogs = QCheckBox("Save channel logs",self)
+		self.saveChanLogs = QCheckBox("Save logs",self)
 		if config.SAVE_CHANNEL_LOGS: self.saveChanLogs.setChecked(True)
 		self.saveChanLogs.stateChanged.connect(self.changedSetting)
 
-		self.loadChanLogs = QCheckBox("Load channel logs",self)
+		self.loadChanLogs = QCheckBox("Load logs",self)
 		if config.LOAD_CHANNEL_LOGS: self.loadChanLogs.setChecked(True)
 		self.loadChanLogs.stateChanged.connect(self.changedSetting)
 
-		self.savePrivLogs = QCheckBox("Save private chat logs",self)
+		self.savePrivLogs = QCheckBox("Save logs",self)
 		if config.SAVE_PRIVATE_LOGS: self.savePrivLogs.setChecked(True)
 		self.savePrivLogs.stateChanged.connect(self.changedSetting)
 
-		self.loadPrivLogs = QCheckBox("Load private chat logs",self)
+		self.loadPrivLogs = QCheckBox("Load logs",self)
 		if config.LOAD_PRIVATE_LOGS: self.loadPrivLogs.setChecked(True)
 		self.loadPrivLogs.stateChanged.connect(self.changedSetting)
 
@@ -2373,18 +2373,47 @@ class Dialog(QDialog):
 		self.logFullDescription.setWordWrap(True)
 		self.logFullDescription.setAlignment(Qt.AlignJustify)
 
-		self.topicLog = QCheckBox("Save channel topics to log",self)
+		self.topicLog = QCheckBox("Topics",self)
 		if config.LOG_CHANNEL_TOPICS: self.topicLog.setChecked(True)
 		self.topicLog.stateChanged.connect(self.changedSetting)
+
+		self.joinLog = QCheckBox("Joins",self)
+		if config.LOG_CHANNEL_JOIN: self.joinLog.setChecked(True)
+		self.joinLog.stateChanged.connect(self.changedSetting)
+
+		self.partLog = QCheckBox("Parts",self)
+		if config.LOG_CHANNEL_PART: self.partLog.setChecked(True)
+		self.partLog.stateChanged.connect(self.changedSetting)
+
+		chanLayout = QHBoxLayout()
+		chanLayout.addStretch()
+		chanLayout.addWidget(self.saveChanLogs)
+		chanLayout.addWidget(self.loadChanLogs)
+		chanLayout.addStretch()
+
+		privLayout = QHBoxLayout()
+		privLayout.addStretch()
+		privLayout.addWidget(self.savePrivLogs)
+		privLayout.addWidget(self.loadPrivLogs)
+		privLayout.addStretch()
+
+		contLayout = QHBoxLayout()
+		contLayout.addStretch()
+		contLayout.addWidget(self.topicLog)
+		contLayout.addWidget(self.joinLog)
+		contLayout.addWidget(self.partLog)
+		contLayout.addStretch()
 
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
-		logLayout.addWidget(self.saveChanLogs)
-		logLayout.addWidget(self.loadChanLogs)
-		logLayout.addWidget(self.savePrivLogs)
-		logLayout.addWidget(self.loadPrivLogs)
-		logLayout.addWidget(self.topicLog)
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel logs</b>"))
+		logLayout.addLayout(chanLayout)
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
+		logLayout.addLayout(contLayout)
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
+		logLayout.addLayout(privLayout)
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		logLayout.addWidget(self.markLog)
 		logLayout.addLayout(intervalBox)
 		logLayout.addWidget(QLabel(' '))
@@ -3184,6 +3213,8 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
 		config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = self.doubleclickRestore.isChecked()
 		config.LOG_CHANNEL_TOPICS = self.topicLog.isChecked()
+		config.LOG_CHANNEL_JOIN = self.joinLog.isChecked()
+		config.LOG_CHANNEL_PART = self.partLog.isChecked()
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash

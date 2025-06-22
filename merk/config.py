@@ -208,9 +208,13 @@ DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = True
 CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = True
 LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = False
 LOG_CHANNEL_TOPICS = True
+LOG_CHANNEL_JOIN = True
+LOG_CHANNEL_PART = True
 
 def build_settings():
 	settings = {
+		"log_channel_joins": LOG_CHANNEL_JOIN,
+		"log_channel_parts": LOG_CHANNEL_PART,
 		"log_channel_topics": LOG_CHANNEL_TOPICS,
 		"log_absolutely_all_messages_of_any_type": LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE,
 		"click_systray_icon_to_minimize_to_tray": CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY,
@@ -385,6 +389,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "log_channel_joins" in settings:
+		settings["log_channel_joins"] = LOG_CHANNEL_JOIN
+	if not "log_channel_parts" in settings:
+		settings["log_channel_parts"] = LOG_CHANNEL_PART
 	if not "log_channel_topics" in settings:
 		settings["log_channel_topics"] = LOG_CHANNEL_TOPICS
 	if not "log_absolutely_all_messages_of_any_type" in settings:
@@ -897,6 +905,8 @@ def load_settings(filename):
 	global CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
 	global LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
 	global LOG_CHANNEL_TOPICS
+	global LOG_CHANNEL_JOIN
+	global LOG_CHANNEL_PART
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -906,6 +916,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_CHANNEL_JOIN = settings["log_channel_joins"]
+		LOG_CHANNEL_PART = settings["log_channel_parts"]
 		LOG_CHANNEL_TOPICS = settings["log_channel_topics"]
 		LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = settings["log_absolutely_all_messages_of_any_type"]
 		CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = settings["click_systray_icon_to_minimize_to_tray"]
