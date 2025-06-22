@@ -2622,6 +2622,7 @@ class Merk(QMainWindow):
 
 		rval = msgBox.exec()
 		if rval != QMessageBox.Cancel:
+			if self.is_hidden: self.toggleHide()
 			if config.DARK_MODE:
 				config.DARK_MODE = False
 			else:
@@ -2685,8 +2686,7 @@ class Merk(QMainWindow):
 
 	def menuSetWidget(self,newstyle):
 		self.app.setStyle(newstyle)
-		font = QFont()
-		font.fromString(config.APPLICATION_FONT)
+		font = self.app.font()
 		self.app.setFont(font)
 		self.setAllFont(font)
 		if config.QT_WINDOW_STYLE:
@@ -2939,28 +2939,6 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsIntermittent)
 		sm.addAction(entry)
 
-		self.settingsMenu.addSeparator()
-
-		if config.DARK_MODE:
-			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
-		entry.triggered.connect(self.settingsDarkMode)
-		self.settingsMenu.addAction(entry)
-
-		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Widget style")
-
-
-		for s in QStyleFactory.keys():
-			if s==config.QT_WINDOW_STYLE:
-				entry = QAction(QIcon(self.round_checked_icon),s, self)
-			else:
-				entry = QAction(QIcon(self.round_unchecked_icon),s, self)
-			entry.triggered.connect(lambda state,u=f"{s}": self.menuSetWidget(u))
-			sm.addAction(entry)
-
-		self.settingsMenu.addSeparator()
-
 		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 		if not is_running_from_pyinstaller():
@@ -2987,6 +2965,25 @@ class Merk(QMainWindow):
 		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 		sm.addAction(entry)
+
+		self.settingsMenu.addSeparator()
+
+		if config.DARK_MODE:
+			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
+		entry.triggered.connect(self.settingsDarkMode)
+		self.settingsMenu.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(WINDOW_ICON),"Widget style")
+
+		for s in QStyleFactory.keys():
+			if s==config.QT_WINDOW_STYLE:
+				entry = QAction(QIcon(self.round_checked_icon),s, self)
+			else:
+				entry = QAction(QIcon(self.round_unchecked_icon),s, self)
+			entry.triggered.connect(lambda state,u=f"{s}": self.menuSetWidget(u))
+			sm.addAction(entry)
 
 		self.buildSystrayMenu()
 
