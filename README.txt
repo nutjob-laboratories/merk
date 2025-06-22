@@ -21,7 +21,7 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All files available for direct download are for the current development version of **MERK**. 
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All files available for direct download below are for the current development version of **MERK**. 
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
@@ -41,13 +41,13 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 # Running MERK on Windows
 **MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release here](!_RELEASE_URL_!).
 
-To run **MERK**, unzip the file you downloaded to any directory, and double click on `merk.exe` to run the client. If you downloaded the installer, double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
+To run **MERK**, [download](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [downloaded the installer](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
 
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
 # Running MERK with Python
 
-First, make sure that all the [requirements](#python-requirements) are installed. Next, download **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
 
     python merk.py
 
@@ -81,7 +81,6 @@ There are three libraries that comes bundled with **MERK**:
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
--   If you're using Windows, [you can run **MERK** without installing Python](https://github.com/nutjob-laboratories/merk//raw/main/downloads/merk-windows-latest.zip)!
 - Dark mode!
 - Audio notifications
   - Can be triggered by seven different events, with each one able to be turned on and off
@@ -90,7 +89,6 @@ There are three libraries that comes bundled with **MERK**:
     - Control application behavior, logging, features, and more!
     - Over 150 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
     - Almost all settings can be changed in the settings dialog without a restart. Have fun testing different options!
-    - Configuration data is stored in JSON
  -  Extensive command-line options
 -   A built-in list of over 80 IRC servers to connect to
 -   All text colors (and backgrounds) can be customized
@@ -213,7 +211,7 @@ Appearance:
   -L, --light           Run in light mode
 ```
 # Commands
-All of these commands can be issued from the text input widget, or from scripts.
+All of these commands can be issued in the client, or from scripts, unless otherwise noted.
 
 | Commands                                | Description                                                                                                 |
 |-----------------------------------------|-------------------------------------------------------------------------------------------------------------|
@@ -336,5 +334,3 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
 
 [//]: # (End of document)
-
-
