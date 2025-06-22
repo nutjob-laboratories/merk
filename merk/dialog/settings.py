@@ -2388,12 +2388,14 @@ class Dialog(QDialog):
 		chanLayout = QHBoxLayout()
 		chanLayout.addStretch()
 		chanLayout.addWidget(self.saveChanLogs)
+		chanLayout.addStretch()
 		chanLayout.addWidget(self.loadChanLogs)
 		chanLayout.addStretch()
 
 		privLayout = QHBoxLayout()
 		privLayout.addStretch()
 		privLayout.addWidget(self.savePrivLogs)
+		privLayout.addStretch()
 		privLayout.addWidget(self.loadPrivLogs)
 		privLayout.addStretch()
 
