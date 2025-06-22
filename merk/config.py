@@ -206,9 +206,11 @@ USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = True
 AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = True
 DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = True
 CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = True
+LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = False
 
 def build_settings():
 	settings = {
+		"log_absolutely_all_messages_of_any_type": LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE,
 		"click_systray_icon_to_minimize_to_tray": CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY,
 		"doubleclick_to_restore_from_systray": DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY,
 		"autocomplete_emojis_in_away_message_widget": AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET,
@@ -381,6 +383,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "log_absolutely_all_messages_of_any_type" in settings:
+		settings["log_absolutely_all_messages_of_any_type"] = LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
 	if not "click_systray_icon_to_minimize_to_tray" in settings:
 		settings["click_systray_icon_to_minimize_to_tray"] = CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
 	if not "doubleclick_to_restore_from_systray" in settings:
@@ -887,6 +891,7 @@ def load_settings(filename):
 	global AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
 	global DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
 	global CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
+	global LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -896,6 +901,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = settings["log_absolutely_all_messages_of_any_type"]
 		CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = settings["click_systray_icon_to_minimize_to_tray"]
 		DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = settings["doubleclick_to_restore_from_systray"]
 		AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = settings["autocomplete_emojis_in_away_message_widget"]

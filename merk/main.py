@@ -1020,7 +1020,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
-			c.writeText(t,False)
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1054,7 +1054,7 @@ class Merk(QMainWindow):
 		c = self.getCurrentChat()
 		if config.SHOW_AWAY_AND_BACK_MESSAGES:
 			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
-			c.writeText(t,False)
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 
 	def back(self,client):
@@ -1070,7 +1070,7 @@ class Merk(QMainWindow):
 		c = self.getCurrentChat()
 		if config.SHOW_AWAY_AND_BACK_MESSAGES:
 			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
-			c.writeText(t,False)
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def gotVersion(self,client,server,version):
 		w = self.getServerWindow(client)
@@ -1398,7 +1398,7 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t,False)
+		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
@@ -1416,7 +1416,7 @@ class Merk(QMainWindow):
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode)
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t,False)
+		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode+" on "+target)
 
@@ -1452,7 +1452,7 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t,False)
+		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
@@ -1490,7 +1490,7 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t,False)
+		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
 
@@ -1589,7 +1589,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			for msg in wd:
-				c.writeText(msg,False)
+				c.writeText(msg,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def who(self,client,nick,whodata):
 
@@ -1598,7 +1598,7 @@ class Merk(QMainWindow):
 			c = w.widget()
 			for entry in whodata:
 				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.channel+"\x0F ("+entry.server+")")
-				c.writeText(t,False)
+				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def whowas(self,client,nick,whodata):
 
@@ -1607,7 +1607,7 @@ class Merk(QMainWindow):
 			c = w.widget()
 			for entry in whodata:
 				t = Message(WHOIS_MESSAGE,nick, entry.username+"@"+entry.host+": \x02"+entry.realname+"\x0F")
-				c.writeText(t,False)
+				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def invited(self,client,user,channel):
 
@@ -1621,7 +1621,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'', user+" invited you to "+channel)
-			c.writeText(t,False)
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1637,7 +1637,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'', "You invited "+user+" to "+channel)
-			c.writeText(t,False)
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1706,7 +1706,7 @@ class Merk(QMainWindow):
 					if config.SHOW_AWAY_AND_BACK_MESSAGES:
 						if nickname in c.nicks:
 							t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({msg})")
-							c.writeText(t,False)
+							c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def gotBack(self,client,nick):
 		windows = self.getAllSubWindows(client)
@@ -1727,7 +1727,7 @@ class Merk(QMainWindow):
 					if config.SHOW_AWAY_AND_BACK_MESSAGES:
 						if nickname in c.nicks:
 							t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
-							c.writeText(t,False)
+							c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def resetAllAutoawayTimers(self):
 		for i in irc.CONNECTIONS:
