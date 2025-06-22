@@ -1020,7 +1020,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
-			c.writeText(t)
+			c.writeText(t,False)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1033,7 +1033,6 @@ class Merk(QMainWindow):
 		w = self.getSubWindow(channel,client)
 		if w:
 			c = w.widget()
-			#if hasattr(c,"saveLogs"): c.saveLogs()
 			c.close()
 			self.buildWindowsMenu()
 
@@ -1052,6 +1051,12 @@ class Merk(QMainWindow):
 				w.away_button.setToolTip("Set status to \"back\"")
 				w.away_button.setIcon(QIcon(GO_BACK_ICON))
 
+		c = self.getCurrentChat()
+		if config.SHOW_AWAY_AND_BACK_MESSAGES:
+			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
+			c.writeText(t,False)
+
+
 	def back(self,client):
 		w = self.getServerWindow(client)
 		if w:
@@ -1061,6 +1066,11 @@ class Merk(QMainWindow):
 			if hasattr(w,"away_button"):
 				w.away_button.setToolTip("Set status to \"away\"")
 				w.away_button.setIcon(QIcon(GO_AWAY_ICON))
+
+		c = self.getCurrentChat()
+		if config.SHOW_AWAY_AND_BACK_MESSAGES:
+			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
+			c.writeText(t,False)
 
 	def gotVersion(self,client,server,version):
 		w = self.getServerWindow(client)
@@ -1388,7 +1398,7 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t)
+		if w: w.writeText(t,False)
 
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
@@ -1406,7 +1416,7 @@ class Merk(QMainWindow):
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode)
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t)
+		if w: w.writeText(t,False)
 
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode+" on "+target)
 
@@ -1442,7 +1452,7 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t)
+		if w: w.writeText(t,False)
 
 		t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
@@ -1480,7 +1490,7 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
-		if w: w.writeText(t)
+		if w: w.writeText(t,False)
 
 		t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
 
@@ -1611,7 +1621,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'', user+" invited you to "+channel)
-			c.writeText(t)
+			c.writeText(t,False)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1627,7 +1637,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'', "You invited "+user+" to "+channel)
-			c.writeText(t)
+			c.writeText(t,False)
 
 		w = self.getServerWindow(client)
 		if w:

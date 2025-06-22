@@ -830,7 +830,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			if len(window.client.server_channel_list)==0:
 				t = Message(ERROR_MESSAGE,'',"Channel list is empty, please use "+config.ISSUE_COMMAND_SYMBOL+"refresh to populate it.")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 
 			# No search terms, so open the channel list window
@@ -870,10 +870,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 					QSound.play(efilename)
 				else:
 					t = Message(ERROR_MESSAGE,'',"\""+filename+"\" is not a WAV file.")
-					window.writeText(t)
+					window.writeText(t,False)
 			else:
 				t = Message(ERROR_MESSAGE,'',"Audio file \""+filename+"\" cannot be found.")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'play':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"play FILENAME")
@@ -954,7 +954,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connectssl HOST [PORT] [PASSWORD]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |----------|
@@ -985,7 +985,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |--------------|
@@ -1016,7 +1016,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xconnectssl HOST [PORT] [PASSWORD]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-----------|
@@ -1047,7 +1047,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xconnect HOST [PORT] [PASSWORD]")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -1065,7 +1065,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			else:
 				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)==1:
 			gui.newEditorWindow()
@@ -1089,7 +1089,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'version':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"version")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |--------|
@@ -1111,7 +1111,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'print' and len(tokens)==1:
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"print TEXT")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -1123,7 +1123,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'time':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"time")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |------|
@@ -1137,7 +1137,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'raw' and len(tokens)==1:
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"raw TEXT")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -1149,7 +1149,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'back':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"back")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -1200,7 +1200,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'oper':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |--------|
@@ -1211,7 +1211,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			if is_script==True:
 				t = Message(ERROR_MESSAGE,'',""+config.ISSUE_COMMAND_SYMBOL+"style cannot be called from a script")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 
 			window.pressedStyleButton()
@@ -1225,7 +1225,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			if is_script==True:
 				t = Message(ERROR_MESSAGE,'',""+config.ISSUE_COMMAND_SYMBOL+"settings cannot be called from a script")
-				window.writeText(t)
+				window.writeText(t,False)
 				return True
 
 			gui.openSettings()
@@ -1248,7 +1248,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				gui.showSubWindow(gui.getSubWindow(window.name,window.client))
 			else:
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 
 	# |-------|
@@ -1285,10 +1285,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 						w.showNormal()
 					else:
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
+						window.writeText(t,False)
 					return True
 			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==2:
@@ -1299,7 +1299,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				w.showNormal()
 			else:
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore':
 			window.showNormal()
@@ -1323,10 +1323,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 						w.showMinimized()
 					else:
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
+						window.writeText(t,False)
 					return True
 			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==2:
@@ -1337,7 +1337,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				w.showMinimized()
 			else:
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize':
 			window.showMinimized()
@@ -1361,10 +1361,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 						w.showMaximized()
 					else:
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
+						window.writeText(t,False)
 					return True
 			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==2:
@@ -1375,7 +1375,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				w.showMaximized()
 			else:
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize':
 			window.showMaximized()
@@ -1400,10 +1400,10 @@ def executeCommonCommands(gui,window,user_input,is_script):
 						gui.showSubWindow(w)
 					else:
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t)
+						window.writeText(t,False)
 					return True
 			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==2:
@@ -1414,11 +1414,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				gui.showSubWindow(w)
 			else:
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |---------|
@@ -1433,7 +1433,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'invite':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"invite NICKNAME CHANNEL")
-			window.writeText(t)
+			window.writeText(t,False)
 			return True
 
 	# |---------|
@@ -1461,7 +1461,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 			else:
 				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
-				window.writeText(t)
+				window.writeText(t,False)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
