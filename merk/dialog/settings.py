@@ -2420,6 +2420,7 @@ class Dialog(QDialog):
 		logLayout.addLayout(contLayout)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
 		logLayout.addLayout(privLayout)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		logLayout.addWidget(self.markLog)
 		logLayout.addLayout(intervalBox)

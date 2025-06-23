@@ -758,12 +758,13 @@ class IRC_Connection(irc.IRCClient):
 	def irc_RPL_UNAWAY(self,prefix,params):
 		msg = params[1]
 
-		self.is_away = False
-		self.away_msg = ''
-		self.autoaway = False
-		self.gui.rerenderUserlists()
-		self.gui.rerenderNickDisplay(self)
-		self.gui.back(self)
+		if self.is_away:
+			self.is_away = False
+			self.away_msg = ''
+			self.autoaway = False
+			self.gui.rerenderUserlists()
+			self.gui.rerenderNickDisplay(self)
+			self.gui.back(self)
 
 		self.last_interaction = 0
 
@@ -771,10 +772,11 @@ class IRC_Connection(irc.IRCClient):
 
 		msg = params[1]
 
-		self.is_away = True
-		self.gui.rerenderUserlists()
-		self.gui.rerenderNickDisplay(self)
-		self.gui.away(self,msg)
+		if not self.is_away:
+			self.is_away = True
+			self.gui.rerenderUserlists()
+			self.gui.rerenderNickDisplay(self)
+			self.gui.away(self,msg)
 
 		self.last_interaction = -1
 
