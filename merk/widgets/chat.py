@@ -2547,7 +2547,8 @@ class SpellTextEdit(QPlainTextEdit):
 
 		self.parent = args[0]
 
-		self.dict = SpellChecker(language=self.parent.language,distance=1)
+		self.dict = SpellChecker(language=self.parent.language,distance=config.SPELLCHECKER_DISTANCE)
+		self.dict.word_frequency.load_words(config.DICTIONARY)
 
 		self.highlighter = Highlighter(self.document())
 
@@ -2705,8 +2706,9 @@ class SpellTextEdit(QPlainTextEdit):
 		self.setPlainText(text)
 
 	def changeLanguage(self,lang):
-		self.dict = SpellChecker(language=lang,distance=1)
+		self.dict = SpellChecker(language=lang,distance=config.SPELLCHECKER_DISTANCE)
 		self.highlighter.setDict(self.dict)
+		self.dict.word_frequency.load_words(config.DICTIONARY)
 
 	def mousePressEvent(self, event):
 		if event.button() == Qt.RightButton:
@@ -2717,21 +2719,35 @@ class SpellTextEdit(QPlainTextEdit):
 		QPlainTextEdit.mousePressEvent(self, event)
 
 	def addToDictionary(self,word):
+
+		# Remove the dictionary from the spellchecker
+		self.dict.word_frequency.remove_words(config.DICTIONARY)
+
 		# Add the word to the internal dictionary
 		config.DICTIONARY.append(word)
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
+		# Re-add the dictionary to the spellchecker
+		self.dict.word_frequency.load_words(config.DICTIONARY)
+
 		# Reset the input
 		self.parent.resetInput()
 
 	def removeFromDictionary(self,word):
+
+		# Remove the dictionary from the spellchecker
+		self.dict.word_frequency.remove_words(config.DICTIONARY)
+
 		# Remove the word from the internal dictionary
 		config.DICTIONARY.remove(word)
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
+
+		# Re-add the dictionary to the spellchecker
+		self.dict.word_frequency.load_words(config.DICTIONARY)
 
 		# Reset the input
 		self.parent.resetInput()
@@ -2761,22 +2777,26 @@ class SpellTextEdit(QPlainTextEdit):
 			text = self.textCursor().selectedText()
 
 			# Make sure that words in the custom dictionary aren't flagged as misspelled
-			if not text in config.DICTIONARY:
+			#if not text in config.DICTIONARY:
 
-				if config.ENABLE_SPELLCHECK:
+			if config.ENABLE_SPELLCHECK:
 
-					misspelled = self.dict.unknown([text])
-					if len(misspelled)>0:
-						unknown_word =True
-						if self.dict.candidates(text)!=None:
-							for word in self.dict.candidates(text):
-								if word!=text:
-									action = SpellAction(word, popup_menu)
-									action.correct.connect(self.correctWord)
-									popup_menu.insertAction(popup_menu.actions()[0],action)
-									counter = counter + 1
-							if counter != 0:
-								popup_menu.insertSeparator(popup_menu.actions()[counter])
+				misspelled = self.dict.unknown([text])
+				if len(misspelled)>0:
+					unknown_word =True
+					if self.dict.candidates(text)!=None:
+						for word in self.dict.candidates(text):
+							if word!=text:
+								action = SpellAction(word, popup_menu)
+								action.correct.connect(self.correctWord)
+								if word==self.dict.correction(text):
+									f = action.font()
+									f.setBold(True)
+									action.setFont(f)
+								popup_menu.insertAction(popup_menu.actions()[0],action)
+								counter = counter + 1
+						if counter != 0:
+							popup_menu.insertSeparator(popup_menu.actions()[counter])
 
 			popup_menu.insertSeparator(popup_menu.actions()[counter])
 			counter = counter + 1

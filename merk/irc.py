@@ -84,7 +84,7 @@ class IRC_Connection(irc.IRCClient):
 	versionNum = APPLICATION_VERSION
 	sourceURL = APPLICATION_SOURCE
 
-	heartbeatInterval = 120
+	heartbeatInterval = config.TWISTED_CLIENT_HEARTBEAT
 
 	def __init__(self,**kwargs):
 

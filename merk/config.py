@@ -211,9 +211,13 @@ LOG_CHANNEL_TOPICS = True
 LOG_CHANNEL_JOIN = True
 LOG_CHANNEL_PART = True
 LOG_CHANNEL_QUIT = True
+TWISTED_CLIENT_HEARTBEAT = 120
+SPELLCHECKER_DISTANCE = 1
 
 def build_settings():
 	settings = {
+		"spellchecker_distance": SPELLCHECKER_DISTANCE,
+		"twisted_irc_client_heartbeat": TWISTED_CLIENT_HEARTBEAT,
 		"log_channel_quits": LOG_CHANNEL_QUIT,
 		"log_channel_joins": LOG_CHANNEL_JOIN,
 		"log_channel_parts": LOG_CHANNEL_PART,
@@ -391,6 +395,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "spellchecker_distance" in settings:
+		settings["spellchecker_distance"] = SPELLCHECKER_DISTANCE
+	if not "twisted_irc_client_heartbeat" in settings:
+		settings["twisted_irc_client_heartbeat"] = TWISTED_CLIENT_HEARTBEAT
 	if not "log_channel_quits" in settings:
 		settings["log_channel_quits"] = LOG_CHANNEL_QUIT
 	if not "log_channel_joins" in settings:
@@ -912,6 +920,8 @@ def load_settings(filename):
 	global LOG_CHANNEL_JOIN
 	global LOG_CHANNEL_PART
 	global LOG_CHANNEL_QUIT
+	global TWISTED_CLIENT_HEARTBEAT
+	global SPELLCHECKER_DISTANCE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -921,6 +931,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SPELLCHECKER_DISTANCE = settings["spellchecker_distance"]
+		TWISTED_CLIENT_HEARTBEAT = settings["twisted_irc_client_heartbeat"]
 		LOG_CHANNEL_QUIT = settings["log_channel_quits"]
 		LOG_CHANNEL_JOIN = settings["log_channel_joins"]
 		LOG_CHANNEL_PART = settings["log_channel_parts"]
