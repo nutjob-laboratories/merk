@@ -49,6 +49,7 @@ CONFIG_DIRECTORY = None
 SCRIPTS_DIRECTORY = None
 
 ALIAS = {}
+TEMPORARY_ALIAS = {}
 AUTOCOMPLETE = {}
 COMMAND_HELP_INFORMATION = []
 HELP = None
@@ -221,6 +222,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 build_help_and_autocomplete()
 
+def addTemporaryAlias(name,value):
+	TEMPORARY_ALIAS[name] = value
+
 def addAlias(name,value):
 	ALIAS[name] = value
 
@@ -245,15 +249,79 @@ def interpolateAliases(text):
 			text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,ALIAS[a])
 		counter = counter + 1
 		if counter>=99: break
+
+	while detect_alias(text):
+		for a in TEMPORARY_ALIAS:
+			text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,TEMPORARY_ALIAS[a])
+		counter = counter + 1
+		if counter>=99: break
+
 	return text
 
+def buildTemporaryAliases(gui,window):
+
+	addTemporaryAlias('_NICKNAME',window.client.nickname)
+	addTemporaryAlias('_USERNAME',window.client.username)
+	addTemporaryAlias('_REALNAME',window.client.realname)
+
+	addTemporaryAlias('_WINDOW',window.name)
+
+	if window.window_type==SERVER_WINDOW:
+		addTemporaryAlias('_WINDOW_TYPE',"server")
+	elif window.window_type==CHANNEL_WINDOW:
+		addTemporaryAlias('_WINDOW_TYPE',"channel")
+	elif window.window_type==PRIVATE_WINDOW:
+		addTemporaryAlias('_WINDOW_TYPE',"private")
+
+	addTemporaryAlias('_SERVER',window.client.server)
+	addTemporaryAlias('_PORT',str(window.client.port))
+
+	if hasattr(window.client,"hostname"):
+		addTemporaryAlias('_HOST',window.client.hostname)
+
+	addTemporaryAlias('_UPTIME',str(window.uptime))
+
+	if window.channel_topic!='':
+		addTemporaryAlias('_TOPIC',window.channel_topic)
+
+	if window.operator:
+		addTemporaryAlias('_STATUS',"operator")
+	elif window.voiced:
+		addTemporaryAlias('_STATUS',"voiced")
+	elif window.owner:
+		addTemporaryAlias('_STATUS',"owner")
+	elif window.admin:
+		addTemporaryAlias('_STATUS',"admin")
+	elif window.halfop:
+		addTemporaryAlias('_STATUS',"halfop")
+	elif window.protected:
+		addTemporaryAlias('_STATUS',"protected")
+	else:
+		addTemporaryAlias('_STATUS',"normal")
+
+	if len(window.nicks)>0:
+		addTemporaryAlias('_PRESENT',",".join(window.nicks))
+
+	if window.client.usermodes!='':
+		addTemporaryAlias('_MODE',window.client.usermodes)
+
 def handleChatCommands(gui,window,user_input,is_script):
+
+	buildTemporaryAliases(gui,window)
+
 	user_input = interpolateAliases(user_input)
-	return executeChatCommands(gui,window,user_input,is_script)
+	retval = executeChatCommands(gui,window,user_input,is_script)
+	TEMPORARY_ALIAS = {}
+	return retval
 
 def handleCommonCommands(gui,window,user_input,is_script):
+
+	buildTemporaryAliases(gui,window)
+
 	user_input = interpolateAliases(user_input)
-	return executeCommonCommands(gui,window,user_input,is_script)
+	retval = executeCommonCommands(gui,window,user_input,is_script)
+	TEMPORARY_ALIAS = {}
+	return retval
 
 def executeChatCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
@@ -890,6 +958,12 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			a = tokens.pop(0)
 
+			if len(a)>=1:
+				if not a[0].isalpha():
+					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
 			# Alias tokens cannot be numbers
 			is_number = True
 			try:
@@ -912,10 +986,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=1:
 
-			if len(ALIAS)==0:
+			if len(ALIAS)==0 and len(TEMPORARY_ALIAS)==0:
 				t = Message(SYSTEM_MESSAGE,'',"No aliases are currently defined.")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
+
+			for a in TEMPORARY_ALIAS:
+				t = Message(SYSTEM_MESSAGE,'',config.ALIAS_INTERPOLATION_SYMBOL+a+" = \""+TEMPORARY_ALIAS[a]+"\"")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			for a in ALIAS:
 				t = Message(SYSTEM_MESSAGE,'',config.ALIAS_INTERPOLATION_SYMBOL+a+" = \""+ALIAS[a]+"\"")

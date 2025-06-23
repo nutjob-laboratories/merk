@@ -51,7 +51,7 @@ from . import commands
 
 from .widgets import menubar,textSeparatorLabel,textSeparator
 
-class GlobalMdiEventFilter(QObject):
+class GlobalActivityFilter(QObject):
 	def eventFilter(self, watched, event):
 		interacted = False
 
@@ -143,7 +143,7 @@ class Merk(QMainWindow):
 		self.donotsave = donotsave
 		self.ontop = ontop
 
-		self.event_filter = GlobalMdiEventFilter()
+		self.event_filter = GlobalActivityFilter()
 		QApplication.instance().installEventFilter(self.event_filter)
 
 		commands.build_help_and_autocomplete()
@@ -2155,6 +2155,21 @@ class Merk(QMainWindow):
 						retval.append(window)
 		return retval
 
+	def getAllConnectedChatWindows(self,client):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					if c.client.registered==True:
+						if c.client==client:
+							retval.append(window)
+				elif c.window_type==PRIVATE_WINDOW:
+					if c.client.registered==True:
+						if c.client==client:
+							retval.append(window)
+		return retval
+
 	def getAllSubWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():
@@ -3398,6 +3413,8 @@ class Merk(QMainWindow):
 		windows = self.getAllServerWindows()
 		if len(windows)>0:
 
+			QApplication.setOverrideCursor(Qt.WaitCursor)
+
 			dc = []
 			for w in windows:
 				c = w.widget()
@@ -3418,6 +3435,8 @@ class Merk(QMainWindow):
 					else:
 						self.quitting[c.client.client_id] = 0
 						c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+						
+			QApplication.restoreOverrideCursor()
 
 		self.mainMenu.close()
 

@@ -406,15 +406,35 @@ class Window(QMainWindow):
 						cname = f"{c.client.server}"
 				else:
 					cname = c.name
-				if c.client.kwargs["ssl"]:
-					sec = "Yes"
-				else:
-					sec = "No"
-				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+"<br><b>Network:</b> "+network+"<br><b>Nickname:</b> "+c.client.nickname+"<br><b>Encrypted:</b> "+sec,CUSTOM_MENU_ICON_SIZE) )
+				runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+cname+"&nbsp;","<b>Host:</b> "+c.name+" ("+network+")<br>Execute on server window",CUSTOM_MENU_ICON_SIZE) )
 				runmenuAction = QWidgetAction(self)
 				runmenuAction.setDefaultWidget(runmenuLabel)
 				runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
 				self.runMenu.addAction(runmenuAction)
+
+				chats = self.parent.getAllConnectedChatWindows(c.client)
+				for window in chats:
+					c = window.widget()
+					if hasattr(c.client,"network"):
+						network = c.client.network
+					else:
+						network = "Unknown network"
+					if hasattr(c.client,"hostname"):
+						cname = c.client.hostname
+					else:
+						cname = f"{c.client.server}:{c.client.port}"
+					if c.window_type==CHANNEL_WINDOW:
+						ctype = "channel"
+					else:
+						ctype = "private chat"
+					runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+c.name+"&nbsp;","<b>Host:</b> "+cname+" ("+network+")<br>Execute on "+ctype+" window",CUSTOM_MENU_ICON_SIZE) )
+					runmenuAction = QWidgetAction(self)
+					runmenuAction.setDefaultWidget(runmenuLabel)
+					runmenuLabel.clicked.connect(lambda u=c: self.executeScript(u))
+					self.runMenu.addAction(runmenuAction)
+
+				self.runMenu.addSeparator()
+
 
 			if len(servers)>1:
 				self.runMenu.addSeparator()
