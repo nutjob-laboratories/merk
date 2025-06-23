@@ -2170,6 +2170,25 @@ class Merk(QMainWindow):
 							retval.append(window)
 		return retval
 
+	def getAllConnectedWindows(self,client):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					if c.client.registered==True:
+						if c.client==client:
+							retval.append(c)
+				elif c.window_type==PRIVATE_WINDOW:
+					if c.client.registered==True:
+						if c.client==client:
+							retval.append(c)
+				elif c.window_type==SERVER_WINDOW:
+					if c.client.registered==True:
+						if c.client==client:
+							retval.append(c)
+		return retval
+
 	def getAllSubWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():
@@ -3435,7 +3454,7 @@ class Merk(QMainWindow):
 					else:
 						self.quitting[c.client.client_id] = 0
 						c.client.quit(config.DEFAULT_QUIT_MESSAGE)
-						
+
 			QApplication.restoreOverrideCursor()
 
 		self.mainMenu.close()

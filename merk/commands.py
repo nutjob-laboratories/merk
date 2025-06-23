@@ -1941,7 +1941,9 @@ class ScriptThread(QThread):
 
 		# First pass through the script, to see if there's
 		# any problem with /wait calls
+		line_number = 0
 		for line in self.script.split("\n"):
+			line_number = line_number + 1
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
@@ -1952,24 +1954,44 @@ class ScriptThread(QThread):
 					try:
 						count = int(count)
 					except:
-						self.scriptError.emit([self.gui,self.window,config.ISSUE_COMMAND_SYMBOL+'wait must be called with a numerical argument'])
+						self.scriptError.emit([self.gui,self.window,f"Line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument"])
 						no_errors = False
-					
+
 		if no_errors:
+			breakout = False
+			line_number = 0
 			for line in self.script.split("\n"):
-				line = line.strip()
-				if len(line)==0: continue
+				line_number = line_number + 1
+				if not breakout:
+					line = line.strip()
+					if len(line)==0: continue
 
-				tokens = line.split()
+					tokens = line.split()
 
-				if len(tokens)==2:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
-						count = tokens[1]
-						count = int(count)
-						time.sleep(count)
-						continue
+					if len(tokens)==2:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'jump':
+							target = tokens[1]
 
-				self.execLine.emit([self.gui,self.window,line])
+							is_valid = False
+							valids = self.gui.getAllConnectedWindows(self.window.client)
+							for c in valids:
+								if c.name==target:
+									self.window = c
+									is_valid = True
+
+							if not is_valid:
+								self.scriptError.emit([self.gui,self.window,f"Line {line_number}: \"{target}\" is not a valid target for {config.ISSUE_COMMAND_SYMBOL}jump"])
+								self.scriptError.emit([self.gui,self.window,f"Script execution halted."])
+								breakout = True
+
+					if len(tokens)==2:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
+							count = tokens[1]
+							count = int(count)
+							time.sleep(count)
+							continue
+
+					self.execLine.emit([self.gui,self.window,line])
 
 		self.scriptEnd.emit([self.gui,self.id])
 

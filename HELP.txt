@@ -285,6 +285,10 @@ Appearance:
 <td>Pauses script execution for <code>SECONDS</code>; can only be called from scripts</td>
 </tr>
 <tr>
+<td><code>/jump WINDOW_NAME</code></td>
+<td>Moves execution of the script to another window, <code>WINDOW_NAME</code>; can only be called from scripts</td>
+</tr>
+<tr>
 <td><code>/exit [SECONDS]</code></td>
 <td>Exits the client, with an optional pause of <code>SECONDS</code> before exit</td>
 </tr>

@@ -259,8 +259,9 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/refresh`                              | Requests a new list of channels from the server                                                             |
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                         |
 | `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                        |
+| `/jump WINDOW_NAME`                     | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                        |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                        |
-| `/config [SETTING] [VALUE...]`                | Changes a setting, or searches and displays one or all settings in the configuration file.  _**Caution**: use at your own risk!_                                       |
+| `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  _**Caution**: use at your own risk!_                                       |
 
 
 # Example Command-line Usage
