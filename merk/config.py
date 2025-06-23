@@ -210,9 +210,11 @@ LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = False
 LOG_CHANNEL_TOPICS = True
 LOG_CHANNEL_JOIN = True
 LOG_CHANNEL_PART = True
+LOG_CHANNEL_QUIT = True
 
 def build_settings():
 	settings = {
+		"log_channel_quits": LOG_CHANNEL_QUIT,
 		"log_channel_joins": LOG_CHANNEL_JOIN,
 		"log_channel_parts": LOG_CHANNEL_PART,
 		"log_channel_topics": LOG_CHANNEL_TOPICS,
@@ -389,6 +391,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "log_channel_quits" in settings:
+		settings["log_channel_quits"] = LOG_CHANNEL_QUIT
 	if not "log_channel_joins" in settings:
 		settings["log_channel_joins"] = LOG_CHANNEL_JOIN
 	if not "log_channel_parts" in settings:
@@ -907,6 +911,7 @@ def load_settings(filename):
 	global LOG_CHANNEL_TOPICS
 	global LOG_CHANNEL_JOIN
 	global LOG_CHANNEL_PART
+	global LOG_CHANNEL_QUIT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -916,6 +921,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_CHANNEL_QUIT = settings["log_channel_quits"]
 		LOG_CHANNEL_JOIN = settings["log_channel_joins"]
 		LOG_CHANNEL_PART = settings["log_channel_parts"]
 		LOG_CHANNEL_TOPICS = settings["log_channel_topics"]

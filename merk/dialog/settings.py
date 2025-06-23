@@ -2385,6 +2385,10 @@ class Dialog(QDialog):
 		if config.LOG_CHANNEL_PART: self.partLog.setChecked(True)
 		self.partLog.stateChanged.connect(self.changedSetting)
 
+		self.quitLog = QCheckBox("Quits",self)
+		if config.LOG_CHANNEL_QUIT: self.quitLog.setChecked(True)
+		self.quitLog.stateChanged.connect(self.changedSetting)
+
 		chanLayout = QHBoxLayout()
 		chanLayout.addStretch()
 		chanLayout.addWidget(self.saveChanLogs)
@@ -2404,6 +2408,7 @@ class Dialog(QDialog):
 		contLayout.addWidget(self.topicLog)
 		contLayout.addWidget(self.joinLog)
 		contLayout.addWidget(self.partLog)
+		contLayout.addWidget(self.quitLog)
 		contLayout.addStretch()
 
 		logLayout = QVBoxLayout()
@@ -3217,6 +3222,7 @@ class Dialog(QDialog):
 		config.LOG_CHANNEL_TOPICS = self.topicLog.isChecked()
 		config.LOG_CHANNEL_JOIN = self.joinLog.isChecked()
 		config.LOG_CHANNEL_PART = self.partLog.isChecked()
+		config.LOG_CHANNEL_QUIT = self.quitLog.isChecked()
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash

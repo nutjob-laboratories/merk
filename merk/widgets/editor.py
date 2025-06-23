@@ -43,7 +43,7 @@ from .extendedmenuitem import MenuLabel,menuHtml
 
 class Window(QMainWindow):
 
-	def closeEvent(self, event):
+	def check_for_save(self):
 
 		if config.EDITOR_PROMPT_SAVE:
 			if self.changed:
@@ -67,6 +67,10 @@ class Window(QMainWindow):
 						else:
 							self.doFileSave()
 
+	def closeEvent(self, event):
+
+		self.check_for_save()
+
 		# Make sure the MDI window is closed
 		self.parent.closeSubWindow(self.subwindow_id)
 
@@ -74,6 +78,8 @@ class Window(QMainWindow):
 		self.close()
 
 	def readConnect(self,hostid,contents):
+
+		self.check_for_save()
 
 		self.editing_user_script = True
 		self.current_user_script = hostid
@@ -269,7 +275,7 @@ class Window(QMainWindow):
 		if not self.filename: self.menuSaveAs.setShortcut("Ctrl+Shift+S")
 		self.fileMenu.addAction(self.menuSaveAs)
 
-		menuPromptText = "Prompt to save on close"
+		menuPromptText = "Ask to save changed files"
 		if config.EDITOR_PROMPT_SAVE:
 			self.menuPrompt = QAction(QIcon(self.parent.checked_icon),menuPromptText,self)
 		else:
@@ -451,6 +457,8 @@ class Window(QMainWindow):
 		self.runMenu.addAction(entry)
 
 	def doNewScript(self):
+
+		self.check_for_save()
 
 		x = NewConnectScript(self)
 		e = x.get_server_information(self)
@@ -776,6 +784,9 @@ class Window(QMainWindow):
 			self.menuSaveAs.setShortcut(QKeySequence())
 
 	def doNewFile(self):
+
+		self.check_for_save()
+
 		self.filename = None
 		self.editor.clear()
 		self.menuSave.setEnabled(False)
@@ -787,6 +798,9 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def doFileOpen(self):
+
+		self.check_for_save()
+
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Open Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.{SCRIPT_FILE_EXTENSION});;All Files (*)", options=options)

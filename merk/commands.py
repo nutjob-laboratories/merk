@@ -1980,8 +1980,7 @@ class ScriptThread(QThread):
 									is_valid = True
 
 							if not is_valid:
-								self.scriptError.emit([self.gui,self.window,f"Line {line_number}: \"{target}\" is not a valid target for {config.ISSUE_COMMAND_SYMBOL}jump"])
-								self.scriptError.emit([self.gui,self.window,f"Script execution halted."])
+								self.scriptError.emit([self.gui,self.window,f"Line {line_number}: {config.ISSUE_COMMAND_SYMBOL}jump cannot find window \"{target}\". Script execution halted."])
 								breakout = True
 
 					if len(tokens)==2:

@@ -1370,7 +1370,7 @@ class Merk(QMainWindow):
 							t = Message(SYSTEM_MESSAGE,"",nickname+" has quit IRC ("+msg+")")
 						else:
 							t = Message(SYSTEM_MESSAGE,"",nickname+" has quit IRC")
-						c.writeText(t)
+						c.writeText(t,config.LOG_CHANNEL_QUIT)
 				if c.window_type==PRIVATE_WINDOW:
 					if c.name==nickname:
 						if msg!='':
