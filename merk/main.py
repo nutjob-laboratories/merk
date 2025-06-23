@@ -1559,16 +1559,17 @@ class Merk(QMainWindow):
 		if config.USE_AUTOAWAY:
 			if client.last_interaction!=-1:
 				if client.last_interaction>config.AUTOAWAY_TIME:
-					if config.ENABLE_EMOJI_SHORTCODES:
-						if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-							msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+					if not client.is_away:
+						if config.ENABLE_EMOJI_SHORTCODES:
+							if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
+								msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+							else:
+								msg = config.DEFAULT_AWAY_MESSAGE
 						else:
 							msg = config.DEFAULT_AWAY_MESSAGE
-					else:
-						msg = config.DEFAULT_AWAY_MESSAGE
-					client.away(msg)
-					client.away_msg = msg
-					client.autoaway = True
+						client.away(msg)
+						client.away_msg = msg
+						client.autoaway = True
 
 		for w in self.getAllSubWindows(client):
 			c = w.widget()
