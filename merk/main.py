@@ -1051,11 +1051,12 @@ class Merk(QMainWindow):
 				w.away_button.setToolTip("Set status to \"back\"")
 				w.away_button.setIcon(QIcon(GO_BACK_ICON))
 
-		c = self.getCurrentChat()
-		if config.SHOW_AWAY_AND_BACK_MESSAGES:
-			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
-			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
+		wins = self.getAllConnectedChatWindows(client)
+		for w in wins:
+			c = w.widget()
+			if config.SHOW_AWAY_AND_BACK_MESSAGES:
+				t = Message(SYSTEM_MESSAGE,'',f"You are marked as being away")
+				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def back(self,client):
 		w = self.getServerWindow(client)
@@ -1067,10 +1068,12 @@ class Merk(QMainWindow):
 				w.away_button.setToolTip("Set status to \"away\"")
 				w.away_button.setIcon(QIcon(GO_AWAY_ICON))
 
-		c = self.getCurrentChat()
-		if config.SHOW_AWAY_AND_BACK_MESSAGES:
-			t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
-			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+		wins = self.getAllConnectedChatWindows(client)
+		for w in wins:
+			c = w.widget()
+			if config.SHOW_AWAY_AND_BACK_MESSAGES:
+				t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
+				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def gotVersion(self,client,server,version):
 		w = self.getServerWindow(client)
