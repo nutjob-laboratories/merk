@@ -1345,7 +1345,7 @@ class Merk(QMainWindow):
 						c.client.sendLine("NAMES "+c.name)
 						# Now notify the client
 						t = Message(SYSTEM_MESSAGE,"",oldname+" is now known as "+newname)
-						c.writeText(t)
+						c.writeText(t,config.LOG_CHANNEL_NICKNAME_CHANGE)
 				# If we're chatting with the changer, then
 				# change the settings of the chat window
 				# to relect the new nick

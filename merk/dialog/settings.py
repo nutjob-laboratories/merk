@@ -2389,6 +2389,10 @@ class Dialog(QDialog):
 		if config.LOG_CHANNEL_QUIT: self.quitLog.setChecked(True)
 		self.quitLog.stateChanged.connect(self.changedSetting)
 
+		self.nickLog = QCheckBox("Nickname changes",self)
+		if config.LOG_CHANNEL_NICKNAME_CHANGE: self.nickLog.setChecked(True)
+		self.nickLog.stateChanged.connect(self.changedSetting)
+
 		chanLayout = QHBoxLayout()
 		chanLayout.addStretch()
 		chanLayout.addWidget(self.saveChanLogs)
@@ -2411,6 +2415,11 @@ class Dialog(QDialog):
 		contLayout.addWidget(self.quitLog)
 		contLayout.addStretch()
 
+		cont2Layout = QHBoxLayout()
+		cont2Layout.addStretch()
+		cont2Layout.addWidget(self.nickLog)
+		cont2Layout.addStretch()
+
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
@@ -2418,6 +2427,7 @@ class Dialog(QDialog):
 		logLayout.addLayout(chanLayout)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
 		logLayout.addLayout(contLayout)
+		logLayout.addLayout(cont2Layout)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
 		logLayout.addLayout(privLayout)
 		logLayout.addWidget(QLabel(' '))
@@ -3224,6 +3234,7 @@ class Dialog(QDialog):
 		config.LOG_CHANNEL_JOIN = self.joinLog.isChecked()
 		config.LOG_CHANNEL_PART = self.partLog.isChecked()
 		config.LOG_CHANNEL_QUIT = self.quitLog.isChecked()
+		config.LOG_CHANNEL_NICKNAME_CHANGE = self.nickLog.isChecked()
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash
