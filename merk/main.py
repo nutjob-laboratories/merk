@@ -1288,7 +1288,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
-			c.writeText(t)
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			wid = c.subwindow_id
 
 		# Write a notification to the server window,
