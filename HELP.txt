@@ -214,7 +214,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/focus [SERVER] WINDOW</code></td>
-<td>Switches focus to another window</td>
+<td>Switches focus to another window. Calls to <code>/focus</code> from scripts will be ignored (use <code>/jump</code> instead)</td>
 </tr>
 <tr>
 <td><code>/maximize [SERVER] WINDOW</code></td>

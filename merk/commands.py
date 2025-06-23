@@ -1983,6 +1983,9 @@ class ScriptThread(QThread):
 								self.scriptError.emit([self.gui,self.window,f"Line {line_number}: {config.ISSUE_COMMAND_SYMBOL}jump cannot find window \"{target}\". Script execution halted."])
 								breakout = True
 
+					if len(tokens)>=1:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus': continue
+
 					if len(tokens)==2:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
 							count = tokens[1]
