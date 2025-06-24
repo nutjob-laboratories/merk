@@ -214,9 +214,11 @@ LOG_CHANNEL_QUIT = True
 TWISTED_CLIENT_HEARTBEAT = 120
 SPELLCHECKER_DISTANCE = 1
 LOG_CHANNEL_NICKNAME_CHANGE = True
+ENABLE_COMMAND_INPUT_HISTORY = True
 
 def build_settings():
 	settings = {
+		"enable_command_history": ENABLE_COMMAND_INPUT_HISTORY,
 		"log_channel_nickname_changes": LOG_CHANNEL_NICKNAME_CHANGE,
 		"spellchecker_distance": SPELLCHECKER_DISTANCE,
 		"twisted_irc_client_heartbeat": TWISTED_CLIENT_HEARTBEAT,
@@ -397,6 +399,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_command_history" in settings:
+		settings["enable_command_history"] = ENABLE_COMMAND_INPUT_HISTORY
 	if not "log_channel_nickname_changes" in settings:
 		settings["log_channel_nickname_changes"] = LOG_CHANNEL_NICKNAME_CHANGE
 	if not "spellchecker_distance" in settings:
@@ -927,6 +931,7 @@ def load_settings(filename):
 	global TWISTED_CLIENT_HEARTBEAT
 	global SPELLCHECKER_DISTANCE
 	global LOG_CHANNEL_NICKNAME_CHANGE
+	global ENABLE_COMMAND_INPUT_HISTORY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -936,6 +941,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_COMMAND_INPUT_HISTORY = settings["enable_command_history"]
 		LOG_CHANNEL_NICKNAME_CHANGE = settings["log_channel_nickname_changes"]
 		SPELLCHECKER_DISTANCE = settings["spellchecker_distance"]
 		TWISTED_CLIENT_HEARTBEAT = settings["twisted_irc_client_heartbeat"]

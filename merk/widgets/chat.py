@@ -2073,32 +2073,33 @@ class Window(QMainWindow):
 		# BEGIN COMMAND HISTORY MANAGEMENT
 		# ================================
 
-		# Remove blank entries from history
-		clean = []
-		for c in self.history_buffer:
-			if c=='': continue
-			clean.append(c)
-		self.history_buffer = clean
+		if config.ENABLE_COMMAND_INPUT_HISTORY:
+			# Remove blank entries from history
+			clean = []
+			for c in self.history_buffer:
+				if c=='': continue
+				clean.append(c)
+			self.history_buffer = clean
 
-		# Insert current input into the history,
-		# right at the beginning
-		self.history_buffer.insert(0,user_input)
+			# Insert current input into the history,
+			# right at the beginning
+			self.history_buffer.insert(0,user_input)
 
-		# If history is larger than it's supposed to be,
-		# remove the last entry
-		if len(self.history_buffer)>config.COMMAND_HISTORY_LENGTH:
-			self.history_buffer.pop()
+			# If history is larger than it's supposed to be,
+			# remove the last entry
+			if len(self.history_buffer)>config.COMMAND_HISTORY_LENGTH:
+				self.history_buffer.pop()
 
-		# "Zero" the history buffer pointer
-		self.history_buffer_pointer = -1
+			# "Zero" the history buffer pointer
+			self.history_buffer_pointer = -1
 
-		# Add a blank entry to the history;
-		# this represents (to the user) the current
-		# "blank" input
-		self.history_buffer.append('')
+			# Add a blank entry to the history;
+			# this represents (to the user) the current
+			# "blank" input
+			self.history_buffer.append('')
 
-		# Remove consecutive repeated commands
-		self.history_buffer = [self.history_buffer[i] for i in range(len(self.history_buffer)) if (i==0) or self.history_buffer[i] != self.history_buffer[i-1]]
+			# Remove consecutive repeated commands
+			self.history_buffer = [self.history_buffer[i] for i in range(len(self.history_buffer)) if (i==0) or self.history_buffer[i] != self.history_buffer[i-1]]
 
 		# ==============================
 		# END COMMAND HISTORY MANAGEMENT
@@ -2165,20 +2166,22 @@ class Window(QMainWindow):
 			self.parent.openPrivate(self.client,user)
 
 	def keyPressDown(self):
-		if len(self.history_buffer) <= 1: return
-		self.history_buffer_pointer = self.history_buffer_pointer - 1
-		if self.history_buffer_pointer < 0:
-			self.history_buffer_pointer = len(self.history_buffer) - 1
-		self.input.setText(self.history_buffer[self.history_buffer_pointer])
-		self.input.moveCursor(QTextCursor.End)
+		if config.ENABLE_COMMAND_INPUT_HISTORY:
+			if len(self.history_buffer) <= 1: return
+			self.history_buffer_pointer = self.history_buffer_pointer - 1
+			if self.history_buffer_pointer < 0:
+				self.history_buffer_pointer = len(self.history_buffer) - 1
+			self.input.setText(self.history_buffer[self.history_buffer_pointer])
+			self.input.moveCursor(QTextCursor.End)
 
 	def keyPressUp(self):
-		if len(self.history_buffer) <= 1: return
-		self.history_buffer_pointer = self.history_buffer_pointer + 1
-		if len(self.history_buffer) - 1 < self.history_buffer_pointer:
-			self.history_buffer_pointer = 0
-		self.input.setText(self.history_buffer[self.history_buffer_pointer])
-		self.input.moveCursor(QTextCursor.End)
+		if config.ENABLE_COMMAND_INPUT_HISTORY:
+			if len(self.history_buffer) <= 1: return
+			self.history_buffer_pointer = self.history_buffer_pointer + 1
+			if len(self.history_buffer) - 1 < self.history_buffer_pointer:
+				self.history_buffer_pointer = 0
+			self.input.setText(self.history_buffer[self.history_buffer_pointer])
+			self.input.moveCursor(QTextCursor.End)
 
 	def moveChatToBottom(self,force=False):
 

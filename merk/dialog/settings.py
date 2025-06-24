@@ -172,7 +172,7 @@ class Dialog(QDialog):
 		x = dialog.HistorySizeDialog(self)
 		if x:
 			self.historysize = x
-			self.historyLabel.setText(f"<b>{str(self.historysize)} lines</b>")
+			self.historyLabel.setText(f"History size: <b>{str(self.historysize)} lines</b>")
 			self.changed.show()
 			self.boldApply()
 		self.selector.setFocus()
@@ -273,6 +273,19 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSetting(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+
+	def changedHistory(self,state):
+		if self.enableHistory.isChecked():
+			self.historyButton.setEnabled(True)
+			self.historyLabel.setEnabled(True)
+		else:
+			self.historyButton.setEnabled(False)
+			self.historyLabel.setEnabled(False)
+
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -2160,26 +2173,26 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.inputPage)
 
-		self.historyLabel = QLabel(f"<b>{str(self.historysize)} lines</b>",self)
+		self.historyLabel = QLabel(f"History size: <b>{str(self.historysize)} lines</b>",self)
 
-		historyButton = QPushButton("")
-		historyButton.clicked.connect(self.setHistorySize)
-		historyButton.setAutoDefault(False)
+		self.historyButton = QPushButton("")
+		self.historyButton.clicked.connect(self.setHistorySize)
+		self.historyButton.setAutoDefault(False)
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		historyButton.setFixedSize(fheight +10,fheight + 10)
-		historyButton.setIcon(QIcon(EDIT_ICON))
-		historyButton.setToolTip("Change command history size")
+		self.historyButton.setFixedSize(fheight +10,fheight + 10)
+		self.historyButton.setIcon(QIcon(EDIT_ICON))
+		self.historyButton.setToolTip("Change command history size")
 
 		historyLayout = QHBoxLayout()
-		historyLayout.addWidget(historyButton)
+		historyLayout.addWidget(self.historyButton)
 		historyLayout.addWidget(self.historyLabel)
 		historyLayout.addStretch()
 
 		self.historyDescription = QLabel("""
 			<small>
-			Any text typed into the text input widget is saved to the <b>command history</b>.
+			If enabled, any text typed into the text input widget is saved to the <b>command history</b>.
 			Use the <b>arrow keys</b> to move backwards (<b>&uarr;</b>) and forwards (<b>&darr;</b>) in the 
 			<b>command history</b> to issue any previously issued commands.
 			</small>
@@ -2232,9 +2245,18 @@ class Dialog(QDialog):
 		autoLayout2.addWidget(self.autocompleteChans)
 		autoLayout2.addWidget(self.autocompleteEmojis)
 
+		self.enableHistory = QCheckBox("Enable command history",self)
+		if config.ENABLE_COMMAND_INPUT_HISTORY: self.enableHistory.setChecked(True)
+		self.enableHistory.stateChanged.connect(self.changedHistory)
+
+		if not config.ENABLE_COMMAND_INPUT_HISTORY:
+			self.historyButton.setEnabled(False)
+			self.historyLabel.setEnabled(False)
+
 		inputLayout = QVBoxLayout()
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history size</b>"))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
 		inputLayout.addWidget(self.historyDescription)
+		inputLayout.addWidget(self.enableHistory)
 		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
@@ -3405,6 +3427,12 @@ class Dialog(QDialog):
 		config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = self.logEverything.isChecked()
 		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
 		config.SHOW_CONNECTION_DEBUG_STREAM = self.showStream.isChecked()
+
+		if not self.enableHistory.isChecked():
+			if config.ENABLE_COMMAND_INPUT_HISTORY:
+				self.parent.clearCommandHistory()
+
+		config.ENABLE_COMMAND_INPUT_HISTORY = self.enableHistory.isChecked()
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash
