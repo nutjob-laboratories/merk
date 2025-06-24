@@ -160,9 +160,8 @@ class Window(QMainWindow):
 				This is a list of channels on <b>{self.server_name} ({self.network})</b>. To join a channel in the
 				list, double click on the line the channel appears on. To search the
 				list, enter search terms below, using <b>*</b> for multi-character wildcards,
-				and <b>?</b> for single character wildcards, and press the <b>Search</b> button.
+				and <b>?</b> for single character wildcards, and press enter or the <b>Search</b> button.
 				To reset the list after a search, press the <b>Reset</b> button to re-display all channels.
-				Press the <b>Request List</b> button to request a fresh channel list from the server.
 				</small>
 				""")
 			self.windowDescription.setWordWrap(True)

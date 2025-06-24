@@ -654,6 +654,12 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def distanceChange(self,i):
+		self.spellcheck_distance = int(self.spellcheckDistance.itemText(i))
+
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
 
 	def justifyChange(self, i):
 		self.windowbar_justify = self.windowbarJustify.itemText(i)
@@ -903,6 +909,8 @@ class Dialog(QDialog):
 		self.sound = config.SOUND_NOTIFICATION_FILE
 
 		self.syntax_did_change = False
+
+		self.spellcheck_distance = config.SPELLCHECKER_DISTANCE
 
 		self.setWindowTitle("Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2246,17 +2254,32 @@ class Dialog(QDialog):
 			<small>
 			Misspelled words in the input widget are marked with a <b><span style='text-decoration: underline; color: red;'>red
 			underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
-			the word with</b> or to <b>add that word to the built-in dictionary</b>.
+			the word with</b> or to <b>add that word to the built-in dictionary</b>. The <b>Levenshtein distance</b> setting sets
+			how the spellchecker finds suggestions to replace misspelled words; lower numbers are better for
+			longer words.
 			</small>
 			<br>
 			""")
 		self.spellcheckDescription.setWordWrap(True)
 		self.spellcheckDescription.setAlignment(Qt.AlignJustify)
 
+		self.spellcheckDistance = QComboBox(self)
+		self.spellcheckDistance.addItem(str(config.SPELLCHECKER_DISTANCE))
+		if config.SPELLCHECKER_DISTANCE!=1: self.spellcheckDistance.addItem('1')
+		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('2')
+		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('3')
+		self.spellcheckDistance.currentIndexChanged.connect(self.distanceChange)
+
+		distanceLayout = QHBoxLayout()
+		distanceLayout.addWidget(QLabel("<b>Levenshtein distance</b> "))
+		distanceLayout.addWidget(self.spellcheckDistance)
+		distanceLayout.addStretch()
+
 		spellcheckLayout = QVBoxLayout()
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addWidget(self.enableSpellcheck)
+		spellcheckLayout.addLayout(distanceLayout)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
@@ -2365,8 +2388,7 @@ class Dialog(QDialog):
 			be read and displayed easily by <b>{APPLICATION_NAME}</b>. If you want to use other
 			software to read or parse your IRC <b>logs</b>, a <b>log</b> export tool is built into
 			<b>{APPLICATION_NAME}</b>. The tool is located in the "<b>{self.default_tools_menu}</b>"
-			menu, under "<b>Export Logs</b>". Your <b>logs</b> can be exported in <b>JSON</b>, <b>CSV</b>, or your
-			own custom <b>ASCII, character delimited format</b>.
+			menu, under "<b>Export Logs</b>".
 			</small>
 			<br>
 			""")
@@ -2420,6 +2442,10 @@ class Dialog(QDialog):
 		cont2Layout.addWidget(self.nickLog)
 		cont2Layout.addStretch()
 
+		self.logEverything = QCheckBox("Log all system messages",self)
+		if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: self.logEverything.setChecked(True)
+		self.logEverything.stateChanged.connect(self.changedSetting)
+
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
@@ -2433,6 +2459,7 @@ class Dialog(QDialog):
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		logLayout.addWidget(self.markLog)
+		logLayout.addWidget(self.logEverything)
 		logLayout.addLayout(intervalBox)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
@@ -3235,6 +3262,8 @@ class Dialog(QDialog):
 		config.LOG_CHANNEL_PART = self.partLog.isChecked()
 		config.LOG_CHANNEL_QUIT = self.quitLog.isChecked()
 		config.LOG_CHANNEL_NICKNAME_CHANGE = self.nickLog.isChecked()
+		config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = self.logEverything.isChecked()
+		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash

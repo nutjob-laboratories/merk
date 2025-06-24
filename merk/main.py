@@ -2193,6 +2193,19 @@ class Merk(QMainWindow):
 							retval.append(c)
 		return retval
 
+	def getTotalWindows(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					retval.append(c)
+				elif c.window_type==PRIVATE_WINDOW:
+					retval.append(c)
+				elif c.window_type==SERVER_WINDOW:
+					retval.append(c)
+		return retval
+
 	def getAllSubWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():
