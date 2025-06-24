@@ -47,6 +47,14 @@ from .new_connect_script import Dialog as NewConnectScript
 from .set_script import Dialog as SetScript
 from .set_alias import Dialog as SetAlias
 from .menu_name import Dialog as SetMenuName
+from .key import Dialog as SetKey
+
+def SetKeyDialog(parent):
+	x = SetKey(parent)
+	info = x.get_message_information(parent)
+	del x
+
+	return info
 
 def SetMenuNameDialog(msg,parent):
 	x = SetMenuName(msg,parent)

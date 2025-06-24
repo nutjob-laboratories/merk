@@ -781,11 +781,178 @@ class Window(QMainWindow):
 			else:
 				self.nick_display.show()
 
+	def unset_mode(self,mode):
+		self.client.mode(self.name,False,mode)
+
+	def set_mode(self,mode):
+		self.client.mode(self.name,True,mode)
+
+	def lock_channel(self):
+
+		my_key = SetKeyDialog(self)
+		if my_key:
+			self.client.mode(self.name,True,'k '+my_key)
+
+	def is_privlidged(self):
+		if self.operator: return True
+		if self.halfop: return True
+		if self.owner: return True
+		if self.admin: return True
+		if self.protected: return True
+
+	def is_operator(self):
+		if self.operator: return True
+		if self.owner: return True
+		if self.admin: return True
+		if self.protected: return True
+
+	def buildOperatorMenu(self):
+
+		opmenu = QMenu("Channel modes")
+
+		try:
+			channel_modes = self.client.channelmodes[self.name]
+		except:
+			channel_modes = ''
+
+		if self.is_privlidged():
+
+			if self.name in self.client.channelkeys:
+				entry = QAction(QIcon(MINUS_ICON),"Unlock channel",self)
+				entry.triggered.connect(lambda state,h='k '+self.client.channelkeys[self.name]: self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Lock channel",self)
+				entry.triggered.connect(self.lock_channel)
+				opmenu.addAction(entry)
+
+			if 'm' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Unmoderate channel",self)
+				entry.triggered.connect(lambda state,h='m': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Moderate channel",self)
+				entry.triggered.connect(lambda state,h='m': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'n' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow external messages",self)
+				entry.triggered.connect(lambda state,h='n': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Forbid external messages",self)
+				entry.triggered.connect(lambda state,h='n': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 't' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Anyone can change topic",self)
+				entry.triggered.connect(lambda state,h='t': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Protect channel topic",self)
+				entry.triggered.connect(lambda state,h='t': self.set_mode(h))
+				opmenu.addAction(entry)
+
+		if self.is_operator():
+
+			if 'c' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow IRC color",self)
+				entry.triggered.connect(lambda state,h='c': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Forbid IRC color",self)
+				entry.triggered.connect(lambda state,h='c': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'S' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Do not remove IRC color",self)
+				entry.triggered.connect(lambda state,h='S': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Remove IRC color",self)
+				entry.triggered.connect(lambda state,h='S': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'C' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow CTCP",self)
+				entry.triggered.connect(lambda state,h='C': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Forbid CTCP",self)
+				entry.triggered.connect(lambda state,h='C': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'KNOCK' in self.client.supports:
+				if 'K' in channel_modes:
+					entry = QAction(QIcon(MINUS_ICON),"Allow knocks",self)
+					entry.triggered.connect(lambda state,h='K': self.unset_mode(h))
+					opmenu.addAction(entry)
+				else:
+					entry = QAction(QIcon(PLUS_ICON),"Forbid knocks",self)
+					entry.triggered.connect(lambda state,h='K': self.set_mode(h))
+					opmenu.addAction(entry)
+
+			if 'i' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow uninvited users",self)
+				entry.triggered.connect(lambda state,h='i': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Only invited users",self)
+				entry.triggered.connect(lambda state,h='i': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'p' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Make channel public",self)
+				entry.triggered.connect(lambda state,h='p': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Make channel private",self)
+				entry.triggered.connect(lambda state,h='p': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 's' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Make channel unsecret",self)
+				entry.triggered.connect(lambda state,h='s': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Make channel secret",self)
+				entry.triggered.connect(lambda state,h='s': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'T' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow channel notices",self)
+				entry.triggered.connect(lambda state,h='T': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Forbid channel notices",self)
+				entry.triggered.connect(lambda state,h='T': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'V' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow invites",self)
+				entry.triggered.connect(lambda state,h='V': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Forbid invites",self)
+				entry.triggered.connect(lambda state,h='V': self.set_mode(h))
+				opmenu.addAction(entry)
+
+		return opmenu
+
 	def chatMenu(self,location):
 
 		menu = self.chat.createStandardContextMenu()
 
 		if config.SHOW_CHAT_CONTEXT_MENUS:
+
+			if self.window_type==CHANNEL_WINDOW:
+				if self.is_privlidged():
+
+					menu.addSeparator()
+
+					self.opmenu = self.buildOperatorMenu()
+					opmenu = menu.addMenu(self.opmenu)
+					opmenu.setIcon(QIcon(OP_USER))
 
 			if self.window_type==SERVER_WINDOW:
 
