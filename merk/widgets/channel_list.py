@@ -85,8 +85,8 @@ class Window(QMainWindow):
 		self.search_button.setToolTip("Search channel list")
 		self.reset_button = QPushButton("Reset")
 
-		self.search_button.setFixedSize(QSize(config.SERVER_TOOLBAR_BUTTON_SIZE,config.SERVER_TOOLBAR_BUTTON_SIZE))
-		self.search_button.setIconSize(QSize(config.SERVER_TOOLBAR_ICON_SIZE,config.SERVER_TOOLBAR_ICON_SIZE))
+		self.search_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.search_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 
 		self.moreFive = QRadioButton("5+",self)
 		self.moreTwo = QRadioButton("2+",self)
@@ -154,6 +154,14 @@ class Window(QMainWindow):
 		self.cLayout.addWidget(self.wordwrap)
 		self.cLayout.addWidget(self.reset_button)
 
+		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
+			extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
+				command, or by clicking the <b>Refresh channel list</b> button on server window toolbars. This window will automatically update
+				to use the new list."""
+		else:
+			extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
+				command; this window will automatically update to use the new list."""
+
 		if not config.SIMPLIFIED_DIALOGS:
 			self.windowDescription = QLabel(f"""
 				<small>
@@ -162,6 +170,7 @@ class Window(QMainWindow):
 				list, enter search terms below, using <b>*</b> for multi-character wildcards,
 				and <b>?</b> for single character wildcards, and press enter or the <b>Search</b> button.
 				To reset the list after a search, press the <b>Reset</b> button to re-display all channels.
+				{extra}
 				</small>
 				""")
 			self.windowDescription.setWordWrap(True)

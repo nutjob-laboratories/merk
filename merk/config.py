@@ -63,8 +63,8 @@ LOAD_CHANNEL_LOGS = True
 SAVE_PRIVATE_LOGS = True
 LOAD_PRIVATE_LOGS = True
 ASK_BEFORE_DISCONNECT = True
-SERVER_TOOLBAR_BUTTON_SIZE = 18
-SERVER_TOOLBAR_ICON_SIZE = 18
+INTERFACE_BUTTON_SIZE = 18
+INTERFACE_BUTTON_ICON_SIZE = 18
 SHOW_CONNECTION_UPTIME = True
 SHOW_CHANNEL_UPTIME = True
 SCROLL_CHAT_TO_BOTTOM_ON_RESIZE = True
@@ -310,8 +310,8 @@ def build_settings():
 		"save_private_logs": SAVE_PRIVATE_LOGS,
 		"load_private_logs": LOAD_PRIVATE_LOGS,
 		"ask_before_disconnect": ASK_BEFORE_DISCONNECT,
-		"server_toolbar_button_size": SERVER_TOOLBAR_BUTTON_SIZE,
-		"server_toolbar_icon_size": SERVER_TOOLBAR_ICON_SIZE,
+		"interface_button_size": INTERFACE_BUTTON_SIZE,
+		"interface_button_icon_size": INTERFACE_BUTTON_ICON_SIZE,
 		"show_connection_uptime": SHOW_CONNECTION_UPTIME,
 		"show_channel_uptime": SHOW_CHANNEL_UPTIME,
 		"scroll_chat_to_bottom_on_resize": SCROLL_CHAT_TO_BOTTOM_ON_RESIZE,
@@ -671,10 +671,10 @@ def patch_settings(settings):
 		settings["show_channel_uptime"] = SHOW_CHANNEL_UPTIME
 	if not "show_connection_uptime" in settings:
 		settings["show_connection_uptime"] = SHOW_CONNECTION_UPTIME
-	if not "server_toolbar_button_size" in settings:
-		settings["server_toolbar_button_size"] = SERVER_TOOLBAR_BUTTON_SIZE
-	if not "server_toolbar_icon_size" in settings:
-		settings["server_toolbar_icon_size"] = SERVER_TOOLBAR_ICON_SIZE
+	if not "interface_button_size" in settings:
+		settings["interface_button_size"] = INTERFACE_BUTTON_SIZE
+	if not "interface_button_icon_size" in settings:
+		settings["interface_button_icon_size"] = INTERFACE_BUTTON_ICON_SIZE
 	if not "ask_before_disconnect" in settings:
 		settings["ask_before_disconnect"] = ASK_BEFORE_DISCONNECT
 	if not "save_private_logs" in settings:
@@ -778,8 +778,8 @@ def load_settings(filename):
 	global SAVE_PRIVATE_LOGS
 	global LOAD_PRIVATE_LOGS
 	global ASK_BEFORE_DISCONNECT
-	global SERVER_TOOLBAR_BUTTON_SIZE
-	global SERVER_TOOLBAR_ICON_SIZE
+	global INTERFACE_BUTTON_SIZE
+	global INTERFACE_BUTTON_ICON_SIZE
 	global SHOW_CONNECTION_UPTIME
 	global SHOW_CHANNEL_UPTIME
 	global SCROLL_CHAT_TO_BOTTOM_ON_RESIZE
@@ -1063,8 +1063,8 @@ def load_settings(filename):
 		SCROLL_CHAT_TO_BOTTOM_ON_RESIZE = settings["scroll_chat_to_bottom_on_resize"]
 		SHOW_CHANNEL_UPTIME = settings["show_channel_uptime"]
 		SHOW_CONNECTION_UPTIME = settings["show_connection_uptime"]
-		SERVER_TOOLBAR_BUTTON_SIZE = settings["server_toolbar_button_size"]
-		SERVER_TOOLBAR_ICON_SIZE = settings["server_toolbar_icon_size"]
+		INTERFACE_BUTTON_SIZE = settings["interface_button_size"]
+		INTERFACE_BUTTON_ICON_SIZE = settings["interface_button_icon_size"]
 		ASK_BEFORE_DISCONNECT = settings["ask_before_disconnect"]
 		SAVE_PRIVATE_LOGS = settings["save_private_logs"]
 		LOAD_PRIVATE_LOGS = settings["load_private_logs"]
