@@ -358,7 +358,7 @@ if __name__ == '__main__':
 
 	def startMERK(app,gui):
 		gui.show()
-		reactor.run()
+		sys.exit(reactor.run())
 
 	# Handle connecting to a server if one has been provided
 	if args.server:

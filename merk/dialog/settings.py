@@ -230,6 +230,12 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingAdvanced(self,state):
+		self.changed.show()
+		self.restart.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedInterpolate(self,state):
 		if self.interpolateAlias.isChecked():
 			self.autocompleteAlias.setEnabled(True)
@@ -506,6 +512,19 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def clickedAdvanced(self,state):
+		if self.advancedEnable.isChecked():
+			self.logEverything.setEnabled(True)
+			self.showStream.setEnabled(True)
+		else:
+			self.logEverything.setEnabled(False)
+			self.showStream.setEnabled(False)
+
+			if self.logEverything.isChecked(): self.logEverything.setChecked(False)
+			if self.showStream.isChecked(): self.showStream.setChecked(False)
+
+		self.selector.setFocus()
+
 	def prependChange(self,i):
 		self.system_prepend = self.sysPrepend.itemText(i)
 
@@ -774,9 +793,11 @@ class Dialog(QDialog):
 
 		if is_running_from_pyinstaller():
 			subprocess.Popen([sys.executable])
-			sys.exit()
+			self.parent.close()
+			self.parent.app.exit()
 		else:
 			os.execl(sys.executable, sys.executable, *sys.argv)
+			sys.exit()
 
 	def playSound(self):
 		QSound.play(self.sound)
@@ -1305,11 +1326,6 @@ class Dialog(QDialog):
 		self.alternative.textChanged.connect(self.changeUser)
 		self.username.textChanged.connect(self.changeUser)
 		self.realname.textChanged.connect(self.changeUser)
-
-		nickl = QLabel("<b>Nickname:</b>")
-		altl = QLabel("<b>Alternate:</b>")
-		usrl = QLabel("<b>Username:</b>")
-		reall = QLabel("<b>Real name:</b>")
 
 		nickLayout = QFormLayout()
 		nickLayout.addRow(self.nick)
@@ -2442,10 +2458,6 @@ class Dialog(QDialog):
 		cont2Layout.addWidget(self.nickLog)
 		cont2Layout.addStretch()
 
-		self.logEverything = QCheckBox("Log all system messages",self)
-		if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: self.logEverything.setChecked(True)
-		self.logEverything.stateChanged.connect(self.changedSetting)
-
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
@@ -2459,7 +2471,6 @@ class Dialog(QDialog):
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		logLayout.addWidget(self.markLog)
-		logLayout.addWidget(self.logEverything)
 		logLayout.addLayout(intervalBox)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
@@ -2996,6 +3007,59 @@ class Dialog(QDialog):
 
 		self.notificationsPage.setLayout(audioLayout)
 
+		# Advanced
+
+		self.advancedPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Advanced")
+		entry.widget = self.advancedPage
+		entry.setIcon(QIcon(ADVANCED_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.advancedPage)
+
+		self.advancedEnable = QCheckBox("Enable advanced settings",self)
+		self.advancedEnable.stateChanged.connect(self.clickedAdvanced)
+
+		self.logEverything = QCheckBox("Log all system messages",self)
+		if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: self.logEverything.setChecked(True)
+		self.logEverything.stateChanged.connect(self.changedSettingAdvanced)
+		self.logEverything.setEnabled(False)
+
+		self.showStream = QCheckBox("Add connection stream display\nto all server windows",self)
+		if config.SHOW_CONNECTION_DEBUG_STREAM: self.showStream.setChecked(True)
+		self.showStream.stateChanged.connect(self.changedSettingAdvanced)
+		self.showStream.setEnabled(False)
+		self.showStream.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.advancedDescription = QLabel(f"""
+			<small>
+			</small><b><span style='color: red;'>WARNING!</b></span> Changing these settings may break your installation of <b>{APPLICATION_NAME}</b>!<small><br><br>
+			If changing one of these settings causes the application to no longer function, please run
+			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
+			settings to the default, and should fix any fatal problems.
+			</small>
+			<br>
+			""")
+		self.advancedDescription.setWordWrap(True)
+		self.advancedDescription.setAlignment(Qt.AlignJustify)
+
+		advancedLayout = QVBoxLayout()
+		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
+		advancedLayout.addWidget(self.advancedDescription)
+		advancedLayout.addWidget(self.advancedEnable)
+		advancedLayout.addWidget(QLabel(' '))
+		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
+		advancedLayout.addWidget(self.logEverything)
+		advancedLayout.addWidget(self.showStream)
+		advancedLayout.addStretch()
+
+		self.advancedPage.setLayout(advancedLayout)
+
+		# End settings pages
+
 		self.changed.hide()
 
 		# Buttons
@@ -3034,7 +3098,7 @@ class Dialog(QDialog):
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
 		leftLayout.addWidget(logo)
-		leftLayout.addWidget(QLabel("<center><b><small>Version "+APPLICATION_VERSION+"</small></b></center>"))
+		leftLayout.addWidget(QLabel(" "))
 
 		mainLayout = QHBoxLayout()
 		mainLayout.addLayout(leftLayout)
@@ -3264,6 +3328,7 @@ class Dialog(QDialog):
 		config.LOG_CHANNEL_NICKNAME_CHANGE = self.nickLog.isChecked()
 		config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = self.logEverything.isChecked()
 		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
+		config.SHOW_CONNECTION_DEBUG_STREAM = self.showStream.isChecked()
 
 		if config.FLASH_SYSTRAY_SPEED!=self.flash:
 			config.FLASH_SYSTRAY_SPEED = self.flash

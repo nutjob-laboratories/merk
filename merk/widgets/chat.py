@@ -491,10 +491,10 @@ class Window(QMainWindow):
 				self.tabs = QTabWidget()
 
 				self.server_tab = QWidget()
-				self.tabs.addTab(self.server_tab, "Console")
+				self.tabs.addTab(self.server_tab, "Server Console")
 
 				self.inputoutput = QWidget()
-				self.tabs.addTab(self.inputoutput, "Connection")
+				self.tabs.addTab(self.inputoutput, f"{self.name}")
 
 
 				serverLayout = QVBoxLayout()

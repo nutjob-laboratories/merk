@@ -43,11 +43,6 @@ from .style import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
-def resource_path(relative_path):
-	if hasattr(sys, '_MEIPASS'):
-		return os.path.join(sys._MEIPASS, relative_path)
-	return os.path.join(os.path.abspath("."), relative_path)
-
 SYSTEM_PREPEND_OPTIONS = [
 	"Nothing",
 	"&diams;",
@@ -90,76 +85,6 @@ SYSTEM_PREPEND_OPTIONS = [
 ]
 
 LOG_AND_STYLE_FILENAME_DELIMITER = "-"
-
-def escape_for_filename(filename):
-	filename = filename.replace('<','_lt_')
-	filename = filename.replace('>','_gt_')
-	filename = filename.replace(':','_cn_')
-	filename = filename.replace('"','_qu_')
-	filename = filename.replace('/','_fs_')
-	filename = filename.replace('\\','_bs_')
-	filename = filename.replace('|','_pp_')
-	filename = filename.replace('?','_qm_')
-	filename = filename.replace('*','_ax_')
-	filename = filename.replace(LOG_AND_STYLE_FILENAME_DELIMITER,'_dm_')
-
-	return filename
-
-def deescape_for_filename(filename):
-	filename = filename.replace('_lt_','<')
-	filename = filename.replace('_gt_','>')
-	filename = filename.replace('_cn_',':')
-	filename = filename.replace('_qu_','"')
-	filename = filename.replace('_fs_','/')
-	filename = filename.replace('_bs_','\\')
-	filename = filename.replace('_pp_','|')
-	filename = filename.replace('_qm_','?')
-	filename = filename.replace('_ax_','*')
-	filename = filename.replace('_dm_',LOG_AND_STYLE_FILENAME_DELIMITER)
-
-	return filename
-
-def remove_duplicate_sublists(list_of_lists):
-	seen = set()
-	new_list = []
-	for sublist in list_of_lists:
-		tuple_sublist = tuple(sublist)
-		if tuple_sublist not in seen:
-			new_list.append(sublist)
-			seen.add(tuple_sublist)
-	return new_list
-
-def is_running_from_pyinstaller():
-	return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
-
-def get_pyinstaller_version():
-	try:
-		return metadata.version('pyinstaller')
-	except:
-		return None
-	return None
-
-def is_deleted(obj):
-	if hasattr(obj,"isVisible"):
-		if not obj.isVisible():
-			if hasattr(obj,"isMinimized"):
-				if obj.isMinimized():
-					return True
-	if hasattr(obj,"isVisible"):
-		if not obj.isVisible():
-			return True
-	return False
-
-def is_wav_file(file_path):
-	if not os.path.isfile(file_path):
-		return False
-	
-	try:
-		with open(file_path, 'rb') as f:
-			header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
-			return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
-	except Exception:
-		return False
 
 INSTALL_DIRECTORY = sys.path[0]
 MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
@@ -344,6 +269,7 @@ README_ICON = ":/icon-readme.png"
 README_MENU_ICON = ":/icon-readme_menu.png"
 PDF_ICON = ":/icon-pdf.png"
 PDF_MENU_ICON = ":/icon-pdf_menu.png"
+ADVANCED_ICON = ":/icon-advanced.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
@@ -451,6 +377,81 @@ class WhoWasData:
 		self.realname = 'Unknown'
 
 # Functions
+
+def resource_path(relative_path):
+	if hasattr(sys, '_MEIPASS'):
+		return os.path.join(sys._MEIPASS, relative_path)
+	return os.path.join(os.path.abspath("."), relative_path)
+
+def escape_for_filename(filename):
+	filename = filename.replace('<','_lt_')
+	filename = filename.replace('>','_gt_')
+	filename = filename.replace(':','_cn_')
+	filename = filename.replace('"','_qu_')
+	filename = filename.replace('/','_fs_')
+	filename = filename.replace('\\','_bs_')
+	filename = filename.replace('|','_pp_')
+	filename = filename.replace('?','_qm_')
+	filename = filename.replace('*','_ax_')
+	filename = filename.replace(LOG_AND_STYLE_FILENAME_DELIMITER,'_dm_')
+
+	return filename
+
+def deescape_for_filename(filename):
+	filename = filename.replace('_lt_','<')
+	filename = filename.replace('_gt_','>')
+	filename = filename.replace('_cn_',':')
+	filename = filename.replace('_qu_','"')
+	filename = filename.replace('_fs_','/')
+	filename = filename.replace('_bs_','\\')
+	filename = filename.replace('_pp_','|')
+	filename = filename.replace('_qm_','?')
+	filename = filename.replace('_ax_','*')
+	filename = filename.replace('_dm_',LOG_AND_STYLE_FILENAME_DELIMITER)
+
+	return filename
+
+def remove_duplicate_sublists(list_of_lists):
+	seen = set()
+	new_list = []
+	for sublist in list_of_lists:
+		tuple_sublist = tuple(sublist)
+		if tuple_sublist not in seen:
+			new_list.append(sublist)
+			seen.add(tuple_sublist)
+	return new_list
+
+def is_running_from_pyinstaller():
+	return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
+
+def get_pyinstaller_version():
+	try:
+		return metadata.version('pyinstaller')
+	except:
+		return None
+	return None
+
+def is_deleted(obj):
+	if hasattr(obj,"isVisible"):
+		if not obj.isVisible():
+			if hasattr(obj,"isMinimized"):
+				if obj.isMinimized():
+					return True
+	if hasattr(obj,"isVisible"):
+		if not obj.isVisible():
+			return True
+	return False
+
+def is_wav_file(file_path):
+	if not os.path.isfile(file_path):
+		return False
+	
+	try:
+		with open(file_path, 'rb') as f:
+			header = f.read(44)  # Read the first 44 bytes (standard WAV header size)
+			return header[:4] == b'RIFF' and header[8:12] == b'WAVE' and header[12:16] == b'fmt '
+	except Exception:
+		return False
 
 def convert_size(size_bytes):
 	if size_bytes == 0:
