@@ -225,6 +225,53 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedLoadLogs(self,state):
+		if self.loadChanLogs.isChecked() or self.loadPrivLogs.isChecked():
+			self.markLog.setEnabled(True)
+			self.logsizeButton.setEnabled(True)
+			self.logLabel.setEnabled(True)
+		else:
+			self.markLog.setEnabled(False)
+			self.logsizeButton.setEnabled(False)
+			self.logLabel.setEnabled(False)
+
+	def changedPrivLogs(self,state):
+		if self.savePrivLogs.isChecked() or self.saveChanLogs.isChecked():
+			self.intermittentLog.setEnabled(True)
+			self.logInterval.setEnabled(True)
+		else:
+			self.intermittentLog.setEnabled(False)
+			self.logInterval.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedChanLogs(self,state):
+		if self.saveChanLogs.isChecked():
+			self.topicLog.setEnabled(True)
+			self.joinLog.setEnabled(True)
+			self.partLog.setEnabled(True)
+			self.quitLog.setEnabled(True)
+			self.nickLog.setEnabled(True)
+		else:
+			self.topicLog.setEnabled(False)
+			self.joinLog.setEnabled(False)
+			self.partLog.setEnabled(False)
+			self.quitLog.setEnabled(False)
+			self.nickLog.setEnabled(False)
+
+		if self.savePrivLogs.isChecked() or self.saveChanLogs.isChecked():
+			self.intermittentLog.setEnabled(True)
+			self.logInterval.setEnabled(True)
+		else:
+			self.intermittentLog.setEnabled(False)
+			self.logInterval.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSetting(self,state):
 		self.changed.show()
 		self.boldApply()
@@ -516,12 +563,21 @@ class Dialog(QDialog):
 		if self.advancedEnable.isChecked():
 			self.logEverything.setEnabled(True)
 			self.showStream.setEnabled(True)
+			self.interpolateAlias.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.showStream.setEnabled(False)
+			self.interpolateAlias.setEnabled(False)
 
 			if self.logEverything.isChecked(): self.logEverything.setChecked(False)
 			if self.showStream.isChecked(): self.showStream.setChecked(False)
+
+			if config.INTERPOLATE_ALIASES_INTO_INPUT:
+				self.interpolateAlias.setChecked(True)
+				self.autocompleteAlias.setEnabled(True)
+			else:
+				self.interpolateAlias.setChecked(False)
+				self.autocompleteAlias.setEnabled(False)
 
 		self.selector.setFocus()
 
@@ -624,6 +680,8 @@ class Dialog(QDialog):
 			self.italianSC.setEnabled(True)
 			self.dutchSC.setEnabled(True)
 			self.russianSC.setEnabled(True)
+			self.spellcheckDistance.setEnabled(True)
+			self.distanceLabel.setEnabled(True)
 		else:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -633,6 +691,8 @@ class Dialog(QDialog):
 			self.italianSC.setEnabled(False)
 			self.dutchSC.setEnabled(False)
 			self.russianSC.setEnabled(False)
+			self.spellcheckDistance.setEnabled(False)
+			self.distanceLabel.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -2164,12 +2224,6 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_ALIAS: self.autocompleteAlias.setChecked(True)
 		self.autocompleteAlias.stateChanged.connect(self.changedSetting)
 
-		self.interpolateAlias = QCheckBox("Interpolate aliases into input",self)
-		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
-		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
-
-		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
-
 		autoLayout1 = QHBoxLayout()
 		autoLayout1.addWidget(self.autocompleteCommands)
 		autoLayout1.addWidget(self.autocompleteNicks)
@@ -2188,9 +2242,6 @@ class Dialog(QDialog):
 		inputLayout.addLayout(autoLayout1)
 		inputLayout.addLayout(autoLayout2)
 		inputLayout.addWidget(self.autocompleteAlias)
-		inputLayout.addWidget(QLabel(' '))
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		inputLayout.addWidget(self.interpolateAlias)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -2286,8 +2337,10 @@ class Dialog(QDialog):
 		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('3')
 		self.spellcheckDistance.currentIndexChanged.connect(self.distanceChange)
 
+		self.distanceLabel = QLabel("<b>Levenshtein distance</b> ")
+
 		distanceLayout = QHBoxLayout()
-		distanceLayout.addWidget(QLabel("<b>Levenshtein distance</b> "))
+		distanceLayout.addWidget(self.distanceLabel)
 		distanceLayout.addWidget(self.spellcheckDistance)
 		distanceLayout.addStretch()
 
@@ -2318,19 +2371,19 @@ class Dialog(QDialog):
 
 		self.saveChanLogs = QCheckBox("Save logs",self)
 		if config.SAVE_CHANNEL_LOGS: self.saveChanLogs.setChecked(True)
-		self.saveChanLogs.stateChanged.connect(self.changedSetting)
+		self.saveChanLogs.stateChanged.connect(self.changedChanLogs)
 
 		self.loadChanLogs = QCheckBox("Load logs",self)
 		if config.LOAD_CHANNEL_LOGS: self.loadChanLogs.setChecked(True)
-		self.loadChanLogs.stateChanged.connect(self.changedSetting)
+		self.loadChanLogs.stateChanged.connect(self.changedLoadLogs)
 
 		self.savePrivLogs = QCheckBox("Save logs",self)
 		if config.SAVE_PRIVATE_LOGS: self.savePrivLogs.setChecked(True)
-		self.savePrivLogs.stateChanged.connect(self.changedSetting)
+		self.savePrivLogs.stateChanged.connect(self.changedPrivLogs)
 
 		self.loadPrivLogs = QCheckBox("Load logs",self)
 		if config.LOAD_PRIVATE_LOGS: self.loadPrivLogs.setChecked(True)
-		self.loadPrivLogs.stateChanged.connect(self.changedSetting)
+		self.loadPrivLogs.stateChanged.connect(self.changedLoadLogs)
 
 		self.markLog = QCheckBox("Mark end of loaded log",self)
 		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
@@ -2338,9 +2391,9 @@ class Dialog(QDialog):
 		
 		self.logLabel = QLabel(f"<b>{str(self.logsize)} lines</b>",self)
 
-		logsizeButton = QPushButton("")
-		logsizeButton.clicked.connect(self.setLogSize)
-		logsizeButton.setAutoDefault(False)
+		self.logsizeButton = QPushButton("")
+		self.logsizeButton.clicked.connect(self.setLogSize)
+		self.logsizeButton.setAutoDefault(False)
 
 		self.intermittentLog = QCheckBox("Save logs every",self)
 		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
@@ -2376,6 +2429,13 @@ class Dialog(QDialog):
 		intervalBox.addWidget(self.logInterval)
 		intervalBox.addStretch()
 
+		if self.savePrivLogs.isChecked() or self.saveChanLogs.isChecked():
+			self.intermittentLog.setEnabled(True)
+			self.logInterval.setEnabled(True)
+		else:
+			self.intermittentLog.setEnabled(False)
+			self.logInterval.setEnabled(False)
+
 		self.logDescription = QLabel("""
 			<small>
 			Full <b>logs</b> are not loaded for display. The below settings
@@ -2389,14 +2449,23 @@ class Dialog(QDialog):
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		logsizeButton.setFixedSize(fheight +10,fheight + 10)
-		logsizeButton.setIcon(QIcon(EDIT_ICON))
-		logsizeButton.setToolTip("Change log load size")
+		self.logsizeButton.setFixedSize(fheight +10,fheight + 10)
+		self.logsizeButton.setIcon(QIcon(EDIT_ICON))
+		self.logsizeButton.setToolTip("Change log load size")
 
 		logsizeLayout = QHBoxLayout()
-		logsizeLayout.addWidget(logsizeButton)
+		logsizeLayout.addWidget(self.logsizeButton)
 		logsizeLayout.addWidget(self.logLabel)
 		logsizeLayout.addStretch()
+
+		if self.loadChanLogs.isChecked() or self.loadPrivLogs.isChecked():
+			self.markLog.setEnabled(True)
+			self.logsizeButton.setEnabled(True)
+			self.logLabel.setEnabled(True)
+		else:
+			self.markLog.setEnabled(False)
+			self.logsizeButton.setEnabled(False)
+			self.logLabel.setEnabled(False)
 
 		self.logFullDescription = QLabel(f"""
 			<small>
@@ -3046,6 +3115,12 @@ class Dialog(QDialog):
 		self.advancedDescription.setWordWrap(True)
 		self.advancedDescription.setAlignment(Qt.AlignJustify)
 
+		self.interpolateAlias = QCheckBox("Interpolate aliases into input",self)
+		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
+		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
+		self.interpolateAlias.setEnabled(False)
+		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -3054,6 +3129,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.showStream)
+		advancedLayout.addWidget(self.interpolateAlias)
 		advancedLayout.addStretch()
 
 		self.advancedPage.setLayout(advancedLayout)
