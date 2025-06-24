@@ -21,7 +21,7 @@
  - [Does MERK need any help?](#does-merk-need-any-help)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All files available for direct download below are for the current development version of **MERK**. 
+All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All files available for direct download below are for the current development version of **MERK**. If you have previously installed **MERK** and would like to update to a new version, just [download the installer](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1) and install **MERK** again; your install will be updated to the latest version.
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
@@ -42,6 +42,8 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 **MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release here](!_RELEASE_URL_!).
 
 To run **MERK**, [download](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [downloaded the installer](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
+
+If you have previously installed **MERK** and would like to update to a new version, just download the installer for the newer version and install **MERK** again; your install will be updated to the newer version.
 
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 

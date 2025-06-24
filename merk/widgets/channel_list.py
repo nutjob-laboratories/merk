@@ -155,12 +155,22 @@ class Window(QMainWindow):
 		self.cLayout.addWidget(self.reset_button)
 
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
-			extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
-				command, or by clicking the <b>Refresh channel list</b> button on server window toolbars. This window will automatically update
-				to use the new list."""
+			if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
+				extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
+					command, or by clicking the <b>Refresh channel list</b> button on server window toolbars on in the <b>{config.MAIN_MENU_WINDOWS_NAME}</b>
+					menu. This window will automatically update to use the new list."""
+			else:
+				extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
+					command, or by clicking the <b>Refresh channel list</b> button on server window toolbars. This window will automatically update
+					to use the new list."""
 		else:
-			extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
-				command; this window will automatically update to use the new list."""
+			if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
+				extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
+					command, or by clicking <b>Refresh channel list</b> in the <b>{config.MAIN_MENU_WINDOWS_NAME}</b>
+					menu. This window will automatically update to use the new list."""
+			else:
+				extra = f"""A new channel list can be requested from the server with the <b>{config.ISSUE_COMMAND_SYMBOL}refresh</b>
+					command; this window will automatically update to use the new list."""
 
 		if not config.SIMPLIFIED_DIALOGS:
 			self.windowDescription = QLabel(f"""
