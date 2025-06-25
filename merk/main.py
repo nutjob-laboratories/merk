@@ -858,7 +858,7 @@ class Merk(QMainWindow):
 		self.trayLinks.addAction(entry)
 
 		entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
-		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html": self.openLinkInBrowser(u))
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.trayLinks.addAction(entry)
 
 		if not hasattr(self,"settingsMenu"):
@@ -3090,13 +3090,16 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,APPLICATION_NAME+" README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
 		self.helpMenu.addAction(entry)
 
+		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
+		self.helpMenu.addAction(entry)
+
+		self.helpMenu.addSeparator()
 		
 		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 1459","IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open1459)
 		self.helpMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"RFC 2812","IRC documentation",CUSTOM_MENU_ICON_SIZE,self.open2812)
 		self.helpMenu.addAction(entry)
-
 
 		self.helpMenu.addSeparator()
 
@@ -3108,8 +3111,8 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
-		entry = QAction(QIcon(LINK_ICON),"Supported emoji shortcodes",self)
-		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html": self.openLinkInBrowser(u))
+		entry = QAction(QIcon(LINK_ICON),"Search supported shortcodes",self)
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 		sm = self.helpMenu.addMenu(QIcon(LINK_ICON),"Technologies")
@@ -3170,6 +3173,14 @@ class Merk(QMainWindow):
 		else:
 			self.showSubWindow(self.readme_window)
 		self.helpMenu.close()
+
+	def openShortcodes(self):
+		if is_running_from_pyinstaller():
+			filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")
+		else:
+			filename = "./merk/resources/emoji_shortcode_list.pdf"
+		url = QUrl.fromLocalFile(filename)
+		QDesktopServices.openUrl(url)
 
 	def open1459(self):
 		if is_running_from_pyinstaller():
