@@ -456,14 +456,26 @@ class Window(QMainWindow):
 			self.banlist_menu.setIcon(QIcon(BAN_ICON))
 			self.banlist_menu.setMenu(buildBanMenu(self,self.client))
 			self.banlist_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
-			self.banlist_menu.setToolTip("Channel Bans")
+			self.banlist_menu.setToolTip("Channel bans")
 			self.banlist_menu.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 			self.banlist_menu.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.banlist_menu.setFlat(True)
 
 			self.banlist_menu.hide()
 
+			self.channel_menu = QPushButton("")
+			self.channel_menu.setIcon(QIcon(MODES_ICON))
+			self.channel_menu.setMenu(buildBanMenu(self,self.client))
+			self.channel_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+			self.channel_menu.setToolTip("Set channel modes")
+			self.channel_menu.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+			self.channel_menu.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+			self.channel_menu.setFlat(True)
+
+			self.channel_menu.hide()
+
 			topicLayout = QHBoxLayout()
+			topicLayout.addWidget(self.channel_menu)
 			topicLayout.addWidget(self.banlist_menu)
 			topicLayout.addWidget(self.channel_mode_display)
 			topicLayout.addWidget(self.topic)
@@ -476,6 +488,9 @@ class Window(QMainWindow):
 
 			if not config.SHOW_BANLIST_MENU:
 				self.banlist_menu.hide()
+
+			if not config.SHOW_CHANNEL_MENU:
+				self.channel_menu.hide()
 
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
@@ -793,7 +808,7 @@ class Window(QMainWindow):
 		if my_key:
 			self.client.mode(self.name,True,'k '+my_key)
 
-	def is_privlidged(self):
+	def is_privileged(self):
 		if self.operator: return True
 		if self.halfop: return True
 		if self.owner: return True
@@ -815,7 +830,7 @@ class Window(QMainWindow):
 		except:
 			channel_modes = ''
 
-		if self.is_privlidged():
+		if self.is_privileged():
 
 			if self.name in self.client.channelkeys:
 				entry = QAction(QIcon(MINUS_ICON),"Unlock channel",self)
@@ -944,15 +959,6 @@ class Window(QMainWindow):
 		menu = self.chat.createStandardContextMenu()
 
 		if config.SHOW_CHAT_CONTEXT_MENUS:
-
-			if self.window_type==CHANNEL_WINDOW:
-				if self.is_privlidged():
-
-					menu.addSeparator()
-
-					self.opmenu = self.buildOperatorMenu()
-					opmenu = menu.addMenu(self.opmenu)
-					opmenu.setIcon(QIcon(OP_USER))
 
 			if self.window_type==SERVER_WINDOW:
 
@@ -1129,6 +1135,7 @@ class Window(QMainWindow):
 
 	def hideTopic(self):
 		self.banlist_menu.hide()
+		self.channel_menu.hide()
 		self.channel_mode_display.hide()
 		self.topic.hide()
 
@@ -1137,6 +1144,11 @@ class Window(QMainWindow):
 			if len(self.banlist)>0: self.banlist_menu.show()
 		else:
 			self.banlist_menu.hide()
+		if config.SHOW_CHANNEL_MENU:
+			if self.is_privileged():
+				self.channel_menu.show()
+		else:
+			self.channel_menu.hide()
 		self.channel_mode_display.show()
 		if config.SHOW_CHANNEL_NAME_AND_MODES:
 			self.channel_mode_display.show()
@@ -1200,6 +1212,17 @@ class Window(QMainWindow):
 		else:
 			self.banlist_menu.hide()
 
+	def refreshChannelMenu(self):
+		if hasattr(self,"channel_menu"):
+			self.channel_menu.setMenu(self.buildOperatorMenu())
+			if config.SHOW_CHANNEL_MENU:
+				if not self.is_privileged():
+					self.channel_menu.hide()
+				else:
+					self.channel_menu.show()
+			else:
+				self.channel_menu.hide()
+
 	def refreshInfoMenu(self):
 		self.server_info_menu = buildServerSettingsMenu(self,self.client)
 		self.info_button.setMenu(self.server_info_menu)
@@ -1246,6 +1269,7 @@ class Window(QMainWindow):
 				if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
 					self.mode_display.show()
 		self.updateTitle()
+		self.refreshChannelMenu()
 
 		if hasattr(self,"key_icon"):
 			if self.name in self.client.channelkeys:
@@ -1966,6 +1990,8 @@ class Window(QMainWindow):
 				self.name_spacer.show()
 			else:
 				self.name_spacer.hide()
+
+		self.refreshChannelMenu()
 
 	def disconnect(self):
 

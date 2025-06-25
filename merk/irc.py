@@ -245,6 +245,7 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.joined(self,channel)
 
 	def left(self, channel):
+		self.channelmodes.pop(channel,None)
 		self.gui.left(self,channel)
 
 	def privmsg(self, user, target, msg):

@@ -658,10 +658,12 @@ class Dialog(QDialog):
 			self.topicBold.setEnabled(True)
 			self.channelName.setEnabled(True)
 			self.showBanlist.setEnabled(True)
+			self.showChanMenu.setEnabled(True)
 		else:
 			self.topicBold.setEnabled(False)
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
+			self.showChanMenu.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2083,14 +2085,19 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
 		self.channelName.stateChanged.connect(self.topicChange)
 
-		self.showBanlist = QCheckBox("Show channel banlist",self)
+		self.showBanlist = QCheckBox("Show channel banlist button",self)
 		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
 		self.showBanlist.stateChanged.connect(self.topicChange)
+
+		self.showChanMenu = QCheckBox("Show channel modes button",self)
+		if config.SHOW_CHANNEL_MENU: self.showChanMenu.setChecked(True)
+		self.showChanMenu.stateChanged.connect(self.topicChange)
 
 		if not config.SHOW_CHANNEL_TOPIC:
 			self.topicBold.setEnabled(False)
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
+			self.showChanMenu.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -2145,6 +2152,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.topicDisplay)
 		menuLayout.addWidget(self.topicBold)
 		menuLayout.addWidget(self.channelName)
+		menuLayout.addWidget(self.showChanMenu)
 		menuLayout.addWidget(self.showBanlist)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
@@ -3427,6 +3435,7 @@ class Dialog(QDialog):
 		config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = self.logEverything.isChecked()
 		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
 		config.SHOW_CONNECTION_DEBUG_STREAM = self.showStream.isChecked()
+		config.SHOW_CHANNEL_MENU = self.showChanMenu.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

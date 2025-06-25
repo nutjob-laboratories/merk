@@ -215,9 +215,11 @@ TWISTED_CLIENT_HEARTBEAT = 120
 SPELLCHECKER_DISTANCE = 1
 LOG_CHANNEL_NICKNAME_CHANGE = True
 ENABLE_COMMAND_INPUT_HISTORY = True
+SHOW_CHANNEL_MENU = True
 
 def build_settings():
 	settings = {
+		"show_channel_mode_menu": SHOW_CHANNEL_MENU,
 		"enable_command_history": ENABLE_COMMAND_INPUT_HISTORY,
 		"log_channel_nickname_changes": LOG_CHANNEL_NICKNAME_CHANGE,
 		"spellchecker_distance": SPELLCHECKER_DISTANCE,
@@ -399,6 +401,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_channel_mode_menu" in settings:
+		settings["show_channel_mode_menu"] = SHOW_CHANNEL_MENU
 	if not "enable_command_history" in settings:
 		settings["enable_command_history"] = ENABLE_COMMAND_INPUT_HISTORY
 	if not "log_channel_nickname_changes" in settings:
@@ -932,6 +936,7 @@ def load_settings(filename):
 	global SPELLCHECKER_DISTANCE
 	global LOG_CHANNEL_NICKNAME_CHANGE
 	global ENABLE_COMMAND_INPUT_HISTORY
+	global SHOW_CHANNEL_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -941,6 +946,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_MENU = settings["show_channel_mode_menu"]
 		ENABLE_COMMAND_INPUT_HISTORY = settings["enable_command_history"]
 		LOG_CHANNEL_NICKNAME_CHANGE = settings["log_channel_nickname_changes"]
 		SPELLCHECKER_DISTANCE = settings["spellchecker_distance"]
