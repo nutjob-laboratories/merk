@@ -577,10 +577,12 @@ class Dialog(QDialog):
 			self.logEverything.setEnabled(True)
 			self.interpolateAlias.setEnabled(True)
 			self.writeConsole.setEnabled(True)
+			self.writeFile.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 			self.writeConsole.setEnabled(False)
+			self.writeFile.setEnabled(False)
 
 			if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: 
 				self.logEverything.setChecked(True)
@@ -598,6 +600,11 @@ class Dialog(QDialog):
 				self.writeConsole.setChecked(True)
 			else:
 				self.writeConsole.setChecked(False)
+
+			if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+				self.writeFile.setChecked(True)
+			else:
+				self.writeFile.setChecked(False)
 
 		self.selector.setFocus()
 
@@ -3157,6 +3164,12 @@ class Dialog(QDialog):
 		self.writeConsole.setEnabled(False)
 		self.writeConsole.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.writeFile = QCheckBox("Write all network input and\noutput to a file in the user's\nsettings directory",self)
+		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE: self.writeFile.setChecked(True)
+		self.writeFile.stateChanged.connect(self.changedSettingAdvanced)
+		self.writeFile.setEnabled(False)
+		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -3166,6 +3179,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.interpolateAlias)
 		advancedLayout.addWidget(self.writeConsole)
+		advancedLayout.addWidget(self.writeFile)
 		advancedLayout.addStretch()
 
 		self.advancedPage.setLayout(advancedLayout)
@@ -3442,6 +3456,7 @@ class Dialog(QDialog):
 		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
 		config.SHOW_CHANNEL_MENU = self.showChanMenu.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = self.writeConsole.isChecked()
+		config.WRITE_INPUT_AND_OUTPUT_TO_FILE = self.writeFile.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

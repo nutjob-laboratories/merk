@@ -198,6 +198,10 @@ class IRC_Connection(irc.IRCClient):
 
 	def connectionMade(self):
 
+		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs["server"]}_{self.kwargs["port"]}.txt")
+			self.dump_file = open(dump_filename,"a")
+
 		self.sendLine("PROTOCTL UHNAMES")
 		self.sendLine("CAP REQ :chghost")
 		self.sendLine("CAP REQ :cap-notify")
@@ -214,6 +218,13 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.connectionMade(self)
 
 	def connectionLost(self, reason):
+
+		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+			try:
+				self.dump_file.close()
+			except:
+				pass
+
 		global CONNECTIONS
 
 		if hasattr(self,"uptimeTimer"):
@@ -727,6 +738,12 @@ class IRC_Connection(irc.IRCClient):
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
 			sys.stdout.write(f"{line}\n")
 
+		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+			try:
+				self.dump_file.write(f"{int(time.time())}\t{line}\n")
+			except:
+				pass
+
 		return irc.IRCClient.sendLine(self, line)
 
 	def irc_ERR_NOSUCHNICK(self,prefix,params):
@@ -800,6 +817,12 @@ class IRC_Connection(irc.IRCClient):
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
 			sys.stdout.write(f"{self.kwargs["server"]}:{self.kwargs["port"]} {line}\n")
+
+		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+			try:
+				self.dump_file.write(f"{int(time.time())}\t{self.kwargs["server"]}:{self.kwargs["port"]} {line}\n")
+			except:
+				pass
 
 		# Hack to get away notifications
 		s = line.decode().split(' ')
