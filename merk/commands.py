@@ -332,7 +332,7 @@ def executeChatCommands(gui,window,user_input,is_script):
 	# |-------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'jump' and len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'jump':
 				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"jump can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
@@ -342,7 +342,7 @@ def executeChatCommands(gui,window,user_input,is_script):
 	# |-------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
 				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"wait can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
@@ -1011,6 +1011,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
+
+			count = len(TEMPORARY_ALIAS) + len(ALIAS)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} aliases")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 			for a in TEMPORARY_ALIAS:
 				t = Message(SYSTEM_MESSAGE,'',config.ALIAS_INTERPOLATION_SYMBOL+a+" = \""+TEMPORARY_ALIAS[a]+"\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1018,6 +1023,9 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			for a in ALIAS:
 				t = Message(SYSTEM_MESSAGE,'',config.ALIAS_INTERPOLATION_SYMBOL+a+" = \""+ALIAS[a]+"\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} aliases")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
