@@ -423,7 +423,7 @@ def executeChatCommands(gui,window,user_input,is_script):
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me' and len(tokens)>=2:
 			tokens.pop(0)
 			msg = ' '.join(tokens)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language='alias')
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.describe(window.name,msg)
 			t = Message(ACTION_MESSAGE,window.client.nickname,msg)
 			window.writeText(t)
@@ -451,7 +451,7 @@ def executeChatCommands(gui,window,user_input,is_script):
 				if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
 					channel = window.name
 					msg = ' '.join(tokens)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language='alias')
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 					window.client.topic(channel,msg)
 					return True
 				else:
@@ -480,7 +480,7 @@ def executeChatCommands(gui,window,user_input,is_script):
 				# Channel name hasn't been passed, it must be a message
 				channel = window.name
 				msg = ' '.join(tokens)
-				if config.ENABLE_EMOJI_SHORTCODES:  msg = emoji.emojize(msg,language='alias')
+				if config.ENABLE_EMOJI_SHORTCODES:  msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				window.client.leave(channel,msg)
 				return True
 
@@ -1268,7 +1268,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES:
 				if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-					msg = emoji.emojize(msg,language='alias')
+					msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.away(msg)
 			window.client.away_msg = msg
 			return True
@@ -1279,13 +1279,13 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				if msg:
 					if config.ENABLE_EMOJI_SHORTCODES:
 						if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-							msg = emoji.emojize(msg,language='alias')
+							msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 					window.client.away(msg)
 					window.client.away_msg = msg
 			else:
 				if config.ENABLE_EMOJI_SHORTCODES:
 					if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 					else:
 						msg = config.DEFAULT_AWAY_MESSAGE
 				else:
@@ -1701,7 +1701,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language='alias')
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.notice(target,msg)
 
 			# If we have the target's window open, write
@@ -1725,7 +1725,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language='alias')
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.msg(target,msg)
 
 			# If we have the target's window open, write
@@ -1792,7 +1792,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			channel = tokens.pop(0)
 			msg = ' '.join(tokens)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language='alias')
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.topic(channel,msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic':
@@ -1820,7 +1820,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			
 			tokens.pop(0)
 			msg = ' '.join(tokens)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language='alias')
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.quit(msg)
 			gui.quitting[window.client.client_id] = 0
 			return True
@@ -1864,7 +1864,7 @@ def executeCommonCommands(gui,window,user_input,is_script):
 			tokens.pop(0)
 			channel = tokens.pop(0)
 			msg = ' '.join(tokens)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language='alias')
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.leave(channel,msg)
 			return True
 

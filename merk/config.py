@@ -216,9 +216,11 @@ SPELLCHECKER_DISTANCE = 1
 LOG_CHANNEL_NICKNAME_CHANGE = True
 ENABLE_COMMAND_INPUT_HISTORY = True
 SHOW_CHANNEL_MENU = True
+EMOJI_LANGUAGE = 'alias'
 
 def build_settings():
 	settings = {
+		"emoji_shortcode_language": EMOJI_LANGUAGE,
 		"show_channel_mode_menu": SHOW_CHANNEL_MENU,
 		"enable_command_history": ENABLE_COMMAND_INPUT_HISTORY,
 		"log_channel_nickname_changes": LOG_CHANNEL_NICKNAME_CHANGE,
@@ -401,6 +403,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "emoji_shortcode_language" in settings:
+		settings["emoji_shortcode_language"] = EMOJI_LANGUAGE
 	if not "show_channel_mode_menu" in settings:
 		settings["show_channel_mode_menu"] = SHOW_CHANNEL_MENU
 	if not "enable_command_history" in settings:
@@ -937,6 +941,7 @@ def load_settings(filename):
 	global LOG_CHANNEL_NICKNAME_CHANGE
 	global ENABLE_COMMAND_INPUT_HISTORY
 	global SHOW_CHANNEL_MENU
+	global EMOJI_LANGUAGE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -946,6 +951,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		EMOJI_LANGUAGE = settings["emoji_shortcode_language"]
 		SHOW_CHANNEL_MENU = settings["show_channel_mode_menu"]
 		ENABLE_COMMAND_INPUT_HISTORY = settings["enable_command_history"]
 		LOG_CHANNEL_NICKNAME_CHANGE = settings["log_channel_nickname_changes"]

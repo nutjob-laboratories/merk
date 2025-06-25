@@ -102,7 +102,7 @@ There are three libraries that comes bundled with **MERK**:
 -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, German, Portuguese, Italian, Dutch, and Russian)
 -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
     -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
-    -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
+    -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html)
 -   Full IRC color support
 -   Full scripting engine
     - Includes a built in script editor, with scripting macros and syntax highlighting

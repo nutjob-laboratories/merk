@@ -858,7 +858,7 @@ class Merk(QMainWindow):
 		self.trayLinks.addAction(entry)
 
 		entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
-		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html": self.openLinkInBrowser(u))
 		self.trayLinks.addAction(entry)
 
 		if not hasattr(self,"settingsMenu"):
@@ -1562,7 +1562,7 @@ class Merk(QMainWindow):
 					if not client.is_away:
 						if config.ENABLE_EMOJI_SHORTCODES:
 							if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-								msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+								msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 							else:
 								msg = config.DEFAULT_AWAY_MESSAGE
 						else:
@@ -2036,7 +2036,7 @@ class Merk(QMainWindow):
 		
 		# Add emojis to the message
 		if config.ENABLE_EMOJI_SHORTCODES:
-			user_input = emoji.emojize(user_input,language='alias')
+			user_input = emoji.emojize(user_input,language=config.EMOJI_LANGUAGE)
 
 		if len(user_input)>0:
 			# Client has sent a chat message, so send the message
@@ -3109,7 +3109,7 @@ class Merk(QMainWindow):
 		self.helpMenu.addAction(entry)
 
 		entry = QAction(QIcon(LINK_ICON),"Supported emoji shortcodes",self)
-		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
+		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html": self.openLinkInBrowser(u))
 		self.helpMenu.addAction(entry)
 
 		sm = self.helpMenu.addMenu(QIcon(LINK_ICON),"Technologies")

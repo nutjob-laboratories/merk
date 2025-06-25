@@ -2035,7 +2035,7 @@ class Window(QMainWindow):
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
 					if config.ENABLE_EMOJI_SHORTCODES:
 						if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-							msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+							msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 						else:
 							msg = config.DEFAULT_AWAY_MESSAGE
 					else:
@@ -2047,7 +2047,7 @@ class Window(QMainWindow):
 				self.away_button.setIcon(QIcon(GO_BACK_ICON))
 				if config.ENABLE_EMOJI_SHORTCODES:
 					if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language='alias')
+						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 					else:
 						msg = config.DEFAULT_AWAY_MESSAGE
 				else:

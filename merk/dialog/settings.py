@@ -1145,7 +1145,7 @@ class Dialog(QDialog):
 			<small>
 			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
 			your chat by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			You can find a complete list of supported <b>shortcodes</b> <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">
+			You can find a complete list of supported <b>shortcodes</b> <a href="https://carpedm20.github.io/emoji/all.html">
 			here</a>.
 			</small>
 			<br>
