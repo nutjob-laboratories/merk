@@ -3122,7 +3122,7 @@ class Dialog(QDialog):
 		self.advancedEnable = QCheckBox("Enable advanced settings",self)
 		self.advancedEnable.stateChanged.connect(self.clickedAdvanced)
 
-		self.logEverything = QCheckBox("Log all system messages",self)
+		self.logEverything = QCheckBox("Save all system messages to log",self)
 		if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: self.logEverything.setChecked(True)
 		self.logEverything.stateChanged.connect(self.changedSettingAdvanced)
 		self.logEverything.setEnabled(False)
