@@ -582,8 +582,15 @@ class Dialog(QDialog):
 			self.showStream.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 
-			if self.logEverything.isChecked(): self.logEverything.setChecked(False)
-			if self.showStream.isChecked(): self.showStream.setChecked(False)
+			if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: 
+				self.logEverything.setChecked(True)
+			else:
+				self.logEverything.setChecked(False)
+
+			if config.SHOW_CONNECTION_DEBUG_STREAM:
+				self.showStream.setChecked(True)
+			else:
+				self.showStream.setChecked(False)
 
 			if config.INTERPOLATE_ALIASES_INTO_INPUT:
 				self.interpolateAlias.setChecked(True)

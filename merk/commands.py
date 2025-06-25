@@ -327,6 +327,26 @@ def executeChatCommands(gui,window,user_input,is_script):
 	user_input = user_input.lstrip()
 	tokens = user_input.split()
 
+	# |-------|
+	# | /jump |
+	# |-------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'jump' and len(tokens)>=1:
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"jump can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+	# |-------|
+	# | /wait |
+	# |-------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)>=1:
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"wait can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 	# |--------|
 	# | /clear |
 	# |--------|
@@ -1975,6 +1995,13 @@ class ScriptThread(QThread):
 							is_valid = False
 							valids = self.gui.getAllConnectedWindows(self.window.client)
 							for c in valids:
+								if c.name==target:
+									self.window = c
+									is_valid = True
+
+							valids = self.gui.getAllConnectedServerWindows()
+							for w in valids:
+								c = w.widget()
 								if c.name==target:
 									self.window = c
 									is_valid = True

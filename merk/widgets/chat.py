@@ -830,6 +830,9 @@ class Window(QMainWindow):
 		except:
 			channel_modes = ''
 
+		e = textSeparator(self,"Channel modes")
+		opmenu.addAction(e)
+
 		if self.is_privileged():
 
 			if self.name in self.client.channelkeys:
@@ -1287,6 +1290,10 @@ class Window(QMainWindow):
 	def updateTitle(self):
 
 		if self.window_type==SERVER_WINDOW:
+
+			if hasattr(self.client,"hostname"):
+				self.name = self.client.hostname
+
 			if hasattr(self.client,"network"):
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
