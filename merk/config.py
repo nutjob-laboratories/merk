@@ -216,9 +216,11 @@ LOG_CHANNEL_NICKNAME_CHANGE = True
 ENABLE_COMMAND_INPUT_HISTORY = True
 SHOW_CHANNEL_MENU = True
 EMOJI_LANGUAGE = 'alias'
+WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = False
 
 def build_settings():
 	settings = {
+		"write_network_input_and_output_to_console": WRITE_INPUT_AND_OUTPUT_TO_CONSOLE,
 		"emoji_shortcode_language": EMOJI_LANGUAGE,
 		"show_channel_mode_menu": SHOW_CHANNEL_MENU,
 		"enable_command_history": ENABLE_COMMAND_INPUT_HISTORY,
@@ -401,6 +403,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "write_network_input_and_output_to_console" in settings:
+		settings["write_network_input_and_output_to_console"] = WRITE_INPUT_AND_OUTPUT_TO_CONSOLE
 	if not "emoji_shortcode_language" in settings:
 		settings["emoji_shortcode_language"] = EMOJI_LANGUAGE
 	if not "show_channel_mode_menu" in settings:
@@ -937,6 +941,7 @@ def load_settings(filename):
 	global ENABLE_COMMAND_INPUT_HISTORY
 	global SHOW_CHANNEL_MENU
 	global EMOJI_LANGUAGE
+	global WRITE_INPUT_AND_OUTPUT_TO_CONSOLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -946,6 +951,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = settings["write_network_input_and_output_to_console"]
 		EMOJI_LANGUAGE = settings["emoji_shortcode_language"]
 		SHOW_CHANNEL_MENU = settings["show_channel_mode_menu"]
 		ENABLE_COMMAND_INPUT_HISTORY = settings["enable_command_history"]

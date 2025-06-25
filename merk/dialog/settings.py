@@ -576,9 +576,11 @@ class Dialog(QDialog):
 		if self.advancedEnable.isChecked():
 			self.logEverything.setEnabled(True)
 			self.interpolateAlias.setEnabled(True)
+			self.writeConsole.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
+			self.writeConsole.setEnabled(False)
 
 			if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: 
 				self.logEverything.setChecked(True)
@@ -591,6 +593,11 @@ class Dialog(QDialog):
 			else:
 				self.interpolateAlias.setChecked(False)
 				self.autocompleteAlias.setEnabled(False)
+
+			if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
+				self.writeConsole.setChecked(True)
+			else:
+				self.writeConsole.setChecked(False)
 
 		self.selector.setFocus()
 
@@ -3087,7 +3094,6 @@ class Dialog(QDialog):
 		sbLayout2.addWidget(soundDefault)
 		sbLayout2.addStretch()
 
-
 		audioLayout = QVBoxLayout()
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
 		audioLayout.addWidget(self.notifyDescription)
@@ -3145,6 +3151,12 @@ class Dialog(QDialog):
 		self.interpolateAlias.setEnabled(False)
 		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
 
+		self.writeConsole = QCheckBox("Write all network input and\noutput to STDOUT",self)
+		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE: self.writeConsole.setChecked(True)
+		self.writeConsole.stateChanged.connect(self.changedSettingAdvanced)
+		self.writeConsole.setEnabled(False)
+		self.writeConsole.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -3153,6 +3165,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.interpolateAlias)
+		advancedLayout.addWidget(self.writeConsole)
 		advancedLayout.addStretch()
 
 		self.advancedPage.setLayout(advancedLayout)
@@ -3428,6 +3441,7 @@ class Dialog(QDialog):
 		config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = self.logEverything.isChecked()
 		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
 		config.SHOW_CHANNEL_MENU = self.showChanMenu.isChecked()
+		config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = self.writeConsole.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
