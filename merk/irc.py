@@ -724,8 +724,6 @@ class IRC_Connection(irc.IRCClient):
 
 	def sendLine(self,line):
 
-		self.gui.got_input_output(self,"> "+line)
-
 		return irc.IRCClient.sendLine(self, line)
 
 	def irc_ERR_NOSUCHNICK(self,prefix,params):
@@ -796,8 +794,6 @@ class IRC_Connection(irc.IRCClient):
 		# IRC events (this fixes an error raised when attempting
 		# to get a channel list from a server)
 		line = line2.encode('utf-8')
-
-		self.gui.got_input_output(self,"< "+line.decode())
 
 		# Hack to get away notifications
 		s = line.decode().split(' ')

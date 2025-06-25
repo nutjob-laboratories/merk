@@ -188,7 +188,6 @@ SYNTAX_NICKNAME_STYLE = "bold"
 SYNTAX_EMOJI_COLOR = "Magenta"
 SYNTAX_EMOJI_STYLE = "bold italic"
 HIDE_USERLIST_HORIZONTAL_SCROLLBAR = True
-SHOW_CONNECTION_DEBUG_STREAM = False
 SHOW_AWAY_AND_BACK_MESSAGES = True
 SHOW_AWAY_STATUS_IN_USERLISTS = True
 SHOW_AWAY_STATUS_IN_NICK_DISPLAY = True
@@ -248,7 +247,6 @@ def build_settings():
 		"show_away_status_in_nick_display": SHOW_AWAY_STATUS_IN_NICK_DISPLAY,
 		"show_away_status_in_userlists": SHOW_AWAY_STATUS_IN_USERLISTS,
 		"show_away_and_back_messages": SHOW_AWAY_AND_BACK_MESSAGES,
-		"debug_server_connection_stream": SHOW_CONNECTION_DEBUG_STREAM,
 		"hide_horizontal_scrollbar_on_userlists": HIDE_USERLIST_HORIZONTAL_SCROLLBAR,
 		"syntax_nickname_color": SYNTAX_NICKNAME_COLOR,
 		"syntax_nickname_style": SYNTAX_NICKNAME_STYLE,
@@ -459,8 +457,6 @@ def patch_settings(settings):
 		settings["show_away_status_in_userlists"] = SHOW_AWAY_STATUS_IN_USERLISTS
 	if not "show_away_and_back_messages" in settings:
 		settings["show_away_and_back_messages"] = SHOW_AWAY_AND_BACK_MESSAGES
-	if not "debug_server_connection_stream" in settings:
-		settings["debug_server_connection_stream"] = SHOW_CONNECTION_DEBUG_STREAM
 	if not "hide_horizontal_scrollbar_on_userlists" in settings:
 		settings["hide_horizontal_scrollbar_on_userlists"] = HIDE_USERLIST_HORIZONTAL_SCROLLBAR
 	if not "syntax_nickname_color" in settings:
@@ -913,7 +909,6 @@ def load_settings(filename):
 	global SYNTAX_EMOJI_COLOR
 	global SYNTAX_EMOJI_STYLE
 	global HIDE_USERLIST_HORIZONTAL_SCROLLBAR
-	global SHOW_CONNECTION_DEBUG_STREAM
 	global SHOW_AWAY_AND_BACK_MESSAGES
 	global SHOW_AWAY_STATUS_IN_USERLISTS
 	global SHOW_AWAY_STATUS_IN_NICK_DISPLAY
@@ -979,7 +974,6 @@ def load_settings(filename):
 		SHOW_AWAY_STATUS_IN_NICK_DISPLAY = settings["show_away_status_in_nick_display"]
 		SHOW_AWAY_STATUS_IN_USERLISTS = settings["show_away_status_in_userlists"]
 		SHOW_AWAY_AND_BACK_MESSAGES = settings["show_away_and_back_messages"]
-		SHOW_CONNECTION_DEBUG_STREAM = settings["debug_server_connection_stream"]
 		HIDE_USERLIST_HORIZONTAL_SCROLLBAR = settings["hide_horizontal_scrollbar_on_userlists"]
 		SYNTAX_NICKNAME_COLOR = settings["syntax_nickname_color"]
 		SYNTAX_NICKNAME_STYLE = settings["syntax_nickname_style"]

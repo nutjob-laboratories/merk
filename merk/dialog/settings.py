@@ -575,22 +575,15 @@ class Dialog(QDialog):
 	def clickedAdvanced(self,state):
 		if self.advancedEnable.isChecked():
 			self.logEverything.setEnabled(True)
-			self.showStream.setEnabled(True)
 			self.interpolateAlias.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
-			self.showStream.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 
 			if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: 
 				self.logEverything.setChecked(True)
 			else:
 				self.logEverything.setChecked(False)
-
-			if config.SHOW_CONNECTION_DEBUG_STREAM:
-				self.showStream.setChecked(True)
-			else:
-				self.showStream.setChecked(False)
 
 			if config.INTERPOLATE_ALIASES_INTO_INPUT:
 				self.interpolateAlias.setChecked(True)
@@ -3134,12 +3127,6 @@ class Dialog(QDialog):
 		self.logEverything.stateChanged.connect(self.changedSettingAdvanced)
 		self.logEverything.setEnabled(False)
 
-		self.showStream = QCheckBox("Add connection stream display\nto all server windows",self)
-		if config.SHOW_CONNECTION_DEBUG_STREAM: self.showStream.setChecked(True)
-		self.showStream.stateChanged.connect(self.changedSettingAdvanced)
-		self.showStream.setEnabled(False)
-		self.showStream.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.advancedDescription = QLabel(f"""
 			<small>
 			</small><b><span style='color: red;'>WARNING!</b></span> Changing these settings may break your installation of <b>{APPLICATION_NAME}</b>!<small><br><br>
@@ -3165,7 +3152,6 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addWidget(self.logEverything)
-		advancedLayout.addWidget(self.showStream)
 		advancedLayout.addWidget(self.interpolateAlias)
 		advancedLayout.addStretch()
 
@@ -3441,7 +3427,6 @@ class Dialog(QDialog):
 		config.LOG_CHANNEL_NICKNAME_CHANGE = self.nickLog.isChecked()
 		config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = self.logEverything.isChecked()
 		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
-		config.SHOW_CONNECTION_DEBUG_STREAM = self.showStream.isChecked()
 		config.SHOW_CHANNEL_MENU = self.showChanMenu.isChecked()
 
 		if not self.enableHistory.isChecked():

@@ -501,46 +501,12 @@ class Window(QMainWindow):
 
 		else:
 
-			if config.SHOW_CONNECTION_DEBUG_STREAM:
-				
-				self.tabs = QTabWidget()
-
-				self.server_tab = QWidget()
-				self.tabs.addTab(self.server_tab, "Server Console")
-
-				self.inputoutput = QWidget()
-				self.tabs.addTab(self.inputoutput, f"{self.name}")
-
-
-				serverLayout = QVBoxLayout()
-				serverLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
-				serverLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-				if self.window_type==SERVER_WINDOW: serverLayout.addWidget(self.server_window_toolbar)
-				serverLayout.addWidget(self.chat)
-				serverLayout.addLayout(inputLayout)
-				self.server_tab.setLayout(serverLayout)
-
-				self.connection = QListWidget()
-				self.connection.setAlternatingRowColors(True)
-				self.connection.setTextElideMode(Qt.ElideRight)
-				self.connection.setWordWrap(True)
-
-				connectionLayout = QVBoxLayout()
-				connectionLayout.addWidget(self.connection)
-				self.inputoutput.setLayout(connectionLayout)
-
-				finalLayout = QVBoxLayout()
-				finalLayout.addWidget(self.tabs)
-				finalLayout.setSpacing(0)
-				finalLayout.setContentsMargins(0,0,0,0)
-
-			else:
-				finalLayout = QVBoxLayout()
-				finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
-				finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-				if self.window_type==SERVER_WINDOW: finalLayout.addWidget(self.server_window_toolbar)
-				finalLayout.addWidget(self.chat)
-				finalLayout.addLayout(inputLayout)
+			finalLayout = QVBoxLayout()
+			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
+			finalLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+			if self.window_type==SERVER_WINDOW: finalLayout.addWidget(self.server_window_toolbar)
+			finalLayout.addWidget(self.chat)
+			finalLayout.addLayout(inputLayout)
 
 		# Finalize the layout
 		interface = QWidget()
@@ -711,20 +677,6 @@ class Window(QMainWindow):
 				self.rerenderChatLog()
 
 				QApplication.restoreOverrideCursor()
-
-	def addInputOutput(self,data):
-
-		if config.SHOW_CONNECTION_DEBUG_STREAM:
-			if hasattr(self,"connection"):
-				i = QListWidgetItem()
-
-				font = QFont()
-				font.setBold(True)
-				i.setFont(font)
-				i.setText(data)
-
-				self.connection.addItem(i)
-				self.connection.scrollToBottom()
 
 	def showChannelList(self):
 		if len(self.client.server_channel_list)==0:
