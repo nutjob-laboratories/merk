@@ -983,7 +983,11 @@ class Window(QMainWindow):
 			if self.window_type==CHANNEL_WINDOW:
 
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
-				entry.triggered.connect(lambda state,u=self.name,w=config.DEFAULT_QUIT_MESSAGE: self.client.leave(u,w))
+				if config.ENABLE_EMOJI_SHORTCODES:
+					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+				else:
+					msg = config.DEFAULT_QUIT_MESSAGE
+				entry.triggered.connect(lambda state,u=self.name,w=msg: self.client.leave(u,w))
 				menu.addAction(entry)
 
 			if self.window_type==PRIVATE_WINDOW:
@@ -1967,7 +1971,11 @@ class Window(QMainWindow):
 				self.parent.hideServerWindow(self.client)
 			else:
 				self.parent.quitting[self.client.client_id] = 0
-				self.client.quit(config.DEFAULT_QUIT_MESSAGE)
+				if config.ENABLE_EMOJI_SHORTCODES:
+					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+				else:
+					msg = config.DEFAULT_QUIT_MESSAGE
+				self.client.quit(msg)
 
 	def changeNick(self):
 		newnick = NewNickDialog(self.client.nickname,self.parent)
@@ -1986,10 +1994,7 @@ class Window(QMainWindow):
 					self.away_button.setToolTip("Set status to \"back\"")
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
 					if config.ENABLE_EMOJI_SHORTCODES:
-						if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-							msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
-						else:
-							msg = config.DEFAULT_AWAY_MESSAGE
+						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 					else:
 						msg = config.DEFAULT_AWAY_MESSAGE
 					self.client.away(msg)
@@ -1998,10 +2003,7 @@ class Window(QMainWindow):
 				self.away_button.setToolTip("Set status to \"back\"")
 				self.away_button.setIcon(QIcon(GO_BACK_ICON))
 				if config.ENABLE_EMOJI_SHORTCODES:
-					if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
-					else:
-						msg = config.DEFAULT_AWAY_MESSAGE
+					msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 				else:
 					msg = config.DEFAULT_AWAY_MESSAGE
 				self.client.away(msg)
@@ -2082,7 +2084,11 @@ class Window(QMainWindow):
 
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
-			self.client.leave(self.name,config.DEFAULT_QUIT_MESSAGE)
+			if config.ENABLE_EMOJI_SHORTCODES:
+				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+			else:
+				msg = config.DEFAULT_QUIT_MESSAGE
+			self.client.leave(self.name,msg)
 
 		save_logs = True
 

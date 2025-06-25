@@ -42,7 +42,80 @@ import os,sys,subprocess
 
 import fnmatch
 
-class EmojiAutocomplete(QPlainTextEdit):
+class EmojiQuitAutocomplete(QPlainTextEdit):
+
+	def __init__(self, *args):
+		QPlainTextEdit.__init__(self, *args)
+
+		self.parent = args[0]
+
+	def keyPressEvent(self,event):
+
+		# BUGFIX: the user can "drag" the view "down"
+		# with the mouse; this resets the widget to
+		# "normal" every time the user presses a key
+		# Man, I wish Qt had a rich-text-enabled QLineEdit :-(
+		sb = self.verticalScrollBar()
+		sb.setValue(sb.minimum())
+		self.ensureCursorVisible()
+
+		if event.key() == Qt.Key_Tab:
+
+			if not self.parent.autocompleteEmojisInQuit:
+				self.parent.autoEmojiQuit.setFocus()
+
+			elif not config.ENABLE_EMOJI_SHORTCODES:
+				self.parent.autoEmojiQuit.setFocus()
+
+			elif not self.parent.enableEmojis.isChecked():
+				self.parent.autoEmojiQuit.setFocus()
+			else:
+
+				cursor = self.textCursor()
+
+				if self.toPlainText().strip()=='': return
+
+				if config.ENABLE_EMOJI_SHORTCODES:
+					# Autocomplete emojis
+					cursor.select(QTextCursor.WordUnderCursor)
+					oldpos = cursor.position()
+					cursor.select(QTextCursor.WordUnderCursor)
+					newpos = cursor.selectionStart() - 1
+					cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+					cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
+
+						for c in EMOJI_AUTOCOMPLETE:
+
+							# Case sensitive
+							if fnmatch.fnmatchcase(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								return
+
+							# Case insensitive
+							if fnmatch.fnmatch(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								return
+
+				cursor.movePosition(QTextCursor.End)
+				self.setTextCursor(cursor)
+
+		else:
+			return super().keyPressEvent(event)
+
+	def text(self):
+		return self.toPlainText()
+
+	def setText(self,text):
+		self.setPlainText(text)
+
+class EmojiAwayAutocomplete(QPlainTextEdit):
 
 	def __init__(self, *args):
 		QPlainTextEdit.__init__(self, *args)
@@ -62,16 +135,14 @@ class EmojiAutocomplete(QPlainTextEdit):
 		if event.key() == Qt.Key_Tab:
 
 			if not self.parent.autocompleteEmojisInAway:
-				self.parent.emojiAway.setFocus()
+				self.parent.autoEmojiAway.setFocus()
 
 			elif not config.ENABLE_EMOJI_SHORTCODES:
-				self.parent.emojiAway.setFocus()
+				self.parent.autoEmojiAway.setFocus()
 
 			elif not self.parent.enableEmojis.isChecked():
-				self.parent.emojiAway.setFocus()
+				self.parent.autoEmojiAway.setFocus()
 
-			elif not self.parent.emojiAway.isChecked():
-				self.parent.emojiAway.setFocus()
 			else:
 
 				cursor = self.textCursor()
@@ -79,33 +150,32 @@ class EmojiAutocomplete(QPlainTextEdit):
 				if self.toPlainText().strip()=='': return
 
 				if config.ENABLE_EMOJI_SHORTCODES:
-					if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-						# Autocomplete emojis
-						cursor.select(QTextCursor.WordUnderCursor)
-						oldpos = cursor.position()
-						cursor.select(QTextCursor.WordUnderCursor)
-						newpos = cursor.selectionStart() - 1
-						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
-						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
-						self.setTextCursor(cursor)
-						if self.textCursor().hasSelection():
-							text = self.textCursor().selectedText()
+					# Autocomplete emojis
+					cursor.select(QTextCursor.WordUnderCursor)
+					oldpos = cursor.position()
+					cursor.select(QTextCursor.WordUnderCursor)
+					newpos = cursor.selectionStart() - 1
+					cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+					cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
 
-							for c in EMOJI_AUTOCOMPLETE:
+						for c in EMOJI_AUTOCOMPLETE:
 
-								# Case sensitive
-								if fnmatch.fnmatchcase(c,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(c)
-									cursor.endEditBlock()
-									return
+							# Case sensitive
+							if fnmatch.fnmatchcase(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								return
 
-								# Case insensitive
-								if fnmatch.fnmatch(c,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(c)
-									cursor.endEditBlock()
-									return
+							# Case insensitive
+							if fnmatch.fnmatch(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								return
 
 				cursor.movePosition(QTextCursor.End)
 				self.setTextCursor(cursor)
@@ -334,22 +404,22 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.rerenderNick = True
 		self.selector.setFocus()
-
-	def changedEmojiAway(self,state):
-		if self.emojiAway.isChecked():
-			self.autoEmojiAway.setEnabled(True)
-		else:
-			self.autoEmojiAway.setEnabled(False)
-
-		self.changed.show()
-		self.boldApply()
-		self.selector.setFocus()
 		
 	def changeEmojiAuto(self,state):
 		if self.autoEmojiAway.isChecked():
 			self.autocompleteEmojisInAway = True
 		else:
 			self.autocompleteEmojisInAway = False
+
+		self.changed.show()
+		self.boldApply()
+		self.awayMsg.setFocus()
+
+	def changeEmojiQuit(self,state):
+		if self.autoEmojiQuit.isChecked():
+			self.autocompleteEmojisInQuit = True
+		else:
+			self.autocompleteEmojisInQuit = False
 
 		self.changed.show()
 		self.boldApply()
@@ -559,14 +629,14 @@ class Dialog(QDialog):
 	def changedEmoji(self,state):
 		if self.enableEmojis.isChecked():
 			self.autocompleteEmojis.setEnabled(True)
-			self.emojiAway.setEnabled(True)
 			self.syntaxemoji.setEnabled(True)
 			self.autoEmojiAway.setEnabled(True)
+			self.autoEmojiQuit.setEnabled(True)
 		else:
 			self.autocompleteEmojis.setEnabled(False)
-			self.emojiAway.setEnabled(False)
 			self.syntaxemoji.setEnabled(False)
 			self.autoEmojiAway.setEnabled(False)
+			self.autoEmojiQuit.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -994,6 +1064,7 @@ class Dialog(QDialog):
 		self.system_prepend = config.SYSTEM_MESSAGE_PREFIX
 
 		self.autocompleteEmojisInAway = config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
+		self.autocompleteEmojisInQuit = config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
 
 		self.user_changed = False
 
@@ -1951,12 +2022,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.awayPage)
 
-		self.emojiAway = QCheckBox("Use emoji shortcodes in all\naway messages",self)
-		if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES: self.emojiAway.setChecked(True)
-		self.emojiAway.stateChanged.connect(self.changedEmojiAway)
-		self.emojiAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.awayMsg = EmojiAutocomplete(self)
+		self.awayMsg = EmojiAwayAutocomplete(self)
 		self.awayMsg.setText(self.default_away)
 
 		fm = self.awayMsg.fontMetrics()
@@ -1972,12 +2038,10 @@ class Dialog(QDialog):
 		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
 
 		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.emojiAway.setEnabled(False)
 			self.autoEmojiAway.setEnabled(False)
 
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(self.awayMsg)
-		awayLayout.addWidget(self.emojiAway)
 		awayLayout.addWidget(self.autoEmojiAway)
 		awayBox = QGroupBox("")
 		awayBox.setAlignment(Qt.AlignLeft)
@@ -2662,15 +2726,30 @@ class Dialog(QDialog):
 
 		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.partMsg = QLineEdit(self.default_quit_part)
+		self.partMsg = EmojiQuitAutocomplete(self)
+		self.partMsg.setText(self.default_quit_part)
+
+		fm = self.partMsg.fontMetrics()
+		self.partMsg.setFixedHeight(fm.height()+10)
+		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
 		self.partMsg.textChanged.connect(self.setQuitMsg)
 
-		partLayout = QVBoxLayout()
-		partLayout.addWidget(self.partMsg)
-		partBox = QGroupBox("")
-		partBox.setAlignment(Qt.AlignLeft)
-		partBox.setLayout(partLayout)
+		self.autoEmojiQuit = QCheckBox(f"Autocomplete emoji shortcodes",self)
+		if config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
+		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiQuit.setEnabled(False)
+
+		quitLayout = QVBoxLayout()
+		quitLayout.addWidget(self.partMsg)
+		quitLayout.addWidget(self.autoEmojiQuit)
+		quitBox = QGroupBox("")
+		quitBox.setAlignment(Qt.AlignLeft)
+		quitBox.setLayout(quitLayout)
 
 		self.linkChannel = QCheckBox("Convert channel names to links",self)
 		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
@@ -2691,7 +2770,7 @@ class Dialog(QDialog):
 		messageLayout.addLayout(prepLayout)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
-		messageLayout.addWidget(partBox)
+		messageLayout.addWidget(quitBox)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -3444,7 +3523,6 @@ class Dialog(QDialog):
 		config.WINDOW_INTERACTION_CANCELS_AUTOAWAY = self.windowCancelAway.isChecked()
 		config.APP_INTERACTION_CANCELS_AUTOAWAY = self.appCancelAway.isChecked()
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
-		config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = self.emojiAway.isChecked()
 		config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
 		config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = self.doubleclickRestore.isChecked()
 		config.LOG_CHANNEL_TOPICS = self.topicLog.isChecked()
@@ -3457,6 +3535,7 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_MENU = self.showChanMenu.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = self.writeConsole.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_FILE = self.writeFile.isChecked()
+		config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = self.autoEmojiQuit.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

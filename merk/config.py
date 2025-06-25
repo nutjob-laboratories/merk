@@ -201,7 +201,6 @@ DO_NOT_APPLY_STYLES_TO_TEXT = False
 TYPING_INPUT_CANCELS_AUTOAWAY = True
 WINDOW_INTERACTION_CANCELS_AUTOAWAY = False
 APP_INTERACTION_CANCELS_AUTOAWAY = False
-USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = True
 AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = True
 DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = True
 CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = True
@@ -218,9 +217,11 @@ SHOW_CHANNEL_MENU = True
 EMOJI_LANGUAGE = 'alias'
 WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = False
 WRITE_INPUT_AND_OUTPUT_TO_FILE = False
+AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = True
 
 def build_settings():
 	settings = {
+		"autocomplete_emojis_in_quit_message_widget": AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET,
 		"write_network_input_and_output_to_file": WRITE_INPUT_AND_OUTPUT_TO_FILE,
 		"write_network_input_and_output_to_console": WRITE_INPUT_AND_OUTPUT_TO_CONSOLE,
 		"emoji_shortcode_language": EMOJI_LANGUAGE,
@@ -237,7 +238,6 @@ def build_settings():
 		"click_systray_icon_to_minimize_to_tray": CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY,
 		"doubleclick_to_restore_from_systray": DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY,
 		"autocomplete_emojis_in_away_message_widget": AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET,
-		"use_emoji_shortcodes_in_away_message": USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES,
 		"app_interaction_cancels_autoaway": APP_INTERACTION_CANCELS_AUTOAWAY,
 		"window_interaction_cancels_autoaway": WINDOW_INTERACTION_CANCELS_AUTOAWAY,
 		"typing_input_cancels_autoaway": TYPING_INPUT_CANCELS_AUTOAWAY,
@@ -405,6 +405,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "autocomplete_emojis_in_quit_message_widget" in settings:
+		settings["autocomplete_emojis_in_quit_message_widget"] = AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
 	if not "write_network_input_and_output_to_file" in settings:
 		settings["write_network_input_and_output_to_file"] = WRITE_INPUT_AND_OUTPUT_TO_FILE
 	if not "write_network_input_and_output_to_console" in settings:
@@ -437,8 +439,6 @@ def patch_settings(settings):
 		settings["doubleclick_to_restore_from_systray"] = DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
 	if not "autocomplete_emojis_in_away_message_widget" in settings:
 		settings["autocomplete_emojis_in_away_message_widget"] = AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
-	if not "use_emoji_shortcodes_in_away_message" in settings:
-		settings["use_emoji_shortcodes_in_away_message"] = USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES
 	if not "app_interaction_cancels_autoaway" in settings:
 		settings["app_interaction_cancels_autoaway"] = APP_INTERACTION_CANCELS_AUTOAWAY
 	if not "window_interaction_cancels_autoaway" in settings:
@@ -930,7 +930,6 @@ def load_settings(filename):
 	global TYPING_INPUT_CANCELS_AUTOAWAY
 	global WINDOW_INTERACTION_CANCELS_AUTOAWAY
 	global APP_INTERACTION_CANCELS_AUTOAWAY
-	global USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES
 	global AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
 	global DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
 	global CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
@@ -947,6 +946,7 @@ def load_settings(filename):
 	global EMOJI_LANGUAGE
 	global WRITE_INPUT_AND_OUTPUT_TO_CONSOLE
 	global WRITE_INPUT_AND_OUTPUT_TO_FILE
+	global AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -956,6 +956,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = settings["autocomplete_emojis_in_quit_message_widget"]
 		WRITE_INPUT_AND_OUTPUT_TO_FILE = settings["write_network_input_and_output_to_file"]
 		WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = settings["write_network_input_and_output_to_console"]
 		EMOJI_LANGUAGE = settings["emoji_shortcode_language"]
@@ -972,7 +973,6 @@ def load_settings(filename):
 		CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = settings["click_systray_icon_to_minimize_to_tray"]
 		DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = settings["doubleclick_to_restore_from_systray"]
 		AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = settings["autocomplete_emojis_in_away_message_widget"]
-		USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES = settings["use_emoji_shortcodes_in_away_message"]
 		APP_INTERACTION_CANCELS_AUTOAWAY = settings["app_interaction_cancels_autoaway"]
 		WINDOW_INTERACTION_CANCELS_AUTOAWAY = settings["window_interaction_cancels_autoaway"]
 		TYPING_INPUT_CANCELS_AUTOAWAY = settings["typing_input_cancels_autoaway"]

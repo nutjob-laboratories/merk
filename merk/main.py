@@ -1561,10 +1561,7 @@ class Merk(QMainWindow):
 				if client.last_interaction>config.AUTOAWAY_TIME:
 					if not client.is_away:
 						if config.ENABLE_EMOJI_SHORTCODES:
-							if config.USE_EMOJI_SHORTCODES_IN_AWAY_MESSAGES:
-								msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
-							else:
-								msg = config.DEFAULT_AWAY_MESSAGE
+							msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 						else:
 							msg = config.DEFAULT_AWAY_MESSAGE
 						client.away(msg)
@@ -2052,7 +2049,11 @@ class Merk(QMainWindow):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
-				c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+				if config.ENABLE_EMOJI_SHORTCODES:
+					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+				else:
+					msg = config.DEFAULT_QUIT_MESSAGE
+				c.client.quit(msg)
 			# if window:
 			# 	self.MDI.removeSubWindow(window)
 
@@ -3485,7 +3486,11 @@ class Merk(QMainWindow):
 						self.hideServerWindow(c.client)
 					else:
 						self.quitting[c.client.client_id] = 0
-						c.client.quit(config.DEFAULT_QUIT_MESSAGE)
+						if config.ENABLE_EMOJI_SHORTCODES:
+							msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+						else:
+							msg = config.DEFAULT_QUIT_MESSAGE
+						c.client.quit(msg)
 
 			QApplication.restoreOverrideCursor()
 
