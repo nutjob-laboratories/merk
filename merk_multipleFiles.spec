@@ -37,6 +37,7 @@ a = Analysis(
         ('merk/resources/rfc1459.pdf','merk/resources'),
         ('merk/resources/rfc2812.pdf','merk/resources'),
         ('merk/resources/emoji_shortcode_list.pdf','merk/resources'),
+        ('merk/resources/MERK_Scripting.pdf','merk/resources'),
 
 
     ],

@@ -107,6 +107,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"xconnect": config.ISSUE_COMMAND_SYMBOL+"xconnect ",
 			config.ISSUE_COMMAND_SYMBOL+"xconnectssl": config.ISSUE_COMMAND_SYMBOL+"xconnectssl ",
 			config.ISSUE_COMMAND_SYMBOL+"alias": config.ISSUE_COMMAND_SYMBOL+"alias ",
+			config.ISSUE_COMMAND_SYMBOL+"unalias": config.ISSUE_COMMAND_SYMBOL+"unalias ",
 			config.ISSUE_COMMAND_SYMBOL+"script" : config.ISSUE_COMMAND_SYMBOL+"script ",
 			config.ISSUE_COMMAND_SYMBOL+"edit" : config.ISSUE_COMMAND_SYMBOL+"edit ",
 			config.ISSUE_COMMAND_SYMBOL+"play" : config.ISSUE_COMMAND_SYMBOL+"play ",
@@ -168,6 +169,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>", "Prints a list of all current aliases" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>", "Deletes the alias referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print TEXT...</b>", "Prints text to the current window" ],
@@ -228,6 +230,14 @@ def addTemporaryAlias(name,value):
 def addAlias(name,value):
 	ALIAS[name] = value
 
+def removeAlias(name):
+	if len(name)>0:
+		if name[0]=="_": return False
+	if name in ALIAS:
+		ALIAS.pop(name,'')
+		return True
+	return False
+
 def detect_alias(text):
 
 	# Make sure the alias symbol is properly escaped
@@ -272,17 +282,23 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_WINDOW_TYPE',"channel")
 	elif window.window_type==PRIVATE_WINDOW:
 		addTemporaryAlias('_WINDOW_TYPE',"private")
+	else:
+		addTemporaryAlias('_WINDOW_TYPE',"unknown")
 
 	addTemporaryAlias('_SERVER',window.client.server)
 	addTemporaryAlias('_PORT',str(window.client.port))
 
 	if hasattr(window.client,"hostname"):
 		addTemporaryAlias('_HOST',window.client.hostname)
+	else:
+		addTemporaryAlias('_HOST',window.client.server+":"+str(window.client.port))
 
 	addTemporaryAlias('_UPTIME',str(window.uptime))
 
 	if window.channel_topic!='':
 		addTemporaryAlias('_TOPIC',window.channel_topic)
+	else:
+		addTemporaryAlias('_TOPIC','')
 
 	if window.operator:
 		addTemporaryAlias('_STATUS',"operator")
@@ -301,9 +317,13 @@ def buildTemporaryAliases(gui,window):
 
 	if len(window.nicks)>0:
 		addTemporaryAlias('_PRESENT',",".join(window.nicks))
+	else:
+		addTemporaryAlias('_PRESENT','')
 
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
+	else:
+		addTemporaryAlias('_MODE','')
 
 def handleChatCommands(gui,window,user_input,is_script):
 
@@ -1036,6 +1056,27 @@ def executeCommonCommands(gui,window,user_input,is_script):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |----------|
+	# | /unalias |
+	# |----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+
+			if removeAlias(target):
+				t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			else:
+				t = Message(ERROR_MESSAGE,'',f"Alias \"{target}\" not found.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias':
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

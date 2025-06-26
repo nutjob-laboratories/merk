@@ -254,6 +254,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/style`                                | Edits the current window's style                                                                            |
 | `/alias TOKEN TEXT...`                  | Creates an alias that can be referenced by `$TOKEN`                                                           |
 | `/alias`                                | Prints a list of all current aliases                                                                        |
+| `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                           |
 | `/script FILENAME`                      | Executes a list of commands in a file                                                                       |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                |
 | `/play FILENAME`                        | Plays a WAV file                                                                                            |

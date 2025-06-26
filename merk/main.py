@@ -3085,6 +3085,9 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,APPLICATION_NAME+" README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
 		self.helpMenu.addAction(entry)
 
+		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,APPLICATION_NAME+" Scripting","Scripting & command guide",CUSTOM_MENU_ICON_SIZE,self.openScripting)
+		self.helpMenu.addAction(entry)
+
 		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
 		self.helpMenu.addAction(entry)
 
@@ -3168,6 +3171,11 @@ class Merk(QMainWindow):
 		else:
 			self.showSubWindow(self.readme_window)
 		self.helpMenu.close()
+
+	def openScripting(self):
+		filename = resource_path("./merk/resources/MERK_Scripting.pdf")
+		url = QUrl.fromLocalFile(filename)
+		QDesktopServices.openUrl(url)
 
 	def openShortcodes(self):
 		filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")

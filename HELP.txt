@@ -257,6 +257,10 @@ Appearance:
 <td>Prints a list of all current aliases</td>
 </tr>
 <tr>
+<td><code>/unalias TOKEN</code></td>
+<td>Deletes the alias referenced by <code>$TOKEN</code></td>
+</tr>
+<tr>
 <td><code>/script FILENAME</code></td>
 <td>Executes a list of commands in a file</td>
 </tr>
