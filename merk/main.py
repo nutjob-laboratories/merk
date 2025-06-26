@@ -3170,26 +3170,17 @@ class Merk(QMainWindow):
 		self.helpMenu.close()
 
 	def openShortcodes(self):
-		if is_running_from_pyinstaller():
-			filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")
-		else:
-			filename = "./merk/resources/emoji_shortcode_list.pdf"
+		filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
 
 	def open1459(self):
-		if is_running_from_pyinstaller():
-			filename = resource_path("./merk/resources/rfc1459.pdf")
-		else:
-			filename = "./merk/resources/rfc1459.pdf"
+		filename = resource_path("./merk/resources/rfc1459.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
 
 	def open2812(self):
-		if is_running_from_pyinstaller():
-			filename = resource_path("./merk/resources/rfc2812.pdf")
-		else:
-			filename = "./merk/resources/rfc2812.pdf"
+		filename = resource_path("./merk/resources/rfc2812.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
 

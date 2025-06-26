@@ -1219,12 +1219,19 @@ class Dialog(QDialog):
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
 		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
-		self.emojiDescription = QLabel("""
+		# if is_running_from_pyinstaller():
+		# 	filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")
+		# else:
+		# 	filename = "./merk/resources/emoji_shortcode_list.pdf"
+
+		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/emoji_shortcode_list.pdf")).toEncoded()).decode()
+
+		self.emojiDescription = QLabel(f"""
 			<small>
 			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
-			your chat by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			You can find a complete list of supported <b>shortcodes</b> <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">
-			here</a>.
+			your chat, quit, part and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
+			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
+			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
 			</small>
 			<br>
 			""")

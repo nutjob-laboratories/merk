@@ -54,10 +54,7 @@ class Window(QMainWindow):
 
 		self.setWindowTitle("README")
 
-		if is_running_from_pyinstaller():
-			filename = resource_path("./merk/resources/README.html")
-		else:
-			filename = "./merk/resources/README.html"
+		filename = resource_path("./merk/resources/README.html")
 
 		f = open(filename,"r",encoding='utf-8')
 		readme = f.read()
