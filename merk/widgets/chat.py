@@ -2770,6 +2770,13 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.endEditBlock()
 								return
 
+						for a in commands.TEMPORARY_ALIAS:
+							if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+								cursor.endEditBlock()
+								return
+
 			if config.AUTOCOMPLETE_COMMANDS:
 				# Auto-complete commands
 				cursor.select(QTextCursor.BlockUnderCursor)
@@ -3054,17 +3061,22 @@ class Highlighter(QSyntaxHighlighter):
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
 
 			# Apply syntax styles to aliases
+			if config.INTERPOLATE_ALIASES_INTO_INPUT:
+				# Make sure the alias interpolation symbol
+				# is properly escaped
+				ALIASES = self.escape_symbol(config.ALIAS_INTERPOLATION_SYMBOL)
 
-			# Make sure the alias interpolation symbol
-			# is properly escaped
-			ALIASES = self.escape_symbol(config.ALIAS_INTERPOLATION_SYMBOL)
+				aliasformat = syntax.format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
+				for word_object in re.finditer(ALIASES, text):
+					for a in commands.ALIAS:
+						if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
+							do_not_spellcheck.append(a)
+							self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
-			aliasformat = syntax.format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
-			for word_object in re.finditer(ALIASES, text):
-				for a in commands.ALIAS:
-					if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
-						do_not_spellcheck.append(a)
-						self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
+					for a in commands.TEMPORARY_ALIAS:
+						if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
+							do_not_spellcheck.append(a)
+							self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
 			# Apply syntax styles to commands
 			
