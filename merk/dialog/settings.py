@@ -1219,17 +1219,12 @@ class Dialog(QDialog):
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
 		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
-		# if is_running_from_pyinstaller():
-		# 	filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")
-		# else:
-		# 	filename = "./merk/resources/emoji_shortcode_list.pdf"
-
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/emoji_shortcode_list.pdf")).toEncoded()).decode()
 
 		self.emojiDescription = QLabel(f"""
 			<small>
 			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
-			your chat, quit, part and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
+			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
 			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
 			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
 			</small>
@@ -1433,9 +1428,13 @@ class Dialog(QDialog):
 
 		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showStatusEditor = QCheckBox("Editor windows",self)
+		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
+		self.showStatusEditor.stateChanged.connect(self.changedSetting)
+
 		statusLayout = QFormLayout()
 		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
-		statusLayout.addRow(self.showStatusList)
+		statusLayout.addRow(self.showStatusList,self.showStatusEditor)
 
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
@@ -3543,6 +3542,7 @@ class Dialog(QDialog):
 		config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = self.writeConsole.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_FILE = self.writeFile.isChecked()
 		config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = self.autoEmojiQuit.isChecked()
+		config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = self.showStatusEditor.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

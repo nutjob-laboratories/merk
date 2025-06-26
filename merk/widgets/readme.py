@@ -75,8 +75,6 @@ class Window(QMainWindow):
 		self.centralWidget.setLayout(self.layout)
 		self.setCentralWidget(self.centralWidget)
 
-
-	
 	def linkClicked(self,url):
 		if url.host():
 			# It's an internet link, so open it

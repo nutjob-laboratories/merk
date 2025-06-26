@@ -179,6 +179,12 @@ class Window(QMainWindow):
 			self.menuPrompt.setIcon(QIcon(self.parent.checked_icon))
 		config.save_settings(config.CONFIG_FILE)
 
+	def toggleStatusBar(self):
+		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS:
+			self.status.show()
+		else:
+			self.status.hide()
+
 	def __init__(self,filename=None,parent=None,subwindow=None):
 		super(Window, self).__init__(parent)
 
@@ -220,6 +226,9 @@ class Window(QMainWindow):
 
 		self.status_file = QLabel("<small><b>Untitled script</b></small>")
 		self.status.addPermanentWidget(self.status_file,0)
+
+		if not config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS:
+			self.status.hide()
 
 		self.updateApplicationTitle()
 

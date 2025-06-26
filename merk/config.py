@@ -218,9 +218,11 @@ EMOJI_LANGUAGE = 'alias'
 WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = False
 WRITE_INPUT_AND_OUTPUT_TO_FILE = False
 AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = True
+SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = True
 
 def build_settings():
 	settings = {
+		"show_status_bar_on_editor_windows": SHOW_STATUS_BAR_ON_EDITOR_WINDOWS,
 		"autocomplete_emojis_in_quit_message_widget": AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET,
 		"write_network_input_and_output_to_file": WRITE_INPUT_AND_OUTPUT_TO_FILE,
 		"write_network_input_and_output_to_console": WRITE_INPUT_AND_OUTPUT_TO_CONSOLE,
@@ -405,6 +407,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_status_bar_on_editor_windows" in settings:
+		settings["show_status_bar_on_editor_windows"] = SHOW_STATUS_BAR_ON_EDITOR_WINDOWS
 	if not "autocomplete_emojis_in_quit_message_widget" in settings:
 		settings["autocomplete_emojis_in_quit_message_widget"] = AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
 	if not "write_network_input_and_output_to_file" in settings:
@@ -947,6 +951,7 @@ def load_settings(filename):
 	global WRITE_INPUT_AND_OUTPUT_TO_CONSOLE
 	global WRITE_INPUT_AND_OUTPUT_TO_FILE
 	global AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
+	global SHOW_STATUS_BAR_ON_EDITOR_WINDOWS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -956,6 +961,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = settings["show_status_bar_on_editor_windows"]
 		AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = settings["autocomplete_emojis_in_quit_message_widget"]
 		WRITE_INPUT_AND_OUTPUT_TO_FILE = settings["write_network_input_and_output_to_file"]
 		WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = settings["write_network_input_and_output_to_console"]
