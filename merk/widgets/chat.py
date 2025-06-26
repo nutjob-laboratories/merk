@@ -278,6 +278,7 @@ class Window(QMainWindow):
 			self.userlist.setFocusPolicy(Qt.NoFocus)
 			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
 			self.userlist.installEventFilter(self)
+			self.userlist.setIconSize(QSize(config.USERLIST_ICON_SIZE, config.USERLIST_ICON_SIZE))
 
 			if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR:
 				self.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -1955,6 +1956,8 @@ class Window(QMainWindow):
 				self.name_spacer.hide()
 
 		self.refreshChannelMenu()
+
+		
 
 	def disconnect(self):
 

@@ -236,12 +236,8 @@ class Dialog(QDialog):
 		fheight = fm.height()
 
 		app_style = self.parent.app.style().metaObject().className()
-		if app_style.lower()=="qfusionstyle":
-			display_height = (fheight*9)+38
-			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*13)
-		else:
-			display_height = (fheight*9)+10
-			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*10)
+		display_height = (fheight*9)+10
+		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*10)
 
 		self.chat.setFixedHeight(display_height)
 
@@ -270,6 +266,7 @@ class Dialog(QDialog):
 		f = self.userlist.font()
 		f.setBold(True)
 		self.userlist.setFont(f)
+		self.userlist.setIconSize(QSize(config.USERLIST_ICON_SIZE, config.USERLIST_ICON_SIZE))
 
 		self.userlist.setFixedHeight(display_height)
 		self.userlist.setFixedWidth(ulwidth)
