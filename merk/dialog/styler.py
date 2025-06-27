@@ -182,6 +182,7 @@ class Dialog(QDialog):
 		self.back.applyColor(self.bgcolor)
 
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+		self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',self.fgcolor,self.bgcolor))
 
 		self.chat.clear()
 

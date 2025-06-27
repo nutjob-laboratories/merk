@@ -271,6 +271,7 @@ PDF_ICON = ":/icon-pdf.png"
 PDF_MENU_ICON = ":/icon-pdf_menu.png"
 ADVANCED_ICON = ":/icon-advanced.png"
 MODES_ICON = ":/icon-modes.png"
+INFO_MENU_ICON = ":/icon-info_menu.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

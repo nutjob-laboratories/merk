@@ -3088,7 +3088,7 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,APPLICATION_NAME+" README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,APPLICATION_NAME+" Help","Commands & Scripting Guide",CUSTOM_MENU_ICON_SIZE,self.openScripting)
+		entry = widgets.ExtendedMenuItem(self,INFO_MENU_ICON,"User Manual","A guide to using "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.openScripting)
 		self.helpMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
@@ -3176,7 +3176,7 @@ class Merk(QMainWindow):
 		self.helpMenu.close()
 
 	def openScripting(self):
-		filename = resource_path("./merk/resources/MERK_Scripting.pdf")
+		filename = resource_path("./merk/resources/MERK_Manual.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
 
