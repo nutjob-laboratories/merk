@@ -182,7 +182,7 @@ class Window(QMainWindow):
 			serverBar.addWidget(self.away_button)
 
 			self.script_button = QPushButton("")
-			self.script_button.setIcon(QIcon(SCRIPT_ICON))
+			self.script_button.setIcon(QIcon(RUN_ICON))
 			self.script_button.clicked.connect(self.loadScript)
 			self.script_button.setToolTip("Run a script")
 			self.script_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
