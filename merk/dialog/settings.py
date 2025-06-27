@@ -35,6 +35,7 @@ from .. import dialog
 from .. import widgets
 from .. import user
 from .. import irc
+from .. import commands
 
 import emoji
 
@@ -3802,11 +3803,7 @@ class Dialog(QDialog):
 
 		self.parent.toggleScrollbar()
 
-		# Set the application font
-		self.parent.app.setFont(self.parent.application_font)
-
-		# Set the widget font
-		self.parent.setFont(self.parent.application_font)
+		commands.build_help_and_autocomplete()
 
 		# Refresh editor windows with any changes to syntax highlighting
 		if self.syntax_did_change:

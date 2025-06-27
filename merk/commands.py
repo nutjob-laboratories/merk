@@ -127,8 +127,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"config": config.ISSUE_COMMAND_SYMBOL+"config ",
 		}
 
+	# Remove the style command if the style editor is turned off 
+	if not config.ENABLE_STYLE_EDITOR:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"style",'')
+
 	if new_autocomplete!=None:
-		
 		if isinstance(new_autocomplete, list):
 			for a in new_autocomplete:
 				AUTOCOMPLETE.update(a)
@@ -184,6 +187,13 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 	]
+
+	if not config.ENABLE_STYLE_EDITOR:
+		COPY = []
+		for e in COMMAND_HELP_INFORMATION:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>": continue
+			COPY.append(e)
+		COMMAND_HELP_INFORMATION = COPY
 
 	if new_help!=None:
 		if isinstance(new_help, list):
