@@ -1470,6 +1470,8 @@ class Window(QMainWindow):
 
 				opMenu = menu.addMenu(QIcon(OP_USER),"Operator actions")
 
+				opMenu.addSeparator()
+
 				if user_is_op: actDeop = opMenu.addAction(QIcon(MINUS_ICON),"Take operator status")
 				if not user_is_op: actOp = opMenu.addAction(QIcon(PLUS_ICON),"Give operator status")
 
@@ -1482,7 +1484,7 @@ class Window(QMainWindow):
 
 				actKick = opMenu.addAction(QIcon(KICK_ICON),"Kick "+user_nick)
 				actBan = opMenu.addAction(QIcon(BAN_ICON),"Ban "+user_nick)
-				actKickBan = opMenu.addAction(QIcon(KICKBAN_ICON),"Kick && Ban "+user_nick)
+				actKickBan = opMenu.addAction(QIcon(KICK_ICON),"Kick && Ban "+user_nick)
 
 			actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
