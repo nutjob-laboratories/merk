@@ -221,9 +221,11 @@ AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = True
 SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = True
 USERLIST_ICON_SIZE = 16
 ENABLE_ALIASES = True
+ENABLE_AUTOCOMPLETE = True
 
 def build_settings():
 	settings = {
+		"enable_autocomplete": ENABLE_AUTOCOMPLETE,
 		"enable_aliases": ENABLE_ALIASES,
 		"userlist_status_icon_size": USERLIST_ICON_SIZE,
 		"show_status_bar_on_editor_windows": SHOW_STATUS_BAR_ON_EDITOR_WINDOWS,
@@ -411,6 +413,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_autocomplete" in settings:
+		settings["enable_autocomplete"] = ENABLE_AUTOCOMPLETE
 	if not "enable_aliases" in settings:
 		settings["enable_aliases"] = ENABLE_ALIASES
 	if not "userlist_status_icon_size" in settings:
@@ -962,6 +966,7 @@ def load_settings(filename):
 	global SHOW_STATUS_BAR_ON_EDITOR_WINDOWS
 	global USERLIST_ICON_SIZE
 	global ENABLE_ALIASES
+	global ENABLE_AUTOCOMPLETE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -971,6 +976,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_AUTOCOMPLETE = settings["enable_autocomplete"]
 		ENABLE_ALIASES = settings["enable_aliases"]
 		USERLIST_ICON_SIZE = settings["userlist_status_icon_size"]
 		SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = settings["show_status_bar_on_editor_windows"]

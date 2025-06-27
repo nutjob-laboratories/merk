@@ -2752,95 +2752,75 @@ class SpellTextEdit(QPlainTextEdit):
 
 			if self.toPlainText().strip()=='': return
 
-			if config.ENABLE_ALIASES:
-				if config.INTERPOLATE_ALIASES_INTO_INPUT:
-					if config.AUTOCOMPLETE_ALIAS:
-						# Auto-complete channel/server
-						cursor.select(QTextCursor.WordUnderCursor)
-						oldpos = cursor.position()
-						cursor.select(QTextCursor.WordUnderCursor)
-						newpos = cursor.selectionStart() - 1
-						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
-						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
-						self.setTextCursor(cursor)
-						if self.textCursor().hasSelection():
-							text = self.textCursor().selectedText()
+			if config.ENABLE_AUTOCOMPLETE:
+				if config.ENABLE_ALIASES:
+					if config.INTERPOLATE_ALIASES_INTO_INPUT:
+						if config.AUTOCOMPLETE_ALIAS:
+							# Auto-complete channel/server
+							cursor.select(QTextCursor.WordUnderCursor)
+							oldpos = cursor.position()
+							cursor.select(QTextCursor.WordUnderCursor)
+							newpos = cursor.selectionStart() - 1
+							cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+							cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
 
-							for a in commands.ALIAS:
-								if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
-									cursor.endEditBlock()
-									return
+								for a in commands.ALIAS:
+									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+										cursor.endEditBlock()
+										return
 
-							for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
-								if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
-									cursor.endEditBlock()
-									return
+								for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
+									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+										cursor.endEditBlock()
+										return
 
-			if config.AUTOCOMPLETE_COMMANDS:
-				# Auto-complete commands
-				cursor.select(QTextCursor.BlockUnderCursor)
-				self.setTextCursor(cursor)
-				if self.textCursor().hasSelection():
-					text = self.textCursor().selectedText()
+				if config.AUTOCOMPLETE_COMMANDS:
+					# Auto-complete commands
+					cursor.select(QTextCursor.BlockUnderCursor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
 
-					self.COMMAND_LIST = commands.AUTOCOMPLETE
+						self.COMMAND_LIST = commands.AUTOCOMPLETE
 
-					for c in self.COMMAND_LIST:
-						cmd = c
-						rep = self.COMMAND_LIST[c]
+						for c in self.COMMAND_LIST:
+							cmd = c
+							rep = self.COMMAND_LIST[c]
 
-						if fnmatch.fnmatch(cmd,f"{text}*"):
-							cursor.beginEditBlock()
-							cursor.insertText(rep)
-							cursor.endEditBlock()
-							return
+							if fnmatch.fnmatch(cmd,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(rep)
+								cursor.endEditBlock()
+								return
 
-			if config.AUTOCOMPLETE_NICKS:
-				# Auto-complete nicks
-				cursor.select(QTextCursor.WordUnderCursor)
-				self.setTextCursor(cursor)
-				if self.textCursor().hasSelection():
-					text = self.textCursor().selectedText()
+				if config.AUTOCOMPLETE_NICKS:
+					# Auto-complete nicks
+					cursor.select(QTextCursor.WordUnderCursor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
 
-					# Nicks
-					chan_nicks = self.parent.nicks
-					for nick in chan_nicks:
-						# Skip client's nickname
-						if nick==self.parent.client.nickname:
-							continue
-						if fnmatch.fnmatch(nick,f"{text}*"):
-							cursor.beginEditBlock()
-							cursor.insertText(f"{nick}")
-							cursor.endEditBlock()
-							return
+						# Nicks
+						chan_nicks = self.parent.nicks
+						for nick in chan_nicks:
+							# Skip client's nickname
+							if nick==self.parent.client.nickname:
+								continue
+							if fnmatch.fnmatch(nick,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(f"{nick}")
+								cursor.endEditBlock()
+								return
 
-			if config.AUTOCOMPLETE_CHANNELS:
-				# Auto-complete channel/server
-				cursor.select(QTextCursor.WordUnderCursor)
-				oldpos = cursor.position()
-				cursor.select(QTextCursor.WordUnderCursor)
-				newpos = cursor.selectionStart() - 1
-				cursor.setPosition(newpos,QTextCursor.MoveAnchor)
-				cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
-				self.setTextCursor(cursor)
-				if self.textCursor().hasSelection():
-					text = self.textCursor().selectedText()
-
-					# Channel/server names
-					for name in self.parent.parent.getAllChatNames():
-						if fnmatch.fnmatch(name,f"{text}*"):
-							cursor.beginEditBlock()
-							cursor.insertText(f"{name}")
-							cursor.endEditBlock()
-							return
-
-			if config.ENABLE_EMOJI_SHORTCODES:
-				if config.AUTOCOMPLETE_EMOJIS:
-					# Autocomplete emojis
+				if config.AUTOCOMPLETE_CHANNELS:
+					# Auto-complete channel/server
 					cursor.select(QTextCursor.WordUnderCursor)
 					oldpos = cursor.position()
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -2851,21 +2831,42 @@ class SpellTextEdit(QPlainTextEdit):
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
 
-						for c in EMOJI_AUTOCOMPLETE:
-
-							# Case sensitive
-							if fnmatch.fnmatchcase(c,f"{text}*"):
+						# Channel/server names
+						for name in self.parent.parent.getAllChatNames():
+							if fnmatch.fnmatch(name,f"{text}*"):
 								cursor.beginEditBlock()
-								cursor.insertText(c)
+								cursor.insertText(f"{name}")
 								cursor.endEditBlock()
 								return
 
-							# Case insensitive
-							if fnmatch.fnmatch(c,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(c)
-								cursor.endEditBlock()
-								return
+				if config.ENABLE_EMOJI_SHORTCODES:
+					if config.AUTOCOMPLETE_EMOJIS:
+						# Autocomplete emojis
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - 1
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+
+							for c in EMOJI_AUTOCOMPLETE:
+
+								# Case sensitive
+								if fnmatch.fnmatchcase(c,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									return
+
+								# Case insensitive
+								if fnmatch.fnmatch(c,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									return
 
 			cursor.movePosition(QTextCursor.End)
 			self.setTextCursor(cursor)

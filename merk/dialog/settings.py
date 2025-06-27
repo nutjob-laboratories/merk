@@ -347,6 +347,26 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedAutocomplete(self,state):
+		if self.enableAutocomplete.isChecked():
+			self.autocompleteCommands.setEnabled(True)
+			self.autocompleteNicks.setEnabled(True)
+			self.autocompleteChans.setEnabled(True)
+			self.autocompleteEmojis.setEnabled(True)
+			if self.enableAlias.isChecked():
+				self.autocompleteAlias.setEnabled(True)
+			else:
+				self.autocompleteAlias.setEnabled(False)
+		else:
+			self.autocompleteCommands.setEnabled(False)
+			self.autocompleteNicks.setEnabled(False)
+			self.autocompleteChans.setEnabled(False)
+			self.autocompleteEmojis.setEnabled(False)
+			self.autocompleteAlias.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
 
 	def changedHistory(self,state):
 		if self.enableHistory.isChecked():
@@ -2363,6 +2383,25 @@ class Dialog(QDialog):
 			self.historyButton.setEnabled(False)
 			self.historyLabel.setEnabled(False)
 
+		self.enableAutocomplete = QCheckBox("Enable autocomplete",self)
+		if config.ENABLE_AUTOCOMPLETE: self.enableAutocomplete.setChecked(True)
+		self.enableAutocomplete.stateChanged.connect(self.changedAutocomplete)
+
+		autoMaster = QHBoxLayout()
+		autoMaster.addStretch()
+		autoMaster.addWidget(self.enableAutocomplete)
+		autoMaster.addStretch()
+
+		if not config.ENABLE_AUTOCOMPLETE:
+			self.autocompleteCommands.setEnabled(False)
+			self.autocompleteNicks.setEnabled(False)
+			self.autocompleteChans.setEnabled(False)
+			self.autocompleteEmojis.setEnabled(False)
+			self.autocompleteAlias.setEnabled(False)
+
+		if not config.ENABLE_ALIASES:
+			self.autocompleteAlias.setEnabled(False)
+
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
 		inputLayout.addWidget(self.historyDescription)
@@ -2371,6 +2410,9 @@ class Dialog(QDialog):
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
+		inputLayout.addWidget(self.enableAutocomplete)
+		inputLayout.addWidget(QLabel(' '))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoLayout1)
 		inputLayout.addLayout(autoLayout2)
 		inputLayout.addWidget(self.autocompleteAlias)
@@ -3570,6 +3612,7 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = self.autoEmojiQuit.isChecked()
 		config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = self.showStatusEditor.isChecked()
 		config.ENABLE_ALIASES = self.enableAlias.isChecked()
+		config.ENABLE_AUTOCOMPLETE = self.enableAutocomplete.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
