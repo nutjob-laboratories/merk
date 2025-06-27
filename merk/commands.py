@@ -131,6 +131,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_STYLE_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"style",'')
 
+	if not config.ENABLE_ALIASES:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"alias",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unalias",'')
+
 	if new_autocomplete!=None:
 		if isinstance(new_autocomplete, list):
 			for a in new_autocomplete:
@@ -188,12 +192,16 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 	]
 
-	if not config.ENABLE_STYLE_EDITOR:
-		COPY = []
-		for e in COMMAND_HELP_INFORMATION:
+	COPY = []
+	for e in COMMAND_HELP_INFORMATION:
+		if not config.ENABLE_STYLE_EDITOR:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>": continue
-			COPY.append(e)
-		COMMAND_HELP_INFORMATION = COPY
+		if not config.ENABLE_ALIASES:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
+		COPY.append(e)
+	COMMAND_HELP_INFORMATION = COPY
 
 	if new_help!=None:
 		if isinstance(new_help, list):
@@ -1013,6 +1021,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	# |--------|
 	# | /alias |
 	# |--------|
+
+	if not config.ENABLE_ALIASES:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=1:
+				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=3:
 
@@ -1077,6 +1093,14 @@ def executeCommonCommands(gui,window,user_input,is_script):
 	# |----------|
 	# | /unalias |
 	# |----------|
+
+	if not config.ENABLE_ALIASES:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)>=1:
+				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)==2:
 			tokens.pop(0)
