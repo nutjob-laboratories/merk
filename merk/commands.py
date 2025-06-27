@@ -1368,6 +1368,11 @@ def executeCommonCommands(gui,window,user_input,is_script):
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
+			if not config.ENABLE_STYLE_EDITOR:
+				t = Message(ERROR_MESSAGE,'',"The style editor has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			window.pressedStyleButton()
 			return True
 

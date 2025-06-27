@@ -968,10 +968,11 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				if not config.FORCE_DEFAULT_STYLE:
-					entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
-					entry.triggered.connect(self.pressedStyleButton)
-					menu.addAction(entry)
+				if config.ENABLE_STYLE_EDITOR:
+					if not config.FORCE_DEFAULT_STYLE:
+						entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
+						entry.triggered.connect(self.pressedStyleButton)
+						menu.addAction(entry)
 
 				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 				entry.triggered.connect(self.clearChat)
@@ -1005,10 +1006,11 @@ class Window(QMainWindow):
 		self.settingsMenu.clear()
 
 		if self.window_type!=SERVER_WINDOW:
-			if not config.FORCE_DEFAULT_STYLE:
-				entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
-				entry.triggered.connect(self.pressedStyleButton)
-				self.settingsMenu.addAction(entry)
+			if config.ENABLE_STYLE_EDITOR:
+				if not config.FORCE_DEFAULT_STYLE:
+					entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
+					entry.triggered.connect(self.pressedStyleButton)
+					self.settingsMenu.addAction(entry)
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.clearChat)

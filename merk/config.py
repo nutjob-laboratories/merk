@@ -222,9 +222,11 @@ SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = True
 USERLIST_ICON_SIZE = 16
 ENABLE_ALIASES = True
 ENABLE_AUTOCOMPLETE = True
+ENABLE_STYLE_EDITOR = True
 
 def build_settings():
 	settings = {
+		"enable_style_editor": ENABLE_STYLE_EDITOR,
 		"enable_autocomplete": ENABLE_AUTOCOMPLETE,
 		"enable_aliases": ENABLE_ALIASES,
 		"userlist_status_icon_size": USERLIST_ICON_SIZE,
@@ -413,6 +415,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_style_editor" in settings:
+		settings["enable_style_editor"] = ENABLE_STYLE_EDITOR
 	if not "enable_autocomplete" in settings:
 		settings["enable_autocomplete"] = ENABLE_AUTOCOMPLETE
 	if not "enable_aliases" in settings:
@@ -967,6 +971,7 @@ def load_settings(filename):
 	global USERLIST_ICON_SIZE
 	global ENABLE_ALIASES
 	global ENABLE_AUTOCOMPLETE
+	global ENABLE_STYLE_EDITOR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -976,6 +981,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_STYLE_EDITOR = settings["enable_style_editor"]
 		ENABLE_AUTOCOMPLETE = settings["enable_autocomplete"]
 		ENABLE_ALIASES = settings["enable_aliases"]
 		USERLIST_ICON_SIZE = settings["userlist_status_icon_size"]

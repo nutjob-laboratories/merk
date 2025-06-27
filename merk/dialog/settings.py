@@ -411,6 +411,7 @@ class Dialog(QDialog):
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 		self.changed.show()
+		self.restart.show()
 		self.boldApply()
 		self.selector.setFocus()
 
@@ -712,12 +713,19 @@ class Dialog(QDialog):
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
 			self.enableAlias.setEnabled(True)
+			self.enableStyle.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
 			self.enableAlias.setEnabled(False)
+			self.enableStyle.setEnabled(False)
+
+			if config.ENABLE_STYLE_EDITOR:
+				self.enableStyle.setChecked(True)
+			else:
+				self.enableStyle.setChecked(False)
 
 			if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: 
 				self.logEverything.setChecked(True)
@@ -3373,15 +3381,21 @@ class Dialog(QDialog):
 		self.enableAlias.stateChanged.connect(self.changedAlias)
 		self.enableAlias.setEnabled(False)
 
+		self.enableStyle = QCheckBox("Enable text style editor",self)
+		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
+		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
+		self.enableStyle.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addWidget(self.advancedEnable)
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
-		advancedLayout.addWidget(self.logEverything)
-		advancedLayout.addWidget(self.interpolateAlias)
 		advancedLayout.addWidget(self.enableAlias)
+		advancedLayout.addWidget(self.interpolateAlias)
+		advancedLayout.addWidget(self.enableStyle)
+		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
 		advancedLayout.addWidget(self.writeFile)
 		advancedLayout.addStretch()
@@ -3664,6 +3678,7 @@ class Dialog(QDialog):
 		config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = self.showStatusEditor.isChecked()
 		config.ENABLE_ALIASES = self.enableAlias.isChecked()
 		config.ENABLE_AUTOCOMPLETE = self.enableAutocomplete.isChecked()
+		config.ENABLE_STYLE_EDITOR = self.enableStyle.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
