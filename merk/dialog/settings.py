@@ -3688,6 +3688,9 @@ class Dialog(QDialog):
 		self.parent.buildWindowsMenu()
 
 		self.parent.app.setStyle(self.qt_style)
+		font = self.parent.app.font()
+		self.parent.app.setFont(font)
+		self.parent.setAllFont(font)
 
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		if self.rerender: self.parent.reRenderAll()

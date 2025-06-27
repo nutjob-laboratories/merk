@@ -1484,7 +1484,7 @@ class Window(QMainWindow):
 
 				actKick = opMenu.addAction(QIcon(KICK_ICON),"Kick "+user_nick)
 				actBan = opMenu.addAction(QIcon(BAN_ICON),"Ban "+user_nick)
-				actKickBan = opMenu.addAction(QIcon(KICK_ICON),"Kick && Ban "+user_nick)
+				actKickBan = opMenu.addAction(QIcon(BAN_ICON),"Kick && Ban "+user_nick)
 
 			actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
