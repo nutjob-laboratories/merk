@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.045.080">MERK 0.045.080</a></big></b><br>
-  <b>Current development version: 0.045.082</b><br>
+  <b>Current development version: 0.045.083</b><br>
 </p>
 
  - [Downloads](#Downloads)
@@ -26,13 +26,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
 | Current Release |  -  | [MERK 0.045.080 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.045.080)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.045.082 (11.53 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
-| Zip Archive|  Windows | [Download MERK 0.045.082 (57.59 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
-|   Windows Installer|  Windows | [Download MERK 0.045.082 (44.20 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.045.083 (11.53 MB)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.045.083 (57.59 MB)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.045.083 (44.20 MB)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.045.082**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.045.083**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.045.080](https://github.com/nutjob-laboratories/merk/releases/tag/0.045.080).
 
@@ -113,7 +113,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.045.080), and may reflect the current development version (0.045.082).</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.045.080), and may reflect the current development version (0.045.083).</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>

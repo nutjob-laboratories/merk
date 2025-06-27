@@ -50,6 +50,7 @@ SCRIPTS_DIRECTORY = None
 
 ALIAS = {}
 TEMPORARY_ALIAS = {}
+TEMPORARY_ALIAS_AUTOCOMPLETE = {}
 AUTOCOMPLETE = {}
 COMMAND_HELP_INFORMATION = []
 HELP = None
@@ -226,6 +227,7 @@ build_help_and_autocomplete()
 
 def addTemporaryAlias(name,value):
 	TEMPORARY_ALIAS[name] = value
+	TEMPORARY_ALIAS_AUTOCOMPLETE[name] = ''
 
 def addAlias(name,value):
 	ALIAS[name] = value
@@ -326,6 +328,7 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_MODE','')
 
 def handleChatCommands(gui,window,user_input,is_script):
+	global TEMPORARY_ALIAS
 
 	buildTemporaryAliases(gui,window)
 
@@ -335,6 +338,7 @@ def handleChatCommands(gui,window,user_input,is_script):
 	return retval
 
 def handleCommonCommands(gui,window,user_input,is_script):
+	global TEMPORARY_ALIAS
 
 	buildTemporaryAliases(gui,window)
 

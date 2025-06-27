@@ -2772,7 +2772,7 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.endEditBlock()
 								return
 
-						for a in commands.TEMPORARY_ALIAS:
+						for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
 							if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
@@ -3075,7 +3075,7 @@ class Highlighter(QSyntaxHighlighter):
 							do_not_spellcheck.append(a)
 							self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
-					for a in commands.TEMPORARY_ALIAS:
+					for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
 						if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
 							do_not_spellcheck.append(a)
 							self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
