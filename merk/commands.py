@@ -349,7 +349,7 @@ def handleCommonCommands(gui,window,user_input,is_script):
 	return retval
 
 def executeChatCommands(gui,window,user_input,is_script):
-	user_input = user_input.lstrip()
+	user_input = user_input.strip()
 	tokens = user_input.split()
 
 	# |-------|
@@ -688,7 +688,7 @@ def check_for_sane_values(setting,value):
 	return ALL_VALID_SETTINGS
 
 def executeCommonCommands(gui,window,user_input,is_script):
-	user_input = user_input.lstrip()
+	user_input = user_input.strip()
 	tokens = user_input.split()
 
 	# |---------|
@@ -2049,13 +2049,19 @@ class ScriptThread(QThread):
 						no_errors = False
 
 		if no_errors:
-			breakout = False
-			line_number = 0
-			for line in self.script.split("\n"):
-				line_number = line_number + 1
-				if not breakout:
-					line = line.strip()
-					if len(line)==0: continue
+
+			script = self.script.split("\n")
+			index = -1
+			loop = True
+
+			while(loop):
+				index = index + 1
+				line_number = index + 1
+
+				if index==len(script):
+					loop =  False
+				else:
+					line = script[index]
 
 					tokens = line.split()
 
@@ -2079,7 +2085,7 @@ class ScriptThread(QThread):
 
 							if not is_valid:
 								self.scriptError.emit([self.gui,self.window,f"Line {line_number}: {config.ISSUE_COMMAND_SYMBOL}jump cannot find window \"{target}\". Script execution halted."])
-								breakout = True
+								loop = False
 
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus': continue
@@ -2090,6 +2096,12 @@ class ScriptThread(QThread):
 							count = int(count)
 							time.sleep(count)
 							continue
+
+					# if len(tokens)==2:
+					# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'goto':
+					# 		target = tokens[1]
+					# 		index = int(target) - 2
+					# 		continue
 
 					self.execLine.emit([self.gui,self.window,line])
 

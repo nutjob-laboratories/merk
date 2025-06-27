@@ -2041,6 +2041,9 @@ class Merk(QMainWindow):
 
 	
 	def handleConsoleInput(self,window,user_input):
+
+		# Discard "empty" input
+		if len(user_input.strip())==0: return
 		
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input,False): return
