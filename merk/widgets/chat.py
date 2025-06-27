@@ -2752,32 +2752,33 @@ class SpellTextEdit(QPlainTextEdit):
 
 			if self.toPlainText().strip()=='': return
 
-			if config.INTERPOLATE_ALIASES_INTO_INPUT:
-				if config.AUTOCOMPLETE_ALIAS:
-					# Auto-complete channel/server
-					cursor.select(QTextCursor.WordUnderCursor)
-					oldpos = cursor.position()
-					cursor.select(QTextCursor.WordUnderCursor)
-					newpos = cursor.selectionStart() - 1
-					cursor.setPosition(newpos,QTextCursor.MoveAnchor)
-					cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
-					self.setTextCursor(cursor)
-					if self.textCursor().hasSelection():
-						text = self.textCursor().selectedText()
+			if config.ENABLE_ALIASES:
+				if config.INTERPOLATE_ALIASES_INTO_INPUT:
+					if config.AUTOCOMPLETE_ALIAS:
+						# Auto-complete channel/server
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - 1
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
 
-						for a in commands.ALIAS:
-							if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
-								cursor.endEditBlock()
-								return
+							for a in commands.ALIAS:
+								if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+									cursor.endEditBlock()
+									return
 
-						for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
-							if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
-								cursor.endEditBlock()
-								return
+							for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
+								if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+									cursor.endEditBlock()
+									return
 
 			if config.AUTOCOMPLETE_COMMANDS:
 				# Auto-complete commands
@@ -3062,23 +3063,24 @@ class Highlighter(QSyntaxHighlighter):
 						do_not_spellcheck.append(name[1:])
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
 
-			# Apply syntax styles to aliases
-			if config.INTERPOLATE_ALIASES_INTO_INPUT:
-				# Make sure the alias interpolation symbol
-				# is properly escaped
-				ALIASES = self.escape_symbol(config.ALIAS_INTERPOLATION_SYMBOL)
+			if config.ENABLE_ALIASES:
+				# Apply syntax styles to aliases
+				if config.INTERPOLATE_ALIASES_INTO_INPUT:
+					# Make sure the alias interpolation symbol
+					# is properly escaped
+					ALIASES = self.escape_symbol(config.ALIAS_INTERPOLATION_SYMBOL)
 
-				aliasformat = syntax.format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
-				for word_object in re.finditer(ALIASES, text):
-					for a in commands.ALIAS:
-						if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
-							do_not_spellcheck.append(a)
-							self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
+					aliasformat = syntax.format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
+					for word_object in re.finditer(ALIASES, text):
+						for a in commands.ALIAS:
+							if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
+								do_not_spellcheck.append(a)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
-					for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
-						if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
-							do_not_spellcheck.append(a)
-							self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
+						for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
+							if config.ALIAS_INTERPOLATION_SYMBOL+a==word_object.group():
+								do_not_spellcheck.append(a)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), aliasformat)
 
 			# Apply syntax styles to commands
 			

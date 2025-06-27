@@ -254,6 +254,7 @@ def detect_alias(text):
 	return bool(match)
 
 def interpolateAliases(text):
+	if not config.ENABLE_ALIASES: return text
 	if not detect_alias(text): return text
 	counter = 0
 	while detect_alias(text):

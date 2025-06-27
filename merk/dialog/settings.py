@@ -366,6 +366,17 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedAlias(self,state):
+		if self.enableAlias.isChecked():
+			self.autocompleteAlias.setEnabled(True)
+			self.interpolateAlias.setEnabled(True)
+		else:
+			self.autocompleteAlias.setEnabled(False)
+			self.interpolateAlias.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedInterpolate(self,state):
 		if self.interpolateAlias.isChecked():
 			self.autocompleteAlias.setEnabled(True)
@@ -648,11 +659,13 @@ class Dialog(QDialog):
 			self.interpolateAlias.setEnabled(True)
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
+			self.enableAlias.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
+			self.enableAlias.setEnabled(False)
 
 			if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: 
 				self.logEverything.setChecked(True)
@@ -675,6 +688,11 @@ class Dialog(QDialog):
 				self.writeFile.setChecked(True)
 			else:
 				self.writeFile.setChecked(False)
+
+			if config.ENABLE_ALIASES:
+				self.enableAlias.setChecked(True)
+			else:
+				self.enableAlias.setChecked(False)
 
 		self.selector.setFocus()
 
@@ -3227,7 +3245,8 @@ class Dialog(QDialog):
 
 		self.advancedDescription = QLabel(f"""
 			<small>
-			</small><b><span style='color: red;'>WARNING!</b></span> Changing these settings may break your installation of <b>{APPLICATION_NAME}</b>!<small><br><br>
+			</small><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation of {APPLICATION_NAME},
+			break existing scripts, or fill up your hard drive!</b><small><br><br>
 			If changing one of these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
 			settings to the default, and should fix any fatal problems.
@@ -3237,11 +3256,12 @@ class Dialog(QDialog):
 		self.advancedDescription.setWordWrap(True)
 		self.advancedDescription.setAlignment(Qt.AlignJustify)
 
-		self.interpolateAlias = QCheckBox("Interpolate aliases into input",self)
+		self.interpolateAlias = QCheckBox("Interpolate aliases into input\nfrom the text input widget",self)
 		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
 		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
 		self.interpolateAlias.setEnabled(False)
 		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
+		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.writeConsole = QCheckBox("Write all network input and\noutput to STDOUT",self)
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE: self.writeConsole.setChecked(True)
@@ -3255,6 +3275,11 @@ class Dialog(QDialog):
 		self.writeFile.setEnabled(False)
 		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.enableAlias = QCheckBox("Enable aliases",self)
+		if config.ENABLE_ALIASES: self.enableAlias.setChecked(True)
+		self.enableAlias.stateChanged.connect(self.changedAlias)
+		self.enableAlias.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -3263,6 +3288,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.interpolateAlias)
+		advancedLayout.addWidget(self.enableAlias)
 		advancedLayout.addWidget(self.writeConsole)
 		advancedLayout.addWidget(self.writeFile)
 		advancedLayout.addStretch()
@@ -3543,6 +3569,7 @@ class Dialog(QDialog):
 		config.WRITE_INPUT_AND_OUTPUT_TO_FILE = self.writeFile.isChecked()
 		config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = self.autoEmojiQuit.isChecked()
 		config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = self.showStatusEditor.isChecked()
+		config.ENABLE_ALIASES = self.enableAlias.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
