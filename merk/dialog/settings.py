@@ -649,10 +649,12 @@ class Dialog(QDialog):
 			self.menubarFloat.setEnabled(True)
 			self.menubarJustify.setEnabled(True)
 			self.menubarMenu.setEnabled(True)
+			self.alignLabel.setEnabled(True)
 		else:
 			self.menubarFloat.setEnabled(False)
 			self.menubarJustify.setEnabled(False)
 			self.menubarMenu.setEnabled(False)
+			self.alignLabel.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -850,6 +852,7 @@ class Dialog(QDialog):
 			self.windowbarLists.setEnabled(True)
 			self.windowBarUnderline.setEnabled(True)
 			self.windowBarHover.setEnabled(True)
+			self.windowbarLabel.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -865,6 +868,7 @@ class Dialog(QDialog):
 			self.windowbarLists.setEnabled(False)
 			self.windowBarUnderline.setEnabled(False)
 			self.windowBarHover.setEnabled(False)
+			self.windowbarLabel.setEnabled(False)
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -1327,7 +1331,7 @@ class Dialog(QDialog):
 		self.qtStyle.currentIndexChanged.connect(self.styleChange)
 
 		styleLayout = QHBoxLayout()
-		styleLayout.addWidget(QLabel("<b>Widget Style</b> "))
+		styleLayout.addWidget(QLabel("Widget Style "))
 		styleLayout.addWidget(self.qtStyle)
 		styleLayout.addStretch()
 
@@ -1624,13 +1628,16 @@ class Dialog(QDialog):
 		if config.MENUBAR_MENU: self.menubarMenu.setChecked(True)
 		self.menubarMenu.stateChanged.connect(self.menuChange)
 
+		self.alignLabel = QLabel("Menubar alignment ")
+
 		if not config.USE_MENUBAR:
 			self.menubarFloat.setEnabled(False)
 			self.menubarJustify.setEnabled(False)
 			self.menubarMenu.setEnabled(False)
+			self.alignLabel.setEnabled(False)
 
 		justifyLayout = QHBoxLayout()
-		justifyLayout.addWidget(QLabel("<b>Menubar alignment</b> "))
+		justifyLayout.addWidget(self.alignLabel)
 		justifyLayout.addWidget(self.menubarJustify)
 		justifyLayout.addStretch()
 
@@ -1840,8 +1847,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_JUSTIFY!='right': self.windowbarJustify.addItem('right')
 		self.windowbarJustify.currentIndexChanged.connect(self.justifyChange)
 
+		self.windowbarLabel = QLabel("Windowbar alignment ")
+
 		justifyLayout = QHBoxLayout()
-		justifyLayout.addWidget(QLabel("<b>Windowbar alignment</b> "))
+		justifyLayout.addWidget(self.windowbarLabel)
 		justifyLayout.addWidget(self.windowbarJustify)
 		justifyLayout.addStretch()
 
@@ -1896,6 +1905,7 @@ class Dialog(QDialog):
 			self.windowbarLists.setEnabled(False)
 			self.windowBarUnderline.setEnabled(False)
 			self.windowBarHover.setEnabled(False)
+			self.windowbarLabel.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -2511,7 +2521,7 @@ class Dialog(QDialog):
 		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('3')
 		self.spellcheckDistance.currentIndexChanged.connect(self.distanceChange)
 
-		self.distanceLabel = QLabel("<b>Levenshtein distance</b> ")
+		self.distanceLabel = QLabel("Levenshtein distance ")
 
 		distanceLayout = QHBoxLayout()
 		distanceLayout.addWidget(self.distanceLabel)
