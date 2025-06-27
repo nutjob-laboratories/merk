@@ -347,6 +347,23 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedAutoAway(self,state):
+		if self.autoAway.isChecked():
+			self.autoawayInterval.setEnabled(True)
+			self.typeCancelInput.setEnabled(True)
+			self.windowCancelAway.setEnabled(True)
+			self.appCancelAway.setEnabled(True)
+			self.autoawayInterval.setEnabled(True)
+		else:
+			self.autoawayInterval.setEnabled(False)
+			self.typeCancelInput.setEnabled(False)
+			self.windowCancelAway.setEnabled(False)
+			self.appCancelAway.setEnabled(False)
+			self.autoawayInterval.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedAutocomplete(self,state):
 		if self.enableAutocomplete.isChecked():
 			self.autocompleteCommands.setEnabled(True)
@@ -431,6 +448,19 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSettingRerenderNick(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.rerenderNick = True
+		self.selector.setFocus()
+
+	def changeTimestamp(self,state):
+		if self.showTimestamps.isChecked():
+			self.timestamp24hour.setEnabled(True)
+			self.timestampSeconds.setEnabled(True)
+		else:
+			self.timestamp24hour.setEnabled(False)
+			self.timestampSeconds.setEnabled(False)
+
 		self.changed.show()
 		self.boldApply()
 		self.rerenderNick = True
@@ -1947,7 +1977,7 @@ class Dialog(QDialog):
 
 		self.showTimestamps = QCheckBox("Show timestamps",self)
 		if config.DISPLAY_TIMESTAMP: self.showTimestamps.setChecked(True)
-		self.showTimestamps.stateChanged.connect(self.changedSettingRerender)
+		self.showTimestamps.stateChanged.connect(self.changeTimestamp)
 
 		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
 		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
@@ -1956,6 +1986,10 @@ class Dialog(QDialog):
 		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
 		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
 		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
+
+		if not config.DISPLAY_TIMESTAMP:
+			self.timestamp24hour.setEnabled(False)
+			self.timestampSeconds.setEnabled(False)
 
 		self.showUptime = QCheckBox("Show connection uptime",self)
 		if config.SHOW_CONNECTION_UPTIME: self.showUptime.setChecked(True)
@@ -2108,7 +2142,7 @@ class Dialog(QDialog):
 
 		self.autoAway = QCheckBox("Auto-away after",self)
 		if config.USE_AUTOAWAY: self.autoAway.setChecked(True)
-		self.autoAway.stateChanged.connect(self.changedSetting)
+		self.autoAway.stateChanged.connect(self.changedAutoAway)
 
 		self.autoawayInterval = QComboBox(self)
 		added = False
@@ -2173,6 +2207,13 @@ class Dialog(QDialog):
 		self.appCancelAway.stateChanged.connect(self.changedSetting)
 		self.appCancelAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
+		if not config.USE_AUTOAWAY:
+			self.autoawayInterval.setEnabled(False)
+			self.typeCancelInput.setEnabled(False)
+			self.windowCancelAway.setEnabled(False)
+			self.appCancelAway.setEnabled(False)
+			self.autoawayInterval.setEnabled(False)
+
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addWidget(self.promptAway)
