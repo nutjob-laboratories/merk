@@ -3180,7 +3180,7 @@ class Merk(QMainWindow):
 		self.helpMenu.close()
 
 	def openScripting(self):
-		filename = resource_path("./merk/resources/MERK_Manual.pdf")
+		filename = resource_path("./merk/resources/MERK_User_Guide.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
 

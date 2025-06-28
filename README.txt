@@ -4,6 +4,7 @@
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
   <b>Current development version: !_FULL_VERSION_!</b><br>
+  <b><a href="./MERK_User_Guide.pdf">MERK User Guide</a></b><br>
 </p>
 
  - [Downloads](#Downloads)
