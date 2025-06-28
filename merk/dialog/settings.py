@@ -408,9 +408,11 @@ class Dialog(QDialog):
 		if self.enableAlias.isChecked():
 			self.autocompleteAlias.setEnabled(True)
 			self.interpolateAlias.setEnabled(True)
+			self.syntaxalias.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
+			self.syntaxalias.setEnabled(False)
 		self.changed.show()
 		self.restart.show()
 		self.boldApply()
@@ -3173,6 +3175,9 @@ class Dialog(QDialog):
 
 		sbLay = QFormLayout()
 		sbLay.addRow(self.syntaxnick, self.syntaxemoji)
+
+		if not config.ENABLE_ALIASES:
+			self.syntaxalias.setEnabled(False)
 
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
