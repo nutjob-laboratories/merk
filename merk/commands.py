@@ -1293,6 +1293,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			password = tokens.pop(0)
 			connect_to_irc(gui,window,host,port,password,True,False,False)
 			return True
+		# /connectssl
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==1:
+			gui.connectToIrc()
+			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl':
 			if is_script:
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1328,6 +1332,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			port = tokens.pop(0)
 			password = tokens.pop(0)
 			connect_to_irc(gui,window,host,port,password,False,False,False)
+			return True
+		# /connect
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==1:
+			gui.connectToIrc()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect':
 			if is_script:
@@ -1365,6 +1373,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			password = tokens.pop(0)
 			connect_to_irc(gui,window,host,port,password,True,False,True)
 			return True
+		# /xconnectssl
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl' and len(tokens)==1:
+			gui.connectToIrc()
+			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl':
 			if is_script:
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1400,6 +1412,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			port = tokens.pop(0)
 			password = tokens.pop(0)
 			connect_to_irc(gui,window,host,port,password,False,False,True)
+			return True
+		# /xconnect
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect' and len(tokens)==1:
+			gui.connectToIrc()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect':
 			if is_script:

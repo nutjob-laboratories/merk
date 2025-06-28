@@ -2044,9 +2044,16 @@ class Merk(QMainWindow):
 
 		# Discard "empty" input
 		if len(user_input.strip())==0: return
+
+		# Build temporary aliases
+		commands.buildTemporaryAliases(self,window)
+
+		# Interpolate aliases into user input
+		if config.INTERPOLATE_ALIASES_INTO_INPUT:
+			user_input = commands.interpolateAliases(user_input)
 		
 		# Handle common commands
-		if commands.handleCommonCommands(self,window,user_input,False): return
+		if commands.handleCommonCommands(self,window,user_input): return
 
 		t = Message(ERROR_MESSAGE,'',"Unrecognized command: "+user_input)
 		window.writeText(t)
