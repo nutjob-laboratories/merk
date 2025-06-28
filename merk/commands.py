@@ -585,19 +585,23 @@ def find_script(filename):
 def execute_script_line(data):
 	gui = data[0]
 	window = data[1]
-	line = data[2]
-	line_number = data[3]
-	script_only_command = data[4]
+	script_id = data[2]
+	line = data[3]
+	line_number = data[4]
+	script_only_command = data[5]
 
 	if not handleScriptCommands(gui,window,line):
 		if len(line.strip())==0: return
 		if config.DISPLAY_SCRIPT_ERRORS:
-
 			# Check to make sure this isn't being thrown by script
 			# only commands
 			if not script_only_command:
-				t = Message(ERROR_MESSAGE,'',f"Unrecognized command on line {line_number}: {line}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if line[0]==config.ISSUE_COMMAND_SYMBOL:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Unrecognized command \"{line}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Line \"{line}\" contains no command")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 def execute_script_error(data):
 	gui = data[0]
@@ -2106,7 +2110,7 @@ class ScriptThread(QThread):
 					try:
 						count = int(count)
 					except:
-						self.scriptError.emit([self.gui,self.window,f"Line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument"])
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument."])
 						no_errors = False
 
 		if no_errors:
@@ -2148,11 +2152,15 @@ class ScriptThread(QThread):
 							script_only_command = True
 
 							if not is_valid:
-								self.scriptError.emit([self.gui,self.window,f"Line {line_number}: {config.ISSUE_COMMAND_SYMBOL}jump cannot find window \"{target}\". Script execution halted."])
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}jump cannot find window \"{target}\"."])
 								loop = False
+							else:
+								continue
 
 					if len(tokens)>=1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus': continue
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus': 
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus cannot be called in scripts."])
+							loop = False
 
 					if len(tokens)==2:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
@@ -2168,7 +2176,7 @@ class ScriptThread(QThread):
 					# 		index = int(target) - 2
 					# 		continue
 
-					self.execLine.emit([self.gui,self.window,line,line_number,script_only_command])
+					self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
 
 		self.scriptEnd.emit([self.gui,self.id])
 
