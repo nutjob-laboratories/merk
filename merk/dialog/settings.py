@@ -3399,7 +3399,7 @@ class Dialog(QDialog):
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
 		self.enableStyle.setEnabled(False)
 
-		self.showErrors = QCheckBox("Show script error messages when\nexecuting scripts",self)
+		self.showErrors = QCheckBox("Show error messages when\nexecuting scripts",self)
 		if config.DISPLAY_SCRIPT_ERRORS: self.showErrors.setChecked(True)
 		self.showErrors.stateChanged.connect(self.changedSettingAdvanced)
 		self.showErrors.setEnabled(False)
