@@ -2023,10 +2023,10 @@ class Merk(QMainWindow):
 			user_input = commands.interpolateAliases(user_input)
 
 		# Handle chat commands
-		if commands.handleChatCommands(self,window,user_input,False): return
+		if commands.handleChatCommands(self,window,user_input): return
 
 		# Handle common commands
-		if commands.handleCommonCommands(self,window,user_input,False): return
+		if commands.handleCommonCommands(self,window,user_input): return
 		
 		# Add emojis to the message
 		if config.ENABLE_EMOJI_SHORTCODES:

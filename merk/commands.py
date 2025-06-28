@@ -346,23 +346,39 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_MODE','')
 
-def handleChatCommands(gui,window,user_input,is_script):
+def handleChatCommands(gui,window,user_input):
 	global TEMPORARY_ALIAS
 
 	buildTemporaryAliases(gui,window)
 
 	user_input = interpolateAliases(user_input)
-	retval = executeChatCommands(gui,window,user_input,is_script)
+	retval = executeChatCommands(gui,window,user_input,False)
 	TEMPORARY_ALIAS = {}
 	return retval
 
-def handleCommonCommands(gui,window,user_input,is_script):
+def handleCommonCommands(gui,window,user_input):
 	global TEMPORARY_ALIAS
 
 	buildTemporaryAliases(gui,window)
 
 	user_input = interpolateAliases(user_input)
-	retval = executeCommonCommands(gui,window,user_input,is_script)
+	retval = executeCommonCommands(gui,window,user_input,False)
+	TEMPORARY_ALIAS = {}
+	return retval
+
+def handleScriptCommands(gui,window,user_input):
+	global TEMPORARY_ALIAS
+
+	buildTemporaryAliases(gui,window)
+
+	user_input = interpolateAliases(user_input)
+
+	if window.window_type!=SERVER_WINDOW:
+		if executeChatCommands(gui,window,user_input,True):
+			TEMPORARY_ALIAS = {}
+			return True
+
+	retval = executeCommonCommands(gui,window,user_input,True)
 	TEMPORARY_ALIAS = {}
 	return retval
 
@@ -570,16 +586,27 @@ def execute_script_line(data):
 	gui = data[0]
 	window = data[1]
 	line = data[2]
+	line_number = data[3]
+	script_only_command = data[4]
 
-	handleCommonCommands(gui,window,line,True)
+	if not handleScriptCommands(gui,window,line):
+		if len(line.strip())==0: return
+		if config.DISPLAY_SCRIPT_ERRORS:
+
+			# Check to make sure this isn't being thrown by script
+			# only commands
+			if not script_only_command:
+				t = Message(ERROR_MESSAGE,'',f"Unrecognized command on line {line_number}: {line}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 def execute_script_error(data):
 	gui = data[0]
 	window = data[1]
 	line = data[2]
 
-	t = Message(ERROR_MESSAGE,'',line)
-	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+	if config.DISPLAY_SCRIPT_ERRORS:
+		t = Message(ERROR_MESSAGE,'',line)
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 def execute_script_end(data):
 	gui = data[0]
@@ -2091,6 +2118,7 @@ class ScriptThread(QThread):
 			while(loop):
 				index = index + 1
 				line_number = index + 1
+				script_only_command = False
 
 				if index==len(script):
 					loop =  False
@@ -2117,6 +2145,8 @@ class ScriptThread(QThread):
 									self.window = c
 									is_valid = True
 
+							script_only_command = True
+
 							if not is_valid:
 								self.scriptError.emit([self.gui,self.window,f"Line {line_number}: {config.ISSUE_COMMAND_SYMBOL}jump cannot find window \"{target}\". Script execution halted."])
 								loop = False
@@ -2129,6 +2159,7 @@ class ScriptThread(QThread):
 							count = tokens[1]
 							count = int(count)
 							time.sleep(count)
+							script_only_command = True
 							continue
 
 					# if len(tokens)==2:
@@ -2137,7 +2168,7 @@ class ScriptThread(QThread):
 					# 		index = int(target) - 2
 					# 		continue
 
-					self.execLine.emit([self.gui,self.window,line])
+					self.execLine.emit([self.gui,self.window,line,line_number,script_only_command])
 
 		self.scriptEnd.emit([self.gui,self.id])
 

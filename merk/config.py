@@ -223,9 +223,11 @@ USERLIST_ICON_SIZE = 16
 ENABLE_ALIASES = True
 ENABLE_AUTOCOMPLETE = True
 ENABLE_STYLE_EDITOR = True
+DISPLAY_SCRIPT_ERRORS = True
 
 def build_settings():
 	settings = {
+		"show_script_execution_errors": DISPLAY_SCRIPT_ERRORS,
 		"enable_style_editor": ENABLE_STYLE_EDITOR,
 		"enable_autocomplete": ENABLE_AUTOCOMPLETE,
 		"enable_aliases": ENABLE_ALIASES,
@@ -415,6 +417,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_script_execution_errors" in settings:
+		settings["show_script_execution_errors"] = DISPLAY_SCRIPT_ERRORS
 	if not "enable_style_editor" in settings:
 		settings["enable_style_editor"] = ENABLE_STYLE_EDITOR
 	if not "enable_autocomplete" in settings:
@@ -972,6 +976,7 @@ def load_settings(filename):
 	global ENABLE_ALIASES
 	global ENABLE_AUTOCOMPLETE
 	global ENABLE_STYLE_EDITOR
+	global DISPLAY_SCRIPT_ERRORS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -981,6 +986,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISPLAY_SCRIPT_ERRORS = settings["show_script_execution_errors"]
 		ENABLE_STYLE_EDITOR = settings["enable_style_editor"]
 		ENABLE_AUTOCOMPLETE = settings["enable_autocomplete"]
 		ENABLE_ALIASES = settings["enable_aliases"]

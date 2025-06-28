@@ -717,6 +717,7 @@ class Dialog(QDialog):
 			self.writeFile.setEnabled(True)
 			self.enableAlias.setEnabled(True)
 			self.enableStyle.setEnabled(True)
+			self.showErrors.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -724,6 +725,12 @@ class Dialog(QDialog):
 			self.writeFile.setEnabled(False)
 			self.enableAlias.setEnabled(False)
 			self.enableStyle.setEnabled(False)
+			self.showErrors.setEnabled(False)
+
+			if config.DISPLAY_SCRIPT_ERRORS:
+				self.showErrors.setChecked(True)
+			else:
+				self.showErrors.setChecked(False)
 
 			if config.ENABLE_STYLE_EDITOR:
 				self.enableStyle.setChecked(True)
@@ -3392,6 +3399,12 @@ class Dialog(QDialog):
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
 		self.enableStyle.setEnabled(False)
 
+		self.showErrors = QCheckBox("Show script error messages when\nexecuting scripts",self)
+		if config.DISPLAY_SCRIPT_ERRORS: self.showErrors.setChecked(True)
+		self.showErrors.stateChanged.connect(self.changedSettingAdvanced)
+		self.showErrors.setEnabled(False)
+		self.showErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -3401,6 +3414,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.enableAlias)
 		advancedLayout.addWidget(self.interpolateAlias)
 		advancedLayout.addWidget(self.enableStyle)
+		advancedLayout.addWidget(self.showErrors)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
 		advancedLayout.addWidget(self.writeFile)
@@ -3685,6 +3699,7 @@ class Dialog(QDialog):
 		config.ENABLE_ALIASES = self.enableAlias.isChecked()
 		config.ENABLE_AUTOCOMPLETE = self.enableAutocomplete.isChecked()
 		config.ENABLE_STYLE_EDITOR = self.enableStyle.isChecked()
+		config.DISPLAY_SCRIPT_ERRORS = self.showErrors.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
