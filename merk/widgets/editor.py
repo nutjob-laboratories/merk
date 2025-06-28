@@ -302,7 +302,7 @@ class Window(QMainWindow):
 
 		self.buildEditMenu()
 
-		self.commandMenu = self.menubar.addMenu("Insert")
+		self.commandMenu = self.menubar.addMenu("Commands")
 
 		e = textSeparator(self,"IRC Commands")
 		self.commandMenu.addAction(e)
@@ -362,10 +362,6 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertMin)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Set focus on window",self)
-		entry.triggered.connect(self.insertFocus)
-		self.commandMenu.addAction(entry)
-
 		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
 		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
@@ -381,6 +377,57 @@ class Window(QMainWindow):
 		entry = QAction(QIcon(APPLICATION_ICON),"Exit application",self)
 		entry.triggered.connect(self.insertExit)
 		self.commandMenu.addAction(entry)
+
+
+		self.aliasMenu = self.menubar.addMenu("Aliases")
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Current window",self)
+		entry.triggered.connect(lambda state,u="$_WINDOW": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Nickname",self)
+		entry.triggered.connect(lambda state,u="$_NICKNAME": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Username",self)
+		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Realname",self)
+		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Window type",self)
+		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Server",self)
+		entry.triggered.connect(lambda state,u="$_SERVER": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Port",self)
+		entry.triggered.connect(lambda state,u="$_PORT": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Host",self)
+		entry.triggered.connect(lambda state,u="$_HOST": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Channel topic",self)
+		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"User status",self)
+		entry.triggered.connect(lambda state,u="$_STATUS": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Present in channel",self)
+		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"User mode",self)
+		entry.triggered.connect(lambda state,u="$_MODE": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
 
 		self.runMenu = self.menubar.addMenu("Run")
 
@@ -401,6 +448,10 @@ class Window(QMainWindow):
 			for window in servers:
 				c = window.widget()
 				self.executeScript(c)
+
+	def insertBuiltinAlias(self,value):
+		self.editor.insertPlainText(f"{value}")
+		self.updateApplicationTitle()
 
 	def buildRunMenu(self):
 		self.runMenu.clear()
@@ -551,14 +602,6 @@ class Window(QMainWindow):
 		if not e: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"quit "+str(e)+"\n")
-		self.updateApplicationTitle()
-
-	def insertFocus(self):
-		e = SetWindowDialog("Set focus on",self)
-
-		if not e: return
-
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"focus "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertMin(self):
