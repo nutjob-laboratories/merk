@@ -2234,6 +2234,9 @@ class Window(QMainWindow):
 		user_input = self.input.text()
 		self.input.setText('')
 
+		# Discard empty input
+		if len(user_input.strip())==0: return
+
 		# ================================
 		# BEGIN COMMAND HISTORY MANAGEMENT
 		# ================================
@@ -2242,7 +2245,7 @@ class Window(QMainWindow):
 			# Remove blank entries from history
 			clean = []
 			for c in self.history_buffer:
-				if c=='': continue
+				if len(c.strip())==0: continue
 				clean.append(c)
 			self.history_buffer = clean
 

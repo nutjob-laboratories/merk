@@ -2042,9 +2042,6 @@ class Merk(QMainWindow):
 	
 	def handleConsoleInput(self,window,user_input):
 
-		# Discard "empty" input
-		if len(user_input.strip())==0: return
-
 		# Build temporary aliases
 		commands.buildTemporaryAliases(self,window)
 
@@ -2067,8 +2064,6 @@ class Merk(QMainWindow):
 				else:
 					msg = config.DEFAULT_QUIT_MESSAGE
 				c.client.quit(msg)
-			# if window:
-			# 	self.MDI.removeSubWindow(window)
 
 	def openPrivate(self,client,nick):
 
