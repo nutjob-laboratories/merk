@@ -171,15 +171,16 @@ class Dialog(QDialog):
 		self.do_json = True
 		self.epoch = False
 
-		self.setWindowTitle("Export log")
+		self.setWindowTitle("Log Manager")
 		self.setWindowIcon(QIcon(LOG_ICON))
 
-		self.title = QLabel("<b>Select a log to export</b>")
+		self.title = QLabel("<b><small>Right click on a log for more options</small></b>")
 
 		self.packlist = QListWidget(self)
 
 		self.packlist.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.packlist.customContextMenuRequested.connect(self.show_context_menu)
+		self.packlist.itemClicked.connect(self.on_item_clicked)
 
 		servers = []
 		others = []
@@ -271,7 +272,8 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		buttons.button(QDialogButtonBox.Ok).setText("Save")
+		buttons.button(QDialogButtonBox.Ok).setText("Export")
+		buttons.button(QDialogButtonBox.Cancel).setText("Close")
 
 		titleLayout = QHBoxLayout()
 		titleLayout.addStretch()
@@ -310,20 +312,33 @@ class Dialog(QDialog):
 		formatLayout.addWidget(self.menubar)
 		formatLayout.addWidget(self.format)
 
+		exportLayout = QVBoxLayout()
+		exportLayout.addLayout(formatLayout)
+		exportLayout.addLayout(delimLayout)
+		exportLayout.addWidget(self.time)
+
+		self.exportBox = QGroupBox("Select a log to export")
+		self.exportBox.setAlignment(Qt.AlignHCenter)
+		self.exportBox.setLayout(exportLayout)
+
+		f = self.exportBox.font()
+		f.setBold(True)
+		self.exportBox.setFont(f)
+
 		finalLayout = QVBoxLayout()
-		
 		finalLayout.addLayout(titleLayout)
 		finalLayout.addWidget(self.packlist)
-		finalLayout.addLayout(formatLayout)
-		finalLayout.addLayout(delimLayout)
-		finalLayout.addWidget(self.time)
-		
+		finalLayout.addWidget(self.exportBox)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+	def on_item_clicked(self, item):
+		#self.fileDisplay.setText("<center><small><b>"+item.text()+"</b></small></center>")
+		self.exportBox.setTitle(item.text())
 
 	def toggleSetting(self,setting):
 

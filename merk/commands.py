@@ -779,7 +779,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						dtype = "string"
 					else:
 						dtype = "unknown"
-					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{count}) {s} = \"{settings[s]}\" ({dtype})")
+					t = Message(SYSTEM_MESSAGE,'',f"{count}) {s} = \"{settings[s]}\" ({dtype})")
 					results.append(t)
 			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} config settings")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
