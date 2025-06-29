@@ -152,6 +152,16 @@ There are three libraries that comes bundled with **MERK**:
   <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera</a> network. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
   </p>
   
+  <p align="center">
+ <center><a href="./graphics/editor_screenshot.png"><img src="./graphics/editor_screenshot_small.png"></a></center></br>
+  <center><i><small>The script editor, with an example file open. In the editor, you can edit, create, and execute MERK scripts. The editor features syntax highlighting, which highlights commands, channels, aliases, and comments, as well as command generator macros, making it easy to write scripts.</small></i></center>
+  </p>
+  
+<p align="center">
+ <center><a href="./graphics/log_manager_screenshot.png"><img src="./graphics/log_manager_screenshot_small.png"></a></center></br>
+  <center><i><small>The log manager allows you to manage, view, and export MERK logs.</small></i></center>
+  </p>  
+
 # Usage
 ```
 usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
