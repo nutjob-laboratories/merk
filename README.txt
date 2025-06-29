@@ -264,6 +264,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/clear [WINDOW]`                       | Clears a window's chat display                                                                              |
 | `/settings`                             | Opens the settings dialog                                                                                   |
 | `/style`                                | Edits the current window's style                                                                            |
+| `/log`                                  | Opens the log manager                                                                            |
 | `/alias TOKEN TEXT...`                  | Creates an alias that can be referenced by `$TOKEN`                                                           |
 | `/alias`                                | Prints a list of all current aliases                                                                        |
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                           |

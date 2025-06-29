@@ -42,6 +42,7 @@ import emoji
 from .resources import *
 from . import config
 from . import user as USER
+from . import dialog
 
 from .dialog.away import Dialog as Away
 
@@ -123,6 +124,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"clear": config.ISSUE_COMMAND_SYMBOL+"clear",
 			config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
 			config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
+			config.ISSUE_COMMAND_SYMBOL+"log": config.ISSUE_COMMAND_SYMBOL+"log",
 			config.ISSUE_COMMAND_SYMBOL+"exit": config.ISSUE_COMMAND_SYMBOL+"exit",
 			config.ISSUE_COMMAND_SYMBOL+"config": config.ISSUE_COMMAND_SYMBOL+"config ",
 		}
@@ -175,6 +177,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>", "Executes a list of commands in a file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"log</b>", "Opens the log manager" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>", "Prints a list of all current aliases" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>", "Deletes the alias referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
@@ -754,6 +757,30 @@ def check_for_sane_values(setting,value):
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	user_input = user_input.strip()
 	tokens = user_input.split()
+
+	# |------|
+	# | /log |
+	# |------|
+	if len(tokens)>=1:
+
+		# No arguments dumps a list of all editable config values
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log' and len(tokens)==1:
+			if is_script==True:
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"log cannot be called from a script")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			gui.menuExportLog()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
+			if is_script==True:
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"log cannot be called from a script")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"log")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /config |

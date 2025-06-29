@@ -249,6 +249,10 @@ Appearance:
 <td>Edits the current window&#39;s style</td>
 </tr>
 <tr>
+<td><code>/log</code></td>
+<td>Opens the log manager</td>
+</tr>
+<tr>
 <td><code>/alias TOKEN TEXT...</code></td>
 <td>Creates an alias that can be referenced by <code>$TOKEN</code></td>
 </tr>
