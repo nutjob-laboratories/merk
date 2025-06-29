@@ -225,7 +225,7 @@ class Window(QMainWindow):
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
 
 		self.status_file = QLabel("<small><b>Untitled script</b></small>")
-		self.status.addPermanentWidget(self.status_file,0)
+		self.status.addPermanentWidget(self.status_file,1)
 
 		if not config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS:
 			self.status.hide()

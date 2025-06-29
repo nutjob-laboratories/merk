@@ -45,8 +45,8 @@ from ..resources import *
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_name_information(logdir,parent=None,app=None):
-		dialog = Dialog(logdir,parent,app)
+	def get_name_information(logdir,parent=None,simplified=False,app=None):
+		dialog = Dialog(logdir,parent,simplified,app)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -171,15 +171,25 @@ class Dialog(QDialog):
 		self.filestats.setText('<small><i>Right click on a log for more options</i></small>')
 		self.filesize.setText('')
 		self.packlist.clearSelection()
+		self.menubar.setEnabled(False)
+		self.format.setEnabled(False)
+		self.typeLabel.setEnabled(False)
+		self.type.setEnabled(False)
+		self.lineLabel.setEnabled(False)
+		self.line.setEnabled(False)
+		self.time.setEnabled(False)
+		self.exportBox.setEnabled(False)
+		self.buttons.button(QDialogButtonBox.Ok).setEnabled(False)
 
-	def __init__(self,logdir,parent=None,app=None):
+	def __init__(self,logdir,parent=None,simplified=False,app=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
 		self.logdir = logdir
-		self.app = None
+		self.app = app
 		self.delimiter = "\t"
 		self.linedelim = "\n"
+		self.simplified = simplified
 
 		self.do_json = True
 		self.epoch = False
@@ -289,13 +299,13 @@ class Dialog(QDialog):
 		delimLayout.addRow(self.lineLabel, self.line)
 
 		# Buttons
-		buttons = QDialogButtonBox(self)
-		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-		buttons.accepted.connect(self.accept)
-		buttons.rejected.connect(self.reject)
+		self.buttons = QDialogButtonBox(self)
+		self.buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+		self.buttons.accepted.connect(self.accept)
+		self.buttons.rejected.connect(self.reject)
 
-		buttons.button(QDialogButtonBox.Ok).setText("Export")
-		buttons.button(QDialogButtonBox.Cancel).setText("Close")
+		self.buttons.button(QDialogButtonBox.Ok).setText("Export")
+		self.buttons.button(QDialogButtonBox.Cancel).setText("Close")
 
 		self.time = QCheckBox("Epoch format for date/time ",self)
 		self.time.stateChanged.connect(self.clickTime)
@@ -339,6 +349,16 @@ class Dialog(QDialog):
 		self.exportBox.setAlignment(Qt.AlignHCenter)
 		self.exportBox.setLayout(exportLayout)
 
+		self.menubar.setEnabled(False)
+		self.format.setEnabled(False)
+		self.typeLabel.setEnabled(False)
+		self.type.setEnabled(False)
+		self.lineLabel.setEnabled(False)
+		self.line.setEnabled(False)
+		self.time.setEnabled(False)
+		self.exportBox.setEnabled(False)
+		self.buttons.button(QDialogButtonBox.Ok).setEnabled(False)
+
 		f = self.exportBox.font()
 		f.setBold(True)
 		self.exportBox.setFont(f)
@@ -377,13 +397,28 @@ class Dialog(QDialog):
 		buttonLayout.addLayout(labelLayout)
 		buttonLayout.addLayout(labelLayout2)
 		buttonLayout.addStretch()
-		buttonLayout.addWidget(buttons)
+		buttonLayout.addWidget(self.buttons)
 
 		bottomLayout = QHBoxLayout()
 		bottomLayout.addWidget(self.exportBox)
 		bottomLayout.addLayout(buttonLayout)
 
+		if not self.simplified:
+			self.windowDescription = QLabel(f"""
+				<small>
+				Here, you can manage all installed logs. <b>Click on a log name</b> to open that log for viewing
+				in the log display. <b>Hover the mouse</b> over the log name to see what IRC network that log is
+				from. <b>Right click on a log name</b> to view other options, like opening the log in a text editor,
+				opening the log's location, copying information about the log to the clipboard, or deleting the log.
+				To export a log, <b>click on a log name</b> to select the log, choose export options in the
+				box on the bottom left, and click the <b>Export</b> button. Click <b>Close</b> to close the manager.
+				</small>
+				""")
+			self.windowDescription.setWordWrap(True)
+			self.windowDescription.setAlignment(Qt.AlignJustify)
+
 		finalLayout = QVBoxLayout()
+		if not self.simplified: finalLayout.addWidget(self.windowDescription)
 		finalLayout.addLayout(mainLayout)
 		finalLayout.addLayout(bottomLayout)
 		finalLayout.addWidget(self.status)
@@ -429,6 +464,16 @@ class Dialog(QDialog):
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
 		self.filestats.setText(f"<small><b>{len(self.log)} lines, {rendertime:.4f} seconds</b></small>")
+
+		self.menubar.setEnabled(True)
+		self.format.setEnabled(True)
+		self.typeLabel.setEnabled(True)
+		self.type.setEnabled(True)
+		self.lineLabel.setEnabled(True)
+		self.line.setEnabled(True)
+		self.time.setEnabled(True)
+		self.exportBox.setEnabled(True)
+		self.buttons.button(QDialogButtonBox.Ok).setEnabled(True)
 
 		QApplication.restoreOverrideCursor()
 

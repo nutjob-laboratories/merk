@@ -3588,7 +3588,10 @@ class Merk(QMainWindow):
 		self.__about_dialog.show()
 
 	def menuExportLog(self):
-		d = ExportLogDialog(logs.LOG_DIRECTORY,None)
+		if config.SIMPLIFIED_DIALOGS:
+			d = ExportLogDialog(logs.LOG_DIRECTORY,self,True,self.app)
+		else:
+			d = ExportLogDialog(logs.LOG_DIRECTORY,self,False,self.app)
 		if d:
 			elog = d[0]
 			channel = d[1]

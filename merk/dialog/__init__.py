@@ -76,9 +76,9 @@ def AboutDialog():
 	x.show()
 	return x
 
-def ExportLogDialog(logdir,obj):
-	x = ExportLog(logdir,obj)
-	info = x.get_name_information(logdir,obj)
+def ExportLogDialog(logdir,obj,simplified,app):
+	x = ExportLog(logdir,obj,simplified,app)
+	info = x.get_name_information(logdir,obj,simplified,app)
 	del x
 
 	if not info: return None
