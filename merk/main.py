@@ -3081,7 +3081,7 @@ class Merk(QMainWindow):
 			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','No logs to export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 			entry.setEnabled(False)
 		else:
-			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','Manage or export logs',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','View, manage or export',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 		self.toolsMenu.addAction(entry)
 
 	def buildHelpMenu(self):

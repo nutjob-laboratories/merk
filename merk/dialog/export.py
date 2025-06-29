@@ -32,7 +32,13 @@ import sys
 import os
 from pathlib import Path
 import operator
+import datetime
+import time
 from .. import logs
+
+from .. import config
+from .. import styles
+from .. import render
 
 from ..resources import *
 
@@ -159,6 +165,13 @@ class Dialog(QDialog):
 			self.packlist.takeItem(self.packlist.row(item))
 			os.remove(item.file)
 
+		self.exportBox.setTitle("Select a log to export")
+		self.chat.clear()
+		self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
+		self.filestats.setText('<small><i>Right click on a log for more options</i></small>')
+		self.filesize.setText('')
+		self.packlist.clearSelection()
+
 	def __init__(self,logdir,parent=None,app=None):
 		super(Dialog,self).__init__(parent)
 
@@ -170,17 +183,24 @@ class Dialog(QDialog):
 
 		self.do_json = True
 		self.epoch = False
+		self.log = []
 
 		self.setWindowTitle("Log Manager")
 		self.setWindowIcon(QIcon(LOG_ICON))
 
-		self.title = QLabel("<b><small>Right click on a log for more options</small></b>")
+		self.style = styles.loadDefault()
 
 		self.packlist = QListWidget(self)
 
 		self.packlist.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.packlist.customContextMenuRequested.connect(self.show_context_menu)
 		self.packlist.itemClicked.connect(self.on_item_clicked)
+
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAA")
+		self.packlist.setMaximumWidth(wwidth)
+		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAA")
+		self.packlist.setMinimumWidth(wwidth)
 
 		servers = []
 		others = []
@@ -209,7 +229,9 @@ class Dialog(QDialog):
 						else:
 							netname = netname.upper()
 
-							item = QListWidgetItem(channel+" ("+netname+")")
+							#item = QListWidgetItem(channel+" ("+netname+")")
+							item = QListWidgetItem(channel)
+							item.setToolTip(netname+" network")
 
 							if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
 								item.setIcon(QIcon(PRIVATE_WINDOW_ICON))
@@ -275,11 +297,6 @@ class Dialog(QDialog):
 		buttons.button(QDialogButtonBox.Ok).setText("Export")
 		buttons.button(QDialogButtonBox.Cancel).setText("Close")
 
-		titleLayout = QHBoxLayout()
-		titleLayout.addStretch()
-		titleLayout.addWidget(self.title)
-		titleLayout.addStretch()
-
 		self.time = QCheckBox("Epoch format for date/time ",self)
 		self.time.stateChanged.connect(self.clickTime)
 		self.time.toggle()
@@ -316,6 +333,7 @@ class Dialog(QDialog):
 		exportLayout.addLayout(formatLayout)
 		exportLayout.addLayout(delimLayout)
 		exportLayout.addWidget(self.time)
+		exportLayout.addStretch()
 
 		self.exportBox = QGroupBox("Select a log to export")
 		self.exportBox.setAlignment(Qt.AlignHCenter)
@@ -325,20 +343,94 @@ class Dialog(QDialog):
 		f.setBold(True)
 		self.exportBox.setFont(f)
 
+		self.chat = QTextBrowser(self)
+		self.chat.setFocusPolicy(Qt.NoFocus)
+		# self.chat.anchorClicked.connect(self.linkClicked)
+		self.chat.setReadOnly(True)
+		self.chat.setMinimumWidth(600)
+
+		self.status = QStatusBar()
+		self.status.setStyleSheet("QStatusBar::item { border: none; }")
+		self.status_details = QLabel(f"<small><b>Click a log to view its contents</b></small>")
+		self.status.addPermanentWidget(self.status_details,1)
+
+		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
+
+		self.filestats = QLabel('<small><i>Right click on a log for more options</i></small>')
+		self.filesize = QLabel('')
+
+		mainLayout = QHBoxLayout()
+		mainLayout.addWidget(self.packlist)
+		mainLayout.addWidget(self.chat)
+
+		labelLayout = QHBoxLayout()
+		labelLayout.addStretch()
+		labelLayout.addWidget(self.filestats)
+
+		labelLayout2 = QHBoxLayout()
+		labelLayout2.addStretch()
+		labelLayout2.addWidget(self.filesize)
+
+		buttonLayout = QVBoxLayout()
+		buttonLayout.addLayout(labelLayout)
+		buttonLayout.addLayout(labelLayout2)
+		buttonLayout.addStretch()
+		buttonLayout.addWidget(buttons)
+
+		bottomLayout = QHBoxLayout()
+		bottomLayout.addWidget(self.exportBox)
+		bottomLayout.addLayout(buttonLayout)
+
 		finalLayout = QVBoxLayout()
-		finalLayout.addLayout(titleLayout)
-		finalLayout.addWidget(self.packlist)
-		finalLayout.addWidget(self.exportBox)
-		finalLayout.addWidget(buttons)
+		finalLayout.addLayout(mainLayout)
+		finalLayout.addLayout(bottomLayout)
+		finalLayout.addWidget(self.status)
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
 
+	def generateStylesheet(self,obj,fore,back):
+
+		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
+
 	def on_item_clicked(self, item):
-		#self.fileDisplay.setText("<center><small><b>"+item.text()+"</b></small></center>")
+		start_time = time.time()
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+
+		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
+		self.log = loadLog
+
+		cdate = None
+		marked = []
+		for e in self.log:
+			ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
+			if cdate!=ndate:
+				cdate = ndate
+				m = Message(DATE_MESSAGE,'',cdate)
+				marked.append(m)
+			marked.append(e)
+		self.log = marked
+
+		self.chat.clear()
+		for line in self.log:
+			t = render.render_message(line,self.style,None)
+			self.chat.append(t)
+
+		end_time = time.time()
+		rendertime = end_time - start_time
+
+		size_bytes = os.path.getsize(item.file)
+
 		self.exportBox.setTitle(item.text())
+		self.status_details.setText(f'<small><b>{item.file}</b></small>')
+		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
+		self.filestats.setText(f"<small><b>{len(self.log)} lines, {rendertime:.4f} seconds</b></small>")
+
+		QApplication.restoreOverrideCursor()
 
 	def toggleSetting(self,setting):
 
