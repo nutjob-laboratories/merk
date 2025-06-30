@@ -205,6 +205,17 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
+	def linkClicked(self,url):
+		if url.host():
+			# It's an internet link, so open it
+			# in the default browser
+			sb = self.chat.verticalScrollBar()
+			og_value = sb.value()
+
+			QDesktopServices.openUrl(url)
+			self.chat.setSource(QUrl())
+			sb.setValue(og_value)
+
 	def __init__(self,logdir,parent=None,simplified=False,app=None):
 		super(Window,self).__init__(parent)
 
@@ -247,6 +258,7 @@ class Window(QMainWindow):
 
 		self.chat = QTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
+		self.chat.anchorClicked.connect(self.linkClicked)
 		self.chat.setReadOnly(True)
 
 		servers = []

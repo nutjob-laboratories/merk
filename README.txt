@@ -27,9 +27,9 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  -  | [View](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK !_RELEASE_! Release](!_RELEASE_URL_!)  |
-| Zip Archive|  Cross-platform  | [Download MERK !_FULL_VERSION_! (!_PYSIZE_!)](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1)  |
-| Zip Archive|  Windows | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1)|
-|   Windows Installer|  Windows | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK !_FULL_VERSION_! (!_PYSIZE_!)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
@@ -42,7 +42,7 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 # Running MERK on Windows
 **MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release here](!_RELEASE_URL_!). For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
 
-To run **MERK**, [download](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [downloaded the installer](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
+To run **MERK**, [download](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [downloaded the installer](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
 
 If you have previously installed **MERK** and would like to update to a new version, just download the installer for the newer version and install **MERK** again; your install will be updated to the newer version.
 
@@ -50,7 +50,7 @@ A note: all command-line arguments, as documented below, work on the all version
 
 # Running MERK with Python
 
-First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/t8nhn5mnoagclu43fs1pn/merk-latest.zip?rlkey=ghcc5c3955ihn4fijw717di03&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
 
     python merk.py
 
