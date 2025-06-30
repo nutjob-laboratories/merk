@@ -277,7 +277,7 @@ class Window(QMainWindow):
 
 							#item = QListWidgetItem(channel+" ("+netname+")")
 							item = QListWidgetItem(channel)
-							item.setToolTip(netname+" network")
+							item.setToolTip(f"{channel} on {netname} network")
 
 							if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
 								item.setIcon(QIcon(PRIVATE_WINDOW_ICON))
@@ -542,7 +542,7 @@ class Window(QMainWindow):
 
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
-		self.filestats.setText(f"<small><b>{chat_length} lines, {rendertime:.4f} seconds</b></small>")
+		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines, {rendertime:.4f} seconds</small>")
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
