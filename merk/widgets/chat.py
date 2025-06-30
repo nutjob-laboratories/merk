@@ -1162,7 +1162,7 @@ class Window(QMainWindow):
 					self.current_date = cdate
 					# there's a new date; create a new date separator
 					m = Message(DATE_MESSAGE,'',cdate)
-					d2 = render.render_message(m,self.style)
+					d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 					self.chat.append(d2)
 
 	def refreshBanMenu(self):
@@ -1215,7 +1215,7 @@ class Window(QMainWindow):
 
 		self.chat.clear()
 		for line in self.log:
-			t = render.render_message(line,self.style,self.client)
+			t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 			self.chat.append(t)
 
 		self.chat.moveCursor(QTextCursor.End)
@@ -2042,7 +2042,7 @@ class Window(QMainWindow):
 				self.chat.append(message)
 			else:
 
-				t = render.render_message(message,self.style,self.client)
+				t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 
 				# Save entered text to the current log
 				self.log.append(message)

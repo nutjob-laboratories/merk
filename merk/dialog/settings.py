@@ -2889,7 +2889,12 @@ class Dialog(QDialog):
 		self.linkChannel = QCheckBox("Convert channel names to links",self)
 		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
 		self.linkChannel.stateChanged.connect(self.changedSettingRerender)
-		
+
+		self.noPadding = QCheckBox("Do not pad nicknames in chat\ndisplay",self)
+		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
+		self.noPadding.stateChanged.connect(self.changedSettingRerender)
+		self.noPadding.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -2900,6 +2905,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.forceMono)
+		messageLayout.addWidget(self.noPadding)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system messages</b>"))
 		messageLayout.addLayout(prepLayout)
@@ -3700,6 +3706,7 @@ class Dialog(QDialog):
 		config.ENABLE_AUTOCOMPLETE = self.enableAutocomplete.isChecked()
 		config.ENABLE_STYLE_EDITOR = self.enableStyle.isChecked()
 		config.DISPLAY_SCRIPT_ERRORS = self.showErrors.isChecked()
+		config.STRIP_NICKNAME_PADDING_FROM_DISPLAY = self.noPadding.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

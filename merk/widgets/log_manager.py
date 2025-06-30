@@ -517,6 +517,7 @@ class Window(QMainWindow):
 		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
 		self.log = loadLog
 
+		chat_length = 0
 		cdate = None
 		marked = []
 		for e in self.log:
@@ -530,7 +531,8 @@ class Window(QMainWindow):
 
 		self.chat.clear()
 		for line in self.log:
-			t = render.render_message(line,self.style,None)
+			if line.type!=DATE_MESSAGE: chat_length = chat_length + 1
+			t = render.render_message(line,self.style,None,True)
 			self.chat.append(t)
 
 		end_time = time.time()
@@ -540,7 +542,7 @@ class Window(QMainWindow):
 
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
-		self.filestats.setText(f"<small><b>{len(self.log)} lines, {rendertime:.4f} seconds</b></small>")
+		self.filestats.setText(f"<small><b>{chat_length} lines, {rendertime:.4f} seconds</b></small>")
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)

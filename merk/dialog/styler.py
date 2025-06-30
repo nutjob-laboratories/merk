@@ -96,7 +96,7 @@ class Dialog(QDialog):
 		self.chat.clear()
 
 		for line in self.messages:
-			t = render.render_message(line,self.style)
+			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 			self.chat.append(t)
 
 	def syntaxChanged(self,data):
@@ -162,7 +162,7 @@ class Dialog(QDialog):
 			self.chat.clear()
 
 			for line in self.messages:
-				t = render.render_message(line,self.style)
+				t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 				self.chat.append(t)
 
 	def loadDefault(self):
@@ -187,7 +187,7 @@ class Dialog(QDialog):
 		self.chat.clear()
 
 		for line in self.messages:
-			t = render.render_message(line,self.style)
+			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 			self.chat.append(t)
 
 	def __init__(self,client,chat,parent=None,simple=False,default=False):
@@ -253,7 +253,7 @@ class Dialog(QDialog):
 		]
 
 		for line in self.messages:
-			t = render.render_message(line,self.style)
+			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 			self.chat.append(t)
 
 		self.fore = widgets.SyntaxTextColor('fore', "Text Color",self.fgcolor,self)

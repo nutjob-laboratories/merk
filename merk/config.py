@@ -224,9 +224,11 @@ ENABLE_ALIASES = True
 ENABLE_AUTOCOMPLETE = True
 ENABLE_STYLE_EDITOR = True
 DISPLAY_SCRIPT_ERRORS = True
+STRIP_NICKNAME_PADDING_FROM_DISPLAY = False
 
 def build_settings():
 	settings = {
+		"do_not_pad_nickname_in_chat_display": STRIP_NICKNAME_PADDING_FROM_DISPLAY,
 		"show_script_execution_errors": DISPLAY_SCRIPT_ERRORS,
 		"enable_style_editor": ENABLE_STYLE_EDITOR,
 		"enable_autocomplete": ENABLE_AUTOCOMPLETE,
@@ -417,6 +419,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "do_not_pad_nickname_in_chat_display" in settings:
+		settings["do_not_pad_nickname_in_chat_display"] = STRIP_NICKNAME_PADDING_FROM_DISPLAY
 	if not "show_script_execution_errors" in settings:
 		settings["show_script_execution_errors"] = DISPLAY_SCRIPT_ERRORS
 	if not "enable_style_editor" in settings:
@@ -977,6 +981,7 @@ def load_settings(filename):
 	global ENABLE_AUTOCOMPLETE
 	global ENABLE_STYLE_EDITOR
 	global DISPLAY_SCRIPT_ERRORS
+	global STRIP_NICKNAME_PADDING_FROM_DISPLAY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -986,6 +991,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		STRIP_NICKNAME_PADDING_FROM_DISPLAY = settings["do_not_pad_nickname_in_chat_display"]
 		DISPLAY_SCRIPT_ERRORS = settings["show_script_execution_errors"]
 		ENABLE_STYLE_EDITOR = settings["enable_style_editor"]
 		ENABLE_AUTOCOMPLETE = settings["enable_autocomplete"]

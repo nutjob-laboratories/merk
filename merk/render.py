@@ -167,7 +167,7 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-def render_message(message,style,client=None):
+def render_message(message,style,client=None,no_padding=False):
 
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 	
@@ -392,10 +392,11 @@ def render_message(message,style,client=None):
 			user_style = ''
 
 		if message.type!=ACTION_MESSAGE:
-			if message.type!=NOTICE_MESSAGE and len(nick)>0:
-				idl = config.NICKNAME_PAD_LENGTH - len(nick)
-				if idl>0:
-					nick = ('&nbsp;'*idl)+nick
+			if not no_padding:
+				if message.type!=NOTICE_MESSAGE and len(nick)>0:
+					idl = config.NICKNAME_PAD_LENGTH - len(nick)
+					if idl>0:
+						nick = ('&nbsp;'*idl)+nick
 	else:
 		user_style = f"color:{foreground};"
 
