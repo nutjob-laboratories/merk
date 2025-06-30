@@ -901,6 +901,7 @@ class Dialog(QDialog):
 			self.windowBarUnderline.setEnabled(True)
 			self.windowBarHover.setEnabled(True)
 			self.windowbarLabel.setEnabled(True)
+			self.windowbarManager.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -917,6 +918,8 @@ class Dialog(QDialog):
 			self.windowBarUnderline.setEnabled(False)
 			self.windowBarHover.setEnabled(False)
 			self.windowbarLabel.setEnabled(False)
+			self.windowbarManager.setEnabled(False)
+
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -1938,6 +1941,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_HOVER_EFFECT: self.windowBarHover.setChecked(True)
 		self.windowBarHover.stateChanged.connect(self.menuChange)
 
+		self.windowbarManager = QCheckBox("Log manager",self)
+		if config.WINDOWBAR_INCLUDE_MANAGER: self.windowbarManager.setChecked(True)
+		self.windowbarManager.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1954,11 +1961,12 @@ class Dialog(QDialog):
 			self.windowBarUnderline.setEnabled(False)
 			self.windowBarHover.setEnabled(False)
 			self.windowbarLabel.setEnabled(False)
+			self.windowbarManager.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
 		includesLayout.addRow(self.windowBarServers,self.windowBarEditor)
-		includesLayout.addRow(self.windowbarLists)
+		includesLayout.addRow(self.windowbarLists,self.windowbarManager)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -3707,6 +3715,7 @@ class Dialog(QDialog):
 		config.ENABLE_STYLE_EDITOR = self.enableStyle.isChecked()
 		config.DISPLAY_SCRIPT_ERRORS = self.showErrors.isChecked()
 		config.STRIP_NICKNAME_PADDING_FROM_DISPLAY = self.noPadding.isChecked()
+		config.WINDOWBAR_INCLUDE_MANAGER = self.windowbarManager.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

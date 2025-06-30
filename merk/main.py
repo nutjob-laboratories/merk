@@ -404,6 +404,11 @@ class Merk(QMainWindow):
 			for window in self.getAllEditorWindows():
 				window_list.append(window)
 
+		if config.WINDOWBAR_INCLUDE_MANAGER:
+			if self.log_manager!=None:
+				if self.log_manager.isVisible():
+					window_list.append(self.log_manager)
+
 		if len(window_list)>0:
 			self.windowbar.show()
 		else:
@@ -501,6 +506,10 @@ class Merk(QMainWindow):
 					else:
 						wname = c.client.server+":"+str(entry.port) + " channels"
 						serv_name = c.client.server+":"+str(entry.port)
+				elif c.window_type==MANAGER_WINDOW:
+					icon = LOG_ICON
+					serv_name = "Log Manager"
+					wname = "Log Manager"
 
 				if config.WINDOWBAR_SHOW_ICONS:
 					button = menubar.get_icon_windowbar_button(icon,wname)
@@ -511,6 +520,11 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
 				else:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
+				if c.window_type==MANAGER_WINDOW:
+					if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
+						button.doubleClicked.connect(self.menuExportLogMax)
+					else:
+						button.doubleClicked.connect(self.menuExportLog)
 				if c.window_type==CHANNEL_WINDOW:
 					button.setToolTip(serv_name)
 				if c.window_type==PRIVATE_WINDOW:
@@ -522,6 +536,8 @@ class Merk(QMainWindow):
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(wname)
 				if c.window_type==LIST_WINDOW:
+					button.setToolTip(serv_name)
+				if c.window_type==MANAGER_WINDOW:
 					button.setToolTip(serv_name)
 
 				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
@@ -591,6 +607,10 @@ class Merk(QMainWindow):
 
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
+				elif c.window_type==MANAGER_WINDOW:
+					icon = LOG_ICON
+					serv_name = "Log Manager"
+					wname = "Log Manager"
 
 				button = menubar.get_icon_only_toolbar_button(icon)
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
@@ -598,6 +618,11 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
 				else:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
+				if c.window_type==MANAGER_WINDOW:
+					if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
+						button.doubleClicked.connect(self.menuExportLogMax)
+					else:
+						button.doubleClicked.connect(self.menuExportLog)
 				if c.window_type==CHANNEL_WINDOW:
 					button.setToolTip(c.name + "\n" + serv_name)
 				if c.window_type==PRIVATE_WINDOW:
@@ -610,6 +635,8 @@ class Merk(QMainWindow):
 				if c.window_type==EDITOR_WINDOW:
 					button.setToolTip(wname)
 				if c.window_type==LIST_WINDOW:
+					button.setToolTip(wname)
+				if c.window_type==MANAGER_WINDOW:
 					button.setToolTip(wname)
 
 				button.setFixedHeight(18)
@@ -2466,6 +2493,23 @@ class Merk(QMainWindow):
 
 		return w
 
+	def newLogManagerMax(self):
+		w = QMdiSubWindow(self)
+		if config.SIMPLIFIED_DIALOGS:
+			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,True,self.app))
+		else:
+			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,False,self.app))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(LOG_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		w.showMaximized()
+
+		self.log_manager = w
+		self.buildWindowsMenu()
+
+		return w
+
 	def openLinkInBrowser(self,url):
 		u = QUrl()
 		u.setUrl(url)
@@ -3327,11 +3371,17 @@ class Merk(QMainWindow):
 
 		edwins = self.getAllEditorWindows()
 		if len(edwins)>0:
-
 			for win in edwins:
 				c = win.widget()
 				entry = QAction(QIcon(SCRIPT_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
+				self.windowsMenu.addAction(entry)
+
+		if self.log_manager!=None:
+			if self.log_manager.isVisible():
+				c = self.log_manager.widget()
+				entry = QAction(QIcon(LOG_ICON),c.name,self)
+				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
 		self.windowsMenu.addSeparator()
@@ -3610,6 +3660,13 @@ class Merk(QMainWindow):
 			self.newLogManager()
 		else:
 			self.showSubWindow(self.log_manager)
+		self.toolsMenu.close()
+
+	def menuExportLogMax(self):
+		if self.log_manager==None:
+			self.newLogManagerMax()
+		else:
+			self.showSubWindowMaximized(self.log_manager)
 		self.toolsMenu.close()
 
 	def getAllEditorWindows(self):

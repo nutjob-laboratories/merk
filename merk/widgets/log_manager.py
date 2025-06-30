@@ -113,8 +113,8 @@ class Window(QMainWindow):
 
 	def closeEvent(self, event):
 
-		if self.app != None:
-			self.app.quit()
+		self.parent.closeSubWindow(self.subwindow_id)
+		self.parent.log_manager = None
 
 		event.accept()
 		self.close()
@@ -222,6 +222,7 @@ class Window(QMainWindow):
 
 		self.window_type = MANAGER_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
+		self.name = "Log Manager"
 
 		self.setWindowTitle("Log Manager")
 		self.setWindowIcon(QIcon(LOG_ICON))

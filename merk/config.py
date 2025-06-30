@@ -225,9 +225,11 @@ ENABLE_AUTOCOMPLETE = True
 ENABLE_STYLE_EDITOR = True
 DISPLAY_SCRIPT_ERRORS = True
 STRIP_NICKNAME_PADDING_FROM_DISPLAY = False
+WINDOWBAR_INCLUDE_MANAGER = False
 
 def build_settings():
 	settings = {
+		"windowbar_include_log_manager": WINDOWBAR_INCLUDE_MANAGER,
 		"do_not_pad_nickname_in_chat_display": STRIP_NICKNAME_PADDING_FROM_DISPLAY,
 		"show_script_execution_errors": DISPLAY_SCRIPT_ERRORS,
 		"enable_style_editor": ENABLE_STYLE_EDITOR,
@@ -419,6 +421,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "windowbar_include_log_manager" in settings:
+		settings["windowbar_include_log_manager"] = WINDOWBAR_INCLUDE_MANAGER
 	if not "do_not_pad_nickname_in_chat_display" in settings:
 		settings["do_not_pad_nickname_in_chat_display"] = STRIP_NICKNAME_PADDING_FROM_DISPLAY
 	if not "show_script_execution_errors" in settings:
@@ -982,6 +986,7 @@ def load_settings(filename):
 	global ENABLE_STYLE_EDITOR
 	global DISPLAY_SCRIPT_ERRORS
 	global STRIP_NICKNAME_PADDING_FROM_DISPLAY
+	global WINDOWBAR_INCLUDE_MANAGER
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -991,6 +996,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_INCLUDE_MANAGER = settings["windowbar_include_log_manager"]
 		STRIP_NICKNAME_PADDING_FROM_DISPLAY = settings["do_not_pad_nickname_in_chat_display"]
 		DISPLAY_SCRIPT_ERRORS = settings["show_script_execution_errors"]
 		ENABLE_STYLE_EDITOR = settings["enable_style_editor"]

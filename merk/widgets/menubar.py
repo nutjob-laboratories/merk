@@ -551,6 +551,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.list_window)
 		menu.addAction(entry)
 
+		if config.WINDOWBAR_INCLUDE_MANAGER:
+			entry = QAction(QIcon(self.parent.checked_icon),"Log manager", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Log manager", self)
+		entry.triggered.connect(self.list_manager)
+		menu.addAction(entry)
+
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 			entry = QAction(QIcon(self.parent.checked_icon),"Doubleclick to maximize", self)
 		else:
@@ -649,6 +656,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_INCLUDE_EDITORS = False
 		else:
 			config.WINDOWBAR_INCLUDE_EDITORS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def list_manager(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_INCLUDE_MANAGER:
+			config.WINDOWBAR_INCLUDE_MANAGER = False
+		else:
+			config.WINDOWBAR_INCLUDE_MANAGER = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)
