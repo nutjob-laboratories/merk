@@ -421,18 +421,37 @@ class Window(QMainWindow):
 		detailsLayout.addWidget(self.filetype)
 		detailsLayout.addWidget(self.filestats)
 		detailsLayout.addWidget(self.filesize)
+		detailsLayout.addStretch()
+
+		iconLayout = QVBoxLayout()
+		iconLayout.addWidget(self.file_icon)
+		iconLayout.addStretch()
 
 		fileinfoLayout = QHBoxLayout()
-		fileinfoLayout.addWidget(self.file_icon)
+		fileinfoLayout.addLayout(iconLayout)
 		fileinfoLayout.addLayout(detailsLayout)
 		fileinfoLayout.addStretch()
 		fileinfoLayout.setSizeConstraint(QLayout.SetFixedSize)
 
-		bottomLayout = QVBoxLayout()
-		bottomLayout.addLayout(fileinfoLayout)
-		bottomLayout.addLayout(sideLayout)
-		
-		bottomLayout.addLayout(buttons)
+		otherLayout = QHBoxLayout()
+		otherLayout.addLayout(sideLayout)
+		otherLayout.addStretch()
+
+		bottomLayout2 = QVBoxLayout()
+		bottomLayout2.addLayout(fileinfoLayout)
+		bottomLayout2.addWidget(QLabel(' '))
+		bottomLayout2.addLayout(otherLayout)
+
+		bottomLayout3 = QVBoxLayout()
+		bottomLayout3.addStretch()
+		bottomLayout3.addLayout(bottomLayout2)
+		bottomLayout3.addStretch()
+		bottomLayout3.addLayout(buttons)
+
+		bottomLayout=QHBoxLayout()
+		bottomLayout.addStretch()
+		bottomLayout.addLayout(bottomLayout3)
+		bottomLayout.addStretch()
 
 		if not self.simplified:
 			self.windowDescription = QLabel(f"""
@@ -441,8 +460,8 @@ class Window(QMainWindow):
 				in the log display. <b>Hover the mouse</b> over the log name to see what IRC network that log is
 				from. <b>Right click on a log name</b> to view other options, like opening the log in a text editor,
 				opening the log's location, copying information about the log to the clipboard, or deleting the log.
-				To export a log, <b>click on a log name</b> to select the log, choose export options in the
-				box on the bottom left, and click the <b>Export</b> button. Click <b>Close</b> to close the manager.
+				To export a log, <b>click on a log name</b> to select the log, <b>click on the "Export" tab</b>,
+				choose export options, and click the <b>Export</b> button. Click <b>Close</b> to close the manager.
 				</small>
 				""")
 			self.windowDescription.setWordWrap(True)
