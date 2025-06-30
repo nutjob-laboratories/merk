@@ -181,9 +181,10 @@ class Window(QMainWindow):
 
 		self.chat.clear()
 		self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
-		self.filestats.setText('<small><i>Right click on a log for more options</i></small>')
+		self.filestats.setText(' ')
 		self.filesize.setText(' ')
-		self.filetype.setText(" ")
+		self.filetype.setText('<b>to export</b>')
+		self.filename.setText('<b>Select a log</b>')
 		self.packlist.clearSelection()
 		self.menubar.setEnabled(False)
 		self.format.setEnabled(False)
@@ -388,7 +389,7 @@ class Window(QMainWindow):
 		self.time.setEnabled(False)
 		self.button_export.setEnabled(False)
 
-		self.status = QStatusBar()
+		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
 		self.status_details = QLabel(f"<small><b>Click a log to view its contents</b></small>")
 		self.status.addPermanentWidget(self.status_details,1)
@@ -397,9 +398,10 @@ class Window(QMainWindow):
 
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
-		self.filestats = QLabel('<small><i>Right click on a log for more options</i></small>')
+		self.filestats = QLabel(' ')
 		self.filesize = QLabel(' ')
-		self.filetype = QLabel(' ')
+		self.filetype = QLabel('<b>to export</b>')
+		self.filename = QLabel('<b>Select a log</b>')
 
 		self.file_icon = QLabel()
 		self.file_icon.setPixmap(self.blank_file)
@@ -410,7 +412,7 @@ class Window(QMainWindow):
 		buttons.addStretch()
 		
 		mainLayout = QHBoxLayout()
-		mainLayout.addWidget(self.packlist)
+		# mainLayout.addWidget(self.packlist)
 		mainLayout.addWidget(self.chat)
 
 		sideLayout = QVBoxLayout()
@@ -418,8 +420,8 @@ class Window(QMainWindow):
 		sideLayout.addStretch()
 
 		detailsLayout = QVBoxLayout()
+		detailsLayout.addWidget(self.filename)
 		detailsLayout.addWidget(self.filetype)
-		detailsLayout.addWidget(self.filestats)
 		detailsLayout.addWidget(self.filesize)
 		detailsLayout.addStretch()
 
@@ -470,7 +472,7 @@ class Window(QMainWindow):
 		self.tabs = QTabWidget()
 
 		self.log_display = QWidget()
-		self.tabs.addTab(self.log_display, "Logs")
+		self.tabs.addTab(self.log_display, "Log Viewer")
 
 		self.export_options = QWidget()
 		self.tabs.addTab(self.export_options, "Export")
@@ -479,14 +481,18 @@ class Window(QMainWindow):
 		self.export_options.setLayout(bottomLayout)
 
 		buttonbar = QHBoxLayout()
+		buttonbar.addWidget(self.filestats)
 		buttonbar.addStretch()
 		buttonbar.addWidget(self.button_close)
 
+		managerLayout = QHBoxLayout()
+		managerLayout.addWidget(self.packlist)
+		managerLayout.addWidget(self.tabs)
+
 		finalLayout = QVBoxLayout()
 		if not self.simplified: finalLayout.addWidget(self.windowDescription)
-		finalLayout.addWidget(self.tabs)
+		finalLayout.addLayout(managerLayout)
 		finalLayout.addLayout(buttonbar)
-		finalLayout.addWidget(self.status)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()
@@ -554,11 +560,13 @@ class Window(QMainWindow):
 		self.button_export.setEnabled(True)
 
 		if item.type==CHANNEL_WINDOW:
-			self.filetype.setText(f"<small><b>Channel log for {item.channel}</b></small>")
+			self.filetype.setText(f"<small><b>Channel log</b></small>")
 			self.file_icon.setPixmap(self.channel_file)
 		elif item.type==PRIVATE_WINDOW:
-			self.filetype.setText(f"<small><b>Private chat log for {item.channel}</b></small>")
+			self.filetype.setText(f"<small><b>Private chat log</b></small>")
 			self.file_icon.setPixmap(self.private_file)
+
+		self.filename.setText(f"<b>{item.channel}</b>")
 
 		QApplication.restoreOverrideCursor()
 
