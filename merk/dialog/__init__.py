@@ -32,7 +32,6 @@ from .settings import Dialog as Settings
 from .windowsize import Dialog as WindowSize
 from .logsize import Dialog as LogSize
 from .historysize import Dialog as HistorySize
-from .export import Dialog as ExportLog
 from .about import Dialog as About
 from .comment import Dialog as Comment
 from .pause import Dialog as Pause
@@ -75,14 +74,6 @@ def AboutDialog():
 	x = About()
 	x.show()
 	return x
-
-def ExportLogDialog(logdir,obj,simplified,app):
-	x = ExportLog(logdir,obj,simplified,app)
-	info = x.get_name_information(logdir,obj,simplified,app)
-	del x
-
-	if not info: return None
-	return info
 
 def HistorySizeDialog(obj):
 	x = HistorySize(obj)

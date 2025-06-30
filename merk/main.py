@@ -189,6 +189,7 @@ class Merk(QMainWindow):
 		self.saved_window = None
 		self.application_title_name = APPLICATION_NAME
 		self.readme_window = None
+		self.log_manager = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -2448,6 +2449,23 @@ class Merk(QMainWindow):
 
 		return w
 
+	def newLogManager(self):
+		w = QMdiSubWindow(self)
+		if config.SIMPLIFIED_DIALOGS:
+			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,True,self.app))
+		else:
+			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,False,self.app))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(LOG_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		w.show()
+
+		self.log_manager = w
+		self.buildWindowsMenu()
+
+		return w
+
 	def openLinkInBrowser(self,url):
 		u = QUrl()
 		u.setUrl(url)
@@ -3588,43 +3606,11 @@ class Merk(QMainWindow):
 		self.__about_dialog.show()
 
 	def menuExportLog(self):
-		if config.SIMPLIFIED_DIALOGS:
-			d = ExportLogDialog(logs.LOG_DIRECTORY,self,True,self.app)
+		if self.log_manager==None:
+			self.newLogManager()
 		else:
-			d = ExportLogDialog(logs.LOG_DIRECTORY,self,False,self.app)
-		if d:
-			elog = d[0]
-			channel = d[1]
-			dlog = d[2]
-			llog = d[3]
-			do_json = d[4]
-			do_epoch = d[5]
-			if not do_json:
-				options = QFileDialog.Options()
-				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
-				if fileName:
-					_, file_extension = os.path.splitext(fileName)
-					if file_extension=='':
-						efl = len("txt")+1
-						if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
-					dump = logs.dumpLog(elog,dlog,llog,do_epoch)
-					code = open(fileName,mode="w",encoding="utf-8")
-					code.write(dump)
-					code.close()
-			else:
-				options = QFileDialog.Options()
-				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
-				if fileName:
-					_, file_extension = os.path.splitext(fileName)
-					if file_extension=='':
-						efl = len("json")+1
-						if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
-					dump = logs.dumpLogJson(elog,do_epoch)
-					code = open(fileName,mode="w",encoding="utf-8")
-					code.write(dump)
-					code.close()
+			self.showSubWindow(self.log_manager)
+		self.toolsMenu.close()
 
 	def getAllEditorWindows(self):
 		retval = []

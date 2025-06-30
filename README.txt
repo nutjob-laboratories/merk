@@ -156,11 +156,6 @@ There are three libraries that comes bundled with **MERK**:
  <center><a href="./graphics/editor_screenshot.png"><img src="./graphics/editor_screenshot_small.png"></a></center></br>
   <center><i><small>The script editor, with an example file open. In the editor, you can edit, create, and execute MERK scripts. The editor features syntax highlighting, which highlights commands, channels, aliases, and comments, as well as command generator macros, making it easy to write scripts.</small></i></center>
   </p>
-  
-<p align="center">
- <center><a href="./graphics/log_manager_screenshot.png"><img src="./graphics/log_manager_screenshot_small.png"></a></center></br>
-  <center><i><small>The log manager allows you to manage, view, and export MERK logs.</small></i></center>
-  </p>  
 
 # Usage
 ```

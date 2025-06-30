@@ -32,3 +32,4 @@ from .syntaxstyler import SyntaxColor,SyntaxTextColor
 from .editor import Window as ScriptEditor
 from .channel_list import Window as ChannelList
 from .readme import Window as ReadMe
+from .log_manager import Window as LogManager

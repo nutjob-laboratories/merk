@@ -35,6 +35,7 @@ import operator
 import datetime
 import time
 from .. import logs
+import uuid
 
 from .. import config
 from .. import styles
@@ -42,33 +43,46 @@ from .. import render
 
 from ..resources import *
 
-class Dialog(QDialog):
+class Window(QMainWindow):
 
-	@staticmethod
-	def get_name_information(logdir,parent=None,simplified=False,app=None):
-		dialog = Dialog(logdir,parent,simplified,app)
-		r = dialog.exec_()
-		if r:
-			return dialog.return_info()
-		return None
-
-		self.close()
-
-	def return_info(self):
+	def do_export(self):
 
 		item = self.packlist.currentItem()
-		if item:
-			retval = [item.file,item.channel,self.delimiter,self.linedelim, self.do_json, self.epoch]
-		else:
-			msg = QMessageBox()
-			msg.setIcon(QMessageBox.Critical)
-			msg.setText("Error")
-			msg.setInformativeText("No log selected")
-			msg.setWindowTitle("Error")
-			msg.exec_()
-			return None
 
-		return retval
+		elog = item.file
+		channel = item.channel
+		dlog = self.delimiter
+		llog = self.linedelim
+		do_json = self.do_json
+		do_epoch = self.epoch
+		if not do_json:
+			options = QFileDialog.Options()
+			options |= QFileDialog.DontUseNativeDialog
+			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
+			if fileName:
+				_, file_extension = os.path.splitext(fileName)
+				if file_extension=='':
+					efl = len("txt")+1
+					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+				dump = logs.dumpLog(elog,dlog,llog,do_epoch)
+				code = open(fileName,mode="w",encoding="utf-8")
+				code.write(dump)
+				code.close()
+		else:
+			options = QFileDialog.Options()
+			options |= QFileDialog.DontUseNativeDialog
+			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
+			if fileName:
+				_, file_extension = os.path.splitext(fileName)
+				if file_extension=='':
+					efl = len("json")+1
+					if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
+				dump = logs.dumpLogJson(elog,do_epoch)
+				code = open(fileName,mode="w",encoding="utf-8")
+				code.write(dump)
+				code.close()
+
+		self.close()
 
 	def clickTime(self,state):
 		if state == Qt.Checked:
@@ -165,11 +179,11 @@ class Dialog(QDialog):
 			self.packlist.takeItem(self.packlist.row(item))
 			os.remove(item.file)
 
-		self.exportBox.setTitle("Select a log to export")
 		self.chat.clear()
 		self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
 		self.filestats.setText('<small><i>Right click on a log for more options</i></small>')
-		self.filesize.setText('')
+		self.filesize.setText(' ')
+		self.filetype.setText(" ")
 		self.packlist.clearSelection()
 		self.menubar.setEnabled(False)
 		self.format.setEnabled(False)
@@ -178,11 +192,20 @@ class Dialog(QDialog):
 		self.lineLabel.setEnabled(False)
 		self.line.setEnabled(False)
 		self.time.setEnabled(False)
-		self.exportBox.setEnabled(False)
-		self.buttons.button(QDialogButtonBox.Ok).setEnabled(False)
+		self.button_export.setEnabled(False)
+		self.file_icon.setPixmap(self.blank_file)
+
+	def closeEvent(self, event):
+
+		# Make sure the MDI window is closed
+		self.parent.closeSubWindow(self.subwindow_id)
+		self.parent.log_manager = None
+
+		event.accept()
+		self.close()
 
 	def __init__(self,logdir,parent=None,simplified=False,app=None):
-		super(Dialog,self).__init__(parent)
+		super(Window,self).__init__(parent)
 
 		self.parent = parent
 		self.logdir = logdir
@@ -194,9 +217,17 @@ class Dialog(QDialog):
 		self.do_json = True
 		self.epoch = False
 		self.log = []
+		self.export_format = 'json'
+
+		self.window_type = MANAGER_WINDOW
+		self.subwindow_id = str(uuid.uuid4())
 
 		self.setWindowTitle("Log Manager")
 		self.setWindowIcon(QIcon(LOG_ICON))
+
+		self.channel_file = QPixmap(CHANNEL_ICON)
+		self.private_file = QPixmap(PRIVATE_ICON)
+		self.blank_file = QPixmap(LOG_ICON)
 
 		self.style = styles.loadDefault()
 
@@ -211,6 +242,10 @@ class Dialog(QDialog):
 		self.packlist.setMaximumWidth(wwidth)
 		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAA")
 		self.packlist.setMinimumWidth(wwidth)
+
+		self.chat = QTextBrowser(self)
+		self.chat.setFocusPolicy(Qt.NoFocus)
+		self.chat.setReadOnly(True)
 
 		servers = []
 		others = []
@@ -245,8 +280,10 @@ class Dialog(QDialog):
 
 							if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
 								item.setIcon(QIcon(PRIVATE_WINDOW_ICON))
+								item.type = PRIVATE_WINDOW
 							else:
 								item.setIcon(QIcon(CHANNEL_WINDOW_ICON))
+								item.type = CHANNEL_WINDOW
 
 							item.file = log
 							item.network = netname
@@ -298,14 +335,11 @@ class Dialog(QDialog):
 		self.lineLabel = QLabel("Entry Delimiter:")
 		delimLayout.addRow(self.lineLabel, self.line)
 
-		# Buttons
-		self.buttons = QDialogButtonBox(self)
-		self.buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-		self.buttons.accepted.connect(self.accept)
-		self.buttons.rejected.connect(self.reject)
+		self.button_export=QPushButton("  Export Log  ")
+		self.button_export.clicked.connect(self.do_export)
 
-		self.buttons.button(QDialogButtonBox.Ok).setText("Export")
-		self.buttons.button(QDialogButtonBox.Cancel).setText("Close")
+		self.button_close = QPushButton("Close")
+		self.button_close.clicked.connect(self.close)
 
 		self.time = QCheckBox("Epoch format for date/time ",self)
 		self.time.stateChanged.connect(self.clickTime)
@@ -330,10 +364,10 @@ class Dialog(QDialog):
 		self.format = QLabel("JSON file")
 		self.format.setFont(BOLD_FONT)
 
-		self.type.setVisible(False)
-		self.typeLabel.setVisible(False)
-		self.line.setVisible(False)
-		self.lineLabel.setVisible(False)
+		self.type.setEnabled(False)
+		self.typeLabel.setEnabled(False)
+		self.line.setEnabled(False)
+		self.lineLabel.setEnabled(False)
 
 		formatLayout = QHBoxLayout()
 		formatLayout.addWidget(self.menubar)
@@ -343,11 +377,7 @@ class Dialog(QDialog):
 		exportLayout.addLayout(formatLayout)
 		exportLayout.addLayout(delimLayout)
 		exportLayout.addWidget(self.time)
-		exportLayout.addStretch()
-
-		self.exportBox = QGroupBox("Select a log to export")
-		self.exportBox.setAlignment(Qt.AlignHCenter)
-		self.exportBox.setLayout(exportLayout)
+		exportLayout.setSizeConstraint(QLayout.SetFixedSize)
 
 		self.menubar.setEnabled(False)
 		self.format.setEnabled(False)
@@ -356,18 +386,7 @@ class Dialog(QDialog):
 		self.lineLabel.setEnabled(False)
 		self.line.setEnabled(False)
 		self.time.setEnabled(False)
-		self.exportBox.setEnabled(False)
-		self.buttons.button(QDialogButtonBox.Ok).setEnabled(False)
-
-		f = self.exportBox.font()
-		f.setBold(True)
-		self.exportBox.setFont(f)
-
-		self.chat = QTextBrowser(self)
-		self.chat.setFocusPolicy(Qt.NoFocus)
-		# self.chat.anchorClicked.connect(self.linkClicked)
-		self.chat.setReadOnly(True)
-		self.chat.setMinimumWidth(600)
+		self.button_export.setEnabled(False)
 
 		self.status = QStatusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
@@ -379,29 +398,41 @@ class Dialog(QDialog):
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
 		self.filestats = QLabel('<small><i>Right click on a log for more options</i></small>')
-		self.filesize = QLabel('')
+		self.filesize = QLabel(' ')
+		self.filetype = QLabel(' ')
 
+		self.file_icon = QLabel()
+		self.file_icon.setPixmap(self.blank_file)
+
+		buttons = QHBoxLayout()
+		buttons.addStretch()
+		buttons.addWidget(self.button_export)
+		buttons.addStretch()
+		
 		mainLayout = QHBoxLayout()
 		mainLayout.addWidget(self.packlist)
 		mainLayout.addWidget(self.chat)
 
-		labelLayout = QHBoxLayout()
-		labelLayout.addStretch()
-		labelLayout.addWidget(self.filestats)
+		sideLayout = QVBoxLayout()
+		sideLayout.addLayout(exportLayout)
+		sideLayout.addStretch()
 
-		labelLayout2 = QHBoxLayout()
-		labelLayout2.addStretch()
-		labelLayout2.addWidget(self.filesize)
+		detailsLayout = QVBoxLayout()
+		detailsLayout.addWidget(self.filetype)
+		detailsLayout.addWidget(self.filestats)
+		detailsLayout.addWidget(self.filesize)
 
-		buttonLayout = QVBoxLayout()
-		buttonLayout.addLayout(labelLayout)
-		buttonLayout.addLayout(labelLayout2)
-		buttonLayout.addStretch()
-		buttonLayout.addWidget(self.buttons)
+		fileinfoLayout = QHBoxLayout()
+		fileinfoLayout.addWidget(self.file_icon)
+		fileinfoLayout.addLayout(detailsLayout)
+		fileinfoLayout.addStretch()
+		fileinfoLayout.setSizeConstraint(QLayout.SetFixedSize)
 
-		bottomLayout = QHBoxLayout()
-		bottomLayout.addWidget(self.exportBox)
-		bottomLayout.addLayout(buttonLayout)
+		bottomLayout = QVBoxLayout()
+		bottomLayout.addLayout(fileinfoLayout)
+		bottomLayout.addLayout(sideLayout)
+		
+		bottomLayout.addLayout(buttons)
 
 		if not self.simplified:
 			self.windowDescription = QLabel(f"""
@@ -417,16 +448,38 @@ class Dialog(QDialog):
 			self.windowDescription.setWordWrap(True)
 			self.windowDescription.setAlignment(Qt.AlignJustify)
 
+		self.tabs = QTabWidget()
+
+		self.log_display = QWidget()
+		self.tabs.addTab(self.log_display, "Logs")
+
+		self.export_options = QWidget()
+		self.tabs.addTab(self.export_options, "Export")
+
+		self.log_display.setLayout(mainLayout)
+		self.export_options.setLayout(bottomLayout)
+
+		buttonbar = QHBoxLayout()
+		buttonbar.addStretch()
+		buttonbar.addWidget(self.button_close)
+
 		finalLayout = QVBoxLayout()
 		if not self.simplified: finalLayout.addWidget(self.windowDescription)
-		finalLayout.addLayout(mainLayout)
-		finalLayout.addLayout(bottomLayout)
+		finalLayout.addWidget(self.tabs)
+		finalLayout.addLayout(buttonbar)
 		finalLayout.addWidget(self.status)
+
+		# Set the layout as the central widget
+		self.centralWidget = QWidget()
+		self.centralWidget.setLayout(finalLayout)
+		self.setCentralWidget(self.centralWidget)
+
+		self.adjustSize()
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
-		self.setLayout(finalLayout)
+		# self.setLayout(finalLayout)
 
 	def generateStylesheet(self,obj,fore,back):
 
@@ -460,33 +513,48 @@ class Dialog(QDialog):
 
 		size_bytes = os.path.getsize(item.file)
 
-		self.exportBox.setTitle(item.text())
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
 		self.filestats.setText(f"<small><b>{len(self.log)} lines, {rendertime:.4f} seconds</b></small>")
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
-		self.typeLabel.setEnabled(True)
-		self.type.setEnabled(True)
-		self.lineLabel.setEnabled(True)
-		self.line.setEnabled(True)
 		self.time.setEnabled(True)
-		self.exportBox.setEnabled(True)
-		self.buttons.button(QDialogButtonBox.Ok).setEnabled(True)
+
+		if self.export_format=='json':
+			self.typeLabel.setEnabled(False)
+			self.type.setEnabled(False)
+			self.lineLabel.setEnabled(False)
+			self.line.setEnabled(False)
+		else:
+			self.typeLabel.setEnabled(True)
+			self.type.setEnabled(True)
+			self.lineLabel.setEnabled(True)
+			self.line.setEnabled(True)
+
+		self.button_export.setEnabled(True)
+
+		if item.type==CHANNEL_WINDOW:
+			self.filetype.setText(f"<small><b>Channel log for {item.channel}</b></small>")
+			self.file_icon.setPixmap(self.channel_file)
+		elif item.type==PRIVATE_WINDOW:
+			self.filetype.setText(f"<small><b>Private chat log for {item.channel}</b></small>")
+			self.file_icon.setPixmap(self.private_file)
 
 		QApplication.restoreOverrideCursor()
 
 	def toggleSetting(self,setting):
 
+		self.export_format = setting
+
 		if setting=='json':
 			self.menuJson.setIcon(QIcon(ROUND_CHECKED_ICON))
 			self.menuText.setIcon(QIcon(ROUND_UNCHECKED_ICON))
 			self.do_json = True
-			self.type.setVisible(False)
-			self.typeLabel.setVisible(False)
-			self.line.setVisible(False)
-			self.lineLabel.setVisible(False)
+			self.type.setEnabled(False)
+			self.typeLabel.setEnabled(False)
+			self.line.setEnabled(False)
+			self.lineLabel.setEnabled(False)
 			self.format.setText("JSON file")
 			return
 
@@ -494,9 +562,9 @@ class Dialog(QDialog):
 			self.menuJson.setIcon(QIcon(ROUND_UNCHECKED_ICON))
 			self.menuText.setIcon(QIcon(ROUND_CHECKED_ICON))
 			self.do_json = False
-			self.type.setVisible(True)
-			self.typeLabel.setVisible(True)
-			self.line.setVisible(True)
-			self.lineLabel.setVisible(True)
+			self.type.setEnabled(True)
+			self.typeLabel.setEnabled(True)
+			self.line.setEnabled(True)
+			self.lineLabel.setEnabled(True)
 			self.format.setText("ASCII text file")
 			return
