@@ -70,24 +70,6 @@ class Dialog(QDialog):
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
-		nutjob = QLabel()
-		pixmap = QPixmap(NUTJOB_LOGO)
-		nutjob.setPixmap(pixmap)
-		nutjob.setAlignment(Qt.AlignCenter)
-
-		line2 = QLabel("<b>Free and Open Source IRC Client</b>")
-		line2.setAlignment(Qt.AlignCenter)
-		line3 = QLabel("<big><b>MERK "+APPLICATION_VERSION+"</b></big>")
-		line3.setAlignment(Qt.AlignCenter)
-		line4 = QLabel(f"<big><b><a href=\"{APPLICATION_SOURCE}\">Source Code Repository</a></b></big>")
-		line4.setAlignment(Qt.AlignCenter)
-		line4.setOpenExternalLinks(True)
-
-		descriptionLayout = QVBoxLayout()
-		descriptionLayout.addWidget(line3)
-		descriptionLayout.addWidget(line2)
-		descriptionLayout.addWidget(line4)
-
 		qt_logo = QLabel()
 		pixmap = QPixmap(QT_ICON)
 		qt_logo.setPixmap(pixmap)
@@ -102,10 +84,6 @@ class Dialog(QDialog):
 		pixmap = QPixmap(TWISTED_BUTTON_ICON)
 		twisted_logo.setPixmap(pixmap)
 		twisted_logo.setAlignment(Qt.AlignCenter)
-
-		titleLayout = QVBoxLayout()
-		titleLayout.addWidget(logo)
-		titleLayout.addLayout(descriptionLayout)
 
 		icons_credit = QLabel(f"<small><b>Icons by <a href=\"https://material.io/resources/icons/\">Google</a>, <a href=\"https://github.com/elementary/icons/\">elementaryOS</a>, and <a href=\"https://github.com/madmaxms/iconpack-obsidian\">Obsidian</a></small></b>")
 		icons_credit.setAlignment(Qt.AlignCenter)
@@ -149,11 +127,7 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		nutjob_credit = QLabel(f"<small><b><i>Open source code for open source people</i></b></small>")
-		nutjob_credit.setAlignment(Qt.AlignCenter)
-		nutjob_credit.setOpenExternalLinks(True)
-
-		me_credit = QLabel(f"<small>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></small>")
+		me_credit = QLabel(f"<small><b>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></b></small>")
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
 
@@ -195,9 +169,19 @@ class Dialog(QDialog):
 		okButton = QPushButton("Ok")
 		okButton.clicked.connect(self.close)
 
+		app_description = QLabel("<b>Free and Open Source IRC Client</b>")
+		app_description.setAlignment(Qt.AlignCenter)
+		app_version = QLabel("<big><b>Version "+APPLICATION_VERSION+"</b></big>")
+		app_version.setAlignment(Qt.AlignCenter)
+		app_repository = QLabel(f"<big><b><a href=\"{APPLICATION_SOURCE}\">Source Code Repository</a></b></big>")
+		app_repository.setAlignment(Qt.AlignCenter)
+		app_repository.setOpenExternalLinks(True)
+
 		aboutLayout = QVBoxLayout()
 		aboutLayout.addStretch()
-		aboutLayout.addLayout(titleLayout)
+		aboutLayout.addWidget(logo)
+		aboutLayout.addWidget(app_version)
+		aboutLayout.addWidget(app_description)
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addWidget(platform_credit)
 		if is_running_from_pyinstaller():
@@ -206,19 +190,17 @@ class Dialog(QDialog):
 				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>"))
 			else:
 				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>"))
-		aboutLayout.addStretch()
-		aboutLayout.addLayout(logoBar)
+		aboutLayout.addWidget(app_repository)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
 
 		credLayout = QVBoxLayout()
 		credLayout.addStretch()
-		credLayout.addWidget(nutjob)
-		credLayout.addWidget(nutjob_credit)
-		credLayout.addWidget(me_credit)
+		credLayout.addLayout(logoBar)
 		credLayout.addStretch()
 		credLayout.addWidget(creditsBox)
+		credLayout.addWidget(me_credit)
 		credLayout.addStretch()
 		
 		self.credits_tab.setLayout(credLayout)
