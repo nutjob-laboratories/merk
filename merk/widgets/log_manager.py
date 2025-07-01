@@ -485,7 +485,16 @@ class Window(QMainWindow):
 		self.tabs = QTabWidget()
 
 		self.log_display = QWidget()
-		self.tabs.addTab(self.log_display, "Log Viewer")
+		log_index = self.tabs.addTab(self.log_display, "Log Viewer  ")
+
+		self.search = QLineEdit()
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAA")
+		self.search.setFixedWidth(wwidth)
+		self.search.returnPressed.connect(self.on_search)
+		self.search.setPlaceholderText("Search terms...")
+
+		self.tabs.tabBar().setTabButton(log_index, QTabBar.RightSide, self.search)
 
 		self.export_options = QWidget()
 		self.tabs.addTab(self.export_options, "Export")
@@ -518,6 +527,17 @@ class Window(QMainWindow):
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		# self.setLayout(finalLayout)
+
+	def on_search(self):
+		search_text = self.search.text()
+
+		if search_text:
+			found = self.chat.find(search_text, QTextDocument.FindFlags())
+			if not found:
+				cursor = self.chat.textCursor()
+				cursor.movePosition(QTextCursor.Start)
+				self.chat.setTextCursor(cursor)
+				self.chat.find(search_text, QTextDocument.FindFlags())
 
 	def generateStylesheet(self,obj,fore,back):
 
