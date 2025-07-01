@@ -159,7 +159,7 @@ There are three libraries that comes bundled with **MERK**:
 
 <p align="center">
  <center><a href="./graphics/log_manager_screenshot.png"><img src="./graphics/log_manager_screenshot_small.png"></a></center></br>
-  <center><i><small>The log manager, where you can view, export, and manage MERK logs. Logs can be exported to JSON or a custom delimited text format.</small></i></center>
+  <center><i><small>The log manager, where you can search, view, export, and manage MERK logs. Logs can be exported to JSON or a custom delimited text format.</small></i></center>
   </p>
 
 # Usage
