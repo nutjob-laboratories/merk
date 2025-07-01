@@ -762,8 +762,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# | /log |
 	# |------|
 	if len(tokens)>=1:
-
-		# No arguments dumps a list of all editable config values
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log' and len(tokens)==1:
 			if is_script==True:
 				if config.DISPLAY_SCRIPT_ERRORS:
