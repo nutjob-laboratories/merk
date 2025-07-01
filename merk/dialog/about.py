@@ -182,6 +182,7 @@ class Dialog(QDialog):
 		aboutLayout.addWidget(logo)
 		aboutLayout.addWidget(app_version)
 		aboutLayout.addWidget(app_description)
+		aboutLayout.addWidget(app_repository)
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addWidget(platform_credit)
 		if is_running_from_pyinstaller():
@@ -190,7 +191,6 @@ class Dialog(QDialog):
 				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>"))
 			else:
 				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>"))
-		aboutLayout.addWidget(app_repository)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
