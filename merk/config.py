@@ -227,9 +227,11 @@ DISPLAY_SCRIPT_ERRORS = True
 STRIP_NICKNAME_PADDING_FROM_DISPLAY = False
 WINDOWBAR_INCLUDE_MANAGER = False
 IGNORE_LIST = []
+USERLIST_ITEMS_NON_SELECTABLE = False
 
 def build_settings():
 	settings = {
+		"do_not_allow_select_on_userlist": USERLIST_ITEMS_NON_SELECTABLE,
 		"ignored_users": IGNORE_LIST,
 		"windowbar_include_log_manager": WINDOWBAR_INCLUDE_MANAGER,
 		"do_not_pad_nickname_in_chat_display": STRIP_NICKNAME_PADDING_FROM_DISPLAY,
@@ -423,6 +425,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "do_not_allow_select_on_userlist" in settings:
+		settings["do_not_allow_select_on_userlist"] = USERLIST_ITEMS_NON_SELECTABLE
 	if not "ignored_users" in settings:
 		settings["ignored_users"] = IGNORE_LIST
 	if not "windowbar_include_log_manager" in settings:
@@ -992,6 +996,7 @@ def load_settings(filename):
 	global STRIP_NICKNAME_PADDING_FROM_DISPLAY
 	global WINDOWBAR_INCLUDE_MANAGER
 	global IGNORE_LIST
+	global USERLIST_ITEMS_NON_SELECTABLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1001,6 +1006,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		USERLIST_ITEMS_NON_SELECTABLE = settings["do_not_allow_select_on_userlist"]
 		IGNORE_LIST = settings["ignored_users"]
 		WINDOWBAR_INCLUDE_MANAGER = settings["windowbar_include_log_manager"]
 		STRIP_NICKNAME_PADDING_FROM_DISPLAY = settings["do_not_pad_nickname_in_chat_display"]

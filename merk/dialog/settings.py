@@ -848,10 +848,12 @@ class Dialog(QDialog):
 			self.plainUserLists.setEnabled(True)
 			self.showUserlistLeft.setEnabled(True)
 			self.hideScroll.setEnabled(True)
+			self.noSelectUserlists.setEnabled(True)
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
+			self.noSelectUserlists.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2340,10 +2342,15 @@ class Dialog(QDialog):
 		self.hideScroll.stateChanged.connect(self.changedSetting)
 		self.hideScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
+		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
+		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
+			self.noSelectUserlists.setEnabled(False)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
@@ -2359,6 +2366,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.plainUserLists)
 		menuLayout.addWidget(self.showUserlistLeft)
 		menuLayout.addWidget(self.hideScroll)
+		menuLayout.addWidget(self.noSelectUserlists)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
@@ -3716,6 +3724,7 @@ class Dialog(QDialog):
 		config.DISPLAY_SCRIPT_ERRORS = self.showErrors.isChecked()
 		config.STRIP_NICKNAME_PADDING_FROM_DISPLAY = self.noPadding.isChecked()
 		config.WINDOWBAR_INCLUDE_MANAGER = self.windowbarManager.isChecked()
+		config.USERLIST_ITEMS_NON_SELECTABLE = self.noSelectUserlists.isChecked()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

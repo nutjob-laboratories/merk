@@ -1863,6 +1863,11 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(OWNER_USER))
 				ui.setText(u)
 
+			if config.USERLIST_ITEMS_NON_SELECTABLE:
+				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+				
+			self.change_to_back_display(ui)
+
 			if u==self.client.nickname:
 				if self.client.is_away:
 					self.change_to_away_display(ui)
@@ -1880,6 +1885,11 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(ADMIN_USER))
 				ui.setText(u)
+
+			if config.USERLIST_ITEMS_NON_SELECTABLE:
+				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+				
+			self.change_to_back_display(ui)
 
 			if u==self.client.nickname:
 				if self.client.is_away:
@@ -1899,6 +1909,11 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(HALFOP_USER))
 				ui.setText(u)
 
+			if config.USERLIST_ITEMS_NON_SELECTABLE:
+				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+				
+			self.change_to_back_display(ui)
+
 			if u==self.client.nickname:
 				if self.client.is_away:
 					self.change_to_away_display(ui)
@@ -1916,6 +1931,11 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(OP_USER))
 				ui.setText(u)
+
+			if config.USERLIST_ITEMS_NON_SELECTABLE:
+				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+				
+			self.change_to_back_display(ui)
 
 			if u==self.client.nickname:
 				if self.client.is_away:
@@ -1935,6 +1955,11 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(VOICE_USER))
 				ui.setText(u)
 
+			if config.USERLIST_ITEMS_NON_SELECTABLE:
+				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+				
+			self.change_to_back_display(ui)
+
 			if u==self.client.nickname:
 				if self.client.is_away:
 					self.change_to_away_display(ui)
@@ -1953,6 +1978,11 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(PROTECTED_USER))
 				ui.setText(u)
 
+			if config.USERLIST_ITEMS_NON_SELECTABLE:
+				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+
+			self.change_to_back_display(ui)
+
 			if u==self.client.nickname:
 				if self.client.is_away:
 					self.change_to_away_display(ui)
@@ -1970,6 +2000,11 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(NORMAL_USER))
 				ui.setText(u)
+
+			if config.USERLIST_ITEMS_NON_SELECTABLE:
+				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+			
+			self.change_to_back_display(ui)
 
 			if u==self.client.nickname:
 				if self.client.is_away:
