@@ -1215,8 +1215,25 @@ class Window(QMainWindow):
 
 		self.chat.clear()
 		for line in self.log:
-			t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
-			self.chat.append(t)
+
+			do_render = True
+			if line.sender!='':
+				p = line.sender.split("!")
+				if len(p)==2:
+					nickname = p[0].lower()
+					hostmask = p[1].lower()
+				else:
+					nickname = line.sender.lower()
+					hostmask = None
+
+				if line.sender in config.IGNORE_LIST: do_render = False
+				if nickname in config.IGNORE_LIST: do_render = False
+				if hostmask!=None:
+					if hostmask in config.IGNORE_LIST: do_render = False
+
+			if do_render:
+				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+				self.chat.append(t)
 
 		self.chat.moveCursor(QTextCursor.End)
 		self.input.setFocus()
@@ -1482,7 +1499,6 @@ class Window(QMainWindow):
 					if not user_is_voiced: actVoice = opMenu.addAction(QIcon(PLUS_ICON),"Give voiced status")
 
 				opMenu.addSeparator()
-				#insertNoTextSeparator(self.parent,opMenu)
 
 				actKick = opMenu.addAction(QIcon(KICK_ICON),"Kick "+user_nick)
 				actBan = opMenu.addAction(QIcon(BAN_ICON),"Ban "+user_nick)
@@ -2042,7 +2058,20 @@ class Window(QMainWindow):
 				self.chat.append(message)
 			else:
 
-				t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+				do_render = True
+				if message.sender!='':
+					p = message.sender.split("!")
+					if len(p)==2:
+						nickname = p[0].lower()
+						hostmask = p[1].lower()
+					else:
+						nickname = message.sender.lower()
+						hostmask = None
+				
+					if message.sender in config.IGNORE_LIST: do_render = False
+					if nickname in config.IGNORE_LIST: do_render = False
+					if hostmask!=None:
+						if hostmask in config.IGNORE_LIST: do_render = False
 
 				# Save entered text to the current log
 				self.log.append(message)
@@ -2050,7 +2079,9 @@ class Window(QMainWindow):
 				# Save entered text to the new log for saving
 				if write_to_log: self.new_log.append(message)
 
-				self.chat.append(t)
+				if do_render:
+					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+					self.chat.append(t)
 
 			self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)
 		except:

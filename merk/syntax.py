@@ -85,6 +85,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"xconnectssl",
 			cmdsymbol+"jump",
 			cmdsymbol+"unalias",
+			cmdsymbol+"ignore",
+			cmdsymbol+"unignore",
 		]
 
 		# if not resources.is_running_from_pyinstaller():

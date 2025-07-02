@@ -278,6 +278,8 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/jump WINDOW_NAME`                     | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                        |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                        |
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  _**Caution**: use at your own risk!_                                       |
+| `/ignore USER`                            | Hides a `USER`'s chat'                                                                  |
+| `/unignore USER`                          | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument'                                                               |
 
 
 # Example Command-line Usage

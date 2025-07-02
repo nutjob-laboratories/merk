@@ -1988,7 +1988,8 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
-	def reRenderAll(self):
+	def reRenderAll(self,show_wait=False):
+		if show_wait: QApplication.setOverrideCursor(Qt.WaitCursor)
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
 			c = window.widget()
@@ -1998,6 +1999,7 @@ class Merk(QMainWindow):
 				c.rerenderEditor()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
+		if show_wait: QApplication.restoreOverrideCursor()
 
 	def reApplyStyle(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)

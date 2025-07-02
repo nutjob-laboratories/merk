@@ -226,9 +226,11 @@ ENABLE_STYLE_EDITOR = True
 DISPLAY_SCRIPT_ERRORS = True
 STRIP_NICKNAME_PADDING_FROM_DISPLAY = False
 WINDOWBAR_INCLUDE_MANAGER = False
+IGNORE_LIST = []
 
 def build_settings():
 	settings = {
+		"ignored_users": IGNORE_LIST,
 		"windowbar_include_log_manager": WINDOWBAR_INCLUDE_MANAGER,
 		"do_not_pad_nickname_in_chat_display": STRIP_NICKNAME_PADDING_FROM_DISPLAY,
 		"show_script_execution_errors": DISPLAY_SCRIPT_ERRORS,
@@ -421,6 +423,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "ignored_users" in settings:
+		settings["ignored_users"] = IGNORE_LIST
 	if not "windowbar_include_log_manager" in settings:
 		settings["windowbar_include_log_manager"] = WINDOWBAR_INCLUDE_MANAGER
 	if not "do_not_pad_nickname_in_chat_display" in settings:
@@ -987,6 +991,7 @@ def load_settings(filename):
 	global DISPLAY_SCRIPT_ERRORS
 	global STRIP_NICKNAME_PADDING_FROM_DISPLAY
 	global WINDOWBAR_INCLUDE_MANAGER
+	global IGNORE_LIST
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -996,6 +1001,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		IGNORE_LIST = settings["ignored_users"]
 		WINDOWBAR_INCLUDE_MANAGER = settings["windowbar_include_log_manager"]
 		STRIP_NICKNAME_PADDING_FROM_DISPLAY = settings["do_not_pad_nickname_in_chat_display"]
 		DISPLAY_SCRIPT_ERRORS = settings["show_script_execution_errors"]

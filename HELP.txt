@@ -304,6 +304,14 @@ Appearance:
 <td><code>/config [SETTING] [VALUE...]</code></td>
 <td>Changes a setting, or searches and displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk!</i></td>
 </tr>
+<tr>
+<td><code>/ignore USER</code></td>
+<td>Hides a <code>USER</code>'s chat. <code>USER</code> can be a nickname or hostmask</td>
+</tr>
+<tr>
+<td><code>/unignore USER</code></td>
+<td>Un-hides a <code>USER</code>'s chat. To un-hide all users, use <code>*</code> as the argument</td>
+</tr>
 </tbody>
 </table>
 <h1 id="example-commandline-usage">Example Commandline Usage</h1>
