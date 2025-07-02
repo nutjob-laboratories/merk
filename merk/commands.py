@@ -774,6 +774,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			config.IGNORE_LIST.append(target)
 			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
 			gui.reRenderAll(True)
 			return True
 
@@ -800,6 +801,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				t = Message(SYSTEM_MESSAGE,'',f"Unignoring all users")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
 				gui.reRenderAll(True)
 				return True
 
@@ -817,6 +819,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			t = Message(SYSTEM_MESSAGE,'',f"Unignoring user \"{target}\"")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
 			gui.reRenderAll(True)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unignore':

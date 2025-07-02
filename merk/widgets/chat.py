@@ -1539,6 +1539,7 @@ class Window(QMainWindow):
 					if user_nick.lower() in config.IGNORE_LIST:
 						config.IGNORE_LIST.remove(user_nick.lower())
 					config.save_settings(config.CONFIG_FILE)
+					self.parent.buildSettingsMenu()
 					self.parent.reRenderAll(True)
 					return True
 				else:
@@ -1547,6 +1548,7 @@ class Window(QMainWindow):
 					else:
 						config.IGNORE_LIST.append(user_nick.lower())
 					config.save_settings(config.CONFIG_FILE)
+					self.parent.buildSettingsMenu()
 					self.parent.reRenderAll(True)
 					return True
 
@@ -1787,7 +1789,7 @@ class Window(QMainWindow):
 
 	def writeUserlist(self,users):
 
-		if not hasattr(self,"userlist"): return
+		if not hasattr(self,"userlist"): return	
 
 		self.users = []
 		self.operator = False

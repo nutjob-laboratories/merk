@@ -2819,12 +2819,24 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsClearIgnore(self):
+		config.IGNORE_LIST = []
+		config.save_settings(config.CONFIG_FILE)
+		self.reRenderAll(True)
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
 
 		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Configure '+APPLICATION_NAME+' preferences&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openSettings)
 		self.settingsMenu.addAction(entry)
+
+		if len(config.IGNORE_LIST)>0:
+			self.settingsMenu.addSeparator()
+			entry = QAction(QIcon(SHOW_ICON),"Clear ignore list", self)
+			entry.triggered.connect(self.settingsClearIgnore)
+			self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
 
