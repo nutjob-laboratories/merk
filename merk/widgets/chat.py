@@ -1525,11 +1525,17 @@ class Window(QMainWindow):
 			else:
 				actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
 
+			actPriv = menu.addAction(QIcon(PRIVATE_ICON),"Open private chat")
+
 			clipMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 			actCopyNick = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's nickname")
 			if user_hostmask: actHostmask = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's hostmask")
 
 			action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
+
+			if action == actPriv:
+				self.parent.openPrivate(self.client,user)
+				return True
 
 			if action == actIgnore:
 				if is_hidden:
