@@ -228,9 +228,11 @@ STRIP_NICKNAME_PADDING_FROM_DISPLAY = False
 WINDOWBAR_INCLUDE_MANAGER = False
 IGNORE_LIST = []
 USERLIST_ITEMS_NON_SELECTABLE = False
+EDITOR_USES_SYNTAX_HIGHLIGHTING = True
 
 def build_settings():
 	settings = {
+		"editor_syntax_highlighting": EDITOR_USES_SYNTAX_HIGHLIGHTING,
 		"do_not_allow_select_on_userlist": USERLIST_ITEMS_NON_SELECTABLE,
 		"ignored_users": IGNORE_LIST,
 		"windowbar_include_log_manager": WINDOWBAR_INCLUDE_MANAGER,
@@ -425,6 +427,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "editor_syntax_highlighting" in settings:
+		settings["editor_syntax_highlighting"] = EDITOR_USES_SYNTAX_HIGHLIGHTING
 	if not "do_not_allow_select_on_userlist" in settings:
 		settings["do_not_allow_select_on_userlist"] = USERLIST_ITEMS_NON_SELECTABLE
 	if not "ignored_users" in settings:
@@ -997,6 +1001,7 @@ def load_settings(filename):
 	global WINDOWBAR_INCLUDE_MANAGER
 	global IGNORE_LIST
 	global USERLIST_ITEMS_NON_SELECTABLE
+	global EDITOR_USES_SYNTAX_HIGHLIGHTING
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1006,6 +1011,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		EDITOR_USES_SYNTAX_HIGHLIGHTING = settings["editor_syntax_highlighting"]
 		USERLIST_ITEMS_NON_SELECTABLE = settings["do_not_allow_select_on_userlist"]
 		IGNORE_LIST = settings["ignored_users"]
 		WINDOWBAR_INCLUDE_MANAGER = settings["windowbar_include_log_manager"]

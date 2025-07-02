@@ -98,7 +98,6 @@ class Window(QMainWindow):
 			self.wordwrap = True
 		self.buildEditMenu()
 
-
 	def buildEditMenu(self):
 
 		self.editMenu.clear()
@@ -167,8 +166,22 @@ class Window(QMainWindow):
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
 	def refreshHighlighter(self):
-		self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
-		self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+		reset = False
+		if self.changed==False: reset = True
+		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
+			self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
+			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+			if reset:
+				self.changed = False
+				self.updateApplicationTitle()
+		else:
+			script = self.editor.toPlainText()
+			self.highlight = None
+			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit','black','white'))
+			self.editor.setPlainText(script)
+			if reset:
+				self.changed = False
+				self.updateApplicationTitle()
 
 	def togglePrompt(self):
 		if config.EDITOR_PROMPT_SAVE:
@@ -178,6 +191,16 @@ class Window(QMainWindow):
 			config.EDITOR_PROMPT_SAVE = True
 			self.menuPrompt.setIcon(QIcon(self.parent.checked_icon))
 		config.save_settings(config.CONFIG_FILE)
+
+	def toggleHighlighting(self):
+		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
+			config.EDITOR_USES_SYNTAX_HIGHLIGHTING = False
+			self.menuSyntax.setIcon(QIcon(self.parent.unchecked_icon))
+		else:
+			config.EDITOR_USES_SYNTAX_HIGHLIGHTING = True
+			self.menuSyntax.setIcon(QIcon(self.parent.checked_icon))
+		config.save_settings(config.CONFIG_FILE)
+		self.refreshHighlighter()
 
 	def toggleStatusBar(self):
 		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS:
@@ -207,12 +230,14 @@ class Window(QMainWindow):
 
 		self.editor = QPlainTextEdit(self)
 
-		self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
+		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
+			self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
+			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+		else:
+			self.highlight = None
 
 		self.wordwrap = True
 		self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
-
-		self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
@@ -246,18 +271,9 @@ class Window(QMainWindow):
 
 		self.fileMenu = self.menubar.addMenu("File")
 
-		entry = QAction(QIcon(NEWFILE_ICON),"New script",self)
-		entry.triggered.connect(self.doNewFile)
-		entry.setShortcut("Ctrl+N")
-		self.fileMenu.addAction(entry)
-
-		entry = QAction(QIcon(OPENFILE_ICON),"Open script",self)
+		entry = QAction(QIcon(OPENFILE_ICON),"Open file",self)
 		entry.triggered.connect(self.doFileOpen)
 		entry.setShortcut("Ctrl+O")
-		self.fileMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
-		entry.triggered.connect(self.doNewScript)
 		self.fileMenu.addAction(entry)
 
 		if len(user.COMMANDS)>0:
@@ -268,6 +284,15 @@ class Window(QMainWindow):
 				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
 				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
 				self.cscript_menu.addAction(entry)
+
+		entry = QAction(QIcon(NEWFILE_ICON),"New script",self)
+		entry.triggered.connect(self.doNewFile)
+		entry.setShortcut("Ctrl+N")
+		self.fileMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
+		entry.triggered.connect(self.doNewScript)
+		self.fileMenu.addAction(entry)
 
 		self.fileMenu.addSeparator()
 
@@ -283,6 +308,16 @@ class Window(QMainWindow):
 		self.menuSaveAs.triggered.connect(self.doFileSaveAs)
 		if not self.filename: self.menuSaveAs.setShortcut("Ctrl+Shift+S")
 		self.fileMenu.addAction(self.menuSaveAs)
+
+		self.fileMenu.addSeparator()
+
+		menuSyntaxText = "Syntax highlighting"
+		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
+			self.menuSyntax = QAction(QIcon(self.parent.checked_icon),menuSyntaxText,self)
+		else:
+			self.menuSyntax = QAction(QIcon(self.parent.unchecked_icon),menuSyntaxText,self)
+		self.menuSyntax.triggered.connect(self.toggleHighlighting)
+		self.fileMenu.addAction(self.menuSyntax)
 
 		menuPromptText = "Ask to save changed files"
 		if config.EDITOR_PROMPT_SAVE:
@@ -855,7 +890,7 @@ class Window(QMainWindow):
 
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getOpenFileName(self,"Open Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.{SCRIPT_FILE_EXTENSION});;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getOpenFileName(self,"Open Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.{SCRIPT_FILE_EXTENSION});;Text Files (*.txt);;All Files (*)", options=options)
 		if fileName:
 			script = open(fileName,"r",encoding="utf-8",errors="ignore")
 			self.editor.setPlainText(script.read())

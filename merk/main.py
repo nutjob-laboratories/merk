@@ -347,8 +347,6 @@ class Merk(QMainWindow):
 
 	def buildWindowbar(self):
 
-		self.buildToolsMenu()
-
 		if not hasattr(self,"windowbar"): return
 
 		if config.SHOW_WINDOWBAR==False:
@@ -949,8 +947,6 @@ class Merk(QMainWindow):
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
 		c.writeText(t)
 
-		self.buildMainMenu()
-
 	def connectionLost(self,client):
 		
 		windows = self.getAllSubWindows(client)
@@ -960,8 +956,6 @@ class Merk(QMainWindow):
 		# Forcibly remove server window
 		w = self.getServerSubWindow(client)
 		self.buildWindowsMenu()
-
-		self.buildMainMenu()
 
 		# If the flash doesn't work, just ignore the error
 		try:
@@ -2687,8 +2681,8 @@ class Merk(QMainWindow):
 			config.DISPLAY_IRC_COLORS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
-		self.buildSettingsMenu()
 		QApplication.restoreOverrideCursor()
+		self.buildSettingsMenu()
 
 	def settingsChanNames(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -2698,8 +2692,8 @@ class Merk(QMainWindow):
 			config.CONVERT_CHANNELS_TO_LINKS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
-		self.buildSettingsMenu()
 		QApplication.restoreOverrideCursor()
+		self.buildSettingsMenu()
 
 	def settingsLinks(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -2709,8 +2703,8 @@ class Merk(QMainWindow):
 			config.CONVERT_URLS_TO_LINKS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
-		self.buildSettingsMenu()
 		QApplication.restoreOverrideCursor()
+		self.buildSettingsMenu()
 
 	def settingsAudio(self):
 		if config.SOUND_NOTIFICATIONS:
@@ -2780,8 +2774,8 @@ class Merk(QMainWindow):
 			config.DISPLAY_TIMESTAMP = True
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll()
-		self.buildSettingsMenu()
 		QApplication.restoreOverrideCursor()
+		self.buildSettingsMenu()
 
 	def settingsSimplified(self):
 		if config.SIMPLIFIED_DIALOGS:
@@ -3539,6 +3533,10 @@ class Merk(QMainWindow):
 		self.buildToolsMenu()
 		self.buildWindowsMenu()
 		self.buildHelpMenu()
+
+		# Re-build some menus every time they are opened
+		self.toolsMenu.aboutToShow.connect(self.buildToolsMenu)
+		self.mainMenu.aboutToShow.connect(self.buildMainMenu)\
 
 	def menuEditStyle(self):
 		if config.SIMPLIFIED_DIALOGS:
