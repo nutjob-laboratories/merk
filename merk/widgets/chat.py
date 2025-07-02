@@ -1452,6 +1452,11 @@ class Window(QMainWindow):
 				OTHER_TEXT = "Normal user"
 			statusLayout.addStretch()
 
+			is_hidden = False
+			if user_hostmask:
+				if user_hostmask.lower() in config.IGNORE_LIST: is_hidden = True
+			if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
+
 			if user_nick==self.client.nickname:
 				
 				if config.SHOW_AWAY_STATUS_IN_USERLISTS:
@@ -1472,9 +1477,18 @@ class Window(QMainWindow):
 				if user_hostmask:
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
 					menu.addAction(entry)
+
+					if is_hidden:
+						e = noSpacePlainTextAction(self,f"<small><i><center>User is ignored</center></i></small>")
+						menu.addAction(e)
+
 				else:
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
 					menu.addAction(entry)
+
+					if is_hidden:
+						e = noSpacePlainTextAction(self,f"<small><i><center>User is ignored</center></i></small>")
+						menu.addAction(e)
 
 			if config.SHOW_AWAY_STATUS_IN_USERLISTS:
 				if user_nick in self.away:
@@ -1506,11 +1520,36 @@ class Window(QMainWindow):
 
 			actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
+			if is_hidden:
+				actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
+			else:
+				actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
+
 			clipMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 			actCopyNick = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's nickname")
 			if user_hostmask: actHostmask = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's hostmask")
 
 			action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
+
+			if action == actIgnore:
+				if is_hidden:
+					if user_hostmask:
+						if user_hostmask.lower() in config.IGNORE_LIST:
+							config.IGNORE_LIST.remove(user_hostmask.lower())
+					if user_nick.lower() in config.IGNORE_LIST:
+						config.IGNORE_LIST.remove(user_nick.lower())
+					config.save_settings(config.CONFIG_FILE)
+					self.parent.reRenderAll(True)
+					return True
+				else:
+					if user_hostmask:
+						config.IGNORE_LIST.append(user_hostmask.lower())
+					else:
+						config.IGNORE_LIST.append(user_nick.lower())
+					config.save_settings(config.CONFIG_FILE)
+					self.parent.reRenderAll(True)
+					return True
+
 
 			if action == actWhois:
 				self.client.sendLine("WHOIS "+user_nick)
