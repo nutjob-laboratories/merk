@@ -1550,7 +1550,6 @@ class Window(QMainWindow):
 					self.parent.reRenderAll(True)
 					return True
 
-
 			if action == actWhois:
 				self.client.sendLine("WHOIS "+user_nick)
 				return True

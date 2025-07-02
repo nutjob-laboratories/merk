@@ -770,6 +770,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			tokens.pop(0)
 			target = tokens.pop(0).lower()
 
+			t = Message(SYSTEM_MESSAGE,'',f"Ignoring user \"{target}\"")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			config.IGNORE_LIST.append(target)
 			config.save_settings(config.CONFIG_FILE)
 			gui.reRenderAll(True)
@@ -795,6 +797,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 			if target=='*':
 				config.IGNORE_LIST = []
+				t = Message(SYSTEM_MESSAGE,'',f"Unignoring all users")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				config.save_settings(config.CONFIG_FILE)
 				gui.reRenderAll(True)
 				return True
@@ -810,6 +814,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				t = Message(ERROR_MESSAGE,'',f"\"{target}\" is not in the ignore list")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
+			t = Message(SYSTEM_MESSAGE,'',f"Unignoring user \"{target}\"")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			config.save_settings(config.CONFIG_FILE)
 			gui.reRenderAll(True)
 			return True
@@ -912,6 +918,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						if a!="timestamp_format" and a!="log_absolutely_all_messages_of_any_type":
 							if fnmatch.fnmatch(a,f"*{my_setting}*"):
 								results.append(a)
+
+				if len(results)==0:
+					if is_script:
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: No settings found containing \"{my_setting}\"")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"No settings found containing \"{my_setting}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
 
 				if len(results)>1:
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")

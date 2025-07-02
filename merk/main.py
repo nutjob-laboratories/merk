@@ -959,7 +959,6 @@ class Merk(QMainWindow):
 
 		# Forcibly remove server window
 		w = self.getServerSubWindow(client)
-		#self.MDI.removeSubWindow(w)
 		self.buildWindowsMenu()
 
 		self.buildMainMenu()
