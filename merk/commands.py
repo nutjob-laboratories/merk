@@ -288,6 +288,7 @@ def interpolateAliases(text):
 		counter = counter + 1
 		if counter>=99: break
 
+	counter = 0
 	while detect_alias(text):
 		for a in TEMPORARY_ALIAS:
 			text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,TEMPORARY_ALIAS[a])

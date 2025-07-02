@@ -2092,9 +2092,7 @@ class Window(QMainWindow):
 					self.away_button.setToolTip("Set status to \"back\"")
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
 					if config.ENABLE_EMOJI_SHORTCODES:
-						msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
-					else:
-						msg = config.DEFAULT_AWAY_MESSAGE
+						msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 					self.client.away(msg)
 					self.client.away_msg = msg
 			else:
