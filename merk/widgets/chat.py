@@ -3242,12 +3242,12 @@ class Highlighter(QSyntaxHighlighter):
 
 		# Highlight for spelling
 		if self.dict:
-			format = QTextCharFormat()
-			format.setUnderlineColor(QColor(config.SPELLCHECK_UNDERLINE_COLOR))
-			format.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
-			if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: format.setFontItalic(True)
-			if config.SHOW_MISSPELLED_WORDS_IN_BOLD: format.setFontWeight(QFont.Bold)
-			if config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT: format.setFontStrikeOut(True)
+			misspelled_format = QTextCharFormat()
+			misspelled_format.setUnderlineColor(QColor(config.SPELLCHECK_UNDERLINE_COLOR))
+			misspelled_format.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
+			if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: misspelled_format.setFontItalic(True)
+			if config.SHOW_MISSPELLED_WORDS_IN_BOLD: misspelled_format.setFontWeight(QFont.Bold)
+			if config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT: misspelled_format.setFontStrikeOut(True)
 
 			for word_object in re.finditer(self.WORDS, text):
 
@@ -3259,9 +3259,9 @@ class Highlighter(QSyntaxHighlighter):
 						if not word_object.group() in config.DICTIONARY:
 							if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
 								if not word_object.group() in do_not_spellcheck:
-									self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
+									self.setFormat(word_object.start(), word_object.end() - word_object.start(), misspelled_format)
 							else:
-								self.setFormat(word_object.start(), word_object.end() - word_object.start(), format)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), misspelled_format)
 
 class SpellAction(QAction):
 	correct = pyqtSignal(str)
