@@ -1044,7 +1044,7 @@ class Window(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
-		# Spellcheck Button
+			# Spellcheck Button
 			self.spellcheckMenu = QMenu("Spellcheck")
 			self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
 
@@ -1089,7 +1089,7 @@ class Window(QMainWindow):
 			if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
 			if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
 
-			self.settingsMenu.addMenu(self.spellcheckMenu)
+			if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.settingsMenu.addMenu(self.spellcheckMenu)
 
 	def updateHostmask(self,nick,hostmask):
 		if hostmask!=None:

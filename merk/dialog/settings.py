@@ -873,6 +873,7 @@ class Dialog(QDialog):
 			self.russianSC.setEnabled(True)
 			self.spellcheckDistance.setEnabled(True)
 			self.distanceLabel.setEnabled(True)
+			self.allowSpellcheck.setEnabled(True)
 		else:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -884,6 +885,7 @@ class Dialog(QDialog):
 			self.russianSC.setEnabled(False)
 			self.spellcheckDistance.setEnabled(False)
 			self.distanceLabel.setEnabled(False)
+			self.allowSpellcheck.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -2565,6 +2567,10 @@ class Dialog(QDialog):
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="nl": self.dutchSC.setChecked(True)
 		if config.DEFAULT_SPELLCHECK_LANGUAGE=="ru": self.russianSC.setChecked(True)
 
+		self.allowSpellcheck = QCheckBox("Show spellcheck settings in menus",self)
+		if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.allowSpellcheck.setChecked(True)
+		self.allowSpellcheck.stateChanged.connect(self.changedSpellcheck)
+
 		if not config.ENABLE_SPELLCHECK:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -2574,6 +2580,7 @@ class Dialog(QDialog):
 			self.italianSC.setEnabled(False)
 			self.dutchSC.setEnabled(False)
 			self.russianSC.setEnabled(False)
+			self.allowSpellcheck.setEnabled(False)
 
 		langLayout = QFormLayout()
 		langLayout.addRow(self.englishSC, self.frenchSC)
@@ -2617,6 +2624,7 @@ class Dialog(QDialog):
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addWidget(self.enableSpellcheck)
+		spellcheckLayout.addWidget(self.allowSpellcheck)
 		spellcheckLayout.addLayout(distanceLayout)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
@@ -3736,6 +3744,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_INCLUDE_MANAGER = self.windowbarManager.isChecked()
 		config.USERLIST_ITEMS_NON_SELECTABLE = self.noSelectUserlists.isChecked()
 		config.SHOW_USER_COUNT_DISPLAY = self.channelCount.isChecked()
+		config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS = self.allowSpellcheck.isChecked()
 		
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
