@@ -231,9 +231,15 @@ USERLIST_ITEMS_NON_SELECTABLE = False
 EDITOR_USES_SYNTAX_HIGHLIGHTING = True
 SHOW_USER_COUNT_DISPLAY = True
 ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS = True
+SPELLCHECK_UNDERLINE_COLOR = "#FF0000"
+SHOW_MISSPELLED_WORDS_IN_ITALICS = False
+SHOW_MISSPELLED_WORDS_IN_BOLD = False
 
 def build_settings():
 	settings = {
+		"spellcheck_underline_color": SPELLCHECK_UNDERLINE_COLOR,
+		"spellcheck_in_italics": SHOW_MISSPELLED_WORDS_IN_ITALICS,
+		"spellcheck_in_bold": SHOW_MISSPELLED_WORDS_IN_BOLD,
 		"show_spellcheck_settings_in_menus": ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS,
 		"show_user_count_display": SHOW_USER_COUNT_DISPLAY,
 		"editor_syntax_highlighting": EDITOR_USES_SYNTAX_HIGHLIGHTING,
@@ -431,6 +437,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "spellcheck_underline_color" in settings:
+		settings["spellcheck_underline_color"] = SPELLCHECK_UNDERLINE_COLOR
+	if not "spellcheck_in_italics" in settings:
+			settings["spellcheck_in_italics"] = SHOW_MISSPELLED_WORDS_IN_ITALICS
+	if not "spellcheck_in_bold" in settings:
+			settings["spellcheck_in_bold"] = SHOW_MISSPELLED_WORDS_IN_BOLD
 	if not "show_spellcheck_settings_in_menus" in settings:
 		settings["show_spellcheck_settings_in_menus"] = ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS
 	if not "show_user_count_display" in settings:
@@ -1012,6 +1024,9 @@ def load_settings(filename):
 	global EDITOR_USES_SYNTAX_HIGHLIGHTING
 	global SHOW_USER_COUNT_DISPLAY
 	global ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS
+	global SPELLCHECK_UNDERLINE_COLOR
+	global SHOW_MISSPELLED_WORDS_IN_ITALICS
+	global SHOW_MISSPELLED_WORDS_IN_BOLD
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1021,6 +1036,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SPELLCHECK_UNDERLINE_COLOR = settings["spellcheck_underline_color"]
+		SHOW_MISSPELLED_WORDS_IN_ITALICS = settings["spellcheck_in_italics"]
+		SHOW_MISSPELLED_WORDS_IN_BOLD = settings["spellcheck_in_bold"]
 		ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS = settings["show_spellcheck_settings_in_menus"]
 		SHOW_USER_COUNT_DISPLAY = settings["show_user_count_display"]
 		EDITOR_USES_SYNTAX_HIGHLIGHTING = settings["editor_syntax_highlighting"]

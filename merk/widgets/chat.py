@@ -3243,8 +3243,10 @@ class Highlighter(QSyntaxHighlighter):
 		# Highlight for spelling
 		if self.dict:
 			format = QTextCharFormat()
-			format.setUnderlineColor(Qt.red)
+			format.setUnderlineColor(QColor(config.SPELLCHECK_UNDERLINE_COLOR))
 			format.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
+			if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: format.setFontItalic(True)
+			if config.SHOW_MISSPELLED_WORDS_IN_BOLD: format.setFontWeight(QFont.Bold)
 
 			for word_object in re.finditer(self.WORDS, text):
 

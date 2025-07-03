@@ -515,6 +515,15 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def underlineChanged(self,data):
+		name = data[0]
+		if name=="underline":
+			color = data[1]
+			self.SPELLCHECK_UNDERLINE_COLOR = color
+			self.changed.show()
+			self.boldApply()
+			self.selector.setFocus()
+
 	def syntaxChanged(self,data):
 		name = data[0]
 		
@@ -874,6 +883,9 @@ class Dialog(QDialog):
 			self.spellcheckDistance.setEnabled(True)
 			self.distanceLabel.setEnabled(True)
 			self.allowSpellcheck.setEnabled(True)
+			self.spellcheckColor.setEnabled(True)
+			self.spellcheckBold.setEnabled(True)
+			self.spellcheckItalics.setEnabled(True)
 		else:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -886,6 +898,9 @@ class Dialog(QDialog):
 			self.spellcheckDistance.setEnabled(False)
 			self.distanceLabel.setEnabled(False)
 			self.allowSpellcheck.setEnabled(False)
+			self.spellcheckColor.setEnabled(False)
+			self.spellcheckBold.setEnabled(False)
+			self.spellcheckItalics.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1153,6 +1168,8 @@ class Dialog(QDialog):
 		self.SYNTAX_NICKNAME_STYLE = config.SYNTAX_NICKNAME_STYLE
 		self.SYNTAX_EMOJI_COLOR = config.SYNTAX_EMOJI_COLOR
 		self.SYNTAX_EMOJI_STYLE = config.SYNTAX_EMOJI_STYLE
+
+		self.SPELLCHECK_UNDERLINE_COLOR = config.SPELLCHECK_UNDERLINE_COLOR
 
 		self.qt_style = config.QT_WINDOW_STYLE
 
@@ -2571,6 +2588,31 @@ class Dialog(QDialog):
 		if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.allowSpellcheck.setChecked(True)
 		self.allowSpellcheck.stateChanged.connect(self.changedSpellcheck)
 
+		self.spellcheckDistance = QComboBox(self)
+		self.spellcheckDistance.addItem(str(config.SPELLCHECKER_DISTANCE))
+		if config.SPELLCHECKER_DISTANCE!=1: self.spellcheckDistance.addItem('1')
+		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('2')
+		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('3')
+		self.spellcheckDistance.currentIndexChanged.connect(self.distanceChange)
+
+		self.distanceLabel = QLabel("Levenshtein distance ")
+
+		self.spellcheckColor = widgets.SyntaxTextColor('underline', "<b>Underline Color</b>",self.SPELLCHECK_UNDERLINE_COLOR,self)
+		self.spellcheckColor.syntaxChanged.connect(self.underlineChanged)
+
+		distanceLayout = QHBoxLayout()
+		distanceLayout.addWidget(self.distanceLabel)
+		distanceLayout.addWidget(self.spellcheckDistance)
+		distanceLayout.addStretch()
+
+		self.spellcheckBold = QCheckBox("Bold",self)
+		if config.SHOW_MISSPELLED_WORDS_IN_BOLD: self.spellcheckBold.setChecked(True)
+		self.spellcheckBold.stateChanged.connect(self.changedSpellcheck)
+
+		self.spellcheckItalics = QCheckBox("Italics",self)
+		if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: self.spellcheckItalics.setChecked(True)
+		self.spellcheckItalics.stateChanged.connect(self.changedSpellcheck)
+
 		if not config.ENABLE_SPELLCHECK:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -2581,6 +2623,11 @@ class Dialog(QDialog):
 			self.dutchSC.setEnabled(False)
 			self.russianSC.setEnabled(False)
 			self.allowSpellcheck.setEnabled(False)
+			self.distanceLabel.setEnabled(False)
+			self.spellcheckDistance.setEnabled(False)
+			self.spellcheckColor.setEnabled(False)
+			self.spellcheckBold.setEnabled(False)
+			self.spellcheckItalics.setEnabled(False)
 
 		langLayout = QFormLayout()
 		langLayout.addRow(self.englishSC, self.frenchSC)
@@ -2593,10 +2640,23 @@ class Dialog(QDialog):
 		lanSubLayout.addLayout(langLayout)
 		lanSubLayout.addStretch()
 
-		self.spellcheckDescription = QLabel("""
+		spColorLayout = QHBoxLayout()
+		spColorLayout.addStretch()
+		spColorLayout.addWidget(self.spellcheckColor)
+		spColorLayout.addStretch()
+
+		spFormatLayout = QFormLayout()
+		spFormatLayout.addRow(self.spellcheckBold,self.spellcheckItalics)
+
+		spFormatLayout2 = QHBoxLayout()
+		spFormatLayout2.addStretch()
+		spFormatLayout2.addLayout(spFormatLayout)
+		spFormatLayout2.addStretch()
+
+		self.spellcheckDescription = QLabel(f"""
 			<small>
-			Misspelled words in the input widget are marked with a <b><span style='text-decoration: underline; color: red;'>red
-			underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
+			Misspelled words in the input widget are marked with a <b><span style='text-decoration: underline; color: {self.SPELLCHECK_UNDERLINE_COLOR};'>
+			colored underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
 			the word with</b> or to <b>add that word to the built-in dictionary</b>. The <b>Levenshtein distance</b> setting sets
 			how the spellchecker finds suggestions to replace misspelled words; lower numbers are better for
 			longer words.
@@ -2606,26 +2666,16 @@ class Dialog(QDialog):
 		self.spellcheckDescription.setWordWrap(True)
 		self.spellcheckDescription.setAlignment(Qt.AlignJustify)
 
-		self.spellcheckDistance = QComboBox(self)
-		self.spellcheckDistance.addItem(str(config.SPELLCHECKER_DISTANCE))
-		if config.SPELLCHECKER_DISTANCE!=1: self.spellcheckDistance.addItem('1')
-		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('2')
-		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('3')
-		self.spellcheckDistance.currentIndexChanged.connect(self.distanceChange)
-
-		self.distanceLabel = QLabel("Levenshtein distance ")
-
-		distanceLayout = QHBoxLayout()
-		distanceLayout.addWidget(self.distanceLabel)
-		distanceLayout.addWidget(self.spellcheckDistance)
-		distanceLayout.addStretch()
-
 		spellcheckLayout = QVBoxLayout()
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addWidget(self.enableSpellcheck)
 		spellcheckLayout.addWidget(self.allowSpellcheck)
 		spellcheckLayout.addLayout(distanceLayout)
+		spellcheckLayout.addWidget(QLabel(' '))
+		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
+		spellcheckLayout.addLayout(spColorLayout)
+		spellcheckLayout.addLayout(spFormatLayout2)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
@@ -3745,6 +3795,9 @@ class Dialog(QDialog):
 		config.USERLIST_ITEMS_NON_SELECTABLE = self.noSelectUserlists.isChecked()
 		config.SHOW_USER_COUNT_DISPLAY = self.channelCount.isChecked()
 		config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS = self.allowSpellcheck.isChecked()
+		config.SPELLCHECK_UNDERLINE_COLOR = self.SPELLCHECK_UNDERLINE_COLOR
+		config.SHOW_MISSPELLED_WORDS_IN_BOLD = self.spellcheckBold.isChecked()
+		config.SHOW_MISSPELLED_WORDS_IN_ITALICS = self.spellcheckItalics.isChecked()
 		
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
