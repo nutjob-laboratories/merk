@@ -256,13 +256,18 @@ class Window(QMainWindow):
 
 		if self.window_type==CHANNEL_WINDOW:
 
+			if self.parent.dark_mode:
+				border_color = "white"
+			else:
+				border_color = "black"
+
 			# Channel name display
 			self.channel_mode_display = QLabel("<b>"+self.name+"</b>")
-			self.channel_mode_display.setStyleSheet("border: 1px solid black; padding: 0px;")
+			self.channel_mode_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
 
 			# Channel name display
 			self.channel_users_display = QLabel("<b><small>1 user</small></b>")
-			self.channel_users_display.setStyleSheet("border: 1px solid black; padding: 0px;")
+			self.channel_users_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
 			self.channel_users_display.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
 			
 			# Create topic editor

@@ -2280,11 +2280,11 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
 		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
 
-		self.topicBold = QCheckBox("Show channel topic in bold",self)
+		self.topicBold = QCheckBox("Channel topic in bold",self)
 		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
 		self.topicBold.stateChanged.connect(self.titleChange)
 
-		self.channelName = QCheckBox("Show channel name and modes",self)
+		self.channelName = QCheckBox("Channel name/modes",self)
 		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
 		self.channelName.stateChanged.connect(self.topicChange)
 
@@ -2292,16 +2292,13 @@ class Dialog(QDialog):
 		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
 		self.showBanlist.stateChanged.connect(self.topicChange)
 
-		self.showChanMenu = QCheckBox("Modes button",self)
+		self.showChanMenu = QCheckBox("Channel modes button",self)
 		if config.SHOW_CHANNEL_MENU: self.showChanMenu.setChecked(True)
 		self.showChanMenu.stateChanged.connect(self.topicChange)
 
-		self.channelCount = QCheckBox("Show channel user count",self)
+		self.channelCount = QCheckBox("User count",self)
 		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
 		self.channelCount.stateChanged.connect(self.topicChange)
-
-		chanButtonLayout = QFormLayout()
-		chanButtonLayout.addRow(self.showBanlist,self.showChanMenu)
 
 		if not config.SHOW_CHANNEL_TOPIC:
 			self.topicBold.setEnabled(False)
@@ -2362,14 +2359,17 @@ class Dialog(QDialog):
 			self.hideScroll.setEnabled(False)
 			self.noSelectUserlists.setEnabled(False)
 
+		chanButtonLayout = QFormLayout()
+		chanButtonLayout.addRow(self.channelName,self.channelCount)
+		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
 		menuLayout.addWidget(self.topicDisplay)
-		menuLayout.addWidget(self.topicBold)
-		menuLayout.addWidget(self.channelName)
-		menuLayout.addWidget(self.channelCount)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show in information display</b>"))
 		menuLayout.addLayout(chanButtonLayout)
+		menuLayout.addWidget(self.topicBold)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		menuLayout.addWidget(self.showUserlists)
