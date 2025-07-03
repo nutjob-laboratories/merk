@@ -80,6 +80,8 @@ class Window(QMainWindow):
 		self.channel_topic = ""		# Channel topic
 		self.userlist_width = 0		# Userlist width
 
+		self.user_count = 0
+
 		self.language = config.DEFAULT_SPELLCHECK_LANGUAGE
 
 		self.history_buffer = ['']
@@ -1826,7 +1828,7 @@ class Window(QMainWindow):
 
 		self.userlist.clear()
 
-		user_count = 0
+		self.user_count = 0
 
 		owners = []
 		admins = []
@@ -1848,7 +1850,7 @@ class Window(QMainWindow):
 				nickname = u
 				hostmask = None
 
-			user_count = user_count + 1
+			self.user_count = self.user_count + 1
 
 			if '@' in nickname:
 				ops.append(nickname.replace('@',''))
@@ -1871,10 +1873,10 @@ class Window(QMainWindow):
 			else:
 				normal.append(nickname)
 
-		if user_count==1:
+		if self.user_count==1:
 			self.channel_users_display.setText("<b><small>1 user</small></b>")
 		else:
-			self.channel_users_display.setText(f"<b><small>{user_count} users</small></b>")
+			self.channel_users_display.setText(f"<b><small>{self.user_count} users</small></b>")
 
 		# Store a list of the nicks in this channel
 		self.nicks = owners + admins + halfops + ops + voiced + normal

@@ -3659,6 +3659,7 @@ class Merk(QMainWindow):
 
 	def openSettings(self):
 		self.settingsDialog = SettingsDialog(self.app,self)
+		self.settingsDialog.show()
 
 	def showAbout(self):
 		self.__about_dialog = AboutDialog()

@@ -101,7 +101,6 @@ def SizeDialog(obj):
 
 def SettingsDialog(app,obj):
 	x = Settings(app,obj)
-	x.show()
 	return x
 
 def StylerDialog(client,chat,obj):
