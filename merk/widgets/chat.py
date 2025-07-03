@@ -259,6 +259,11 @@ class Window(QMainWindow):
 			# Channel name display
 			self.channel_mode_display = QLabel("<b>"+self.name+"</b>")
 			self.channel_mode_display.setStyleSheet("border: 1px solid black; padding: 0px;")
+
+			# Channel name display
+			self.channel_users_display = QLabel("<b><small>1 user</small></b>")
+			self.channel_users_display.setStyleSheet("border: 1px solid black; padding: 0px;")
+			self.channel_users_display.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
 			
 			# Create topic editor
 			self.topic = TopicEdit(self)
@@ -296,6 +301,9 @@ class Window(QMainWindow):
 			if not config.SHOW_USERLIST:
 				self.userlist.hide()
 				self.userlist_visible = False
+
+			if not config.SHOW_USER_COUNT_DISPLAY:
+				self.channel_users_display.hide()
 
 		# Create chat display widget
 		self.chat = QTextBrowser(self)
@@ -480,6 +488,7 @@ class Window(QMainWindow):
 			topicLayout.addWidget(self.banlist_menu)
 			topicLayout.addWidget(self.channel_mode_display)
 			topicLayout.addWidget(self.topic)
+			topicLayout.addWidget(self.channel_users_display)
 
 			if not config.SHOW_CHANNEL_TOPIC:
 				self.hideTopic()
@@ -1100,6 +1109,7 @@ class Window(QMainWindow):
 		self.channel_menu.hide()
 		self.channel_mode_display.hide()
 		self.topic.hide()
+		self.channel_users_display.hide()
 
 	def showTopic(self):
 		if config.SHOW_BANLIST_MENU:
@@ -1117,6 +1127,10 @@ class Window(QMainWindow):
 		else:
 			self.channel_mode_display.hide()
 		self.topic.show()
+		if config.SHOW_USER_COUNT_DISPLAY:
+			self.channel_users_display.show()
+		else:
+			self.channel_users_display.hide()
 
 	def tickUptime(self,uptime):
 
@@ -1807,6 +1821,8 @@ class Window(QMainWindow):
 
 		self.userlist.clear()
 
+		user_count = 0
+
 		owners = []
 		admins = []
 		ops = []
@@ -1826,6 +1842,8 @@ class Window(QMainWindow):
 			else:
 				nickname = u
 				hostmask = None
+
+			user_count = user_count + 1
 
 			if '@' in nickname:
 				ops.append(nickname.replace('@',''))
@@ -1847,6 +1865,11 @@ class Window(QMainWindow):
 				if nickname.replace('!','')==self.client.nickname: self.protected = True
 			else:
 				normal.append(nickname)
+
+		if user_count==1:
+			self.channel_users_display.setText("<b><small>1 user</small></b>")
+		else:
+			self.channel_users_display.setText(f"<b><small>{user_count} users</small></b>")
 
 		# Store a list of the nicks in this channel
 		self.nicks = owners + admins + halfops + ops + voiced + normal

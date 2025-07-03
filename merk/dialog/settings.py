@@ -831,11 +831,13 @@ class Dialog(QDialog):
 			self.channelName.setEnabled(True)
 			self.showBanlist.setEnabled(True)
 			self.showChanMenu.setEnabled(True)
+			self.channelCount.setEnabled(True)
 		else:
 			self.topicBold.setEnabled(False)
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
 			self.showChanMenu.setEnabled(False)
+			self.channelCount.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2286,19 +2288,27 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
 		self.channelName.stateChanged.connect(self.topicChange)
 
-		self.showBanlist = QCheckBox("Show channel banlist button",self)
+		self.showBanlist = QCheckBox("Banlist button",self)
 		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
 		self.showBanlist.stateChanged.connect(self.topicChange)
 
-		self.showChanMenu = QCheckBox("Show channel modes button",self)
+		self.showChanMenu = QCheckBox("Modes button",self)
 		if config.SHOW_CHANNEL_MENU: self.showChanMenu.setChecked(True)
 		self.showChanMenu.stateChanged.connect(self.topicChange)
+
+		self.channelCount = QCheckBox("Show channel user count",self)
+		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
+		self.channelCount.stateChanged.connect(self.topicChange)
+
+		chanButtonLayout = QFormLayout()
+		chanButtonLayout.addRow(self.showBanlist,self.showChanMenu)
 
 		if not config.SHOW_CHANNEL_TOPIC:
 			self.topicBold.setEnabled(False)
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
 			self.showChanMenu.setEnabled(False)
+			self.channelCount.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -2358,8 +2368,8 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.topicDisplay)
 		menuLayout.addWidget(self.topicBold)
 		menuLayout.addWidget(self.channelName)
-		menuLayout.addWidget(self.showChanMenu)
-		menuLayout.addWidget(self.showBanlist)
+		menuLayout.addWidget(self.channelCount)
+		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		menuLayout.addWidget(self.showUserlists)
@@ -3725,7 +3735,8 @@ class Dialog(QDialog):
 		config.STRIP_NICKNAME_PADDING_FROM_DISPLAY = self.noPadding.isChecked()
 		config.WINDOWBAR_INCLUDE_MANAGER = self.windowbarManager.isChecked()
 		config.USERLIST_ITEMS_NON_SELECTABLE = self.noSelectUserlists.isChecked()
-
+		config.SHOW_USER_COUNT_DISPLAY = self.channelCount.isChecked()
+		
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
 				self.parent.clearCommandHistory()
