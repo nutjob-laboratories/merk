@@ -886,6 +886,7 @@ class Dialog(QDialog):
 			self.spellcheckColor.setEnabled(True)
 			self.spellcheckBold.setEnabled(True)
 			self.spellcheckItalics.setEnabled(True)
+			self.spellcheckStrikout.setEnabled(True)
 		else:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -901,6 +902,8 @@ class Dialog(QDialog):
 			self.spellcheckColor.setEnabled(False)
 			self.spellcheckBold.setEnabled(False)
 			self.spellcheckItalics.setEnabled(False)
+			self.spellcheckStrikout.setEnabled(False)
+
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -2613,6 +2616,10 @@ class Dialog(QDialog):
 		if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: self.spellcheckItalics.setChecked(True)
 		self.spellcheckItalics.stateChanged.connect(self.changedSpellcheck)
 
+		self.spellcheckStrikout = QCheckBox("Strikeout",self)
+		if config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT: self.spellcheckStrikout.setChecked(True)
+		self.spellcheckStrikout.stateChanged.connect(self.changedSpellcheck)
+
 		if not config.ENABLE_SPELLCHECK:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -2628,6 +2635,7 @@ class Dialog(QDialog):
 			self.spellcheckColor.setEnabled(False)
 			self.spellcheckBold.setEnabled(False)
 			self.spellcheckItalics.setEnabled(False)
+			self.spellcheckStrikout.setEnabled(False)
 
 		langLayout = QFormLayout()
 		langLayout.addRow(self.englishSC, self.frenchSC)
@@ -2645,13 +2653,12 @@ class Dialog(QDialog):
 		spColorLayout.addWidget(self.spellcheckColor)
 		spColorLayout.addStretch()
 
-		spFormatLayout = QFormLayout()
-		spFormatLayout.addRow(self.spellcheckBold,self.spellcheckItalics)
-
-		spFormatLayout2 = QHBoxLayout()
-		spFormatLayout2.addStretch()
-		spFormatLayout2.addLayout(spFormatLayout)
-		spFormatLayout2.addStretch()
+		spFormatLayout = QHBoxLayout()
+		spFormatLayout.addStretch()
+		spFormatLayout.addWidget(self.spellcheckBold)
+		spFormatLayout.addWidget(self.spellcheckItalics)
+		spFormatLayout.addWidget(self.spellcheckStrikout)
+		spFormatLayout.addStretch()
 
 		self.spellcheckDescription = QLabel(f"""
 			<small>
@@ -2675,7 +2682,7 @@ class Dialog(QDialog):
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
 		spellcheckLayout.addLayout(spColorLayout)
-		spellcheckLayout.addLayout(spFormatLayout2)
+		spellcheckLayout.addLayout(spFormatLayout)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
@@ -3798,6 +3805,7 @@ class Dialog(QDialog):
 		config.SPELLCHECK_UNDERLINE_COLOR = self.SPELLCHECK_UNDERLINE_COLOR
 		config.SHOW_MISSPELLED_WORDS_IN_BOLD = self.spellcheckBold.isChecked()
 		config.SHOW_MISSPELLED_WORDS_IN_ITALICS = self.spellcheckItalics.isChecked()
+		config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = self.spellcheckStrikout.isChecked()
 		
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:

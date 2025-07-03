@@ -757,6 +757,9 @@ def check_for_sane_values(setting,value):
 	if setting=="syntax_comment_color":
 		if not QColor(value).isValid(): return INVALID_COLOR
 
+	if setting=="spellcheck_underline_color":
+		if not QColor(value).isValid(): return INVALID_COLOR
+
 	return ALL_VALID_SETTINGS
 
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0):

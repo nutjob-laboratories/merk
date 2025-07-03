@@ -3247,6 +3247,7 @@ class Highlighter(QSyntaxHighlighter):
 			format.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
 			if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: format.setFontItalic(True)
 			if config.SHOW_MISSPELLED_WORDS_IN_BOLD: format.setFontWeight(QFont.Bold)
+			if config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT: format.setFontStrikeOut(True)
 
 			for word_object in re.finditer(self.WORDS, text):
 
