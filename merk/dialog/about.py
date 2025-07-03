@@ -89,7 +89,7 @@ class Dialog(QDialog):
 		icons_credit.setAlignment(Qt.AlignCenter)
 		icons_credit.setOpenExternalLinks(True)
 
-		font_credit = QLabel(f"<small><b>Default font by <a href=\"http://www.carrois.com/\">Carrois Apostrophe</small></a> (<a href=\"https://bboxtype.com/typefaces/FiraSans/\">Fira Mono</a>)</small></b>")
+		font_credit = QLabel(f"<small><b>Default font by <a href=\"http://www.carrois.com/\">Carrois Apostrophe</a> (<a href=\"https://bboxtype.com/typefaces/FiraSans/\">Fira Mono</a>)</small></b>")
 		font_credit.setAlignment(Qt.AlignCenter)
 		font_credit.setOpenExternalLinks(True)
 
