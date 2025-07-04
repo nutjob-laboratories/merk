@@ -1304,9 +1304,10 @@ class Merk(QMainWindow):
 		w = self.MDI.activeSubWindow()
 		if w:
 			c = w.widget()
-			t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
-			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			wid = c.subwindow_id
+			if c.client == client:
+				t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
+				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				wid = c.subwindow_id
 
 		# Write a notification to the server window,
 		# but *only* if the current window is *not*
