@@ -30,6 +30,7 @@ from PyQt5 import QtCore
 
 import uuid
 import os
+import fnmatch
 
 from ..resources import *
 from ..dialog import *
@@ -258,7 +259,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 		if self.filename:
-			f = commands.find_script(self.filename)
+			f = commands.find_file(self.filename,SCRIPT_FILE_EXTENSION)
 			if f!=None:
 				x = open(f,mode="r",encoding="utf-8",errors="ignore")
 				source_code = str(x.read())

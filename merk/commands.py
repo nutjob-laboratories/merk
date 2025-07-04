@@ -573,7 +573,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0):
 
 	return False
 
-def find_script(filename):
+def find_file(filename,extension):
 
 	# Check if it's a complete filename
 	if os.path.isfile(filename): return filename
@@ -589,7 +589,7 @@ def find_script(filename):
 
 	# Add the default file extension and see if we find it
 
-	efilename = filename + "." + SCRIPT_FILE_EXTENSION
+	efilename = filename + "." + extension
 
 	# Check if it's a complete filename
 	if os.path.isfile(efilename): return filename
@@ -602,6 +602,31 @@ def find_script(filename):
 
 	# Look for the script in the install directory
 	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
+
+	# Still not found? Case insensitive seach
+	for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+			return os.path.join(root, filename)
+
+	for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+			return os.path.join(root, filename)
+
+	for root, dirs, files in os.walk(INSTALL_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+			return os.path.join(root, filename)
+
+	for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.*"):
+			return os.path.join(root, filename)
+
+	for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.*"):
+			return os.path.join(root, filename)
+
+	for root, dirs, files in os.walk(INSTALL_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.*"):
+			return os.path.join(root, filename)
 
 	return None
 
@@ -671,52 +696,6 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 		execute, # execute script
 	)
 	gui.connectToIrc(i)
-
-def find_sound_file(filename):
-
-	# Check if it's a complete filename
-	if os.path.isfile(filename): return filename
-
-	# Look for the WAV in the scripts directory
-	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, filename)): return os.path.join(SCRIPTS_DIRECTORY, filename)
-
-	# Look for the WAV in the config directory
-	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return os.path.join(config.CONFIG_DIRECTORY, filename)
-
-	# Look for the WAV in the install directory
-	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
-
-	# Add the default file extension and see if we find it
-
-	efilename = filename + "." + "wav"
-
-	# Check if it's a complete filename
-	if os.path.isfile(efilename): return filename
-
-	# Look for the WAV in the scripts directory
-	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
-
-	# Look for the WAV in the config directory
-	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
-
-	# Look for the WAV in the install directory
-	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
-
-	efilename = filename + "." + "WAV"
-
-	# Check if it's a complete filename
-	if os.path.isfile(efilename): return filename
-
-	# Look for the WAV in the scripts directory
-	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
-
-	# Look for the WAV in the config directory
-	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
-
-	# Look for the WAV in the install directory
-	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
-
-	return None
 
 def exit_from_command(gui):
 	gui.close()
@@ -1213,7 +1192,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			tokens.pop(0)
 			filename = tokens.pop(0)
 
-			efilename = find_sound_file(filename)
+			efilename = find_file(filename,"wav")
 			if efilename!=None:
 				if is_wav_file(efilename):
 					QSound.play(efilename)
@@ -1549,17 +1528,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			tokens.pop(0)
 			filename = tokens.pop(0)
 
-			filename = find_script(filename)
-			if filename!=None:
-				gui.newEditorWindowFile(filename)
+			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
+			if efilename!=None:
+				gui.newEditorWindowFile(efilename)
 
 			else:
 				if is_script:
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \""+filename+"\" doesn't exist.")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: File \""+filename+"\" doesn't exist.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
+				t = Message(ERROR_MESSAGE,'',"File \""+filename+"\" doesn't exist.")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)==1:
@@ -2036,7 +2015,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			# Filename might have spaces in it
 			filename = ' '.join(tokens)
 
-			filename = find_script(filename)
+			filename = find_fine(filename,SCRIPT_FILE_EXTENSION)
 			if filename:
 				f=open(filename, "r",encoding="utf-8",errors="ignore")
 				text = f.read()
