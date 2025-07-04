@@ -193,6 +193,8 @@ class Window(QMainWindow):
 			self.script_button.setFlat(True)
 			serverBar.addWidget(self.script_button)
 
+			if not config.SCRIPTING_ENGINE_ENABLED: self.script_button.hide()
+
 			self.refresh_button = QPushButton("")
 			self.refresh_button.setIcon(QIcon(REFRESH_ICON))
 			self.refresh_button.clicked.connect(self.refreshChannelList)
@@ -947,9 +949,10 @@ class Window(QMainWindow):
 				self.contextJoin.triggered.connect(self.joinChannel)
 				menu.addAction(self.contextJoin)
 
-				self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
-				self.contextRun.triggered.connect(self.loadScript)
-				menu.addAction(self.contextRun)
+				if config.SCRIPTING_ENGINE_ENABLED:
+					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
+					self.contextRun.triggered.connect(self.loadScript)
+					menu.addAction(self.contextRun)
 
 				hostid = self.client.server+":"+str(self.client.port)
 				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
@@ -979,7 +982,8 @@ class Window(QMainWindow):
 				if self.client.hostname==None:
 					self.contextNick.setEnabled(False)
 					self.contextJoin.setEnabled(False)
-					self.contextRun.setEnabled(False)
+					if config.SCRIPTING_ENGINE_ENABLED:
+						self.contextRun.setEnabled(False)
 
 			if self.window_type!=SERVER_WINDOW:
 
@@ -1042,9 +1046,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.clearChat)
 			self.settingsMenu.addAction(entry)
 
-		entry = QAction(QIcon(RUN_ICON),"Run script",self)
-		entry.triggered.connect(self.loadScript)
-		self.settingsMenu.addAction(entry)
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = QAction(QIcon(RUN_ICON),"Run script",self)
+			entry.triggered.connect(self.loadScript)
+			self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
 			# Spellcheck Button

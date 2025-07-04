@@ -3022,12 +3022,13 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsDoNotSave)
 		sm.addAction(entry)
 
-		if self.noexecute:
-			entry = QAction(QIcon(self.checked_icon),"Do not execute connection script", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Do not execute connection script", self)
-		entry.triggered.connect(self.settingsDoNoExecute)
-		sm.addAction(entry)
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			if self.noexecute:
+				entry = QAction(QIcon(self.checked_icon),"Do not execute connection script", self)
+			else:
+				entry = QAction(QIcon(self.unchecked_icon),"Do not execute connection script", self)
+			entry.triggered.connect(self.settingsDoNoExecute)
+			sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(LOG_ICON),"Logs")
 
