@@ -954,10 +954,10 @@ class Window(QMainWindow):
 					self.contextRun.triggered.connect(self.loadScript)
 					menu.addAction(self.contextRun)
 
-				hostid = self.client.server+":"+str(self.client.port)
-				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
-				entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
-				menu.addAction(entry)
+					hostid = self.client.server+":"+str(self.client.port)
+					entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+					entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
+					menu.addAction(entry)
 
 				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
 					if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
