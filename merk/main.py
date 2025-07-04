@@ -997,12 +997,13 @@ class Merk(QMainWindow):
 		
 		self.nickChanged(client)
 
-		if client.kwargs["execute_script"]==True:
-			w = self.getServerWindow(client)
-			if w:
-				hostid = client.server+":"+str(client.port)
-				if hostid in user.COMMANDS:
-					commands.executeScript(self,w,user.COMMANDS[hostid])
+		if config.SCRIPTING_ENGINE_ENABLED:
+			if client.kwargs["execute_script"]==True:
+				w = self.getServerWindow(client)
+				if w:
+					hostid = client.server+":"+str(client.port)
+					if hostid in user.COMMANDS:
+						commands.executeScript(self,w,user.COMMANDS[hostid])
 
 		if len(self.join_channels)>0:
 			for e in self.join_channels:
@@ -3094,9 +3095,10 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-		sm.addAction(entry)
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			sm.addAction(entry)
 
 		self.settingsMenu.addSeparator()
 
@@ -3142,8 +3144,9 @@ class Merk(QMainWindow):
 				entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Default Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
 				self.toolsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
-		self.toolsMenu.addAction(entry)
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
+			self.toolsMenu.addAction(entry)
 
 		if(len(os.listdir(logs.LOG_DIRECTORY))==0):
 			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','No logs to export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)

@@ -394,9 +394,10 @@ class Dialog(QDialog):
 
 		if not SSL_AVAILABLE: self.ssl.hide()
 
-		self.exe = QCheckBox("Execute connection script",self)
-		self.exe.stateChanged.connect(self.clickExe)
-		self.exe.toggle()
+		if config.SCRIPTING_ENGINE_ENABLED:
+			self.exe = QCheckBox("Execute connection script",self)
+			self.exe.stateChanged.connect(self.clickExe)
+			self.exe.toggle()
 
 		if self.noexecute: self.exe.toggle()
 
@@ -433,7 +434,9 @@ class Dialog(QDialog):
 			optionLayout.addRow(self.reconnect)
 		else:
 			optionLayout.addRow(self.ssl,self.reconnect)
-		optionLayout.addRow(self.exe,QLabel(''))
+
+		if config.SCRIPTING_ENGINE_ENABLED:
+			optionLayout.addRow(self.exe,QLabel(''))
 
 		serverInfoLayout = QVBoxLayout()
 		serverInfoLayout.addLayout(bannerLayout)
@@ -527,9 +530,10 @@ class Dialog(QDialog):
 		self.server_tab.setLayout(serverInfoLayout)
 		self.tabs.addTab(self.server_tab, QIcon(NETWORK_ICON), "Server")
 
-		self.commands_tab = QWidget()
-		self.commands_tab.setLayout(commandsLayout)
-		self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
+		if config.SCRIPTING_ENGINE_ENABLED:
+			self.commands_tab = QWidget()
+			self.commands_tab.setLayout(commandsLayout)
+			self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -598,6 +602,8 @@ class Dialog(QDialog):
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.adjustSize()
 
 		self.setFixedSize(finalLayout.sizeHint())
 

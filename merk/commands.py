@@ -139,6 +139,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"alias",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unalias",'')
 
+	if not config.SCRIPTING_ENGINE_ENABLED:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"script",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"edit",'')
+
 	if new_autocomplete!=None:
 		if isinstance(new_autocomplete, list):
 			for a in new_autocomplete:
@@ -207,6 +211,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
 		COPY.append(e)
 	COMMAND_HELP_INFORMATION = COPY
 
@@ -1523,6 +1530,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# | /edit |
 	# |-------|
 	if len(tokens)>=1:
+
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
+				if is_script:
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Scripting is disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)>=2:
 
 			tokens.pop(0)
@@ -2040,6 +2059,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# | /script |
 	# |---------|
 	if len(tokens)>=1:
+
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
+				if is_script:
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Scripting is disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)>=2:
 
 			tokens.pop(0)

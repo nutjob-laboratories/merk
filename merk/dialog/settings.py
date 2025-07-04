@@ -418,6 +418,16 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedScripting(self,state):
+		if self.enableScripts.isChecked():
+			self.showErrors.setEnabled(True)
+		else:
+			self.showErrors.setEnabled(False)
+		self.changed.show()
+		self.restart.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedInterpolate(self,state):
 		if self.interpolateAlias.isChecked():
 			self.autocompleteAlias.setEnabled(True)
@@ -727,6 +737,13 @@ class Dialog(QDialog):
 			self.enableAlias.setEnabled(True)
 			self.enableStyle.setEnabled(True)
 			self.showErrors.setEnabled(True)
+			self.enableScripts.setEnabled(True)
+
+			if not config.SCRIPTING_ENGINE_ENABLED:
+				self.showErrors.setEnabled(False)
+
+			if not config.ENABLE_ALIASES:
+				self.interpolateAlias.setEnabled(False)
 		else:
 			self.logEverything.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -735,6 +752,13 @@ class Dialog(QDialog):
 			self.enableAlias.setEnabled(False)
 			self.enableStyle.setEnabled(False)
 			self.showErrors.setEnabled(False)
+			self.enableScripts.setEnabled(False)
+
+			if config.SCRIPTING_ENGINE_ENABLED:
+				self.enableScripts.setChecked(True)
+			else:
+				self.enableScripts.setChecked(False)
+				self.showErrors.setEnabled(False)
 
 			if config.DISPLAY_SCRIPT_ERRORS:
 				self.showErrors.setChecked(True)
@@ -3509,6 +3533,11 @@ class Dialog(QDialog):
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
 		self.enableStyle.setEnabled(False)
 
+		self.enableScripts = QCheckBox("Enable scripting",self)
+		if config.SCRIPTING_ENGINE_ENABLED: self.enableScripts.setChecked(True)
+		self.enableScripts.stateChanged.connect(self.changedScripting)
+		self.enableScripts.setEnabled(False)
+
 		self.showErrors = QCheckBox("Show error messages when\nexecuting scripts",self)
 		if config.DISPLAY_SCRIPT_ERRORS: self.showErrors.setChecked(True)
 		self.showErrors.stateChanged.connect(self.changedSettingAdvanced)
@@ -3524,6 +3553,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.enableAlias)
 		advancedLayout.addWidget(self.interpolateAlias)
 		advancedLayout.addWidget(self.enableStyle)
+		advancedLayout.addWidget(self.enableScripts)
 		advancedLayout.addWidget(self.showErrors)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
@@ -3819,7 +3849,8 @@ class Dialog(QDialog):
 		config.SHOW_MISSPELLED_WORDS_IN_BOLD = self.spellcheckBold.isChecked()
 		config.SHOW_MISSPELLED_WORDS_IN_ITALICS = self.spellcheckItalics.isChecked()
 		config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = self.spellcheckStrikout.isChecked()
-		
+		config.SCRIPTING_ENGINE_ENABLED = self.enableScripts.isChecked()
+
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
 				self.parent.clearCommandHistory()
