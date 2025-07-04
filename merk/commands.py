@@ -1587,9 +1587,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				msg = ' '.join(tokens)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
-				w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if len(msg)>0:
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					if is_script:
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: No text to print")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"No text to print")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
 			msg = target+' '+' '.join(tokens)
