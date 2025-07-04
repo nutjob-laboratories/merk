@@ -887,6 +887,7 @@ class Dialog(QDialog):
 			self.spellcheckBold.setEnabled(True)
 			self.spellcheckItalics.setEnabled(True)
 			self.spellcheckStrikout.setEnabled(True)
+			self.spellcheckMissColor.setEnabled(True)
 		else:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -903,6 +904,7 @@ class Dialog(QDialog):
 			self.spellcheckBold.setEnabled(False)
 			self.spellcheckItalics.setEnabled(False)
 			self.spellcheckStrikout.setEnabled(False)
+			self.spellcheckMissColor.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2620,6 +2622,10 @@ class Dialog(QDialog):
 		if config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT: self.spellcheckStrikout.setChecked(True)
 		self.spellcheckStrikout.stateChanged.connect(self.changedSpellcheck)
 
+		self.spellcheckMissColor = QCheckBox("In underline color",self)
+		if config.SHOW_MISSPELLED_WORDS_IN_COLOR: self.spellcheckMissColor.setChecked(True)
+		self.spellcheckMissColor.stateChanged.connect(self.changedSpellcheck)
+
 		if not config.ENABLE_SPELLCHECK:
 			self.englishSC.setEnabled(False)
 			self.frenchSC.setEnabled(False)
@@ -2636,6 +2642,7 @@ class Dialog(QDialog):
 			self.spellcheckBold.setEnabled(False)
 			self.spellcheckItalics.setEnabled(False)
 			self.spellcheckStrikout.setEnabled(False)
+			self.spellcheckMissColor.setEnabled(False)
 
 		langLayout = QFormLayout()
 		langLayout.addRow(self.englishSC, self.frenchSC)
@@ -2660,6 +2667,12 @@ class Dialog(QDialog):
 		spFormatLayout.addWidget(self.spellcheckStrikout)
 		spFormatLayout.addStretch()
 
+		spFormatLayout2 = QHBoxLayout()
+		spFormatLayout2.addStretch()
+		spFormatLayout2.addWidget(self.spellcheckMissColor)
+		spFormatLayout2.addStretch()
+
+
 		self.spellcheckDescription = QLabel(f"""
 			<small>
 			Misspelled words in the input widget are marked with a <b><span style='text-decoration: underline; color: {self.SPELLCHECK_UNDERLINE_COLOR};'>
@@ -2679,10 +2692,10 @@ class Dialog(QDialog):
 		spellcheckLayout.addWidget(self.enableSpellcheck)
 		spellcheckLayout.addWidget(self.allowSpellcheck)
 		spellcheckLayout.addLayout(distanceLayout)
-		spellcheckLayout.addWidget(QLabel(' '))
-		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
 		spellcheckLayout.addLayout(spColorLayout)
+		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
 		spellcheckLayout.addLayout(spFormatLayout)
+		spellcheckLayout.addLayout(spFormatLayout2)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)

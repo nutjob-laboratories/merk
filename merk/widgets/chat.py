@@ -3250,6 +3250,7 @@ class Highlighter(QSyntaxHighlighter):
 			if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: misspelled_format.setFontItalic(True)
 			if config.SHOW_MISSPELLED_WORDS_IN_BOLD: misspelled_format.setFontWeight(QFont.Bold)
 			if config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT: misspelled_format.setFontStrikeOut(True)
+			if config.SHOW_MISSPELLED_WORDS_IN_COLOR: misspelled_format.setForeground(QColor(config.SPELLCHECK_UNDERLINE_COLOR))
 
 			for word_object in re.finditer(self.WORDS, text):
 

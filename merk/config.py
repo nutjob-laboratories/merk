@@ -235,9 +235,11 @@ SPELLCHECK_UNDERLINE_COLOR = "#FF0000"
 SHOW_MISSPELLED_WORDS_IN_ITALICS = False
 SHOW_MISSPELLED_WORDS_IN_BOLD = False
 SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = False
+SHOW_MISSPELLED_WORDS_IN_COLOR = False
 
 def build_settings():
 	settings = {
+		"spellcheck_in_color": SHOW_MISSPELLED_WORDS_IN_COLOR,
 		"spellcheck_in_strikeout": SHOW_MISSPELLED_WORDS_IN_STRIKEOUT,
 		"spellcheck_underline_color": SPELLCHECK_UNDERLINE_COLOR,
 		"spellcheck_in_italics": SHOW_MISSPELLED_WORDS_IN_ITALICS,
@@ -439,6 +441,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "spellcheck_in_color" in settings:
+		settings["spellcheck_in_color"] = SHOW_MISSPELLED_WORDS_IN_COLOR
 	if not "spellcheck_in_strikeout" in settings:
 		settings["spellcheck_in_strikeout"] = SHOW_MISSPELLED_WORDS_IN_STRIKEOUT
 	if not "spellcheck_underline_color" in settings:
@@ -1032,6 +1036,7 @@ def load_settings(filename):
 	global SHOW_MISSPELLED_WORDS_IN_ITALICS
 	global SHOW_MISSPELLED_WORDS_IN_BOLD
 	global SHOW_MISSPELLED_WORDS_IN_STRIKEOUT
+	global SHOW_MISSPELLED_WORDS_IN_COLOR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1041,6 +1046,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_MISSPELLED_WORDS_IN_COLOR = settings["spellcheck_in_color"]
 		SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = settings["spellcheck_in_strikeout"]
 		SPELLCHECK_UNDERLINE_COLOR = settings["spellcheck_underline_color"]
 		SHOW_MISSPELLED_WORDS_IN_ITALICS = settings["spellcheck_in_italics"]
