@@ -209,8 +209,8 @@ Appearance:
 <td>Connects to an IRC server via SSL &amp; executes connection script</td>
 </tr>
 <tr>
-<td><code>/print TEXT...</code></td>
-<td>Prints text to the current window</td>
+<td><code>/print [WINDOW] TEXT...</code></td>
+<td>Prints text to a window</td>
 </tr>
 <tr>
 <td><code>/focus [SERVER] WINDOW</code></td>

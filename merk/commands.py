@@ -185,7 +185,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>", "Deletes the alias referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print TEXT...</b>", "Prints text to the current window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print [WINDOW] TEXT...</b>", "Prints text to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW</b>", "Minimizes a window" ],
@@ -1331,7 +1331,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	if len(tokens)>=1:
+	if len(tokens)>0:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
@@ -1523,10 +1523,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# | /edit |
 	# |-------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)==2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)>=2:
 
 			tokens.pop(0)
-			filename = tokens.pop(0)
+			filename = ' '.join(tokens)
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
 			if efilename!=None:
@@ -1582,7 +1582,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'print' and len(tokens)>=2:
 			tokens.pop(0)
-			msg = ' '.join(tokens)
+
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				msg = ' '.join(tokens)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+				w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			msg = target+' '+' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 			# Get the current active window
@@ -1773,17 +1783,29 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# |-------|
 	# | /tile |
 	# |-------|
-	if len(tokens)==1:
+	if len(tokens)>=1:
+		if len(tokens)==1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'tile':
+				gui.MDI.tileSubWindows()
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'tile':
-			gui.MDI.tileSubWindows()
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"tile")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |----------|
 	# | /cascade |
 	# |----------|
-	if len(tokens)==1:
+	if len(tokens)>=1:
+		if len(tokens)==1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'cascade':
+				gui.MDI.cascadeSubWindows()
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'cascade':
-			gui.MDI.cascadeSubWindows()
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"cascade")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |----------|
@@ -2016,7 +2038,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			filename = ' '.join(tokens)
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
-			if filename:
+			if efilename:
 				f=open(efilename, "r",encoding="utf-8",errors="ignore")
 				text = f.read()
 				f.close()
@@ -2259,7 +2281,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
 					w = gui.getServerWindow(window.client)
 					if w:
-						t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
+						t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
 						w.writeText(t)
 
 			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
@@ -2409,6 +2431,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.leave(channel,msg)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part':
+			if is_script:
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |-------|

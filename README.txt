@@ -254,7 +254,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                           |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server & executes connection script                                                      |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL & executes connection script                                              |
-| `/print TEXT...`                        | Prints text to the current window                                                                           |
+| `/print [WINDOW] TEXT...`               | Prints text to a window                                                                           |
 | `/focus [SERVER] WINDOW`                | Switches focus to another window. Calls to `/focus` from scripts will be ignored (use `/jump` instead)                                                                          |
 | `/maximize [SERVER] WINDOW`             | Maximizes a window                                                                                          |
 | `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                          |
