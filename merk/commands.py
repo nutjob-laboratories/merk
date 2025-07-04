@@ -2015,9 +2015,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			# Filename might have spaces in it
 			filename = ' '.join(tokens)
 
-			filename = find_file(filename,SCRIPT_FILE_EXTENSION)
+			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
 			if filename:
-				f=open(filename, "r",encoding="utf-8",errors="ignore")
+				f=open(efilename, "r",encoding="utf-8",errors="ignore")
 				text = f.read()
 				f.close()
 
