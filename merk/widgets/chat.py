@@ -89,6 +89,7 @@ class Window(QMainWindow):
 
 		self.log = []
 		self.new_log = []
+		self.full_nicks = []
 
 		self.users = []
 		self.nicks = []
@@ -1692,6 +1693,7 @@ class Window(QMainWindow):
 				else:
 					b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
 					self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
+				self.writeUserlist(self.full_nicks)
 
 			self.rerenderChatLog()
 
@@ -1730,6 +1732,7 @@ class Window(QMainWindow):
 			else:
 				b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
+				self.writeUserlist(self.full_nicks)
 
 
 		self.rerenderChatLog()
@@ -1829,6 +1832,7 @@ class Window(QMainWindow):
 		self.userlist.clear()
 
 		self.user_count = 0
+		self.full_nicks = users
 
 		owners = []
 		admins = []
