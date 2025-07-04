@@ -2643,12 +2643,20 @@ class ScriptThread(QThread):
 									self.window = c
 									is_valid = True
 
-							valids = self.gui.getAllConnectedServerWindows()
-							for w in valids:
-								c = w.widget()
-								if c.name==target:
-									self.window = c
-									is_valid = True
+							if is_valid==False:
+								valids = self.gui.getAllAllConnectedWindows()
+								for c in valids:
+									if c.name==target:
+										self.window = c
+										is_valid = True
+
+							if is_valid==False:
+								valids = self.gui.getAllConnectedServerWindows()
+								for w in valids:
+									c = w.widget()
+									if c.name==target:
+										self.window = c
+										is_valid = True
 
 							script_only_command = True
 
