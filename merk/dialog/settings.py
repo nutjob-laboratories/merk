@@ -398,6 +398,12 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingAdvancedSymbol(self,state):
+		self.changed_alias_symbol = True
+		self.changed.show()
+		self.restart.show()
+		self.boldApply()
+
 	def changedSettingAdvanced(self,state):
 		self.changed.show()
 		self.restart.show()
@@ -406,13 +412,18 @@ class Dialog(QDialog):
 
 	def changedAlias(self,state):
 		if self.enableAlias.isChecked():
-			self.autocompleteAlias.setEnabled(True)
-			self.interpolateAlias.setEnabled(True)
-			self.syntaxalias.setEnabled(True)
+			if self.advancedEnable.isChecked():
+				self.autocompleteAlias.setEnabled(True)
+				self.interpolateAlias.setEnabled(True)
+				self.syntaxalias.setEnabled(True)
+				self.alias_symbol_label.setEnabled(True)
+				self.alias_symbol.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 			self.syntaxalias.setEnabled(False)
+			self.alias_symbol_label.setEnabled(False)
+			self.alias_symbol.setEnabled(False)
 		self.changed.show()
 		self.restart.show()
 		self.boldApply()
@@ -420,7 +431,8 @@ class Dialog(QDialog):
 
 	def changedScripting(self,state):
 		if self.enableScripts.isChecked():
-			self.showErrors.setEnabled(True)
+			if self.advancedEnable.isChecked():
+				self.showErrors.setEnabled(True)
 		else:
 			self.showErrors.setEnabled(False)
 		self.changed.show()
@@ -430,7 +442,8 @@ class Dialog(QDialog):
 
 	def changedInterpolate(self,state):
 		if self.interpolateAlias.isChecked():
-			self.autocompleteAlias.setEnabled(True)
+			if self.advancedEnable.isChecked():
+				self.autocompleteAlias.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 		self.changed.show()
@@ -738,12 +751,16 @@ class Dialog(QDialog):
 			self.enableStyle.setEnabled(True)
 			self.showErrors.setEnabled(True)
 			self.enableScripts.setEnabled(True)
+			self.alias_symbol_label.setEnabled(True)
+			self.alias_symbol.setEnabled(True)
 
 			if not config.SCRIPTING_ENGINE_ENABLED:
 				self.showErrors.setEnabled(False)
 
 			if not config.ENABLE_ALIASES:
 				self.interpolateAlias.setEnabled(False)
+				self.alias_symbol_label.setEnabled(False)
+				self.alias_symbol.setEnabled(False)
 		else:
 			self.logEverything.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -753,12 +770,16 @@ class Dialog(QDialog):
 			self.enableStyle.setEnabled(False)
 			self.showErrors.setEnabled(False)
 			self.enableScripts.setEnabled(False)
+			self.alias_symbol_label.setEnabled(False)
+			self.alias_symbol.setEnabled(False)
+
+			self.alias_symbol.setText(config.ALIAS_INTERPOLATION_SYMBOL)
 
 			if config.SCRIPTING_ENGINE_ENABLED:
 				self.enableScripts.setChecked(True)
 			else:
 				self.enableScripts.setChecked(False)
-				self.showErrors.setEnabled(False)
+				#self.showErrors.setEnabled(False)
 
 			if config.DISPLAY_SCRIPT_ERRORS:
 				self.showErrors.setChecked(True)
@@ -777,10 +798,10 @@ class Dialog(QDialog):
 
 			if config.INTERPOLATE_ALIASES_INTO_INPUT:
 				self.interpolateAlias.setChecked(True)
-				self.autocompleteAlias.setEnabled(True)
+				#self.autocompleteAlias.setEnabled(True)
 			else:
 				self.interpolateAlias.setChecked(False)
-				self.autocompleteAlias.setEnabled(False)
+				#self.autocompleteAlias.setEnabled(False)
 
 			if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
 				self.writeConsole.setChecked(True)
@@ -1218,8 +1239,8 @@ class Dialog(QDialog):
 		self.swapUserlists = False
 		self.toggleUserlist = False
 		self.rerenderStyle = False
-
 		self.windowbar_change = False
+		self.changed_alias_symbol = False
 
 		self.default_main_menu = config.MAIN_MENU_IRC_NAME
 		self.default_tools_menu = config.MAIN_MENU_TOOLS_NAME
@@ -3544,6 +3565,21 @@ class Dialog(QDialog):
 		self.showErrors.setEnabled(False)
 		self.showErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("AA")
+
+		self.alias_symbol = QNoSpaceLineEdit(config.ALIAS_INTERPOLATION_SYMBOL)
+		self.alias_symbol.setMaximumWidth(wwidth)
+		self.alias_symbol.textChanged.connect(self.changedSettingAdvancedSymbol)
+		self.alias_symbol_label = QLabel("Alias interpolation symbol")
+		self.alias_symbol_label.setEnabled(False)
+		self.alias_symbol.setEnabled(False)
+
+		aliasLayout = QHBoxLayout()
+		aliasLayout.addWidget(self.alias_symbol)
+		aliasLayout.addWidget(self.alias_symbol_label)
+		aliasLayout.addStretch()
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -3552,6 +3588,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addWidget(self.enableAlias)
 		advancedLayout.addWidget(self.interpolateAlias)
+		advancedLayout.addLayout(aliasLayout)
 		advancedLayout.addWidget(self.enableStyle)
 		advancedLayout.addWidget(self.enableScripts)
 		advancedLayout.addWidget(self.showErrors)
@@ -3850,6 +3887,9 @@ class Dialog(QDialog):
 		config.SHOW_MISSPELLED_WORDS_IN_ITALICS = self.spellcheckItalics.isChecked()
 		config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = self.spellcheckStrikout.isChecked()
 		config.SCRIPTING_ENGINE_ENABLED = self.enableScripts.isChecked()
+
+		if self.changed_alias_symbol:
+			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
 
 		if not self.enableHistory.isChecked():
 			if config.ENABLE_COMMAND_INPUT_HISTORY:
