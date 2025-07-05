@@ -48,6 +48,7 @@ from . import logs
 from . import user
 from .dialog import *
 from . import commands
+from . import connection_script
 
 from .widgets import menubar,textSeparatorLabel,textSeparator
 
@@ -999,11 +1000,17 @@ class Merk(QMainWindow):
 
 		if config.SCRIPTING_ENGINE_ENABLED:
 			if client.kwargs["execute_script"]==True:
-				w = self.getServerWindow(client)
-				if w:
-					hostid = client.server+":"+str(client.port)
-					if hostid in user.COMMANDS:
-						commands.executeScript(self,w,user.COMMANDS[hostid])
+
+				hostid = client.server+":"+str(client.port)
+				script = connection_script.get_connection_script(hostid)
+				
+				if len(script)>0:
+					commands.executeScript(self,w,script)
+				else:
+					w = self.getServerWindow(client)
+					if w:
+						if hostid in user.COMMANDS:
+							commands.executeScript(self,w,user.COMMANDS[hostid])
 
 		if len(self.join_channels)>0:
 			for e in self.join_channels:

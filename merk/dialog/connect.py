@@ -40,6 +40,7 @@ from ..resources import *
 from .. import config
 from .. import user
 from .. import syntax
+from .. import connection_script
 
 class Dialog(QDialog):
 
@@ -82,6 +83,8 @@ class Dialog(QDialog):
 			errors.append("Port must be a number")
 			bad_info = True
 
+		hostid = self.host.text()+":"+self.port.text()
+
 		if self.SAVE:
 			# Save user settings
 			user.NICKNAME = self.nick.text()
@@ -97,7 +100,6 @@ class Dialog(QDialog):
 			user.HISTORY = list(user.HISTORY)
 
 			commands = self.commands.toPlainText()
-			hostid = self.host.text()+":"+self.port.text()
 			if hostid in user.COMMANDS:
 				if len(commands.strip())==0:
 					del user.COMMANDS[hostid]
@@ -164,6 +166,8 @@ class Dialog(QDialog):
 				entry = [ self.host.text(),self.port.text(),UNKNOWN_NETWORK,ussl,self.password.text() ]
 				if self.SAVE: user_history.append(entry)
 
+			hostid = self.host.text()+":"+self.port.text()
+
 			if self.SAVE:
 				# Save user settings
 				user.NICKNAME = self.nick.text()
@@ -178,7 +182,6 @@ class Dialog(QDialog):
 				user.HISTORY = user_history
 
 				commands = self.commands.toPlainText()
-				hostid = self.host.text()+":"+self.port.text()
 				if hostid in user.COMMANDS:
 					if len(commands.strip())==0:
 						del user.COMMANDS[hostid]
@@ -205,6 +208,9 @@ class Dialog(QDialog):
 
 				return retval
 			else:
+
+				connection_script.add_connection_script(hostid,self.commands.toPlainText())
+
 				retval = ConnectInfo(
 					self.nick.text(),
 					self.alternative.text(),
