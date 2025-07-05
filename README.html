@@ -1,4 +1,4 @@
-<h1>MERK 0.047.081</h1>
+<h1>MERK 0.047.085</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -14,7 +14,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.047.081</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>.  <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.047.085</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>.  <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at <strong>irc.libera.chat</strong>, port <strong>6667</strong> (you can also connect via SSL on port <strong>6697</strong>). Honestly, I work a lot, so I&#39;m almost always idle, but I pop in and chat a few times a day!</p>
 <h1 id="making-merk-portable-on-windows">Making MERK Portable on Windows</h1>
@@ -40,14 +40,16 @@ pip <span class="hljs-keyword">install</span> service_identity
 <li><a href="https://github.com/carpedm20/emoji">emoji 2.14.1</a></li>
 </ul>
 <h1 id="usage">Usage</h1>
-<pre><code>usage: python merk.py [-h] [<span class="hljs-comment">--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]</span>
-                      [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x] [-o]
-                      [-t] [-R] [<span class="hljs-comment">--config-name NAME] [-Q NAME] [-D] [-L]</span>
+<pre><code>usage: python merk.py [<span class="hljs-comment">--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]</span>
+                      [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
+                      [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
+                      [-t] [-R] [-o] [-s FILENAME][<span class="hljs-comment">--config-name NAME] </span>
                       [<span class="hljs-comment">--config-directory DIRECTORY] [--config-local]</span>
                       [<span class="hljs-comment">--scripts-directory DIRECTORY] [--user-file FILENAME]</span>
-                      [<span class="hljs-comment">--config-file FILENAME] [--reset] [--reset-user] [--reset-all]</span>
+                      [<span class="hljs-comment">--config-file FILENAME] [--reset] [--reset-user]</span>
+                      [<span class="hljs-comment">--reset-all] [-Q NAME] [-D] [-L]</span>
                       [SERVER] [PORT]
+
 
 Connection:
   SERVER                Server to connect to
@@ -79,9 +81,7 @@ Options:
   -t, <span class="hljs-comment">--reconnect       Reconnect to servers on disconnection</span>
   -R, <span class="hljs-comment">--run             Don't ask for connection information on start</span>
   -o, <span class="hljs-comment">--on-top          Application window always on top</span>
-  <span class="hljs-comment">--reset               Resets configuration file to default values</span>
-  <span class="hljs-comment">--reset-user          Resets user file to default values</span>
-  <span class="hljs-comment">--reset-all           Resets all configuration files to default values</span>
+  -s, <span class="hljs-comment">--script FILE     Use a file as a connection script</span>
 
 Files <span class="hljs-keyword">and</span> Directories:
   <span class="hljs-comment">--config-name NAME    Name of the configuration file directory (default: .merk)</span>
@@ -90,9 +90,11 @@ Files <span class="hljs-keyword">and</span> Directories:
   <span class="hljs-comment">--config-local        Store configuration files in install directory</span>
   <span class="hljs-comment">--scripts-directory DIRECTORY</span>
                         Location <span class="hljs-keyword">to</span> look <span class="hljs-keyword">for</span> script files
-  <span class="hljs-comment">--user-file FILENAME  File to use for user data</span>
-  <span class="hljs-comment">--config-file FILENAME</span>
-                        <span class="hljs-keyword">File</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">use</span> <span class="hljs-keyword">for</span> configuration <span class="hljs-keyword">data</span>
+  <span class="hljs-comment">--user-file FILE      File to use for user data</span>
+  <span class="hljs-comment">--config-file FILE    File to use for configuration data</span>
+  <span class="hljs-comment">--reset               Reset configuration file to default values</span>
+  <span class="hljs-comment">--reset-user          Reset user file to default values</span>
+  <span class="hljs-comment">--reset-all           Reset all configuration files to default values</span>
 
 Appearance:
   -Q, <span class="hljs-comment">--qtstyle NAME    Set Qt widget style (default: Windows)</span>
@@ -341,20 +343,24 @@ Appearance:
 <li>Join the <code>#merk</code> and <code>#python</code> channels on both networks</li>
 <li>Make sure that we don&#39;t execute any connection scripts we have set up</li>
 <li>Run in &quot;light mode&quot;, regardless of what the configuration settings say</li>
+<li>Run a <strong>MERK</strong> script file named <code>stuff.merk</code> on connection, for both connections</li>
 </ul>
 <p>Here&#39;s the set of arguments that will make all of that happen:</p>
-<pre><code>python merk<span class="hljs-selector-class">.py</span> -Ltx -S irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span>:<span class="hljs-number">6697</span> -C us<span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span>:<span class="hljs-number">6667</span> -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span>
-</code></pre><pre><code>merk<span class="hljs-selector-class">.exe</span> -Ltx -S irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span>:<span class="hljs-number">6697</span> -C us<span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span>:<span class="hljs-number">6667</span> -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span>
+<pre><code>python merk<span class="hljs-selector-class">.py</span> -Ltx -s stuff.merk -S irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span>:<span class="hljs-number">6697</span> -C us<span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span>:<span class="hljs-number">6667</span> -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span>
+</code></pre><pre><code>merk<span class="hljs-selector-class">.exe</span> -Ltx -s stuff.merk -S irc<span class="hljs-selector-class">.libera</span><span class="hljs-selector-class">.chat</span>:<span class="hljs-number">6697</span> -C us<span class="hljs-selector-class">.dal</span><span class="hljs-selector-class">.net</span>:<span class="hljs-number">6667</span> -c <span class="hljs-string">"#python"</span> -c <span class="hljs-string">"#merk"</span>
 </code></pre><p>All commandline options are what they say on the tin: <em>optional</em>. Just running the script with no commandline options will initally open up the connection dialog, and you can do just about everything completely inside the GUI.</p>
-<h1 id="why-does-merk-exist">Why does MERK exist?</h1>
+<h1 id="why-does-merk-exist-">Why does MERK exist?</h1>
 <p>It&#39;s simple. I don&#39;t currently like any of the other IRC clients. I&#39;ve used many, <em>many</em> other IRC clients for Windows and Linux, and they just didn&#39;t feel <em>right</em>. They weren&#39;t customizable enough, didn&#39;t have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called <a href="https://github.com/nutjob-laboratories/erk"><strong>Ərk</strong></a>, and although I liked developing it and working on it, I honestly didn&#39;t use it that much. I fell out of love with the &quot;single window&quot; interface that so many other IRC clients use, and decided to try something &quot;new&quot; (and by &quot;new&quot; I mean 30 years old). I remembered using <a href="https://www.mirc.com/">mIRC</a> back when I was younger, and decided to try and write a new client that used the <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a> style I remember fondly. And thus, <strong>MERK</strong> was born!</p>
+<p>I honestly think that <strong>MERK</strong> may be the most configurable IRC client ever created. With over 170 different settings to work with, you can configure <strong>MERK</strong> to look and operate <em>exactly</em> how you want. Want to display all channel userlists on the left, or not display userlists at all? You can do that. Want to turn off all the pretty stuff, and display only raw, (nearly) unaltered text? You can do that. Maybe you want to use text styles only on the chat display, and leave the userlists and text input alone? You can do that. One of the things I hated about <a href="http://xchat.org/">XChat</a>/<a href="https://hexchat.github.io/">Hexchat</a> is how un-configurable the UI is, and how most other clients require plugins or scripts to change the client UI. I wanted a client where you could alter or change most aspects of the UI without needed external tools or editing configuration files manually. With <strong>MERK</strong>, you can change all settings in the client and see the effects instantly. There are a few settings that can only be changed by editing the configuration files, but they are for settings most users will probably never change; but you can still change them and <strong>MERK</strong> will compensate, and not break the client!</p>
 <h1 id="what-does-merk-mean">What does MERK mean?</h1>
 <p>Well, if you were to pronounce &quot;IRC&quot; as a word and not an acronym, it would probably be pronounced <em>/Ərk/</em>. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the &quot;M&quot; stands for. Either that, or &quot;multiple-document interface&quot;. &quot;MDIIRC&quot; doesn&#39;t exactly roll off the tongue, so we combined the &quot;M&quot; with the word-pronunciation of IRC, and came up with <strong>MERK</strong>!</p>
-<h1 id="does-merk-need-any-help">Does MERK need any help?</h1>
+<h1 id="does-merk-need-any-help-">Does MERK need any help?</h1>
 <p>Yes! <strong>MERK</strong> is being written by me, <a href="https://github.com/danhetrick">Dan Hetrick</a>, a software developer that can not do everything that this piece of software needs. There&#39;s few things I need help with!</p>
 <ul>
 <li><strong>Icons and other graphics work</strong>. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for <strong>MERK</strong>. I&#39;m doing my best, here, but I&#39;m a computer programmer, not an artist!</li>
 <li><strong>Packaging</strong>. <strong>MERK</strong> now has a <a href="https://www.pyinstaller.org/">PyInstaller</a>-based distribution! However, I can&#39;t seem to get PyInstaller working on a Linux binary for reasons that are beyond me. I&#39;d love some help on getting packaging for Linux, be it with PyInstaller or anything else that&#39;s easy for end-users to use. I also know next to nothing about making Python packages for use with  <code>pip</code>, but that&#39;s another thing I&#39;d love help with!</li>
+<li><strong>DCC chat and file transfers</strong>. The DCC  functionality in Twisted is undocumented, and I&#39;ll be honest, I can&#39;t make heads or tails of it. I&#39;d love to be able to add this functionality to <strong>MERK</strong>, but I need help!</li>
 <li><strong>Using MERK and giving me feedback</strong>. Let me know what you love about <strong>MERK</strong> and what you hate about <strong>MERK</strong>! Got ideas for ways you&#39;d like to customize the client? Features you&#39;d like? Let me know! I can&#39;t guarantee that I&#39;ll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using <strong>MERK</strong>!</li>
 </ul>
-<p>Contacting me is easy! Drop me an <a href="mailto:dhetrick@gmail.com">email</a> or say hi in the official <strong>MERK</strong> IRC channel: <code>#merk</code> on the Libera network (<code>irc.libera.chat</code>, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I&#39;m not always active, but I idle in <code>#merk</code> everyday, and pop in to talk to people when I have a spare minute.</p>
+<p>Contacting me is easy! Drop me an <a href="mailto:dhetrick@gmail.com">email</a> or say hi in the official <strong>MERK</strong> IRC channel: <code>#merk</code> on the Libera network (<code>irc.libera.chat</code>, port 6667 for TCP/I</p>
+

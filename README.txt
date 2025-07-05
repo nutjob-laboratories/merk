@@ -1,3 +1,4 @@
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
@@ -164,15 +165,16 @@ There are three libraries that comes bundled with **MERK**:
 
 # Usage
 ```
-usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x] [-o]
-                      [-t] [-R] [--config-name NAME] [-Q NAME] [-D] [-L]
+usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
+                      [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
+                      [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
+                      [-t] [-R] [-o] [-s FILENAME][--config-name NAME] 
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
-                      [--reset-all]
+                      [--reset-all] [-Q NAME] [-D] [-L]
                       [SERVER] [PORT]
+
 
 Connection:
   SERVER                Server to connect to
@@ -204,9 +206,7 @@ Options:
   -t, --reconnect       Reconnect to servers on disconnection
   -R, --run             Don't ask for connection information on start
   -o, --on-top          Application window always on top
-  --reset               Resets configuration file to default values
-  --reset-user          Resets user file to default values
-  --reset-all           Resets all configuration files to default values
+  -s, --script FILE     Use a file as a connection script
 
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)
@@ -215,9 +215,11 @@ Files and Directories:
   --config-local        Store configuration files in install directory
   --scripts-directory DIRECTORY
                         Location to look for script files
-  --user-file FILENAME  File to use for user data
-  --config-file FILENAME
-                        File to use for configuration data
+  --user-file FILE      File to use for user data
+  --config-file FILE    File to use for configuration data
+  --reset               Reset configuration file to default values
+  --reset-user          Reset user file to default values
+  --reset-all           Reset all configuration files to default values
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
@@ -324,13 +326,14 @@ You can do a lot of things from the command-line. For a really complicated examp
  - Join the `#merk` and `#python` channels on both networks
  - Make sure that we don't execute any connection scripts we have set up
  - Run in "light mode", regardless of what the configuration settings say
+ - Run a **MERK** script file named `stuff.merk` on connection, for both connections
 
 Here's the set of arguments that will make all of that happen:
 ```
-python merk.py -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
+python merk.py -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
 ```
 ```
-merk.exe -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
+merk.exe -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
 ```
 
 All command-line options are what they say on the tin: _optional_. Just running the script with no command-line options will initially open up the connection dialog, and you can do just about everything completely inside the GUI.

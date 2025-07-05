@@ -51,6 +51,8 @@ import merk.logs as logs
 import merk.user as user
 import merk.commands as commands
 
+import merk.connection_script as connection_script
+
 if not is_running_from_pyinstaller():
 	myprog = f"python {os.path.basename(__file__)}"
 else:
@@ -97,14 +99,15 @@ optiongroup.add_argument("-x","--donotexecute", help=f"Do not execute connection
 optiongroup.add_argument("-t", "--reconnect", help=f"Reconnect to servers on disconnection", action="store_true")
 optiongroup.add_argument( "-R","--run",dest="noask", help=f"Don't ask for connection information on start", action="store_true")
 optiongroup.add_argument( "-o","--on-top",dest="ontop", help=f"Application window always on top", action="store_true")
+optiongroup.add_argument("-s","--script", type=str,help="Use a file as a connection script", metavar="FILE", default='')
 
 configuration_group = parser.add_argument_group('Files and Directories')
 configuration_group.add_argument( "--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)", metavar="NAME", default=".merk")
 configuration_group.add_argument( "--config-directory",dest="configdir",type=str,help="Location to store configuration files", metavar="DIRECTORY", default=None)
 configuration_group.add_argument( "--config-local",dest="configinstall",help=f"Store configuration files in install directory", action="store_true")
 configuration_group.add_argument( "--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files", metavar="DIRECTORY", default=None)
-configuration_group.add_argument( "--user-file",dest="userfile",type=str,help="File to use for user data", metavar="FILENAME", default=None)
-configuration_group.add_argument( "--config-file",dest="configfile",type=str,help="File to use for configuration data", metavar="FILENAME", default=None)
+configuration_group.add_argument( "--user-file",dest="userfile",type=str,help="File to use for user data", metavar="FILE", default=None)
+configuration_group.add_argument( "--config-file",dest="configfile",type=str,help="File to use for configuration data", metavar="FILE", default=None)
 configuration_group.add_argument( "--reset",dest="configdefault", help=f"Reset configuration file to default values", action="store_true")
 configuration_group.add_argument( "--reset-user",dest="userdefault", help=f"Reset user file to default values", action="store_true")
 configuration_group.add_argument( "--reset-all",dest="alldefault", help=f"Reset all configuration files to default values", action="store_true")
@@ -340,6 +343,18 @@ if __name__ == '__main__':
 			EXECUTE_CONNECTION_SCRIPT = False
 		else:
 			EXECUTE_CONNECTION_SCRIPT = True
+
+			if args.script!='':
+				if os.path.exists(args.script) and os.access(args.script, os.R_OK):
+					f = open(args.script,"r")
+					cscript = f.read()
+					f.close()
+
+					connection_script.add_connection_script(f"{host}:{port}",cscript)
+				else:
+					# throw error
+					sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable!\n")
+					sys.exit(1)
 
 		i = ConnectInfo(
 			args.nickname,

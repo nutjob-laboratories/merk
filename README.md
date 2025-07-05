@@ -1,9 +1,10 @@
+
 <p align="center">
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.047.000">MERK 0.047.000</a></big></b><br>
-  <b>Current development version: 0.047.081</b><br>
+  <b>Current development version: 0.047.085</b><br>
 </p>
 
  - [Downloads](#Downloads)
@@ -27,13 +28,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  -  | [View](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.047.000 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.047.000)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.047.081 (11.60 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows | [Download MERK 0.047.081 (57.67 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows | [Download MERK 0.047.081 (44.27 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.047.085 (11.60 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.047.085 (57.67 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.047.085 (44.28 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.047.081**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.047.085**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.047.000](https://github.com/nutjob-laboratories/merk/releases/tag/0.047.000). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -115,7 +116,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.047.000), and may reflect the current development version (0.047.081). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.047.000), and may reflect the current development version (0.047.085). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -164,15 +165,16 @@ There are three libraries that comes bundled with **MERK**:
 
 # Usage
 ```
-usage: python merk.py [-h] [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-n NICKNAME]
-                      [-C SERVER:PORT[:PASSWORD]] [-S SERVER:PORT[:PASSWORD]]
-                      [-u USERNAME] [-a NICKNAME] [-r REALNAME] [-d] [-x] [-o]
-                      [-t] [-R] [--config-name NAME] [-Q NAME] [-D] [-L]
+usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
+                      [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
+                      [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
+                      [-t] [-R] [-o] [-s FILENAME][--config-name NAME] 
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
-                      [--reset-all]
+                      [--reset-all] [-Q NAME] [-D] [-L]
                       [SERVER] [PORT]
+
 
 Connection:
   SERVER                Server to connect to
@@ -204,9 +206,7 @@ Options:
   -t, --reconnect       Reconnect to servers on disconnection
   -R, --run             Don't ask for connection information on start
   -o, --on-top          Application window always on top
-  --reset               Resets configuration file to default values
-  --reset-user          Resets user file to default values
-  --reset-all           Resets all configuration files to default values
+  -s, --script FILE     Use a file as a connection script
 
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)
@@ -215,9 +215,11 @@ Files and Directories:
   --config-local        Store configuration files in install directory
   --scripts-directory DIRECTORY
                         Location to look for script files
-  --user-file FILENAME  File to use for user data
-  --config-file FILENAME
-                        File to use for configuration data
+  --user-file FILE      File to use for user data
+  --config-file FILE    File to use for configuration data
+  --reset               Reset configuration file to default values
+  --reset-user          Reset user file to default values
+  --reset-all           Reset all configuration files to default values
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
@@ -324,13 +326,14 @@ You can do a lot of things from the command-line. For a really complicated examp
  - Join the `#merk` and `#python` channels on both networks
  - Make sure that we don't execute any connection scripts we have set up
  - Run in "light mode", regardless of what the configuration settings say
+ - Run a **MERK** script file named `stuff.merk` on connection, for both connections
 
 Here's the set of arguments that will make all of that happen:
 ```
-python merk.py -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
+python merk.py -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
 ```
 ```
-merk.exe -Ltx -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
+merk.exe -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
 ```
 
 All command-line options are what they say on the tin: _optional_. Just running the script with no command-line options will initially open up the connection dialog, and you can do just about everything completely inside the GUI.
