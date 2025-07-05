@@ -411,13 +411,13 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0):
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	# |-------|
-	# | /jump |
-	# |-------|
+	# |----------|
+	# | /context |
+	# |----------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'jump':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"jump can only be called from scripts")
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context':
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"context can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -1450,7 +1450,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			if is_script:
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2648,7 +2647,7 @@ class ScriptThread(QThread):
 					tokens = line.split()
 
 					if len(tokens)==2:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'jump':
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context':
 							target = tokens[1]
 
 							is_valid = False
@@ -2676,7 +2675,7 @@ class ScriptThread(QThread):
 							script_only_command = True
 
 							if not is_valid:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}jump cannot find window \"{target}\"."])
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context cannot find window \"{target}\"."])
 								loop = False
 							else:
 								continue

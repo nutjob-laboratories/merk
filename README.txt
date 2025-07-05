@@ -255,7 +255,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server & executes connection script                                                      |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL & executes connection script                                              |
 | `/print [WINDOW] TEXT...`               | Prints text to a window                                                                           |
-| `/focus [SERVER] WINDOW`                | Switches focus to another window. Calls to `/focus` from scripts will be ignored (use `/jump` instead)                                                                          |
+| `/focus [SERVER] WINDOW`                | Switches focus to another window. Calls to `/focus` from scripts will be ignored (use `/context` instead)                                                                          |
 | `/maximize [SERVER] WINDOW`             | Maximizes a window                                                                                          |
 | `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                          |
 | `/restore [SERVER] WINDOW`              | Restores a window                                                                                           |
@@ -275,7 +275,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/refresh`                              | Requests a new list of channels from the server                                                             |
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                         |
 | `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                        |
-| `/jump WINDOW_NAME`                     | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                        |
+| `/context WINDOW_NAME`                     | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                        |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                        |
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  _**Caution**: use at your own risk!_                                       |
 | `/ignore USER`                            | Hides a `USER`'s chat'                                                                  |
