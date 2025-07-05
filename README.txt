@@ -280,6 +280,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  _**Caution**: use at your own risk!_                                       |
 | `/ignore USER`                            | Hides a `USER`'s chat'                                                                  |
 | `/unignore USER`                          | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument'                                                               |
+| `/end`                            | Immediately ends a script; can only be called from scripts                                                           |
 
 
 # Example Command-line Usage

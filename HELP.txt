@@ -312,6 +312,10 @@ Appearance:
 <td><code>/unignore USER</code></td>
 <td>Un-hides a <code>USER</code>'s chat. To un-hide all users, use <code>*</code> as the argument</td>
 </tr>
+<tr>
+<td><code>/end</code></td>
+<td>Immediately ends a script; can only be called from scripts</td>
+</tr>
 </tbody>
 </table>
 <h1 id="example-commandline-usage">Example Commandline Usage</h1>

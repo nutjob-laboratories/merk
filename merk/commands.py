@@ -401,6 +401,16 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0):
 	user_input = user_input.strip()
 	tokens = user_input.split()
 
+	# |------|
+	# | /end |
+	# |------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end':
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"end can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 	# |-------|
 	# | /jump |
 	# |-------|
@@ -2605,6 +2615,11 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end' and len(tokens)>1: 
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}end called with too many arguments."])
+					no_errors = False
+
 			if len(tokens)==2:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
 					count = tokens[1]
@@ -2676,6 +2691,12 @@ class ScriptThread(QThread):
 							count = tokens[1]
 							count = int(count)
 							time.sleep(count)
+							script_only_command = True
+							continue
+
+					if len(tokens)==1:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end':
+							loop = False
 							script_only_command = True
 							continue
 
