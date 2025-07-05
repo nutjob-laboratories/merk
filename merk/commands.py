@@ -604,34 +604,33 @@ def find_file(filename,extension):
 	# Look for the script in the install directory
 	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
 
-	# Add the default file extension and see if we find it
+	if extension!=None or extension!='':
+		efilename = filename + "." + extension
 
-	efilename = filename + "." + extension
+		# Check if it's a complete filename
+		if os.path.isfile(efilename): return filename
 
-	# Check if it's a complete filename
-	if os.path.isfile(efilename): return filename
+		# Look for the script in the scripts directory
+		if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
 
-	# Look for the script in the scripts directory
-	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
+		# Look for the script in the config directory
+		if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
 
-	# Look for the script in the config directory
-	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
+		# Look for the script in the install directory
+		if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
 
-	# Look for the script in the install directory
-	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
+		# Still not found? Case insensitive seach
+		for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return os.path.join(root, filename)
 
-	# Still not found? Case insensitive seach
-	for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
-		for filename in fnmatch.filter(files, f"{filename}.{extension}"):
-			return os.path.join(root, filename)
+		for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return os.path.join(root, filename)
 
-	for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
-		for filename in fnmatch.filter(files, f"{filename}.{extension}"):
-			return os.path.join(root, filename)
-
-	for root, dirs, files in os.walk(INSTALL_DIRECTORY):
-		for filename in fnmatch.filter(files, f"{filename}.{extension}"):
-			return os.path.join(root, filename)
+		for root, dirs, files in os.walk(INSTALL_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return os.path.join(root, filename)
 
 	for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
 		for filename in fnmatch.filter(files, f"{filename}.*"):

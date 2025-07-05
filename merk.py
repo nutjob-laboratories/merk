@@ -50,7 +50,6 @@ import merk.styles as styles
 import merk.logs as logs
 import merk.user as user
 import merk.commands as commands
-
 import merk.connection_script as connection_script
 
 if not is_running_from_pyinstaller():
@@ -262,6 +261,13 @@ if __name__ == '__main__':
 			}}
 			""")
 
+	def find_file(file):
+		if os.path.exists(file) and os.access(file, os.R_OK): return file
+		if args.scriptdir!=None:
+			file2 = os.path.join(args.scriptdir,file)
+			if os.path.exists(file2) and os.access(file2, os.R_OK): return file2
+		return commands.find_file(file,None)
+
 	def create_connection(host,port,password,ssl):
 		if password=='':
 			pword = None
@@ -345,8 +351,10 @@ if __name__ == '__main__':
 			EXECUTE_CONNECTION_SCRIPT = True
 
 			if args.script!='':
-				if os.path.exists(args.script) and os.access(args.script, os.R_OK):
-					f = open(args.script,"r")
+				file = find_file(args.script)
+
+				if file!=None:
+					f = open(file,"r")
 					cscript = f.read()
 					f.close()
 
