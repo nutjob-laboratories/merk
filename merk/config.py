@@ -237,9 +237,11 @@ SHOW_MISSPELLED_WORDS_IN_BOLD = False
 SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = False
 SHOW_MISSPELLED_WORDS_IN_COLOR = False
 SCRIPTING_ENGINE_ENABLED = True
+SHOW_PINGS_IN_CONSOLE = False
 
 def build_settings():
 	settings = {
+		"display_server_pings_in_server_window": SHOW_PINGS_IN_CONSOLE,
 		"enable_scripting": SCRIPTING_ENGINE_ENABLED,
 		"spellcheck_in_color": SHOW_MISSPELLED_WORDS_IN_COLOR,
 		"spellcheck_in_strikeout": SHOW_MISSPELLED_WORDS_IN_STRIKEOUT,
@@ -443,6 +445,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "display_server_pings_in_server_window" in settings:
+		settings["display_server_pings_in_server_window"] = SHOW_PINGS_IN_CONSOLE
 	if not "enable_scripting" in settings:
 		settings["enable_scripting"] = SCRIPTING_ENGINE_ENABLED
 	if not "spellcheck_in_color" in settings:
@@ -1042,6 +1046,7 @@ def load_settings(filename):
 	global SHOW_MISSPELLED_WORDS_IN_STRIKEOUT
 	global SHOW_MISSPELLED_WORDS_IN_COLOR
 	global SCRIPTING_ENGINE_ENABLED
+	global SHOW_PINGS_IN_CONSOLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1051,6 +1056,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_PINGS_IN_CONSOLE = settings["display_server_pings_in_server_window"]
 		SCRIPTING_ENGINE_ENABLED = settings["enable_scripting"]
 		SHOW_MISSPELLED_WORDS_IN_COLOR = settings["spellcheck_in_color"]
 		SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = settings["spellcheck_in_strikeout"]

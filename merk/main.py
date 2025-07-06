@@ -1020,6 +1020,14 @@ class Merk(QMainWindow):
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			client.sendLine(f"LIST")
 
+	def receivedPing(self,client):
+		if config.SHOW_PINGS_IN_CONSOLE:
+			if client.registered:
+				w = self.getServerWindow(client)
+				if w:
+					t = Message(SERVER_MESSAGE,'',"PING? PONG!")
+					w.writeText(t)
+
 	def receivedMOTD(self,client,motd):
 
 		m = "<br>".join(motd)

@@ -146,6 +146,10 @@ class IRC_Connection(irc.IRCClient):
 				if c[0]==channel: return True
 		return False
 
+	def irc_PING(self,prefix,params):
+		self.gui.receivedPing(self)
+		return irc.IRCClient.irc_PING(self,prefix,params)
+
 	def irc_RPL_LIST(self,prefix,params):
 		server = prefix
 		channel_name = params[1]

@@ -753,6 +753,7 @@ class Dialog(QDialog):
 			self.enableScripts.setEnabled(True)
 			self.alias_symbol_label.setEnabled(True)
 			self.alias_symbol.setEnabled(True)
+			self.enablePing.setEnabled(True)
 
 			if not config.SCRIPTING_ENGINE_ENABLED:
 				self.showErrors.setEnabled(False)
@@ -772,6 +773,12 @@ class Dialog(QDialog):
 			self.enableScripts.setEnabled(False)
 			self.alias_symbol_label.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
+			self.enablePing.setEnabled(False)
+
+			if config.SHOW_PINGS_IN_CONSOLE:
+				self.enablePing.setChecked(True)
+			else:
+				self.enablePing.setChecked(False)
 
 			self.alias_symbol.setText(config.ALIAS_INTERPOLATION_SYMBOL)
 
@@ -3520,7 +3527,7 @@ class Dialog(QDialog):
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
 			settings to the default, and should fix any fatal problems.
 			</small>
-			<br>
+			
 			""")
 		self.advancedDescription.setWordWrap(True)
 		self.advancedDescription.setAlignment(Qt.AlignJustify)
@@ -3580,11 +3587,20 @@ class Dialog(QDialog):
 		aliasLayout.addWidget(self.alias_symbol_label)
 		aliasLayout.addStretch()
 
+		self.enablePing = QCheckBox("Show server pings in server windows",self)
+		if config.SHOW_PINGS_IN_CONSOLE: self.enablePing.setChecked(True)
+		self.enablePing.stateChanged.connect(self.changedSettingAdvanced)
+		self.enablePing.setEnabled(False)
+
+		aoLayout = QHBoxLayout()
+		aoLayout.addStretch()
+		aoLayout.addWidget(self.advancedEnable)
+		aoLayout.addStretch()
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
-		advancedLayout.addWidget(self.advancedEnable)
-		advancedLayout.addWidget(QLabel(' '))
+		advancedLayout.addLayout(aoLayout)
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addWidget(self.enableAlias)
 		advancedLayout.addWidget(self.interpolateAlias)
@@ -3592,6 +3608,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.enableStyle)
 		advancedLayout.addWidget(self.enableScripts)
 		advancedLayout.addWidget(self.showErrors)
+		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
 		advancedLayout.addWidget(self.writeFile)
@@ -3887,6 +3904,7 @@ class Dialog(QDialog):
 		config.SHOW_MISSPELLED_WORDS_IN_ITALICS = self.spellcheckItalics.isChecked()
 		config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = self.spellcheckStrikout.isChecked()
 		config.SCRIPTING_ENGINE_ENABLED = self.enableScripts.isChecked()
+		config.SHOW_PINGS_IN_CONSOLE = self.enablePing.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
