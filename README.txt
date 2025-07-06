@@ -283,6 +283,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/ignore USER`                            | Hides a `USER`'s chat'                                                                  |
 | `/unignore USER`                          | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument'                                                               |
 | `/end`                            | Immediately ends a script; can only be called from scripts                                                           |
+| `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards |
 
 
 # Example Command-line Usage

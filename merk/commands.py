@@ -129,6 +129,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"config": config.ISSUE_COMMAND_SYMBOL+"config ",
 			config.ISSUE_COMMAND_SYMBOL+"ignore": config.ISSUE_COMMAND_SYMBOL+"ignore ",
 			config.ISSUE_COMMAND_SYMBOL+"unignore": config.ISSUE_COMMAND_SYMBOL+"unignore ",
+			config.ISSUE_COMMAND_SYMBOL+"find": config.ISSUE_COMMAND_SYMBOL+"find ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -201,6 +202,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>", "Hides a user's chat. USER can be a nickname or hostmask" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>", "Un-hides a user's chat. To un-hide all users, use * as the argument" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"find [TERMS]</b>", "Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards" ],
 	]
 
 	COPY = []
@@ -763,9 +765,58 @@ def check_for_sane_values(setting,value):
 
 	return ALL_VALID_SETTINGS
 
+def list_files():
+	file_paths = []
+	for root, _, files in os.walk(SCRIPTS_DIRECTORY):
+		for file in files:
+			file_paths.append(os.path.join(root, file))
+	for root, _, files in os.walk(CONFIG_DIRECTORY):
+		for file in files:
+			file_paths.append(os.path.join(root, file))
+	for root, _, files in os.walk(INSTALL_DIRECTORY):
+		for file in files:
+			file_paths.append(os.path.join(root, file))
+	return file_paths
+
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	user_input = user_input.strip()
 	tokens = user_input.split()
+
+	# |-------|
+	# | /find |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)==1:
+			flist = list_files()
+
+			count = len(flist)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} files")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			for f in flist:
+				t = Message(SYSTEM_MESSAGE,'',f"{f}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+
+			found = []
+			for f in list_files():
+				b = os.path.basename(f)
+				if fnmatch.fnmatch(b, f"{target}"): found.append(b)
+
+			count = len(found)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} files")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			for f in found:
+				t = Message(SYSTEM_MESSAGE,'',f"{f}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /ignore |

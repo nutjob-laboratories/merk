@@ -88,6 +88,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ignore",
 			cmdsymbol+"unignore",
 			cmdsymbol+"end",
+			cmdsymbol+"find",
 		]
 
 		# if not resources.is_running_from_pyinstaller():
