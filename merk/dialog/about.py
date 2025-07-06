@@ -110,6 +110,11 @@ class Dialog(QDialog):
 		qr_credit.setOpenExternalLinks(True)
 
 		if is_running_from_pyinstaller():
+
+			upx_credit = QLabel(f"<b><small><a href=\"https://upx.github.io/\">UPX</a> by M. Oberhumer, L. Molnar & J. Reiser</small></b>")
+			upx_credit.setAlignment(Qt.AlignCenter)
+			upx_credit.setOpenExternalLinks(True)
+
 			pi_credit = QLabel(f"<b><small><a href=\"https://pyinstaller.org/\">PyInstaller</a> by David Cortesi</small></b>")
 			pi_credit.setAlignment(Qt.AlignCenter)
 			pi_credit.setOpenExternalLinks(True)
@@ -163,6 +168,7 @@ class Dialog(QDialog):
 		creditsLayout.addWidget(emoji_credit)
 		creditsLayout.addWidget(qr_credit)
 		if is_running_from_pyinstaller():
+			creditsLayout.addWidget(upx_credit)
 			creditsLayout.addWidget(pi_credit)
 		creditsBox.setLayout(creditsLayout)
 
