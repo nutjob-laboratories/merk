@@ -799,9 +799,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)==2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)>=2:
 			tokens.pop(0)
-			target = tokens.pop(0)
+			target = ' '.join(tokens)
 
 			found = []
 			for f in list_files():
@@ -1619,10 +1619,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			else:
 				if is_script:
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: File \""+filename+"\" doesn't exist.")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: File \""+filename+"\" doesn't exist or is not readable.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"File \""+filename+"\" doesn't exist.")
+				t = Message(ERROR_MESSAGE,'',"File \""+filename+"\" doesn't exist or is not readable.")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit' and len(tokens)==1:
@@ -2158,10 +2158,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			else:
 				if is_script:
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \""+filename+"\" doesn't exist.")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \""+filename+"\" doesn't exist or is not readable.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist.")
+				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist or is not readable.")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

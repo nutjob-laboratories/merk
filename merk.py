@@ -361,7 +361,7 @@ if __name__ == '__main__':
 					connection_script.add_connection_script(f"{host}:{port}",cscript)
 				else:
 					# throw error
-					sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable!\n")
+					sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable.\n")
 					sys.exit(1)
 
 		i = ConnectInfo(
