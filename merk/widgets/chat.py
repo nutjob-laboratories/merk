@@ -2710,11 +2710,25 @@ def buildServerSettingsMenu(self,client):
 		e = plainTextAction(self,"<b>Users"+f":</b> {client.server_user_count:,}")
 	optionsMenu.addAction(e)
 
-	if client.server_channel_count==0:
-		e = plainTextAction(self,"<b>Channels"+f":</b> Unknown")
+	if client.server_op_count==0:
+		e = plainTextAction(self,"<b>Operators"+f":</b> Unknown")
 	else:
-		e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,}")
+		e = plainTextAction(self,"<b>Operators"+f":</b> {client.server_op_count:,}")
 	optionsMenu.addAction(e)
+
+	if client.actual_server_channel_count==0:
+		if client.server_channel_count==0:
+			e = plainTextAction(self,"<b>Channels"+f":</b> Unknown")
+		else:
+			e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,}")
+		optionsMenu.addAction(e)
+	else:
+		diff = client.actual_server_channel_count - client.server_channel_count
+		if client.server_channel_count==0:
+			e = plainTextAction(self,"<b>Channels"+f":</b> {client.actual_server_channel_count:,}")
+		else:
+			e = plainTextAction(self,"<b>Channels"+f":</b> {client.server_channel_count:,} ({diff:,} hidden)")
+		optionsMenu.addAction(e)
 
 	e = textSeparator(self,"Limits")
 	optionsMenu.addAction(e)

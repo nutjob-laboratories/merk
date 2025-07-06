@@ -135,10 +135,35 @@ class IRC_Connection(irc.IRCClient):
 		self.last_list_timestamp = 0
 		self.is_listing_channels = False
 
+		self.server_op_count = 0
+		self.actual_server_channel_count = 0
+
 		self.last_interaction = 0
 		self.autoaway = False
 
 		self.banlists = defaultdict(list)
+
+	def luserChannels(self,channels):
+		try:
+			ccount = int(channels)
+			self.actual_server_channel_count = ccount
+		except:
+			pass
+
+	def luserClient(self,info):
+		#sys.stdout.write(f"luserClient: {info}\n")
+		pass
+
+	def luserMe(self,info):
+		#sys.stdout.write(f"luserMe: {info}\n")
+		pass
+
+	def luserOp(self,ops):
+		try:
+			opcount = int(ops)
+			self.server_op_count = opcount
+		except:
+			pass
 
 	def server_has_channel(self,channel):
 		if len(self.server_channel_list)>0:
