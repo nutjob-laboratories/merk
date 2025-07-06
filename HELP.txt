@@ -362,5 +362,5 @@ Appearance:
 <li><strong>DCC chat and file transfers</strong>. The DCC  functionality in Twisted is undocumented, and I&#39;ll be honest, I can&#39;t make heads or tails of it. I&#39;d love to be able to add this functionality to <strong>MERK</strong>, but I need help!</li>
 <li><strong>Using MERK and giving me feedback</strong>. Let me know what you love about <strong>MERK</strong> and what you hate about <strong>MERK</strong>! Got ideas for ways you&#39;d like to customize the client? Features you&#39;d like? Let me know! I can&#39;t guarantee that I&#39;ll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using <strong>MERK</strong>!</li>
 </ul>
-<p>Contacting me is easy! Drop me an <a href="mailto:dhetrick@gmail.com">email</a> or say hi in the official <strong>MERK</strong> IRC channel: <code>#merk</code> on the Libera network (<code>irc.libera.chat</code>, port 6667 for TCP/I</p>
+<p>Contacting me is easy! Drop me an <a href="mailto:dhetrick@gmail.com">email</a> or say hi in the official <strong>MERK</strong> IRC channel: <code>#merk</code> on the Libera network (<code>irc.libera.chat</code>, port 6667 for TCP/IP, port 6697 for SSL/TLS).</p>
 
