@@ -590,59 +590,65 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0):
 
 	return False
 
+def check_readable(file):
+	if os.path.exists(file) and os.access(file, os.R_OK):
+		return file
+	else:
+		return None
+
 def find_file(filename,extension):
 
 	# Check if it's a complete filename
-	if os.path.isfile(filename): return filename
+	if os.path.isfile(filename): return check_readable(filename)
 
 	# Look for the script in the scripts directory
-	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, filename)): return os.path.join(SCRIPTS_DIRECTORY, filename)
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, filename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, filename))
 
 	# Look for the script in the config directory
-	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return os.path.join(config.CONFIG_DIRECTORY, filename)
+	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return check_readable(os.path.join(config.CONFIG_DIRECTORY, filename))
 
 	# Look for the script in the install directory
-	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return os.path.join(INSTALL_DIRECTORY, filename)
+	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return check_readable(os.path.join(INSTALL_DIRECTORY, filename))
 
 	if extension!=None or extension!='':
 		efilename = filename + "." + extension
 
 		# Check if it's a complete filename
-		if os.path.isfile(efilename): return filename
+		if os.path.isfile(efilename): return check_readable(filename)
 
 		# Look for the script in the scripts directory
-		if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return os.path.join(SCRIPTS_DIRECTORY, efilename)
+		if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, efilename))
 
 		# Look for the script in the config directory
-		if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return os.path.join(config.CONFIG_DIRECTORY, efilename)
+		if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return check_readable(os.path.join(config.CONFIG_DIRECTORY, efilename))
 
 		# Look for the script in the install directory
-		if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return os.path.join(INSTALL_DIRECTORY, efilename)
+		if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return check_readable(os.path.join(INSTALL_DIRECTORY, efilename))
 
 		# Still not found? Case insensitive seach
 		for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
 			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
-				return os.path.join(root, filename)
+				return check_readable(os.path.join(root, filename))
 
 		for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
 			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
-				return os.path.join(root, filename)
+				return check_readable(os.path.join(root, filename))
 
 		for root, dirs, files in os.walk(INSTALL_DIRECTORY):
 			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
-				return os.path.join(root, filename)
+				return check_readable(os.path.join(root, filename))
 
 	for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
 		for filename in fnmatch.filter(files, f"{filename}.*"):
-			return os.path.join(root, filename)
+			return check_readable(os.path.join(root, filename))
 
 	for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
 		for filename in fnmatch.filter(files, f"{filename}.*"):
-			return os.path.join(root, filename)
+			return check_readable(os.path.join(root, filename))
 
 	for root, dirs, files in os.walk(INSTALL_DIRECTORY):
 		for filename in fnmatch.filter(files, f"{filename}.*"):
-			return os.path.join(root, filename)
+			return check_readable(os.path.join(root, filename))
 
 	return None
 
