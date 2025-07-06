@@ -143,6 +143,10 @@ class IRC_Connection(irc.IRCClient):
 
 		self.banlists = defaultdict(list)
 
+	def pong(self,user,seconds):
+		#sys.stdout.write(f"PONG: {user} {seconds} seconds\n")
+		self.gui.receivedPong(self,user,seconds)
+
 	def luserChannels(self,channels):
 		try:
 			ccount = int(channels)

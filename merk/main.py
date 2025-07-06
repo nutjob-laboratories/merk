@@ -1028,6 +1028,19 @@ class Merk(QMainWindow):
 					t = Message(SERVER_MESSAGE,'',"PING? PONG!")
 					w.writeText(t)
 
+	def receivedPong(self,client,user,seconds):
+
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',f"Received pong from {user}: {seconds} seconds")
+			w.writeText(t)
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			t = Message(SYSTEM_MESSAGE,'',f"Received pong from {user}: {seconds} seconds")
+			c.writeText(t)
+
 	def receivedMOTD(self,client,motd):
 
 		m = "<br>".join(motd)

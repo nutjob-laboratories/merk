@@ -130,6 +130,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ignore": config.ISSUE_COMMAND_SYMBOL+"ignore ",
 			config.ISSUE_COMMAND_SYMBOL+"unignore": config.ISSUE_COMMAND_SYMBOL+"unignore ",
 			config.ISSUE_COMMAND_SYMBOL+"find": config.ISSUE_COMMAND_SYMBOL+"find ",
+			config.ISSUE_COMMAND_SYMBOL+"ping": config.ISSUE_COMMAND_SYMBOL+"ping ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -203,6 +204,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>", "Hides a user's chat. USER can be a nickname or hostmask" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>", "Un-hides a user's chat. To un-hide all users, use * as the argument" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"find [TERMS]</b>", "Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ping USER [TEXT]</b>", "Sends a CTCP ping to a user" ],
 	]
 
 	COPY = []
@@ -781,6 +783,33 @@ def list_files():
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	user_input = user_input.strip()
 	tokens = user_input.split()
+
+	# |-------|
+	# | /ping |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ping' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			window.client.ping(target)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ping' and len(tokens)>2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			msg = ' '.join(tokens)
+			window.client.ping(target,msg)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ping':
+			if is_script:
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"ping USER")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"ping USER")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |-------|
 	# | /find |

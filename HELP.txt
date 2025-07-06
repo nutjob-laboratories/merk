@@ -318,12 +318,14 @@ Appearance:
 <td><code>/end</code></td>
 <td>Immediately ends a script; can only be called from scripts</td>
 </tr>
-
 <tr>
 <td><code>/find [TERMS]</code></td>
-<td>Finds filenames that can be found by other commands; use <code>*</code> for multi-character wildcards, and <code>?</code> for single character wildcards. </td>
+<td>Finds filenames that can be found by other commands; use <code>*</code> for multi-character wildcards, and <code>?</code> for single character wildcards</td>
 </tr>
-
+<tr>
+<td><code>/ping USER [TEXT]</code></td>
+<td>Sends a CTCP ping to a user</td>
+</tr>
 </tbody>
 </table>
 <h1 id="example-commandline-usage">Example Commandline Usage</h1>
