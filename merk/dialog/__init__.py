@@ -47,6 +47,7 @@ from .set_script import Dialog as SetScript
 from .set_alias import Dialog as SetAlias
 from .menu_name import Dialog as SetMenuName
 from .key import Dialog as SetKey
+from .find import Dialog as Find
 
 def SetKeyDialog(parent):
 	x = SetKey(parent)

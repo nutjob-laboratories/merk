@@ -103,6 +103,18 @@ class Window(QMainWindow):
 
 		self.editMenu.clear()
 
+		mefind = QAction(QIcon(WHOIS_ICON),"Find",self)
+		mefind.triggered.connect(self.doFind)
+		mefind.setShortcut("Ctrl+F")
+		self.editMenu.addAction(mefind)
+
+		mefind = QAction(QIcon(EDIT_ICON),"Find and replace",self)
+		mefind.triggered.connect(self.doFindReplace)
+		mefind.setShortcut("Ctrl+R")
+		self.editMenu.addAction(mefind)
+
+		self.editMenu.addSeparator()
+
 		entry = QAction(QIcon(SELECTALL_ICON),"Select All",self)
 		entry.triggered.connect(self.editor.selectAll)
 		entry.setShortcut("Ctrl+A")
@@ -209,6 +221,65 @@ class Window(QMainWindow):
 		else:
 			self.status.hide()
 
+	def doFind(self):
+
+		if self.findWindow != None:
+			ftext = self.findWindow.find.text()
+			winpos = self.findWindow.pos()
+			if self.findWindow.icount!=' ':
+				icount = self.findWindow.icount.text()
+			else:
+				icount = None
+			self.findWindow.close()
+		else:
+			ftext = None
+			winpos = None
+			icount = None
+
+		self.findWindow = Find(self,False)
+		if self.filename:
+			self.findWindow.setWindowTitle(self.filename)
+		if ftext: self.findWindow.find.setText(ftext)
+
+		if winpos:
+			self.findWindow.move(winpos)
+
+		if icount:
+			self.findWindow.icount.setText(icount)
+
+		self.findWindow.show()
+		return
+
+	def doFindReplace(self):
+
+		if self.findWindow != None:
+			ftext = self.findWindow.find.text()
+			winpos = self.findWindow.pos()
+			if self.findWindow.icount!=' ':
+				icount = self.findWindow.icount.text()
+			else:
+				icount = None
+			self.findWindow.close()
+		else:
+			ftext = None
+			winpos = None
+			icount = None
+
+		self.findWindow = Find(self,True)
+		if self.filename:
+			self.findWindow.setWindowTitle(self.filename)
+		if ftext: self.findWindow.find.setText(ftext)
+
+		if winpos:
+			self.findWindow.move(winpos)
+
+		if icount:
+			self.findWindow.icount.setText(icount)
+
+
+		self.findWindow.show()
+		return
+
 	def __init__(self,filename=None,parent=None,subwindow=None):
 		super(Window, self).__init__(parent)
 
@@ -221,6 +292,7 @@ class Window(QMainWindow):
 
 		self.editing_user_script = False
 		self.current_user_script = None
+		self.findWindow = None
 
 		self.name = "Untitled script"
 
@@ -398,11 +470,15 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertMin)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
+		entry.triggered.connect(self.insertContext)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
 		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Alias",self)
+		entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
 		entry.triggered.connect(self.insertAlias)
 		self.commandMenu.addAction(entry)
 
@@ -414,6 +490,9 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertExit)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(SCRIPT_ICON),"End script",self)
+		entry.triggered.connect(self.insertEnd)
+		self.commandMenu.addAction(entry)
 
 		self.aliasMenu = self.menubar.addMenu("Aliases")
 
@@ -472,6 +551,14 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def insertContext(self):
+		e = SetWindowDialog("Context",self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"context "+str(e)+"\n")
+		self.updateApplicationTitle()
 
 	def executeScript(self,window):
 		script = self.editor.toPlainText()
@@ -667,6 +754,10 @@ class Window(QMainWindow):
 
 	def insertExit(self):
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"exit\n")
+		self.updateApplicationTitle()
+
+	def insertEnd(self):
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"end\n")
 		self.updateApplicationTitle()
 
 	def insertPlay(self):
