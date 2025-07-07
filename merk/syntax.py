@@ -58,7 +58,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"who",
 			cmdsymbol+"invite",
 			cmdsymbol+"script",
-			cmdsymbol+"focus",
 			cmdsymbol+"maximize",
 			cmdsymbol+"minimize",
 			cmdsymbol+"restore",

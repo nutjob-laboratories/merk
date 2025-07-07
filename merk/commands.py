@@ -922,19 +922,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# |------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log' and len(tokens)==1:
-			if is_script==True:
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"log cannot be called from a script")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
 			gui.menuExportLog()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
-			if is_script==True:
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"log cannot be called from a script")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"log")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
@@ -1627,11 +1617,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
-				if is_script:
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Scripting is disabled")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
 				t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
@@ -1844,18 +1829,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# |--------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style' and len(tokens)==1:
-
-			if is_script==True:
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"style cannot be called from a script")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
 			if not config.ENABLE_STYLE_EDITOR:
 				t = Message(ERROR_MESSAGE,'',"The style editor has been disabled in settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-
 			window.pressedStyleButton()
 			return True
 
@@ -1864,13 +1841,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# |-----------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings' and len(tokens)==1:
-
-			if is_script:
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"settings cannot be called from a script")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
 			gui.openSettings()
 			return True
 
@@ -2697,6 +2667,31 @@ class ScriptThread(QThread):
 			tokens = line.split()
 
 			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus cannot be called from a script."])
+					no_errors = False
+
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script."])
+					no_errors = False
+
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}settings cannot be called from a script."])
+					no_errors = False
+
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}log cannot be called from a script."])
+					no_errors = False
+
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script."])
+					no_errors = False
+
+			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end' and len(tokens)>1: 
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}end called with too many arguments."])
 					no_errors = False
@@ -2761,11 +2756,6 @@ class ScriptThread(QThread):
 								loop = False
 							else:
 								continue
-
-					if len(tokens)>=1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus': 
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus cannot be called in scripts."])
-							loop = False
 
 					if len(tokens)==2:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
