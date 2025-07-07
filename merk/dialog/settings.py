@@ -754,6 +754,7 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(True)
 			self.alias_symbol.setEnabled(True)
 			self.enablePing.setEnabled(True)
+			self.enableDisconnect.setEnabled(True)
 
 			if not config.SCRIPTING_ENGINE_ENABLED:
 				self.showErrors.setEnabled(False)
@@ -774,6 +775,12 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.enablePing.setEnabled(False)
+			self.enableDisconnect.setEnabled(False)
+
+			if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
+				self.enableDisconnect.setChecked(True)
+			else:
+				self.enableDisconnect.setChecked(False)
 
 			if config.SHOW_PINGS_IN_CONSOLE:
 				self.enablePing.setChecked(True)
@@ -3592,6 +3599,11 @@ class Dialog(QDialog):
 		self.enablePing.stateChanged.connect(self.changedSettingAdvanced)
 		self.enablePing.setEnabled(False)
 
+		self.enableDisconnect = QCheckBox("Closing server window disconnects",self)
+		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
+		self.enableDisconnect.stateChanged.connect(self.changedSettingAdvanced)
+		self.enableDisconnect.setEnabled(False)
+
 		aoLayout = QHBoxLayout()
 		aoLayout.addStretch()
 		aoLayout.addWidget(self.advancedEnable)
@@ -3609,6 +3621,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.enableScripts)
 		advancedLayout.addWidget(self.showErrors)
 		advancedLayout.addWidget(self.enablePing)
+		advancedLayout.addWidget(self.enableDisconnect)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
 		advancedLayout.addWidget(self.writeFile)
@@ -3905,6 +3918,7 @@ class Dialog(QDialog):
 		config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT = self.spellcheckStrikout.isChecked()
 		config.SCRIPTING_ENGINE_ENABLED = self.enableScripts.isChecked()
 		config.SHOW_PINGS_IN_CONSOLE = self.enablePing.isChecked()
+		config.CLOSING_SERVER_WINDOW_DISCONNECTS = self.enableDisconnect.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
