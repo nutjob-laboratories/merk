@@ -2356,7 +2356,7 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
 		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
 
-		self.topicBold = QCheckBox("Channel topic in bold",self)
+		self.topicBold = QCheckBox("Show topic in bold",self)
 		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
 		self.topicBold.stateChanged.connect(self.titleChange)
 
@@ -2368,7 +2368,7 @@ class Dialog(QDialog):
 		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
 		self.showBanlist.stateChanged.connect(self.topicChange)
 
-		self.showChanMenu = QCheckBox("Channel modes button",self)
+		self.showChanMenu = QCheckBox("Set modes button",self)
 		if config.SHOW_CHANNEL_MENU: self.showChanMenu.setChecked(True)
 		self.showChanMenu.stateChanged.connect(self.topicChange)
 
