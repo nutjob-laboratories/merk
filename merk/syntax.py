@@ -89,6 +89,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"end",
 			cmdsymbol+"find",
 			cmdsymbol+"ping",
+			cmdsymbol+"shell",
 		]
 
 		# if not resources.is_running_from_pyinstaller():

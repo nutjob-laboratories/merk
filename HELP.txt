@@ -326,6 +326,10 @@ Appearance:
 <td><code>/ping USER [TEXT]</code></td>
 <td>Sends a CTCP ping to a user</td>
 </tr>
+<tr>
+<td><code>/shell ALIAS COMMAND...</code></td>
+<td>Executes an external program, and stores the output in an alias</td>
+</tr>
 </tbody>
 </table>
 <h1 id="example-commandline-usage">Example Commandline Usage</h1>

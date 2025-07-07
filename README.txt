@@ -285,6 +285,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/end`                            | Immediately ends a script; can only be called from scripts                                                           |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards |
 | `/ping USER [TEXT]`                            | Sends a CTCP ping to a user                                                          |
+| `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                    |
 
 
 # Example Command-line Usage
