@@ -486,6 +486,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertPlay)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
+		entry.triggered.connect(self.insertShell)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(APPLICATION_ICON),"Exit application",self)
 		entry.triggered.connect(self.insertExit)
 		self.commandMenu.addAction(entry)
@@ -773,6 +777,20 @@ class Window(QMainWindow):
 			else:
 				self.show_error_message("Wrong file type","File is not a WAV file!\nOnly WAV files can be used with the "+config.ISSUE_COMMAND_SYMBOL+"play command.\nPlease select a valid file.")
 
+	def insertShell(self):
+		x = SetShell(self)
+		e = x.get_alias_information(self)
+
+		if not e: return
+
+		aname = e[0]
+		avalue = e[1]
+
+		if len(aname)==0: return
+		if len(avalue)==0: avalue = 'X'
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"shell "+aname+" "+avalue+"\n")
+		self.updateApplicationTitle()
 
 	def insertAlias(self):
 		x = SetAlias(self)
