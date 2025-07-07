@@ -754,7 +754,6 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(True)
 			self.alias_symbol.setEnabled(True)
 			self.enablePing.setEnabled(True)
-			self.enableDisconnect.setEnabled(True)
 
 			if not config.SCRIPTING_ENGINE_ENABLED:
 				self.showErrors.setEnabled(False)
@@ -775,12 +774,6 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.enablePing.setEnabled(False)
-			self.enableDisconnect.setEnabled(False)
-
-			if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
-				self.enableDisconnect.setChecked(True)
-			else:
-				self.enableDisconnect.setChecked(False)
 
 			if config.SHOW_PINGS_IN_CONSOLE:
 				self.enablePing.setChecked(True)
@@ -1605,7 +1598,6 @@ class Dialog(QDialog):
 		self.showTopicInTitle = QCheckBox("Show current channel topic in\napplication title",self)
 		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
 		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
-
 		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showStatusEditor = QCheckBox("Editor windows",self)
@@ -1616,12 +1608,18 @@ class Dialog(QDialog):
 		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
 		statusLayout.addRow(self.showStatusList,self.showStatusEditor)
 
+		self.enableDisconnect = QCheckBox("Closing server window disconnects\nfrom server",self)
+		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
+		self.enableDisconnect.stateChanged.connect(self.changedSettingAdvanced)
+		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
 		subwindowLayout.addWidget(self.showServToolbar)
 		subwindowLayout.addWidget(self.showServList)
 		subwindowLayout.addWidget(self.showServRefresh)
 		subwindowLayout.addWidget(self.displayServNicks)
+		subwindowLayout.addWidget(self.enableDisconnect)
 		subwindowLayout.addWidget(QLabel(' '))
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat windows</b>"))
 		subwindowLayout.addWidget(self.showInfo)
@@ -3599,11 +3597,6 @@ class Dialog(QDialog):
 		self.enablePing.stateChanged.connect(self.changedSettingAdvanced)
 		self.enablePing.setEnabled(False)
 
-		self.enableDisconnect = QCheckBox("Closing server window disconnects",self)
-		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
-		self.enableDisconnect.stateChanged.connect(self.changedSettingAdvanced)
-		self.enableDisconnect.setEnabled(False)
-
 		aoLayout = QHBoxLayout()
 		aoLayout.addStretch()
 		aoLayout.addWidget(self.advancedEnable)
@@ -3621,7 +3614,6 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.enableScripts)
 		advancedLayout.addWidget(self.showErrors)
 		advancedLayout.addWidget(self.enablePing)
-		advancedLayout.addWidget(self.enableDisconnect)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
 		advancedLayout.addWidget(self.writeFile)
