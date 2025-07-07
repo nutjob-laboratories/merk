@@ -92,6 +92,14 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"shell",
 		]
 
+		if not config.ENABLE_ALIASES:
+			merk.remove(cmdsymbol+"alias")
+			merk.remove(cmdsymbol+"unalias")
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			merk.remove(cmdsymbol+"script")
+		if not config.ENABLE_SHELL_COMMAND:
+			merk.remove(cmdsymbol+"shell")
+
 		# if not resources.is_running_from_pyinstaller():
 		# 	merk.append(cmdsymbol+"nostril")
 

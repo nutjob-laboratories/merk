@@ -147,6 +147,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"script",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"edit",'')
 
+	if not config.ENABLE_SHELL_COMMAND:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
+
 	if new_autocomplete!=None:
 		if isinstance(new_autocomplete, list):
 			for a in new_autocomplete:
@@ -221,6 +224,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
+		if not config.ENABLE_SHELL_COMMAND:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 		COPY.append(e)
 	COMMAND_HELP_INFORMATION = COPY
 
@@ -791,6 +796,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# | /shell |
 	# |--------|
 	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
+			if not config.ENABLE_SHELL_COMMAND:
+				if is_script:
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"shell has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"shell has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell' and len(tokens)>=3:
 			tokens.pop(0)
 			alias = tokens.pop(0)

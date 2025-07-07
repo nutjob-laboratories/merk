@@ -239,9 +239,11 @@ SHOW_MISSPELLED_WORDS_IN_COLOR = False
 SCRIPTING_ENGINE_ENABLED = True
 SHOW_PINGS_IN_CONSOLE = False
 CLOSING_SERVER_WINDOW_DISCONNECTS = False
+ENABLE_SHELL_COMMAND = True
 
 def build_settings():
 	settings = {
+		"enable_shell_command": ENABLE_SHELL_COMMAND,
 		"closing_server_window_disconnects_from_server": CLOSING_SERVER_WINDOW_DISCONNECTS,
 		"display_server_pings_in_server_window": SHOW_PINGS_IN_CONSOLE,
 		"enable_scripting": SCRIPTING_ENGINE_ENABLED,
@@ -447,6 +449,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_shell_command" in settings:
+		settings["enable_shell_command"] = ENABLE_SHELL_COMMAND
 	if not "closing_server_window_disconnects_from_server" in settings:
 		settings["closing_server_window_disconnects_from_server"] = CLOSING_SERVER_WINDOW_DISCONNECTS
 	if not "display_server_pings_in_server_window" in settings:
@@ -1052,6 +1056,7 @@ def load_settings(filename):
 	global SCRIPTING_ENGINE_ENABLED
 	global SHOW_PINGS_IN_CONSOLE
 	global CLOSING_SERVER_WINDOW_DISCONNECTS
+	global ENABLE_SHELL_COMMAND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1061,6 +1066,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_SHELL_COMMAND = settings["enable_shell_command"]
 		CLOSING_SERVER_WINDOW_DISCONNECTS = settings["closing_server_window_disconnects_from_server"]
 		SHOW_PINGS_IN_CONSOLE = settings["display_server_pings_in_server_window"]
 		SCRIPTING_ENGINE_ENABLED = settings["enable_scripting"]

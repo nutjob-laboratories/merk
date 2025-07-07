@@ -754,6 +754,7 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(True)
 			self.alias_symbol.setEnabled(True)
 			self.enablePing.setEnabled(True)
+			self.enableShell.setEnabled(True)
 
 			if not config.SCRIPTING_ENGINE_ENABLED:
 				self.showErrors.setEnabled(False)
@@ -774,6 +775,12 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.enablePing.setEnabled(False)
+			self.enableShell.setEnabled(False)
+
+			if config.ENABLE_SHELL_COMMAND:
+				self.enableShell.setChecked(True)
+			else:
+				self.enableShell.setChecked(False)
 
 			if config.SHOW_PINGS_IN_CONSOLE:
 				self.enablePing.setChecked(True)
@@ -1610,7 +1617,7 @@ class Dialog(QDialog):
 
 		self.enableDisconnect = QCheckBox("Closing server window disconnects\nfrom server",self)
 		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
-		self.enableDisconnect.stateChanged.connect(self.changedSettingAdvanced)
+		self.enableDisconnect.stateChanged.connect(self.changedSetting)
 		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		subwindowLayout = QVBoxLayout()
@@ -3526,8 +3533,8 @@ class Dialog(QDialog):
 
 		self.advancedDescription = QLabel(f"""
 			<small>
-			</small><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation of {APPLICATION_NAME},
-			break existing scripts, or fill up your hard drive!</b><small><br><br>
+			</small><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
+			break existing scripts, or fill up your hard drive!</b><small><br>
 			If changing one of these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
 			settings to the default, and should fix any fatal problems.
@@ -3602,6 +3609,11 @@ class Dialog(QDialog):
 		aoLayout.addWidget(self.advancedEnable)
 		aoLayout.addStretch()
 
+		self.enableShell = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}shell command",self)
+		if config.ENABLE_SHELL_COMMAND: self.enableShell.setChecked(True)
+		self.enableShell.stateChanged.connect(self.changedSettingAdvanced)
+		self.enableShell.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -3613,6 +3625,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(self.enableStyle)
 		advancedLayout.addWidget(self.enableScripts)
 		advancedLayout.addWidget(self.showErrors)
+		advancedLayout.addWidget(self.enableShell)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
