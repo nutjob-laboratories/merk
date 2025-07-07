@@ -2142,6 +2142,8 @@ class Merk(QMainWindow):
 					return c
 				elif c.window_type==PRIVATE_WINDOW:
 					return c
+				elif c.window_type==SERVER_WINDOW:
+					return c
 		return None
 
 	def getWindow(self,channel,client):
@@ -3181,6 +3183,8 @@ class Merk(QMainWindow):
 				if chat_window!=None:
 					if chat_window.window_type==CHANNEL_WINDOW:
 						icon = CHANNEL_MENU_ICON
+					elif chat_window.window_type==SERVER_WINDOW:
+						icon = CONSOLE_WINDOW_ICON
 					else:
 						icon = PRIVATE_MENU_ICON
 					entry = widgets.ExtendedMenuItem(self,icon,chat_window.name+'\'s Style','Edit '+chat_window.name+'\'s text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,chat_window.pressedStyleButton)
@@ -3592,7 +3596,7 @@ class Merk(QMainWindow):
 
 		# Re-build some menus every time they are opened
 		self.toolsMenu.aboutToShow.connect(self.buildToolsMenu)
-		self.mainMenu.aboutToShow.connect(self.buildMainMenu)\
+		self.mainMenu.aboutToShow.connect(self.buildMainMenu)
 
 	def menuEditStyle(self):
 		if config.SIMPLIFIED_DIALOGS:

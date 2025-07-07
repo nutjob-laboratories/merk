@@ -270,6 +270,7 @@ MODES_ICON = ":/icon-modes.png"
 INFO_MENU_ICON = ":/icon-info_menu.png"
 SHOW_ICON = ":/icon-show.png"
 HIDE_ICON = ":/icon-hide.png"
+CONSOLE_WINDOW_ICON = ":/icon-console_window.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

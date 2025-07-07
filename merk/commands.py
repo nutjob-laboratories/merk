@@ -1856,10 +1856,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-			if window.window_type==SERVER_WINDOW:
-				gui.menuEditStyle()
-			else:
-				window.pressedStyleButton()
+			window.pressedStyleButton()
 			return True
 
 	# |-----------|

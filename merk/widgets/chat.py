@@ -937,6 +937,14 @@ class Window(QMainWindow):
 
 			if self.window_type==SERVER_WINDOW:
 
+				menu.addSeparator()
+
+				if config.ENABLE_STYLE_EDITOR:
+					if not config.FORCE_DEFAULT_STYLE:
+						entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+						entry.triggered.connect(self.pressedStyleButton)
+						menu.addAction(entry)
+
 				entry = QAction(QIcon(CLEAR_ICON),"Clear log",self)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
@@ -991,7 +999,7 @@ class Window(QMainWindow):
 
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
+						entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
@@ -1005,6 +1013,8 @@ class Window(QMainWindow):
 
 			if self.window_type==CHANNEL_WINDOW:
 
+				menu.addSeparator()
+
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
 				if config.ENABLE_EMOJI_SHORTCODES:
 					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
@@ -1014,6 +1024,8 @@ class Window(QMainWindow):
 				menu.addAction(entry)
 
 			if self.window_type==PRIVATE_WINDOW:
+
+				menu.addSeparator()
 
 				entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
 				entry.triggered.connect(self.close)
@@ -1026,12 +1038,13 @@ class Window(QMainWindow):
 
 		self.settingsMenu.clear()
 
+		if config.ENABLE_STYLE_EDITOR:
+			if not config.FORCE_DEFAULT_STYLE:
+				entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+				entry.triggered.connect(self.pressedStyleButton)
+				self.settingsMenu.addAction(entry)
+
 		if self.window_type!=SERVER_WINDOW:
-			if config.ENABLE_STYLE_EDITOR:
-				if not config.FORCE_DEFAULT_STYLE:
-					entry = QAction(QIcon(STYLE_ICON),"Edit "+self.name+"'s text style",self)
-					entry.triggered.connect(self.pressedStyleButton)
-					self.settingsMenu.addAction(entry)
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.clearChat)

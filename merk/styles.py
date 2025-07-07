@@ -61,7 +61,7 @@ def saveStyle(client,channel,style,is_server_window=False):
 		starter = client.server+"-"+str(client.port)
 
 	if is_server_window:
-		escaped_filename = encodeStyleName(client.server+"-"+str(client.port))
+		escaped_filename = encodeStyleName(client.server+"_"+str(client.port))
 		fname = os.path.join(STYLE_DIRECTORY,escaped_filename)
 	else:
 		fname = encodeStyleName(starter,channel)
@@ -76,7 +76,7 @@ def loadDefault():
 	return read_style_file(STYLE_FILE)
 
 def loadStyleServer(client):
-	fname = os.path.join(STYLE_DIRECTORY,encodeStyleName(client.server+"-"+str(client.port)))
+	fname = os.path.join(STYLE_DIRECTORY,encodeStyleName(client.server+"_"+str(client.port)))
 
 	if os.path.isfile(fname):
 		return read_style_file(fname)
