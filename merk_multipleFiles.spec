@@ -67,7 +67,8 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='merk.ico'
+    icon='merk.ico',
+    contents_directory='lib',
 )
 coll = COLLECT(
     exe,
