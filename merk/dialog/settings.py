@@ -3532,9 +3532,8 @@ class Dialog(QDialog):
 		self.logEverything.setEnabled(False)
 
 		self.advancedDescription = QLabel(f"""
-			<small>
-			</small><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
-			break existing scripts, or fill up your hard drive!</b><small><br>
+			<center><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
+			break existing scripts, or fill up your hard drive!</b></center><small><br>
 			If changing one of these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
 			settings to the default, and should fix any fatal problems.
