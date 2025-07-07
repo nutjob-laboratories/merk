@@ -1,4 +1,4 @@
-<h1>MERK 0.048.040</h1>
+<h1>MERK 0.048.041</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -14,7 +14,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.048.040</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>.  <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.048.041</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>.  <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at <strong>irc.libera.chat</strong>, port <strong>6667</strong> (you can also connect via SSL on port <strong>6697</strong>). Honestly, I work a lot, so I&#39;m almost always idle, but I pop in and chat a few times a day!</p>
 <h1 id="making-merk-portable-on-windows">Making MERK Portable on Windows</h1>
@@ -111,68 +111,12 @@ Appearance:
 </thead>
 <tbody>
 <tr>
-<td><code>/help</code></td>
-<td>Displays command usage information</td>
+<td><code>/alias</code></td>
+<td>Prints a list of all current aliases</td>
 </tr>
 <tr>
-<td><code>/me MESSAGE...</code></td>
-<td>Sends a CTCP action message to the current chat</td>
-</tr>
-<tr>
-<td><code>/msg TARGET MESSAGE...</code></td>
-<td>Sends a message</td>
-</tr>
-<tr>
-<td><code>/notice TARGET MESSAGE...</code></td>
-<td>Sends a notice</td>
-</tr>
-<tr>
-<td><code>/join CHANNEL [KEY]</code></td>
-<td>Joins a channel</td>
-</tr>
-<tr>
-<td><code>/part CHANNEL [MESSAGE]</code></td>
-<td>Leaves a channel</td>
-</tr>
-<tr>
-<td><code>/nick NEW_NICKNAME</code></td>
-<td>Changes your nickname</td>
-</tr>
-<tr>
-<td><code>/topic CHANNEL NEW_TOPIC</code></td>
-<td>Sets a channel topic</td>
-</tr>
-<tr>
-<td><code>/mode TARGET MODE...</code></td>
-<td>Sets a mode on a channel or user</td>
-</tr>
-<tr>
-<td><code>/invite NICKNAME CHANNEL</code></td>
-<td>Sends a channel invitation</td>
-</tr>
-<tr>
-<td><code>/kick CHANNEL NICKNAME [MESSAGE]</code></td>
-<td>Kicks a user from a channel</td>
-</tr>
-<tr>
-<td><code>/whois NICKNAME [SERVER]</code></td>
-<td>Requests user information from the server</td>
-</tr>
-<tr>
-<td><code>/who NICKNAME [o]</code></td>
-<td>Requests user information from the server</td>
-</tr>
-<tr>
-<td><code>/whowas NICKNAME [COUNT] [SERVER]</code></td>
-<td>Requests information about previously connected users</td>
-</tr>
-<tr>
-<td><code>/quit [MESSAGE]</code></td>
-<td>Disconnects from the current IRC server</td>
-</tr>
-<tr>
-<td><code>/oper USERNAME PASSWORD</code></td>
-<td>Logs into an operator account</td>
+<td><code>/alias TOKEN TEXT...</code></td>
+<td>Creates an alias that can be referenced by <code>$TOKEN</code></td>
 </tr>
 <tr>
 <td><code>/away [MESSAGE]</code></td>
@@ -183,16 +127,16 @@ Appearance:
 <td>Sets status as &quot;back&quot;</td>
 </tr>
 <tr>
-<td><code>/raw TEXT...</code></td>
-<td>Sends unprocessed data to the server</td>
+<td><code>/cascade</code></td>
+<td>Cascades all subwindows</td>
 </tr>
 <tr>
-<td><code>/time</code></td>
-<td>Requests server time</td>
+<td><code>/clear [WINDOW]</code></td>
+<td>Clears a window&#39;s chat display</td>
 </tr>
 <tr>
-<td><code>/version [SERVER]</code></td>
-<td>Requests server version</td>
+<td><code>/config [SETTING] [VALUE...]</code></td>
+<td>Changes a setting, or searches and displays one or all settings in the configuration file.  <strong>*Caution</strong>: use at your own risk!*</td>
 </tr>
 <tr>
 <td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
@@ -203,132 +147,188 @@ Appearance:
 <td>Connects to an IRC server via SSL</td>
 </tr>
 <tr>
-<td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>
-<td>Connects to an IRC server &amp; executes connection script</td>
-</tr>
-<tr>
-<td><code>/xconnectssl SERVER [PORT] [PASSWORD]</code></td>
-<td>Connects to an IRC server via SSL &amp; executes connection script</td>
-</tr>
-<tr>
-<td><code>/print [WINDOW] TEXT...</code></td>
-<td>Prints text to a window</td>
-</tr>
-<tr>
-<td><code>/focus [SERVER] WINDOW</code></td>
-<td>Switches focus to another window. Calls to <code>/focus</code> from scripts will be ignored (use <code>/context</code> instead)</td>
-</tr>
-<tr>
-<td><code>/maximize [SERVER] WINDOW</code></td>
-<td>Maximizes a window</td>
-</tr>
-<tr>
-<td><code>/minimize [SERVER] WINDOW</code></td>
-<td>Minimizes a window</td>
-</tr>
-<tr>
-<td><code>/restore [SERVER] WINDOW</code></td>
-<td>Restores a window</td>
-</tr>
-<tr>
-<td><code>/cascade</code></td>
-<td>Cascades all subwindows</td>
-</tr>
-<tr>
-<td><code>/tile</code></td>
-<td>Tiles all subwindows</td>
-</tr>
-<tr>
-<td><code>/clear [WINDOW]</code></td>
-<td>Clears a window&#39;s chat display</td>
-</tr>
-<tr>
-<td><code>/settings</code></td>
-<td>Opens the settings dialog</td>
-</tr>
-<tr>
-<td><code>/style</code></td>
-<td>Edits the current window&#39;s style</td>
-</tr>
-<tr>
-<td><code>/log</code></td>
-<td>Opens the log manager</td>
-</tr>
-<tr>
-<td><code>/alias TOKEN TEXT...</code></td>
-<td>Creates an alias that can be referenced by <code>$TOKEN</code></td>
-</tr>
-<tr>
-<td><code>/alias</code></td>
-<td>Prints a list of all current aliases</td>
-</tr>
-<tr>
-<td><code>/unalias TOKEN</code></td>
-<td>Deletes the alias referenced by <code>$TOKEN</code></td>
-</tr>
-<tr>
-<td><code>/script FILENAME</code></td>
-<td>Executes a list of commands in a file</td>
+<td><code>/context WINDOW_NAME</code></td>
+<td>Moves execution of the script to <code>WINDOW_NAME</code>; can only be called from scripts</td>
 </tr>
 <tr>
 <td><code>/edit [FILENAME]</code></td>
 <td>Opens a script in the editor</td>
 </tr>
 <tr>
-<td><code>/play FILENAME</code></td>
-<td>Plays a WAV file</td>
-</tr>
-<tr>
-<td><code>/list [TERMS]</code></td>
-<td>Lists or searches channels on the server; use &quot;*&quot; for multi-character wildcard and &quot;?&quot; for single character</td>
-</tr>
-<tr>
-<td><code>/refresh</code></td>
-<td>Requests a new list of channels from the server</td>
-</tr>
-<tr>
-<td><code>/knock CHANNEL [MESSAGE]</code></td>
-<td>Requests an invitation to a channel</td>
-</tr>
-<tr>
-<td><code>/wait SECONDS</code></td>
-<td>Pauses script execution for <code>SECONDS</code>; can only be called from scripts</td>
-</tr>
-<tr>
-<td><code>/context WINDOW_NAME</code></td>
-<td>Moves execution of the script to another window, <code>WINDOW_NAME</code>; can only be called from scripts</td>
+<td><code>/end</code></td>
+<td>Immediately ends a script; can only be called from scripts</td>
 </tr>
 <tr>
 <td><code>/exit [SECONDS]</code></td>
 <td>Exits the client, with an optional pause of <code>SECONDS</code> before exit</td>
 </tr>
 <tr>
-<td><code>/config [SETTING] [VALUE...]</code></td>
-<td>Changes a setting, or searches and displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk!</i></td>
+<td><code>/find [TERMS]</code></td>
+<td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
+</tr>
+<tr>
+<td><code>/focus [SERVER] WINDOW</code></td>
+<td>Switches focus to another window. Calls to <code>/focus</code> from scripts will be ignored (use <code>/context</code> instead)</td>
+</tr>
+<tr>
+<td><code>/help</code></td>
+<td>Displays command usage information</td>
 </tr>
 <tr>
 <td><code>/ignore USER</code></td>
-<td>Hides a <code>USER</code>'s chat. <code>USER</code> can be a nickname or hostmask</td>
+<td>Hides a <code>USER</code>&#39;s chat&#39;</td>
 </tr>
 <tr>
-<td><code>/unignore USER</code></td>
-<td>Un-hides a <code>USER</code>'s chat. To un-hide all users, use <code>*</code> as the argument</td>
+<td><code>/invite NICKNAME CHANNEL</code></td>
+<td>Sends a channel invitation</td>
 </tr>
 <tr>
-<td><code>/end</code></td>
-<td>Immediately ends a script; can only be called from scripts</td>
+<td><code>/join CHANNEL [KEY]</code></td>
+<td>Joins a channel</td>
 </tr>
 <tr>
-<td><code>/find [TERMS]</code></td>
-<td>Finds filenames that can be found by other commands; use <code>*</code> for multi-character wildcards, and <code>?</code> for single character wildcards</td>
+<td><code>/kick CHANNEL NICKNAME [MESSAGE]</code></td>
+<td>Kicks a user from a channel</td>
+</tr>
+<tr>
+<td><code>/knock CHANNEL [MESSAGE]</code></td>
+<td>Requests an invitation to a channel</td>
+</tr>
+<tr>
+<td><code>/list [TERMS]</code></td>
+<td>Lists or searches channels on the server; use &quot;*&quot; for multi-character wildcard and &quot;?&quot; for single character</td>
+</tr>
+<tr>
+<td><code>/log</code></td>
+<td>Opens the log manager</td>
+</tr>
+<tr>
+<td><code>/maximize [SERVER] WINDOW</code></td>
+<td>Maximizes a window</td>
+</tr>
+<tr>
+<td><code>/me MESSAGE...</code></td>
+<td>Sends a CTCP action message to the current chat</td>
+</tr>
+<tr>
+<td><code>/minimize [SERVER] WINDOW</code></td>
+<td>Minimizes a window</td>
+</tr>
+<tr>
+<td><code>/mode TARGET MODE...</code></td>
+<td>Sets a mode on a channel or user</td>
+</tr>
+<tr>
+<td><code>/msg TARGET MESSAGE...</code></td>
+<td>Sends a message</td>
+</tr>
+<tr>
+<td><code>/nick NEW_NICKNAME</code></td>
+<td>Changes your nickname</td>
+</tr>
+<tr>
+<td><code>/notice TARGET MESSAGE...</code></td>
+<td>Sends a notice</td>
+</tr>
+<tr>
+<td><code>/oper USERNAME PASSWORD</code></td>
+<td>Logs into an operator account</td>
+</tr>
+<tr>
+<td><code>/part CHANNEL [MESSAGE]</code></td>
+<td>Leaves a channel</td>
 </tr>
 <tr>
 <td><code>/ping USER [TEXT]</code></td>
 <td>Sends a CTCP ping to a user</td>
 </tr>
 <tr>
+<td><code>/play FILENAME</code></td>
+<td>Plays a WAV file</td>
+</tr>
+<tr>
+<td><code>/print [WINDOW] TEXT...</code></td>
+<td>Prints text to a window</td>
+</tr>
+<tr>
+<td><code>/quit [MESSAGE]</code></td>
+<td>Disconnects from the current IRC server</td>
+</tr>
+<tr>
+<td><code>/raw TEXT...</code></td>
+<td>Sends unprocessed data to the server</td>
+</tr>
+<tr>
+<td><code>/refresh</code></td>
+<td>Requests a new list of channels from the server</td>
+</tr>
+<tr>
+<td><code>/restore [SERVER] WINDOW</code></td>
+<td>Restores a window</td>
+</tr>
+<tr>
+<td><code>/script FILENAME</code></td>
+<td>Executes a list of commands in a file</td>
+</tr>
+<tr>
+<td><code>/settings</code></td>
+<td>Opens the settings dialog</td>
+</tr>
+<tr>
 <td><code>/shell ALIAS COMMAND...</code></td>
 <td>Executes an external program, and stores the output in an alias</td>
+</tr>
+<tr>
+<td><code>/style</code></td>
+<td>Edits the current window&#39;s style</td>
+</tr>
+<tr>
+<td><code>/tile</code></td>
+<td>Tiles all subwindows</td>
+</tr>
+<tr>
+<td><code>/time</code></td>
+<td>Requests server time</td>
+</tr>
+<tr>
+<td><code>/topic CHANNEL NEW_TOPIC</code></td>
+<td>Sets a channel topic</td>
+</tr>
+<tr>
+<td><code>/unalias TOKEN</code></td>
+<td>Deletes the alias referenced by <code>$TOKEN</code></td>
+</tr>
+<tr>
+<td><code>/unignore USER</code></td>
+<td>Un-hides a <code>USER</code>&#39;s chat. To un-hide all users, use <code>*</code> as the argument&#39;</td>
+</tr>
+<tr>
+<td><code>/version [SERVER]</code></td>
+<td>Requests server version</td>
+</tr>
+<tr>
+<td><code>/wait SECONDS</code></td>
+<td>Pauses script execution for <code>SECONDS</code>; can only be called from scripts</td>
+</tr>
+<tr>
+<td><code>/who NICKNAME [o]</code></td>
+<td>Requests user information from the server</td>
+</tr>
+<tr>
+<td><code>/whois NICKNAME [SERVER]</code></td>
+<td>Requests user information from the server</td>
+</tr>
+<tr>
+<td><code>/whowas NICKNAME [COUNT] [SERVER]</code></td>
+<td>Requests information about previously connected users</td>
+</tr>
+<tr>
+<td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server &amp; executes connection script</td>
+</tr>
+<tr>
+<td><code>/xconnectssl SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server via SSL &amp; executes connection script</td>
 </tr>
 </tbody>
 </table>

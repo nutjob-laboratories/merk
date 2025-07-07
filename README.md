@@ -4,7 +4,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.048.000">MERK 0.048.000</a></big></b><br>
-  <b>Current development version: 0.048.040</b><br>
+  <b>Current development version: 0.048.041</b><br>
 </p>
 
  - [Downloads](#Downloads)
@@ -28,13 +28,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  -  | [View](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.048.000 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.048.000)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.048.040 (11.63 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows | [Download MERK 0.048.040 (48.42 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows | [Download MERK 0.048.040 (45.56 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.048.041 (11.63 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.048.041 (48.42 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.048.041 (45.56 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.048.040**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.048.041**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.048.000](https://github.com/nutjob-laboratories/merk/releases/tag/0.048.000). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -116,7 +116,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.048.000), and may reflect the current development version (0.048.040). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.048.000), and may reflect the current development version (0.048.041). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -229,64 +229,63 @@ Appearance:
 # Commands
 All of these commands can be issued in the client, or from scripts, unless otherwise noted.
 
-| Commands                                | Description                                                                                                 |
-|-----------------------------------------|-------------------------------------------------------------------------------------------------------------|
-| `/help`                                 | Displays command usage information                                                                          |
-| `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                             |
-| `/msg TARGET MESSAGE...`                | Sends a message                                                                                             |
-| `/notice TARGET MESSAGE...`             | Sends a notice                                                                                              |
-| `/join CHANNEL [KEY]`                   | Joins a channel                                                                                             |
-| `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                            |
-| `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                       |
-| `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                        |
-| `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                            |
-| `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                  |
-| `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                                                                 |
-| `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                   |
-| `/who NICKNAME [o]`                     | Requests user information from the server                                                                   |
-| `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                       |
-| `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                     |
-| `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                               |
-| `/away [MESSAGE]`                       | Sets status as "away"                                                                                       |
-| `/back`                                 | Sets status as "back"                                                                                       |
-| `/raw TEXT...`                          | Sends unprocessed data to the server                                                                        |
-| `/time`                                 | Requests server time                                                                                        |
-| `/version [SERVER]`                     | Requests server version                                                                                     |
-| `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                   |
-| `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                           |
-| `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server & executes connection script                                                      |
-| `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL & executes connection script                                              |
-| `/print [WINDOW] TEXT...`               | Prints text to a window                                                                           |
-| `/focus [SERVER] WINDOW`                | Switches focus to another window. Calls to `/focus` from scripts will be ignored (use `/context` instead)                                                                          |
-| `/maximize [SERVER] WINDOW`             | Maximizes a window                                                                                          |
-| `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                          |
-| `/restore [SERVER] WINDOW`              | Restores a window                                                                                           |
-| `/cascade`                              | Cascades all subwindows                                                                                     |
-| `/tile`                                 | Tiles all subwindows                                                                                        |
-| `/clear [WINDOW]`                       | Clears a window's chat display                                                                              |
-| `/settings`                             | Opens the settings dialog                                                                                   |
-| `/style`                                | Edits the current window's style                                                                            |
-| `/log`                                  | Opens the log manager                                                                            |
-| `/alias TOKEN TEXT...`                  | Creates an alias that can be referenced by `$TOKEN`                                                           |
-| `/alias`                                | Prints a list of all current aliases                                                                        |
-| `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                           |
-| `/script FILENAME`                      | Executes a list of commands in a file                                                                       |
-| `/edit [FILENAME]`                      | Opens a script in the editor                                                                                |
-| `/play FILENAME`                        | Plays a WAV file                                                                                            |
-| `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character |
-| `/refresh`                              | Requests a new list of channels from the server                                                             |
-| `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                         |
-| `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                        |
-| `/context WINDOW_NAME`                     | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                        |
-| `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                        |
-| `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  _**Caution**: use at your own risk!_                                       |
-| `/ignore USER`                            | Hides a `USER`'s chat'                                                                  |
-| `/unignore USER`                          | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument'                                                               |
-| `/end`                            | Immediately ends a script; can only be called from scripts                                                           |
-| `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards |
-| `/ping USER [TEXT]`                            | Sends a CTCP ping to a user                                                          |
-| `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                    |
-
+| Commands                                | Description                                                                                                                      |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `/alias`                                | Prints a list of all current aliases                                                                                             |
+| `/alias TOKEN TEXT...`                  | Creates an alias that can be referenced by `$TOKEN`                                                                              |
+| `/away [MESSAGE]`                       | Sets status as "away"                                                                                                            |
+| `/back`                                 | Sets status as "back"                                                                                                            |
+| `/cascade`                              | Cascades all subwindows                                                                                                          |
+| `/clear [WINDOW]`                       | Clears a window's chat display                                                                                                   |
+| `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk!* |
+| `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
+| `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
+| `/context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                                  |
+| `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
+| `/end`                                  | Immediately ends a script; can only be called from scripts                                                                       |
+| `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
+| `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
+| `/focus [SERVER] WINDOW`                | Switches focus to another window. Calls to `/focus` from scripts will be ignored (use `/context` instead)                        |
+| `/help`                                 | Displays command usage information                                                                                               |
+| `/ignore USER`                          | Hides a `USER`'s chat'                                                                                                           |
+| `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
+| `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |
+| `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                                                                                      |
+| `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
+| `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character                      |
+| `/log`                                  | Opens the log manager                                                                                                            |
+| `/maximize [SERVER] WINDOW`             | Maximizes a window                                                                                                               |
+| `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
+| `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                                               |
+| `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
+| `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
+| `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
+| `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
+| `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
+| `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
+| `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
+| `/play FILENAME`                        | Plays a WAV file                                                                                                                 |
+| `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
+| `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
+| `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
+| `/refresh`                              | Requests a new list of channels from the server                                                                                  |
+| `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |
+| `/script FILENAME`                      | Executes a list of commands in a file                                                                                            |
+| `/settings`                             | Opens the settings dialog                                                                                                        |
+| `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
+| `/style`                                | Edits the current window's style                                                                                                 |
+| `/tile`                                 | Tiles all subwindows                                                                                                             |
+| `/time`                                 | Requests server time                                                                                                             |
+| `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
+| `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
+| `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument'                                                         |
+| `/version [SERVER]`                     | Requests server version                                                                                                          |
+| `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                                           |
+| `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
+| `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
+| `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
+| `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
+| `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 
 # Example Command-line Usage
 In the following examples, the first command-line is how you would do the task using **MERK** as a Python script, and second command-line is how you would do it using the **MERK** Windows executable. Note that the command-lines, other than the initial executable, are the same!
