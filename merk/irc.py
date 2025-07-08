@@ -244,7 +244,7 @@ class IRC_Connection(irc.IRCClient):
 	def connectionMade(self):
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
-			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs["server"]}_{self.kwargs["port"]}.txt")
+			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs["server"]}-{self.kwargs["port"]}.txt")
 			self.dump_file = open(dump_filename,"a")
 
 		self.sendLine("PROTOCTL UHNAMES")
