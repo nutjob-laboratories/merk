@@ -299,7 +299,7 @@ HELP_ENTRY_COMMAND_TEMPLATE='''%_USAGE_%&nbsp;&nbsp;-&nbsp;&nbsp;%_DESCRIPTION_%
 HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 	<tbody>
 				<tr>
-					<td><center><b>{APPLICATION_NAME} {APPLICATION_VERSION} Commands</b></center></td>
+					<td><center><b>{APPLICATION_NAME} Commands</b></center></td>
 				</tr>
 				%_PREFIX_%
 				<tr>

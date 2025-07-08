@@ -162,6 +162,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	COMMAND_HELP_INFORMATION = [
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help [COMMAND]</b>", "Displays command usage information" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE...</b>", "Sends a CTCP action message to the current chat" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me TARGET MESSAGE...</b>", "Sends a CTCP action message to a chat, only callable from server windows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE...</b>", "Sends a message" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE...</b>", "Sends a notice" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]</b>", "Joins a channel" ],
@@ -794,6 +795,55 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	user_input = user_input.strip()
 	tokens = user_input.split()
 
+	# |-----|
+	# | /me |
+	# |-----|
+	if window.window_type==SERVER_WINDOW:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me' and len(tokens)>=3:
+				tokens.pop(0)
+				target = tokens.pop(0)
+				msg = ' '.join(tokens)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+
+				# If we have the target's window open, write
+				# the message there
+				displayed_message = False
+				w = gui.getWindow(target,window.client)
+				if w:
+					t = Message(ACTION_MESSAGE,window.client.nickname,msg)
+					w.writeText(t)
+					displayed_message = True
+
+				# Write the message to the server window
+				if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
+					if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
+						w = gui.getServerWindow(window.client)
+						if w:
+							t = Message(ACTION_MESSAGE,"&rarr; "+target+": ",window.client.nickname+" "+msg)
+							w.writeText(t)
+
+				if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
+					if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
+						if not displayed_message:
+							w = gui.newPrivateWindow(target,window.client)
+							if w:
+								c = w.widget()
+								t = Message(ACTION_MESSAGE,window.client.nickname,msg)
+								c.writeText(t)
+
+				window.client.describe(target,msg)
+				return True
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':
+				if is_script:
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"me TARGET MESSAGE")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"me TARGET MESSAGE")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 
 	# |-------|
 	# | /ctcp |
@@ -803,6 +853,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			tokens.pop(0)
 			target = tokens.pop(0)
 			request = tokens.pop(0).upper()
+			args = ' '.join(tokens)
 
 			if request=="VERSION":
 				pass
@@ -819,7 +870,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				t = Message(ERROR_MESSAGE,'',"Invalid request type (not VERSION, TIME, or FINGER)")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			window.client.ctcpMakeQuery(target, [(request, "")])
+			window.client.ctcpMakeQuery(target, [(request, args)])
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ctcp':
 			if is_script:
@@ -2514,6 +2565,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			cmd = tokens.pop(0)
 			if cmd[0]!=config.ISSUE_COMMAND_SYMBOL:
 				cmd = config.ISSUE_COMMAND_SYMBOL+cmd
+			found = False
 			for entry in COMMAND_HELP_INFORMATION:
 				if cmd in entry[0]:
 					h = HELP_ENTRY_COMMAND_TEMPLATE
@@ -2521,7 +2573,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 					h = h.replace("%_DESCRIPTION_%",entry[1])
 					t = Message(SYSTEM_MESSAGE,'',h)
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
+					found = True
+			if found: return True
 			if is_script:
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Command "+cmd+" not found.")
