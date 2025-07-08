@@ -71,28 +71,20 @@ class Dialog(QDialog):
 		self.setWindowTitle("Connect to Server")
 		self.setWindowIcon(QIcon(CONNECT_ICON))
 
-		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Host:</b>")
 		self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as
-									# spaces are forbidden in channel names
-		nameLayout.addWidget(self.nameLabel)
-		nameLayout.addStretch()
-		nameLayout.addWidget(self.name)
-
-		keyLayout = QHBoxLayout()
+										# spaces are forbidden in channel names
+		
 		self.keyLabel = QLabel("<b>Port:</b>")
 		self.key = QNoSpaceLineEdit()
-		keyLayout.addWidget(self.keyLabel)
-		keyLayout.addStretch()
-		keyLayout.addWidget(self.key)
 
-		passLayout = QHBoxLayout()
 		self.passLabel = QLabel("<b>Password:</b>")
 		self.password = QNoSpaceLineEdit()
-		passLayout.addWidget(self.passLabel)
-		passLayout.addStretch()
-		passLayout.addWidget(self.password)
 
+		inputLayout = QFormLayout()
+		inputLayout.addRow(self.nameLabel,self.name)
+		inputLayout.addRow(self.keyLabel,self.key)
+		inputLayout.addRow(self.passLabel,self.password)
 
 		self.savessl = QCheckBox("Connect via SSL",self)
 		self.savessl.stateChanged.connect(self.clickSSL)
@@ -107,9 +99,7 @@ class Dialog(QDialog):
 		buttons.rejected.connect(self.reject)
 
 		chanLayout = QVBoxLayout()
-		chanLayout.addLayout(nameLayout)
-		chanLayout.addLayout(keyLayout)
-		chanLayout.addLayout(passLayout)
+		chanLayout.addLayout(inputLayout)
 		chanLayout.addWidget(self.savessl)
 		chanLayout.addWidget(self.saveexe)
 		chanInfoBox = QGroupBox("",self)

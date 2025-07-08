@@ -56,21 +56,17 @@ class Dialog(QDialog):
 		self.setWindowTitle("Join channel")
 		self.setWindowIcon(QIcon(CHANNEL_ICON))
 
-		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Channel:</b>")
 		self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as
-									# spaces are forbidden in channel names
-		nameLayout.addWidget(self.nameLabel)
-		nameLayout.addStretch()
-		nameLayout.addWidget(self.name)
-
-		keyLayout = QHBoxLayout()
+										# spaces are forbidden in channel names
+	
 		self.keyLabel = QLabel("<b>Key:</b>")
 		self.key = QNoSpaceLineEdit()
 		self.key.setEchoMode(QLineEdit.Password)
-		keyLayout.addWidget(self.keyLabel)
-		keyLayout.addStretch()
-		keyLayout.addWidget(self.key)
+
+		inputLayout = QFormLayout()
+		inputLayout.addRow(self.nameLabel,self.name)
+		inputLayout.addRow(self.keyLabel,self.key)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -78,12 +74,8 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		chanLayout = QVBoxLayout()
-		chanLayout.addLayout(nameLayout)
-		chanLayout.addLayout(keyLayout)
-
 		chanInfoBox = QGroupBox("",self)
-		chanInfoBox.setLayout(chanLayout)
+		chanInfoBox.setLayout(inputLayout)
 		chanInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
 
 		finalLayout = QVBoxLayout()

@@ -57,23 +57,13 @@ class Dialog(QDialog):
 		self.setWindowTitle("Create alias")
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
-		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Alias name:</b>")
 		self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as
-									# spaces are forbidden in channel names
-		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDE")
-		self.name.setMinimumWidth(wwidth)
-		nameLayout.addWidget(self.nameLabel)
-		nameLayout.addWidget(self.name)
-		nameLayout.addStretch()
+										# spaces are forbidden in channel names
 
 		keyLayout = QHBoxLayout()
 		self.keyLabel = QLabel("<b>Value:</b>")
 		self.key = QLineEdit()
-		keyLayout.addWidget(self.keyLabel)
-		keyLayout.addStretch()
-		keyLayout.addWidget(self.key)
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
 		self.key.setMinimumWidth(wwidth)
@@ -90,6 +80,10 @@ class Dialog(QDialog):
 		self.aliasDescription.setWordWrap(True)
 		self.aliasDescription.setAlignment(Qt.AlignJustify)
 
+		inputLayout = QFormLayout()
+		inputLayout.addRow(self.nameLabel,self.name)
+		inputLayout.addRow(self.keyLabel,self.key)
+
 		# Buttons
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -98,8 +92,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.aliasDescription)
-		finalLayout.addLayout(nameLayout)
-		finalLayout.addLayout(keyLayout)
+		finalLayout.addLayout(inputLayout)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()

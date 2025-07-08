@@ -726,7 +726,7 @@ class Window(QMainWindow):
 		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
 		e = x.get_message_information(config.DEFAULT_QUIT_MESSAGE,self)
 
-		if not e: return
+		if e==None: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"quit "+str(e)+"\n")
 		self.updateApplicationTitle()

@@ -56,20 +56,12 @@ class Dialog(QDialog):
 		self.setWindowTitle("New connection script")
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
-		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Host:</b>")
 		self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as
-									# spaces are forbidden in channel names
-		nameLayout.addWidget(self.nameLabel)
-		nameLayout.addStretch()
-		nameLayout.addWidget(self.name)
+										# spaces are forbidden in channel names
 
-		keyLayout = QHBoxLayout()
 		self.keyLabel = QLabel("<b>Port:</b>")
 		self.key = QNoSpaceLineEdit()
-		keyLayout.addWidget(self.keyLabel)
-		keyLayout.addStretch()
-		keyLayout.addWidget(self.key)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -77,9 +69,9 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		chanLayout = QVBoxLayout()
-		chanLayout.addLayout(nameLayout)
-		chanLayout.addLayout(keyLayout)
+		chanLayout = QFormLayout()
+		chanLayout.addRow(self.nameLabel,self.name)
+		chanLayout.addRow(self.keyLabel,self.key)
 
 		chanInfoBox = QGroupBox("",self)
 		chanInfoBox.setLayout(chanLayout)
