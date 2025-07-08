@@ -143,8 +143,22 @@ class IRC_Connection(irc.IRCClient):
 
 		self.banlists = defaultdict(list)
 
+	def ctcpReply(self, user, channel, messages):
+		# sys.stdout.write(f"{user} - {channel} - {messages}\n")
+
+		for e in messages:
+			ctype = e[0]
+			data = e[1]
+
+			if ctype=="VERSION":
+				self.gui.receivedClientVersion(self,user,data)
+
+			if ctype=="TIME":
+				self.gui.receivedClientTime(self,user,data)
+
+		return irc.IRCClient.ctcpReply(self, user, channel, messages)
+
 	def pong(self,user,seconds):
-		#sys.stdout.write(f"PONG: {user} {seconds} seconds\n")
 		self.gui.receivedPong(self,user,seconds)
 
 	def luserChannels(self,channels):
@@ -155,11 +169,9 @@ class IRC_Connection(irc.IRCClient):
 			pass
 
 	def luserClient(self,info):
-		#sys.stdout.write(f"luserClient: {info}\n")
 		pass
 
 	def luserMe(self,info):
-		#sys.stdout.write(f"luserMe: {info}\n")
 		pass
 
 	def luserOp(self,ops):

@@ -136,7 +136,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/config [SETTING] [VALUE...]</code></td>
-<td>Changes a setting, or searches and displays one or all settings in the configuration file.  <strong>*Caution</strong>: use at your own risk!*</td>
+<td>Changes a setting, or searches and displays one or all settings in the configuration file.  <strong>*Caution*</strong>: use at your own risk!*</td>
 </tr>
 <tr>
 <td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
@@ -149,6 +149,10 @@ Appearance:
 <tr>
 <td><code>/context WINDOW_NAME</code></td>
 <td>Moves execution of the script to <code>WINDOW_NAME</code>; can only be called from scripts</td>
+</tr>
+<tr>
+<td><code>/ctcp USER REQUEST</code></td>
+<td>Sends a CTCP request to <code>USER</code>; valid <code>REQUEST</code>s are TIME, VERSION, or FINGER</td>
 </tr>
 <tr>
 <td><code>/edit [FILENAME]</code></td>

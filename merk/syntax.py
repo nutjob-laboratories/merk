@@ -90,6 +90,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"find",
 			cmdsymbol+"ping",
 			cmdsymbol+"shell",
+			cmdsymbol+"ctcp",
 		]
 
 		if not config.ENABLE_ALIASES:

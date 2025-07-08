@@ -3673,7 +3673,6 @@ class Dialog(QDialog):
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
 		leftLayout.addWidget(logo)
-		# leftLayout.addWidget(QLabel(f"<center><b><small>Version {APPLICATION_VERSION}</small></b></center>"))
 		leftLayout.addWidget(QLabel(" "))
 
 		mainLayout = QHBoxLayout()

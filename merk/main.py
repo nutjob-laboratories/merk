@@ -1028,6 +1028,30 @@ class Merk(QMainWindow):
 					t = Message(SERVER_MESSAGE,'',"PING? PONG!")
 					w.writeText(t)
 
+	def receivedClientVersion(self,client,user,msg):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',f"Received version from {user}: {msg}")
+			w.writeText(t)
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			t = Message(SYSTEM_MESSAGE,'',f"Received version from {user}: {msg}")
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def receivedClientTime(self,client,user,msg):
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',f"Received time from {user}: {msg}")
+			w.writeText(t)
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			t = Message(SYSTEM_MESSAGE,'',f"Received time from {user}: {msg}")
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 	def receivedPong(self,client,user,seconds):
 
 		w = self.getServerWindow(client)
@@ -1039,7 +1063,7 @@ class Merk(QMainWindow):
 		if w:
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'',f"Received pong from {user}: {seconds} seconds")
-			c.writeText(t)
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def receivedMOTD(self,client,motd):
 
