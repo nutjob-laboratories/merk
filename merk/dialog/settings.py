@@ -3534,7 +3534,7 @@ class Dialog(QDialog):
 		self.advancedDescription = QLabel(f"""
 			<center><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
 			break existing scripts, or fill up your hard drive!</b></center><small><br>
-			If changing one of these settings causes the application to no longer function, please run
+			If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
 			settings to the default, and should fix any fatal problems.
 			</small>
@@ -3673,6 +3673,7 @@ class Dialog(QDialog):
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
 		leftLayout.addWidget(logo)
+		# leftLayout.addWidget(QLabel(f"<center><b><small>Version {APPLICATION_VERSION}</small></b></center>"))
 		leftLayout.addWidget(QLabel(" "))
 
 		mainLayout = QHBoxLayout()
