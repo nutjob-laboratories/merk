@@ -1430,6 +1430,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			tokens.pop(0)
 			a = tokens.pop(0)
 
+			# If the first character is the interpolation
+			# symbol, strip it from the name
+			if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+				if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+					a = a[il:]
+
 			if len(a)>=1:
 				if not a[0].isalpha():
 					if is_script:

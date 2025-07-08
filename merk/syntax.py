@@ -40,6 +40,12 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 				c = '\\'+c
 			cmdsymbol = cmdsymbol + c
 
+		aliassymbol = ''
+		for c in config.ALIAS_INTERPOLATION_SYMBOL:
+			if c in special:
+				c = '\\'+c
+			aliassymbol = aliassymbol + c
+
 
 		merk = [
 			cmdsymbol+"part",
@@ -111,6 +117,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			'alias': format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE),
 		}
 
+		if not config.ENABLE_ALIASES: 
+			STYLES['alias'] = format(config.SYNTAX_FOREGROUND,'')
+
 		# Comments
 		self.script_comments = (QRegExp("(\\/\\*|\\*\\/|\n)"), 1, STYLES['comments'])
 
@@ -126,7 +135,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			(r'(\&\w+)', 0, STYLES['channel']),
 			(r'(\!\w+)', 0, STYLES['channel']),
 			(r'(\+\w+)', 0, STYLES['channel']),
-			(r'(\$\w+)', 0, STYLES['alias']),
+			(r'(%s\w+)' % aliassymbol, 0, STYLES['alias']),
 		]
 
 		# Build a QRegExp for each pattern
