@@ -41,7 +41,6 @@ from .. import user
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import MenuLabel,menuHtml
 
-
 class Window(QMainWindow):
 
 	def check_for_save(self):
@@ -280,6 +279,12 @@ class Window(QMainWindow):
 		self.findWindow.show()
 		return
 
+	def update_line_number(self):
+		cursor = self.editor.textCursor()
+		line_number = cursor.blockNumber() + 1
+
+		self.status_line.setText(f"<small>{line_number}</small>")
+
 	def __init__(self,filename=None,parent=None,subwindow=None):
 		super(Window, self).__init__(parent)
 
@@ -303,6 +308,8 @@ class Window(QMainWindow):
 
 		self.editor = QPlainTextEdit(self)
 
+		self.editor.cursorPositionChanged.connect(self.update_line_number)
+
 		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
 			self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
 			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
@@ -324,6 +331,9 @@ class Window(QMainWindow):
 
 		self.status_file = QLabel("<small><b>Untitled script</b></small>")
 		self.status.addPermanentWidget(self.status_file,1)
+
+		self.status_line = QLabel("<small>1</small>")
+		self.status.addPermanentWidget(self.status_line,0)
 
 		if not config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS:
 			self.status.hide()
