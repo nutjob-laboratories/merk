@@ -160,7 +160,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	# The command help system
 	COMMAND_HELP_INFORMATION = [
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help</b>", "Displays command usage information" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help [COMMAND]</b>", "Displays command usage information" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE...</b>", "Sends a CTCP action message to the current chat" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE...</b>", "Sends a message" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE...</b>", "Sends a notice" ],
@@ -169,11 +169,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME</b>", "Changes your nickname" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC</b>", "Sets a channel topic" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...</b>", "Sets a mode on a channel or user" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"invite NICKNAME CHANNEL</b>", "Sends a channel invitation" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [MESSAGE]</b>", "Kicks a user from a channel" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]</b>", "Requests user information from the server" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]</b>", "Requests user information from the server" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"invite USER CHANNEL</b>", "Sends a channel invitation" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL USER [MESSAGE]</b>", "Kicks a user from a channel" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whois USER [SERVER]</b>", "Requests user information from the server" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"who USER [o]</b>", "Requests user information from the server" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas USER [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD</b>", "Logs into an operator account" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"away [MESSAGE]</b>", "Sets status as \"away\"" ],
@@ -229,7 +229,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		if not config.ENABLE_SHELL_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 		COPY.append(e)
-	COMMAND_HELP_INFORMATION = COPY
+	COMMAND_HELP_INFORMATION = sorted(COPY)
 
 	if new_help!=None:
 		if isinstance(new_help, list):
@@ -1414,7 +1414,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 	if not config.ENABLE_ALIASES:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
 				if is_script:
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
