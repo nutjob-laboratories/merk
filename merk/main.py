@@ -3073,7 +3073,7 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsDoNotSave)
 		sm.addAction(entry)
 
-		if not config.SCRIPTING_ENGINE_ENABLED:
+		if config.SCRIPTING_ENGINE_ENABLED:
 			if self.noexecute:
 				entry = QAction(QIcon(self.checked_icon),"Do not execute connection script", self)
 			else:
