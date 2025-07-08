@@ -246,7 +246,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/end`                                  | Immediately ends a script; can only be called from scripts                                                                       |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
-| `/focus [SERVER] WINDOW`                | Switches focus to another window. Calls to `/focus` from scripts will be ignored (use `/context` instead)                        |
+| `/focus [SERVER] WINDOW`                | Switches focus to another window. Cannot be called from scripts (use `/context` instead)                        |
 | `/help`                                 | Displays command usage information                                                                                               |
 | `/ignore USER`                          | Hides a `USER`'s chat'                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
