@@ -1837,6 +1837,37 @@ class Window(QMainWindow):
 				self.change_to_back_display(item)
 				self.userlist.update()
 
+	def clean_nick(self,nick):
+		nick = nick.replace('@','')
+		nick = nick.replace('+','')
+		nick = nick.replace('~','')
+		nick = nick.replace('&','')
+		nick = nick.replace('%','')
+		nick = nick.replace('!','')
+		return nick
+
+	def is_ignored(self,nick,hostmask):
+
+		if nick in self.hostmasks:
+			for i in config.IGNORE_LIST:
+				if i.lower()==self.hostmasks[nick].lower(): return True
+
+		for i in config.IGNORE_LIST:
+			if i.lower()==nick.lower(): return True
+
+		if hostmask!=None:
+			for i in config.IGNORE_LIST:
+				if i.lower()==hostmask.lower(): return True
+
+		return False
+
+	def change_to_ignore_display(self,w):
+		if config.SHOW_IGNORE_STATUS_IN_USERLISTS:
+			font = QFont()
+			font.setBold(False)
+			font.setStrikeOut(True)
+			w.setFont(font)
+
 	def writeUserlist(self,users):
 
 		if not hasattr(self,"userlist"): return	
@@ -1861,6 +1892,7 @@ class Window(QMainWindow):
 		voiced = []
 		normal = []
 		protected = []
+		ignored = []
 
 		for u in users:
 			if len(u)<1: continue
@@ -1869,10 +1901,12 @@ class Window(QMainWindow):
 			if len(p)==2:
 				nickname = p[0]
 				hostmask = p[1]
-				self.hostmasks[nickname] = hostmask
+				self.hostmasks[self.clean_nick(nickname)] = hostmask
 			else:
 				nickname = u
 				hostmask = None
+
+			if self.is_ignored(self.clean_nick(nickname),hostmask): ignored.append(self.clean_nick(nickname))
 
 			self.user_count = self.user_count + 1
 
@@ -1935,6 +1969,8 @@ class Window(QMainWindow):
 			if u in self.away:
 				self.change_to_away_display(ui)
 
+			if u in ignored: self.change_to_ignore_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add admins
@@ -1957,6 +1993,8 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored: self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 
@@ -1981,6 +2019,8 @@ class Window(QMainWindow):
 			if u in self.away:
 				self.change_to_away_display(ui)
 
+			if u in ignored: self.change_to_ignore_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add ops
@@ -2003,6 +2043,8 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored: self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 
@@ -2027,6 +2069,8 @@ class Window(QMainWindow):
 			if u in self.away:
 				self.change_to_away_display(ui)
 
+			if u in ignored: self.change_to_ignore_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add protected
@@ -2050,6 +2094,8 @@ class Window(QMainWindow):
 			if u in self.away:
 				self.change_to_away_display(ui)
 
+			if u in ignored: self.change_to_ignore_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add normal
@@ -2072,6 +2118,8 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored: self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 

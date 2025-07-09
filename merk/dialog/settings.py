@@ -919,11 +919,13 @@ class Dialog(QDialog):
 			self.showUserlistLeft.setEnabled(True)
 			self.hideScroll.setEnabled(True)
 			self.noSelectUserlists.setEnabled(True)
+			self.ignoreUserlist.setEnabled(True)
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 			self.noSelectUserlists.setEnabled(False)
+			self.ignoreUserlist.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2441,11 +2443,16 @@ class Dialog(QDialog):
 		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
 		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
+		self.ignoreUserlist = QCheckBox("Mark ignored users",self)
+		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlist.setChecked(True)
+		self.ignoreUserlist.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 			self.noSelectUserlists.setEnabled(False)
+			self.ignoreUserlist.setEnabled(False)
 
 		chanButtonLayout = QFormLayout()
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
@@ -2458,14 +2465,13 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show in information display</b>"))
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(self.topicBold)
-		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		menuLayout.addWidget(self.showUserlists)
 		menuLayout.addWidget(self.plainUserLists)
+		menuLayout.addWidget(self.ignoreUserlist)
 		menuLayout.addWidget(self.showUserlistLeft)
 		menuLayout.addWidget(self.hideScroll)
 		menuLayout.addWidget(self.noSelectUserlists)
-		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
@@ -3923,6 +3929,7 @@ class Dialog(QDialog):
 		config.SCRIPTING_ENGINE_ENABLED = self.enableScripts.isChecked()
 		config.SHOW_PINGS_IN_CONSOLE = self.enablePing.isChecked()
 		config.CLOSING_SERVER_WINDOW_DISCONNECTS = self.enableDisconnect.isChecked()
+		config.SHOW_IGNORE_STATUS_IN_USERLISTS = self.ignoreUserlist.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()

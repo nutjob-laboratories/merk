@@ -240,9 +240,11 @@ SCRIPTING_ENGINE_ENABLED = True
 SHOW_PINGS_IN_CONSOLE = False
 CLOSING_SERVER_WINDOW_DISCONNECTS = False
 ENABLE_SHELL_COMMAND = True
+SHOW_IGNORE_STATUS_IN_USERLISTS = True
 
 def build_settings():
 	settings = {
+		"show_ignore_status_in_userlists": SHOW_IGNORE_STATUS_IN_USERLISTS,
 		"enable_shell_command": ENABLE_SHELL_COMMAND,
 		"closing_server_window_disconnects_from_server": CLOSING_SERVER_WINDOW_DISCONNECTS,
 		"display_server_pings_in_server_window": SHOW_PINGS_IN_CONSOLE,
@@ -449,6 +451,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_ignore_status_in_userlists" in settings:
+		settings["show_ignore_status_in_userlists"] = SHOW_IGNORE_STATUS_IN_USERLISTS
 	if not "enable_shell_command" in settings:
 		settings["enable_shell_command"] = ENABLE_SHELL_COMMAND
 	if not "closing_server_window_disconnects_from_server" in settings:
@@ -1057,6 +1061,7 @@ def load_settings(filename):
 	global SHOW_PINGS_IN_CONSOLE
 	global CLOSING_SERVER_WINDOW_DISCONNECTS
 	global ENABLE_SHELL_COMMAND
+	global SHOW_IGNORE_STATUS_IN_USERLISTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1066,6 +1071,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_IGNORE_STATUS_IN_USERLISTS = settings["show_ignore_status_in_userlists"]
 		ENABLE_SHELL_COMMAND = settings["enable_shell_command"]
 		CLOSING_SERVER_WINDOW_DISCONNECTS = settings["closing_server_window_disconnects_from_server"]
 		SHOW_PINGS_IN_CONSOLE = settings["display_server_pings_in_server_window"]
