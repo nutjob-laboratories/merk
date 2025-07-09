@@ -2416,13 +2416,11 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
 		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
 
-		self.showUserlistLeft = QCheckBox("Display user lists on the left\nhand side of channel windows",self)
+		self.showUserlistLeft = QCheckBox("Display on left",self)
 		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
 		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
 
-		self.showUserlistLeft.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.plainUserLists = QCheckBox("Plain user lists",self)
+		self.plainUserLists = QCheckBox("Text only",self)
 		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
 		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
@@ -2439,7 +2437,7 @@ class Dialog(QDialog):
 		self.hideScroll.stateChanged.connect(self.changedSetting)
 		self.hideScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
+		self.noSelectUserlists = QCheckBox("No item selection",self)
 		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
 		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
@@ -2458,20 +2456,32 @@ class Dialog(QDialog):
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
 		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
 
+		ulistLayout = QFormLayout()
+		ulistLayout.addRow(self.plainUserLists,self.ignoreUserlist)
+		ulistLayout.addRow(self.showUserlistLeft,self.noSelectUserlists)
+
+		ulistExist = QHBoxLayout()
+		ulistExist.addStretch()
+		ulistExist.addWidget(self.showUserlists)
+		ulistExist.addStretch()
+
+		infoExist = QHBoxLayout()
+		infoExist.addStretch()
+		infoExist.addWidget(self.topicDisplay)
+		infoExist.addStretch()
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
-		menuLayout.addWidget(self.topicDisplay)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show in information display</b>"))
+		menuLayout.addLayout(infoExist)
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(self.topicBold)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
-		menuLayout.addWidget(self.showUserlists)
-		menuLayout.addWidget(self.plainUserLists)
-		menuLayout.addWidget(self.ignoreUserlist)
-		menuLayout.addWidget(self.showUserlistLeft)
+		menuLayout.addWidget(QLabel(' '))
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
+		menuLayout.addLayout(ulistExist)
+		menuLayout.addLayout(ulistLayout)
 		menuLayout.addWidget(self.hideScroll)
-		menuLayout.addWidget(self.noSelectUserlists)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
