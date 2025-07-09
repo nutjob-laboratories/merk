@@ -920,12 +920,14 @@ class Dialog(QDialog):
 			self.hideScroll.setEnabled(True)
 			self.noSelectUserlists.setEnabled(True)
 			self.ignoreUserlist.setEnabled(True)
+			self.showAwayStatus.setEnabled(True)
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 			self.noSelectUserlists.setEnabled(False)
 			self.ignoreUserlist.setEnabled(False)
+			self.showAwayStatus.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2318,10 +2320,6 @@ class Dialog(QDialog):
 		intervalBox.addWidget(self.autoawayInterval)
 		intervalBox.addStretch()
 
-		self.showAwayStatus = QCheckBox("Show away status in userlists",self)
-		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
-		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
-
 		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
 		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
 		self.showAwayBack.stateChanged.connect(self.changedSetting)
@@ -2357,7 +2355,6 @@ class Dialog(QDialog):
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addWidget(self.promptAway)
-		awayLayout.addWidget(self.showAwayStatus)
 		awayLayout.addWidget(self.showAwayBack)
 		awayLayout.addWidget(self.showAwayNick)
 		awayLayout.addWidget(QLabel(' '))
@@ -2457,7 +2454,7 @@ class Dialog(QDialog):
 		self.hideScroll.stateChanged.connect(self.changedSetting)
 		self.hideScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.noSelectUserlists = QCheckBox("No item selection",self)
+		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
 		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
 		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
@@ -2465,20 +2462,26 @@ class Dialog(QDialog):
 		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlist.setChecked(True)
 		self.ignoreUserlist.stateChanged.connect(self.changedSettingRerenderUserlists)
 
+		self.showAwayStatus = QCheckBox("Mark away status",self)
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
+		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 			self.noSelectUserlists.setEnabled(False)
 			self.ignoreUserlist.setEnabled(False)
+			self.showAwayStatus.setEnabled(False)
 
 		chanButtonLayout = QFormLayout()
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
 		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
 
 		ulistLayout = QFormLayout()
-		ulistLayout.addRow(self.plainUserLists,self.ignoreUserlist)
-		ulistLayout.addRow(self.showUserlistLeft,self.noSelectUserlists)
+		ulistLayout.addRow(self.plainUserLists,self.showUserlistLeft)
+		ulistLayout.addRow(self.ignoreUserlist,self.showAwayStatus)
+		ulistLayout.addRow(self.noSelectUserlists)
 
 		ulistExist = QHBoxLayout()
 		ulistExist.addStretch()
