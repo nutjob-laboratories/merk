@@ -78,7 +78,7 @@ DISPLAY_ACTIVE_CHAT_IN_TITLE = True
 TIMESTAMP_FORMAT = "%H:%M:%S"
 TIMESTAMP_24_HOUR = True
 TIMESTAMP_SHOW_SECONDS = True
-# PLAIN_USER_LISTS = False
+PLAIN_USER_LISTS = False
 SHOW_USER_INFO_ON_CHAT_WINDOWS = True
 AUTOCOMPLETE_CHANNELS = True
 SYNTAX_COMMENT_COLOR = "Magenta"
@@ -240,11 +240,9 @@ SCRIPTING_ENGINE_ENABLED = True
 SHOW_PINGS_IN_CONSOLE = False
 CLOSING_SERVER_WINDOW_DISCONNECTS = False
 ENABLE_SHELL_COMMAND = True
-SHOW_IGNORE_STATUS_IN_USERLISTS = True
 
 def build_settings():
 	settings = {
-		"show_ignore_status_in_userlists": SHOW_IGNORE_STATUS_IN_USERLISTS,
 		"enable_shell_command": ENABLE_SHELL_COMMAND,
 		"closing_server_window_disconnects_from_server": CLOSING_SERVER_WINDOW_DISCONNECTS,
 		"display_server_pings_in_server_window": SHOW_PINGS_IN_CONSOLE,
@@ -378,7 +376,7 @@ def build_settings():
 		"display_active_chat_in_title": DISPLAY_ACTIVE_CHAT_IN_TITLE,
 		"timestamp_24_hour": TIMESTAMP_24_HOUR,
 		"timestamp_show_seconds": TIMESTAMP_SHOW_SECONDS,
-		# "plain_user_lists": PLAIN_USER_LISTS,
+		"plain_user_lists": PLAIN_USER_LISTS,
 		"show_user_info_on_chat_windows": SHOW_USER_INFO_ON_CHAT_WINDOWS,
 		"autocomplete_channels": AUTOCOMPLETE_CHANNELS,
 		"syntax_comment_color": SYNTAX_COMMENT_COLOR,
@@ -451,8 +449,6 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "show_ignore_status_in_userlists" in settings:
-		settings["show_ignore_status_in_userlists"] = SHOW_IGNORE_STATUS_IN_USERLISTS
 	if not "enable_shell_command" in settings:
 		settings["enable_shell_command"] = ENABLE_SHELL_COMMAND
 	if not "closing_server_window_disconnects_from_server" in settings:
@@ -753,8 +749,8 @@ def patch_settings(settings):
 		settings["autocomplete_channels"] = AUTOCOMPLETE_CHANNELS
 	if not "show_user_info_on_chat_windows" in settings:
 		settings["show_user_info_on_chat_windows"] = SHOW_USER_INFO_ON_CHAT_WINDOWS
-	# if not "plain_user_lists" in settings:
-	# 	settings["plain_user_lists"] = PLAIN_USER_LISTS
+	if not "plain_user_lists" in settings:
+		settings["plain_user_lists"] = PLAIN_USER_LISTS
 	if not "timestamp_24_hour" in settings:
 		settings["timestamp_24_hour"] = TIMESTAMP_24_HOUR
 	if not "timestamp_show_seconds" in settings:
@@ -900,7 +896,7 @@ def load_settings(filename):
 	global DISPLAY_ACTIVE_CHAT_IN_TITLE
 	global TIMESTAMP_24_HOUR
 	global TIMESTAMP_SHOW_SECONDS
-	# global PLAIN_USER_LISTS
+	global PLAIN_USER_LISTS
 	global SHOW_USER_INFO_ON_CHAT_WINDOWS
 	global AUTOCOMPLETE_CHANNELS
 	global SYNTAX_COMMENT_COLOR
@@ -1061,7 +1057,6 @@ def load_settings(filename):
 	global SHOW_PINGS_IN_CONSOLE
 	global CLOSING_SERVER_WINDOW_DISCONNECTS
 	global ENABLE_SHELL_COMMAND
-	global SHOW_IGNORE_STATUS_IN_USERLISTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1071,7 +1066,6 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		SHOW_IGNORE_STATUS_IN_USERLISTS = settings["show_ignore_status_in_userlists"]
 		ENABLE_SHELL_COMMAND = settings["enable_shell_command"]
 		CLOSING_SERVER_WINDOW_DISCONNECTS = settings["closing_server_window_disconnects_from_server"]
 		SHOW_PINGS_IN_CONSOLE = settings["display_server_pings_in_server_window"]
@@ -1212,7 +1206,7 @@ def load_settings(filename):
 		SHOW_SYSTRAY_ICON = settings["show_systray_icon"]
 		AUTOCOMPLETE_CHANNELS = settings["autocomplete_channels"]
 		SHOW_USER_INFO_ON_CHAT_WINDOWS = settings["show_user_info_on_chat_windows"]
-		# PLAIN_USER_LISTS = settings["plain_user_lists"]
+		PLAIN_USER_LISTS = settings["plain_user_lists"]
 		TIMESTAMP_24_HOUR = settings["timestamp_24_hour"]
 		TIMESTAMP_SHOW_SECONDS = settings["timestamp_show_seconds"]
 		DISPLAY_ACTIVE_CHAT_IN_TITLE = settings["display_active_chat_in_title"]

@@ -157,14 +157,6 @@ INVALID_JUSTIFY = 2
 INVALID_COLOR = 3
 ALL_VALID_SETTINGS = 0
 
-STATUS_OP = 0
-STATUS_OWNER = 1
-STATUS_ADMIN = 2
-STATUS_PROTECTED = 3
-STATUS_HALFOP = 4
-STATUS_VOICED = 5
-STATUS_NORMAL = 6
-
 # Icons
 
 ROUND_UNCHECKED_ICON = ":/icon-runchecked.png"
@@ -386,25 +378,6 @@ class WhoWasData:
 		self.realname = 'Unknown'
 
 # Functions
-
-def get_channel_status(nick):
-	status = STATUS_NORMAL
-
-	if '+' in nick: status = STATUS_VOICED
-	if '!' in nick: status = STATUS_PROTECTED
-	if '%' in nick: status = STATUS_HALFOP
-	if '@' in nick: status = STATUS_OP
-	if '&' in nick: status = STATUS_ADMIN
-	if '~' in nick: status = STATUS_OWNER
-
-	nick = nick.replace('+','')
-	nick = nick.replace('!','')
-	nick = nick.replace('%','')
-	nick = nick.replace('@','')
-	nick = nick.replace('&','')
-	nick = nick.replace('~','')
-
-	return status,nick
 
 def resource_path(relative_path):
 	if hasattr(sys, '_MEIPASS'):
