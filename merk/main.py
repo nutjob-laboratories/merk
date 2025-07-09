@@ -2898,6 +2898,7 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.reRenderAll(True)
 		self.buildSettingsMenu()
+		self.rerenderUserlists()
 
 	def buildSettingsMenu(self):
 

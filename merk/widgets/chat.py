@@ -1587,6 +1587,7 @@ class Window(QMainWindow):
 					config.save_settings(config.CONFIG_FILE)
 					self.parent.buildSettingsMenu()
 					self.parent.reRenderAll(True)
+					self.parent.rerenderUserlists()
 					return True
 				else:
 					if user_hostmask:
@@ -1596,6 +1597,7 @@ class Window(QMainWindow):
 					config.save_settings(config.CONFIG_FILE)
 					self.parent.buildSettingsMenu()
 					self.parent.reRenderAll(True)
+					self.parent.rerenderUserlists()
 					return True
 
 			if action == actWhois:
