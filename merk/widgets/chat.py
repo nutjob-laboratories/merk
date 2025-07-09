@@ -1443,6 +1443,8 @@ class Window(QMainWindow):
 					user = user.replace('!','')
 				user_nick = user
 
+				user_nick = self.clean_nick(user_nick)
+
 				if user_nick in self.hostmasks:
 					user_hostmask = self.hostmasks[user_nick]
 

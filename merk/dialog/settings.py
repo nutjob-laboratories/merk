@@ -1484,7 +1484,7 @@ class Dialog(QDialog):
 			<b>If dark mode is enabled or disabled, the application must be restarted to use the
 			new palette.</b>
 			</small>
-			<br>
+			
 			""")
 		self.darkDescription.setWordWrap(True)
 		self.darkDescription.setAlignment(Qt.AlignJustify)
@@ -1520,14 +1520,24 @@ class Dialog(QDialog):
 		self.noStyles.stateChanged.connect(self.changedSettingRerender)
 		self.noStyles.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		app1Layout = QHBoxLayout()
+		app1Layout.addStretch()
+		app1Layout.addLayout(styleLayout)
+		app1Layout.addStretch()
+
+		app2Layout = QHBoxLayout()
+		app2Layout.addStretch()
+		app2Layout.addWidget(self.darkMode)
+		app2Layout.addStretch()
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
-		appearanceLayout.addLayout(styleLayout)
+		appearanceLayout.addLayout(app1Layout)
 		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
-		appearanceLayout.addWidget(self.darkMode)
+		appearanceLayout.addLayout(app2Layout)
 		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		appearanceLayout.addWidget(self.forceDefault)
@@ -1923,10 +1933,15 @@ class Dialog(QDialog):
 		self.menuNameDescription.setWordWrap(True)
 		self.menuNameDescription.setAlignment(Qt.AlignJustify)
 
+		menu1Layout = QHBoxLayout()
+		menu1Layout.addStretch()
+		menu1Layout.addWidget(self.menubar)
+		menu1Layout.addStretch()
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
-		menuLayout.addWidget(self.menubar)
+		menuLayout.addLayout(menu1Layout)
 		menuLayout.addWidget(self.menubarFloat)
 		menuLayout.addWidget(self.menubarMenu)
 		menuLayout.addLayout(justifyLayout)
@@ -2062,10 +2077,15 @@ class Dialog(QDialog):
 		includesLayout.addRow(self.windowBarServers,self.windowBarEditor)
 		includesLayout.addRow(self.windowbarLists,self.windowbarManager)
 
+		windowbar1Layout = QHBoxLayout()
+		windowbar1Layout.addStretch()
+		windowbar1Layout.addWidget(self.windowBar)
+		windowbar1Layout.addStretch()
+
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
 		windowbarLayout.addWidget(self.windowbarDescription)
-		windowbarLayout.addWidget(self.windowBar)
+		windowbarLayout.addLayout(windowbar1Layout)
 		windowbarLayout.addWidget(self.windowBarFloat)
 		windowbarLayout.addWidget(self.windowBarTop)
 		windowbarLayout.addWidget(self.windowBarFirst)
@@ -2591,6 +2611,11 @@ class Dialog(QDialog):
 		autoMaster.addWidget(self.enableAutocomplete)
 		autoMaster.addStretch()
 
+		historyMaster = QHBoxLayout()
+		historyMaster.addStretch()
+		historyMaster.addWidget(self.enableHistory)
+		historyMaster.addStretch()
+
 		if not config.ENABLE_AUTOCOMPLETE:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -2604,12 +2629,12 @@ class Dialog(QDialog):
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
 		inputLayout.addWidget(self.historyDescription)
-		inputLayout.addWidget(self.enableHistory)
+		inputLayout.addLayout(historyMaster)
 		inputLayout.addLayout(historyLayout)
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
-		inputLayout.addWidget(self.enableAutocomplete)
+		inputLayout.addLayout(autoMaster)
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoLayout1)
@@ -2761,15 +2786,20 @@ class Dialog(QDialog):
 			how the spellchecker finds suggestions to replace misspelled words; lower numbers are better for
 			longer words.
 			</small>
-			<br>
+			
 			""")
 		self.spellcheckDescription.setWordWrap(True)
 		self.spellcheckDescription.setAlignment(Qt.AlignJustify)
 
+		spellMaster = QHBoxLayout()
+		spellMaster.addStretch()
+		spellMaster.addWidget(self.enableSpellcheck)
+		spellMaster.addStretch()
+
 		spellcheckLayout = QVBoxLayout()
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
-		spellcheckLayout.addWidget(self.enableSpellcheck)
+		spellcheckLayout.addLayout(spellMaster)
 		spellcheckLayout.addWidget(self.allowSpellcheck)
 		spellcheckLayout.addLayout(distanceLayout)
 		spellcheckLayout.addLayout(spColorLayout)
@@ -3376,13 +3406,18 @@ class Dialog(QDialog):
 		if not config.ENABLE_ALIASES:
 			self.syntaxalias.setEnabled(False)
 
+		inputMaster = QHBoxLayout()
+		inputMaster.addStretch()
+		inputMaster.addWidget(self.toggleSyntaxInput)
+		inputMaster.addStretch()
+
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
-		syntaxLayout.addWidget(self.toggleSyntaxInput)
+		syntaxLayout.addLayout(inputMaster)
 		syntaxLayout.addLayout(sbLay)
 		syntaxLayout.addStretch()
 
@@ -3508,10 +3543,15 @@ class Dialog(QDialog):
 		sbLayout2.addWidget(soundDefault)
 		sbLayout2.addStretch()
 
+		audioMaster = QHBoxLayout()
+		audioMaster.addStretch()
+		audioMaster.addWidget(self.audioNotifications)
+		audioMaster.addStretch()
+
 		audioLayout = QVBoxLayout()
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
 		audioLayout.addWidget(self.notifyDescription)
-		audioLayout.addWidget(self.audioNotifications)
+		audioLayout.addLayout(audioMaster)
 		audioLayout.addWidget(QLabel(' '))
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
 		audioLayout.addLayout(anickPriv)
