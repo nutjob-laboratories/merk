@@ -1376,36 +1376,29 @@ class Window(QMainWindow):
 					nick = u
 					hostmask = None
 
-				if '@' in nick:
-					is_op = True
-					nick = nick.replace('@','')
-				else:
-					is_op = False
-				if '+' in nick:
+				chan_status, clean_nick = get_channel_status(nick)
+				nick = clean_nick
+
+				is_op = False
+				is_voiced = False
+				is_owner = False
+				is_admin = False
+				is_halfop = False
+				is_protected = False
+
+				if chan_status==STATUS_VOICED:
 					is_voiced = True
-					nick = nick.replace('+','')
-				else:
-					is_voiced = False
-				if '~' in nick:
-					is_owner = True
-					nick = nick.replace('~','')
-				else:
-					is_owner = False
-				if '&' in nick:
-					is_admin = True
-					nick = nick.replace('&','')
-				else:
-					is_admin = False
-				if '%' in nick:
-					is_halfop = True
-					nick = nick.replace('%','')
-				else:
-					is_halfop = False
-				if '!' in nick:
+				elif chan_status==STATUS_PROTECTED:
 					is_protected = True
-					nick = nick.replace('!','')
-				else:
-					is_protected = False
+				elif chan_status==STATUS_HALFOP:
+					is_halfop = True
+				elif chan_status==STATUS_OP:
+					is_op = True
+				elif chan_status==STATUS_ADMIN:
+					is_admin = True
+				elif chan_status==STATUS_OWNER:
+					is_owner = True
+
 				if nick==user:
 					raw_user = u
 					user_nick = nick
@@ -1587,6 +1580,7 @@ class Window(QMainWindow):
 					config.save_settings(config.CONFIG_FILE)
 					self.parent.buildSettingsMenu()
 					self.parent.reRenderAll(True)
+					self.parent.rerenderUserlists()
 					return True
 				else:
 					if user_hostmask:
@@ -1596,6 +1590,7 @@ class Window(QMainWindow):
 					config.save_settings(config.CONFIG_FILE)
 					self.parent.buildSettingsMenu()
 					self.parent.reRenderAll(True)
+					self.parent.rerenderUserlists()
 					return True
 
 			if action == actWhois:
@@ -1758,6 +1753,13 @@ class Window(QMainWindow):
 	def rerenderUserlist(self):
 		self.writeUserlist(self.users)
 
+	def change_to_ignore_display(self,w):
+		if config.SHOW_IGNORE_STATUS_IN_USERLISTS:
+			font = QFont()
+			font.setStrikeOut(True)
+			font.setBold(False)
+			w.setFont(font)
+
 	def change_to_away_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
 			font = QFont()
@@ -1859,6 +1861,7 @@ class Window(QMainWindow):
 		voiced = []
 		normal = []
 		protected = []
+		ignored = []
 
 		for u in users:
 			if len(u)<1: continue
@@ -1868,37 +1871,40 @@ class Window(QMainWindow):
 				nickname = p[0]
 				hostmask = p[1]
 				self.hostmasks[nickname] = hostmask
+				if hostmask.lower() in config.IGNORE_LIST:
+					x, clean_nick = get_channel_status(nickname)
+					ignored.append(clean_nick)
 			else:
 				nickname = u
 				hostmask = None
 
 			self.user_count = self.user_count + 1
 
-			if '@' in nickname:
-				ops.append(nickname.replace('@',''))
-				if nickname.replace('@','')==self.client.nickname: self.operator = True
-			elif '+' in nickname:
-				voiced.append(nickname.replace('+',''))
-				if nickname.replace('+','')==self.client.nickname: self.voiced = True
-			elif '~' in nickname:
-				owners.append(nickname.replace('~',''))
-				if nickname.replace('~','')==self.client.nickname: self.owner = True
-			elif '&' in nickname:
-				admins.append(nickname.replace('&',''))
-				if nickname.replace('&','')==self.client.nickname: self.admin = True
-			elif '%' in nickname:
-				halfops.append(nickname.replace('%',''))
-				if nickname.replace('%','')==self.client.nickname: self.halfop = True
-			elif '!' in nickname:
-				protected.append(nickname.replace('!',''))
-				if nickname.replace('!','')==self.client.nickname: self.protected = True
-			else:
-				normal.append(nickname)
+			chan_status, clean_nick = get_channel_status(nickname)
+
+			if chan_status==STATUS_NORMAL:
+				normal.append(clean_nick)
+			elif chan_status==STATUS_VOICED:
+				voiced.append(clean_nick)
+			elif chan_status==STATUS_PROTECTED:
+				protected.append(clean_nick)
+			elif chan_status==STATUS_HALFOP:
+				halfops.append(clean_nick)
+			elif chan_status==STATUS_OP:
+				ops.append(clean_nick)
+			elif chan_status==STATUS_ADMIN:
+				admins.append(clean_nick)
+			elif chan_status==STATUS_OWNER:
+				owners.append(clean_nick)
+
+			if clean_nick.lower() in config.IGNORE_LIST: ignored.append(clean_nick)
 
 		if self.user_count==1:
 			self.channel_users_display.setText("<b><small>1 user</small></b>")
 		else:
 			self.channel_users_display.setText(f"<b><small>{self.user_count} users</small></b>")
+
+		ignored = list(set(ignored))
 
 		# Store a list of the nicks in this channel
 		self.nicks = owners + admins + halfops + ops + voiced + normal
@@ -1915,11 +1921,8 @@ class Window(QMainWindow):
 		# Add owners
 		for u in owners:
 			ui = QListWidgetItem()
-			if config.PLAIN_USER_LISTS:
-				ui.setText('~ '+u)
-			else:
-				ui.setIcon(QIcon(OWNER_USER))
-				ui.setText(u)
+			ui.setIcon(QIcon(OWNER_USER))
+			ui.setText(u)
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -1932,17 +1935,17 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored:
+				self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 
 		# Add admins
 		for u in admins:
 			ui = QListWidgetItem()
-			if config.PLAIN_USER_LISTS:
-				ui.setText('& '+u)
-			else:
-				ui.setIcon(QIcon(ADMIN_USER))
-				ui.setText(u)
+			ui.setIcon(QIcon(ADMIN_USER))
+			ui.setText(u)
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -1955,17 +1958,17 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored:
+				self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 
 		# Add halfops
 		for u in halfops:
 			ui = QListWidgetItem()
-			if config.PLAIN_USER_LISTS:
-				ui.setText('% '+u)
-			else:
-				ui.setIcon(QIcon(HALFOP_USER))
-				ui.setText(u)
+			ui.setIcon(QIcon(HALFOP_USER))
+			ui.setText(u)
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -1978,17 +1981,17 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored:
+				self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 
 		# Add ops
 		for u in ops:
 			ui = QListWidgetItem()
-			if config.PLAIN_USER_LISTS:
-				ui.setText('@ '+u)
-			else:
-				ui.setIcon(QIcon(OP_USER))
-				ui.setText(u)
+			ui.setIcon(QIcon(OP_USER))
+			ui.setText(u)
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -2001,17 +2004,17 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored:
+				self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 
 		# Add voiced
 		for u in voiced:
 			ui = QListWidgetItem()
-			if config.PLAIN_USER_LISTS:
-				ui.setText('+ '+u)
-			else:
-				ui.setIcon(QIcon(VOICE_USER))
-				ui.setText(u)
+			ui.setIcon(QIcon(VOICE_USER))
+			ui.setText(u)
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -2025,16 +2028,16 @@ class Window(QMainWindow):
 			if u in self.away:
 				self.change_to_away_display(ui)
 
+			if u in ignored:
+				self.change_to_ignore_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add protected
 		for u in protected:
 			ui = QListWidgetItem()
-			if config.PLAIN_USER_LISTS:
-				ui.setText('! '+u)
-			else:
-				ui.setIcon(QIcon(PROTECTED_USER))
-				ui.setText(u)
+			ui.setIcon(QIcon(PROTECTED_USER))
+			ui.setText(u)
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -2048,16 +2051,16 @@ class Window(QMainWindow):
 			if u in self.away:
 				self.change_to_away_display(ui)
 
+			if u in ignored:
+				self.change_to_ignore_display(ui)
+
 			self.userlist.addItem(ui)
 
 		# Add normal
 		for u in normal:
 			ui = QListWidgetItem()
-			if config.PLAIN_USER_LISTS:
-				ui.setText('  '+u)
-			else:
-				ui.setIcon(QIcon(NORMAL_USER))
-				ui.setText(u)
+			ui.setIcon(QIcon(NORMAL_USER))
+			ui.setText(u)
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -2070,6 +2073,9 @@ class Window(QMainWindow):
 
 			if u in self.away:
 				self.change_to_away_display(ui)
+
+			if u in ignored:
+				self.change_to_ignore_display(ui)
 
 			self.userlist.addItem(ui)
 

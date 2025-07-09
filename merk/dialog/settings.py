@@ -915,15 +915,17 @@ class Dialog(QDialog):
 		self.toggleUserlist = True
 
 		if self.showUserlists.isChecked():
-			self.plainUserLists.setEnabled(True)
+			# self.plainUserLists.setEnabled(True)
 			self.showUserlistLeft.setEnabled(True)
 			self.hideScroll.setEnabled(True)
 			self.noSelectUserlists.setEnabled(True)
+			self.ignoreUserlists.setEnabled(True)
 		else:
-			self.plainUserLists.setEnabled(False)
+			# self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 			self.noSelectUserlists.setEnabled(False)
+			self.ignoreUserlists.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2404,7 +2406,6 @@ class Dialog(QDialog):
 			or edited with it (if you have the right permissions) by clicking
 			on the <b>topic</b> and editing it. Here, the
 			<b>channel information display</b> can be customized or turned off.
-			<br>
 			</small>
 			""")
 		self.channelDescription.setWordWrap(True)
@@ -2420,9 +2421,9 @@ class Dialog(QDialog):
 
 		self.showUserlistLeft.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.plainUserLists = QCheckBox("Plain user lists",self)
-		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
-		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
+		# self.plainUserLists = QCheckBox("Plain user lists",self)
+		# if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
+		# self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
 		self.showUserlists = QCheckBox("Show user lists",self)
 		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
@@ -2441,11 +2442,16 @@ class Dialog(QDialog):
 		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
 		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
+		self.ignoreUserlists = QCheckBox("Show \"ignored\" status",self)
+		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlists.setChecked(True)
+		self.ignoreUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
-			self.plainUserLists.setEnabled(False)
+			# self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
 			self.noSelectUserlists.setEnabled(False)
+			self.ignoreUserlists.setEnabled(False)
 
 		chanButtonLayout = QFormLayout()
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
@@ -2461,9 +2467,10 @@ class Dialog(QDialog):
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user lists</b>"))
 		menuLayout.addWidget(self.showUserlists)
-		menuLayout.addWidget(self.plainUserLists)
+		# menuLayout.addWidget(self.plainUserLists)
 		menuLayout.addWidget(self.showUserlistLeft)
 		menuLayout.addWidget(self.hideScroll)
+		menuLayout.addWidget(self.ignoreUserlists)
 		menuLayout.addWidget(self.noSelectUserlists)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
@@ -3779,7 +3786,7 @@ class Dialog(QDialog):
 		config.DEFAULT_QUIT_MESSAGE = self.default_quit_part
 		config.TIMESTAMP_24_HOUR = self.timestamp24hour.isChecked()
 		config.TIMESTAMP_SHOW_SECONDS = self.timestampSeconds.isChecked()
-		config.PLAIN_USER_LISTS = self.plainUserLists.isChecked()
+		# config.PLAIN_USER_LISTS = self.plainUserLists.isChecked()
 		config.SHOW_USER_INFO_ON_CHAT_WINDOWS = self.showInfo.isChecked()
 		config.AUTOCOMPLETE_CHANNELS = self.autocompleteChans.isChecked()
 		config.SYNTAX_COMMENT_COLOR = self.SYNTAX_COMMENT_COLOR
@@ -3923,6 +3930,7 @@ class Dialog(QDialog):
 		config.SCRIPTING_ENGINE_ENABLED = self.enableScripts.isChecked()
 		config.SHOW_PINGS_IN_CONSOLE = self.enablePing.isChecked()
 		config.CLOSING_SERVER_WINDOW_DISCONNECTS = self.enableDisconnect.isChecked()
+		config.SHOW_IGNORE_STATUS_IN_USERLISTS = self.ignoreUserlists.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()

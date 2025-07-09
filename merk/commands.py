@@ -1005,6 +1005,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
 			gui.reRenderAll(True)
+			gui.rerenderUserlists()
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ignore':
@@ -1032,6 +1033,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				config.save_settings(config.CONFIG_FILE)
 				gui.buildSettingsMenu()
 				gui.reRenderAll(True)
+				gui.rerenderUserlists()
 				return True
 
 			if target in config.IGNORE_LIST:
@@ -1050,6 +1052,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			config.save_settings(config.CONFIG_FILE)
 			gui.buildSettingsMenu()
 			gui.reRenderAll(True)
+			gui.rerenderUserlists()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unignore':
 			if is_script:
