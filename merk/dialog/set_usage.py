@@ -45,7 +45,7 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = [self.name.text(),self.key.text()]
+		retval = [self.pauseTime.value(),self.key.text()]
 
 		return retval
 
@@ -58,8 +58,12 @@ class Dialog(QDialog):
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
 		self.nameLabel = QLabel("<b>Number of arguments:</b>")
-		self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as
-										# spaces are forbidden in channel names
+		# self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as
+		# 								# spaces are forbidden in channel names
+
+		self.pauseTime = QSpinBox()
+		self.pauseTime.setRange(0,1000)
+		self.pauseTime.setValue(1)
 
 		keyLayout = QHBoxLayout()
 		self.keyLabel = QLabel("<b>Message:</b>")
@@ -81,7 +85,7 @@ class Dialog(QDialog):
 		self.aliasDescription.setAlignment(Qt.AlignJustify)
 
 		inputLayout = QFormLayout()
-		inputLayout.addRow(self.nameLabel,self.name)
+		inputLayout.addRow(self.nameLabel,self.pauseTime)
 		inputLayout.addRow(self.keyLabel,self.key)
 
 		# Buttons
@@ -100,4 +104,4 @@ class Dialog(QDialog):
 
 		self.setLayout(finalLayout)
 
-		self.name.setFocus()
+		self.key.setFocus()

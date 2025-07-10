@@ -839,8 +839,8 @@ class Window(QMainWindow):
 
 		if not e: return
 
-		aname = e[0]
-		avalue = e[1]
+		aname = str(e[0])
+		avalue = str(e[1])
 
 		if len(aname)==0: return
 		if len(avalue)>0:
