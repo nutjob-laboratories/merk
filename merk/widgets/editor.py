@@ -488,6 +488,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(SCRIPT_ICON),"Set usage",self)
+		entry.triggered.connect(self.insertUsage)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
 		entry.triggered.connect(self.insertAlias)
 		self.commandMenu.addAction(entry)
@@ -510,52 +514,64 @@ class Window(QMainWindow):
 
 		self.aliasMenu = self.menubar.addMenu("Aliases")
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Current window",self)
-		entry.triggered.connect(lambda state,u="$_WINDOW": self.insertBuiltinAlias(u))
+		entry = QAction(QIcon(SCRIPT_ICON),"Host",self)
+		entry.triggered.connect(lambda state,u="$_HOST": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Filename",self)
+		entry.triggered.connect(lambda state,u="$_FILE": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"User mode",self)
+		entry.triggered.connect(lambda state,u="$_MODE": self.insertBuiltinAlias(u))
 		self.aliasMenu.addAction(entry)
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Nickname",self)
 		entry.triggered.connect(lambda state,u="$_NICKNAME": self.insertBuiltinAlias(u))
 		self.aliasMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Username",self)
-		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Realname",self)
-		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Window type",self)
-		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Server",self)
-		entry.triggered.connect(lambda state,u="$_SERVER": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
 		entry = QAction(QIcon(SCRIPT_ICON),"Port",self)
 		entry.triggered.connect(lambda state,u="$_PORT": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Host",self)
-		entry.triggered.connect(lambda state,u="$_HOST": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Channel topic",self)
-		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"User status",self)
-		entry.triggered.connect(lambda state,u="$_STATUS": self.insertBuiltinAlias(u))
 		self.aliasMenu.addAction(entry)
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Present in channel",self)
 		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertBuiltinAlias(u))
 		self.aliasMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"User mode",self)
-		entry.triggered.connect(lambda state,u="$_MODE": self.insertBuiltinAlias(u))
+		entry = QAction(QIcon(SCRIPT_ICON),"Realname",self)
+		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Script name",self)
+		entry.triggered.connect(lambda state,u="$_SCRIPT": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Server",self)
+		entry.triggered.connect(lambda state,u="$_SERVER": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"User status",self)
+		entry.triggered.connect(lambda state,u="$_STATUS": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Channel topic",self)
+		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Uptime",self)
+		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Username",self)
+		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Current window",self)
+		entry.triggered.connect(lambda state,u="$_WINDOW": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Window type",self)
+		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertBuiltinAlias(u))
 		self.aliasMenu.addAction(entry)
 
 		self.runMenu = self.menubar.addMenu("Run")
@@ -815,6 +831,23 @@ class Window(QMainWindow):
 		if len(avalue)==0: avalue = 'X'
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"alias "+aname+" "+avalue+"\n")
+		self.updateApplicationTitle()
+
+	def insertUsage(self):
+		x = SetUsage(self)
+		e = x.get_alias_information(self)
+
+		if not e: return
+
+		aname = e[0]
+		avalue = e[1]
+
+		if len(aname)==0: return
+		if len(avalue)>0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"usage "+aname+" "+avalue+"\n")
+		else:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"usage "+aname+"\n")
+
 		self.updateApplicationTitle()
 
 	def insertPart(self):

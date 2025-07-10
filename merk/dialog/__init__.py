@@ -49,6 +49,7 @@ from .menu_name import Dialog as SetMenuName
 from .key import Dialog as SetKey
 from .find import Dialog as Find
 from .shell import Dialog as SetShell
+from .set_usage import Dialog as SetUsage
 
 def SetKeyDialog(parent):
 	x = SetKey(parent)
