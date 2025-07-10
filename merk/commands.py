@@ -2311,7 +2311,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				f.close()
 
 				script_id = str(uuid.uuid4())
-				gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,arguments)
+				gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,arguments,efilename)
 				gui.scripts[script_id].execLine.connect(execute_script_line)
 				gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 				gui.scripts[script_id].scriptError.connect(execute_script_error)
@@ -2811,13 +2811,14 @@ class ScriptThread(QThread):
 	scriptEnd = pyqtSignal(list)
 	scriptError = pyqtSignal(list)
 
-	def __init__(self,script,sid,gui,window,arguments=[],parent=None):
+	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None):
 		super(ScriptThread, self).__init__(parent)
 		self.script = script
 		self.id = sid
 		self.gui = gui
 		self.window = window
 		self.arguments = arguments
+		self.filename = filename
 
 		# Strip comments from script
 		self.script = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,self.script)
@@ -2828,9 +2829,14 @@ class ScriptThread(QThread):
 		for a in self.arguments:
 			addTemporaryAlias(f"_{counter}",a)
 			counter = counter + 1
-		self.script = interpolateAliases(self.script)
 
 		addTemporaryAlias(f"_0",' '.join(self.arguments))
+
+		if self.filename!=None:
+			addTemporaryAlias(f"_FILE",self.filename)
+			addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
+
+		self.script = interpolateAliases(self.script)
 
 		no_errors = True
 
