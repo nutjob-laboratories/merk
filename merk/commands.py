@@ -2831,6 +2831,7 @@ class ScriptThread(QThread):
 			counter = counter + 1
 
 		addTemporaryAlias(f"_0",' '.join(self.arguments))
+		addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
 
 		if self.filename!=None:
 			addTemporaryAlias(f"_FILE",self.filename)
