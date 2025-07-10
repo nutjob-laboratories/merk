@@ -97,6 +97,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ping",
 			cmdsymbol+"shell",
 			cmdsymbol+"ctcp",
+			cmdsymbol+"usage",
 		]
 
 		if not config.ENABLE_ALIASES:
@@ -104,6 +105,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"unalias")
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			merk.remove(cmdsymbol+"script")
+			merk.remove(cmdsymbol+"usage")
 		if not config.ENABLE_SHELL_COMMAND:
 			merk.remove(cmdsymbol+"shell")
 

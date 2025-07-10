@@ -271,7 +271,7 @@ Appearance:
 <td>Restores a window</td>
 </tr>
 <tr>
-<td><code>/script FILENAME</code></td>
+<td><code>/script FILENAME [ARGUMENTS]</code></td>
 <td>Executes a list of commands in a file</td>
 </tr>
 <tr>
@@ -304,7 +304,11 @@ Appearance:
 </tr>
 <tr>
 <td><code>/unignore USER</code></td>
-<td>Un-hides a <code>USER</code>&#39;s chat. To un-hide all users, use <code>*</code> as the argument&#39;</td>
+<td>Un-hides a <code>USER</code>&#39;s chat. To un-hide all users, use <code>*</code> as the argument</td>
+</tr>
+<tr>
+<td><code>/usage NUMBER [MESSAGE...]</code></td>
+<td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. Can only be called by scripts</td>
 </tr>
 <tr>
 <td><code>/version [SERVER]</code></td>

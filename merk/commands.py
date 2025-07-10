@@ -37,6 +37,7 @@ from pathlib import Path
 import fnmatch
 import datetime
 import subprocess
+import shlex
 
 import emoji
 
@@ -415,6 +416,16 @@ def handleScriptCommands(gui,window,user_input,line_number):
 def executeChatCommands(gui,window,user_input,is_script,line_number=0):
 	user_input = user_input.strip()
 	tokens = user_input.split()
+
+	# |------|
+	# | /end |
+	# |------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'args':
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"args can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 	# |------|
 	# | /end |
@@ -2288,9 +2299,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)>=2:
 
+			tokens = shlex.split(user_input, comments=False)
 			tokens.pop(0)
-			# Filename might have spaces in it
-			filename = ' '.join(tokens)
+			filename = tokens.pop(0)
+			arguments = list(tokens)
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
 			if efilename:
@@ -2299,7 +2311,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				f.close()
 
 				script_id = str(uuid.uuid4())
-				gui.scripts[script_id] = ScriptThread(text,script_id,gui,window)
+				gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,arguments)
 				gui.scripts[script_id].execLine.connect(execute_script_line)
 				gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 				gui.scripts[script_id].scriptError.connect(execute_script_error)
@@ -2799,17 +2811,26 @@ class ScriptThread(QThread):
 	scriptEnd = pyqtSignal(list)
 	scriptError = pyqtSignal(list)
 
-	def __init__(self,script,sid,gui,window,parent=None):
+	def __init__(self,script,sid,gui,window,arguments=[],parent=None):
 		super(ScriptThread, self).__init__(parent)
 		self.script = script
 		self.id = sid
 		self.gui = gui
 		self.window = window
+		self.arguments = arguments
 
 		# Strip comments from script
 		self.script = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,self.script)
 
 	def run(self):
+
+		counter = 1
+		for a in self.arguments:
+			addTemporaryAlias(f"_{counter}",a)
+			counter = counter + 1
+		self.script = interpolateAliases(self.script)
+
+		addTemporaryAlias(f"_0",' '.join(self.arguments))
 
 		no_errors = True
 
@@ -2821,6 +2842,24 @@ class ScriptThread(QThread):
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
+
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)>=2:
+					tokens.pop(0)
+					arg = tokens.pop(0)
+					try:
+						arg = int(arg)
+						if len(tokens)>0:
+							if len(self.arguments)!=arg:
+								self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+								no_errors = False
+						else:
+							if len(self.arguments)!=arg:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be called with {arg} arguments"])
+								no_errors = False
+					except:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}usage must be called with a numerical first argument."])
+						no_errors = False
 
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
@@ -2924,6 +2963,11 @@ class ScriptThread(QThread):
 					if len(tokens)==1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end':
 							loop = False
+							script_only_command = True
+							continue
+
+					if len(tokens)>=1:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage':
 							script_only_command = True
 							continue
 

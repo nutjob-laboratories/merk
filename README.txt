@@ -271,7 +271,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |
-| `/script FILENAME`                      | Executes a list of commands in a file                                                                                            |
+| `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/settings`                             | Opens the settings dialog                                                                                                        |
 | `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
 | `/style`                                | Edits the current window's style                                                                                                 |
@@ -279,7 +279,8 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
-| `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument'                                                         |
+| `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
+| `/usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. Can only be called by scripts                                                        |
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
 | `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                                           |
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
