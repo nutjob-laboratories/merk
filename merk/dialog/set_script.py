@@ -48,7 +48,7 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = self.name.text()
+		retval = [ self.name.text(), self.args.text() ]
 
 		return retval
 
@@ -77,7 +77,7 @@ class Dialog(QDialog):
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
 		nameLayout = QHBoxLayout()
-		self.nameLabel = QLabel("<b>Filename:</b>")
+		self.nameLabel = QLabel("<b>Filename:&nbsp;</b>")
 		
 		self.name = QLineEdit()
 		fm = QFontMetrics(self.font())
@@ -94,6 +94,17 @@ class Dialog(QDialog):
 		nameLayout.addWidget(self.name)
 		nameLayout.addWidget(self.file_button)
 
+		self.argsLabel = QLabel("<b>Arguments:</b>")
+		
+		self.args = QLineEdit()
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
+		self.args.setMinimumWidth(wwidth)
+
+		argsLayout = QHBoxLayout()
+		argsLayout.addWidget(self.argsLabel)
+		argsLayout.addWidget(self.args)
+
 		# Buttons
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -102,6 +113,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(nameLayout)
+		finalLayout.addLayout(argsLayout)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()

@@ -848,7 +848,10 @@ class Window(QMainWindow):
 
 		if not e: return
 
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"script "+str(e)+"\n")
+		script = e[0]
+		args = e[1]
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"script "+str(script)+" "+str(args)+"\n")
 		self.updateApplicationTitle()
 
 	def insertNotice(self):
