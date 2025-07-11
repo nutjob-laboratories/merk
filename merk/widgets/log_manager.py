@@ -367,11 +367,11 @@ class Window(QMainWindow):
 
 		fileMenu = self.menubar.addMenu ("Export log as...")
 
-		self.menuJson = QAction(QIcon(ROUND_CHECKED_ICON),"JSON",self)
+		self.menuJson = QAction(QIcon(self.parent.round_checked_icon),"JSON",self)
 		self.menuJson.triggered.connect(lambda state,s="json": self.toggleSetting(s))
 		fileMenu.addAction(self.menuJson)
 
-		self.menuText = QAction(QIcon(ROUND_UNCHECKED_ICON),"Text",self)
+		self.menuText = QAction(QIcon(self.parent.round_unchecked_icon),"Text",self)
 		self.menuText.triggered.connect(lambda state,s="text": self.toggleSetting(s))
 		fileMenu.addAction(self.menuText)
 
@@ -610,8 +610,8 @@ class Window(QMainWindow):
 		self.export_format = setting
 
 		if setting=='json':
-			self.menuJson.setIcon(QIcon(ROUND_CHECKED_ICON))
-			self.menuText.setIcon(QIcon(ROUND_UNCHECKED_ICON))
+			self.menuJson.setIcon(QIcon(self.parent.round_checked_icon))
+			self.menuText.setIcon(QIcon(self.parent.round_unchecked_icon))
 			self.do_json = True
 			self.type.setEnabled(False)
 			self.typeLabel.setEnabled(False)
@@ -621,8 +621,8 @@ class Window(QMainWindow):
 			return
 
 		if setting=='text':
-			self.menuJson.setIcon(QIcon(ROUND_UNCHECKED_ICON))
-			self.menuText.setIcon(QIcon(ROUND_CHECKED_ICON))
+			self.menuJson.setIcon(QIcon(self.parent.round_unchecked_icon))
+			self.menuText.setIcon(QIcon(self.parent.round_checked_icon))
 			self.do_json = False
 			self.type.setEnabled(True)
 			self.typeLabel.setEnabled(True)
