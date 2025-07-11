@@ -251,8 +251,8 @@ class Dialog(QDialog):
 			Message(SYSTEM_MESSAGE,'','This is a system message'),
 			Message(ERROR_MESSAGE,'','This is an error message'),
 			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
-			Message(CHAT_MESSAGE,'other_nicks',"Here's a link: http://google.com"),
-			Message(SELF_MESSAGE,'your_nick',"Here's a message without a link!"),
+			Message(CHAT_MESSAGE,'other_nicks',"Here's a link: http://ebay.com"),
+			Message(SELF_MESSAGE,'your_nick',"A message without a link!"),
 			Message(ACTION_MESSAGE,'nickname','sends a CTCP action message'),
 		]
 
@@ -332,17 +332,28 @@ class Dialog(QDialog):
 
 		self.userlist.update()
 
-		dispLayout = QHBoxLayout()
-		if config.SHOW_USERLIST_ON_LEFT:
-			dispLayout.addWidget(self.userlist)
-			dispLayout.addWidget(self.chat)
+		if self.wchat.window_type==CHANNEL_WINDOW:
+
+			dispLayout = QHBoxLayout()
+			if config.SHOW_USERLIST_ON_LEFT:
+				dispLayout.addWidget(self.userlist)
+				dispLayout.addWidget(self.chat)
+			else:
+				dispLayout.addWidget(self.chat)
+				dispLayout.addWidget(self.userlist)
+			if not self.simple:
+				dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+			else:
+				dispLayout.setContentsMargins(1,1,1,1)
+
 		else:
+			self.userlist.hide()
+			dispLayout = QHBoxLayout()
 			dispLayout.addWidget(self.chat)
-			dispLayout.addWidget(self.userlist)
-		if not self.simple:
-			dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-		else:
-			dispLayout.setContentsMargins(1,1,1,1)
+			if not self.simple:
+				dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+			else:
+				dispLayout.setContentsMargins(1,1,1,1)
 
 
 		# Buttons
@@ -362,39 +373,22 @@ class Dialog(QDialog):
 		defaultButton = QPushButton(" Set colors to app default ")
 		defaultButton.clicked.connect(self.loadDefault)
 
-		ln1 = QHBoxLayout()
-		ln1.addWidget(self.system_style)
-		ln1.addWidget(self.error_style)
-		ln1.setContentsMargins(1,1,1,1)
+		foregroundBackground = QHBoxLayout()
+		foregroundBackground.addWidget(self.fore)
+		foregroundBackground.addWidget(self.back)
+		foregroundBackground.addStretch()
+		foregroundBackground.addWidget(defaultButton)
+		foregroundBackground.setContentsMargins(1,1,1,1)
 
-		ln2 = QHBoxLayout()
-		ln2.addWidget(self.link_style)
-		ln2.addWidget(self.server_style)
-		ln2.setContentsMargins(1,1,1,1)
-
-		ln3 = QHBoxLayout()
-		ln3.addWidget(self.self_style)
-		ln3.addWidget(self.user_style)
-		ln3.setContentsMargins(1,1,1,1)
-
-		ln4 = QHBoxLayout()
-		ln4.addWidget(self.action_style)
-		ln4.addWidget(self.notice_style)
-		ln4.setContentsMargins(1,1,1,1)
-
-		ln5 = QHBoxLayout()
-		ln5.addWidget(self.fore)
-		ln5.addWidget(self.back)
-		ln5.addStretch()
-		ln5.addWidget(defaultButton)
-		ln5.setContentsMargins(1,1,1,1)
+		allStyles = QFormLayout()
+		allStyles.addRow(self.system_style,self.error_style)
+		allStyles.addRow(self.link_style,self.server_style)
+		allStyles.addRow(self.self_style,self.user_style)
+		allStyles.addRow(self.action_style,self.notice_style)
 
 		editstyleLayout = QVBoxLayout()
-		editstyleLayout.addLayout(ln5)
-		editstyleLayout.addLayout(ln1)
-		editstyleLayout.addLayout(ln2)
-		editstyleLayout.addLayout(ln3)
-		editstyleLayout.addLayout(ln4)
+		editstyleLayout.addLayout(foregroundBackground)
+		editstyleLayout.addLayout(allStyles)
 		editstyleLayout.setContentsMargins(0,0,0,0)
 
 		styleLayout = QVBoxLayout()
