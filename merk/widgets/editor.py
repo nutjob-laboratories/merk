@@ -592,7 +592,10 @@ class Window(QMainWindow):
 
 	def executeScript(self,window):
 		script = self.editor.toPlainText()
-		window.executeScript(script)
+		if self.filename==None:
+			window.executeScript(script,None)
+		else:
+			window.executeScript(script,self.filename)
 		self.runMenu.close()
 
 	def executeScriptOnAll(self):

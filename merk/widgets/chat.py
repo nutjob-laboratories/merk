@@ -1707,8 +1707,8 @@ class Window(QMainWindow):
 				self.input.setFocus()
 				self.input.moveCursor(QTextCursor.End)
 
-	def executeScript(self,script):
-		commands.executeScript(self.parent,self,script)
+	def executeScript(self,script,filename=None):
+		commands.executeScript(self.parent,self,script,filename)
 
 	def generateStylesheet(self,obj,fore,back):
 
