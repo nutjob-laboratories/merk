@@ -201,10 +201,14 @@ class Dialog(QDialog):
 
 		if default:
 			self.style = styles.loadDefault()
-			self.setWindowTitle("Edit default text style")
+			self.setWindowTitle("Default text style")
 		else:
 			self.style = self.wchat.style
-			self.setWindowTitle("Edit text style for "+self.wchat.name)
+			if self.wchat.window_type==SERVER_WINDOW:
+				name = self.wchat.client.server+":"+str(self.wchat.client.port)
+			else:
+				name = self.wchat.name
+			self.setWindowTitle("Text style for "+name)
 
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
@@ -347,12 +351,12 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
-		buttons.button(QDialogButtonBox.Ok).setText("Save")
+		buttons.button(QDialogButtonBox.Ok).setText("Apply")
 
 		saveAsButton = QPushButton(" Save style as... ")
 		saveAsButton.clicked.connect(self.saveAsStyle)
 
-		loadButton = QPushButton(" Open style ")
+		loadButton = QPushButton(" Load style ")
 		loadButton.clicked.connect(self.loadStyle)
 
 		defaultButton = QPushButton(" Set colors to app default ")
