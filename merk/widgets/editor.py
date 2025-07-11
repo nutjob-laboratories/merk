@@ -605,6 +605,20 @@ class Window(QMainWindow):
 				c = window.widget()
 				self.executeScript(c)
 
+	def executeScriptOnChannels(self):
+		servers = self.parent.getAllChannelWindows()
+		if len(servers)>0:
+			for window in servers:
+				c = window.widget()
+				self.executeScript(c)
+
+	def executeScriptOnPrivates(self):
+		servers = self.parent.getAllPrivateWindows()
+		if len(servers)>0:
+			for window in servers:
+				c = window.widget()
+				self.executeScript(c)
+
 	def insertBuiltinAlias(self,value):
 		self.editor.insertPlainText(f"{value}")
 		self.updateApplicationTitle()
@@ -613,6 +627,8 @@ class Window(QMainWindow):
 		self.runMenu.clear()
 
 		servers = self.parent.getAllConnectedServerWindows()
+		channels = 0
+		privates = 0
 
 		if len(servers)>0:
 			for window in servers:
@@ -647,8 +663,10 @@ class Window(QMainWindow):
 						cname = f"{c.client.server}:{c.client.port}"
 					if c.window_type==CHANNEL_WINDOW:
 						ctype = "channel"
+						channels = channels + 1
 					else:
 						ctype = "private chat"
+						privates = privates + 1
 					runmenuLabel = MenuLabel( menuHtml(RUN_MENU_ICON,"Run on "+c.name+"&nbsp;","<b>Host:</b> "+cname+" ("+network+")<br>Execute on "+ctype+" window",CUSTOM_MENU_ICON_SIZE) )
 					runmenuAction = QWidgetAction(self)
 					runmenuAction.setDefaultWidget(runmenuLabel)
@@ -658,11 +676,25 @@ class Window(QMainWindow):
 				self.runMenu.addSeparator()
 
 
-			if len(servers)>1:
+			if len(servers)>1 or channels>1 or privates>1:
 				self.runMenu.addSeparator()
+
+			if len(servers)>1:
 
 				entry = QAction(QIcon(RUN_ICON),"Run script on all servers",self)
 				entry.triggered.connect(self.executeScriptOnAll)
+				self.runMenu.addAction(entry)
+
+			if channels>1:
+
+				entry = QAction(QIcon(RUN_ICON),"Run script on all channels",self)
+				entry.triggered.connect(self.executeScriptOnChannels)
+				self.runMenu.addAction(entry)
+
+			if privates>1:
+
+				entry = QAction(QIcon(RUN_ICON),"Run script on all private chats",self)
+				entry.triggered.connect(self.executeScriptOnPrivates)
 				self.runMenu.addAction(entry)
 
 			return

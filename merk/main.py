@@ -2235,6 +2235,24 @@ class Merk(QMainWindow):
 					retval.append(window)
 		return retval
 
+	def getAllChannelWindows(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==CHANNEL_WINDOW:
+					retval.append(window)
+		return retval
+
+	def getAllPrivateWindows(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==PRIVATE_WINDOW:
+					retval.append(window)
+		return retval
+
 	def getAllConnectedServerWindows(self):
 		retval = []
 		for window in self.MDI.subWindowList():
