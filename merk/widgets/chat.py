@@ -31,6 +31,7 @@ from PyQt5 import QtCore
 import re
 import uuid
 import fnmatch
+import pathlib
 
 import emoji
 
@@ -186,12 +187,14 @@ class Window(QMainWindow):
 
 			self.script_button = QPushButton("")
 			self.script_button.setIcon(QIcon(RUN_ICON))
-			self.script_button.clicked.connect(self.loadScript)
+			self.script_button.clicked.connect(lambda state,u=True: self.loadScript(u))
 			self.script_button.setToolTip("Run a script")
 			self.script_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 			self.script_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.script_button.setFlat(True)
 			serverBar.addWidget(self.script_button)
+
+			lambda state,u="en": self.menuSetLanguage(u)
 
 			if not config.SCRIPTING_ENGINE_ENABLED: self.script_button.hide()
 
@@ -1670,15 +1673,34 @@ class Window(QMainWindow):
 
 		return super(Window, self).eventFilter(source, event)
 
-	def loadScript(self):
+	def loadScript(self,directly_execute=False):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Select Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.merk);;All Files (*)", options=options)
 		if fileName:
-			sfile = open(fileName,"r",encoding="utf-8",errors="ignore")
-			script = sfile.read()
-			sfile.close()
-			commands.executeScript(self.parent,self,script)
+			if directly_execute:
+				# Function was called from the server toolbar, so
+				# load and execute the script directly
+				f = open(fileName,"r")
+				script = f.read()
+				f.close()
+				commands.executeScript(self.parent,self,script)
+			else:
+				scriptDir = pathlib.Path(commands.SCRIPTS_DIRECTORY)
+				configDir = pathlib.Path(config.CONFIG_DIRECTORY)
+				fileDir = pathlib.Path(os.path.dirname(fileName))
+
+				if scriptDir.resolve() == fileDir.resolve():
+					# Script is in the script directory, no need
+					# to keep the path, MERK will find the file
+					self.input.setText(f"{config.ISSUE_COMMAND_SYMBOL}script {os.path.basename(fileName)} ")
+				elif configDir.resolve() == fileDir.resolve():
+					# Script is in the config directory
+					self.input.setText(f"{config.ISSUE_COMMAND_SYMBOL}script {os.path.basename(fileName)} ")
+				else:
+					self.input.setText(f"{config.ISSUE_COMMAND_SYMBOL}script {fileName} ")
+				self.input.setFocus()
+				self.input.moveCursor(QTextCursor.End)
 
 	def executeScript(self,script):
 		commands.executeScript(self.parent,self,script)
