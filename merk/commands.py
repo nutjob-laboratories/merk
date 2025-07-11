@@ -714,10 +714,10 @@ def execute_script_end(data):
 
 	del gui.scripts[script_id]
 
-def executeScript(gui,window,text):
+def executeScript(gui,window,text,filename=None):
 
 	script_id = str(uuid.uuid4())
-	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window)
+	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,[],filename)
 	gui.scripts[script_id].execLine.connect(execute_script_line)
 	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 	gui.scripts[script_id].scriptError.connect(execute_script_error)

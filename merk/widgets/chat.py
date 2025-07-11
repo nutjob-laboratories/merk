@@ -1689,7 +1689,7 @@ class Window(QMainWindow):
 				f = open(fileName,"r")
 				script = f.read()
 				f.close()
-				commands.executeScript(self.parent,self,script)
+				commands.executeScript(self.parent,self,script,fileName)
 			else:
 				scriptDir = pathlib.Path(commands.SCRIPTS_DIRECTORY)
 				configDir = pathlib.Path(config.CONFIG_DIRECTORY)
