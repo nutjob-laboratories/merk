@@ -33,6 +33,7 @@ import pathlib
 
 from ..resources import *
 from .. import commands
+from .. import config
 
 class Dialog(QDialog):
 
@@ -59,11 +60,14 @@ class Dialog(QDialog):
 		if fileName:
 
 			scriptDir = pathlib.Path(commands.SCRIPTS_DIRECTORY)
+			configDir = pathlib.Path(config.CONFIG_DIRECTORY)
 			fileDir = pathlib.Path(os.path.dirname(fileName))
 
 			if scriptDir.resolve() == fileDir.resolve():
 				# Script is in the script directory, no need
 				# to keep the path, MERK will find the file
+				self.name.setText(os.path.basename(fileName))
+			elif configDir.resolve() == fileDir.resolve():
 				self.name.setText(os.path.basename(fileName))
 			else:
 				self.name.setText(fileName)
