@@ -460,32 +460,24 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertComment)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
-		entry.triggered.connect(self.insertConnect)
+		entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
+		entry.triggered.connect(self.insertAlias)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
-		entry.triggered.connect(self.insertPause)
+		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
+		entry.triggered.connect(self.insertConnect)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(EDIT_ICON),"Print to window",self)
 		entry.triggered.connect(self.insertWrite)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
-		entry.triggered.connect(self.insertMax)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
-		entry.triggered.connect(self.insertMin)
-		self.commandMenu.addAction(entry)
-
 		entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
 		entry.triggered.connect(self.insertContext)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
-		entry.triggered.connect(self.insertScript)
+		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
+		entry.triggered.connect(self.insertPause)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Set usage",self)
@@ -496,8 +488,16 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertRestrict)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
-		entry.triggered.connect(self.insertAlias)
+		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
+		entry.triggered.connect(self.insertMax)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
+		entry.triggered.connect(self.insertMin)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
+		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(NOTIFICATION_ICON),"Play a sound",self)
