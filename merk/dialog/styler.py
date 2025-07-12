@@ -332,7 +332,20 @@ class Dialog(QDialog):
 
 		self.userlist.update()
 
-		if self.wchat.window_type==CHANNEL_WINDOW:
+		if default:
+			dispLayout = QHBoxLayout()
+			if config.SHOW_USERLIST_ON_LEFT:
+				dispLayout.addWidget(self.userlist)
+				dispLayout.addWidget(self.chat)
+			else:
+				dispLayout.addWidget(self.chat)
+				dispLayout.addWidget(self.userlist)
+			if not self.simple:
+				dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+			else:
+				dispLayout.setContentsMargins(1,1,1,1)
+
+		elif self.wchat.window_type==CHANNEL_WINDOW:
 
 			dispLayout = QHBoxLayout()
 			if config.SHOW_USERLIST_ON_LEFT:
