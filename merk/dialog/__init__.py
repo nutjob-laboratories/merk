@@ -50,6 +50,7 @@ from .key import Dialog as SetKey
 from .find import Dialog as Find
 from .shell import Dialog as SetShell
 from .set_usage import Dialog as SetUsage
+from .restrict import Dialog as SetRestrict
 
 def SetKeyDialog(parent):
 	x = SetKey(parent)

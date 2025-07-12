@@ -492,6 +492,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertUsage)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(SCRIPT_ICON),"Restrict script",self)
+		entry.triggered.connect(self.insertRestrict)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
 		entry.triggered.connect(self.insertAlias)
 		self.commandMenu.addAction(entry)
@@ -965,6 +969,15 @@ class Window(QMainWindow):
 		if not e: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"wait "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertRestrict(self):
+		x = SetRestrict(self)
+		e = x.get_restrict_information(self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"restrict "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertMLComment(self):
