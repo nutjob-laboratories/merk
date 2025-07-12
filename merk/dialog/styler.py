@@ -322,13 +322,39 @@ class Dialog(QDialog):
 			ui.setText('voiced')
 		self.userlist.addItem(ui)
 
-		ui = QListWidgetItem()
-		if config.PLAIN_USER_LISTS:
-			ui.setText('  '+'user')
+		if config.SHOW_IGNORE_STATUS_IN_USERLISTS:
+			ui = QListWidgetItem()
+			if config.PLAIN_USER_LISTS:
+				ui.setText('  '+'ignored')
+			else:
+				ui.setIcon(QIcon(NORMAL_USER))
+				ui.setText('ignored')
+			font = QFont()
+			font.setBold(False)
+			font.setStrikeOut(True)
+			ui.setFont(font)
+			self.userlist.addItem(ui)
 		else:
-			ui.setIcon(QIcon(NORMAL_USER))
-			ui.setText('user')
-		self.userlist.addItem(ui)
+			ui = QListWidgetItem()
+			if config.PLAIN_USER_LISTS:
+				ui.setText('  '+'user')
+			else:
+				ui.setIcon(QIcon(NORMAL_USER))
+				ui.setText('user')
+			self.userlist.addItem(ui)
+
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+			ui = QListWidgetItem()
+			if config.PLAIN_USER_LISTS:
+				ui.setText('  '+'away')
+			else:
+				ui.setIcon(QIcon(NORMAL_USER))
+				ui.setText('away')
+			font = QFont()
+			font.setBold(False)
+			ui.setFont(font)
+			self.userlist.addItem(ui)
+
 
 		self.userlist.update()
 
