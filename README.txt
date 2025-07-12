@@ -270,7 +270,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
-| `/restrict SERVER` or `CHANNEL` or `PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. Can only be called from scripts                                                                                |
+| `/restrict SERVER\|CHANNEL\|PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. Can only be called from scripts                                                                                |
 | `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/settings`                             | Opens the settings dialog                                                                                                        |
