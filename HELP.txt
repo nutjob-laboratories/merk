@@ -183,6 +183,10 @@ Appearance:
 <td>Hides a <code>USER</code>&#39;s chat&#39;</td>
 </tr>
 <tr>
+<td><code>/insert FILE [FILE...]</code></td>
+<td>Inserts the contents of <code>FILE</code> where it appears into the script. Can only be called by scripts.</td>
+</tr>
+<tr>
 <td><code>/invite NICKNAME CHANNEL</code></td>
 <td>Sends a channel invitation</td>
 </tr>

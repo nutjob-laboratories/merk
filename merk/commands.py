@@ -2840,6 +2840,43 @@ class ScriptThread(QThread):
 		self.script = interpolateAliases(self.script)
 
 		no_errors = True
+		script = []
+
+		# File include loop
+		line_number = 0
+		for line in self.script.split("\n"):
+			line_number = line_number + 1
+			line = line.strip()
+			if len(line)==0: continue
+			tokens = line.split()
+
+			if len(tokens)>=1:
+				if len(tokens)>=2:
+					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
+						tokens.pop(0)
+
+						for f in tokens:
+							file = find_file(f,"merk")
+							if file==None: file = find_file(f,None)
+							if file!=None:
+								x = open(file,"r")
+								contents = x.read()
+								x.close()
+
+								contents = interpolateAliases(contents)
+
+								for l in contents.split("\n"): script.append(l)
+							else:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: File \"{f}\" cannot be found"])
+								no_errors = False
+						continue
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}insert FILE [FILE...]"])
+					no_errors = False
+
+			script.append(line)
+
+		if len(script)>0: self.script = "\n".join(script)
 
 		# First pass through the script, to see if there's
 		# any problem with /wait calls
@@ -3039,6 +3076,11 @@ class ScriptThread(QThread):
 
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict':
+							script_only_command = True
+							continue
+
+					if len(tokens)>=1:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
 							script_only_command = True
 							continue
 

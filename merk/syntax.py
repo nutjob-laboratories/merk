@@ -99,6 +99,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ctcp",
 			cmdsymbol+"usage",
 			cmdsymbol+"restrict",
+			cmdsymbol+"insert",
 		]
 
 		if not config.ENABLE_ALIASES:

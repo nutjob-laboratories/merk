@@ -250,6 +250,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/help`                                 | Displays command usage information                                                                                               |
 | `/ignore USER`                          | Hides a `USER`'s chat'                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
+| `/insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script. Can only be called by scripts.            |
 | `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |
 | `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                                                                                      |
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
