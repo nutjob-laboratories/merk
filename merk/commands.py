@@ -2857,21 +2857,21 @@ class ScriptThread(QThread):
 
 					if arg.lower()=='server':
 						if self.window.window_type!=SERVER_WINDOW:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in server window"])
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in server windows"])
 							no_errors = False
 					elif arg.lower()=='channel':
 						if self.window.window_type!=CHANNEL_WINDOW:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in channel window"])
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in channel windows"])
 							no_errors = False
 					elif arg.lower()=='private':
 						if self.window.window_type!=PRIVATE_WINDOW:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in private chat window"])
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in private chat windows"])
 							no_errors = False
 					else:
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Unrecognized restriction: \"{arg}\""])
 						no_errors = False
 
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==3:
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==3:
 					tokens.pop(0)
 					arg1 = tokens.pop(0)
 					arg2 = tokens.pop(0)
@@ -2889,12 +2889,25 @@ class ScriptThread(QThread):
 					if arg2.lower()=='private':
 						if self.window.window_type==PRIVATE_WINDOW: valid = True
 
-					if not valid:
+					if arg1.lower()!='server' and arg1.lower()!='channel' and arg1.lower()!='private':
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Unrecognized restriction: \"{arg1}\""])
+						no_errors = False
+					elif arg2.lower()!='server' and arg2.lower()!='channel' and arg2.lower()!='private':
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Unrecognized restriction: \"{arg2}\""])
+						no_errors = False
+					elif not valid:
 						if self.window.window_type==PRIVATE_WINDOW: reason = "private chat"
 						if self.window.window_type==SERVER_WINDOW: reason = "server"
 						if self.window.window_type==CHANNEL_WINDOW: reason = "channel"
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script is restricted from running in {reason} windows"])
 						no_errors = False
+
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}restrict WINDOW_TYPE [WINDOW_TYPE]"])
+					no_errors = False
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)>3:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}restrict WINDOW_TYPE [WINDOW_TYPE]"])
+					no_errors = False
 
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)>=2:
