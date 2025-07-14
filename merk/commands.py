@@ -2874,7 +2874,7 @@ class ScriptThread(QThread):
 								no_errors = False
 						continue
 				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}insert FILE [FILE...]"])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}insert called without any arguments"])
 					no_errors = False
 
 			script.append(line)
@@ -2950,10 +2950,10 @@ class ScriptThread(QThread):
 						no_errors = False
 
 				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}restrict WINDOW_TYPE [WINDOW_TYPE]"])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restrict called without an argument"])
 					no_errors = False
 				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)>3:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}restrict WINDOW_TYPE [WINDOW_TYPE]"])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restrict called with too many arguments"])
 					no_errors = False
 
 			# |========|
@@ -3026,10 +3026,10 @@ class ScriptThread(QThread):
 			# Make sure that /wait has only one argument
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)>2:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}wait SECONDS"])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait called with too many arguments"])
 					no_errors = False
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}wait SECONDS"])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument"])
 					no_errors = False
 
 		# Third pass through the script, here's
@@ -3088,6 +3088,16 @@ class ScriptThread(QThread):
 								loop = False
 							else:
 								continue
+
+					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)==1:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called without an argument"])
+						script_only_command = True
+						loop = False
+
+					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)>2:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called with too many arguments"])
+						script_only_command = True
+						loop = False
 
 					# |=======|
 					# | /wait |
