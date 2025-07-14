@@ -2825,6 +2825,8 @@ class ScriptThread(QThread):
 
 	def run(self):
 
+		# This should never happen, but if it does...
+		# Do not execute any scripts if scripting is disabled
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.scriptError.emit([self.gui,self.window,f"Scripting has been disabled"])
 			self.scriptEnd.emit([self.gui,self.id])
