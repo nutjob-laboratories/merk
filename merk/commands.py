@@ -2842,7 +2842,9 @@ class ScriptThread(QThread):
 		no_errors = True
 		script = []
 
-		# File include loop
+		# First pass through the script,
+		# insert any files that are to be
+		# /inserted into the script
 		line_number = 0
 		for line in self.script.split("\n"):
 			line_number = line_number + 1
@@ -2850,6 +2852,9 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |=========|
+			# | /insert |
+			# |=========|
 			if len(tokens)>=1:
 				if len(tokens)>=2:
 					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
@@ -2863,8 +2868,6 @@ class ScriptThread(QThread):
 								contents = x.read()
 								x.close()
 
-								contents = interpolateAliases(contents)
-
 								for l in contents.split("\n"): script.append(l)
 							else:
 								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: File \"{f}\" cannot be found"])
@@ -2876,10 +2879,14 @@ class ScriptThread(QThread):
 
 			script.append(line)
 
-		if len(script)>0: self.script = "\n".join(script)
+		if len(script)>0: self.script = interpolateAliases("\n".join(script))
 
-		# First pass through the script, to see if there's
-		# any problem with /wait calls
+		# Second pass through the script, here's where
+		# we handle calls to /usage and /restrict,
+		# as well as make sure that certain commands
+		# aren't called, and that /wait and /end
+		# have the proper number (and right kind)
+		# of arguments
 		line_number = 0
 		for line in self.script.split("\n"):
 			line_number = line_number + 1
@@ -2887,6 +2894,9 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |===========|
+			# | /restrict |
+			# |===========|
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==2:
 					tokens.pop(0)
@@ -2946,6 +2956,9 @@ class ScriptThread(QThread):
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}restrict WINDOW_TYPE [WINDOW_TYPE]"])
 					no_errors = False
 
+			# |========|
+			# | /usage |
+			# |========|
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)>=2:
 					tokens.pop(0)
@@ -2964,36 +2977,43 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}usage must be called with a numerical first argument."])
 						no_errors = False
 
+			# /focus can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus cannot be called from a script."])
 					no_errors = False
 
+			# /style can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style':
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script."])
 					no_errors = False
 
+			# /settings can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings':
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}settings cannot be called from a script."])
 					no_errors = False
 
+			# /log can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}log cannot be called from a script."])
 					no_errors = False
 
+			# /edit can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script."])
 					no_errors = False
 
+			# /end doesn't take any arguments
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end' and len(tokens)>1: 
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}end called with too many arguments."])
 					no_errors = False
 
+			# Make sure that /wait is called with a numerical argument
 			if len(tokens)==2:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
 					count = tokens[1]
@@ -3003,6 +3023,8 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument."])
 						no_errors = False
 
+		# Third pass through the script, here's
+		# where we actually do stuff
 		if no_errors:
 
 			script = self.script.split("\n")
@@ -3021,6 +3043,9 @@ class ScriptThread(QThread):
 
 					tokens = line.split()
 
+					# |==========|
+					# | /context |
+					# |==========|
 					if len(tokens)==2:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context':
 							target = tokens[1]
@@ -3055,6 +3080,9 @@ class ScriptThread(QThread):
 							else:
 								continue
 
+					# |=======|
+					# | /wait |
+					# |=======|
 					if len(tokens)==2:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
 							count = tokens[1]
@@ -3063,22 +3091,28 @@ class ScriptThread(QThread):
 							script_only_command = True
 							continue
 
+					# |======|
+					# | /end |
+					# |======|
 					if len(tokens)==1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end':
 							loop = False
 							script_only_command = True
 							continue
 
+					# Bypass /usage, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage':
 							script_only_command = True
 							continue
 
+					# Bypass /restrict, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict':
 							script_only_command = True
 							continue
 
+					# Bypass /insert, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
 							script_only_command = True
