@@ -29,6 +29,14 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 from PyQt5.QtMultimedia import QSound
 
+SSL_AVAILABLE = True
+try:
+	from twisted.internet import ssl
+except ImportError as error:
+	SSL_AVAILABLE = False
+except Exception as exception:
+	pass
+
 import os
 import time
 import uuid
@@ -152,6 +160,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_SHELL_COMMAND:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
 
+	if not SSL_AVAILABLE:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"connectssl",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"xconnectssl",'')
+
 	if new_autocomplete!=None:
 		if isinstance(new_autocomplete, list):
 			for a in new_autocomplete:
@@ -230,6 +242,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
 		if not config.ENABLE_SHELL_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
+		if not SSL_AVAILABLE:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"connectssl SERVER [PORT] [PASSWORD]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnectssl SERVER [PORT] [PASSWORD]</b>": continue
 		COPY.append(e)
 	COMMAND_HELP_INFORMATION = sorted(COPY)
 
@@ -1619,6 +1634,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# |-------------|
 	# | /connectssl |
 	# |-------------|
+	if not SSL_AVAILABLE:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl':
+				t = Message(ERROR_MESSAGE,'',"SSL/TLS is not available. Please install pyOpenSSL and service_identity to use this command.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 	if len(tokens)>=1:
 		# /connectssl HOST
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==2:
@@ -1698,6 +1720,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	# |--------------|
 	# | /xconnectssl |
 	# |--------------|
+	if not SSL_AVAILABLE:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl':
+				t = Message(ERROR_MESSAGE,'',"SSL/TLS is not available. Please install pyOpenSSL and service_identity to use this command.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 	if len(tokens)>=1:
 		# /connectssl HOST
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl' and len(tokens)==2:

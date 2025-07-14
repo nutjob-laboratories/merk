@@ -1,8 +1,40 @@
+#
+# ███╗   ███╗██████╗ ██████╗ ██╗  ██╗
+# ████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝
+# ██╔████╔██║███████║██████╔╝█████╔╝
+# ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
+# ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
+# ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+# Copyright (C) 2025  Daniel Hetrick
+# https://github.com/nutjob-laboratories/merk
+# https://github.com/nutjob-laboratories
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
+
+SSL_AVAILABLE = True
+try:
+	from twisted.internet import ssl
+except ImportError as error:
+	SSL_AVAILABLE = False
+except Exception as exception:
+	pass
 
 from . import config
 # from . import resources
@@ -111,6 +143,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"restrict")
 		if not config.ENABLE_SHELL_COMMAND:
 			merk.remove(cmdsymbol+"shell")
+		if not SSL_AVAILABLE:
+			merk.remove(cmdsymbol+"connectssl")
+			merk.remove(cmdsymbol+"xconnectssl")
 
 		# if not resources.is_running_from_pyinstaller():
 		# 	merk.append(cmdsymbol+"nostril")
