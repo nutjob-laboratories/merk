@@ -2860,7 +2860,11 @@ class ScriptThread(QThread):
 					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
 						tokens.pop(0)
 
-						for f in tokens:
+						# Use shlex to tokenize the input, so that we can
+						# handle filenames with spaces in them
+						ftokens = shlex.split(' '.join(tokens), comments=False)
+
+						for f in ftokens:
 							file = find_file(f,"merk")
 							if file==None: file = find_file(f,None)
 							if file!=None:
@@ -3089,15 +3093,16 @@ class ScriptThread(QThread):
 							else:
 								continue
 
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called without an argument"])
-						script_only_command = True
-						loop = False
+					if len(tokens)>=1:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)==1:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called without an argument"])
+							script_only_command = True
+							loop = False
 
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)>2:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called with too many arguments"])
-						script_only_command = True
-						loop = False
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)>2:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called with too many arguments"])
+							script_only_command = True
+							loop = False
 
 					# |=======|
 					# | /wait |
