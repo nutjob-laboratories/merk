@@ -3023,6 +3023,15 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument."])
 						no_errors = False
 
+			# Make sure that /wait has only one argument
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)>2:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}wait SECONDS"])
+					no_errors = False
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Usage: {config.ISSUE_COMMAND_SYMBOL}wait SECONDS"])
+					no_errors = False
+
 		# Third pass through the script, here's
 		# where we actually do stuff
 		if no_errors:
