@@ -2981,6 +2981,12 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}usage must be called with a numerical first argument."])
 						no_errors = False
 
+			# Usage must be called with at least one argument
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}usage called without an argument"])
+					no_errors = False
+
 			# /focus can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
