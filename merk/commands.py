@@ -651,7 +651,7 @@ def find_file(filename,extension):
 	# Look for the script in the install directory
 	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return check_readable(os.path.join(INSTALL_DIRECTORY, filename))
 
-	if extension!=None or extension!='':
+	if extension!=None:
 		efilename = filename + "." + extension
 
 		# Check if it's a complete filename
@@ -2901,7 +2901,7 @@ class ScriptThread(QThread):
 						ftokens = shlex.split(' '.join(tokens), comments=False)
 
 						for f in ftokens:
-							file = find_file(f,"merk")
+							file = find_file(f,SCRIPT_FILE_EXTENSION)
 							if file==None: file = find_file(f,None)
 							if file!=None:
 								x = open(file,"r")
