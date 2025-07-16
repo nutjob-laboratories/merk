@@ -190,6 +190,31 @@ class Dialog(QDialog):
 			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 			self.chat.append(t)
 
+	def loadDefault2(self):
+		self.style = styles.loadDefault()
+
+		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		self.system_style.setQss(self.style['system'])
+		self.link_style.setQss(self.style['hyperlink'])
+		self.action_style.setQss(self.style['action'])
+		self.error_style.setQss(self.style['error'])
+		self.notice_style.setQss(self.style['notice'])
+		self.self_style.setQss(self.style['self'])
+		self.user_style.setQss(self.style['username'])
+		self.server_style.setQss(self.style['server'])
+
+		self.fore.applyColor(self.fgcolor)
+		self.back.applyColor(self.bgcolor)
+
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+		self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',self.fgcolor,self.bgcolor))
+
+		self.chat.clear()
+
+		for line in self.messages:
+			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+			self.chat.append(t)
+
 	def __init__(self,client,chat,parent=None,simple=False,default=False):
 		super(Dialog,self).__init__(parent)
 
@@ -412,6 +437,11 @@ class Dialog(QDialog):
 		defaultButton = QPushButton(" Set colors to app default ")
 		defaultButton.clicked.connect(self.loadDefault)
 
+		default2Button = QPushButton(" Load default ")
+		default2Button.clicked.connect(self.loadDefault2)
+
+		if default: default2Button.setEnabled(False)
+
 		foregroundBackground = QHBoxLayout()
 		foregroundBackground.addWidget(self.fore)
 		foregroundBackground.addWidget(self.back)
@@ -437,6 +467,7 @@ class Dialog(QDialog):
 
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(loadButton)
+		buttonLayout.addWidget(default2Button)
 		buttonLayout.addWidget(saveAsButton)
 		buttonLayout.addWidget(buttons)
 		buttonLayout.setAlignment(Qt.AlignRight)
