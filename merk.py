@@ -276,7 +276,7 @@ if __name__ == '__main__':
 		if args.scriptdir!=None:
 			file2 = os.path.join(args.scriptdir,file)
 			if os.path.exists(file2) and os.access(file2, os.R_OK): return file2
-		return commands.find_file(file,None)
+		return commands.find_file(file,SCRIPT_FILE_EXTENSION)
 
 	def create_connection(host,port,password,ssl):
 		if password=='':
