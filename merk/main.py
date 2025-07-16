@@ -1742,7 +1742,10 @@ class Merk(QMainWindow):
 	def gotRefreshEnd(self,client):
 		w = self.getServerWindow(client)
 		if w:
-			t = Message(SYSTEM_MESSAGE,"",f"Channel list refresh is complete!")
+			if len(client.server_channel_list)>0:
+				t = Message(SYSTEM_MESSAGE,"",f"Channel list refresh is complete!")
+			else:
+				t = Message(SYSTEM_MESSAGE,"",f"Channel list not received, please try again later.")
 			w.writeText(t)
 			w.refreshInfoMenu()
 

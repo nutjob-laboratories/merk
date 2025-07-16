@@ -132,31 +132,26 @@ class Window(QMainWindow):
 		if self.window_type==PRIVATE_WINDOW: self.nicks = [ self.name ]
 
 		if self.window_type==SERVER_WINDOW:
-			
-			sep = QFrame()
-			sep.setFrameShape(QFrame.VLine)
-			sep.setFrameShadow(QFrame.Sunken)
-			sep.setLineWidth(1)
 
 			if self.client.kwargs["ssl"]:
-				icon = QIcon(VISITED_SECURE_ICON)
+				name = "SSL/TLS"
 			else:
-				icon = QIcon(VISITED_BOOKMARK_ICON)
+				name = "TCP/IP"
 
 			self.server_info_menu = buildServerSettingsMenu(self,self.client)
 
-			self.info_button = QPushButton("")
-			self.info_button.setIcon(icon)
+			self.info_button = QPushButton(name)
 			self.info_button.setMenu(self.server_info_menu)
 			self.info_button.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.info_button.setToolTip("Server information")
-			self.info_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 			self.info_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.info_button.setFlat(True)
+			f = self.info_button.font()
+			f.setBold(True)
+			self.info_button.setFont(f)
 
 			serverBar = QHBoxLayout()
 			serverBar.addWidget(self.info_button)
-			serverBar.addWidget(sep)
 
 			self.join_button = QPushButton("")
 			self.join_button.setIcon(QIcon(CHANNEL_ICON))
