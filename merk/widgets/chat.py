@@ -136,13 +136,12 @@ class Window(QMainWindow):
 			if self.client.kwargs["ssl"]:
 				name = "SSL/TLS"
 			else:
-				name = "TCP/IP"
+				name = "TCP/IP "
 
 			self.server_info_menu = buildServerSettingsMenu(self,self.client)
 
 			self.info_button = QPushButton(name)
 			self.info_button.setMenu(self.server_info_menu)
-			self.info_button.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.info_button.setToolTip("Server information")
 			self.info_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.info_button.setFlat(True)
