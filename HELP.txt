@@ -259,6 +259,10 @@ Appearance:
 <td>Prints text to a window</td>
 </tr>
 <tr>
+<td><code>/private NICKNAME</code></td>
+<td>Opens a private chatwindow for <code>NICKNAME</code></td>
+</tr>
+<tr>
 <td><code>/quit [MESSAGE]</code></td>
 <td>Disconnects from the current IRC server</td>
 </tr>
