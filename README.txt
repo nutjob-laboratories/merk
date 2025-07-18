@@ -4,7 +4,8 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
-  <b>Current development version: !_FULL_VERSION_!</b><br>
+  <b>Current development version: !_FULL_VERSION_!</b><br><br>
+  <b>If you like MERK, and want to help, I have a GoFundMe: <a href="https://gofund.me/ae062139">MERK GoFundMe</a></b><br>
 </p>
 
  - [Downloads](#Downloads)
