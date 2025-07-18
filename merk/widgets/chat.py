@@ -142,7 +142,7 @@ class Window(QMainWindow):
 
 			self.info_button = QPushButton(name)
 			self.info_button.setMenu(self.server_info_menu)
-			self.info_button.setToolTip("Server information")
+			self.info_button.setToolTip("IRC Server")
 			self.info_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.info_button.setFlat(True)
 			f = self.info_button.font()
@@ -188,9 +188,8 @@ class Window(QMainWindow):
 			self.script_button.setFlat(True)
 			serverBar.addWidget(self.script_button)
 
-			lambda state,u="en": self.menuSetLanguage(u)
-
-			if not config.SCRIPTING_ENGINE_ENABLED: self.script_button.hide()
+			if not config.SCRIPTING_ENGINE_ENABLED:
+				self.script_button.hide()
 
 			self.refresh_button = QPushButton("")
 			self.refresh_button.setIcon(QIcon(REFRESH_ICON))
@@ -1714,33 +1713,7 @@ class Window(QMainWindow):
 		else:
 			x = StylerDialog(self.client,self,self.parent)
 		if x:
-
-			QApplication.setOverrideCursor(Qt.WaitCursor)
-
-			self.style = x
-
-			# Apply style background and forground colors
-			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
-
-			self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
-
-			if not config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET:
-				self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
-			else:
-				b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
-				self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',f,b))
-
-			if self.window_type==CHANNEL_WINDOW:
-				if not config.DO_NOT_APPLY_STYLE_TO_USERLIST:
-					self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',foreground,background))
-				else:
-					b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
-					self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
-				self.writeUserlist(self.full_nicks)
-
-			self.rerenderChatLog()
-
-			QApplication.restoreOverrideCursor()
+			self.applyStyle()
 
 	def applyStyle(self,filename=None):
 		if not config.FORCE_DEFAULT_STYLE:

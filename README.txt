@@ -135,7 +135,7 @@ There are three libraries that comes bundled with **MERK**:
 
   <p align="center">
  <center><a href="./graphics/styler.png"><img src="./graphics/styler_small.png"></a></center></br>
-  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
+  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center>
   </p>
 
   <p align="center">

@@ -3227,25 +3227,8 @@ class Merk(QMainWindow):
 		self.toolsMenu.clear()
 
 		if config.ENABLE_STYLE_EDITOR:
-			if not config.FORCE_DEFAULT_STYLE:
-				chat_window = self.getCurrentChat()
-				if chat_window!=None:
-					if chat_window.window_type==CHANNEL_WINDOW:
-						icon = CHANNEL_MENU_ICON
-					elif chat_window.window_type==SERVER_WINDOW:
-						icon = CONSOLE_WINDOW_ICON
-					else:
-						icon = PRIVATE_MENU_ICON
-					entry = widgets.ExtendedMenuItem(self,icon,chat_window.name+'\'s Style','Edit '+chat_window.name+'\'s text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,chat_window.pressedStyleButton)
-					self.toolsMenu.addAction(entry)
-					entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Default Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
-					self.toolsMenu.addAction(entry)
-				else:
-					entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Default Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
-					self.toolsMenu.addAction(entry)
-			else:
-				entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Default Style','Edit default text style&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
-				self.toolsMenu.addAction(entry)
+			entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style Editor','Edit text styles&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
+			self.toolsMenu.addAction(entry)
 
 		if config.SCRIPTING_ENGINE_ENABLED:
 			entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)

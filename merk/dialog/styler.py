@@ -65,6 +65,8 @@ class Dialog(QDialog):
 			self.parent.reApplyStyle()
 		else:
 			self.saveStyle()
+			if self.wchat!=None:
+				self.wchat.applyStyle()
 
 		return self.style
 
@@ -214,6 +216,62 @@ class Dialog(QDialog):
 		for line in self.messages:
 			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 			self.chat.append(t)
+
+	def windowChange(self,i):
+
+		self.selected_window = self.selectWindow.itemData(i, Qt.UserRole)
+
+		show_userlist = True
+
+		if self.selected_window==None:
+			self.style = styles.loadDefault()
+			self.setWindowTitle("Default text style")
+			self.default = True
+		else:
+			self.wchat = self.selected_window
+			self.client = self.wchat.client
+			self.style = self.selected_window.style
+			if self.selected_window.window_type==SERVER_WINDOW:
+				name = self.selected_window.client.server+":"+str(self.selected_window.client.port)
+			else:
+				name = self.selected_window.name
+			self.setWindowTitle("Text style for "+name)
+			self.default = False
+
+			if self.selected_window.window_type==SERVER_WINDOW or self.selected_window.window_type==PRIVATE_WINDOW:
+				show_userlist = False
+
+		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		self.system_style.setQss(self.style['system'])
+		self.link_style.setQss(self.style['hyperlink'])
+		self.action_style.setQss(self.style['action'])
+		self.error_style.setQss(self.style['error'])
+		self.notice_style.setQss(self.style['notice'])
+		self.self_style.setQss(self.style['self'])
+		self.user_style.setQss(self.style['username'])
+		self.server_style.setQss(self.style['server'])
+
+		self.fore.applyColor(self.fgcolor)
+		self.back.applyColor(self.bgcolor)
+
+		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',self.fgcolor,self.bgcolor))
+		self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',self.fgcolor,self.bgcolor))
+
+		self.chat.clear()
+
+		for line in self.messages:
+			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+			self.chat.append(t)
+
+		if show_userlist:
+			self.userlist.show()
+		else:
+			self.userlist.hide()
+
+		if self.default:
+			self.load_default_button.setEnabled(False)
+		else:
+			self.load_default_button.setEnabled(True)
 
 	def __init__(self,client,chat,parent=None,simple=False,default=False):
 		super(Dialog,self).__init__(parent)
@@ -380,44 +438,56 @@ class Dialog(QDialog):
 			ui.setFont(font)
 			self.userlist.addItem(ui)
 
-
 		self.userlist.update()
 
-		if default:
-			dispLayout = QHBoxLayout()
-			if config.SHOW_USERLIST_ON_LEFT:
-				dispLayout.addWidget(self.userlist)
-				dispLayout.addWidget(self.chat)
-			else:
-				dispLayout.addWidget(self.chat)
-				dispLayout.addWidget(self.userlist)
-			if not self.simple:
-				dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-			else:
-				dispLayout.setContentsMargins(1,1,1,1)
-
-		elif self.wchat.window_type==CHANNEL_WINDOW:
-
-			dispLayout = QHBoxLayout()
-			if config.SHOW_USERLIST_ON_LEFT:
-				dispLayout.addWidget(self.userlist)
-				dispLayout.addWidget(self.chat)
-			else:
-				dispLayout.addWidget(self.chat)
-				dispLayout.addWidget(self.userlist)
-			if not self.simple:
-				dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
-			else:
-				dispLayout.setContentsMargins(1,1,1,1)
-
-		else:
-			self.userlist.hide()
-			dispLayout = QHBoxLayout()
+		dispLayout = QHBoxLayout()
+		if config.SHOW_USERLIST_ON_LEFT:
+			dispLayout.addWidget(self.userlist)
 			dispLayout.addWidget(self.chat)
-			if not self.simple:
-				dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+		else:
+			dispLayout.addWidget(self.chat)
+			dispLayout.addWidget(self.userlist)
+		if not self.simple:
+			dispLayout.setContentsMargins(CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING,CHAT_WINDOW_WIDGET_SPACING)
+		else:
+			dispLayout.setContentsMargins(1,1,1,1)
+
+		if self.wchat.window_type==SERVER_WINDOW or self.wchat.window_type==PRIVATE_WINDOW:
+			self.userlist.hide()
+
+		self.selectWindow = QComboBox(self)
+		addedDefault = False
+		if self.wchat==None:
+			self.selectWindow.addItem("Default text style",None)
+			addedDefault = True
+		else:
+			if self.wchat.window_type==SERVER_WINDOW:
+				name = self.wchat.name
 			else:
-				dispLayout.setContentsMargins(1,1,1,1)
+				if hasattr(self.wchat.client,"hostname"):
+					name = f"{self.wchat.name} ({self.wchat.client.hostname})"
+				else:
+					name = f"{self.wchat.name} ({self.wchat.client.server}:{self.wchat.client.port})"
+			self.selectWindow.addItem(name,self.wchat)
+		if not addedDefault: self.selectWindow.addItem("Default text style",None)
+		for e in self.parent.getAllAllConnectedWindows():
+			if e != self.wchat:
+				if e.window_type==SERVER_WINDOW:
+					name = e.name
+				else:
+					if hasattr(e.client,"hostname"):
+						name = f"{e.name} ({e.client.hostname})"
+					else:
+						name = f"{e.name} ({e.client.server}:{e.client.port})"
+				self.selectWindow.addItem(name,e)
+		self.selectWindow.currentIndexChanged.connect(self.windowChange)
+		self.selectWindow.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 
+
+		self.selectLabel = QLabel("<b>Currently editing text style for</b> ")
+
+		selectLayout = QHBoxLayout()
+		selectLayout.addWidget(self.selectLabel)
+		selectLayout.addWidget(self.selectWindow)
 
 
 		# Buttons
@@ -437,10 +507,10 @@ class Dialog(QDialog):
 		defaultButton = QPushButton(" Set colors to app default ")
 		defaultButton.clicked.connect(self.loadDefault)
 
-		default2Button = QPushButton(" Load default ")
-		default2Button.clicked.connect(self.loadDefault2)
+		self.load_default_button = QPushButton(" Load default ")
+		self.load_default_button.clicked.connect(self.loadDefault2)
 
-		if default: default2Button.setEnabled(False)
+		if default: self.load_default_button.setEnabled(False)
 
 		foregroundBackground = QHBoxLayout()
 		foregroundBackground.addWidget(self.fore)
@@ -467,7 +537,7 @@ class Dialog(QDialog):
 
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(loadButton)
-		buttonLayout.addWidget(default2Button)
+		buttonLayout.addWidget(self.load_default_button)
 		buttonLayout.addWidget(saveAsButton)
 		buttonLayout.addWidget(buttons)
 		buttonLayout.setAlignment(Qt.AlignRight)
@@ -480,14 +550,17 @@ class Dialog(QDialog):
 				dname = f"<b>text style for {self.wchat.name}</b>"
 			self.stylerDescription = QLabel(f"""
 				<small>
-				Here, you can edit the {dname}. Below are an example chat display and
-				userlist so that you can see what the current style looks like in action.
+				This is the text style editor. Below is an example display, showing what
+				the text style looks like in action. You can select what text style you'd
+				like to edit with the <b>Currently editing text style</b> control, which lists
+				all chat and server windows that are currently open.
 				Click <b>Text Color</b> to set the color of text, and <b>Background Color</b>
 				to set the color of the chat and userlist background. Clicking <b>Set colors
 				to app default</b> will set all colors to the default text style built into
-				<b>{APPLICATION_NAME}</b>. Clicking <b>Open style</b> will allow you to open a previously
-				saved style file, and <b>Save style as...</b> will save the current style to a
-				file. Click <b>Save</b> to save and apply the current settings as the {dname}.
+				<b>{APPLICATION_NAME}</b>. Clicking <b>Load style</b> will allow you to load a previously
+				saved style file, and clicking <b>Load default</b> will load in the default style into
+				the current style. <b>Save style as...</b> will save the current style to a
+				file. Click <b>Apply</b> to apply and save the current text style.
 				Click <b>Cancel</b> to exit.
 				</small>
 				""")
@@ -497,11 +570,12 @@ class Dialog(QDialog):
 		finalLayout = QVBoxLayout()
 		if not self.simple:
 			finalLayout.addWidget(self.stylerDescription)
+		finalLayout.addLayout(selectLayout)
 		finalLayout.addLayout(styleLayout)
 		finalLayout.addLayout(buttonLayout)
 
 		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
 
