@@ -32,6 +32,7 @@ import platform
 import twisted
 
 from ..resources import *
+from .. import widgets
 
 class Dialog(QDialog):
 
@@ -64,6 +65,9 @@ class Dialog(QDialog):
 
 		self.credits_tab = QWidget()
 		self.tabs.addTab(self.credits_tab, "Credits")
+
+		self.patrons_tab = QWidget()
+		self.tabs.addTab(self.patrons_tab, "Patrons")
 
 		logo = QLabel()
 		pixmap = QPixmap(SPLASH_LOGO)
@@ -183,12 +187,17 @@ class Dialog(QDialog):
 		app_repository.setAlignment(Qt.AlignCenter)
 		app_repository.setOpenExternalLinks(True)
 
+		app_donations = QLabel(f"<big><b><a href=\"https://www.gofundme.com/f/keep-dans-opensource-projects-alive\">Donate To {APPLICATION_NAME}</a></b></big>")
+		app_donations.setAlignment(Qt.AlignCenter)
+		app_donations.setOpenExternalLinks(True)
+
 		aboutLayout = QVBoxLayout()
 		aboutLayout.addStretch()
 		aboutLayout.addWidget(logo)
 		aboutLayout.addWidget(app_version)
 		aboutLayout.addWidget(app_description)
 		aboutLayout.addWidget(app_repository)
+		aboutLayout.addWidget(app_donations)
 		aboutLayout.addWidget(gnu_credit)
 		aboutLayout.addWidget(platform_credit)
 		if is_running_from_pyinstaller():
@@ -210,6 +219,30 @@ class Dialog(QDialog):
 		credLayout.addStretch()
 		
 		self.credits_tab.setLayout(credLayout)
+
+		patronsList = QFormLayout()
+		patronsList.addRow(QLabel("Ilmari Lauhakangas"))
+
+		patron_description = QLabel(f"""
+			<small>These are the wonderful humans that help keep<br>
+			    <b>{APPLICATION_NAME}</b> alive. Thank you for helping me keep IRC<br>
+			    alive in the 21st century! If you want your<br>
+			    name here, <b><a href=\"https://www.gofundme.com/f/keep-dans-opensource-projects-alive\">donate $50 or more today!</a></b></small><br>
+			""")
+		patron_description.setAlignment(Qt.AlignJustify)
+
+		patDescLayout = QHBoxLayout()
+		patDescLayout.addStretch()
+		patDescLayout.addWidget(patron_description)
+		patDescLayout.addStretch()
+
+		patronLayout = QVBoxLayout()
+		patronLayout.addLayout(patDescLayout)
+		patronLayout.addWidget(widgets.textSeparatorLabel(self,"<b>patrons</b>"))
+		patronLayout.addLayout(patronsList)
+		patronLayout.addStretch()
+
+		self.patrons_tab.setLayout(patronLayout)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.tabs)
