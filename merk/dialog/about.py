@@ -220,8 +220,10 @@ class Dialog(QDialog):
 		
 		self.credits_tab.setLayout(credLayout)
 
-		patronsList = QFormLayout()
-		patronsList.addRow(QLabel("Ilmari Lauhakangas"))
+		patronsList = QVBoxLayout()
+		patronsList.addWidget(QLabel("Ilmari Lauhakangas"))
+		patronsList.addWidget(QLabel("Boris"))
+		patronsList.addWidget(QLabel("Michael"))
 
 		patron_description = QLabel(f"""
 			<small>These are the wonderful humans that help keep<br>
