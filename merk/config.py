@@ -241,9 +241,11 @@ SHOW_PINGS_IN_CONSOLE = False
 CLOSING_SERVER_WINDOW_DISCONNECTS = False
 ENABLE_SHELL_COMMAND = True
 SHOW_IGNORE_STATUS_IN_USERLISTS = True
+MAXIMUM_INSERT_DEPTH = 10
 
 def build_settings():
 	settings = {
+		"maximum_insert_file_depth": MAXIMUM_INSERT_DEPTH,
 		"show_ignore_status_in_userlists": SHOW_IGNORE_STATUS_IN_USERLISTS,
 		"enable_shell_command": ENABLE_SHELL_COMMAND,
 		"closing_server_window_disconnects_from_server": CLOSING_SERVER_WINDOW_DISCONNECTS,
@@ -451,6 +453,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "maximum_insert_file_depth" in settings:
+		settings["maximum_insert_file_depth"] = MAXIMUM_INSERT_DEPTH
 	if not "show_ignore_status_in_userlists" in settings:
 		settings["show_ignore_status_in_userlists"] = SHOW_IGNORE_STATUS_IN_USERLISTS
 	if not "enable_shell_command" in settings:
@@ -1062,6 +1066,7 @@ def load_settings(filename):
 	global CLOSING_SERVER_WINDOW_DISCONNECTS
 	global ENABLE_SHELL_COMMAND
 	global SHOW_IGNORE_STATUS_IN_USERLISTS
+	global MAXIMUM_INSERT_DEPTH
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1071,6 +1076,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MAXIMUM_INSERT_DEPTH = settings["maximum_insert_file_depth"]
 		SHOW_IGNORE_STATUS_IN_USERLISTS = settings["show_ignore_status_in_userlists"]
 		ENABLE_SHELL_COMMAND = settings["enable_shell_command"]
 		CLOSING_SERVER_WINDOW_DISCONNECTS = settings["closing_server_window_disconnects_from_server"]
