@@ -191,6 +191,9 @@ class Dialog(QDialog):
 		app_donations.setAlignment(Qt.AlignCenter)
 		app_donations.setOpenExternalLinks(True)
 
+		pyinstaller_no_version = QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>")
+		pyinstaller_no_version.setOpenExternalLinks(True)
+
 		aboutLayout = QVBoxLayout()
 		aboutLayout.addStretch()
 		aboutLayout.addWidget(logo)
@@ -203,9 +206,11 @@ class Dialog(QDialog):
 		if is_running_from_pyinstaller():
 			version = get_pyinstaller_version()
 			if version != None:
-				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>"))
+				pyinstaller_w_version = QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a> " + version +"</b></small></center>")
+				pyinstaller_w_version.setOpenExternalLinks(True)
+				aboutLayout.addWidget(pyinstaller_w_version)
 			else:
-				aboutLayout.addWidget(QLabel("<center><small><b>Running with <a href=\"https://pyinstaller.org/\">PyInstaller</a></b></small></center>"))
+				aboutLayout.addWidget(pyinstaller_no_version)
 		aboutLayout.addStretch()
 
 		self.about_tab.setLayout(aboutLayout)
@@ -232,6 +237,7 @@ class Dialog(QDialog):
 			    name here, <b><a href=\"https://www.gofundme.com/f/keep-dans-opensource-projects-alive\">donate $50 or more today!</a></b></small><br>
 			""")
 		patron_description.setAlignment(Qt.AlignJustify)
+		patron_description.setOpenExternalLinks(True)
 
 		patDescLayout = QHBoxLayout()
 		patDescLayout.addStretch()
