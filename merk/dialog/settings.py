@@ -991,6 +991,7 @@ class Dialog(QDialog):
 			self.windowBarHover.setEnabled(True)
 			self.windowbarLabel.setEnabled(True)
 			self.windowbarManager.setEnabled(True)
+			self.windowbarUnread.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1008,6 +1009,7 @@ class Dialog(QDialog):
 			self.windowBarHover.setEnabled(False)
 			self.windowbarLabel.setEnabled(False)
 			self.windowbarManager.setEnabled(False)
+			self.windowbarUnread.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -2056,6 +2058,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_MANAGER: self.windowbarManager.setChecked(True)
 		self.windowbarManager.stateChanged.connect(self.menuChange)
 
+		self.windowbarUnread = QCheckBox("Show unread chat messages",self)
+		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES: self.windowbarUnread.setChecked(True)
+		self.windowbarUnread.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2073,6 +2079,7 @@ class Dialog(QDialog):
 			self.windowBarHover.setEnabled(False)
 			self.windowbarLabel.setEnabled(False)
 			self.windowbarManager.setEnabled(False)
+			self.windowbarUnread.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -2095,6 +2102,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarHover)
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
+		windowbarLayout.addWidget(self.windowbarUnread)
 		windowbarLayout.addWidget(self.windowbarMenu)
 		windowbarLayout.addLayout(justifyLayout)
 		windowbarLayout.addWidget(QLabel(' '))
@@ -3983,6 +3991,7 @@ class Dialog(QDialog):
 		config.SHOW_PINGS_IN_CONSOLE = self.enablePing.isChecked()
 		config.CLOSING_SERVER_WINDOW_DISCONNECTS = self.enableDisconnect.isChecked()
 		config.SHOW_IGNORE_STATUS_IN_USERLISTS = self.ignoreUserlist.isChecked()
+		config.WINDOWBAR_SHOW_UNREAD_MESSAGES = self.windowbarUnread.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()

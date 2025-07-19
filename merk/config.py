@@ -242,9 +242,11 @@ CLOSING_SERVER_WINDOW_DISCONNECTS = False
 ENABLE_SHELL_COMMAND = True
 SHOW_IGNORE_STATUS_IN_USERLISTS = True
 MAXIMUM_INSERT_DEPTH = 10
+WINDOWBAR_SHOW_UNREAD_MESSAGES = True
 
 def build_settings():
 	settings = {
+		"windowbar_show_unread_messages": WINDOWBAR_SHOW_UNREAD_MESSAGES,
 		"maximum_insert_file_depth": MAXIMUM_INSERT_DEPTH,
 		"show_ignore_status_in_userlists": SHOW_IGNORE_STATUS_IN_USERLISTS,
 		"enable_shell_command": ENABLE_SHELL_COMMAND,
@@ -453,6 +455,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "windowbar_show_unread_messages" in settings:
+		settings["windowbar_show_unread_messages"] = WINDOWBAR_SHOW_UNREAD_MESSAGES
 	if not "maximum_insert_file_depth" in settings:
 		settings["maximum_insert_file_depth"] = MAXIMUM_INSERT_DEPTH
 	if not "show_ignore_status_in_userlists" in settings:
@@ -1067,6 +1071,7 @@ def load_settings(filename):
 	global ENABLE_SHELL_COMMAND
 	global SHOW_IGNORE_STATUS_IN_USERLISTS
 	global MAXIMUM_INSERT_DEPTH
+	global WINDOWBAR_SHOW_UNREAD_MESSAGES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1076,6 +1081,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_SHOW_UNREAD_MESSAGES = settings["windowbar_show_unread_messages"]
 		MAXIMUM_INSERT_DEPTH = settings["maximum_insert_file_depth"]
 		SHOW_IGNORE_STATUS_IN_USERLISTS = settings["show_ignore_status_in_userlists"]
 		ENABLE_SHELL_COMMAND = settings["enable_shell_command"]

@@ -187,6 +187,7 @@ class Merk(QMainWindow):
 		self.application_title_name = APPLICATION_NAME
 		self.readme_window = None
 		self.log_manager = None
+		self.unread_messages = []
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -545,6 +546,9 @@ class Merk(QMainWindow):
 				button.setFixedHeight(18)
 				button_list.append(button)
 
+				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
+					if wname in self.unread_messages: button.pulse()
+
 
 		for window in partial_display:
 			if hasattr(window,"widget"):
@@ -636,6 +640,9 @@ class Merk(QMainWindow):
 
 				button.setFixedHeight(18)
 				button_list.append(button)
+
+				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
+					if wname in self.unread_messages: button.pulse()
 		
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			if len(button_list)>0:
@@ -1154,6 +1161,13 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',f"{server} VERSION: {version}")
 			w.writeText(t)
 
+	def isActiveWindow(self,window):
+		w = self.MDI.activeSubWindow()
+		if hasattr(w,"widget"):
+			c = w.widget()
+			if c==window: return True
+		return False
+
 	def privmsg(self,client,user,target,msg):
 
 		p = user.split("!")
@@ -1182,6 +1196,10 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(CHAT_MESSAGE,user,msg)
 				w.writeText(t)
+
+				if not self.isActiveWindow(w):
+					# Not the current window
+					self.add_unread_message(w.name)
 				return
 
 		if target==client.nickname:
@@ -1200,6 +1218,10 @@ class Merk(QMainWindow):
 				t = Message(CHAT_MESSAGE,user,msg)
 				w.writeText(t)
 				displayed_private_message = True
+
+				if not self.isActiveWindow(w):
+					# Not the current window
+					self.add_unread_message(w.name)
 
 			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 				# Write the private message to the server window
@@ -2444,6 +2466,10 @@ class Merk(QMainWindow):
 			# Get the chat window instance associated
 			# with the current subwindow
 			c = window.widget()
+
+			if hasattr(c,"name"):
+				if c.name in self.unread_messages:
+					self.unread_messages = [item for item in self.unread_messages if item != c.name]
 
 			# Check to see if the subwindow_id passed
 			# to this function is the one we're looking
@@ -3838,6 +3864,11 @@ class Merk(QMainWindow):
 		event.accept()
 		self.app.quit()
 
+	def add_unread_message(self,target):
+		if not target in self.unread_messages:
+			self.unread_messages.append(target)
+			self.buildWindowbar()
+
 	# merk_subWindowActivated()
 	# Triggered whenever a subwindow is activated
 	def merk_subWindowActivated(self,subwindow):
@@ -3866,6 +3897,12 @@ class Merk(QMainWindow):
 		# then give the editor widget focus
 		if hasattr(w,"editor"):
 			w.editor.setFocus()
+
+		# If there's unread messages in the window,
+		# remove them now that the window is active
+		if hasattr(w,"name"):
+			if w.name in self.unread_messages:
+				self.unread_messages = [item for item in self.unread_messages if item != w.name]
 
 		self.buildWindowbar()
 

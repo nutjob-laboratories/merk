@@ -287,6 +287,25 @@ class wMenuButton(QPushButton):
 			self.setStyleSheet(self.normal_style)
 		return False
 
+	def pulse(self):
+		# Create a QGraphicsOpacityEffect for the label
+		self.effect = QGraphicsOpacityEffect(self)
+		self.setGraphicsEffect(self.effect)
+
+		# Create a QPropertyAnimation for the opacity
+		self.animation = QPropertyAnimation(self.effect, b"opacity")
+		self.animation.setDuration(1000) # 1 second duration for one pulse phase
+		self.animation.setStartValue(1.0) # Fully visible
+		self.animation.setEndValue(0.2)   # Nearly transparent
+		self.animation.setEasingCurve(QEasingCurve.InOutQuad) # Smooth in/out transition
+
+		# Reverse the animation to create the "pulse" effect
+		self.animation.setDirection(QAbstractAnimation.Forward) # Start with fade out
+		self.animation.setLoopCount(-1) # Loop indefinitely
+
+		# Start the animation
+		self.animation.start()
+
 class wIconMenuButton(QPushButton):
 	doubleClicked = pyqtSignal()
 	clicked = pyqtSignal()
@@ -323,6 +342,25 @@ class wIconMenuButton(QPushButton):
 		elif event.type() == QEvent.Leave:
 			self.setStyleSheet(self.normal_style)
 		return False
+
+	def pulse(self):
+		# Create a QGraphicsOpacityEffect for the label
+		self.effect = QGraphicsOpacityEffect(self)
+		self.setGraphicsEffect(self.effect)
+
+		# Create a QPropertyAnimation for the opacity
+		self.animation = QPropertyAnimation(self.effect, b"opacity")
+		self.animation.setDuration(1000) # 1 second duration for one pulse phase
+		self.animation.setStartValue(1.0) # Fully visible
+		self.animation.setEndValue(0.2)   # Nearly transparent
+		self.animation.setEasingCurve(QEasingCurve.InOutQuad) # Smooth in/out transition
+
+		# Reverse the animation to create the "pulse" effect
+		self.animation.setDirection(QAbstractAnimation.Forward) # Start with fade out
+		self.animation.setLoopCount(-1) # Loop indefinitely
+
+		# Start the animation
+		self.animation.start()
 
 def generate_window_toolbar(self):
 
@@ -565,6 +603,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.doubleclick)
 		menu.addAction(entry)
 
+		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show unread messages", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread messages", self)
+		entry.triggered.connect(self.showUnread)
+		menu.addAction(entry)
+
 		self.justifyMenu = QMenu("Alignment")
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
@@ -636,6 +681,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_CAN_FLOAT = False
 		else:
 			config.WINDOWBAR_CAN_FLOAT = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def showUnread(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
+			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = False
+		else:
+			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)
