@@ -135,7 +135,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"settings": config.ISSUE_COMMAND_SYMBOL+"settings",
 			config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style",
 			config.ISSUE_COMMAND_SYMBOL+"log": config.ISSUE_COMMAND_SYMBOL+"log",
-			config.ISSUE_COMMAND_SYMBOL+"exit": config.ISSUE_COMMAND_SYMBOL+"exit",
+			config.ISSUE_COMMAND_SYMBOL+"exit": config.ISSUE_COMMAND_SYMBOL+"exit ",
 			config.ISSUE_COMMAND_SYMBOL+"config": config.ISSUE_COMMAND_SYMBOL+"config ",
 			config.ISSUE_COMMAND_SYMBOL+"ignore": config.ISSUE_COMMAND_SYMBOL+"ignore ",
 			config.ISSUE_COMMAND_SYMBOL+"unignore": config.ISSUE_COMMAND_SYMBOL+"unignore ",
@@ -2926,12 +2926,13 @@ class ScriptThread(QThread):
 
 	def run(self):
 
+		no_errors = True
+
 		# This should never happen, but if it does...
 		# Do not execute any scripts if scripting is disabled
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.scriptError.emit([self.gui,self.window,f"Scripting has been disabled"])
-			self.scriptEnd.emit([self.gui,self.id])
-			return
+			no_errors = False
 
 		counter = 1
 		for a in self.arguments:
@@ -2946,19 +2947,18 @@ class ScriptThread(QThread):
 			addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
 
 		self.script = interpolateAliases(self.script)
-
-		no_errors = True
 		
 		# First passes through the script,
 		# insert any files that are to be
 		# /inserted into the script, up to
 		# the maximum depth
-		counter = 0
-		while counter<config.MAXIMUM_INSERT_DEPTH:
-			counter = counter + 1
-			err = self.process_inserts()
-			if err:
-				no_errors = False
+		if no_errors:
+			counter = 0
+			while counter<config.MAXIMUM_INSERT_DEPTH:
+				counter = counter + 1
+				err = self.process_inserts()
+				if err:
+					no_errors = False
 		
 		if not no_errors:
 			self.scriptError.emit([self.gui,self.window,f"Error processing {config.ISSUE_COMMAND_SYMBOL}inserts, script terminating."])
