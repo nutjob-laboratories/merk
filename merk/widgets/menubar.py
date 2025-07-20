@@ -325,6 +325,12 @@ class wMenuButton(QPushButton):
 
 		if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
 
+			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
+				if self.window.parent.has_unread_messages(self.window.name):
+					entry = QAction(QIcon(HIDE_ICON),"Clear unread messages",self)
+					entry.triggered.connect(lambda state,h=self.window.name: self.window.parent.remove_unread_message(h))
+					menu.addAction(entry)
+
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.window.clearChat)
 			menu.addAction(entry)
@@ -467,6 +473,12 @@ class wIconMenuButton(QPushButton):
 				self.contextList.setEnabled(False)
 
 		if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
+
+			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
+				if self.window.parent.has_unread_messages(self.window.name):
+					entry = QAction(QIcon(HIDE_ICON),"Clear unread messages",self)
+					entry.triggered.connect(lambda state,h=self.window.name: self.window.parent.remove_unread_message(h))
+					menu.addAction(entry)
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.window.clearChat)

@@ -3871,6 +3871,15 @@ class Merk(QMainWindow):
 			self.unread_messages.append(target)
 			self.buildWindowbar()
 
+	def remove_unread_message(self,target):
+		if target in self.unread_messages:
+			self.unread_messages = [item for item in self.unread_messages if item != target]
+			self.buildWindowbar()
+
+	def has_unread_messages(self,target):
+		if target in self.unread_messages: return True
+		return False
+
 	# merk_subWindowActivated()
 	# Triggered whenever a subwindow is activated
 	def merk_subWindowActivated(self,subwindow):
