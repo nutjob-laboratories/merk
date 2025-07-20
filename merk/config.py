@@ -243,9 +243,11 @@ ENABLE_SHELL_COMMAND = True
 SHOW_IGNORE_STATUS_IN_USERLISTS = True
 MAXIMUM_INSERT_DEPTH = 10
 WINDOWBAR_SHOW_UNREAD_MESSAGES = True
+WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = 1000
 
 def build_settings():
 	settings = {
+		"windowbar_unread_message_animation_length": WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH,
 		"windowbar_show_unread_messages": WINDOWBAR_SHOW_UNREAD_MESSAGES,
 		"maximum_insert_file_depth": MAXIMUM_INSERT_DEPTH,
 		"show_ignore_status_in_userlists": SHOW_IGNORE_STATUS_IN_USERLISTS,
@@ -455,6 +457,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "windowbar_unread_message_animation_length" in settings:
+		settings["windowbar_unread_message_animation_length"] = WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH
 	if not "windowbar_show_unread_messages" in settings:
 		settings["windowbar_show_unread_messages"] = WINDOWBAR_SHOW_UNREAD_MESSAGES
 	if not "maximum_insert_file_depth" in settings:
@@ -1072,6 +1076,7 @@ def load_settings(filename):
 	global SHOW_IGNORE_STATUS_IN_USERLISTS
 	global MAXIMUM_INSERT_DEPTH
 	global WINDOWBAR_SHOW_UNREAD_MESSAGES
+	global WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1081,6 +1086,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = settings["windowbar_unread_message_animation_length"]
 		WINDOWBAR_SHOW_UNREAD_MESSAGES = settings["windowbar_show_unread_messages"]
 		MAXIMUM_INSERT_DEPTH = settings["maximum_insert_file_depth"]
 		SHOW_IGNORE_STATUS_IN_USERLISTS = settings["show_ignore_status_in_userlists"]

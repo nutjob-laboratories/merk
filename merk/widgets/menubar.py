@@ -288,18 +288,14 @@ class wMenuButton(QPushButton):
 		return False
 
 	def pulse(self):
-		# Create a QGraphicsOpacityEffect for the label
 		self.effect = QGraphicsOpacityEffect(self)
 		self.setGraphicsEffect(self.effect)
 
-		# Create a QPropertyAnimation for the opacity
 		self.animation = QPropertyAnimation(self.effect, b"opacity")
-		self.animation.setDuration(1000) # 1 second duration for one pulse phase
+		self.animation.setDuration(config.WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH)
 		self.animation.setStartValue(1.0) # Fully visible
 		self.animation.setEndValue(0.2)   # Nearly transparent
 		self.animation.setEasingCurve(QEasingCurve.InOutQuad) # Smooth in/out transition
-
-		# Reverse the animation to create the "pulse" effect
 		self.animation.setDirection(QAbstractAnimation.Forward) # Start with fade out
 		self.animation.setLoopCount(-1) # Loop indefinitely
 
@@ -344,18 +340,14 @@ class wIconMenuButton(QPushButton):
 		return False
 
 	def pulse(self):
-		# Create a QGraphicsOpacityEffect for the label
 		self.effect = QGraphicsOpacityEffect(self)
 		self.setGraphicsEffect(self.effect)
 
-		# Create a QPropertyAnimation for the opacity
 		self.animation = QPropertyAnimation(self.effect, b"opacity")
-		self.animation.setDuration(1000) # 1 second duration for one pulse phase
+		self.animation.setDuration(config.WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH)
 		self.animation.setStartValue(1.0) # Fully visible
 		self.animation.setEndValue(0.2)   # Nearly transparent
 		self.animation.setEasingCurve(QEasingCurve.InOutQuad) # Smooth in/out transition
-
-		# Reverse the animation to create the "pulse" effect
 		self.animation.setDirection(QAbstractAnimation.Forward) # Start with fade out
 		self.animation.setLoopCount(-1) # Loop indefinitely
 
