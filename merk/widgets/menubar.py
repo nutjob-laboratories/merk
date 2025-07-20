@@ -32,6 +32,8 @@ from ..resources import *
 from .. import config
 from .text_separator import textSeparatorLabel,textSeparator
 
+import emoji
+
 toolbar_button_style = '''
 	QPushButton {
 		border: 0px;
@@ -256,9 +258,14 @@ class wMenuButton(QPushButton):
 	doubleClicked = pyqtSignal()
 	clicked = pyqtSignal()
 
+	def setWindow(self,window):
+		self.window = window.widget()
+
 	def __init__(self,normal_style,hover_style,parent=None):
 		QLabel.__init__(self, parent)
 		self.installEventFilter(self)
+
+		self.window = None
 
 		self.normal_style = normal_style
 		self.hover_style = hover_style
@@ -267,6 +274,92 @@ class wMenuButton(QPushButton):
 		self.timer.setSingleShot(True)
 		self.timer.timeout.connect(self.clicked.emit)
 		super().clicked.connect(self.checkDoubleClick)
+
+		self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+		self.customContextMenuRequested.connect(self.show_context_menu)
+
+	def show_context_menu(self,position):
+
+		if not config.WINDOWBAR_ENTRY_MENU: return
+
+		menu = QMenu(self)
+
+		if self.window.window_type==SERVER_WINDOW or self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
+			if config.ENABLE_STYLE_EDITOR:
+				if not config.FORCE_DEFAULT_STYLE:
+					entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+					entry.triggered.connect(self.window.pressedStyleButton)
+					menu.addAction(entry)
+		
+		if self.window.window_type==SERVER_WINDOW:
+
+			self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+			self.contextNick.triggered.connect(self.window.changeNick)
+			menu.addAction(self.contextNick)
+
+			self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+			self.contextJoin.triggered.connect(self.window.joinChannel)
+			menu.addAction(self.contextJoin)
+
+			if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
+				self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",self)
+				self.contextList.triggered.connect(self.window.showChannelList)
+				menu.addAction(self.contextList)
+
+			if config.SCRIPTING_ENGINE_ENABLED:
+				hostid = self.window.client.server+":"+str(self.window.client.port)
+				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+				entry.triggered.connect(lambda state,h=hostid: self.window.parent.newEditorWindowConnect(h))
+				menu.addAction(entry)
+
+			menu.addSeparator()
+
+			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
+			entry.triggered.connect(self.window.disconnect)
+			menu.addAction(entry)
+
+			if not self.window.client.registered:
+				self.contextNick.setEnabled(False)
+				self.contextJoin.setEnabled(False)
+				self.contextList.setEnabled(False)
+
+		if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
+
+			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
+			entry.triggered.connect(self.window.clearChat)
+			menu.addAction(entry)
+
+			entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+			entry.triggered.connect(self.window.menuSaveLogs)
+			menu.addAction(entry)
+
+		if self.window.window_type==CHANNEL_WINDOW:
+
+			menu.addSeparator()
+
+			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
+			if config.ENABLE_EMOJI_SHORTCODES:
+				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+			else:
+				msg = config.DEFAULT_QUIT_MESSAGE
+			entry.triggered.connect(lambda state,u=self.window.name,w=msg: self.window.client.leave(u,w))
+			menu.addAction(entry)
+
+		if self.window.window_type==LIST_WINDOW:
+
+			entry = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
+			entry.triggered.connect(lambda state,h='LIST': self.window.client.sendLine(h))
+			menu.addAction(entry)
+
+		if self.window.window_type!=CHANNEL_WINDOW and self.window.window_type!=SERVER_WINDOW:
+
+			menu.addSeparator()
+
+			entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
+			entry.triggered.connect(self.window.close)
+			menu.addAction(entry)
+
+		menu.exec_(self.mapToGlobal(position))
 
 	@pyqtSlot()
 	def checkDoubleClick(self):
@@ -306,9 +399,14 @@ class wIconMenuButton(QPushButton):
 	doubleClicked = pyqtSignal()
 	clicked = pyqtSignal()
 
+	def setWindow(self,window):
+		self.window = window.widget()
+
 	def __init__(self,icon,normal_style,hover_style,parent=None):
 		QLabel.__init__(self, parent)
 		self.installEventFilter(self)
+
+		self.window = None
 
 		self.setIcon(QIcon(icon))
 
@@ -319,6 +417,92 @@ class wIconMenuButton(QPushButton):
 		self.timer.setSingleShot(True)
 		self.timer.timeout.connect(self.clicked.emit)
 		super().clicked.connect(self.checkDoubleClick)
+
+		self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+		self.customContextMenuRequested.connect(self.show_context_menu)
+
+	def show_context_menu(self,position):
+
+		if not config.WINDOWBAR_ENTRY_MENU: return
+
+		menu = QMenu(self)
+
+		if self.window.window_type==SERVER_WINDOW or self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
+			if config.ENABLE_STYLE_EDITOR:
+				if not config.FORCE_DEFAULT_STYLE:
+					entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+					entry.triggered.connect(self.window.pressedStyleButton)
+					menu.addAction(entry)
+		
+		if self.window.window_type==SERVER_WINDOW:
+
+			self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+			self.contextNick.triggered.connect(self.window.changeNick)
+			menu.addAction(self.contextNick)
+
+			self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+			self.contextJoin.triggered.connect(self.window.joinChannel)
+			menu.addAction(self.contextJoin)
+
+			if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
+				self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",self)
+				self.contextList.triggered.connect(self.window.showChannelList)
+				menu.addAction(self.contextList)
+
+			if config.SCRIPTING_ENGINE_ENABLED:
+				hostid = self.window.client.server+":"+str(self.window.client.port)
+				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+				entry.triggered.connect(lambda state,h=hostid: self.window.parent.newEditorWindowConnect(h))
+				menu.addAction(entry)
+
+			menu.addSeparator()
+
+			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
+			entry.triggered.connect(self.window.disconnect)
+			menu.addAction(entry)
+
+			if not self.window.client.registered:
+				self.contextNick.setEnabled(False)
+				self.contextJoin.setEnabled(False)
+				self.contextList.setEnabled(False)
+
+		if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
+
+			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
+			entry.triggered.connect(self.window.clearChat)
+			menu.addAction(entry)
+
+			entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+			entry.triggered.connect(self.window.menuSaveLogs)
+			menu.addAction(entry)
+
+		if self.window.window_type==CHANNEL_WINDOW:
+
+			menu.addSeparator()
+
+			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
+			if config.ENABLE_EMOJI_SHORTCODES:
+				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+			else:
+				msg = config.DEFAULT_QUIT_MESSAGE
+			entry.triggered.connect(lambda state,u=self.window.name,w=msg: self.window.client.leave(u,w))
+			menu.addAction(entry)
+
+		if self.window.window_type==LIST_WINDOW:
+
+			entry = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
+			entry.triggered.connect(lambda state,h='LIST': self.window.client.sendLine(h))
+			menu.addAction(entry)
+
+		if self.window.window_type!=CHANNEL_WINDOW and self.window.window_type!=SERVER_WINDOW:
+
+			menu.addSeparator()
+
+			entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
+			entry.triggered.connect(self.window.close)
+			menu.addAction(entry)
+
+		menu.exec_(self.mapToGlobal(position))
 
 	@pyqtSlot()
 	def checkDoubleClick(self):
@@ -602,6 +786,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.showUnread)
 		menu.addAction(entry)
 
+		if config.WINDOWBAR_ENTRY_MENU:
+			entry = QAction(QIcon(self.parent.checked_icon),"Entry context menu", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Entry context menu", self)
+		entry.triggered.connect(self.showMenu)
+		menu.addAction(entry)
+
 		self.justifyMenu = QMenu("Alignment")
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
@@ -683,6 +874,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = False
 		else:
 			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def showMenu(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_ENTRY_MENU:
+			config.WINDOWBAR_ENTRY_MENU = False
+		else:
+			config.WINDOWBAR_ENTRY_MENU = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)

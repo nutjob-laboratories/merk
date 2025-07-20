@@ -992,6 +992,7 @@ class Dialog(QDialog):
 			self.windowbarLabel.setEnabled(True)
 			self.windowbarManager.setEnabled(True)
 			self.windowbarUnread.setEnabled(True)
+			self.windowbarEntryMenu.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1010,6 +1011,7 @@ class Dialog(QDialog):
 			self.windowbarLabel.setEnabled(False)
 			self.windowbarManager.setEnabled(False)
 			self.windowbarUnread.setEnabled(False)
+			self.windowbarEntryMenu.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -2062,6 +2064,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES: self.windowbarUnread.setChecked(True)
 		self.windowbarUnread.stateChanged.connect(self.menuChange)
 
+		self.windowbarEntryMenu = QCheckBox("Entry context menu",self)
+		if config.WINDOWBAR_ENTRY_MENU: self.windowbarEntryMenu.setChecked(True)
+		self.windowbarEntryMenu.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2080,6 +2086,7 @@ class Dialog(QDialog):
 			self.windowbarLabel.setEnabled(False)
 			self.windowbarManager.setEnabled(False)
 			self.windowbarUnread.setEnabled(False)
+			self.windowbarEntryMenu.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -2090,6 +2097,9 @@ class Dialog(QDialog):
 		windowbar1Layout.addStretch()
 		windowbar1Layout.addWidget(self.windowBar)
 		windowbar1Layout.addStretch()
+
+		wbMenuLayout = QFormLayout()
+		wbMenuLayout.addRow(self.windowbarMenu,self.windowbarEntryMenu)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -2103,7 +2113,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarUnread)
-		windowbarLayout.addWidget(self.windowbarMenu)
+		windowbarLayout.addLayout(wbMenuLayout)
 		windowbarLayout.addLayout(justifyLayout)
 		windowbarLayout.addWidget(QLabel(' '))
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
@@ -3992,6 +4002,7 @@ class Dialog(QDialog):
 		config.CLOSING_SERVER_WINDOW_DISCONNECTS = self.enableDisconnect.isChecked()
 		config.SHOW_IGNORE_STATUS_IN_USERLISTS = self.ignoreUserlist.isChecked()
 		config.WINDOWBAR_SHOW_UNREAD_MESSAGES = self.windowbarUnread.isChecked()
+		config.WINDOWBAR_ENTRY_MENU = self.windowbarEntryMenu.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()

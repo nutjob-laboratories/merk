@@ -511,6 +511,7 @@ class Merk(QMainWindow):
 					button = menubar.get_icon_windowbar_button(icon,wname)
 				else:
 					button = menubar.get_windowbar_button(wname)
+				button.setWindow(window)
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
 				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
@@ -612,6 +613,7 @@ class Merk(QMainWindow):
 					wname = "Log Manager"
 
 				button = menubar.get_icon_only_toolbar_button(icon)
+				button.setWindow(window)
 				button.clicked.connect(lambda u=window: self.showSubWindow(u))
 				if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
