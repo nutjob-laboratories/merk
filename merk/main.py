@@ -3652,6 +3652,8 @@ class Merk(QMainWindow):
 			if config.MENUBAR_JUSTIFY.lower()=='center':
 				menubar.add_toolbar_stretch(self.menuTool)
 
+			# menubar.add_toolbar_stretch(self.menuTool)
+			# menubar.add_toolbar_image(self.menuTool,APPLICATION_ICON)
 
 		self.buildMainMenu()
 		self.buildSettingsMenu()
