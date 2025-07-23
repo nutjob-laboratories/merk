@@ -225,13 +225,21 @@ class Dialog(QDialog):
 		
 		self.credits_tab.setLayout(credLayout)
 
-		patronsList = QVBoxLayout()
-		patronsList.addWidget(QLabel("Ilmari Lauhakangas"))
-		patronsList.addWidget(QLabel("Boris"))
-		patronsList.addWidget(QLabel("Michael"))
-		patronsList.addWidget(QLabel("Jim Kost"))
-		patronsList.addWidget(QLabel("Brian"))
-		patronsList.addWidget(QLabel("Harry Oxnard"))
+		# patronsList = QVBoxLayout()
+		# patronsList.addWidget(QLabel("Ilmari Lauhakangas"))
+		# patronsList.addWidget(QLabel("Boris"))
+		# patronsList.addWidget(QLabel("Michael"))
+		# patronsList.addWidget(QLabel("Jim Kost"))
+		# patronsList.addWidget(QLabel("Brian"))
+		# patronsList.addWidget(QLabel("Harry Oxnard"))
+
+		patron_list = QLabel(f"""
+			<small>Ilmari Lauhakangas, Boris, Michael, Jim Kost,<br>
+			       Brian, Harry Oxnard
+			</small>
+			""")
+		patron_list.setAlignment(Qt.AlignJustify)
+		patron_list.setOpenExternalLinks(True)
 
 		patron_description = QLabel(f"""
 			<small>These are the wonderful humans that help keep<br>
@@ -250,7 +258,8 @@ class Dialog(QDialog):
 		patronLayout = QVBoxLayout()
 		patronLayout.addLayout(patDescLayout)
 		patronLayout.addWidget(widgets.textSeparatorLabel(self,"<b>patrons</b>"))
-		patronLayout.addLayout(patronsList)
+		# patronLayout.addLayout(patronsList)
+		patronLayout.addWidget(patron_list)
 		patronLayout.addStretch()
 
 		self.patrons_tab.setLayout(patronLayout)
