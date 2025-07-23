@@ -188,6 +188,7 @@ class Merk(QMainWindow):
 		self.readme_window = None
 		self.log_manager = None
 		self.unread_messages = []
+		self.current_window = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -3885,12 +3886,10 @@ class Merk(QMainWindow):
 
 	def add_unread_message(self,client,target):
 
-		w = self.MDI.activeSubWindow()
-		if hasattr(w,"widget"):
-			c = w.widget()
-			if hasattr(c,"name"):
-				if hasattr(c,"client"):
-					if c.name==target and c.client==client: return
+		c = self.current_window
+		if hasattr(c,"name"):
+			if hasattr(c,"client"):
+				if c.name==target and c.client==client: return
 
 		for e in self.unread_messages:
 			if e[0]==client and e[1]==target:
@@ -3927,6 +3926,7 @@ class Merk(QMainWindow):
 		if subwindow==None: return
 
 		w = subwindow.widget()
+		self.current_window = w
 
 		# If the window belongs to a client that
 		# is quitting, don't do anything
