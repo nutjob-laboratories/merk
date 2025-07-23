@@ -231,6 +231,7 @@ class Dialog(QDialog):
 		patronsList.addWidget(QLabel("Michael"))
 		patronsList.addWidget(QLabel("Jim Kost"))
 		patronsList.addWidget(QLabel("Brian"))
+		patronsList.addWidget(QLabel("Harry Oxnard"))
 
 		patron_description = QLabel(f"""
 			<small>These are the wonderful humans that help keep<br>
