@@ -450,6 +450,8 @@ class Merk(QMainWindow):
 			if hasattr(window,"widget"):
 				c = window.widget()
 
+				do_pulse = False
+
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
 					wname = c.name
@@ -460,6 +462,7 @@ class Merk(QMainWindow):
 
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
+					if self.has_unread_messages(c.client,c.name): do_pulse = True
 				elif c.window_type==PRIVATE_WINDOW:
 					icon = PRIVATE_ICON
 					wname = c.name
@@ -470,6 +473,7 @@ class Merk(QMainWindow):
 
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
+					if self.has_unread_messages(c.client,c.name): do_pulse = True
 				elif c.window_type==SERVER_WINDOW:
 					icon = CONSOLE_ICON
 					wname = c.name
@@ -548,12 +552,14 @@ class Merk(QMainWindow):
 				button_list.append(button)
 
 				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
-					if wname in self.unread_messages: button.pulse()
+					if do_pulse: button.pulse()
 
 
 		for window in partial_display:
 			if hasattr(window,"widget"):
 				c = window.widget()
+
+				do_pulse = False
 
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
@@ -565,6 +571,7 @@ class Merk(QMainWindow):
 
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
+					if self.has_unread_messages(c.client,c.name): do_pulse = True
 				elif c.window_type==PRIVATE_WINDOW:
 					icon = PRIVATE_ICON
 					wname = c.name
@@ -575,6 +582,7 @@ class Merk(QMainWindow):
 
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
+					if self.has_unread_messages(c.client,c.name): do_pulse = True
 				elif c.window_type==SERVER_WINDOW:
 					icon = CONSOLE_ICON
 					wname = c.name
@@ -644,7 +652,8 @@ class Merk(QMainWindow):
 				button_list.append(button)
 
 				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
-					if wname in self.unread_messages: button.pulse()
+					if do_pulse: button.pulse()
+
 		
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			if len(button_list)>0:
@@ -1201,7 +1210,7 @@ class Merk(QMainWindow):
 
 				if not self.isActiveWindow(w):
 					# Not the current window
-					self.add_unread_message(w.name)
+					self.add_unread_message(client,w.name)
 				return
 
 		if target==client.nickname:
@@ -1223,7 +1232,7 @@ class Merk(QMainWindow):
 
 				if not self.isActiveWindow(w):
 					# Not the current window
-					self.add_unread_message(w.name)
+					self.add_unread_message(client,w.name)
 
 			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 				# Write the private message to the server window
@@ -2470,8 +2479,14 @@ class Merk(QMainWindow):
 			c = window.widget()
 
 			if hasattr(c,"name"):
-				if c.name in self.unread_messages:
-					self.unread_messages = [item for item in self.unread_messages if item != c.name]
+				copy = []
+				for e in self.unread_messages:
+					if e[0]==c.client and e[1]==c.name:
+						pass
+					else:
+						copy.append(e)
+
+				self.unread_messages = list(copy)
 
 			# Check to see if the subwindow_id passed
 			# to this function is the one we're looking
@@ -3868,29 +3883,42 @@ class Merk(QMainWindow):
 		event.accept()
 		self.app.quit()
 
-	def add_unread_message(self,target):
-		if not target in self.unread_messages:
-			self.unread_messages.append(target)
-			self.buildWindowbar()
+	def add_unread_message(self,client,target):
 
-	def remove_unread_message(self,target):
-		if target in self.unread_messages:
-			self.unread_messages = [item for item in self.unread_messages if item != target]
+		for e in self.unread_messages:
+			if e[0]==client and e[1]==target:
+				return
 
-			# Bugfix: sometimes, the windowbar is rebuilt
-			# with twice the entries. I still don't know
-			# why that happens, but building it twice in
-			# a row seems to fix the problem. Occasionally
-			# the focus shifts to another window, so we
-			# make sure that the focus stays on the original
-			# window when the function was called.
-			w = self.MDI.activeSubWindow()
-			self.buildWindowbar()
-			self.buildWindowbar()
-			self.MDI.setActiveSubWindow(w)
+		e = [client,target]
+		self.unread_messages.append(e)
+		self.buildWindowbar()
 
-	def has_unread_messages(self,target):
-		if target in self.unread_messages: return True
+	def remove_unread_message(self,client,target):
+		copy = []
+		for e in self.unread_messages:
+			if e[0]==client and e[1]==target:
+				pass
+			else:
+				copy.append(e)
+
+		self.unread_messages = list(copy)
+
+		# Bugfix: sometimes, the windowbar is rebuilt
+		# with twice the entries. I still don't know
+		# why that happens, but building it twice in
+		# a row seems to fix the problem. Occasionally
+		# the focus shifts to another window, so we
+		# make sure that the focus stays on the original
+		# window when the function was called.
+		w = self.MDI.activeSubWindow()
+		#self.buildWindowbar()
+		self.buildWindowbar()
+		self.MDI.setActiveSubWindow(w)
+
+	def has_unread_messages(self,client,target):
+		for e in self.unread_messages:
+			if e[0]==client and e[1]==target:
+				return True
 		return False
 
 	# merk_subWindowActivated()
@@ -3925,8 +3953,9 @@ class Merk(QMainWindow):
 		# If there's unread messages in the window,
 		# remove them now that the window is active
 		if hasattr(w,"name"):
-			if w.name in self.unread_messages:
-				self.unread_messages = [item for item in self.unread_messages if item != w.name]
+			if hasattr(w,"client"):
+				if self.has_unread_messages(w.client,w.name):
+					self.remove_unread_message(w.client,w.name)
 
 		self.buildWindowbar()
 
