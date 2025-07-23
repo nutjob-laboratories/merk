@@ -3658,6 +3658,9 @@ class Merk(QMainWindow):
 			if config.MENUBAR_JUSTIFY.lower()=='center' or config.MENUBAR_JUSTIFY.lower()=='right':
 				menubar.add_toolbar_stretch(self.menuTool)
 
+			#menubar.add_toolbar_stretch(self.menuTool)
+			#menubar.add_toolbar_image(self.menuTool,APPLICATION_ICON)
+
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_IRC_NAME,self.mainMenu)
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_SETTINGS_NAME,self.settingsMenu)
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_TOOLS_NAME,self.toolsMenu)
@@ -3666,9 +3669,6 @@ class Merk(QMainWindow):
 
 			if config.MENUBAR_JUSTIFY.lower()=='center':
 				menubar.add_toolbar_stretch(self.menuTool)
-
-			# menubar.add_toolbar_stretch(self.menuTool)
-			# menubar.add_toolbar_image(self.menuTool,APPLICATION_ICON)
 
 		self.buildMainMenu()
 		self.buildSettingsMenu()
@@ -3884,6 +3884,13 @@ class Merk(QMainWindow):
 		self.app.quit()
 
 	def add_unread_message(self,client,target):
+
+		w = self.MDI.activeSubWindow()
+		if hasattr(w,"widget"):
+			c = w.widget()
+			if hasattr(c,"name"):
+				if hasattr(c,"client"):
+					if c.name==target and c.client==client: return
 
 		for e in self.unread_messages:
 			if e[0]==client and e[1]==target:
