@@ -3903,15 +3903,7 @@ class Merk(QMainWindow):
 
 		self.unread_messages = list(copy)
 
-		# Bugfix: sometimes, the windowbar is rebuilt
-		# with twice the entries. I still don't know
-		# why that happens, but building it twice in
-		# a row seems to fix the problem. Occasionally
-		# the focus shifts to another window, so we
-		# make sure that the focus stays on the original
-		# window when the function was called.
 		w = self.MDI.activeSubWindow()
-		#self.buildWindowbar()
 		self.buildWindowbar()
 		self.MDI.setActiveSubWindow(w)
 
