@@ -245,9 +245,11 @@ MAXIMUM_INSERT_DEPTH = 10
 WINDOWBAR_SHOW_UNREAD_MESSAGES = True
 WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = 1000
 WINDOWBAR_ENTRY_MENU = True
+INCLUDE_SCRIPT_COMMAND_SHORTCUT = True
 
 def build_settings():
 	settings = {
+		"include_script_command_shortcut": INCLUDE_SCRIPT_COMMAND_SHORTCUT,
 		"windowbar_entry_context_menu": WINDOWBAR_ENTRY_MENU,
 		"windowbar_unread_message_animation_length": WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH,
 		"windowbar_show_unread_messages": WINDOWBAR_SHOW_UNREAD_MESSAGES,
@@ -459,6 +461,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "include_script_command_shortcut" in settings:
+		settings["include_script_command_shortcut"] = INCLUDE_SCRIPT_COMMAND_SHORTCUT
 	if not "windowbar_entry_context_menu" in settings:
 		settings["windowbar_entry_context_menu"] = WINDOWBAR_ENTRY_MENU
 	if not "windowbar_unread_message_animation_length" in settings:
@@ -1082,6 +1086,7 @@ def load_settings(filename):
 	global WINDOWBAR_SHOW_UNREAD_MESSAGES
 	global WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH
 	global WINDOWBAR_ENTRY_MENU
+	global INCLUDE_SCRIPT_COMMAND_SHORTCUT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1091,6 +1096,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		INCLUDE_SCRIPT_COMMAND_SHORTCUT = settings["include_script_command_shortcut"]
 		WINDOWBAR_ENTRY_MENU = settings["windowbar_entry_context_menu"]
 		WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = settings["windowbar_unread_message_animation_length"]
 		WINDOWBAR_SHOW_UNREAD_MESSAGES = settings["windowbar_show_unread_messages"]

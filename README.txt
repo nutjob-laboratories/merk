@@ -276,6 +276,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. Can only be called from scripts                                                                                |
 | `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |
+| `/s FILENAME [ARGUMENTS]`                      | A shortcut for the `/script` command                                                                                            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/settings`                             | Opens the settings dialog                                                                                                        |
 | `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |

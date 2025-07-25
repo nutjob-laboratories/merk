@@ -165,6 +165,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"connectssl",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"xconnectssl",'')
 
+	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
+		AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"s"] = config.ISSUE_COMMAND_SYMBOL+"s "
+
 	if new_autocomplete!=None:
 		if isinstance(new_autocomplete, list):
 			for a in new_autocomplete:
@@ -203,7 +206,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server & executes connection script" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>", "Executes a list of commands in a file" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME [ARGUMENTS]</b>", "Executes a list of commands in a file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"log</b>", "Opens the log manager" ],
@@ -231,6 +234,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME</b>", "Opens a private chat window for NICKNAME" ],
 	]
 
+	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
+		COMMAND_HELP_INFORMATION.append(["<b>"+config.ISSUE_COMMAND_SYMBOL+"s FILENAME [ARGUMENTS]</b>", f"Shortcut for the {config.ISSUE_COMMAND_SYMBOL}script command"])
+
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
 		if not config.ENABLE_STYLE_EDITOR:
@@ -242,6 +248,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"s FILENAME [ARGUMENTS]</b>": continue
 		if not config.ENABLE_SHELL_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 		if not SSL_AVAILABLE:
@@ -822,6 +829,14 @@ def list_files():
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 	user_input = user_input.strip()
 	tokens = user_input.split()
+
+	# |----|
+	# | /s |
+	# |----|
+	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
+				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
 	# |----------|
 	# | /private |
