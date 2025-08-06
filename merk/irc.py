@@ -247,7 +247,14 @@ class IRC_Connection(irc.IRCClient):
 			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs["server"]}-{self.kwargs["port"]}.txt")
 			self.dump_file = open(dump_filename,"a")
 
-		self.sendLine("CAP LS *")
+		#self.sendLine("PROTOCTL UHNAMES")
+		self.sendLine("CAP REQ :chghost")
+		self.sendLine("CAP REQ :cap-notify")
+		self.sendLine("CAP REQ :userhost-in-names")
+		self.sendLine("CAP REQ :multi-prefix")
+		self.sendLine("CAP REQ :away-notify")
+		self.sendLine("CAP REQ :account-notify")
+		self.sendLine("CAP END")
 
 		irc.IRCClient.connectionMade(self)
 
@@ -837,17 +844,6 @@ class IRC_Connection(irc.IRCClient):
 
 		self.last_interaction = -1
 
-	def IRC_CAP(self,ctype,arg):
-		# sys.stdout.write(f"{ctype} {arg}\n")
-		if ctype.lower()=="ls":
-			if "chghost" in arg: self.sendLine("CAP REQ :cghost")
-			if "cap-notify" in arg: self.sendLine("CAP REQ :cap-notify")
-			if "userhost-in-names" in arg: self.sendLine("CAP REQ :userhost-in-names")
-			if "multi-prefix" in arg: self.sendLine("CAP REQ :multi-prefix")
-			if "away-notify" in arg: self.sendLine("CAP REQ :away-notify")
-			if "account-notify" in arg: self.sendLine("CAP REQ :account-notify")
-			self.sendLine("CAP END")
-
 	def lineReceived(self, line):
 
 		# Decode the incoming text line
@@ -882,12 +878,6 @@ class IRC_Connection(irc.IRCClient):
 				s.pop(0)
 				msg = ' '.join(s)[1:]
 				self.IRC_RPL_AWAY(nick,msg)
-			if s[1].lower()=='cap':
-				s.pop(0)
-				s.pop(0)
-				s.pop(0)
-				ctype = s.pop(0)
-				self.IRC_CAP(ctype,' '.join(s))
 		elif len(s)==2:
 			if s[1].lower()=='away':
 				nick = s[0][1:]
