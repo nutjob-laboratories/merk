@@ -2922,6 +2922,8 @@ class ScriptThread(QThread):
 								contents = x.read()
 								x.close()
 
+								if not self.check_for_errors(contents,file): return True
+
 								for l in contents.split("\n"): script.append(l)
 							else:
 								self.scriptError.emit([self.gui,self.window,f"Error processing {config.ISSUE_COMMAND_SYMBOL}insert: File \"{f}\" cannot be found"])
@@ -2939,7 +2941,168 @@ class ScriptThread(QThread):
 
 		return got_error
 
+	def check_for_errors(self,script,filename):
+		if filename==None: filename = "script"
+		no_errors = True
+		line_number = 0
+		for line in script.split("\n"):
+			line_number = line_number + 1
+			line = line.strip()
+			if len(line)==0: continue
+			tokens = line.split()
+
+			# |===========|
+			# | /restrict |
+			# |===========|
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==2:
+					tokens.pop(0)
+					arg = tokens.pop(0)
+
+					if arg.lower()=='server':
+						if self.window.window_type!=SERVER_WINDOW:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in server windows"])
+							no_errors = False
+					elif arg.lower()=='channel':
+						if self.window.window_type!=CHANNEL_WINDOW:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in channel windows"])
+							no_errors = False
+					elif arg.lower()=='private':
+						if self.window.window_type!=PRIVATE_WINDOW:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in private chat windows"])
+							no_errors = False
+					else:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Unrecognized restriction: \"{arg}\""])
+						no_errors = False
+
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==3:
+					tokens.pop(0)
+					arg1 = tokens.pop(0)
+					arg2 = tokens.pop(0)
+					valid = False
+					if arg1.lower()=='server':
+						if self.window.window_type==SERVER_WINDOW: valid = True
+					if arg1.lower()=='channel':
+						if self.window.window_type==CHANNEL_WINDOW: valid = True
+					if arg1.lower()=='private':
+						if self.window.window_type==PRIVATE_WINDOW: valid = True
+					if arg2.lower()=='server':
+						if self.window.window_type==SERVER_WINDOW: valid = True
+					if arg2.lower()=='channel':
+						if self.window.window_type==CHANNEL_WINDOW: valid = True
+					if arg2.lower()=='private':
+						if self.window.window_type==PRIVATE_WINDOW: valid = True
+
+					if arg1.lower()!='server' and arg1.lower()!='channel' and arg1.lower()!='private':
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Unrecognized restriction: \"{arg1}\""])
+						no_errors = False
+					elif arg2.lower()!='server' and arg2.lower()!='channel' and arg2.lower()!='private':
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Unrecognized restriction: \"{arg2}\""])
+						no_errors = False
+					elif not valid:
+						if self.window.window_type==PRIVATE_WINDOW: reason = "private chat"
+						if self.window.window_type==SERVER_WINDOW: reason = "server"
+						if self.window.window_type==CHANNEL_WINDOW: reason = "channel"
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script is restricted from running in {reason} windows"])
+						no_errors = False
+
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}restrict called without an argument"])
+					no_errors = False
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)>3:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}restrict called with too many arguments"])
+					no_errors = False
+
+			# |========|
+			# | /usage |
+			# |========|
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)>=2:
+					tokens.pop(0)
+					arg = tokens.pop(0)
+					try:
+						arg = int(arg)
+						if len(tokens)>0:
+							if len(self.arguments)!=arg:
+								self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+								no_errors = False
+						else:
+							if len(self.arguments)!=arg:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be called with {arg} arguments"])
+								no_errors = False
+					except:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}usage must be called with a numerical first argument."])
+						no_errors = False
+
+			# Usage must be called with at least one argument
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}usage called without an argument"])
+					no_errors = False
+
+			# /focus can't be called in scripts
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}focus cannot be called from a script."])
+					no_errors = False
+
+			# /style can't be called in scripts
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script."])
+					no_errors = False
+
+			# /settings can't be called in scripts
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}settings cannot be called from a script."])
+					no_errors = False
+
+			# /log can't be called in scripts
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}log cannot be called from a script."])
+					no_errors = False
+
+			# /edit can't be called in scripts
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script."])
+					no_errors = False
+
+			# /end doesn't take any arguments
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end' and len(tokens)>1: 
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}end called with too many arguments."])
+					no_errors = False
+
+			# Make sure that /wait is called with a numerical argument
+			if len(tokens)==2:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
+					count = tokens[1]
+					try:
+						count = int(count)
+					except:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument."])
+						no_errors = False
+
+			# Make sure that /wait has only one argument
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)>2:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}wait called with too many arguments"])
+					no_errors = False
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument"])
+					no_errors = False
+
+		return no_errors
+
 	def run(self):
+
+		if self.filename==None:
+			filename = "script"
+		else:
+			filename = self.filename
 
 		no_errors = True
 
@@ -2974,167 +3137,10 @@ class ScriptThread(QThread):
 				err = self.process_inserts()
 				if err:
 					no_errors = False
-		
-		if not no_errors:
-			self.scriptError.emit([self.gui,self.window,f"Error processing {config.ISSUE_COMMAND_SYMBOL}inserts, script terminating."])
+					break
 
 		if no_errors:
-			# Second pass through the script, here's where
-			# we handle calls to /usage and /restrict,
-			# as well as make sure that certain commands
-			# aren't called, and that /wait and /end
-			# have the proper number (and right kind)
-			# of arguments
-			line_number = 0
-			for line in self.script.split("\n"):
-				line_number = line_number + 1
-				line = line.strip()
-				if len(line)==0: continue
-				tokens = line.split()
-
-				# |===========|
-				# | /restrict |
-				# |===========|
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==2:
-						tokens.pop(0)
-						arg = tokens.pop(0)
-
-						if arg.lower()=='server':
-							if self.window.window_type!=SERVER_WINDOW:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in server windows"])
-								no_errors = False
-						elif arg.lower()=='channel':
-							if self.window.window_type!=CHANNEL_WINDOW:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in channel windows"])
-								no_errors = False
-						elif arg.lower()=='private':
-							if self.window.window_type!=PRIVATE_WINDOW:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be ran in private chat windows"])
-								no_errors = False
-						else:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Unrecognized restriction: \"{arg}\""])
-							no_errors = False
-
-					elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==3:
-						tokens.pop(0)
-						arg1 = tokens.pop(0)
-						arg2 = tokens.pop(0)
-						valid = False
-						if arg1.lower()=='server':
-							if self.window.window_type==SERVER_WINDOW: valid = True
-						if arg1.lower()=='channel':
-							if self.window.window_type==CHANNEL_WINDOW: valid = True
-						if arg1.lower()=='private':
-							if self.window.window_type==PRIVATE_WINDOW: valid = True
-						if arg2.lower()=='server':
-							if self.window.window_type==SERVER_WINDOW: valid = True
-						if arg2.lower()=='channel':
-							if self.window.window_type==CHANNEL_WINDOW: valid = True
-						if arg2.lower()=='private':
-							if self.window.window_type==PRIVATE_WINDOW: valid = True
-
-						if arg1.lower()!='server' and arg1.lower()!='channel' and arg1.lower()!='private':
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Unrecognized restriction: \"{arg1}\""])
-							no_errors = False
-						elif arg2.lower()!='server' and arg2.lower()!='channel' and arg2.lower()!='private':
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Unrecognized restriction: \"{arg2}\""])
-							no_errors = False
-						elif not valid:
-							if self.window.window_type==PRIVATE_WINDOW: reason = "private chat"
-							if self.window.window_type==SERVER_WINDOW: reason = "server"
-							if self.window.window_type==CHANNEL_WINDOW: reason = "channel"
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script is restricted from running in {reason} windows"])
-							no_errors = False
-
-					elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restrict called without an argument"])
-						no_errors = False
-					elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)>3:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restrict called with too many arguments"])
-						no_errors = False
-
-				# |========|
-				# | /usage |
-				# |========|
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)>=2:
-						tokens.pop(0)
-						arg = tokens.pop(0)
-						try:
-							arg = int(arg)
-							if len(tokens)>0:
-								if len(self.arguments)!=arg:
-									self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
-									no_errors = False
-							else:
-								if len(self.arguments)!=arg:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: Script must be called with {arg} arguments"])
-									no_errors = False
-						except:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}usage must be called with a numerical first argument."])
-							no_errors = False
-
-				# Usage must be called with at least one argument
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}usage called without an argument"])
-						no_errors = False
-
-				# /focus can't be called in scripts
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus cannot be called from a script."])
-						no_errors = False
-
-				# /style can't be called in scripts
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style':
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script."])
-						no_errors = False
-
-				# /settings can't be called in scripts
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings':
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}settings cannot be called from a script."])
-						no_errors = False
-
-				# /log can't be called in scripts
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}log cannot be called from a script."])
-						no_errors = False
-
-				# /edit can't be called in scripts
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script."])
-						no_errors = False
-
-				# /end doesn't take any arguments
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end' and len(tokens)>1: 
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}end called with too many arguments."])
-						no_errors = False
-
-				# Make sure that /wait is called with a numerical argument
-				if len(tokens)==2:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
-						count = tokens[1]
-						try:
-							count = int(count)
-						except:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument."])
-							no_errors = False
-
-				# Make sure that /wait has only one argument
-				if len(tokens)>=1:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)>2:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait called with too many arguments"])
-						no_errors = False
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument"])
-						no_errors = False
+			no_errors = self.check_for_errors(self.script,self.filename)
 
 		# Third pass through the script, here's
 		# where we actually do stuff
@@ -3188,19 +3194,19 @@ class ScriptThread(QThread):
 							script_only_command = True
 
 							if not is_valid:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context cannot find window \"{target}\"."])
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}context cannot find window \"{target}\"."])
 								loop = False
 							else:
 								continue
 
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)==1:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called without an argument"])
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}context called without an argument"])
 							script_only_command = True
 							loop = False
 
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)>2:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}context called with too many arguments"])
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}context called with too many arguments"])
 							script_only_command = True
 							loop = False
 

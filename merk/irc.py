@@ -247,7 +247,6 @@ class IRC_Connection(irc.IRCClient):
 			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs["server"]}-{self.kwargs["port"]}.txt")
 			self.dump_file = open(dump_filename,"a")
 
-		#self.sendLine("PROTOCTL UHNAMES")
 		self.sendLine("CAP REQ :chghost")
 		self.sendLine("CAP REQ :cap-notify")
 		self.sendLine("CAP REQ :userhost-in-names")
