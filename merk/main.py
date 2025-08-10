@@ -1024,12 +1024,12 @@ class Merk(QMainWindow):
 				script = connection_script.get_connection_script(hostid)
 				
 				if len(script)>0:
-					commands.executeScript(self,w,script,f"\"{hostid}\"")
+					commands.executeScript(self,w,script,f"{hostid}")
 				else:
 					w = self.getServerWindow(client)
 					if w:
 						if hostid in user.COMMANDS:
-							commands.executeScript(self,w,user.COMMANDS[hostid],f"\"{hostid}\"")
+							commands.executeScript(self,w,user.COMMANDS[hostid],f"{hostid}")
 
 		if len(self.join_channels)>0:
 			for e in self.join_channels:
