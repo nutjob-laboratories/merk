@@ -63,11 +63,11 @@ class Dialog(QDialog):
 		self.about_tab = QWidget()
 		self.tabs.addTab(self.about_tab, "About")
 
-		self.credits_tab = QWidget()
-		self.tabs.addTab(self.credits_tab, "Credits")
-
 		self.patrons_tab = QWidget()
 		self.tabs.addTab(self.patrons_tab, "Patrons")
+
+		self.credits_tab = QWidget()
+		self.tabs.addTab(self.credits_tab, "Credits")
 
 		logo = QLabel()
 		pixmap = QPixmap(SPLASH_LOGO)

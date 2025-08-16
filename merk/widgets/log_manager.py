@@ -550,6 +550,9 @@ class Window(QMainWindow):
 		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
 		self.log = loadLog
 
+		if len(self.log)>config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:
+			self.log = self.log[-config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:]
+
 		chat_length = 0
 		cdate = None
 		marked = []

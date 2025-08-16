@@ -246,9 +246,11 @@ WINDOWBAR_SHOW_UNREAD_MESSAGES = True
 WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = 1000
 WINDOWBAR_ENTRY_MENU = True
 INCLUDE_SCRIPT_COMMAND_SHORTCUT = True
+LOG_MANAGER_MAXIMUM_LOAD_SIZE = 5000
 
 def build_settings():
 	settings = {
+		"log_manager_maximum_load_size": LOG_MANAGER_MAXIMUM_LOAD_SIZE,
 		"include_script_command_shortcut": INCLUDE_SCRIPT_COMMAND_SHORTCUT,
 		"windowbar_entry_context_menu": WINDOWBAR_ENTRY_MENU,
 		"windowbar_unread_message_animation_length": WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH,
@@ -461,6 +463,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "log_manager_maximum_load_size" in settings:
+		settings["log_manager_maximum_load_size"] = LOG_MANAGER_MAXIMUM_LOAD_SIZE
 	if not "include_script_command_shortcut" in settings:
 		settings["include_script_command_shortcut"] = INCLUDE_SCRIPT_COMMAND_SHORTCUT
 	if not "windowbar_entry_context_menu" in settings:
@@ -1087,6 +1091,7 @@ def load_settings(filename):
 	global WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH
 	global WINDOWBAR_ENTRY_MENU
 	global INCLUDE_SCRIPT_COMMAND_SHORTCUT
+	global LOG_MANAGER_MAXIMUM_LOAD_SIZE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1096,6 +1101,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_MANAGER_MAXIMUM_LOAD_SIZE = settings["log_manager_maximum_load_size"]
 		INCLUDE_SCRIPT_COMMAND_SHORTCUT = settings["include_script_command_shortcut"]
 		WINDOWBAR_ENTRY_MENU = settings["windowbar_entry_context_menu"]
 		WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = settings["windowbar_unread_message_animation_length"]

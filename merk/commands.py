@@ -2869,7 +2869,6 @@ class ExitThread(QThread):
 
 		self.threadEnd.emit(self.gui)
 
-
 class ScriptThread(QThread):
 
 	execLine = pyqtSignal(list)
@@ -2898,6 +2897,8 @@ class ScriptThread(QThread):
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
+
+			line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
 			skip_this_line = False
 
@@ -2950,6 +2951,8 @@ class ScriptThread(QThread):
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
+
+			line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
 			# |===========|
 			# | /restrict |
@@ -3159,6 +3162,8 @@ class ScriptThread(QThread):
 					loop =  False
 				else:
 					line = script[index]
+
+					line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
 					tokens = line.split()
 
