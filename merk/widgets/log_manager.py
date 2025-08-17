@@ -82,8 +82,6 @@ class Window(QMainWindow):
 				code.write(dump)
 				code.close()
 
-		self.close()
-
 	def clickTime(self,state):
 		if state == Qt.Checked:
 			self.epoch = True
@@ -248,7 +246,8 @@ class Window(QMainWindow):
 
 		self.packlist.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.packlist.customContextMenuRequested.connect(self.show_context_menu)
-		self.packlist.itemClicked.connect(self.on_item_clicked)
+		self.packlist.itemClicked.connect(self.on_item_selected)
+		self.packlist.itemDoubleClicked.connect(self.on_item_clicked)
 
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAA")
@@ -404,7 +403,7 @@ class Window(QMainWindow):
 
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
-		self.status_details = QLabel(f"<small><b>Click a log to view its contents</b></small>")
+		self.status_details = QLabel(f"<small><b>Double click a log to view its contents</b></small>")
 		self.status.addPermanentWidget(self.status_details,1)
 
 		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
@@ -543,7 +542,52 @@ class Window(QMainWindow):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
+	def on_item_selected(self, item):
+
+		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
+		self.log = loadLog
+
+		chat_length = 0
+
+		for line in self.log:
+			if line.type!=DATE_MESSAGE: chat_length = chat_length + 1
+
+		size_bytes = os.path.getsize(item.file)
+
+		self.status_details.setText(f'<small><b>{item.file}</b></small>')
+		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
+		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines - <b>Double click to view log</b></small>")
+
+		self.menubar.setEnabled(True)
+		self.format.setEnabled(True)
+		self.time.setEnabled(True)
+
+		if self.export_format=='json':
+			self.typeLabel.setEnabled(False)
+			self.type.setEnabled(False)
+			self.lineLabel.setEnabled(False)
+			self.line.setEnabled(False)
+		else:
+			self.typeLabel.setEnabled(True)
+			self.type.setEnabled(True)
+			self.lineLabel.setEnabled(True)
+			self.line.setEnabled(True)
+
+		self.button_export.setEnabled(True)
+
+		if item.type==CHANNEL_WINDOW:
+			self.filetype.setText(f"<small><b>Channel log</b></small>")
+			self.file_icon.setPixmap(self.channel_file)
+		elif item.type==PRIVATE_WINDOW:
+			self.filetype.setText(f"<small><b>Private chat log</b></small>")
+			self.file_icon.setPixmap(self.private_file)
+
+		self.filename.setText(f"<b>{item.channel}</b>")
+
 	def on_item_clicked(self, item):
+
+		self.tabs.setCurrentWidget(self.log_display)
+
 		start_time = time.time()
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 
