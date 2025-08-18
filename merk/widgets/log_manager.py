@@ -605,8 +605,16 @@ class Window(QMainWindow):
 		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
 		self.log = loadLog
 
+		big_log = False
+
 		if len(self.log)>config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:
+			big_log = True
+			self.reminder.setText(f'<small><b>Rendering last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log for viewing...</b></small>')
 			self.log = self.log[-config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:]
+		else:
+			self.reminder.setText(f'<small><b>Rendering log for viewing...</b></small>')
+
+		QApplication.processEvents()
 
 		chat_length = 0
 		cdate = None
@@ -634,7 +642,10 @@ class Window(QMainWindow):
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
 		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines, {rendertime:.4f} seconds</small>")
-		self.reminder.setText(' ')
+		if big_log:
+			self.reminder.setText(f'<small><b>Viewing last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</b></small>')
+		else:
+			self.reminder.setText('<small><b>Viewing full log</b></small>')
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
