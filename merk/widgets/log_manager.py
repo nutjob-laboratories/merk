@@ -403,7 +403,7 @@ class Window(QMainWindow):
 
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
-		self.status_details = QLabel(f"<small><b>Double click a log to view its contents</b></small>")
+		self.status_details = QLabel(f"<small><b>Select a log to view or export</b></small>")
 		self.status.addPermanentWidget(self.status_details,1)
 
 		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
@@ -501,8 +501,14 @@ class Window(QMainWindow):
 		self.log_display.setLayout(mainLayout)
 		self.export_options.setLayout(bottomLayout)
 
+		self.reminder = QLabel(" ")
+
+		sbar = QVBoxLayout()
+		sbar.addWidget(self.filestats)
+		sbar.addWidget(self.reminder)
+
 		buttonbar = QHBoxLayout()
-		buttonbar.addWidget(self.filestats)
+		buttonbar.addLayout(sbar)
 		buttonbar.addStretch()
 		buttonbar.addWidget(self.button_close)
 
@@ -552,11 +558,16 @@ class Window(QMainWindow):
 		for line in self.log:
 			if line.type!=DATE_MESSAGE: chat_length = chat_length + 1
 
+		if len(self.log)>config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:
+			self.reminder.setText(f"<small><b>Double click to view last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</b></small>")
+		else:
+			self.reminder.setText(f"<small><b>Double click to view log</b></small>")
+
 		size_bytes = os.path.getsize(item.file)
 
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
-		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines - <b>Double click to view log</b></small>")
+		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines</b></small>")
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
@@ -623,6 +634,7 @@ class Window(QMainWindow):
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
 		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines, {rendertime:.4f} seconds</small>")
+		self.reminder.setText(' ')
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
