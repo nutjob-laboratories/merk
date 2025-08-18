@@ -263,6 +263,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                                               |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
+| `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
 | `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |

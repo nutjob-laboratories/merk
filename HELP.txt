@@ -231,6 +231,10 @@ Appearance:
 <td>Sends a message</td>
 </tr>
 <tr>
+<td><code>/msgbox MESSAGE...</code></td>
+<td>Displays a messagebox with a short message</td>
+</tr>
+<tr>
 <td><code>/nick NEW_NICKNAME</code></td>
 <td>Changes your nickname</td>
 </tr>

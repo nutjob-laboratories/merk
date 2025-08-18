@@ -133,6 +133,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"restrict",
 			cmdsymbol+"insert",
 			cmdsymbol+"private",
+			cmdsymbol+"msgbox",
 		]
 
 		if not config.ENABLE_ALIASES:

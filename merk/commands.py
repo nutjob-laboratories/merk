@@ -144,6 +144,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"shell": config.ISSUE_COMMAND_SYMBOL+"shell ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp": config.ISSUE_COMMAND_SYMBOL+"ctcp ",
 			config.ISSUE_COMMAND_SYMBOL+"private": config.ISSUE_COMMAND_SYMBOL+"private ",
+			config.ISSUE_COMMAND_SYMBOL+"msgbox": config.ISSUE_COMMAND_SYMBOL+"msgbox ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -232,6 +233,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>", "Executes an external program, and stores the output in an alias" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp USER REQUEST</b>", "Sends a CTCP request; valid requests are TIME, VERSION, or FINGER" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME</b>", "Opens a private chat window for NICKNAME" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -837,6 +839,34 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |---------|
+	# | /msgbox |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox' and len(tokens)>=2:
+			tokens.pop(0)
+			
+			msg = ' '.join(tokens)
+
+			msgBox = QMessageBox()
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText(msg)
+			msgBox.setWindowTitle(APPLICATION_NAME)
+			msgBox.setStandardButtons(QMessageBox.Ok)
+
+			msgBox.exec()
+
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
+			if is_script:
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |----------|
 	# | /private |
