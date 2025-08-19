@@ -69,6 +69,26 @@ HELP_PREFIX = None
 HELP_POSTFIX = None
 HELP_EPILOGUE = None
 
+HALT_SCRIPT = []
+
+def add_halt(script_id):
+	if script_id==None: return
+	global HALT_SCRIPT
+
+	if script_id in HALT_SCRIPT: return
+	HALT_SCRIPT.append(script_id)
+
+def do_halt(script_id):
+	if script_id in HALT_SCRIPT: return True
+	return False
+
+def remove_halt(script_id):
+	global HALT_SCRIPT
+	clean = []
+	for i in HALT_SCRIPT:
+		if i!=script_id: clean.append(i)
+	HALT_SCRIPT = clean
+
 def initialize(directory,directory_name):
 	global SCRIPTS_DIRECTORY
 
@@ -423,7 +443,7 @@ def handleCommonCommands(gui,window,user_input):
 	TEMPORARY_ALIAS = {}
 	return retval
 
-def handleScriptCommands(gui,window,user_input,line_number):
+def handleScriptCommands(gui,window,user_input,line_number,script_id):
 	global TEMPORARY_ALIAS
 
 	buildTemporaryAliases(gui,window)
@@ -431,15 +451,15 @@ def handleScriptCommands(gui,window,user_input,line_number):
 	user_input = interpolateAliases(user_input)
 
 	if window.window_type!=SERVER_WINDOW:
-		if executeChatCommands(gui,window,user_input,True,line_number):
+		if executeChatCommands(gui,window,user_input,True,line_number,script_id):
 			TEMPORARY_ALIAS = {}
 			return True
 
-	retval = executeCommonCommands(gui,window,user_input,True,line_number)
+	retval = executeCommonCommands(gui,window,user_input,True,line_number,script_id)
 	TEMPORARY_ALIAS = {}
 	return retval
 
-def executeChatCommands(gui,window,user_input,is_script,line_number=0):
+def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
 	user_input = user_input.strip()
 	tokens = user_input.split()
 
@@ -572,6 +592,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -603,6 +624,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0):
 					return True
 				else:
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Can't set topic for a private message")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -712,16 +734,20 @@ def execute_script_line(data):
 	line_number = data[4]
 	script_only_command = data[5]
 
-	if not handleScriptCommands(gui,window,line,line_number):
+	if do_halt(script_id): return
+
+	if not handleScriptCommands(gui,window,line,line_number,script_id):
 		if len(line.strip())==0: return
 		if config.DISPLAY_SCRIPT_ERRORS:
 			# Check to make sure this isn't being thrown by script
 			# only commands
 			if not script_only_command:
 				if line[0]==config.ISSUE_COMMAND_SYMBOL:
+					add_halt(script_id)
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Unrecognized command \"{line}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
+					add_halt(script_id)
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Line \"{line}\" contains no command")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
@@ -739,6 +765,7 @@ def execute_script_end(data):
 	script_id = data[1]
 
 	del gui.scripts[script_id]
+	remove_halt(script_id)
 
 def executeScript(gui,window,text,filename=None):
 
@@ -828,7 +855,7 @@ def list_files():
 			file_paths.append(os.path.join(root, file))
 	return file_paths
 
-def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
+def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
 	user_input = user_input.strip()
 	tokens = user_input.split()
 
@@ -860,6 +887,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -879,6 +907,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -928,6 +957,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				return True
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"me TARGET MESSAGE")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -955,6 +985,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				pass
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid request type (not VERSION, TIME, or FINGER)")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -966,6 +997,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ctcp':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"ctcp USER REQUEST")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -982,6 +1014,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
 			if not config.ENABLE_SHELL_COMMAND:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"shell has been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -999,6 +1032,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				addAlias(alias,stored)
 			except subprocess.CalledProcessError as e:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}:{config.ISSUE_COMMAND_SYMBOL}shell returned \"{e.stderr}\"")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1012,6 +1046,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1039,6 +1074,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ping':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"ping USER")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1102,6 +1138,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ignore':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"ignore USER")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1148,6 +1185,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unignore':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"unignore USER")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1238,6 +1276,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 				if len(results)==0:
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: No settings found containing \"{my_setting}\"")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1284,6 +1323,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			if my_setting in settings:
 				if type(settings[my_setting]) is list or my_setting=="timestamp_format" or my_setting=="log_absolutely_all_messages_of_any_type":
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{my_setting}\" cannot be changed with the {config.ISSUE_COMMAND_SYMBOL}config command")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1317,6 +1357,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 					else:
 						itype = "unknown"
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{my_value}\" is not a valid value for \"{my_setting}\" (value is {itype}, requires {dtype})")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1338,6 +1379,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 					else:
 						reason = "Invalid setting for unknown reasons"
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line: {line_number}: \"{my_value}\" is not a valid value for \"{my_setting}\"")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1361,6 +1403,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line: {line_number}: \"{my_setting}\" is not a valid configuration setting")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1381,6 +1424,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				timer=int(timer)
 			except:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{timer}\" is not a number")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1415,6 +1459,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'knock' and len(tokens)==2:
 			if not 'KNOCK' in window.client.supports:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"knock command is not supported by this server")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1431,6 +1476,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'knock' and len(tokens)>=2:
 			if not 'KNOCK' in window.client.supports:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"knock command is not supported by this server")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1452,6 +1498,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"knock CHANNEL [MESSAGE]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1469,6 +1516,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'refresh':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"refresh")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1485,6 +1533,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 			if len(window.client.server_channel_list)==0:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Channel list is empty, please use "+config.ISSUE_COMMAND_SYMBOL+"refresh to populate it.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1530,6 +1579,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 					QSound.play(efilename)
 				else:
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \""+filename+"\" is not a WAV file.")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1538,6 +1588,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Audio file \""+filename+"\" cannot be found.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1547,6 +1598,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'play':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"play FILENAME")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1563,6 +1615,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1587,6 +1640,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			if len(a)>=1:
 				if not a[0].isalpha():
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1603,6 +1657,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				is_number = False
 			if is_number:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens cannot be numbers")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1646,6 +1701,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1662,6 +1718,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)>=1:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1681,6 +1738,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				return True
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias \"{target}\" not found.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1690,6 +1748,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1737,6 +1796,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"connectssl HOST [PORT] [PASSWORD]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1777,6 +1837,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"connect HOST [PORT] [PASSWORD]")
 				return True
@@ -1823,6 +1884,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"xconnectssl HOST [PORT] [PASSWORD]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1863,6 +1925,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"xconnect HOST [PORT] [PASSWORD]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1893,6 +1956,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: File \""+filename+"\" doesn't exist or is not readable.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1905,6 +1969,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1927,6 +1992,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'version':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"version")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1952,6 +2018,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
 					if is_script:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: No text to print")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1974,6 +2041,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'print' and len(tokens)==1:
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"print TEXT")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1991,6 +2059,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'time':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"time")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2011,6 +2080,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'raw' and len(tokens)==1:
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"raw TEXT")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2028,6 +2098,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'back':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"back")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2077,6 +2148,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'oper':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2122,6 +2194,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				gui.showSubWindow(gui.getSubWindow(window.name,window.client))
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2141,6 +2214,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'tile':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"tile")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2160,6 +2234,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'cascade':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"cascade")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2186,6 +2261,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						w.showNormal()
 					else:
 						if is_script:
+							do_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
 								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2194,6 +2270,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Server \""+server+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2210,6 +2287,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				w.showNormal()
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2239,6 +2317,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						w.showMinimized()
 					else:
 						if is_script:
+							do_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
 								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2247,6 +2326,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Server \""+server+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2263,6 +2343,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				w.showMinimized()
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2292,6 +2373,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						w.showMaximized()
 					else:
 						if is_script:
+							do_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
 								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2300,6 +2382,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Server \""+server+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2316,6 +2399,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				w.showMaximized()
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2379,6 +2463,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'invite':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"invite NICKNAME CHANNEL")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2395,6 +2480,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Scripting is disabled")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2425,6 +2511,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \""+filename+"\" doesn't exist or is not readable.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2435,6 +2522,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2460,6 +2548,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				arg = int(arg)
 			except:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2478,6 +2567,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				arg = int(arg)
 			except:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2489,6 +2579,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"whowas NICKNAME [COUNT] [SERVER]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2512,6 +2603,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			arg = tokens.pop(0)
 			if arg.lower()!='o':
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Improper argument for "+config.ISSUE_COMMAND_SYMBOL+"who")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2523,6 +2615,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"who NICKNAME [o]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2548,6 +2641,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whois':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"whois NICKNAME [SERVER]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2571,6 +2665,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'kick':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"kick CHANNEL NICKNAME [REASON]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2591,6 +2686,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"mode TARGET MODE...")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2621,6 +2717,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'notice':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2669,6 +2766,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2697,6 +2795,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 					found = True
 			if found: return True
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Command "+cmd+" not found.")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2721,6 +2820,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"topic CHANNEL NEW_TOPIC")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2779,6 +2879,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'nick':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"nick NEW_NICKNAME")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2809,6 +2910,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"part CHANNEL [MESSAGE]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2829,6 +2931,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			# channel from the same channel they are in
 			if window.name.lower()==channel.lower():
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: You have already joined "+window.name)
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2860,6 +2963,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			# channel from the same channel they are in
 			if window.name.lower()==channel.lower():
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: You have already joined "+window.name)
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2884,6 +2988,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'join':
 			if is_script:
+				do_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
