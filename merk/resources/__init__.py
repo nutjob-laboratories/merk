@@ -166,10 +166,6 @@ UNCHECKED_ICON = ":/icon-unchecked.png"
 OPTIONS_ICON = ":/icon-options.png"
 BOLD_ICON = ":/icon-bold.png"
 ITALIC_ICON = ":/icon-italic.png"
-SPELLCHECK_ICON = ":/icon-spellcheck.png"
-MENU_ICON = ":/icon-menu.png"
-WINDOW_ICON = ":/icon-window.png"
-SYSTRAY_ICON = ":/icon-tray.png"
 MDI_BACKGROUND = ":/gui-background.png"
 
 DARK_ROUND_UNCHECKED_ICON = ":/icon-dark_runchecked.png"
@@ -272,6 +268,10 @@ SHOW_ICON = ":/icon-show.png"
 HIDE_ICON = ":/icon-hide.png"
 CONSOLE_WINDOW_ICON = ":/icon-console_window.png"
 EXE_ICON = ":/icon-exe.png"
+SPELLCHECK_ICON = ":/icon-spellcheck.png"
+MENU_ICON = ":/icon-menu.png"
+WINDOW_ICON = ":/icon-window.png"
+SYSTRAY_ICON = ":/icon-tray.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"
@@ -291,7 +291,6 @@ LIGHT_HORIZONTAL_DOTTED_BACKGROUND = ":/gui-light_horizontal_dotted.png"
 LIGHT_HORIZONTAL_RULE_BACKGROUND = ":/gui-light_horizontal_rule.png"
 
 BELL_NOTIFICATION = ":/sound-notification.wav"
-
 
 HELP_ENTRY_TEMPLATE='''<tr><td>%_USAGE_%&nbsp;</td><td>%_DESCRIPTION_%</td></tr>'''
 HELP_ENTRY_COMMAND_TEMPLATE='''%_USAGE_%&nbsp;&nbsp;-&nbsp;&nbsp;%_DESCRIPTION_%'''

@@ -785,9 +785,9 @@ class Windowbar(QToolBar):
 		menu.addAction(entry)
 
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
-			entry = QAction(QIcon(self.parent.checked_icon),"Doubleclick to maximize", self)
+			entry = QAction(QIcon(self.parent.checked_icon),"Double click to maximize", self)
 		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Doubleclick to maximize", self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Double click to maximize", self)
 		entry.triggered.connect(self.doubleclick)
 		menu.addAction(entry)
 

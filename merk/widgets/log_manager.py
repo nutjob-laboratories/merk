@@ -501,11 +501,11 @@ class Window(QMainWindow):
 		self.log_display.setLayout(mainLayout)
 		self.export_options.setLayout(bottomLayout)
 
-		self.reminder = QLabel(" ")
+		self.log_render_status = QLabel(" ")
 
 		sbar = QVBoxLayout()
 		sbar.addWidget(self.filestats)
-		sbar.addWidget(self.reminder)
+		sbar.addWidget(self.log_render_status)
 
 		buttonbar = QHBoxLayout()
 		buttonbar.addLayout(sbar)
@@ -559,9 +559,9 @@ class Window(QMainWindow):
 			if line.type!=DATE_MESSAGE: chat_length = chat_length + 1
 
 		if len(self.log)>config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:
-			self.reminder.setText(f"<small><b>Double click to view last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</b></small>")
+			self.log_render_status.setText(f"<small>Double click to view last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</small>")
 		else:
-			self.reminder.setText(f"<small><b>Double click to view log</b></small>")
+			self.log_render_status.setText(f"<small>Double click to view log</small>")
 
 		size_bytes = os.path.getsize(item.file)
 
@@ -609,10 +609,10 @@ class Window(QMainWindow):
 
 		if len(self.log)>config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:
 			big_log = True
-			self.reminder.setText(f'<small><b>Rendering last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log for viewing...</b></small>')
+			self.log_render_status.setText(f'<small>Rendering last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log for viewing...</small>')
 			self.log = self.log[-config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:]
 		else:
-			self.reminder.setText(f'<small><b>Rendering log for viewing...</b></small>')
+			self.log_render_status.setText(f'<small>Rendering log for viewing...</small>')
 
 		QApplication.processEvents()
 
@@ -643,9 +643,9 @@ class Window(QMainWindow):
 		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
 		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines, {rendertime:.4f} seconds</small>")
 		if big_log:
-			self.reminder.setText(f'<small><b>Viewing last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</b></small>')
+			self.log_render_status.setText(f'<small>Viewing last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</small>')
 		else:
-			self.reminder.setText('<small><b>Viewing full log</b></small>')
+			self.log_render_status.setText('<small>Viewing full log</small>')
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)

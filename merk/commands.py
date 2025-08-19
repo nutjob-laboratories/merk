@@ -1459,6 +1459,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"knock CHANNEL [MESSAGE]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
+
 	# |----------|
 	# | /refresh |
 	# |----------|
@@ -2139,6 +2140,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'tile':
+			if is_script:
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"tile")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"tile")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
@@ -2153,6 +2159,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0):
 				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'cascade':
+			if is_script:
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"cascade")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"cascade")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
