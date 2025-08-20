@@ -418,7 +418,13 @@ def inject_www_links(txt,style):
 	else:
 		style = style["hyperlink"]
 
-	urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', txt)
+	# urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', txt)
+
+	# New URL search pattern includes # as part of the URL
+	search_for_urls = r"(https?:\/\/[a-zA-Z0-9\-\.]+(?:\.[a-zA-Z]{2,6})(?::[0-9]{1,5})?(?:\/([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]*))?(?:#([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]+))?)"
+	found_urls = re.finditer(search_for_urls, txt)
+	urls = [match.group(0) for match in found_urls]
+
 	for u in urls:
 		u = re.sub('<[^<]+?>', '', u)
 		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"
