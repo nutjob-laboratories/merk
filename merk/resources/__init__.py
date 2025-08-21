@@ -272,6 +272,7 @@ SPELLCHECK_ICON = ":/icon-spellcheck.png"
 MENU_ICON = ":/icon-menu.png"
 WINDOW_ICON = ":/icon-window.png"
 SYSTRAY_ICON = ":/icon-tray.png"
+HIGHLIGHT_ICON = ":/icon-highlight.png"
 
 SPLASH_LOGO = ":/gui-splash.png"
 VERTICAL_SPLASH_LOGO = ":/gui-vertical.png"

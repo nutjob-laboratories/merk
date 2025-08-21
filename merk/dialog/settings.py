@@ -3305,7 +3305,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Highlighting")
 		entry.widget = self.syntaxPage
-		entry.setIcon(QIcon(SCRIPT_ICON))
+		entry.setIcon(QIcon(HIGHLIGHT_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.syntaxPage)
@@ -3542,7 +3542,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Scripting")
 		entry.widget = self.scriptingPage
-		entry.setIcon(QIcon(README_ICON))
+		entry.setIcon(QIcon(SCRIPT_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.scriptingPage)
