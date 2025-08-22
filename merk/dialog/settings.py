@@ -3297,7 +3297,87 @@ class Dialog(QDialog):
 			self.doubleclickRestore.setEnabled(False)
 			self.clickToMinimize.setEnabled(False)
 
-		# Syntax
+		# Scripting
+
+		self.scriptingPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Scripting")
+		entry.widget = self.scriptingPage
+		entry.setIcon(QIcon(SCRIPT_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.scriptingPage)
+
+		self.interpolateAlias = QCheckBox("Interpolate aliases into input\nfrom the text input widget",self)
+		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
+		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
+		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
+		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.enableAlias = QCheckBox("Enable aliases",self)
+		if config.ENABLE_ALIASES: self.enableAlias.setChecked(True)
+		self.enableAlias.stateChanged.connect(self.changedAlias)
+
+		self.enableScripts = QCheckBox("Enable scripting",self)
+		if config.SCRIPTING_ENGINE_ENABLED: self.enableScripts.setChecked(True)
+		self.enableScripts.stateChanged.connect(self.changedScripting)
+
+		self.showErrors = QCheckBox("Show error messages when\nexecuting scripts",self)
+		if config.DISPLAY_SCRIPT_ERRORS: self.showErrors.setChecked(True)
+		self.showErrors.stateChanged.connect(self.changedSetting)
+		self.showErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("AA")
+
+		self.alias_symbol = QNoSpaceLineEdit(config.ALIAS_INTERPOLATION_SYMBOL)
+		self.alias_symbol.setMaximumWidth(wwidth)
+		self.alias_symbol.textChanged.connect(self.changedSettingAdvancedSymbol)
+		self.alias_symbol_label = QLabel("Alias interpolation symbol")
+
+		aliasLayout = QHBoxLayout()
+		aliasLayout.addWidget(self.alias_symbol)
+		aliasLayout.addWidget(self.alias_symbol_label)
+		aliasLayout.addStretch()
+
+		self.enableShell = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}shell command",self)
+		if config.ENABLE_SHELL_COMMAND: self.enableShell.setChecked(True)
+		self.enableShell.stateChanged.connect(self.changedSetting)
+
+		self.scriptingDescription = QLabel(f"""
+			<small><b>Scripting</b> allows <b>{APPLICATION_NAME}</b> to automate commands upon connection, as well
+			as for multiple commands to be executed in sequence. Turning off <b>scripting</b> will
+			prevent scripts and connection scripts from being executed or edited in <b>{APPLICATION_NAME}</b>,
+			but it will not turn off commands entered in the input widget.
+			</small>
+			
+			""")
+		self.scriptingDescription.setWordWrap(True)
+		self.scriptingDescription.setAlignment(Qt.AlignJustify)
+
+		seLayout = QHBoxLayout()
+		seLayout.addStretch()
+		seLayout.addWidget(self.enableScripts)
+		seLayout.addStretch()
+
+		scriptingLayout = QVBoxLayout()
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
+		scriptingLayout.addWidget(self.scriptingDescription)
+		scriptingLayout.addLayout(seLayout)
+		scriptingLayout.addWidget(QLabel(' '))
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting settings</b>"))
+		scriptingLayout.addWidget(self.enableAlias)
+		scriptingLayout.addWidget(self.interpolateAlias)
+		scriptingLayout.addLayout(aliasLayout)
+		scriptingLayout.addWidget(self.showErrors)
+		scriptingLayout.addWidget(self.enableShell)
+		scriptingLayout.addStretch()
+
+		self.scriptingPage.setLayout(scriptingLayout)
+
+		# Highlighting
 
 		self.syntaxPage = QWidget()
 
@@ -3533,86 +3613,6 @@ class Dialog(QDialog):
 		audioLayout.addStretch()
 
 		self.notificationsPage.setLayout(audioLayout)
-
-		# Scripting
-
-		self.scriptingPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Scripting")
-		entry.widget = self.scriptingPage
-		entry.setIcon(QIcon(SCRIPT_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.scriptingPage)
-
-		self.interpolateAlias = QCheckBox("Interpolate aliases into input\nfrom the text input widget",self)
-		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
-		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
-		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
-		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.enableAlias = QCheckBox("Enable aliases",self)
-		if config.ENABLE_ALIASES: self.enableAlias.setChecked(True)
-		self.enableAlias.stateChanged.connect(self.changedAlias)
-
-		self.enableScripts = QCheckBox("Enable scripting",self)
-		if config.SCRIPTING_ENGINE_ENABLED: self.enableScripts.setChecked(True)
-		self.enableScripts.stateChanged.connect(self.changedScripting)
-
-		self.showErrors = QCheckBox("Show error messages when\nexecuting scripts",self)
-		if config.DISPLAY_SCRIPT_ERRORS: self.showErrors.setChecked(True)
-		self.showErrors.stateChanged.connect(self.changedSetting)
-		self.showErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("AA")
-
-		self.alias_symbol = QNoSpaceLineEdit(config.ALIAS_INTERPOLATION_SYMBOL)
-		self.alias_symbol.setMaximumWidth(wwidth)
-		self.alias_symbol.textChanged.connect(self.changedSettingAdvancedSymbol)
-		self.alias_symbol_label = QLabel("Alias interpolation symbol")
-
-		aliasLayout = QHBoxLayout()
-		aliasLayout.addWidget(self.alias_symbol)
-		aliasLayout.addWidget(self.alias_symbol_label)
-		aliasLayout.addStretch()
-
-		self.enableShell = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}shell command",self)
-		if config.ENABLE_SHELL_COMMAND: self.enableShell.setChecked(True)
-		self.enableShell.stateChanged.connect(self.changedSetting)
-
-		self.scriptingDescription = QLabel(f"""
-			<small><b>Scripting</b> allows <b>{APPLICATION_NAME}</b> to automate commands upon connection, as well
-			as for multiple commands to be executed in sequence. Turning off <b>scripting</b> will
-			prevent scripts and connection scripts from being executed or edited in <b>{APPLICATION_NAME}</b>,
-			but it will not turn off commands entered in the input widget.
-			</small>
-			
-			""")
-		self.scriptingDescription.setWordWrap(True)
-		self.scriptingDescription.setAlignment(Qt.AlignJustify)
-
-		seLayout = QHBoxLayout()
-		seLayout.addStretch()
-		seLayout.addWidget(self.enableScripts)
-		seLayout.addStretch()
-
-		scriptingLayout = QVBoxLayout()
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
-		scriptingLayout.addWidget(self.scriptingDescription)
-		scriptingLayout.addLayout(seLayout)
-		scriptingLayout.addWidget(QLabel(' '))
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting settings</b>"))
-		scriptingLayout.addWidget(self.enableAlias)
-		scriptingLayout.addWidget(self.interpolateAlias)
-		scriptingLayout.addLayout(aliasLayout)
-		scriptingLayout.addWidget(self.showErrors)
-		scriptingLayout.addWidget(self.enableShell)
-		scriptingLayout.addStretch()
-
-		self.scriptingPage.setLayout(scriptingLayout)
 
 		# Advanced
 
