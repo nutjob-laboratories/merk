@@ -1752,6 +1752,7 @@ class Window(QMainWindow):
 
 
 		self.rerenderChatLog()
+		self.rerenderUserlist()
 
 	def rerenderUserlist(self):
 		self.writeUserlist(self.users)
