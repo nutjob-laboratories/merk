@@ -1180,6 +1180,18 @@ class Merk(QMainWindow):
 			if c==window: return True
 		return False
 
+	def is_ignored(self,nick,hostmask):
+
+		if nick!=None:
+			for i in config.IGNORE_LIST:
+				if i.lower()==nick.lower(): return True
+
+		if hostmask!=None:
+			for i in config.IGNORE_LIST:
+				if i.lower()==hostmask.lower(): return True
+
+		return False
+
 	def privmsg(self,client,user,target,msg):
 
 		p = user.split("!")
@@ -1189,6 +1201,11 @@ class Merk(QMainWindow):
 		else:
 			nickname = user
 			hostmask = None
+
+		if hostmask!=None:
+			ignored = self.is_ignored(nickname,hostmask)
+		else:
+			ignored = self.is_ignored(nickname,None)
 
 		self.updateHostmask(client,nickname,hostmask)
 
@@ -1210,8 +1227,9 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 				if not self.isActiveWindow(w):
-					# Not the current window
-					self.add_unread_message(client,w.name)
+					if not ignored:
+						# Not the current window
+						self.add_unread_message(client,w.name)
 				return
 
 		if target==client.nickname:
@@ -1232,8 +1250,9 @@ class Merk(QMainWindow):
 				displayed_private_message = True
 
 				if not self.isActiveWindow(w):
-					# Not the current window
-					self.add_unread_message(client,w.name)
+					if not ignored:
+						# Not the current window
+						self.add_unread_message(client,w.name)
 
 			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 				# Write the private message to the server window
@@ -1245,14 +1264,17 @@ class Merk(QMainWindow):
 			if displayed_private_message: return
 
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
-				# Create a new private message window and write
-				# the message to it
-				w = self.newPrivateWindow(nickname,client)
-				if w:
-					c = w.widget()
-					t = Message(CHAT_MESSAGE,user,msg)
-					c.writeText(t)
-					return
+				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
+					pass
+				else:
+					# Create a new private message window and write
+					# the message to it
+					w = self.newPrivateWindow(nickname,client)
+					if w:
+						c = w.widget()
+						t = Message(CHAT_MESSAGE,user,msg)
+						c.writeText(t)
+						return
 
 			# Client has received a private message, and will
 			# NOT see it, so write it to the current window

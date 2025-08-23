@@ -3077,12 +3077,18 @@ class Dialog(QDialog):
 		self.noPadding.stateChanged.connect(self.changedSettingRerender)
 		self.noPadding.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
+		self.ignoreCreateWindow = QCheckBox("Do not create windows for\nmessages from ignored users",self)
+		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
+		self.ignoreCreateWindow.stateChanged.connect(self.changedSetting)
+		self.ignoreCreateWindow.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.createWindow)
+		messageLayout.addWidget(self.ignoreCreateWindow)
 		messageLayout.addWidget(self.createWindowOut)
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
@@ -3091,7 +3097,6 @@ class Dialog(QDialog):
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system messages</b>"))
 		messageLayout.addLayout(prepLayout)
-		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		messageLayout.addWidget(quitBox)
 		messageLayout.addStretch()
@@ -3982,6 +3987,7 @@ class Dialog(QDialog):
 		config.SHOW_IGNORE_STATUS_IN_USERLISTS = self.ignoreUserlist.isChecked()
 		config.WINDOWBAR_SHOW_UNREAD_MESSAGES = self.windowbarUnread.isChecked()
 		config.WINDOWBAR_ENTRY_MENU = self.windowbarEntryMenu.isChecked()
+		config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = self.ignoreCreateWindow.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
