@@ -1296,6 +1296,11 @@ class Merk(QMainWindow):
 
 		self.updateHostmask(client,nickname,hostmask)
 
+		if hostmask!=None:
+			ignored = self.is_ignored(nickname,hostmask)
+		else:
+			ignored = self.is_ignored(nickname,None)
+
 		# Channel message
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 			w = self.getWindow(target,client)
@@ -1311,14 +1316,17 @@ class Merk(QMainWindow):
 			w.writeText(t)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
-				# Create a new private message window and write
-				# the message to it
-				w = self.newPrivateWindow(nickname,client)
-				if w:
-					c = w.widget()
-					t = Message(ACTION_MESSAGE,nickname,msg)
-					c.writeText(t)
-					return
+				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
+					pass
+				else:
+					# Create a new private message window and write
+					# the message to it
+					w = self.newPrivateWindow(nickname,client)
+					if w:
+						c = w.widget()
+						t = Message(ACTION_MESSAGE,nickname,msg)
+						c.writeText(t)
+						return
 
 	def noticed(self,client,user,target,msg):
 

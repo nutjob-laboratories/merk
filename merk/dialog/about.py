@@ -249,10 +249,15 @@ class Dialog(QDialog):
 		patDescLayout.addWidget(patron_description)
 		patDescLayout.addStretch()
 
+		patListLayout = QHBoxLayout()
+		patListLayout.addStretch()
+		patListLayout.addWidget(patron_list)
+		patListLayout.addStretch()
+
 		patronLayout = QVBoxLayout()
 		patronLayout.addLayout(patDescLayout)
 		patronLayout.addWidget(widgets.textSeparatorLabel(self,"<b>patrons</b>"))
-		patronLayout.addWidget(patron_list)
+		patronLayout.addLayout(patListLayout)
 		patronLayout.addStretch()
 
 		self.patrons_tab.setLayout(patronLayout)
