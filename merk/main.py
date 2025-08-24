@@ -848,7 +848,7 @@ class Merk(QMainWindow):
 					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 						netlink = get_network_link(mynet)
 						if netlink!=None:
-							desc = f"<a href=\"{netlink}\">IRC Network</a>"
+							desc = f"<a href=\"{netlink}\">Network Website</a>"
 						else:
 							desc = "IRC Network"
 					else:
@@ -3494,7 +3494,7 @@ class Merk(QMainWindow):
 					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 						netlink = get_network_link(mynet)
 						if netlink!=None:
-							desc = f"<a href=\"{netlink}\">IRC Network</a>"
+							desc = f"<a href=\"{netlink}\">Network Website</a>"
 						else:
 							desc = "IRC Network"
 					else:
