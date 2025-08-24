@@ -228,7 +228,8 @@ class Dialog(QDialog):
 		patron_list = QLabel(f"""
 			<small>Ilmari Lauhakangas, Boris, Michael, Jim Kost,<br>
 			       Brian, Harry Oxnard, Vincent, Wayne Windsor,<br>
-			       Brian
+			       Brian, Nancy Hetrick, Nancy Golumbia, Toni<br>
+			       Dewees
 			</small>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)
