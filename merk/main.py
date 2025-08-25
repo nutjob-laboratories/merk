@@ -1364,24 +1364,12 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
-		else:
-			# Write the notice to the current window
-			current = self.MDI.activeSubWindow()
-			if current:
-				c = current.widget()
-				if not c is self.getServerWindow(client):
-					t = Message(NOTICE_MESSAGE,user,msg)
-					c.writeText(t)
 
-			# Write the notice to the server window
-			w = self.getServerWindow(client)
-			if w:
-				# If the current window is the server
-				# window, then don't write the message
-				# twice
-				if w is current: return
-				t = Message(NOTICE_MESSAGE,user,msg)
-				w.writeText(t)
+		# Write the notice to the server window
+		w = self.getServerWindow(client)
+		if w:
+			t = Message(NOTICE_MESSAGE,user,msg)
+			w.writeText(t)
 
 	def gotTime(self,client,server,time):
 		w = self.getServerWindow(client)
