@@ -180,7 +180,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/ignore USER</code></td>
-<td>Hides a <code>USER</code>&#39;s chat&#39;</td>
+<td>Hides a <code>USER</code>&#39;s chat; use <code>*</code> as multiple character wildcards, and <code>?</code> as single character wildcards</td>
 </tr>
 <tr>
 <td><code>/insert FILE [FILE...]</code></td>

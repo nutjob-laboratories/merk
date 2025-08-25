@@ -35,6 +35,7 @@ from PyQt5.QtMultimedia import QSound
 import twisted
 import platform
 import subprocess
+import fnmatch
 
 import emoji
 
@@ -1189,6 +1190,11 @@ class Merk(QMainWindow):
 		if hostmask!=None:
 			for i in config.IGNORE_LIST:
 				if i.lower()==hostmask.lower(): return True
+
+		for i in config.IGNORE_LIST:
+			if fnmatch.fnmatch(nick,f"{i}"): return True
+			if hostmask!=None:
+				if fnmatch.fnmatch(hostmask,f"{i}"): return True
 
 		return False
 

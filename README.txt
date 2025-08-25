@@ -250,7 +250,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/focus [SERVER] WINDOW`                | Switches focus to another window. Cannot be called from scripts (use `/context` instead)                        |
 | `/help`                                 | Displays command usage information                                                                                               |
-| `/ignore USER`                          | Hides a `USER`'s chat'                                                                                                           |
+| `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
 | `/insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script. Can only be called by scripts.            |
 | `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |

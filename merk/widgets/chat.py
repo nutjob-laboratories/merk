@@ -1854,6 +1854,11 @@ class Window(QMainWindow):
 			for i in config.IGNORE_LIST:
 				if i.lower()==hostmask.lower(): return True
 
+		for i in config.IGNORE_LIST:
+			if fnmatch.fnmatch(nick,f"{i}"): return True
+			if hostmask!=None:
+				if fnmatch.fnmatch(hostmask,f"{i}"): return True
+
 		return False
 
 	def change_to_ignore_display(self,w):
