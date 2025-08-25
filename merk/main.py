@@ -1369,8 +1369,9 @@ class Merk(QMainWindow):
 			current = self.MDI.activeSubWindow()
 			if current:
 				c = current.widget()
-				t = Message(PRIVATE_MESSAGE,user,msg)
-				c.writeText(t)
+				if not c is self.getServerWindow(client):
+					t = Message(NOTICE_MESSAGE,user,msg)
+					c.writeText(t)
 
 			# Write the notice to the server window
 			w = self.getServerWindow(client)
