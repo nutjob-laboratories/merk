@@ -1305,14 +1305,14 @@ class Merk(QMainWindow):
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 			w = self.getWindow(target,client)
 			if w:
-				t = Message(ACTION_MESSAGE,nickname,msg)
+				t = Message(ACTION_MESSAGE,user,msg)
 				w.writeText(t)
 				return
 
 		# Try to display it as a private message
 		w = self.getWindow(nickname,client)
 		if w:
-			t = Message(ACTION_MESSAGE,nickname,msg)
+			t = Message(ACTION_MESSAGE,user,msg)
 			w.writeText(t)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
@@ -1321,10 +1321,10 @@ class Merk(QMainWindow):
 				else:
 					# Create a new private message window and write
 					# the message to it
-					w = self.newPrivateWindow(nickname,client)
+					w = self.newPrivateWindow(user,client)
 					if w:
 						c = w.widget()
-						t = Message(ACTION_MESSAGE,nickname,msg)
+						t = Message(ACTION_MESSAGE,user,msg)
 						c.writeText(t)
 						return
 
@@ -1357,7 +1357,7 @@ class Merk(QMainWindow):
 		# Try and send the message to the right window
 		w = self.getWindow(nickname,client)
 		if w:
-			t = Message(NOTICE_MESSAGE,nickname,msg)
+			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
 		else:
 			# Write the notice to the current window
@@ -1374,7 +1374,7 @@ class Merk(QMainWindow):
 				# window, then don't write the message
 				# twice
 				if w is current: return
-				t = Message(NOTICE_MESSAGE,nickname,msg)
+				t = Message(NOTICE_MESSAGE,user,msg)
 				w.writeText(t)
 
 	def gotTime(self,client,server,time):
