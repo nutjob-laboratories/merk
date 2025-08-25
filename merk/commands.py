@@ -1133,6 +1133,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0).lower()
 
+			for e in config.IGNORE_LIST:
+				if target.lower()==e.lower():
+					if is_script==True:
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{target}\" is already in the ignore list")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{target}\" is already in the ignore list")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
 			t = Message(SYSTEM_MESSAGE,'',f"Ignoring user \"{target}\"")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			config.IGNORE_LIST.append(target)
