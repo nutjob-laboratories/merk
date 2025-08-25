@@ -2007,7 +2007,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_MANAGER: self.windowbarManager.setChecked(True)
 		self.windowbarManager.stateChanged.connect(self.menuChange)
 
-		self.windowbarUnread = QCheckBox("Show unread chat messages",self)
+		self.windowbarUnread = QCheckBox("Flash on unread chat messages",self)
 		if config.WINDOWBAR_SHOW_UNREAD_MESSAGES: self.windowbarUnread.setChecked(True)
 		self.windowbarUnread.stateChanged.connect(self.menuChange)
 

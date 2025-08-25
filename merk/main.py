@@ -1307,6 +1307,11 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(ACTION_MESSAGE,user,msg)
 				w.writeText(t)
+
+				if not self.isActiveWindow(w):
+					if not ignored:
+						# Not the current window
+						self.add_unread_message(client,w.name)
 				return
 
 		# Try to display it as a private message
@@ -1362,7 +1367,7 @@ class Merk(QMainWindow):
 		else:
 			# Write the notice to the current window
 			current = self.MDI.activeSubWindow()
-			if w:
+			if current:
 				c = current.widget()
 				t = Message(PRIVATE_MESSAGE,user,msg)
 				c.writeText(t)
