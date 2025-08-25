@@ -1268,9 +1268,7 @@ class Window(QMainWindow):
 					hostmask = None
 
 				if line.sender in config.IGNORE_LIST: do_render = False
-				if nickname in config.IGNORE_LIST: do_render = False
-				if hostmask!=None:
-					if hostmask in config.IGNORE_LIST: do_render = False
+				if self.is_ignored(nickname,hostmask): do_render = False
 
 			if do_render:
 				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
@@ -1497,8 +1495,9 @@ class Window(QMainWindow):
 
 			is_hidden = False
 			if user_hostmask:
-				if user_hostmask.lower() in config.IGNORE_LIST: is_hidden = True
-			if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
+				is_hidden = self.is_ignored(user_nick,user_hostmask)
+			else:
+				is_hidden = self.is_ignored(user_nick,None)
 
 			if user_nick==self.client.nickname:
 				
@@ -2247,9 +2246,7 @@ class Window(QMainWindow):
 						hostmask = None
 				
 					if message.sender in config.IGNORE_LIST: do_render = False
-					if nickname in config.IGNORE_LIST: do_render = False
-					if hostmask!=None:
-						if hostmask in config.IGNORE_LIST: do_render = False
+					if self.is_ignored(nickname,hostmask): do_render = False
 
 				# Save entered text to the current log
 				self.log.append(message)

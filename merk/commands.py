@@ -859,6 +859,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	user_input = user_input.strip()
 	tokens = user_input.split()
 
+	# if len(tokens)>=1:
+	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'speak' and len(tokens)>=2:
+	# 		tokens.pop(0)
+	# 		user_input = config.ISSUE_COMMAND_SYMBOL+"script speak "+' '.join(tokens).strip()
+	# 		tokens = user_input.split()
+
 	# |----|
 	# | /s |
 	# |----|
