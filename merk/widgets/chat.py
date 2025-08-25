@@ -1495,9 +1495,8 @@ class Window(QMainWindow):
 
 			is_hidden = False
 			if user_hostmask:
-				is_hidden = self.is_ignored(user_nick,user_hostmask)
-			else:
-				is_hidden = self.is_ignored(user_nick,None)
+				if user_hostmask.lower() in config.IGNORE_LIST: is_hidden = True
+			if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
 
 			if user_nick==self.client.nickname:
 				

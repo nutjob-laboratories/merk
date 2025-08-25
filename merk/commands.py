@@ -1143,13 +1143,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ignore':
-			if is_script:
-				do_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"ignore USER")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			if len(config.IGNORE_LIST)==0:
+				t = Message(SYSTEM_MESSAGE,'',f"Ignore list is empty")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"ignore USER")
+
+			count = 0
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Begin ignore list")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			for i in config.IGNORE_LIST:
+				count = count + 1
+				t = Message(SYSTEM_MESSAGE,'',f"{count}) {i}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End ignore list")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
