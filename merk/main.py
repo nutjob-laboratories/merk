@@ -1326,7 +1326,7 @@ class Merk(QMainWindow):
 				else:
 					# Create a new private message window and write
 					# the message to it
-					w = self.newPrivateWindow(user,client)
+					w = self.newPrivateWindow(nickname,client)
 					if w:
 						c = w.widget()
 						t = Message(ACTION_MESSAGE,user,msg)
@@ -1345,6 +1345,11 @@ class Merk(QMainWindow):
 
 		self.updateHostmask(client,nickname,hostmask)
 
+		if hostmask!=None:
+			ignored = self.is_ignored(nickname,hostmask)
+		else:
+			ignored = self.is_ignored(nickname,None)
+
 		# Server notices get written to the server window only
 		if target=='*':
 			w = self.getServerWindow(client)
@@ -1359,11 +1364,36 @@ class Merk(QMainWindow):
 			if config.SOUND_NOTIFICATION_NOTICE:
 				QSound.play(config.SOUND_NOTIFICATION_FILE)
 
+		# Channel notice
+		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+			w = self.getWindow(target,client)
+			if w:
+				t = Message(NOTICE_MESSAGE,user,msg)
+				w.writeText(t)
+
+				if not self.isActiveWindow(w):
+					if not ignored:
+						# Not the current window
+						self.add_unread_message(client,w.name)
+				return
+
 		# Try and send the message to the right window
 		w = self.getWindow(nickname,client)
 		if w:
 			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
+		else:
+			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES:
+				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
+					pass
+				else:
+					# Create a new private message window and write
+					# the message to it
+					w = self.newPrivateWindow(nickname,client)
+					if w:
+						c = w.widget()
+						t = Message(NOTICE_MESSAGE,user,msg)
+						c.writeText(t)
 
 		# Write the notice to the server window
 		w = self.getServerWindow(client)

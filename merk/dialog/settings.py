@@ -3082,19 +3082,24 @@ class Dialog(QDialog):
 		self.ignoreCreateWindow.stateChanged.connect(self.changedSetting)
 		self.ignoreCreateWindow.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.createNotice = QCheckBox("Create windows for incoming\nprivate notices",self)
+		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
+		self.createNotice.stateChanged.connect(self.changedSetting)
+		self.createNotice.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.createWindow)
+		messageLayout.addWidget(self.createNotice)
 		messageLayout.addWidget(self.ignoreCreateWindow)
 		messageLayout.addWidget(self.createWindowOut)
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.forceMono)
 		messageLayout.addWidget(self.noPadding)
-		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system messages</b>"))
 		messageLayout.addLayout(prepLayout)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
@@ -3988,6 +3993,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_SHOW_UNREAD_MESSAGES = self.windowbarUnread.isChecked()
 		config.WINDOWBAR_ENTRY_MENU = self.windowbarEntryMenu.isChecked()
 		config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = self.ignoreCreateWindow.isChecked()
+		config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = self.createNotice.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
