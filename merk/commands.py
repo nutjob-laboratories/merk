@@ -523,6 +523,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				return True
 			else:
 				if is_script:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: You can't invite a user to a private chat")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -853,6 +854,7 @@ def list_files():
 	for root, _, files in os.walk(INSTALL_DIRECTORY):
 		for file in files:
 			file_paths.append(os.path.join(root, file))
+	file_paths = list(set(file_paths))
 	return file_paths
 
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
@@ -1136,6 +1138,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			for e in config.IGNORE_LIST:
 				if target.lower()==e.lower():
 					if is_script==True:
+						do_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{target}\" is already in the ignore list")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1193,6 +1196,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				config.IGNORE_LIST.remove(target)
 			else:
 				if is_script==True:
+					do_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{target}\" is not in the ignore list")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
