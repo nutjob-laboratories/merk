@@ -73,6 +73,7 @@ HALT_SCRIPT = []
 
 def add_halt(script_id):
 	if script_id==None: return
+	if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: return
 	global HALT_SCRIPT
 
 	if script_id in HALT_SCRIPT: return

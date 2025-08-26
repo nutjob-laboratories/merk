@@ -249,9 +249,11 @@ INCLUDE_SCRIPT_COMMAND_SHORTCUT = True
 LOG_MANAGER_MAXIMUM_LOAD_SIZE = 5000
 DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = True
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = False
+HALT_SCRIPT_EXECUTION_ON_ERROR = True
 
 def build_settings():
 	settings = {
+		"halt_script_execution_on_error": HALT_SCRIPT_EXECUTION_ON_ERROR,
 		"create_window_for_incoming_private_notices": CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES,
 		"do_not_create_private_chat_windows_for_ignored_users": DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS,
 		"log_manager_maximum_load_size": LOG_MANAGER_MAXIMUM_LOAD_SIZE,
@@ -467,6 +469,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "halt_script_execution_on_error" in settings:
+		settings["halt_script_execution_on_error"] = HALT_SCRIPT_EXECUTION_ON_ERROR
 	if not "create_window_for_incoming_private_notices" in settings:
 		settings["create_window_for_incoming_private_notices"] = CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES
 	if not "do_not_create_private_chat_windows_for_ignored_users" in settings:
@@ -1102,6 +1106,7 @@ def load_settings(filename):
 	global LOG_MANAGER_MAXIMUM_LOAD_SIZE
 	global DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS
 	global CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES
+	global HALT_SCRIPT_EXECUTION_ON_ERROR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1111,6 +1116,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HALT_SCRIPT_EXECUTION_ON_ERROR = settings["halt_script_execution_on_error"]
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = settings["create_window_for_incoming_private_notices"]
 		DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = settings["do_not_create_private_chat_windows_for_ignored_users"]
 		LOG_MANAGER_MAXIMUM_LOAD_SIZE = settings["log_manager_maximum_load_size"]
