@@ -3372,6 +3372,10 @@ class Dialog(QDialog):
 		seLayout.addWidget(self.enableScripts)
 		seLayout.addStretch()
 
+		self.haltError = QCheckBox("Halt execution on error",self)
+		if config.HALT_SCRIPT_EXECUTION_ON_ERROR: self.haltError.setChecked(True)
+		self.haltError.stateChanged.connect(self.changedSetting)
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
@@ -3382,6 +3386,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.interpolateAlias)
 		scriptingLayout.addLayout(aliasLayout)
 		scriptingLayout.addWidget(self.showErrors)
+		scriptingLayout.addWidget(self.haltError)
 		scriptingLayout.addWidget(self.enableShell)
 		scriptingLayout.addStretch()
 
@@ -3994,6 +3999,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_ENTRY_MENU = self.windowbarEntryMenu.isChecked()
 		config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = self.ignoreCreateWindow.isChecked()
 		config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = self.createNotice.isChecked()
+		config.HALT_SCRIPT_EXECUTION_ON_ERROR = self.haltError.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
