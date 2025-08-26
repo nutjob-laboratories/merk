@@ -1711,7 +1711,9 @@ class Window(QMainWindow):
 		else:
 			x = StylerDialog(self.client,self,self.parent)
 		if x:
+			QApplication.setOverrideCursor(Qt.WaitCursor)
 			self.applyStyle()
+			QApplication.restoreOverrideCursor()
 
 	def applyStyle(self,filename=None):
 		if not config.FORCE_DEFAULT_STYLE:
@@ -1768,7 +1770,6 @@ class Window(QMainWindow):
 			else:
 				change = c.lighter(150)
 			w.setForeground(QBrush(QColor(change)))
-
 
 	def change_to_back_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
