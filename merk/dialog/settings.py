@@ -4061,6 +4061,11 @@ class Dialog(QDialog):
 
 		config.TIMESTAMP_FORMAT = ts
 
+		if self.newfont!=None:
+			config.APPLICATION_FONT = self.newfont.toString()
+			self.parent.app.setFont(self.newfont)
+			self.parent.setAllFont(self.newfont)
+
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
@@ -4081,11 +4086,6 @@ class Dialog(QDialog):
 			self.parent.rerenderAllNickDisplays()
 			self.parent.toggleNickDisplay()
 			if not self.rerenderUsers: self.parent.rerenderUserlists()
-
-		if self.newfont!=None:
-			config.APPLICATION_FONT = self.newfont.toString()
-			self.parent.app.setFont(self.newfont)
-			self.parent.setAllFont(self.newfont)
 
 		if config.SHOW_SYSTRAY_ICON:
 			self.parent.tray.setVisible(True)
