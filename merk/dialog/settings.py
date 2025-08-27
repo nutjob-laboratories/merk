@@ -1228,11 +1228,14 @@ class Dialog(QDialog):
 
 		self.spellcheck_distance = config.SPELLCHECKER_DISTANCE
 
-		self.setWindowTitle("Settings")
+		self.setWindowTitle(f" {APPLICATION_NAME} Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
 
 		self.selector = QListWidget(self)
 		self.stack = QStackedWidget(self)
+
+		self.selector.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.selector.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
 		f = self.selector.font()
 		f.setBold(True)
@@ -3741,11 +3744,6 @@ class Dialog(QDialog):
 
 		# Finalize layout
 
-		logo = QLabel()
-		pixmap = QPixmap(VERTICAL_SPLASH_LOGO)
-		logo.setPixmap(pixmap)
-		logo.setAlignment(Qt.AlignCenter)
-
 		dialogButtonsLayout = QHBoxLayout()
 		dialogButtonsLayout.addStretch()
 		dialogButtonsLayout.addWidget(self.changed)
@@ -3756,8 +3754,6 @@ class Dialog(QDialog):
 
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(self.selector)
-		leftLayout.addWidget(logo)
-		#leftLayout.addWidget(QLabel(" "))
 
 		mainLayout = QHBoxLayout()
 		mainLayout.addLayout(leftLayout)
