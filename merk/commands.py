@@ -3319,13 +3319,14 @@ class ScriptThread(QThread):
 		# /inserted into the script, up to
 		# the maximum depth
 		if no_errors:
-			counter = 0
-			while counter<config.MAXIMUM_INSERT_DEPTH:
-				counter = counter + 1
-				err = self.process_inserts()
-				if err:
-					no_errors = False
-					break
+			if config.ENABLE_INSERT_COMMAND:
+				counter = 0
+				while counter<config.MAXIMUM_INSERT_DEPTH:
+					counter = counter + 1
+					err = self.process_inserts()
+					if err:
+						no_errors = False
+						break
 
 		# Second pass, check for errors
 		if no_errors:
@@ -3436,8 +3437,14 @@ class ScriptThread(QThread):
 					# Bypass /insert, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
-							script_only_command = True
-							continue
+							if config.ENABLE_INSERT_COMMAND:
+								script_only_command = True
+								continue
+							else:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}insert has been disabled"])
+								script_only_command = True
+								loop = False
+								continue
 
 					# if len(tokens)==2:
 					# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'goto':

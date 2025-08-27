@@ -3381,19 +3381,26 @@ class Dialog(QDialog):
 		self.requireArgs.stateChanged.connect(self.changedSetting)
 		self.requireArgs.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.enableInsert = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}insert command",self)
+		if config.ENABLE_INSERT_COMMAND: self.enableInsert.setChecked(True)
+		self.enableInsert.stateChanged.connect(self.changedSetting)
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
 		scriptingLayout.addWidget(QLabel(' '))
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting settings</b>"))
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
 		scriptingLayout.addWidget(self.enableAlias)
 		scriptingLayout.addWidget(self.interpolateAlias)
 		scriptingLayout.addLayout(aliasLayout)
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error settings</b>"))
 		scriptingLayout.addWidget(self.showErrors)
 		scriptingLayout.addWidget(self.haltError)
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command settings</b>"))
 		scriptingLayout.addWidget(self.requireArgs)
 		scriptingLayout.addWidget(self.enableShell)
+		scriptingLayout.addWidget(self.enableInsert)
 		scriptingLayout.addStretch()
 
 		self.scriptingPage.setLayout(scriptingLayout)
@@ -4007,6 +4014,7 @@ class Dialog(QDialog):
 		config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = self.createNotice.isChecked()
 		config.HALT_SCRIPT_EXECUTION_ON_ERROR = self.haltError.isChecked()
 		config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = self.requireArgs.isChecked()
+		config.ENABLE_INSERT_COMMAND = self.enableInsert.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()

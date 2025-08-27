@@ -251,9 +251,11 @@ DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = True
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = False
 HALT_SCRIPT_EXECUTION_ON_ERROR = True
 REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = False
+ENABLE_INSERT_COMMAND = True
 
 def build_settings():
 	settings = {
+		"enable_insert_command": ENABLE_INSERT_COMMAND,
 		"require_exact_argument_count_for_scripts": REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS,
 		"halt_script_execution_on_error": HALT_SCRIPT_EXECUTION_ON_ERROR,
 		"create_window_for_incoming_private_notices": CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES,
@@ -471,6 +473,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_insert_command" in settings:
+		settings["enable_insert_command"] = ENABLE_INSERT_COMMAND
 	if not "require_exact_argument_count_for_scripts" in settings:
 		settings["require_exact_argument_count_for_scripts"] = REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS
 	if not "halt_script_execution_on_error" in settings:
@@ -1112,6 +1116,7 @@ def load_settings(filename):
 	global CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES
 	global HALT_SCRIPT_EXECUTION_ON_ERROR
 	global REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS
+	global ENABLE_INSERT_COMMAND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1121,6 +1126,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_INSERT_COMMAND = settings["enable_insert_command"]
 		REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = settings["require_exact_argument_count_for_scripts"]
 		HALT_SCRIPT_EXECUTION_ON_ERROR = settings["halt_script_execution_on_error"]
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = settings["create_window_for_incoming_private_notices"]
