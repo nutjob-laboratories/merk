@@ -3200,14 +3200,24 @@ class ScriptThread(QThread):
 					arg = tokens.pop(0)
 					try:
 						arg = int(arg)
-						if len(tokens)>0:
-							if len(self.arguments)!=arg:
-								self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
-								no_errors = False
+						if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS:
+							if len(tokens)>0:
+								if len(self.arguments)!=arg:
+									self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+									no_errors = False
+							else:
+								if len(self.arguments)!=arg:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be called with {arg} arguments"])
+									no_errors = False
 						else:
-							if len(self.arguments)!=arg:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be called with {arg} arguments"])
-								no_errors = False
+							if len(tokens)>0:
+								if len(self.arguments)<arg:
+									self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+									no_errors = False
+							else:
+								if len(self.arguments)<arg:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be called with {arg} arguments"])
+									no_errors = False
 					except:
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}usage must be called with a numerical first argument."])
 						no_errors = False
@@ -3317,6 +3327,7 @@ class ScriptThread(QThread):
 					no_errors = False
 					break
 
+		# Second pass, check for errors
 		if no_errors:
 			no_errors = self.check_for_errors(self.script,self.filename)
 

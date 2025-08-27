@@ -3376,6 +3376,11 @@ class Dialog(QDialog):
 		if config.HALT_SCRIPT_EXECUTION_ON_ERROR: self.haltError.setChecked(True)
 		self.haltError.stateChanged.connect(self.changedSetting)
 
+		self.requireArgs = QCheckBox(f"Require the exact argument\ncount for {config.ISSUE_COMMAND_SYMBOL}usage command",self)
+		if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS: self.requireArgs.setChecked(True)
+		self.requireArgs.stateChanged.connect(self.changedSetting)
+		self.requireArgs.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
@@ -3387,6 +3392,7 @@ class Dialog(QDialog):
 		scriptingLayout.addLayout(aliasLayout)
 		scriptingLayout.addWidget(self.showErrors)
 		scriptingLayout.addWidget(self.haltError)
+		scriptingLayout.addWidget(self.requireArgs)
 		scriptingLayout.addWidget(self.enableShell)
 		scriptingLayout.addStretch()
 
@@ -4000,6 +4006,7 @@ class Dialog(QDialog):
 		config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = self.ignoreCreateWindow.isChecked()
 		config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = self.createNotice.isChecked()
 		config.HALT_SCRIPT_EXECUTION_ON_ERROR = self.haltError.isChecked()
+		config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = self.requireArgs.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
