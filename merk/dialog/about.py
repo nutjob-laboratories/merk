@@ -229,7 +229,7 @@ class Dialog(QDialog):
 			<small>Ilmari Lauhakangas, Boris, Michael, Jim Kost,<br>
 			       Brian, Harry Oxnard, Vincent, Wayne Windsor,<br>
 			       Brian, Nancy Hetrick, Nancy Golumbia, Toni<br>
-			       Dewees
+			       Dewees, Drew Diller
 			</small>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)
