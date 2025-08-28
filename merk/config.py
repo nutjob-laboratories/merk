@@ -252,9 +252,11 @@ CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = False
 HALT_SCRIPT_EXECUTION_ON_ERROR = True
 REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = False
 ENABLE_INSERT_COMMAND = True
+LOG_CHANNEL_NOTICE = True
 
 def build_settings():
 	settings = {
+		"log_channel_notice": LOG_CHANNEL_NOTICE,
 		"enable_insert_command": ENABLE_INSERT_COMMAND,
 		"require_exact_argument_count_for_scripts": REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS,
 		"halt_script_execution_on_error": HALT_SCRIPT_EXECUTION_ON_ERROR,
@@ -473,6 +475,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "log_channel_notice" in settings:
+		settings["log_channel_notice"] = LOG_CHANNEL_NOTICE
 	if not "enable_insert_command" in settings:
 		settings["enable_insert_command"] = ENABLE_INSERT_COMMAND
 	if not "require_exact_argument_count_for_scripts" in settings:
@@ -1117,6 +1121,7 @@ def load_settings(filename):
 	global HALT_SCRIPT_EXECUTION_ON_ERROR
 	global REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS
 	global ENABLE_INSERT_COMMAND
+	global LOG_CHANNEL_NOTICE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1126,6 +1131,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_CHANNEL_NOTICE = settings["log_channel_notice"]
 		ENABLE_INSERT_COMMAND = settings["enable_insert_command"]
 		REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = settings["require_exact_argument_count_for_scripts"]
 		HALT_SCRIPT_EXECUTION_ON_ERROR = settings["halt_script_execution_on_error"]

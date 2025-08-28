@@ -1375,7 +1375,7 @@ class Merk(QMainWindow):
 			w = self.getWindow(target,client)
 			if w:
 				t = Message(NOTICE_MESSAGE,user,msg)
-				w.writeText(t)
+				w.writeText(t,config.LOG_CHANNEL_NOTICE)
 
 				if not self.isActiveWindow(w):
 					if not ignored:

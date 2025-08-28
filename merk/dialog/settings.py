@@ -2928,6 +2928,10 @@ class Dialog(QDialog):
 		if config.LOG_CHANNEL_NICKNAME_CHANGE: self.nickLog.setChecked(True)
 		self.nickLog.stateChanged.connect(self.changedSetting)
 
+		self.noticeLog = QCheckBox("Channel notices",self)
+		if config.LOG_CHANNEL_NOTICE: self.noticeLog.setChecked(True)
+		self.noticeLog.stateChanged.connect(self.changedSetting)
+
 		chanLayout = QHBoxLayout()
 		chanLayout.addStretch()
 		chanLayout.addWidget(self.saveChanLogs)
@@ -2953,6 +2957,7 @@ class Dialog(QDialog):
 		cont2Layout = QHBoxLayout()
 		cont2Layout.addStretch()
 		cont2Layout.addWidget(self.nickLog)
+		cont2Layout.addWidget(self.noticeLog)
 		cont2Layout.addStretch()
 
 		logLayout = QVBoxLayout()
@@ -4011,6 +4016,7 @@ class Dialog(QDialog):
 		config.HALT_SCRIPT_EXECUTION_ON_ERROR = self.haltError.isChecked()
 		config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = self.requireArgs.isChecked()
 		config.ENABLE_INSERT_COMMAND = self.enableInsert.isChecked()
+		config.LOG_CHANNEL_NOTICE = self.noticeLog.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
