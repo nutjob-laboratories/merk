@@ -2132,6 +2132,10 @@ class Dialog(QDialog):
 		self.uptimeDescription.setWordWrap(True)
 		self.uptimeDescription.setAlignment(Qt.AlignJustify)
 
+		self.showDates = QCheckBox("Show dates in logs",self)
+		if config.SHOW_DATES_IN_LOGS: self.showDates.setChecked(True)
+		self.showDates.stateChanged.connect(self.changedSetting)
+
 		timestampLayout = QVBoxLayout()
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
 		timestampLayout.addWidget(self.timestampDescription)
@@ -2143,6 +2147,9 @@ class Dialog(QDialog):
 		timestampLayout.addWidget(self.uptimeDescription)
 		timestampLayout.addWidget(self.showUptime)
 		timestampLayout.addWidget(self.showChanUptime)
+		timestampLayout.addWidget(QLabel(' '))
+		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
+		timestampLayout.addWidget(self.showDates)
 		timestampLayout.addStretch()
 
 		self.timestampPage.setLayout(timestampLayout)
@@ -4017,6 +4024,7 @@ class Dialog(QDialog):
 		config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = self.requireArgs.isChecked()
 		config.ENABLE_INSERT_COMMAND = self.enableInsert.isChecked()
 		config.LOG_CHANNEL_NOTICE = self.noticeLog.isChecked()
+		config.SHOW_DATES_IN_LOGS = self.showDates.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()

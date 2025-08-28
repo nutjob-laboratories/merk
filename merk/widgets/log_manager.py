@@ -617,16 +617,18 @@ class Window(QMainWindow):
 		QApplication.processEvents()
 
 		chat_length = 0
-		cdate = None
-		marked = []
-		for e in self.log:
-			ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
-			if cdate!=ndate:
-				cdate = ndate
-				m = Message(DATE_MESSAGE,'',cdate)
-				marked.append(m)
-			marked.append(e)
-		self.log = marked
+
+		if config.SHOW_DATES_IN_LOGS:
+			cdate = None
+			marked = []
+			for e in self.log:
+				ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
+				if cdate!=ndate:
+					cdate = ndate
+					m = Message(DATE_MESSAGE,'',cdate)
+					marked.append(m)
+				marked.append(e)
+			self.log = marked
 
 		self.chat.clear()
 		for line in self.log:

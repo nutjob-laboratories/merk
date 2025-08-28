@@ -665,24 +665,25 @@ class Window(QMainWindow):
 				# log of the chat window
 				if len(loadLog)>0:
 					self.log = loadLog + self.log
-					# Now, we insert day markers; starting with the first saved
-					# log message, we will insert a separator before the first
-					# message of a new day containing the date the following
-					# messages will have taken place on. This makes reading
-					# the loaded log a bit clearer. We step through the loaded
-					# log data, checking the date of each message, placing
-					# our markers whenever the date changes, the then replace
-					# the loaded log data with our "altered" log.
-					cdate = None
-					marked = []
-					for e in self.log:
-						ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
-						if cdate!=ndate:
-							cdate = ndate
-							m = Message(DATE_MESSAGE,'',cdate)
-							marked.append(m)
-						marked.append(e)
-					self.log = marked
+					if config.SHOW_DATES_IN_LOGS:
+						# Now, we insert day markers; starting with the first saved
+						# log message, we will insert a separator before the first
+						# message of a new day containing the date the following
+						# messages will have taken place on. This makes reading
+						# the loaded log a bit clearer. We step through the loaded
+						# log data, checking the date of each message, placing
+						# our markers whenever the date changes, the then replace
+						# the loaded log data with our "altered" log.
+						cdate = None
+						marked = []
+						for e in self.log:
+							ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
+							if cdate!=ndate:
+								cdate = ndate
+								m = Message(DATE_MESSAGE,'',cdate)
+								marked.append(m)
+							marked.append(e)
+						self.log = marked
 					# Mark end of loaded log
 					if config.MARK_END_OF_LOADED_LOG:
 						t = datetime.timestamp(datetime.now())
@@ -1196,15 +1197,16 @@ class Window(QMainWindow):
 				self.channelUptime.setText("<small>"+prettyUptime(self.uptime)+"</small>")
 
 			if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
-				# If the date has changed, add a date message to the chat to reflect that
-				# But only do that on channel and private chat windows
-				cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
-				if cdate!=self.current_date:
-					self.current_date = cdate
-					# there's a new date; create a new date separator
-					m = Message(DATE_MESSAGE,'',cdate)
-					d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
-					self.chat.append(d2)
+				if config.SHOW_DATES_IN_LOGS:
+					# If the date has changed, add a date message to the chat to reflect that
+					# But only do that on channel and private chat windows
+					cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
+					if cdate!=self.current_date:
+						self.current_date = cdate
+						# there's a new date; create a new date separator
+						m = Message(DATE_MESSAGE,'',cdate)
+						d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+						self.chat.append(d2)
 
 	def refreshBanMenu(self):
 		self.banlist_menu.setMenu(buildBanMenu(self,self.client))
