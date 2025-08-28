@@ -2134,7 +2134,7 @@ class Dialog(QDialog):
 
 		self.showDates = QCheckBox("Show dates in logs",self)
 		if config.SHOW_DATES_IN_LOGS: self.showDates.setChecked(True)
-		self.showDates.stateChanged.connect(self.changedSetting)
+		self.showDates.stateChanged.connect(self.changedSettingRerender)
 
 		timestampLayout = QVBoxLayout()
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
@@ -2297,7 +2297,7 @@ class Dialog(QDialog):
 
 		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
 		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
-		self.showAwayBack.stateChanged.connect(self.changedSetting)
+		self.showAwayBack.stateChanged.connect(self.changedSettingRerender)
 		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showAwayNick = QCheckBox("Show away status in nickname\ndisplay",self)
