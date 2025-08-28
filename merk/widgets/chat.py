@@ -1272,6 +1272,9 @@ class Window(QMainWindow):
 				if line.sender in config.IGNORE_LIST: do_render = False
 				if self.is_ignored(nickname,hostmask): do_render = False
 
+			if not config.SHOW_DATES_IN_LOGS:
+				if line.type==DATE_MESSAGE: do_render = False
+
 			if do_render:
 				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 				self.chat.append(t)
