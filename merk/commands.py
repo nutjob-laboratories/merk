@@ -369,6 +369,10 @@ def interpolateAliases(text):
 
 def buildTemporaryAliases(gui,window):
 
+	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
+	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
+	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
+
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
 	addTemporaryAlias('_USERNAME',window.client.username)
 	addTemporaryAlias('_REALNAME',window.client.realname)
@@ -1427,8 +1431,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.reload_settings()
 
 				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(SYSTEM_MESSAGE,'',f"Please restart {APPLICATION_NAME} as soon as possible!")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:
