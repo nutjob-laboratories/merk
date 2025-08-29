@@ -3270,6 +3270,14 @@ class Highlighter(QSyntaxHighlighter):
 			symbol = symbol + c
 		return fr"{symbol}\w+"
 
+	def beginning_escape_symbol(self,target):
+		symbol = ''
+		for c in target:
+			if c in self.SPECIAL:
+				c = '\\'+c
+			symbol = symbol + c
+		return fr"^{symbol}\w+"
+
 	def highlightBlock(self, text):
 
 		do_not_spellcheck = []
@@ -3326,7 +3334,7 @@ class Highlighter(QSyntaxHighlighter):
 			
 			# Make sure the command symbol is
 			# properly escaped
-			COMMANDS = self.escape_symbol(config.ISSUE_COMMAND_SYMBOL)
+			COMMANDS = self.beginning_escape_symbol(config.ISSUE_COMMAND_SYMBOL)
 
 			cmdformat = syntax.format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)
 			for word_object in re.finditer(COMMANDS, text):
