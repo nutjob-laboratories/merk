@@ -46,9 +46,7 @@ from .. import logs
 from .plain_text import plainTextAction,noSpacePlainTextAction
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import ExtendedMenuItemNoAction
-
 from .. import commands
-
 from .. import syntax
 
 class Window(QMainWindow):
@@ -2207,6 +2205,10 @@ class Window(QMainWindow):
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
 					if config.ENABLE_EMOJI_SHORTCODES:
 						msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+						commands.buildTemporaryAliases(self.parent,self)
+						msg = commands.interpolateAliases(msg)
+						commands.TEMPORARY_ALIAS = {}
 					self.client.away(msg)
 					self.client.away_msg = msg
 			else:
@@ -2216,6 +2218,10 @@ class Window(QMainWindow):
 					msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 				else:
 					msg = config.DEFAULT_AWAY_MESSAGE
+				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+					commands.buildTemporaryAliases(self.parent,self)
+					msg = commands.interpolateAliases(msg)
+					commands.TEMPORARY_ALIAS = {}
 				self.client.away(msg)
 				self.client.away_msg = msg
 

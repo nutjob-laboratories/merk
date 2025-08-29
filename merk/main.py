@@ -1732,6 +1732,13 @@ class Merk(QMainWindow):
 							msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 						else:
 							msg = config.DEFAULT_AWAY_MESSAGE
+						if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+							w = self.getServerSubWindow(client)
+							if w:
+								c = w.widget()
+								commands.buildTemporaryAliases(self,c)
+								msg = commands.interpolateAliases(msg)
+								commands.TEMPORARY_ALIAS = {}
 						client.away(msg)
 						client.away_msg = msg
 						client.autoaway = True

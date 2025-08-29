@@ -254,9 +254,11 @@ REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = False
 ENABLE_INSERT_COMMAND = True
 LOG_CHANNEL_NOTICE = True
 SHOW_DATES_IN_LOGS = True
+INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = True
 
 def build_settings():
 	settings = {
+		"interpolate_aliases_into_away_message": INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE,
 		"display_dates_in_logs": SHOW_DATES_IN_LOGS,
 		"log_channel_notice": LOG_CHANNEL_NOTICE,
 		"enable_insert_command": ENABLE_INSERT_COMMAND,
@@ -477,6 +479,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "interpolate_aliases_into_away_message" in settings:
+		settings["interpolate_aliases_into_away_message"] = INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE
 	if not "display_dates_in_logs" in settings:
 		settings["display_dates_in_logs"] = SHOW_DATES_IN_LOGS
 	if not "log_channel_notice" in settings:
@@ -1127,6 +1131,7 @@ def load_settings(filename):
 	global ENABLE_INSERT_COMMAND
 	global LOG_CHANNEL_NOTICE
 	global SHOW_DATES_IN_LOGS
+	global INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1136,6 +1141,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = settings["interpolate_aliases_into_away_message"]
 		SHOW_DATES_IN_LOGS = settings["display_dates_in_logs"]
 		LOG_CHANNEL_NOTICE = settings["log_channel_notice"]
 		ENABLE_INSERT_COMMAND = settings["enable_insert_command"]

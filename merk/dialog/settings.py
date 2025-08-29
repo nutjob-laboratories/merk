@@ -417,12 +417,14 @@ class Dialog(QDialog):
 			self.syntaxalias.setEnabled(True)
 			self.alias_symbol_label.setEnabled(True)
 			self.alias_symbol.setEnabled(True)
+			self.autoAliasAway.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
 			self.syntaxalias.setEnabled(False)
 			self.alias_symbol_label.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
+			self.autoAliasAway.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -2245,9 +2247,17 @@ class Dialog(QDialog):
 		if not config.ENABLE_EMOJI_SHORTCODES:
 			self.autoEmojiAway.setEnabled(False)
 
+		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
+		self.autoAliasAway.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasAway.setEnabled(False)
+
 		awayLayout = QVBoxLayout()
 		awayLayout.addWidget(self.awayMsg)
 		awayLayout.addWidget(self.autoEmojiAway)
+		awayLayout.addWidget(self.autoAliasAway)
 		awayBox = QGroupBox("")
 		awayBox.setAlignment(Qt.AlignLeft)
 		awayBox.setLayout(awayLayout)
@@ -4025,6 +4035,7 @@ class Dialog(QDialog):
 		config.ENABLE_INSERT_COMMAND = self.enableInsert.isChecked()
 		config.LOG_CHANNEL_NOTICE = self.noticeLog.isChecked()
 		config.SHOW_DATES_IN_LOGS = self.showDates.isChecked()
+		config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = self.autoAliasAway.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
