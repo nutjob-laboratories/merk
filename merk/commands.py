@@ -436,7 +436,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_TIME',mytime)
 	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
 	addTemporaryAlias('_DATE',mydate)
-	addTemporaryAlias('_EDATE',mydate)
+	addTemporaryAlias('_EDATE',myedate)
 
 def handleChatCommands(gui,window,user_input):
 	global TEMPORARY_ALIAS
