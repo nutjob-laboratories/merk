@@ -430,9 +430,13 @@ def buildTemporaryAliases(gui,window):
 
 	timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT)
 	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")
+	mydate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
+	myedate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d/%m/%Y')
 	addTemporaryAlias('_TIMESTAMP',timestamp)
 	addTemporaryAlias('_TIME',mytime)
 	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
+	addTemporaryAlias('_DATE',mydate)
+	addTemporaryAlias('_EDATE',mydate)
 
 def handleChatCommands(gui,window,user_input):
 	global TEMPORARY_ALIAS
