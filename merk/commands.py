@@ -2172,6 +2172,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
 				else:
 					msg = config.DEFAULT_AWAY_MESSAGE
+				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+					buildTemporaryAliases(gui,window)
+					msg = interpolateAliases(msg)
 				window.client.away(msg)
 				window.client.away_msg = msg
 			return True
