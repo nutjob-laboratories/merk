@@ -2248,6 +2248,12 @@ class Merk(QMainWindow):
 					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 				else:
 					msg = config.DEFAULT_QUIT_MESSAGE
+
+				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					commands.buildTemporaryAliases(self,c)
+					msg = commands.interpolateAliases(msg)
+					commands.TEMPORARY_ALIAS = {}
+					
 				c.client.quit(msg)
 
 	def openPrivate(self,client,nick):
@@ -3783,6 +3789,12 @@ class Merk(QMainWindow):
 							msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 						else:
 							msg = config.DEFAULT_QUIT_MESSAGE
+
+						if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+							commands.buildTemporaryAliases(self,c)
+							msg = commands.interpolateAliases(msg)
+							commands.TEMPORARY_ALIAS = {}
+
 						c.client.quit(msg)
 
 			QApplication.restoreOverrideCursor()

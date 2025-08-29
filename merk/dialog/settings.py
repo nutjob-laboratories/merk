@@ -418,6 +418,7 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(True)
 			self.alias_symbol.setEnabled(True)
 			self.autoAliasAway.setEnabled(True)
+			self.autoAliasQuit.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -425,6 +426,7 @@ class Dialog(QDialog):
 			self.alias_symbol_label.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.autoAliasAway.setEnabled(False)
+			self.autoAliasQuit.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -1488,20 +1490,24 @@ class Dialog(QDialog):
 		app2Layout.addWidget(self.darkMode)
 		app2Layout.addStretch()
 
+		self.forceMono = QCheckBox("Force monospace rendering\nof all message text",self)
+		if config.FORCE_MONOSPACE_RENDERING: self.forceMono.setChecked(True)
+		self.forceMono.stateChanged.connect(self.changedSettingRerender)
+		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
-		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
-		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		appearanceLayout.addWidget(self.forceDefault)
 		appearanceLayout.addWidget(self.notInputWidget)
 		appearanceLayout.addWidget(self.notUserlist)
 		appearanceLayout.addWidget(self.noStyles)
+		appearanceLayout.addWidget(self.forceMono)
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
@@ -3062,12 +3068,6 @@ class Dialog(QDialog):
 		prepLayout.addWidget(self.setSystemPrepend)
 		prepLayout.addLayout(prepSel)
 
-		self.forceMono = QCheckBox("Force monospace rendering\nof all message text",self)
-		if config.FORCE_MONOSPACE_RENDERING: self.forceMono.setChecked(True)
-		self.forceMono.stateChanged.connect(self.changedSettingRerender)
-
-		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.partMsg = EmojiQuitAutocomplete(self)
 		self.partMsg.setText(self.default_quit_part)
 
@@ -3086,9 +3086,17 @@ class Dialog(QDialog):
 		if not config.ENABLE_EMOJI_SHORTCODES:
 			self.autoEmojiQuit.setEnabled(False)
 
+		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
+		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasQuit.setEnabled(False)
+
 		quitLayout = QVBoxLayout()
 		quitLayout.addWidget(self.partMsg)
 		quitLayout.addWidget(self.autoEmojiQuit)
+		quitLayout.addWidget(self.autoAliasQuit)
 		quitBox = QGroupBox("")
 		quitBox.setAlignment(Qt.AlignLeft)
 		quitBox.setLayout(quitLayout)
@@ -3123,9 +3131,8 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.createWindowOut)
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
-		messageLayout.addWidget(self.forceMono)
 		messageLayout.addWidget(self.noPadding)
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system messages</b>"))
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
 		messageLayout.addLayout(prepLayout)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		messageLayout.addWidget(quitBox)
@@ -4036,6 +4043,7 @@ class Dialog(QDialog):
 		config.LOG_CHANNEL_NOTICE = self.noticeLog.isChecked()
 		config.SHOW_DATES_IN_LOGS = self.showDates.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = self.autoAliasAway.isChecked()
+		config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = self.autoAliasQuit.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()

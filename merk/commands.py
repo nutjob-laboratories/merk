@@ -2888,6 +2888,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				else:
 					msg = config.DEFAULT_QUIT_MESSAGE
 
+				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					buildTemporaryAliases(gui,window)
+					msg = interpolateAliases(msg)
+
 				window.client.quit(msg)
 			else:
 				window.client.quit()
