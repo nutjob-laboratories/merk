@@ -428,6 +428,12 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_MODE','')
 
+	timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT)
+	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")
+	addTemporaryAlias('_TIMESTAMP',timestamp)
+	addTemporaryAlias('_TIME',mytime)
+	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
+
 def handleChatCommands(gui,window,user_input):
 	global TEMPORARY_ALIAS
 
