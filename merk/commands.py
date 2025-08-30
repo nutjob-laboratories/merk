@@ -904,7 +904,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			gui.scripts[script_id] = ReclaimThread(script_id,gui,window,nickname,config.RECLAIM_NICKNAME_FREQUENCY)
 			gui.scripts[script_id].threadEnd.connect(execute_script_end)
 			gui.scripts[script_id].reclaim.connect(do_reclaim)
-			gui.scripts[script_id].finished.connect(do_reclaim_finish)
 			gui.scripts[script_id].already.connect(do_already)
 			gui.scripts[script_id].tstart.connect(do_start)
 			gui.scripts[script_id].start()
@@ -3083,13 +3082,6 @@ def do_reclaim(data):
 	nickname = data[1]
 	window.client.setNick(nickname)
 
-def do_reclaim_finish(data):
-	window = data[0]
-	nickname = data[1]
-	
-	# t = Message(SYSTEM_MESSAGE,'',f"Nickname \"{nickname}\" reclaimed!")
-	# window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
 def do_already(data):
 	window = data[0]
 	nickname = data[1]
@@ -3130,7 +3122,6 @@ class ReclaimThread(QThread):
 			while needreclaim:
 				if self.window.client.nickname==self.nickname:
 					needreclaim = False
-					self.finished.emit([self.window,self.nickname])
 					break
 				self.reclaim.emit([self.window,self.nickname])
 				time.sleep(self.time)
