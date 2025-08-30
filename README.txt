@@ -274,6 +274,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/private NICKNAME`               | Opens a private chat window for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
+| `/reclaim NICKNAME`                          | Attempts to change nickname to `NICKNAME` until claimed                                                                                             |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. Can only be called from scripts                                                                                |
 | `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |

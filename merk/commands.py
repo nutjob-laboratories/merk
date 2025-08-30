@@ -166,6 +166,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ctcp": config.ISSUE_COMMAND_SYMBOL+"ctcp ",
 			config.ISSUE_COMMAND_SYMBOL+"private": config.ISSUE_COMMAND_SYMBOL+"private ",
 			config.ISSUE_COMMAND_SYMBOL+"msgbox": config.ISSUE_COMMAND_SYMBOL+"msgbox ",
+			config.ISSUE_COMMAND_SYMBOL+"reclaim": config.ISSUE_COMMAND_SYMBOL+"reclaim ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -255,6 +256,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp USER REQUEST</b>", "Sends a CTCP request; valid requests are TIME, VERSION, or FINGER" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME</b>", "Opens a private chat window for NICKNAME" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME</b>", "Attempts to change nickname to NICKNAME until claimed" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -881,6 +883,36 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# 		tokens.pop(0)
 	# 		user_input = config.ISSUE_COMMAND_SYMBOL+"script speak "+' '.join(tokens).strip()
 	# 		tokens = user_input.split()
+
+	# |----------|
+	# | /reclaim |
+	# |----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reclaim' and len(tokens)==2:
+			tokens.pop(0)
+			nickname = tokens.pop(0)
+
+			t = Message(SYSTEM_MESSAGE,'',f"Reclaiming nickname \"{nickname}\"...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			script_id = str(uuid.uuid4())
+			gui.scripts[script_id] = ReclaimThread(script_id,gui,window,nickname,config.RECLAIM_NICKNAME_FREQUENCY)
+			gui.scripts[script_id].threadEnd.connect(execute_script_end)
+			gui.scripts[script_id].reclaim.connect(do_reclaim)
+			gui.scripts[script_id].finished.connect(do_reclaim_finish)
+			gui.scripts[script_id].start()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reclaim':
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |----|
 	# | /s |
@@ -3046,6 +3078,46 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 	return False
+
+def do_reclaim(data):
+	window = data[0]
+	nickname = data[1]
+	window.client.setNick(nickname)
+
+def do_reclaim_finish(data):
+	window = data[0]
+	nickname = data[1]
+	
+	# t = Message(SYSTEM_MESSAGE,'',f"Nickname \"{nickname}\" reclaimed!")
+	# window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+class ReclaimThread(QThread):
+
+	threadEnd = pyqtSignal(list)
+	reclaim = pyqtSignal(list)
+	finished = pyqtSignal(list)
+
+	def __init__(self,sid,gui,window,nickname,wait,parent=None):
+		super(ReclaimThread, self).__init__(parent)
+		self.id = sid
+		self.gui = gui
+		self.window = window
+		self.nickname = nickname
+		self.time = wait
+
+	def run(self):
+
+		needreclaim = True
+		while needreclaim:
+			if self.window.client.nickname==self.nickname:
+				needreclaim = False
+				self.finished.emit([self.window,self.nickname])
+				break
+			self.reclaim.emit([self.window,self.nickname])
+			time.sleep(self.time)
+
+		self.threadEnd.emit([self.gui,self.id])
+
 
 class ExitThread(QThread):
 

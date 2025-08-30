@@ -275,6 +275,10 @@ Appearance:
 <td>Sends unprocessed data to the server</td>
 </tr>
 <tr>
+<td><code>/reclaim NICKNAME</code></td>
+<td>Attempts to change nickname to <code>NICKNAME</code> until claimed</td>
+</tr>
+<tr>
 <td><code>/refresh</code></td>
 <td>Requests a new list of channels from the server</td>
 </tr>
