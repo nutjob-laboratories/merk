@@ -884,6 +884,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# 		user_input = config.ISSUE_COMMAND_SYMBOL+"script speak "+' '.join(tokens).strip()
 	# 		tokens = user_input.split()
 
+	# |----|
+	# | /s |
+	# |----|
+	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
+				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
 	# |----------|
 	# | /reclaim |
 	# |----------|
@@ -892,14 +900,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			nickname = tokens.pop(0)
 
-			t = Message(SYSTEM_MESSAGE,'',f"Reclaiming nickname \"{nickname}\"...")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
 			script_id = str(uuid.uuid4())
 			gui.scripts[script_id] = ReclaimThread(script_id,gui,window,nickname,config.RECLAIM_NICKNAME_FREQUENCY)
 			gui.scripts[script_id].threadEnd.connect(execute_script_end)
 			gui.scripts[script_id].reclaim.connect(do_reclaim)
 			gui.scripts[script_id].finished.connect(do_reclaim_finish)
+			gui.scripts[script_id].already.connect(do_already)
+			gui.scripts[script_id].tstart.connect(do_start)
 			gui.scripts[script_id].start()
 			return True
 
@@ -913,14 +920,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
-
-	# |----|
-	# | /s |
-	# |----|
-	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
-				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
 	# |---------|
 	# | /msgbox |
@@ -3091,11 +3090,26 @@ def do_reclaim_finish(data):
 	# t = Message(SYSTEM_MESSAGE,'',f"Nickname \"{nickname}\" reclaimed!")
 	# window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
+def do_already(data):
+	window = data[0]
+	nickname = data[1]
+	
+	t = Message(SYSTEM_MESSAGE,'',f"Nickname \"{nickname}\" already claimed")
+	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+def do_start(data):
+	window = data[0]
+	nickname = data[1]
+	t = Message(SYSTEM_MESSAGE,'',f"Reclaiming nickname \"{nickname}\"...")
+	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 class ReclaimThread(QThread):
 
 	threadEnd = pyqtSignal(list)
 	reclaim = pyqtSignal(list)
 	finished = pyqtSignal(list)
+	already = pyqtSignal(list)
+	tstart = pyqtSignal(object)
 
 	def __init__(self,sid,gui,window,nickname,wait,parent=None):
 		super(ReclaimThread, self).__init__(parent)
@@ -3107,16 +3121,21 @@ class ReclaimThread(QThread):
 
 	def run(self):
 
-		needreclaim = True
-		while needreclaim:
-			if self.window.client.nickname==self.nickname:
-				needreclaim = False
-				self.finished.emit([self.window,self.nickname])
-				break
-			self.reclaim.emit([self.window,self.nickname])
-			time.sleep(self.time)
+		if self.window.client.nickname==self.nickname:
+			self.already.emit([self.window,self.nickname])
+			self.threadEnd.emit([self.gui,self.id])
+		else:
+			self.tstart.emit([self.window,self.nickname])
+			needreclaim = True
+			while needreclaim:
+				if self.window.client.nickname==self.nickname:
+					needreclaim = False
+					self.finished.emit([self.window,self.nickname])
+					break
+				self.reclaim.emit([self.window,self.nickname])
+				time.sleep(self.time)
 
-		self.threadEnd.emit([self.gui,self.id])
+			self.threadEnd.emit([self.gui,self.id])
 
 
 class ExitThread(QThread):
