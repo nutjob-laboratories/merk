@@ -482,13 +482,43 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	user_input = user_input.strip()
 	tokens = user_input.split()
 
-	# |------|
-	# | /end |
-	# |------|
+	# |---------|
+	# | /insert |
+	# |---------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'args':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"args can only be called from scripts")
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"insert can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+	# |--------|
+	# | /usage |
+	# |--------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage':
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"usage can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+	# |-------|
+	# | /only |
+	# |-------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only':
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"only can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+	# |-----------|
+	# | /restrict |
+	# |-----------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict':
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"restrict can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -3232,6 +3262,25 @@ class ScriptThread(QThread):
 
 			line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
+			# |=======|
+			# | /only |
+			# |=======|
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only' and len(tokens)>=2:
+					tokens.pop(0)
+					
+					valid = False
+					for e in tokens:
+						if e.lower()==self.window.name.lower(): valid = True
+
+					if valid==False:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script cannot be ran in {self.window.name}"])
+						no_errors = False
+
+				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}only called without an argument"])
+					no_errors = False
+
 			# |===========|
 			# | /restrict |
 			# |===========|
@@ -3538,6 +3587,12 @@ class ScriptThread(QThread):
 					# Bypass /restrict, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict':
+							script_only_command = True
+							continue
+
+					# Bypass /only, already handled
+					if len(tokens)>=1:
+						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only':
 							script_only_command = True
 							continue
 

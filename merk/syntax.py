@@ -135,6 +135,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"private",
 			cmdsymbol+"msgbox",
 			cmdsymbol+"reclaim",
+			cmdsymbol+"only",
 		]
 
 		if not config.ENABLE_ALIASES:
@@ -144,6 +145,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"script")
 			merk.remove(cmdsymbol+"usage")
 			merk.remove(cmdsymbol+"restrict")
+			merk.remove(cmdsymbol+"only")
 		if not config.ENABLE_SHELL_COMMAND:
 			merk.remove(cmdsymbol+"shell")
 		if not SSL_AVAILABLE:

@@ -243,6 +243,11 @@ Appearance:
 <td>Sends a notice</td>
 </tr>
 <tr>
+<td><code>/only WINDOW...</code></td>
+<td>Restricts a script to only executing in <code>WINDOW</code>'s context. Multiple <code>WINDOW</code>s can be specified. Can only be called from scripts.
+</td>
+</tr>
+<tr>
 <td><code>/oper USERNAME PASSWORD</code></td>
 <td>Logs into an operator account</td>
 </tr>

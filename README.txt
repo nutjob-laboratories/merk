@@ -266,6 +266,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
+| `/only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. Can only be called from scripts.              |
 | `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
