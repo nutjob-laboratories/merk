@@ -342,7 +342,7 @@ class Window(QMainWindow):
 		self.nick_display.installEventFilter(self)
 
 		if len(self.client.usermodes)>0:
-			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
+			self.mode_display.setText("<small>+"+self.client.usermodes+"&nbsp;</small>")
 		else:
 			self.mode_display.hide()
 
@@ -1285,7 +1285,7 @@ class Window(QMainWindow):
 			self.mode_display.setText("")
 			self.mode_display.hide()
 		else:
-			self.mode_display.setText("<small>+"+self.client.usermodes+"</small>")
+			self.mode_display.setText("<small>+"+self.client.usermodes+"&nbsp;</small>")
 			if self.window_type!=SERVER_WINDOW:
 				if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
 					self.mode_display.show()
