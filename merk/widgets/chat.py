@@ -1335,6 +1335,7 @@ class Window(QMainWindow):
 
 			if len(modes)>0:
 				self.channel_mode_display.setText("<b>"+self.name+"</b> <small>"+modes+"</small>")
+				self.setTopic(self.channel_topic)
 			else:
 				self.channel_mode_display.setText("<b>"+self.name+"</b>")
 		else:
