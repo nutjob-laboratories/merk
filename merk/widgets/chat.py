@@ -1338,6 +1338,7 @@ class Window(QMainWindow):
 				self.setTopic(self.channel_topic)
 			else:
 				self.channel_mode_display.setText("<b>"+self.name+"</b>")
+				self.setTopic(self.channel_topic)
 		else:
 			self.setWindowTitle(self.name)
 			self.parent.buildWindowsMenu()
