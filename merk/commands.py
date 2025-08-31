@@ -371,6 +371,8 @@ def interpolateAliases(text):
 
 def buildTemporaryAliases(gui,window):
 
+	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
+
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
 	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
 	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)

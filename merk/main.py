@@ -36,6 +36,7 @@ import twisted
 import platform
 import subprocess
 import fnmatch
+import time
 
 import emoji
 
@@ -274,6 +275,15 @@ class Merk(QMainWindow):
 				if not do_not_connect:
 					if connection_info.nickname!=None:
 						self.connectToIrc(connection_info)
+
+		self.client_uptime = 0
+		self.uptimeTimer = UptimeHeartbeat()
+		self.uptimeTimer.beat.connect(self.uptime_beat)
+		self.uptimeTimer.start()
+
+
+	def uptime_beat(self):
+		self.client_uptime = self.client_uptime + 1
 
 	# Windowbar
 
@@ -4106,3 +4116,20 @@ class Merk(QMainWindow):
 								self.setWindowTitle(' ')
 							else:
 								self.setWindowTitle(self.application_title_name)
+
+class UptimeHeartbeat(QThread):
+
+	beat = pyqtSignal()
+
+	def __init__(self,parent=None):
+		super(UptimeHeartbeat, self).__init__(parent)
+		self.threadactive = True
+
+	def run(self):
+		while self.threadactive:
+			time.sleep(1)
+			self.beat.emit()
+
+	def stop(self):
+		self.threadactive = False
+		self.wait()
