@@ -403,7 +403,7 @@ def buildTemporaryAliases(gui,window):
 	if window.channel_topic!='':
 		addTemporaryAlias('_TOPIC',window.channel_topic)
 	else:
-		addTemporaryAlias('_TOPIC','')
+		addTemporaryAlias('_TOPIC','No topic')
 
 	if window.operator:
 		addTemporaryAlias('_STATUS',"operator")
@@ -423,12 +423,12 @@ def buildTemporaryAliases(gui,window):
 	if len(window.nicks)>0:
 		addTemporaryAlias('_PRESENT',",".join(window.nicks))
 	else:
-		addTemporaryAlias('_PRESENT','')
+		addTemporaryAlias('_PRESENT','none')
 
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
 	else:
-		addTemporaryAlias('_MODE','')
+		addTemporaryAlias('_MODE','none')
 
 	timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT)
 	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")
@@ -3406,7 +3406,11 @@ class ScriptThread(QThread):
 			addTemporaryAlias(f"_{counter}",a)
 			counter = counter + 1
 
-		addTemporaryAlias(f"_0",' '.join(self.arguments))
+		if len(self.arguments)>0:
+			addTemporaryAlias(f"_0",' '.join(self.arguments))
+		else:
+			addTemporaryAlias(f"_0",'none')
+			
 		addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
 
 		if self.filename!=None:
