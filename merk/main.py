@@ -950,7 +950,10 @@ class Merk(QMainWindow):
 
 	def systrayShowWindow(self,window):
 		self.toggleHide()
-		self.showNormal()
+		if self.isMaximized():
+			self.showMaximized()
+		else:
+			self.showNormal()
 		self.showSubWindow(window)
 		window.showMaximized()
 

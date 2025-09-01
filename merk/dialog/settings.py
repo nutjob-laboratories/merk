@@ -3901,7 +3901,6 @@ class Dialog(QDialog):
 		config.SYNTAX_FOREGROUND = self.SYNTAX_FOREGROUND
 		config.SHOW_SYSTRAY_ICON = self.showSystray.isChecked()
 		config.SHOW_USERLIST_ON_LEFT = self.showUserlistLeft.isChecked()
-		config.MINIMIZE_TO_SYSTRAY = self.minSystray.isChecked()
 		config.FLASH_SYSTRAY_NOTIFICATION = self.systrayNotify.isChecked()
 		config.FLASH_SYSTRAY_NICKNAME = self.systrayNickname.isChecked()
 		config.FLASH_SYSTRAY_DISCONNECT = self.systrayDisconnect.isChecked()
@@ -4044,6 +4043,13 @@ class Dialog(QDialog):
 		config.SHOW_DATES_IN_LOGS = self.showDates.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = self.autoAliasAway.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = self.autoAliasQuit.isChecked()
+
+		if config.MINIMIZE_TO_SYSTRAY==True:
+			if not self.minSystray.isChecked():
+				if self.parent.is_hidden:
+					self.parent.toggleHide()
+					self.parent.showNormal()
+		config.MINIMIZE_TO_SYSTRAY = self.minSystray.isChecked()
 
 		if self.changed_alias_symbol:
 			config.ALIAS_INTERPOLATION_SYMBOL = self.alias_symbol.text()
