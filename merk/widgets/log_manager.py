@@ -470,7 +470,7 @@ class Window(QMainWindow):
 		if not self.simplified:
 			self.windowDescription = QLabel(f"""
 				<small>
-				Here, you can manage all installed logs. <b>Click on a log name</b> to open that log for viewing
+				Here, you can manage all installed logs. <b>Double click on a log name</b> to open that log for viewing
 				in the log display. <b>Hover the mouse</b> over the log name to see what IRC network that log is
 				from. <b>Right click on a log name</b> to view other options, like opening the log in a text editor,
 				opening the log's location, copying information about the log to the clipboard, or deleting the log.
