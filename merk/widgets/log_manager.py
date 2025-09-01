@@ -493,7 +493,30 @@ class Window(QMainWindow):
 		self.search.returnPressed.connect(self.on_search)
 		self.search.setPlaceholderText("Search terms...")
 
-		self.tabs.tabBar().setTabButton(log_index, QTabBar.RightSide, self.search)
+		self.forward = QPushButton("")
+		self.forward.setIcon(QIcon(NEXT_ICON))
+		self.forward.setToolTip("Next result")
+		self.forward.clicked.connect(self.on_search)
+		self.forward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.forward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+
+		self.backward = QPushButton("")
+		self.backward.setIcon(QIcon(BACK_ICON))
+		self.backward.setToolTip("Previous result")
+		self.backward.clicked.connect(self.on_back)
+		self.backward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.backward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+
+		swlayout = QHBoxLayout()
+		swlayout.addWidget(self.search)
+		swlayout.addWidget(self.backward)
+		swlayout.addWidget(self.forward)
+		swlayout.setContentsMargins(0,0,0,0)
+		
+		self.swidget = QWidget()
+		self.swidget.setLayout(swlayout)
+
+		self.tabs.tabBar().setTabButton(log_index, QTabBar.RightSide, self.swidget)
 
 		self.export_options = QWidget()
 		self.tabs.addTab(self.export_options, "Export")
@@ -543,6 +566,18 @@ class Window(QMainWindow):
 				cursor.movePosition(QTextCursor.Start)
 				self.chat.setTextCursor(cursor)
 				self.chat.find(search_text, QTextDocument.FindFlags())
+
+	def on_back(self):
+		search_text = self.search.text()
+		flags = QTextDocument.FindFlags() | QTextDocument.FindBackward
+
+		if search_text:
+			found = self.chat.find(search_text, flags)
+			if not found:
+				cursor = self.chat.textCursor()
+				cursor.movePosition(QTextCursor.Start)
+				self.chat.setTextCursor(cursor)
+				self.chat.find(search_text, flags)
 
 	def generateStylesheet(self,obj,fore,back):
 
