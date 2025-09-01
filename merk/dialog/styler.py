@@ -452,8 +452,9 @@ class Dialog(QDialog):
 		else:
 			dispLayout.setContentsMargins(1,1,1,1)
 
-		if self.wchat.window_type==SERVER_WINDOW or self.wchat.window_type==PRIVATE_WINDOW:
-			self.userlist.hide()
+		if self.wchat!=None:
+			if self.wchat.window_type==SERVER_WINDOW or self.wchat.window_type==PRIVATE_WINDOW:
+				self.userlist.hide()
 
 		self.selectWindow = QComboBox(self)
 		addedDefault = False
