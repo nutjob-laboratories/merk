@@ -2913,7 +2913,7 @@ class TopicEdit(QLineEdit):
 	def setText(self,text,elide=True):
 		if elide:
 			metrics = QFontMetrics(self.font())
-			elided  = metrics.elidedText(text, Qt.ElideRight, self.width())
+			elided  = metrics.elidedText(text, Qt.ElideRight, self.width()-5)
 			QLineEdit.setText(self,elided)
 			if len(elided)!=len(text):
 				self.setToolTip(text)
