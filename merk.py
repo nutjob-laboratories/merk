@@ -449,7 +449,7 @@ if __name__ == '__main__':
 
 		if user_info_changed: user.save_user(user.USER_FILE)
 
-		if args.noask:
+		if args.noask or not config.ASK_FOR_SERVER_ON_STARTUP:
 			# Create the main GUI and show it
 			GUI = Merk(
 					app,							# Application

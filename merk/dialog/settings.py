@@ -1385,6 +1385,10 @@ class Dialog(QDialog):
 		escLayout.addWidget(self.enableEmojis)
 		escLayout.addStretch()
 
+		self.showConnect = QCheckBox("Show connection dialog on startup",self)
+		if config.ASK_FOR_SERVER_ON_STARTUP: self.showConnect.setChecked(True)
+		self.showConnect.stateChanged.connect(self.changedSetting)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -1399,7 +1403,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.noAppNameTitle)
 		applicationLayout.addWidget(self.noConnectLogo)
-		applicationLayout.addWidget(QLabel(' '))
+		applicationLayout.addWidget(self.showConnect)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
 		applicationLayout.addWidget(self.emojiDescription)
 		applicationLayout.addLayout(escLayout)
@@ -4057,6 +4061,7 @@ class Dialog(QDialog):
 		config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = self.autoAliasAway.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = self.autoAliasQuit.isChecked()
 		config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = self.noConnectLogo.isChecked()
+		config.ASK_FOR_SERVER_ON_STARTUP = self.showConnect.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
