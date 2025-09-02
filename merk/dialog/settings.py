@@ -1354,7 +1354,6 @@ class Dialog(QDialog):
 		self.noAppNameTitle = QCheckBox("Do not show application name in\nwindow title",self)
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE: self.noAppNameTitle.setChecked(True)
 		self.noAppNameTitle.stateChanged.connect(self.changedSetting)
-
 		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
@@ -1376,6 +1375,11 @@ class Dialog(QDialog):
 		self.emojiDescription.setAlignment(Qt.AlignJustify)
 		self.emojiDescription.setOpenExternalLinks(True)
 
+		self.noConnectLogo = QCheckBox(f"Hide {APPLICATION_NAME} logo on the initial\nconnection dialog",self)
+		if config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG: self.noConnectLogo.setChecked(True)
+		self.noConnectLogo.stateChanged.connect(self.changedSetting)
+		self.noConnectLogo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -1389,6 +1393,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.noAppNameTitle)
+		applicationLayout.addWidget(self.noConnectLogo)
 		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
 		applicationLayout.addWidget(self.emojiDescription)
@@ -4043,6 +4048,7 @@ class Dialog(QDialog):
 		config.SHOW_DATES_IN_LOGS = self.showDates.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = self.autoAliasAway.isChecked()
 		config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = self.autoAliasQuit.isChecked()
+		config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = self.noConnectLogo.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

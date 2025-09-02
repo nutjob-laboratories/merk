@@ -257,9 +257,11 @@ SHOW_DATES_IN_LOGS = True
 INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = True
 INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = True
 RECLAIM_NICKNAME_FREQUENCY = 30
+HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = False
 
 def build_settings():
 	settings = {
+		"hide_logo_on_initial_connection_dialog": HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG,
 		"reclaim_nickname_frequency": RECLAIM_NICKNAME_FREQUENCY,
 		"interpolate_aliases_into_quit_message": INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE,
 		"interpolate_aliases_into_away_message": INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE,
@@ -483,6 +485,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "hide_logo_on_initial_connection_dialog" in settings:
+		settings["hide_logo_on_initial_connection_dialog"] = HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
 	if not "reclaim_nickname_frequency" in settings:
 		settings["reclaim_nickname_frequency"] = RECLAIM_NICKNAME_FREQUENCY
 	if not "interpolate_aliases_into_quit_message" in settings:
@@ -1142,6 +1146,7 @@ def load_settings(filename):
 	global INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE
 	global INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE
 	global RECLAIM_NICKNAME_FREQUENCY
+	global HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1151,6 +1156,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = settings["hide_logo_on_initial_connection_dialog"]
 		RECLAIM_NICKNAME_FREQUENCY = settings["reclaim_nickname_frequency"]
 		INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = settings["interpolate_aliases_into_quit_message"]
 		INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = settings["interpolate_aliases_into_away_message"]

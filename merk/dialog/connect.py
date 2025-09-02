@@ -319,6 +319,9 @@ class Dialog(QDialog):
 		self.StoredData = []
 		self.StoredServer = 0
 
+		# Load the config file
+		config.load_settings(config.CONFIG_FILE)
+
 		# Load in user settings
 		user.load_user(user.USER_FILE)
 
@@ -336,7 +339,7 @@ class Dialog(QDialog):
 		"""
 
 		if self.initial:
-			self.setWindowTitle(APPLICATION_NAME+" IRC Client")
+			self.setWindowTitle(f"{APPLICATION_NAME} IRC Client {APPLICATION_VERSION}")
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
@@ -584,19 +587,21 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		if self.initial:
-			splash = QLabel()
-			pixmap = QPixmap(SPLASH_LOGO)
-			splash.setPixmap(pixmap)
+			if not config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG:
+				splash = QLabel()
+				pixmap = QPixmap(SPLASH_LOGO)
+				scaled_pixmap = pixmap.scaled(150, 49, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+				splash.setPixmap(scaled_pixmap)
 
-			spLayout = QHBoxLayout()
-			spLayout.addStretch()
-			spLayout.addWidget(splash)
-			spLayout.addStretch()
+				spLayout = QHBoxLayout()
+				spLayout.addStretch()
+				spLayout.addWidget(splash)
+				spLayout.addStretch()
 
-			vLayout = QVBoxLayout()
-			vLayout.addLayout(spLayout)
+				vLayout = QVBoxLayout()
+				vLayout.addLayout(spLayout)
 
-			finalLayout.addLayout(vLayout)
+				finalLayout.addLayout(vLayout)
 		finalLayout.addLayout(bannerTabs)
 		finalLayout.addWidget(self.saveU)
 		if self.initial:
