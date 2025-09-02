@@ -735,8 +735,8 @@ class Window(QMainWindow):
 		self.editor.clear()
 		self.menuSave.setEnabled(True)
 		self.changed = False
-		self.menuSave.setShortcut(QKeySequence())
-		self.menuSaveAs.setShortcut("Ctrl+S")
+		self.menuSave.setShortcut("Ctrl+S")
+		self.menuSaveAs.setShortcut(QKeySequence())
 		self.editing_user_script = True
 		self.current_user_script = cscript
 		self.updateApplicationTitle()
