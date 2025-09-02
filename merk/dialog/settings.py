@@ -747,13 +747,11 @@ class Dialog(QDialog):
 			self.logEverything.setEnabled(True)
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
-			self.enableStyle.setEnabled(True)
 			self.enablePing.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
-			self.enableStyle.setEnabled(False)
 			self.enablePing.setEnabled(False)
 
 			if config.SHOW_PINGS_IN_CONSOLE:
@@ -762,11 +760,6 @@ class Dialog(QDialog):
 				self.enablePing.setChecked(False)
 
 			self.alias_symbol.setText(config.ALIAS_INTERPOLATION_SYMBOL)
-
-			if config.ENABLE_STYLE_EDITOR:
-				self.enableStyle.setChecked(True)
-			else:
-				self.enableStyle.setChecked(False)
 
 			if config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE: 
 				self.logEverything.setChecked(True)
@@ -1394,6 +1387,8 @@ class Dialog(QDialog):
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(self.maxOnStart)
+		applicationLayout.addWidget(self.showConnect)
+		applicationLayout.addWidget(self.noConnectLogo)
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.simpleConnect)
@@ -1402,8 +1397,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.noAppNameTitle)
-		applicationLayout.addWidget(self.noConnectLogo)
-		applicationLayout.addWidget(self.showConnect)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
 		applicationLayout.addWidget(self.emojiDescription)
 		applicationLayout.addLayout(escLayout)
@@ -1509,6 +1502,10 @@ class Dialog(QDialog):
 		self.forceMono.stateChanged.connect(self.changedSettingRerender)
 		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.enableStyle = QCheckBox("Enable text style editor",self)
+		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
+		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
@@ -1517,6 +1514,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		appearanceLayout.addWidget(self.enableStyle)
 		appearanceLayout.addWidget(self.forceDefault)
 		appearanceLayout.addWidget(self.notInputWidget)
 		appearanceLayout.addWidget(self.notUserlist)
@@ -3736,11 +3734,6 @@ class Dialog(QDialog):
 		self.writeFile.setEnabled(False)
 		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.enableStyle = QCheckBox("Enable text style editor",self)
-		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
-		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
-		self.enableStyle.setEnabled(False)
-
 		self.enablePing = QCheckBox("Show server pings in server windows",self)
 		if config.SHOW_PINGS_IN_CONSOLE: self.enablePing.setChecked(True)
 		self.enablePing.stateChanged.connect(self.changedSettingAdvanced)
@@ -3757,7 +3750,6 @@ class Dialog(QDialog):
 		advancedLayout.addLayout(aoLayout)
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
-		advancedLayout.addWidget(self.enableStyle)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
