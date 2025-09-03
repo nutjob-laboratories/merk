@@ -2635,16 +2635,45 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					script = e[0]
 					args = shlex.split(e[1], comments=False)
 
-					f=open(script, "r",encoding="utf-8",errors="ignore")
-					text = f.read()
-					f.close()
+					# Check to see if the filename is a filename
+					# in the application's "path"
+					ffile = find_file(script,SCRIPT_FILE_EXTENSION)
+					if ffile:
+						f=open(ffile, "r",encoding="utf-8",errors="ignore")
+						text = f.read()
+						f.close()
 
-					script_id = str(uuid.uuid4())
-					gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,script)
-					gui.scripts[script_id].execLine.connect(execute_script_line)
-					gui.scripts[script_id].scriptEnd.connect(execute_script_end)
-					gui.scripts[script_id].scriptError.connect(execute_script_error)
-					gui.scripts[script_id].start()
+						script_id = str(uuid.uuid4())
+						gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,ffile)
+						gui.scripts[script_id].execLine.connect(execute_script_line)
+						gui.scripts[script_id].scriptEnd.connect(execute_script_end)
+						gui.scripts[script_id].scriptError.connect(execute_script_error)
+						gui.scripts[script_id].start()
+
+					else:
+						# If the filename isn't on the "path", we check
+						# to see if the filename actually exists
+						if Path(script).exists():
+							f=open(script, "r",encoding="utf-8",errors="ignore")
+							text = f.read()
+							f.close()
+
+							script_id = str(uuid.uuid4())
+							gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,script)
+							gui.scripts[script_id].execLine.connect(execute_script_line)
+							gui.scripts[script_id].scriptEnd.connect(execute_script_end)
+							gui.scripts[script_id].scriptError.connect(execute_script_error)
+							gui.scripts[script_id].start()
+						else:
+							if is_script:
+								do_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{script}\" doesn't exist or is not readable.")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',f"\"{script}\" doesn't exist or is not readable.")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
 				return True
 			else:
 				if is_script:
