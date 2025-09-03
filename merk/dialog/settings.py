@@ -937,6 +937,7 @@ class Dialog(QDialog):
 			self.windowbarManager.setEnabled(True)
 			self.windowbarUnread.setEnabled(True)
 			self.windowbarEntryMenu.setEnabled(True)
+			self.windowbarHidden.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -956,6 +957,7 @@ class Dialog(QDialog):
 			self.windowbarManager.setEnabled(False)
 			self.windowbarUnread.setEnabled(False)
 			self.windowbarEntryMenu.setEnabled(False)
+			self.windowbarHidden.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -2038,6 +2040,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_ENTRY_MENU: self.windowbarEntryMenu.setChecked(True)
 		self.windowbarEntryMenu.stateChanged.connect(self.menuChange)
 
+		self.windowbarHidden = QCheckBox("Show hidden server windows",self)
+		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR: self.windowbarHidden.setChecked(True)
+		self.windowbarHidden.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2057,6 +2063,7 @@ class Dialog(QDialog):
 			self.windowbarManager.setEnabled(False)
 			self.windowbarUnread.setEnabled(False)
 			self.windowbarEntryMenu.setEnabled(False)
+			self.windowbarHidden.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -2083,9 +2090,9 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarUnread)
+		windowbarLayout.addWidget(self.windowbarHidden)
 		windowbarLayout.addLayout(wbMenuLayout)
 		windowbarLayout.addLayout(justifyLayout)
-		windowbarLayout.addWidget(QLabel(' '))
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
 		windowbarLayout.addLayout(includesLayout)
 		windowbarLayout.addStretch()
@@ -4061,6 +4068,7 @@ class Dialog(QDialog):
 		config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = self.noConnectLogo.isChecked()
 		config.ASK_FOR_SERVER_ON_STARTUP = self.showConnect.isChecked()
 		config.PROMPT_FOR_SCRIPT_FILE = self.promptScript.isChecked()
+		config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = self.windowbarHidden.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

@@ -260,9 +260,11 @@ RECLAIM_NICKNAME_FREQUENCY = 30
 HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = False
 ASK_FOR_SERVER_ON_STARTUP = True
 PROMPT_FOR_SCRIPT_FILE = False
+SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = True
 
 def build_settings():
 	settings = {
+		"show_hidden_server_windows_in_windowbar": SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR,
 		"prompt_for_file_on_calling_script_with_no_arguments": PROMPT_FOR_SCRIPT_FILE,
 		"show_connection_dialog_on_startup": ASK_FOR_SERVER_ON_STARTUP,
 		"hide_logo_on_initial_connection_dialog": HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG,
@@ -489,6 +491,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_hidden_server_windows_in_windowbar" in settings:
+		settings["show_hidden_server_windows_in_windowbar"] = SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR
 	if not "prompt_for_file_on_calling_script_with_no_arguments" in settings:
 		settings["prompt_for_file_on_calling_script_with_no_arguments"] = PROMPT_FOR_SCRIPT_FILE
 	if not "show_connection_dialog_on_startup" in settings:
@@ -1157,6 +1161,7 @@ def load_settings(filename):
 	global HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
 	global ASK_FOR_SERVER_ON_STARTUP
 	global PROMPT_FOR_SCRIPT_FILE
+	global SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1166,6 +1171,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = settings["show_hidden_server_windows_in_windowbar"]
 		PROMPT_FOR_SCRIPT_FILE = settings["prompt_for_file_on_calling_script_with_no_arguments"]
 		ASK_FOR_SERVER_ON_STARTUP = settings["show_connection_dialog_on_startup"]
 		HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = settings["hide_logo_on_initial_connection_dialog"]

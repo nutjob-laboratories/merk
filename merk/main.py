@@ -387,8 +387,11 @@ class Merk(QMainWindow):
 			if config.WINDOWBAR_INCLUDE_SERVERS:
 				w = self.getServerSubWindow(entry)
 				if hasattr(w,"isVisible"):
-					if w.isVisible():
+					if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR:
 						window_list.append(self.getServerSubWindow(entry))
+					else:
+						if w.isVisible():
+							window_list.append(self.getServerSubWindow(entry))
 
 			if config.WINDOWBAR_INCLUDE_LIST:
 				w = self.getServerSubWindow(entry)
