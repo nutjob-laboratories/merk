@@ -44,6 +44,7 @@ from .set_quit import Dialog as SetQuit
 from .connect_server import Dialog as ConnectServer
 from .new_connect_script import Dialog as NewConnectScript
 from .set_script import Dialog as SetScript
+from .get_script import Dialog as GetScript
 from .set_alias import Dialog as SetAlias
 from .menu_name import Dialog as SetMenuName
 from .key import Dialog as SetKey

@@ -2629,16 +2629,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
 
 			if config.PROMPT_FOR_SCRIPT_FILE and not is_script:
-				options = QFileDialog.Options()
-				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getOpenFileName(gui,"Select Script", SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.merk);;All Files (*)", options=options)
-				if fileName:
-					f=open(fileName, "r",encoding="utf-8",errors="ignore")
+				x = dialog.GetScript(gui)
+				e = x.get_script_information(gui)
+				if e:
+					script = e[0]
+					args = shlex.split(e[1], comments=False)
+
+					f=open(script, "r",encoding="utf-8",errors="ignore")
 					text = f.read()
 					f.close()
 
 					script_id = str(uuid.uuid4())
-					gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,[],fileName)
+					gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,script)
 					gui.scripts[script_id].execLine.connect(execute_script_line)
 					gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 					gui.scripts[script_id].scriptError.connect(execute_script_error)
