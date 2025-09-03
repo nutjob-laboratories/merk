@@ -653,8 +653,6 @@ class Window(QMainWindow):
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 			if load_logs:
 
-				QApplication.setOverrideCursor(Qt.WaitCursor)
-
 				# Load log from disk
 				loadLog = logs.readLog(self.client.network,self.name,logs.LOG_DIRECTORY)
 				# If the log is too long (which, after a while, it *will* be), we
@@ -692,8 +690,6 @@ class Window(QMainWindow):
 				# Now, rerender all text in the log, so that
 				# the loaded log data is displayed
 				self.rerenderChatLog()
-
-				QApplication.restoreOverrideCursor()
 
 	def showChannelList(self):
 		if len(self.client.server_channel_list)==0:
@@ -1256,6 +1252,8 @@ class Window(QMainWindow):
 
 	def rerenderChatLog(self):
 
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+
 		self.chat.clear()
 		for line in self.log:
 
@@ -1281,6 +1279,8 @@ class Window(QMainWindow):
 
 		self.chat.moveCursor(QTextCursor.End)
 		self.input.setFocus()
+
+		QApplication.restoreOverrideCursor()
 
 	def refreshModeDisplay(self):
 		if len(self.client.usermodes)==0:
