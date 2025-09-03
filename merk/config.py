@@ -259,9 +259,11 @@ INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = True
 RECLAIM_NICKNAME_FREQUENCY = 30
 HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = False
 ASK_FOR_SERVER_ON_STARTUP = True
+PROMPT_FOR_SCRIPT_FILE = False
 
 def build_settings():
 	settings = {
+		"prompt_for_file_on_calling_script_with_no_arguments": PROMPT_FOR_SCRIPT_FILE,
 		"show_connection_dialog_on_startup": ASK_FOR_SERVER_ON_STARTUP,
 		"hide_logo_on_initial_connection_dialog": HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG,
 		"reclaim_nickname_frequency": RECLAIM_NICKNAME_FREQUENCY,
@@ -487,6 +489,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "prompt_for_file_on_calling_script_with_no_arguments" in settings:
+		settings["prompt_for_file_on_calling_script_with_no_arguments"] = PROMPT_FOR_SCRIPT_FILE
 	if not "show_connection_dialog_on_startup" in settings:
 		settings["show_connection_dialog_on_startup"] = ASK_FOR_SERVER_ON_STARTUP
 	if not "hide_logo_on_initial_connection_dialog" in settings:
@@ -1152,6 +1156,7 @@ def load_settings(filename):
 	global RECLAIM_NICKNAME_FREQUENCY
 	global HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
 	global ASK_FOR_SERVER_ON_STARTUP
+	global PROMPT_FOR_SCRIPT_FILE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1161,6 +1166,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PROMPT_FOR_SCRIPT_FILE = settings["prompt_for_file_on_calling_script_with_no_arguments"]
 		ASK_FOR_SERVER_ON_STARTUP = settings["show_connection_dialog_on_startup"]
 		HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = settings["hide_logo_on_initial_connection_dialog"]
 		RECLAIM_NICKNAME_FREQUENCY = settings["reclaim_nickname_frequency"]

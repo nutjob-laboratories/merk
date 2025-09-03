@@ -2627,15 +2627,33 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script':
-			if is_script:
-				do_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			if config.PROMPT_FOR_SCRIPT_FILE and not is_script:
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getOpenFileName(gui,"Select Script", SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.merk);;All Files (*)", options=options)
+				if fileName:
+					f=open(fileName, "r",encoding="utf-8",errors="ignore")
+					text = f.read()
+					f.close()
+
+					script_id = str(uuid.uuid4())
+					gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,[],fileName)
+					gui.scripts[script_id].execLine.connect(execute_script_line)
+					gui.scripts[script_id].scriptEnd.connect(execute_script_end)
+					gui.scripts[script_id].scriptError.connect(execute_script_error)
+					gui.scripts[script_id].start()
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
+			else:
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"script FILENAME")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 	# |---------|
 	# | /whowas |

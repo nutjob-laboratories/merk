@@ -1368,15 +1368,15 @@ class Dialog(QDialog):
 		self.emojiDescription.setAlignment(Qt.AlignJustify)
 		self.emojiDescription.setOpenExternalLinks(True)
 
-		self.noConnectLogo = QCheckBox(f"Hide {APPLICATION_NAME} logo on the initial\nconnection dialog",self)
-		if config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG: self.noConnectLogo.setChecked(True)
-		self.noConnectLogo.stateChanged.connect(self.changedSetting)
-		self.noConnectLogo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		escLayout = QHBoxLayout()
 		escLayout.addStretch()
 		escLayout.addWidget(self.enableEmojis)
 		escLayout.addStretch()
+
+		self.noConnectLogo = QCheckBox(f"Hide {APPLICATION_NAME} logo on the initial\nconnection dialog",self)
+		if config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG: self.noConnectLogo.setChecked(True)
+		self.noConnectLogo.stateChanged.connect(self.changedSetting)
+		self.noConnectLogo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showConnect = QCheckBox("Show connection dialog on startup",self)
 		if config.ASK_FOR_SERVER_ON_STARTUP: self.showConnect.setChecked(True)
@@ -3432,6 +3432,11 @@ class Dialog(QDialog):
 		if config.ENABLE_INSERT_COMMAND: self.enableInsert.setChecked(True)
 		self.enableInsert.stateChanged.connect(self.changedSetting)
 
+		self.promptScript = QCheckBox(f"Prompt for file when calling\n{config.ISSUE_COMMAND_SYMBOL}script with no arguments",self)
+		if config.PROMPT_FOR_SCRIPT_FILE: self.promptScript.setChecked(True)
+		self.promptScript.stateChanged.connect(self.changedSetting)
+		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
@@ -3446,6 +3451,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.haltError)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command settings</b>"))
 		scriptingLayout.addWidget(self.requireArgs)
+		scriptingLayout.addWidget(self.promptScript)
 		scriptingLayout.addWidget(self.enableShell)
 		scriptingLayout.addWidget(self.enableInsert)
 		scriptingLayout.addStretch()
@@ -4054,6 +4060,7 @@ class Dialog(QDialog):
 		config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = self.autoAliasQuit.isChecked()
 		config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = self.noConnectLogo.isChecked()
 		config.ASK_FOR_SERVER_ON_STARTUP = self.showConnect.isChecked()
+		config.PROMPT_FOR_SCRIPT_FILE = self.promptScript.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
