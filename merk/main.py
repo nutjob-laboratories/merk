@@ -1030,7 +1030,13 @@ class Merk(QMainWindow):
 			w.refresh_button.setEnabled(True)
 			w.away_button.setEnabled(True)
 
+			w.connected = True
+
 			self.buildWindowsMenu()
+
+			if not config.CLOSING_SERVER_WINDOW_DISCONNECTS:
+				if config.HIDE_SERVER_WINDOWS_ON_SIGNON:
+					w.close()
 		
 		self.nickChanged(client)
 

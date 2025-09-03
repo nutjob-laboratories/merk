@@ -107,6 +107,8 @@ class Window(QMainWindow):
 
 		self.force_close = False
 
+		self.connected = False
+
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
 		self.dosave = QTimer(self)
