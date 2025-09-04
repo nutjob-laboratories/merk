@@ -558,10 +558,17 @@ class Merk(QMainWindow):
 
 				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 					if window == self.MDI.activeSubWindow():
-						font = QFont()
+						font = button.font()
 						font.setBold(True)
 						if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: font.setUnderline(True)
 						button.setFont(font)
+
+				if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS:
+					if c.window_type==SERVER_WINDOW:
+						if c.connected==False:
+							font = button.font()
+							font.setItalic(True)
+							button.setFont(font)
 
 				button.setFixedHeight(18)
 				button_list.append(button)
@@ -663,16 +670,22 @@ class Merk(QMainWindow):
 				if c.window_type==MANAGER_WINDOW:
 					button.setToolTip(wname)
 
+				if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS:
+					if c.window_type==SERVER_WINDOW:
+						if c.connected==False:
+							font = button.font()
+							font.setItalic(True)
+							button.setFont(font)
+
 				button.setFixedHeight(18)
 				button_list.append(button)
 
 				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
 					if do_pulse: button.pulse()
 
-		
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			if len(button_list)>0:
-				font = QFont()
+				font = button_list[0].font()
 				font.setBold(True)
 				if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: font.setUnderline(True)
 				button_list[0].setFont(font)

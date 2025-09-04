@@ -948,6 +948,7 @@ class Dialog(QDialog):
 			self.windowbarUnread.setEnabled(True)
 			self.windowbarEntryMenu.setEnabled(True)
 			self.windowbarHidden.setEnabled(True)
+			self.windowbarItalics.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -968,6 +969,7 @@ class Dialog(QDialog):
 			self.windowbarUnread.setEnabled(False)
 			self.windowbarEntryMenu.setEnabled(False)
 			self.windowbarHidden.setEnabled(False)
+			self.windowbarItalics.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -1963,11 +1965,7 @@ class Dialog(QDialog):
 			<small>
 			The <b>windowbar</b> is a toolbar widget that lists all (or some) of the open
 			subwindows and allows you to switch between them by clicking on
-			the subwindow's name. The <b>windowbar</b> can show channel, private chat,
-			server, or script editor windows. It can be displayed at the <b>top</b> of
-			the main window or at the <b>bottom</b>, or can be optionally <b>movable</b>. The entries
-			in the window bar can be <b>left</b>, <b>right</b>, or <b>center</b> justified. The
-			<b>windowbar</b> is turned on by default.
+			the subwindow's name.
 			</small>
 			""")
 		self.windowbarDescription.setWordWrap(True)
@@ -2059,6 +2057,11 @@ class Dialog(QDialog):
 		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR: self.windowbarHidden.setChecked(True)
 		self.windowbarHidden.stateChanged.connect(self.menuChange)
 
+		self.windowbarItalics = QCheckBox("Show connecting server windows\nin italics",self)
+		if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS: self.windowbarItalics.setChecked(True)
+		self.windowbarItalics.stateChanged.connect(self.menuChange)
+		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2079,6 +2082,7 @@ class Dialog(QDialog):
 			self.windowbarUnread.setEnabled(False)
 			self.windowbarEntryMenu.setEnabled(False)
 			self.windowbarHidden.setEnabled(False)
+			self.windowbarItalics.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -2106,6 +2110,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarUnread)
 		windowbarLayout.addWidget(self.windowbarHidden)
+		windowbarLayout.addWidget(self.windowbarItalics)
 		windowbarLayout.addLayout(wbMenuLayout)
 		windowbarLayout.addLayout(justifyLayout)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
@@ -2214,7 +2219,6 @@ class Dialog(QDialog):
 		self.askBeforeReconnect = QCheckBox("Ask before automatically\nreconnecting",self)
 		if config.ASK_BEFORE_RECONNECT: self.askBeforeReconnect.setChecked(True)
 		self.askBeforeReconnect.stateChanged.connect(self.changedSetting)
-
 		self.askBeforeReconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.notifyOnLostConnection = QCheckBox("Notify on lost/failed connection",self)
@@ -4073,6 +4077,7 @@ class Dialog(QDialog):
 		config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = self.windowbarHidden.isChecked()
 		config.HIDE_SERVER_WINDOWS_ON_SIGNON = self.hideServer.isChecked()
 		config.ENABLE_DELAY_COMMAND = self.enableDelay.isChecked()
+		config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = self.windowbarItalics.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
