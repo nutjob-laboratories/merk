@@ -1226,6 +1226,26 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell' and len(tokens)>=3:
 			tokens.pop(0)
 			alias = tokens.pop(0)
+
+			# If the first character is the interpolation
+			# symbol, strip it from the name
+			if len(alias)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+				if alias[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+					alias = alias[il:]
+
+			if len(alias)>=1:
+				if not alias[0].isalpha():
+					if is_script:
+						do_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens must begin with a letter")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
 			try:
 				result = subprocess.run(tokens, capture_output=True, text=True, check=True, shell=True)
 				stored = f"{result.stdout}"
