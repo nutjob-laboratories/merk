@@ -136,6 +136,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"msgbox",
 			cmdsymbol+"reclaim",
 			cmdsymbol+"only",
+			cmdsymbol+"next",
+			cmdsymbol+"previous",
 		]
 
 		if not config.ENABLE_ALIASES:

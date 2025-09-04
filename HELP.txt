@@ -235,6 +235,10 @@ Appearance:
 <td>Displays a messagebox with a short message</td>
 </tr>
 <tr>
+<td><code>/next</code></td>
+<td>Shifts focus to the "next" subwindow</td>
+</tr>
+<tr>
 <td><code>/nick NEW_NICKNAME</code></td>
 <td>Changes your nickname</td>
 </tr>
@@ -262,6 +266,10 @@ Appearance:
 <tr>
 <td><code>/play FILENAME</code></td>
 <td>Plays a WAV file</td>
+</tr>
+<tr>
+<td><code>/previous</code></td>
+<td>Shifts focus to the "previous" subwindow</td>
 </tr>
 <tr>
 <td><code>/print [WINDOW] TEXT...</code></td>

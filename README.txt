@@ -264,6 +264,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
+| `/next`                    | Shifts focus to the "next" subwindow                                                                                                   |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
 | `/only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. Can only be called from scripts.              |
@@ -271,6 +272,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
 | `/play FILENAME`                        | Plays a WAV file                                                                                                                 |
+| `/previous`               | Shifts focus to the "previous" subwindow                                                                                    |
 | `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
 | `/private NICKNAME`               | Opens a private chat window for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
