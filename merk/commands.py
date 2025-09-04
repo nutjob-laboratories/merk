@@ -179,6 +179,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_ALIASES:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"alias",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unalias",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
 
 	if not config.SCRIPTING_ENGINE_ENABLED:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"script",'')
@@ -281,6 +282,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
@@ -1196,6 +1198,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /shell |
 	# |--------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_ALIASES:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
 			if not config.ENABLE_SHELL_COMMAND:

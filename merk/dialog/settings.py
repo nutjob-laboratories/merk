@@ -429,6 +429,7 @@ class Dialog(QDialog):
 			self.alias_symbol.setEnabled(True)
 			self.autoAliasAway.setEnabled(True)
 			self.autoAliasQuit.setEnabled(True)
+			self.enableShell.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -437,6 +438,7 @@ class Dialog(QDialog):
 			self.alias_symbol.setEnabled(False)
 			self.autoAliasAway.setEnabled(False)
 			self.autoAliasQuit.setEnabled(False)
+			self.enableShell.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -3450,6 +3452,9 @@ class Dialog(QDialog):
 		self.enableShell = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}shell command",self)
 		if config.ENABLE_SHELL_COMMAND: self.enableShell.setChecked(True)
 		self.enableShell.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.enableShell.setEnabled(False)
 
 		self.scriptingDescription = QLabel(f"""
 			<small><b>Scripting</b> allows <b>{APPLICATION_NAME}</b> to automate commands upon connection, as well

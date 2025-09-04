@@ -145,6 +145,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_ALIASES:
 			merk.remove(cmdsymbol+"alias")
 			merk.remove(cmdsymbol+"unalias")
+			merk.remove(cmdsymbol+"shell")
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			merk.remove(cmdsymbol+"script")
 			merk.remove(cmdsymbol+"usage")
@@ -157,9 +158,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"xconnectssl")
 		if not config.ENABLE_DELAY_COMMAND:
 			merk.remove(cmdsymbol+"delay")
-
-		# if not resources.is_running_from_pyinstaller():
-		# 	merk.append(cmdsymbol+"nostril")
 
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),
@@ -180,7 +178,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
 			for o in merk]
 
-		# Channel names
+		# Channel names and aliases
 		rules += [
 			(r'(#\w+)', 0, STYLES['channel']),
 			(r'(\&\w+)', 0, STYLES['channel']),
