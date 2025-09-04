@@ -139,6 +139,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"next",
 			cmdsymbol+"previous",
 			cmdsymbol+"delay",
+			cmdsymbol+"clear",
 		]
 
 		if not config.ENABLE_ALIASES:
