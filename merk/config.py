@@ -262,9 +262,11 @@ ASK_FOR_SERVER_ON_STARTUP = True
 PROMPT_FOR_SCRIPT_FILE = False
 SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = True
 HIDE_SERVER_WINDOWS_ON_SIGNON = False
+ENABLE_DELAY_COMMAND = True
 
 def build_settings():
 	settings = {
+		"enable_delay_command": ENABLE_DELAY_COMMAND,
 		"hide_server_windows_when_registration_completes": HIDE_SERVER_WINDOWS_ON_SIGNON,
 		"show_hidden_server_windows_in_windowbar": SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR,
 		"prompt_for_file_on_calling_script_with_no_arguments": PROMPT_FOR_SCRIPT_FILE,
@@ -493,6 +495,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_delay_command" in settings:
+		settings["enable_delay_command"] = ENABLE_DELAY_COMMAND
 	if not "hide_server_windows_when_registration_completes" in settings:
 		settings["hide_server_windows_when_registration_completes"] = HIDE_SERVER_WINDOWS_ON_SIGNON
 	if not "show_hidden_server_windows_in_windowbar" in settings:
@@ -1167,6 +1171,7 @@ def load_settings(filename):
 	global PROMPT_FOR_SCRIPT_FILE
 	global SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR
 	global HIDE_SERVER_WINDOWS_ON_SIGNON
+	global ENABLE_DELAY_COMMAND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1176,6 +1181,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_DELAY_COMMAND = settings["enable_delay_command"]
 		HIDE_SERVER_WINDOWS_ON_SIGNON = settings["hide_server_windows_when_registration_completes"]
 		SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = settings["show_hidden_server_windows_in_windowbar"]
 		PROMPT_FOR_SCRIPT_FILE = settings["prompt_for_file_on_calling_script_with_no_arguments"]

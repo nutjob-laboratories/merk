@@ -138,6 +138,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"only",
 			cmdsymbol+"next",
 			cmdsymbol+"previous",
+			cmdsymbol+"delay",
 		]
 
 		if not config.ENABLE_ALIASES:
@@ -153,6 +154,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")
+		if not config.ENABLE_DELAY_COMMAND:
+			merk.remove(cmdsymbol+"delay")
 
 		# if not resources.is_running_from_pyinstaller():
 		# 	merk.append(cmdsymbol+"nostril")

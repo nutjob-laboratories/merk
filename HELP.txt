@@ -155,6 +155,10 @@ Appearance:
 <td>Sends a CTCP request to <code>USER</code>; valid <code>REQUEST</code>s are TIME, VERSION, or FINGER</td>
 </tr>
 <tr>
+<td><code>/delay SECONDS COMMAND...</code></td>
+<td>Executes <code>COMMAND</code> after <code>SECONDS</code> seconds</td>
+</tr>
+<tr>
 <td><code>/edit [FILENAME]</code></td>
 <td>Opens a script in the editor</td>
 </tr>

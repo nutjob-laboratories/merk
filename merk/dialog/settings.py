@@ -3444,6 +3444,10 @@ class Dialog(QDialog):
 		self.promptScript.stateChanged.connect(self.changedSetting)
 		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.enableDelay = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}delay command",self)
+		if config.ENABLE_DELAY_COMMAND: self.enableDelay.setChecked(True)
+		self.enableDelay.stateChanged.connect(self.changedSetting)
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
@@ -3460,6 +3464,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.promptScript)
 		scriptingLayout.addWidget(self.enableShell)
 		scriptingLayout.addWidget(self.enableInsert)
+		scriptingLayout.addWidget(self.enableDelay)
 		scriptingLayout.addStretch()
 
 		self.scriptingPage.setLayout(scriptingLayout)
@@ -4067,6 +4072,7 @@ class Dialog(QDialog):
 		config.PROMPT_FOR_SCRIPT_FILE = self.promptScript.isChecked()
 		config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = self.windowbarHidden.isChecked()
 		config.HIDE_SERVER_WINDOWS_ON_SIGNON = self.hideServer.isChecked()
+		config.ENABLE_DELAY_COMMAND = self.enableDelay.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

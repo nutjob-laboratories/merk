@@ -169,6 +169,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"reclaim": config.ISSUE_COMMAND_SYMBOL+"reclaim ",
 			config.ISSUE_COMMAND_SYMBOL+"next": config.ISSUE_COMMAND_SYMBOL+"next",
 			config.ISSUE_COMMAND_SYMBOL+"previous": config.ISSUE_COMMAND_SYMBOL+"previous",
+			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -185,6 +186,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	if not config.ENABLE_SHELL_COMMAND:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
+
+	if not config.ENABLE_DELAY_COMMAND:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"delay",'')
 
 	if not SSL_AVAILABLE:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"connectssl",'')
@@ -261,6 +265,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME</b>", "Attempts to change nickname to NICKNAME until claimed" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"next</b>", "Shifts focus to the \"next\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"previous</b>", "Shifts focus to the \"previous\" subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -268,6 +273,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+		if not config.ENABLE_DELAY_COMMAND:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>": continue
 		if not config.ENABLE_STYLE_EDITOR:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>": continue
 		if not config.ENABLE_ALIASES:
@@ -927,6 +934,59 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |--------|
+	# | /delay |
+	# |--------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'delay':
+			if not config.ENABLE_DELAY_COMMAND:
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"delay has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"delay has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'delay' and len(tokens)>=3:
+			tokens.pop(0)
+			wait = tokens.pop(0)
+			command = ' '.join(tokens)
+
+			try:
+				wait = int(wait)
+			except:
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"delay requires a numerical argument")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"delay requires a numerical argument")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			script_id = str(uuid.uuid4())
+			gui.scripts[script_id] = DelayThread(script_id,gui,window,command,wait)
+			gui.scripts[script_id].threadEnd.connect(execute_script_end)
+			gui.scripts[script_id].finished.connect(execute_delay)
+			gui.scripts[script_id].start()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'delay':
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |-------|
 	# | /next |
@@ -3198,6 +3258,45 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 	return False
+
+def execute_delay(data):
+	gui = data[0]
+	window = data[1]
+	line = data[2]
+	script_id = data[3]
+
+	if not handleScriptCommands(gui,window,line,1,script_id):
+		if len(line.strip())==0: return
+		if config.DISPLAY_SCRIPT_ERRORS:
+			# Check to make sure this isn't being thrown by script
+			# only commands
+			if not script_only_command:
+				if line[0]==config.ISSUE_COMMAND_SYMBOL:
+					t = Message(ERROR_MESSAGE,'',f"Unrecognized command \"{line}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(ERROR_MESSAGE,'',f"Line \"{line}\" contains no command")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+class DelayThread(QThread):
+
+	threadEnd = pyqtSignal(list)
+	finished = pyqtSignal(list)
+
+	def __init__(self,sid,gui,window,script,wait,parent=None):
+		super(DelayThread, self).__init__(parent)
+		self.id = sid
+		self.gui = gui
+		self.window = window
+		self.script = script
+		self.time = wait
+
+	def run(self):
+
+		time.sleep(self.time)
+		self.finished.emit([self.gui,self.window,self.script,self.id])
+
+		self.threadEnd.emit([self.gui,self.id])
 
 def do_reclaim(data):
 	window = data[0]
