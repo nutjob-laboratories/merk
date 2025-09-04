@@ -277,6 +277,7 @@ WINDOW_ICON = ":/icon-window.png"
 SYSTRAY_ICON = ":/icon-tray.png"
 HIGHLIGHT_ICON = ":/icon-highlight.png"
 BACK_ICON = ":/icon-back.png"
+MISC_ICON = ":/icon-misc.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"

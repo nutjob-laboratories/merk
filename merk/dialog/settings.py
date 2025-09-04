@@ -1363,30 +1363,6 @@ class Dialog(QDialog):
 		self.noAppNameTitle.stateChanged.connect(self.changedSetting)
 		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
-		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
-		self.enableEmojis.stateChanged.connect(self.changedEmoji)
-
-		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/emoji_shortcode_list.pdf")).toEncoded()).decode()
-
-		self.emojiDescription = QLabel(f"""
-			<small>
-			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
-			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
-			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
-			</small>
-			<br>
-			""")
-		self.emojiDescription.setWordWrap(True)
-		self.emojiDescription.setAlignment(Qt.AlignJustify)
-		self.emojiDescription.setOpenExternalLinks(True)
-
-		escLayout = QHBoxLayout()
-		escLayout.addStretch()
-		escLayout.addWidget(self.enableEmojis)
-		escLayout.addStretch()
-
 		self.noConnectLogo = QCheckBox(f"Hide {APPLICATION_NAME} logo on the initial\nconnection dialog",self)
 		if config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG: self.noConnectLogo.setChecked(True)
 		self.noConnectLogo.stateChanged.connect(self.changedSetting)
@@ -1411,12 +1387,126 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.noAppNameTitle)
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
-		applicationLayout.addWidget(self.emojiDescription)
-		applicationLayout.addLayout(escLayout)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
+
+		# Miscellaneous page
+
+		self.miscPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Miscellaneous")
+		entry.widget = self.miscPage
+		entry.setIcon(QIcon(MISC_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.miscPage)
+
+		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
+		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
+		self.enableEmojis.stateChanged.connect(self.changedEmoji)
+
+		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/emoji_shortcode_list.pdf")).toEncoded()).decode()
+
+		self.emojiDescription = QLabel(f"""
+			<small>
+			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
+			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
+			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
+			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
+			</small>
+			<br>
+			""")
+		self.emojiDescription.setWordWrap(True)
+		self.emojiDescription.setAlignment(Qt.AlignJustify)
+		self.emojiDescription.setOpenExternalLinks(True)
+
+		escLayout = QHBoxLayout()
+		escLayout.addStretch()
+		escLayout.addWidget(self.enableEmojis)
+		escLayout.addStretch()
+
+		self.partMsg = EmojiQuitAutocomplete(self)
+		self.partMsg.setText(self.default_quit_part)
+
+		fm = self.partMsg.fontMetrics()
+		self.partMsg.setFixedHeight(fm.height()+10)
+		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.partMsg.textChanged.connect(self.setQuitMsg)
+
+		self.autoEmojiQuit = QCheckBox(f"Autocomplete emoji shortcodes",self)
+		if config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
+		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiQuit.setEnabled(False)
+
+		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
+		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasQuit.setEnabled(False)
+
+		quitLayout = QVBoxLayout()
+		quitLayout.addWidget(self.partMsg)
+		quitLayout.addWidget(self.autoEmojiQuit)
+		quitLayout.addWidget(self.autoAliasQuit)
+		quitBox = QGroupBox("")
+		quitBox.setAlignment(Qt.AlignLeft)
+		quitBox.setLayout(quitLayout)
+
+		self.awayMsg = EmojiAwayAutocomplete(self)
+		self.awayMsg.setText(self.default_away)
+
+		fm = self.awayMsg.fontMetrics()
+		self.awayMsg.setFixedHeight(fm.height()+10)
+		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.awayMsg.textChanged.connect(self.setAwayMsg)
+
+		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
+		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
+		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiAway.setEnabled(False)
+
+		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
+		self.autoAliasAway.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasAway.setEnabled(False)
+
+		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(self.awayMsg)
+		awayLayout.addWidget(self.autoEmojiAway)
+		awayLayout.addWidget(self.autoAliasAway)
+		awayBox = QGroupBox("")
+		awayBox.setAlignment(Qt.AlignLeft)
+		awayBox.setLayout(awayLayout)
+
+		miscLayout = QVBoxLayout()
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
+		miscLayout.addWidget(self.emojiDescription)
+		miscLayout.addLayout(escLayout)
+		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
+		miscLayout.addWidget(quitBox)
+		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		miscLayout.addWidget(awayBox)
+		miscLayout.addStretch()
+
+		self.miscPage.setLayout(miscLayout)
 
 		# Widget page
 
@@ -1941,6 +2031,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.menubarFloat)
 		menuLayout.addWidget(self.menubarMenu)
 		menuLayout.addLayout(justifyLayout)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
 		menuLayout.addWidget(self.menuNameDescription)
 		menuLayout.addLayout(nameMenuEntries)
@@ -2113,6 +2204,7 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowbarItalics)
 		windowbarLayout.addLayout(wbMenuLayout)
 		windowbarLayout.addLayout(justifyLayout)
+		windowbarLayout.addWidget(QLabel(' '))
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
 		windowbarLayout.addLayout(includesLayout)
 		windowbarLayout.addStretch()
@@ -2189,10 +2281,12 @@ class Dialog(QDialog):
 		timestampLayout.addWidget(self.showTimestamps)
 		timestampLayout.addWidget(self.timestamp24hour)
 		timestampLayout.addWidget(self.timestampSeconds)
+		timestampLayout.addWidget(QLabel(' '))
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime displays</b>"))
 		timestampLayout.addWidget(self.uptimeDescription)
 		timestampLayout.addWidget(self.showUptime)
 		timestampLayout.addWidget(self.showChanUptime)
+		timestampLayout.addWidget(QLabel(' '))
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		timestampLayout.addWidget(self.showDates)
 		timestampLayout.addStretch()
@@ -2270,39 +2364,6 @@ class Dialog(QDialog):
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.awayPage)
-
-		self.awayMsg = EmojiAwayAutocomplete(self)
-		self.awayMsg.setText(self.default_away)
-
-		fm = self.awayMsg.fontMetrics()
-		self.awayMsg.setFixedHeight(fm.height()+10)
-		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		self.awayMsg.textChanged.connect(self.setAwayMsg)
-
-		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
-		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiAway.setEnabled(False)
-
-		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
-		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
-		self.autoAliasAway.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasAway.setEnabled(False)
-
-		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(self.awayMsg)
-		awayLayout.addWidget(self.autoEmojiAway)
-		awayLayout.addWidget(self.autoAliasAway)
-		awayBox = QGroupBox("")
-		awayBox.setAlignment(Qt.AlignLeft)
-		awayBox.setLayout(awayLayout)
 
 		self.promptAway = QCheckBox(f"Prompt for away message if one is\nnot provided with the {config.ISSUE_COMMAND_SYMBOL}away command\nor when pressing the \"Set status to\naway\" button on the server window\ntoolbar",self)
 		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
@@ -2384,8 +2445,7 @@ class Dialog(QDialog):
 		awayLayout.addWidget(self.promptAway)
 		awayLayout.addWidget(self.showAwayBack)
 		awayLayout.addWidget(self.showAwayNick)
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		awayLayout.addWidget(awayBox)
+		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autoaway settiings</b>"))
 		awayLayout.addLayout(intervalBox)
 		awayLayout.addWidget(self.typeCancelInput)
@@ -2524,10 +2584,12 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(self.topicBold)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistExist)
 		menuLayout.addLayout(ulistLayout)
 		menuLayout.addWidget(self.hideScroll)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
@@ -2657,9 +2719,11 @@ class Dialog(QDialog):
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyMaster)
 		inputLayout.addLayout(historyLayout)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addLayout(autoMaster)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoLayout1)
 		inputLayout.addLayout(autoLayout2)
@@ -2824,6 +2888,7 @@ class Dialog(QDialog):
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addLayout(spellMaster)
+		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		spellcheckLayout.addWidget(self.allowSpellcheck)
 		spellcheckLayout.addLayout(distanceLayout)
@@ -3023,9 +3088,11 @@ class Dialog(QDialog):
 		logLayout.addLayout(cont2Layout)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
 		logLayout.addLayout(privLayout)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		logLayout.addWidget(self.markLog)
 		logLayout.addLayout(intervalBox)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
 		logLayout.addWidget(self.logDescription)
 		logLayout.addLayout(logsizeLayout)
@@ -3096,38 +3163,7 @@ class Dialog(QDialog):
 		prepLayout.addWidget(self.setSystemPrepend)
 		prepLayout.addLayout(prepSel)
 
-		self.partMsg = EmojiQuitAutocomplete(self)
-		self.partMsg.setText(self.default_quit_part)
-
-		fm = self.partMsg.fontMetrics()
-		self.partMsg.setFixedHeight(fm.height()+10)
-		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		self.partMsg.textChanged.connect(self.setQuitMsg)
-
-		self.autoEmojiQuit = QCheckBox(f"Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
-		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiQuit.setEnabled(False)
-
-		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
-		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
-		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasQuit.setEnabled(False)
-
-		quitLayout = QVBoxLayout()
-		quitLayout.addWidget(self.partMsg)
-		quitLayout.addWidget(self.autoEmojiQuit)
-		quitLayout.addWidget(self.autoAliasQuit)
-		quitBox = QGroupBox("")
-		quitBox.setAlignment(Qt.AlignLeft)
-		quitBox.setLayout(quitLayout)
+		
 
 		self.linkChannel = QCheckBox("Convert channel names to links",self)
 		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
@@ -3160,10 +3196,9 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.noPadding)
+		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
 		messageLayout.addLayout(prepLayout)
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
-		messageLayout.addWidget(quitBox)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -3301,10 +3336,12 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(self.systrayMinOnClose)
 		systrayLayout.addWidget(self.doubleclickRestore)
 		systrayLayout.addWidget(self.clickToMinimize)
+		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
 		systrayLayout.addWidget(self.systrayNotify)
 		systrayLayout.addWidget(self.listSystray)
 		systrayLayout.addLayout(flashBox)
+		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
 		systrayLayout.addLayout(nickPriv)
 		systrayLayout.addLayout(kickInvite)
@@ -3559,6 +3596,7 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
+		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addLayout(inputMaster)
@@ -3696,6 +3734,7 @@ class Dialog(QDialog):
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
 		audioLayout.addWidget(self.notifyDescription)
 		audioLayout.addLayout(audioMaster)
+		audioLayout.addWidget(QLabel(' '))
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
 		audioLayout.addLayout(anickPriv)
 		audioLayout.addLayout(akickInvite)
