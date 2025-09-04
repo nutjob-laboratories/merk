@@ -500,6 +500,14 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertMin)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(NEXT_ICON),"Next subwindow",self)
+		entry.triggered.connect(self.insertNext)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(BACK_ICON),"Previous subwindow",self)
+		entry.triggered.connect(self.insertPrevious)
+		self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
 		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
@@ -580,6 +588,38 @@ class Window(QMainWindow):
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Window type",self)
 		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Date",self)
+		entry.triggered.connect(lambda state,u="$_DATE": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"European date",self)
+		entry.triggered.connect(lambda state,u="$_EDATE": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Unix epoch",self)
+		entry.triggered.connect(lambda state,u="$_EPOCH": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client name",self)
+		entry.triggered.connect(lambda state,u="$_CLIENT": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client version",self)
+		entry.triggered.connect(lambda state,u="$_VERSION": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client source code URL",self)
+		entry.triggered.connect(lambda state,u="$_SOURCE": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client uptime",self)
+		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertBuiltinAlias(u))
+		self.aliasMenu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Timestamp",self)
+		entry.triggered.connect(lambda state,u="$_TIMESTAMP": self.insertBuiltinAlias(u))
 		self.aliasMenu.addAction(entry)
 
 		self.runMenu = self.menubar.addMenu("Run")
@@ -798,6 +838,14 @@ class Window(QMainWindow):
 		if e==None: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"quit "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertNext(self):
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"next\n")
+		self.updateApplicationTitle()
+
+	def insertPrevious(self):
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"previous\n")
 		self.updateApplicationTitle()
 
 	def insertMin(self):
