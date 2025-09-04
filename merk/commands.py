@@ -1862,7 +1862,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)==1:
 
 			if len(ALIAS)==0 and len(TEMPORARY_ALIAS)==0:
 				t = Message(SYSTEM_MESSAGE,'',"No aliases are currently defined.")
