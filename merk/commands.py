@@ -1853,23 +1853,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-			# Alias tokens cannot be numbers
-			is_number = True
-			try:
-				a = int(a)
-			except:
-				is_number = False
-			if is_number:
-				if is_script:
-					do_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens cannot be numbers")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"Alias tokens cannot be numbers")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
 			value = ' '.join(tokens)
 			addAlias(a,value)
 
