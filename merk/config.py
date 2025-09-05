@@ -264,9 +264,11 @@ SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = True
 HIDE_SERVER_WINDOWS_ON_SIGNON = False
 ENABLE_DELAY_COMMAND = True
 WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = True
+DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = True
 
 def build_settings():
 	settings = {
+		"doubleclick_userlist_to_open_private_chat": DOUBLECLICK_TO_OPEN_PRIVATE_CHAT,
 		"windowbar_show_connecting_server_windows_in_italics": WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS,
 		"enable_delay_command": ENABLE_DELAY_COMMAND,
 		"hide_server_windows_when_registration_completes": HIDE_SERVER_WINDOWS_ON_SIGNON,
@@ -497,6 +499,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "doubleclick_userlist_to_open_private_chat" in settings:
+		settings["doubleclick_userlist_to_open_private_chat"] = DOUBLECLICK_TO_OPEN_PRIVATE_CHAT
 	if not "windowbar_show_connecting_server_windows_in_italics" in settings:
 		settings["windowbar_show_connecting_server_windows_in_italics"] = WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS
 	if not "enable_delay_command" in settings:
@@ -1177,6 +1181,7 @@ def load_settings(filename):
 	global HIDE_SERVER_WINDOWS_ON_SIGNON
 	global ENABLE_DELAY_COMMAND
 	global WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS
+	global DOUBLECLICK_TO_OPEN_PRIVATE_CHAT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1186,6 +1191,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = settings["doubleclick_userlist_to_open_private_chat"]
 		WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = settings["windowbar_show_connecting_server_windows_in_italics"]
 		ENABLE_DELAY_COMMAND = settings["enable_delay_command"]
 		HIDE_SERVER_WINDOWS_ON_SIGNON = settings["hide_server_windows_when_registration_completes"]

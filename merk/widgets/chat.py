@@ -2555,6 +2555,7 @@ class Window(QMainWindow):
 
 
 	def handleDoubleClick(self,item):
+		if not config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: return
 		item.setSelected(False)
 		user = item.text()
 		user = user.replace('@','')

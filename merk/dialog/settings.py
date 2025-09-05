@@ -877,6 +877,7 @@ class Dialog(QDialog):
 			self.noSelectUserlists.setEnabled(True)
 			self.ignoreUserlist.setEnabled(True)
 			self.showAwayStatus.setEnabled(True)
+			self.dcPrivate.setEnabled(True)
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
@@ -884,6 +885,7 @@ class Dialog(QDialog):
 			self.noSelectUserlists.setEnabled(False)
 			self.ignoreUserlist.setEnabled(False)
 			self.showAwayStatus.setEnabled(False)
+			self.dcPrivate.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2552,6 +2554,10 @@ class Dialog(QDialog):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
 		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
 
+		self.dcPrivate = QCheckBox("Double click user for private chat",self)
+		if config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: self.dcPrivate.setChecked(True)
+		self.dcPrivate.stateChanged.connect(self.changedSetting)
+
 		if not config.SHOW_USERLIST:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
@@ -2559,6 +2565,7 @@ class Dialog(QDialog):
 			self.noSelectUserlists.setEnabled(False)
 			self.ignoreUserlist.setEnabled(False)
 			self.showAwayStatus.setEnabled(False)
+			self.dcPrivate.setEnabled(False)
 
 		chanButtonLayout = QFormLayout()
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
@@ -2591,6 +2598,7 @@ class Dialog(QDialog):
 		menuLayout.addLayout(ulistExist)
 		menuLayout.addLayout(ulistLayout)
 		menuLayout.addWidget(self.hideScroll)
+		menuLayout.addWidget(self.dcPrivate)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.topicTitleDisplay)
@@ -4122,6 +4130,7 @@ class Dialog(QDialog):
 		config.HIDE_SERVER_WINDOWS_ON_SIGNON = self.hideServer.isChecked()
 		config.ENABLE_DELAY_COMMAND = self.enableDelay.isChecked()
 		config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = self.windowbarItalics.isChecked()
+		config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = self.dcPrivate.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
