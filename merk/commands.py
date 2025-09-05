@@ -170,6 +170,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"next": config.ISSUE_COMMAND_SYMBOL+"next",
 			config.ISSUE_COMMAND_SYMBOL+"previous": config.ISSUE_COMMAND_SYMBOL+"previous",
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
+			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide",
+			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -267,6 +269,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"next</b>", "Shifts focus to the \"next\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"previous</b>", "Shifts focus to the \"previous\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide</b>", "Hides the current subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show</b>", "Shows the current subwindow, if hidden" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -944,6 +948,46 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |-------|
+	# | /show |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			w.show()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show':
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"show")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"show")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |-------|
+	# | /hide |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			w.hide()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide':
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"hide")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"hide")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |--------|
 	# | /delay |

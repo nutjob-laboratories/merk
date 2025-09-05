@@ -140,6 +140,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"previous",
 			cmdsymbol+"delay",
 			cmdsymbol+"clear",
+			cmdsymbol+"hide",
+			cmdsymbol+"show",
 		]
 
 		if not config.ENABLE_ALIASES:

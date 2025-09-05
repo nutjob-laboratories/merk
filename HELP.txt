@@ -179,8 +179,12 @@ Appearance:
 <td>Switches focus to another window. Cannot be called from scripts (use <code>/context</code> instead)</td>
 </tr>
 <tr>
-<td><code>/help</code></td>
+<td><code>/help [COMMAND]</code></td>
 <td>Displays command usage information</td>
+</tr>
+<tr>
+<td><code>/hide</code></td>
+<td>Hides the current subwindow</td>
 </tr>
 <tr>
 <td><code>/ignore USER</code></td>
@@ -322,6 +326,10 @@ Appearance:
 <tr>
 <td><code>/shell ALIAS COMMAND...</code></td>
 <td>Executes an external program, and stores the output in an alias</td>
+</tr>
+<tr>
+<td><code>/show</code></td>
+<td>Shows the current subwindow, if hidden</td>
 </tr>
 <tr>
 <td><code>/style</code></td>

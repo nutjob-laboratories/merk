@@ -250,7 +250,8 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/focus [SERVER] WINDOW`                | Switches focus to another window. Cannot be called from scripts (use `/context` instead)                        |
-| `/help`                                 | Displays command usage information                                                                                               |
+| `/help [COMMAND]`                                 | Displays command usage information                                                                                               |
+| `/hide`                                 | Hides the current subwindow                                                                                               |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
 | `/insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script. Can only be called by scripts.            |
@@ -286,6 +287,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/settings`                             | Opens the settings dialog                                                                                                        |
 | `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
+| `/show`               | Shows the current subwindow, if hidden                                         |
 | `/style`                                | Edits the current window's style                                                                                                 |
 | `/tile`                                 | Tiles all subwindows                                                                                                             |
 | `/time`                                 | Requests server time                                                                                                             |
