@@ -182,10 +182,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 
 		# Channel names and aliases
 		rules += [
-			(r'(#\w+)', 0, STYLES['channel']),
-			(r'(\&\w+)', 0, STYLES['channel']),
-			(r'(\!\w+)', 0, STYLES['channel']),
-			(r'(\+\w+)', 0, STYLES['channel']),
+			(r'(#+[^#\s]+)', 0, STYLES['channel']),
+			(r'(\&+[^\&\s]+)', 0, STYLES['channel']),
+			(r'(\!+[^\!\s]+)', 0, STYLES['channel']),
+			(r'(\++[^\+\s]+)', 0, STYLES['channel']),
 			(r'(%s\w+)' % aliassymbol, 0, STYLES['alias']),
 		]
 
