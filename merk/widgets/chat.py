@@ -2559,6 +2559,10 @@ class Window(QMainWindow):
 		user = item.text()
 		user = user.replace('@','')
 		user = user.replace('+','')
+		user = user.replace('~','')
+		user = user.replace('&','')
+		user = user.replace('%','')
+		user = user.replace('!','')
 
 		if user!=self.client.nickname:
 			self.parent.openPrivate(self.client,user)
