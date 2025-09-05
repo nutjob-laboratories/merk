@@ -2537,10 +2537,9 @@ class Dialog(QDialog):
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
 
-		self.hideScroll = QCheckBox("Hide horizontal scrollbars on\n all userlists",self)
+		self.hideScroll = QCheckBox("Hide horizontal scrollbars",self)
 		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
 		self.hideScroll.stateChanged.connect(self.changedSetting)
-		self.hideScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
 		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
