@@ -713,6 +713,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 			else:
 				msg = config.DEFAULT_QUIT_MESSAGE
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
 			window.client.leave(channel,msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=2:
@@ -726,6 +729,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				channel = window.name
 				msg = ' '.join(tokens)
 				if config.ENABLE_EMOJI_SHORTCODES:  msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					buildTemporaryAliases(gui,window)
+					msg = interpolateAliases(msg)
 				window.client.leave(channel,msg)
 				return True
 
@@ -3228,6 +3234,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 			else:
 				msg = config.DEFAULT_QUIT_MESSAGE
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
 			window.client.leave(channel,msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=3:
@@ -3235,6 +3244,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			channel = tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
 			window.client.leave(channel,msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part':
