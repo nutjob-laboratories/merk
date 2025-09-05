@@ -31,6 +31,7 @@ from PyQt5 import QtCore
 import uuid
 import os
 import fnmatch
+import re
 
 from ..resources import *
 from ..dialog import *
@@ -93,10 +94,11 @@ class Window(QMainWindow):
 		if self.wordwrap:
 			self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
 			self.wordwrap = False
+			self.ww_menu.setIcon(QIcon(self.parent.unchecked_icon))
 		else:
 			self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
 			self.wordwrap = True
-		self.buildEditMenu()
+			self.ww_menu.setIcon(QIcon(self.parent.checked_icon))
 
 	def buildEditMenu(self):
 
@@ -166,12 +168,9 @@ class Window(QMainWindow):
 
 		self.editMenu.addSeparator()
 
-		if self.wordwrap:
-			entry = QAction(QIcon(self.parent.checked_icon),"Word wrap",self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Word wrap",self)
-		entry.triggered.connect(self.toggleWordwrap)
-		self.editMenu.addAction(entry)
+		mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
+		mefind.triggered.connect(self.doStrip)
+		self.editMenu.addAction(mefind)
 
 	def generateStylesheet(self,obj,fore,back):
 
@@ -219,6 +218,11 @@ class Window(QMainWindow):
 			self.status.show()
 		else:
 			self.status.hide()
+
+	def doStrip(self):
+		s = self.editor.toPlainText()
+		s = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,s)
+		self.editor.setPlainText(s)
 
 	def doFind(self):
 
@@ -409,6 +413,13 @@ class Window(QMainWindow):
 			self.menuPrompt = QAction(QIcon(self.parent.unchecked_icon),menuPromptText,self)
 		self.menuPrompt.triggered.connect(self.togglePrompt)
 		self.fileMenu.addAction(self.menuPrompt)
+
+		if self.wordwrap:
+			self.ww_menu = QAction(QIcon(self.parent.checked_icon),"Word wrap",self)
+		else:
+			self.ww_menu = QAction(QIcon(self.parent.unchecked_icon),"Word wrap",self)
+		self.ww_menu.triggered.connect(self.toggleWordwrap)
+		self.fileMenu.addAction(self.ww_menu)
 		
 		self.fileMenu.addSeparator()
 
