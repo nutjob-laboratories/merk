@@ -905,6 +905,14 @@ def check_for_sane_values(setting,value):
 
 	return ALL_VALID_SETTINGS
 
+def list_scripts():
+	file_paths = []
+	for root, _, files in os.walk(SCRIPTS_DIRECTORY):
+		for file in files:
+			file_paths.append(os.path.basename(os.path.join(root, file)))
+	file_paths = list(set(file_paths))
+	return file_paths
+
 def list_files():
 	file_paths = []
 	for root, _, files in os.walk(SCRIPTS_DIRECTORY):

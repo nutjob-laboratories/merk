@@ -385,12 +385,14 @@ class Dialog(QDialog):
 				self.autocompleteAlias.setEnabled(True)
 			else:
 				self.autocompleteAlias.setEnabled(False)
+			self.autocompleteScripts.setEnabled(True)
 		else:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
 			self.autocompleteChans.setEnabled(False)
 			self.autocompleteEmojis.setEnabled(False)
 			self.autocompleteAlias.setEnabled(False)
+			self.autocompleteScripts.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -2713,15 +2715,24 @@ class Dialog(QDialog):
 		historyMaster.addWidget(self.enableHistory)
 		historyMaster.addStretch()
 
+		self.autocompleteScripts = QCheckBox("Script filenames",self)
+		if config.AUTOCOMPLETE_SCRIPTS: self.autocompleteScripts.setChecked(True)
+		self.autocompleteScripts.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_AUTOCOMPLETE:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
 			self.autocompleteChans.setEnabled(False)
 			self.autocompleteEmojis.setEnabled(False)
 			self.autocompleteAlias.setEnabled(False)
+			self.autocompleteScripts.setEnabled(False)
 
 		if not config.ENABLE_ALIASES:
 			self.autocompleteAlias.setEnabled(False)
+
+		autoLayout3 = QHBoxLayout()
+		autoLayout3.addWidget(self.autocompleteScripts)
+		autoLayout3.addWidget(self.autocompleteAlias)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
@@ -2736,7 +2747,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoLayout1)
 		inputLayout.addLayout(autoLayout2)
-		inputLayout.addWidget(self.autocompleteAlias)
+		inputLayout.addLayout(autoLayout3)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -4130,6 +4141,7 @@ class Dialog(QDialog):
 		config.ENABLE_DELAY_COMMAND = self.enableDelay.isChecked()
 		config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = self.windowbarItalics.isChecked()
 		config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = self.dcPrivate.isChecked()
+		config.AUTOCOMPLETE_SCRIPTS = self.autocompleteScripts.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

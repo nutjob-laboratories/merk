@@ -3007,6 +3007,22 @@ class SpellTextEdit(QPlainTextEdit):
 			if self.toPlainText().strip()=='': return
 
 			if config.ENABLE_AUTOCOMPLETE:
+					if config.AUTOCOMPLETE_SCRIPTS:
+						# Auto-complete script filenames
+						if config.ISSUE_COMMAND_SYMBOL+'script' in self.text() or config.ISSUE_COMMAND_SYMBOL+'edit' in self.text():
+							cursor.select(QTextCursor.WordUnderCursor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
+
+								for script in commands.list_scripts():
+									if fnmatch.fnmatch(script,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{script}")
+										cursor.endEditBlock()
+										return
+
+			if config.ENABLE_AUTOCOMPLETE:
 				if config.ENABLE_ALIASES:
 					if config.INTERPOLATE_ALIASES_INTO_INPUT:
 						if config.AUTOCOMPLETE_ALIAS:

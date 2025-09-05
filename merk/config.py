@@ -265,9 +265,11 @@ HIDE_SERVER_WINDOWS_ON_SIGNON = False
 ENABLE_DELAY_COMMAND = True
 WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = True
 DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = True
+AUTOCOMPLETE_SCRIPTS = True
 
 def build_settings():
 	settings = {
+		"autocomplete_scripts": AUTOCOMPLETE_SCRIPTS,
 		"doubleclick_userlist_to_open_private_chat": DOUBLECLICK_TO_OPEN_PRIVATE_CHAT,
 		"windowbar_show_connecting_server_windows_in_italics": WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS,
 		"enable_delay_command": ENABLE_DELAY_COMMAND,
@@ -499,6 +501,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "autocomplete_scripts" in settings:
+		settings["autocomplete_scripts"] = AUTOCOMPLETE_SCRIPTS
 	if not "doubleclick_userlist_to_open_private_chat" in settings:
 		settings["doubleclick_userlist_to_open_private_chat"] = DOUBLECLICK_TO_OPEN_PRIVATE_CHAT
 	if not "windowbar_show_connecting_server_windows_in_italics" in settings:
@@ -1182,6 +1186,7 @@ def load_settings(filename):
 	global ENABLE_DELAY_COMMAND
 	global WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS
 	global DOUBLECLICK_TO_OPEN_PRIVATE_CHAT
+	global AUTOCOMPLETE_SCRIPTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1191,6 +1196,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOCOMPLETE_SCRIPTS = settings["autocomplete_scripts"]
 		DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = settings["doubleclick_userlist_to_open_private_chat"]
 		WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = settings["windowbar_show_connecting_server_windows_in_italics"]
 		ENABLE_DELAY_COMMAND = settings["enable_delay_command"]
