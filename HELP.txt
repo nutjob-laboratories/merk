@@ -175,16 +175,12 @@ Appearance:
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>
 <tr>
-<td><code>/focus [SERVER] WINDOW</code></td>
-<td>Switches focus to another window. Cannot be called from scripts (use <code>/context</code> instead)</td>
-</tr>
-<tr>
 <td><code>/help [COMMAND]</code></td>
 <td>Displays command usage information</td>
 </tr>
 <tr>
-<td><code>/hide [WINDOW]</code></td>
-<td>Hides a subwindow; only has access to windows associated with the current context</td>
+<td><code>/hide [SERVER] [WINDOW]</code></td>
+<td>Hides a subwindow</td>
 </tr>
 <tr>
 <td><code>/ignore USER</code></td>
@@ -328,8 +324,8 @@ Appearance:
 <td>Executes an external program, and stores the output in an alias</td>
 </tr>
 <tr>
-<td><code>/show [WINDOW]</code></td>
-<td>Shows a subwindow, if hidden; only has access to windows associated with the current context</td>
+<td><code>/show [SERVER] [WINDOW]</code></td>
+<td>Shows a subwindow, if hidden; otherwise, shifts focus to that window</td>
 </tr>
 <tr>
 <td><code>/style</code></td>

@@ -147,7 +147,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"list" : config.ISSUE_COMMAND_SYMBOL+"list ",
 			config.ISSUE_COMMAND_SYMBOL+"restore": config.ISSUE_COMMAND_SYMBOL+"restore ",
 			config.ISSUE_COMMAND_SYMBOL+"print": config.ISSUE_COMMAND_SYMBOL+"print ",
-			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
 			config.ISSUE_COMMAND_SYMBOL+"maximize": config.ISSUE_COMMAND_SYMBOL+"maximize ",
 			config.ISSUE_COMMAND_SYMBOL+"minimize": config.ISSUE_COMMAND_SYMBOL+"minimize ",
 			config.ISSUE_COMMAND_SYMBOL+"cascade": config.ISSUE_COMMAND_SYMBOL+"cascade",
@@ -170,8 +169,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"next": config.ISSUE_COMMAND_SYMBOL+"next",
 			config.ISSUE_COMMAND_SYMBOL+"previous": config.ISSUE_COMMAND_SYMBOL+"previous",
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
-			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide",
-			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show",
+			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
+			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -248,7 +247,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print [WINDOW] TEXT...</b>", "Prints text to a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW</b>", "Switches focus to another window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] WINDOW</b>", "Maximizes a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] WINDOW</b>", "Minimizes a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] WINDOW</b>", "Restores a window" ],
@@ -269,8 +267,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"next</b>", "Shifts focus to the \"next\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"previous</b>", "Shifts focus to the \"previous\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [WINDOW]</b>", "Hides a subwindow; only has access to windows associated with the current context" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [WINDOW]</b>", "Shows a subwindow, if hidden; only has access to windows associated with the current context" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -964,6 +962,25 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w.show()
 			return True
 
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower() in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						gui.showSubWindow(w)
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
@@ -993,6 +1010,25 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==1:
 			w = gui.getSubWindow(window.name,window.client)
 			w.hide()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower() in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.hide()
+					else:
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==2:
@@ -2715,46 +2751,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.showMaximized()
 			return True
 
-	# |--------|
-	# | /focus |
-	# |--------|
-
-	if len(tokens)>=1:
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==3:
-			tokens.pop(0)
-			server = tokens.pop(0)
-			target = tokens.pop(0)
-
-			swins = gui.getAllServerWindows()
-			for win in swins:
-				if server.lower() in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
-					if w:
-						gui.showSubWindow(w)
-					else:
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==2:
-			tokens.pop(0)
-			target = tokens.pop(0)
-			w = gui.getSubWindow(target,window.client)
-			if w:
-				gui.showSubWindow(w)
-			else:
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] WINDOW")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
 	# |---------|
 	# | /invite |
 	# |---------|
@@ -3670,12 +3666,6 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)==1:
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}usage called without an argument"])
-					no_errors = False
-
-			# /focus can't be called in scripts
-			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}focus cannot be called from a script."])
 					no_errors = False
 
 			# /style can't be called in scripts
