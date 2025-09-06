@@ -809,7 +809,7 @@ class IRC_Connection(irc.IRCClient):
 		# Do nothing, because twisted apparently
 		# doesn't ever trigger this event
 
-	def IRC_RPL_AWAY(self,user,message):
+	def irc_RPL_AWAY(self,user,message):
 
 		if message=='':
 			# user is back
@@ -876,11 +876,11 @@ class IRC_Connection(irc.IRCClient):
 				s.pop(0)
 				s.pop(0)
 				msg = ' '.join(s)[1:]
-				self.IRC_RPL_AWAY(nick,msg)
+				self.irc_RPL_AWAY(nick,msg)
 		elif len(s)==2:
 			if s[1].lower()=='away':
 				nick = s[0][1:]
-				self.IRC_RPL_AWAY(nick,'')
+				self.irc_RPL_AWAY(nick,'')
 
 		d = line2.split(" ")
 		if len(d) >= 2:

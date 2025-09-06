@@ -2706,7 +2706,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server in win.widget().name.lower():
+				if server.lower() in win.widget().name.lower():
 					w = gui.getSubWindow(target,win.widget().client)
 					if w:
 						gui.showSubWindow(w)
