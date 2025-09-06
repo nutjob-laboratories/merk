@@ -3109,20 +3109,18 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.endEditBlock()
 								return
 
-				if config.AUTOCOMPLETE_CONNECTED_SERVERS:
-					# Auto-complete servers
-					cursor.select(QTextCursor.WordUnderCursor)
-					self.setTextCursor(cursor)
-					if self.textCursor().hasSelection():
-						text = self.textCursor().selectedText()
-
-						swins = self.parent.parent.getAllServerWindows()
-						for win in swins:
-							if fnmatch.fnmatch(win.widget().name,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(f"{win.widget().name}")
-								cursor.endEditBlock()
-								return
+				# if config.AUTOCOMPLETE_CONNECTED_SERVERS:
+				# 	# Auto-complete servers
+				# 	cursor.select(QTextCursor.WordUnderCursor)
+				# 	self.setTextCursor(cursor)
+				# 	if self.textCursor().hasSelection():
+				# 		text = self.textCursor().selectedText()
+				# 		for win in self.parent.parent.getAllServerNames():
+				# 			if fnmatch.fnmatch(win,f"{text}*"):
+				# 				cursor.beginEditBlock()
+				# 				cursor.insertText(f"{win}")
+				# 				cursor.endEditBlock()
+				# 				return
 
 				if config.ENABLE_EMOJI_SHORTCODES:
 					if config.AUTOCOMPLETE_EMOJIS:

@@ -2371,6 +2371,15 @@ class Merk(QMainWindow):
 							return window
 		return None
 
+	def getAllServerNames(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					retval.append(c.name)
+		return retval
+
 	def getAllServerWindows(self):
 		retval = []
 		for window in self.MDI.subWindowList():
