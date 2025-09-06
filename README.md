@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.050.270">MERK 0.050.270</a></big></b><br>
-  <b>Current development version: 0.050.285</b><br><br>
+  <b>Current development version: 0.050.288</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
 </p>
 
@@ -30,13 +30,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  -  | [View](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.050.270 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.270)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.050.285 (11.85 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows | [Download MERK 0.050.285 (48.66 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows | [Download MERK 0.050.285 (45.77 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.050.288 (11.85 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.050.288 (48.66 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.050.288 (45.78 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.285**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.288**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.050.270](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.270). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -118,7 +118,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.050.270), and may reflect the current development version (0.050.285). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.050.270), and may reflect the current development version (0.050.288). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -251,7 +251,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/focus [SERVER] WINDOW`                | Switches focus to another window. Cannot be called from scripts (use `/context` instead)                        |
 | `/help [COMMAND]`                                 | Displays command usage information                                                                                               |
-| `/hide`                                 | Hides the current subwindow                                                                                               |
+| `/hide [WINDOW]`                                 | Hides a subwindow; only has access to windows associated with the current context                                                                                               |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
 | `/insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script. Can only be called by scripts.            |
@@ -287,7 +287,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/settings`                             | Opens the settings dialog                                                                                                        |
 | `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
-| `/show`               | Shows the current subwindow, if hidden                                         |
+| `/show [WINDOW]`               | Shows a subwindow, if hidden; only has access to windows associated with the current context                                         |
 | `/style`                                | Edits the current window's style                                                                                                 |
 | `/tile`                                 | Tiles all subwindows                                                                                                             |
 | `/time`                                 | Requests server time                                                                                                             |

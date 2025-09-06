@@ -269,8 +269,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"next</b>", "Shifts focus to the \"next\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"previous</b>", "Shifts focus to the \"previous\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide</b>", "Hides the current subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show</b>", "Shows the current subwindow, if hidden" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [WINDOW]</b>", "Hides a subwindow; only has access to windows associated with the current context" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [WINDOW]</b>", "Shows a subwindow, if hidden; only has access to windows associated with the current context" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -964,6 +964,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w.show()
 			return True
 
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				gui.showSubWindow(w)
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show':
 			if is_script:
 				do_halt(script_id)
@@ -982,6 +993,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==1:
 			w = gui.getSubWindow(window.name,window.client)
 			w.hide()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.hide()
+			else:
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide':

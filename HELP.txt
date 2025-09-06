@@ -183,8 +183,8 @@ Appearance:
 <td>Displays command usage information</td>
 </tr>
 <tr>
-<td><code>/hide</code></td>
-<td>Hides the current subwindow</td>
+<td><code>/hide [WINDOW]</code></td>
+<td>Hides a subwindow; only has access to windows associated with the current context</td>
 </tr>
 <tr>
 <td><code>/ignore USER</code></td>
@@ -328,8 +328,8 @@ Appearance:
 <td>Executes an external program, and stores the output in an alias</td>
 </tr>
 <tr>
-<td><code>/show</code></td>
-<td>Shows the current subwindow, if hidden</td>
+<td><code>/show [WINDOW]</code></td>
+<td>Shows a subwindow, if hidden; only has access to windows associated with the current context</td>
 </tr>
 <tr>
 <td><code>/style</code></td>
