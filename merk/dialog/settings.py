@@ -386,6 +386,7 @@ class Dialog(QDialog):
 			else:
 				self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(True)
+			self.autocompleteServers.setEnabled(True)
 		else:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -393,6 +394,7 @@ class Dialog(QDialog):
 			self.autocompleteEmojis.setEnabled(False)
 			self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(False)
+			self.autocompleteServers.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -2719,6 +2721,10 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_SCRIPTS: self.autocompleteScripts.setChecked(True)
 		self.autocompleteScripts.stateChanged.connect(self.changedSetting)
 
+		self.autocompleteServers = QCheckBox("Connected servers",self)
+		if config.AUTOCOMPLETE_CONNECTED_SERVERS: self.autocompleteServers.setChecked(True)
+		self.autocompleteServers.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_AUTOCOMPLETE:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -2726,6 +2732,7 @@ class Dialog(QDialog):
 			self.autocompleteEmojis.setEnabled(False)
 			self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(False)
+			self.autocompleteServers.setEnabled(False)
 
 		if not config.ENABLE_ALIASES:
 			self.autocompleteAlias.setEnabled(False)
@@ -2748,6 +2755,7 @@ class Dialog(QDialog):
 		inputLayout.addLayout(autoLayout1)
 		inputLayout.addLayout(autoLayout2)
 		inputLayout.addLayout(autoLayout3)
+		inputLayout.addWidget(self.autocompleteServers)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -4142,6 +4150,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = self.windowbarItalics.isChecked()
 		config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = self.dcPrivate.isChecked()
 		config.AUTOCOMPLETE_SCRIPTS = self.autocompleteScripts.isChecked()
+		config.AUTOCOMPLETE_CONNECTED_SERVERS = self.autocompleteServers.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
