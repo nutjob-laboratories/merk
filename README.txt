@@ -239,6 +239,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/back`                                 | Sets status as "back"                                                                                                            |
 | `/cascade`                              | Cascades all subwindows                                                                                                          |
 | `/clear [WINDOW]`                       | Clears a window's chat display                                                                                                   |
+| `/close [SERVER] [WINDOW]`              | Closes a window                                                                                          |
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk!* |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |

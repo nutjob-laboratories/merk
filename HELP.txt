@@ -135,6 +135,10 @@ Appearance:
 <td>Clears a window&#39;s chat display</td>
 </tr>
 <tr>
+<td><code>/close [SERVER] [WINDOW]</code></td>
+<td>Closes a window</td>
+</tr>
+<tr>
 <td><code>/config [SETTING] [VALUE...]</code></td>
 <td>Changes a setting, or searches and displays one or all settings in the configuration file.  <strong>*Caution*</strong>: use at your own risk!*</td>
 </tr>

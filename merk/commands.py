@@ -172,6 +172,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
 			config.ISSUE_COMMAND_SYMBOL+"windows": config.ISSUE_COMMAND_SYMBOL+"windows",
+			config.ISSUE_COMMAND_SYMBOL+"close": config.ISSUE_COMMAND_SYMBOL+"close ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -271,6 +272,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"windows</b>", "Generates a list of all connected windows" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -954,6 +956,77 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |--------|
+	# | /close |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'close' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			w.close()
+			gui.buildWindowbar()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'close' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower() in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.close()
+						gui.buildWindowbar()
+					else:
+						if is_script:
+							do_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Server \""+server+"\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'close' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				w.close()
+				gui.buildWindowbar()
+			else:
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'close':
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |----------|
 	# | /windows |
