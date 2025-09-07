@@ -812,6 +812,32 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.showMenu)
 		menu.addAction(entry)
 
+		self.hiddenMenu = QMenu("Show hidden...")
+		self.hiddenMenu.setIcon(QIcon(SHOW_ICON))
+
+		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR:
+			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Server windows", self)
+		entry.triggered.connect(self.showHiddenServer)
+		self.hiddenMenu.addAction(entry)
+
+		if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR:
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel windows", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel windows", self)
+		entry.triggered.connect(self.showHiddenChannel)
+		self.hiddenMenu.addAction(entry)
+
+		if config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR:
+			entry = QAction(QIcon(self.parent.checked_icon),"Private chats", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Private chats", self)
+		entry.triggered.connect(self.showHiddenPrivate)
+		self.hiddenMenu.addAction(entry)
+
+		menu.addMenu(self.hiddenMenu)
+
 		self.justifyMenu = QMenu("Alignment")
 		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
 
@@ -893,6 +919,36 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = False
 		else:
 			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def showHiddenPrivate(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR:
+			config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = False
+		else:
+			config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def showHiddenChannel(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR:
+			config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = False
+		else:
+			config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def showHiddenServer(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR:
+			config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = False
+		else:
+			config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)
