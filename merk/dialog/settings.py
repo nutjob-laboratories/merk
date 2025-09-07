@@ -1726,6 +1726,10 @@ class Dialog(QDialog):
 		if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
 			self.hideServer.setEnabled(False)
 
+		self.autoMaxSubwindow = QCheckBox("Maximize new subwindows automatically",self)
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
+		self.autoMaxSubwindow.stateChanged.connect(self.changedSetting)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
 		subwindowLayout.addWidget(self.showServToolbar)
@@ -1743,6 +1747,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showInputMenu)
 		subwindowLayout.addWidget(self.showChatInTitle)
+		subwindowLayout.addWidget(self.autoMaxSubwindow)
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
@@ -4142,6 +4147,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = self.windowbarItalics.isChecked()
 		config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = self.dcPrivate.isChecked()
 		config.AUTOCOMPLETE_SCRIPTS = self.autocompleteScripts.isChecked()
+		config.MAXIMIZE_SUBWINDOWS_ON_CREATION = self.autoMaxSubwindow.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

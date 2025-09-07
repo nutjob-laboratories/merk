@@ -2304,6 +2304,8 @@ class Merk(QMainWindow):
 		w = self.newPrivateWindow(nick,client)
 		self.showSubWindow(w)
 
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
 	def getCurrentChat(self):
 		w = self.MDI.activeSubWindow()
 		if w==None: return None
@@ -2649,6 +2651,8 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
 		return w
 
 	def newServerWindow(self,name,client):
@@ -2661,6 +2665,8 @@ class Merk(QMainWindow):
 		w.show()
 		self.buildWindowsMenu()
 
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
 		return w
 
 	def newPrivateWindow(self,name,client):
@@ -2672,6 +2678,8 @@ class Merk(QMainWindow):
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
 
@@ -2686,6 +2694,8 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 		w.show()
 
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
 		return w
 
 	def newEditorWindowFile(self,filename):
@@ -2698,6 +2708,8 @@ class Merk(QMainWindow):
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
 		w.show()
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
 
@@ -2715,6 +2727,8 @@ class Merk(QMainWindow):
 		c = w.widget()
 		c.openScript(hostid)
 
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
 		return w
 
 	def newListWindow(self,client,parent):
@@ -2729,6 +2743,8 @@ class Merk(QMainWindow):
 		client.channel_list_window = w
 		self.buildWindowsMenu()
 
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
 		return w
 
 	def newReadmeWindow(self):
@@ -2742,6 +2758,8 @@ class Merk(QMainWindow):
 
 		self.readme_window = w
 		self.buildWindowsMenu()
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
 
@@ -2759,6 +2777,8 @@ class Merk(QMainWindow):
 
 		self.log_manager = w
 		self.buildWindowsMenu()
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
 
