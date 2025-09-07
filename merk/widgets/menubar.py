@@ -261,6 +261,7 @@ class wMenuButton(QPushButton):
 
 	def setWindow(self,window):
 		self.window = window.widget()
+		self.subwindow = window
 
 	def __init__(self,normal_style,hover_style,parent=None):
 		QLabel.__init__(self, parent)
@@ -278,6 +279,14 @@ class wMenuButton(QPushButton):
 
 		self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 		self.customContextMenuRequested.connect(self.show_context_menu)
+
+	def hide_window(self):
+		self.subwindow.hide()
+		self.window.parent.initWindowbar()
+
+	def show_window(self):
+		self.subwindow.show()
+		self.window.parent.initWindowbar()
 
 	def show_context_menu(self,position):
 
@@ -315,6 +324,15 @@ class wMenuButton(QPushButton):
 
 			menu.addSeparator()
 
+			if self.subwindow.isVisible():
+				entry = QAction(QIcon(HIDE_ICON),"Hide window",self)
+				entry.triggered.connect(self.hide_window)
+				menu.addAction(entry)
+			else:
+				entry = QAction(QIcon(SHOW_ICON),"Show window",self)
+				entry.triggered.connect(self.show_window)
+				menu.addAction(entry)
+
 			entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
 			entry.triggered.connect(self.window.disconnect)
 			menu.addAction(entry)
@@ -344,6 +362,15 @@ class wMenuButton(QPushButton):
 
 			menu.addSeparator()
 
+			if self.subwindow.isVisible():
+				entry = QAction(QIcon(HIDE_ICON),"Hide window",self)
+				entry.triggered.connect(self.hide_window)
+				menu.addAction(entry)
+			else:
+				entry = QAction(QIcon(SHOW_ICON),"Show window",self)
+				entry.triggered.connect(self.show_window)
+				menu.addAction(entry)
+
 			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
 			if config.ENABLE_EMOJI_SHORTCODES:
 				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
@@ -364,6 +391,15 @@ class wMenuButton(QPushButton):
 		if self.window.window_type!=CHANNEL_WINDOW and self.window.window_type!=SERVER_WINDOW:
 
 			menu.addSeparator()
+
+			if self.subwindow.isVisible():
+				entry = QAction(QIcon(HIDE_ICON),"Hide window",self)
+				entry.triggered.connect(self.hide_window)
+				menu.addAction(entry)
+			else:
+				entry = QAction(QIcon(SHOW_ICON),"Show window",self)
+				entry.triggered.connect(self.show_window)
+				menu.addAction(entry)
 
 			entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
 			entry.triggered.connect(self.window.close)
