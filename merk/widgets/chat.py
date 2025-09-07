@@ -115,14 +115,18 @@ class Window(QMainWindow):
 		self.dosave.timeout.connect(self.saveLogs)
 		self.dosave.start(config.LOG_SAVE_INTERVAL)
 
-		self.setWindowTitle(self.name)
-
 		if self.window_type==CHANNEL_WINDOW:
 			icon = CHANNEL_ICON
+			if not config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
+				self.setWindowTitle(' ')
+			else:
+				self.setWindowTitle(self.name)
 		elif self.window_type==SERVER_WINDOW:
 			icon = CONSOLE_ICON
+			self.setWindowTitle(self.name)
 		elif self.window_type==PRIVATE_WINDOW:
 			icon = PRIVATE_ICON
+			self.setWindowTitle(self.name)
 		self.setWindowIcon(QIcon(icon))
 
 		f = self.parent.app.font()
@@ -2925,6 +2929,7 @@ class TopicEdit(QLineEdit):
 
 	def refresh(self):
 		self.setText(self.parent.channel_topic)
+		self.update()
 
 	def setText(self,text,elide=True):
 		if elide:
@@ -2941,11 +2946,20 @@ class TopicEdit(QLineEdit):
 		# Handle window title
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE:
 			if len(text)>0:
-				self.parent.setWindowTitle(self.parent.name+" - "+text)
+				if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
+					self.parent.setWindowTitle(self.parent.name+" - "+text)
+				else:
+					self.parent.setWindowTitle(text)
 			else:
-				self.parent.setWindowTitle(self.parent.name)
+				if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
+					self.parent.setWindowTitle(self.parent.name)
+				else:
+					self.parent.setWindowTitle(' ')
 		else:
-			self.parent.setWindowTitle(self.parent.name)
+			if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
+				self.parent.setWindowTitle(self.parent.name)
+			else:
+				self.parent.setWindowTitle(' ')
 
 	def mousePressEvent(self, e, Parent=None):
 		super(QLineEdit, self).mousePressEvent(e) #required to deselect on 2e click

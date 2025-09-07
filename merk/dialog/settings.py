@@ -2592,6 +2592,10 @@ class Dialog(QDialog):
 		infoExist.addWidget(self.topicDisplay)
 		infoExist.addStretch()
 
+		self.nameTitleDisplay = QCheckBox("Show channel name in subwindow title",self)
+		if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE: self.nameTitleDisplay.setChecked(True)
+		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -2599,14 +2603,13 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(self.topicBold)
-		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistExist)
 		menuLayout.addLayout(ulistLayout)
 		menuLayout.addWidget(self.hideScroll)
 		menuLayout.addWidget(self.dcPrivate)
-		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		menuLayout.addWidget(self.nameTitleDisplay)
 		menuLayout.addWidget(self.topicTitleDisplay)
 		menuLayout.addWidget(self.autoJoin)
 		menuLayout.addStretch()
@@ -4148,6 +4151,7 @@ class Dialog(QDialog):
 		config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = self.dcPrivate.isChecked()
 		config.AUTOCOMPLETE_SCRIPTS = self.autocompleteScripts.isChecked()
 		config.MAXIMIZE_SUBWINDOWS_ON_CREATION = self.autoMaxSubwindow.isChecked()
+		config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = self.nameTitleDisplay.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
@@ -4257,12 +4261,6 @@ class Dialog(QDialog):
 			# Set the windowbar
 			self.parent.initWindowbar()
 
-		self.parent.refreshAllTopic()
-		if config.SHOW_CHANNEL_TOPIC:
-			self.parent.showAllTopic()
-		else:
-			self.parent.hideAllTopic()
-
 		if self.swapUserlists: self.parent.swapAllUserlists()
 
 		if self.toggleUserlist: self.parent.toggleAllUserlists()
@@ -4280,6 +4278,12 @@ class Dialog(QDialog):
 		self.parent.toggleServerToolbar()
 
 		self.parent.toggleScrollbar()
+
+		self.parent.refreshAllTopic()
+		if config.SHOW_CHANNEL_TOPIC:
+			self.parent.showAllTopic()
+		else:
+			self.parent.hideAllTopic()
 
 		commands.build_help_and_autocomplete()
 

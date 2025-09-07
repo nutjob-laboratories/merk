@@ -2557,6 +2557,7 @@ class Merk(QMainWindow):
 						font.setBold(False)
 						c.topic.setFont(font)
 
+					c.setTopic(c.channel_topic)
 					c.topic.refresh()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)

@@ -267,9 +267,11 @@ WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = True
 DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = True
 AUTOCOMPLETE_SCRIPTS = True
 MAXIMIZE_SUBWINDOWS_ON_CREATION = False
+SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = True
 
 def build_settings():
 	settings = {
+		"show_channel_name_in_subwindow_title": SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE,
 		"maximize_subwindows_on_creation": MAXIMIZE_SUBWINDOWS_ON_CREATION,
 		"autocomplete_scripts": AUTOCOMPLETE_SCRIPTS,
 		"doubleclick_userlist_to_open_private_chat": DOUBLECLICK_TO_OPEN_PRIVATE_CHAT,
@@ -503,6 +505,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_channel_name_in_subwindow_title" in settings:
+		settings["show_channel_name_in_subwindow_title"] = SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE
 	if not "maximize_subwindows_on_creation" in settings:
 		settings["maximize_subwindows_on_creation"] = MAXIMIZE_SUBWINDOWS_ON_CREATION
 	if not "autocomplete_scripts" in settings:
@@ -1192,6 +1196,7 @@ def load_settings(filename):
 	global DOUBLECLICK_TO_OPEN_PRIVATE_CHAT
 	global AUTOCOMPLETE_SCRIPTS
 	global MAXIMIZE_SUBWINDOWS_ON_CREATION
+	global SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1201,6 +1206,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = settings["show_channel_name_in_subwindow_title"]
 		MAXIMIZE_SUBWINDOWS_ON_CREATION = settings["maximize_subwindows_on_creation"]
 		AUTOCOMPLETE_SCRIPTS = settings["autocomplete_scripts"]
 		DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = settings["doubleclick_userlist_to_open_private_chat"]
