@@ -30,6 +30,7 @@ from PyQt5 import QtCore
 
 from ..resources import *
 from .. import config
+from .. import commands
 from .text_separator import textSeparatorLabel,textSeparator
 
 import emoji
@@ -348,6 +349,9 @@ class wMenuButton(QPushButton):
 				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 			else:
 				msg = config.DEFAULT_QUIT_MESSAGE
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					commands.buildTemporaryAliases(self.window.parent,self.window)
+					msg = commands.interpolateAliases(msg)
 			entry.triggered.connect(lambda state,u=self.window.name,w=msg: self.window.client.leave(u,w))
 			menu.addAction(entry)
 
@@ -497,6 +501,9 @@ class wIconMenuButton(QPushButton):
 				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 			else:
 				msg = config.DEFAULT_QUIT_MESSAGE
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					commands.buildTemporaryAliases(self.window.parent,self.window)
+					msg = commands.interpolateAliases(msg)
 			entry.triggered.connect(lambda state,u=self.window.name,w=msg: self.window.client.leave(u,w))
 			menu.addAction(entry)
 

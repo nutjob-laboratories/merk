@@ -1018,6 +1018,9 @@ class Window(QMainWindow):
 					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 				else:
 					msg = config.DEFAULT_QUIT_MESSAGE
+				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					commands.buildTemporaryAliases(self.parent,self)
+					msg = commands.interpolateAliases(msg)
 				entry.triggered.connect(lambda state,u=self.name,w=msg: self.client.leave(u,w))
 				menu.addAction(entry)
 
@@ -2189,6 +2192,9 @@ class Window(QMainWindow):
 					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
 				else:
 					msg = config.DEFAULT_QUIT_MESSAGE
+				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					commands.buildTemporaryAliases(self.parent,self)
+					msg = commands.interpolateAliases(msg)
 				self.client.quit(msg)
 
 	def changeNick(self):
