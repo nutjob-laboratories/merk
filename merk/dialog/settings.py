@@ -2081,7 +2081,7 @@ class Dialog(QDialog):
 		if config.SHOW_WINDOWBAR: self.windowBar.setChecked(True)
 		self.windowBar.stateChanged.connect(self.changedWindowbarSetting)
 
-		self.windowBarTop = QCheckBox("Display at top of window",self)
+		self.windowBarTop = QCheckBox("Display at top",self)
 		if config.WINDOWBAR_TOP_OF_SCREEN: self.windowBarTop.setChecked(True)
 		self.windowBarTop.stateChanged.connect(self.menuChange)
 
@@ -2159,7 +2159,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_ENTRY_MENU: self.windowbarEntryMenu.setChecked(True)
 		self.windowbarEntryMenu.stateChanged.connect(self.menuChange)
 
-		self.windowbarHidden = QCheckBox("Show hidden server windows",self)
+		self.windowbarHidden = QCheckBox("Server windows",self)
 		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR: self.windowbarHidden.setChecked(True)
 		self.windowbarHidden.stateChanged.connect(self.menuChange)
 
@@ -2168,11 +2168,11 @@ class Dialog(QDialog):
 		self.windowbarItalics.stateChanged.connect(self.menuChange)
 		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.channelHidden = QCheckBox("Show hidden channel windows",self)
+		self.channelHidden = QCheckBox("Channel windows",self)
 		if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR: self.channelHidden.setChecked(True)
 		self.channelHidden.stateChanged.connect(self.menuChange)
 
-		self.privateHidden = QCheckBox("Show hidden private chat windows",self)
+		self.privateHidden = QCheckBox("Private chats",self)
 		if config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR: self.privateHidden.setChecked(True)
 		self.privateHidden.stateChanged.connect(self.menuChange)
 
@@ -2213,24 +2213,34 @@ class Dialog(QDialog):
 		wbMenuLayout = QFormLayout()
 		wbMenuLayout.addRow(self.windowbarMenu,self.windowbarEntryMenu)
 
+		wbMenuLayout2 = QFormLayout()
+		wbMenuLayout2.addRow(self.windowBarFloat,self.windowBarTop)
+
+		windowbar2Layout = QHBoxLayout()
+		windowbar2Layout.addStretch()
+		windowbar2Layout.addLayout(wbMenuLayout2)
+		windowbar2Layout.addStretch()
+
+		hiddenLayout = QFormLayout()
+		hiddenLayout.addRow(self.channelHidden,self.privateHidden)
+		hiddenLayout.addRow(self.windowbarHidden)
+
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
 		windowbarLayout.addWidget(self.windowbarDescription)
 		windowbarLayout.addLayout(windowbar1Layout)
-		windowbarLayout.addWidget(self.windowBarFloat)
-		windowbarLayout.addWidget(self.windowBarTop)
+		windowbarLayout.addLayout(windowbar2Layout)
 		windowbarLayout.addWidget(self.windowBarFirst)
 		windowbarLayout.addWidget(self.windowBarUnderline)
 		windowbarLayout.addWidget(self.windowBarHover)
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarUnread)
-		windowbarLayout.addWidget(self.windowbarHidden)
-		windowbarLayout.addWidget(self.channelHidden)
-		windowbarLayout.addWidget(self.privateHidden)
 		windowbarLayout.addWidget(self.windowbarItalics)
 		windowbarLayout.addLayout(wbMenuLayout)
 		windowbarLayout.addLayout(justifyLayout)
+		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden...</b>"))
+		windowbarLayout.addLayout(hiddenLayout)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
 		windowbarLayout.addLayout(includesLayout)
 		windowbarLayout.addStretch()
