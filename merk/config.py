@@ -268,9 +268,13 @@ DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = True
 AUTOCOMPLETE_SCRIPTS = True
 MAXIMIZE_SUBWINDOWS_ON_CREATION = False
 SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = True
+SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = True
+SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = True
 
 def build_settings():
 	settings = {
+		"show_hidden_private_windows_in_windowbar": SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR,
+		"show_hidden_channel_windows_in_windowbar": SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR,
 		"show_channel_name_in_subwindow_title": SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE,
 		"maximize_subwindows_on_creation": MAXIMIZE_SUBWINDOWS_ON_CREATION,
 		"autocomplete_scripts": AUTOCOMPLETE_SCRIPTS,
@@ -505,6 +509,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_hidden_private_windows_in_windowbar" in settings:
+		settings["show_hidden_private_windows_in_windowbar"] = SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR
+	if not "show_hidden_channel_windows_in_windowbar" in settings:
+		settings["show_hidden_channel_windows_in_windowbar"] = SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR
 	if not "show_channel_name_in_subwindow_title" in settings:
 		settings["show_channel_name_in_subwindow_title"] = SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE
 	if not "maximize_subwindows_on_creation" in settings:
@@ -1197,6 +1205,8 @@ def load_settings(filename):
 	global AUTOCOMPLETE_SCRIPTS
 	global MAXIMIZE_SUBWINDOWS_ON_CREATION
 	global SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE
+	global SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR
+	global SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1206,6 +1216,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = settings["show_hidden_private_windows_in_windowbar"]
+		SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = settings["show_hidden_channel_windows_in_windowbar"]
 		SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = settings["show_channel_name_in_subwindow_title"]
 		MAXIMIZE_SUBWINDOWS_ON_CREATION = settings["maximize_subwindows_on_creation"]
 		AUTOCOMPLETE_SCRIPTS = settings["autocomplete_scripts"]

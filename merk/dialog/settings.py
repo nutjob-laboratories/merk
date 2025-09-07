@@ -955,6 +955,8 @@ class Dialog(QDialog):
 			self.windowbarEntryMenu.setEnabled(True)
 			self.windowbarHidden.setEnabled(True)
 			self.windowbarItalics.setEnabled(True)
+			self.channelHidden.setEnabled(True)
+			self.privateHidden.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -976,6 +978,8 @@ class Dialog(QDialog):
 			self.windowbarEntryMenu.setEnabled(False)
 			self.windowbarHidden.setEnabled(False)
 			self.windowbarItalics.setEnabled(False)
+			self.channelHidden.setEnabled(False)
+			self.privateHidden.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -2164,6 +2168,14 @@ class Dialog(QDialog):
 		self.windowbarItalics.stateChanged.connect(self.menuChange)
 		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.channelHidden = QCheckBox("Show hidden channel windows",self)
+		if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR: self.channelHidden.setChecked(True)
+		self.channelHidden.stateChanged.connect(self.menuChange)
+
+		self.privateHidden = QCheckBox("Show hidden private chat windows",self)
+		if config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR: self.privateHidden.setChecked(True)
+		self.privateHidden.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2185,6 +2197,8 @@ class Dialog(QDialog):
 			self.windowbarEntryMenu.setEnabled(False)
 			self.windowbarHidden.setEnabled(False)
 			self.windowbarItalics.setEnabled(False)
+			self.channelHidden.setEnabled(False)
+			self.privateHidden.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -2212,10 +2226,11 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowbarClick)
 		windowbarLayout.addWidget(self.windowbarUnread)
 		windowbarLayout.addWidget(self.windowbarHidden)
+		windowbarLayout.addWidget(self.channelHidden)
+		windowbarLayout.addWidget(self.privateHidden)
 		windowbarLayout.addWidget(self.windowbarItalics)
 		windowbarLayout.addLayout(wbMenuLayout)
 		windowbarLayout.addLayout(justifyLayout)
-		windowbarLayout.addWidget(QLabel(' '))
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
 		windowbarLayout.addLayout(includesLayout)
 		windowbarLayout.addStretch()
@@ -4152,6 +4167,8 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_SCRIPTS = self.autocompleteScripts.isChecked()
 		config.MAXIMIZE_SUBWINDOWS_ON_CREATION = self.autoMaxSubwindow.isChecked()
 		config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = self.nameTitleDisplay.isChecked()
+		config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = self.channelHidden.isChecked()
+		config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = self.privateHidden.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

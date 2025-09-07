@@ -406,10 +406,18 @@ class Merk(QMainWindow):
 					c = window.widget()
 					if c.window_type==CHANNEL_WINDOW:
 						if config.WINDOWBAR_INCLUDE_CHANNELS:
-							window_list.append(window)
+							if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR:
+								window_list.append(window)
+							else:
+								if window.isVisible():
+									window_list.append(window)
 					elif c.window_type==PRIVATE_WINDOW:
 						if config.WINDOWBAR_INCLUDE_PRIVATE:
-							window_list.append(window)
+							if config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR:
+								window_list.append(window)
+							else:
+								if window.isVisible():
+									window_list.append(window)
 
 		if config.WINDOWBAR_INCLUDE_EDITORS:
 			for window in self.getAllEditorWindows():
