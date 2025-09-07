@@ -1267,7 +1267,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
-			window.parent.openPrivate(window.client,target)
+			w = window.parent.openPrivate(window.client,target)
+			w.show()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private':
 			if is_script:

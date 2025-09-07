@@ -2306,6 +2306,8 @@ class Merk(QMainWindow):
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
+		return w
+
 	def getCurrentChat(self):
 		w = self.MDI.activeSubWindow()
 		if w==None: return None
