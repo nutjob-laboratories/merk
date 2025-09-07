@@ -1063,6 +1063,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==1:
 			w = gui.getSubWindow(window.name,window.client)
 			w.hide()
+			gui.buildWindowbar()
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==3:
@@ -1075,7 +1076,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if server.lower() in win.widget().name.lower():
 					w = gui.getSubWindow(target,win.widget().client)
 					if w:
+						t = Message(SYSTEM_MESSAGE,'',f"Hiding {target} ({server}) window...")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						w.hide()
+						gui.buildWindowbar()
 					else:
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1089,7 +1093,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			w = gui.getSubWindow(target,window.client)
 			if w:
+				t = Message(SYSTEM_MESSAGE,'',f"Hiding {target} window...")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				w.hide()
+				gui.buildWindowbar()
 			else:
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
