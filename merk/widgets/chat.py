@@ -3290,7 +3290,10 @@ class SpellTextEdit(QPlainTextEdit):
 class Highlighter(QSyntaxHighlighter):
 
 	WORDS = u'(?iu)[\\w\']+'
-	CHANNELS = r"#\w+"
+	CHANNELS = r'(#+[^#\s]+)'
+	CHANNELS_2 = r'(\&+[^\&\s]+)'
+	CHANNELS_3 = r'(\!+[^\!\s]+)'
+	CHANNELS_4 = r'(\++[^\+\s]+)'
 	EMOJIS = r":\w+:"
 	SPECIAL = ['\\','^','$','.','|','?','*','+','(',')','{']
 
@@ -3349,6 +3352,27 @@ class Highlighter(QSyntaxHighlighter):
 			# Apply syntax styles to channels
 			channelformat = syntax.format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE)
 			for word_object in re.finditer(self.CHANNELS, text):
+				for name in self.parent.parent.getAllChatNames():
+					if name==word_object.group():
+						do_not_spellcheck.append(name)
+						do_not_spellcheck.append(name[1:])
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+
+			for word_object in re.finditer(self.CHANNELS_2, text):
+				for name in self.parent.parent.getAllChatNames():
+					if name==word_object.group():
+						do_not_spellcheck.append(name)
+						do_not_spellcheck.append(name[1:])
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+
+			for word_object in re.finditer(self.CHANNELS_3, text):
+				for name in self.parent.parent.getAllChatNames():
+					if name==word_object.group():
+						do_not_spellcheck.append(name)
+						do_not_spellcheck.append(name[1:])
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+
+			for word_object in re.finditer(self.CHANNELS_4, text):
 				for name in self.parent.parent.getAllChatNames():
 					if name==word_object.group():
 						do_not_spellcheck.append(name)
