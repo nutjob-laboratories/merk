@@ -171,6 +171,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
 			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
+			config.ISSUE_COMMAND_SYMBOL+"windows": config.ISSUE_COMMAND_SYMBOL+"windows",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -269,6 +270,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"windows</b>", "Generates a list of all connected windows" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -952,6 +954,57 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |----------|
+	# | /windows |
+	# |----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'windows' and len(tokens)==1:
+			
+			results = []
+			for w in gui.getAllAllConnectedSubWindows():
+				if w.isVisible():
+					v = "visible"
+				else:
+					v = "hidden"
+				c = w.widget()
+				if c.window_type==CHANNEL_WINDOW:
+					entry = f"{c.name} - Channel ({c.client.server}:{c.client.port}, {v})"
+				elif c.window_type==PRIVATE_WINDOW:
+					entry = f"{c.name} - Private Chat ({c.client.server}:{c.client.port}, {v})"
+				elif c.window_type==SERVER_WINDOW:
+					entry = f"{c.name} - Server ({c.client.server}:{c.client.port}, {v})"
+				results.append(entry)
+
+			if len(results)>1:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} windows")
+			else:
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} window")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			counter = 0
+			for r in results:
+				counter = counter + 1
+				t = Message(SYSTEM_MESSAGE,'',f"{counter}) {r}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			if len(results)>1:
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} windows")
+			else:
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} window")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'windows':
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"windows")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"windows")
+			window.writeTe
 
 	# |-------|
 	# | /show |

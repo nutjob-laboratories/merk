@@ -376,6 +376,10 @@ Appearance:
 <td>Requests information about previously connected users</td>
 </tr>
 <tr>
+<td><code>/windows</code></td>
+<td>Generates and displays a list of all connected windows</td>
+</tr>
+<tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server &amp; executes connection script</td>
 </tr>
