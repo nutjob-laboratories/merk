@@ -288,6 +288,10 @@ class wMenuButton(QPushButton):
 		self.subwindow.show()
 		self.window.parent.initWindowbar()
 
+	def close_subwindow(self):
+		self.subwindow.close()
+		self.window.parent.initWindowbar()
+
 	def show_context_menu(self,position):
 
 		if not config.WINDOWBAR_ENTRY_MENU: return
@@ -392,17 +396,8 @@ class wMenuButton(QPushButton):
 
 			menu.addSeparator()
 
-			if self.subwindow.isVisible():
-				entry = QAction(QIcon(HIDE_ICON),"Hide window",self)
-				entry.triggered.connect(self.hide_window)
-				menu.addAction(entry)
-			else:
-				entry = QAction(QIcon(SHOW_ICON),"Show window",self)
-				entry.triggered.connect(self.show_window)
-				menu.addAction(entry)
-
 			entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
-			entry.triggered.connect(self.window.close)
+			entry.triggered.connect(self.close_subwindow)
 			menu.addAction(entry)
 
 		menu.exec_(self.mapToGlobal(position))
@@ -447,6 +442,7 @@ class wIconMenuButton(QPushButton):
 
 	def setWindow(self,window):
 		self.window = window.widget()
+		self.subwindow = window
 
 	def __init__(self,icon,normal_style,hover_style,parent=None):
 		QLabel.__init__(self, parent)
@@ -466,6 +462,10 @@ class wIconMenuButton(QPushButton):
 
 		self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 		self.customContextMenuRequested.connect(self.show_context_menu)
+
+	def close_subwindow(self):
+		self.subwindow.close()
+		self.window.parent.initWindowbar()
 
 	def show_context_menu(self,position):
 
@@ -554,7 +554,7 @@ class wIconMenuButton(QPushButton):
 			menu.addSeparator()
 
 			entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
-			entry.triggered.connect(self.window.close)
+			entry.triggered.connect(self.close_subwindow)
 			menu.addAction(entry)
 
 		menu.exec_(self.mapToGlobal(position))
