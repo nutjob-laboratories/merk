@@ -785,48 +785,6 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.icons)
 		menu.addAction(entry)
 
-		if config.WINDOWBAR_INCLUDE_CHANNELS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Channel windows", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel windows", self)
-		entry.triggered.connect(self.channels)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_INCLUDE_PRIVATE:
-			entry = QAction(QIcon(self.parent.checked_icon),"Private windows", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Private windows", self)
-		entry.triggered.connect(self.privates)
-		menu.addAction(entry)
-		
-		if config.WINDOWBAR_INCLUDE_SERVERS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Server windows", self)
-		entry.triggered.connect(self.servers)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_INCLUDE_EDITORS:
-			entry = QAction(QIcon(self.parent.checked_icon),"Editor windows", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Editor windows", self)
-		entry.triggered.connect(self.editors)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_INCLUDE_LIST:
-			entry = QAction(QIcon(self.parent.checked_icon),"Channel lists", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel lists", self)
-		entry.triggered.connect(self.list_window)
-		menu.addAction(entry)
-
-		if config.WINDOWBAR_INCLUDE_MANAGER:
-			entry = QAction(QIcon(self.parent.checked_icon),"Log manager", self)
-		else:
-			entry = QAction(QIcon(self.parent.unchecked_icon),"Log manager", self)
-		entry.triggered.connect(self.list_manager)
-		menu.addAction(entry)
-
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 			entry = QAction(QIcon(self.parent.checked_icon),"Double click to maximize", self)
 		else:
@@ -848,33 +806,54 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.showMenu)
 		menu.addAction(entry)
 
-		self.justifyMenu = QMenu("Alignment")
-		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+		self.includesMenu = QMenu("Displays...")
+		self.includesMenu.setIcon(QIcon(WINDOW_ICON))
 
-		if config.WINDOWBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
+		if config.WINDOWBAR_INCLUDE_CHANNELS:
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel windows", self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
-		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel windows", self)
+		entry.triggered.connect(self.channels)
+		self.includesMenu.addAction(entry)
 
-		if config.WINDOWBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
+		if config.WINDOWBAR_INCLUDE_PRIVATE:
+			entry = QAction(QIcon(self.parent.checked_icon),"Private windows", self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
-		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-
-		if config.WINDOWBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Private windows", self)
+		entry.triggered.connect(self.privates)
+		self.includesMenu.addAction(entry)
+		
+		if config.WINDOWBAR_INCLUDE_SERVERS:
+			entry = QAction(QIcon(self.parent.checked_icon),"Server windows", self)
 		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
-		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-	
-		menu.addMenu(self.justifyMenu)
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Server windows", self)
+		entry.triggered.connect(self.servers)
+		self.includesMenu.addAction(entry)
 
-		self.hiddenMenu = QMenu("Show hidden...")
+		if config.WINDOWBAR_INCLUDE_EDITORS:
+			entry = QAction(QIcon(self.parent.checked_icon),"Editor windows", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Editor windows", self)
+		entry.triggered.connect(self.editors)
+		self.includesMenu.addAction(entry)
+
+		if config.WINDOWBAR_INCLUDE_LIST:
+			entry = QAction(QIcon(self.parent.checked_icon),"Channel lists", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Channel lists", self)
+		entry.triggered.connect(self.list_window)
+		self.includesMenu.addAction(entry)
+
+		if config.WINDOWBAR_INCLUDE_MANAGER:
+			entry = QAction(QIcon(self.parent.checked_icon),"Log manager", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Log manager", self)
+		entry.triggered.connect(self.list_manager)
+		self.includesMenu.addAction(entry)
+
+		menu.addMenu(self.includesMenu)
+
+		self.hiddenMenu = QMenu("Display hidden...")
 		self.hiddenMenu.setIcon(QIcon(SHOW_ICON))
 
 		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR:
@@ -927,7 +906,41 @@ class Windowbar(QToolBar):
 
 		menu.addMenu(self.hiddenMenu)
 
+		self.justifyMenu = QMenu("Alignment")
+		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+
+		if config.WINDOWBAR_JUSTIFY=='left':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
+		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='center':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
+		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='right':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
+		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+	
+		menu.addMenu(self.justifyMenu)
+
 		menu.addSeparator()
+
+		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
+		entry3.triggered.connect(self.parent.MDI.activateNextSubWindow)
+		menu.addAction(entry3)
+
+		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
+		entry4.triggered.connect(self.parent.MDI.activatePreviousSubWindow)
+		menu.addAction(entry4)
 
 		entry1 = QAction(QIcon(CASCADE_ICON),"Cascade windows",self)
 		entry1.triggered.connect(self.parent.MDI.cascadeSubWindows)
