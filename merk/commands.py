@@ -389,6 +389,8 @@ def interpolateAliases(text):
 		counter = counter + 1
 		if counter>=99: break
 
+	if config.ENABLE_EMOJI_SHORTCODES: text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
+
 	return text
 
 def buildTemporaryAliases(gui,window):
@@ -983,12 +985,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if is_script:
 		if script_id!=None:
 			if do_halt(script_id): return True
-
-	# if len(tokens)>=1:
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'speak' and len(tokens)>=2:
-	# 		tokens.pop(0)
-	# 		user_input = config.ISSUE_COMMAND_SYMBOL+"script speak "+' '.join(tokens).strip()
-	# 		tokens = user_input.split()
 
 	# |----|
 	# | /s |
