@@ -617,6 +617,13 @@ class Dialog(QDialog):
 			self.SYNTAX_EMOJI_STYLE = style
 			self.changed.show()
 			self.boldApply()
+		elif name=="script":
+			color = data[1][0]
+			style = data[1][1]
+			self.SYNTAX_SCRIPT_COLOR = color
+			self.SYNTAX_SCRIPT_STYLE = style
+			self.changed.show()
+			self.boldApply()
 		
 		self.syntax_did_change = True
 		self.selector.setFocus()
@@ -1208,6 +1215,9 @@ class Dialog(QDialog):
 		self.SYNTAX_NICKNAME_STYLE = config.SYNTAX_NICKNAME_STYLE
 		self.SYNTAX_EMOJI_COLOR = config.SYNTAX_EMOJI_COLOR
 		self.SYNTAX_EMOJI_STYLE = config.SYNTAX_EMOJI_STYLE
+
+		self.SYNTAX_SCRIPT_COLOR = config.SYNTAX_SCRIPT_COLOR
+		self.SYNTAX_SCRIPT_STYLE = config.SYNTAX_SCRIPT_STYLE
 
 		self.SPELLCHECK_UNDERLINE_COLOR = config.SPELLCHECK_UNDERLINE_COLOR
 
@@ -3584,6 +3594,8 @@ class Dialog(QDialog):
 		self.syntaxchannel = widgets.SyntaxColor('channel', "<b>Channels</b>",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
 		self.syntaxalias = widgets.SyntaxColor('alias', "<b>Aliases</b>",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
 
+		self.syntaxscript = widgets.SyntaxColor('script', "<b>Script-Only Commands</b>",self.SYNTAX_SCRIPT_COLOR,self.SYNTAX_SCRIPT_STYLE,self)
+
 		self.syntaxfore = widgets.SyntaxTextColor('fore', "<b>Text Color</b>",self.SYNTAX_FOREGROUND,self)
 		self.syntaxback = widgets.SyntaxTextColor('back', "<b>Background</b>",self.SYNTAX_BACKGROUND,self)
 
@@ -3591,6 +3603,7 @@ class Dialog(QDialog):
 		self.syntaxcommand.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxchannel.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxalias.syntaxChanged.connect(self.syntaxChanged)
+		self.syntaxscript.syntaxChanged.connect(self.syntaxChanged)
 
 		self.syntaxnick = widgets.SyntaxColor('nick', "<b>Nicknames</b>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
 		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Emoji Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
@@ -3607,8 +3620,7 @@ class Dialog(QDialog):
 		self.syntaxDescription = QLabel("""
 			<small>
 			<b>Syntax highlighting</b> is applied to both the script section of the
-			connection dialog, and the built-in script editor. <b>Commands</b>,
-			<b>channels</b>, <b>comments</b>, and <b>aliases</b> appear in the colors and styles set below.
+			connection dialog, and the built-in script editor.
 			</small>
 			""")
 		self.syntaxDescription.setWordWrap(True)
@@ -3620,8 +3632,7 @@ class Dialog(QDialog):
 			all server and chat windows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
 			current chat and <b>emoji shortcodes</b> will be highlighted using the
-			colors and format settings below. Text color and background
-			color will be set to the current window's text style.
+			colors and format settings below.
 			</small>
 			<br>
 			""")
@@ -3636,6 +3647,7 @@ class Dialog(QDialog):
 		tbLay.addRow(self.syntaxfore, self.syntaxback)
 		tbLay.addRow(self.syntaxcomment, self.syntaxcommand)
 		tbLay.addRow(self.syntaxchannel, self.syntaxalias)
+		tbLay.addRow(self.syntaxscript)
 
 		sbLay = QFormLayout()
 		sbLay.addRow(self.syntaxnick, self.syntaxemoji)
@@ -3652,7 +3664,6 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
-		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addLayout(inputMaster)
@@ -4179,6 +4190,8 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = self.nameTitleDisplay.isChecked()
 		config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = self.channelHidden.isChecked()
 		config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = self.privateHidden.isChecked()
+		config.SYNTAX_SCRIPT_COLOR = self.SYNTAX_SCRIPT_COLOR
+		config.SYNTAX_SCRIPT_STYLE = self.SYNTAX_SCRIPT_STYLE
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

@@ -678,6 +678,9 @@ def check_for_sane_values(setting,value):
 	if setting=="spellcheck_underline_color":
 		if not QColor(value).isValid(): return INVALID_COLOR
 
+	if setting=="syntax_script_only_color":
+		if not QColor(value).isValid(): return INVALID_COLOR
+
 	return ALL_VALID_SETTINGS
 
 def list_scripts():

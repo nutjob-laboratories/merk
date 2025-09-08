@@ -270,9 +270,13 @@ MAXIMIZE_SUBWINDOWS_ON_CREATION = False
 SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = True
 SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = True
 SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = True
+SYNTAX_SCRIPT_COLOR = "darkGreen"
+SYNTAX_SCRIPT_STYLE = "bold"
 
 def build_settings():
 	settings = {
+		"syntax_script_only_color": SYNTAX_SCRIPT_COLOR,
+		"syntax_script_only_style": SYNTAX_SCRIPT_STYLE,
 		"show_hidden_private_windows_in_windowbar": SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR,
 		"show_hidden_channel_windows_in_windowbar": SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR,
 		"show_channel_name_in_subwindow_title": SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE,
@@ -509,6 +513,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "syntax_script_only_color" in settings:
+		settings["syntax_script_only_color"] = SYNTAX_SCRIPT_COLOR
+	if not "syntax_script_only_style" in settings:
+			settings["syntax_script_only_style"] = SYNTAX_SCRIPT_STYLE
 	if not "show_hidden_private_windows_in_windowbar" in settings:
 		settings["show_hidden_private_windows_in_windowbar"] = SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR
 	if not "show_hidden_channel_windows_in_windowbar" in settings:
@@ -1207,6 +1215,8 @@ def load_settings(filename):
 	global SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE
 	global SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR
 	global SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR
+	global SYNTAX_SCRIPT_COLOR
+	global SYNTAX_SCRIPT_STYLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1216,6 +1226,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SYNTAX_SCRIPT_COLOR = settings["syntax_script_only_color"]
+		SYNTAX_SCRIPT_STYLE = settings["syntax_script_only_style"]
 		SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = settings["show_hidden_private_windows_in_windowbar"]
 		SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = settings["show_hidden_channel_windows_in_windowbar"]
 		SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = settings["show_channel_name_in_subwindow_title"]

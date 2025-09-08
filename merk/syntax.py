@@ -172,6 +172,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			'merk': format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE),
 			'channel': format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE),
 			'alias': format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE),
+			'script': format(config.SYNTAX_SCRIPT_COLOR,config.SYNTAX_SCRIPT_STYLE),
 		}
 
 		if not config.ENABLE_ALIASES: 
@@ -187,7 +188,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			for o in merk]
 
 		# Script Only Commands
-		rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
+		rules += [(r'^\s*%s' % o, 0, STYLES['script'])
 			for o in script_only]
 
 		# Channel names and aliases
