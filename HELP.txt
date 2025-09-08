@@ -152,7 +152,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>context WINDOW_NAME</code></td>
-<td>Moves execution of the script to <code>WINDOW_NAME</code>; can only be called from scripts</td>
+<td>Moves execution of the script to <code>WINDOW_NAME</code>; <b>can only be called from scripts</b></td>
 </tr>
 <tr>
 <td><code>/ctcp USER REQUEST</code></td>
@@ -168,7 +168,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>end</code></td>
-<td>Immediately ends a script; can only be called from scripts</td>
+<td>Immediately ends a script; <b>can only be called from scripts</b></td>
 </tr>
 <tr>
 <td><code>/exit [SECONDS]</code></td>
@@ -192,7 +192,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>insert FILE [FILE...]</code></td>
-<td>Inserts the contents of <code>FILE</code> where it appears into the script. Can only be called by scripts.</td>
+<td>Inserts the contents of <code>FILE</code> where it appears into the script; <b>can only be called by scripts</b></td>
 </tr>
 <tr>
 <td><code>/invite NICKNAME CHANNEL</code></td>
@@ -256,7 +256,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>only WINDOW...</code></td>
-<td>Restricts a script to only executing in <code>WINDOW</code>'s context. Multiple <code>WINDOW</code>s can be specified. Can only be called from scripts.
+<td>Restricts a script to only executing in <code>WINDOW</code>'s context. Multiple <code>WINDOW</code>s can be specified. <b>Can only be called from scripts</b>.
 </td>
 </tr>
 <tr>
@@ -309,7 +309,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>restrict SERVER|CHANNEL|PRIVATE</code></td>
-<td>Prevents a script from running if it is not being ran in a <code>SERVER</code>, <code>CHANNEL</code>, or <code>PRIVATE</code> window. Up to two windows types can be passed. Can only be called from scripts</td>
+<td>Prevents a script from running if it is not being ran in a <code>SERVER</code>, <code>CHANNEL</code>, or <code>PRIVATE</code> window. Up to two windows types can be passed. <b>Can only be called from scripts</b></td>
 </tr>
 <tr>
 <td><code>/restore [SERVER] WINDOW</code></td>
@@ -361,7 +361,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>usage NUMBER [MESSAGE...]</code></td>
-<td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. Can only be called by scripts</td>
+<td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. <b>Can only be called by scripts</b></td>
 </tr>
 <tr>
 <td><code>/version [SERVER]</code></td>
@@ -369,7 +369,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>wait SECONDS</code></td>
-<td>Pauses script execution for <code>SECONDS</code>; can only be called from scripts</td>
+<td>Pauses script execution for <code>SECONDS</code>; <b>can only be called from scripts</b></td>
 </tr>
 <tr>
 <td><code>/who NICKNAME [o]</code></td>
