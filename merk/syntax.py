@@ -101,7 +101,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"restore",
 			cmdsymbol+"cascade",
 			cmdsymbol+"tile",
-			cmdsymbol+"wait",
 			cmdsymbol+"away",
 			cmdsymbol+"back",
 			cmdsymbol+"raw",
@@ -120,22 +119,16 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"config",
 			cmdsymbol+"xconnect",
 			cmdsymbol+"xconnectssl",
-			cmdsymbol+"context",
 			cmdsymbol+"unalias",
 			cmdsymbol+"ignore",
 			cmdsymbol+"unignore",
-			cmdsymbol+"end",
 			cmdsymbol+"find",
 			cmdsymbol+"ping",
 			cmdsymbol+"shell",
 			cmdsymbol+"ctcp",
-			cmdsymbol+"usage",
-			cmdsymbol+"restrict",
-			cmdsymbol+"insert",
 			cmdsymbol+"private",
 			cmdsymbol+"msgbox",
 			cmdsymbol+"reclaim",
-			cmdsymbol+"only",
 			cmdsymbol+"next",
 			cmdsymbol+"previous",
 			cmdsymbol+"delay",
@@ -164,6 +157,16 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_DELAY_COMMAND:
 			merk.remove(cmdsymbol+"delay")
 
+		script_only = [
+			cmdsymbol+"restrict",
+			cmdsymbol+"insert",
+			cmdsymbol+"usage",
+			cmdsymbol+"context",
+			cmdsymbol+"wait",
+			cmdsymbol+"end",
+			cmdsymbol+"only",
+		]
+
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),
 			'merk': format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE),
@@ -182,6 +185,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		# Commands
 		rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
 			for o in merk]
+
+		# Script Only Commands
+		rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
+			for o in script_only]
 
 		# Channel names and aliases
 		rules += [
