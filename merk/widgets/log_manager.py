@@ -250,10 +250,8 @@ class Window(QMainWindow):
 		self.packlist.itemDoubleClicked.connect(self.on_item_clicked)
 
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAA")
+		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAAAAAAA")
 		self.packlist.setMaximumWidth(wwidth)
-		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAA")
-		self.packlist.setMinimumWidth(wwidth)
 
 		self.chat = QTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
