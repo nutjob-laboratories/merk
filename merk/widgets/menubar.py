@@ -848,6 +848,32 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.showMenu)
 		menu.addAction(entry)
 
+		self.justifyMenu = QMenu("Alignment")
+		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
+
+		if config.WINDOWBAR_JUSTIFY=='left':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
+		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='center':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
+		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+
+		if config.WINDOWBAR_JUSTIFY=='right':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
+		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
+		self.justifyMenu.addAction(entry)
+	
+		menu.addMenu(self.justifyMenu)
+
 		self.hiddenMenu = QMenu("Show hidden...")
 		self.hiddenMenu.setIcon(QIcon(SHOW_ICON))
 
@@ -874,7 +900,9 @@ class Windowbar(QToolBar):
 
 		wlist = self.parent.getAllHiddenSubWindows()
 		if len(wlist)>0:
-			self.hiddenMenu.addSeparator()
+
+			e = textSeparator(self,"Hidden Windows")
+			self.hiddenMenu.addAction(e)
 
 			for win in wlist:
 				c = win.widget()
@@ -898,32 +926,6 @@ class Windowbar(QToolBar):
 				self.hiddenMenu.addAction(entry)
 
 		menu.addMenu(self.hiddenMenu)
-
-		self.justifyMenu = QMenu("Alignment")
-		self.justifyMenu.setIcon(QIcon(JUSTIFY_ICON))
-
-		if config.WINDOWBAR_JUSTIFY=='left':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Left",self)
-		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Left",self)
-		entry.triggered.connect(lambda state,u="left": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-
-		if config.WINDOWBAR_JUSTIFY=='center':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Center",self)
-		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Center",self)
-		entry.triggered.connect(lambda state,u="center": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-
-		if config.WINDOWBAR_JUSTIFY=='right':
-			entry = QAction(QIcon(self.parent.round_checked_icon),"Right",self)
-		else:
-			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Right",self)
-		entry.triggered.connect(lambda state,u="right": self.setJustify(u))
-		self.justifyMenu.addAction(entry)
-	
-		menu.addMenu(self.justifyMenu)
 
 		menu.addSeparator()
 
