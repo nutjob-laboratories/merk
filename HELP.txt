@@ -151,7 +151,7 @@ Appearance:
 <td>Connects to an IRC server via SSL</td>
 </tr>
 <tr>
-<td><code>/context WINDOW_NAME</code></td>
+<td><code>context WINDOW_NAME</code></td>
 <td>Moves execution of the script to <code>WINDOW_NAME</code>; can only be called from scripts</td>
 </tr>
 <tr>
@@ -167,7 +167,7 @@ Appearance:
 <td>Opens a script in the editor</td>
 </tr>
 <tr>
-<td><code>/end</code></td>
+<td><code>end</code></td>
 <td>Immediately ends a script; can only be called from scripts</td>
 </tr>
 <tr>
@@ -191,7 +191,7 @@ Appearance:
 <td>Hides a <code>USER</code>&#39;s chat; use <code>*</code> as multiple character wildcards, and <code>?</code> as single character wildcards</td>
 </tr>
 <tr>
-<td><code>/insert FILE [FILE...]</code></td>
+<td><code>insert FILE [FILE...]</code></td>
 <td>Inserts the contents of <code>FILE</code> where it appears into the script. Can only be called by scripts.</td>
 </tr>
 <tr>
@@ -255,7 +255,7 @@ Appearance:
 <td>Sends a notice</td>
 </tr>
 <tr>
-<td><code>/only WINDOW...</code></td>
+<td><code>only WINDOW...</code></td>
 <td>Restricts a script to only executing in <code>WINDOW</code>'s context. Multiple <code>WINDOW</code>s can be specified. Can only be called from scripts.
 </td>
 </tr>
@@ -308,7 +308,7 @@ Appearance:
 <td>Requests a new list of channels from the server</td>
 </tr>
 <tr>
-<td><code>/restrict SERVER|CHANNEL|PRIVATE</code></td>
+<td><code>restrict SERVER|CHANNEL|PRIVATE</code></td>
 <td>Prevents a script from running if it is not being ran in a <code>SERVER</code>, <code>CHANNEL</code>, or <code>PRIVATE</code> window. Up to two windows types can be passed. Can only be called from scripts</td>
 </tr>
 <tr>
@@ -360,7 +360,7 @@ Appearance:
 <td>Un-hides a <code>USER</code>&#39;s chat. To un-hide all users, use <code>*</code> as the argument</td>
 </tr>
 <tr>
-<td><code>/usage NUMBER [MESSAGE...]</code></td>
+<td><code>usage NUMBER [MESSAGE...]</code></td>
 <td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. Can only be called by scripts</td>
 </tr>
 <tr>
@@ -368,7 +368,7 @@ Appearance:
 <td>Requests server version</td>
 </tr>
 <tr>
-<td><code>/wait SECONDS</code></td>
+<td><code>wait SECONDS</code></td>
 <td>Pauses script execution for <code>SECONDS</code>; can only be called from scripts</td>
 </tr>
 <tr>

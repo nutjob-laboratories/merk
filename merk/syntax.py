@@ -158,13 +158,13 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"delay")
 
 		script_only = [
-			cmdsymbol+"restrict",
-			cmdsymbol+"insert",
-			cmdsymbol+"usage",
-			cmdsymbol+"context",
-			cmdsymbol+"wait",
-			cmdsymbol+"end",
-			cmdsymbol+"only",
+			"restrict",
+			"insert",
+			"usage",
+			"context",
+			"wait",
+			"end",
+			"only",
 		]
 
 		STYLES = {

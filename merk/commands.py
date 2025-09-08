@@ -80,7 +80,7 @@ def add_halt(script_id):
 	if script_id in HALT_SCRIPT: return
 	HALT_SCRIPT.append(script_id)
 
-def do_halt(script_id):
+def is_halting(script_id):
 	if script_id in HALT_SCRIPT: return True
 	return False
 
@@ -572,7 +572,7 @@ def execute_script_line(data):
 	line_number = data[4]
 	script_only_command = data[5]
 
-	if do_halt(script_id): return
+	if is_halting(script_id): return
 
 	if not handleScriptCommands(gui,window,line,line_number,script_id):
 		if len(line.strip())==0: return
@@ -708,15 +708,15 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 
 	if is_script:
 		if script_id!=None:
-			if do_halt(script_id): return True
+			if is_halting(script_id): return True
 
 	# |---------|
 	# | /insert |
 	# |---------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"insert can only be called from scripts")
+			if tokens[0].lower()=='insert':
+				t = Message(ERROR_MESSAGE,'',"insert can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -725,8 +725,8 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	# |--------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"usage can only be called from scripts")
+			if tokens[0].lower()=='usage':
+				t = Message(ERROR_MESSAGE,'',"usage can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -735,8 +735,8 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	# |-------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"only can only be called from scripts")
+			if tokens[0].lower()=='only':
+				t = Message(ERROR_MESSAGE,'',"only can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -745,8 +745,8 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	# |-----------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"restrict can only be called from scripts")
+			if tokens[0].lower()=='restrict':
+				t = Message(ERROR_MESSAGE,'',"restrict can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -755,8 +755,8 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	# |------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"end can only be called from scripts")
+			if tokens[0].lower()=='end':
+				t = Message(ERROR_MESSAGE,'',"end can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -765,8 +765,8 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	# |----------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"context can only be called from scripts")
+			if tokens[0].lower()=='context':
+				t = Message(ERROR_MESSAGE,'',"context can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -775,8 +775,8 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	# |-------|
 	if not is_script:
 		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"wait can only be called from scripts")
+			if tokens[0].lower()=='wait':
+				t = Message(ERROR_MESSAGE,'',"wait can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -984,7 +984,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 	if is_script:
 		if script_id!=None:
-			if do_halt(script_id): return True
+			if is_halting(script_id): return True
 
 	# |----|
 	# | /s |
@@ -3800,7 +3800,7 @@ class ScriptThread(QThread):
 			# |=========|
 			if len(tokens)>=1:
 				if len(tokens)>=2:
-					if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
+					if tokens[0].lower()=='insert':
 						tokens.pop(0)
 
 						# Use shlex to tokenize the input, so that we can
@@ -3820,11 +3820,11 @@ class ScriptThread(QThread):
 
 								for l in contents.split("\n"): script.append(l)
 							else:
-								self.scriptError.emit([self.gui,self.window,f"Error processing {config.ISSUE_COMMAND_SYMBOL}insert: File \"{f}\" cannot be found"])
+								self.scriptError.emit([self.gui,self.window,f"Error processing insert: File \"{f}\" cannot be found"])
 								got_error = True
 						skip_this_line = True
-				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error processing {config.ISSUE_COMMAND_SYMBOL}insert: {config.ISSUE_COMMAND_SYMBOL}insert called without any arguments"])
+				elif tokens[0].lower()=='insert' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error processing insert: insert called without any arguments"])
 					skip_this_line = True
 					got_error = True
 
@@ -3851,7 +3851,7 @@ class ScriptThread(QThread):
 			# | /only |
 			# |=======|
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only' and len(tokens)>=2:
+				if tokens[0].lower()=='only' and len(tokens)>=2:
 					tokens.pop(0)
 					
 					valid = False
@@ -3862,15 +3862,15 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script cannot be ran in {self.window.name}"])
 						no_errors = False
 
-				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}only called without an argument"])
+				elif tokens[0].lower()=='only' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: only called without an argument"])
 					no_errors = False
 
 			# |===========|
 			# | /restrict |
 			# |===========|
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==2:
+				if tokens[0].lower()=='restrict' and len(tokens)==2:
 					tokens.pop(0)
 					arg = tokens.pop(0)
 
@@ -3890,7 +3890,7 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Unrecognized restriction: \"{arg}\""])
 						no_errors = False
 
-				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==3:
+				elif tokens[0].lower()=='restrict' and len(tokens)==3:
 					tokens.pop(0)
 					arg1 = tokens.pop(0)
 					arg2 = tokens.pop(0)
@@ -3921,18 +3921,18 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script is restricted from running in {reason} windows"])
 						no_errors = False
 
-				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}restrict called without an argument"])
+				elif tokens[0].lower()=='restrict' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: restrict called without an argument"])
 					no_errors = False
-				elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict' and len(tokens)>3:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}restrict called with too many arguments"])
+				elif tokens[0].lower()=='restrict' and len(tokens)>3:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: restrict called with too many arguments"])
 					no_errors = False
 
 			# |========|
 			# | /usage |
 			# |========|
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)>=2:
+				if tokens[0].lower()=='usage' and len(tokens)>=2:
 					tokens.pop(0)
 					arg = tokens.pop(0)
 					try:
@@ -3956,13 +3956,13 @@ class ScriptThread(QThread):
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be called with {arg} arguments"])
 									no_errors = False
 					except:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}usage must be called with a numerical first argument."])
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: usage must be called with a numerical first argument."])
 						no_errors = False
 
 			# Usage must be called with at least one argument
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}usage called without an argument"])
+				if tokens[0].lower()=='usage' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: usage called without an argument"])
 					no_errors = False
 
 			# /style can't be called in scripts
@@ -3991,27 +3991,27 @@ class ScriptThread(QThread):
 
 			# /end doesn't take any arguments
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end' and len(tokens)>1: 
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}end called with too many arguments."])
+				if tokens[0].lower()=='end' and len(tokens)>1: 
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: end called with too many arguments."])
 					no_errors = False
 
 			# Make sure that /wait is called with a numerical argument
 			if len(tokens)==2:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
+				if tokens[0].lower()=='wait':
 					count = tokens[1]
 					try:
 						count = int(count)
 					except:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument."])
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument."])
 						no_errors = False
 
 			# Make sure that /wait has only one argument
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)>2:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}wait called with too many arguments"])
+				if tokens[0].lower()=='wait' and len(tokens)>2:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait called with too many arguments"])
 					no_errors = False
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}wait must be called with a numerical argument"])
+				if tokens[0].lower()=='wait' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument"])
 					no_errors = False
 
 		return no_errors
@@ -4093,7 +4093,7 @@ class ScriptThread(QThread):
 					# | /context |
 					# |==========|
 					if len(tokens)==2:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context':
+						if tokens[0].lower()=='context':
 							target = tokens[1]
 
 							is_valid = False
@@ -4121,19 +4121,19 @@ class ScriptThread(QThread):
 							script_only_command = True
 
 							if not is_valid:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}context cannot find window \"{target}\"."])
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context cannot find window \"{target}\"."])
 								loop = False
 							else:
 								continue
 
 					if len(tokens)>=1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)==1:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}context called without an argument"])
+						if tokens[0].lower()=='context' and len(tokens)==1:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context called without an argument"])
 							script_only_command = True
 							loop = False
 
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'context' and len(tokens)>2:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}context called with too many arguments"])
+						if tokens[0].lower()=='context' and len(tokens)>2:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context called with too many arguments"])
 							script_only_command = True
 							loop = False
 
@@ -4141,7 +4141,7 @@ class ScriptThread(QThread):
 					# | /wait |
 					# |=======|
 					if len(tokens)==2:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wait':
+						if tokens[0].lower()=='wait':
 							count = tokens[1]
 							count = int(count)
 							time.sleep(count)
@@ -4152,37 +4152,37 @@ class ScriptThread(QThread):
 					# | /end |
 					# |======|
 					if len(tokens)==1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'end':
+						if tokens[0].lower()=='end':
 							loop = False
 							script_only_command = True
 							continue
 
 					# Bypass /usage, already handled
 					if len(tokens)>=1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'usage':
+						if tokens[0].lower()=='usage':
 							script_only_command = True
 							continue
 
 					# Bypass /restrict, already handled
 					if len(tokens)>=1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restrict':
+						if tokens[0].lower()=='restrict':
 							script_only_command = True
 							continue
 
 					# Bypass /only, already handled
 					if len(tokens)>=1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'only':
+						if tokens[0].lower()=='only':
 							script_only_command = True
 							continue
 
 					# Bypass /insert, already handled
 					if len(tokens)>=1:
-						if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'insert':
+						if tokens[0].lower()=='insert':
 							if config.ENABLE_INSERT_COMMAND:
 								script_only_command = True
 								continue
 							else:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}insert has been disabled"])
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: insert has been disabled"])
 								script_only_command = True
 								loop = False
 								continue

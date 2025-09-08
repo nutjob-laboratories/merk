@@ -243,18 +243,18 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk!* |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
-| `/context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                                  |
+| `context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; can only be called from scripts                                                  |
 | `/ctcp USER REQUEST`                  | Sends a CTCP request to `USER`; valid `REQUEST`s are TIME, VERSION, or FINGER                                                  |
 | `/delay SECONDS COMMAND...`                  | Executes `COMMAND` after `SECONDS` seconds                                                 |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
-| `/end`                                  | Immediately ends a script; can only be called from scripts                                                                       |
+| `end`                                  | Immediately ends a script; can only be called from scripts                                                                       |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/help [COMMAND]`                                 | Displays command usage information                                                                                               |
 | `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow                                                                                              |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
-| `/insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script. Can only be called by scripts.            |
+| `insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script. Can only be called by scripts.            |
 | `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |
 | `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                                                                                      |
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
@@ -269,7 +269,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/next`                    | Shifts focus to the "next" subwindow                                                                                                   |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
-| `/only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. Can only be called from scripts.              |
+| `only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. Can only be called from scripts.              |
 | `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
@@ -282,7 +282,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
 | `/reclaim NICKNAME`                          | Attempts to change nickname to `NICKNAME` until claimed                                                                                             |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
-| `/restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. Can only be called from scripts                                                                                |
+| `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. Can only be called from scripts                                                                                |
 | `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |
 | `/s FILENAME [ARGUMENTS]`                      | A shortcut for the `/script` command                                                                                            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
@@ -295,9 +295,9 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
-| `/usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. Can only be called by scripts                                                        |
+| `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. Can only be called by scripts                                                        |
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
-| `/wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                                           |
+| `wait SECONDS`                         | Pauses script execution for `SECONDS`; can only be called from scripts                                                           |
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
