@@ -292,6 +292,10 @@ Appearance:
 <td>Disconnects from the current IRC server</td>
 </tr>
 <tr>
+<td><code>/random ALIAS LOW HIGH</code></td>
+<td>Generates a random number between <code>LOW</code> and <code>HIGH</code> and stores it in <code>ALIAS</code></td>
+</tr>
+<tr>
 <td><code>/raw TEXT...</code></td>
 <td>Sends unprocessed data to the server</td>
 </tr>

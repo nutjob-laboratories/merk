@@ -278,6 +278,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
 | `/private NICKNAME`               | Opens a private chat window for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
+| `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
 | `/reclaim NICKNAME`                          | Attempts to change nickname to `NICKNAME` until claimed                                                                                             |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |

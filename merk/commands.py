@@ -46,6 +46,7 @@ import fnmatch
 import datetime
 import subprocess
 import shlex
+import random
 
 import emoji
 
@@ -173,6 +174,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
 			config.ISSUE_COMMAND_SYMBOL+"windows": config.ISSUE_COMMAND_SYMBOL+"windows",
 			config.ISSUE_COMMAND_SYMBOL+"close": config.ISSUE_COMMAND_SYMBOL+"close ",
+			config.ISSUE_COMMAND_SYMBOL+"random": config.ISSUE_COMMAND_SYMBOL+"random ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -273,6 +275,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"windows</b>", "Generates a list of all connected windows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -570,6 +573,36 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"wait can only be called from scripts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
+
+	# |--------|
+	# | /close |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'close' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			w.close()
+			gui.buildWindowbar()
+			return True
+
+	# |-------|
+	# | /show |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			w.show()
+			gui.buildWindowbar()
+			return True
+
+	# |-------|
+	# | /hide |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			w.hide()
+			gui.buildWindowbar()
+			return True
 
 	# |--------|
 	# | /clear |
@@ -956,6 +989,93 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |---------|
+	# | /random |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random' and len(tokens)==4:
+			
+			tokens.pop(0)
+			a =  tokens.pop(0)
+			low = tokens.pop(0)
+			high = tokens.pop(0)
+
+			# If the first character is the interpolation
+			# symbol, strip it from the name
+			if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+				if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+					a = a[il:]
+
+			if len(a)>=1:
+				if not a[0].isalpha():
+					if is_script:
+						do_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens must begin with a letter")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+			# Alias tokens cannot be numbers
+			is_number = True
+			try:
+				a = int(a)
+			except:
+				is_number = False
+			if is_number:
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens cannot be numbers")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Alias tokens cannot be numbers")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			try:
+				low = int(low)
+			except:
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{low}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{low}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			try:
+				high = int(high)
+			except:
+				if is_script:
+					do_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{high}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{high}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			addAlias(a,f"{random.randint(low,high)}")
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random':
+			if is_script:
+				do_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |--------|
 	# | /close |
