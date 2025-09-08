@@ -249,10 +249,6 @@ class Window(QMainWindow):
 		self.packlist.itemClicked.connect(self.on_item_selected)
 		self.packlist.itemDoubleClicked.connect(self.on_item_clicked)
 
-		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAAAAAAA")
-		self.packlist.setMaximumWidth(wwidth)
-
 		self.chat = QTextBrowser(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
 		self.chat.anchorClicked.connect(self.linkClicked)
@@ -481,6 +477,18 @@ class Window(QMainWindow):
 
 		self.tabs = QTabWidget()
 
+		self.horizontalSplitter = QSplitter(Qt.Horizontal)
+		self.horizontalSplitter.addWidget(self.packlist)
+		self.horizontalSplitter.addWidget(self.tabs)
+
+		self.horizontalSplitter.setStretchFactor(0, 0)
+		self.horizontalSplitter.setStretchFactor(1, 1)
+
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAAAAAAA")
+		mwidth = self.tabs.width()
+		self.horizontalSplitter.setSizes([wwidth,mwidth])
+
 		self.log_display = QWidget()
 		log_index = self.tabs.addTab(self.log_display, "Log Viewer  ")
 
@@ -534,8 +542,9 @@ class Window(QMainWindow):
 		buttonbar.addWidget(self.button_close)
 
 		managerLayout = QHBoxLayout()
-		managerLayout.addWidget(self.packlist)
-		managerLayout.addWidget(self.tabs)
+		# managerLayout.addWidget(self.packlist)
+		# managerLayout.addWidget(self.tabs)
+		managerLayout.addWidget(self.horizontalSplitter)
 
 		finalLayout = QVBoxLayout()
 		if not self.simplified: finalLayout.addWidget(self.windowDescription)
