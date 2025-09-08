@@ -2517,6 +2517,14 @@ class Merk(QMainWindow):
 					retval.append(window)
 		return retval
 
+	def getAllHiddenSubWindows(self):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if not window.isVisible():
+				retval.append(window)
+		return retval
+
 	def getAllSubChatWindows(self,client):
 		retval = []
 		for window in self.MDI.subWindowList():

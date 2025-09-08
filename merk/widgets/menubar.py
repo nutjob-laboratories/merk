@@ -872,6 +872,31 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.showHiddenPrivate)
 		self.hiddenMenu.addAction(entry)
 
+		wlist = self.parent.getAllHiddenSubWindows()
+		if len(wlist)>0:
+			self.hiddenMenu.addSeparator()
+
+			for win in wlist:
+				c = win.widget()
+				if c.window_type==SERVER_WINDOW:
+					icon = QIcon(CONSOLE_ICON)
+				elif c.window_type==CHANNEL_WINDOW:
+					icon = QIcon(CHANNEL_WINDOW_ICON)
+				elif c.window_type==PRIVATE_WINDOW:
+					icon = QIcon(PRIVATE_WINDOW_ICON)
+				if hasattr(c.client,"hostname"):
+					server = c.client.hostname
+				else:
+					server = f"{c.client.server}:{c.client.port}"
+				if f"{c.name}"==f"{server}":
+					name = c.name
+				else:
+					name = f"{c.name} ({server})"
+
+				entry = QAction(icon,name,self)
+				entry.triggered.connect(lambda state,u=win: self.parent.showSubWindow(u))
+				self.hiddenMenu.addAction(entry)
+
 		menu.addMenu(self.hiddenMenu)
 
 		self.justifyMenu = QMenu("Alignment")

@@ -481,13 +481,13 @@ class Window(QMainWindow):
 		self.horizontalSplitter.addWidget(self.packlist)
 		self.horizontalSplitter.addWidget(self.tabs)
 
-		self.horizontalSplitter.setStretchFactor(0, 0)
-		self.horizontalSplitter.setStretchFactor(1, 1)
-
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAAAAAAA")
 		mwidth = self.tabs.width()
 		self.horizontalSplitter.setSizes([wwidth,mwidth])
+
+		self.horizontalSplitter.setStretchFactor(0, 0)
+		self.horizontalSplitter.setStretchFactor(1, 1)
 
 		self.log_display = QWidget()
 		log_index = self.tabs.addTab(self.log_display, "Log Viewer  ")
