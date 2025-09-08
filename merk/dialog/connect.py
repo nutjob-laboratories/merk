@@ -333,7 +333,7 @@ class Dialog(QDialog):
 		self.exeTemplate = f"""
 			<small>
 			Execute these commands upon connection to <b>%__SERVER__%</b>. To insert a pause in between commands,
-			use the <b>{config.ISSUE_COMMAND_SYMBOL}wait</b> command, passing the number
+			use the <b>wait</b> command, passing the number
 			of seconds to pause as an argument.
 			</small>
 		"""

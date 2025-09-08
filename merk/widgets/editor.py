@@ -646,7 +646,7 @@ class Window(QMainWindow):
 
 		if not e: return
 
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"context "+str(e)+"\n")
+		self.editor.insertPlainText("context "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def executeScript(self,window):
@@ -889,7 +889,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertEnd(self):
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"end\n")
+		self.editor.insertPlainText("end\n")
 		self.updateApplicationTitle()
 
 	def insertPlay(self):
@@ -946,9 +946,9 @@ class Window(QMainWindow):
 
 		if len(aname)==0: return
 		if len(avalue)>0:
-			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"usage "+aname+" "+avalue+"\n")
+			self.editor.insertPlainText("usage "+aname+" "+avalue+"\n")
 		else:
-			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"usage "+aname+"\n")
+			self.editor.insertPlainText("usage "+aname+"\n")
 
 		self.updateApplicationTitle()
 
@@ -1041,7 +1041,7 @@ class Window(QMainWindow):
 
 		if not e: return
 
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"wait "+str(e)+"\n")
+		self.editor.insertPlainText("wait "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertRestrict(self):
@@ -1050,7 +1050,7 @@ class Window(QMainWindow):
 
 		if not e: return
 
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"restrict "+str(e)+"\n")
+		self.editor.insertPlainText("restrict "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertMLComment(self):
