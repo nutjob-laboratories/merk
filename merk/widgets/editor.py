@@ -32,6 +32,7 @@ import uuid
 import os
 import fnmatch
 import re
+import os
 
 from ..resources import *
 from ..dialog import *
@@ -43,6 +44,55 @@ from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import MenuLabel,menuHtml
 
 class Window(QMainWindow):
+
+	def is_multi_line_selection_by_block(self):
+		cursor = self.editor.textCursor()
+		if cursor.hasSelection():
+			start_position = cursor.selectionStart()
+			end_position = cursor.selectionEnd()
+
+			temp_cursor = self.editor.textCursor()
+
+			temp_cursor.setPosition(start_position)
+			start_block_number = temp_cursor.blockNumber()
+
+			temp_cursor.setPosition(end_position)
+			end_block_number = temp_cursor.blockNumber()
+
+			return start_block_number != end_block_number
+		return False
+
+	def comment_selected(self):
+		cursor = self.editor.textCursor()
+		selected_text = cursor.selectedText()
+
+		if selected_text:
+
+			if self.is_multi_line_selection_by_block():
+				selected_text = re.sub(os.linesep + r'\Z','',selected_text)
+				text = "/*\n"+selected_text+"\n*/"
+			else:
+				text = "/* "+selected_text+" */"
+			
+			cursor.beginEditBlock()
+			cursor.insertText(text)
+			cursor.endEditBlock()
+
+	def show_context_menu(self,pos):
+
+		menu = self.editor.createStandardContextMenu()
+
+		menu.addSeparator()
+
+		commented = QAction(QIcon(SCRIPT_ICON),"Comment text", self)
+		commented.triggered.connect(self.comment_selected)
+		menu.addAction(commented)
+
+		selected_text = self.editor.textCursor().selectedText()
+		commented.setEnabled(bool(selected_text))
+
+
+		menu.exec_(self.editor.mapToGlobal(pos))
 
 	def check_for_save(self):
 
@@ -323,6 +373,9 @@ class Window(QMainWindow):
 		self.wordwrap = True
 		self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
 
+		self.editor.setContextMenuPolicy(Qt.CustomContextMenu)
+		self.editor.customContextMenuRequested.connect(self.show_context_menu)
+
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
 		self.editor.textChanged.connect(self.docModified)
@@ -541,97 +594,7 @@ class Window(QMainWindow):
 
 		self.aliasMenu = self.menubar.addMenu("Aliases")
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Host",self)
-		entry.triggered.connect(lambda state,u="$_HOST": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Filename",self)
-		entry.triggered.connect(lambda state,u="$_FILE": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"User mode",self)
-		entry.triggered.connect(lambda state,u="$_MODE": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Nickname",self)
-		entry.triggered.connect(lambda state,u="$_NICKNAME": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Port",self)
-		entry.triggered.connect(lambda state,u="$_PORT": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Present in channel",self)
-		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Realname",self)
-		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Script name",self)
-		entry.triggered.connect(lambda state,u="$_SCRIPT": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Server",self)
-		entry.triggered.connect(lambda state,u="$_SERVER": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"User status",self)
-		entry.triggered.connect(lambda state,u="$_STATUS": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Channel topic",self)
-		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Uptime",self)
-		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Username",self)
-		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Current window",self)
-		entry.triggered.connect(lambda state,u="$_WINDOW": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Window type",self)
-		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Date",self)
-		entry.triggered.connect(lambda state,u="$_DATE": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"European date",self)
-		entry.triggered.connect(lambda state,u="$_EDATE": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Unix epoch",self)
-		entry.triggered.connect(lambda state,u="$_EPOCH": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client name",self)
-		entry.triggered.connect(lambda state,u="$_CLIENT": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client version",self)
-		entry.triggered.connect(lambda state,u="$_VERSION": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client source code URL",self)
-		entry.triggered.connect(lambda state,u="$_SOURCE": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client uptime",self)
-		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Timestamp",self)
-		entry.triggered.connect(lambda state,u="$_TIMESTAMP": self.insertBuiltinAlias(u))
-		self.aliasMenu.addAction(entry)
+		self.buildAliasMenu(self.aliasMenu)
 
 		self.runMenu = self.menubar.addMenu("Run")
 
@@ -640,6 +603,100 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.editor)
 
 		self.editor.setFocus()
+
+	def buildAliasMenu(self,menu):
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Host",self)
+		entry.triggered.connect(lambda state,u="$_HOST": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Filename",self)
+		entry.triggered.connect(lambda state,u="$_FILE": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"User mode",self)
+		entry.triggered.connect(lambda state,u="$_MODE": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Nickname",self)
+		entry.triggered.connect(lambda state,u="$_NICKNAME": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Port",self)
+		entry.triggered.connect(lambda state,u="$_PORT": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Present in channel",self)
+		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Realname",self)
+		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Script name",self)
+		entry.triggered.connect(lambda state,u="$_SCRIPT": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Server",self)
+		entry.triggered.connect(lambda state,u="$_SERVER": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"User status",self)
+		entry.triggered.connect(lambda state,u="$_STATUS": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Channel topic",self)
+		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Uptime",self)
+		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Username",self)
+		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Current window",self)
+		entry.triggered.connect(lambda state,u="$_WINDOW": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Window type",self)
+		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Date",self)
+		entry.triggered.connect(lambda state,u="$_DATE": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"European date",self)
+		entry.triggered.connect(lambda state,u="$_EDATE": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Unix epoch",self)
+		entry.triggered.connect(lambda state,u="$_EPOCH": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client name",self)
+		entry.triggered.connect(lambda state,u="$_CLIENT": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client version",self)
+		entry.triggered.connect(lambda state,u="$_VERSION": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client source code URL",self)
+		entry.triggered.connect(lambda state,u="$_SOURCE": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Client uptime",self)
+		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Timestamp",self)
+		entry.triggered.connect(lambda state,u="$_TIMESTAMP": self.insertBuiltinAlias(u))
+		menu.addAction(entry)
 
 	def insertContext(self):
 		e = SetWindowDialog("Context",self)
