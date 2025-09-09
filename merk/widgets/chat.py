@@ -3075,7 +3075,7 @@ class SpellTextEdit(QPlainTextEdit):
 							cursor.select(QTextCursor.WordUnderCursor)
 							oldpos = cursor.position()
 							cursor.select(QTextCursor.WordUnderCursor)
-							newpos = cursor.selectionStart() - 1
+							newpos = cursor.selectionStart() - len(config.ALIAS_INTERPOLATION_SYMBOL)
 							cursor.setPosition(newpos,QTextCursor.MoveAnchor)
 							cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
 							self.setTextCursor(cursor)
@@ -3153,6 +3153,28 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.insertText(f"{name}")
 								cursor.endEditBlock()
 								return
+
+					# Channels that might have multiple symbols in front of them
+					counter = 1
+					while counter<11:
+						counter = counter + 1
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - counter
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+
+							# Channel/server names
+							for name in self.parent.parent.getAllChatNames():
+								if fnmatch.fnmatch(name,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(f"{name}")
+									cursor.endEditBlock()
+									return
 
 				# if config.AUTOCOMPLETE_CONNECTED_SERVERS:
 				# 	# Auto-complete servers
