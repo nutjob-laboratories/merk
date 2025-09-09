@@ -149,6 +149,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"usage")
 			merk.remove(cmdsymbol+"restrict")
 			merk.remove(cmdsymbol+"only")
+			merk.remove(cmdsymbol+"insert")
 		if not config.ENABLE_SHELL_COMMAND:
 			merk.remove(cmdsymbol+"shell")
 		if not SSL_AVAILABLE:
@@ -168,6 +169,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"end",
 			"only",
 		]
+
+		if not config.ENABLE_INSERT_COMMAND:
+			script_only.remove("insert")
 
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),

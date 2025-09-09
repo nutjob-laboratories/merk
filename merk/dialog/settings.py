@@ -348,6 +348,12 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingEditor(self,state):
+		self.syntax_did_change = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSettingDisconnect(self,state):
 		if self.enableDisconnect.isChecked():
 			self.hideServer.setEnabled(False)
@@ -417,6 +423,7 @@ class Dialog(QDialog):
 
 	def changedSettingAdvancedSymbol(self,state):
 		self.changed_alias_symbol = True
+		self.syntax_did_change = True
 		self.changed.show()
 		self.restart.show()
 		self.boldApply()
@@ -447,7 +454,7 @@ class Dialog(QDialog):
 			self.autoAliasQuit.setEnabled(False)
 			self.enableShell.setEnabled(False)
 		self.changed.show()
-		#self.restart.show()
+		self.syntax_did_change = True
 		self.boldApply()
 		self.selector.setFocus()
 
@@ -466,6 +473,7 @@ class Dialog(QDialog):
 			self.autocompleteAlias.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
+		self.syntax_did_change = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -3514,7 +3522,7 @@ class Dialog(QDialog):
 
 		self.enableShell = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}shell command",self)
 		if config.ENABLE_SHELL_COMMAND: self.enableShell.setChecked(True)
-		self.enableShell.stateChanged.connect(self.changedSetting)
+		self.enableShell.stateChanged.connect(self.changedSettingEditor)
 
 		if not config.ENABLE_ALIASES:
 			self.enableShell.setEnabled(False)
@@ -3546,7 +3554,7 @@ class Dialog(QDialog):
 
 		self.enableInsert = QCheckBox(f"Enable insert command",self)
 		if config.ENABLE_INSERT_COMMAND: self.enableInsert.setChecked(True)
-		self.enableInsert.stateChanged.connect(self.changedSetting)
+		self.enableInsert.stateChanged.connect(self.changedSettingEditor)
 
 		self.promptScript = QCheckBox(f"Prompt for file when calling\n{config.ISSUE_COMMAND_SYMBOL}script with no arguments",self)
 		if config.PROMPT_FOR_SCRIPT_FILE: self.promptScript.setChecked(True)
@@ -3555,11 +3563,16 @@ class Dialog(QDialog):
 
 		self.enableDelay = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}delay command",self)
 		if config.ENABLE_DELAY_COMMAND: self.enableDelay.setChecked(True)
-		self.enableDelay.stateChanged.connect(self.changedSetting)
+		self.enableDelay.stateChanged.connect(self.changedSettingEditor)
 
 		self.enableConfig = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}config command",self)
 		if config.ENABLE_CONFIG_COMMAND: self.enableConfig.setChecked(True)
-		self.enableConfig.stateChanged.connect(self.changedSetting)
+		self.enableConfig.stateChanged.connect(self.changedSettingEditor)
+
+		if not config.ENABLE_ALIASES:
+			self.interpolateAlias.setEnabled(False)
+			self.alias_symbol.setEnabled(False)
+			self.alias_symbol_label.setEnabled(False)
 
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
@@ -4201,6 +4214,7 @@ class Dialog(QDialog):
 		config.SYNTAX_SCRIPT_STYLE = self.SYNTAX_SCRIPT_STYLE
 		config.AUTOCOMPLETE_SETTINGS = self.autocompleteSettings.isChecked()
 		config.ENABLE_CONFIG_COMMAND = self.enableConfig.isChecked()
+		config.ENABLE_SHELL_COMMAND = self.enableShell.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
