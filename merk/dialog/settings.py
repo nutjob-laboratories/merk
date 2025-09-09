@@ -380,12 +380,16 @@ class Dialog(QDialog):
 			self.autocompleteCommands.setEnabled(True)
 			self.autocompleteNicks.setEnabled(True)
 			self.autocompleteChans.setEnabled(True)
-			self.autocompleteEmojis.setEnabled(True)
+			if self.enableEmojis.isChecked():
+				self.autocompleteEmojis.setEnabled(True)
+			else:
+				self.autocompleteEmojis.setEnabled(False)
 			if self.enableAlias.isChecked():
 				self.autocompleteAlias.setEnabled(True)
 			else:
 				self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(True)
+			self.autocompleteSettings.setEnabled(True)
 		else:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -393,6 +397,7 @@ class Dialog(QDialog):
 			self.autocompleteEmojis.setEnabled(False)
 			self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(False)
+			self.autocompleteSettings.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -2728,14 +2733,6 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_ALIAS: self.autocompleteAlias.setChecked(True)
 		self.autocompleteAlias.stateChanged.connect(self.changedSetting)
 
-		autoLayout1 = QHBoxLayout()
-		autoLayout1.addWidget(self.autocompleteCommands)
-		autoLayout1.addWidget(self.autocompleteNicks)
-
-		autoLayout2 = QHBoxLayout()
-		autoLayout2.addWidget(self.autocompleteChans)
-		autoLayout2.addWidget(self.autocompleteEmojis)
-
 		self.enableHistory = QCheckBox("Enable command history",self)
 		if config.ENABLE_COMMAND_INPUT_HISTORY: self.enableHistory.setChecked(True)
 		self.enableHistory.stateChanged.connect(self.changedHistory)
@@ -2748,6 +2745,26 @@ class Dialog(QDialog):
 		if config.ENABLE_AUTOCOMPLETE: self.enableAutocomplete.setChecked(True)
 		self.enableAutocomplete.stateChanged.connect(self.changedAutocomplete)
 
+		self.autocompleteScripts = QCheckBox("Script filenames",self)
+		if config.AUTOCOMPLETE_SCRIPTS: self.autocompleteScripts.setChecked(True)
+		self.autocompleteScripts.stateChanged.connect(self.changedSetting)
+
+		self.autocompleteSettings = QCheckBox("Settings",self)
+		if config.AUTOCOMPLETE_SETTINGS: self.autocompleteSettings.setChecked(True)
+		self.autocompleteSettings.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_AUTOCOMPLETE:
+			self.autocompleteCommands.setEnabled(False)
+			self.autocompleteNicks.setEnabled(False)
+			self.autocompleteChans.setEnabled(False)
+			self.autocompleteEmojis.setEnabled(False)
+			self.autocompleteAlias.setEnabled(False)
+			self.autocompleteScripts.setEnabled(False)
+			self.autocompleteSettings.setEnabled(False)
+
+		if not config.ENABLE_ALIASES:
+			self.autocompleteAlias.setEnabled(False)
+
 		autoMaster = QHBoxLayout()
 		autoMaster.addStretch()
 		autoMaster.addWidget(self.enableAutocomplete)
@@ -2758,24 +2775,11 @@ class Dialog(QDialog):
 		historyMaster.addWidget(self.enableHistory)
 		historyMaster.addStretch()
 
-		self.autocompleteScripts = QCheckBox("Script filenames",self)
-		if config.AUTOCOMPLETE_SCRIPTS: self.autocompleteScripts.setChecked(True)
-		self.autocompleteScripts.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_AUTOCOMPLETE:
-			self.autocompleteCommands.setEnabled(False)
-			self.autocompleteNicks.setEnabled(False)
-			self.autocompleteChans.setEnabled(False)
-			self.autocompleteEmojis.setEnabled(False)
-			self.autocompleteAlias.setEnabled(False)
-			self.autocompleteScripts.setEnabled(False)
-
-		if not config.ENABLE_ALIASES:
-			self.autocompleteAlias.setEnabled(False)
-
-		autoLayout3 = QHBoxLayout()
-		autoLayout3.addWidget(self.autocompleteScripts)
-		autoLayout3.addWidget(self.autocompleteAlias)
+		autoSettingsLayout = QFormLayout()
+		autoSettingsLayout.addRow(self.autocompleteCommands,self.autocompleteNicks)
+		autoSettingsLayout.addRow(self.autocompleteChans,self.autocompleteEmojis)
+		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteAlias)
+		autoSettingsLayout.addRow(self.autocompleteSettings)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
@@ -2788,9 +2792,7 @@ class Dialog(QDialog):
 		inputLayout.addLayout(autoMaster)
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
-		inputLayout.addLayout(autoLayout1)
-		inputLayout.addLayout(autoLayout2)
-		inputLayout.addLayout(autoLayout3)
+		inputLayout.addLayout(autoSettingsLayout)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -3542,7 +3544,7 @@ class Dialog(QDialog):
 		self.requireArgs.stateChanged.connect(self.changedSetting)
 		self.requireArgs.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.enableInsert = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}insert command",self)
+		self.enableInsert = QCheckBox(f"Enable insert command",self)
 		if config.ENABLE_INSERT_COMMAND: self.enableInsert.setChecked(True)
 		self.enableInsert.stateChanged.connect(self.changedSetting)
 
@@ -3554,6 +3556,10 @@ class Dialog(QDialog):
 		self.enableDelay = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}delay command",self)
 		if config.ENABLE_DELAY_COMMAND: self.enableDelay.setChecked(True)
 		self.enableDelay.stateChanged.connect(self.changedSetting)
+
+		self.enableConfig = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}config command",self)
+		if config.ENABLE_CONFIG_COMMAND: self.enableConfig.setChecked(True)
+		self.enableConfig.stateChanged.connect(self.changedSetting)
 
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
@@ -3572,6 +3578,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.enableShell)
 		scriptingLayout.addWidget(self.enableInsert)
 		scriptingLayout.addWidget(self.enableDelay)
+		scriptingLayout.addWidget(self.enableConfig)
 		scriptingLayout.addStretch()
 
 		self.scriptingPage.setLayout(scriptingLayout)
@@ -4192,6 +4199,8 @@ class Dialog(QDialog):
 		config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR = self.privateHidden.isChecked()
 		config.SYNTAX_SCRIPT_COLOR = self.SYNTAX_SCRIPT_COLOR
 		config.SYNTAX_SCRIPT_STYLE = self.SYNTAX_SCRIPT_STYLE
+		config.AUTOCOMPLETE_SETTINGS = self.autocompleteSettings.isChecked()
+		config.ENABLE_CONFIG_COMMAND = self.enableConfig.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

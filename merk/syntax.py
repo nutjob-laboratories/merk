@@ -156,6 +156,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"xconnectssl")
 		if not config.ENABLE_DELAY_COMMAND:
 			merk.remove(cmdsymbol+"delay")
+		if not config.ENABLE_CONFIG_COMMAND:
+			merk.remove(cmdsymbol+"config")
 
 		script_only = [
 			"restrict",

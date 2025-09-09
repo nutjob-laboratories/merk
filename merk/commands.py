@@ -196,6 +196,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_DELAY_COMMAND:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"delay",'')
 
+	if not config.ENABLE_CONFIG_COMMAND:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"config",'')
+
 	if not SSL_AVAILABLE:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"connectssl",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"xconnectssl",'')
@@ -283,6 +286,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+		if not config.ENABLE_CONFIG_COMMAND:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>": continue
 		if not config.ENABLE_DELAY_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>": continue
 		if not config.ENABLE_STYLE_EDITOR:
@@ -1866,6 +1871,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /config |
 	# |---------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_CONFIG_COMMAND:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}config has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}config has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 		# No arguments dumps a list of all editable config values
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==1:

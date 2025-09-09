@@ -3030,6 +3030,28 @@ class SpellTextEdit(QPlainTextEdit):
 			if self.toPlainText().strip()=='': return
 
 			if config.ENABLE_AUTOCOMPLETE:
+
+				if config.ENABLE_CONFIG_COMMAND:
+					if config.AUTOCOMPLETE_SETTINGS:
+						if config.ISSUE_COMMAND_SYMBOL+'config' in self.text():
+							cursor.select(QTextCursor.WordUnderCursor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
+
+								settings = config.build_settings()
+								settings_list = []
+								for s in settings:
+									if s=="timestamp_format": continue
+									if s=="log_absolutely_all_messages_of_any_type": continue
+									if not type(settings[s]) is list: settings_list.append(s)
+
+								for setting in settings_list:
+									if fnmatch.fnmatch(setting,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{setting}")
+										cursor.endEditBlock()
+										return
 				
 				if config.AUTOCOMPLETE_SCRIPTS:
 					# Auto-complete script filenames
