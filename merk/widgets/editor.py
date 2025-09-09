@@ -580,17 +580,63 @@ class Window(QMainWindow):
 		e = textSeparator(self,"Script Commands")
 		self.commandMenu.addAction(e)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Multiline comment",self)
+		self.winCommands = self.commandMenu.addMenu(QIcon(WINDOW_ICON),"Subwindows")
+
+		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
+		entry.triggered.connect(self.insertMax)
+		self.winCommands.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
+		entry.triggered.connect(self.insertMin)
+		self.winCommands.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
+		entry.triggered.connect(self.insertShow)
+		self.winCommands.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Hide window",self)
+		entry.triggered.connect(self.insertHide)
+		self.winCommands.addAction(entry)
+
+		entry = QAction(QIcon(NEXT_ICON),"Next subwindow",self)
+		entry.triggered.connect(self.insertNext)
+		self.winCommands.addAction(entry)
+
+		entry = QAction(QIcon(BACK_ICON),"Previous subwindow",self)
+		entry.triggered.connect(self.insertPrevious)
+		self.winCommands.addAction(entry)
+
+		self.scriptCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Script control")
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
+		entry.triggered.connect(self.insertPause)
+		self.scriptCommands.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Set usage",self)
+		entry.triggered.connect(self.insertUsage)
+		self.scriptCommands.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Restrict script",self)
+		entry.triggered.connect(self.insertRestrict)
+		self.scriptCommands.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
+		entry.triggered.connect(self.insertScript)
+		self.scriptCommands.addAction(entry)
+
+		entry = QAction(QIcon(SCRIPT_ICON),"End script",self)
+		entry.triggered.connect(self.insertEnd)
+		self.scriptCommands.addAction(entry)
+
+		self.commentCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Comments")
+
+		entry = QAction(QIcon(SCRIPT_ICON),"Insert multiline comment",self)
 		entry.triggered.connect(self.insertMLComment)
-		self.commandMenu.addAction(entry)
+		self.commentCommands.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Comment",self)
+		entry = QAction(QIcon(SCRIPT_ICON),"Insert comment",self)
 		entry.triggered.connect(self.insertComment)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
-		entry.triggered.connect(self.insertAlias)
-		self.commandMenu.addAction(entry)
+		self.commentCommands.addAction(entry)
 
 		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
 		entry.triggered.connect(self.insertConnect)
@@ -604,61 +650,32 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertBox)
 		self.commandMenu.addAction(entry)
 
+		if config.ENABLE_ALIASES:
+			entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
+			entry.triggered.connect(self.insertAlias)
+			self.commandMenu.addAction(entry)
+
 		entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
 		entry.triggered.connect(self.insertContext)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
-		entry.triggered.connect(self.insertPause)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Set usage",self)
-		entry.triggered.connect(self.insertUsage)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Restrict script",self)
-		entry.triggered.connect(self.insertRestrict)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
-		entry.triggered.connect(self.insertMax)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
-		entry.triggered.connect(self.insertMin)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(NEXT_ICON),"Next subwindow",self)
-		entry.triggered.connect(self.insertNext)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(BACK_ICON),"Previous subwindow",self)
-		entry.triggered.connect(self.insertPrevious)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
-		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(NOTIFICATION_ICON),"Play a sound",self)
 		entry.triggered.connect(self.insertPlay)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
-		entry.triggered.connect(self.insertShell)
-		self.commandMenu.addAction(entry)
+		if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
+			entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
+			entry.triggered.connect(self.insertShell)
+			self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(APPLICATION_ICON),"Exit application",self)
 		entry.triggered.connect(self.insertExit)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"End script",self)
-		entry.triggered.connect(self.insertEnd)
-		self.commandMenu.addAction(entry)
+		if config.ENABLE_ALIASES:
+			self.aliasMenu = self.menubar.addMenu("Aliases")
 
-		self.aliasMenu = self.menubar.addMenu("Aliases")
-
-		self.buildAliasMenu(self.aliasMenu)
+			self.buildAliasMenu(self.aliasMenu)
 
 		self.runMenu = self.menubar.addMenu("Run")
 
@@ -978,6 +995,22 @@ class Window(QMainWindow):
 
 	def insertPrevious(self):
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"previous\n")
+		self.updateApplicationTitle()
+
+	def insertHide(self):
+		e = SetWindowDialog("Hide",self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"hide "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertShow(self):
+		e = SetWindowDialog("Show",self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"show "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertMin(self):
