@@ -620,10 +620,6 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertRestrict)
 		self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Execute script",self)
-		entry.triggered.connect(self.insertScript)
-		self.scriptCommands.addAction(entry)
-
 		entry = QAction(QIcon(SCRIPT_ICON),"End script",self)
 		entry.triggered.connect(self.insertEnd)
 		self.scriptCommands.addAction(entry)
@@ -638,16 +634,18 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertComment)
 		self.commentCommands.addAction(entry)
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
-		entry.triggered.connect(self.insertConnect)
-		self.commandMenu.addAction(entry)
+		self.displayCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Display")
 
 		entry = QAction(QIcon(EDIT_ICON),"Print to window",self)
 		entry.triggered.connect(self.insertWrite)
-		self.commandMenu.addAction(entry)
+		self.displayCommands.addAction(entry)
 
 		entry = QAction(QIcon(WINDOW_ICON),"Display message box",self)
 		entry.triggered.connect(self.insertBox)
+		self.displayCommands.addAction(entry)
+
+		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
+		entry.triggered.connect(self.insertConnect)
 		self.commandMenu.addAction(entry)
 
 		if config.ENABLE_ALIASES:
@@ -663,12 +661,20 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertPlay)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(EXE_ICON),"Execute script",self)
+		entry.triggered.connect(self.insertScript)
+		self.commandMenu.addAction(entry)
+
 		if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
 			entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
 			entry.triggered.connect(self.insertShell)
 			self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(APPLICATION_ICON),"Exit application",self)
+		entry = QAction(QIcon(EXE_ICON),"Delay command",self)
+		entry.triggered.connect(self.insertDelay)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(APPLICATION_ICON),f"Exit {APPLICATION_NAME}",self)
 		entry.triggered.connect(self.insertExit)
 		self.commandMenu.addAction(entry)
 
@@ -687,96 +693,106 @@ class Window(QMainWindow):
 
 	def buildAliasMenu(self,menu):
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Host",self)
-		entry.triggered.connect(lambda state,u="$_HOST": self.insertIntoEditor(u))
-		menu.addAction(entry)
+		sub = menu.addMenu(QIcon(PRIVATE_ICON),"User information")
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Filename",self)
-		entry.triggered.connect(lambda state,u="$_FILE": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"User mode",self)
-		entry.triggered.connect(lambda state,u="$_MODE": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Nickname",self)
+		entry = QAction("Nickname",self)
 		entry.triggered.connect(lambda state,u="$_NICKNAME": self.insertIntoEditor(u))
-		menu.addAction(entry)
+		sub.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Port",self)
-		entry.triggered.connect(lambda state,u="$_PORT": self.insertIntoEditor(u))
-		menu.addAction(entry)
+		entry = QAction("Username",self)
+		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertIntoEditor(u))
+		sub.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Present in channel",self)
-		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Realname",self)
+		entry = QAction("Realname",self)
 		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertIntoEditor(u))
-		menu.addAction(entry)
+		sub.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Script name",self)
+		sub = menu.addMenu(QIcon(CONNECT_ICON),"Current server")
+
+		entry = QAction("Host",self)
+		entry.triggered.connect(lambda state,u="$_HOST": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Server",self)
+		entry.triggered.connect(lambda state,u="$_SERVER": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Port",self)
+		entry.triggered.connect(lambda state,u="$_PORT": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Uptime",self)
+		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("User mode",self)
+		entry.triggered.connect(lambda state,u="$_MODE": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		sub = menu.addMenu(QIcon(CHANNEL_ICON),"Current channel")
+
+		entry = QAction("User status",self)
+		entry.triggered.connect(lambda state,u="$_STATUS": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Topic",self)
+		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Present in channel",self)
+		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		sub = menu.addMenu(QIcon(TIMESTAMP_ICON),"Date and time")
+
+		entry = QAction("Date",self)
+		entry.triggered.connect(lambda state,u="$_DATE": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("European date",self)
+		entry.triggered.connect(lambda state,u="$_EDATE": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Unix epoch",self)
+		entry.triggered.connect(lambda state,u="$_EPOCH": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Timestamp",self)
+		entry.triggered.connect(lambda state,u="$_TIMESTAMP": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		sub = menu.addMenu(QIcon(APPLICATION_ICON),"Client")
+
+		entry = QAction("Name",self)
+		entry.triggered.connect(lambda state,u="$_CLIENT": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Version",self)
+		entry.triggered.connect(lambda state,u="$_VERSION": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Source code URL",self)
+		entry.triggered.connect(lambda state,u="$_SOURCE": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Uptime",self)
+		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Script name",self)
 		entry.triggered.connect(lambda state,u="$_SCRIPT": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Server",self)
-		entry.triggered.connect(lambda state,u="$_SERVER": self.insertIntoEditor(u))
+		entry = QAction("Filename",self)
+		entry.triggered.connect(lambda state,u="$_FILE": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"User status",self)
-		entry.triggered.connect(lambda state,u="$_STATUS": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Channel topic",self)
-		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Uptime",self)
-		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Username",self)
-		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Current window",self)
+		entry = QAction("Current window",self)
 		entry.triggered.connect(lambda state,u="$_WINDOW": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Window type",self)
+		entry = QAction("Window type",self)
 		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Date",self)
-		entry.triggered.connect(lambda state,u="$_DATE": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"European date",self)
-		entry.triggered.connect(lambda state,u="$_EDATE": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Unix epoch",self)
-		entry.triggered.connect(lambda state,u="$_EPOCH": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client name",self)
-		entry.triggered.connect(lambda state,u="$_CLIENT": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client version",self)
-		entry.triggered.connect(lambda state,u="$_VERSION": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client source code URL",self)
-		entry.triggered.connect(lambda state,u="$_SOURCE": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Client uptime",self)
-		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertIntoEditor(u))
-		menu.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Timestamp",self)
-		entry.triggered.connect(lambda state,u="$_TIMESTAMP": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
 	def insertContext(self):
@@ -1088,6 +1104,21 @@ class Window(QMainWindow):
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"alias "+aname+" "+avalue+"\n")
 		self.updateApplicationTitle()
+
+	def insertDelay(self):
+		x = SetDelay(self)
+		e = x.get_alias_information(self)
+
+		if not e: return
+
+		aname = str(e[0])
+		avalue = str(e[1])
+
+		if len(aname)==0: return
+		if len(avalue)>0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"delay "+aname+" "+avalue+"\n")
+		else:
+			return
 
 	def insertUsage(self):
 		x = SetUsage(self)

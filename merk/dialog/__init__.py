@@ -52,6 +52,7 @@ from .find import Dialog as Find
 from .shell import Dialog as SetShell
 from .set_usage import Dialog as SetUsage
 from .restrict import Dialog as SetRestrict
+from .set_delay import Dialog as SetDelay
 
 def SetKeyDialog(parent):
 	x = SetKey(parent)
