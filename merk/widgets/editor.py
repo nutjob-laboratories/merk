@@ -590,6 +590,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertMin)
 		self.winCommands.addAction(entry)
 
+		entry = QAction(QIcon(WINDOW_ICON),"Restore window",self)
+		entry.triggered.connect(self.insertRestore)
+		self.winCommands.addAction(entry)
+
 		entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
 		entry.triggered.connect(self.insertShow)
 		self.winCommands.addAction(entry)
@@ -672,6 +676,10 @@ class Window(QMainWindow):
 
 		entry = QAction(QIcon(EXE_ICON),"Delay command",self)
 		entry.triggered.connect(self.insertDelay)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
+		entry.triggered.connect(self.insertReclaim)
 		self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(APPLICATION_ICON),f"Exit {APPLICATION_NAME}",self)
@@ -1016,7 +1024,8 @@ class Window(QMainWindow):
 	def insertHide(self):
 		e = SetWindowDialog("Hide",self)
 
-		if not e: return
+		if not e:
+			return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"hide "+str(e)+"\n")
 		self.updateApplicationTitle()
@@ -1024,15 +1033,26 @@ class Window(QMainWindow):
 	def insertShow(self):
 		e = SetWindowDialog("Show",self)
 
-		if not e: return
+		if not e:
+			return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"show "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertRestore(self):
+		e = SetWindowDialog("Restore",self)
+
+		if not e:
+			return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"restore "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertMin(self):
 		e = SetWindowDialog("Minimize",self)
 
-		if not e: return
+		if not e:
+			return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"minimize "+str(e)+"\n")
 		self.updateApplicationTitle()
@@ -1040,7 +1060,8 @@ class Window(QMainWindow):
 	def insertMax(self):
 		e = SetWindowDialog("Maximize",self)
 
-		if not e: return
+		if not e:
+			return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"maximize "+str(e)+"\n")
 		self.updateApplicationTitle()
@@ -1105,6 +1126,17 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"alias "+aname+" "+avalue+"\n")
 		self.updateApplicationTitle()
 
+	def insertReclaim(self):
+		x = SetReclaim(self)
+		e = x.get_nick_information(self)
+
+		if not e: return
+
+		if len(e)==0: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"reclaim "+e+"\n")
+		self.updateApplicationTitle()
+
 	def insertDelay(self):
 		x = SetDelay(self)
 		e = x.get_alias_information(self)
@@ -1117,6 +1149,7 @@ class Window(QMainWindow):
 		if len(aname)==0: return
 		if len(avalue)>0:
 			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"delay "+aname+" "+avalue+"\n")
+			self.updateApplicationTitle()
 		else:
 			return
 
