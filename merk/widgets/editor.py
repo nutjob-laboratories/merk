@@ -105,6 +105,24 @@ class Window(QMainWindow):
 		entry = QAction(QIcon(PRIVATE_ICON),"Realname",self)
 		entry.triggered.connect(lambda state,u=f"{user.REALNAME}": self.insertIntoEditor(u))
 		smenu.addAction(entry)
+		
+		# smenu = menu.addMenu(QIcon(SETTINGS_ICON),"Config Values")
+		# settings = config.build_settings()
+		# for s in settings:
+		# 	if s=="timestamp_format": continue
+		# 	if s=="log_absolutely_all_messages_of_any_type": continue
+		# 	if not type(settings[s]) is list:
+		# 		if type(settings[s]).__name__=='bool':
+		# 			dtype = "boolean"
+		# 		elif type(settings[s]).__name__=='int':
+		# 			dtype = "integer"
+		# 		elif type(settings[s]).__name__=='str':
+		# 			dtype = "string"
+		# 		else:
+		# 			dtype = "unknown"
+		# 		entry = QAction(QIcon(SCRIPT_ICON),f"{s} ({dtype})",self)
+		# 		entry.triggered.connect(lambda state,u=f"{s}": self.insertIntoEditor(u))
+		# 		smenu.addAction(entry)
 
 		servers = self.parent.getAllServerWindows()
 		if len(servers)>0:
@@ -115,18 +133,28 @@ class Window(QMainWindow):
 				entry.triggered.connect(lambda state,u=f"{c.name}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
+				entry = QAction(QIcon(CONNECT_ICON),f"{c.client.server}:{c.client.port}",self)
+				entry.triggered.connect(lambda state,u=f"{c.client.server}:{c.client.port}": self.insertIntoEditor(u))
+				smenu.addAction(entry)
+
+				smenu.addSeparator()
+
 		channels = self.parent.getAllChannelWindows()
 		if len(channels)>0:
 			smenu = menu.addMenu(QIcon(CHANNEL_ICON),"Insert channel name")
+			clist = []
 			for window in channels:
 				c = window.widget()
-				entry = QAction(QIcon(CHANNEL_ICON),c.name,self)
-				entry.triggered.connect(lambda state,u=f"{c.name}": self.insertIntoEditor(u))
+				clist.append(c.name)
+
+			clist = list(set(clist))
+			for c in clist:
+				entry = QAction(QIcon(CHANNEL_ICON),c,self)
+				entry.triggered.connect(lambda state,u=f"{c}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
 		selected_text = self.editor.textCursor().selectedText()
 		commented.setEnabled(bool(selected_text))
-
 
 		menu.exec_(self.editor.mapToGlobal(pos))
 
