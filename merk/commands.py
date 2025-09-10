@@ -81,7 +81,8 @@ def add_halt(script_id):
 	HALT_SCRIPT.append(script_id)
 
 def is_halting(script_id):
-	if script_id in HALT_SCRIPT: return True
+	if config.HALT_SCRIPT_EXECUTION_ON_ERROR:
+		if script_id in HALT_SCRIPT: return True
 	return False
 
 def remove_halt(script_id):
