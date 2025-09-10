@@ -461,8 +461,16 @@ class Dialog(QDialog):
 	def changedScripting(self,state):
 		if self.enableScripts.isChecked():
 			self.showErrors.setEnabled(True)
+			self.restrictError.setEnabled(True)
+			self.haltError.setEnabled(True)
+			self.enableInsert.setEnabled(True)
+			self.requireArgs.setEnabled(True)
 		else:
 			self.showErrors.setEnabled(False)
+			self.restrictError.setEnabled(False)
+			self.haltError.setEnabled(False)
+			self.enableInsert.setEnabled(False)
+			self.requireArgs.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -3547,7 +3555,7 @@ class Dialog(QDialog):
 		if config.HALT_SCRIPT_EXECUTION_ON_ERROR: self.haltError.setChecked(True)
 		self.haltError.stateChanged.connect(self.changedSetting)
 
-		self.requireArgs = QCheckBox(f"Require the exact argument\ncount for {config.ISSUE_COMMAND_SYMBOL}usage command",self)
+		self.requireArgs = QCheckBox(f"Require the exact argument\ncount for usage command",self)
 		if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS: self.requireArgs.setChecked(True)
 		self.requireArgs.stateChanged.connect(self.changedSetting)
 		self.requireArgs.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -3574,6 +3582,18 @@ class Dialog(QDialog):
 			self.alias_symbol.setEnabled(False)
 			self.alias_symbol_label.setEnabled(False)
 
+		self.restrictError = QCheckBox(f"Display error for violations of\nonly and restrict commands",self)
+		if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION: self.restrictError.setChecked(True)
+		self.restrictError.stateChanged.connect(self.changedSetting)
+		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			self.restrictError.setEnabled(False)
+			self.haltError.setEnabled(False)
+			self.enableInsert.setEnabled(False)
+			self.showErrors.setEnabled(False)
+			self.requireArgs.setEnabled(False)
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
@@ -3588,6 +3608,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command settings</b>"))
 		scriptingLayout.addWidget(self.requireArgs)
 		scriptingLayout.addWidget(self.promptScript)
+		scriptingLayout.addWidget(self.restrictError)
 		scriptingLayout.addWidget(self.enableShell)
 		scriptingLayout.addWidget(self.enableInsert)
 		scriptingLayout.addWidget(self.enableDelay)
@@ -4215,6 +4236,7 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_SETTINGS = self.autocompleteSettings.isChecked()
 		config.ENABLE_CONFIG_COMMAND = self.enableConfig.isChecked()
 		config.ENABLE_SHELL_COMMAND = self.enableShell.isChecked()
+		config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = self.restrictError.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

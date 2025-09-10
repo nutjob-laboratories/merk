@@ -105,24 +105,6 @@ class Window(QMainWindow):
 		entry = QAction(QIcon(PRIVATE_ICON),"Realname",self)
 		entry.triggered.connect(lambda state,u=f"{user.REALNAME}": self.insertIntoEditor(u))
 		smenu.addAction(entry)
-		
-		# smenu = menu.addMenu(QIcon(SETTINGS_ICON),"Config Values")
-		# settings = config.build_settings()
-		# for s in settings:
-		# 	if s=="timestamp_format": continue
-		# 	if s=="log_absolutely_all_messages_of_any_type": continue
-		# 	if not type(settings[s]) is list:
-		# 		if type(settings[s]).__name__=='bool':
-		# 			dtype = "boolean"
-		# 		elif type(settings[s]).__name__=='int':
-		# 			dtype = "integer"
-		# 		elif type(settings[s]).__name__=='str':
-		# 			dtype = "string"
-		# 		else:
-		# 			dtype = "unknown"
-		# 		entry = QAction(QIcon(SCRIPT_ICON),f"{s} ({dtype})",self)
-		# 		entry.triggered.connect(lambda state,u=f"{s}": self.insertIntoEditor(u))
-		# 		smenu.addAction(entry)
 
 		servers = self.parent.getAllServerWindows()
 		if len(servers)>0:

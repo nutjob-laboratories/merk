@@ -274,9 +274,11 @@ SYNTAX_SCRIPT_COLOR = "darkGreen"
 SYNTAX_SCRIPT_STYLE = "bold"
 AUTOCOMPLETE_SETTINGS = True
 ENABLE_CONFIG_COMMAND = True
+DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = True
 
 def build_settings():
 	settings = {
+		"display_error_message_for_restrict_and_only_violation": DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION,
 		"enable_config_command": ENABLE_CONFIG_COMMAND,
 		"autocomplete_settings": AUTOCOMPLETE_SETTINGS,
 		"syntax_script_only_color": SYNTAX_SCRIPT_COLOR,
@@ -517,6 +519,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "display_error_message_for_restrict_and_only_violation" in settings:
+		settings["display_error_message_for_restrict_and_only_violation"] = DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION
 	if not "enable_config_command" in settings:
 		settings["enable_config_command"] = ENABLE_CONFIG_COMMAND
 	if not "autocomplete_settings" in settings:
@@ -600,9 +604,9 @@ def patch_settings(settings):
 	if not "spellcheck_underline_color" in settings:
 		settings["spellcheck_underline_color"] = SPELLCHECK_UNDERLINE_COLOR
 	if not "spellcheck_in_italics" in settings:
-			settings["spellcheck_in_italics"] = SHOW_MISSPELLED_WORDS_IN_ITALICS
+		settings["spellcheck_in_italics"] = SHOW_MISSPELLED_WORDS_IN_ITALICS
 	if not "spellcheck_in_bold" in settings:
-			settings["spellcheck_in_bold"] = SHOW_MISSPELLED_WORDS_IN_BOLD
+		settings["spellcheck_in_bold"] = SHOW_MISSPELLED_WORDS_IN_BOLD
 	if not "show_spellcheck_settings_in_menus" in settings:
 		settings["show_spellcheck_settings_in_menus"] = ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS
 	if not "show_user_count_display" in settings:
@@ -680,7 +684,7 @@ def patch_settings(settings):
 	if not "autoaway" in settings:
 		settings["autoaway"] = USE_AUTOAWAY
 	if not "autoaway_time" in settings:
-			settings["autoaway_time"] = AUTOAWAY_TIME
+		settings["autoaway_time"] = AUTOAWAY_TIME
 	if not "default_away_message" in settings:
 		settings["default_away_message"] = DEFAULT_AWAY_MESSAGE
 	if not "show_away_status_in_nick_display" in settings:
@@ -694,11 +698,11 @@ def patch_settings(settings):
 	if not "syntax_nickname_color" in settings:
 		settings["syntax_nickname_color"] = SYNTAX_NICKNAME_COLOR
 	if not "syntax_nickname_style" in settings:
-			settings["syntax_nickname_style"] = SYNTAX_NICKNAME_STYLE
+		settings["syntax_nickname_style"] = SYNTAX_NICKNAME_STYLE
 	if not "syntax_emoji_color" in settings:
-			settings["syntax_emoji_color"] = SYNTAX_EMOJI_COLOR
+		settings["syntax_emoji_color"] = SYNTAX_EMOJI_COLOR
 	if not "syntax_emoji_style" in settings:
-			settings["syntax_emoji_style"] = SYNTAX_EMOJI_STYLE
+		settings["syntax_emoji_style"] = SYNTAX_EMOJI_STYLE
 	if not "apply_syntax_highlighting_to_input_widget" in settings:
 		settings["apply_syntax_highlighting_to_input_widget"] = APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET
 	if not "do_not_show_application_name_in_title" in settings:
@@ -1227,6 +1231,7 @@ def load_settings(filename):
 	global SYNTAX_SCRIPT_STYLE
 	global AUTOCOMPLETE_SETTINGS
 	global ENABLE_CONFIG_COMMAND
+	global DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1236,6 +1241,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = settings["display_error_message_for_restrict_and_only_violation"]
 		ENABLE_CONFIG_COMMAND = settings["enable_config_command"]
 		AUTOCOMPLETE_SETTINGS = settings["autocomplete_settings"]
 		SYNTAX_SCRIPT_COLOR = settings["syntax_script_only_color"]

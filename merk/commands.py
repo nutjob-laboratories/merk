@@ -1575,7 +1575,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-
 	# |-------|
 	# | /ctcp |
 	# |-------|
@@ -3879,7 +3878,8 @@ class ScriptThread(QThread):
 						if e.lower()==self.window.name.lower(): valid = True
 
 					if valid==False:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script cannot be ran in {self.window.name}"])
+						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script cannot be ran in {self.window.name}"])
 						no_errors = False
 
 				elif tokens[0].lower()=='only' and len(tokens)==1:
@@ -3896,15 +3896,18 @@ class ScriptThread(QThread):
 
 					if arg.lower()=='server':
 						if self.window.window_type!=SERVER_WINDOW:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in server windows"])
+							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in server windows"])
 							no_errors = False
 					elif arg.lower()=='channel':
 						if self.window.window_type!=CHANNEL_WINDOW:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in channel windows"])
+							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in channel windows"])
 							no_errors = False
 					elif arg.lower()=='private':
 						if self.window.window_type!=PRIVATE_WINDOW:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in private chat windows"])
+							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be ran in private chat windows"])
 							no_errors = False
 					else:
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Unrecognized restriction: \"{arg}\""])
@@ -3938,7 +3941,8 @@ class ScriptThread(QThread):
 						if self.window.window_type==PRIVATE_WINDOW: reason = "private chat"
 						if self.window.window_type==SERVER_WINDOW: reason = "server"
 						if self.window.window_type==CHANNEL_WINDOW: reason = "channel"
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script is restricted from running in {reason} windows"])
+						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script is restricted from running in {reason} windows"])
 						no_errors = False
 
 				elif tokens[0].lower()=='restrict' and len(tokens)==1:
