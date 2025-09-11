@@ -401,6 +401,8 @@ def interpolateAliases(text):
 
 def buildTemporaryAliases(gui,window):
 
+	if not config.ENABLE_ALIASES: return
+
 	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
 
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
@@ -719,9 +721,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 		if script_id!=None:
 			if is_halting(script_id): return True
 
-	# |---------|
-	# | /insert |
-	# |---------|
+	# |--------|
+	# | insert |
+	# |--------|
 	if not is_script:
 		if len(tokens)>=1:
 			if tokens[0].lower()=='insert':
@@ -729,9 +731,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	# |--------|
-	# | /usage |
-	# |--------|
+	# |-------|
+	# | usage |
+	# |-------|
 	if not is_script:
 		if len(tokens)>=1:
 			if tokens[0].lower()=='usage':
@@ -739,9 +741,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	# |-------|
-	# | /only |
-	# |-------|
+	# |------|
+	# | only |
+	# |------|
 	if not is_script:
 		if len(tokens)>=1:
 			if tokens[0].lower()=='only':
@@ -749,9 +751,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	# |-----------|
-	# | /restrict |
-	# |-----------|
+	# |----------|
+	# | restrict |
+	# |----------|
 	if not is_script:
 		if len(tokens)>=1:
 			if tokens[0].lower()=='restrict':
@@ -759,9 +761,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	# |------|
-	# | /end |
-	# |------|
+	# |-----|
+	# | end |
+	# |-----|
 	if not is_script:
 		if len(tokens)>=1:
 			if tokens[0].lower()=='end':
@@ -769,9 +771,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	# |----------|
-	# | /context |
-	# |----------|
+	# |---------|
+	# | context |
+	# |---------|
 	if not is_script:
 		if len(tokens)>=1:
 			if tokens[0].lower()=='context':
@@ -779,9 +781,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-	# |-------|
-	# | /wait |
-	# |-------|
+	# |------|
+	# | wait |
+	# |------|
 	if not is_script:
 		if len(tokens)>=1:
 			if tokens[0].lower()=='wait':
@@ -4213,9 +4215,10 @@ class ScriptThread(QThread):
 								continue
 
 					# if len(tokens)==2:
-					# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'goto':
+					# 	if tokens[0].lower()=='goto':
 					# 		target = tokens[1]
 					# 		index = int(target) - 2
+					# 		script_only_command = True
 					# 		continue
 
 					self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
