@@ -1669,124 +1669,6 @@ class Dialog(QDialog):
 
 		self.appearancePage.setLayout(appearanceLayout)
 
-		# Subwindows
-
-		self.subwindowPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Subwindows")
-		entry.widget = self.subwindowPage
-		entry.setIcon(QIcon(SUBWINDOW_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.subwindowPage)
-
-		self.showInfo = QCheckBox("Show nickname display on all chat\nwindows",self)
-		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
-		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
-		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showInputMenu = QCheckBox("Show input menu button",self)
-		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
-		self.showInputMenu.stateChanged.connect(self.changedSetting)
-
-		self.showContext = QCheckBox("Context menus on channel, private,\nand server text displays",self)
-		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
-		self.showContext.stateChanged.connect(self.changedSetting)
-		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showStatusServer = QCheckBox("Server windows",self)
-		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
-		self.showStatusServer.stateChanged.connect(self.changedSetting)
-
-		self.showStatusChat = QCheckBox("Chat windows",self)
-		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
-		self.showStatusChat.stateChanged.connect(self.changedSetting)
-
-		self.displayServNicks = QCheckBox("Show nickname display on server\nwindows",self)
-		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
-		self.displayServNicks.stateChanged.connect(self.changedSetting)
-		self.displayServNicks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showServToolbar = QCheckBox("Show toolbar on server windows",self)
-		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
-		self.showServToolbar.stateChanged.connect(self.changedSetting)
-
-		self.showServRefresh = QCheckBox("Show channel list refresh button\non server window toolbars and menus",self)
-		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
-		self.showServRefresh.stateChanged.connect(self.changedSetting)
-
-		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showServList = QCheckBox("Show channel list button\non server window toolbars and menus",self)
-		if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS: self.showServList.setChecked(True)
-		self.showServList.stateChanged.connect(self.changedSetting)
-
-		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showStatusList = QCheckBox("Channel lists",self)
-		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
-		self.showStatusList.stateChanged.connect(self.changedSetting)
-
-		self.showChatInTitle = QCheckBox("Show active subwindow information\nin application title",self)
-		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
-		self.showChatInTitle.stateChanged.connect(self.changedSetting)
-
-		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-	
-		self.showTopicInTitle = QCheckBox("Show current channel topic in\napplication title",self)
-		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
-		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
-		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showStatusEditor = QCheckBox("Editor windows",self)
-		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
-		self.showStatusEditor.stateChanged.connect(self.changedSetting)
-
-		statusLayout = QFormLayout()
-		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
-		statusLayout.addRow(self.showStatusList,self.showStatusEditor)
-
-		self.enableDisconnect = QCheckBox("Closing server window disconnects\nfrom server",self)
-		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
-		self.enableDisconnect.stateChanged.connect(self.changedSettingDisconnect)
-		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.hideServer = QCheckBox("Close server windows when registration\nis complete",self)
-		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
-		self.hideServer.stateChanged.connect(self.changedSetting)
-		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
-			self.hideServer.setEnabled(False)
-
-		self.autoMaxSubwindow = QCheckBox("Maximize new subwindows automatically",self)
-		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
-		self.autoMaxSubwindow.stateChanged.connect(self.changedSetting)
-
-		subwindowLayout = QVBoxLayout()
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
-		subwindowLayout.addWidget(self.showServToolbar)
-		subwindowLayout.addWidget(self.showServList)
-		subwindowLayout.addWidget(self.showServRefresh)
-		subwindowLayout.addWidget(self.displayServNicks)
-		subwindowLayout.addWidget(self.enableDisconnect)
-		subwindowLayout.addWidget(self.hideServer)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat windows</b>"))
-		subwindowLayout.addWidget(self.showInfo)
-		subwindowLayout.addWidget(self.showTopicInTitle)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>status bars</b>"))
-		subwindowLayout.addLayout(statusLayout)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		subwindowLayout.addWidget(self.showContext)
-		subwindowLayout.addWidget(self.showInputMenu)
-		subwindowLayout.addWidget(self.showChatInTitle)
-		subwindowLayout.addWidget(self.autoMaxSubwindow)
-		subwindowLayout.addStretch()
-
-		self.subwindowPage.setLayout(subwindowLayout)
-
 		# User page
 
 		self.userPage = QWidget()
@@ -2278,6 +2160,274 @@ class Dialog(QDialog):
 
 		self.windowbarPage.setLayout(windowbarLayout)
 
+		# Subwindows
+
+		self.subwindowPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Subwindows")
+		entry.widget = self.subwindowPage
+		entry.setIcon(QIcon(SUBWINDOW_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.subwindowPage)
+
+		self.showInfo = QCheckBox("Show nickname display on all chat\nwindows",self)
+		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
+		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
+		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showInputMenu = QCheckBox("Show input menu button",self)
+		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
+		self.showInputMenu.stateChanged.connect(self.changedSetting)
+
+		self.showContext = QCheckBox("Context menus on channel, private,\nand server text displays",self)
+		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
+		self.showContext.stateChanged.connect(self.changedSetting)
+		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showStatusServer = QCheckBox("Server windows",self)
+		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
+		self.showStatusServer.stateChanged.connect(self.changedSetting)
+
+		self.showStatusChat = QCheckBox("Chat windows",self)
+		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
+		self.showStatusChat.stateChanged.connect(self.changedSetting)
+
+		self.displayServNicks = QCheckBox("Show nickname display on server\nwindows",self)
+		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
+		self.displayServNicks.stateChanged.connect(self.changedSetting)
+		self.displayServNicks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showServToolbar = QCheckBox("Show toolbar on server windows",self)
+		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
+		self.showServToolbar.stateChanged.connect(self.changedSetting)
+
+		self.showServRefresh = QCheckBox("Show channel list refresh button\non server window toolbars and menus",self)
+		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
+		self.showServRefresh.stateChanged.connect(self.changedSetting)
+
+		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showServList = QCheckBox("Show channel list button\non server window toolbars and menus",self)
+		if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS: self.showServList.setChecked(True)
+		self.showServList.stateChanged.connect(self.changedSetting)
+
+		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showStatusList = QCheckBox("Channel lists",self)
+		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
+		self.showStatusList.stateChanged.connect(self.changedSetting)
+
+		self.showChatInTitle = QCheckBox("Show active subwindow information\nin application title",self)
+		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
+		self.showChatInTitle.stateChanged.connect(self.changedSetting)
+
+		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+	
+		self.showTopicInTitle = QCheckBox("Show current channel topic in\napplication title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
+		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
+		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showStatusEditor = QCheckBox("Editor windows",self)
+		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
+		self.showStatusEditor.stateChanged.connect(self.changedSetting)
+
+		statusLayout = QFormLayout()
+		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
+		statusLayout.addRow(self.showStatusList,self.showStatusEditor)
+
+		self.enableDisconnect = QCheckBox("Closing server window disconnects\nfrom server",self)
+		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
+		self.enableDisconnect.stateChanged.connect(self.changedSettingDisconnect)
+		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.hideServer = QCheckBox("Close server windows when registration\nis complete",self)
+		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
+		self.hideServer.stateChanged.connect(self.changedSetting)
+		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
+			self.hideServer.setEnabled(False)
+
+		self.autoMaxSubwindow = QCheckBox("Maximize new subwindows automatically",self)
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
+		self.autoMaxSubwindow.stateChanged.connect(self.changedSetting)
+
+		subwindowLayout = QVBoxLayout()
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
+		subwindowLayout.addWidget(self.showServToolbar)
+		subwindowLayout.addWidget(self.showServList)
+		subwindowLayout.addWidget(self.showServRefresh)
+		subwindowLayout.addWidget(self.displayServNicks)
+		subwindowLayout.addWidget(self.enableDisconnect)
+		subwindowLayout.addWidget(self.hideServer)
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat windows</b>"))
+		subwindowLayout.addWidget(self.showInfo)
+		subwindowLayout.addWidget(self.showTopicInTitle)
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>status bars</b>"))
+		subwindowLayout.addLayout(statusLayout)
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		subwindowLayout.addWidget(self.showContext)
+		subwindowLayout.addWidget(self.showInputMenu)
+		subwindowLayout.addWidget(self.showChatInTitle)
+		subwindowLayout.addWidget(self.autoMaxSubwindow)
+		subwindowLayout.addStretch()
+
+		self.subwindowPage.setLayout(subwindowLayout)
+
+		# Channels
+
+		self.channelInfoPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Channels")
+		entry.widget = self.channelInfoPage
+		entry.setIcon(QIcon(CHANNEL_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.channelInfoPage)
+
+		self.topicDisplay = QCheckBox("Show channel information display",self)
+		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
+		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
+
+		self.topicBold = QCheckBox("Show topic in bold",self)
+		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
+		self.topicBold.stateChanged.connect(self.titleChange)
+
+		self.channelName = QCheckBox("Channel name/modes",self)
+		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
+		self.channelName.stateChanged.connect(self.topicChange)
+
+		self.showBanlist = QCheckBox("Banlist button",self)
+		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
+		self.showBanlist.stateChanged.connect(self.topicChange)
+
+		self.showChanMenu = QCheckBox("Set modes button",self)
+		if config.SHOW_CHANNEL_MENU: self.showChanMenu.setChecked(True)
+		self.showChanMenu.stateChanged.connect(self.topicChange)
+
+		self.channelCount = QCheckBox("User count",self)
+		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
+		self.channelCount.stateChanged.connect(self.topicChange)
+
+		if not config.SHOW_CHANNEL_TOPIC:
+			self.topicBold.setEnabled(False)
+			self.channelName.setEnabled(False)
+			self.showBanlist.setEnabled(False)
+			self.showChanMenu.setEnabled(False)
+			self.channelCount.setEnabled(False)
+
+		self.channelDescription = QLabel("""
+			<small>
+			The <b>channel information display</b> is a bar shown at the top of
+			every channel window that displays the channel <b>name</b>, any <b>modes</b> set
+			on the channel, the channel
+			<b>topic</b>, and the channel <b>banlist</b>. The channel <b>topic</b> can be changed
+			or edited with it (if you have the right permissions) by clicking
+			on the <b>topic</b> and editing it. Here, the
+			<b>channel information display</b> can be customized or turned off.
+			</small>
+			""")
+		self.channelDescription.setWordWrap(True)
+		self.channelDescription.setAlignment(Qt.AlignJustify)
+
+		self.topicTitleDisplay = QCheckBox("Show channel topic in subwindow title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
+		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
+
+		self.showUserlistLeft = QCheckBox("Display on left",self)
+		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
+		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
+
+		self.plainUserLists = QCheckBox("Text only",self)
+		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
+		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.showUserlists = QCheckBox("Show user lists",self)
+		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
+		self.showUserlists.stateChanged.connect(self.changedUserlistVisibility)
+
+		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
+		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
+		self.autoJoin.stateChanged.connect(self.changedSetting)
+
+		self.hideScroll = QCheckBox("Hide horizontal scrollbars",self)
+		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
+		self.hideScroll.stateChanged.connect(self.changedSetting)
+
+		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
+		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
+		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.ignoreUserlist = QCheckBox("Mark ignored users",self)
+		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlist.setChecked(True)
+		self.ignoreUserlist.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.showAwayStatus = QCheckBox("Mark away status",self)
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
+		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.dcPrivate = QCheckBox("Double click user for private chat",self)
+		if config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: self.dcPrivate.setChecked(True)
+		self.dcPrivate.stateChanged.connect(self.changedSetting)
+
+		if not config.SHOW_USERLIST:
+			self.plainUserLists.setEnabled(False)
+			self.showUserlistLeft.setEnabled(False)
+			self.hideScroll.setEnabled(False)
+			self.noSelectUserlists.setEnabled(False)
+			self.ignoreUserlist.setEnabled(False)
+			self.showAwayStatus.setEnabled(False)
+			self.dcPrivate.setEnabled(False)
+
+		chanButtonLayout = QFormLayout()
+		chanButtonLayout.addRow(self.channelName,self.channelCount)
+		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
+
+		ulistLayout = QFormLayout()
+		ulistLayout.addRow(self.plainUserLists,self.showUserlistLeft)
+		ulistLayout.addRow(self.ignoreUserlist,self.showAwayStatus)
+		ulistLayout.addRow(self.noSelectUserlists)
+
+		ulistExist = QHBoxLayout()
+		ulistExist.addStretch()
+		ulistExist.addWidget(self.showUserlists)
+		ulistExist.addStretch()
+
+		infoExist = QHBoxLayout()
+		infoExist.addStretch()
+		infoExist.addWidget(self.topicDisplay)
+		infoExist.addStretch()
+
+		self.nameTitleDisplay = QCheckBox("Show channel name in subwindow title",self)
+		if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE: self.nameTitleDisplay.setChecked(True)
+		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
+
+		menuLayout = QVBoxLayout()
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
+		menuLayout.addWidget(self.channelDescription)
+		menuLayout.addLayout(infoExist)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
+		menuLayout.addLayout(chanButtonLayout)
+		menuLayout.addWidget(self.topicBold)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
+		menuLayout.addLayout(ulistExist)
+		menuLayout.addLayout(ulistLayout)
+		menuLayout.addWidget(self.hideScroll)
+		menuLayout.addWidget(self.dcPrivate)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		menuLayout.addWidget(self.nameTitleDisplay)
+		menuLayout.addWidget(self.topicTitleDisplay)
+		menuLayout.addWidget(self.autoJoin)
+		menuLayout.addStretch()
+
+		self.channelInfoPage.setLayout(menuLayout)
+
 		# Time
 
 		self.timestampPage = QWidget()
@@ -2521,156 +2671,6 @@ class Dialog(QDialog):
 		awayLayout.addStretch()
 
 		self.awayPage.setLayout(awayLayout)
-
-		# Channels
-
-		self.channelInfoPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Channels")
-		entry.widget = self.channelInfoPage
-		entry.setIcon(QIcon(CHANNEL_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.channelInfoPage)
-
-		self.topicDisplay = QCheckBox("Show channel information display",self)
-		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
-		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
-
-		self.topicBold = QCheckBox("Show topic in bold",self)
-		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
-		self.topicBold.stateChanged.connect(self.titleChange)
-
-		self.channelName = QCheckBox("Channel name/modes",self)
-		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
-		self.channelName.stateChanged.connect(self.topicChange)
-
-		self.showBanlist = QCheckBox("Banlist button",self)
-		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
-		self.showBanlist.stateChanged.connect(self.topicChange)
-
-		self.showChanMenu = QCheckBox("Set modes button",self)
-		if config.SHOW_CHANNEL_MENU: self.showChanMenu.setChecked(True)
-		self.showChanMenu.stateChanged.connect(self.topicChange)
-
-		self.channelCount = QCheckBox("User count",self)
-		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
-		self.channelCount.stateChanged.connect(self.topicChange)
-
-		if not config.SHOW_CHANNEL_TOPIC:
-			self.topicBold.setEnabled(False)
-			self.channelName.setEnabled(False)
-			self.showBanlist.setEnabled(False)
-			self.showChanMenu.setEnabled(False)
-			self.channelCount.setEnabled(False)
-
-		self.channelDescription = QLabel("""
-			<small>
-			The <b>channel information display</b> is a bar shown at the top of
-			every channel window that displays the channel <b>name</b>, any <b>modes</b> set
-			on the channel, the channel
-			<b>topic</b>, and the channel <b>banlist</b>. The channel <b>topic</b> can be changed
-			or edited with it (if you have the right permissions) by clicking
-			on the <b>topic</b> and editing it. Here, the
-			<b>channel information display</b> can be customized or turned off.
-			</small>
-			""")
-		self.channelDescription.setWordWrap(True)
-		self.channelDescription.setAlignment(Qt.AlignJustify)
-
-		self.topicTitleDisplay = QCheckBox("Show channel topic in subwindow title",self)
-		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
-		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
-
-		self.showUserlistLeft = QCheckBox("Display on left",self)
-		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
-		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
-
-		self.plainUserLists = QCheckBox("Text only",self)
-		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
-		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.showUserlists = QCheckBox("Show user lists",self)
-		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
-		self.showUserlists.stateChanged.connect(self.changedUserlistVisibility)
-
-		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
-		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
-		self.autoJoin.stateChanged.connect(self.changedSetting)
-
-		self.hideScroll = QCheckBox("Hide horizontal scrollbars",self)
-		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
-		self.hideScroll.stateChanged.connect(self.changedSetting)
-
-		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
-		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
-		self.noSelectUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.ignoreUserlist = QCheckBox("Mark ignored users",self)
-		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlist.setChecked(True)
-		self.ignoreUserlist.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.showAwayStatus = QCheckBox("Mark away status",self)
-		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
-		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
-
-		self.dcPrivate = QCheckBox("Double click user for private chat",self)
-		if config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: self.dcPrivate.setChecked(True)
-		self.dcPrivate.stateChanged.connect(self.changedSetting)
-
-		if not config.SHOW_USERLIST:
-			self.plainUserLists.setEnabled(False)
-			self.showUserlistLeft.setEnabled(False)
-			self.hideScroll.setEnabled(False)
-			self.noSelectUserlists.setEnabled(False)
-			self.ignoreUserlist.setEnabled(False)
-			self.showAwayStatus.setEnabled(False)
-			self.dcPrivate.setEnabled(False)
-
-		chanButtonLayout = QFormLayout()
-		chanButtonLayout.addRow(self.channelName,self.channelCount)
-		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
-
-		ulistLayout = QFormLayout()
-		ulistLayout.addRow(self.plainUserLists,self.showUserlistLeft)
-		ulistLayout.addRow(self.ignoreUserlist,self.showAwayStatus)
-		ulistLayout.addRow(self.noSelectUserlists)
-
-		ulistExist = QHBoxLayout()
-		ulistExist.addStretch()
-		ulistExist.addWidget(self.showUserlists)
-		ulistExist.addStretch()
-
-		infoExist = QHBoxLayout()
-		infoExist.addStretch()
-		infoExist.addWidget(self.topicDisplay)
-		infoExist.addStretch()
-
-		self.nameTitleDisplay = QCheckBox("Show channel name in subwindow title",self)
-		if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE: self.nameTitleDisplay.setChecked(True)
-		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
-
-		menuLayout = QVBoxLayout()
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
-		menuLayout.addWidget(self.channelDescription)
-		menuLayout.addLayout(infoExist)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
-		menuLayout.addLayout(chanButtonLayout)
-		menuLayout.addWidget(self.topicBold)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
-		menuLayout.addLayout(ulistExist)
-		menuLayout.addLayout(ulistLayout)
-		menuLayout.addWidget(self.hideScroll)
-		menuLayout.addWidget(self.dcPrivate)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		menuLayout.addWidget(self.nameTitleDisplay)
-		menuLayout.addWidget(self.topicTitleDisplay)
-		menuLayout.addWidget(self.autoJoin)
-		menuLayout.addStretch()
-
-		self.channelInfoPage.setLayout(menuLayout)
 
 		# Input page
 
