@@ -522,9 +522,11 @@ class Dialog(QDialog):
 		if self.noPadding.isChecked():
 			self.padLengthLabel.setEnabled(False)
 			self.padLength.setEnabled(False)
+			self.padLengthLabelSpec.setEnabled(False)
 		else:
 			self.padLengthLabel.setEnabled(True)
 			self.padLength.setEnabled(True)
+			self.padLengthLabelSpec.setEnabled(True)
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
@@ -3562,7 +3564,8 @@ class Dialog(QDialog):
 		self.createNotice.stateChanged.connect(self.changedSetting)
 		self.createNotice.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.padLengthLabel = QLabel("Nickname padding length:")
+		self.padLengthLabel = QLabel("Nickname padding:")
+		self.padLengthLabelSpec = QLabel("characters")
 		self.padLength = QSpinBox()
 		self.padLength.setRange(1,99)
 		self.padLength.setValue(self.nicknamePadLength)
@@ -3571,11 +3574,13 @@ class Dialog(QDialog):
 		padLayout = QHBoxLayout()
 		padLayout.addWidget(self.padLengthLabel)
 		padLayout.addWidget(self.padLength)
+		padLayout.addWidget(self.padLengthLabelSpec)
 		padLayout.addStretch()
 
 		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY:
 			self.padLengthLabel.setEnabled(False)
 			self.padLength.setEnabled(False)
+			self.padLengthLabelSpec.setEnabled(False)
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
