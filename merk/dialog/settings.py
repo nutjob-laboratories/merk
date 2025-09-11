@@ -539,6 +539,12 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateHeartbeat(self,state):
+		self.heartbeat = self.heartbeatLength.value()
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changeTimestamp(self,state):
 		if self.showTimestamps.isChecked():
 			self.timestamp24hour.setEnabled(True)
@@ -816,12 +822,21 @@ class Dialog(QDialog):
 			self.writeFile.setEnabled(True)
 			self.enablePing.setEnabled(True)
 			self.enableStyle.setEnabled(True)
+			self.serverHeartbeatLabel.setEnabled(True)
+			self.heartbeatLength.setEnabled(True)
+			self.heartbeatLabelSpec.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
 			self.enablePing.setEnabled(False)
 			self.enableStyle.setEnabled(False)
+			self.serverHeartbeatLabel.setEnabled(False)
+			self.heartbeatLength.setEnabled(False)
+			self.heartbeatLabelSpec.setEnabled(False)
+
+			self.heartbeatLength.setValue(config.TWISTED_CLIENT_HEARTBEAT)
+			self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
 
 			if config.ENABLE_STYLE_EDITOR:
 				self.enableStyle.setChecked(True)
@@ -1313,6 +1328,7 @@ class Dialog(QDialog):
 		self.spellcheck_distance = config.SPELLCHECKER_DISTANCE
 
 		self.nicknamePadLength = config.NICKNAME_PAD_LENGTH
+		self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
 
 		self.setWindowTitle(f" {APPLICATION_NAME} Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -4000,12 +4016,30 @@ class Dialog(QDialog):
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
 		self.enableStyle.setEnabled(False)
 
+		self.serverHeartbeatLabel = QLabel("Connection heartbeat:")
+		self.heartbeatLabelSpec = QLabel("seconds")
+		self.heartbeatLength = QSpinBox()
+		self.heartbeatLength.setRange(1,300)
+		self.heartbeatLength.setValue(self.heartbeat)
+		self.heartbeatLength.valueChanged.connect(self.updateHeartbeat)
+
+		hbLayout = QHBoxLayout()
+		hbLayout.addWidget(self.serverHeartbeatLabel)
+		hbLayout.addWidget(self.heartbeatLength)
+		hbLayout.addWidget(self.heartbeatLabelSpec)
+		hbLayout.addStretch()
+
+		self.serverHeartbeatLabel.setEnabled(False)
+		self.heartbeatLength.setEnabled(False)
+		self.heartbeatLabelSpec.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
+		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addWidget(self.enableStyle)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
@@ -4330,6 +4364,7 @@ class Dialog(QDialog):
 		config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = self.restrictError.isChecked()
 		config.MENUBAR_DOCKED_AT_TOP = self.menubarTop.isChecked()
 		config.NICKNAME_PAD_LENGTH = self.nicknamePadLength
+		config.TWISTED_CLIENT_HEARTBEAT = self.heartbeat
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
