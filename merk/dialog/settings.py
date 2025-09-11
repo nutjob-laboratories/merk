@@ -759,11 +759,13 @@ class Dialog(QDialog):
 			self.menubarJustify.setEnabled(True)
 			self.menubarMenu.setEnabled(True)
 			self.alignLabel.setEnabled(True)
+			self.menubarTop.setEnabled(True)
 		else:
 			self.menubarFloat.setEnabled(False)
 			self.menubarJustify.setEnabled(False)
 			self.menubarMenu.setEnabled(False)
 			self.alignLabel.setEnabled(False)
+			self.menubarTop.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -790,11 +792,18 @@ class Dialog(QDialog):
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
 			self.enablePing.setEnabled(True)
+			self.enableStyle.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
 			self.enablePing.setEnabled(False)
+			self.enableStyle.setEnabled(False)
+
+			if config.ENABLE_STYLE_EDITOR:
+				self.enableStyle.setChecked(True)
+			else:
+				self.enableStyle.setChecked(False)
 
 			if config.SHOW_PINGS_IN_CONSOLE:
 				self.enablePing.setChecked(True)
@@ -1482,23 +1491,17 @@ class Dialog(QDialog):
 		if config.DARK_MODE: self.darkMode.setChecked(True)
 		self.darkMode.stateChanged.connect(self.setDarkMode)
 
-		self.forceDefault = QCheckBox("Force all chat windows to use\nthe default text style",self)
+		self.forceDefault = QCheckBox("Chat windows",self)
 		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
 		self.forceDefault.stateChanged.connect(self.changeSettingStyle)
 
-		self.forceDefault.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.notInputWidget = QCheckBox("Force default text style on\nthe text input widget",self)
+		self.notInputWidget = QCheckBox("Text input widgets",self)
 		if config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET: self.notInputWidget.setChecked(True)
 		self.notInputWidget.stateChanged.connect(self.changeSettingStyle)
 
-		self.notInputWidget.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.notUserlist = QCheckBox("Force default text style on\nthe userlist",self)
+		self.notUserlist = QCheckBox("Userlists",self)
 		if config.DO_NOT_APPLY_STYLE_TO_USERLIST: self.notUserlist.setChecked(True)
 		self.notUserlist.stateChanged.connect(self.changeSettingStyle)
-
-		self.notUserlist.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		if self.forceDefault.isChecked():
 			self.notInputWidget.setEnabled(False)
@@ -1519,27 +1522,27 @@ class Dialog(QDialog):
 		app2Layout.addWidget(self.darkMode)
 		app2Layout.addStretch()
 
+		forceLayout = QFormLayout()
+		forceLayout.addRow(self.forceDefault,self.notInputWidget)
+		forceLayout.addRow(self.notUserlist)
+
 		self.forceMono = QCheckBox("Force monospace rendering\nof all message text",self)
 		if config.FORCE_MONOSPACE_RENDERING: self.forceMono.setChecked(True)
 		self.forceMono.stateChanged.connect(self.changedSettingRerender)
 		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.enableStyle = QCheckBox("Enable text style editor",self)
-		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
-		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
-
 		appearanceLayout = QVBoxLayout()
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
-		appearanceLayout.addWidget(self.styleDescription)
-		appearanceLayout.addLayout(app1Layout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
+		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
+		appearanceLayout.addWidget(self.styleDescription)
+		appearanceLayout.addLayout(app1Layout)
+		appearanceLayout.addWidget(QLabel(' '))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
+		appearanceLayout.addLayout(forceLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		appearanceLayout.addWidget(self.enableStyle)
-		appearanceLayout.addWidget(self.forceDefault)
-		appearanceLayout.addWidget(self.notInputWidget)
-		appearanceLayout.addWidget(self.notUserlist)
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
 		appearanceLayout.addStretch()
@@ -1745,11 +1748,28 @@ class Dialog(QDialog):
 		menu1Layout.addWidget(self.menubar)
 		menu1Layout.addStretch()
 
+		self.menubarTop = QCheckBox("Display at top",self)
+		if config.MENUBAR_DOCKED_AT_TOP: self.menubarTop.setChecked(True)
+		self.menubarTop.stateChanged.connect(self.menuChange)
+
+		if not config.USE_MENUBAR:
+			self.menubarFloat.setEnabled(False)
+			self.menubarJustify.setEnabled(False)
+			self.menubarMenu.setEnabled(False)
+			self.alignLabel.setEnabled(False)
+			self.menubarTop.setEnabled(False)
+
+		menu2Layout = QHBoxLayout()
+		menu2Layout.addStretch()
+		menu2Layout.addWidget(self.menubarFloat)
+		menu2Layout.addWidget(self.menubarTop)
+		menu2Layout.addStretch()
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addLayout(menu1Layout)
-		menuLayout.addWidget(self.menubarFloat)
+		menuLayout.addLayout(menu2Layout)
 		menuLayout.addWidget(self.menubarMenu)
 		menuLayout.addLayout(justifyLayout)
 		menuLayout.addWidget(QLabel(' '))
@@ -3865,7 +3885,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
 		miscLayout.addWidget(QLabel(' '))
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list options</b>"))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addWidget(self.showChannelList)
 		miscLayout.addWidget(self.searchAllTerms)
 		miscLayout.addWidget(self.examineTopic)
@@ -3927,12 +3947,18 @@ class Dialog(QDialog):
 		aoLayout.addWidget(self.advancedEnable)
 		aoLayout.addStretch()
 
+		self.enableStyle = QCheckBox("Enable text style editor",self)
+		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
+		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
+		self.enableStyle.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
+		advancedLayout.addWidget(self.enableStyle)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
@@ -4254,6 +4280,7 @@ class Dialog(QDialog):
 		config.ENABLE_CONFIG_COMMAND = self.enableConfig.isChecked()
 		config.ENABLE_SHELL_COMMAND = self.enableShell.isChecked()
 		config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = self.restrictError.isChecked()
+		config.MENUBAR_DOCKED_AT_TOP = self.menubarTop.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
