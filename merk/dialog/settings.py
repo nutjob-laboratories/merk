@@ -465,12 +465,14 @@ class Dialog(QDialog):
 			self.haltError.setEnabled(True)
 			self.enableInsert.setEnabled(True)
 			self.requireArgs.setEnabled(True)
+			self.promptScript.setEnabled(True)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
 			self.haltError.setEnabled(False)
 			self.enableInsert.setEnabled(False)
 			self.requireArgs.setEnabled(False)
+			self.promptScript.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -514,6 +516,25 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerenderNick = True
+		self.selector.setFocus()
+
+	def changedSettingRerenderPad(self,state):
+		if self.noPadding.isChecked():
+			self.padLengthLabel.setEnabled(False)
+			self.padLength.setEnabled(False)
+		else:
+			self.padLengthLabel.setEnabled(True)
+			self.padLength.setEnabled(True)
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
+	def updatePadLength(self,state):
+		self.nicknamePadLength = self.padLength.value()
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
 		self.selector.setFocus()
 
 	def changeTimestamp(self,state):
@@ -1288,6 +1309,8 @@ class Dialog(QDialog):
 		self.syntax_did_change = False
 
 		self.spellcheck_distance = config.SPELLCHECKER_DISTANCE
+
+		self.nicknamePadLength = config.NICKNAME_PAD_LENGTH
 
 		self.setWindowTitle(f" {APPLICATION_NAME} Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3526,7 +3549,7 @@ class Dialog(QDialog):
 
 		self.noPadding = QCheckBox("Do not pad nicknames in chat\ndisplay",self)
 		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
-		self.noPadding.stateChanged.connect(self.changedSettingRerender)
+		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
 		self.noPadding.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
 		self.ignoreCreateWindow = QCheckBox("Do not create windows for\nmessages from ignored users",self)
@@ -3538,6 +3561,21 @@ class Dialog(QDialog):
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
 		self.createNotice.stateChanged.connect(self.changedSetting)
 		self.createNotice.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.padLengthLabel = QLabel("Nickname padding length:")
+		self.padLength = QSpinBox()
+		self.padLength.setRange(1,99)
+		self.padLength.setValue(self.nicknamePadLength)
+		self.padLength.valueChanged.connect(self.updatePadLength)
+
+		padLayout = QHBoxLayout()
+		padLayout.addWidget(self.padLengthLabel)
+		padLayout.addWidget(self.padLength)
+		padLayout.addStretch()
+
+		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY:
+			self.padLengthLabel.setEnabled(False)
+			self.padLength.setEnabled(False)
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
@@ -3551,6 +3589,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.writePrivate)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.noPadding)
+		messageLayout.addLayout(padLayout)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
 		messageLayout.addLayout(prepLayout)
@@ -3668,6 +3707,7 @@ class Dialog(QDialog):
 			self.enableInsert.setEnabled(False)
 			self.showErrors.setEnabled(False)
 			self.requireArgs.setEnabled(False)
+			self.promptScript.setEnabled(False)
 
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
@@ -4284,6 +4324,7 @@ class Dialog(QDialog):
 		config.ENABLE_SHELL_COMMAND = self.enableShell.isChecked()
 		config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = self.restrictError.isChecked()
 		config.MENUBAR_DOCKED_AT_TOP = self.menubarTop.isChecked()
+		config.NICKNAME_PAD_LENGTH = self.nicknamePadLength
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

@@ -2623,6 +2623,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"subwindow_id"):
 				if c.subwindow_id==subwindow_id:
 					window.hide()
+		self.buildWindowsMenu()
 
 	def closeSubWindow(self,subwindow_id):
 		# Step through the list of MDI windows
