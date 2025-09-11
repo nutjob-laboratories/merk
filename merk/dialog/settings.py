@@ -1306,6 +1306,8 @@ class Dialog(QDialog):
 
 		self.selector.setStyleSheet("background-color: transparent; border-width: 0px; border-color: transparent;")
 
+		# BEGIN PAGES
+
 		# Application page
 
 		self.applicationPage = QWidget()
@@ -1432,123 +1434,6 @@ class Dialog(QDialog):
 
 		self.applicationPage.setLayout(applicationLayout)
 
-		# Miscellaneous page
-
-		self.miscPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Miscellaneous")
-		entry.widget = self.miscPage
-		entry.setIcon(QIcon(MISC_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.miscPage)
-
-		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
-		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
-		self.enableEmojis.stateChanged.connect(self.changedEmoji)
-
-		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/emoji_shortcode_list.pdf")).toEncoded()).decode()
-
-		self.emojiDescription = QLabel(f"""
-			<small>
-			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
-			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
-			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
-			</small>
-			<br>
-			""")
-		self.emojiDescription.setWordWrap(True)
-		self.emojiDescription.setAlignment(Qt.AlignJustify)
-		self.emojiDescription.setOpenExternalLinks(True)
-
-		escLayout = QHBoxLayout()
-		escLayout.addStretch()
-		escLayout.addWidget(self.enableEmojis)
-		escLayout.addStretch()
-
-		self.partMsg = EmojiQuitAutocomplete(self)
-		self.partMsg.setText(self.default_quit_part)
-
-		fm = self.partMsg.fontMetrics()
-		self.partMsg.setFixedHeight(fm.height()+10)
-		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		self.partMsg.textChanged.connect(self.setQuitMsg)
-
-		self.autoEmojiQuit = QCheckBox(f"Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
-		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiQuit.setEnabled(False)
-
-		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
-		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
-		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasQuit.setEnabled(False)
-
-		quitLayout = QVBoxLayout()
-		quitLayout.addWidget(self.partMsg)
-		quitLayout.addWidget(self.autoEmojiQuit)
-		quitLayout.addWidget(self.autoAliasQuit)
-		quitBox = QGroupBox("")
-		quitBox.setAlignment(Qt.AlignLeft)
-		quitBox.setLayout(quitLayout)
-
-		self.awayMsg = EmojiAwayAutocomplete(self)
-		self.awayMsg.setText(self.default_away)
-
-		fm = self.awayMsg.fontMetrics()
-		self.awayMsg.setFixedHeight(fm.height()+10)
-		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		self.awayMsg.textChanged.connect(self.setAwayMsg)
-
-		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
-		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiAway.setEnabled(False)
-
-		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
-		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
-		self.autoAliasAway.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasAway.setEnabled(False)
-
-		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(self.awayMsg)
-		awayLayout.addWidget(self.autoEmojiAway)
-		awayLayout.addWidget(self.autoAliasAway)
-		awayBox = QGroupBox("")
-		awayBox.setAlignment(Qt.AlignLeft)
-		awayBox.setLayout(awayLayout)
-
-		miscLayout = QVBoxLayout()
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
-		miscLayout.addWidget(self.emojiDescription)
-		miscLayout.addLayout(escLayout)
-		miscLayout.addWidget(QLabel(' '))
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
-		miscLayout.addWidget(quitBox)
-		miscLayout.addWidget(QLabel(' '))
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		miscLayout.addWidget(awayBox)
-		miscLayout.addStretch()
-
-		self.miscPage.setLayout(miscLayout)
-
 		# Widget page
 
 		self.appearancePage = QWidget()
@@ -1668,90 +1553,6 @@ class Dialog(QDialog):
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
-
-		# User page
-
-		self.userPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("User")
-		entry.widget = self.userPage
-		entry.setIcon(QIcon(PRIVATE_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.userPage)
-
-		self.userDescription = QLabel("""
-			<small>
-			You can set the default settings needed to connect to
-			an IRC server here. These options can be set or changed
-			in the server connection dialog. If both your <b>nickname</b> and <b>alternate</b>
-			are taken (or if you have not set an <b>alternate</b>),
-			a random number will be generated and attached to your <b>nickname</b> for use.
-			<br>
-			""")
-		self.userDescription.setWordWrap(True)
-		self.userDescription.setAlignment(Qt.AlignJustify)
-
-		self.nick = QNoSpaceLineEdit(user.NICKNAME)
-		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
-		self.username = QNoSpaceLineEdit(user.USERNAME)
-		self.realname = QLineEdit(user.REALNAME)
-
-		self.nick.textChanged.connect(self.changeUser)
-		self.alternative.textChanged.connect(self.changeUser)
-		self.username.textChanged.connect(self.changeUser)
-		self.realname.textChanged.connect(self.changeUser)
-
-		nickLayout = QFormLayout()
-		nickLayout.addRow(self.nick)
-		nickLayout.addRow(QLabel("<center><small>The nickname you wish to use on the server</small></center>"))
-		nickBox = QGroupBox("Nickname")
-		nickBox.setAlignment(Qt.AlignLeft)
-		nickBox.setLayout(nickLayout)
-
-		font = nickBox.font()
-		font.setBold(True)
-		nickBox.setFont(font)
-		
-		alternateLayout = QFormLayout()
-		alternateLayout.addRow(self.alternative)
-		alternateLayout.addRow(QLabel("<center><small>Alternate nickname if your first<br>choice is already taken</small></center>"))
-		alternateBox = QGroupBox("Alternate (optional)")
-		alternateBox.setAlignment(Qt.AlignLeft)
-		alternateBox.setLayout(alternateLayout)
-
-		alternateBox.setFont(font)
-		
-		userLayout = QFormLayout()
-		userLayout.addRow(self.username)
-		userLayout.addRow(QLabel("<center><small>The username you wish to use</small></center>"))
-		userBox = QGroupBox("Username")
-		userBox.setAlignment(Qt.AlignLeft)
-		userBox.setLayout(userLayout)
-
-		userBox.setFont(font)
-		
-		realnameLayout = QFormLayout()
-		realnameLayout.addRow(self.realname)
-		realnameLayout.addRow(QLabel("<center><small>Your real name or other descriptive text</small></center>"))
-		realnameBox = QGroupBox("Real Name")
-		realnameBox.setAlignment(Qt.AlignLeft)
-		realnameBox.setLayout(realnameLayout)
-
-		realnameBox.setFont(font)
-
-		userLayout = QVBoxLayout()
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user defaults</b>"))
-		userLayout.addWidget(self.userDescription)
-		userLayout.addWidget(nickBox)
-		userLayout.addWidget(alternateBox)
-		userLayout.addWidget(userBox)
-		userLayout.addWidget(realnameBox)
-		userLayout.addStretch()
-
-		self.userPage.setLayout(userLayout)
 
 		# Menubar page
 
@@ -2277,6 +2078,431 @@ class Dialog(QDialog):
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
+
+		# Systray page
+
+		self.systrayPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("System Tray")
+		entry.widget = self.systrayPage
+		entry.setIcon(QIcon(SYSTRAY_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.systrayPage)
+
+		self.showSystrayMenu = QCheckBox("Show right click menu",self)
+		if config.SYSTRAY_MENU: self.showSystrayMenu.setChecked(True)
+		self.showSystrayMenu.stateChanged.connect(self.changedSystrayMin)
+
+		self.minSystray = QCheckBox("Minimize to system tray",self)
+		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
+		self.minSystray.stateChanged.connect(self.changedSystrayMin)
+
+		self.systrayNotify = QCheckBox("Show system tray notifications\nwhen minimized to system tray",self)
+		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
+		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
+		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.listSystray = QCheckBox("List notifications in tooltip",self)
+		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
+		self.listSystray.stateChanged.connect(self.changedSetting)
+
+		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
+		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
+		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
+
+		self.systrayNickname = QCheckBox("Nickname\nmentions",self)
+		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
+		self.systrayNickname.stateChanged.connect(self.changedSetting)
+		self.systrayNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.systrayPrivate = QCheckBox("Private\nmessages",self)
+		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
+		self.systrayPrivate.stateChanged.connect(self.changedSetting)
+		self.systrayPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.systrayKick = QCheckBox("Channel kick",self)
+		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
+		self.systrayKick.stateChanged.connect(self.changedSetting)
+
+		self.systrayInvite = QCheckBox("Channel\ninvitation",self)
+		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
+		self.systrayInvite.stateChanged.connect(self.changedSetting)
+		self.systrayInvite.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.systrayNotice = QCheckBox("Notice",self)
+		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
+		self.systrayNotice.stateChanged.connect(self.changedSetting)
+
+		self.systrayMode = QCheckBox("Mode set on\nuser",self)
+		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
+		self.systrayMode.stateChanged.connect(self.changedSetting)
+		self.systrayMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.systrayMinOnClose = QCheckBox("Closing main window with window\ncontrols minimizes to tray",self)
+		if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY: self.systrayMinOnClose.setChecked(True)
+		self.systrayMinOnClose.stateChanged.connect(self.changedSetting)
+		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showSystray = QCheckBox("Show system tray icon",self)
+		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
+		self.showSystray.stateChanged.connect(self.changedSystrayMin)
+
+		discLay = QHBoxLayout()
+		discLay.addWidget(self.systrayDisconnect)
+		discLay.addStretch()
+
+		nickPriv = QHBoxLayout()
+		nickPriv.addWidget(self.systrayNickname)
+		nickPriv.addWidget(self.systrayPrivate)
+
+		kickInvite = QHBoxLayout()
+		kickInvite.addWidget(self.systrayKick)
+		kickInvite.addWidget(self.systrayInvite)
+
+		noticeMode = QHBoxLayout()
+		noticeMode.addWidget(self.systrayNotice)
+		noticeMode.addWidget(self.systrayMode)
+
+		self.setFlashInterval = QLabel("Flash icon every ")
+
+		self.flashInterval = QComboBox(self)
+		added = False
+		if config.FLASH_SYSTRAY_SPEED==250:
+			self.flashInterval.addItem("250ms")
+			added = True
+		if config.FLASH_SYSTRAY_SPEED==500:
+			self.flashInterval.addItem("500 ms")
+			added = True
+		if config.FLASH_SYSTRAY_SPEED==750:
+			self.flashInterval.addItem("750 ms")
+			added = True
+		if config.FLASH_SYSTRAY_SPEED==1000:
+			self.flashInterval.addItem("1 second")
+			added = True
+		if added==False: self.flashInterval.addItem(f"{config.FLASH_SYSTRAY_SPEED} ms")
+		if config.FLASH_SYSTRAY_SPEED!=250: self.flashInterval.addItem("250 ms")
+		if config.FLASH_SYSTRAY_SPEED!=500: self.flashInterval.addItem("500 ms")
+		if config.FLASH_SYSTRAY_SPEED!=750: self.flashInterval.addItem("750 ms")
+		if config.FLASH_SYSTRAY_SPEED!=1000: self.flashInterval.addItem("1 second")
+		self.flashInterval.currentIndexChanged.connect(self.flashChange)
+
+		flashBox = QHBoxLayout()
+		flashBox.addWidget(self.setFlashInterval)
+		flashBox.addWidget(self.flashInterval)
+		flashBox.addStretch()
+
+		self.doubleclickRestore = QCheckBox("Double click to restore window\nfrom system tray",self)
+		if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY: self.doubleclickRestore.setChecked(True)
+		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
+		self.doubleclickRestore.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.clickToMinimize = QCheckBox("Click systray icon to minimize\nto system tray",self)
+		if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY: self.clickToMinimize.setChecked(True)
+		self.clickToMinimize.stateChanged.connect(self.changedSetting)
+		self.clickToMinimize.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		systrayLayout = QVBoxLayout()
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
+		systrayLayout.addWidget(self.showSystray)
+		systrayLayout.addWidget(self.showSystrayMenu)
+		systrayLayout.addWidget(self.minSystray)
+		systrayLayout.addWidget(self.systrayMinOnClose)
+		systrayLayout.addWidget(self.doubleclickRestore)
+		systrayLayout.addWidget(self.clickToMinimize)
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
+		systrayLayout.addWidget(self.systrayNotify)
+		systrayLayout.addWidget(self.listSystray)
+		systrayLayout.addLayout(flashBox)
+		systrayLayout.addWidget(QLabel(' '))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
+		systrayLayout.addLayout(nickPriv)
+		systrayLayout.addLayout(kickInvite)
+		systrayLayout.addLayout(noticeMode)
+		systrayLayout.addLayout(discLay)
+		systrayLayout.addStretch()
+
+		self.systrayPage.setLayout(systrayLayout)
+
+		if self.showSystray.isChecked():
+			self.showSystrayMenu.setEnabled(True)
+			self.minSystray.setEnabled(True)
+			if self.minSystray.isChecked():
+				self.systrayNotify.setEnabled(True)
+				self.listSystray.setEnabled(True)
+				self.systrayDisconnect.setEnabled(True)
+				self.systrayNickname.setEnabled(True)
+				self.systrayPrivate.setEnabled(True)
+				self.systrayKick.setEnabled(True)
+				self.systrayInvite.setEnabled(True)
+				self.systrayNotice.setEnabled(True)
+				self.systrayMode.setEnabled(True)
+				self.systrayMinOnClose.setEnabled(True)
+				self.setFlashInterval.setEnabled(True)
+				self.flashInterval.setEnabled(True)
+				self.doubleclickRestore.setEnabled(True)
+				self.clickToMinimize.setEnabled(True)
+			else:
+				self.systrayNotify.setEnabled(False)
+				self.listSystray.setEnabled(False)
+				self.systrayDisconnect.setEnabled(False)
+				self.systrayNickname.setEnabled(False)
+				self.systrayPrivate.setEnabled(False)
+				self.systrayKick.setEnabled(False)
+				self.systrayInvite.setEnabled(False)
+				self.systrayNotice.setEnabled(False)
+				self.systrayMode.setEnabled(False)
+				self.systrayMinOnClose.setEnabled(False)
+				self.setFlashInterval.setEnabled(False)
+				self.flashInterval.setEnabled(False)
+				self.doubleclickRestore.setEnabled(False)
+				self.clickToMinimize.setEnabled(False)
+		else:
+			self.showSystrayMenu.setEnabled(False)
+			self.minSystray.setEnabled(False)
+			self.systrayNotify.setEnabled(False)
+			self.listSystray.setEnabled(False)
+			self.systrayDisconnect.setEnabled(False)
+			self.systrayNickname.setEnabled(False)
+			self.systrayPrivate.setEnabled(False)
+			self.systrayKick.setEnabled(False)
+			self.systrayInvite.setEnabled(False)
+			self.systrayNotice.setEnabled(False)
+			self.systrayMode.setEnabled(False)
+			self.systrayMinOnClose.setEnabled(False)
+			self.setFlashInterval.setEnabled(False)
+			self.flashInterval.setEnabled(False)
+			self.doubleclickRestore.setEnabled(False)
+			self.clickToMinimize.setEnabled(False)
+
+		# Notifications
+
+		self.notificationsPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Notifications")
+		entry.widget = self.notificationsPage
+		entry.setIcon(QIcon(NOTIFICATION_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.notificationsPage)
+
+		self.audioNotifications = QCheckBox("Play audio notifications",self)
+		if config.SOUND_NOTIFICATIONS: self.audioNotifications.setChecked(True)
+		self.audioNotifications.stateChanged.connect(self.changedNotifications)
+
+		self.notifyDisco = QCheckBox("Disconnection from server",self)
+		if config.SOUND_NOTIFICATION_DISCONNECT: self.notifyDisco.setChecked(True)
+		self.notifyDisco.stateChanged.connect(self.changedSetting)
+
+		self.notifyNickname = QCheckBox("Nickname\nmention",self)
+		if config.SOUND_NOTIFICATION_NICKNAME: self.notifyNickname.setChecked(True)
+		self.notifyNickname.stateChanged.connect(self.changedSetting)
+		self.notifyNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.notifyPrivate = QCheckBox("Private\nmessage",self)
+		if config.SOUND_NOTIFICATION_PRIVATE: self.notifyPrivate.setChecked(True)
+		self.notifyPrivate.stateChanged.connect(self.changedSetting)
+		self.notifyPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.notifyNotice = QCheckBox("Notice",self)
+		if config.SOUND_NOTIFICATION_NOTICE: self.notifyNotice.setChecked(True)
+		self.notifyNotice.stateChanged.connect(self.changedSetting)
+
+		self.notifyKick = QCheckBox("Kick",self)
+		if config.SOUND_NOTIFICATION_KICK: self.notifyKick.setChecked(True)
+		self.notifyKick.stateChanged.connect(self.changedSetting)
+
+		self.notifyInvite = QCheckBox("Invite",self)
+		if config.SOUND_NOTIFICATION_INVITE: self.notifyInvite.setChecked(True)
+		self.notifyInvite.stateChanged.connect(self.changedSetting)
+
+		self.notifyMode = QCheckBox("Channel mode\nchange",self)
+		if config.SOUND_NOTIFICATION_MODE: self.notifyMode.setChecked(True)
+		self.notifyMode.stateChanged.connect(self.changedSetting)
+		self.notifyMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if not self.audioNotifications.isChecked():
+			self.notifyDisco.setEnabled(False)
+			self.notifyNickname.setEnabled(False)
+			self.notifyPrivate.setEnabled(False)
+			self.notifyNotice.setEnabled(False)
+			self.notifyKick.setEnabled(False)
+			self.notifyInvite.setEnabled(False)
+			self.notifyMode.setEnabled(False)
+		
+		self.notifyDescription = QLabel("""
+			<small>
+			<b>Audio notifications</b>, when enabled, play a sound (by default, a bell) every time
+			one of the listed <b>events</b> occur. Any file of any length can be used for the notification
+			sound; the only limitation is that the file <b><i>must</i> be a WAV file</b>.
+			</small>
+			<br>
+			""")
+		self.notifyDescription.setWordWrap(True)
+		self.notifyDescription.setAlignment(Qt.AlignJustify)
+
+		adiscLay = QHBoxLayout()
+		adiscLay.addWidget(self.notifyDisco)
+		adiscLay.addStretch()
+
+		anickPriv = QHBoxLayout()
+		anickPriv.addWidget(self.notifyNickname)
+		anickPriv.addWidget(self.notifyPrivate)
+
+		akickInvite = QHBoxLayout()
+		akickInvite.addWidget(self.notifyKick)
+		akickInvite.addWidget(self.notifyInvite)
+
+		anoticeMode = QHBoxLayout()
+		anoticeMode.addWidget(self.notifyNotice)
+		anoticeMode.addWidget(self.notifyMode)
+
+		bname = os.path.basename(self.sound)
+		self.soundLabel = QLabel("<b>"+bname+"</b>")
+
+		soundButton = QPushButton("")
+		soundButton.clicked.connect(self.setSound)
+		soundButton.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		soundButton.setFixedSize(fheight +10,fheight + 10)
+		soundButton.setIcon(QIcon(EDIT_ICON))
+		soundButton.setToolTip("Set notification sound file")
+
+		playButton = QPushButton(" Play")
+		playButton.clicked.connect(self.playSound)
+		playButton.setAutoDefault(False)
+		playButton.setIcon(QIcon(RUN_ICON))
+		playButton.setToolTip("Play sound")
+
+		soundDefault = QPushButton("Set to default")
+		soundDefault.clicked.connect(self.soundDefault)
+		soundDefault.setAutoDefault(False)
+		soundDefault.setToolTip("Set to default")
+
+		sbLayout = QHBoxLayout()
+		sbLayout.addStretch()
+		sbLayout.addWidget(soundButton)
+		sbLayout.addWidget(self.soundLabel)
+		sbLayout.addStretch()
+
+		sbLayout2 = QHBoxLayout()
+		sbLayout2.addStretch()
+		sbLayout2.addWidget(playButton)
+		sbLayout2.addWidget(soundDefault)
+		sbLayout2.addStretch()
+
+		audioMaster = QHBoxLayout()
+		audioMaster.addStretch()
+		audioMaster.addWidget(self.audioNotifications)
+		audioMaster.addStretch()
+
+		audioLayout = QVBoxLayout()
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
+		audioLayout.addWidget(self.notifyDescription)
+		audioLayout.addLayout(audioMaster)
+		audioLayout.addWidget(QLabel(' '))
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
+		audioLayout.addLayout(anickPriv)
+		audioLayout.addLayout(akickInvite)
+		audioLayout.addLayout(anoticeMode)
+		audioLayout.addLayout(adiscLay)
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>sound file</b>"))
+		audioLayout.addLayout(sbLayout)
+		audioLayout.addLayout(sbLayout2)
+		audioLayout.addStretch()
+
+		self.notificationsPage.setLayout(audioLayout)
+
+		# User page
+
+		self.userPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("User")
+		entry.widget = self.userPage
+		entry.setIcon(QIcon(PRIVATE_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.userPage)
+
+		self.userDescription = QLabel("""
+			<small>
+			You can set the default settings needed to connect to
+			an IRC server here. These options can be set or changed
+			in the server connection dialog. If both your <b>nickname</b> and <b>alternate</b>
+			are taken (or if you have not set an <b>alternate</b>),
+			a random number will be generated and attached to your <b>nickname</b> for use.
+			<br>
+			""")
+		self.userDescription.setWordWrap(True)
+		self.userDescription.setAlignment(Qt.AlignJustify)
+
+		self.nick = QNoSpaceLineEdit(user.NICKNAME)
+		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
+		self.username = QNoSpaceLineEdit(user.USERNAME)
+		self.realname = QLineEdit(user.REALNAME)
+
+		self.nick.textChanged.connect(self.changeUser)
+		self.alternative.textChanged.connect(self.changeUser)
+		self.username.textChanged.connect(self.changeUser)
+		self.realname.textChanged.connect(self.changeUser)
+
+		nickLayout = QFormLayout()
+		nickLayout.addRow(self.nick)
+		nickLayout.addRow(QLabel("<center><small>The nickname you wish to use on the server</small></center>"))
+		nickBox = QGroupBox("Nickname")
+		nickBox.setAlignment(Qt.AlignLeft)
+		nickBox.setLayout(nickLayout)
+
+		font = nickBox.font()
+		font.setBold(True)
+		nickBox.setFont(font)
+		
+		alternateLayout = QFormLayout()
+		alternateLayout.addRow(self.alternative)
+		alternateLayout.addRow(QLabel("<center><small>Alternate nickname if your first<br>choice is already taken</small></center>"))
+		alternateBox = QGroupBox("Alternate (optional)")
+		alternateBox.setAlignment(Qt.AlignLeft)
+		alternateBox.setLayout(alternateLayout)
+
+		alternateBox.setFont(font)
+		
+		userLayout = QFormLayout()
+		userLayout.addRow(self.username)
+		userLayout.addRow(QLabel("<center><small>The username you wish to use</small></center>"))
+		userBox = QGroupBox("Username")
+		userBox.setAlignment(Qt.AlignLeft)
+		userBox.setLayout(userLayout)
+
+		userBox.setFont(font)
+		
+		realnameLayout = QFormLayout()
+		realnameLayout.addRow(self.realname)
+		realnameLayout.addRow(QLabel("<center><small>Your real name or other descriptive text</small></center>"))
+		realnameBox = QGroupBox("Real Name")
+		realnameBox.setAlignment(Qt.AlignLeft)
+		realnameBox.setLayout(realnameLayout)
+
+		realnameBox.setFont(font)
+
+		userLayout = QVBoxLayout()
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user defaults</b>"))
+		userLayout.addWidget(self.userDescription)
+		userLayout.addWidget(nickBox)
+		userLayout.addWidget(alternateBox)
+		userLayout.addWidget(userBox)
+		userLayout.addWidget(realnameBox)
+		userLayout.addStretch()
+
+		self.userPage.setLayout(userLayout)
 
 		# Channels
 
@@ -3244,8 +3470,6 @@ class Dialog(QDialog):
 		prepLayout.addWidget(self.setSystemPrepend)
 		prepLayout.addLayout(prepSel)
 
-		
-
 		self.linkChannel = QCheckBox("Convert channel names to links",self)
 		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
 		self.linkChannel.stateChanged.connect(self.changedSettingRerender)
@@ -3283,205 +3507,6 @@ class Dialog(QDialog):
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
-
-		# Systray page
-
-		self.systrayPage = QWidget()
-
-		entry = QListWidgetItem()
-		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("System Tray")
-		entry.widget = self.systrayPage
-		entry.setIcon(QIcon(SYSTRAY_ICON))
-		self.selector.addItem(entry)
-
-		self.stack.addWidget(self.systrayPage)
-
-		self.showSystrayMenu = QCheckBox("Show right click menu",self)
-		if config.SYSTRAY_MENU: self.showSystrayMenu.setChecked(True)
-		self.showSystrayMenu.stateChanged.connect(self.changedSystrayMin)
-
-		self.minSystray = QCheckBox("Minimize to system tray",self)
-		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
-		self.minSystray.stateChanged.connect(self.changedSystrayMin)
-
-		self.systrayNotify = QCheckBox("Show system tray notifications\nwhen minimized to system tray",self)
-		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
-		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
-		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.listSystray = QCheckBox("List notifications in tooltip",self)
-		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
-		self.listSystray.stateChanged.connect(self.changedSetting)
-
-		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
-		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
-		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
-
-		self.systrayNickname = QCheckBox("Nickname\nmentions",self)
-		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
-		self.systrayNickname.stateChanged.connect(self.changedSetting)
-		self.systrayNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayPrivate = QCheckBox("Private\nmessages",self)
-		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
-		self.systrayPrivate.stateChanged.connect(self.changedSetting)
-		self.systrayPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayKick = QCheckBox("Channel kick",self)
-		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
-		self.systrayKick.stateChanged.connect(self.changedSetting)
-
-		self.systrayInvite = QCheckBox("Channel\ninvitation",self)
-		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
-		self.systrayInvite.stateChanged.connect(self.changedSetting)
-		self.systrayInvite.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayNotice = QCheckBox("Notice",self)
-		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
-		self.systrayNotice.stateChanged.connect(self.changedSetting)
-
-		self.systrayMode = QCheckBox("Mode set on\nuser",self)
-		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
-		self.systrayMode.stateChanged.connect(self.changedSetting)
-		self.systrayMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayMinOnClose = QCheckBox("Closing main window with window\ncontrols minimizes to tray",self)
-		if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY: self.systrayMinOnClose.setChecked(True)
-		self.systrayMinOnClose.stateChanged.connect(self.changedSetting)
-		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showSystray = QCheckBox("Show system tray icon",self)
-		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
-		self.showSystray.stateChanged.connect(self.changedSystrayMin)
-
-		discLay = QHBoxLayout()
-		discLay.addWidget(self.systrayDisconnect)
-		discLay.addStretch()
-
-		nickPriv = QHBoxLayout()
-		nickPriv.addWidget(self.systrayNickname)
-		nickPriv.addWidget(self.systrayPrivate)
-
-		kickInvite = QHBoxLayout()
-		kickInvite.addWidget(self.systrayKick)
-		kickInvite.addWidget(self.systrayInvite)
-
-		noticeMode = QHBoxLayout()
-		noticeMode.addWidget(self.systrayNotice)
-		noticeMode.addWidget(self.systrayMode)
-
-		self.setFlashInterval = QLabel("Flash icon every ")
-
-		self.flashInterval = QComboBox(self)
-		added = False
-		if config.FLASH_SYSTRAY_SPEED==250:
-			self.flashInterval.addItem("250ms")
-			added = True
-		if config.FLASH_SYSTRAY_SPEED==500:
-			self.flashInterval.addItem("500 ms")
-			added = True
-		if config.FLASH_SYSTRAY_SPEED==750:
-			self.flashInterval.addItem("750 ms")
-			added = True
-		if config.FLASH_SYSTRAY_SPEED==1000:
-			self.flashInterval.addItem("1 second")
-			added = True
-		if added==False: self.flashInterval.addItem(f"{config.FLASH_SYSTRAY_SPEED} ms")
-		if config.FLASH_SYSTRAY_SPEED!=250: self.flashInterval.addItem("250 ms")
-		if config.FLASH_SYSTRAY_SPEED!=500: self.flashInterval.addItem("500 ms")
-		if config.FLASH_SYSTRAY_SPEED!=750: self.flashInterval.addItem("750 ms")
-		if config.FLASH_SYSTRAY_SPEED!=1000: self.flashInterval.addItem("1 second")
-		self.flashInterval.currentIndexChanged.connect(self.flashChange)
-
-		flashBox = QHBoxLayout()
-		flashBox.addWidget(self.setFlashInterval)
-		flashBox.addWidget(self.flashInterval)
-		flashBox.addStretch()
-
-		self.doubleclickRestore = QCheckBox("Double click to restore window\nfrom system tray",self)
-		if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY: self.doubleclickRestore.setChecked(True)
-		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
-		self.doubleclickRestore.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.clickToMinimize = QCheckBox("Click systray icon to minimize\nto system tray",self)
-		if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY: self.clickToMinimize.setChecked(True)
-		self.clickToMinimize.stateChanged.connect(self.changedSetting)
-		self.clickToMinimize.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		systrayLayout = QVBoxLayout()
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
-		systrayLayout.addWidget(self.showSystray)
-		systrayLayout.addWidget(self.showSystrayMenu)
-		systrayLayout.addWidget(self.minSystray)
-		systrayLayout.addWidget(self.systrayMinOnClose)
-		systrayLayout.addWidget(self.doubleclickRestore)
-		systrayLayout.addWidget(self.clickToMinimize)
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
-		systrayLayout.addWidget(self.systrayNotify)
-		systrayLayout.addWidget(self.listSystray)
-		systrayLayout.addLayout(flashBox)
-		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
-		systrayLayout.addLayout(nickPriv)
-		systrayLayout.addLayout(kickInvite)
-		systrayLayout.addLayout(noticeMode)
-		systrayLayout.addLayout(discLay)
-		systrayLayout.addStretch()
-
-		self.systrayPage.setLayout(systrayLayout)
-
-		if self.showSystray.isChecked():
-			self.showSystrayMenu.setEnabled(True)
-			self.minSystray.setEnabled(True)
-			if self.minSystray.isChecked():
-				self.systrayNotify.setEnabled(True)
-				self.listSystray.setEnabled(True)
-				self.systrayDisconnect.setEnabled(True)
-				self.systrayNickname.setEnabled(True)
-				self.systrayPrivate.setEnabled(True)
-				self.systrayKick.setEnabled(True)
-				self.systrayInvite.setEnabled(True)
-				self.systrayNotice.setEnabled(True)
-				self.systrayMode.setEnabled(True)
-				self.systrayMinOnClose.setEnabled(True)
-				self.setFlashInterval.setEnabled(True)
-				self.flashInterval.setEnabled(True)
-				self.doubleclickRestore.setEnabled(True)
-				self.clickToMinimize.setEnabled(True)
-			else:
-				self.systrayNotify.setEnabled(False)
-				self.listSystray.setEnabled(False)
-				self.systrayDisconnect.setEnabled(False)
-				self.systrayNickname.setEnabled(False)
-				self.systrayPrivate.setEnabled(False)
-				self.systrayKick.setEnabled(False)
-				self.systrayInvite.setEnabled(False)
-				self.systrayNotice.setEnabled(False)
-				self.systrayMode.setEnabled(False)
-				self.systrayMinOnClose.setEnabled(False)
-				self.setFlashInterval.setEnabled(False)
-				self.flashInterval.setEnabled(False)
-				self.doubleclickRestore.setEnabled(False)
-				self.clickToMinimize.setEnabled(False)
-		else:
-			self.showSystrayMenu.setEnabled(False)
-			self.minSystray.setEnabled(False)
-			self.systrayNotify.setEnabled(False)
-			self.listSystray.setEnabled(False)
-			self.systrayDisconnect.setEnabled(False)
-			self.systrayNickname.setEnabled(False)
-			self.systrayPrivate.setEnabled(False)
-			self.systrayKick.setEnabled(False)
-			self.systrayInvite.setEnabled(False)
-			self.systrayNotice.setEnabled(False)
-			self.systrayMode.setEnabled(False)
-			self.systrayMinOnClose.setEnabled(False)
-			self.setFlashInterval.setEnabled(False)
-			self.flashInterval.setEnabled(False)
-			self.doubleclickRestore.setEnabled(False)
-			self.clickToMinimize.setEnabled(False)
 
 		# Scripting
 
@@ -3713,147 +3738,122 @@ class Dialog(QDialog):
 
 		self.syntaxPage.setLayout(syntaxLayout)
 
-		# Notifications
+		# Miscellaneous page
 
-		self.notificationsPage = QWidget()
+		self.miscPage = QWidget()
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Notifications")
-		entry.widget = self.notificationsPage
-		entry.setIcon(QIcon(NOTIFICATION_ICON))
+		entry.setText("Miscellaneous")
+		entry.widget = self.miscPage
+		entry.setIcon(QIcon(MISC_ICON))
 		self.selector.addItem(entry)
 
-		self.stack.addWidget(self.notificationsPage)
+		self.stack.addWidget(self.miscPage)
 
-		self.audioNotifications = QCheckBox("Play audio notifications",self)
-		if config.SOUND_NOTIFICATIONS: self.audioNotifications.setChecked(True)
-		self.audioNotifications.stateChanged.connect(self.changedNotifications)
+		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
+		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
+		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
-		self.notifyDisco = QCheckBox("Disconnection from server",self)
-		if config.SOUND_NOTIFICATION_DISCONNECT: self.notifyDisco.setChecked(True)
-		self.notifyDisco.stateChanged.connect(self.changedSetting)
+		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/emoji_shortcode_list.pdf")).toEncoded()).decode()
 
-		self.notifyNickname = QCheckBox("Nickname\nmention",self)
-		if config.SOUND_NOTIFICATION_NICKNAME: self.notifyNickname.setChecked(True)
-		self.notifyNickname.stateChanged.connect(self.changedSetting)
-		self.notifyNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.notifyPrivate = QCheckBox("Private\nmessage",self)
-		if config.SOUND_NOTIFICATION_PRIVATE: self.notifyPrivate.setChecked(True)
-		self.notifyPrivate.stateChanged.connect(self.changedSetting)
-		self.notifyPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.notifyNotice = QCheckBox("Notice",self)
-		if config.SOUND_NOTIFICATION_NOTICE: self.notifyNotice.setChecked(True)
-		self.notifyNotice.stateChanged.connect(self.changedSetting)
-
-		self.notifyKick = QCheckBox("Kick",self)
-		if config.SOUND_NOTIFICATION_KICK: self.notifyKick.setChecked(True)
-		self.notifyKick.stateChanged.connect(self.changedSetting)
-
-		self.notifyInvite = QCheckBox("Invite",self)
-		if config.SOUND_NOTIFICATION_INVITE: self.notifyInvite.setChecked(True)
-		self.notifyInvite.stateChanged.connect(self.changedSetting)
-
-		self.notifyMode = QCheckBox("Channel mode\nchange",self)
-		if config.SOUND_NOTIFICATION_MODE: self.notifyMode.setChecked(True)
-		self.notifyMode.stateChanged.connect(self.changedSetting)
-		self.notifyMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		if not self.audioNotifications.isChecked():
-			self.notifyDisco.setEnabled(False)
-			self.notifyNickname.setEnabled(False)
-			self.notifyPrivate.setEnabled(False)
-			self.notifyNotice.setEnabled(False)
-			self.notifyKick.setEnabled(False)
-			self.notifyInvite.setEnabled(False)
-			self.notifyMode.setEnabled(False)
-		
-		self.notifyDescription = QLabel("""
+		self.emojiDescription = QLabel(f"""
 			<small>
-			<b>Audio notifications</b>, when enabled, play a sound (by default, a bell) every time
-			one of the listed <b>events</b> occur. Any file of any length can be used for the notification
-			sound; the only limitation is that the file <b><i>must</i> be a WAV file</b>.
+			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
+			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
+			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
+			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
 			</small>
 			<br>
 			""")
-		self.notifyDescription.setWordWrap(True)
-		self.notifyDescription.setAlignment(Qt.AlignJustify)
+		self.emojiDescription.setWordWrap(True)
+		self.emojiDescription.setAlignment(Qt.AlignJustify)
+		self.emojiDescription.setOpenExternalLinks(True)
 
-		adiscLay = QHBoxLayout()
-		adiscLay.addWidget(self.notifyDisco)
-		adiscLay.addStretch()
+		escLayout = QHBoxLayout()
+		escLayout.addStretch()
+		escLayout.addWidget(self.enableEmojis)
+		escLayout.addStretch()
 
-		anickPriv = QHBoxLayout()
-		anickPriv.addWidget(self.notifyNickname)
-		anickPriv.addWidget(self.notifyPrivate)
+		self.partMsg = EmojiQuitAutocomplete(self)
+		self.partMsg.setText(self.default_quit_part)
 
-		akickInvite = QHBoxLayout()
-		akickInvite.addWidget(self.notifyKick)
-		akickInvite.addWidget(self.notifyInvite)
+		fm = self.partMsg.fontMetrics()
+		self.partMsg.setFixedHeight(fm.height()+10)
+		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-		anoticeMode = QHBoxLayout()
-		anoticeMode.addWidget(self.notifyNotice)
-		anoticeMode.addWidget(self.notifyMode)
+		self.partMsg.textChanged.connect(self.setQuitMsg)
 
-		bname = os.path.basename(self.sound)
-		self.soundLabel = QLabel("<b>"+bname+"</b>")
+		self.autoEmojiQuit = QCheckBox(f"Autocomplete emoji shortcodes",self)
+		if config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
+		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
 
-		soundButton = QPushButton("")
-		soundButton.clicked.connect(self.setSound)
-		soundButton.setAutoDefault(False)
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiQuit.setEnabled(False)
 
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		soundButton.setFixedSize(fheight +10,fheight + 10)
-		soundButton.setIcon(QIcon(EDIT_ICON))
-		soundButton.setToolTip("Set notification sound file")
+		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
+		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
 
-		playButton = QPushButton(" Play")
-		playButton.clicked.connect(self.playSound)
-		playButton.setAutoDefault(False)
-		playButton.setIcon(QIcon(RUN_ICON))
-		playButton.setToolTip("Play sound")
+		if not config.ENABLE_ALIASES:
+			self.autoAliasQuit.setEnabled(False)
 
-		soundDefault = QPushButton("Set to default")
-		soundDefault.clicked.connect(self.soundDefault)
-		soundDefault.setAutoDefault(False)
-		soundDefault.setToolTip("Set to default")
+		quitLayout = QVBoxLayout()
+		quitLayout.addWidget(self.partMsg)
+		quitLayout.addWidget(self.autoEmojiQuit)
+		quitLayout.addWidget(self.autoAliasQuit)
+		quitBox = QGroupBox("")
+		quitBox.setAlignment(Qt.AlignLeft)
+		quitBox.setLayout(quitLayout)
 
-		sbLayout = QHBoxLayout()
-		sbLayout.addStretch()
-		sbLayout.addWidget(soundButton)
-		sbLayout.addWidget(self.soundLabel)
-		sbLayout.addStretch()
+		self.awayMsg = EmojiAwayAutocomplete(self)
+		self.awayMsg.setText(self.default_away)
 
-		sbLayout2 = QHBoxLayout()
-		sbLayout2.addStretch()
-		sbLayout2.addWidget(playButton)
-		sbLayout2.addWidget(soundDefault)
-		sbLayout2.addStretch()
+		fm = self.awayMsg.fontMetrics()
+		self.awayMsg.setFixedHeight(fm.height()+10)
+		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-		audioMaster = QHBoxLayout()
-		audioMaster.addStretch()
-		audioMaster.addWidget(self.audioNotifications)
-		audioMaster.addStretch()
+		self.awayMsg.textChanged.connect(self.setAwayMsg)
 
-		audioLayout = QVBoxLayout()
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
-		audioLayout.addWidget(self.notifyDescription)
-		audioLayout.addLayout(audioMaster)
-		audioLayout.addWidget(QLabel(' '))
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
-		audioLayout.addLayout(anickPriv)
-		audioLayout.addLayout(akickInvite)
-		audioLayout.addLayout(anoticeMode)
-		audioLayout.addLayout(adiscLay)
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>sound file</b>"))
-		audioLayout.addLayout(sbLayout)
-		audioLayout.addLayout(sbLayout2)
-		audioLayout.addStretch()
+		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
+		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
+		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
 
-		self.notificationsPage.setLayout(audioLayout)
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiAway.setEnabled(False)
+
+		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
+		self.autoAliasAway.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasAway.setEnabled(False)
+
+		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(self.awayMsg)
+		awayLayout.addWidget(self.autoEmojiAway)
+		awayLayout.addWidget(self.autoAliasAway)
+		awayBox = QGroupBox("")
+		awayBox.setAlignment(Qt.AlignLeft)
+		awayBox.setLayout(awayLayout)
+
+		miscLayout = QVBoxLayout()
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
+		miscLayout.addWidget(self.emojiDescription)
+		miscLayout.addLayout(escLayout)
+		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
+		miscLayout.addWidget(quitBox)
+		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		miscLayout.addWidget(awayBox)
+		miscLayout.addStretch()
+
+		self.miscPage.setLayout(miscLayout)
 
 		# Advanced
 
