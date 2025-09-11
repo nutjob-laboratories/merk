@@ -1377,24 +1377,6 @@ class Dialog(QDialog):
 		if config.ASK_BEFORE_CLOSE: self.askBeforeExit.setChecked(True)
 		self.askBeforeExit.stateChanged.connect(self.changedSetting)
 
-		self.examineTopic = QCheckBox("Examine topics in channel\nlist searches",self)
-		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.examineTopic.setChecked(True)
-		self.examineTopic.stateChanged.connect(self.changedSetting)
-
-		self.examineTopic.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showChannelList = QCheckBox(f"Show channel list options in\nthe \"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
-		if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU: self.showChannelList.setChecked(True)
-		self.showChannelList.stateChanged.connect(self.changedSetting)
-
-		self.showChannelList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.searchAllTerms = QCheckBox("Search for all terms in\nchannel list searches",self)
-		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.searchAllTerms.setChecked(True)
-		self.searchAllTerms.stateChanged.connect(self.changedSetting)
-
-		self.searchAllTerms.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.showServerInfo = QCheckBox(f"Show server information in\nthe \"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
 		if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU: self.showServerInfo.setChecked(True)
 		self.showServerInfo.stateChanged.connect(self.changedSetting)
@@ -1415,7 +1397,20 @@ class Dialog(QDialog):
 		if config.ASK_FOR_SERVER_ON_STARTUP: self.showConnect.setChecked(True)
 		self.showConnect.stateChanged.connect(self.changedSetting)
 
+		logo = QLabel()
+		pixmap = QPixmap(SPLASH_LOGO)
+		logo.setPixmap(pixmap)
+		logo.setAlignment(Qt.AlignCenter)
+
+		app_link = QLabel(f'<center><b><small><a href="{APPLICATION_SOURCE}">{APPLICATION_SOURCE}</a></small></b></center>')
+		app_link.setOpenExternalLinks(True)
+
 		applicationLayout = QVBoxLayout()
+		applicationLayout.addWidget(logo)
+		applicationLayout.addWidget(QLabel(f'<center><b><small>Open Source IRC Client</small></b></center>'))
+		applicationLayout.addWidget(app_link)
+		applicationLayout.addWidget(QLabel(f'<center><b>Version {APPLICATION_VERSION}</b></center>'))
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
@@ -1425,9 +1420,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.simpleConnect)
-		applicationLayout.addWidget(self.examineTopic)
-		applicationLayout.addWidget(self.searchAllTerms)
-		applicationLayout.addWidget(self.showChannelList)
 		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.noAppNameTitle)
 		applicationLayout.addStretch()
@@ -2883,7 +2875,43 @@ class Dialog(QDialog):
 			self.appCancelAway.setEnabled(False)
 			self.autoawayInterval.setEnabled(False)
 
+		self.awayMsg = EmojiAwayAutocomplete(self)
+		self.awayMsg.setText(self.default_away)
+
+		fm = self.awayMsg.fontMetrics()
+		self.awayMsg.setFixedHeight(fm.height()+10)
+		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.awayMsg.textChanged.connect(self.setAwayMsg)
+
+		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
+		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
+		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiAway.setEnabled(False)
+
+		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
+		self.autoAliasAway.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasAway.setEnabled(False)
+
 		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(self.awayMsg)
+		awayLayout.addWidget(self.autoEmojiAway)
+		awayLayout.addWidget(self.autoAliasAway)
+		awayBox = QGroupBox("")
+		awayBox.setAlignment(Qt.AlignLeft)
+		awayBox.setLayout(awayLayout)
+
+		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		awayLayout.addWidget(awayBox)
+		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addWidget(self.promptAway)
 		awayLayout.addWidget(self.showAwayBack)
@@ -3800,59 +3828,48 @@ class Dialog(QDialog):
 		if not config.ENABLE_ALIASES:
 			self.autoAliasQuit.setEnabled(False)
 
-		quitLayout = QVBoxLayout()
-		quitLayout.addWidget(self.partMsg)
-		quitLayout.addWidget(self.autoEmojiQuit)
-		quitLayout.addWidget(self.autoAliasQuit)
+		qfLayout = QVBoxLayout()
+		qfLayout.addWidget(self.partMsg)
+		qfLayout.addWidget(self.autoEmojiQuit)
+		qfLayout.addWidget(self.autoAliasQuit)
+
 		quitBox = QGroupBox("")
 		quitBox.setAlignment(Qt.AlignLeft)
-		quitBox.setLayout(quitLayout)
+		quitBox.setLayout(qfLayout)
 
-		self.awayMsg = EmojiAwayAutocomplete(self)
-		self.awayMsg.setText(self.default_away)
+		size_policy = quitBox.sizePolicy()
+		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
+		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
+		quitBox.setSizePolicy(size_policy)
 
-		fm = self.awayMsg.fontMetrics()
-		self.awayMsg.setFixedHeight(fm.height()+10)
-		self.awayMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.awayMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.awayMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.showChannelList = QCheckBox(f"Show channel list options in\nthe \"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
+		if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU: self.showChannelList.setChecked(True)
+		self.showChannelList.stateChanged.connect(self.changedSetting)
+		self.showChannelList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.awayMsg.textChanged.connect(self.setAwayMsg)
+		self.searchAllTerms = QCheckBox("Search for all terms in\nchannel list searches",self)
+		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.searchAllTerms.setChecked(True)
+		self.searchAllTerms.stateChanged.connect(self.changedSetting)
+		self.searchAllTerms.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
-		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiAway.setEnabled(False)
-
-		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
-		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
-		self.autoAliasAway.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasAway.setEnabled(False)
-
-		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(self.awayMsg)
-		awayLayout.addWidget(self.autoEmojiAway)
-		awayLayout.addWidget(self.autoAliasAway)
-		awayBox = QGroupBox("")
-		awayBox.setAlignment(Qt.AlignLeft)
-		awayBox.setLayout(awayLayout)
+		self.examineTopic = QCheckBox("Examine topics in channel\nlist searches",self)
+		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.examineTopic.setChecked(True)
+		self.examineTopic.stateChanged.connect(self.changedSetting)
+		self.examineTopic.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		miscLayout = QVBoxLayout()
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
+		miscLayout.addWidget(quitBox)
+		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
 		miscLayout.addWidget(QLabel(' '))
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
-		miscLayout.addWidget(quitBox)
-		miscLayout.addWidget(QLabel(' '))
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		miscLayout.addWidget(awayBox)
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list options</b>"))
+		miscLayout.addWidget(self.showChannelList)
+		miscLayout.addWidget(self.searchAllTerms)
+		miscLayout.addWidget(self.examineTopic)
 		miscLayout.addStretch()
-
 		self.miscPage.setLayout(miscLayout)
 
 		# Advanced
