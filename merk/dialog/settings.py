@@ -825,7 +825,6 @@ class Dialog(QDialog):
 			self.serverHeartbeatLabel.setEnabled(True)
 			self.heartbeatLength.setEnabled(True)
 			self.heartbeatLabelSpec.setEnabled(True)
-			self.escapeHTML.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -835,12 +834,6 @@ class Dialog(QDialog):
 			self.serverHeartbeatLabel.setEnabled(False)
 			self.heartbeatLength.setEnabled(False)
 			self.heartbeatLabelSpec.setEnabled(False)
-			self.escapeHTML.setEnabled(False)
-
-			if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE:
-				self.escapeHTML.setChecked(True)
-			else:
-				self.escapeHTML.setChecked(False)
 
 			self.heartbeatLength.setValue(config.TWISTED_CLIENT_HEARTBEAT)
 			self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
@@ -3670,7 +3663,7 @@ class Dialog(QDialog):
 		aliasLayout.addWidget(self.alias_symbol_label)
 		aliasLayout.addStretch()
 
-		self.enableShell = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}shell command",self)
+		self.enableShell = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}shell",self)
 		if config.ENABLE_SHELL_COMMAND: self.enableShell.setChecked(True)
 		self.enableShell.stateChanged.connect(self.changedSettingEditor)
 
@@ -3702,7 +3695,7 @@ class Dialog(QDialog):
 		self.requireArgs.stateChanged.connect(self.changedSetting)
 		self.requireArgs.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.enableInsert = QCheckBox(f"Enable insert command",self)
+		self.enableInsert = QCheckBox(f"insert",self)
 		if config.ENABLE_INSERT_COMMAND: self.enableInsert.setChecked(True)
 		self.enableInsert.stateChanged.connect(self.changedSettingEditor)
 
@@ -3711,11 +3704,11 @@ class Dialog(QDialog):
 		self.promptScript.stateChanged.connect(self.changedSetting)
 		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.enableDelay = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}delay command",self)
+		self.enableDelay = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}delay",self)
 		if config.ENABLE_DELAY_COMMAND: self.enableDelay.setChecked(True)
 		self.enableDelay.stateChanged.connect(self.changedSettingEditor)
 
-		self.enableConfig = QCheckBox(f"Enable {config.ISSUE_COMMAND_SYMBOL}config command",self)
+		self.enableConfig = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}config",self)
 		if config.ENABLE_CONFIG_COMMAND: self.enableConfig.setChecked(True)
 		self.enableConfig.stateChanged.connect(self.changedSettingEditor)
 
@@ -3737,6 +3730,19 @@ class Dialog(QDialog):
 			self.requireArgs.setEnabled(False)
 			self.promptScript.setEnabled(False)
 
+		cmdLayout = QFormLayout()
+		cmdLayout.addRow(self.enableInsert,self.enableShell)
+		cmdLayout.addRow(self.enableDelay,self.enableConfig)
+
+		cmdLayout2 = QHBoxLayout()
+		cmdLayout2.addStretch()
+		cmdLayout2.addLayout(cmdLayout)
+		cmdLayout2.addStretch()
+
+		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints",self)
+		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
+		self.escapeHTML.stateChanged.connect(self.changedSettingRerender)
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
@@ -3752,10 +3758,9 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command settings</b>"))
 		scriptingLayout.addWidget(self.requireArgs)
 		scriptingLayout.addWidget(self.promptScript)
-		scriptingLayout.addWidget(self.enableInsert)
-		scriptingLayout.addWidget(self.enableShell)
-		scriptingLayout.addWidget(self.enableDelay)
-		scriptingLayout.addWidget(self.enableConfig)
+		scriptingLayout.addWidget(self.escapeHTML)
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable commands</b>"))
+		scriptingLayout.addLayout(cmdLayout2)
 		scriptingLayout.addStretch()
 
 		self.scriptingPage.setLayout(scriptingLayout)
@@ -4040,12 +4045,6 @@ class Dialog(QDialog):
 		self.heartbeatLength.setEnabled(False)
 		self.heartbeatLabelSpec.setEnabled(False)
 
-		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints\ncommands",self)
-		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
-		self.escapeHTML.stateChanged.connect(self.changedSettingAdvanced)
-		self.escapeHTML.setEnabled(False)
-		self.escapeHTML.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -4054,7 +4053,6 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addWidget(self.enableStyle)
-		advancedLayout.addWidget(self.escapeHTML)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
