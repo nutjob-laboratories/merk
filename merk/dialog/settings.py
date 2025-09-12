@@ -3730,14 +3730,11 @@ class Dialog(QDialog):
 			self.requireArgs.setEnabled(False)
 			self.promptScript.setEnabled(False)
 
-		cmdLayout = QFormLayout()
-		cmdLayout.addRow(self.enableInsert,self.enableShell)
-		cmdLayout.addRow(self.enableDelay,self.enableConfig)
-
-		cmdLayout2 = QHBoxLayout()
-		cmdLayout2.addStretch()
-		cmdLayout2.addLayout(cmdLayout)
-		cmdLayout2.addStretch()
+		cmdLayout = QHBoxLayout()
+		cmdLayout.addWidget(self.enableInsert)
+		cmdLayout.addWidget(self.enableShell)
+		cmdLayout.addWidget(self.enableDelay)
+		cmdLayout.addWidget(self.enableConfig)
 
 		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints",self)
 		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
@@ -3760,7 +3757,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.promptScript)
 		scriptingLayout.addWidget(self.escapeHTML)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable commands</b>"))
-		scriptingLayout.addLayout(cmdLayout2)
+		scriptingLayout.addLayout(cmdLayout)
 		scriptingLayout.addStretch()
 
 		self.scriptingPage.setLayout(scriptingLayout)
