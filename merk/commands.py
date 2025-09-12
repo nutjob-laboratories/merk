@@ -176,6 +176,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"windows": config.ISSUE_COMMAND_SYMBOL+"windows",
 			config.ISSUE_COMMAND_SYMBOL+"close": config.ISSUE_COMMAND_SYMBOL+"close ",
 			config.ISSUE_COMMAND_SYMBOL+"random": config.ISSUE_COMMAND_SYMBOL+"random ",
+			config.ISSUE_COMMAND_SYMBOL+"prints": config.ISSUE_COMMAND_SYMBOL+"prints ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -280,6 +281,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"windows</b>", "Generates a list of all connected windows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1004,6 +1006,55 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |---------|
+	# | /prints |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'prints' and len(tokens)>=2:
+			tokens.pop(0)
+
+			target = tokens.pop(0)
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				msg = ' '.join(tokens)
+				if len(msg)>0:
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: No text to print")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"No text to print")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			msg = target+' '+' '.join(tokens)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+			# Get the current active window
+			w = gui.MDI.activeSubWindow()
+			if hasattr(w,"widget"):
+				c = w.widget()
+				if hasattr(c,"writeText"):
+					c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'prints' and len(tokens)==1:
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW] TEXT")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW] TEXT")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /random |
@@ -2699,10 +2750,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"print TEXT")
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"print [WINDOW] TEXT")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"print TEXT")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"print [WINDOW] TEXT")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

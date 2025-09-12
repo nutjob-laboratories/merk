@@ -284,6 +284,10 @@ Appearance:
 <td>Prints text to a window</td>
 </tr>
 <tr>
+<td><code>/prints [WINDOW] TEXT...</code></td>
+<td>Prints a system message to a window</td>
+</tr>
+<tr>
 <td><code>/private NICKNAME</code></td>
 <td>Opens a private chatwindow for <code>NICKNAME</code></td>
 </tr>
