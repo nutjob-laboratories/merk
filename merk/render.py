@@ -186,6 +186,11 @@ def render_message(message,style,client=None,no_padding=False):
 	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
 		msg_to_display = html.escape(msg_to_display)
 
+	# Escape HTML if it's turned on for /print
+	if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE:
+		if message.type==RAW_SYSTEM_MESSAGE or message.type==SYSTEM_MESSAGE:
+			msg_to_display = html.escape(msg_to_display)
+
 	if config.CONVERT_CHANNELS_TO_LINKS:
 		if client!=None:
 			if config.DO_NOT_APPLY_STYLES_TO_TEXT:

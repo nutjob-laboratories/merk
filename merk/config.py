@@ -275,9 +275,11 @@ SYNTAX_SCRIPT_STYLE = "bold"
 AUTOCOMPLETE_SETTINGS = True
 ENABLE_CONFIG_COMMAND = True
 DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = True
+ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = False
 
 def build_settings():
 	settings = {
+		"escape_html_in_print_and_prints_messages": ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE,
 		"display_error_message_for_restrict_and_only_violation": DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION,
 		"enable_config_command": ENABLE_CONFIG_COMMAND,
 		"autocomplete_settings": AUTOCOMPLETE_SETTINGS,
@@ -519,6 +521,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "escape_html_in_print_and_prints_messages" in settings:
+		settings["escape_html_in_print_and_prints_messages"] = ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE
 	if not "display_error_message_for_restrict_and_only_violation" in settings:
 		settings["display_error_message_for_restrict_and_only_violation"] = DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION
 	if not "enable_config_command" in settings:
@@ -1232,6 +1236,7 @@ def load_settings(filename):
 	global AUTOCOMPLETE_SETTINGS
 	global ENABLE_CONFIG_COMMAND
 	global DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION
+	global ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1241,6 +1246,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = settings["escape_html_in_print_and_prints_messages"]
 		DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = settings["display_error_message_for_restrict_and_only_violation"]
 		ENABLE_CONFIG_COMMAND = settings["enable_config_command"]
 		AUTOCOMPLETE_SETTINGS = settings["autocomplete_settings"]

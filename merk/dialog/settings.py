@@ -825,6 +825,7 @@ class Dialog(QDialog):
 			self.serverHeartbeatLabel.setEnabled(True)
 			self.heartbeatLength.setEnabled(True)
 			self.heartbeatLabelSpec.setEnabled(True)
+			self.escapeHTML.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -834,6 +835,12 @@ class Dialog(QDialog):
 			self.serverHeartbeatLabel.setEnabled(False)
 			self.heartbeatLength.setEnabled(False)
 			self.heartbeatLabelSpec.setEnabled(False)
+			self.escapeHTML.setEnabled(False)
+
+			if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE:
+				self.escapeHTML.setChecked(True)
+			else:
+				self.escapeHTML.setChecked(False)
 
 			self.heartbeatLength.setValue(config.TWISTED_CLIENT_HEARTBEAT)
 			self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
@@ -4033,6 +4040,12 @@ class Dialog(QDialog):
 		self.heartbeatLength.setEnabled(False)
 		self.heartbeatLabelSpec.setEnabled(False)
 
+		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints\ncommands",self)
+		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
+		self.escapeHTML.stateChanged.connect(self.changedSettingAdvanced)
+		self.escapeHTML.setEnabled(False)
+		self.escapeHTML.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -4041,6 +4054,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addWidget(self.enableStyle)
+		advancedLayout.addWidget(self.escapeHTML)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
@@ -4365,6 +4379,7 @@ class Dialog(QDialog):
 		config.MENUBAR_DOCKED_AT_TOP = self.menubarTop.isChecked()
 		config.NICKNAME_PAD_LENGTH = self.nicknamePadLength
 		config.TWISTED_CLIENT_HEARTBEAT = self.heartbeat
+		config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = self.escapeHTML.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
