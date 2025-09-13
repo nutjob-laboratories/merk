@@ -2045,10 +2045,10 @@ class Dialog(QDialog):
 		windowbarLayout.addLayout(justifyLayout)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show active window in...</b>"))
 		windowbarLayout.addLayout(wbAppearLayout)
-		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden...</b>"))
-		windowbarLayout.addLayout(hiddenLayout)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
 		windowbarLayout.addLayout(includesLayout)
+		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden windows</b>"))
+		windowbarLayout.addLayout(hiddenLayout)
 		windowbarLayout.addStretch()
 
 		self.windowbarPage.setLayout(windowbarLayout)
