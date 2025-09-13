@@ -51,6 +51,7 @@ class Window(QMainWindow):
 
 		self.window_type = README_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
+		self.name = "README"
 
 		self.setWindowTitle("README")
 

@@ -276,9 +276,11 @@ AUTOCOMPLETE_SETTINGS = True
 ENABLE_CONFIG_COMMAND = True
 DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = True
 ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = False
+HIDE_WINDOWBAR_IF_EMPTY = True
 
 def build_settings():
 	settings = {
+		"hide_windowbar_if_empty": HIDE_WINDOWBAR_IF_EMPTY,
 		"escape_html_in_print_and_prints_messages": ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE,
 		"display_error_message_for_restrict_and_only_violation": DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION,
 		"enable_config_command": ENABLE_CONFIG_COMMAND,
@@ -521,6 +523,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "hide_windowbar_if_empty" in settings:
+		settings["hide_windowbar_if_empty"] = HIDE_WINDOWBAR_IF_EMPTY
 	if not "escape_html_in_print_and_prints_messages" in settings:
 		settings["escape_html_in_print_and_prints_messages"] = ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE
 	if not "display_error_message_for_restrict_and_only_violation" in settings:
@@ -1237,6 +1241,7 @@ def load_settings(filename):
 	global ENABLE_CONFIG_COMMAND
 	global DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION
 	global ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE
+	global HIDE_WINDOWBAR_IF_EMPTY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1246,6 +1251,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIDE_WINDOWBAR_IF_EMPTY = settings["hide_windowbar_if_empty"]
 		ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = settings["escape_html_in_print_and_prints_messages"]
 		DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = settings["display_error_message_for_restrict_and_only_violation"]
 		ENABLE_CONFIG_COMMAND = settings["enable_config_command"]

@@ -1032,6 +1032,7 @@ class Dialog(QDialog):
 			self.windowbarItalics.setEnabled(True)
 			self.channelHidden.setEnabled(True)
 			self.privateHidden.setEnabled(True)
+			self.autoHide.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1055,6 +1056,7 @@ class Dialog(QDialog):
 			self.windowbarItalics.setEnabled(False)
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
+			self.autoHide.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -1943,6 +1945,10 @@ class Dialog(QDialog):
 		if config.SHOW_HIDDEN_PRIVATE_WINDOWS_IN_WINDOWBAR: self.privateHidden.setChecked(True)
 		self.privateHidden.stateChanged.connect(self.menuChange)
 
+		self.autoHide = QCheckBox("Auto-hide",self)
+		if config.HIDE_WINDOWBAR_IF_EMPTY: self.autoHide.setChecked(True)
+		self.autoHide.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1966,6 +1972,7 @@ class Dialog(QDialog):
 			self.windowbarItalics.setEnabled(False)
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
+			self.autoHide.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -1980,13 +1987,10 @@ class Dialog(QDialog):
 		wbMenuLayout = QFormLayout()
 		wbMenuLayout.addRow(self.windowbarMenu,self.windowbarEntryMenu)
 
-		wbMenuLayout2 = QFormLayout()
-		wbMenuLayout2.addRow(self.windowBarFloat,self.windowBarTop)
-
 		windowbar2Layout = QHBoxLayout()
-		windowbar2Layout.addStretch()
-		windowbar2Layout.addLayout(wbMenuLayout2)
-		windowbar2Layout.addStretch()
+		windowbar2Layout.addWidget(self.windowBarFloat)
+		windowbar2Layout.addWidget(self.windowBarTop)
+		windowbar2Layout.addWidget(self.autoHide)
 
 		hiddenLayout = QFormLayout()
 		hiddenLayout.addRow(self.channelHidden,self.privateHidden)
@@ -4375,6 +4379,7 @@ class Dialog(QDialog):
 		config.NICKNAME_PAD_LENGTH = self.nicknamePadLength
 		config.TWISTED_CLIENT_HEARTBEAT = self.heartbeat
 		config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = self.escapeHTML.isChecked()
+		config.HIDE_WINDOWBAR_IF_EMPTY = self.autoHide.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

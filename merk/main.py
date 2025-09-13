@@ -428,11 +428,15 @@ class Merk(QMainWindow):
 				if self.log_manager.isVisible():
 					window_list.append(self.log_manager)
 
-		if len(window_list)>0:
-			self.windowbar.show()
+		if config.HIDE_WINDOWBAR_IF_EMPTY:
+			if len(window_list)>0:
+				self.windowbar.show()
+			else:
+				self.windowbar.hide()
+				return
 		else:
-			self.windowbar.hide()
-			return
+			self.windowbar.show()
+			if len(window_list)==0: return
 
 		if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
 			menubar.add_toolbar_stretch(self.windowbar)

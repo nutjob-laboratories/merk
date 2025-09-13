@@ -764,6 +764,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.float)
 		menu.addAction(entry)
 
+		if config.HIDE_WINDOWBAR_IF_EMPTY:
+			entry = QAction(QIcon(self.parent.checked_icon),"Auto-hide", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Auto-hide", self)
+		entry.triggered.connect(self.autohide)
+		menu.addAction(entry)
+
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			entry = QAction(QIcon(self.parent.checked_icon),"Show active first", self)
 		else:
@@ -975,6 +982,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = False
 		else:
 			config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def autohide(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.HIDE_WINDOWBAR_IF_EMPTY:
+			config.HIDE_WINDOWBAR_IF_EMPTY = False
+		else:
+			config.HIDE_WINDOWBAR_IF_EMPTY = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)
