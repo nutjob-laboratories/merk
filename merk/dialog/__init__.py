@@ -54,6 +54,7 @@ from .set_usage import Dialog as SetUsage
 from .restrict import Dialog as SetRestrict
 from .set_delay import Dialog as SetDelay
 from .reclaim import Dialog as SetReclaim
+from .set_insert import Dialog as SetInsert
 
 def SetKeyDialog(parent):
 	x = SetKey(parent)

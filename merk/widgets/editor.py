@@ -592,7 +592,16 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertPrevious)
 		self.winCommands.addAction(entry)
 
-		self.scriptCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Script control")
+		self.scriptCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Scripting")
+
+		entry = QAction(QIcon(EXE_ICON),"Execute script",self)
+		entry.triggered.connect(self.insertScript)
+		self.scriptCommands.addAction(entry)
+
+		if config.ENABLE_INSERT_COMMAND:
+			entry = QAction(QIcon(EXE_ICON),"Insert script",self)
+			entry.triggered.connect(self.insertScriptInsert)
+			self.scriptCommands.addAction(entry)
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
 		entry.triggered.connect(self.insertPause)
@@ -622,8 +631,12 @@ class Window(QMainWindow):
 
 		self.displayCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Display")
 
-		entry = QAction(QIcon(EDIT_ICON),"Print to window",self)
+		entry = QAction(QIcon(EDIT_ICON),"Print text",self)
 		entry.triggered.connect(self.insertWrite)
+		self.displayCommands.addAction(entry)
+
+		entry = QAction(QIcon(EDIT_ICON),"Print system message",self)
+		entry.triggered.connect(self.insertWriteSystem)
 		self.displayCommands.addAction(entry)
 
 		entry = QAction(QIcon(WINDOW_ICON),"Display message box",self)
@@ -647,18 +660,15 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertPlay)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(EXE_ICON),"Execute script",self)
-		entry.triggered.connect(self.insertScript)
-		self.commandMenu.addAction(entry)
-
 		if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
 			entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
 			entry.triggered.connect(self.insertShell)
 			self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(EXE_ICON),"Delay command",self)
-		entry.triggered.connect(self.insertDelay)
-		self.commandMenu.addAction(entry)
+		if config.ENABLE_DELAY_COMMAND:
+			entry = QAction(QIcon(EXE_ICON),"Delay command",self)
+			entry.triggered.connect(self.insertDelay)
+			self.commandMenu.addAction(entry)
 
 		entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
 		entry.triggered.connect(self.insertReclaim)
@@ -1177,6 +1187,15 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"nick "+str(e)+"\n")
 		self.updateApplicationTitle()
 
+	def insertScriptInsert(self):
+		x = SetInsert(self)
+		e = x.get_script_information(self)
+
+		if not e: return
+
+		self.editor.insertPlainText("insert "+str(e)+"\n")
+		self.updateApplicationTitle()
+
 	def insertScript(self):
 		x = SetScript(self)
 		e = x.get_script_information(self)
@@ -1200,6 +1219,16 @@ class Window(QMainWindow):
 		
 		if len(target)>0 and len(msg)>0:
 			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"notice "+target+" "+msg+"\n")
+			self.updateApplicationTitle()
+
+	def insertWriteSystem(self):
+		x = PrintMsg(self)
+		e = x.get_message_information(self)
+
+		if not e: return
+
+		if len(e)>0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"prints "+e+"\n")
 			self.updateApplicationTitle()
 
 	def insertWrite(self):
