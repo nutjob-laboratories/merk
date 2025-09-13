@@ -229,7 +229,7 @@ class Window(QMainWindow):
 		self.log = []
 		self.export_format = 'json'
 
-		self.window_type = MANAGER_WINDOW
+		self.window_type = LOG_MANAGER_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
 		self.name = "Log Manager"
 

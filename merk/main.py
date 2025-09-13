@@ -529,7 +529,7 @@ class Merk(QMainWindow):
 					else:
 						wname = c.client.server+":"+str(entry.port) + " channels"
 						serv_name = c.client.server+":"+str(entry.port)
-				elif c.window_type==MANAGER_WINDOW:
+				elif c.window_type==LOG_MANAGER_WINDOW:
 					icon = LOG_ICON
 					serv_name = "Log Manager"
 					wname = "Log Manager"
@@ -544,7 +544,7 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
 				else:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
-				if c.window_type==MANAGER_WINDOW:
+				if c.window_type==LOG_MANAGER_WINDOW:
 					if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 						button.doubleClicked.connect(self.menuExportLogMax)
 					else:
@@ -561,7 +561,7 @@ class Merk(QMainWindow):
 					button.setToolTip(wname)
 				if c.window_type==LIST_WINDOW:
 					button.setToolTip(serv_name)
-				if c.window_type==MANAGER_WINDOW:
+				if c.window_type==LOG_MANAGER_WINDOW:
 					button.setToolTip(serv_name)
 
 				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
@@ -645,7 +645,7 @@ class Merk(QMainWindow):
 
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
-				elif c.window_type==MANAGER_WINDOW:
+				elif c.window_type==LOG_MANAGER_WINDOW:
 					icon = LOG_ICON
 					serv_name = "Log Manager"
 					wname = "Log Manager"
@@ -657,7 +657,7 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindowMaximized(u))
 				else:
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
-				if c.window_type==MANAGER_WINDOW:
+				if c.window_type==LOG_MANAGER_WINDOW:
 					if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 						button.doubleClicked.connect(self.menuExportLogMax)
 					else:
@@ -675,7 +675,7 @@ class Merk(QMainWindow):
 					button.setToolTip(wname)
 				if c.window_type==LIST_WINDOW:
 					button.setToolTip(wname)
-				if c.window_type==MANAGER_WINDOW:
+				if c.window_type==LOG_MANAGER_WINDOW:
 					button.setToolTip(wname)
 
 				if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS:
