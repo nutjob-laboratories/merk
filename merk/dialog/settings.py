@@ -1033,6 +1033,7 @@ class Dialog(QDialog):
 			self.channelHidden.setEnabled(True)
 			self.privateHidden.setEnabled(True)
 			self.autoHide.setEnabled(True)
+			self.windowbarIncludeReadme.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1057,6 +1058,7 @@ class Dialog(QDialog):
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
 			self.autoHide.setEnabled(False)
+			self.windowbarIncludeReadme.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -1949,6 +1951,10 @@ class Dialog(QDialog):
 		if config.HIDE_WINDOWBAR_IF_EMPTY: self.autoHide.setChecked(True)
 		self.autoHide.stateChanged.connect(self.menuChange)
 
+		self.windowbarIncludeReadme = QCheckBox("README",self)
+		if config.WINDOWBAR_INCLUDE_README: self.windowbarIncludeReadme.setChecked(True)
+		self.windowbarIncludeReadme.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1973,11 +1979,13 @@ class Dialog(QDialog):
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
 			self.autoHide.setEnabled(False)
+			self.windowbarIncludeReadme.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
 		includesLayout.addRow(self.windowBarServers,self.windowBarEditor)
 		includesLayout.addRow(self.windowbarLists,self.windowbarManager)
+		includesLayout.addRow(self.windowbarIncludeReadme)
 
 		windowbar1Layout = QHBoxLayout()
 		windowbar1Layout.addStretch()
@@ -4380,6 +4388,7 @@ class Dialog(QDialog):
 		config.TWISTED_CLIENT_HEARTBEAT = self.heartbeat
 		config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = self.escapeHTML.isChecked()
 		config.HIDE_WINDOWBAR_IF_EMPTY = self.autoHide.isChecked()
+		config.WINDOWBAR_INCLUDE_README = self.windowbarIncludeReadme.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

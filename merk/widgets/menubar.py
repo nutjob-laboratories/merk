@@ -858,6 +858,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.list_manager)
 		self.includesMenu.addAction(entry)
 
+		if config.WINDOWBAR_INCLUDE_README:
+			entry = QAction(QIcon(self.parent.checked_icon),"README", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"README", self)
+		entry.triggered.connect(self.readme)
+		self.includesMenu.addAction(entry)
+
 		menu.addMenu(self.includesMenu)
 
 		self.hiddenMenu = QMenu("Display hidden...")
@@ -1072,6 +1079,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_INCLUDE_EDITORS = False
 		else:
 			config.WINDOWBAR_INCLUDE_EDITORS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def readme(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_INCLUDE_README:
+			config.WINDOWBAR_INCLUDE_README = False
+		else:
+			config.WINDOWBAR_INCLUDE_README = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)

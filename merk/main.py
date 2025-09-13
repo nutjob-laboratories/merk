@@ -428,6 +428,11 @@ class Merk(QMainWindow):
 				if self.log_manager.isVisible():
 					window_list.append(self.log_manager)
 
+		if config.WINDOWBAR_INCLUDE_README:
+			if self.readme_window!=None:
+				if self.readme_window.isVisible():
+					window_list.append(self.readme_window)
+
 		if config.HIDE_WINDOWBAR_IF_EMPTY:
 			if len(window_list)>0:
 				self.windowbar.show()
@@ -537,6 +542,10 @@ class Merk(QMainWindow):
 					icon = LOG_ICON
 					serv_name = "Log Manager"
 					wname = "Log Manager"
+				elif c.window_type==README_WINDOW:
+					icon = README_ICON
+					serv_name = "README"
+					wname = "README"
 
 				if config.WINDOWBAR_SHOW_ICONS:
 					button = menubar.get_icon_windowbar_button(icon,wname)
@@ -566,6 +575,8 @@ class Merk(QMainWindow):
 				if c.window_type==LIST_WINDOW:
 					button.setToolTip(serv_name)
 				if c.window_type==LOG_MANAGER_WINDOW:
+					button.setToolTip(serv_name)
+				if c.window_type==README_WINDOW:
 					button.setToolTip(serv_name)
 
 				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
@@ -653,6 +664,10 @@ class Merk(QMainWindow):
 					icon = LOG_ICON
 					serv_name = "Log Manager"
 					wname = "Log Manager"
+				elif c.window_type==README_WINDOW:
+					icon = README_ICON
+					serv_name = "README"
+					wname = "README"
 
 				button = menubar.get_icon_only_toolbar_button(icon)
 				button.setWindow(window)
@@ -680,6 +695,8 @@ class Merk(QMainWindow):
 				if c.window_type==LIST_WINDOW:
 					button.setToolTip(wname)
 				if c.window_type==LOG_MANAGER_WINDOW:
+					button.setToolTip(wname)
+				if c.window_type==README_WINDOW:
 					button.setToolTip(wname)
 
 				if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS:
