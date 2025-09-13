@@ -582,7 +582,7 @@ class Merk(QMainWindow):
 				if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 					if window == self.MDI.activeSubWindow():
 						font = button.font()
-						font.setBold(True)
+						if config.WINDOWBAR_BOLD_ACTIVE_WINDOW: font.setBold(True)
 						if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: font.setUnderline(True)
 						button.setFont(font)
 
@@ -715,7 +715,7 @@ class Merk(QMainWindow):
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			if len(button_list)>0:
 				font = button_list[0].font()
-				font.setBold(True)
+				if config.WINDOWBAR_BOLD_ACTIVE_WINDOW: font.setBold(True)
 				if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: font.setUnderline(True)
 				button_list[0].setFont(font)
 

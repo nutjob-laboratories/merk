@@ -1038,12 +1038,13 @@ class Dialog(QDialog):
 			self.windowbarManager.setEnabled(True)
 			self.windowbarUnread.setEnabled(True)
 			self.windowbarEntryMenu.setEnabled(True)
-			self.windowbarHidden.setEnabled(True)
+			self.serverHidden.setEnabled(True)
 			self.windowbarItalics.setEnabled(True)
 			self.channelHidden.setEnabled(True)
 			self.privateHidden.setEnabled(True)
 			self.autoHide.setEnabled(True)
 			self.windowbarReadme.setEnabled(True)
+			self.windowBarBold.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1063,12 +1064,13 @@ class Dialog(QDialog):
 			self.windowbarManager.setEnabled(False)
 			self.windowbarUnread.setEnabled(False)
 			self.windowbarEntryMenu.setEnabled(False)
-			self.windowbarHidden.setEnabled(False)
+			self.serverHidden.setEnabled(False)
 			self.windowbarItalics.setEnabled(False)
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
 			self.autoHide.setEnabled(False)
 			self.windowbarReadme.setEnabled(False)
+			self.windowBarBold.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -1488,7 +1490,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.simpleConnect)
 		applicationLayout.addWidget(self.showServerInfo)
 		applicationLayout.addWidget(self.noConnectLogo)
-		
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -1923,7 +1924,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_LIST: self.windowbarLists.setChecked(True)
 		self.windowbarLists.stateChanged.connect(self.menuChange)
 
-		self.windowBarUnderline = QCheckBox("Underline active window",self)
+		self.windowBarUnderline = QCheckBox("Underlined text",self)
 		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: self.windowBarUnderline.setChecked(True)
 		self.windowBarUnderline.stateChanged.connect(self.menuChange)
 
@@ -1943,16 +1944,16 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_ENTRY_MENU: self.windowbarEntryMenu.setChecked(True)
 		self.windowbarEntryMenu.stateChanged.connect(self.menuChange)
 
-		self.windowbarHidden = QCheckBox("Server windows",self)
-		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR: self.windowbarHidden.setChecked(True)
-		self.windowbarHidden.stateChanged.connect(self.menuChange)
+		self.serverHidden = QCheckBox("Server",self)
+		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR: self.serverHidden.setChecked(True)
+		self.serverHidden.stateChanged.connect(self.menuChange)
 
 		self.windowbarItalics = QCheckBox("Show connecting server windows\nin italics",self)
 		if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS: self.windowbarItalics.setChecked(True)
 		self.windowbarItalics.stateChanged.connect(self.menuChange)
 		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.channelHidden = QCheckBox("Channel windows",self)
+		self.channelHidden = QCheckBox("Channel",self)
 		if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR: self.channelHidden.setChecked(True)
 		self.channelHidden.stateChanged.connect(self.menuChange)
 
@@ -1967,6 +1968,10 @@ class Dialog(QDialog):
 		self.windowbarReadme = QCheckBox("README",self)
 		if config.WINDOWBAR_INCLUDE_README: self.windowbarReadme.setChecked(True)
 		self.windowbarReadme.stateChanged.connect(self.menuChange)
+
+		self.windowBarBold = QCheckBox("Bold text",self)
+		if config.WINDOWBAR_BOLD_ACTIVE_WINDOW: self.windowBarBold.setChecked(True)
+		self.windowBarBold.stateChanged.connect(self.menuChange)
 
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
@@ -1987,12 +1992,13 @@ class Dialog(QDialog):
 			self.windowbarManager.setEnabled(False)
 			self.windowbarUnread.setEnabled(False)
 			self.windowbarEntryMenu.setEnabled(False)
-			self.windowbarHidden.setEnabled(False)
+			self.serverHidden.setEnabled(False)
 			self.windowbarItalics.setEnabled(False)
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
 			self.autoHide.setEnabled(False)
 			self.windowbarReadme.setEnabled(False)
+			self.windowBarBold.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
@@ -2013,9 +2019,16 @@ class Dialog(QDialog):
 		windowbar2Layout.addWidget(self.windowBarTop)
 		windowbar2Layout.addWidget(self.autoHide)
 
-		hiddenLayout = QFormLayout()
-		hiddenLayout.addRow(self.channelHidden,self.privateHidden)
-		hiddenLayout.addRow(self.windowbarHidden)
+		hiddenLayout = QHBoxLayout()
+		hiddenLayout.addWidget(self.serverHidden)
+		hiddenLayout.addWidget(self.channelHidden)
+		hiddenLayout.addWidget(self.privateHidden)
+
+		wbAppearLayout = QHBoxLayout()
+		wbAppearLayout.addStretch()
+		wbAppearLayout.addWidget(self.windowBarBold)
+		wbAppearLayout.addWidget(self.windowBarUnderline)
+		wbAppearLayout.addStretch()
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -2023,7 +2036,6 @@ class Dialog(QDialog):
 		windowbarLayout.addLayout(windowbar1Layout)
 		windowbarLayout.addLayout(windowbar2Layout)
 		windowbarLayout.addWidget(self.windowBarFirst)
-		windowbarLayout.addWidget(self.windowBarUnderline)
 		windowbarLayout.addWidget(self.windowBarHover)
 		windowbarLayout.addWidget(self.windowBarIcons)
 		windowbarLayout.addWidget(self.windowbarClick)
@@ -2031,6 +2043,8 @@ class Dialog(QDialog):
 		windowbarLayout.addWidget(self.windowbarItalics)
 		windowbarLayout.addLayout(wbMenuLayout)
 		windowbarLayout.addLayout(justifyLayout)
+		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show active window in...</b>"))
+		windowbarLayout.addLayout(wbAppearLayout)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden...</b>"))
 		windowbarLayout.addLayout(hiddenLayout)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
@@ -4399,7 +4413,7 @@ class Dialog(QDialog):
 		config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = self.noConnectLogo.isChecked()
 		config.ASK_FOR_SERVER_ON_STARTUP = self.showConnect.isChecked()
 		config.PROMPT_FOR_SCRIPT_FILE = self.promptScript.isChecked()
-		config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = self.windowbarHidden.isChecked()
+		config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR = self.serverHidden.isChecked()
 		config.HIDE_SERVER_WINDOWS_ON_SIGNON = self.hideServer.isChecked()
 		config.ENABLE_DELAY_COMMAND = self.enableDelay.isChecked()
 		config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = self.windowbarItalics.isChecked()
@@ -4421,6 +4435,7 @@ class Dialog(QDialog):
 		config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = self.escapeHTML.isChecked()
 		config.HIDE_WINDOWBAR_IF_EMPTY = self.autoHide.isChecked()
 		config.WINDOWBAR_INCLUDE_README = self.windowbarReadme.isChecked()
+		config.WINDOWBAR_BOLD_ACTIVE_WINDOW = self.windowBarBold.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
