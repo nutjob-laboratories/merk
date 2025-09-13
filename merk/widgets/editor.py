@@ -599,11 +599,11 @@ class Window(QMainWindow):
 		self.scriptCommands.addAction(entry)
 
 		if config.ENABLE_INSERT_COMMAND:
-			entry = QAction(QIcon(EXE_ICON),"Insert script",self)
+			entry = QAction(QIcon(OPENFILE_ICON),"Insert script",self)
 			entry.triggered.connect(self.insertScriptInsert)
 			self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Pause",self)
+		entry = QAction(QIcon(TIMESTAMP_ICON),"Pause",self)
 		entry.triggered.connect(self.insertPause)
 		self.scriptCommands.addAction(entry)
 
@@ -611,11 +611,11 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertUsage)
 		self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Restrict script",self)
+		entry = QAction(QIcon(WINDOW_ICON),"Restrict script",self)
 		entry.triggered.connect(self.insertRestrict)
 		self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"End script",self)
+		entry = QAction(QIcon(QUIT_ICON),"End script",self)
 		entry.triggered.connect(self.insertEnd)
 		self.scriptCommands.addAction(entry)
 
