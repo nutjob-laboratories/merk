@@ -325,12 +325,14 @@ class Dialog(QDialog):
 			self.partLog.setEnabled(True)
 			self.quitLog.setEnabled(True)
 			self.nickLog.setEnabled(True)
+			self.noticeLog.setEnabled(True)
 		else:
 			self.topicLog.setEnabled(False)
 			self.joinLog.setEnabled(False)
 			self.partLog.setEnabled(False)
 			self.quitLog.setEnabled(False)
 			self.nickLog.setEnabled(False)
+			self.noticeLog.setEnabled(False)
 
 		if self.savePrivLogs.isChecked() or self.saveChanLogs.isChecked():
 			self.intermittentLog.setEnabled(True)
@@ -687,6 +689,10 @@ class Dialog(QDialog):
 			self.notifyKick.setEnabled(False)
 			self.notifyInvite.setEnabled(False)
 			self.notifyMode.setEnabled(False)
+			self.soundLabel.setEnabled(False)
+			self.soundButton.setEnabled(False)
+			self.playButton.setEnabled(False)
+			self.soundDefaultButton.setEnabled(False)
 		else:
 			self.notifyDisco.setEnabled(True)
 			self.notifyNickname.setEnabled(True)
@@ -695,6 +701,10 @@ class Dialog(QDialog):
 			self.notifyKick.setEnabled(True)
 			self.notifyInvite.setEnabled(True)
 			self.notifyMode.setEnabled(True)
+			self.soundLabel.setEnabled(True)
+			self.soundButton.setEnabled(True)
+			self.playButton.setEnabled(True)
+			self.soundDefaultButton.setEnabled(True)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -1033,7 +1043,7 @@ class Dialog(QDialog):
 			self.channelHidden.setEnabled(True)
 			self.privateHidden.setEnabled(True)
 			self.autoHide.setEnabled(True)
-			self.windowbarIncludeReadme.setEnabled(True)
+			self.windowbarReadme.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1058,7 +1068,7 @@ class Dialog(QDialog):
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
 			self.autoHide.setEnabled(False)
-			self.windowbarIncludeReadme.setEnabled(False)
+			self.windowbarReadme.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -1548,7 +1558,7 @@ class Dialog(QDialog):
 		if config.DO_NOT_APPLY_STYLE_TO_USERLIST: self.notUserlist.setChecked(True)
 		self.notUserlist.stateChanged.connect(self.changeSettingStyle)
 
-		if self.forceDefault.isChecked():
+		if config.FORCE_DEFAULT_STYLE:
 			self.notInputWidget.setEnabled(False)
 			self.notUserlist.setEnabled(False)
 
@@ -1951,9 +1961,9 @@ class Dialog(QDialog):
 		if config.HIDE_WINDOWBAR_IF_EMPTY: self.autoHide.setChecked(True)
 		self.autoHide.stateChanged.connect(self.menuChange)
 
-		self.windowbarIncludeReadme = QCheckBox("README",self)
-		if config.WINDOWBAR_INCLUDE_README: self.windowbarIncludeReadme.setChecked(True)
-		self.windowbarIncludeReadme.stateChanged.connect(self.menuChange)
+		self.windowbarReadme = QCheckBox("README",self)
+		if config.WINDOWBAR_INCLUDE_README: self.windowbarReadme.setChecked(True)
+		self.windowbarReadme.stateChanged.connect(self.menuChange)
 
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
@@ -1979,13 +1989,13 @@ class Dialog(QDialog):
 			self.channelHidden.setEnabled(False)
 			self.privateHidden.setEnabled(False)
 			self.autoHide.setEnabled(False)
-			self.windowbarIncludeReadme.setEnabled(False)
+			self.windowbarReadme.setEnabled(False)
 
 		includesLayout = QFormLayout()
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
 		includesLayout.addRow(self.windowBarServers,self.windowBarEditor)
 		includesLayout.addRow(self.windowbarLists,self.windowbarManager)
-		includesLayout.addRow(self.windowbarIncludeReadme)
+		includesLayout.addRow(self.windowbarReadme)
 
 		windowbar1Layout = QHBoxLayout()
 		windowbar1Layout.addStretch()
@@ -2292,10 +2302,10 @@ class Dialog(QDialog):
 
 		self.systrayPage.setLayout(systrayLayout)
 
-		if self.showSystray.isChecked():
+		if config.SHOW_SYSTRAY_ICON:
 			self.showSystrayMenu.setEnabled(True)
 			self.minSystray.setEnabled(True)
-			if self.minSystray.isChecked():
+			if config.MINIMIZE_TO_SYSTRAY:
 				self.systrayNotify.setEnabled(True)
 				self.listSystray.setEnabled(True)
 				self.systrayDisconnect.setEnabled(True)
@@ -2390,15 +2400,6 @@ class Dialog(QDialog):
 		if config.SOUND_NOTIFICATION_MODE: self.notifyMode.setChecked(True)
 		self.notifyMode.stateChanged.connect(self.changedSetting)
 		self.notifyMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		if not self.audioNotifications.isChecked():
-			self.notifyDisco.setEnabled(False)
-			self.notifyNickname.setEnabled(False)
-			self.notifyPrivate.setEnabled(False)
-			self.notifyNotice.setEnabled(False)
-			self.notifyKick.setEnabled(False)
-			self.notifyInvite.setEnabled(False)
-			self.notifyMode.setEnabled(False)
 		
 		self.notifyDescription = QLabel("""
 			<small>
@@ -2430,37 +2431,50 @@ class Dialog(QDialog):
 		bname = os.path.basename(self.sound)
 		self.soundLabel = QLabel("<b>"+bname+"</b>")
 
-		soundButton = QPushButton("")
-		soundButton.clicked.connect(self.setSound)
-		soundButton.setAutoDefault(False)
+		self.soundButton = QPushButton("")
+		self.soundButton.clicked.connect(self.setSound)
+		self.soundButton.setAutoDefault(False)
 
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
-		soundButton.setFixedSize(fheight +10,fheight + 10)
-		soundButton.setIcon(QIcon(EDIT_ICON))
-		soundButton.setToolTip("Set notification sound file")
+		self.soundButton.setFixedSize(fheight +10,fheight + 10)
+		self.soundButton.setIcon(QIcon(EDIT_ICON))
+		self.soundButton.setToolTip("Set notification sound file")
 
-		playButton = QPushButton(" Play")
-		playButton.clicked.connect(self.playSound)
-		playButton.setAutoDefault(False)
-		playButton.setIcon(QIcon(RUN_ICON))
-		playButton.setToolTip("Play sound")
+		self.playButton = QPushButton(" Play")
+		self.playButton.clicked.connect(self.playSound)
+		self.playButton.setAutoDefault(False)
+		self.playButton.setIcon(QIcon(RUN_ICON))
+		self.playButton.setToolTip("Play sound")
 
-		soundDefault = QPushButton("Set to default")
-		soundDefault.clicked.connect(self.soundDefault)
-		soundDefault.setAutoDefault(False)
-		soundDefault.setToolTip("Set to default")
+		self.soundDefaultButton = QPushButton("Set to default")
+		self.soundDefaultButton.clicked.connect(self.soundDefault)
+		self.soundDefaultButton.setAutoDefault(False)
+		self.soundDefaultButton.setToolTip("Set to default")
+
+		if not config.SOUND_NOTIFICATIONS:
+			self.notifyDisco.setEnabled(False)
+			self.notifyNickname.setEnabled(False)
+			self.notifyPrivate.setEnabled(False)
+			self.notifyNotice.setEnabled(False)
+			self.notifyKick.setEnabled(False)
+			self.notifyInvite.setEnabled(False)
+			self.notifyMode.setEnabled(False)
+			self.soundLabel.setEnabled(False)
+			self.soundButton.setEnabled(False)
+			self.playButton.setEnabled(False)
+			self.soundDefaultButton.setEnabled(False)
 
 		sbLayout = QHBoxLayout()
 		sbLayout.addStretch()
-		sbLayout.addWidget(soundButton)
+		sbLayout.addWidget(self.soundButton)
 		sbLayout.addWidget(self.soundLabel)
 		sbLayout.addStretch()
 
 		sbLayout2 = QHBoxLayout()
 		sbLayout2.addStretch()
-		sbLayout2.addWidget(playButton)
-		sbLayout2.addWidget(soundDefault)
+		sbLayout2.addWidget(self.playButton)
+		sbLayout2.addWidget(self.soundDefaultButton)
 		sbLayout2.addStretch()
 
 		audioMaster = QHBoxLayout()
@@ -3385,7 +3399,7 @@ class Dialog(QDialog):
 		intervalBox.addWidget(self.logInterval)
 		intervalBox.addStretch()
 
-		if self.savePrivLogs.isChecked() or self.saveChanLogs.isChecked():
+		if config.SAVE_PRIVATE_LOGS or config.SAVE_CHANNEL_LOGS:
 			self.intermittentLog.setEnabled(True)
 			self.logInterval.setEnabled(True)
 		else:
@@ -3414,7 +3428,7 @@ class Dialog(QDialog):
 		logsizeLayout.addWidget(self.logLabel)
 		logsizeLayout.addStretch()
 
-		if self.loadChanLogs.isChecked() or self.loadPrivLogs.isChecked():
+		if config.LOAD_CHANNEL_LOGS or config.LOAD_PRIVATE_LOGS:
 			self.markLog.setEnabled(True)
 			self.logsizeButton.setEnabled(True)
 			self.logLabel.setEnabled(True)
@@ -3459,6 +3473,21 @@ class Dialog(QDialog):
 		self.noticeLog = QCheckBox("Channel notices",self)
 		if config.LOG_CHANNEL_NOTICE: self.noticeLog.setChecked(True)
 		self.noticeLog.stateChanged.connect(self.changedSetting)
+
+		if config.SAVE_CHANNEL_LOGS:
+			self.topicLog.setEnabled(True)
+			self.joinLog.setEnabled(True)
+			self.partLog.setEnabled(True)
+			self.quitLog.setEnabled(True)
+			self.nickLog.setEnabled(True)
+			self.noticeLog.setEnabled(True)
+		else:
+			self.topicLog.setEnabled(False)
+			self.joinLog.setEnabled(False)
+			self.partLog.setEnabled(False)
+			self.quitLog.setEnabled(False)
+			self.nickLog.setEnabled(False)
+			self.noticeLog.setEnabled(False)
 
 		chanLayout = QHBoxLayout()
 		chanLayout.addStretch()
@@ -4388,7 +4417,7 @@ class Dialog(QDialog):
 		config.TWISTED_CLIENT_HEARTBEAT = self.heartbeat
 		config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = self.escapeHTML.isChecked()
 		config.HIDE_WINDOWBAR_IF_EMPTY = self.autoHide.isChecked()
-		config.WINDOWBAR_INCLUDE_README = self.windowbarIncludeReadme.isChecked()
+		config.WINDOWBAR_INCLUDE_README = self.windowbarReadme.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
