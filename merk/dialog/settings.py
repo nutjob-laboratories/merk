@@ -2098,7 +2098,7 @@ class Dialog(QDialog):
 		self.enableDisconnect.stateChanged.connect(self.changedSettingDisconnect)
 		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.hideServer = QCheckBox("Close server windows when registration\nis complete",self)
+		self.hideServer = QCheckBox("Hide server windows when registration\nis complete",self)
 		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
 		self.hideServer.stateChanged.connect(self.changedSetting)
 		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
