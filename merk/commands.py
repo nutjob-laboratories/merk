@@ -353,6 +353,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 build_help_and_autocomplete()
 
 def addTemporaryAlias(name,value):
+	global TEMPORARY_ALIAS
+
 	TEMPORARY_ALIAS[name] = value
 	TEMPORARY_ALIAS_AUTOCOMPLETE[name] = ''
 
@@ -405,43 +407,34 @@ def buildTemporaryAliases(gui,window):
 
 	if not config.ENABLE_ALIASES: return
 
-	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
+	timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT)
+	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")
+	mydate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
+	myedate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d/%m/%Y')
 
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
-	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
-	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
-	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
-
-	addTemporaryAlias('_NICKNAME',window.client.nickname)
-	addTemporaryAlias('_USERNAME',window.client.username)
-	addTemporaryAlias('_REALNAME',window.client.realname)
-
-	addTemporaryAlias('_WINDOW',window.name)
-
-	if window.window_type==SERVER_WINDOW:
-		addTemporaryAlias('_WINDOW_TYPE',"server")
-	elif window.window_type==CHANNEL_WINDOW:
-		addTemporaryAlias('_WINDOW_TYPE',"channel")
-	elif window.window_type==PRIVATE_WINDOW:
-		addTemporaryAlias('_WINDOW_TYPE',"private")
-	else:
-		addTemporaryAlias('_WINDOW_TYPE',"unknown")
-
-	addTemporaryAlias('_SERVER',window.client.server)
-	addTemporaryAlias('_PORT',str(window.client.port))
-
+	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
 	if hasattr(window.client,"hostname"):
 		addTemporaryAlias('_HOST',window.client.hostname)
 	else:
 		addTemporaryAlias('_HOST',window.client.server+":"+str(window.client.port))
-
-	addTemporaryAlias('_UPTIME',str(window.uptime))
-
-	if window.channel_topic!='':
-		addTemporaryAlias('_TOPIC',window.channel_topic)
+	addTemporaryAlias('_DATE',mydate)
+	addTemporaryAlias('_EDATE',myedate)
+	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
+	if window.client.usermodes!='':
+		addTemporaryAlias('_MODE',window.client.usermodes)
 	else:
-		addTemporaryAlias('_TOPIC','No topic')
-
+		addTemporaryAlias('_MODE','none')
+	addTemporaryAlias('_NICKNAME',window.client.nickname)
+	addTemporaryAlias('_PORT',str(window.client.port))
+	if len(window.nicks)>0:
+		addTemporaryAlias('_PRESENT',",".join(window.nicks))
+	else:
+		addTemporaryAlias('_PRESENT','none')
+	addTemporaryAlias('_REALNAME',window.client.realname)
+	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
+	addTemporaryAlias('_SERVER',window.client.server)
+	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
 	if window.operator:
 		addTemporaryAlias('_STATUS',"operator")
 	elif window.voiced:
@@ -456,26 +449,24 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_STATUS',"protected")
 	else:
 		addTemporaryAlias('_STATUS',"normal")
-
-	if len(window.nicks)>0:
-		addTemporaryAlias('_PRESENT',",".join(window.nicks))
-	else:
-		addTemporaryAlias('_PRESENT','none')
-
-	if window.client.usermodes!='':
-		addTemporaryAlias('_MODE',window.client.usermodes)
-	else:
-		addTemporaryAlias('_MODE','none')
-
-	timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT)
-	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")
-	mydate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
-	myedate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d/%m/%Y')
-	addTemporaryAlias('_TIMESTAMP',timestamp)
 	addTemporaryAlias('_TIME',mytime)
-	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
-	addTemporaryAlias('_DATE',mydate)
-	addTemporaryAlias('_EDATE',myedate)
+	addTemporaryAlias('_TIMESTAMP',timestamp)
+	if window.channel_topic!='':
+		addTemporaryAlias('_TOPIC',window.channel_topic)
+	else:
+		addTemporaryAlias('_TOPIC','No topic')
+	addTemporaryAlias('_UPTIME',str(window.uptime))
+	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
+	addTemporaryAlias('_USERNAME',window.client.username)
+	addTemporaryAlias('_WINDOW',window.name)
+	if window.window_type==SERVER_WINDOW:
+		addTemporaryAlias('_WINDOW_TYPE',"server")
+	elif window.window_type==CHANNEL_WINDOW:
+		addTemporaryAlias('_WINDOW_TYPE',"channel")
+	elif window.window_type==PRIVATE_WINDOW:
+		addTemporaryAlias('_WINDOW_TYPE',"private")
+	else:
+		addTemporaryAlias('_WINDOW_TYPE',"unknown")
 
 def handleChatCommands(gui,window,user_input):
 	global TEMPORARY_ALIAS
