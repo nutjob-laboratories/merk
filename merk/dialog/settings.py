@@ -799,12 +799,14 @@ class Dialog(QDialog):
 			self.menubarMenu.setEnabled(True)
 			self.alignLabel.setEnabled(True)
 			self.menubarTop.setEnabled(True)
+			self.menubarBold.setEnabled(True)
 		else:
 			self.menubarFloat.setEnabled(False)
 			self.menubarJustify.setEnabled(False)
 			self.menubarMenu.setEnabled(False)
 			self.alignLabel.setEnabled(False)
 			self.menubarTop.setEnabled(False)
+			self.menubarBold.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1811,12 +1813,17 @@ class Dialog(QDialog):
 		if config.MENUBAR_DOCKED_AT_TOP: self.menubarTop.setChecked(True)
 		self.menubarTop.stateChanged.connect(self.menuChange)
 
+		self.menubarBold = QCheckBox("Bold entries on mouse hover",self)
+		if config.MENUBAR_HOVER_EFFECT: self.menubarBold.setChecked(True)
+		self.menubarBold.stateChanged.connect(self.menuChange)
+
 		if not config.USE_MENUBAR:
 			self.menubarFloat.setEnabled(False)
 			self.menubarJustify.setEnabled(False)
 			self.menubarMenu.setEnabled(False)
 			self.alignLabel.setEnabled(False)
 			self.menubarTop.setEnabled(False)
+			self.menubarBold.setEnabled(False)
 
 		menu2Layout = QHBoxLayout()
 		menu2Layout.addStretch()
@@ -1829,6 +1836,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.menubarDescription)
 		menuLayout.addLayout(menu1Layout)
 		menuLayout.addLayout(menu2Layout)
+		menuLayout.addWidget(self.menubarBold)
 		menuLayout.addWidget(self.menubarMenu)
 		menuLayout.addLayout(justifyLayout)
 		menuLayout.addWidget(QLabel(' '))
@@ -4436,6 +4444,7 @@ class Dialog(QDialog):
 		config.HIDE_WINDOWBAR_IF_EMPTY = self.autoHide.isChecked()
 		config.WINDOWBAR_INCLUDE_README = self.windowbarReadme.isChecked()
 		config.WINDOWBAR_BOLD_ACTIVE_WINDOW = self.windowBarBold.isChecked()
+		config.MENUBAR_HOVER_EFFECT = self.menubarBold.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

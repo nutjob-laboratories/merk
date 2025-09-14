@@ -279,9 +279,11 @@ ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE = False
 HIDE_WINDOWBAR_IF_EMPTY = True
 WINDOWBAR_INCLUDE_README = False
 WINDOWBAR_BOLD_ACTIVE_WINDOW = True
+MENUBAR_HOVER_EFFECT = True
 
 def build_settings():
 	settings = {
+		"menubar_bold_on_hover": MENUBAR_HOVER_EFFECT,
 		"windowbar_bold_active_window": WINDOWBAR_BOLD_ACTIVE_WINDOW,
 		"windobar_include_readme": WINDOWBAR_INCLUDE_README,
 		"hide_windowbar_if_empty": HIDE_WINDOWBAR_IF_EMPTY,
@@ -527,6 +529,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "menubar_bold_on_hover" in settings:
+		settings["menubar_bold_on_hover"] = MENUBAR_HOVER_EFFECT
 	if not "windowbar_bold_active_window" in settings:
 		settings["windowbar_bold_active_window"] = WINDOWBAR_BOLD_ACTIVE_WINDOW
 	if not "windobar_include_readme" in settings:
@@ -1252,6 +1256,7 @@ def load_settings(filename):
 	global HIDE_WINDOWBAR_IF_EMPTY
 	global WINDOWBAR_INCLUDE_README
 	global WINDOWBAR_BOLD_ACTIVE_WINDOW
+	global MENUBAR_HOVER_EFFECT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1261,6 +1266,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MENUBAR_HOVER_EFFECT = settings["menubar_bold_on_hover"]
 		WINDOWBAR_BOLD_ACTIVE_WINDOW = settings["windowbar_bold_active_window"]
 		WINDOWBAR_INCLUDE_README = settings["windobar_include_readme"]
 		HIDE_WINDOWBAR_IF_EMPTY = settings["hide_windowbar_if_empty"]
