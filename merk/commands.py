@@ -403,9 +403,14 @@ def interpolateAliases(text):
 
 	return text
 
+def clearTemporaryAliases():
+	global TEMPORARY_ALIAS
+	TEMPORARY_ALIAS = {}
+
 def buildTemporaryAliases(gui,window):
 
 	if not config.ENABLE_ALIASES: return
+	if not config.ENABLE_BUILT_IN_ALIASES: return
 
 	timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT)
 	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")

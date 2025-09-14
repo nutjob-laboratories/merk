@@ -280,9 +280,11 @@ HIDE_WINDOWBAR_IF_EMPTY = True
 WINDOWBAR_INCLUDE_README = False
 WINDOWBAR_BOLD_ACTIVE_WINDOW = True
 MENUBAR_HOVER_EFFECT = True
+ENABLE_BUILT_IN_ALIASES = True
 
 def build_settings():
 	settings = {
+		"enable_built_in_aliases": ENABLE_BUILT_IN_ALIASES,
 		"menubar_bold_on_hover": MENUBAR_HOVER_EFFECT,
 		"windowbar_bold_active_window": WINDOWBAR_BOLD_ACTIVE_WINDOW,
 		"windobar_include_readme": WINDOWBAR_INCLUDE_README,
@@ -529,6 +531,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_built_in_aliases" in settings:
+		settings["enable_built_in_aliases"] = ENABLE_BUILT_IN_ALIASES
 	if not "menubar_bold_on_hover" in settings:
 		settings["menubar_bold_on_hover"] = MENUBAR_HOVER_EFFECT
 	if not "windowbar_bold_active_window" in settings:
@@ -1257,6 +1261,7 @@ def load_settings(filename):
 	global WINDOWBAR_INCLUDE_README
 	global WINDOWBAR_BOLD_ACTIVE_WINDOW
 	global MENUBAR_HOVER_EFFECT
+	global ENABLE_BUILT_IN_ALIASES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1266,6 +1271,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_BUILT_IN_ALIASES = settings["enable_built_in_aliases"]
 		MENUBAR_HOVER_EFFECT = settings["menubar_bold_on_hover"]
 		WINDOWBAR_BOLD_ACTIVE_WINDOW = settings["windowbar_bold_active_window"]
 		WINDOWBAR_INCLUDE_README = settings["windobar_include_readme"]

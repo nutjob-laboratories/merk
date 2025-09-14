@@ -446,6 +446,7 @@ class Dialog(QDialog):
 			self.autoAliasAway.setEnabled(True)
 			self.autoAliasQuit.setEnabled(True)
 			self.enableShell.setEnabled(True)
+			self.enableBuiltin.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -455,6 +456,7 @@ class Dialog(QDialog):
 			self.autoAliasAway.setEnabled(False)
 			self.autoAliasQuit.setEnabled(False)
 			self.enableShell.setEnabled(False)
+			self.enableBuiltin.setEnabled(False)
 		self.changed.show()
 		self.syntax_did_change = True
 		self.boldApply()
@@ -3788,6 +3790,10 @@ class Dialog(QDialog):
 		self.restrictError.stateChanged.connect(self.changedSetting)
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.enableBuiltin = QCheckBox("Enable built-in aliases",self)
+		if config.ENABLE_BUILT_IN_ALIASES: self.enableBuiltin.setChecked(True)
+		self.enableBuiltin.stateChanged.connect(self.changedSettingEditor)
+
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.restrictError.setEnabled(False)
 			self.haltError.setEnabled(False)
@@ -3812,6 +3818,7 @@ class Dialog(QDialog):
 		scriptingLayout.addLayout(seLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
 		scriptingLayout.addWidget(self.enableAlias)
+		scriptingLayout.addWidget(self.enableBuiltin)
 		scriptingLayout.addWidget(self.interpolateAlias)
 		scriptingLayout.addLayout(aliasLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error settings</b>"))
@@ -4233,6 +4240,11 @@ class Dialog(QDialog):
 		# Save the current focused window
 		current_open_window = self.parent.MDI.activeSubWindow()
 
+		reset_built_in = False
+		if config.ENABLE_BUILT_IN_ALIASES:
+			if not self.enableBuiltin.isChecked():
+				reset_built_in = True
+
 		config.DISPLAY_ACTIVE_CHAT_IN_TITLE = self.showChatInTitle.isChecked()
 		config.PROMPT_ON_FAILED_CONNECTION = self.promptFail.isChecked()
 		config.ALWAYS_SCROLL_TO_BOTTOM = self.writeScroll.isChecked()
@@ -4445,6 +4457,7 @@ class Dialog(QDialog):
 		config.WINDOWBAR_INCLUDE_README = self.windowbarReadme.isChecked()
 		config.WINDOWBAR_BOLD_ACTIVE_WINDOW = self.windowBarBold.isChecked()
 		config.MENUBAR_HOVER_EFFECT = self.menubarBold.isChecked()
+		config.ENABLE_BUILT_IN_ALIASES = self.enableBuiltin.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
@@ -4578,6 +4591,7 @@ class Dialog(QDialog):
 		else:
 			self.parent.hideAllTopic()
 
+		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()
 
 		# Refresh editor windows with any changes to syntax highlighting
