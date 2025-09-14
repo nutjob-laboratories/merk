@@ -62,9 +62,13 @@ f = open("./merk/data/url.txt","r")
 rurl = f.read()
 f.close()
 
+f = open("./merk/data/release.txt","r")
+rversion = f.read()
+f.close()
+
 # Write version to python file to be loaded in
 f = open("./merk/resources/release.py","w")
-f.write(f"APPLICATION_RELEASE = \"{rurl}\"")
+f.write(f"APPLICATION_RELEASE = \"{rurl}\"\nAPPLICATION_RELEASE_VERSION = \"{rversion}\"")
 f.close()
 
 # Build README

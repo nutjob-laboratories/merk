@@ -433,6 +433,7 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_PRESENT','none')
 	addTemporaryAlias('_REALNAME',window.client.realname)
 	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
+	addTemporaryAlias('_RVERSION',APPLICATION_RELEASE_VERSION)
 	addTemporaryAlias('_SERVER',window.client.server)
 	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
 	if window.operator:

@@ -693,6 +693,8 @@ class Window(QMainWindow):
 
 	def buildAliasMenu(self,menu):
 
+		# User information submenu
+
 		sub = menu.addMenu(QIcon(PRIVATE_ICON),"User information")
 
 		entry = QAction("Nickname",self)
@@ -706,6 +708,8 @@ class Window(QMainWindow):
 		entry = QAction("Realname",self)
 		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertIntoEditor(u))
 		sub.addAction(entry)
+
+		# Current server submenu
 
 		sub = menu.addMenu(QIcon(CONNECT_ICON),"Current server")
 
@@ -729,6 +733,8 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u="$_MODE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
+		# Current channel submenu
+
 		sub = menu.addMenu(QIcon(CHANNEL_ICON),"Current channel")
 
 		entry = QAction("User status",self)
@@ -742,6 +748,8 @@ class Window(QMainWindow):
 		entry = QAction("Present in channel",self)
 		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertIntoEditor(u))
 		sub.addAction(entry)
+
+		# Date and time submenu
 
 		sub = menu.addMenu(QIcon(TIMESTAMP_ICON),"Date and time")
 
@@ -760,6 +768,8 @@ class Window(QMainWindow):
 		entry = QAction("Timestamp",self)
 		entry.triggered.connect(lambda state,u="$_TIMESTAMP": self.insertIntoEditor(u))
 		sub.addAction(entry)
+
+		# Client submenu
 
 		sub = menu.addMenu(QIcon(APPLICATION_ICON),"Client")
 
@@ -782,6 +792,12 @@ class Window(QMainWindow):
 		entry = QAction("Current release URL",self)
 		entry.triggered.connect(lambda state,u="$_RELEASE": self.insertIntoEditor(u))
 		sub.addAction(entry)
+
+		entry = QAction("Current release version",self)
+		entry.triggered.connect(lambda state,u="$_RVERSION": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		# Non-submenu entries
 
 		entry = QAction("Script name",self)
 		entry.triggered.connect(lambda state,u="$_SCRIPT": self.insertIntoEditor(u))
