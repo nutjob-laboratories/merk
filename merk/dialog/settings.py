@@ -1470,12 +1470,12 @@ class Dialog(QDialog):
 		logo.setPixmap(pixmap)
 		logo.setAlignment(Qt.AlignCenter)
 
-		app_link = QLabel(f'<center><b><small><a href="{APPLICATION_SOURCE}">{APPLICATION_SOURCE}</a></small></b></center>')
+		app_link = QLabel(f'<center><b><small><a href="{APPLICATION_SOURCE}">Open Source IRC Client</a></small></b></center>')
 		app_link.setOpenExternalLinks(True)
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
-		applicationLayout.addWidget(QLabel(f'<center><b><small>Open Source IRC Client</small></b></center>'))
+		#applicationLayout.addWidget(QLabel(f'<center><b><small>Open Source IRC Client</small></b></center>'))
 		applicationLayout.addWidget(app_link)
 		applicationLayout.addWidget(QLabel(f'<center><b>Version {APPLICATION_VERSION}</b></center>'))
 		applicationLayout.addWidget(QLabel(' '))
