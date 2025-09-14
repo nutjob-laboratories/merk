@@ -58,6 +58,15 @@ f = open("./merk/data/win_minor.txt","r")
 win_minor = f.read()
 f.close()
 
+f = open("./merk/data/url.txt","r")
+rurl = f.read()
+f.close()
+
+# Write version to python file to be loaded in
+f = open("./merk/resources/release.py","w")
+f.write(f"APPLICATION_RELEASE = \"{rurl}\"")
+f.close()
+
 # Build README
 
 x = open("README.txt",mode="r", encoding='latin-1')

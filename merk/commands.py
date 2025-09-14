@@ -410,6 +410,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
 	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
 	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
+	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
 
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
 	addTemporaryAlias('_USERNAME',window.client.username)

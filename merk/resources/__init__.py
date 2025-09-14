@@ -39,6 +39,7 @@ from .servers import *
 from .emoji1 import *
 from .emoji2 import *
 from .style import *
+from .release import *
 
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")

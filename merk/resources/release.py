@@ -1,0 +1,1 @@
+APPLICATION_RELEASE = "https://github.com/nutjob-laboratories/merk/releases/tag/0.050.450"
