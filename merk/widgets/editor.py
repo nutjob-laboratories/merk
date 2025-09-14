@@ -767,6 +767,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u="$_CLIENT": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
+		entry = QAction("Uptime",self)
+		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
 		entry = QAction("Version",self)
 		entry.triggered.connect(lambda state,u="$_VERSION": self.insertIntoEditor(u))
 		sub.addAction(entry)
@@ -775,8 +779,8 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u="$_SOURCE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
-		entry = QAction("Uptime",self)
-		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertIntoEditor(u))
+		entry = QAction("Current release URL",self)
+		entry.triggered.connect(lambda state,u="$_RELEASE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Script name",self)
