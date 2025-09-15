@@ -559,6 +559,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertQuit)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(DISCONNECT_ICON),"Quit all servers",self)
+		entry.triggered.connect(self.insertAllQuit)
+		self.commandMenu.addAction(entry)
+
 		e = textSeparator(self,"Script Commands")
 		self.commandMenu.addAction(e)
 
@@ -1015,6 +1019,14 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(my_command+" "+cmd)
 		self.updateApplicationTitle()
 
+	def insertAllQuit(self):
+		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
+		e = x.get_message_information(config.DEFAULT_QUIT_MESSAGE,self)
+
+		if e==None: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"quitall "+str(e)+"\n")
+		self.updateApplicationTitle()
 
 	def insertQuit(self):
 		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
