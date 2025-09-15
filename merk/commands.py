@@ -3918,9 +3918,29 @@ class ScriptThread(QThread):
 
 			line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
-			# |=======|
-			# | /only |
-			# |=======|
+			# |=========|
+			# | exclude |
+			# |=========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='exclude' and len(tokens)>=2:
+					tokens.pop(0)
+					
+					valid = True
+					for e in tokens:
+						if e.lower()==self.window.name.lower(): valid = False
+
+					if valid==False:
+						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script cannot be ran in {self.window.name}"])
+						no_errors = False
+
+				elif tokens[0].lower()=='exclude' and len(tokens)==1:
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: exclude called without an argument"])
+					no_errors = False
+
+			# |======|
+			# | only |
+			# |======|
 			if len(tokens)>=1:
 				if tokens[0].lower()=='only' and len(tokens)>=2:
 					tokens.pop(0)
@@ -3938,9 +3958,9 @@ class ScriptThread(QThread):
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: only called without an argument"])
 					no_errors = False
 
-			# |===========|
-			# | /restrict |
-			# |===========|
+			# |==========|
+			# | restrict |
+			# |==========|
 			if len(tokens)>=1:
 				if tokens[0].lower()=='restrict' and len(tokens)==2:
 					tokens.pop(0)
@@ -4004,9 +4024,9 @@ class ScriptThread(QThread):
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: restrict called with too many arguments"])
 					no_errors = False
 
-			# |========|
-			# | /usage |
-			# |========|
+			# |=======|
+			# | usage |
+			# |=======|
 			if len(tokens)>=1:
 				if tokens[0].lower()=='usage' and len(tokens)>=2:
 					tokens.pop(0)
@@ -4071,7 +4091,7 @@ class ScriptThread(QThread):
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: end called with too many arguments."])
 					no_errors = False
 
-			# Make sure that /wait is called with a numerical argument
+			# Make sure that wait is called with a numerical argument
 			if len(tokens)==2:
 				if tokens[0].lower()=='wait':
 					count = tokens[1]
@@ -4081,7 +4101,7 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument."])
 						no_errors = False
 
-			# Make sure that /wait has only one argument
+			# Make sure that wait has only one argument
 			if len(tokens)>=1:
 				if tokens[0].lower()=='wait' and len(tokens)>2:
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait called with too many arguments"])
@@ -4165,9 +4185,9 @@ class ScriptThread(QThread):
 
 					tokens = line.split()
 
-					# |==========|
-					# | /context |
-					# |==========|
+					# |=========|
+					# | context |
+					# |=========|
 					if len(tokens)==2:
 						if tokens[0].lower()=='context':
 							target = tokens[1]
@@ -4213,9 +4233,9 @@ class ScriptThread(QThread):
 							script_only_command = True
 							loop = False
 
-					# |=======|
-					# | /wait |
-					# |=======|
+					# |======|
+					# | wait |
+					# |======|
 					if len(tokens)==2:
 						if tokens[0].lower()=='wait':
 							count = tokens[1]
@@ -4224,34 +4244,40 @@ class ScriptThread(QThread):
 							script_only_command = True
 							continue
 
-					# |======|
-					# | /end |
-					# |======|
+					# |=====|
+					# | end |
+					# |=====|
 					if len(tokens)==1:
 						if tokens[0].lower()=='end':
 							loop = False
 							script_only_command = True
 							continue
 
-					# Bypass /usage, already handled
+					# Bypass usage, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()=='usage':
 							script_only_command = True
 							continue
 
-					# Bypass /restrict, already handled
+					# Bypass restrict, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()=='restrict':
 							script_only_command = True
 							continue
 
-					# Bypass /only, already handled
+					# Bypass only, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()=='only':
 							script_only_command = True
 							continue
 
-					# Bypass /insert, already handled
+					# Bypass exclude, already handled
+					if len(tokens)>=1:
+						if tokens[0].lower()=='exclude':
+							script_only_command = True
+							continue
+
+					# Bypass insert, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()=='insert':
 							if config.ENABLE_INSERT_COMMAND:

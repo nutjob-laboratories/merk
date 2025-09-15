@@ -248,6 +248,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/delay SECONDS COMMAND...`                  | Executes `COMMAND` after `SECONDS` seconds                                                 |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
 | `end`                                  | Immediately ends a script; *can only be called from scripts*                                                                       |
+| `exclude WINDOW...`                       | Prevents a script from executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/help [COMMAND]`                                 | Displays command usage information                                                                                               |

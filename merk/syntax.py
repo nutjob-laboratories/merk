@@ -169,6 +169,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"wait",
 			"end",
 			"only",
+			"exclude",
 		]
 
 		if not config.ENABLE_INSERT_COMMAND:
