@@ -723,6 +723,16 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 		if script_id!=None:
 			if is_halting(script_id): return True
 
+	# |---------|
+	# | exclude |
+	# |---------|
+	if not is_script:
+		if len(tokens)>=1:
+			if tokens[0].lower()=='exclude':
+				t = Message(ERROR_MESSAGE,'',"exclude can only be called from scripts")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 	# |--------|
 	# | insert |
 	# |--------|
