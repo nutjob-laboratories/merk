@@ -3790,7 +3790,7 @@ class Dialog(QDialog):
 		self.restrictError.stateChanged.connect(self.changedSetting)
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.enableBuiltin = QCheckBox("Enable built-in aliases",self)
+		self.enableBuiltin = QCheckBox("Built-in aliases",self)
 		if config.ENABLE_BUILT_IN_ALIASES: self.enableBuiltin.setChecked(True)
 		self.enableBuiltin.stateChanged.connect(self.changedSettingEditor)
 
@@ -3812,13 +3812,16 @@ class Dialog(QDialog):
 		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
 		self.escapeHTML.stateChanged.connect(self.changedSettingRerender)
 
+		aliLayout = QHBoxLayout()
+		aliLayout.addWidget(self.enableAlias)
+		aliLayout.addWidget(self.enableBuiltin)
+
 		scriptingLayout = QVBoxLayout()
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
-		scriptingLayout.addWidget(self.enableAlias)
-		scriptingLayout.addWidget(self.enableBuiltin)
+		scriptingLayout.addLayout(aliLayout)
 		scriptingLayout.addWidget(self.interpolateAlias)
 		scriptingLayout.addLayout(aliasLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error settings</b>"))
