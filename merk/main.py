@@ -3881,7 +3881,7 @@ class Merk(QMainWindow):
 		else:
 			x = StylerDefaultDialog(self)
 
-	def disconnectAll(self):
+	def disconnectAll(self,disco_msg=None):
 		windows = self.getAllServerWindows()
 		if len(windows)>0:
 
@@ -3906,10 +3906,16 @@ class Merk(QMainWindow):
 						self.hideServerWindow(c.client)
 					else:
 						self.quitting[c.client.client_id] = 0
-						if config.ENABLE_EMOJI_SHORTCODES:
-							msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+						if disco_msg==None:
+							if config.ENABLE_EMOJI_SHORTCODES:
+								msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+							else:
+								msg = config.DEFAULT_QUIT_MESSAGE
 						else:
-							msg = config.DEFAULT_QUIT_MESSAGE
+							if config.ENABLE_EMOJI_SHORTCODES:
+								msg = emoji.emojize(disco_msg,language=config.EMOJI_LANGUAGE)
+							else:
+								msg = disco_msg
 
 						if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 							commands.buildTemporaryAliases(self,c)

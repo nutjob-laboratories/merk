@@ -139,6 +139,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"close",
 			cmdsymbol+"random",
 			cmdsymbol+"prints",
+			cmdsymbol+"quitall",
 		]
 
 		if not config.ENABLE_ALIASES:

@@ -301,6 +301,10 @@ Appearance:
 <td>Disconnects from the current IRC server</td>
 </tr>
 <tr>
+<td><code>/quitall [MESSAGE]</code></td>
+<td>Disconnects from all IRC servers</td>
+</tr>
+<tr>
 <td><code>/random ALIAS LOW HIGH</code></td>
 <td>Generates a random number between <code>LOW</code> and <code>HIGH</code> and stores it in <code>ALIAS</code></td>
 </tr>
