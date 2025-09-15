@@ -1076,10 +1076,9 @@ class Merk(QMainWindow):
 
 			self.buildWindowsMenu()
 
-			if not config.CLOSING_SERVER_WINDOW_DISCONNECTS:
-				if config.HIDE_SERVER_WINDOWS_ON_SIGNON:
-					self.hideSubWindow(w.subwindow_id)
-					self.MDI.activateNextSubWindow()
+			if config.HIDE_SERVER_WINDOWS_ON_SIGNON:
+				self.hideSubWindow(w.subwindow_id)
+				self.MDI.activateNextSubWindow()
 		
 		self.nickChanged(client)
 
