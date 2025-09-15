@@ -188,6 +188,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"alias",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unalias",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"random",'')
 
 	if not config.SCRIPTING_ENGINE_ENABLED:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"script",'')
@@ -302,6 +303,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>": continue
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
@@ -1086,6 +1088,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /random |
 	# |---------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_ALIASES:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random' and len(tokens)==4:
 			
 			tokens.pop(0)
@@ -1111,23 +1126,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-
-			# Alias tokens cannot be numbers
-			is_number = True
-			try:
-				a = int(a)
-			except:
-				is_number = False
-			if is_number:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens cannot be numbers")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"Alias tokens cannot be numbers")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
 
 			try:
 				low = int(low)

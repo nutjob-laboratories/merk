@@ -146,6 +146,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"alias")
 			merk.remove(cmdsymbol+"unalias")
 			merk.remove(cmdsymbol+"shell")
+			merk.remove(cmdsymbol+"random")
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			merk.remove(cmdsymbol+"script")
 			merk.remove(cmdsymbol+"usage")

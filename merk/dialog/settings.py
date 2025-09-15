@@ -1467,7 +1467,6 @@ class Dialog(QDialog):
 
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(logo)
-		#applicationLayout.addWidget(QLabel(f'<center><b><small>Open Source IRC Client</small></b></center>'))
 		applicationLayout.addWidget(app_link)
 		applicationLayout.addWidget(QLabel(f'<center><b>Version {APPLICATION_VERSION}</b></center>'))
 		applicationLayout.addWidget(QLabel(' '))
@@ -3767,11 +3766,6 @@ class Dialog(QDialog):
 		if config.ENABLE_CONFIG_COMMAND: self.enableConfig.setChecked(True)
 		self.enableConfig.stateChanged.connect(self.changedSettingEditor)
 
-		if not config.ENABLE_ALIASES:
-			self.interpolateAlias.setEnabled(False)
-			self.alias_symbol.setEnabled(False)
-			self.alias_symbol_label.setEnabled(False)
-
 		self.restrictError = QCheckBox(f"Display error for violations of\nonly and restrict commands",self)
 		if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION: self.restrictError.setChecked(True)
 		self.restrictError.stateChanged.connect(self.changedSetting)
@@ -3780,6 +3774,12 @@ class Dialog(QDialog):
 		self.enableBuiltin = QCheckBox("Built-in aliases",self)
 		if config.ENABLE_BUILT_IN_ALIASES: self.enableBuiltin.setChecked(True)
 		self.enableBuiltin.stateChanged.connect(self.changedSettingEditor)
+
+		if not config.ENABLE_ALIASES:
+			self.interpolateAlias.setEnabled(False)
+			self.alias_symbol.setEnabled(False)
+			self.alias_symbol_label.setEnabled(False)
+			self.enableBuiltin.setEnabled(False)
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.restrictError.setEnabled(False)
