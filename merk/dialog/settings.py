@@ -356,16 +356,6 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
-	def changedSettingDisconnect(self,state):
-		if self.enableDisconnect.isChecked():
-			self.hideServer.setEnabled(False)
-		else:
-			self.hideServer.setEnabled(True)
-
-		self.changed.show()
-		self.boldApply()
-		self.selector.setFocus()
-
 	def changedAutoAway(self,state):
 		if self.autoAway.isChecked():
 			self.autoawayInterval.setEnabled(True)
@@ -2144,16 +2134,13 @@ class Dialog(QDialog):
 
 		self.enableDisconnect = QCheckBox("Closing server window disconnects\nfrom server",self)
 		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
-		self.enableDisconnect.stateChanged.connect(self.changedSettingDisconnect)
+		self.enableDisconnect.stateChanged.connect(self.changedSetting)
 		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.hideServer = QCheckBox("Hide server windows when registration\nis complete",self)
 		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
 		self.hideServer.stateChanged.connect(self.changedSetting)
 		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
-			self.hideServer.setEnabled(False)
 
 		self.autoMaxSubwindow = QCheckBox("Maximize new subwindows automatically",self)
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
