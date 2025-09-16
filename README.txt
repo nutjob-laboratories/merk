@@ -233,8 +233,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 
 | Commands                                | Description                                                                                                                      |
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `/alias`                                | Prints a list of all current aliases                                                                                             |
-| `/alias TOKEN TEXT...`                  | Creates an alias that can be referenced by `$TOKEN`                                                                              |
+| `/alias [TOKEN] [TEXT...]`                  | Creates an alias that can be referenced by `$TOKEN`. Call with only `TOKEN` as an argument to see `TOKEN`'s value. Call without any arguments to see all aliases and their values'                                                                              |
 | `/away [MESSAGE]`                       | Sets status as "away"                                                                                                            |
 | `/back`                                 | Sets status as "back"                                                                                                            |
 | `/cascade`                              | Cascades all subwindows                                                                                                          |

@@ -111,12 +111,8 @@ Appearance:
 </thead>
 <tbody>
 <tr>
-<td><code>/alias</code></td>
-<td>Prints a list of all current aliases</td>
-</tr>
-<tr>
-<td><code>/alias TOKEN TEXT...</code></td>
-<td>Creates an alias that can be referenced by <code>$TOKEN</code></td>
+<td><code>/alias [TOKEN] [TEXT...]</code></td>
+<td>Creates an alias that can be referenced by <code>$TOKEN</code>. Call with only <code>TOKEN</code> as an argument to see <code>TOKEN</code>'s value. Call without any arguments to see all aliases and their values</td>
 </tr>
 <tr>
 <td><code>/away [MESSAGE]</code></td>

@@ -252,8 +252,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"settings</b>", "Opens the settings dialog" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>", "Edits the current window's style" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"log</b>", "Opens the log manager" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>", "Prints a list of all current aliases" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias [TOKEN] [TEXT...]</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>", "Deletes the alias referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
@@ -299,8 +298,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		if not config.ENABLE_STYLE_EDITOR:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>": continue
 		if not config.ENABLE_ALIASES:
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...</b>": continue
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias [TOKEN] [TEXT...]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>": continue
