@@ -180,12 +180,21 @@ Appearance:
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>
 <tr>
+<tr>
+<td><code>goto LINE_NUMBER</code></td>
+<td>Moves execution of the script to <code>LINE_NUMBER</code>. The only script-only command that can be issued from an <code>if</code> command. <b>Can only be called from scripts</b></td>
+</tr>
+<tr>
 <td><code>/help [COMMAND]</code></td>
 <td>Displays command usage information</td>
 </tr>
 <tr>
 <td><code>/hide [SERVER] [WINDOW]</code></td>
 <td>Hides a subwindow</td>
+</tr>
+<tr>
+<td><code>if VALUE1 OPERATOR VALUE2 COMMAND...</code></td>
+<td>Executes <code>COMMAND</code> if <code>VALUE1</code> and <code>VALUE2</code> are true, depending on <code>OPERATOR</code>. Valid <code>OPERATOR</code>s are <code>(is)</code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are equal), <code>(not)</code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are not equal), <code>(in)</code> (result is true if <code>VALUE1</code> is contained in <code>VALUE2</code>), <code>(gt)</code> (result is true if <code>VALUE1</code> is a greater number than <code>VALUE2</code>), and <code>(lt)</code> (result is true if <code>VALUE1</code> is a lesser number than <code>VALUE2</code>). <b>Can only be called from scripts</b></td>
 </tr>
 <tr>
 <td><code>/ignore USER</code></td>

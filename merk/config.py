@@ -281,9 +281,18 @@ WINDOWBAR_INCLUDE_README = False
 WINDOWBAR_BOLD_ACTIVE_WINDOW = True
 MENUBAR_HOVER_EFFECT = True
 ENABLE_BUILT_IN_ALIASES = True
+SYNTAX_OPERATOR_COLOR = "blue"
+SYNTAX_OPERATOR_STYLE = "bold"
+ENABLE_GOTO_COMMAND = True
+
+ENABLE_IF_COMMAND = True
 
 def build_settings():
 	settings = {
+		"enable_if_command": ENABLE_IF_COMMAND,
+		"enable_goto_command": ENABLE_GOTO_COMMAND,
+		"syntax_operator_color": SYNTAX_OPERATOR_COLOR,
+		"syntax_operator_style": SYNTAX_OPERATOR_STYLE,
 		"enable_built_in_aliases": ENABLE_BUILT_IN_ALIASES,
 		"menubar_bold_on_hover": MENUBAR_HOVER_EFFECT,
 		"windowbar_bold_active_window": WINDOWBAR_BOLD_ACTIVE_WINDOW,
@@ -531,6 +540,14 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_if_command" in settings:
+		settings["enable_if_command"] = ENABLE_IF_COMMAND
+	if not "enable_goto_command" in settings:
+		settings["enable_goto_command"] = ENABLE_GOTO_COMMAND
+	if not "syntax_operator_color" in settings:
+		settings["syntax_operator_color"] = SYNTAX_OPERATOR_COLOR
+	if not "syntax_operator_style" in settings:
+		settings["syntax_operator_style"] = SYNTAX_OPERATOR_STYLE
 	if not "enable_built_in_aliases" in settings:
 		settings["enable_built_in_aliases"] = ENABLE_BUILT_IN_ALIASES
 	if not "menubar_bold_on_hover" in settings:
@@ -1262,6 +1279,10 @@ def load_settings(filename):
 	global WINDOWBAR_BOLD_ACTIVE_WINDOW
 	global MENUBAR_HOVER_EFFECT
 	global ENABLE_BUILT_IN_ALIASES
+	global SYNTAX_OPERATOR_COLOR
+	global SYNTAX_OPERATOR_STYLE
+	global ENABLE_GOTO_COMMAND
+	global ENABLE_IF_COMMAND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1271,6 +1292,10 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_IF_COMMAND = settings["enable_if_command"]
+		ENABLE_GOTO_COMMAND = settings["enable_goto_command"]
+		SYNTAX_OPERATOR_COLOR = settings["syntax_operator_color"]
+		SYNTAX_OPERATOR_STYLE = settings["syntax_operator_style"]
 		ENABLE_BUILT_IN_ALIASES = settings["enable_built_in_aliases"]
 		MENUBAR_HOVER_EFFECT = settings["menubar_bold_on_hover"]
 		WINDOWBAR_BOLD_ACTIVE_WINDOW = settings["windowbar_bold_active_window"]

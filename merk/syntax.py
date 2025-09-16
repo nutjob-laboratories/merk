@@ -172,6 +172,19 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"end",
 			"only",
 			"exclude",
+			"if",
+		]
+
+		script_full = [
+			"goto",
+		]
+
+		operators = [
+			"\\(is\\)",
+			"\\(not\\)",
+			"\\(in\\)",
+			"\\(lt\\)",
+			"\\(gt\\)",
 		]
 
 		if not config.ENABLE_INSERT_COMMAND:
@@ -183,6 +196,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			'channel': format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE),
 			'alias': format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE),
 			'script': format(config.SYNTAX_SCRIPT_COLOR,config.SYNTAX_SCRIPT_STYLE),
+			'operator': format(config.SYNTAX_OPERATOR_COLOR,config.SYNTAX_OPERATOR_STYLE),
 		}
 
 		if not config.ENABLE_ALIASES: 
@@ -200,6 +214,14 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		# Script Only Commands
 		rules += [(r'^\s*%s' % o, 0, STYLES['script'])
 			for o in script_only]
+
+		# Script Full Commands
+		rules += [(r'%s' % o, 0, STYLES['script'])
+			for o in script_full]
+
+		# Script Operators
+		rules += [(r'%s' % o, 0, STYLES['operator'])
+			for o in operators]
 
 		# Channel names and aliases
 		rules += [

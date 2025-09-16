@@ -691,6 +691,9 @@ def check_for_sane_values(setting,value):
 	if setting=="syntax_script_only_color":
 		if not QColor(value).isValid(): return INVALID_COLOR
 
+	if setting=="syntax_operator_color":
+		if not QColor(value).isValid(): return INVALID_COLOR
+
 	return ALL_VALID_SETTINGS
 
 def list_scripts():
@@ -4218,94 +4221,122 @@ class ScriptThread(QThread):
 
 					tokens = line.split()
 
-					# # |====|
-					# # | if |
-					# # |====|
-					# if len(tokens)>=5:
-					# 	if tokens[0].lower()=='if':
+					# |====|
+					# | if |
+					# |====|
+					if len(tokens)>=5:
+						if tokens[0].lower()=='if':
 
-					# 		try:
-					# 			stokens = shlex.split(line, comments=False)
-					# 		except:
-					# 			self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks"])
-					# 			loop = False
-					# 			continue
+							if not config.ENABLE_IF_COMMAND:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if has been disabled"])
+								loop = False
+								continue
 
-					# 		stokens.pop(0)
+							try:
+								stokens = shlex.split(line, comments=False)
+							except:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks"])
+								loop = False
+								continue
 
-					# 		buildTemporaryAliases(self.gui,self.window)
-					# 		examine = interpolateAliases(stokens.pop(0))
-					# 		operator = interpolateAliases(stokens.pop(0))
-					# 		target = interpolateAliases(stokens.pop(0))
+							stokens.pop(0)
 
-					# 		do_command = False
-					# 		if operator.lower()=='is':
-					# 			if examine.lower()==target.lower(): do_command = True
-					# 		if operator.lower()=='not':
-					# 			if examine.lower()!=target.lower(): do_command = True
-					# 		if operator.lower()=='in':
-					# 			if examine.lower() in target.lower(): do_command = True
+							buildTemporaryAliases(self.gui,self.window)
+							examine = interpolateAliases(stokens.pop(0))
+							operator = interpolateAliases(stokens.pop(0))
+							target = interpolateAliases(stokens.pop(0))
 
-					# 		if operator.lower()=='lesser':
-					# 			ei = is_int(examine)
-					# 			if ei==None:
-					# 				ei = is_float(examine)
-					# 			if ei==None:
-					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
-					# 				loop = False
-					# 				continue
-					# 			ti = is_int(target)
-					# 			if ti==None:
-					# 				ti = is_float(target)
-					# 			if ti==None:
-					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
-					# 				loop = False
-					# 				continue
-					# 			if ei<ti: do_command = True
+							valid_operator = False
+							do_command = False
+							if operator.lower()=='(is)':
+								valid_operator = True
+								if examine.lower()==target.lower():
+									do_command = True
+							if operator.lower()=='(not)':
+								valid_operator = True
+								if examine.lower()!=target.lower():
+									do_command = True
+							if operator.lower()=='(in)':
+								valid_operator = True
+								if examine.lower() in target.lower():
+									do_command = True
 
-					# 		if operator.lower()=='greater':
-					# 			ei = is_int(examine)
-					# 			if ei==None:
-					# 				ei = is_float(examine)
-					# 			if ei==None:
-					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
-					# 				loop = False
-					# 				continue
-					# 			ti = is_int(target)
-					# 			if ti==None:
-					# 				ti = is_float(target)
-					# 			if ti==None:
-					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
-					# 				loop = False
-					# 				continue
-					# 			if ei>ti: do_command = True
+							if operator.lower()=='(lt)':
+								valid_operator = True
+								ei = is_int(examine)
+								if ei==None:
+									ei = is_float(examine)
+								if ei==None:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+									loop = False
+									continue
+								ti = is_int(target)
+								if ti==None:
+									ti = is_float(target)
+								if ti==None:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+									loop = False
+									continue
+								if ei<ti:
+									do_command = True
 
-					# 		if do_command:
-					# 			handled_goto = False
-					# 			if len(stokens)==2:
-					# 				if stokens[0].lower()=='goto':
-					# 					try:
-					# 						ln = int(stokens[1])
-					# 					except:
-					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
-					# 						loop = False
-					# 						continue
-					# 					if ln>len(self.script):
-					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
-					# 						loop = False
-					# 						continue
-					# 					index = ln - 2
-					# 					handled_goto = True
-					# 			if not handled_goto:
-					# 				self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
-					# 			script_only_command = True
-					# 			continue
+							if operator.lower()=='(gt)':
+								valid_operator = True
+								ei = is_int(examine)
+								if ei==None:
+									ei = is_float(examine)
+								if ei==None:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+									loop = False
+									continue
+								ti = is_int(target)
+								if ti==None:
+									ti = is_float(target)
+								if ti==None:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+									loop = False
+									continue
+								if ei>ti: 
+									do_command = True
 
-					# if len(tokens)<5:
-					# 	if tokens[0].lower()=='if':
-					# 		self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if called without enough arguments"])
-					# 		loop = False
-					# 		continue
+							if not valid_operator:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{operator}\" is not a valid \"if\" operator"])
+								loop = False
+								do_command = False
+								continue
+
+							if do_command:
+								handled_goto = False
+								if len(stokens)==2:
+									if stokens[0].lower()=='goto':
+										if config.ENABLE_GOTO_COMMAND:
+											try:
+												ln = int(stokens[1])
+											except:
+												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
+												loop = False
+												continue
+											if ln>len(self.script):
+												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
+												loop = False
+												continue
+											index = ln - 2
+											handled_goto = True
+										else:
+											self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: goto has been disabled"])
+											loop = False
+											handled_goto = True
+											continue
+								if not handled_goto:
+									self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
+								script_only_command = True
+								continue
+
+					if len(tokens)<5:
+						if tokens[0].lower()=='if':
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"if\" called without enough arguments"])
+							loop = False
+							continue
 
 					# |=========|
 					# | context |
@@ -4399,11 +4430,11 @@ class ScriptThread(QThread):
 							script_only_command = True
 							continue
 
-					# # Bypass if, already handled
-					# if len(tokens)>=1:
-					# 	if tokens[0].lower()=='if':
-					# 		script_only_command = True
-					# 		continue
+					# Bypass if, already handled
+					if len(tokens)>=1:
+						if tokens[0].lower()=='if':
+							script_only_command = True
+							continue
 
 					# Bypass insert, already handled
 					if len(tokens)>=1:
@@ -4417,12 +4448,18 @@ class ScriptThread(QThread):
 								loop = False
 								continue
 
-					# if len(tokens)==2:
-					# 	if tokens[0].lower()=='goto':
-					# 		target = tokens[1]
-					# 		index = int(target) - 2
-					# 		script_only_command = True
-					# 		continue
+					if len(tokens)==2:
+						if tokens[0].lower()=='goto':
+							if config.ENABLE_GOTO_COMMAND:
+								target = tokens[1]
+								index = int(target) - 2
+								script_only_command = True
+								continue
+							else:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: goto has been disabled"])
+								script_only_command = True
+								loop = False
+								continue
 
 					self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
 

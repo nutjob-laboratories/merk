@@ -356,6 +356,17 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingEditorIf(self,state):
+		if self.enableIf.isChecked():
+			self.syntaxop.setEnabled(True)
+		else:
+			self.syntaxop.setEnabled(False)
+
+		self.syntax_did_change = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedAutoAway(self,state):
 		if self.autoAway.isChecked():
 			self.autoawayInterval.setEnabled(True)
@@ -460,6 +471,10 @@ class Dialog(QDialog):
 			self.enableInsert.setEnabled(True)
 			self.requireArgs.setEnabled(True)
 			self.promptScript.setEnabled(True)
+			self.enableGoto.setEnabled(True)
+			self.enableIf.setEnabled(True)
+			self.syntaxop.setEnabled(True)
+			self.syntaxscript.setEnabled(True)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
@@ -467,6 +482,10 @@ class Dialog(QDialog):
 			self.enableInsert.setEnabled(False)
 			self.requireArgs.setEnabled(False)
 			self.promptScript.setEnabled(False)
+			self.enableGoto.setEnabled(False)
+			self.enableIf.setEnabled(False)
+			self.syntaxop.setEnabled(False)
+			self.syntaxscript.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -666,6 +685,13 @@ class Dialog(QDialog):
 			style = data[1][1]
 			self.SYNTAX_SCRIPT_COLOR = color
 			self.SYNTAX_SCRIPT_STYLE = style
+			self.changed.show()
+			self.boldApply()
+		elif name=="operator":
+			color = data[1][0]
+			style = data[1][1]
+			self.SYNTAX_OPERATOR_COLOR = color
+			self.SYNTAX_OPERATOR_STYLE = style
 			self.changed.show()
 			self.boldApply()
 		
@@ -1296,6 +1322,9 @@ class Dialog(QDialog):
 
 		self.SYNTAX_SCRIPT_COLOR = config.SYNTAX_SCRIPT_COLOR
 		self.SYNTAX_SCRIPT_STYLE = config.SYNTAX_SCRIPT_STYLE
+
+		self.SYNTAX_OPERATOR_COLOR = config.SYNTAX_OPERATOR_COLOR
+		self.SYNTAX_OPERATOR_STYLE = config.SYNTAX_OPERATOR_STYLE
 
 		self.SPELLCHECK_UNDERLINE_COLOR = config.SPELLCHECK_UNDERLINE_COLOR
 
@@ -3775,6 +3804,14 @@ class Dialog(QDialog):
 		if config.ENABLE_BUILT_IN_ALIASES: self.enableBuiltin.setChecked(True)
 		self.enableBuiltin.stateChanged.connect(self.changedSettingEditor)
 
+		self.enableGoto = QCheckBox(f"goto",self)
+		if config.ENABLE_GOTO_COMMAND: self.enableGoto.setChecked(True)
+		self.enableGoto.stateChanged.connect(self.changedSettingEditor)
+
+		self.enableIf = QCheckBox(f"if",self)
+		if config.ENABLE_IF_COMMAND: self.enableIf.setChecked(True)
+		self.enableIf.stateChanged.connect(self.changedSettingEditorIf)
+
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
@@ -3788,12 +3825,22 @@ class Dialog(QDialog):
 			self.showErrors.setEnabled(False)
 			self.requireArgs.setEnabled(False)
 			self.promptScript.setEnabled(False)
+			self.enableGoto.setEnabled(False)
+			self.enableIf.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
-		cmdLayout.addWidget(self.enableInsert)
 		cmdLayout.addWidget(self.enableShell)
 		cmdLayout.addWidget(self.enableDelay)
 		cmdLayout.addWidget(self.enableConfig)
+
+		cmdLayout2 = QHBoxLayout()
+		cmdLayout2.addWidget(self.enableInsert)
+		cmdLayout2.addWidget(self.enableGoto)
+		cmdLayout2.addWidget(self.enableIf)
+
+		allCmdLayout = QVBoxLayout()
+		allCmdLayout.addLayout(cmdLayout)
+		allCmdLayout.addLayout(cmdLayout2)
 
 		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints",self)
 		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
@@ -3820,7 +3867,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.promptScript)
 		scriptingLayout.addWidget(self.escapeHTML)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable commands</b>"))
-		scriptingLayout.addLayout(cmdLayout)
+		scriptingLayout.addLayout(allCmdLayout)
 		scriptingLayout.addStretch()
 
 		self.scriptingPage.setLayout(scriptingLayout)
@@ -3845,6 +3892,8 @@ class Dialog(QDialog):
 
 		self.syntaxscript = widgets.SyntaxColor('script', "<b>Script-Only Commands</b>",self.SYNTAX_SCRIPT_COLOR,self.SYNTAX_SCRIPT_STYLE,self)
 
+		self.syntaxop = widgets.SyntaxColor('operator', "<b>\"if\" Operators</b>",self.SYNTAX_OPERATOR_COLOR,self.SYNTAX_OPERATOR_STYLE,self)
+
 		self.syntaxfore = widgets.SyntaxTextColor('fore', "<b>Text Color</b>",self.SYNTAX_FOREGROUND,self)
 		self.syntaxback = widgets.SyntaxTextColor('back', "<b>Background</b>",self.SYNTAX_BACKGROUND,self)
 
@@ -3853,6 +3902,7 @@ class Dialog(QDialog):
 		self.syntaxchannel.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxalias.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxscript.syntaxChanged.connect(self.syntaxChanged)
+		self.syntaxop.syntaxChanged.connect(self.syntaxChanged)
 
 		self.syntaxnick = widgets.SyntaxColor('nick', "<b>Nicknames</b>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
 		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Emoji Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
@@ -3896,13 +3946,17 @@ class Dialog(QDialog):
 		tbLay.addRow(self.syntaxfore, self.syntaxback)
 		tbLay.addRow(self.syntaxcomment, self.syntaxcommand)
 		tbLay.addRow(self.syntaxchannel, self.syntaxalias)
-		tbLay.addRow(self.syntaxscript)
+		tbLay.addRow(self.syntaxscript,self.syntaxop)
 
 		sbLay = QFormLayout()
 		sbLay.addRow(self.syntaxnick, self.syntaxemoji)
 
 		if not config.ENABLE_ALIASES:
 			self.syntaxalias.setEnabled(False)
+
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			self.syntaxop.setEnabled(False)
+			self.syntaxscript.setEnabled(False)
 
 		inputMaster = QHBoxLayout()
 		inputMaster.addStretch()
@@ -4448,6 +4502,10 @@ class Dialog(QDialog):
 		config.WINDOWBAR_BOLD_ACTIVE_WINDOW = self.windowBarBold.isChecked()
 		config.MENUBAR_HOVER_EFFECT = self.menubarBold.isChecked()
 		config.ENABLE_BUILT_IN_ALIASES = self.enableBuiltin.isChecked()
+		config.SYNTAX_OPERATOR_COLOR = self.SYNTAX_OPERATOR_COLOR
+		config.SYNTAX_OPERATOR_STYLE = self.SYNTAX_OPERATOR_STYLE
+		config.ENABLE_GOTO_COMMAND = self.enableGoto.isChecked()
+		config.ENABLE_IF_COMMAND = self.enableIf.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
