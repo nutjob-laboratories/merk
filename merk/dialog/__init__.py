@@ -56,6 +56,7 @@ from .set_delay import Dialog as SetDelay
 from .reclaim import Dialog as SetReclaim
 from .set_insert import Dialog as SetInsert
 from .set_nick import Dialog as SetNick
+from .set_if import Dialog as SetIf
 
 def SetKeyDialog(parent):
 	x = SetKey(parent)

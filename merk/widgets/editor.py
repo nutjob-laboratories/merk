@@ -623,6 +623,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertEnd)
 		self.scriptCommands.addAction(entry)
 
+		entry = QAction(QIcon(SCRIPT_ICON),f"If statement",self)
+		entry.triggered.connect(self.insertIf)
+		self.scriptCommands.addAction(entry)
+
 		self.commentCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Comments")
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Insert multiline comment",self)
@@ -1159,6 +1163,20 @@ class Window(QMainWindow):
 		if len(e)==0: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"reclaim "+e+"\n")
+		self.updateApplicationTitle()
+
+	def insertIf(self):
+		x = SetIf(self)
+		e = x.get_if_information(self)
+
+		if not e: return
+
+		val1 = str(e[0])
+		operator = str(e[1])
+		val2 = str(e[2])
+		command = str(e[3])
+
+		self.editor.insertPlainText(f"if {val1} {operator} {val2} {command}\n")
 		self.updateApplicationTitle()
 
 	def insertDelay(self):
