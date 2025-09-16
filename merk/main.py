@@ -3882,6 +3882,7 @@ class Merk(QMainWindow):
 			x = StylerDefaultDialog(self)
 
 	def disconnectAll(self,disco_msg=None):
+		if not isinstance(disco_msg,str): disco_msg = None
 		windows = self.getAllServerWindows()
 		if len(windows)>0:
 

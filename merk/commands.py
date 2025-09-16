@@ -3771,15 +3771,12 @@ def execute_delay(data):
 	if not handleScriptCommands(gui,window,line,1,script_id):
 		if len(line.strip())==0: return
 		if config.DISPLAY_SCRIPT_ERRORS:
-			# Check to make sure this isn't being thrown by script
-			# only commands
-			if not script_only_command:
-				if line[0]==config.ISSUE_COMMAND_SYMBOL:
-					t = Message(ERROR_MESSAGE,'',f"Unrecognized command \"{line}\"")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				else:
-					t = Message(ERROR_MESSAGE,'',f"Line \"{line}\" contains no command")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if line[0]==config.ISSUE_COMMAND_SYMBOL:
+				t = Message(ERROR_MESSAGE,'',f"Unrecognized command \"{line}\"")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				t = Message(ERROR_MESSAGE,'',f"Line \"{line}\" contains no command")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 class DelayThread(QThread):
 
@@ -4221,13 +4218,16 @@ class ScriptThread(QThread):
 
 					tokens = line.split()
 
+					# # |====|
+					# # | if |
+					# # |====|
 					# if len(tokens)>=5:
 					# 	if tokens[0].lower()=='if':
 
 					# 		try:
 					# 			stokens = shlex.split(line, comments=False)
 					# 		except:
-					# 			self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks."])
+					# 			self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks"])
 					# 			loop = False
 					# 			continue
 
@@ -4246,25 +4246,66 @@ class ScriptThread(QThread):
 					# 		if operator.lower()=='in':
 					# 			if examine.lower() in target.lower(): do_command = True
 
+					# 		if operator.lower()=='lesser':
+					# 			ei = is_int(examine)
+					# 			if ei==None:
+					# 				ei = is_float(examine)
+					# 			if ei==None:
+					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+					# 				loop = False
+					# 				continue
+					# 			ti = is_int(target)
+					# 			if ti==None:
+					# 				ti = is_float(target)
+					# 			if ti==None:
+					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+					# 				loop = False
+					# 				continue
+					# 			if ei<ti: do_command = True
+
+					# 		if operator.lower()=='greater':
+					# 			ei = is_int(examine)
+					# 			if ei==None:
+					# 				ei = is_float(examine)
+					# 			if ei==None:
+					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+					# 				loop = False
+					# 				continue
+					# 			ti = is_int(target)
+					# 			if ti==None:
+					# 				ti = is_float(target)
+					# 			if ti==None:
+					# 				self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+					# 				loop = False
+					# 				continue
+					# 			if ei>ti: do_command = True
+
 					# 		if do_command:
-								
 					# 			handled_goto = False
 					# 			if len(stokens)==2:
 					# 				if stokens[0].lower()=='goto':
 					# 					try:
 					# 						ln = int(stokens[1])
 					# 					except:
-					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number."])
+					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
 					# 						loop = False
+					# 						continue
 					# 					if ln>len(self.script):
-					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number."])
+					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
 					# 						loop = False
+					# 						continue
 					# 					index = ln - 2
 					# 					handled_goto = True
 					# 			if not handled_goto:
 					# 				self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
 					# 			script_only_command = True
 					# 			continue
+
+					# if len(tokens)<5:
+					# 	if tokens[0].lower()=='if':
+					# 		self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if called without enough arguments"])
+					# 		loop = False
+					# 		continue
 
 					# |=========|
 					# | context |
@@ -4298,7 +4339,7 @@ class ScriptThread(QThread):
 							script_only_command = True
 
 							if not is_valid:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context cannot find window \"{target}\"."])
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context cannot find window \"{target}\""])
 								loop = False
 							else:
 								continue
@@ -4358,11 +4399,11 @@ class ScriptThread(QThread):
 							script_only_command = True
 							continue
 
-					# Bypass if, already handled
-					if len(tokens)>=1:
-						if tokens[0].lower()=='if':
-							script_only_command = True
-							continue
+					# # Bypass if, already handled
+					# if len(tokens)>=1:
+					# 	if tokens[0].lower()=='if':
+					# 		script_only_command = True
+					# 		continue
 
 					# Bypass insert, already handled
 					if len(tokens)>=1:

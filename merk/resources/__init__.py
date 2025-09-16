@@ -387,6 +387,27 @@ class WhoWasData:
 
 # Functions
 
+def is_string(msg):
+	try:
+		msg = str(msg)
+	except:
+		return None
+	return msg
+
+def is_int(number):
+	try:
+		number = int(number)
+	except:
+		return None
+	return number
+
+def is_float(number):
+	try:
+		number = float(number)
+	except:
+		return None
+	return number
+
 def resource_path(relative_path):
 	if hasattr(sys, '_MEIPASS'):
 		return os.path.join(sys._MEIPASS, relative_path)
