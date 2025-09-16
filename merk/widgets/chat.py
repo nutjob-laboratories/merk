@@ -3051,6 +3051,7 @@ class SpellTextEdit(QPlainTextEdit):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{setting}")
 										cursor.endEditBlock()
+										self.ensureCursorVisible()
 										return
 				
 				if config.AUTOCOMPLETE_SCRIPTS:
@@ -3066,6 +3067,7 @@ class SpellTextEdit(QPlainTextEdit):
 									cursor.beginEditBlock()
 									cursor.insertText(f"{script}")
 									cursor.endEditBlock()
+									self.ensureCursorVisible()
 									return
 
 				if config.ENABLE_ALIASES:
@@ -3087,6 +3089,7 @@ class SpellTextEdit(QPlainTextEdit):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
 										cursor.endEditBlock()
+										self.ensureCursorVisible()
 										return
 
 								for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
@@ -3094,6 +3097,7 @@ class SpellTextEdit(QPlainTextEdit):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
 										cursor.endEditBlock()
+										self.ensureCursorVisible()
 										return
 
 				if config.AUTOCOMPLETE_COMMANDS:
@@ -3113,6 +3117,7 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.beginEditBlock()
 								cursor.insertText(rep)
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 				if config.AUTOCOMPLETE_NICKS:
@@ -3132,6 +3137,7 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.beginEditBlock()
 								cursor.insertText(f"{nick}")
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 				if config.AUTOCOMPLETE_CHANNELS:
@@ -3152,6 +3158,7 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.beginEditBlock()
 								cursor.insertText(f"{name}")
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 					# Channels that might have multiple symbols in front of them
@@ -3174,20 +3181,8 @@ class SpellTextEdit(QPlainTextEdit):
 									cursor.beginEditBlock()
 									cursor.insertText(f"{name}")
 									cursor.endEditBlock()
+									self.ensureCursorVisible()
 									return
-
-				# if config.AUTOCOMPLETE_CONNECTED_SERVERS:
-				# 	# Auto-complete servers
-				# 	cursor.select(QTextCursor.WordUnderCursor)
-				# 	self.setTextCursor(cursor)
-				# 	if self.textCursor().hasSelection():
-				# 		text = self.textCursor().selectedText()
-				# 		for win in self.parent.parent.getAllServerNames():
-				# 			if fnmatch.fnmatch(win,f"{text}*"):
-				# 				cursor.beginEditBlock()
-				# 				cursor.insertText(f"{win}")
-				# 				cursor.endEditBlock()
-				# 				return
 
 				if config.ENABLE_EMOJI_SHORTCODES:
 					if config.AUTOCOMPLETE_EMOJIS:
@@ -3209,6 +3204,7 @@ class SpellTextEdit(QPlainTextEdit):
 									cursor.beginEditBlock()
 									cursor.insertText(c)
 									cursor.endEditBlock()
+									self.ensureCursorVisible()
 									return
 
 								# Case insensitive
@@ -3216,6 +3212,7 @@ class SpellTextEdit(QPlainTextEdit):
 									cursor.beginEditBlock()
 									cursor.insertText(c)
 									cursor.endEditBlock()
+									self.ensureCursorVisible()
 									return
 
 			cursor.movePosition(QTextCursor.End)

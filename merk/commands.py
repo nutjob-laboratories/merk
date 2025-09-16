@@ -4221,6 +4221,51 @@ class ScriptThread(QThread):
 
 					tokens = line.split()
 
+					# if len(tokens)>=5:
+					# 	if tokens[0].lower()=='if':
+
+					# 		try:
+					# 			stokens = shlex.split(line, comments=False)
+					# 		except:
+					# 			self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks."])
+					# 			loop = False
+					# 			continue
+
+					# 		stokens.pop(0)
+
+					# 		buildTemporaryAliases(self.gui,self.window)
+					# 		examine = interpolateAliases(stokens.pop(0))
+					# 		operator = interpolateAliases(stokens.pop(0))
+					# 		target = interpolateAliases(stokens.pop(0))
+
+					# 		do_command = False
+					# 		if operator.lower()=='is':
+					# 			if examine.lower()==target.lower(): do_command = True
+					# 		if operator.lower()=='not':
+					# 			if examine.lower()!=target.lower(): do_command = True
+					# 		if operator.lower()=='in':
+					# 			if examine.lower() in target.lower(): do_command = True
+
+					# 		if do_command:
+								
+					# 			handled_goto = False
+					# 			if len(stokens)==2:
+					# 				if stokens[0].lower()=='goto':
+					# 					try:
+					# 						ln = int(stokens[1])
+					# 					except:
+					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number."])
+					# 						loop = False
+					# 					if ln>len(self.script):
+					# 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number."])
+					# 						loop = False
+					# 					index = ln - 2
+					# 					handled_goto = True
+					# 			if not handled_goto:
+					# 				self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
+					# 			script_only_command = True
+					# 			continue
+
 					# |=========|
 					# | context |
 					# |=========|
@@ -4310,6 +4355,12 @@ class ScriptThread(QThread):
 					# Bypass exclude, already handled
 					if len(tokens)>=1:
 						if tokens[0].lower()=='exclude':
+							script_only_command = True
+							continue
+
+					# Bypass if, already handled
+					if len(tokens)>=1:
+						if tokens[0].lower()=='if':
 							script_only_command = True
 							continue
 
