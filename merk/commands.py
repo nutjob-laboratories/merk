@@ -272,7 +272,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ping USER [TEXT]</b>", "Sends a CTCP ping to a user" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>", "Executes an external program, and stores the output in an alias" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp USER REQUEST</b>", "Sends a CTCP request; valid requests are TIME, VERSION, or FINGER" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME</b>", "Opens a private chat window for NICKNAME" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat window for NICKNAME" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME</b>", "Attempts to change nickname to NICKNAME until claimed" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"next</b>", "Shifts focus to the \"next\" subwindow" ],
@@ -1592,6 +1592,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = window.parent.openPrivate(window.client,target)
 			w.show()
 			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private' and len(tokens)>=3:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			msg = ' '.join(tokens)
+			w = window.parent.openPrivate(window.client,target)
+			window.client.msg(target,msg)
+			t = Message(SELF_MESSAGE,window.client.nickname,msg)
+			w.widget().writeText(t)
+			w.show()
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'private':
 			if is_script:
 				add_halt(script_id)
