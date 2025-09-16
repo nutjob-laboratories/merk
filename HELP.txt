@@ -290,7 +290,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/private NICKNAME [MESSAGE]</code></td>
-<td>Opens a private chatwindow for <code>NICKNAME</code></td>
+<td>Opens a private chat window for <code>NICKNAME</code></td>
 </tr>
 <tr>
 <td><code>/quit [MESSAGE]</code></td>
