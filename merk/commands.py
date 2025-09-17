@@ -1035,6 +1035,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
+	# |------|
+	# | /rem |
+	# |------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'rem':
+			# Does absolutely nothing
+			return True
+
 	# |----------|
 	# | /quitall |
 	# |----------|
