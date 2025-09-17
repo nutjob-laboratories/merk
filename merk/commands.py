@@ -586,6 +586,21 @@ def execute_script_line(data):
 
 	if not handleScriptCommands(gui,window,line,line_number,script_id):
 		if len(line.strip())==0: return
+
+		tokens = line.split()
+		if len(tokens)>0:
+			if len(tokens)==1:
+				if tokens[0].lower()=='end':
+					add_halt(script_id)
+					return
+			else:
+				if tokens[1].lower()=='end':
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: end called with too many arguments")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return
+
 		if config.DISPLAY_SCRIPT_ERRORS:
 			# Check to make sure this isn't being thrown by script
 			# only commands
@@ -4088,7 +4103,7 @@ class ScriptThread(QThread):
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Script must be called with {arg} arguments"])
 									no_errors = False
 					except:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: usage must be called with a numerical first argument."])
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: usage must be called with a numerical first argument"])
 						no_errors = False
 
 			# Usage must be called with at least one argument
@@ -4100,31 +4115,31 @@ class ScriptThread(QThread):
 			# /style can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script."])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script"])
 					no_errors = False
 
 			# /settings can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}settings cannot be called from a script."])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}settings cannot be called from a script"])
 					no_errors = False
 
 			# /log can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}log cannot be called from a script."])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}log cannot be called from a script"])
 					no_errors = False
 
 			# /edit can't be called in scripts
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script."])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script"])
 					no_errors = False
 
 			# /end doesn't take any arguments
 			if len(tokens)>=1:
 				if tokens[0].lower()=='end' and len(tokens)>1: 
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: end called with too many arguments."])
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: end called with too many arguments"])
 					no_errors = False
 
 			# Make sure that wait is called with a numerical argument
@@ -4134,7 +4149,7 @@ class ScriptThread(QThread):
 					try:
 						count = int(count)
 					except:
-						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument."])
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument"])
 						no_errors = False
 
 			# Make sure that wait has only one argument
