@@ -4317,7 +4317,9 @@ class ScriptThread(QThread):
 												loop = False
 												continue
 											ln = ln - 2
-											if ln>len(self.script):
+											try:
+												code = script[ln]
+											except:
 												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
 												loop = False
 												continue
@@ -4473,14 +4475,14 @@ class ScriptThread(QThread):
 									loop = False
 									script_only_command = True
 									continue
-								target = target - 2
-								if target>len(self.script):
+								try:
+									code = script[target-2]
+								except:
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
 									loop = False
-									script_only_command = True
 									continue
 
-								index = target
+								index = target-2
 								self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
 								script_only_command = True
 								continue
