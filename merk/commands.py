@@ -4476,13 +4476,13 @@ class ScriptThread(QThread):
 									script_only_command = True
 									continue
 								try:
-									code = script[target-2]
+									code = script[target-1]
 								except:
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
 									loop = False
 									continue
 
-								index = target-2
+								index = target-1
 								self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
 								script_only_command = True
 								continue
