@@ -148,12 +148,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"unalias")
 			merk.remove(cmdsymbol+"shell")
 			merk.remove(cmdsymbol+"random")
-		if not config.SCRIPTING_ENGINE_ENABLED:
-			merk.remove(cmdsymbol+"script")
-			merk.remove(cmdsymbol+"usage")
-			merk.remove(cmdsymbol+"restrict")
-			merk.remove(cmdsymbol+"only")
-			merk.remove(cmdsymbol+"insert")
 		if not config.ENABLE_SHELL_COMMAND:
 			merk.remove(cmdsymbol+"shell")
 		if not SSL_AVAILABLE:
@@ -188,6 +182,11 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(gt\\)",
 		]
 
+		if not config.ENABLE_GOTO_COMMAND: script_full = []
+		if not config.ENABLE_IF_COMMAND:
+			script_only.remove("if")
+			operators = []
+		
 		if not config.ENABLE_INSERT_COMMAND:
 			script_only.remove("insert")
 
