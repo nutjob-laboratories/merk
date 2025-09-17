@@ -4316,7 +4316,7 @@ class ScriptThread(QThread):
 												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
 												loop = False
 												continue
-											ln = ln - 2
+											ln = ln - 1
 											try:
 												code = script[ln]
 											except:
