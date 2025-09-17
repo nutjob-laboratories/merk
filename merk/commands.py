@@ -4316,12 +4316,15 @@ class ScriptThread(QThread):
 												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
 												loop = False
 												continue
+											ln = ln - 2
 											if ln>len(self.script):
 												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
 												loop = False
 												continue
-											index = ln - 2
+											index = ln
+											self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
 											handled_goto = True
+											continue
 										else:
 											self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: goto has been disabled"])
 											loop = False
@@ -4344,6 +4347,9 @@ class ScriptThread(QThread):
 					if len(tokens)==2:
 						if tokens[0].lower()=='context':
 							target = tokens[1]
+
+							buildTemporaryAliases(self.gui,self.window)
+							target = interpolateAliases(target)
 
 							is_valid = False
 							valids = self.gui.getAllConnectedWindows(self.window.client)
@@ -4392,6 +4398,10 @@ class ScriptThread(QThread):
 					if len(tokens)==2:
 						if tokens[0].lower()=='wait':
 							count = tokens[1]
+
+							buildTemporaryAliases(self.gui,self.window)
+							count = interpolateAliases(count)
+
 							count = int(count)
 							time.sleep(count)
 							script_only_command = True
@@ -4452,7 +4462,26 @@ class ScriptThread(QThread):
 						if tokens[0].lower()=='goto':
 							if config.ENABLE_GOTO_COMMAND:
 								target = tokens[1]
-								index = int(target) - 2
+
+								buildTemporaryAliases(self.gui,self.window)
+								target = interpolateAliases(target)
+
+								try:
+									target = int(target)
+								except:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
+									loop = False
+									script_only_command = True
+									continue
+								target = target - 2
+								if target>len(self.script):
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
+									loop = False
+									script_only_command = True
+									continue
+
+								index = target
+								self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
 								script_only_command = True
 								continue
 							else:
@@ -4460,7 +4489,7 @@ class ScriptThread(QThread):
 								script_only_command = True
 								loop = False
 								continue
-
+					
 					self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
 
 		self.scriptEnd.emit([self.gui,self.id])
