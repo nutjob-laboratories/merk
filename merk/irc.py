@@ -138,10 +138,20 @@ class IRC_Connection(irc.IRCClient):
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
 
+		self.server_software = "Unknown"
+
 		self.last_interaction = 0
 		self.autoaway = False
 
 		self.banlists = defaultdict(list)
+
+	def yourHost(self,info):
+
+		i = info.split()
+		try:
+			self.server_software = i[6]
+		except:
+			self.server_software = "Unknown"
 
 	def ctcpReply(self, user, channel, messages):
 		# sys.stdout.write(f"{user} - {channel} - {messages}\n")
