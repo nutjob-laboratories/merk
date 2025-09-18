@@ -1486,6 +1486,10 @@ class Dialog(QDialog):
 		if config.ASK_FOR_SERVER_ON_STARTUP: self.showConnect.setChecked(True)
 		self.showConnect.stateChanged.connect(self.changedSetting)
 
+		self.fullScreen = QCheckBox("Main window full screen",self)
+		if config.SHOW_FULL_SCREEN: self.fullScreen.setChecked(True)
+		self.fullScreen.stateChanged.connect(self.changedSetting)
+
 		logo = QLabel()
 		pixmap = QPixmap(SPLASH_LOGO)
 		logo.setPixmap(pixmap)
@@ -1506,6 +1510,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.maxOnStart)
 		applicationLayout.addWidget(self.showConnect)
 		applicationLayout.addWidget(self.alwaysOnTop)
+		applicationLayout.addWidget(self.fullScreen)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.noAppNameTitle)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
@@ -4513,6 +4518,14 @@ class Dialog(QDialog):
 		config.ENABLE_GOTO_COMMAND = self.enableGoto.isChecked()
 		config.ENABLE_IF_COMMAND = self.enableIf.isChecked()
 		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
+
+		if config.SHOW_FULL_SCREEN:
+			if not self.fullScreen.isChecked():
+				self.parent.showNormal()
+		else:
+			if self.fullScreen.isChecked():
+				self.parent.showFullScreen()
+		config.SHOW_FULL_SCREEN = self.fullScreen.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

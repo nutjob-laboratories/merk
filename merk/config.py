@@ -286,9 +286,11 @@ SYNTAX_OPERATOR_STYLE = "bold"
 ENABLE_GOTO_COMMAND = True
 ENABLE_IF_COMMAND = True
 WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = True
+SHOW_FULL_SCREEN = False
 
 def build_settings():
 	settings = {
+		"show_app_full_screen": SHOW_FULL_SCREEN,
 		"write_outgoing_private_messages_to_current_window": WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW,
 		"enable_if_command": ENABLE_IF_COMMAND,
 		"enable_goto_command": ENABLE_GOTO_COMMAND,
@@ -541,6 +543,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_app_full_screen" in settings:
+		settings["show_app_full_screen"] = SHOW_FULL_SCREEN
 	if not "write_outgoing_private_messages_to_current_window" in settings:
 		settings["write_outgoing_private_messages_to_current_window"] = WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW
 	if not "enable_if_command" in settings:
@@ -1287,6 +1291,7 @@ def load_settings(filename):
 	global ENABLE_GOTO_COMMAND
 	global ENABLE_IF_COMMAND
 	global WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW
+	global SHOW_FULL_SCREEN
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1296,6 +1301,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_FULL_SCREEN = settings["show_app_full_screen"]
 		WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = settings["write_outgoing_private_messages_to_current_window"]
 		ENABLE_IF_COMMAND = settings["enable_if_command"]
 		ENABLE_GOTO_COMMAND = settings["enable_goto_command"]

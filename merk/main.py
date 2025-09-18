@@ -227,6 +227,9 @@ class Merk(QMainWindow):
 			if not config.ALWAYS_ON_TOP:
 				self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
 
+		if config.SHOW_FULL_SCREEN:
+			self.showFullScreen()
+
 		# Systray
 		self.flash = QTimer(self)
 		self.flash.timeout.connect(self.blink)
@@ -3053,6 +3056,16 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsFull(self):
+		if config.SHOW_FULL_SCREEN:
+			config.SHOW_FULL_SCREEN = False
+			self.showNormal()
+		else:
+			config.SHOW_FULL_SCREEN = True
+			self.showFullScreen()
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsTop(self):
 		if config.ALWAYS_ON_TOP:
 			config.ALWAYS_ON_TOP = False
@@ -3234,6 +3247,13 @@ class Merk(QMainWindow):
 		if self.ontop:
 			entry.setIcon(QIcon(self.checked_icon))
 			entry.setEnabled(False)
+
+		if config.SHOW_FULL_SCREEN:
+			entry = QAction(QIcon(self.checked_icon),"Full screen", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Full screen", self)
+		entry.triggered.connect(self.settingsFull)
+		self.settingsMenu.addAction(entry)
 
 		if config.SHOW_SYSTRAY_ICON:
 			if config.MINIMIZE_TO_SYSTRAY:
