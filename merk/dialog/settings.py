@@ -3681,6 +3681,11 @@ class Dialog(QDialog):
 			self.padLength.setEnabled(False)
 			self.padLengthLabelSpec.setEnabled(False)
 
+		self.writeMessageOut = QCheckBox("Write outgoing private messages\nto the current window",self)
+		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
+		self.writeMessageOut.stateChanged.connect(self.changedSetting)
+		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -3691,6 +3696,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.ignoreCreateWindow)
 		messageLayout.addWidget(self.createWindowOut)
 		messageLayout.addWidget(self.writePrivate)
+		messageLayout.addWidget(self.writeMessageOut)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.noPadding)
 		messageLayout.addLayout(padLayout)
@@ -4506,6 +4512,7 @@ class Dialog(QDialog):
 		config.SYNTAX_OPERATOR_STYLE = self.SYNTAX_OPERATOR_STYLE
 		config.ENABLE_GOTO_COMMAND = self.enableGoto.isChecked()
 		config.ENABLE_IF_COMMAND = self.enableIf.isChecked()
+		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
 
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():

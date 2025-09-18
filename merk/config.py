@@ -285,9 +285,11 @@ SYNTAX_OPERATOR_COLOR = "blue"
 SYNTAX_OPERATOR_STYLE = "bold"
 ENABLE_GOTO_COMMAND = True
 ENABLE_IF_COMMAND = True
+WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = True
 
 def build_settings():
 	settings = {
+		"write_outgoing_private_messages_to_current_window": WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW,
 		"enable_if_command": ENABLE_IF_COMMAND,
 		"enable_goto_command": ENABLE_GOTO_COMMAND,
 		"syntax_operator_color": SYNTAX_OPERATOR_COLOR,
@@ -539,6 +541,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "write_outgoing_private_messages_to_current_window" in settings:
+		settings["write_outgoing_private_messages_to_current_window"] = WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW
 	if not "enable_if_command" in settings:
 		settings["enable_if_command"] = ENABLE_IF_COMMAND
 	if not "enable_goto_command" in settings:
@@ -1282,6 +1286,7 @@ def load_settings(filename):
 	global SYNTAX_OPERATOR_STYLE
 	global ENABLE_GOTO_COMMAND
 	global ENABLE_IF_COMMAND
+	global WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1291,6 +1296,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = settings["write_outgoing_private_messages_to_current_window"]
 		ENABLE_IF_COMMAND = settings["enable_if_command"]
 		ENABLE_GOTO_COMMAND = settings["enable_goto_command"]
 		SYNTAX_OPERATOR_COLOR = settings["syntax_operator_color"]

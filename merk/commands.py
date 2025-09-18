@@ -3533,6 +3533,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
 						w.writeText(t)
 
+			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
+				t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
+				window.writeText(t)
+
 			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
 				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
 					if not displayed_message:
