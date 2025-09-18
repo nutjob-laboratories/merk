@@ -3526,16 +3526,23 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				displayed_message = True
 
 			# Write the message to the server window
+			written_to_server_window = False
 			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
 					w = gui.getServerWindow(window.client)
 					if w:
+						written_to_server_window = True
 						t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
 						w.writeText(t)
 
 			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
-				t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
-				window.writeText(t)
+				if window == gui.getServerWindow(window.client):
+					if not written_to_server_window:
+						t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
+						window.writeText(t)
+				else:
+					t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
+					window.writeText(t)
 
 			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
 				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
