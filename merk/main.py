@@ -3569,10 +3569,8 @@ class Merk(QMainWindow):
 
 	def menuChannelList(self,sw):
 		c = sw.widget()
-		if c.client.channel_list_window==None:
-			self.newListWindow(c.client,sw)
-		else:
-			self.showSubWindow(c.client.channel_list_window)
+		w = self.getServerWindow(c.client)
+		w.showChannelList()
 
 	def menuReadMe(self):
 		if self.readme_window==None:
