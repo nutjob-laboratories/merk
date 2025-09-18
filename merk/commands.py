@@ -1661,6 +1661,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |----------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'windows' and len(tokens)==1:
+
+			mdi_viewport = gui.MDI.viewport()
+			viewport_size = mdi_viewport.size()
 			
 			results = []
 			for w in gui.getAllAllConnectedSubWindows():
@@ -1681,6 +1684,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} windows")
 			else:
 				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} window")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			t = Message(SYSTEM_MESSAGE,'',f"Subwindow display area: {viewport_size.width()}x{viewport_size.height()}")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			counter = 0
