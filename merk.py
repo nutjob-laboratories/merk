@@ -108,6 +108,7 @@ optiongroup.add_argument("-x","--donotexecute",help=f"Do not execute connection 
 optiongroup.add_argument("-t","--reconnect",help=f"Reconnect to servers on disconnection",action="store_true")
 optiongroup.add_argument("-R","--run",dest="noask",help=f"Don't ask for connection information on start",action="store_true")
 optiongroup.add_argument("-o","--on-top",dest="ontop",help=f"Application window always on top",action="store_true")
+optiongroup.add_argument("-f","--full-screen",dest="fullscreen",help=f"Application window displays full screen",action="store_true")
 optiongroup.add_argument("-s","--script",type=str,help="Use a file as a connection script",metavar="FILE",default='')
 
 configuration_group = parser.add_argument_group('Files and Directories')
@@ -420,6 +421,7 @@ if __name__ == '__main__':
 				args.donotexecute,				# Do not execute script default
 				args.donotsave,					# Do not save default
 				args.ontop,						# Always on top
+				args.fullscreen,				# Full screen
 				None,							# Parent
 			)
 
@@ -461,6 +463,7 @@ if __name__ == '__main__':
 					args.donotexecute,				# Do not execute script default
 					args.donotsave,					# Do not save default
 					args.ontop,						# Always on top
+					args.fullscreen,				# Full screen
 					None,							# Parent
 				)
 
@@ -545,6 +548,7 @@ if __name__ == '__main__':
 								args.donotexecute,				# Do not execute script default
 								args.donotsave,					# Do not save default
 								args.ontop,						# Always on top
+								args.fullscreen,				# Full screen
 								None,							# Parent
 							)
 
@@ -580,6 +584,7 @@ if __name__ == '__main__':
 						args.donotexecute,				# Do not execute script default
 						args.donotsave,					# Do not save default
 						args.ontop,						# Always on top
+						args.fullscreen,				# Full screen
 						None,							# Parent
 					)
 

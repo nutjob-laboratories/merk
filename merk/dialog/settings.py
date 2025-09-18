@@ -4519,14 +4519,17 @@ class Dialog(QDialog):
 		config.ENABLE_IF_COMMAND = self.enableIf.isChecked()
 		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
 
-		if config.SHOW_FULL_SCREEN:
-			if not self.fullScreen.isChecked():
-				self.parent.showNormal()
+		if self.fullScreen.isChecked():
+			if not config.SHOW_FULL_SCREEN:
+				config.SHOW_FULL_SCREEN = True
+				if not self.parent.fullscreen:
+					self.parent.showFullScreen()
 		else:
-			if self.fullScreen.isChecked():
-				self.parent.showFullScreen()
-		config.SHOW_FULL_SCREEN = self.fullScreen.isChecked()
-
+			if config.SHOW_FULL_SCREEN:
+				config.SHOW_FULL_SCREEN = False
+				if not self.parent.fullscreen:
+					self.parent.showNormal()
+		
 		if config.MINIMIZE_TO_SYSTRAY==True:
 			if not self.minSystray.isChecked():
 				if self.parent.is_hidden:

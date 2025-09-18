@@ -131,6 +131,7 @@ class Merk(QMainWindow):
 			noexecute=False,
 			donotsave=False,
 			ontop=False,
+			fullscreen=False,
 			parent=None,
 		):
 		super(Merk, self).__init__(parent)
@@ -145,6 +146,7 @@ class Merk(QMainWindow):
 		self.noexecute = noexecute
 		self.donotsave = donotsave
 		self.ontop = ontop
+		self.fullscreen = fullscreen
 
 		self.event_filter = GlobalActivityFilter()
 		QApplication.instance().installEventFilter(self.event_filter)
@@ -229,6 +231,10 @@ class Merk(QMainWindow):
 
 		if config.SHOW_FULL_SCREEN:
 			self.showFullScreen()
+
+		if self.fullscreen:
+			if not config.SHOW_FULL_SCREEN:
+				self.showFullScreen()
 
 		# Systray
 		self.flash = QTimer(self)
@@ -3254,6 +3260,10 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Full screen", self)
 		entry.triggered.connect(self.settingsFull)
 		self.settingsMenu.addAction(entry)
+
+		if self.fullscreen:
+			entry.setIcon(QIcon(self.checked_icon))
+			entry.setEnabled(False)
 
 		if config.SHOW_SYSTRAY_ICON:
 			if config.MINIMIZE_TO_SYSTRAY:

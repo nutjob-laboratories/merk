@@ -170,7 +170,7 @@ There are three libraries that comes bundled with **MERK**:
 usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
                       [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
-                      [-t] [-R] [-o] [-s FILENAME][--config-name NAME] 
+                      [-t] [-R] [-o] [-f] [-s FILENAME][--config-name NAME] 
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
@@ -208,6 +208,7 @@ Options:
   -t, --reconnect       Reconnect to servers on disconnection
   -R, --run             Don't ask for connection information on start
   -o, --on-top          Application window always on top
+  -f, --full-screen     Application window displays full screen
   -s, --script FILE     Use a file as a connection script
 
 Files and Directories:
