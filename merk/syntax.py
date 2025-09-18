@@ -143,21 +143,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"rem",
 		]
 
-		if not config.ENABLE_ALIASES:
-			merk.remove(cmdsymbol+"alias")
-			merk.remove(cmdsymbol+"unalias")
-			merk.remove(cmdsymbol+"shell")
-			merk.remove(cmdsymbol+"random")
-		if not config.ENABLE_SHELL_COMMAND:
-			merk.remove(cmdsymbol+"shell")
-		if not SSL_AVAILABLE:
-			merk.remove(cmdsymbol+"connectssl")
-			merk.remove(cmdsymbol+"xconnectssl")
-		if not config.ENABLE_DELAY_COMMAND:
-			merk.remove(cmdsymbol+"delay")
-		if not config.ENABLE_CONFIG_COMMAND:
-			merk.remove(cmdsymbol+"config")
-
 		script_only = [
 			"restrict",
 			"insert",
@@ -182,11 +167,24 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(gt\\)",
 		]
 
+		if not config.ENABLE_ALIASES:
+			merk.remove(cmdsymbol+"alias")
+			merk.remove(cmdsymbol+"unalias")
+			merk.remove(cmdsymbol+"shell")
+			merk.remove(cmdsymbol+"random")
+		if not config.ENABLE_SHELL_COMMAND:
+			merk.remove(cmdsymbol+"shell")
+		if not SSL_AVAILABLE:
+			merk.remove(cmdsymbol+"connectssl")
+			merk.remove(cmdsymbol+"xconnectssl")
+		if not config.ENABLE_DELAY_COMMAND:
+			merk.remove(cmdsymbol+"delay")
+		if not config.ENABLE_CONFIG_COMMAND:
+			merk.remove(cmdsymbol+"config")
 		if not config.ENABLE_GOTO_COMMAND: script_full = []
 		if not config.ENABLE_IF_COMMAND:
 			script_only.remove("if")
 			operators = []
-		
 		if not config.ENABLE_INSERT_COMMAND:
 			script_only.remove("insert")
 

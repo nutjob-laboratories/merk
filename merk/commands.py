@@ -4373,7 +4373,7 @@ class ScriptThread(QThread):
 
 					if len(tokens)<5:
 						if tokens[0].lower()=='if':
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"if\" called without enough arguments"])
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if called without enough arguments"])
 							loop = False
 							continue
 
