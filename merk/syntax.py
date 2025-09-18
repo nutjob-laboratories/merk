@@ -143,6 +143,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"rem",
 			cmdsymbol+"fullscreen",
 			cmdsymbol+"resize",
+			cmdsymbol+"move",
 		]
 
 		script_only = [

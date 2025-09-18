@@ -180,6 +180,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"quitall": config.ISSUE_COMMAND_SYMBOL+"quitall",
 			config.ISSUE_COMMAND_SYMBOL+"fullscreen": config.ISSUE_COMMAND_SYMBOL+"fullscreen",
 			config.ISSUE_COMMAND_SYMBOL+"resize": config.ISSUE_COMMAND_SYMBOL+"resize ",
+			config.ISSUE_COMMAND_SYMBOL+"move": config.ISSUE_COMMAND_SYMBOL+"move ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -288,6 +289,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fullscreen</b>", "Toggles full screen mode" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1038,6 +1040,193 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |-------|
+	# | /move |
+	# |-------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'move' and len(tokens)==5:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+			x_val = tokens.pop(0)
+			y_val = tokens.pop(0)
+
+			x_val = is_int(x_val)
+			if x_val==None:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			y_val = is_int(y_val)
+			if y_val==None:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						if gui.is_valid_position(w,x_val,y_val):
+							w.move(x_val,y_val)
+						else:
+							if is_script:
+								add_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Not a valid window position")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Server \""+server+"\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'move' and len(tokens)==4:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			x_val = tokens.pop(0)
+			y_val = tokens.pop(0)
+
+			x_val = is_int(x_val)
+			if x_val==None:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			y_val = is_int(y_val)
+			if y_val==None:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Invalid Y Value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				if gui.is_valid_position(w,x_val,y_val):
+					w.move(x_val,y_val)
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Not a valid window position")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'move' and len(tokens)==3:
+			tokens.pop(0)
+			x_val = tokens.pop(0)
+			y_val = tokens.pop(0)
+
+			x_val = is_int(x_val)
+			if x_val==None:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			y_val = is_int(y_val)
+			if y_val==None:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			w = gui.getSubWindow(window.name,window.client)
+			if w:
+				if gui.is_valid_position(w,x_val,y_val):
+					w.move(x_val,y_val)
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Not a valid window position")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+window.name+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Window \""+window.name+"\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'move':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /resize |

@@ -253,6 +253,10 @@ Appearance:
 <td>Sends a message</td>
 </tr>
 <tr>
+<td><code>/move [SERVER] [WINDOW] X Y</code></td>
+<td>Moves a subwindow to <code>X</code> (left and right) and <code>Y</code> (up and down) coordinates. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+</tr>
+<tr>
 <td><code>/msgbox MESSAGE...</code></td>
 <td>Displays a messagebox with a short message</td>
 </tr>

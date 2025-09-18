@@ -4158,6 +4158,15 @@ class Merk(QMainWindow):
 				return True
 		return False
 
+	def is_valid_position(self, sub_window, new_x, new_y):
+		mdi_viewport = self.MDI.viewport()
+		viewport_rect = mdi_viewport.rect()
+		sub_window_size = sub_window.size()
+		proposed_rect = QRect(new_x, new_y, sub_window_size.width(), sub_window_size.height())
+
+		# A position is "valid" if the subwindow is at least partially visible.
+		return viewport_rect.intersects(proposed_rect)
+
 	# merk_subWindowActivated()
 	# Triggered whenever a subwindow is activated
 	def merk_subWindowActivated(self,subwindow):

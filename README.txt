@@ -268,6 +268,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
 | `/minimize [SERVER] WINDOW`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
+| `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context                                                                              |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
 | `/next`                    | Shifts focus to the "next" subwindow                                                                                                   |
