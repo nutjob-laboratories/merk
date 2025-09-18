@@ -128,8 +128,8 @@ Appearance:
 <td>Cascades all subwindows</td>
 </tr>
 <tr>
-<td><code>/clear [WINDOW]</code></td>
-<td>Clears a window&#39;s chat display</td>
+<td><code>/clear [SERVER] [WINDOW]</code></td>
+<td>Clears a window&#39;s chat display. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
 <td><code>/close [SERVER] [WINDOW]</code></td>

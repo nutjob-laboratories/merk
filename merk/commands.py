@@ -263,7 +263,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] [WINDOW]</b>", "Restores a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"cascade</b>", "Cascades all subwindows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [WINDOW]</b>", "Clears a window's chat display" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [SERVER] [WINDOW]</b>", "Clears a window's chat display" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>", "Hides a user's chat. USER can be a nickname or hostmask" ],
@@ -2994,17 +2994,46 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /clear |
 	# |--------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==1:
-			window.clearChat()
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.widget().clearChat()
+						window.setFocus()
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Server \""+server+"\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.widget().clearChat()
-				# Move focus back to the calling window
-				gui.showSubWindow(gui.getSubWindow(window.name,window.client))
+				window.setFocus()
 			else:
 				if is_script:
 					add_halt(script_id)
@@ -3014,6 +3043,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear':
+			window.clearChat()
 			return True
 
 	# |-------|
@@ -3060,10 +3093,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /restore |
 	# |----------|
 	if len(tokens)>=1:
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==1:
-			window.showNormal()
-			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==3:
 			tokens.pop(0)
@@ -3112,6 +3141,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore':
 			window.showNormal()
 			return True
@@ -3168,6 +3198,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize':
 			window.showMinimized()
 			return True
@@ -3224,6 +3255,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
+			
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize':
 			window.showMaximized()
 			return True
