@@ -178,6 +178,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"random": config.ISSUE_COMMAND_SYMBOL+"random ",
 			config.ISSUE_COMMAND_SYMBOL+"prints": config.ISSUE_COMMAND_SYMBOL+"prints ",
 			config.ISSUE_COMMAND_SYMBOL+"quitall": config.ISSUE_COMMAND_SYMBOL+"quitall",
+			config.ISSUE_COMMAND_SYMBOL+"fullscreen": config.ISSUE_COMMAND_SYMBOL+"fullscreen",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -284,6 +285,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fullscreen</b>", "Toggles full screen mode" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1034,6 +1036,47 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |-------------|
+	# | /fullscreen |
+	# |-------------|
+	if len(tokens)>=1:
+		if len(tokens)==1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fullscreen':
+				if gui.fullscreen:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Full screen mode is turned on by command-line flag")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Full screen mode is turned on by command-line flag")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				if config.SHOW_FULL_SCREEN:
+					config.SHOW_FULL_SCREEN = False
+					if gui.was_maximized:
+						gui.showMaximized()
+					else:
+						gui.showNormal()
+				else:
+					if gui.isMaximized(): gui.was_maximized = True
+					config.SHOW_FULL_SCREEN = True
+					gui.showFullScreen()
+				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fullscreen':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"fullscreen")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"fullscreen")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |------|
 	# | /rem |

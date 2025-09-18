@@ -181,6 +181,9 @@ Appearance:
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>
 <tr>
+<td><code>/fullscreen</code></td>
+<td>Toggles full screen mode</td>
+</tr>
 <tr>
 <td><code>goto LINE_NUMBER</code></td>
 <td>Moves execution of the script to <code>LINE_NUMBER</code>. The only script-only command that can be issued from an <code>if</code> command. Cannot be used to move execution to a line that consists of a script-only command other than <code>end</code>. <b>Can only be called from scripts</b></td>

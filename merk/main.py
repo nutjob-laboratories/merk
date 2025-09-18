@@ -3065,9 +3065,13 @@ class Merk(QMainWindow):
 	def settingsFull(self):
 		if config.SHOW_FULL_SCREEN:
 			config.SHOW_FULL_SCREEN = False
-			self.showNormal()
+			if self.was_maximized:
+				self.showMaximized()
+			else:
+				self.showNormal()
 		else:
 			config.SHOW_FULL_SCREEN = True
+			if self.isMaximized(): self.was_maximized = True
 			self.showFullScreen()
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
