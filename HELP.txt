@@ -334,6 +334,10 @@ Appearance:
 <td>Does nothing. Can be used as a target for <code>goto</code></td>
 </tr>
 <tr>
+<td><code>/resize [SERVER] [WINDOW] WIDTH HEIGHT&nbsp;&nbsp;</code></td>
+<td>Resizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+</tr>
+<tr>
 <td><code>restrict SERVER|CHANNEL|PRIVATE</code></td>
 <td>Prevents a script from running if it is not being ran in a <code>SERVER</code>, <code>CHANNEL</code>, or <code>PRIVATE</code> window. Up to two windows types can be passed. <b>Can only be called from scripts</b></td>
 </tr>
