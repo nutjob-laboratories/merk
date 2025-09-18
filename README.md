@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.050.500">MERK 0.050.500</a></big></b><br>
-  <b>Current development version: 0.050.514</b><br><br>
+  <b>Current development version: 0.050.517</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
 </p>
 
@@ -30,13 +30,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  -  | [View](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.050.500 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.500)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.050.514 (11.98 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows | [Download MERK 0.050.514 (48.81 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows | [Download MERK 0.050.514 (45.92 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.050.517 (11.98 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows | [Download MERK 0.050.517 (48.81 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows | [Download MERK 0.050.517 (45.92 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.514**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.517**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.050.500](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.500). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -118,7 +118,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.050.500), and may reflect the current development version (0.050.514). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.050.500), and may reflect the current development version (0.050.517). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -239,7 +239,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/back`                                 | Sets status as "back"                                                                                                            |
 | `/cascade`                              | Cascades all subwindows                                                                                                          |
 | `/clear [WINDOW]`                       | Clears a window's chat display                                                                                                   |
-| `/close [SERVER] [WINDOW]`              | Closes a window                                                                                          |
+| `/close [SERVER] [WINDOW]`              | Closes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk!* |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
@@ -254,7 +254,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/fullscreen`                           | Toggles full screen mode   |
 | `goto LINE_NUMBER`                         | Moves execution of the script to `LINE_NUMBER`. The only script-only command that can be issued from an `if` command. Cannot be used to move to a line that consists of a script-only command other than `end`. Can only be called from scripts  |
 | `/help [COMMAND]`                                 | Displays command usage information                                                                                               |
-| `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow                                                                                              |
+| `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                              |
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`), and `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`). Can only be called from scripts    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
@@ -264,9 +264,9 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
 | `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character                      |
 | `/log`                                  | Opens the log manager                                                                                                            |
-| `/maximize [SERVER] WINDOW`             | Maximizes a window                                                                                                               |
+| `/maximize [SERVER] WINDOW`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
-| `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                                               |
+| `/minimize [SERVER] WINDOW`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
@@ -281,7 +281,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/previous`               | Shifts focus to the "previous" subwindow                                                                                    |
 | `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
 | `/prints [WINDOW] TEXT...`               | Prints system message to a window                                                                                                          |
-| `/private NICKNAME [MESSAGE]`               | Opens a private chat window for `NICKNAME`                             |
+| `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
@@ -290,12 +290,12 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/rem [TEXT...]`                        | Does nothing. Can be used as a target for `goto`                                                                              |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
-| `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |
+| `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                                |
 | `/s FILENAME [ARGUMENTS]`                      | A shortcut for the `/script` command                                                                                            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/settings`                             | Opens the settings dialog                                                                                                        |
 | `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
-| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that window                                |
+| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                |
 | `/style`                                | Edits the current window's style                                                                                                 |
 | `/tile`                                 | Tiles all subwindows                                                                                                             |
 | `/time`                                 | Requests server time                                                                                                             |
@@ -308,7 +308,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/windows`     | Generates and displays a list of all connected windows                                                            |
+| `/windows`     | Generates and displays a list of all connected subwindows                                                            |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 

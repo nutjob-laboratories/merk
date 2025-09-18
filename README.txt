@@ -239,7 +239,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/back`                                 | Sets status as "back"                                                                                                            |
 | `/cascade`                              | Cascades all subwindows                                                                                                          |
 | `/clear [WINDOW]`                       | Clears a window's chat display                                                                                                   |
-| `/close [SERVER] [WINDOW]`              | Closes a window                                                                                          |
+| `/close [SERVER] [WINDOW]`              | Closes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk!* |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
@@ -254,7 +254,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/fullscreen`                           | Toggles full screen mode   |
 | `goto LINE_NUMBER`                         | Moves execution of the script to `LINE_NUMBER`. The only script-only command that can be issued from an `if` command. Cannot be used to move to a line that consists of a script-only command other than `end`. Can only be called from scripts  |
 | `/help [COMMAND]`                                 | Displays command usage information                                                                                               |
-| `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow                                                                                              |
+| `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                              |
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`), and `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`). Can only be called from scripts    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
@@ -264,9 +264,9 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
 | `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character                      |
 | `/log`                                  | Opens the log manager                                                                                                            |
-| `/maximize [SERVER] WINDOW`             | Maximizes a window                                                                                                               |
+| `/maximize [SERVER] WINDOW`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
-| `/minimize [SERVER] WINDOW`             | Minimizes a window                                                                                                               |
+| `/minimize [SERVER] WINDOW`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
@@ -281,7 +281,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/previous`               | Shifts focus to the "previous" subwindow                                                                                    |
 | `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
 | `/prints [WINDOW] TEXT...`               | Prints system message to a window                                                                                                          |
-| `/private NICKNAME [MESSAGE]`               | Opens a private chat window for `NICKNAME`                             |
+| `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
@@ -290,12 +290,12 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/rem [TEXT...]`                        | Does nothing. Can be used as a target for `goto`                                                                              |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
-| `/restore [SERVER] WINDOW`              | Restores a window                                                                                                                |
+| `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                                |
 | `/s FILENAME [ARGUMENTS]`                      | A shortcut for the `/script` command                                                                                            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/settings`                             | Opens the settings dialog                                                                                                        |
 | `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
-| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that window                                |
+| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                |
 | `/style`                                | Edits the current window's style                                                                                                 |
 | `/tile`                                 | Tiles all subwindows                                                                                                             |
 | `/time`                                 | Requests server time                                                                                                             |
@@ -308,7 +308,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/windows`     | Generates and displays a list of all connected windows                                                            |
+| `/windows`     | Generates and displays a list of all connected subwindows                                                            |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 

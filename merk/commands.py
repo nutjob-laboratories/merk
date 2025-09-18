@@ -3061,6 +3061,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |----------|
 	if len(tokens)>=1:
 
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==1:
+			window.showNormal()
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==3:
 			tokens.pop(0)
 			server = tokens.pop(0)

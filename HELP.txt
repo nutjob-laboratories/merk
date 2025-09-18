@@ -133,7 +133,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/close [SERVER] [WINDOW]</code></td>
-<td>Closes a window</td>
+<td>Closes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
 <td><code>/config [SETTING] [VALUE...]</code></td>
@@ -194,7 +194,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/hide [SERVER] [WINDOW]</code></td>
-<td>Hides a subwindow</td>
+<td>Hides a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
 <td><code>if VALUE1 OPERATOR VALUE2 COMMAND...</code></td>
@@ -234,7 +234,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/maximize [SERVER] WINDOW</code></td>
-<td>Maximizes a window</td>
+<td>Maximizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
 <td><code>/me MESSAGE...</code></td>
@@ -242,7 +242,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/minimize [SERVER] WINDOW</code></td>
-<td>Minimizes a window</td>
+<td>Minimizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
 <td><code>/mode TARGET MODE...</code></td>
@@ -303,7 +303,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/private NICKNAME [MESSAGE]</code></td>
-<td>Opens a private chat window for <code>NICKNAME</code></td>
+<td>Opens a private chat subwindow for <code>NICKNAME</code></td>
 </tr>
 <tr>
 <td><code>/quit [MESSAGE]</code></td>
@@ -329,7 +329,6 @@ Appearance:
 <td><code>/refresh</code></td>
 <td>Requests a new list of channels from the server</td>
 </tr>
-</tr>
 <tr>
 <td><code>/rem [TEXT...]</code></td>
 <td>Does nothing. Can be used as a target for <code>goto</code></td>
@@ -339,8 +338,8 @@ Appearance:
 <td>Prevents a script from running if it is not being ran in a <code>SERVER</code>, <code>CHANNEL</code>, or <code>PRIVATE</code> window. Up to two windows types can be passed. <b>Can only be called from scripts</b></td>
 </tr>
 <tr>
-<td><code>/restore [SERVER] WINDOW</code></td>
-<td>Restores a window</td>
+<td><code>/restore [SERVER] [WINDOW]</code></td>
+<td>Restores a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
 <td><code>/s FILENAME [ARGUMENTS]</code></td>
@@ -360,7 +359,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/show [SERVER] [WINDOW]</code></td>
-<td>Shows a subwindow, if hidden; otherwise, shifts focus to that window</td>
+<td>Shows a subwindow, if hidden; otherwise, shifts focus to that window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
 <td><code>/style</code></td>
