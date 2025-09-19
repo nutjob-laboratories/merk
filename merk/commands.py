@@ -681,7 +681,6 @@ def check_for_sane_values(setting,value):
 	if setting=="menubar_justify":
 		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return INVALID_JUSTIFY
 
-	# Do colors
 	if setting=="syntax_nickname_color":
 		if not QColor(value).isValid(): return INVALID_COLOR
 
@@ -714,6 +713,10 @@ def check_for_sane_values(setting,value):
 
 	if setting=="syntax_operator_color":
 		if not QColor(value).isValid(): return INVALID_COLOR
+
+	if setting=="default_spellcheck_language":
+		v = ["en","fr","es","de","pt","it","nl","ru"]
+		if not value in v: return INVALID_LANGUAGE
 
 	return ALL_VALID_SETTINGS
 
@@ -2557,24 +2560,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if check!=ALL_VALID_SETTINGS:
 					if check==INVALID_STYLE:
 						qlist = [f"\"{item}\"" for item in QStyleFactory.keys()]
-						reason = f"Invalid Qt style (must be {", ".join(qlist[:-1]) + " or " + qlist[-1]})"
+						reason = f"invalid Qt style, must be {", ".join(qlist[:-1]) + " or " + qlist[-1]}"
 					elif check==INVALID_JUSTIFY:
-						reason = "Invalid justify value (must be \"center\", \"left\", or \"right\")"
+						reason = "invalid value, must be \"center\", \"left\", or \"right\""
 					elif check==INVALID_COLOR:
-						reason = f"Invalid color (\"{my_value}\" is not a recognized color)"
+						reason = f"not a recognized color"
+					elif check==INVALID_LANGUAGE:
+						reason = f"not a valid spellchecker language"
 					else:
-						reason = "Invalid setting for unknown reasons"
+						reason = "unknown"
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line: {line_number}: \"{my_value}\" is not a valid value for \"{my_setting}\"")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-							t = Message(ERROR_MESSAGE,'',f"Error on line: {line_number}: {reason}")
+							t = Message(ERROR_MESSAGE,'',f"Error on line: {line_number}: \"{my_value}\" is not a valid value for \"{my_setting}\" ({reason})")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for \"{my_setting}\"")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(ERROR_MESSAGE,'',f"{reason}")
+					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for \"{my_setting}\" ({reason})")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 

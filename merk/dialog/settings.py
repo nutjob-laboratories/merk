@@ -1490,6 +1490,11 @@ class Dialog(QDialog):
 		if config.SHOW_FULL_SCREEN: self.fullScreen.setChecked(True)
 		self.fullScreen.stateChanged.connect(self.changedSetting)
 
+		self.showTopicInTitle = QCheckBox("Show current channel topic in\napplication title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
+		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
+		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		logo = QLabel()
 		pixmap = QPixmap(SPLASH_LOGO)
 		logo.setPixmap(pixmap)
@@ -1513,6 +1518,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.fullScreen)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.noAppNameTitle)
+		applicationLayout.addWidget(self.showTopicInTitle)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		applicationLayout.addWidget(self.simpleConnect)
 		applicationLayout.addWidget(self.showServerInfo)
@@ -2151,11 +2157,6 @@ class Dialog(QDialog):
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 
 		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-	
-		self.showTopicInTitle = QCheckBox("Show current channel topic in\napplication title",self)
-		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
-		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
-		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showStatusEditor = QCheckBox("Editor windows",self)
 		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
@@ -2184,16 +2185,14 @@ class Dialog(QDialog):
 		self.subwindowOrder.stateChanged.connect(self.changedSetting)
 
 		subwindowLayout = QVBoxLayout()
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showServToolbar)
 		subwindowLayout.addWidget(self.showServList)
 		subwindowLayout.addWidget(self.showServRefresh)
 		subwindowLayout.addWidget(self.displayServNicks)
 		subwindowLayout.addWidget(self.enableDisconnect)
 		subwindowLayout.addWidget(self.hideServer)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat windows</b>"))
 		subwindowLayout.addWidget(self.showInfo)
-		subwindowLayout.addWidget(self.showTopicInTitle)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>status bars</b>"))
 		subwindowLayout.addLayout(statusLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
