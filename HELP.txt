@@ -181,6 +181,10 @@ Appearance:
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>
 <tr>
+<td><code>/focus [SERVER] [WINDOW]</code></td>
+<td>Sets focus on a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+</tr>
+<tr>
 <td><code>/fullscreen</code></td>
 <td>Toggles full screen mode</td>
 </tr>
