@@ -1585,7 +1585,8 @@ class Window(QMainWindow):
 			else:
 				actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
 
-			actPriv = menu.addAction(QIcon(PRIVATE_ICON),"Open private chat")
+			if user_nick!=self.client.nickname:
+				actPriv = menu.addAction(QIcon(PRIVATE_ICON),"Open private chat")
 
 			clipMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 			actCopyNick = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's nickname")
@@ -1593,9 +1594,10 @@ class Window(QMainWindow):
 
 			action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
 
-			if action == actPriv:
-				self.parent.openPrivate(self.client,user)
-				return True
+			if user_nick!=self.client.nickname:
+				if action == actPriv:
+					self.parent.openPrivate(self.client,user)
+					return True
 
 			if action == actIgnore:
 				if is_hidden:
