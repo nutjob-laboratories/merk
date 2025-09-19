@@ -718,6 +718,22 @@ def check_for_sane_values(setting,value):
 		v = ["en","fr","es","de","pt","it","nl","ru"]
 		if not value in v: return INVALID_LANGUAGE
 
+	v = ["bold","italic"]
+	if setting=="syntax_comment_style":
+		if not value in v: return INVALID_TEXT_STYLE
+
+	if setting=="syntax_command_style":
+		if not value in v: return INVALID_TEXT_STYLE
+
+	if setting=="syntax_channel_style":
+		if not value in v: return INVALID_TEXT_STYLE
+
+	if setting=="syntax_alias_style":
+		if not value in v: return INVALID_TEXT_STYLE
+
+	if setting=="syntax_script_only_style":
+		if not value in v: return INVALID_TEXT_STYLE
+
 	return ALL_VALID_SETTINGS
 
 def list_scripts():
@@ -2567,6 +2583,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = f"not a recognized color"
 					elif check==INVALID_LANGUAGE:
 						reason = f"not a valid spellchecker language"
+					elif check==INVALID_TEXT_STYLE:
+						reason = f"not a valid text style"
 					else:
 						reason = "unknown"
 					if is_script:
