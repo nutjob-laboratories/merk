@@ -720,19 +720,23 @@ def check_for_sane_values(setting,value):
 
 	v = ["bold","italic"]
 	if setting=="syntax_comment_style":
-		if not value in v: return INVALID_TEXT_STYLE
+		if not value.lower() in v: return INVALID_TEXT_STYLE
 
 	if setting=="syntax_command_style":
-		if not value in v: return INVALID_TEXT_STYLE
+		if not value.lower() in v: return INVALID_TEXT_STYLE
 
 	if setting=="syntax_channel_style":
-		if not value in v: return INVALID_TEXT_STYLE
+		if not value.lower() in v: return INVALID_TEXT_STYLE
 
 	if setting=="syntax_alias_style":
-		if not value in v: return INVALID_TEXT_STYLE
+		if not value.lower() in v: return INVALID_TEXT_STYLE
 
 	if setting=="syntax_script_only_style":
-		if not value in v: return INVALID_TEXT_STYLE
+		if not value.lower() in v: return INVALID_TEXT_STYLE
+
+	v = ["creation","stacking","activation"]
+	if setting=="subwindow_order":
+		if not value.lower() in v: return INVALID_ORDER
 
 	return ALL_VALID_SETTINGS
 
@@ -2585,6 +2589,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = f"not a valid spellchecker language"
 					elif check==INVALID_TEXT_STYLE:
 						reason = f"not a valid text style"
+					elif check==INVALID_ORDER:
+						reason = "invalid value, must be \"creation\", \"stacking\", or \"activation\""
 					else:
 						reason = "unknown"
 					if is_script:

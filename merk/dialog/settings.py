@@ -296,6 +296,24 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def selCreation(self):
+		self.SET_SUBWINDOW_ORDER = "creation"
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def selStacking(self):
+		self.SET_SUBWINDOW_ORDER = "stacking"
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def selActivation(self):
+		self.SET_SUBWINDOW_ORDER = "activation"
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedLoadLogs(self,state):
 		if self.loadChanLogs.isChecked() or self.loadPrivLogs.isChecked():
 			self.markLog.setEnabled(True)
@@ -1302,7 +1320,6 @@ class Dialog(QDialog):
 		self.rerenderUsers = False
 		self.rerenderNick = False
 		self.default_away = config.DEFAULT_AWAY_MESSAGE
-
 		self.SYNTAX_COMMENT_COLOR = config.SYNTAX_COMMENT_COLOR
 		self.SYNTAX_COMMENT_STYLE = config.SYNTAX_COMMENT_STYLE
 		self.SYNTAX_COMMAND_COLOR = config.SYNTAX_COMMAND_COLOR
@@ -1311,36 +1328,24 @@ class Dialog(QDialog):
 		self.SYNTAX_CHANNEL_STYLE = config.SYNTAX_CHANNEL_STYLE
 		self.SYNTAX_BACKGROUND = config.SYNTAX_BACKGROUND
 		self.SYNTAX_FOREGROUND = config.SYNTAX_FOREGROUND
-
 		self.SYNTAX_ALIAS_COLOR = config.SYNTAX_ALIAS_COLOR
 		self.SYNTAX_ALIAS_STYLE = config.SYNTAX_ALIAS_STYLE
-
 		self.SYNTAX_NICKNAME_COLOR = config.SYNTAX_NICKNAME_COLOR
 		self.SYNTAX_NICKNAME_STYLE = config.SYNTAX_NICKNAME_STYLE
 		self.SYNTAX_EMOJI_COLOR = config.SYNTAX_EMOJI_COLOR
 		self.SYNTAX_EMOJI_STYLE = config.SYNTAX_EMOJI_STYLE
-
 		self.SYNTAX_SCRIPT_COLOR = config.SYNTAX_SCRIPT_COLOR
 		self.SYNTAX_SCRIPT_STYLE = config.SYNTAX_SCRIPT_STYLE
-
 		self.SYNTAX_OPERATOR_COLOR = config.SYNTAX_OPERATOR_COLOR
 		self.SYNTAX_OPERATOR_STYLE = config.SYNTAX_OPERATOR_STYLE
-
 		self.SPELLCHECK_UNDERLINE_COLOR = config.SPELLCHECK_UNDERLINE_COLOR
-
 		self.qt_style = config.QT_WINDOW_STYLE
-
 		self.windowbar_justify = config.WINDOWBAR_JUSTIFY
-
 		self.menubar_justify = config.MENUBAR_JUSTIFY
-
 		self.system_prepend = config.SYSTEM_MESSAGE_PREFIX
-
 		self.autocompleteEmojisInAway = config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
 		self.autocompleteEmojisInQuit = config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
-
 		self.user_changed = False
-
 		self.refreshTopics = False
 		self.refreshTitles = False
 		self.swapUserlists = False
@@ -1348,26 +1353,20 @@ class Dialog(QDialog):
 		self.rerenderStyle = False
 		self.windowbar_change = False
 		self.changed_alias_symbol = False
-
 		self.default_main_menu = config.MAIN_MENU_IRC_NAME
 		self.default_tools_menu = config.MAIN_MENU_TOOLS_NAME
 		self.default_windows_menu = config.MAIN_MENU_WINDOWS_NAME
 		self.default_help_menu = config.MAIN_MENU_HELP_NAME
 		self.default_settings_menu = config.MAIN_MENU_SETTINGS_NAME
-
 		self.interval = config.LOG_SAVE_INTERVAL
 		self.awayInterval = config.AUTOAWAY_TIME
-
 		self.flash = config.FLASH_SYSTRAY_SPEED
-
 		self.sound = config.SOUND_NOTIFICATION_FILE
-
 		self.syntax_did_change = False
-
 		self.spellcheck_distance = config.SPELLCHECKER_DISTANCE
-
 		self.nicknamePadLength = config.NICKNAME_PAD_LENGTH
 		self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
+		self.SET_SUBWINDOW_ORDER = config.SET_SUBWINDOW_ORDER
 
 		self.setWindowTitle(f" {APPLICATION_NAME} Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2180,9 +2179,23 @@ class Dialog(QDialog):
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
 		self.autoMaxSubwindow.stateChanged.connect(self.changedSetting)
 
-		self.subwindowOrder = QCheckBox("Set subwindow order by activation",self)
-		if config.ORDER_SUBWINDOWS_BY_ACTIVATION: self.subwindowOrder.setChecked(True)
-		self.subwindowOrder.stateChanged.connect(self.changedSetting)
+		self.mdiCreation = QRadioButton("Creation")
+		self.mdiCreation.toggled.connect(self.selCreation)
+
+		self.mdiStacking = QRadioButton("Stacking")
+		self.mdiStacking.toggled.connect(self.selStacking)
+
+		self.mdiActivation = QRadioButton("Activation")
+		self.mdiActivation.toggled.connect(self.selActivation)
+
+		if config.SET_SUBWINDOW_ORDER=="creation": self.mdiCreation.setChecked(True)
+		if config.SET_SUBWINDOW_ORDER=="stacking": self.mdiStacking.setChecked(True)
+		if config.SET_SUBWINDOW_ORDER=="activation": self.mdiActivation.setChecked(True)
+
+		orderLayout = QHBoxLayout()
+		orderLayout.addWidget(self.mdiCreation)
+		orderLayout.addWidget(self.mdiStacking)
+		orderLayout.addWidget(self.mdiActivation)
 
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
@@ -2200,7 +2213,8 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showInputMenu)
 		subwindowLayout.addWidget(self.showChatInTitle)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
-		subwindowLayout.addWidget(self.subwindowOrder)
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow order</b>"))
+		subwindowLayout.addLayout(orderLayout)
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
@@ -4523,12 +4537,15 @@ class Dialog(QDialog):
 		config.ENABLE_IF_COMMAND = self.enableIf.isChecked()
 		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
 
-		if self.subwindowOrder.isChecked():
-			config.ORDER_SUBWINDOWS_BY_ACTIVATION = True
+		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
+			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
+		elif self.SET_SUBWINDOW_ORDER.lower()=='stacking':
+			self.parent.MDI.setActivationOrder(QMdiArea.StackingOrder)
+		elif self.SET_SUBWINDOW_ORDER.lower()=='activation':
 			self.parent.MDI.setActivationOrder(QMdiArea.ActivationHistoryOrder)
 		else:
-			config.ORDER_SUBWINDOWS_BY_ACTIVATION = False
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
+		config.SET_SUBWINDOW_ORDER = self.SET_SUBWINDOW_ORDER
 
 		if self.fullScreen.isChecked():
 			if not config.SHOW_FULL_SCREEN:

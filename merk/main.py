@@ -236,8 +236,15 @@ class Merk(QMainWindow):
 			if not config.SHOW_FULL_SCREEN:
 				self.showFullScreen()
 
-		if config.ORDER_SUBWINDOWS_BY_ACTIVATION:
+		if config.SET_SUBWINDOW_ORDER.lower()=='creation':
+			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
+		elif config.SET_SUBWINDOW_ORDER.lower()=='stacking':
+			self.MDI.setActivationOrder(QMdiArea.StackingOrder)
+		elif config.SET_SUBWINDOW_ORDER.lower()=='activation':
 			self.MDI.setActivationOrder(QMdiArea.ActivationHistoryOrder)
+		else:
+			# Default
+			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
 
 		# Systray
 		self.flash = QTimer(self)
