@@ -425,6 +425,11 @@ def buildTemporaryAliases(gui,window):
 	mydate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
 	myedate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d/%m/%Y')
 
+	day = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A')
+	month = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%B')
+	year = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%Y')
+	ordinal = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d')
+
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
 	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
 	if hasattr(window.client,"hostname"):
@@ -432,13 +437,16 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_HOST',window.client.server+":"+str(window.client.port))
 	addTemporaryAlias('_DATE',mydate)
+	addTemporaryAlias('_DAY',day)
 	addTemporaryAlias('_EDATE',myedate)
 	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
 	else:
 		addTemporaryAlias('_MODE','none')
+	addTemporaryAlias('_MONTH',month)
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
+	addTemporaryAlias('_ORDINAL',ordinal)
 	addTemporaryAlias('_PORT',str(window.client.port))
 	if len(window.nicks)>0:
 		addTemporaryAlias('_PRESENT',",".join(window.nicks))
@@ -463,8 +471,8 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_STATUS',"protected")
 	else:
 		addTemporaryAlias('_STATUS',"normal")
+	addTemporaryAlias('_STAMP',timestamp)
 	addTemporaryAlias('_TIME',mytime)
-	addTemporaryAlias('_TIMESTAMP',timestamp)
 	if window.channel_topic!='':
 		addTemporaryAlias('_TOPIC',window.channel_topic)
 	else:
@@ -481,6 +489,7 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_WINDOW_TYPE',"private")
 	else:
 		addTemporaryAlias('_WINDOW_TYPE',"unknown")
+	addTemporaryAlias('_YEAR',year)
 
 def handleChatCommands(gui,window,user_input):
 	global TEMPORARY_ALIAS

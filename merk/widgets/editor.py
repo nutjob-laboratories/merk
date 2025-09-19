@@ -761,6 +761,23 @@ class Window(QMainWindow):
 
 		sub = menu.addMenu(QIcon(TIMESTAMP_ICON),"Date and time")
 
+
+		entry = QAction("Day of the week",self)
+		entry.triggered.connect(lambda state,u="$_MONTH": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Day of the month",self)
+		entry.triggered.connect(lambda state,u="$_ORDINAL": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Month name",self)
+		entry.triggered.connect(lambda state,u="$_MONTH": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Year",self)
+		entry.triggered.connect(lambda state,u="$_YEAR": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
 		entry = QAction("Date",self)
 		entry.triggered.connect(lambda state,u="$_DATE": self.insertIntoEditor(u))
 		sub.addAction(entry)
@@ -773,8 +790,12 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u="$_EPOCH": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
+		entry = QAction("Time (24hr format)",self)
+		entry.triggered.connect(lambda state,u="$_TIME": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
 		entry = QAction("Timestamp",self)
-		entry.triggered.connect(lambda state,u="$_TIMESTAMP": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u="$_STAMP": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Client submenu
