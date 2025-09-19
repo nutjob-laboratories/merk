@@ -2179,6 +2179,10 @@ class Dialog(QDialog):
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
 		self.autoMaxSubwindow.stateChanged.connect(self.changedSetting)
 
+		self.subwindowOrder = QCheckBox("Set subwindow order by activation",self)
+		if config.ORDER_SUBWINDOWS_BY_ACTIVATION: self.subwindowOrder.setChecked(True)
+		self.subwindowOrder.stateChanged.connect(self.changedSetting)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server windows</b>"))
 		subwindowLayout.addWidget(self.showServToolbar)
@@ -2197,6 +2201,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showInputMenu)
 		subwindowLayout.addWidget(self.showChatInTitle)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
+		subwindowLayout.addWidget(self.subwindowOrder)
 		subwindowLayout.addStretch()
 
 		self.subwindowPage.setLayout(subwindowLayout)
@@ -4518,6 +4523,13 @@ class Dialog(QDialog):
 		config.ENABLE_GOTO_COMMAND = self.enableGoto.isChecked()
 		config.ENABLE_IF_COMMAND = self.enableIf.isChecked()
 		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
+
+		if self.subwindowOrder.isChecked():
+			config.ORDER_SUBWINDOWS_BY_ACTIVATION = True
+			self.parent.MDI.setActivationOrder(QMdiArea.ActivationHistoryOrder)
+		else:
+			config.ORDER_SUBWINDOWS_BY_ACTIVATION = False
+			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
 
 		if self.fullScreen.isChecked():
 			if not config.SHOW_FULL_SCREEN:

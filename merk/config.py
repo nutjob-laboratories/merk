@@ -287,9 +287,11 @@ ENABLE_GOTO_COMMAND = True
 ENABLE_IF_COMMAND = True
 WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = True
 SHOW_FULL_SCREEN = False
+ORDER_SUBWINDOWS_BY_ACTIVATION = False
 
 def build_settings():
 	settings = {
+		"order_subwindows_by_activation": ORDER_SUBWINDOWS_BY_ACTIVATION,
 		"show_app_full_screen": SHOW_FULL_SCREEN,
 		"write_outgoing_private_messages_to_current_window": WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW,
 		"enable_if_command": ENABLE_IF_COMMAND,
@@ -543,6 +545,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "order_subwindows_by_activation" in settings:
+		settings["order_subwindows_by_activation"] = ORDER_SUBWINDOWS_BY_ACTIVATION
 	if not "show_app_full_screen" in settings:
 		settings["show_app_full_screen"] = SHOW_FULL_SCREEN
 	if not "write_outgoing_private_messages_to_current_window" in settings:
@@ -1292,6 +1296,7 @@ def load_settings(filename):
 	global ENABLE_IF_COMMAND
 	global WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW
 	global SHOW_FULL_SCREEN
+	global ORDER_SUBWINDOWS_BY_ACTIVATION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1301,6 +1306,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ORDER_SUBWINDOWS_BY_ACTIVATION = settings["order_subwindows_by_activation"]
 		SHOW_FULL_SCREEN = settings["show_app_full_screen"]
 		WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = settings["write_outgoing_private_messages_to_current_window"]
 		ENABLE_IF_COMMAND = settings["enable_if_command"]
