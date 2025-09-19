@@ -716,7 +716,7 @@ def check_for_sane_values(setting,value):
 
 	if setting=="default_spellcheck_language":
 		v = ["en","fr","es","de","pt","it","nl","ru"]
-		if not value in v: return INVALID_LANGUAGE
+		if not value.lower() in v: return INVALID_LANGUAGE
 
 	v = ["bold","italic"]
 	if setting=="syntax_comment_style":
@@ -2575,14 +2575,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
+				# Make sure the spellcheck language is lowercase
+				if my_setting=="default_spellcheck_language":
+					my_value = my_value.lower()
+
 				# Check for sanity
 				check = check_for_sane_values(my_setting,my_value)
 				if check!=ALL_VALID_SETTINGS:
 					if check==INVALID_STYLE:
 						qlist = [f"\"{item}\"" for item in QStyleFactory.keys()]
-						reason = f"invalid Qt style, must be {", ".join(qlist[:-1]) + " or " + qlist[-1]}"
+						reason = f"must be {", ".join(qlist[:-1]) + " or " + qlist[-1]}"
 					elif check==INVALID_JUSTIFY:
-						reason = "invalid value, must be \"center\", \"left\", or \"right\""
+						reason = "must be \"center\", \"left\", or \"right\""
 					elif check==INVALID_COLOR:
 						reason = f"not a recognized color"
 					elif check==INVALID_LANGUAGE:
@@ -2590,7 +2594,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					elif check==INVALID_TEXT_STYLE:
 						reason = f"not a valid text style"
 					elif check==INVALID_ORDER:
-						reason = "invalid value, must be \"creation\", \"stacking\", or \"activation\""
+						reason = "must be \"creation\", \"stacking\", or \"activation\""
 					else:
 						reason = "unknown"
 					if is_script:

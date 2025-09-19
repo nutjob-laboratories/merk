@@ -2273,6 +2273,36 @@ class Merk(QMainWindow):
 			if hasattr(c,"reload_settings"):
 				c.reload_settings()
 
+		if config.SET_SUBWINDOW_ORDER.lower()=='creation':
+			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
+		elif config.SET_SUBWINDOW_ORDER.lower()=='stacking':
+			self.MDI.setActivationOrder(QMdiArea.StackingOrder)
+		elif config.SET_SUBWINDOW_ORDER.lower()=='activation':
+			self.MDI.setActivationOrder(QMdiArea.ActivationHistoryOrder)
+		else:
+			# Default
+			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
+
+		if not self.ontop:
+			if config.ALWAYS_ON_TOP:
+				self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+			else:
+				self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+
+		if not self.fullscreen:
+			if config.SHOW_FULL_SCREEN:
+				self.showFullScreen()
+			else:
+				if self.was_maximized:
+					self.showMaximized()
+				else:
+					self.showNormal()
+
+		if config.SHOW_SYSTRAY_ICON==False:
+			self.tray.setVisible(False)
+		else:
+			self.tray.setVisible(True)
+
 		self.buildSettingsMenu()
 		self.buildWindowsMenu()
 
