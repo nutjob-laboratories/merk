@@ -61,3 +61,41 @@ def noSpacePlainTextAction(self,text):
 	tsAction.setDefaultWidget(tsLabel)
 
 	return tsAction
+
+def BoxPlainTextAction(self,text):
+		
+	tsLabel = QLabel( NS_PLAIN_TEXT.replace("!TEXT!",text) )
+
+	alayout = QHBoxLayout()
+	alayout.addWidget(tsLabel)
+	alayout.setContentsMargins(3,3,3,3)
+
+	aBox = QGroupBox("")
+	aBox.setLayout(alayout)
+
+
+	tsAction = QWidgetAction(self)
+	tsAction.setDefaultWidget(aBox)
+
+	return tsAction
+
+def BoxPlainTextActionAway(self,text):
+		
+	tsLabel = QLabel( NS_PLAIN_TEXT.replace("!TEXT!",text) )
+
+	alayout = QHBoxLayout()
+	alayout.addWidget(tsLabel)
+	alayout.setContentsMargins(3,3,3,3)
+
+	aBox = QGroupBox("Away")
+	aBox.setLayout(alayout)
+	aBox.setAlignment(Qt.AlignCenter)
+
+	tsAction = QWidgetAction(self)
+	tsAction.setDefaultWidget(aBox)
+
+	return tsAction
+
+
+
+	

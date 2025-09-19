@@ -43,7 +43,7 @@ from .. import styles
 from .. import render
 from ..dialog import *
 from .. import logs
-from .plain_text import plainTextAction,noSpacePlainTextAction
+from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction,BoxPlainTextActionAway
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
@@ -1512,6 +1512,7 @@ class Window(QMainWindow):
 				if user_hostmask.lower() in config.IGNORE_LIST: is_hidden = True
 			if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
 
+			shown_box = False
 			if user_nick==self.client.nickname:
 				
 				if config.SHOW_AWAY_STATUS_IN_USERLISTS:
@@ -1519,8 +1520,9 @@ class Window(QMainWindow):
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"You are away",CUSTOM_MENU_ICON_SIZE)
 						menu.addAction(entry)
 
-						e = noSpacePlainTextAction(self,f"<small><i>{self.client.away_msg}</i></small>")
+						e = BoxPlainTextActionAway(self,f"<small><center>{self.client.away_msg}</center></small>")
 						menu.addAction(e)
+						shown_box = True
 					else:
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
 						menu.addAction(entry)
@@ -1534,25 +1536,28 @@ class Window(QMainWindow):
 					menu.addAction(entry)
 
 					if is_hidden:
-						e = noSpacePlainTextAction(self,f"<small><i><center>User is ignored</center></i></small>")
+						e = BoxPlainTextAction(self,f"<small><b><center>User is ignored</center></b></small>")
 						menu.addAction(e)
+						shown_box = True
 
 				else:
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
 					menu.addAction(entry)
 
 					if is_hidden:
-						e = noSpacePlainTextAction(self,f"<small><i><center>User is ignored</center></i></small>")
+						e = BoxPlainTextAction(self,f"<small><b><center>User is ignored</center></b></small>")
 						menu.addAction(e)
+						shown_box = True
 
 			if config.SHOW_AWAY_STATUS_IN_USERLISTS:
 				if user_nick in self.away:
 					away_msg = self.away[user_nick]
 
-					e = noSpacePlainTextAction(self,f"<small><i>{away_msg}</i></small>")
+					e = BoxPlainTextActionAway(self,f"<small><center>{away_msg}</center></small>")
 					menu.addAction(e)
+					shown_box = True
 
-			menu.addSeparator()
+			if not shown_box: menu.addSeparator()
 
 			if self.operator:
 
