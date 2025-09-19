@@ -424,7 +424,6 @@ def buildTemporaryAliases(gui,window):
 	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")
 	mydate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
 	myedate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d/%m/%Y')
-
 	day = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A')
 	month = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%B')
 	year = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%Y')
