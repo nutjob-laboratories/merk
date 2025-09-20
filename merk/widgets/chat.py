@@ -1615,6 +1615,9 @@ class Window(QMainWindow):
 			clipMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 			actCopyNick = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's nickname")
 			if user_hostmask: actHostmask = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's hostmask")
+			actChannel = clipMenu.addAction(QIcon(CHANNEL_ICON),"Channel name")
+			if self.client.hostname: actHostname = clipMenu.addAction(QIcon(CONSOLE_ICON),"Server hostname")
+			actServer = clipMenu.addAction(QIcon(CONNECT_ICON),"Server information")
 
 			action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
 
@@ -1662,6 +1665,25 @@ class Window(QMainWindow):
 					cb.clear(mode=cb.Clipboard)
 					cb.setText(f"{user_hostmask}", mode=cb.Clipboard)
 					return True
+
+			if action==actChannel:
+				cb = QApplication.clipboard()
+				cb.clear(mode=cb.Clipboard)
+				cb.setText(f"{self.name}", mode=cb.Clipboard)
+				return True
+
+			if self.client.hostname:
+				if action == actHostname:
+					cb = QApplication.clipboard()
+					cb.clear(mode=cb.Clipboard)
+					cb.setText(f"{self.client.hostname}", mode=cb.Clipboard)
+					return True
+
+			if action==actServer:
+				cb = QApplication.clipboard()
+				cb.clear(mode=cb.Clipboard)
+				cb.setText(f"{self.client.server}:{self.client.port}", mode=cb.Clipboard)
+				return True
 
 			if self.operator:
 
