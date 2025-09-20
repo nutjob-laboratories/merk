@@ -43,7 +43,7 @@ from .. import styles
 from .. import render
 from ..dialog import *
 from .. import logs
-from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction,BoxPlainTextActionAway
+from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
@@ -1513,6 +1513,7 @@ class Window(QMainWindow):
 			if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
 
 			shown_box = False
+
 			if user_nick==self.client.nickname:
 				
 				if config.SHOW_AWAY_STATUS_IN_USERLISTS:
@@ -1520,15 +1521,33 @@ class Window(QMainWindow):
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"You are away",CUSTOM_MENU_ICON_SIZE)
 						menu.addAction(entry)
 
-						e = BoxPlainTextActionAway(self,f"<small><center>{self.client.away_msg}</center></small>")
+						if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+							if user_is_voiced:
+								e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
+								menu.addAction(e)
+								shown_box = True
+
+						e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
 						menu.addAction(e)
 						shown_box = True
 					else:
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
 						menu.addAction(entry)
+
+						if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+							if user_is_voiced:
+								e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
+								menu.addAction(e)
+								shown_box = True
 				else:
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
 					menu.addAction(entry)
+
+					if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+						if user_is_voiced:
+							e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
+							menu.addAction(e)
+							shown_box = True
 
 			else:
 				if user_hostmask:
@@ -1536,16 +1555,21 @@ class Window(QMainWindow):
 					menu.addAction(entry)
 
 					if is_hidden:
-						e = BoxPlainTextAction(self,f"<small><b><center>User is ignored</center></b></small>")
+						e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
 						menu.addAction(e)
 						shown_box = True
-
 				else:
 					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
 					menu.addAction(entry)
 
 					if is_hidden:
-						e = BoxPlainTextAction(self,f"<small><b><center>User is ignored</center></b></small>")
+						e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
+						menu.addAction(e)
+						shown_box = True
+
+				if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+					if user_is_voiced:
+						e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
 						menu.addAction(e)
 						shown_box = True
 
@@ -1553,7 +1577,7 @@ class Window(QMainWindow):
 				if user_nick in self.away:
 					away_msg = self.away[user_nick]
 
-					e = BoxPlainTextActionAway(self,f"<small><center>{away_msg}</center></small>")
+					e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
 					menu.addAction(e)
 					shown_box = True
 
