@@ -1568,9 +1568,9 @@ class Window(QMainWindow):
 				if user_is_op: actDeop = opMenu.addAction(QIcon(MINUS_ICON),"Take operator status")
 				if not user_is_op: actOp = opMenu.addAction(QIcon(PLUS_ICON),"Give operator status")
 
-				if not user_is_op:
-					if user_is_voiced: actDevoice = opMenu.addAction(QIcon(MINUS_ICON),"Take voiced status")
-					if not user_is_voiced: actVoice = opMenu.addAction(QIcon(PLUS_ICON),"Give voiced status")
+		
+				if user_is_voiced: actDevoice = opMenu.addAction(QIcon(MINUS_ICON),"Take voiced status")
+				if not user_is_voiced: actVoice = opMenu.addAction(QIcon(PLUS_ICON),"Give voiced status")
 
 				opMenu.addSeparator()
 
@@ -1669,22 +1669,20 @@ class Window(QMainWindow):
 						self.client.mode(self.name,False,"o",None,user_nick)
 						return True
 
-				if not user_is_op:
-					if user_is_voiced:
-						if action == actDevoice:
-							self.client.mode(self.name,False,"v",None,user_nick)
-							return True
+				if user_is_voiced:
+					if action == actDevoice:
+						self.client.mode(self.name,False,"v",None,user_nick)
+						return True
 
 				if not user_is_op:
 					if action == actOp:
 						self.client.mode(self.name,True,"o",None,user_nick)
 						return True
 
-				if not user_is_op:
-					if not user_is_voiced:
-						if action == actVoice:
-							self.client.mode(self.name,True,"v",None,user_nick)
-							return True
+				if not user_is_voiced:
+					if action == actVoice:
+						self.client.mode(self.name,True,"v",None,user_nick)
+						return True
 
 			return True
 
@@ -1924,32 +1922,34 @@ class Window(QMainWindow):
 				nickname = p[0]
 				hostmask = p[1]
 				self.hostmasks[self.clean_nick(nickname)] = hostmask
+				raw_nickname = p[0]
 			else:
 				nickname = u
 				hostmask = None
+				raw_nickname = u
 
 			if self.is_ignored(self.clean_nick(nickname),hostmask): ignored.append(self.clean_nick(nickname))
 
 			self.user_count = self.user_count + 1
 
 			if '@' in nickname:
-				ops.append(nickname.replace('@',''))
-				if nickname.replace('@','')==self.client.nickname: self.operator = True
+				ops.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.operator = True
 			elif '+' in nickname:
-				voiced.append(nickname.replace('+',''))
-				if nickname.replace('+','')==self.client.nickname: self.voiced = True
+				voiced.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.voiced = True
 			elif '~' in nickname:
-				owners.append(nickname.replace('~',''))
-				if nickname.replace('~','')==self.client.nickname: self.owner = True
+				owners.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.owner = True
 			elif '&' in nickname:
-				admins.append(nickname.replace('&',''))
-				if nickname.replace('&','')==self.client.nickname: self.admin = True
+				admins.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.admin = True
 			elif '%' in nickname:
-				halfops.append(nickname.replace('%',''))
-				if nickname.replace('%','')==self.client.nickname: self.halfop = True
+				halfops.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.halfop = True
 			elif '!' in nickname:
-				protected.append(nickname.replace('!',''))
-				if nickname.replace('!','')==self.client.nickname: self.protected = True
+				protected.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.protected = True
 			else:
 				normal.append(nickname)
 
