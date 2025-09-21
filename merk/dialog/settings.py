@@ -2197,6 +2197,10 @@ class Dialog(QDialog):
 		orderLayout.addWidget(self.mdiStacking)
 		orderLayout.addWidget(self.mdiActivation)
 
+		self.windowRubberSize = QCheckBox("Rubber band resizing",self)
+		if config.RUBBER_BAND_RESIZE: self.windowRubberSize.setChecked(True)
+		self.windowRubberSize.stateChanged.connect(self.changedSetting)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showServToolbar)
@@ -2206,6 +2210,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.enableDisconnect)
 		subwindowLayout.addWidget(self.hideServer)
 		subwindowLayout.addWidget(self.showInfo)
+		subwindowLayout.addWidget(self.windowRubberSize)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>status bars</b>"))
 		subwindowLayout.addLayout(statusLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
@@ -4536,6 +4541,7 @@ class Dialog(QDialog):
 		config.ENABLE_GOTO_COMMAND = self.enableGoto.isChecked()
 		config.ENABLE_IF_COMMAND = self.enableIf.isChecked()
 		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
+		config.RUBBER_BAND_RESIZE = self.windowRubberSize.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -4681,6 +4687,8 @@ class Dialog(QDialog):
 		self.parent.updateStatusBar()
 
 		self.parent.toggleServerToolbar()
+
+		self.parent.toggleRubberbanding()
 
 		self.parent.toggleScrollbar()
 
