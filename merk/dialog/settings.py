@@ -2190,19 +2190,19 @@ class Dialog(QDialog):
 		self.enableDisconnect.stateChanged.connect(self.changedSetting)
 		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.hideServer = QCheckBox("Hide server windows when registration\nis complete",self)
+		self.hideServer = QCheckBox("Hide server windows when\nregistration is complete",self)
 		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
 		self.hideServer.stateChanged.connect(self.changedSetting)
 		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.autoMaxSubwindow = QCheckBox("Maximize new subwindows automatically",self)
+		self.autoMaxSubwindow = QCheckBox("Maximize new subwindows",self)
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
 		self.autoMaxSubwindow.stateChanged.connect(self.changedSetting)
 
 		self.mdiCreation = QRadioButton("Creation")
 		self.mdiCreation.toggled.connect(self.selCreation)
 
-		self.mdiStacking = QRadioButton("Stacking")
+		self.mdiStacking = QRadioButton("Stack")
 		self.mdiStacking.toggled.connect(self.selStacking)
 
 		self.mdiActivation = QRadioButton("Activation")
@@ -2241,7 +2241,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showInfo)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>rubber band subwindows while...</b>"))
 		subwindowLayout.addLayout(rbLayout)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow order</b>"))
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>order subwindows on...</b>"))
 		subwindowLayout.addLayout(orderLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow status bars</b>"))
 		subwindowLayout.addLayout(statusLayout)
@@ -2776,7 +2776,7 @@ class Dialog(QDialog):
 		if config.SHOW_IGNORE_STATUS_IN_USERLISTS: self.ignoreUserlist.setChecked(True)
 		self.ignoreUserlist.stateChanged.connect(self.changedSettingRerenderUserlists)
 
-		self.showAwayStatus = QCheckBox("Mark away status",self)
+		self.showAwayStatus = QCheckBox("Mark away users",self)
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS: self.showAwayStatus.setChecked(True)
 		self.showAwayStatus.stateChanged.connect(self.changedSettingRerenderUserlists)
 
@@ -2797,10 +2797,14 @@ class Dialog(QDialog):
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
 		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
 
-		ulistLayout = QFormLayout()
-		ulistLayout.addRow(self.plainUserLists,self.showUserlistLeft)
-		ulistLayout.addRow(self.ignoreUserlist,self.showAwayStatus)
-		ulistLayout.addRow(self.noSelectUserlists)
+		ulistDisplay = QFormLayout()
+		ulistDisplay.addRow(self.plainUserLists,self.showUserlistLeft)
+		ulistDisplay.addRow(self.ignoreUserlist,self.showAwayStatus)
+
+		ulistDisplay2 = QHBoxLayout()
+		ulistDisplay2.addStretch()
+		ulistDisplay2.addLayout(ulistDisplay)
+		ulistDisplay2.addStretch()
 
 		ulistExist = QHBoxLayout()
 		ulistExist.addStretch()
@@ -2825,7 +2829,8 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.topicBold)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistExist)
-		menuLayout.addLayout(ulistLayout)
+		menuLayout.addLayout(ulistDisplay2)
+		menuLayout.addWidget(self.noSelectUserlists)
 		menuLayout.addWidget(self.hideScroll)
 		menuLayout.addWidget(self.dcPrivate)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
