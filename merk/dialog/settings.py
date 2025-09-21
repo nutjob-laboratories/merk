@@ -2214,20 +2214,17 @@ class Dialog(QDialog):
 		orderLayout.addWidget(self.mdiStacking)
 		orderLayout.addWidget(self.mdiActivation)
 
-		self.windowRubberSize = QCheckBox("Resizing",self)
+		self.windowRubberSize = QCheckBox("Rubber band resize",self)
 		if config.RUBBER_BAND_RESIZE: self.windowRubberSize.setChecked(True)
 		self.windowRubberSize.stateChanged.connect(self.changedSetting)
 
-		self.windowRubberMove = QCheckBox("Moving",self)
+		self.windowRubberMove = QCheckBox("Rubber band move",self)
 		if config.RUBBER_BAND_MOVE: self.windowRubberMove.setChecked(True)
 		self.windowRubberMove.stateChanged.connect(self.changedSetting)
 
 		rbLayout = QHBoxLayout()
-		rbLayout.addStretch()
 		rbLayout.addWidget(self.windowRubberSize)
-		rbLayout.addStretch()
 		rbLayout.addWidget(self.windowRubberMove)
-		rbLayout.addStretch()
 
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
@@ -2236,7 +2233,6 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showChatInTitle)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
 		subwindowLayout.addWidget(self.showInfo)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>rubber band subwindows while...</b>"))
 		subwindowLayout.addLayout(rbLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>order subwindows on...</b>"))
 		subwindowLayout.addLayout(orderLayout)
