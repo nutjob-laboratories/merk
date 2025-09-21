@@ -876,7 +876,6 @@ class Dialog(QDialog):
 			self.writeConsole.setEnabled(True)
 			self.writeFile.setEnabled(True)
 			self.enablePing.setEnabled(True)
-			self.enableStyle.setEnabled(True)
 			self.serverHeartbeatLabel.setEnabled(True)
 			self.heartbeatLength.setEnabled(True)
 			self.heartbeatLabelSpec.setEnabled(True)
@@ -885,18 +884,12 @@ class Dialog(QDialog):
 			self.writeConsole.setEnabled(False)
 			self.writeFile.setEnabled(False)
 			self.enablePing.setEnabled(False)
-			self.enableStyle.setEnabled(False)
 			self.serverHeartbeatLabel.setEnabled(False)
 			self.heartbeatLength.setEnabled(False)
 			self.heartbeatLabelSpec.setEnabled(False)
 
 			self.heartbeatLength.setValue(config.TWISTED_CLIENT_HEARTBEAT)
 			self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
-
-			if config.ENABLE_STYLE_EDITOR:
-				self.enableStyle.setChecked(True)
-			else:
-				self.enableStyle.setChecked(False)
 
 			if config.SHOW_PINGS_IN_CONSOLE:
 				self.enablePing.setChecked(True)
@@ -1542,7 +1535,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Appearance")
 		entry.widget = self.appearancePage
-		entry.setIcon(QIcon(WIDGET_ICON))
+		entry.setIcon(QIcon(STYLE_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.appearancePage)
@@ -1643,6 +1636,10 @@ class Dialog(QDialog):
 		cursorLayout.addWidget(self.inputCursorLabelSpec)
 		cursorLayout.addStretch()
 
+		self.enableStyle = QCheckBox("Enable text style editor",self)
+		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
+		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
@@ -1655,6 +1652,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		appearanceLayout.addWidget(self.enableStyle)
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
 		appearanceLayout.addLayout(cursorLayout)
@@ -4206,11 +4204,6 @@ class Dialog(QDialog):
 		aoLayout.addWidget(self.advancedEnable)
 		aoLayout.addStretch()
 
-		self.enableStyle = QCheckBox("Enable text style editor",self)
-		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
-		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
-		self.enableStyle.setEnabled(False)
-
 		self.serverHeartbeatLabel = QLabel("Connection heartbeat:")
 		self.heartbeatLabelSpec = QLabel("seconds")
 		self.heartbeatLength = QSpinBox()
@@ -4235,7 +4228,6 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addLayout(hbLayout)
-		advancedLayout.addWidget(self.enableStyle)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
