@@ -1599,11 +1599,10 @@ class Dialog(QDialog):
 			self.notInputWidget.setEnabled(False)
 			self.notUserlist.setEnabled(False)
 
-		self.noStyles = QCheckBox("Do not apply text styles to\ndisplayed text",self)
+		self.noStyles = QCheckBox("Do not apply text styles",self)
 		if config.DO_NOT_APPLY_STYLES_TO_TEXT: self.noStyles.setChecked(True)
 		self.noStyles.stateChanged.connect(self.changedSettingRerender)
-		self.noStyles.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+	
 		app1Layout = QHBoxLayout()
 		app1Layout.addStretch()
 		app1Layout.addLayout(styleLayout)
@@ -1644,11 +1643,9 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
-		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
-		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
