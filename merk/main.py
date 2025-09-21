@@ -2737,6 +2737,10 @@ class Merk(QMainWindow):
 				window.setOption(QMdiSubWindow.RubberBandResize, True)
 			else:
 				window.setOption(QMdiSubWindow.RubberBandResize, False)
+			if config.RUBBER_BAND_MOVE:
+				window.setOption(QMdiSubWindow.RubberBandMove, True)
+			else:
+				window.setOption(QMdiSubWindow.RubberBandMove, False)
 
 	def newChannelWindow(self,name,client):
 		w = QMdiSubWindow(self)
@@ -2750,6 +2754,9 @@ class Merk(QMainWindow):
 
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
@@ -2768,6 +2775,9 @@ class Merk(QMainWindow):
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
 
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
@@ -2784,6 +2794,9 @@ class Merk(QMainWindow):
 
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
@@ -2803,6 +2816,9 @@ class Merk(QMainWindow):
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
 
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
@@ -2821,6 +2837,9 @@ class Merk(QMainWindow):
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
 
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
@@ -2838,6 +2857,9 @@ class Merk(QMainWindow):
 
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
 
 		c = w.widget()
 		c.openScript(hostid)
@@ -2858,6 +2880,9 @@ class Merk(QMainWindow):
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
 
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
 		client.channel_list_window = w
 		self.buildWindowsMenu()
 
@@ -2876,6 +2901,9 @@ class Merk(QMainWindow):
 
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
 
 		self.readme_window = w
 		self.buildWindowsMenu()
@@ -2899,6 +2927,9 @@ class Merk(QMainWindow):
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
 
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
 		self.log_manager = w
 		self.buildWindowsMenu()
 
@@ -2920,6 +2951,9 @@ class Merk(QMainWindow):
 
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
 
 		self.log_manager = w
 		self.buildWindowsMenu()
