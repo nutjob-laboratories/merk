@@ -3409,6 +3409,13 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsSimplified)
 		self.settingsMenu.addAction(entry)
 
+		if config.DARK_MODE:
+			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
+		entry.triggered.connect(self.settingsDarkMode)
+		self.settingsMenu.addAction(entry)
+
 		if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS:
 
 			sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
@@ -3563,6 +3570,16 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsIntermittent)
 		sm.addAction(entry)
 
+		sm = self.settingsMenu.addMenu(QIcon(WINDOW_ICON),"Widget style")
+
+		for s in QStyleFactory.keys():
+			if s==config.QT_WINDOW_STYLE:
+				entry = QAction(QIcon(self.round_checked_icon),s, self)
+			else:
+				entry = QAction(QIcon(self.round_unchecked_icon),s, self)
+			entry.triggered.connect(lambda state,u=f"{s}": self.menuSetWidget(u))
+			sm.addAction(entry)
+
 		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 		if not is_running_from_pyinstaller():
@@ -3589,25 +3606,6 @@ class Merk(QMainWindow):
 		if config.SCRIPTING_ENGINE_ENABLED:
 			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-			sm.addAction(entry)
-
-		self.settingsMenu.addSeparator()
-
-		if config.DARK_MODE:
-			entry = QAction(QIcon(self.checked_icon),"Dark mode", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
-		entry.triggered.connect(self.settingsDarkMode)
-		self.settingsMenu.addAction(entry)
-
-		sm = self.settingsMenu.addMenu(QIcon(WINDOW_ICON),"Widget style")
-
-		for s in QStyleFactory.keys():
-			if s==config.QT_WINDOW_STYLE:
-				entry = QAction(QIcon(self.round_checked_icon),s, self)
-			else:
-				entry = QAction(QIcon(self.round_unchecked_icon),s, self)
-			entry.triggered.connect(lambda state,u=f"{s}": self.menuSetWidget(u))
 			sm.addAction(entry)
 
 		self.buildSystrayMenu()

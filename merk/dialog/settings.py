@@ -1646,6 +1646,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
