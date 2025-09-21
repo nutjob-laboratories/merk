@@ -332,11 +332,12 @@ class Window(QMainWindow):
 
 		# Text input widget should only be one line
 		fm = self.input.fontMetrics()
-		# self.input.setFixedHeight(fm.height()+12)
 		self.input.setFixedHeight(fm.height()+10)
 		self.input.setWordWrapMode(QTextOption.NoWrap)
 		self.input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.input.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.input.setCursorWidth(config.INPUT_CURSOR_WIDTH)
 
 		# Set input language for spell checker
 		self.input.changeLanguage(self.language)

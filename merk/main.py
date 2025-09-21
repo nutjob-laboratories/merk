@@ -3038,6 +3038,13 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def toggleCursorWidth(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"input"):
+				if hasattr(c.input,"setCursorWidth"):
+					c.input.setCursorWidth(config.INPUT_CURSOR_WIDTH)
+
 	def clearCommandHistory(self):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
@@ -3407,9 +3414,9 @@ class Merk(QMainWindow):
 			sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
 
 			if config.ENABLE_SPELLCHECK:
-				entry = QAction(QIcon(self.checked_icon),"Spellcheck", self)
+				entry = QAction(QIcon(self.checked_icon),"Enabled", self)
 			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Spellcheck", self)
+				entry = QAction(QIcon(self.unchecked_icon),"Enabled", self)
 			entry.triggered.connect(self.settingsSpell)
 			sm.addAction(entry)
 

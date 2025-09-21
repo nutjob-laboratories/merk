@@ -290,9 +290,11 @@ SHOW_FULL_SCREEN = False
 SET_SUBWINDOW_ORDER = 'creation' # creation, stacking, activation
 RUBBER_BAND_RESIZE = False
 RUBBER_BAND_MOVE = False
+INPUT_CURSOR_WIDTH = 1
 
 def build_settings():
 	settings = {
+		"input_widget_cursor_width": INPUT_CURSOR_WIDTH,
 		"rubberband_subwindow_move": RUBBER_BAND_MOVE,
 		"rubberband_subwindow_resize": RUBBER_BAND_RESIZE,
 		"subwindow_order": SET_SUBWINDOW_ORDER,
@@ -549,6 +551,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "input_widget_cursor_width" in settings:
+		settings["input_widget_cursor_width"] = INPUT_CURSOR_WIDTH
 	if not "rubberband_subwindow_move" in settings:
 		settings["rubberband_subwindow_move"] = RUBBER_BAND_MOVE
 	if not "rubberband_subwindow_resize" in settings:
@@ -1307,6 +1311,7 @@ def load_settings(filename):
 	global SET_SUBWINDOW_ORDER
 	global RUBBER_BAND_RESIZE
 	global RUBBER_BAND_MOVE
+	global INPUT_CURSOR_WIDTH
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1316,6 +1321,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		INPUT_CURSOR_WIDTH = settings["input_widget_cursor_width"]
 		RUBBER_BAND_MOVE = settings["rubberband_subwindow_move"]
 		RUBBER_BAND_RESIZE = settings["rubberband_subwindow_resize"]
 		SET_SUBWINDOW_ORDER = settings["subwindow_order"]

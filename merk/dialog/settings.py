@@ -570,6 +570,13 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateinputCursor(self,state):
+		self.INPUT_CURSOR_WIDTH = self.inputCursor.value()
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
 	def updateHeartbeat(self,state):
 		self.heartbeat = self.heartbeatLength.value()
 		self.changed.show()
@@ -1367,6 +1374,7 @@ class Dialog(QDialog):
 		self.nicknamePadLength = config.NICKNAME_PAD_LENGTH
 		self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
 		self.SET_SUBWINDOW_ORDER = config.SET_SUBWINDOW_ORDER
+		self.INPUT_CURSOR_WIDTH = config.INPUT_CURSOR_WIDTH
 
 		self.setWindowTitle(f" {APPLICATION_NAME} Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -1622,6 +1630,19 @@ class Dialog(QDialog):
 		self.forceMono.stateChanged.connect(self.changedSettingRerender)
 		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.inputCursorLabel = QLabel("Input cursor width:")
+		self.inputCursorLabelSpec = QLabel("pixels")
+		self.inputCursor = QSpinBox()
+		self.inputCursor.setRange(1,99)
+		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
+		self.inputCursor.valueChanged.connect(self.updateinputCursor)
+
+		cursorLayout = QHBoxLayout()
+		cursorLayout.addWidget(self.inputCursorLabel)
+		cursorLayout.addWidget(self.inputCursor)
+		cursorLayout.addWidget(self.inputCursorLabelSpec)
+		cursorLayout.addStretch()
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
@@ -1636,6 +1657,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
+		appearanceLayout.addLayout(cursorLayout)
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
@@ -4556,6 +4578,7 @@ class Dialog(QDialog):
 		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
 		config.RUBBER_BAND_RESIZE = self.windowRubberSize.isChecked()
 		config.RUBBER_BAND_MOVE = self.windowRubberMove.isChecked()
+		config.INPUT_CURSOR_WIDTH = self.INPUT_CURSOR_WIDTH
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -4705,6 +4728,8 @@ class Dialog(QDialog):
 		self.parent.toggleRubberbanding()
 
 		self.parent.toggleScrollbar()
+
+		self.parent.toggleCursorWidth()
 
 		self.parent.refreshAllTopic()
 		if config.SHOW_CHANNEL_TOPIC:
