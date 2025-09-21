@@ -4278,7 +4278,7 @@ class Dialog(QDialog):
 		self.finalLayout = QVBoxLayout()
 		self.finalLayout.addLayout(mainLayout)
 		self.finalLayout.addLayout(dialogButtonsLayout)
-		self.finalLayout.setContentsMargins(3,3,3,3)
+		self.finalLayout.setContentsMargins(4,4,4,4)
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
