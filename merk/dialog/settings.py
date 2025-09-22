@@ -1369,7 +1369,7 @@ class Dialog(QDialog):
 		self.SET_SUBWINDOW_ORDER = config.SET_SUBWINDOW_ORDER
 		self.INPUT_CURSOR_WIDTH = config.INPUT_CURSOR_WIDTH
 
-		self.setWindowTitle(f" {APPLICATION_NAME} Settings")
+		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
 
 		self.selector = QListWidget(self)
@@ -4263,8 +4263,8 @@ class Dialog(QDialog):
 
 		leftLayout = QVBoxLayout()
 		leftLayout.addWidget(logo)
-		leftLayout.addWidget(QLabel(f"<center><small><b>Version {APPLICATION_VERSION}</b></small></center>"))
 		leftLayout.addWidget(self.selector)
+		leftLayout.addWidget(QLabel(f"<center><small><b>Version {APPLICATION_VERSION}</b></small></center>"))
 
 		mainLayout = QHBoxLayout()
 		mainLayout.addLayout(leftLayout)
