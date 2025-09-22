@@ -1495,19 +1495,7 @@ class Dialog(QDialog):
 		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
 		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		logo = QLabel()
-		pixmap = QPixmap(SPLASH_LOGO)
-		logo.setPixmap(pixmap)
-		logo.setAlignment(Qt.AlignCenter)
-
-		app_link = QLabel(f'<center><b><small><a href="{APPLICATION_SOURCE}">Open Source IRC Client</a></small></b></center>')
-		app_link.setOpenExternalLinks(True)
-
 		applicationLayout = QVBoxLayout()
-		applicationLayout.addWidget(logo)
-		applicationLayout.addWidget(app_link)
-		applicationLayout.addWidget(QLabel(f'<center><b>Version {APPLICATION_VERSION}</b></center>'))
-		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
@@ -4267,7 +4255,15 @@ class Dialog(QDialog):
 		dialogButtonsLayout.addWidget(self.saveButton)
 		dialogButtonsLayout.addWidget(self.cancelButton)
 
+		logo = QLabel()
+		pixmap = QPixmap(SPLASH_LOGO)
+		pixmap = pixmap.scaledToWidth(self.selector.width(), Qt.SmoothTransformation)
+		logo.setPixmap(pixmap)
+		logo.setAlignment(Qt.AlignCenter)
+
 		leftLayout = QVBoxLayout()
+		leftLayout.addWidget(logo)
+		leftLayout.addWidget(QLabel(f"<center><small><b>Version {APPLICATION_VERSION}</b></small></center>"))
 		leftLayout.addWidget(self.selector)
 
 		mainLayout = QHBoxLayout()
