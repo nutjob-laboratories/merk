@@ -4255,16 +4255,16 @@ class Dialog(QDialog):
 		dialogButtonsLayout.addWidget(self.saveButton)
 		dialogButtonsLayout.addWidget(self.cancelButton)
 
-		logo = QLabel()
-		pixmap = QPixmap(SPLASH_LOGO)
-		pixmap = pixmap.scaledToWidth(self.selector.width(), Qt.SmoothTransformation)
-		logo.setPixmap(pixmap)
-		logo.setAlignment(Qt.AlignCenter)
+		# logo = QLabel()
+		# pixmap = QPixmap(SPLASH_LOGO)
+		# pixmap = pixmap.scaledToWidth(self.selector.width(), Qt.SmoothTransformation)
+		# logo.setPixmap(pixmap)
+		# logo.setAlignment(Qt.AlignCenter)
 
 		leftLayout = QVBoxLayout()
-		leftLayout.addWidget(logo)
+		#leftLayout.addWidget(logo)
 		leftLayout.addWidget(self.selector)
-		leftLayout.addWidget(QLabel(f"<center><small><b>Version {APPLICATION_VERSION}</b></small></center>"))
+		#leftLayout.addWidget(QLabel(f"<center><small>Version {APPLICATION_VERSION}</small></center>"))
 
 		mainLayout = QHBoxLayout()
 		mainLayout.addLayout(leftLayout)
