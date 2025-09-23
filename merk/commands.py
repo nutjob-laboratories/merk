@@ -1413,7 +1413,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w = gui.getSubWindow(target,win.widget().client)
 					if w:
 						w.resize(width,height)
-						if not is_script: window.input.setFocus()
 					else:
 						if is_script:
 							add_halt(script_id)
@@ -1429,7 +1428,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w = gui.getSubWindow(target,win.widget().client)
 					if w:
 						w.resize(width,height)
-						if not is_script: window.input.setFocus()
 					else:
 						if is_script:
 							add_halt(script_id)
@@ -1482,7 +1480,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.resize(width,height)
-				if not is_script: window.input.setFocus()
 			else:
 				if is_script:
 					add_halt(script_id)
@@ -1525,7 +1522,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = gui.getSubWindow(window.name,window.client)
 			if w:
 				w.resize(width,height)
-				if not is_script: window.input.setFocus()
 			else:
 				if is_script:
 					add_halt(script_id)
@@ -3577,7 +3573,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w = gui.getSubWindow(target,win.widget().client)
 					if w:
 						w.widget().clearChat()
-						if not is_script: window.input.setFocus()
 					else:
 						if is_script:
 							add_halt(script_id)
@@ -3604,7 +3599,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.widget().clearChat()
-				if not is_script: window.input.setFocus()
 			else:
 				if is_script:
 					add_halt(script_id)
