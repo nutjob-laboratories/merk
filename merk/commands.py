@@ -1091,7 +1091,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			swins = gui.getAllServerWindows()
 			for win in swins:
 				if server.lower() in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().input.setFocus()
 					else:
@@ -1104,10 +1104,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-
-
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().input.setFocus()
 					else:
@@ -1120,7 +1118,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1197,7 +1194,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			swins = gui.getAllServerWindows()
 			for win in swins:
 				if server in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						if gui.is_valid_position(w,x_val,y_val):
 							w.move(x_val,y_val)
@@ -1220,9 +1217,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						if gui.is_valid_position(w,x_val,y_val):
 							w.move(x_val,y_val)
@@ -1245,7 +1241,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1410,7 +1405,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			swins = gui.getAllServerWindows()
 			for win in swins:
 				if server in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.resize(width,height)
 					else:
@@ -1425,7 +1420,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.resize(width,height)
 					else:
@@ -1759,7 +1754,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			swins = gui.getAllServerWindows()
 			for win in swins:
 				if server.lower() in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.close()
 						gui.buildWindowbar()
@@ -1775,7 +1770,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.close()
 						gui.buildWindowbar()
@@ -1903,9 +1898,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			swins = gui.getAllServerWindows()
 			for win in swins:
 				if server.lower() in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						gui.showSubWindow(w)
+						if hasattr(window,"input"): window.input.setFocus()
 						gui.buildWindowbar()
 					else:
 						if is_script:
@@ -1918,9 +1914,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						gui.showSubWindow(w)
+						if hasattr(window,"input"): window.input.setFocus()
 						gui.buildWindowbar()
 					else:
 						if is_script:
@@ -1948,6 +1945,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				gui.showSubWindow(w)
+				if hasattr(window,"input"): window.input.setFocus()
 				gui.buildWindowbar()
 			else:
 				if is_script:
@@ -1989,7 +1987,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			swins = gui.getAllServerWindows()
 			for win in swins:
 				if server.lower() in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						t = Message(SYSTEM_MESSAGE,'',f"Hiding {target} ({server}) window...")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2006,7 +2004,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
-					w = gui.getSubWindow(target,win.widget().client)
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						t = Message(SYSTEM_MESSAGE,'',f"Hiding {target} ({server}) window...")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)

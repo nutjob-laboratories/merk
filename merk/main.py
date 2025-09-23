@@ -2443,6 +2443,25 @@ class Merk(QMainWindow):
 							return window
 		return None
 
+	def getSubWindowCommand(self,channel,client):
+		if channel=='*':
+			for window in self.MDI.subWindowList():
+				c = window.widget()
+				if hasattr(c,"client"):
+					if c.client.client_id == client.client_id:
+						if c.window_type==SERVER_WINDOW:
+							return window
+			return None
+
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"name"):
+				if c.name.lower() == channel.lower():
+					if hasattr(c,"client"):
+						if c.client.client_id == client.client_id:
+							return window
+		return None
+
 	def getServerSubWindow(self,client):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
