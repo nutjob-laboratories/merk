@@ -51,7 +51,6 @@ from . import user
 from .dialog import *
 from . import commands
 from . import connection_script
-
 from .widgets import menubar,textSeparatorLabel,textSeparator
 
 class GlobalActivityFilter(QObject):
@@ -217,6 +216,7 @@ class Merk(QMainWindow):
 			self.setWindowTitle(' ')
 		else:
 			self.setWindowTitle(self.application_title_name)
+			
 		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
 		if config.MAXIMIZE_ON_STARTUP:

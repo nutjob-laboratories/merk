@@ -1104,6 +1104,23 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
+
+
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.widget().input.setFocus()
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1203,6 +1220,32 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
+
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						if gui.is_valid_position(w,x_val,y_val):
+							w.move(x_val,y_val)
+						else:
+							if is_script:
+								add_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Not a valid window position")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1380,6 +1423,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							return True
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.resize(width,height)
+						if not is_script: window.input.setFocus()
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
 				add_halt(script_id)
@@ -1718,6 +1777,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
+
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						w.close()
+						gui.buildWindowbar()
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1846,6 +1921,21 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						gui.showSubWindow(w)
+						gui.buildWindowbar()
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -1903,6 +1993,23 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			swins = gui.getAllServerWindows()
 			for win in swins:
 				if server.lower() in win.widget().name.lower():
+					w = gui.getSubWindow(target,win.widget().client)
+					if w:
+						t = Message(SYSTEM_MESSAGE,'',f"Hiding {target} ({server}) window...")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						w.hide()
+						gui.buildWindowbar()
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
 					w = gui.getSubWindow(target,win.widget().client)
 					if w:
 						t = Message(SYSTEM_MESSAGE,'',f"Hiding {target} ({server}) window...")
@@ -4949,6 +5056,12 @@ class ScriptThread(QThread):
 								for w in valids:
 									c = w.widget()
 									if c.name==target:
+										self.window = c
+										is_valid = True
+									elif target==f"{c.client.server}":
+										self.window = c
+										is_valid = True
+									elif target==f"{c.client.server}:{c.client.port}":
 										self.window = c
 										is_valid = True
 
