@@ -1511,13 +1511,29 @@ class Window(QMainWindow):
 				if user_nick==self.client.nickname:
 					
 					if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+						if user_hostmask:
+							if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
+								dstring = elide_text(user_hostmask,25)
+							else:
+								dstring = user_hostmask	
+						else:
+							if self.client.is_away:
+								dstring = "You are away"
+							else:
+								dstring = "This is you!"
+
 						if self.client.is_away:
-							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"You are away",CUSTOM_MENU_ICON_SIZE)
+							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
 							menu.addAction(entry)
+
+							if is_hidden:
+								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
+								menu.addAction(e)
+								shown_box = True
 
 							if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 								if user_is_voiced:
-									e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
+									e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
 									menu.addAction(e)
 									shown_box = True
 
@@ -1528,17 +1544,27 @@ class Window(QMainWindow):
 							menu.addAction(e)
 							shown_box = True
 						else:
-							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
+							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
 							menu.addAction(entry)
+
+							if is_hidden:
+								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
+								menu.addAction(e)
+								shown_box = True
 
 							if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 								if user_is_voiced:
-									e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
+									e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
 									menu.addAction(e)
 									shown_box = True
 					else:
-						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,"This is you!",CUSTOM_MENU_ICON_SIZE)
+						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
 						menu.addAction(entry)
+
+						if is_hidden:
+							e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
+							menu.addAction(e)
+							shown_box = True
 
 						if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 							if user_is_voiced:
