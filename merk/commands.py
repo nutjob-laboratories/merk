@@ -1125,6 +1125,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				tree = ast.parse(statement, mode='eval')
 				evaluator = MathEvaluator()
 				result = evaluator.visit(tree)
+				removeAlias(a)
 				addAlias(a,f"{result}")
 				return True
 			except (SyntaxError, TypeError, ValueError) as e:
