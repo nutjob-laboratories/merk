@@ -1106,6 +1106,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
+		if not config.ENABLE_MATH_COMMAND:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'math':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math has been disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}math has been disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'math' and len(tokens)>=3:
 			
 			tokens.pop(0)
@@ -5042,24 +5054,30 @@ class ScriptThread(QThread):
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: end called with too many arguments"])
 					no_errors = False
 
-			# Make sure that wait is called with a numerical argument
-			if len(tokens)==2:
-				if tokens[0].lower()=='wait':
-					count = tokens[1]
-					try:
-						count = int(count)
-					except:
+			if config.ENABLE_WAIT_COMMAND:
+				# Make sure that wait is called with a numerical argument
+				if len(tokens)==2:
+					if tokens[0].lower()=='wait':
+						count = tokens[1]
+						try:
+							count = int(count)
+						except:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument"])
+							no_errors = False
+
+				# Make sure that wait has only one argument
+				if len(tokens)>=1:
+					if tokens[0].lower()=='wait' and len(tokens)>2:
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait called with too many arguments"])
+						no_errors = False
+					if tokens[0].lower()=='wait' and len(tokens)==1:
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument"])
 						no_errors = False
-
-			# Make sure that wait has only one argument
-			if len(tokens)>=1:
-				if tokens[0].lower()=='wait' and len(tokens)>2:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait called with too many arguments"])
-					no_errors = False
-				if tokens[0].lower()=='wait' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument"])
-					no_errors = False
+			else:
+				if len(tokens)>=1:
+					if tokens[0].lower()=='wait':
+						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait has been disabled"])
+						no_errors = False
 
 		return no_errors
 

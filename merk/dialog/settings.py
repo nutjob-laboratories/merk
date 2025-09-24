@@ -466,6 +466,7 @@ class Dialog(QDialog):
 			self.autoAliasQuit.setEnabled(True)
 			self.enableShell.setEnabled(True)
 			self.enableBuiltin.setEnabled(True)
+			self.enableMath.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -476,6 +477,7 @@ class Dialog(QDialog):
 			self.autoAliasQuit.setEnabled(False)
 			self.enableShell.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
+			self.enableMath.setEnabled(False)
 		self.changed.show()
 		self.syntax_did_change = True
 		self.boldApply()
@@ -493,6 +495,8 @@ class Dialog(QDialog):
 			self.enableIf.setEnabled(True)
 			self.syntaxop.setEnabled(True)
 			self.syntaxscript.setEnabled(True)
+			self.enableWait.setEnabled(True)
+			self.enableMath.setEnabled(True)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
@@ -504,6 +508,8 @@ class Dialog(QDialog):
 			self.enableIf.setEnabled(False)
 			self.syntaxop.setEnabled(False)
 			self.syntaxscript.setEnabled(False)
+			self.enableWait.setEnabled(False)
+			self.enableMath.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -3866,11 +3872,20 @@ class Dialog(QDialog):
 		if config.ENABLE_IF_COMMAND: self.enableIf.setChecked(True)
 		self.enableIf.stateChanged.connect(self.changedSettingEditorIf)
 
+		self.enableWait = QCheckBox(f"wait",self)
+		if config.ENABLE_WAIT_COMMAND: self.enableWait.setChecked(True)
+		self.enableWait.stateChanged.connect(self.changedSettingEditor)
+
+		self.enableMath = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}math",self)
+		if config.ENABLE_MATH_COMMAND: self.enableMath.setChecked(True)
+		self.enableMath.stateChanged.connect(self.changedSettingEditor)
+
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.alias_symbol_label.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
+			self.enableMath.setEnabled(False)
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.restrictError.setEnabled(False)
@@ -3881,16 +3896,20 @@ class Dialog(QDialog):
 			self.promptScript.setEnabled(False)
 			self.enableGoto.setEnabled(False)
 			self.enableIf.setEnabled(False)
+			self.enableWait.setEnabled(False)
+			self.enableMath.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addWidget(self.enableShell)
 		cmdLayout.addWidget(self.enableDelay)
 		cmdLayout.addWidget(self.enableConfig)
+		cmdLayout.addWidget(self.enableMath)
 
 		cmdLayout2 = QHBoxLayout()
 		cmdLayout2.addWidget(self.enableInsert)
 		cmdLayout2.addWidget(self.enableGoto)
 		cmdLayout2.addWidget(self.enableIf)
+		cmdLayout2.addWidget(self.enableWait)
 
 		allCmdLayout = QVBoxLayout()
 		allCmdLayout.addLayout(cmdLayout)
@@ -4560,6 +4579,8 @@ class Dialog(QDialog):
 		config.RUBBER_BAND_RESIZE = self.windowRubberSize.isChecked()
 		config.RUBBER_BAND_MOVE = self.windowRubberMove.isChecked()
 		config.INPUT_CURSOR_WIDTH = self.INPUT_CURSOR_WIDTH
+		config.ENABLE_WAIT_COMMAND = self.enableWait.isChecked()
+		config.ENABLE_MATH_COMMAND = self.enableMath.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

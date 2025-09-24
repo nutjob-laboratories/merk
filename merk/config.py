@@ -291,9 +291,13 @@ SET_SUBWINDOW_ORDER = 'creation' # creation, stacking, activation
 RUBBER_BAND_RESIZE = False
 RUBBER_BAND_MOVE = False
 INPUT_CURSOR_WIDTH = 1
+ENABLE_WAIT_COMMAND = True
+ENABLE_MATH_COMMAND = True
 
 def build_settings():
 	settings = {
+		"enable_math_command": ENABLE_MATH_COMMAND,
+		"enable_wait_command": ENABLE_WAIT_COMMAND,
 		"input_widget_cursor_width": INPUT_CURSOR_WIDTH,
 		"rubberband_subwindow_move": RUBBER_BAND_MOVE,
 		"rubberband_subwindow_resize": RUBBER_BAND_RESIZE,
@@ -551,6 +555,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_math_command" in settings:
+		settings["enable_math_command"] = ENABLE_MATH_COMMAND
+	if not "enable_wait_command" in settings:
+		settings["enable_wait_command"] = ENABLE_WAIT_COMMAND
 	if not "input_widget_cursor_width" in settings:
 		settings["input_widget_cursor_width"] = INPUT_CURSOR_WIDTH
 	if not "rubberband_subwindow_move" in settings:
@@ -1312,6 +1320,8 @@ def load_settings(filename):
 	global RUBBER_BAND_RESIZE
 	global RUBBER_BAND_MOVE
 	global INPUT_CURSOR_WIDTH
+	global ENABLE_WAIT_COMMAND
+	global ENABLE_MATH_COMMAND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1321,6 +1331,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_MATH_COMMAND = settings["enable_math_command"]
+		ENABLE_WAIT_COMMAND = settings["enable_wait_command"]
 		INPUT_CURSOR_WIDTH = settings["input_widget_cursor_width"]
 		RUBBER_BAND_MOVE = settings["rubberband_subwindow_move"]
 		RUBBER_BAND_RESIZE = settings["rubberband_subwindow_resize"]
