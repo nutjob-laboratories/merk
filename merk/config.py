@@ -296,9 +296,11 @@ ENABLE_MATH_COMMAND = True
 ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = True
 ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = True
 USERLIST_CONTEXT_MENU = True
+HOSTMASK_FETCH_FREQUENCY = 5
 
 def build_settings():
 	settings = {
+		"fetch_hostmask_frequency": HOSTMASK_FETCH_FREQUENCY,
 		"enable_userlist_context_menu": USERLIST_CONTEXT_MENU,
 		"elide_hostmask_in_userlist_context_menu": ELIDE_HOSTMASK_IN_USERLIST_CONTEXT,
 		"elide_away_message_in_userlist_context_menu": ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT,
@@ -561,6 +563,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "fetch_hostmask_frequency" in settings:
+		settings["fetch_hostmask_frequency"] = HOSTMASK_FETCH_FREQUENCY
 	if not "enable_userlist_context_menu" in settings:
 		settings["enable_userlist_context_menu"] = USERLIST_CONTEXT_MENU
 	if not "elide_hostmask_in_userlist_context_menu" in settings:
@@ -1337,6 +1341,7 @@ def load_settings(filename):
 	global ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT
 	global ELIDE_HOSTMASK_IN_USERLIST_CONTEXT
 	global USERLIST_CONTEXT_MENU
+	global HOSTMASK_FETCH_FREQUENCY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1346,6 +1351,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HOSTMASK_FETCH_FREQUENCY = settings["fetch_hostmask_frequency"]
 		USERLIST_CONTEXT_MENU = settings["enable_userlist_context_menu"]
 		ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = settings["elide_hostmask_in_userlist_context_menu"]
 		ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = settings["elide_away_message_in_userlist_context_menu"]

@@ -589,6 +589,27 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def changedSettingHostmask(self,state):
+		if self.autoHostmasks.isChecked():
+			self.fetchFreqLabel.setEnabled(True)
+			self.fetchFreq.setEnabled(True)
+			self.fetchFreqLabelSpec.setEnabled(True)
+		else:
+			self.fetchFreqLabel.setEnabled(False)
+			self.fetchFreq.setEnabled(False)
+			self.fetchFreqLabelSpec.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
+	def updateFreq(self,state):
+		self.HOSTMASK_FETCH_FREQUENCY = self.fetchFreq.value()
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
 	def updateinputCursor(self,state):
 		self.INPUT_CURSOR_WIDTH = self.inputCursor.value()
 		self.changed.show()
@@ -1398,6 +1419,7 @@ class Dialog(QDialog):
 		self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
 		self.SET_SUBWINDOW_ORDER = config.SET_SUBWINDOW_ORDER
 		self.INPUT_CURSOR_WIDTH = config.INPUT_CURSOR_WIDTH
+		self.HOSTMASK_FETCH_FREQUENCY = config.HOSTMASK_FETCH_FREQUENCY
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2764,7 +2786,7 @@ class Dialog(QDialog):
 		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
 		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
 
-		self.plainUserLists = QCheckBox("Text only",self)
+		self.plainUserLists = QCheckBox("Plain text only",self)
 		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
 		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
@@ -2989,14 +3011,32 @@ class Dialog(QDialog):
 
 		self.requestList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.autoHostmasks = QCheckBox("Fetch hostmasks on channel join",self)
+		self.autoHostmasks = QCheckBox("Fetch user hostmasks on channel join",self)
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
-		self.autoHostmasks.stateChanged.connect(self.changedSetting)
+		self.autoHostmasks.stateChanged.connect(self.changedSettingHostmask)
 
 		self.showNetLinks = QCheckBox("Show known links to network\nhomepages",self)
 		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
 		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.fetchFreqLabel = QLabel("Fetch hostmask every")
+		self.fetchFreqLabelSpec = QLabel("seconds")
+		self.fetchFreq = QSpinBox()
+		self.fetchFreq.setRange(1,99)
+		self.fetchFreq.setValue(self.HOSTMASK_FETCH_FREQUENCY)
+		self.fetchFreq.valueChanged.connect(self.updateFreq)
+
+		freqLayout = QHBoxLayout()
+		freqLayout.addWidget(self.fetchFreqLabel)
+		freqLayout.addWidget(self.fetchFreq)
+		freqLayout.addWidget(self.fetchFreqLabelSpec)
+		freqLayout.addStretch()
+
+		if not config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+			self.fetchFreqLabel.setEnabled(False)
+			self.fetchFreq.setEnabled(False)
+			self.fetchFreqLabelSpec.setEnabled(False)
 
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
@@ -3005,8 +3045,11 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
 		connectionsLayout.addWidget(self.requestList)
-		connectionsLayout.addWidget(self.autoHostmasks)
 		connectionsLayout.addWidget(self.showNetLinks)
+		connectionsLayout.addWidget(QLabel(' '))
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user hostmasks</b>"))
+		connectionsLayout.addWidget(self.autoHostmasks)
+		connectionsLayout.addLayout(freqLayout)
 		connectionsLayout.addStretch()
 		self.connectionsPage.setLayout(connectionsLayout)
 
@@ -4624,6 +4667,7 @@ class Dialog(QDialog):
 		config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = self.elideAway.isChecked()
 		config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = self.elideHostmask.isChecked()
 		config.USERLIST_CONTEXT_MENU = self.ulistContext.isChecked()
+		config.HOSTMASK_FETCH_FREQUENCY = self.HOSTMASK_FETCH_FREQUENCY
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

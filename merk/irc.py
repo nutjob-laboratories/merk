@@ -243,11 +243,14 @@ class IRC_Connection(irc.IRCClient):
 						self.sendLine(f"LIST")
 
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
-			if len(self.do_whois)>0:
-				nick = self.do_whois.pop(0)
-				if len(nick.strip())>0:
-					self.request_whois.append(nick)
-					self.sendLine("WHOIS "+nick)
+			# Do a whois request every 5 seconds so
+			# we don't get kicked for flooding
+			if self.uptime % config.HOSTMASK_FETCH_FREQUENCY==0:
+				if len(self.do_whois)>0:
+					nick = self.do_whois.pop(0)
+					if len(nick.strip())>0:
+						self.request_whois.append(nick)
+						self.sendLine("WHOIS "+nick)
 
 		self.gui.uptime(self,self.uptime)
 
