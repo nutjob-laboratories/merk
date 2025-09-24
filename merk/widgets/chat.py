@@ -1861,10 +1861,6 @@ class Window(QMainWindow):
 			else:
 				change = c.lighter(150)
 			w.setForeground(QBrush(QColor(change)))
-		else:
-			font = QFont()
-			font.setBold(True)
-			w.setFont(font)
 
 	def change_to_back_display(self,w):
 		font = QFont()
