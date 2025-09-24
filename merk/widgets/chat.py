@@ -1509,19 +1509,19 @@ class Window(QMainWindow):
 				away_elide_size = 30
 
 				if user_nick==self.client.nickname:
+
+					if user_hostmask:
+						if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
+							dstring = elide_text(user_hostmask,25)
+						else:
+							dstring = user_hostmask	
+					else:
+						if self.client.is_away:
+							dstring = "You are away"
+						else:
+							dstring = "This is you!"
 					
 					if config.SHOW_AWAY_STATUS_IN_USERLISTS:
-						if user_hostmask:
-							if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
-								dstring = elide_text(user_hostmask,25)
-							else:
-								dstring = user_hostmask	
-						else:
-							if self.client.is_away:
-								dstring = "You are away"
-							else:
-								dstring = "This is you!"
-
 						if self.client.is_away:
 							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
 							menu.addAction(entry)
@@ -1562,13 +1562,13 @@ class Window(QMainWindow):
 						menu.addAction(entry)
 
 						if is_hidden:
-							e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
+							e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
 							menu.addAction(e)
 							shown_box = True
 
 						if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 							if user_is_voiced:
-								e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
+								e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
 								menu.addAction(e)
 								shown_box = True
 
@@ -1861,15 +1861,18 @@ class Window(QMainWindow):
 			else:
 				change = c.lighter(150)
 			w.setForeground(QBrush(QColor(change)))
-
-	def change_to_back_display(self,w):
-		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+		else:
 			font = QFont()
 			font.setBold(True)
 			w.setFont(font)
 
-			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
-			w.setForeground(QBrush(QColor(foreground)))
+	def change_to_back_display(self,w):
+		font = QFont()
+		font.setBold(True)
+		w.setFont(font)
+
+		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		w.setForeground(QBrush(QColor(foreground)))
 
 	def got_away(self,username,message):
 
