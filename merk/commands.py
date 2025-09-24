@@ -4680,10 +4680,10 @@ def execute_delay(data):
 		if len(line.strip())==0: return
 		if config.DISPLAY_SCRIPT_ERRORS:
 			if line[0]==config.ISSUE_COMMAND_SYMBOL:
-				t = Message(ERROR_MESSAGE,'',f"Unrecognized command \"{line}\"")
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}delay: Unrecognized command \"{line}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
-				t = Message(ERROR_MESSAGE,'',f"Line \"{line}\" contains no command")
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}delay: Line \"{line}\" contains no command")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 class DelayThread(QThread):
