@@ -47,6 +47,7 @@ import datetime
 import subprocess
 import shlex
 import random
+import ast
 
 import emoji
 
