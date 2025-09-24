@@ -1019,7 +1019,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Can't set topic for a private message")
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Can't set topic for a private chat")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Can't set topic for a private message")
@@ -1089,7 +1089,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math: Aliases have been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
@@ -1114,7 +1114,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math: Alias tokens must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
@@ -1136,7 +1136,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math: {e}")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"{e}")
+				t = Message(ERROR_MESSAGE,'',f"Error: {e}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'math':
@@ -1249,7 +1249,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Invalid X value")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
@@ -1260,7 +1260,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Invalid Y value")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
@@ -1338,7 +1338,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Invalid X value")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
@@ -1349,7 +1349,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Invalid Y value")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid Y Value passed to {config.ISSUE_COMMAND_SYMBOL}move")
@@ -1390,7 +1390,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Invalid X value")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid X value passed to {config.ISSUE_COMMAND_SYMBOL}move")
@@ -1401,7 +1401,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Invalid Y value")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid Y value passed to {config.ISSUE_COMMAND_SYMBOL}move")
@@ -1460,7 +1460,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid width")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
@@ -1471,7 +1471,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid height")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
@@ -1530,7 +1530,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid width")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
@@ -1541,7 +1541,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid height")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
@@ -1572,7 +1572,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid width")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
@@ -1583,7 +1583,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid height")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
@@ -1672,9 +1672,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			gui.disconnectAll()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quitall' and len(tokens)>=2:
-
-			if not gui.askDisconnect(window.client): return True
-			
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			gui.disconnectAll(msg)
@@ -1739,7 +1736,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: Aliases have been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
@@ -1765,7 +1762,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: Alias tokens must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
@@ -1778,7 +1775,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{low}\" is not a number")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: \"{low}\" is not a number")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"\"{low}\" is not a number")
@@ -1791,7 +1788,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{high}\" is not a number")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: \"{high}\" is not a number")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"\"{high}\" is not a number")
@@ -2293,6 +2290,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			w = window.parent.openPrivate(window.client,target)
 			window.client.msg(target,msg)
 			t = Message(SELF_MESSAGE,window.client.nickname,msg)
@@ -2381,7 +2379,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Invalid request type (not VERSION, TIME, or FINGER)")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}ctcp: Invalid request type (not VERSION, TIME, or FINGER)")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Invalid request type (not VERSION, TIME, or FINGER)")
@@ -2410,7 +2408,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}shell: Aliases have been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
@@ -2445,7 +2443,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}shell: Alias tokens must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
@@ -2888,7 +2886,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{timer}\" is not a number")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}exit: \"{timer}\" is not a number")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"\"{timer}\" is not a number")
@@ -3079,7 +3077,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: Aliases have been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
@@ -3104,7 +3102,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias tokens must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: Alias tokens must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
@@ -3165,7 +3163,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Aliases have been disabled in settings")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias: Aliases have been disabled in settings")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
@@ -3185,7 +3183,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Alias \"{target}\" not found.")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias: Alias \"{target}\" not found.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"Alias \"{target}\" not found.")
@@ -3225,6 +3223,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}connectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,None,True,False,False)
 			return True
 		# /connectssl HOST PORT PASSWORD
@@ -3233,6 +3243,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			host = tokens.pop(0)
 			port = tokens.pop(0)
 			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}connectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,password,True,False,False)
 			return True
 		# /connectssl
@@ -3266,6 +3288,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}connect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,None,False,False,False)
 			return True
 		# /connect HOST PORT PASSWORD
@@ -3274,6 +3308,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			host = tokens.pop(0)
 			port = tokens.pop(0)
 			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}connect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,password,False,False,False)
 			return True
 		# /connect
@@ -3313,6 +3359,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xconnectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,None,True,False,True)
 			return True
 		# /connectssl HOST PORT PASSWORD
@@ -3321,6 +3379,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			host = tokens.pop(0)
 			port = tokens.pop(0)
 			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xconnectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,password,True,False,True)
 			return True
 		# /xconnectssl
@@ -3354,6 +3424,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			host = tokens.pop(0)
 			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xconnect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,None,False,False,True)
 			return True
 		# /connect HOST PORT PASSWORD
@@ -3362,6 +3444,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			host = tokens.pop(0)
 			port = tokens.pop(0)
 			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xconnect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			connect_to_irc(gui,window,host,port,password,False,False,True)
 			return True
 		# /xconnect
@@ -3989,7 +4083,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Scripting is disabled")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}script: Scripting is disabled")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
@@ -4020,7 +4114,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \""+filename+"\" doesn't exist or is not readable.")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}script: \""+filename+"\" doesn't exist or is not readable.")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"\""+filename+"\" doesn't exist or is not readable.")
@@ -4069,7 +4163,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if is_script:
 								add_halt(script_id)
 								if config.DISPLAY_SCRIPT_ERRORS:
-									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{script}\" doesn't exist or is not readable.")
+									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}script: \"{script}\" doesn't exist or is not readable.")
 									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 								return True
 							t = Message(ERROR_MESSAGE,'',f"\"{script}\" doesn't exist or is not readable.")
