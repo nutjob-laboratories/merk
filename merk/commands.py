@@ -437,6 +437,10 @@ def buildTemporaryAliases(gui,window):
 	ordinal = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d')
 
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
+	if window.window_type==CHANNEL_WINDOW:
+		addTemporaryAlias('_COUNT',f"{len(window.nicks)}")
+	else:
+		addTemporaryAlias('_COUNT',f"0")
 	addTemporaryAlias('_CUPTIME',str(gui.client_uptime))
 	if hasattr(window.client,"hostname"):
 		addTemporaryAlias('_HOST',window.client.hostname)
@@ -454,7 +458,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
 	addTemporaryAlias('_ORDINAL',ordinal)
 	addTemporaryAlias('_PORT',str(window.client.port))
-	if len(window.nicks)>0:
+	if window.window_type==CHANNEL_WINDOW:
 		addTemporaryAlias('_PRESENT',",".join(window.nicks))
 	else:
 		addTemporaryAlias('_PRESENT','none')
@@ -463,24 +467,30 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_RVERSION',APPLICATION_RELEASE_VERSION)
 	addTemporaryAlias('_SERVER',window.client.server)
 	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
-	if window.operator:
-		addTemporaryAlias('_STATUS',"operator")
-	elif window.voiced:
-		addTemporaryAlias('_STATUS',"voiced")
-	elif window.owner:
-		addTemporaryAlias('_STATUS',"owner")
-	elif window.admin:
-		addTemporaryAlias('_STATUS',"admin")
-	elif window.halfop:
-		addTemporaryAlias('_STATUS',"halfop")
-	elif window.protected:
-		addTemporaryAlias('_STATUS',"protected")
+	if window.window_type==CHANNEL_WINDOW:
+		if window.operator:
+			addTemporaryAlias('_STATUS',"operator")
+		elif window.voiced:
+			addTemporaryAlias('_STATUS',"voiced")
+		elif window.owner:
+			addTemporaryAlias('_STATUS',"owner")
+		elif window.admin:
+			addTemporaryAlias('_STATUS',"admin")
+		elif window.halfop:
+			addTemporaryAlias('_STATUS',"halfop")
+		elif window.protected:
+			addTemporaryAlias('_STATUS',"protected")
+		else:
+			addTemporaryAlias('_STATUS',"normal")
 	else:
 		addTemporaryAlias('_STATUS',"normal")
 	addTemporaryAlias('_STAMP',timestamp)
 	addTemporaryAlias('_TIME',mytime)
-	if window.channel_topic!='':
-		addTemporaryAlias('_TOPIC',window.channel_topic)
+	if window.window_type==CHANNEL_WINDOW:
+		if window.channel_topic!='':
+			addTemporaryAlias('_TOPIC',window.channel_topic)
+		else:
+			addTemporaryAlias('_TOPIC','No topic')
 	else:
 		addTemporaryAlias('_TOPIC','No topic')
 	addTemporaryAlias('_UPTIME',str(window.uptime))
