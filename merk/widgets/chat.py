@@ -1470,7 +1470,10 @@ class Window(QMainWindow):
 			menu = QMenu(self)
 
 			if user_hostmask:
-				display_hostmask = elide_text(user_hostmask,25)
+				if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
+					display_hostmask = elide_text(user_hostmask,25)
+				else:
+					display_hostmask = user_hostmask
 
 			statusLayout = QHBoxLayout()
 			if user_is_op:

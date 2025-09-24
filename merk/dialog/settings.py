@@ -1010,6 +1010,7 @@ class Dialog(QDialog):
 			self.showAwayStatus.setEnabled(True)
 			self.dcPrivate.setEnabled(True)
 			self.elideAway.setEnabled(True)
+			self.elideHostmask.setEnabled(True)
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
@@ -1019,6 +1020,7 @@ class Dialog(QDialog):
 			self.showAwayStatus.setEnabled(False)
 			self.dcPrivate.setEnabled(False)
 			self.elideAway.setEnabled(False)
+			self.elideHostmask.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2774,9 +2776,13 @@ class Dialog(QDialog):
 		if config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: self.dcPrivate.setChecked(True)
 		self.dcPrivate.stateChanged.connect(self.changedSetting)
 
-		self.elideAway = QCheckBox("Elide away message in context menus",self)
+		self.elideAway = QCheckBox("Elide away message ",self)
 		if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT: self.elideAway.setChecked(True)
 		self.elideAway.stateChanged.connect(self.changedSetting)
+
+		self.elideHostmask = QCheckBox("Elide hostmask",self)
+		if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT: self.elideHostmask.setChecked(True)
+		self.elideHostmask.stateChanged.connect(self.changedSetting)
 
 		if not config.SHOW_USERLIST:
 			self.plainUserLists.setEnabled(False)
@@ -2787,6 +2793,7 @@ class Dialog(QDialog):
 			self.showAwayStatus.setEnabled(False)
 			self.dcPrivate.setEnabled(False)
 			self.elideAway.setEnabled(False)
+			self.elideHostmask.setEnabled(False)
 
 		chanButtonLayout = QFormLayout()
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
@@ -2795,6 +2802,7 @@ class Dialog(QDialog):
 		ulistDisplay = QFormLayout()
 		ulistDisplay.addRow(self.plainUserLists,self.showUserlistLeft)
 		ulistDisplay.addRow(self.ignoreUserlist,self.showAwayStatus)
+		ulistDisplay.addRow(self.elideAway,self.elideHostmask)
 
 		ulistDisplay2 = QHBoxLayout()
 		ulistDisplay2.addStretch()
@@ -2828,7 +2836,6 @@ class Dialog(QDialog):
 		menuLayout.addWidget(self.noSelectUserlists)
 		menuLayout.addWidget(self.hideScroll)
 		menuLayout.addWidget(self.dcPrivate)
-		menuLayout.addWidget(self.elideAway)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addWidget(self.nameTitleDisplay)
 		menuLayout.addWidget(self.topicTitleDisplay)
@@ -4590,6 +4597,7 @@ class Dialog(QDialog):
 		config.ENABLE_WAIT_COMMAND = self.enableWait.isChecked()
 		config.ENABLE_MATH_COMMAND = self.enableMath.isChecked()
 		config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = self.elideAway.isChecked()
+		config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = self.elideHostmask.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
