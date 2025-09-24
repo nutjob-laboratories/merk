@@ -3553,27 +3553,41 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /clear |
 	# |--------|
 	if len(tokens)>=1:
-
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear' and len(tokens)==3:
 			tokens.pop(0)
 			server = tokens.pop(0)
 			target = tokens.pop(0)
-
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server in win.widget().name.lower():
-					w = gui.getSubWindow(target,win.widget().client)
+				if server.lower() in win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().clearChat()
+						if hasattr(window,"input"): window.input.setFocus()
 					else:
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Window \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-							return True
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						w.widget().clearChat()
+						if hasattr(window,"input"): window.input.setFocus()
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
 				add_halt(script_id)
@@ -3591,6 +3605,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.widget().clearChat()
+				if hasattr(window,"input"): window.input.setFocus()
 			else:
 				if is_script:
 					add_halt(script_id)
