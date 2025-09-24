@@ -237,7 +237,11 @@ Appearance:
 <td>Opens the log manager</td>
 </tr>
 <tr>
-<td><code>/maximize [SERVER] WINDOW</code></td>
+<td><code>/math ALIAS STATEMENT...</code></td>
+<td>Evaluates a mathematical statement and stores the result in <code>ALIAS</code>. Operations supported are parenthesis, addition (<code>+</code>), subtraction (<code>-</code>), multiplication (<code>*</code>), division (<code>/</code>), modulus (<code>%</code>), and exponents(<code>**</code>)</td>
+</tr>
+<tr>
+<td><code>/maximize [SERVER] [WINDOW]</code></td>
 <td>Maximizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
@@ -245,7 +249,7 @@ Appearance:
 <td>Sends a CTCP action message to the current chat</td>
 </tr>
 <tr>
-<td><code>/minimize [SERVER] WINDOW</code></td>
+<td><code>/minimize [SERVER] [WINDOW]</code></td>
 <td>Minimizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>

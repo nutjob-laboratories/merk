@@ -33,6 +33,7 @@ import sys
 import os
 import math
 from importlib import metadata
+import ast
 
 from .version import *
 from .servers import *
@@ -386,6 +387,47 @@ class WhoWasData:
 		self.username = 'Unknown'
 		self.host = 'Unknown'
 		self.realname = 'Unknown'
+
+class MathEvaluator(ast.NodeVisitor):
+	def visit_Expression(self, node):
+		return self.visit(node.body)
+
+	def visit_BinOp(self, node):
+		left_val = self.visit(node.left)
+		right_val = self.visit(node.right)
+
+		if isinstance(node.op, ast.Add):
+			return left_val + right_val
+		elif isinstance(node.op, ast.Sub):
+			return left_val - right_val
+		elif isinstance(node.op, ast.Mult):
+			return left_val * right_val
+		elif isinstance(node.op, ast.Div):
+			# Handle division by zero
+			if right_val == 0:
+				raise ValueError("Division by zero is not allowed")
+			return left_val / right_val
+		elif isinstance(node.op, ast.Mod):
+			# Handle modulus by zero
+			if right_val == 0:
+				raise ValueError("Modulus by zero is not allowed")
+			return left_val % right_val
+		elif isinstance(node.op, ast.Pow):
+			return left_val ** right_val
+		else:
+			raise TypeError(f"Unsupported binary operator: {type(node.op)}")
+
+	def visit_UnaryOp(self, node):
+		operand = self.visit(node.operand)
+		if isinstance(node.op, ast.UAdd):
+			return +operand
+		elif isinstance(node.op, ast.USub):
+			return -operand
+		else:
+			raise TypeError(f"Unsupported unary operator: {type(node.op)}")
+
+	def visit_Constant(self, node):
+		return node.value
 
 # Functions
 
