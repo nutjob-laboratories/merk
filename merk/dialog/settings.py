@@ -363,6 +363,19 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingContext(self,state):
+		if self.showUserlists.isChecked():
+			if self.ulistContext.isChecked():
+				self.elideAway.setEnabled(True)
+				self.elideHostmask.setEnabled(True)
+			else:
+				self.elideAway.setEnabled(False)
+				self.elideHostmask.setEnabled(False)
+		else:
+			self.elideAway.setEnabled(False)
+			self.elideHostmask.setEnabled(False)
+
+
 	def changedSetting(self,state):
 		self.changed.show()
 		self.boldApply()
@@ -1009,8 +1022,14 @@ class Dialog(QDialog):
 			self.ignoreUserlist.setEnabled(True)
 			self.showAwayStatus.setEnabled(True)
 			self.dcPrivate.setEnabled(True)
-			self.elideAway.setEnabled(True)
-			self.elideHostmask.setEnabled(True)
+			self.ulistContext.setEnabled(True)
+
+			if self.ulistContext.isChecked():
+				self.elideAway.setEnabled(True)
+				self.elideHostmask.setEnabled(True)
+			else:
+				self.elideAway.setEnabled(False)
+				self.elideHostmask.setEnabled(False)
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
@@ -1021,6 +1040,7 @@ class Dialog(QDialog):
 			self.dcPrivate.setEnabled(False)
 			self.elideAway.setEnabled(False)
 			self.elideHostmask.setEnabled(False)
+			self.ulistContext.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2784,6 +2804,10 @@ class Dialog(QDialog):
 		if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT: self.elideHostmask.setChecked(True)
 		self.elideHostmask.stateChanged.connect(self.changedSetting)
 
+		self.ulistContext = QCheckBox("Context menu",self)
+		if config.USERLIST_CONTEXT_MENU: self.ulistContext.setChecked(True)
+		self.ulistContext.stateChanged.connect(self.changedSettingContext)
+
 		if not config.SHOW_USERLIST:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
@@ -2794,25 +2818,27 @@ class Dialog(QDialog):
 			self.dcPrivate.setEnabled(False)
 			self.elideAway.setEnabled(False)
 			self.elideHostmask.setEnabled(False)
+			self.ulistContext.setEnabled(False)
+
+		if not config.USERLIST_CONTEXT_MENU:
+			if config.SHOW_USERLIST:
+				self.elideAway.setEnabled(False)
+				self.elideHostmask.setEnabled(False)
 
 		chanButtonLayout = QFormLayout()
 		chanButtonLayout.addRow(self.channelName,self.channelCount)
 		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
 
 		ulistDisplay = QFormLayout()
-		ulistDisplay.addRow(self.plainUserLists,self.showUserlistLeft)
-		ulistDisplay.addRow(self.ignoreUserlist,self.showAwayStatus)
+		ulistDisplay.addRow(self.showUserlists,self.showUserlistLeft)
+		ulistDisplay.addRow(self.plainUserLists,self.ulistContext)
 		ulistDisplay.addRow(self.elideAway,self.elideHostmask)
-
+		ulistDisplay.addRow(self.ignoreUserlist,self.showAwayStatus)
+		
 		ulistDisplay2 = QHBoxLayout()
 		ulistDisplay2.addStretch()
 		ulistDisplay2.addLayout(ulistDisplay)
 		ulistDisplay2.addStretch()
-
-		ulistExist = QHBoxLayout()
-		ulistExist.addStretch()
-		ulistExist.addWidget(self.showUserlists)
-		ulistExist.addStretch()
 
 		infoExist = QHBoxLayout()
 		infoExist.addStretch()
@@ -2831,7 +2857,6 @@ class Dialog(QDialog):
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(self.topicBold)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
-		menuLayout.addLayout(ulistExist)
 		menuLayout.addLayout(ulistDisplay2)
 		menuLayout.addWidget(self.noSelectUserlists)
 		menuLayout.addWidget(self.hideScroll)
@@ -4598,6 +4623,7 @@ class Dialog(QDialog):
 		config.ENABLE_MATH_COMMAND = self.enableMath.isChecked()
 		config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = self.elideAway.isChecked()
 		config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = self.elideHostmask.isChecked()
+		config.USERLIST_CONTEXT_MENU = self.ulistContext.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
