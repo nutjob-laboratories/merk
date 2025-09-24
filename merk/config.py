@@ -293,9 +293,11 @@ RUBBER_BAND_MOVE = False
 INPUT_CURSOR_WIDTH = 1
 ENABLE_WAIT_COMMAND = True
 ENABLE_MATH_COMMAND = True
+ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = True
 
 def build_settings():
 	settings = {
+		"elide_away_message_in_userlist_context_menu": ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT,
 		"enable_math_command": ENABLE_MATH_COMMAND,
 		"enable_wait_command": ENABLE_WAIT_COMMAND,
 		"input_widget_cursor_width": INPUT_CURSOR_WIDTH,
@@ -555,6 +557,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "elide_away_message_in_userlist_context_menu" in settings:
+		settings["elide_away_message_in_userlist_context_menu"] = ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT
 	if not "enable_math_command" in settings:
 		settings["enable_math_command"] = ENABLE_MATH_COMMAND
 	if not "enable_wait_command" in settings:
@@ -1322,6 +1326,7 @@ def load_settings(filename):
 	global INPUT_CURSOR_WIDTH
 	global ENABLE_WAIT_COMMAND
 	global ENABLE_MATH_COMMAND
+	global ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1331,6 +1336,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = settings["elide_away_message_in_userlist_context_menu"]
 		ENABLE_MATH_COMMAND = settings["enable_math_command"]
 		ENABLE_WAIT_COMMAND = settings["enable_wait_command"]
 		INPUT_CURSOR_WIDTH = settings["input_widget_cursor_width"]

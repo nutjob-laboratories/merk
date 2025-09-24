@@ -431,6 +431,22 @@ class MathEvaluator(ast.NodeVisitor):
 
 # Functions
 
+def elide_text(text,max_length):
+	if len(text)>max_length:
+		if len(text)>=max_length+3:
+			offset = max_length-3
+		elif len(text)==max_length+2:
+			offset = max_length-2
+		elif len(text)==max_length+1:
+			offset = max_length-1
+		else:
+			offset = max_length
+		out = text[0:offset]+"..."
+	else:
+		out = text
+
+	return out
+
 def is_string(msg):
 	try:
 		msg = str(msg)

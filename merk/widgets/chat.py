@@ -1470,19 +1470,7 @@ class Window(QMainWindow):
 			menu = QMenu(self)
 
 			if user_hostmask:
-				max_length = 25
-				if len(user_hostmask)>max_length:
-					if len(user_hostmask)>=max_length+3:
-						offset = max_length-3
-					elif len(user_hostmask)==max_length+2:
-						offset = max_length-2
-					elif len(user_hostmask)==max_length+1:
-						offset = max_length-1
-					else:
-						offset = max_length
-					display_hostmask = user_hostmask[0:offset]+"..."
-				else:
-					display_hostmask = user_hostmask
+				display_hostmask = elide_text(user_hostmask,25)
 
 			statusLayout = QHBoxLayout()
 			if user_is_op:
@@ -1514,6 +1502,7 @@ class Window(QMainWindow):
 			if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
 
 			shown_box = False
+			away_elide_size = 30
 
 			if user_nick==self.client.nickname:
 				
@@ -1528,7 +1517,10 @@ class Window(QMainWindow):
 								menu.addAction(e)
 								shown_box = True
 
-						e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
+						if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
+							e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(self.client.away_msg,away_elide_size)}</center></small>")
+						else:
+							e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
 						menu.addAction(e)
 						shown_box = True
 					else:
@@ -1578,7 +1570,10 @@ class Window(QMainWindow):
 				if user_nick in self.away:
 					away_msg = self.away[user_nick]
 
-					e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
+					if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
+						e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(away_msg,away_elide_size)}</center></small>")
+					else:
+						e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
 					menu.addAction(e)
 					shown_box = True
 
