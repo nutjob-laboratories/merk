@@ -1524,7 +1524,7 @@ class Dialog(QDialog):
 
 		self.showServerInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.noAppNameTitle = QCheckBox("Do not show application name in\nwindow title",self)
+		self.noAppNameTitle = QCheckBox("Do not show application name in\napplication title",self)
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE: self.noAppNameTitle.setChecked(True)
 		self.noAppNameTitle.stateChanged.connect(self.changedSetting)
 		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -1547,6 +1547,16 @@ class Dialog(QDialog):
 		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
 		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.noShowServerTitle = QCheckBox("Do not show server in application\ntitle",self)
+		if config.DO_NOT_SHOW_SERVER_IN_TITLE: self.noShowServerTitle.setChecked(True)
+		self.noShowServerTitle.stateChanged.connect(self.changedSetting)
+		self.noShowServerTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.showChatInTitle = QCheckBox("Show active subwindow title in\napplication title",self)
+		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
+		self.showChatInTitle.stateChanged.connect(self.changedSetting)
+		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
@@ -1558,7 +1568,9 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.fullScreen)
 		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.noAppNameTitle)
+		applicationLayout.addWidget(self.noShowServerTitle)
 		applicationLayout.addWidget(self.showTopicInTitle)
+		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		applicationLayout.addWidget(self.simpleConnect)
 		applicationLayout.addWidget(self.showServerInfo)
@@ -2209,12 +2221,6 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
 		self.showStatusList.stateChanged.connect(self.changedSetting)
 
-		self.showChatInTitle = QCheckBox("Show active subwindow information\nin application title",self)
-		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
-		self.showChatInTitle.stateChanged.connect(self.changedSetting)
-
-		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.showStatusEditor = QCheckBox("Editor windows",self)
 		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
 		self.showStatusEditor.stateChanged.connect(self.changedSetting)
@@ -2271,7 +2277,6 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showInputMenu)
-		subwindowLayout.addWidget(self.showChatInTitle)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
 		subwindowLayout.addWidget(self.showInfo)
 		subwindowLayout.addLayout(rbLayout)
@@ -3005,7 +3010,7 @@ class Dialog(QDialog):
 
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.requestList = QCheckBox("Fetch channel list from\nserver on connection",self)
+		self.requestList = QCheckBox("Fetch channel list from server on\nconnection",self)
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
 		self.requestList.stateChanged.connect(self.changedSetting)
 
@@ -4662,6 +4667,7 @@ class Dialog(QDialog):
 		config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = self.elideHostmask.isChecked()
 		config.USERLIST_CONTEXT_MENU = self.ulistContext.isChecked()
 		config.HOSTMASK_FETCH_FREQUENCY = self.HOSTMASK_FETCH_FREQUENCY
+		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

@@ -525,7 +525,10 @@ def buildTemporaryAliases(gui,window):
 			addTemporaryAlias('_TOPIC','No topic')
 	else:
 		addTemporaryAlias('_TOPIC','No topic')
-	addTemporaryAlias('_UPTIME',str(window.uptime))
+	if hasattr(window,"uptime"):
+		addTemporaryAlias('_UPTIME',str(window.uptime))
+	else:
+		addTemporaryAlias('_UPTIME',"0")
 	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
 	addTemporaryAlias('_USERNAME',window.client.username)
 	addTemporaryAlias('_WINDOW',window.name)

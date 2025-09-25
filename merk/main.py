@@ -4375,28 +4375,57 @@ class Merk(QMainWindow):
 							self.setWindowTitle(self.application_title_name+" - Channels on "+server)
 					elif w.window_type==PRIVATE_WINDOW:
 						if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-							self.setWindowTitle("Private chat with "+w.name+" ("+server+")")
+							if config.DO_NOT_SHOW_SERVER_IN_TITLE:
+								self.setWindowTitle("Private chat with "+w.name)
+							else:
+								self.setWindowTitle("Private chat with "+w.name+" ("+server+")")
 						else:
-							self.setWindowTitle(self.application_title_name+" - Private chat with "+w.name+" ("+server+")")
+							if config.DO_NOT_SHOW_SERVER_IN_TITLE:
+								self.setWindowTitle(self.application_title_name+" - Private chat with "+w.name)
+							else:
+								self.setWindowTitle(self.application_title_name+" - Private chat with "+w.name+" ("+server+")")
 					else:
 						if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
 							if hasattr(w,'topic'):
 								if hasattr(w.topic,"text"):
 									if w.topic.text().strip()!='':
-										if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-											self.setWindowTitle(w.name+" ("+server+") - "+w.topic.text().strip())
+										if config.DO_NOT_SHOW_SERVER_IN_TITLE:
+											if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+												self.setWindowTitle(w.name+" - "+w.topic.text().strip())
+											else:
+												self.setWindowTitle(self.application_title_name+" - "+w.name+" - "+w.topic.text().strip())
 										else:
-											self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+") - "+w.topic.text().strip())
+											if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+												self.setWindowTitle(w.name+" ("+server+") - "+w.topic.text().strip())
+											else:
+												self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+") - "+w.topic.text().strip())
 									else:
-										if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-											self.setWindowTitle(w.name+" ("+server+")")
+										if config.DO_NOT_SHOW_SERVER_IN_TITLE:
+											if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+												self.setWindowTitle(w.name)
+											else:
+												self.setWindowTitle(self.application_title_name+" - "+w.name)
 										else:
-											self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
+											if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+												self.setWindowTitle(w.name+" ("+server+")")
+											else:
+												self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
 						else:
-							if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
-								self.setWindowTitle(w.name+" ("+server+")")
+							if config.DO_NOT_SHOW_SERVER_IN_TITLE:
+								if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+									self.setWindowTitle(w.name)
+								else:
+									self.setWindowTitle(self.application_title_name+" - "+w.name)
 							else:
-								self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
+								if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+									self.setWindowTitle(w.name+" ("+server+")")
+								else:
+									self.setWindowTitle(self.application_title_name+" - "+w.name+" ("+server+")")
+				else:
+					if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+						self.setWindowTitle(w.name)
+					else:
+						self.setWindowTitle(self.application_title_name+" - "+w.name)
 			elif config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE:
 				if hasattr(w,'topic'):
 					if hasattr(w.topic,"text"):
