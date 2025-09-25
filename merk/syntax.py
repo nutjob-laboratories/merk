@@ -170,6 +170,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(in\\)",
 			"\\(lt\\)",
 			"\\(gt\\)",
+			"\\(eq\\)",
 		]
 
 		if not config.ENABLE_ALIASES:

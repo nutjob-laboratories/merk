@@ -5260,6 +5260,23 @@ class ScriptThread(QThread):
 								if ei>ti: 
 									do_command = True
 
+							if operator.lower()=='(eq)':
+								valid_operator = True
+								try:
+									ei = float(examine)
+								except:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+									loop = False
+									continue
+								try:
+									ti = float(target)
+								except:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+									loop = False
+									continue
+								if ei==ti: 
+									do_command = True
+
 							if not valid_operator:
 								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{operator}\" is not a valid \"if\" operator"])
 								loop = False
