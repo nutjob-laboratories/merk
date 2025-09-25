@@ -1506,7 +1506,7 @@ class Window(QMainWindow):
 				if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
 
 				shown_box = False
-				away_elide_size = 30
+				away_elide_size = 29
 
 				if user_nick==self.client.nickname:
 
