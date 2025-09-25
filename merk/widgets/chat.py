@@ -2872,7 +2872,10 @@ def buildServerSettingsMenu(self,client):
 	e = plainTextAction(self,"<b>Port"+f":</b> {client.port}")
 	optionsMenu.addAction(e)
 
-	e = plainTextAction(self,"<b>Software"+f":</b> {client.server_software}")
+	if client.server_software:
+		e = plainTextAction(self,"<b>Software"+f":</b> {client.server_software}")
+	else:
+		e = plainTextAction(self,"<b>Software"+f":</b> Unknown")
 	optionsMenu.addAction(e)
 
 	e = plainTextAction(self,"<b>Network"+f":</b> {mynet}")

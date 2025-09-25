@@ -478,6 +478,10 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_SCOUNT',f"{window.client.server_user_count}")
 	addTemporaryAlias('_SERVER',window.client.server)
+	if window.client.server_software:
+		addTemporaryAlias('_SOFTWARE',f"{window.client.server_software}")
+	else:
+		addTemporaryAlias('_SOFTWARE',"unknown")
 	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
 	if window.window_type==CHANNEL_WINDOW:
 		if window.operator:
