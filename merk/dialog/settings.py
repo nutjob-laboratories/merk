@@ -1567,6 +1567,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.alwaysOnTop)
 		applicationLayout.addWidget(self.fullScreen)
 		applicationLayout.addWidget(self.askBeforeExit)
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application title</b>"))
 		applicationLayout.addWidget(self.noAppNameTitle)
 		applicationLayout.addWidget(self.noShowServerTitle)
 		applicationLayout.addWidget(self.showTopicInTitle)
