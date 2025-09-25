@@ -473,6 +473,21 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_REALNAME',window.client.realname)
 	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
 	addTemporaryAlias('_RVERSION',APPLICATION_RELEASE_VERSION)
+	if window.client.actual_server_channel_count==0:
+		if window.client.server_channel_count==0:
+			addTemporaryAlias('_SCHANNELS',"0")
+			addTemporaryAlias('_HCHANNELS',"0")
+		else:
+			addTemporaryAlias('_SCHANNELS',f"{window.client.server_channel_count}")
+			addTemporaryAlias('_HCHANNELS',"0")
+	else:
+		diff = window.client.actual_server_channel_count - window.client.server_channel_count
+		if window.client.server_channel_count==0:
+			addTemporaryAlias('_SCHANNELS',f"{window.client.actual_server_channel_count}")
+			addTemporaryAlias('_HCHANNELS',"0")
+		else:
+			addTemporaryAlias('_SCHANNELS',f"{window.client.server_channel_count}")
+			addTemporaryAlias('_HCHANNELS',f"{diff}")
 	if window.client.server_user_count==0:
 		addTemporaryAlias('_SCOUNT',"0")
 	else:
@@ -501,6 +516,7 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_STATUS',"normal")
 	addTemporaryAlias('_STAMP',timestamp)
+	addTemporaryAlias('_SUPTIME',str(window.client.uptime))
 	addTemporaryAlias('_TIME',mytime)
 	if window.window_type==CHANNEL_WINDOW:
 		if window.channel_topic!='':
@@ -5212,17 +5228,15 @@ class ScriptThread(QThread):
 
 							if operator.lower()=='(lt)':
 								valid_operator = True
-								ei = is_int(examine)
-								if ei==None:
-									ei = is_float(examine)
-								if ei==None:
+								try:
+									ei = float(examine)
+								except:
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
 									loop = False
 									continue
-								ti = is_int(target)
-								if ti==None:
-									ti = is_float(target)
-								if ti==None:
+								try:
+									ti = float(target)
+								except:
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
 									loop = False
 									continue
@@ -5231,17 +5245,15 @@ class ScriptThread(QThread):
 
 							if operator.lower()=='(gt)':
 								valid_operator = True
-								ei = is_int(examine)
-								if ei==None:
-									ei = is_float(examine)
-								if ei==None:
+								try:
+									ei = float(examine)
+								except:
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
 									loop = False
 									continue
-								ti = is_int(target)
-								if ti==None:
-									ti = is_float(target)
-								if ti==None:
+								try:
+									ti = float(target)
+								except:
 									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
 									loop = False
 									continue
