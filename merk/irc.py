@@ -583,6 +583,10 @@ class IRC_Connection(irc.IRCClient):
 				if len(p)!=2:
 					u = u.replace('@','')
 					u = u.replace('+','')
+					u = u.replace('~','')
+					u = u.replace('&','')
+					u = u.replace('%','')
+					u = u.replace('!','')
 					if not self.gui.doesChannelHaveHostmask(self,channel,u):
 						self.do_whois.append(u)
 
