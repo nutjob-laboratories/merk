@@ -3044,10 +3044,10 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.askBeforeReconnect)
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
-		connectionsLayout.addWidget(self.requestList)
 		connectionsLayout.addWidget(self.showNetLinks)
 		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user hostmasks</b>"))
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>fetch from server</b>"))
+		connectionsLayout.addWidget(self.requestList)
 		connectionsLayout.addWidget(self.autoHostmasks)
 		connectionsLayout.addLayout(freqLayout)
 		connectionsLayout.addStretch()
@@ -4022,7 +4022,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.requireArgs)
 		scriptingLayout.addWidget(self.promptScript)
 		scriptingLayout.addWidget(self.escapeHTML)
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable commands</b>"))
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable commands</b>"))
 		scriptingLayout.addLayout(allCmdLayout)
 		scriptingLayout.addStretch()
 
@@ -4045,13 +4045,12 @@ class Dialog(QDialog):
 		self.syntaxcommand = widgets.SyntaxColor('command', "<b>Commands</b>",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
 		self.syntaxchannel = widgets.SyntaxColor('channel', "<b>Channels</b>",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
 		self.syntaxalias = widgets.SyntaxColor('alias', "<b>Aliases</b>",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
-
 		self.syntaxscript = widgets.SyntaxColor('script', "<b>Script-Only Commands</b>",self.SYNTAX_SCRIPT_COLOR,self.SYNTAX_SCRIPT_STYLE,self)
-
 		self.syntaxop = widgets.SyntaxColor('operator', "<b>\"if\" Operators</b>",self.SYNTAX_OPERATOR_COLOR,self.SYNTAX_OPERATOR_STYLE,self)
-
 		self.syntaxfore = widgets.SyntaxTextColor('fore', "<b>Text Color</b>",self.SYNTAX_FOREGROUND,self)
 		self.syntaxback = widgets.SyntaxTextColor('back', "<b>Background</b>",self.SYNTAX_BACKGROUND,self)
+		self.syntaxnick = widgets.SyntaxColor('nick', "<b>Nicknames</b>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
+		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Emoji Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
 
 		self.syntaxcomment.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxcommand.syntaxChanged.connect(self.syntaxChanged)
@@ -4059,13 +4058,8 @@ class Dialog(QDialog):
 		self.syntaxalias.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxscript.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxop.syntaxChanged.connect(self.syntaxChanged)
-
-		self.syntaxnick = widgets.SyntaxColor('nick', "<b>Nicknames</b>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
-		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Emoji Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
-
 		self.syntaxnick.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxemoji.syntaxChanged.connect(self.syntaxChanged)
-
 		self.syntaxfore.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxback.syntaxChanged.connect(self.syntaxChanged)
 

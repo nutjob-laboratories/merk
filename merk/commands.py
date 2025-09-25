@@ -437,6 +437,10 @@ def buildTemporaryAliases(gui,window):
 	ordinal = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d')
 
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
+	if window.client.kwargs["ssl"]:
+		addTemporaryAlias('_CONNECTION',"SSL/TLS")
+	else:
+		addTemporaryAlias('_CONNECTION',"TCP/IP")
 	if window.window_type==CHANNEL_WINDOW:
 		addTemporaryAlias('_COUNT',f"{len(window.nicks)}")
 	else:
@@ -455,6 +459,10 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_MODE','none')
 	addTemporaryAlias('_MONTH',month)
+	if window.client.network:
+		addTemporaryAlias('_NETWORK',window.client.network)
+	else:
+		addTemporaryAlias('_NETWORK',"unknown")
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
 	addTemporaryAlias('_ORDINAL',ordinal)
 	addTemporaryAlias('_PORT',str(window.client.port))
@@ -465,6 +473,10 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_REALNAME',window.client.realname)
 	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
 	addTemporaryAlias('_RVERSION',APPLICATION_RELEASE_VERSION)
+	if window.client.server_user_count==0:
+		addTemporaryAlias('_SCOUNT',"0")
+	else:
+		addTemporaryAlias('_SCOUNT',f"{window.client.server_user_count}")
 	addTemporaryAlias('_SERVER',window.client.server)
 	addTemporaryAlias('_SOURCE',APPLICATION_SOURCE)
 	if window.window_type==CHANNEL_WINDOW:
