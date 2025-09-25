@@ -733,12 +733,36 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u="$_PORT": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
-		entry = QAction("Uptime",self)
-		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertIntoEditor(u))
+		entry = QAction("Server uptime",self)
+		entry.triggered.connect(lambda state,u="$_SUPTIME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("User mode",self)
 		entry.triggered.connect(lambda state,u="$_MODE": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Connection type",self)
+		entry.triggered.connect(lambda state,u="$_CONNECTION": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Network",self)
+		entry.triggered.connect(lambda state,u="$_NETWORK": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Number of channels",self)
+		entry.triggered.connect(lambda state,u="$_SCHANNELS": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Number of hidden channels",self)
+		entry.triggered.connect(lambda state,u="$_HCHANNELS": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("User count",self)
+		entry.triggered.connect(lambda state,u="$_SCOUNT": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Server software",self)
+		entry.triggered.connect(lambda state,u="$_SOFTWARE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Current channel submenu
@@ -755,6 +779,10 @@ class Window(QMainWindow):
 
 		entry = QAction("Present in channel",self)
 		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
+		entry = QAction("Uptime",self)
+		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Date and time submenu

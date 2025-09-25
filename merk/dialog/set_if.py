@@ -72,6 +72,7 @@ class Dialog(QDialog):
 		self.operator.addItem('(in)')
 		self.operator.addItem('(gt)')
 		self.operator.addItem('(lt)')
+		self.operator.addItem('(eq)')
 
 		fline = QHBoxLayout()
 		fline.addWidget(self.val1)
