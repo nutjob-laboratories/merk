@@ -5092,16 +5092,6 @@ class ScriptThread(QThread):
 					no_errors = False
 
 			if config.ENABLE_WAIT_COMMAND:
-				# Make sure that wait is called with a numerical argument
-				if len(tokens)==2:
-					if tokens[0].lower()=='wait':
-						count = tokens[1]
-						try:
-							count = int(count)
-						except:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait must be called with a numerical argument"])
-							no_errors = False
-
 				# Make sure that wait has only one argument
 				if len(tokens)>=1:
 					if tokens[0].lower()=='wait' and len(tokens)>2:
@@ -5409,8 +5399,13 @@ class ScriptThread(QThread):
 
 							buildTemporaryAliases(self.gui,self.window)
 							count = interpolateAliases(count)
-
-							count = int(count)
+							try:
+								count = float(count)
+							except:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait called with a non-numerical argument"])
+								script_only_command = True
+								loop = False
+								continue
 							time.sleep(count)
 							script_only_command = True
 							continue
