@@ -374,9 +374,11 @@ def addTemporaryAlias(name,value):
 	TEMPORARY_ALIAS_AUTOCOMPLETE[name] = ''
 
 def addAlias(name,value):
+	global ALIAS
 	ALIAS[name] = value
 
 def removeAlias(name):
+	global ALIAS
 	if len(name)>0:
 		if name[0]=="_": return False
 	if name in ALIAS:
@@ -385,7 +387,6 @@ def removeAlias(name):
 	return False
 
 def detect_alias(text):
-
 	# Make sure the alias symbol is properly escaped
 	aliassymbol = ''
 	for c in config.ALIAS_INTERPOLATION_SYMBOL:
@@ -543,39 +544,33 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_YEAR',year)
 
 def handleChatCommands(gui,window,user_input):
-	global TEMPORARY_ALIAS
-
 	buildTemporaryAliases(gui,window)
 
 	user_input = interpolateAliases(user_input)
 	retval = executeChatCommands(gui,window,user_input,False)
-	TEMPORARY_ALIAS = {}
+	clearTemporaryAliases()
 	return retval
 
 def handleCommonCommands(gui,window,user_input):
-	global TEMPORARY_ALIAS
-
 	buildTemporaryAliases(gui,window)
 
 	user_input = interpolateAliases(user_input)
 	retval = executeCommonCommands(gui,window,user_input,False)
-	TEMPORARY_ALIAS = {}
+	clearTemporaryAliases()
 	return retval
 
 def handleScriptCommands(gui,window,user_input,line_number,script_id):
-	global TEMPORARY_ALIAS
-
 	buildTemporaryAliases(gui,window)
 
 	user_input = interpolateAliases(user_input)
 
 	if window.window_type!=SERVER_WINDOW:
 		if executeChatCommands(gui,window,user_input,True,line_number,script_id):
-			TEMPORARY_ALIAS = {}
+			clearTemporaryAliases()
 			return True
 
 	retval = executeCommonCommands(gui,window,user_input,True,line_number,script_id)
-	TEMPORARY_ALIAS = {}
+	clearTemporaryAliases()
 	return retval
 
 def check_readable(file):
@@ -821,6 +816,9 @@ def list_files():
 			file_paths.append(os.path.join(root, file))
 	file_paths = list(set(file_paths))
 	return file_paths
+
+def mssleep(milliseconds):
+	time.sleep(milliseconds * 0.001) 
 
 def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
 	user_input = user_input.strip()
@@ -1185,6 +1183,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				result = evaluator.visit(tree)
 				removeAlias(a)
 				addAlias(a,f"{result}")
+				if is_script: mssleep(250)
 				return True
 			except (SyntaxError, TypeError, ValueError) as e:
 				if is_script:
@@ -3233,8 +3232,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 
 			if removeAlias(target):
-				t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if not is_script:
+					t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			else:
 				if is_script:
