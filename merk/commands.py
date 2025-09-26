@@ -4464,13 +4464,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						w.writeText(t)
 
 			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
-				if window == gui.getServerWindow(window.client):
-					if not written_to_server_window:
+				if not is_script:
+					if window == gui.getServerWindow(window.client):
+						if not written_to_server_window:
+							t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
+							window.writeText(t)
+					else:
 						t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
 						window.writeText(t)
-				else:
-					t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
-					window.writeText(t)
 
 			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
 				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
@@ -4845,6 +4846,7 @@ class ScriptThread(QThread):
 		self.window = window
 		self.arguments = arguments
 		self.filename = filename
+		self.ALIAS = {}
 
 		# Strip comments from script
 		self.script = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,self.script)
@@ -5278,6 +5280,23 @@ class ScriptThread(QThread):
 									loop = False
 									continue
 								if ei==ti: 
+									do_command = True
+
+							if operator.lower()=='(ne)':
+								valid_operator = True
+								try:
+									ei = float(examine)
+								except:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+									loop = False
+									continue
+								try:
+									ti = float(target)
+								except:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+									loop = False
+									continue
+								if ei!=ti: 
 									do_command = True
 
 							if not valid_operator:
