@@ -1510,7 +1510,7 @@ class Dialog(QDialog):
 		if config.MAXIMIZE_ON_STARTUP: self.maxOnStart.setChecked(True)
 		self.maxOnStart.stateChanged.connect(self.changedSetting)
 
-		self.alwaysOnTop = QCheckBox("Main window always on top",self)
+		self.alwaysOnTop = QCheckBox("Always on top",self)
 		if config.ALWAYS_ON_TOP: self.alwaysOnTop.setChecked(True)
 		self.alwaysOnTop.stateChanged.connect(self.changedSetting)
 
@@ -1538,7 +1538,7 @@ class Dialog(QDialog):
 		if config.ASK_FOR_SERVER_ON_STARTUP: self.showConnect.setChecked(True)
 		self.showConnect.stateChanged.connect(self.changedSetting)
 
-		self.fullScreen = QCheckBox("Main window full screen",self)
+		self.fullScreen = QCheckBox("Full screen",self)
 		if config.SHOW_FULL_SCREEN: self.fullScreen.setChecked(True)
 		self.fullScreen.stateChanged.connect(self.changedSetting)
 
@@ -1557,16 +1557,16 @@ class Dialog(QDialog):
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		screenLayout = QFormLayout()
+		screenLayout.addRow(self.alwaysOnTop,self.fullScreen)
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window</b>"))
 		applicationLayout.addWidget(self.maxOnStart)
-		applicationLayout.addWidget(self.showConnect)
-		applicationLayout.addWidget(self.alwaysOnTop)
-		applicationLayout.addWidget(self.fullScreen)
-		applicationLayout.addWidget(self.askBeforeExit)
+		applicationLayout.addLayout(screenLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application title</b>"))
 		applicationLayout.addWidget(self.noAppNameTitle)
 		applicationLayout.addWidget(self.noShowServerTitle)
@@ -1574,7 +1574,9 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		applicationLayout.addWidget(self.simpleConnect)
+		applicationLayout.addWidget(self.askBeforeExit)
 		applicationLayout.addWidget(self.showServerInfo)
+		applicationLayout.addWidget(self.showConnect)
 		applicationLayout.addWidget(self.noConnectLogo)
 		applicationLayout.addStretch()
 
