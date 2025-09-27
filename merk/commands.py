@@ -2207,7 +2207,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			command = ' '.join(tokens)
 
 			try:
-				wait = int(wait)
+				wait = float(wait)
 			except:
 				if is_script:
 					add_halt(script_id)
@@ -2937,7 +2937,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			timer = tokens.pop(0)
 
 			try:
-				timer=int(timer)
+				timer=float(timer)
 			except:
 				if is_script:
 					add_halt(script_id)
@@ -4926,7 +4926,9 @@ class ScriptThread(QThread):
 					tokens.pop(0)
 					
 					valid = True
+					buildTemporaryAliases(self.gui,self.window)
 					for e in tokens:
+						e = interpolateAliases(e)
 						if e.lower()==self.window.name.lower(): valid = False
 
 					if valid==False:
@@ -4946,7 +4948,9 @@ class ScriptThread(QThread):
 					tokens.pop(0)
 					
 					valid = False
+					buildTemporaryAliases(self.gui,self.window)
 					for e in tokens:
+						e = interpolateAliases(e)
 						if e.lower()==self.window.name.lower(): valid = True
 
 					if valid==False:
@@ -4965,6 +4969,8 @@ class ScriptThread(QThread):
 				if tokens[0].lower()=='restrict' and len(tokens)==2:
 					tokens.pop(0)
 					arg = tokens.pop(0)
+					buildTemporaryAliases(self.gui,self.window)
+					arg = interpolateAliases(arg)
 
 					if arg.lower()=='server':
 						if self.window.window_type!=SERVER_WINDOW:
@@ -4989,6 +4995,9 @@ class ScriptThread(QThread):
 					tokens.pop(0)
 					arg1 = tokens.pop(0)
 					arg2 = tokens.pop(0)
+					buildTemporaryAliases(self.gui,self.window)
+					arg1 = interpolateAliases(arg1)
+					arg2 = interpolateAliases(arg2)
 					valid = False
 					if arg1.lower()=='server':
 						if self.window.window_type==SERVER_WINDOW: valid = True
@@ -5031,6 +5040,8 @@ class ScriptThread(QThread):
 				if tokens[0].lower()=='usage' and len(tokens)>=2:
 					tokens.pop(0)
 					arg = tokens.pop(0)
+					buildTemporaryAliases(self.gui,self.window)
+					arg = interpolateAliases(arg)
 					try:
 						arg = int(arg)
 						if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS:
