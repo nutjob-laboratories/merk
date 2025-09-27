@@ -2531,6 +2531,7 @@ class Window(QMainWindow):
 
 	def linkClicked(self,url):
 		if url.host():
+			#sys.stdout.write(f"{url.toString()}\n")
 			# It's an internet link, so open it
 			# in the default browser
 			sb = self.chat.verticalScrollBar()
