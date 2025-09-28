@@ -2688,11 +2688,13 @@ class Dialog(QDialog):
 		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
 		self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QLineEdit(user.REALNAME)
+		self.userinfo = QLineEdit(config.USERINFO)
 
 		self.nick.textChanged.connect(self.changeUser)
 		self.alternative.textChanged.connect(self.changeUser)
 		self.username.textChanged.connect(self.changeUser)
 		self.realname.textChanged.connect(self.changeUser)
+		self.userinfo.textChanged.connect(self.changeUser)
 
 		nickLayout = QFormLayout()
 		nickLayout.addRow(self.nick)
@@ -2732,6 +2734,15 @@ class Dialog(QDialog):
 
 		realnameBox.setFont(font)
 
+		userinfoLayout = QFormLayout()
+		userinfoLayout.addRow(self.userinfo)
+		userinfoLayout.addRow(QLabel("<center><small>Sent for CTCP USERINFO queries</small></center>"))
+		userinfoBox = QGroupBox("Userinfo")
+		userinfoBox.setAlignment(Qt.AlignLeft)
+		userinfoBox.setLayout(userinfoLayout)
+
+		userinfoBox.setFont(font)
+
 		userLayout = QVBoxLayout()
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user defaults</b>"))
 		userLayout.addWidget(self.userDescription)
@@ -2739,6 +2750,7 @@ class Dialog(QDialog):
 		userLayout.addWidget(alternateBox)
 		userLayout.addWidget(userBox)
 		userLayout.addWidget(realnameBox)
+		userLayout.addWidget(userinfoBox)
 		userLayout.addStretch()
 
 		self.userPage.setLayout(userLayout)
@@ -4684,6 +4696,7 @@ class Dialog(QDialog):
 		config.USERLIST_CONTEXT_MENU = self.ulistContext.isChecked()
 		config.HOSTMASK_FETCH_FREQUENCY = self.HOSTMASK_FETCH_FREQUENCY
 		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
+		config.USERINFO = self.userinfo.text().strip()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -4835,6 +4848,8 @@ class Dialog(QDialog):
 		self.parent.toggleScrollbar()
 
 		self.parent.toggleCursorWidth()
+
+		self.parent.toggleUserinfo()
 
 		self.parent.refreshAllTopic()
 		if config.SHOW_CHANNEL_TOPIC:

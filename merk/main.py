@@ -2311,6 +2311,11 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"reload_settings"):
 				c.reload_settings()
+			if hasattr(c,"client"):
+				if config.USERINFO=='':
+					c.client.userinfo = None
+				else:
+					c.client.userinfo = config.USERINFO
 
 		if config.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -3102,6 +3107,15 @@ class Merk(QMainWindow):
 			if hasattr(c,"input"):
 				if hasattr(c.input,"setCursorWidth"):
 					c.input.setCursorWidth(config.INPUT_CURSOR_WIDTH)
+
+	def toggleUserinfo(self):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if config.USERINFO=='':
+					c.client.userinfo = None
+				else:
+					c.client.userinfo = config.USERINFO
 
 	def clearCommandHistory(self):
 		w = self.MDI.activeSubWindow()

@@ -86,6 +86,9 @@ class IRC_Connection(irc.IRCClient):
 
 	heartbeatInterval = config.TWISTED_CLIENT_HEARTBEAT
 
+	fingerReply = None
+	userinfo = None
+
 	def __init__(self,**kwargs):
 
 		self.kwargs = kwargs
@@ -144,6 +147,11 @@ class IRC_Connection(irc.IRCClient):
 		self.autoaway = False
 
 		self.banlists = defaultdict(list)
+
+		if config.USERINFO=='':
+			self.userinfo = None
+		else:
+			self.userinfo = config.USERINFO
 
 	def yourHost(self,info):
 
