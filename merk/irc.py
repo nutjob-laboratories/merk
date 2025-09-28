@@ -153,6 +153,11 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			self.userinfo = user.USERINFO
 
+		if user.FINGER=='':
+			self.fingerReply = None
+		else:
+			self.fingerReply = user.FINGER
+
 	def yourHost(self,info):
 
 		i = info.split()

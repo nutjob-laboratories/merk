@@ -2317,6 +2317,10 @@ class Merk(QMainWindow):
 					c.client.userinfo = None
 				else:
 					c.client.userinfo = user.USERINFO
+				if user.FINGER=='':
+					c.client.fingerReply = None
+				else:
+					c.client.fingerReply = user.FINGER
 
 		if config.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -3118,6 +3122,10 @@ class Merk(QMainWindow):
 					c.client.userinfo = None
 				else:
 					c.client.userinfo = user.USERINFO
+				if user.FINGER=='':
+					c.client.fingerReply = None
+				else:
+					c.client.fingerReply = user.FINGER
 
 	def clearCommandHistory(self):
 		w = self.MDI.activeSubWindow()

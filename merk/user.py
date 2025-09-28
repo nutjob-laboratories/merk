@@ -45,6 +45,7 @@ LAST_PASSWORD = ''
 HISTORY = []
 COMMANDS = {}
 USERINFO = ''
+FINGER = ''
 
 def build_settings():
 	settings = {
@@ -60,11 +61,14 @@ def build_settings():
 		"history": HISTORY,
 		"commands": COMMANDS,
 		"userinfo": USERINFO,
+		"finger": FINGER,
 	}
 
 	return settings
 
 def patch_user(settings):
+	if not "finger" in settings:
+		settings["finger"] = FINGER
 	if not "userinfo" in settings:
 		settings["userinfo"] = USERINFO
 	if not "nickname" in settings:
@@ -105,6 +109,7 @@ def load_user(filename):
 	global HISTORY
 	global COMMANDS
 	global USERINFO
+	global FINGER
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -127,6 +132,7 @@ def load_user(filename):
 		HISTORY = settings["history"]
 		COMMANDS = settings["commands"]
 		USERINFO = settings["userinfo"]
+		FINGER = settings["finger"]
 
 		if prepatch_length!=postpatch_length:
 			save_user(filename)

@@ -2672,29 +2672,19 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.userPage)
 
-		self.userDescription = QLabel("""
-			<small>
-			You can set the default settings needed to connect to
-			an IRC server here. These options can be set or changed
-			in the server connection dialog. If both your <b>nickname</b> and <b>alternate</b>
-			are taken (or if you have not set an <b>alternate</b>),
-			a random number will be generated and attached to your <b>nickname</b> for use.
-			<br>
-			""")
-		self.userDescription.setWordWrap(True)
-		self.userDescription.setAlignment(Qt.AlignJustify)
-
 		self.nick = QNoSpaceLineEdit(user.NICKNAME)
 		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
 		self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QLineEdit(user.REALNAME)
 		self.userinfo = QLineEdit(user.USERINFO)
+		self.finger = QLineEdit(user.FINGER)
 
 		self.nick.textChanged.connect(self.changeUser)
 		self.alternative.textChanged.connect(self.changeUser)
 		self.username.textChanged.connect(self.changeUser)
 		self.realname.textChanged.connect(self.changeUser)
 		self.userinfo.textChanged.connect(self.changeUser)
+		self.finger.textChanged.connect(self.changeUser)
 
 		nickLayout = QFormLayout()
 		nickLayout.addRow(self.nick)
@@ -2736,21 +2726,30 @@ class Dialog(QDialog):
 
 		userinfoLayout = QFormLayout()
 		userinfoLayout.addRow(self.userinfo)
-		userinfoLayout.addRow(QLabel("<center><small>Sent for CTCP USERINFO queries</small></center>"))
-		userinfoBox = QGroupBox("Userinfo (optional)")
+		userinfoLayout.addRow(QLabel("<center><small>Reply for CTCP USERINFO queries</small></center>"))
+		userinfoBox = QGroupBox("USERINFO (optional)")
 		userinfoBox.setAlignment(Qt.AlignLeft)
 		userinfoBox.setLayout(userinfoLayout)
 
 		userinfoBox.setFont(font)
 
+		fingerLayout = QFormLayout()
+		fingerLayout.addRow(self.finger)
+		fingerLayout.addRow(QLabel("<center><small>Reply for CTCP FINGER queries</small></center>"))
+		fingerBox = QGroupBox("FINGER (optional)")
+		fingerBox.setAlignment(Qt.AlignLeft)
+		fingerBox.setLayout(fingerLayout)
+
+		fingerBox.setFont(font)
+
 		userLayout = QVBoxLayout()
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user defaults</b>"))
-		userLayout.addWidget(self.userDescription)
 		userLayout.addWidget(nickBox)
 		userLayout.addWidget(alternateBox)
 		userLayout.addWidget(userBox)
 		userLayout.addWidget(realnameBox)
 		userLayout.addWidget(userinfoBox)
+		userLayout.addWidget(fingerBox)
 		userLayout.addStretch()
 
 		self.userPage.setLayout(userLayout)
@@ -4776,6 +4775,7 @@ class Dialog(QDialog):
 			user.USERNAME = self.username.text()
 			user.REALNAME = self.realname.text()
 			user.USERINFO = self.userinfo.text().strip()
+			user.FINGER = self.finger.text().strip()
 			user.save_user(user.USER_FILE)
 
 		if config.TIMESTAMP_24_HOUR:
