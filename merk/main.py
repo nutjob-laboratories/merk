@@ -1157,6 +1157,45 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',f"Received time from {user}: {msg}")
 			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
+	def receivedClientFinger(self,client,user,msg):
+		s = self.getServerWindow(client)
+		if s:
+			t = Message(SYSTEM_MESSAGE,'',f"Received finger from {user}: {msg}")
+			s.writeText(t)
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			if c==s: return
+			t = Message(SYSTEM_MESSAGE,'',f"Received finger from {user}: {msg}")
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def receivedClientUserinfo(self,client,user,msg):
+		s = self.getServerWindow(client)
+		if s:
+			t = Message(SYSTEM_MESSAGE,'',f"Received userinfo from {user}: {msg}")
+			s.writeText(t)
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			if c==s: return
+			t = Message(SYSTEM_MESSAGE,'',f"Received userinfo from {user}: {msg}")
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def receivedClientSource(self,client,user,msg):
+		s = self.getServerWindow(client)
+		if s:
+			t = Message(SYSTEM_MESSAGE,'',f"Received source from {user}: {msg}")
+			s.writeText(t)
+
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			if c==s: return
+			t = Message(SYSTEM_MESSAGE,'',f"Received source from {user}: {msg}")
+			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 	def receivedPong(self,client,user,seconds):
 
 		s = self.getServerWindow(client)

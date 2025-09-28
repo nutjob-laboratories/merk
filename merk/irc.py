@@ -166,6 +166,15 @@ class IRC_Connection(irc.IRCClient):
 			if ctype=="TIME":
 				self.gui.receivedClientTime(self,user,data)
 
+			if ctype=="USERINFO":
+				self.gui.receivedClientUserinfo(self,user,data)
+
+			if ctype=="FINGER":
+				self.gui.receivedClientFinger(self,user,data)
+
+			if ctype=="SOURCE":
+				self.gui.receivedClientSource(self,user,data)
+
 		return irc.IRCClient.ctcpReply(self, user, channel, messages)
 
 	def pong(self,user,seconds):

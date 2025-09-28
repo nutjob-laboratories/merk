@@ -153,7 +153,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/ctcp USER REQUEST</code></td>
-<td>Sends a CTCP request to <code>USER</code>; valid <code>REQUEST</code>s are TIME, VERSION, or FINGER</td>
+<td>Sends a CTCP request to <code>USER</code>; valid <code>REQUEST</code>s are TIME, VERSION, USERINFO, SOURCE, or FINGER</td>
 </tr>
 <tr>
 <td><code>/delay SECONDS COMMAND...</code></td>

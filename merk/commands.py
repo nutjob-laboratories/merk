@@ -2353,14 +2353,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				pass
 			elif request=="FINGER":
 				pass
+			elif request=="USERINFO":
+				pass
+			elif request=="SOURCE":
+				pass
 			else:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}ctcp: Invalid request type (not VERSION, TIME, or FINGER)")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}ctcp: Invalid request type (not VERSION, TIME, USERINFO, SOURCE, or FINGER)")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Invalid request type (not VERSION, TIME, or FINGER)")
+				t = Message(ERROR_MESSAGE,'',"Invalid request type (not VERSION, TIME, USERINFO, SOURCE, or FINGER)")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			window.client.ctcpMakeQuery(target, [(request, args)])
