@@ -145,7 +145,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"resize",
 			cmdsymbol+"move",
 			cmdsymbol+"focus",
-			cmdsymbol+"math",
 		]
 
 		script_only = [
@@ -179,7 +178,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"unalias")
 			merk.remove(cmdsymbol+"shell")
 			merk.remove(cmdsymbol+"random")
-			merk.remove(cmdsymbol+"math")
 		if not config.ENABLE_SHELL_COMMAND:
 			merk.remove(cmdsymbol+"shell")
 		if not SSL_AVAILABLE:

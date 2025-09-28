@@ -113,7 +113,7 @@ Appearance:
 <tbody>
 <tr>
 <td><code>/alias [TOKEN] [TEXT...]</code></td>
-<td>Creates an alias that can be referenced by <code>$TOKEN</code>. Call with only <code>TOKEN</code> as an argument to see <code>TOKEN</code>'s value. Call without any arguments to see all aliases and their values</td>
+<td>Creates an alias that can be referenced by <code>$TOKEN</code>. Call with only <code>TOKEN</code> as an argument to see <code>TOKEN</code>'s value. If <code>TEXT</code> is a mathematical statement, it will be evaluated and the result used as the alias' value. Operations supported are parenthesis, addition (<code>+</code>), subtraction (<code>-</code>), multiplication (<code>*</code>), division (<code>/</code>), modulus (<code>%</code>), and exponents(<code>**</code>).  Call without any arguments to see all aliases and their values</td>
 </tr>
 <tr>
 <td><code>/away [MESSAGE]</code></td>
@@ -235,10 +235,6 @@ Appearance:
 <tr>
 <td><code>/log</code></td>
 <td>Opens the log manager</td>
-</tr>
-<tr>
-<td><code>/math ALIAS STATEMENT...</code></td>
-<td>Evaluates a mathematical statement and stores the result in <code>ALIAS</code>. Operations supported are parenthesis, addition (<code>+</code>), subtraction (<code>-</code>), multiplication (<code>*</code>), division (<code>/</code>), modulus (<code>%</code>), and exponents(<code>**</code>)</td>
 </tr>
 <tr>
 <td><code>/maximize [SERVER] [WINDOW]</code></td>

@@ -183,7 +183,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"resize": config.ISSUE_COMMAND_SYMBOL+"resize ",
 			config.ISSUE_COMMAND_SYMBOL+"move": config.ISSUE_COMMAND_SYMBOL+"move ",
 			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
-			config.ISSUE_COMMAND_SYMBOL+"math": config.ISSUE_COMMAND_SYMBOL+"math ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -195,7 +194,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unalias",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"random",'')
-		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"math",'')
 
 	if not config.SCRIPTING_ENGINE_ENABLED:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"script",'')
@@ -295,7 +293,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]</b>", "Sets focus on a subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"math ALIAS STATEMENT...</b>", "Evaluates STATMENT and stores the result in ALIAS" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -314,7 +311,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>": continue
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"math ALIAS STATEMENT...</b>": continue
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
@@ -818,7 +814,17 @@ def list_files():
 	return file_paths
 
 def mssleep(milliseconds):
-	time.sleep(milliseconds * 0.001) 
+	time.sleep(milliseconds * 0.001)
+
+def math(statement):
+	try:
+		# Parse the expression into an AST
+		tree = ast.parse(statement, mode='eval')
+		evaluator = MathEvaluator()
+		result = evaluator.visit(tree)
+		return [result,False]
+	except (SyntaxError, TypeError, ValueError) as e:
+		return [e,True]
 
 def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
 	user_input = user_input.strip()
@@ -1121,90 +1127,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
-
-	# |-------|
-	# | /math |
-	# |-------|
-	if len(tokens)>=1:
-
-		if not config.ENABLE_ALIASES:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'math':
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math: Aliases have been disabled in settings")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-		if not config.ENABLE_MATH_COMMAND:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'math':
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math has been disabled")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}math has been disabled")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'math' and len(tokens)>=3:
-			
-			tokens.pop(0)
-			a =  tokens.pop(0)
-			statement = ' '.join(tokens)
-
-			# If the first character is the interpolation
-			# symbol, strip it from the name
-			if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
-				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
-				if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
-					a = a[il:]
-
-			if len(a)>=1:
-				if not a[0].isalpha():
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math: Alias tokens must begin with a letter")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
-					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-
-			try:
-				# Parse the expression into an AST
-				tree = ast.parse(statement, mode='eval')
-				evaluator = MathEvaluator()
-				result = evaluator.visit(tree)
-				removeAlias(a)
-				addAlias(a,f"{result}")
-				if is_script: mssleep(250)
-				return True
-			except (SyntaxError, TypeError, ValueError) as e:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}math: {e}")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',f"Error: {e}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'math':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"math ALIAS STATEMENT...")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"math ALIAS STATEMENT...")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
 
 	# |--------|
 	# | /focus |
@@ -3166,6 +3088,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 
 			value = ' '.join(tokens)
+
+			result,error = math(value)
+			if not error: value = str(result)
+
 			addAlias(a,value)
 
 			if not is_script:
@@ -5119,6 +5045,16 @@ class ScriptThread(QThread):
 
 		return no_errors
 
+	def math(self,statement):
+		try:
+			# Parse the expression into an AST
+			tree = ast.parse(statement, mode='eval')
+			evaluator = MathEvaluator()
+			result = evaluator.visit(tree)
+			return [result,False]
+		except (SyntaxError, TypeError, ValueError) as e:
+			return [e,True]
+
 	def run(self):
 
 		if self.filename==None:
@@ -5217,17 +5153,29 @@ class ScriptThread(QThread):
 							operator = interpolateAliases(stokens.pop(0))
 							target = interpolateAliases(stokens.pop(0))
 
+							r,error = self.math(examine)
+							if not error: examine = r
+
+							r,error = self.math(target)
+							if not error: target = r
+
 							valid_operator = False
 							do_command = False
 							if operator.lower()=='(is)':
+								examine = str(examine)
+								target = str(target)
 								valid_operator = True
 								if examine.lower()==target.lower():
 									do_command = True
 							if operator.lower()=='(not)':
+								examine = str(examine)
+								target = str(target)
 								valid_operator = True
 								if examine.lower()!=target.lower():
 									do_command = True
 							if operator.lower()=='(in)':
+								examine = str(examine)
+								target = str(target)
 								valid_operator = True
 								if examine.lower() in target.lower():
 									do_command = True

@@ -292,7 +292,6 @@ RUBBER_BAND_RESIZE = False
 RUBBER_BAND_MOVE = False
 INPUT_CURSOR_WIDTH = 1
 ENABLE_WAIT_COMMAND = True
-ENABLE_MATH_COMMAND = True
 ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = True
 ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = True
 USERLIST_CONTEXT_MENU = True
@@ -306,7 +305,6 @@ def build_settings():
 		"enable_userlist_context_menu": USERLIST_CONTEXT_MENU,
 		"elide_hostmask_in_userlist_context_menu": ELIDE_HOSTMASK_IN_USERLIST_CONTEXT,
 		"elide_away_message_in_userlist_context_menu": ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT,
-		"enable_math_command": ENABLE_MATH_COMMAND,
 		"enable_wait_command": ENABLE_WAIT_COMMAND,
 		"input_widget_cursor_width": INPUT_CURSOR_WIDTH,
 		"rubberband_subwindow_move": RUBBER_BAND_MOVE,
@@ -575,8 +573,6 @@ def patch_settings(settings):
 		settings["elide_hostmask_in_userlist_context_menu"] = ELIDE_HOSTMASK_IN_USERLIST_CONTEXT
 	if not "elide_away_message_in_userlist_context_menu" in settings:
 		settings["elide_away_message_in_userlist_context_menu"] = ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT
-	if not "enable_math_command" in settings:
-		settings["enable_math_command"] = ENABLE_MATH_COMMAND
 	if not "enable_wait_command" in settings:
 		settings["enable_wait_command"] = ENABLE_WAIT_COMMAND
 	if not "input_widget_cursor_width" in settings:
@@ -1341,7 +1337,6 @@ def load_settings(filename):
 	global RUBBER_BAND_MOVE
 	global INPUT_CURSOR_WIDTH
 	global ENABLE_WAIT_COMMAND
-	global ENABLE_MATH_COMMAND
 	global ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT
 	global ELIDE_HOSTMASK_IN_USERLIST_CONTEXT
 	global USERLIST_CONTEXT_MENU
@@ -1361,7 +1356,6 @@ def load_settings(filename):
 		USERLIST_CONTEXT_MENU = settings["enable_userlist_context_menu"]
 		ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = settings["elide_hostmask_in_userlist_context_menu"]
 		ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = settings["elide_away_message_in_userlist_context_menu"]
-		ENABLE_MATH_COMMAND = settings["enable_math_command"]
 		ENABLE_WAIT_COMMAND = settings["enable_wait_command"]
 		INPUT_CURSOR_WIDTH = settings["input_widget_cursor_width"]
 		RUBBER_BAND_MOVE = settings["rubberband_subwindow_move"]
