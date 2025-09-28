@@ -297,11 +297,9 @@ ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = True
 USERLIST_CONTEXT_MENU = True
 HOSTMASK_FETCH_FREQUENCY = 5
 DO_NOT_SHOW_SERVER_IN_TITLE = False
-USERINFO = ''
 
 def build_settings():
 	settings = {
-		"userinfo": USERINFO,
 		"do_not_show_server_name_in_application_title": DO_NOT_SHOW_SERVER_IN_TITLE,
 		"fetch_hostmask_frequency": HOSTMASK_FETCH_FREQUENCY,
 		"enable_userlist_context_menu": USERLIST_CONTEXT_MENU,
@@ -565,8 +563,6 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "userinfo" in settings:
-		settings["userinfo"] = USERINFO
 	if not "do_not_show_server_name_in_application_title" in settings:
 		settings["do_not_show_server_name_in_application_title"] = DO_NOT_SHOW_SERVER_IN_TITLE
 	if not "fetch_hostmask_frequency" in settings:
@@ -1346,7 +1342,6 @@ def load_settings(filename):
 	global USERLIST_CONTEXT_MENU
 	global HOSTMASK_FETCH_FREQUENCY
 	global DO_NOT_SHOW_SERVER_IN_TITLE
-	global USERINFO
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1356,7 +1351,6 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		USERINFO = settings["userinfo"]
 		DO_NOT_SHOW_SERVER_IN_TITLE = settings["do_not_show_server_name_in_application_title"]
 		HOSTMASK_FETCH_FREQUENCY = settings["fetch_hostmask_frequency"]
 		USERLIST_CONTEXT_MENU = settings["enable_userlist_context_menu"]

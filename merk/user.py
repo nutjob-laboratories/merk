@@ -44,6 +44,7 @@ LAST_RECONNECT = True
 LAST_PASSWORD = ''
 HISTORY = []
 COMMANDS = {}
+USERINFO = ''
 
 def build_settings():
 	settings = {
@@ -58,11 +59,14 @@ def build_settings():
 		"last_password": LAST_PASSWORD,
 		"history": HISTORY,
 		"commands": COMMANDS,
+		"userinfo": USERINFO,
 	}
 
 	return settings
 
 def patch_user(settings):
+	if not "userinfo" in settings:
+		settings["userinfo"] = USERINFO
 	if not "nickname" in settings:
 		settings["nickname"] = NICKNAME
 	if not "alternate" in settings:
@@ -100,6 +104,7 @@ def load_user(filename):
 	global LAST_PASSWORD
 	global HISTORY
 	global COMMANDS
+	global USERINFO
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -121,6 +126,7 @@ def load_user(filename):
 		LAST_PASSWORD = settings["last_password"]
 		HISTORY = settings["history"]
 		COMMANDS = settings["commands"]
+		USERINFO = settings["userinfo"]
 
 		if prepatch_length!=postpatch_length:
 			save_user(filename)

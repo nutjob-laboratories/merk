@@ -148,10 +148,10 @@ class IRC_Connection(irc.IRCClient):
 
 		self.banlists = defaultdict(list)
 
-		if config.USERINFO=='':
+		if user.USERINFO=='':
 			self.userinfo = None
 		else:
-			self.userinfo = config.USERINFO
+			self.userinfo = user.USERINFO
 
 	def yourHost(self,info):
 

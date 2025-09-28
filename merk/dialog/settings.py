@@ -2688,7 +2688,7 @@ class Dialog(QDialog):
 		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
 		self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QLineEdit(user.REALNAME)
-		self.userinfo = QLineEdit(config.USERINFO)
+		self.userinfo = QLineEdit(user.USERINFO)
 
 		self.nick.textChanged.connect(self.changeUser)
 		self.alternative.textChanged.connect(self.changeUser)
@@ -2737,7 +2737,7 @@ class Dialog(QDialog):
 		userinfoLayout = QFormLayout()
 		userinfoLayout.addRow(self.userinfo)
 		userinfoLayout.addRow(QLabel("<center><small>Sent for CTCP USERINFO queries</small></center>"))
-		userinfoBox = QGroupBox("Userinfo")
+		userinfoBox = QGroupBox("Userinfo (optional)")
 		userinfoBox.setAlignment(Qt.AlignLeft)
 		userinfoBox.setLayout(userinfoLayout)
 
@@ -4696,7 +4696,6 @@ class Dialog(QDialog):
 		config.USERLIST_CONTEXT_MENU = self.ulistContext.isChecked()
 		config.HOSTMASK_FETCH_FREQUENCY = self.HOSTMASK_FETCH_FREQUENCY
 		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
-		config.USERINFO = self.userinfo.text().strip()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -4776,6 +4775,7 @@ class Dialog(QDialog):
 			user.ALTERNATE = self.alternative.text()
 			user.USERNAME = self.username.text()
 			user.REALNAME = self.realname.text()
+			user.USERINFO = self.userinfo.text().strip()
 			user.save_user(user.USER_FILE)
 
 		if config.TIMESTAMP_24_HOUR:
