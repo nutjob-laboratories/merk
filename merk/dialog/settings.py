@@ -375,6 +375,10 @@ class Dialog(QDialog):
 			self.elideAway.setEnabled(False)
 			self.elideHostmask.setEnabled(False)
 
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 
 	def changedSetting(self,state):
 		self.changed.show()
