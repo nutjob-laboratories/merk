@@ -2743,7 +2743,7 @@ class Dialog(QDialog):
 		fingerBox.setFont(font)
 
 		userLayout = QVBoxLayout()
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user defaults</b>"))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
 		userLayout.addWidget(nickBox)
 		userLayout.addWidget(alternateBox)
 		userLayout.addWidget(userBox)
