@@ -2,8 +2,8 @@
   <img src="https://github.com/nutjob-laboratories/merk//raw/main/graphics/banner.png"><br>
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
-  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.050.600">MERK 0.050.600</a></big></b><br>
-  <b>Current development version: 0.050.647</b><br><br>
+  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.050.650">MERK 0.050.650</a></big></b><br>
+  <b>Current development version: 0.050.650</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
 </p>
 
@@ -29,21 +29,21 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
-| Current Release |  -  | [MERK 0.050.600 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.600)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.050.647 (12.02 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows EXE | [Download MERK 0.050.647 (48.85 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows Setup | [Download MERK 0.050.647 (46.01 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Current Release |  -  | [MERK 0.050.650 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.650)  |
+| Zip Archive|  Cross-platform  | [Download MERK 0.050.650 (12.02 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows EXE | [Download MERK 0.050.650 (48.85 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows Setup | [Download MERK 0.050.650 (46.02 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.647**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.650**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
-**MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.050.600](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.600). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
+**MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.050.650](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.650). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). Honestly, I'm working a lot, so I'm almost always idle, but I pop in and chat a few times a day!
 
 # Running MERK on Windows
-**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release (0.050.600) here](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.600). For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
+**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release (0.050.650) here](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.650). For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
 
 To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [download the installer](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
 
@@ -118,7 +118,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.050.600), and may reflect the current development version (0.050.647). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.050.650), and may reflect the current development version (0.050.650). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
