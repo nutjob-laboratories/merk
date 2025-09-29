@@ -37,7 +37,7 @@ pip <span class="hljs-keyword">install</span> service_identity
 <ul>
 <li><a href="https://github.com/twisted/qt5reactor">qt5reactor 0.6.3</a></li>
 <li><a href="https://github.com/barrust/pyspellchecker">pyspellchecker 0.8.3</a></li>
-<li><a href="https://github.com/carpedm20/emoji">emoji 2.14.1</a></li>
+<li><a href="https://github.com/carpedm20/emoji">emoji 2.15.0</a></li>
 </ul>
 <h1 id="usage">Usage</h1>
 <pre><code>usage: python merk.py [<span class="hljs-comment">--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]</span>

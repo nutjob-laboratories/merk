@@ -4,7 +4,7 @@ import json
 from functools import lru_cache
 from warnings import warn
 
-from typing import Any, BinaryIO, Dict, List, Optional
+from typing import IO, Any, Dict, Optional, Set
 
 from emoji.unicode_codes.data_dict import STATUS, LANGUAGES
 
@@ -18,7 +18,7 @@ __all__ = [
 
 _DEFAULT_KEYS = ('en', 'alias', 'E', 'status')  # The keys in emoji.json
 
-_loaded_keys: List[str] = list(
+_loaded_keys: Set[str] = set(
     _DEFAULT_KEYS
 )  # Keep track of keys already loaded from json files to avoid loading them twice
 
@@ -76,7 +76,7 @@ Accessing EMOJI_DATA[emj]['{key}'] without loading the language is deprecated.""
 EMOJI_DATA: Dict[str, Dict[str, Any]]
 
 
-def _open_file(name: str) -> BinaryIO:
+def _open_file(name: str) -> IO[bytes]:
     if sys.version_info >= (3, 9):
         return importlib.resources.files('emoji.unicode_codes').joinpath(name).open('rb')
     else:
@@ -89,7 +89,7 @@ def _load_default_from_json():
 
     with _open_file('emoji.json') as f:
         EMOJI_DATA = dict(json.load(f, object_pairs_hook=EmojiDataDict))  # type: ignore
-    _loaded_keys = list(_DEFAULT_KEYS)
+    _loaded_keys = set(_DEFAULT_KEYS)
 
 
 def load_from_json(key: str):
@@ -105,7 +105,7 @@ def load_from_json(key: str):
         for emj, value in json.load(f).items():
             EMOJI_DATA[emj][key] = value  # type: ignore
 
-    _loaded_keys.append(key)
+    _loaded_keys.add(key)
 
 
 _load_default_from_json()

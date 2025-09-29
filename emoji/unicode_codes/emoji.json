@@ -2671,6 +2671,36 @@
   "status": 1,
   "E": 11
 },
+"🧑\u200d🩰": {
+  "en": ":ballet_dancer:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🩰": {
+  "en": ":ballet_dancer_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🩰": {
+  "en": ":ballet_dancer_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🩰": {
+  "en": ":ballet_dancer_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🩰": {
+  "en": ":ballet_dancer_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🩰": {
+  "en": ":ballet_dancer_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
 "🩰": {
   "en": ":ballet_shoes:",
   "status": 2,
@@ -5714,6 +5744,11 @@
   "status": 2,
   "E": 13
 },
+"🫪": {
+  "en": ":distorted_face:",
+  "status": 2,
+  "E": 17
+},
 "➗": {
   "en": ":divide:",
   "status": 2,
@@ -6740,6 +6775,11 @@
   "E": 1,
   "alias": [":field_hockey_stick_and_ball:"]
 },
+"🫯": {
+  "en": ":fight_cloud:",
+  "status": 2,
+  "E": 17
+},
 "🗄\ufe0f": {
   "en": ":file_cabinet:",
   "status": 2,
@@ -7548,6 +7588,11 @@
   "en": ":hair_pick:",
   "status": 2,
   "E": 15
+},
+"🫈": {
+  "en": ":hairy_creature:",
+  "status": 2,
+  "E": 17
 },
 "🍔": {
   "en": ":hamburger:",
@@ -9817,6 +9862,11 @@
   "status": 2,
   "E": 0.6,
   "alias": [":beetle:"]
+},
+"🛘": {
+  "en": ":landslide:",
+  "status": 2,
+  "E": 17
 },
 "💻": {
   "en": ":laptop:",
@@ -14921,6 +14971,156 @@
   "E": 4,
   "alias": [":dancing_men:"]
 },
+"👯🏿\u200d♂\ufe0f": {
+  "en": ":men_with_bunny_ears_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏿\u200d♂": {
+  "en": ":men_with_bunny_ears_dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏿\u200d🐰\u200d👨🏻": {
+  "en": ":men_with_bunny_ears_dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏿\u200d🐰\u200d👨🏾": {
+  "en": ":men_with_bunny_ears_dark_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏿\u200d🐰\u200d👨🏼": {
+  "en": ":men_with_bunny_ears_dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏿\u200d🐰\u200d👨🏽": {
+  "en": ":men_with_bunny_ears_dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏻\u200d♂\ufe0f": {
+  "en": ":men_with_bunny_ears_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏻\u200d♂": {
+  "en": ":men_with_bunny_ears_light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏻\u200d🐰\u200d👨🏿": {
+  "en": ":men_with_bunny_ears_light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏻\u200d🐰\u200d👨🏾": {
+  "en": ":men_with_bunny_ears_light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏻\u200d🐰\u200d👨🏼": {
+  "en": ":men_with_bunny_ears_light_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏻\u200d🐰\u200d👨🏽": {
+  "en": ":men_with_bunny_ears_light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏾\u200d♂\ufe0f": {
+  "en": ":men_with_bunny_ears_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏾\u200d♂": {
+  "en": ":men_with_bunny_ears_medium-dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏾\u200d🐰\u200d👨🏿": {
+  "en": ":men_with_bunny_ears_medium-dark_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏾\u200d🐰\u200d👨🏻": {
+  "en": ":men_with_bunny_ears_medium-dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏾\u200d🐰\u200d👨🏼": {
+  "en": ":men_with_bunny_ears_medium-dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏾\u200d🐰\u200d👨🏽": {
+  "en": ":men_with_bunny_ears_medium-dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏼\u200d♂\ufe0f": {
+  "en": ":men_with_bunny_ears_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏼\u200d♂": {
+  "en": ":men_with_bunny_ears_medium-light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏼\u200d🐰\u200d👨🏿": {
+  "en": ":men_with_bunny_ears_medium-light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏼\u200d🐰\u200d👨🏻": {
+  "en": ":men_with_bunny_ears_medium-light_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏼\u200d🐰\u200d👨🏾": {
+  "en": ":men_with_bunny_ears_medium-light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏼\u200d🐰\u200d👨🏽": {
+  "en": ":men_with_bunny_ears_medium-light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏽\u200d♂\ufe0f": {
+  "en": ":men_with_bunny_ears_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏽\u200d♂": {
+  "en": ":men_with_bunny_ears_medium_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏽\u200d🐰\u200d👨🏿": {
+  "en": ":men_with_bunny_ears_medium_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏽\u200d🐰\u200d👨🏻": {
+  "en": ":men_with_bunny_ears_medium_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏽\u200d🐰\u200d👨🏾": {
+  "en": ":men_with_bunny_ears_medium_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏽\u200d🐰\u200d👨🏼": {
+  "en": ":men_with_bunny_ears_medium_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
 "🤼\u200d♂\ufe0f": {
   "en": ":men_wrestling:",
   "status": 2,
@@ -14930,6 +15130,156 @@
   "en": ":men_wrestling:",
   "status": 3,
   "E": 4
+},
+"🤼🏿\u200d♂\ufe0f": {
+  "en": ":men_wrestling_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏿\u200d♂": {
+  "en": ":men_wrestling_dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏿\u200d🫯\u200d👨🏻": {
+  "en": ":men_wrestling_dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏿\u200d🫯\u200d👨🏾": {
+  "en": ":men_wrestling_dark_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏿\u200d🫯\u200d👨🏼": {
+  "en": ":men_wrestling_dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏿\u200d🫯\u200d👨🏽": {
+  "en": ":men_wrestling_dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏻\u200d♂\ufe0f": {
+  "en": ":men_wrestling_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏻\u200d♂": {
+  "en": ":men_wrestling_light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏻\u200d🫯\u200d👨🏿": {
+  "en": ":men_wrestling_light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏻\u200d🫯\u200d👨🏾": {
+  "en": ":men_wrestling_light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏻\u200d🫯\u200d👨🏼": {
+  "en": ":men_wrestling_light_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏻\u200d🫯\u200d👨🏽": {
+  "en": ":men_wrestling_light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏾\u200d♂\ufe0f": {
+  "en": ":men_wrestling_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏾\u200d♂": {
+  "en": ":men_wrestling_medium-dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏾\u200d🫯\u200d👨🏿": {
+  "en": ":men_wrestling_medium-dark_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏾\u200d🫯\u200d👨🏻": {
+  "en": ":men_wrestling_medium-dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏾\u200d🫯\u200d👨🏼": {
+  "en": ":men_wrestling_medium-dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏾\u200d🫯\u200d👨🏽": {
+  "en": ":men_wrestling_medium-dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏼\u200d♂\ufe0f": {
+  "en": ":men_wrestling_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏼\u200d♂": {
+  "en": ":men_wrestling_medium-light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏼\u200d🫯\u200d👨🏿": {
+  "en": ":men_wrestling_medium-light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏼\u200d🫯\u200d👨🏻": {
+  "en": ":men_wrestling_medium-light_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏼\u200d🫯\u200d👨🏾": {
+  "en": ":men_wrestling_medium-light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏼\u200d🫯\u200d👨🏽": {
+  "en": ":men_wrestling_medium-light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏽\u200d♂\ufe0f": {
+  "en": ":men_wrestling_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏽\u200d♂": {
+  "en": ":men_wrestling_medium_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👨🏽\u200d🫯\u200d👨🏿": {
+  "en": ":men_wrestling_medium_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏽\u200d🫯\u200d👨🏻": {
+  "en": ":men_wrestling_medium_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏽\u200d🫯\u200d👨🏾": {
+  "en": ":men_wrestling_medium_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👨🏽\u200d🫯\u200d👨🏼": {
+  "en": ":men_wrestling_medium_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
 },
 "❤\ufe0f\u200d🩹": {
   "en": ":mending_heart:",
@@ -16040,6 +16390,11 @@
   "status": 2,
   "E": 12
 },
+"🫍": {
+  "en": ":orca:",
+  "status": 2,
+  "E": 17
+},
 "☦\ufe0f": {
   "en": ":orthodox_cross:",
   "status": 2,
@@ -16512,11 +16867,261 @@
   "E": 0.6,
   "alias": [":dancers:"]
 },
+"👯🏿": {
+  "en": ":people_with_bunny_ears_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🐰\u200d🧑🏻": {
+  "en": ":people_with_bunny_ears_dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🐰\u200d🧑🏾": {
+  "en": ":people_with_bunny_ears_dark_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🐰\u200d🧑🏼": {
+  "en": ":people_with_bunny_ears_dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🐰\u200d🧑🏽": {
+  "en": ":people_with_bunny_ears_dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏻": {
+  "en": ":people_with_bunny_ears_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🐰\u200d🧑🏿": {
+  "en": ":people_with_bunny_ears_light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🐰\u200d🧑🏾": {
+  "en": ":people_with_bunny_ears_light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🐰\u200d🧑🏼": {
+  "en": ":people_with_bunny_ears_light_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🐰\u200d🧑🏽": {
+  "en": ":people_with_bunny_ears_light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏾": {
+  "en": ":people_with_bunny_ears_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🐰\u200d🧑🏿": {
+  "en": ":people_with_bunny_ears_medium-dark_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🐰\u200d🧑🏻": {
+  "en": ":people_with_bunny_ears_medium-dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🐰\u200d🧑🏼": {
+  "en": ":people_with_bunny_ears_medium-dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🐰\u200d🧑🏽": {
+  "en": ":people_with_bunny_ears_medium-dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏼": {
+  "en": ":people_with_bunny_ears_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🐰\u200d🧑🏿": {
+  "en": ":people_with_bunny_ears_medium-light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🐰\u200d🧑🏻": {
+  "en": ":people_with_bunny_ears_medium-light_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🐰\u200d🧑🏾": {
+  "en": ":people_with_bunny_ears_medium-light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🐰\u200d🧑🏽": {
+  "en": ":people_with_bunny_ears_medium-light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏽": {
+  "en": ":people_with_bunny_ears_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🐰\u200d🧑🏿": {
+  "en": ":people_with_bunny_ears_medium_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🐰\u200d🧑🏻": {
+  "en": ":people_with_bunny_ears_medium_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🐰\u200d🧑🏾": {
+  "en": ":people_with_bunny_ears_medium_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🐰\u200d🧑🏼": {
+  "en": ":people_with_bunny_ears_medium_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
 "🤼": {
   "en": ":people_wrestling:",
   "status": 2,
   "E": 3,
   "alias": [":wrestling:"]
+},
+"🤼🏿": {
+  "en": ":people_wrestling_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🫯\u200d🧑🏻": {
+  "en": ":people_wrestling_dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🫯\u200d🧑🏾": {
+  "en": ":people_wrestling_dark_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🫯\u200d🧑🏼": {
+  "en": ":people_wrestling_dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏿\u200d🫯\u200d🧑🏽": {
+  "en": ":people_wrestling_dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏻": {
+  "en": ":people_wrestling_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🫯\u200d🧑🏿": {
+  "en": ":people_wrestling_light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🫯\u200d🧑🏾": {
+  "en": ":people_wrestling_light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🫯\u200d🧑🏼": {
+  "en": ":people_wrestling_light_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏻\u200d🫯\u200d🧑🏽": {
+  "en": ":people_wrestling_light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏾": {
+  "en": ":people_wrestling_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🫯\u200d🧑🏿": {
+  "en": ":people_wrestling_medium-dark_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🫯\u200d🧑🏻": {
+  "en": ":people_wrestling_medium-dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🫯\u200d🧑🏼": {
+  "en": ":people_wrestling_medium-dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏾\u200d🫯\u200d🧑🏽": {
+  "en": ":people_wrestling_medium-dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏼": {
+  "en": ":people_wrestling_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🫯\u200d🧑🏿": {
+  "en": ":people_wrestling_medium-light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🫯\u200d🧑🏻": {
+  "en": ":people_wrestling_medium-light_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🫯\u200d🧑🏾": {
+  "en": ":people_wrestling_medium-light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏼\u200d🫯\u200d🧑🏽": {
+  "en": ":people_wrestling_medium-light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏽": {
+  "en": ":people_wrestling_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🫯\u200d🧑🏿": {
+  "en": ":people_wrestling_medium_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🫯\u200d🧑🏻": {
+  "en": ":people_wrestling_medium_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🫯\u200d🧑🏾": {
+  "en": ":people_wrestling_medium_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🧑🏽\u200d🫯\u200d🧑🏼": {
+  "en": ":people_wrestling_medium_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
 },
 "🎭": {
   "en": ":performing_arts:",
@@ -21490,6 +22095,11 @@
   "E": 13,
   "variant": true
 },
+"🪎": {
+  "en": ":treasure_chest:",
+  "status": 2,
+  "E": 17
+},
 "🚩": {
   "en": ":triangular_flag:",
   "status": 2,
@@ -21516,6 +22126,11 @@
   "en": ":trolleybus:",
   "status": 2,
   "E": 1
+},
+"🪊": {
+  "en": ":trombone:",
+  "status": 2,
+  "E": 17
 },
 "🏆": {
   "en": ":trophy:",
@@ -26784,6 +27399,156 @@
   "E": 4,
   "alias": [":dancing_women:"]
 },
+"👯🏿\u200d♀\ufe0f": {
+  "en": ":women_with_bunny_ears_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏿\u200d♀": {
+  "en": ":women_with_bunny_ears_dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏿\u200d🐰\u200d👩🏻": {
+  "en": ":women_with_bunny_ears_dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏿\u200d🐰\u200d👩🏾": {
+  "en": ":women_with_bunny_ears_dark_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏿\u200d🐰\u200d👩🏼": {
+  "en": ":women_with_bunny_ears_dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏿\u200d🐰\u200d👩🏽": {
+  "en": ":women_with_bunny_ears_dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏻\u200d♀\ufe0f": {
+  "en": ":women_with_bunny_ears_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏻\u200d♀": {
+  "en": ":women_with_bunny_ears_light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏻\u200d🐰\u200d👩🏿": {
+  "en": ":women_with_bunny_ears_light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏻\u200d🐰\u200d👩🏾": {
+  "en": ":women_with_bunny_ears_light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏻\u200d🐰\u200d👩🏼": {
+  "en": ":women_with_bunny_ears_light_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏻\u200d🐰\u200d👩🏽": {
+  "en": ":women_with_bunny_ears_light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏾\u200d♀\ufe0f": {
+  "en": ":women_with_bunny_ears_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏾\u200d♀": {
+  "en": ":women_with_bunny_ears_medium-dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏾\u200d🐰\u200d👩🏿": {
+  "en": ":women_with_bunny_ears_medium-dark_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏾\u200d🐰\u200d👩🏻": {
+  "en": ":women_with_bunny_ears_medium-dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏾\u200d🐰\u200d👩🏼": {
+  "en": ":women_with_bunny_ears_medium-dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏾\u200d🐰\u200d👩🏽": {
+  "en": ":women_with_bunny_ears_medium-dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏼\u200d♀\ufe0f": {
+  "en": ":women_with_bunny_ears_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏼\u200d♀": {
+  "en": ":women_with_bunny_ears_medium-light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏼\u200d🐰\u200d👩🏿": {
+  "en": ":women_with_bunny_ears_medium-light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏼\u200d🐰\u200d👩🏻": {
+  "en": ":women_with_bunny_ears_medium-light_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏼\u200d🐰\u200d👩🏾": {
+  "en": ":women_with_bunny_ears_medium-light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏼\u200d🐰\u200d👩🏽": {
+  "en": ":women_with_bunny_ears_medium-light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏽\u200d♀\ufe0f": {
+  "en": ":women_with_bunny_ears_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👯🏽\u200d♀": {
+  "en": ":women_with_bunny_ears_medium_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏽\u200d🐰\u200d👩🏿": {
+  "en": ":women_with_bunny_ears_medium_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏽\u200d🐰\u200d👩🏻": {
+  "en": ":women_with_bunny_ears_medium_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏽\u200d🐰\u200d👩🏾": {
+  "en": ":women_with_bunny_ears_medium_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏽\u200d🐰\u200d👩🏼": {
+  "en": ":women_with_bunny_ears_medium_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
 "🤼\u200d♀\ufe0f": {
   "en": ":women_wrestling:",
   "status": 2,
@@ -26793,6 +27558,156 @@
   "en": ":women_wrestling:",
   "status": 3,
   "E": 4
+},
+"🤼🏿\u200d♀\ufe0f": {
+  "en": ":women_wrestling_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏿\u200d♀": {
+  "en": ":women_wrestling_dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏿\u200d🫯\u200d👩🏻": {
+  "en": ":women_wrestling_dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏿\u200d🫯\u200d👩🏾": {
+  "en": ":women_wrestling_dark_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏿\u200d🫯\u200d👩🏼": {
+  "en": ":women_wrestling_dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏿\u200d🫯\u200d👩🏽": {
+  "en": ":women_wrestling_dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏻\u200d♀\ufe0f": {
+  "en": ":women_wrestling_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏻\u200d♀": {
+  "en": ":women_wrestling_light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏻\u200d🫯\u200d👩🏿": {
+  "en": ":women_wrestling_light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏻\u200d🫯\u200d👩🏾": {
+  "en": ":women_wrestling_light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏻\u200d🫯\u200d👩🏼": {
+  "en": ":women_wrestling_light_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏻\u200d🫯\u200d👩🏽": {
+  "en": ":women_wrestling_light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏾\u200d♀\ufe0f": {
+  "en": ":women_wrestling_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏾\u200d♀": {
+  "en": ":women_wrestling_medium-dark_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏾\u200d🫯\u200d👩🏿": {
+  "en": ":women_wrestling_medium-dark_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏾\u200d🫯\u200d👩🏻": {
+  "en": ":women_wrestling_medium-dark_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏾\u200d🫯\u200d👩🏼": {
+  "en": ":women_wrestling_medium-dark_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏾\u200d🫯\u200d👩🏽": {
+  "en": ":women_wrestling_medium-dark_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏼\u200d♀\ufe0f": {
+  "en": ":women_wrestling_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏼\u200d♀": {
+  "en": ":women_wrestling_medium-light_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏼\u200d🫯\u200d👩🏿": {
+  "en": ":women_wrestling_medium-light_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏼\u200d🫯\u200d👩🏻": {
+  "en": ":women_wrestling_medium-light_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏼\u200d🫯\u200d👩🏾": {
+  "en": ":women_wrestling_medium-light_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏼\u200d🫯\u200d👩🏽": {
+  "en": ":women_wrestling_medium-light_skin_tone_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏽\u200d♀\ufe0f": {
+  "en": ":women_wrestling_medium_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"🤼🏽\u200d♀": {
+  "en": ":women_wrestling_medium_skin_tone:",
+  "status": 3,
+  "E": 17
+},
+"👩🏽\u200d🫯\u200d👩🏿": {
+  "en": ":women_wrestling_medium_skin_tone_dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏽\u200d🫯\u200d👩🏻": {
+  "en": ":women_wrestling_medium_skin_tone_light_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏽\u200d🫯\u200d👩🏾": {
+  "en": ":women_wrestling_medium_skin_tone_medium-dark_skin_tone:",
+  "status": 2,
+  "E": 17
+},
+"👩🏽\u200d🫯\u200d👩🏼": {
+  "en": ":women_wrestling_medium_skin_tone_medium-light_skin_tone:",
+  "status": 2,
+  "E": 17
 },
 "🚺": {
   "en": ":women’s_room:",

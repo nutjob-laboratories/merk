@@ -80,7 +80,7 @@ To run properly on Linux, the latest version of all required software is recomme
 There are three libraries that comes bundled with **MERK**:
  - [qt5reactor 0.6.3](https://github.com/twisted/qt5reactor)
  - [pyspellchecker 0.8.3](https://github.com/barrust/pyspellchecker)
- - [emoji 2.14.1](https://github.com/carpedm20/emoji)
+ - [emoji 2.15.0](https://github.com/carpedm20/emoji)
 
 # Features
 -   Runs on Windows and Linux

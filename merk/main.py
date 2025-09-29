@@ -3777,7 +3777,7 @@ class Merk(QMainWindow):
 		entry.triggered.connect(lambda state,u="https://github.com/barrust/pyspellchecker": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(PYTHON_ICON),"emoji 2.14.1",self)
+		entry = QAction(QIcon(PYTHON_ICON),"emoji 2.15.0",self)
 		entry.triggered.connect(lambda state,u="https://github.com/carpedm20/emoji": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 

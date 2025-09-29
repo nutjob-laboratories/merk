@@ -8,13 +8,7 @@ Core components for emoji.
 
 import re
 import unicodedata
-import sys
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, Union
-
-if sys.version_info < (3, 9):
-    from typing_extensions import Literal, Match, TypedDict  # type: ignore
-else:
-    from typing import Literal, Match, TypedDict
+from typing import Any, Callable, Dict, Iterator, List, Literal, Match, Optional, Tuple, TypedDict, Union
 
 from emoji import unicode_codes
 from emoji.tokenizer import (
