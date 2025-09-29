@@ -1153,14 +1153,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.toggleUserinfo()
 				return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
-			if USER.FINGER=='':
-				t = Message(SYSTEM_MESSAGE,'',f"No FINGER message")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			else:
-				t = Message(SYSTEM_MESSAGE,'',f"FINGER message: {USER.FINGER}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
+		if is_script:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"finger TEXT...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True 
+		else:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
+				if USER.FINGER=='':
+					t = Message(SYSTEM_MESSAGE,'',f"No FINGER message")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"FINGER message: {USER.FINGER}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 	# |-----------|
 	# | /userinfo |
@@ -1183,14 +1191,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.toggleUserinfo()
 				return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
-			if USER.USERINFO=='':
-				t = Message(SYSTEM_MESSAGE,'',f"No USERINFO message")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			else:
-				t = Message(SYSTEM_MESSAGE,'',f"USERINFO message: {USER.USERINFO}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
+		if is_script:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"userinfo TEXT...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True 
+		else:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
+				if USER.USERINFO=='':
+					t = Message(SYSTEM_MESSAGE,'',f"No USERINFO message")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"USERINFO message: {USER.USERINFO}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 	# |--------|
 	# | /focus |
