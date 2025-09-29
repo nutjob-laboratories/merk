@@ -183,6 +183,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"resize": config.ISSUE_COMMAND_SYMBOL+"resize ",
 			config.ISSUE_COMMAND_SYMBOL+"move": config.ISSUE_COMMAND_SYMBOL+"move ",
 			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
+			config.ISSUE_COMMAND_SYMBOL+"finger": config.ISSUE_COMMAND_SYMBOL+"finger ",
+			config.ISSUE_COMMAND_SYMBOL+"userinfo": config.ISSUE_COMMAND_SYMBOL+"userinfo ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -293,6 +295,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]</b>", "Sets focus on a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"finger TEXT...</b>", "Sets the CTCP FINGER response" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"userinfo TEXT...</b>", "Sets the CTCP USERINFO response" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1128,6 +1132,70 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
+	# |---------|
+	# | /finger |
+	# |---------|
+	if len(tokens)>=1:
+		if len(tokens)>=2:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
+				tokens.pop(0)
+				msg = ' '.join(tokens)
+
+				if msg=='*': msg = ''
+
+				if config.ENABLE_EMOJI_SHORTCODES:
+					msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				else:
+					msg = config.DEFAULT_QUIT_MESSAGE
+
+				USER.FINGER = msg
+				USER.save_user(USER.USER_FILE)
+				gui.toggleUserinfo()
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"finger TEXT...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"finger TEXT...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |-----------|
+	# | /userinfo |
+	# |-----------|
+	if len(tokens)>=1:
+		if len(tokens)>=2:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
+				tokens.pop(0)
+				msg = ' '.join(tokens)
+
+				if msg=='*': msg = ''
+
+				if config.ENABLE_EMOJI_SHORTCODES:
+					msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				else:
+					msg = config.DEFAULT_QUIT_MESSAGE
+
+				USER.USERINFO = msg
+				USER.save_user(USER.USER_FILE)
+				gui.toggleUserinfo()
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"userinfo TEXT...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"userinfo TEXT...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
 	# |--------|
 	# | /focus |
 	# |--------|
@@ -1652,6 +1720,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quitall' and len(tokens)>=2:
 			tokens.pop(0)
 			msg = ' '.join(tokens)
+
+			if config.ENABLE_EMOJI_SHORTCODES:
+				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+			else:
+				msg = config.DEFAULT_QUIT_MESSAGE
+
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
+
+
 			gui.disconnectAll(msg)
 			return True
 

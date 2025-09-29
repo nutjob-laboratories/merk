@@ -181,6 +181,10 @@ Appearance:
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>
 <tr>
+<td><code>/finger TEXT...</code></td>
+<td>Sets the CTCP FINGER response. Pass <code>*</code> as the argument to clear the FINGER response</td>
+</tr>
+<tr>
 <td><code>/focus [SERVER] [WINDOW]</code></td>
 <td>Sets focus on a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
@@ -400,6 +404,10 @@ Appearance:
 <tr>
 <td><code>usage NUMBER [MESSAGE...]</code></td>
 <td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. <b>Can only be called by scripts</b></td>
+</tr>
+<tr>
+<td><code>/userinfo TEXT...</code></td>
+<td>Sets the CTCP USERINFO response. Pass <code>*</code> as the argument to clear the USERINFO response</td>
 </tr>
 <tr>
 <td><code>/version [SERVER]</code></td>
