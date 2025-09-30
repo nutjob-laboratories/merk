@@ -124,8 +124,36 @@ class Dialog(QMainWindow):
 			cursor.insertText(reptext)
 			cursor.endEditBlock()
 			self.doSearch()
-		# else:
-		# 	print("no select")
+
+	def doReplaceAll(self):
+		old_text = self.find.text()
+		new_text = self.replace.text()
+
+		if not old_text:
+			return
+
+		text_cursor = self.parent.editor.textCursor()
+
+		options = QTextDocument.FindFlags()
+		if self.findCase:
+			if self.wholeWord:
+				options |= QTextDocument.FindWholeWords
+				options |= QTextDocument.FindCaseSensitively
+			else:
+				options |= QTextDocument.FindCaseSensitively
+
+		doc = self.parent.editor.document()
+		cursor = QTextCursor(doc)
+
+		while True:
+			cursor = doc.find(old_text, cursor, options)
+			if cursor.isNull(): break
+			
+			cursor.insertText(new_text)
+	
+		cursor.endEditBlock()
+		
+		self.parent.editor.setTextCursor(text_cursor)
 
 	def __init__(self,parent=None,replace=False):
 		super(Dialog,self).__init__(parent)
@@ -173,18 +201,28 @@ class Dialog(QMainWindow):
 		self.wordWhole.stateChanged.connect(self.clickWord)
 
 		settingsLayout = QHBoxLayout()
+		settingsLayout.addStretch()
 		settingsLayout.addWidget(self.caseSensitive)
+		settingsLayout.addStretch()
 		settingsLayout.addWidget(self.wordWhole)
+		settingsLayout.addStretch()
 
-		doFind = QPushButton("Find Next")
+		doFind = QPushButton()
 		doFind.clicked.connect(self.doSearch)
+		doFind.setIcon(QIcon(NEXT_ICON))
+		doFind.setToolTip("Next result")
 
-		doBack = QPushButton("Find Previous")
+		doBack = QPushButton()
 		doBack.clicked.connect(self.doSearchBack)
+		doBack.setIcon(QIcon(PREVIOUS_ICON))
+		doBack.setToolTip("Previous result")
 
 		if replace:
 			doReplace = QPushButton("Replace")
 			doReplace.clicked.connect(self.doReplace)
+
+			doReplaceAll = QPushButton("Replace All")
+			doReplaceAll.clicked.connect(self.doReplaceAll)
 
 		doClose = QPushButton("Close")
 		doClose.clicked.connect(self.close)
@@ -193,19 +231,22 @@ class Dialog(QMainWindow):
 		buttonsLayout.addWidget(doBack)
 		if replace:
 			buttonsLayout.addWidget(doReplace)
+			buttonsLayout.addWidget(doReplaceAll)
 		buttonsLayout.addWidget(doFind)
 		
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(inputBox)
 		finalLayout.addLayout(settingsLayout)
 		finalLayout.addLayout(buttonsLayout)
+		# if replace:
+		# 	finalLayout.addWidget(doReplaceAll)
 		finalLayout.addWidget(doClose)
 
 		x = QWidget()
 		x.setLayout(finalLayout)
 
 		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		#self.setLayout(finalLayout)
 		self.setCentralWidget(x)
