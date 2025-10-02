@@ -3714,6 +3714,28 @@ class Merk(QMainWindow):
 
 		self.toolsMenu.addSeparator()
 
+		if config.SCRIPTING_ENGINE_ENABLED:
+			file_paths = []
+			for root, _, files in os.walk(commands.SCRIPTS_DIRECTORY):
+				for file in files:
+					file_paths.append(os.path.join(root, file))
+			file_paths = list(set(file_paths))
+			if len(file_paths)>0:
+				sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Scripts")
+
+				for f in file_paths:
+					entry = QAction(QIcon(README_ICON),os.path.basename(f),self)
+					entry.triggered.connect(lambda state,h=f: self.newEditorWindowFile(h))
+					sm.addAction(entry)
+
+			if len(user.COMMANDS)>0:
+				sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Connection Scripts")
+
+				for f in user.COMMANDS:
+					entry = QAction(QIcon(README_ICON),f,self)
+					entry.triggered.connect(lambda state,h=f: self.newEditorWindowConnect(h))
+					sm.addAction(entry)
+
 		sm = self.toolsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 		if not is_running_from_pyinstaller():
