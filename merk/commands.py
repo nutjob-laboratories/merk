@@ -474,8 +474,11 @@ def buildTemporaryAliases(gui,window):
 	else:
 		addTemporaryAlias('_MODE','none')
 	addTemporaryAlias('_MONTH',month)
-	if window.client.network:
-		addTemporaryAlias('_NETWORK',window.client.network)
+	if hasattr(window.client,"network"):
+		if window.client.network:
+			addTemporaryAlias('_NETWORK',window.client.network)
+		else:
+			addTemporaryAlias('_NETWORK',"unknown")
 	else:
 		addTemporaryAlias('_NETWORK',"unknown")
 	addTemporaryAlias('_NICKNAME',window.client.nickname)
