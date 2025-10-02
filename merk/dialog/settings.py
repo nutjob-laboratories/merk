@@ -796,6 +796,16 @@ class Dialog(QDialog):
 	def changedSystrayMin(self,state):
 		if self.showSystray.isChecked():
 			self.showSystrayMenu.setEnabled(True)
+			if self.showSystrayMenu.isChecked():
+				self.stmConnections.setEnabled(True)
+				self.stmSettings.setEnabled(True)
+				self.stmDirs.setEnabled(True)
+				self.stmLinks.setEnabled(True)
+			else:
+				self.stmConnections.setEnabled(False)
+				self.stmSettings.setEnabled(False)
+				self.stmDirs.setEnabled(False)
+				self.stmLinks.setEnabled(False)
 			self.minSystray.setEnabled(True)
 			if self.minSystray.isChecked():
 				self.systrayNotify.setEnabled(True)
@@ -844,6 +854,10 @@ class Dialog(QDialog):
 			self.flashInterval.setEnabled(False)
 			self.doubleclickRestore.setEnabled(False)
 			self.clickToMinimize.setEnabled(False)
+			self.stmConnections.setEnabled(False)
+			self.stmSettings.setEnabled(False)
+			self.stmDirs.setEnabled(False)
+			self.stmLinks.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -2439,6 +2453,46 @@ class Dialog(QDialog):
 		self.clickToMinimize.stateChanged.connect(self.changedSetting)
 		self.clickToMinimize.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.stmConnections = QCheckBox("Connections",self)
+		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
+		self.stmConnections.stateChanged.connect(self.changedSetting)
+
+		self.stmSettings = QCheckBox("Settings",self)
+		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU: self.stmSettings.setChecked(True)
+		self.stmSettings.stateChanged.connect(self.changedSetting)
+
+		self.stmDirs = QCheckBox("Directories",self)
+		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU: self.stmDirs.setChecked(True)
+		self.stmDirs.stateChanged.connect(self.changedSetting)
+
+		self.stmLinks = QCheckBox("Links   ",self)
+		if config.SHOW_LINKS_IN_SYSTRAY_MENU: self.stmLinks.setChecked(True)
+		self.stmLinks.stateChanged.connect(self.changedSetting)
+
+		menuRow1 = QHBoxLayout()
+		menuRow1.addStretch()
+		menuRow1.addWidget(self.stmConnections)
+		menuRow1.addStretch()
+		menuRow1.addWidget(self.stmSettings)
+		menuRow1.addStretch()
+
+		menuRow2 = QHBoxLayout()
+		menuRow2.addStretch()
+		menuRow2.addWidget(self.stmDirs)
+		menuRow2.addStretch()
+		menuRow2.addWidget(self.stmLinks)
+		menuRow2.addStretch()
+
+		menuBox = QVBoxLayout()
+		menuBox.addLayout(menuRow1)
+		menuBox.addLayout(menuRow2)
+
+		if not config.SYSTRAY_MENU:
+			self.stmConnections.setEnabled(False)
+			self.stmSettings.setEnabled(False)
+			self.stmDirs.setEnabled(False)
+			self.stmLinks.setEnabled(False)
+
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
 		systrayLayout.addWidget(self.showSystray)
@@ -2447,17 +2501,17 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(self.systrayMinOnClose)
 		systrayLayout.addWidget(self.doubleclickRestore)
 		systrayLayout.addWidget(self.clickToMinimize)
-		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
 		systrayLayout.addWidget(self.systrayNotify)
 		systrayLayout.addWidget(self.listSystray)
 		systrayLayout.addLayout(flashBox)
-		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
 		systrayLayout.addLayout(nickPriv)
 		systrayLayout.addLayout(kickInvite)
 		systrayLayout.addLayout(noticeMode)
 		systrayLayout.addLayout(discLay)
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray menu includes...</b>"))
+		systrayLayout.addLayout(menuBox)
 		systrayLayout.addStretch()
 
 		self.systrayPage.setLayout(systrayLayout)
@@ -2512,6 +2566,10 @@ class Dialog(QDialog):
 			self.flashInterval.setEnabled(False)
 			self.doubleclickRestore.setEnabled(False)
 			self.clickToMinimize.setEnabled(False)
+			self.stmConnections.setEnabled(False)
+			self.stmSettings.setEnabled(False)
+			self.stmDirs.setEnabled(False)
+			self.stmLinks.setEnabled(False)
 
 		# Notifications
 
@@ -4695,6 +4753,10 @@ class Dialog(QDialog):
 		config.USERLIST_CONTEXT_MENU = self.ulistContext.isChecked()
 		config.HOSTMASK_FETCH_FREQUENCY = self.HOSTMASK_FETCH_FREQUENCY
 		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
+		config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU = self.stmConnections.isChecked()
+		config.SHOW_SETTINGS_IN_SYSTRAY_MENU = self.stmSettings.isChecked()
+		config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU = self.stmDirs.isChecked()
+		config.SHOW_LINKS_IN_SYSTRAY_MENU = self.stmLinks.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

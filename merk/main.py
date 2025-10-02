@@ -880,161 +880,141 @@ class Merk(QMainWindow):
 			entry.triggered.connect(self.toggleHide)
 			self.trayMenu.addAction(entry)
 
-		windows = self.getAllServerWindows()
-		clean = []
-		for w in windows:
-			c = w.widget()
-			if c.client.client_id in self.quitting: continue
-			clean.append(w)
-		windows = clean
+			self.trayMenu.addSeparator()
 
-		listOfConnections = {}
-		for i in irc.CONNECTIONS:
-			add_to_list = True
-			for j in self.hiding:
-				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
-			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
 
-		if len(listOfConnections)>0:
+			windows = self.getAllServerWindows()
+			clean = []
+			for w in windows:
+				c = w.widget()
+				if c.client.client_id in self.quitting: continue
+				clean.append(w)
+			windows = clean
 
-			e = textSeparator(self,"Connections")
-			self.trayMenu.addAction(e)
+			listOfConnections = {}
+			for i in irc.CONNECTIONS:
+				add_to_list = True
+				for j in self.hiding:
+					if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+				if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
-			for i in listOfConnections:
-				entry = listOfConnections[i]
-				if entry.hostname:
-					name = entry.hostname
-				else:
-					name = entry.server+":"+str(entry.port)
+			if len(listOfConnections)>0:
 
-				sw = self.getServerSubWindow(entry)
-				wl = self.getAllSubChatWindows(entry)
-				total = self.getAllSubWindows(entry)
-
-				if len(total)>0:
-					sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
-
-					c = sw.widget()
-					if hasattr(c.client,"network"):
-						mynet = c.client.network
+				for i in listOfConnections:
+					entry = listOfConnections[i]
+					if entry.hostname:
+						name = entry.hostname
 					else:
-						mynet = "Unknown"
+						name = entry.server+":"+str(entry.port)
 
-					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
-						netlink = get_network_link(mynet)
-						if netlink!=None:
-							desc = f"<a href=\"{netlink}\">Network Website</a>"
+					sw = self.getServerSubWindow(entry)
+					wl = self.getAllSubChatWindows(entry)
+					total = self.getAllSubWindows(entry)
+
+					if len(total)>0:
+						sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
+
+						c = sw.widget()
+						if hasattr(c.client,"network"):
+							mynet = c.client.network
+						else:
+							mynet = "Unknown"
+
+						if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+							netlink = get_network_link(mynet)
+							if netlink!=None:
+								desc = f"<a href=\"{netlink}\">Network Website</a>"
+							else:
+								desc = "IRC Network"
 						else:
 							desc = "IRC Network"
-					else:
-						desc = "IRC Network"
 
-					entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
-					sm.addAction(entry)
-
-					sm.addSeparator()
-
-					entry = QAction(QIcon(CONSOLE_ICON),name,self)
-					entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
-					sm.addAction(entry)
-
-					for w in wl:
-						c = w.widget()
-
-						if c.window_type==CHANNEL_WINDOW:
-							icon = CHANNEL_ICON
-						elif c.window_type==SERVER_WINDOW:
-							icon = CONSOLE_ICON
-						elif c.window_type==PRIVATE_WINDOW:
-							icon = PRIVATE_ICON
-
-						entry = QAction(QIcon(icon),c.name,self)
-						entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
+						entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 						sm.addAction(entry)
 
-		e = textSeparator(self,"Options")
-		self.trayMenu.addAction(e)
+						sm.addSeparator()
 
-		if hasattr(self,"settingsMenu"):
-			entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
-			entry.setMenu(self.settingsMenu)
-			self.trayMenu.addAction(entry)
-		else:
-			entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
-			entry.triggered.connect(self.openSettings)
-			self.trayMenu.addAction(entry)
+						entry = QAction(QIcon(CONSOLE_ICON),name,self)
+						entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
+						sm.addAction(entry)
 
-		sm = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
+						for w in wl:
+							c = w.widget()
 
-		if not is_running_from_pyinstaller():
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
-			sm.addAction(entry)
-		else:
-			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
-			sm.addAction(entry)
+							if c.window_type==CHANNEL_WINDOW:
+								icon = CHANNEL_ICON
+							elif c.window_type==SERVER_WINDOW:
+								icon = CONSOLE_ICON
+							elif c.window_type==PRIVATE_WINDOW:
+								icon = PRIVATE_ICON
 
-		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
-		sm.addAction(entry)
+							entry = QAction(QIcon(icon),c.name,self)
+							entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
+							sm.addAction(entry)
 
-		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
-		sm.addAction(entry)
+		self.trayMenu.addSeparator()
 
-		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
-		sm.addAction(entry)
+		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU:
+			if hasattr(self,"settingsMenu"):
+				entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
+				entry.setMenu(self.settingsMenu)
+				self.trayMenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
+				entry.triggered.connect(self.openSettings)
+				self.trayMenu.addAction(entry)
 
-		if config.SCRIPTING_ENGINE_ENABLED:
-			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-			sm.addAction(entry)
+		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU:
 
-		self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
-
-		entry = QAction(QIcon(LINK_ICON),"Source code",self)
-		entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
-		self.trayLinks.addAction(entry)
-
-		entry = QAction(QIcon(LINK_ICON),"GPL v3",self)
-		entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
-		self.trayLinks.addAction(entry)
-
-		entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
-		entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
-		self.trayLinks.addAction(entry)
-
-		if not hasattr(self,"settingsMenu"):
-			self.trayFolder = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Folders")
+			sm = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 			if not is_running_from_pyinstaller():
-				entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME,self)
+				entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
 				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
-				self.trayFolder.addAction(entry)
+				sm.addAction(entry)
+			else:
+				entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+				sm.addAction(entry)
 
-			entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
+			entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
-			self.trayFolder.addAction(entry)
+			sm.addAction(entry)
 
-			entry = QAction(QIcon(STYLE_ICON),"Styles",self)
+			entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
-			self.trayFolder.addAction(entry)
+			sm.addAction(entry)
 
-			entry = QAction(QIcon(LOG_ICON),"Logs",self)
+			entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
-			self.trayFolder.addAction(entry)
+			sm.addAction(entry)
 
-			entry = QAction(QIcon(SCRIPT_ICON),"Scripts",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-			self.trayFolder.addAction(entry)
+			if config.SCRIPTING_ENGINE_ENABLED:
+				entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+				sm.addAction(entry)
+
+		if config.SHOW_LINKS_IN_SYSTRAY_MENU:
+			self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
+
+			entry = QAction(QIcon(LINK_ICON),"Source code",self)
+			entry.triggered.connect(lambda state,u=APPLICATION_SOURCE: self.openLinkInBrowser(u))
+			self.trayLinks.addAction(entry)
+
+			entry = QAction(QIcon(LINK_ICON),"GPL v3",self)
+			entry.triggered.connect(lambda state,u="https://www.gnu.org/licenses/gpl-3.0.en.html": self.openLinkInBrowser(u))
+			self.trayLinks.addAction(entry)
+
+			entry = QAction(QIcon(LINK_ICON),"Emoji shortcodes",self)
+			entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
+			self.trayLinks.addAction(entry)
+
+		self.trayMenu.addSeparator()
 
 		entry = QAction(QIcon(ABOUT_ICON),"About "+APPLICATION_NAME,self)
 		entry.triggered.connect(self.showAbout)
 		self.trayMenu.addAction(entry)
-
-		self.trayMenu.addSeparator()
 
 		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
 		entry.triggered.connect(self.close)

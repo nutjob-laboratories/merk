@@ -297,9 +297,17 @@ ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = True
 USERLIST_CONTEXT_MENU = True
 HOSTMASK_FETCH_FREQUENCY = 5
 DO_NOT_SHOW_SERVER_IN_TITLE = False
+SHOW_CONNECTIONS_IN_SYSTRAY_MENU = True
+SHOW_SETTINGS_IN_SYSTRAY_MENU = True
+SHOW_DIRECTORIES_IN_SYSTRAY_MENU = True
+SHOW_LINKS_IN_SYSTRAY_MENU = True
 
 def build_settings():
 	settings = {
+		"show_connections_in_systray_menu": SHOW_CONNECTIONS_IN_SYSTRAY_MENU,
+		"show_settings_in_systray_menu": SHOW_SETTINGS_IN_SYSTRAY_MENU,
+		"show_directories_in_systray_menu": SHOW_DIRECTORIES_IN_SYSTRAY_MENU,
+		"show_links_in_systray_menu": SHOW_LINKS_IN_SYSTRAY_MENU,
 		"do_not_show_server_name_in_application_title": DO_NOT_SHOW_SERVER_IN_TITLE,
 		"fetch_hostmask_frequency": HOSTMASK_FETCH_FREQUENCY,
 		"enable_userlist_context_menu": USERLIST_CONTEXT_MENU,
@@ -563,6 +571,14 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_connections_in_systray_menu" in settings:
+		settings["show_connections_in_systray_menu"] = SHOW_CONNECTIONS_IN_SYSTRAY_MENU
+	if not "show_settings_in_systray_menu" in settings:
+		settings["show_settings_in_systray_menu"] = SHOW_SETTINGS_IN_SYSTRAY_MENU
+	if not "show_directories_in_systray_menu" in settings:
+		settings["show_directories_in_systray_menu"] = SHOW_DIRECTORIES_IN_SYSTRAY_MENU
+	if not "show_links_in_systray_menu" in settings:
+		settings["show_links_in_systray_menu"] = SHOW_LINKS_IN_SYSTRAY_MENU
 	if not "do_not_show_server_name_in_application_title" in settings:
 		settings["do_not_show_server_name_in_application_title"] = DO_NOT_SHOW_SERVER_IN_TITLE
 	if not "fetch_hostmask_frequency" in settings:
@@ -1342,6 +1358,10 @@ def load_settings(filename):
 	global USERLIST_CONTEXT_MENU
 	global HOSTMASK_FETCH_FREQUENCY
 	global DO_NOT_SHOW_SERVER_IN_TITLE
+	global SHOW_CONNECTIONS_IN_SYSTRAY_MENU
+	global SHOW_SETTINGS_IN_SYSTRAY_MENU
+	global SHOW_DIRECTORIES_IN_SYSTRAY_MENU
+	global SHOW_LINKS_IN_SYSTRAY_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1351,6 +1371,10 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CONNECTIONS_IN_SYSTRAY_MENU = settings["show_connections_in_systray_menu"]
+		SHOW_SETTINGS_IN_SYSTRAY_MENU = settings["show_settings_in_systray_menu"]
+		SHOW_DIRECTORIES_IN_SYSTRAY_MENU = settings["show_directories_in_systray_menu"]
+		SHOW_LINKS_IN_SYSTRAY_MENU = settings["show_links_in_systray_menu"]
 		DO_NOT_SHOW_SERVER_IN_TITLE = settings["do_not_show_server_name_in_application_title"]
 		HOSTMASK_FETCH_FREQUENCY = settings["fetch_hostmask_frequency"]
 		USERLIST_CONTEXT_MENU = settings["enable_userlist_context_menu"]
