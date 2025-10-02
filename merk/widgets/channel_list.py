@@ -88,6 +88,15 @@ class Window(QMainWindow):
 		self.search_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.search_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 
+
+		self.refresh_button = QPushButton('')
+		self.refresh_button.setIcon(QIcon(REFRESH_ICON))
+		self.refresh_button.setToolTip("Refresh channel list")
+		self.refresh_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.refresh_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.refresh_button.clicked.connect(lambda state,u=self.client: self.parent.refreshChannelList(u))
+		self.refresh_button.setFlat(True)
+
 		self.moreFive = QRadioButton("5+",self)
 		self.moreTwo = QRadioButton("2+",self)
 		self.moreTen = QRadioButton("10+",self)
@@ -139,6 +148,7 @@ class Window(QMainWindow):
 		self.sLayout = QHBoxLayout()
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
+		self.sLayout.addWidget(self.refresh_button)
 		self.sLayout.addWidget(self.allTerms)
 		self.sLayout.addWidget(self.searchTopic)
 		self.sLayout.setContentsMargins(1,1,1,1)

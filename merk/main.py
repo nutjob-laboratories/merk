@@ -832,7 +832,7 @@ class Merk(QMainWindow):
 		super().changeEvent(event)
 
 	def toggleHide(self):
-		if not config.MINIMIZE_TO_SYSTRAY: return
+		if not config.MINIMIZE_TO_SYSTRAY and not self.is_hidden: return
 		if self.is_hidden:
 			self.show()
 			self.resize(self.tray_width,self.tray_height)
