@@ -1053,6 +1053,11 @@ class Merk(QMainWindow):
 
 		# Forcibly remove server window
 		w = self.getServerSubWindow(client)
+		try:
+			w.widget().force_close = True
+			w.close()
+		except:
+			pass
 		self.buildWindowsMenu()
 
 		# If the flash doesn't work, just ignore the error

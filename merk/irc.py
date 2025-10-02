@@ -1177,6 +1177,8 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			return
 
+		CONNECTIONS.pop(self.kwargs["client_id"],None)
+
 		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
 			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost."
 
@@ -1194,6 +1196,8 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			return
+
+		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
 		if config.PROMPT_ON_FAILED_CONNECTION:
 			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
@@ -1228,6 +1232,8 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			return
 
 		self.kwargs["gui"].reconnecting[self.kwargs["client_id"]] = 0
+
+		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
 		if config.ASK_BEFORE_RECONNECT:
 			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.\nTry to reconnect?"
@@ -1271,6 +1277,8 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
 				del self.kwargs["gui"].reconnecting[self.kwargs["client_id"]]
 			return
+
+		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
 		if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
 			protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
