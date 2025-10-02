@@ -185,6 +185,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
 			config.ISSUE_COMMAND_SYMBOL+"finger": config.ISSUE_COMMAND_SYMBOL+"finger ",
 			config.ISSUE_COMMAND_SYMBOL+"userinfo": config.ISSUE_COMMAND_SYMBOL+"userinfo ",
+			config.ISSUE_COMMAND_SYMBOL+"reconnect": config.ISSUE_COMMAND_SYMBOL+"reconnect ",
+			config.ISSUE_COMMAND_SYMBOL+"reconnectssl": config.ISSUE_COMMAND_SYMBOL+"reconnectssl ",
+			config.ISSUE_COMMAND_SYMBOL+"xreconnect": config.ISSUE_COMMAND_SYMBOL+"xreconnect ",
+			config.ISSUE_COMMAND_SYMBOL+"xreconnectssl": config.ISSUE_COMMAND_SYMBOL+"xreconnectssl ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -213,6 +217,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not SSL_AVAILABLE:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"connectssl",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"xconnectssl",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"reconnectssl",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"xreconnectssl",'')
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
 		AUTOCOMPLETE[config.ISSUE_COMMAND_SYMBOL+"s"] = config.ISSUE_COMMAND_SYMBOL+"s "
@@ -297,6 +303,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]</b>", "Sets focus on a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"finger TEXT...</b>", "Sets the CTCP FINGER response" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"userinfo TEXT...</b>", "Sets the CTCP USERINFO response" ],
+
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server, reconnecting on disconnection" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL, reconnecting on disconnection" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server & executes connection script, reconnecting on disconnection" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script, reconnecting on disconnection" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -324,6 +335,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		if not SSL_AVAILABLE:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"connectssl SERVER [PORT] [PASSWORD]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnectssl SERVER [PORT] [PASSWORD]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnectssl SERVER [PORT] [PASSWORD]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>": continue
+
 		COPY.append(e)
 	COMMAND_HELP_INFORMATION = sorted(COPY)
 
@@ -1132,278 +1146,278 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
-	# # |---------------|
-	# # | /reconnectssl |
-	# # |---------------|
-	# if not SSL_AVAILABLE:
-	# 	if len(tokens)>=1:
-	# 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl':
-	# 			t = Message(ERROR_MESSAGE,'',"SSL/TLS is not available. Please install pyOpenSSL and service_identity to use this command.")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
+	# |---------------|
+	# | /reconnectssl |
+	# |---------------|
+	if not SSL_AVAILABLE:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl':
+				t = Message(ERROR_MESSAGE,'',"SSL/TLS is not available. Please install pyOpenSSL and service_identity to use this command.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
-	# if len(tokens)>=1:
-	# 	# /reconnectssl HOST
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==2:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = 6667
-	# 		connect_to_irc(gui,window,host,port,None,True,True,False)
-	# 		return True
-	# 	# /reconnectssl HOST PORT
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==3:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnectssl: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,None,True,True,False)
-	# 		return True
-	# 	# /reconnectssl HOST PORT PASSWORD
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==4:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		password = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnectssl: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,password,True,True,False)
-	# 		return True
-	# 	# /reconnectssl
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==1:
-	# 		gui.connectToIrc()
-	# 		return True
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl':
-	# 		if is_script:
-	# 			add_halt(script_id)
-	# 			if config.DISPLAY_SCRIPT_ERRORS:
-	# 				t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnectssl HOST [PORT] [PASSWORD]")
-	# 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnectssl HOST [PORT] [PASSWORD]")
-	# 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 		return True
+	if len(tokens)>=1:
+		# /reconnectssl HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			connect_to_irc(gui,window,host,port,None,True,True,False)
+			return True
+		# /reconnectssl HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,None,True,True,False)
+			return True
+		# /reconnectssl HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,password,True,True,False)
+			return True
+		# /reconnectssl
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==1:
+			gui.connectToIrc()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnectssl HOST [PORT] [PASSWORD]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnectssl HOST [PORT] [PASSWORD]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
-	# # |------------|
-	# # | /reconnect |
-	# # |------------|
-	# if len(tokens)>=1:
-	# 	# /reconnect HOST
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==2:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = 6667
-	# 		connect_to_irc(gui,window,host,port,None,False,True,False)
-	# 		return True
-	# 	# /reconnect HOST PORT
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==3:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnect: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,None,False,True,False)
-	# 		return True
-	# 	# /reconnect HOST PORT PASSWORD
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==4:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		password = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnect: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,password,False,True,False)
-	# 		return True
-	# 	# /reconnect
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==1:
-	# 		gui.connectToIrc()
-	# 		return True
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect':
-	# 		if is_script:
-	# 			add_halt(script_id)
-	# 			if config.DISPLAY_SCRIPT_ERRORS:
-	# 				t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnect HOST [PORT] [PASSWORD]")
-	# 			return True
-	# 		t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnect HOST [PORT] [PASSWORD]")
-	# 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 		return True
+	# |------------|
+	# | /reconnect |
+	# |------------|
+	if len(tokens)>=1:
+		# /reconnect HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			connect_to_irc(gui,window,host,port,None,False,True,False)
+			return True
+		# /reconnect HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,None,False,True,False)
+			return True
+		# /reconnect HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}reconnect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,password,False,True,False)
+			return True
+		# /reconnect
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==1:
+			gui.connectToIrc()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnect HOST [PORT] [PASSWORD]")
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reconnect HOST [PORT] [PASSWORD]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
-	# # |----------------|
-	# # | /xreconnectssl |
-	# # |----------------|
-	# if not SSL_AVAILABLE:
-	# 	if len(tokens)>=1:
-	# 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl':
-	# 			t = Message(ERROR_MESSAGE,'',"SSL/TLS is not available. Please install pyOpenSSL and service_identity to use this command.")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
+	# |----------------|
+	# | /xreconnectssl |
+	# |----------------|
+	if not SSL_AVAILABLE:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl':
+				t = Message(ERROR_MESSAGE,'',"SSL/TLS is not available. Please install pyOpenSSL and service_identity to use this command.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
-	# if len(tokens)>=1:
-	# 	# /reconnectssl HOST
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==2:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = 6667
-	# 		connect_to_irc(gui,window,host,port,None,True,True,True)
-	# 		return True
-	# 	# /reconnectssl HOST PORT
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==3:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnectssl: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,None,True,True,True)
-	# 		return True
-	# 	# /reconnectssl HOST PORT PASSWORD
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==4:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		password = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnectssl: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,password,True,True,True)
-	# 		return True
-	# 	# /xreconnectssl
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==1:
-	# 		gui.connectToIrc()
-	# 		return True
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl':
-	# 		if is_script:
-	# 			add_halt(script_id)
-	# 			if config.DISPLAY_SCRIPT_ERRORS:
-	# 				t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl HOST [PORT] [PASSWORD]")
-	# 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl HOST [PORT] [PASSWORD]")
-	# 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 		return True
+	if len(tokens)>=1:
+		# /reconnectssl HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			connect_to_irc(gui,window,host,port,None,True,True,True)
+			return True
+		# /reconnectssl HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,None,True,True,True)
+			return True
+		# /reconnectssl HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnectssl: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,password,True,True,True)
+			return True
+		# /xreconnectssl
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==1:
+			gui.connectToIrc()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl HOST [PORT] [PASSWORD]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl HOST [PORT] [PASSWORD]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
-	# # |-------------|
-	# # | /xreconnect |
-	# # |-------------|
-	# if len(tokens)>=1:
-	# 	# /reconnect HOST
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==2:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = 6667
-	# 		connect_to_irc(gui,window,host,port,None,False,True,True)
-	# 		return True
-	# 	# /reconnect HOST PORT
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==3:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnect: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,None,False,True,True)
-	# 		return True
-	# 	# /reconnect HOST PORT PASSWORD
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==4:
-	# 		tokens.pop(0)
-	# 		host = tokens.pop(0)
-	# 		port = tokens.pop(0)
-	# 		password = tokens.pop(0)
-	# 		try:
-	# 			port = int(port)
-	# 		except:
-	# 			if is_script:
-	# 				add_halt(script_id)
-	# 				if config.DISPLAY_SCRIPT_ERRORS:
-	# 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnect: \"{port}\" is not a number")
-	# 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 				return True
-	# 			t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
-	# 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		connect_to_irc(gui,window,host,port,password,False,True,True)
-	# 		return True
-	# 	# /xreconnect
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==1:
-	# 		gui.connectToIrc()
-	# 		return True
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect':
-	# 		if is_script:
-	# 			add_halt(script_id)
-	# 			if config.DISPLAY_SCRIPT_ERRORS:
-	# 				t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnect HOST [PORT] [PASSWORD]")
-	# 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 			return True
-	# 		t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnect HOST [PORT] [PASSWORD]")
-	# 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	# 		return True
+	# |-------------|
+	# | /xreconnect |
+	# |-------------|
+	if len(tokens)>=1:
+		# /reconnect HOST
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==2:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = 6667
+			connect_to_irc(gui,window,host,port,None,False,True,True)
+			return True
+		# /reconnect HOST PORT
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==3:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,None,False,True,True)
+			return True
+		# /reconnect HOST PORT PASSWORD
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==4:
+			tokens.pop(0)
+			host = tokens.pop(0)
+			port = tokens.pop(0)
+			password = tokens.pop(0)
+			try:
+				port = int(port)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}xreconnect: \"{port}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{port}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			connect_to_irc(gui,window,host,port,password,False,True,True)
+			return True
+		# /xreconnect
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==1:
+			gui.connectToIrc()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnect HOST [PORT] [PASSWORD]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnect HOST [PORT] [PASSWORD]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /finger |

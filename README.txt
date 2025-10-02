@@ -290,6 +290,8 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
 | `/reclaim NICKNAME`                          | Attempts to change nickname to `NICKNAME` until claimed                                                                                             |
+| `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
+| `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/rem [TEXT...]`                        | Does nothing. Can be used as a target for `goto`                                                                              |
 | `/resize [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                              |
@@ -316,7 +318,8 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/windows`     | Generates and displays a list of all connected subwindows                                                            |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
-
+| `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |
+| `/xreconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script, reconnecting on disconnection                                                              |
 # Example Command-line Usage
 In the following examples, the first command-line is how you would do the task using **MERK** as a Python script, and second command-line is how you would do it using the **MERK** Windows executable. Note that the command-lines, other than the initial executable, are the same!
 

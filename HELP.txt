@@ -338,6 +338,14 @@ Appearance:
 <td>Attempts to change nickname to <code>NICKNAME</code> until claimed</td>
 </tr>
 <tr>
+<td><code>/reconnect SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server, reconnecting on disconnection</td>
+</tr>
+<tr>
+<td><code>/reconnectssl SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server via SSL, reconnecting on disconnection</td>
+</tr>
+<tr>
 <td><code>/refresh</code></td>
 <td>Requests a new list of channels from the server</td>
 </tr>
@@ -440,6 +448,14 @@ Appearance:
 <tr>
 <td><code>/xconnectssl SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server via SSL &amp; executes connection script</td>
+</tr>
+<tr>
+<td><code>/xreconnect SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server &amp; executes connection script, reconnecting on disconnection</td>
+</tr>
+<tr>
+<td><code>/xreconnectssl SERVER [PORT] [PASSWORD]</code></td>
+<td>Connects to an IRC server via SSL &amp; executes connection script, reconnecting on disconnection</td>
 </tr>
 </tbody>
 </table>

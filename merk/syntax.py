@@ -147,6 +147,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"focus",
 			cmdsymbol+"finger",
 			cmdsymbol+"userinfo",
+			cmdsymbol+"reconnect",
+			cmdsymbol+"reconnectssl",
+			cmdsymbol+"xreconnect",
+			cmdsymbol+"xreconnectssl",
 		]
 
 		script_only = [
@@ -185,6 +189,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")
+			merk.remove(cmdsymbol+"reconnectssl")
+			merk.remove(cmdsymbol+"xreconnectssl")
 		if not config.ENABLE_DELAY_COMMAND:
 			merk.remove(cmdsymbol+"delay")
 		if not config.ENABLE_CONFIG_COMMAND:
