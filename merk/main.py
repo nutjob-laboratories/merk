@@ -964,6 +964,34 @@ class Merk(QMainWindow):
 			entry.triggered.connect(self.openSettings)
 			self.trayMenu.addAction(entry)
 
+		sm = self.trayMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
+
+		if not is_running_from_pyinstaller():
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+			sm.addAction(entry)
+		else:
+			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+			sm.addAction(entry)
+
+		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		sm.addAction(entry)
+
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			sm.addAction(entry)
+
 		self.trayLinks = self.trayMenu.addMenu(QIcon(LINK_ICON),"Links")
 
 		entry = QAction(QIcon(LINK_ICON),"Source code",self)
@@ -3663,7 +3691,30 @@ class Merk(QMainWindow):
 			entry.triggered.connect(lambda state,u=f"{s}": self.menuSetWidget(u))
 			sm.addAction(entry)
 
-		sm = self.settingsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
+		self.buildSystrayMenu()
+
+	def buildToolsMenu(self):
+
+		self.toolsMenu.clear()
+
+		if config.ENABLE_STYLE_EDITOR:
+			entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style Editor','Edit text styles&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
+			self.toolsMenu.addAction(entry)
+
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
+			self.toolsMenu.addAction(entry)
+
+		if(len(os.listdir(logs.LOG_DIRECTORY))==0):
+			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','No logs to export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+			entry.setEnabled(False)
+		else:
+			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','View, manage or export',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
+		self.toolsMenu.addAction(entry)
+
+		self.toolsMenu.addSeparator()
+
+		sm = self.toolsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")
 
 		if not is_running_from_pyinstaller():
 			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
@@ -3690,27 +3741,6 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 			sm.addAction(entry)
-
-		self.buildSystrayMenu()
-
-	def buildToolsMenu(self):
-
-		self.toolsMenu.clear()
-
-		if config.ENABLE_STYLE_EDITOR:
-			entry = widgets.ExtendedMenuItem(self,STYLE_MENU_ICON,'Style Editor','Edit text styles&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuEditStyle)
-			self.toolsMenu.addAction(entry)
-
-		if config.SCRIPTING_ENGINE_ENABLED:
-			entry = widgets.ExtendedMenuItem(self,SCRIPT_MENU_ICON,'Script Editor','Edit '+APPLICATION_NAME+' scripts&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.newEditorWindow)
-			self.toolsMenu.addAction(entry)
-
-		if(len(os.listdir(logs.LOG_DIRECTORY))==0):
-			entry = widgets.DisabledExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','No logs to export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
-			entry.setEnabled(False)
-		else:
-			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','View, manage or export',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
-		self.toolsMenu.addAction(entry)
 
 	def buildHelpMenu(self):
 
