@@ -1244,9 +1244,25 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			if rval == QMessageBox.Cancel:
 				pass
 			else:
-				protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+				#protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+				if self.kwargs["ssl"]:
+					self.kwargs["client_id"] = str(uuid.uuid4())
+					bot = IRC_ReConnection_Factory(**self.kwargs)
+					reactor.connectSSL(self.kwargs["server"],self.kwargs["port"],bot,ssl.ClientContextFactory())
+				else:
+					self.kwargs["client_id"] = str(uuid.uuid4())
+					bot = IRC_ReConnection_Factory(**self.kwargs)
+					reactor.connectTCP(self.kwargs["server"],self.kwargs["port"],bot)
 		else:
-			protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+			#protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+			if self.kwargs["ssl"]:
+				self.kwargs["client_id"] = str(uuid.uuid4())
+				bot = IRC_ReConnection_Factory(**self.kwargs)
+				reactor.connectSSL(self.kwargs["server"],self.kwargs["port"],bot,ssl.ClientContextFactory())
+			else:
+				self.kwargs["client_id"] = str(uuid.uuid4())
+				bot = IRC_ReConnection_Factory(**self.kwargs)
+				reactor.connectTCP(self.kwargs["server"],self.kwargs["port"],bot)
 
 	def clientConnectionFailed(self, connector, reason):
 
