@@ -153,4 +153,5 @@ irc.techtronix.net:6667:Techtronix:normal
 irc.servx.ru:6667:TURLINet:normal
 us.undernet.org:6667:UnderNet:normal
 irc.worldnet.net:6667:Worldnet:normal
-irc.xertion.org:6667:Xertion:normal"""
+irc.xertion.org:6667:Xertion:normal
+irc.inthemansion.com:6697:MansionNET:ssl"""

@@ -804,7 +804,10 @@ class Merk(QMainWindow):
 			if not config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY:
 				if self.is_hidden:
 					self.toggleHide()
-					self.showNormal()
+					if self.was_maximized:
+						self.showMaximized()
+					else:
+						self.showNormal()
 				else:
 					if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY:
 						self.toggleHide()
@@ -812,7 +815,10 @@ class Merk(QMainWindow):
 			if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY:
 				if self.is_hidden:
 					self.toggleHide()
-					self.showNormal()
+					if self.was_maximized:
+						self.showMaximized()
+					else:
+						self.showNormal()
 				else:
 					if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY:
 						self.toggleHide()
@@ -826,6 +832,7 @@ class Merk(QMainWindow):
 		super().changeEvent(event)
 
 	def toggleHide(self):
+		if not config.MINIMIZE_TO_SYSTRAY: return
 		if self.is_hidden:
 			self.show()
 			self.resize(self.tray_width,self.tray_height)
