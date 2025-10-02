@@ -94,7 +94,7 @@ class Window(QMainWindow):
 		self.refresh_button.setToolTip("Refresh channel list")
 		self.refresh_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.refresh_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-		self.refresh_button.clicked.connect(lambda state,u=self.client: self.parent.refreshChannelList(u))
+		self.refresh_button.clicked.connect(lambda state: self.client.sendLine('LIST'))
 		self.refresh_button.setFlat(True)
 
 		self.moreFive = QRadioButton("5+",self)
