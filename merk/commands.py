@@ -5836,8 +5836,10 @@ class ScriptThread(QThread):
 								script_only_command = True
 								loop = False
 								continue
-					
-					self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
+					try:
+						self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
+					except:
+						pass
 
 		self.scriptEnd.emit([self.gui,self.id])
 

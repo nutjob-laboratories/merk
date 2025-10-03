@@ -791,7 +791,6 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
-		
 
 	def changedSystrayMin(self,state):
 		if self.showSystray.isChecked():
@@ -803,6 +802,12 @@ class Dialog(QDialog):
 				self.stmLinks.setEnabled(True)
 				self.stmList.setEnabled(True)
 				self.stmLogs.setEnabled(True)
+				if not self.stmConnections.isChecked():
+					self.stmList.setEnabled(False)
+					self.stmLogs.setEnabled(False)
+				else:
+					self.stmList.setEnabled(True)
+					self.stmLogs.setEnabled(True)
 			else:
 				self.stmConnections.setEnabled(False)
 				self.stmSettings.setEnabled(False)
@@ -867,6 +872,15 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
+
+	def changedSettingConnections(self,state):
+		if not self.stmConnections.isChecked():
+			self.stmList.setEnabled(False)
+			self.stmLogs.setEnabled(False)
+		else:
+			self.stmList.setEnabled(True)
+			self.stmLogs.setEnabled(True)
+
 
 	def changedSystrayNotification(self,state):
 		if self.systrayNotify.isChecked():
@@ -2467,7 +2481,7 @@ class Dialog(QDialog):
 
 		self.stmConnections = QCheckBox("Connections",self)
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
-		self.stmConnections.stateChanged.connect(self.changedSetting)
+		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
 
 		self.stmSettings = QCheckBox("Settings",self)
 		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU: self.stmSettings.setChecked(True)
@@ -2512,6 +2526,10 @@ class Dialog(QDialog):
 			self.stmSettings.setEnabled(False)
 			self.stmDirs.setEnabled(False)
 			self.stmLinks.setEnabled(False)
+			self.stmList.setEnabled(False)
+			self.stmLogs.setEnabled(False)
+
+		if not config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
 
