@@ -940,6 +940,12 @@ class Merk(QMainWindow):
 						entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 						sm.addAction(entry)
 
+						entry = QAction(QIcon(LIST_ICON),"Channel list",self)
+						entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
+						sm.addAction(entry)
+
+						if not c.client.registered: entry.setEnabled(False)
+
 						sm.addSeparator()
 
 						entry = QAction(QIcon(CONSOLE_ICON),name,self)
@@ -1035,6 +1041,17 @@ class Merk(QMainWindow):
 			self.showNormal()
 		self.showSubWindow(window)
 		window.showMaximized()
+
+	def systrayShowList(self,window):
+		self.toggleHide()
+		if self.isMaximized():
+			self.showMaximized()
+		else:
+			self.showNormal()
+
+		c = window.widget()
+		w = self.getServerWindow(c.client)
+		w.showChannelList()
 
 	def menuMax(self):
 
