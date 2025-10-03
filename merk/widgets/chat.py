@@ -1528,17 +1528,17 @@ class Window(QMainWindow):
 
 							status_text = ''
 							if user_is_op:
-								status_text = "Channel operator"
+								status_text = "Channel Operator"
 							elif user_is_owner:
-								status_text = "Channel owner"
+								status_text = "Channel Owner"
 							elif user_is_admin:
-								status_text = "Channel admin"
+								status_text = "Channel Administrator"
 							elif user_is_halfop:
-								status_text = "Channel half-operator"
+								status_text = "Channel Half-Operator"
 							elif user_is_protected:
-								status_text = "Protected user"
+								status_text = "Protected User"
 							elif user_is_voiced:
-								status_text = "Voiced user"
+								status_text = "Voiced User"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 								menu.addAction(entry)
@@ -1566,17 +1566,17 @@ class Window(QMainWindow):
 
 							status_text = ''
 							if user_is_op:
-								status_text = "Channel operator"
+								status_text = "Channel Operator"
 							elif user_is_owner:
-								status_text = "Channel owner"
+								status_text = "Channel Owner"
 							elif user_is_admin:
-								status_text = "Channel admin"
+								status_text = "Channel Administrator"
 							elif user_is_halfop:
-								status_text = "Channel half-operator"
+								status_text = "Channel Half-Operator"
 							elif user_is_protected:
-								status_text = "Protected user"
+								status_text = "Protected User"
 							elif user_is_voiced:
-								status_text = "Voiced user"
+								status_text = "Voiced User"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 								menu.addAction(entry)
@@ -1613,17 +1613,17 @@ class Window(QMainWindow):
 
 						status_text = ''
 						if user_is_op:
-							status_text = "Channel operator"
+							status_text = "Channel Operator"
 						elif user_is_owner:
-							status_text = "Channel owner"
+							status_text = "Channel Owner"
 						elif user_is_admin:
-							status_text = "Channel admin"
+							status_text = "Channel Administrator"
 						elif user_is_halfop:
-							status_text = "Channel half-operator"
+							status_text = "Channel Half-Operator"
 						elif user_is_protected:
-							status_text = "Protected user"
+							status_text = "Protected User"
 						elif user_is_voiced:
-							status_text = "Voiced user"
+							status_text = "Voiced User"
 						if status_text!='':
 							entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 							menu.addAction(entry)
