@@ -954,7 +954,7 @@ class Merk(QMainWindow):
 							if not c.client.registered: entry.setEnabled(False)
 
 						if config.SHOW_LOGS_IN_SYSTRAY_MENU:
-							entry = QAction(QIcon(LOG_ICON),f"{mynet} logs",self)
+							entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
 							entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
 							sm.addAction(entry)
 
@@ -4014,7 +4014,7 @@ class Merk(QMainWindow):
 							entry.setEnabled(False)
 
 					if config.SHOW_LOGS_IN_WINDOWS_MENU:
-						entry = QAction(QIcon(LOG_ICON),f"{mynet} logs",self)
+						entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
 						entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
 						sm.addAction(entry)
 
