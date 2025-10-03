@@ -301,9 +301,15 @@ SHOW_CONNECTIONS_IN_SYSTRAY_MENU = True
 SHOW_SETTINGS_IN_SYSTRAY_MENU = True
 SHOW_DIRECTORIES_IN_SYSTRAY_MENU = True
 SHOW_LINKS_IN_SYSTRAY_MENU = True
+SHOW_LIST_IN_SYSTRAY_MENU = True
+SHOW_LOGS_IN_SYSTRAY_MENU = True
+SHOW_LOGS_IN_WINDOWS_MENU = True
 
 def build_settings():
 	settings = {
+		"show_network_logs_in_windows_menu": SHOW_LOGS_IN_WINDOWS_MENU,
+		"show_channel_list_in_systray_menu": SHOW_LIST_IN_SYSTRAY_MENU,
+		"show_network_logs_in_systray_menu": SHOW_LOGS_IN_SYSTRAY_MENU,
 		"show_connections_in_systray_menu": SHOW_CONNECTIONS_IN_SYSTRAY_MENU,
 		"show_settings_in_systray_menu": SHOW_SETTINGS_IN_SYSTRAY_MENU,
 		"show_directories_in_systray_menu": SHOW_DIRECTORIES_IN_SYSTRAY_MENU,
@@ -571,6 +577,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_network_logs_in_windows_menu" in settings:
+		settings["show_network_logs_in_windows_menu"] = SHOW_LOGS_IN_WINDOWS_MENU
+	if not "show_channel_list_in_systray_menu" in settings:
+		settings["show_channel_list_in_systray_menu"] = SHOW_LIST_IN_SYSTRAY_MENU
+	if not "show_network_logs_in_systray_menu" in settings:
+		settings["show_network_logs_in_systray_menu"] = SHOW_LOGS_IN_SYSTRAY_MENU
 	if not "show_connections_in_systray_menu" in settings:
 		settings["show_connections_in_systray_menu"] = SHOW_CONNECTIONS_IN_SYSTRAY_MENU
 	if not "show_settings_in_systray_menu" in settings:
@@ -1362,6 +1374,9 @@ def load_settings(filename):
 	global SHOW_SETTINGS_IN_SYSTRAY_MENU
 	global SHOW_DIRECTORIES_IN_SYSTRAY_MENU
 	global SHOW_LINKS_IN_SYSTRAY_MENU
+	global SHOW_LIST_IN_SYSTRAY_MENU
+	global SHOW_LOGS_IN_SYSTRAY_MENU
+	global SHOW_LOGS_IN_WINDOWS_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1371,6 +1386,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_LOGS_IN_WINDOWS_MENU = settings["show_network_logs_in_windows_menu"]
+		SHOW_LIST_IN_SYSTRAY_MENU = settings["show_channel_list_in_systray_menu"]
+		SHOW_LOGS_IN_SYSTRAY_MENU = settings["show_network_logs_in_systray_menu"]
 		SHOW_CONNECTIONS_IN_SYSTRAY_MENU = settings["show_connections_in_systray_menu"]
 		SHOW_SETTINGS_IN_SYSTRAY_MENU = settings["show_settings_in_systray_menu"]
 		SHOW_DIRECTORIES_IN_SYSTRAY_MENU = settings["show_directories_in_systray_menu"]

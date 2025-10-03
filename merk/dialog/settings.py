@@ -801,11 +801,15 @@ class Dialog(QDialog):
 				self.stmSettings.setEnabled(True)
 				self.stmDirs.setEnabled(True)
 				self.stmLinks.setEnabled(True)
+				self.stmList.setEnabled(True)
+				self.stmLogs.setEnabled(True)
 			else:
 				self.stmConnections.setEnabled(False)
 				self.stmSettings.setEnabled(False)
 				self.stmDirs.setEnabled(False)
 				self.stmLinks.setEnabled(False)
+				self.stmList.setEnabled(False)
+				self.stmLogs.setEnabled(False)
 			self.minSystray.setEnabled(True)
 			if self.minSystray.isChecked():
 				self.systrayNotify.setEnabled(True)
@@ -858,6 +862,8 @@ class Dialog(QDialog):
 			self.stmSettings.setEnabled(False)
 			self.stmDirs.setEnabled(False)
 			self.stmLinks.setEnabled(False)
+			self.stmList.setEnabled(False)
+			self.stmLogs.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1532,7 +1538,7 @@ class Dialog(QDialog):
 		if config.ASK_BEFORE_CLOSE: self.askBeforeExit.setChecked(True)
 		self.askBeforeExit.stateChanged.connect(self.changedSetting)
 
-		self.showServerInfo = QCheckBox(f"Show server information in\nthe \"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
+		self.showServerInfo = QCheckBox(f"Show server information in the\n\"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
 		if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU: self.showServerInfo.setChecked(True)
 		self.showServerInfo.stateChanged.connect(self.changedSetting)
 
@@ -1571,6 +1577,11 @@ class Dialog(QDialog):
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showLogsInWindows = QCheckBox(f"Show network log option in the\n\"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
+		if config.SHOW_LOGS_IN_WINDOWS_MENU: self.showLogsInWindows.setChecked(True)
+		self.showLogsInWindows.stateChanged.connect(self.changedSetting)
+		self.showLogsInWindows.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		screenLayout2 = QHBoxLayout()
 		screenLayout2.addStretch()
 		screenLayout2.addWidget(self.alwaysOnTop)
@@ -1603,6 +1614,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		applicationLayout.addWidget(self.simpleConnect)
 		applicationLayout.addWidget(self.showServerInfo)
+		applicationLayout.addWidget(self.showLogsInWindows)
 		applicationLayout.addWidget(self.showConnect)
 		applicationLayout.addWidget(self.noConnectLogo)
 		applicationLayout.addStretch()
@@ -2465,22 +2477,30 @@ class Dialog(QDialog):
 		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU: self.stmDirs.setChecked(True)
 		self.stmDirs.stateChanged.connect(self.changedSetting)
 
-		self.stmLinks = QCheckBox("Links   ",self)
+		self.stmLinks = QCheckBox("Links ",self)
 		if config.SHOW_LINKS_IN_SYSTRAY_MENU: self.stmLinks.setChecked(True)
 		self.stmLinks.stateChanged.connect(self.changedSetting)
+
+		self.stmList = QCheckBox("Channel list",self)
+		if config.SHOW_LIST_IN_SYSTRAY_MENU: self.stmList.setChecked(True)
+		self.stmList.stateChanged.connect(self.changedSetting)
+
+		self.stmLogs = QCheckBox("Network logs",self)
+		if config.SHOW_LOGS_IN_SYSTRAY_MENU: self.stmLogs.setChecked(True)
+		self.stmLogs.stateChanged.connect(self.changedSetting)
 
 		menuRow1 = QHBoxLayout()
 		menuRow1.addStretch()
 		menuRow1.addWidget(self.stmConnections)
-		menuRow1.addStretch()
 		menuRow1.addWidget(self.stmSettings)
+		menuRow1.addWidget(self.stmDirs)
 		menuRow1.addStretch()
 
 		menuRow2 = QHBoxLayout()
 		menuRow2.addStretch()
-		menuRow2.addWidget(self.stmDirs)
-		menuRow2.addStretch()
 		menuRow2.addWidget(self.stmLinks)
+		menuRow2.addWidget(self.stmList)
+		menuRow2.addWidget(self.stmLogs)
 		menuRow2.addStretch()
 
 		menuBox = QVBoxLayout()
@@ -2492,6 +2512,8 @@ class Dialog(QDialog):
 			self.stmSettings.setEnabled(False)
 			self.stmDirs.setEnabled(False)
 			self.stmLinks.setEnabled(False)
+			self.stmList.setEnabled(False)
+			self.stmLogs.setEnabled(False)
 
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
@@ -2570,6 +2592,8 @@ class Dialog(QDialog):
 			self.stmSettings.setEnabled(False)
 			self.stmDirs.setEnabled(False)
 			self.stmLinks.setEnabled(False)
+			self.stmList.setEnabled(False)
+			self.stmLogs.setEnabled(False)
 
 		# Notifications
 
@@ -4757,6 +4781,9 @@ class Dialog(QDialog):
 		config.SHOW_SETTINGS_IN_SYSTRAY_MENU = self.stmSettings.isChecked()
 		config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU = self.stmDirs.isChecked()
 		config.SHOW_LINKS_IN_SYSTRAY_MENU = self.stmLinks.isChecked()
+		config.SHOW_LIST_IN_SYSTRAY_MENU = self.stmList.isChecked()
+		config.SHOW_LOGS_IN_SYSTRAY_MENU = self.stmLogs.isChecked()
+		config.SHOW_LOGS_IN_WINDOWS_MENU = self.showLogsInWindows.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

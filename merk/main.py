@@ -946,18 +946,20 @@ class Merk(QMainWindow):
 						entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 						sm.addAction(entry)
 
-						entry = QAction(QIcon(LIST_ICON),"Channel list",self)
-						entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
-						sm.addAction(entry)
+						if config.SHOW_LIST_IN_SYSTRAY_MENU:
+							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
+							entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
+							sm.addAction(entry)
 
-						if not c.client.registered: entry.setEnabled(False)
+							if not c.client.registered: entry.setEnabled(False)
 
-						entry = QAction(QIcon(LOG_ICON),"Network logs",self)
-						entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
-						sm.addAction(entry)
+						if config.SHOW_LOGS_IN_SYSTRAY_MENU:
+							entry = QAction(QIcon(LOG_ICON),f"{mynet} logs",self)
+							entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+							sm.addAction(entry)
 
-						if mynet=="Unknown": entry.setEnabled(False)
-						if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
+							if mynet=="Unknown": entry.setVisible(False)
+							if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
 
 						sm.addSeparator()
 
@@ -4011,12 +4013,13 @@ class Merk(QMainWindow):
 						if not c.list_button.isEnabled():
 							entry.setEnabled(False)
 
-					entry = QAction(QIcon(LOG_ICON),"Network logs",self)
-					entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
-					sm.addAction(entry)
+					if config.SHOW_LOGS_IN_WINDOWS_MENU:
+						entry = QAction(QIcon(LOG_ICON),f"{mynet} logs",self)
+						entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+						sm.addAction(entry)
 
-					if mynet=="Unknown": entry.setEnabled(False)
-					if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
+						if mynet=="Unknown": entry.setVisible(False)
+						if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
 
 					sm.addSeparator()
 
