@@ -1526,6 +1526,23 @@ class Window(QMainWindow):
 							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
 							menu.addAction(entry)
 
+							status_text = ''
+							if user_is_op:
+								status_text = "Channel operator"
+							elif user_is_owner:
+								status_text = "Channel owner"
+							elif user_is_admin:
+								status_text = "Channel admin"
+							elif user_is_halfop:
+								status_text = "Channel half-operator"
+							elif user_is_protected:
+								status_text = "Protected user"
+							elif user_is_voiced:
+								status_text = "Voiced user"
+							if status_text!='':
+								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+								menu.addAction(entry)
+
 							if is_hidden:
 								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
 								menu.addAction(e)
@@ -1546,6 +1563,23 @@ class Window(QMainWindow):
 						else:
 							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
 							menu.addAction(entry)
+
+							status_text = ''
+							if user_is_op:
+								status_text = "Channel operator"
+							elif user_is_owner:
+								status_text = "Channel owner"
+							elif user_is_admin:
+								status_text = "Channel admin"
+							elif user_is_halfop:
+								status_text = "Channel half-operator"
+							elif user_is_protected:
+								status_text = "Protected user"
+							elif user_is_voiced:
+								status_text = "Voiced user"
+							if status_text!='':
+								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+								menu.addAction(entry)
 
 							if is_hidden:
 								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
@@ -1576,6 +1610,23 @@ class Window(QMainWindow):
 					if user_hostmask:
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
 						menu.addAction(entry)
+
+						status_text = ''
+						if user_is_op:
+							status_text = "Channel operator"
+						elif user_is_owner:
+							status_text = "Channel owner"
+						elif user_is_admin:
+							status_text = "Channel admin"
+						elif user_is_halfop:
+							status_text = "Channel half-operator"
+						elif user_is_protected:
+							status_text = "Protected user"
+						elif user_is_voiced:
+							status_text = "Voiced user"
+						if status_text!='':
+							entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+							menu.addAction(entry)
 
 						if is_hidden:
 							e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
