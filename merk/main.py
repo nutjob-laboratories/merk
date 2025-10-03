@@ -561,6 +561,9 @@ class Merk(QMainWindow):
 					icon = LOG_ICON
 					serv_name = "Log Manager"
 					wname = "Log Manager"
+					if c.target!=None:
+						wname = f"Log Manager ({c.target})"
+						serv_name = f"Log Manager ({c.target})"
 				elif c.window_type==README_WINDOW:
 					icon = README_ICON
 					serv_name = "README"
@@ -578,9 +581,9 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
 				if c.window_type==LOG_MANAGER_WINDOW:
 					if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
-						button.doubleClicked.connect(self.menuExportLogMax)
+						button.doubleClicked.connect(self.menuExportLogMaxBar)
 					else:
-						button.doubleClicked.connect(self.menuExportLog)
+						button.doubleClicked.connect(self.menuExportLogBar)
 				if c.window_type==CHANNEL_WINDOW:
 					button.setToolTip(serv_name)
 				if c.window_type==PRIVATE_WINDOW:
@@ -683,6 +686,9 @@ class Merk(QMainWindow):
 					icon = LOG_ICON
 					serv_name = "Log Manager"
 					wname = "Log Manager"
+					if c.target!=None:
+						wname = f"Log Manager ({c.target})"
+						serv_name = f"Log Manager ({c.target})"
 				elif c.window_type==README_WINDOW:
 					icon = README_ICON
 					serv_name = "README"
@@ -697,9 +703,9 @@ class Merk(QMainWindow):
 					button.doubleClicked.connect(lambda u=window: self.showSubWindow(u))
 				if c.window_type==LOG_MANAGER_WINDOW:
 					if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
-						button.doubleClicked.connect(self.menuExportLogMax)
+						button.doubleClicked.connect(self.menuExportLogMaxBar)
 					else:
-						button.doubleClicked.connect(self.menuExportLog)
+						button.doubleClicked.connect(self.menuExportLogBar)
 				if c.window_type==CHANNEL_WINDOW:
 					button.setToolTip(c.name + "\n" + serv_name)
 				if c.window_type==PRIVATE_WINDOW:
@@ -945,6 +951,13 @@ class Merk(QMainWindow):
 						sm.addAction(entry)
 
 						if not c.client.registered: entry.setEnabled(False)
+
+						entry = QAction(QIcon(LOG_ICON),"Network logs",self)
+						entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+						sm.addAction(entry)
+
+						if mynet=="Unknown": entry.setEnabled(False)
+						if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
 
 						sm.addSeparator()
 
@@ -3038,6 +3051,31 @@ class Merk(QMainWindow):
 
 		return w
 
+	def newLogManagerTarget(self,target):
+		w = QMdiSubWindow(self)
+		if config.SIMPLIFIED_DIALOGS:
+			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,True,self.app,target))
+		else:
+			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,False,self.app,target))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(LOG_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		w.show()
+
+		if config.RUBBER_BAND_RESIZE:
+			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
+		self.log_manager = w
+		self.buildWindowsMenu()
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		return w
+
 	def newLogManagerMax(self):
 		w = QMdiSubWindow(self)
 		if config.SIMPLIFIED_DIALOGS:
@@ -3966,13 +4004,19 @@ class Merk(QMainWindow):
 						if not c.list_button.isEnabled():
 							entry.setEnabled(False)
 
-
 						entry = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
 						entry.triggered.connect(lambda state,u=sw: self.menuRefreshList(u))
 						sm.addAction(entry)
 
 						if not c.list_button.isEnabled():
 							entry.setEnabled(False)
+
+					entry = QAction(QIcon(LOG_ICON),"Network logs",self)
+					entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+					sm.addAction(entry)
+
+					if mynet=="Unknown": entry.setEnabled(False)
+					if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setEnabled(False)
 
 					sm.addSeparator()
 
@@ -4007,6 +4051,13 @@ class Merk(QMainWindow):
 				c = self.log_manager.widget()
 				entry = QAction(QIcon(LOG_ICON),c.name,self)
 				entry.triggered.connect(lambda state,u=self.log_manager: self.showSubWindow(u))
+				self.windowsMenu.addAction(entry)
+
+		if self.readme_window!=None:
+			if self.readme_window.isVisible():
+				c = self.readme_window.widget()
+				entry = QAction(QIcon(README_ICON),c.name,self)
+				entry.triggered.connect(lambda state,u=self.readme_window: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
 		self.windowsMenu.addSeparator()
@@ -4303,16 +4354,62 @@ class Merk(QMainWindow):
 	def menuExportLog(self):
 		if self.log_manager==None:
 			self.newLogManager()
+			self.MDI.setActiveSubWindow(self.log_manager)
 		else:
+			if self.log_manager.widget().target!=None: self.log_manager.widget().setNewTarget(None)
 			self.showSubWindow(self.log_manager)
+			self.MDI.setActiveSubWindow(self.log_manager)
 		self.toolsMenu.close()
+		self.buildWindowsMenu()
 
 	def menuExportLogMax(self):
 		if self.log_manager==None:
 			self.newLogManagerMax()
+			self.MDI.setActiveSubWindow(self.log_manager)
+		else:
+			if self.log_manager.widget().target!=None: self.log_manager.widget().setNewTarget(None)
+			self.showSubWindowMaximized(self.log_manager)
+			self.MDI.setActiveSubWindow(self.log_manager)
+		self.toolsMenu.close()
+		self.buildWindowsMenu()
+
+	def menuExportLogBar(self):
+		if self.log_manager==None:
+			self.newLogManager()
+			self.MDI.setActiveSubWindow(self.log_manager)
+		else:
+			self.showSubWindow(self.log_manager)
+			self.MDI.setActiveSubWindow(self.log_manager)
+		self.buildWindowsMenu()
+
+	def menuExportLogMaxBar(self):
+		if self.log_manager==None:
+			self.newLogManagerMax()
+			self.MDI.setActiveSubWindow(self.log_manager)
 		else:
 			self.showSubWindowMaximized(self.log_manager)
-		self.toolsMenu.close()
+			self.MDI.setActiveSubWindow(self.log_manager)
+		self.buildWindowsMenu()
+
+	def menuExportLogTarget(self,target):
+		if self.log_manager==None:
+			self.newLogManagerTarget(target)
+			self.MDI.setActiveSubWindow(self.log_manager)
+		else:
+			self.log_manager.widget().setNewTarget(target)
+			self.showSubWindow(self.log_manager)
+			self.MDI.setActiveSubWindow(self.log_manager)
+		self.buildWindowsMenu()
+
+	def menuExportLogMaxTarget(self,target):
+		if self.log_manager==None:
+			self.newLogManagerMaxTarget(target)
+			self.MDI.setActiveSubWindow(self.log_manager)
+		else:
+			self.log_manager.widget().setNewTarget(target)
+			self.showSubWindowMaximized(self.log_manager)
+			self.MDI.setActiveSubWindow(self.log_manager)
+		self.buildWindowsMenu()
 
 	def getAllEditorWindows(self):
 		retval = []

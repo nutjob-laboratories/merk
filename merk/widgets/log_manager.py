@@ -229,6 +229,26 @@ class Window(QMainWindow):
 	def buildList(self):
 
 		self.packlist.clear()
+		self.chat.clear()
+		self.search.clear()
+		self.log = []
+
+		self.status_details.setText(f"<small><b>Select a log to view or export</b></small>")
+		self.filesize.setText(' ')
+		self.filestats.setText(" ")
+		self.filetype.setText('<b>to export</b>')
+		self.file_icon.setPixmap(self.blank_file)
+		self.log_render_status.setText(' ')
+		self.filename.setText('<b>Select a log</b>')
+
+		self.menubar.setEnabled(False)
+		self.format.setEnabled(False)
+		self.typeLabel.setEnabled(False)
+		self.type.setEnabled(False)
+		self.lineLabel.setEnabled(False)
+		self.line.setEnabled(False)
+		self.time.setEnabled(False)
+		self.button_export.setEnabled(False)
 
 		servers = []
 		others = []
@@ -251,7 +271,7 @@ class Window(QMainWindow):
 								netname = netname[1:]
 
 						if self.target!=None:
-							if self.target.lower()==netname.lower(): continue
+							if self.target.lower()!=netname.lower(): continue
 
 						if is_a_server_log:
 							item = QListWidgetItem(netname+":"+channel+" (SERVER)")
@@ -305,10 +325,14 @@ class Window(QMainWindow):
 
 		self.window_type = LOG_MANAGER_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
-		self.name = "Log Manager"
-
-		self.setWindowTitle("Log Manager")
 		self.setWindowIcon(QIcon(LOG_ICON))
+
+		if target!=None:
+			self.name = f"Log Manager ({self.target})"
+			self.setWindowTitle(f"Log Manager ({self.target})")
+		else:
+			self.name = "Log Manager"
+			self.setWindowTitle("Log Manager")
 
 		self.channel_file = QPixmap(CHANNEL_ICON)
 		self.private_file = QPixmap(PRIVATE_ICON)
@@ -327,8 +351,6 @@ class Window(QMainWindow):
 		self.chat.setFocusPolicy(Qt.NoFocus)
 		self.chat.anchorClicked.connect(self.linkClicked)
 		self.chat.setReadOnly(True)
-
-		self.buildList()
 
 		delimLayout = QFormLayout()
 
@@ -439,7 +461,6 @@ class Window(QMainWindow):
 		buttons.addStretch()
 		
 		mainLayout = QHBoxLayout()
-		# mainLayout.addWidget(self.packlist)
 		mainLayout.addWidget(self.chat)
 
 		sideLayout = QVBoxLayout()
@@ -553,6 +574,8 @@ class Window(QMainWindow):
 
 		self.log_render_status = QLabel(" ")
 
+		self.buildList()
+
 		sbar = QVBoxLayout()
 		sbar.addWidget(self.filestats)
 		sbar.addWidget(self.log_render_status)
@@ -563,8 +586,6 @@ class Window(QMainWindow):
 		buttonbar.addWidget(self.button_close)
 
 		managerLayout = QHBoxLayout()
-		# managerLayout.addWidget(self.packlist)
-		# managerLayout.addWidget(self.tabs)
 		managerLayout.addWidget(self.horizontalSplitter)
 
 		finalLayout = QVBoxLayout()
@@ -581,8 +602,6 @@ class Window(QMainWindow):
 
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
-
-		# self.setLayout(finalLayout)
 
 	def on_search(self):
 		search_text = self.search.text()
