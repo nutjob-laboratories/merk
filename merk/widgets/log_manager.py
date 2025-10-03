@@ -214,7 +214,80 @@ class Window(QMainWindow):
 			self.chat.setSource(QUrl())
 			sb.setValue(og_value)
 
-	def __init__(self,logdir,parent=None,simplified=False,app=None):
+	def setNewTarget(self,target):
+		self.target = target
+
+		if target!=None:
+			self.name = f"Log Manager ({self.target})"
+			self.setWindowTitle(f"Log Manager ({self.target})")
+		else:
+			self.name = "Log Manager"
+			self.setWindowTitle("Log Manager")
+
+		self.buildList()
+
+	def buildList(self):
+
+		self.packlist.clear()
+
+		servers = []
+		others = []
+
+		for x in os.listdir(self.logdir):
+			if x.endswith(".json"):
+				log = os.path.join(self.logdir, x)
+				if os.path.isfile(log):
+					p = os.path.basename(log).replace('.json','')
+
+					p = p.split(LOG_AND_STYLE_FILENAME_DELIMITER,1)
+					if len(p)==2:
+						netname = deescape_for_filename(p[0])
+						channel = deescape_for_filename(p[1])
+
+						is_a_server_log = False
+						if len(netname)>1:
+							if netname[0]=='#':
+								is_a_server_log = True
+								netname = netname[1:]
+
+						if self.target!=None:
+							if self.target.lower()==netname.lower(): continue
+
+						if is_a_server_log:
+							item = QListWidgetItem(netname+":"+channel+" (SERVER)")
+							item.file = log
+							servers.append(item)
+						else:
+							netname = netname.upper()
+
+							item = QListWidgetItem(channel)
+							item.setToolTip(f"{channel} on {netname} network")
+
+							if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
+								item.setIcon(QIcon(PRIVATE_WINDOW_ICON))
+								item.type = PRIVATE_WINDOW
+							else:
+								item.setIcon(QIcon(CHANNEL_WINDOW_ICON))
+								item.type = CHANNEL_WINDOW
+
+							item.file = log
+							item.network = netname
+							item.channel = channel
+							others.append(item)
+
+		# Sort channel/chat logs by network, THEN chat name
+		others = sorted(others,key=operator.attrgetter("network","channel"))
+		# Sort servers by name
+		servers = sorted(servers, key=lambda obj: obj.text())
+
+		# Add the now sorted logs to the list widget
+		for e in others:
+			self.packlist.addItem(e)
+
+		for e in servers:
+			self.packlist.addItem(e)
+
+	def __init__(self,logdir,parent=None,simplified=False,app=None,target=None):
 		super(Window,self).__init__(parent)
 
 		self.parent = parent
@@ -223,6 +296,7 @@ class Window(QMainWindow):
 		self.delimiter = "\t"
 		self.linedelim = "\n"
 		self.simplified = simplified
+		self.target = target
 
 		self.do_json = True
 		self.epoch = False
@@ -254,60 +328,7 @@ class Window(QMainWindow):
 		self.chat.anchorClicked.connect(self.linkClicked)
 		self.chat.setReadOnly(True)
 
-		servers = []
-		others = []
-
-		for x in os.listdir(self.logdir):
-			if x.endswith(".json"):
-				log = os.path.join(self.logdir, x)
-				if os.path.isfile(log):
-					p = os.path.basename(log).replace('.json','')
-
-					p = p.split(LOG_AND_STYLE_FILENAME_DELIMITER,1)
-					if len(p)==2:
-						netname = deescape_for_filename(p[0])
-						channel = deescape_for_filename(p[1])
-
-						is_a_server_log = False
-						if len(netname)>1:
-							if netname[0]=='#':
-								is_a_server_log = True
-								netname = netname[1:]
-
-						if is_a_server_log:
-							item = QListWidgetItem(netname+":"+channel+" (SERVER)")
-							item.file = log
-							servers.append(item)
-						else:
-							netname = netname.upper()
-
-							#item = QListWidgetItem(channel+" ("+netname+")")
-							item = QListWidgetItem(channel)
-							item.setToolTip(f"{channel} on {netname} network")
-
-							if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
-								item.setIcon(QIcon(PRIVATE_WINDOW_ICON))
-								item.type = PRIVATE_WINDOW
-							else:
-								item.setIcon(QIcon(CHANNEL_WINDOW_ICON))
-								item.type = CHANNEL_WINDOW
-
-							item.file = log
-							item.network = netname
-							item.channel = channel
-							others.append(item)
-
-		# Sort channel/chat logs by network, THEN chat name
-		others = sorted(others,key=operator.attrgetter("network","channel"))
-		# Sort servers by name
-		servers = sorted(servers, key=lambda obj: obj.text())
-
-		# Add the now sorted logs to the list widget
-		for e in others:
-			self.packlist.addItem(e)
-
-		for e in servers:
-			self.packlist.addItem(e)
+		self.buildList()
 
 		delimLayout = QFormLayout()
 
