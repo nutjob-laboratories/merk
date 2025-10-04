@@ -1410,6 +1410,11 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def eventFilter(self, source, event):
+		if source == self.selector.viewport() and event.type() == QEvent.Wheel:
+			return True
+		return super().eventFilter(source, event)
+
 	def __init__(self,app=None,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -1492,6 +1497,9 @@ class Dialog(QDialog):
 		self.selector = QListWidget(self)
 		self.stack = QStackedWidget(self)
 
+		# Prevent users from scrolling the selector with the
+		# mouse wheel, or anything else
+		self.selector.viewport().installEventFilter(self)
 		self.selector.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.selector.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
