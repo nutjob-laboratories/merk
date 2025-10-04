@@ -1010,7 +1010,7 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
-				entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+				entry = QAction(QIcon(LOG_ICON),"Save log",self)
 				entry.triggered.connect(self.menuSaveLogs)
 				menu.addAction(entry)
 
@@ -1056,7 +1056,7 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.clearChat)
 			self.settingsMenu.addAction(entry)
 
-			entry = QAction(QIcon(LOG_ICON),"Save log to file",self)
+			entry = QAction(QIcon(LOG_ICON),"Save log",self)
 			entry.triggered.connect(self.menuSaveLogs)
 			self.settingsMenu.addAction(entry)
 
@@ -2429,35 +2429,6 @@ class Window(QMainWindow):
 		if event.spontaneous():
 			pass
 
-		if self.force_close:
-			# Let the parent know that this subwindow
-			# has been closed by the user
-			self.parent.closeSubWindow(self.subwindow_id)
-
-			event.accept()
-			self.close()
-			return
-
-		if self.client.client_id in self.parent.quitting:
-			if self.window_type==SERVER_WINDOW:
-				self.parent.closeSubWindow(self.subwindow_id)
-				event.accept()
-				self.close()
-				return
-
-		# Server windows are never closed unless
-		# the server has been disconnected; they
-		# are only hidden
-		if self.window_type==SERVER_WINDOW:
-			if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
-				self.disconnect()
-				event.ignore()
-			else:
-				event.ignore()
-				self.parent.hideSubWindow(self.subwindow_id)
-				self.parent.MDI.activateNextSubWindow()
-			return
-
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
 			if config.ENABLE_EMOJI_SHORTCODES:
@@ -2488,6 +2459,35 @@ class Window(QMainWindow):
 			if save_logs:
 				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 				self.parent.buildToolsMenu()
+
+		if self.force_close:
+			# Let the parent know that this subwindow
+			# has been closed by the user
+			self.parent.closeSubWindow(self.subwindow_id)
+
+			event.accept()
+			self.close()
+			return
+
+		if self.client.client_id in self.parent.quitting:
+			if self.window_type==SERVER_WINDOW:
+				self.parent.closeSubWindow(self.subwindow_id)
+				event.accept()
+				self.close()
+				return
+
+		# Server windows are never closed unless
+		# the server has been disconnected; they
+		# are only hidden
+		if self.window_type==SERVER_WINDOW:
+			if config.CLOSING_SERVER_WINDOW_DISCONNECTS:
+				self.disconnect()
+				event.ignore()
+			else:
+				event.ignore()
+				self.parent.hideSubWindow(self.subwindow_id)
+				self.parent.MDI.activateNextSubWindow()
+			return
 
 
 		# Let the parent know that this subwindow
@@ -2528,17 +2528,11 @@ class Window(QMainWindow):
 		self.dosave.start(config.LOG_SAVE_INTERVAL)
 
 	def menuSaveLogs(self):
-		# Save logs
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
-			options = QFileDialog.Options()
-			options |= QFileDialog.DontUseNativeDialog
-			fileName, _ = QFileDialog.getSaveFileName(self,"Save log as...","",f"{APPLICATION_NAME} Log (*.json);;All Files (*)", options=options)
-			if fileName:
-				_, file_extension = os.path.splitext(fileName)
-				if file_extension=='':
-					efl = len('json')+1
-					if fileName[-efl:].lower()!=".json": fileName = fileName+".json"
-				logs.saveLogFile(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY,fileName)
+			if len(self.new_log)>0:
+				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+				self.new_log = []
+			self.parent.buildToolsMenu()
 
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)
