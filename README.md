@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.050.700">MERK 0.050.700</a></big></b><br>
-  <b>Current development version: 0.050.707</b><br><br>
+  <b>Current development version: 0.050.708</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
 </p>
 
@@ -30,13 +30,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.050.700 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.700)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.050.707 (12.03 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows EXE | [Download MERK 0.050.707 (48.86 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows Setup | [Download MERK 0.050.707 (46.02 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.050.708 (12.03 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows EXE | [Download MERK 0.050.708 (48.86 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows Setup | [Download MERK 0.050.708 (46.02 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.707**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.708**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.050.700](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.700). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -118,7 +118,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.050.700), and may reflect the current development version (0.050.707). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.050.700), and may reflect the current development version (0.050.708). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -240,7 +240,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/cascade`                              | Cascades all subwindows                                                                                                          |
 | `/clear [SERVER] [WINDOW]`              | Clears a window's chat display. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                    |
 | `/close [SERVER] [WINDOW]`              | Closes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
-| `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk!* |
+| `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk! |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
 | `context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; *can only be called from scripts*                                                  |
@@ -308,7 +308,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
 | `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. *Can only be called by scripts*                                                        |
-| `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk!* |
+| `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk! |
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
 | `wait SECONDS`                         | Pauses script execution for `SECONDS`; *can only be called from scripts*                                                           |
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |

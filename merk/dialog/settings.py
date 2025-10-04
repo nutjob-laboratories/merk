@@ -434,6 +434,7 @@ class Dialog(QDialog):
 				self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(True)
 			self.autocompleteSettings.setEnabled(True)
+			self.autocompleteUser.setEnabled(True)
 		else:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -442,6 +443,7 @@ class Dialog(QDialog):
 			self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(False)
 			self.autocompleteSettings.setEnabled(False)
+			self.autocompleteUser.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -3448,6 +3450,10 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_SETTINGS: self.autocompleteSettings.setChecked(True)
 		self.autocompleteSettings.stateChanged.connect(self.changedSetting)
 
+		self.autocompleteUser = QCheckBox("User settings",self)
+		if config.AUTOCOMPLETE_USER: self.autocompleteUser.setChecked(True)
+		self.autocompleteUser.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_AUTOCOMPLETE:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -3456,6 +3462,7 @@ class Dialog(QDialog):
 			self.autocompleteAlias.setEnabled(False)
 			self.autocompleteScripts.setEnabled(False)
 			self.autocompleteSettings.setEnabled(False)
+			self.autocompleteUser.setEnabled(False)
 
 		if not config.ENABLE_ALIASES:
 			self.autocompleteAlias.setEnabled(False)
@@ -3474,7 +3481,7 @@ class Dialog(QDialog):
 		autoSettingsLayout.addRow(self.autocompleteCommands,self.autocompleteNicks)
 		autoSettingsLayout.addRow(self.autocompleteChans,self.autocompleteEmojis)
 		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteAlias)
-		autoSettingsLayout.addRow(self.autocompleteSettings)
+		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
@@ -4829,6 +4836,7 @@ class Dialog(QDialog):
 		config.SHOW_LOGS_IN_WINDOWS_MENU = self.showLogsInWindows.isChecked()
 		config.DELAY_AUTO_RECONNECTION = self.delayReconnect.isChecked()
 		config.RECONNECTION_DELAY = self.RECONNECTION_DELAY
+		config.AUTOCOMPLETE_USER = self.autocompleteUser.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

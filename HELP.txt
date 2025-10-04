@@ -137,7 +137,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/config [SETTING] [VALUE...]</code></td>
-<td>Changes a setting, or searches and displays one or all settings in the configuration file.  <strong>*Caution*</strong>: use at your own risk!*</td>
+<td>Changes a setting, or searches and displays one or all settings in the configuration file.  <strong>*Caution*</strong>: use at your own risk!</td>
 </tr>
 <tr>
 <td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
@@ -411,7 +411,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/user [SETTING] [VALUE...]</code></td>
-<td>Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass <code>*</code> as <code>VALUE</code> to set a setting as blank. <strong>*Caution*</strong>: use at your own risk!*</td>
+<td>Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass <code>*</code> as <code>VALUE</code> to set a setting as blank. <strong>*Caution*</strong>: use at your own risk!</td>
 </tr>
 <tr>
 <td><code>/version [SERVER]</code></td>
