@@ -1236,7 +1236,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
 		if config.ASK_BEFORE_RECONNECT:
-			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.\nTry to reconnect?"
+			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.\n\nTry to reconnect?"
 
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
