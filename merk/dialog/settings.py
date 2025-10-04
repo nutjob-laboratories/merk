@@ -1510,11 +1510,10 @@ class Dialog(QDialog):
 		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
 
 		fm = QFontMetrics(self.font())
-		fwidth = fm.width('X') * 27
+		fwidth = fm.width('X') * 22
 		self.selector.setMaximumWidth(fwidth)
 
-		# add_factor = 10
-		add_factor = 14
+		add_factor = 13
 		self.selector.setIconSize(QSize(fm.height()+add_factor,fm.height()+add_factor))
 
 		self.selector.itemClicked.connect(self.selectorClick)
