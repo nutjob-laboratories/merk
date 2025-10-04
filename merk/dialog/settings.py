@@ -4117,10 +4117,9 @@ class Dialog(QDialog):
 		if config.HALT_SCRIPT_EXECUTION_ON_ERROR: self.haltError.setChecked(True)
 		self.haltError.stateChanged.connect(self.changedSetting)
 
-		self.requireArgs = QCheckBox(f"Require the exact argument\ncount for usage command",self)
+		self.requireArgs = QCheckBox(f"Exact argument count with \"usage\"",self)
 		if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS: self.requireArgs.setChecked(True)
 		self.requireArgs.stateChanged.connect(self.changedSetting)
-		self.requireArgs.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.enableInsert = QCheckBox(f"insert",self)
 		if config.ENABLE_INSERT_COMMAND: self.enableInsert.setChecked(True)
@@ -4191,14 +4190,12 @@ class Dialog(QDialog):
 		cmdLayout.addStretch()
 
 		cmdLayout2 = QHBoxLayout()
+		cmdLayout2.addStretch()
 		cmdLayout2.addWidget(self.enableInsert)
 		cmdLayout2.addWidget(self.enableGoto)
 		cmdLayout2.addWidget(self.enableIf)
 		cmdLayout2.addWidget(self.enableWait)
-
-		allCmdLayout = QVBoxLayout()
-		allCmdLayout.addLayout(cmdLayout)
-		allCmdLayout.addLayout(cmdLayout2)
+		cmdLayout2.addStretch()
 
 		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints",self)
 		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
@@ -4225,7 +4222,9 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(self.promptScript)
 		scriptingLayout.addWidget(self.escapeHTML)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable commands</b>"))
-		scriptingLayout.addLayout(allCmdLayout)
+		scriptingLayout.addLayout(cmdLayout)
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable script-only commands</b>"))
+		scriptingLayout.addLayout(cmdLayout2)
 		scriptingLayout.addStretch()
 
 		self.scriptingPage.setLayout(scriptingLayout)
