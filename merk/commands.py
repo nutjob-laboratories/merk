@@ -183,12 +183,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"resize": config.ISSUE_COMMAND_SYMBOL+"resize ",
 			config.ISSUE_COMMAND_SYMBOL+"move": config.ISSUE_COMMAND_SYMBOL+"move ",
 			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
-			config.ISSUE_COMMAND_SYMBOL+"finger": config.ISSUE_COMMAND_SYMBOL+"finger ",
-			config.ISSUE_COMMAND_SYMBOL+"userinfo": config.ISSUE_COMMAND_SYMBOL+"userinfo ",
 			config.ISSUE_COMMAND_SYMBOL+"reconnect": config.ISSUE_COMMAND_SYMBOL+"reconnect ",
 			config.ISSUE_COMMAND_SYMBOL+"reconnectssl": config.ISSUE_COMMAND_SYMBOL+"reconnectssl ",
 			config.ISSUE_COMMAND_SYMBOL+"xreconnect": config.ISSUE_COMMAND_SYMBOL+"xreconnect ",
 			config.ISSUE_COMMAND_SYMBOL+"xreconnectssl": config.ISSUE_COMMAND_SYMBOL+"xreconnectssl ",
+			config.ISSUE_COMMAND_SYMBOL+"user": config.ISSUE_COMMAND_SYMBOL+"user ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -301,13 +300,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]</b>", "Sets focus on a subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"finger TEXT...</b>", "Sets the CTCP FINGER response" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"userinfo TEXT...</b>", "Sets the CTCP USERINFO response" ],
-
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server & executes connection script, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script, reconnecting on disconnection" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the user configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1149,6 +1146,183 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
+	# |-------|
+	# | /user |
+	# |-------|
+	if len(tokens)>=1:
+
+		# No arguments dumps a list of all editable config values
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==1:
+			settings = USER.build_settings()
+
+			count = 0
+			results = []
+			for s in settings:
+				if type(settings[s]) is list: continue
+				if type(settings[s]) is dict: continue
+				count = count + 1
+				if type(settings[s]).__name__=='bool':
+					dtype = "boolean"
+				elif type(settings[s]).__name__=='int':
+					dtype = "integer"
+				elif type(settings[s]).__name__=='str':
+					dtype = "string"
+				else:
+					dtype = "unknown"
+				t = Message(SYSTEM_MESSAGE,'',f"{count}) {s} = \"{settings[s]}\" ({dtype})")
+				results.append(t)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} user settings")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			for t in results:
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} user search results")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		# One argument displays the config value
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==2:
+			settings = USER.build_settings()
+
+			tokens.pop(0)
+			my_setting = tokens.pop(0)
+
+			if my_setting in settings:
+				if type(settings[my_setting]) is list or type(settings[my_setting]) is dict:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 user settings containing \"{my_setting}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End 0 user search results")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+			if my_setting in settings:
+				if type(settings[my_setting]).__name__=='bool':
+					dtype = "boolean"
+				elif type(settings[my_setting]).__name__=='int':
+					dtype = "integer"
+				elif type(settings[my_setting]).__name__=='str':
+					dtype = "string"
+				else:
+					dtype = "unknown"
+				t = Message(SYSTEM_MESSAGE,'',f"{my_setting} = \"{settings[my_setting]}\" ({dtype})")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				results = []
+				for a in settings:
+					if type(settings[a]) is list: continue
+					if type(settings[a]) is dict: continue
+					if fnmatch.fnmatch(a,f"*{my_setting}*"):
+						results.append(a)
+
+				if len(results)==0:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: No settings found containing \"{my_setting}\"")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"No settings found containing \"{my_setting}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				if len(results)>1:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} user settings containing \"{my_setting}\"")
+				else:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} user setting containing \"{my_setting}\"")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+				counter = 0
+				for r in results:
+					counter = counter + 1
+					if type(settings[r]).__name__=='bool':
+						dtype = "boolean"
+					elif type(settings[r]).__name__=='int':
+						dtype = "integer"
+					elif type(settings[r]).__name__=='str':
+						dtype = "string"
+					else:
+						dtype = "unknown"
+					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {r} = \"{settings[r]}\" ({dtype})")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+				if len(results)>1:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} user search results")
+				else:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} user search result")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		# Two and more, we're editing user values
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>2:
+			settings = USER.build_settings()
+
+			tokens.pop(0)
+			my_setting = tokens.pop(0)
+			my_value = ' '.join(tokens)
+
+			if my_value=='*': my_value = ''
+
+			if my_setting in settings:
+				if type(settings[my_setting])==list or type(settings[my_setting])==dict:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{my_setting}\" cannot be changed with the {config.ISSUE_COMMAND_SYMBOL}user command")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" cannot be changed with the {config.ISSUE_COMMAND_SYMBOL}user command")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+			if my_setting in settings:
+				try:
+					my_value=int(my_value)
+				except:
+					if str(my_value).lower()=='true': my_value = True
+					if str(my_value).lower()=='false': my_value = False
+
+				if type(my_value)!= type(settings[my_setting]):
+					if type(settings[my_setting]).__name__=='bool':
+						dtype = "boolean"
+					elif type(settings[my_setting]).__name__=='int':
+						dtype = "integer"
+					elif type(settings[my_setting]).__name__=='str':
+						dtype = "string"
+					else:
+						dtype = "unknown"
+					if type(my_value).__name__=='bool':
+						itype = "boolean"
+					elif type(my_value).__name__=='int':
+						itype = "integer"
+					elif type(my_value).__name__=='str':
+						itype = "string"
+					else:
+						itype = "unknown"
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{my_value}\" is not a valid value for \"{my_setting}\" (value is {itype}, requires {dtype})")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for \"{my_setting}\" (value is {itype}, requires {dtype})")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				USER.import_data(my_setting,my_value)
+				USER.save_user(USER.USER_FILE)
+
+				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line: {line_number}: \"{my_setting}\" is not a valid user setting")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{my_setting}\" is not a valid user setting")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
 	# |---------------|
 	# | /reconnectssl |
 	# |---------------|
@@ -1421,82 +1595,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"xreconnect HOST [PORT] [PASSWORD]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
-
-	# |---------|
-	# | /finger |
-	# |---------|
-	if len(tokens)>=1:
-		if len(tokens)>=2:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
-				tokens.pop(0)
-				msg = ' '.join(tokens)
-
-				if msg=='*': msg = ''
-
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_QUIT_MESSAGE
-
-				USER.FINGER = msg
-				USER.save_user(USER.USER_FILE)
-				gui.toggleUserinfo()
-				return True
-
-		if is_script:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"finger TEXT...")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True 
-		else:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'finger':
-				if USER.FINGER=='':
-					t = Message(SYSTEM_MESSAGE,'',f"No FINGER message")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				else:
-					t = Message(SYSTEM_MESSAGE,'',f"FINGER message: {USER.FINGER}")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-	# |-----------|
-	# | /userinfo |
-	# |-----------|
-	if len(tokens)>=1:
-		if len(tokens)>=2:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
-				tokens.pop(0)
-				msg = ' '.join(tokens)
-
-				if msg=='*': msg = ''
-
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_QUIT_MESSAGE
-
-				USER.USERINFO = msg
-				USER.save_user(USER.USER_FILE)
-				gui.toggleUserinfo()
-				return True
-
-		if is_script:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"userinfo TEXT...")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True 
-		else:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userinfo':
-				if USER.USERINFO=='':
-					t = Message(SYSTEM_MESSAGE,'',f"No USERINFO message")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				else:
-					t = Message(SYSTEM_MESSAGE,'',f"USERINFO message: {USER.USERINFO}")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
 
 	# |--------|
 	# | /focus |

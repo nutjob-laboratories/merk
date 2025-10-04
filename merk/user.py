@@ -139,6 +139,35 @@ def load_user(filename):
 	else:
 		save_user(filename)
 
+def import_data(entry,value):
+	global NICKNAME
+	global ALTERNATE
+	global REALNAME
+	global USERNAME
+	global LAST_HOST
+	global LAST_PORT
+	global LAST_SSL
+	global LAST_RECONNECT
+	global LAST_PASSWORD
+	global USERINFO
+	global FINGER
+
+	settings = build_settings()
+	settings[entry] = value
+
+	NICKNAME = settings["nickname"]
+	ALTERNATE = settings["alternate"]
+	REALNAME = settings["realname"]
+	USERNAME = settings["username"]
+	LAST_HOST = settings["last_host"]
+	LAST_PORT = settings["last_port"]
+	LAST_SSL = settings["last_ssl"]
+	LAST_RECONNECT = settings["last_reconnect"]
+	LAST_PASSWORD = settings["last_password"]
+	LAST_PASSWORD = settings["last_password"]
+	USERINFO = settings["userinfo"]
+	FINGER = settings["finger"]
+
 def save_user(filename):
 
 	settings = build_settings()

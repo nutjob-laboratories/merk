@@ -251,7 +251,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `exclude WINDOW...`                       | Prevents a script from executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
-| `/finger TEXT...`                         | Sets the CTCP FINGER response. Pass `*` as the argument to clear the FINGER response.   |
 | `/focus [SERVER] [WINDOW]`              | Sets focus on a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
 | `/fullscreen`                           | Toggles full screen mode   |
 | `goto LINE_NUMBER`                         | Moves execution of the script to `LINE_NUMBER`. The only script-only command that can be issued from an `if` command. Cannot be used to move to a line that consists of a script-only command other than `end`. Can only be called from scripts  |
@@ -309,7 +308,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
 | `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. *Can only be called by scripts*                                                        |
-| `/userinfo TEXT...`                         | Sets the CTCP USERINFO response. Pass `*` as the argument to clear the USERINFO response.   |
+| `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk!* |
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
 | `wait SECONDS`                         | Pauses script execution for `SECONDS`; *can only be called from scripts*                                                           |
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
