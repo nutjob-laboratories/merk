@@ -610,6 +610,13 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateDelay(self,state):
+		self.RECONNECTION_DELAY = self.delayTime.value()
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
 	def updateinputCursor(self,state):
 		self.INPUT_CURSOR_WIDTH = self.inputCursor.value()
 		self.changed.show()
@@ -1454,6 +1461,7 @@ class Dialog(QDialog):
 		self.SET_SUBWINDOW_ORDER = config.SET_SUBWINDOW_ORDER
 		self.INPUT_CURSOR_WIDTH = config.INPUT_CURSOR_WIDTH
 		self.HOSTMASK_FETCH_FREQUENCY = config.HOSTMASK_FETCH_FREQUENCY
+		self.RECONNECTION_DELAY = config.RECONNECTION_DELAY
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3124,10 +3132,9 @@ class Dialog(QDialog):
 		if config.ASK_BEFORE_DISCONNECT: self.askBeforeDisconnect.setChecked(True)
 		self.askBeforeDisconnect.stateChanged.connect(self.changedSetting)
 
-		self.askBeforeReconnect = QCheckBox("Ask before automatically\nreconnecting",self)
+		self.askBeforeReconnect = QCheckBox("Ask before reconnecting",self)
 		if config.ASK_BEFORE_RECONNECT: self.askBeforeReconnect.setChecked(True)
 		self.askBeforeReconnect.stateChanged.connect(self.changedSetting)
-		self.askBeforeReconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.notifyOnLostConnection = QCheckBox("Notify on lost/failed connection",self)
 		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION: self.notifyOnLostConnection.setChecked(True)
@@ -3142,7 +3149,6 @@ class Dialog(QDialog):
 		self.requestList = QCheckBox("Fetch channel list from server on\nconnection",self)
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
 		self.requestList.stateChanged.connect(self.changedSetting)
-
 		self.requestList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.autoHostmasks = QCheckBox("Fetch user hostmasks on channel join",self)
@@ -3172,13 +3178,32 @@ class Dialog(QDialog):
 			self.fetchFreq.setEnabled(False)
 			self.fetchFreqLabelSpec.setEnabled(False)
 
+		self.delayReconnect = QCheckBox("Delay reconnection by",self)
+		if config.DELAY_AUTO_RECONNECTION: self.delayReconnect.setChecked(True)
+		self.delayReconnect.stateChanged.connect(self.changedSetting)
+
+		self.delayTimeLabelSpec = QLabel("seconds")
+		self.delayTime = QSpinBox()
+		self.delayTime.setRange(1,99)
+		self.delayTime.setValue(self.RECONNECTION_DELAY)
+		self.delayTime.valueChanged.connect(self.updateDelay)
+
+		delayLayout = QHBoxLayout()
+		delayLayout.addWidget(self.delayReconnect)
+		delayLayout.addWidget(self.delayTime)
+		delayLayout.addWidget(self.delayTimeLabelSpec)
+		delayLayout.addStretch()
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
-		connectionsLayout.addWidget(self.askBeforeReconnect)
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
 		connectionsLayout.addWidget(self.showNetLinks)
+		connectionsLayout.addWidget(QLabel(' '))
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatic reconnection</b>"))
+		connectionsLayout.addWidget(self.askBeforeReconnect)
+		connectionsLayout.addLayout(delayLayout)
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatically fetch from server</b>"))
 		connectionsLayout.addWidget(self.requestList)
@@ -4802,6 +4827,8 @@ class Dialog(QDialog):
 		config.SHOW_LIST_IN_SYSTRAY_MENU = self.stmList.isChecked()
 		config.SHOW_LOGS_IN_SYSTRAY_MENU = self.stmLogs.isChecked()
 		config.SHOW_LOGS_IN_WINDOWS_MENU = self.showLogsInWindows.isChecked()
+		config.DELAY_AUTO_RECONNECTION = self.delayReconnect.isChecked()
+		config.RECONNECTION_DELAY = self.RECONNECTION_DELAY
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

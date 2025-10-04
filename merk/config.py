@@ -304,9 +304,13 @@ SHOW_LINKS_IN_SYSTRAY_MENU = True
 SHOW_LIST_IN_SYSTRAY_MENU = True
 SHOW_LOGS_IN_SYSTRAY_MENU = True
 SHOW_LOGS_IN_WINDOWS_MENU = True
+DELAY_AUTO_RECONNECTION = False
+RECONNECTION_DELAY = 30
 
 def build_settings():
 	settings = {
+		"delay_automatic_reconnection": DELAY_AUTO_RECONNECTION,
+		"automatic_reconnection_timer": RECONNECTION_DELAY,
 		"show_network_logs_in_windows_menu": SHOW_LOGS_IN_WINDOWS_MENU,
 		"show_channel_list_in_systray_menu": SHOW_LIST_IN_SYSTRAY_MENU,
 		"show_network_logs_in_systray_menu": SHOW_LOGS_IN_SYSTRAY_MENU,
@@ -577,6 +581,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "delay_automatic_reconnection" in settings:
+		settings["delay_automatic_reconnection"] = DELAY_AUTO_RECONNECTION
+	if not "automatic_reconnection_timer" in settings:
+		settings["automatic_reconnection_timer"] = RECONNECTION_DELAY
 	if not "show_network_logs_in_windows_menu" in settings:
 		settings["show_network_logs_in_windows_menu"] = SHOW_LOGS_IN_WINDOWS_MENU
 	if not "show_channel_list_in_systray_menu" in settings:
@@ -1377,6 +1385,8 @@ def load_settings(filename):
 	global SHOW_LIST_IN_SYSTRAY_MENU
 	global SHOW_LOGS_IN_SYSTRAY_MENU
 	global SHOW_LOGS_IN_WINDOWS_MENU
+	global DELAY_AUTO_RECONNECTION
+	global RECONNECTION_DELAY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1386,6 +1396,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DELAY_AUTO_RECONNECTION = settings["delay_automatic_reconnection"]
+		RECONNECTION_DELAY = settings["automatic_reconnection_timer"]
 		SHOW_LOGS_IN_WINDOWS_MENU = settings["show_network_logs_in_windows_menu"]
 		SHOW_LIST_IN_SYSTRAY_MENU = settings["show_channel_list_in_systray_menu"]
 		SHOW_LOGS_IN_SYSTRAY_MENU = settings["show_network_logs_in_systray_menu"]
