@@ -1583,12 +1583,6 @@ class Dialog(QDialog):
 		if config.ASK_BEFORE_CLOSE: self.askBeforeExit.setChecked(True)
 		self.askBeforeExit.stateChanged.connect(self.changedSetting)
 
-		self.showServerInfo = QCheckBox(f"Show server information in the\n\"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
-		if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU: self.showServerInfo.setChecked(True)
-		self.showServerInfo.stateChanged.connect(self.changedSetting)
-
-		self.showServerInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.noAppNameTitle = QCheckBox("Do not show application name in\napplication title",self)
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE: self.noAppNameTitle.setChecked(True)
 		self.noAppNameTitle.stateChanged.connect(self.changedSetting)
@@ -1622,11 +1616,6 @@ class Dialog(QDialog):
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showLogsInWindows = QCheckBox(f"Show network log option in the\n\"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
-		if config.SHOW_LOGS_IN_WINDOWS_MENU: self.showLogsInWindows.setChecked(True)
-		self.showLogsInWindows.stateChanged.connect(self.changedSetting)
-		self.showLogsInWindows.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		screenLayout2 = QHBoxLayout()
 		screenLayout2.addStretch()
 		screenLayout2.addWidget(self.alwaysOnTop)
@@ -1658,8 +1647,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.showChatInTitle)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		applicationLayout.addWidget(self.simpleConnect)
-		applicationLayout.addWidget(self.showServerInfo)
-		applicationLayout.addWidget(self.showLogsInWindows)
 		applicationLayout.addWidget(self.showConnect)
 		applicationLayout.addWidget(self.noConnectLogo)
 		applicationLayout.addStretch()
@@ -2019,6 +2006,22 @@ class Dialog(QDialog):
 		menu2Layout.addWidget(self.menubarTop)
 		menu2Layout.addStretch()
 
+		self.showChannelList = QCheckBox(f"Channel list options",self)
+		if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU: self.showChannelList.setChecked(True)
+		self.showChannelList.stateChanged.connect(self.changedSetting)
+		
+		self.showLogsInWindows = QCheckBox(f"Network logs",self)
+		if config.SHOW_LOGS_IN_WINDOWS_MENU: self.showLogsInWindows.setChecked(True)
+		self.showLogsInWindows.stateChanged.connect(self.changedSetting)
+
+		self.showServerInfo = QCheckBox(f"Server information",self)
+		if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU: self.showServerInfo.setChecked(True)
+		self.showServerInfo.stateChanged.connect(self.changedSetting)
+
+		menu3Layout = QHBoxLayout()
+		menu3Layout.addWidget(self.showChannelList)
+		menu3Layout.addWidget(self.showLogsInWindows)
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addWidget(self.menubarDescription)
@@ -2027,7 +2030,9 @@ class Dialog(QDialog):
 		menuLayout.addLayout(justifyLayout)
 		menuLayout.addWidget(self.menubarBold)
 		menuLayout.addWidget(self.menubarMenu)
-		menuLayout.addWidget(QLabel(' '))
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,f"<b>\"{config.MAIN_MENU_WINDOWS_NAME}\" menu includes...</b>"))
+		menuLayout.addLayout(menu3Layout)
+		menuLayout.addWidget(self.showServerInfo)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
 		menuLayout.addWidget(self.menuNameDescription)
 		menuLayout.addLayout(nameMenuEntries)
@@ -4398,11 +4403,6 @@ class Dialog(QDialog):
 		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
 		quitBox.setSizePolicy(size_policy)
 
-		self.showChannelList = QCheckBox(f"Show channel list options in\nthe \"{config.MAIN_MENU_WINDOWS_NAME}\" menu",self)
-		if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU: self.showChannelList.setChecked(True)
-		self.showChannelList.stateChanged.connect(self.changedSetting)
-		self.showChannelList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
 		self.searchAllTerms = QCheckBox("Search for all terms in\nchannel list searches",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.searchAllTerms.setChecked(True)
 		self.searchAllTerms.stateChanged.connect(self.changedSetting)
@@ -4422,7 +4422,6 @@ class Dialog(QDialog):
 		miscLayout.addLayout(escLayout)
 		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
-		miscLayout.addWidget(self.showChannelList)
 		miscLayout.addWidget(self.searchAllTerms)
 		miscLayout.addWidget(self.examineTopic)
 		miscLayout.addStretch()
