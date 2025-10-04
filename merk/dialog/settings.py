@@ -1505,7 +1505,8 @@ class Dialog(QDialog):
 		fwidth = fm.width('X') * 27
 		self.selector.setMaximumWidth(fwidth)
 
-		add_factor = 10
+		# add_factor = 10
+		add_factor = 14
 		self.selector.setIconSize(QSize(fm.height()+add_factor,fm.height()+add_factor))
 
 		self.selector.itemClicked.connect(self.selectorClick)
@@ -4547,6 +4548,7 @@ class Dialog(QDialog):
 		dialogButtonsLayout.addWidget(self.cancelButton)
 
 		leftLayout = QVBoxLayout()
+		# leftLayout.addWidget(QLabel(' '))
 		leftLayout.addWidget(self.selector)
 
 		mainLayout = QHBoxLayout()
