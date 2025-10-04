@@ -200,6 +200,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			operators = []
 		if not config.ENABLE_INSERT_COMMAND:
 			script_only.remove("insert")
+		if not config.ENABLE_USER_COMMAND:
+			merk.remove(cmdsymbol+"user")
 
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),

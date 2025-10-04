@@ -402,6 +402,21 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingEditorConfig(self,state):
+		if self.enableConfig.isChecked():
+			self.autocompleteSettings.setEnabled(True)
+		else:
+			self.autocompleteSettings.setEnabled(False)
+		if self.enableUser.isChecked():
+			self.autocompleteUser.setEnabled(True)
+		else:
+			self.autocompleteUser.setEnabled(False)
+
+		self.syntax_did_change = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedAutoAway(self,state):
 		if self.autoAway.isChecked():
 			self.autoawayInterval.setEnabled(True)
@@ -513,6 +528,7 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(True)
 			self.syntaxscript.setEnabled(True)
 			self.enableWait.setEnabled(True)
+			self.enableUser.setEnabled(True)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
@@ -525,6 +541,7 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(False)
 			self.syntaxscript.setEnabled(False)
 			self.enableWait.setEnabled(False)
+			self.enableUser.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -3467,6 +3484,12 @@ class Dialog(QDialog):
 		if not config.ENABLE_ALIASES:
 			self.autocompleteAlias.setEnabled(False)
 
+		if not config.ENABLE_USER_COMMAND:
+			self.autocompleteUser.setEnabled(False)
+
+		if not config.ENABLE_CONFIG_COMMAND:
+			self.autocompleteSettings.setEnabled(False)
+
 		autoMaster = QHBoxLayout()
 		autoMaster.addStretch()
 		autoMaster.addWidget(self.enableAutocomplete)
@@ -4104,7 +4127,7 @@ class Dialog(QDialog):
 
 		self.enableConfig = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}config",self)
 		if config.ENABLE_CONFIG_COMMAND: self.enableConfig.setChecked(True)
-		self.enableConfig.stateChanged.connect(self.changedSettingEditor)
+		self.enableConfig.stateChanged.connect(self.changedSettingEditorConfig)
 
 		self.restrictError = QCheckBox(f"Display error for violations of\nonly and restrict commands",self)
 		if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION: self.restrictError.setChecked(True)
@@ -4127,6 +4150,10 @@ class Dialog(QDialog):
 		if config.ENABLE_WAIT_COMMAND: self.enableWait.setChecked(True)
 		self.enableWait.stateChanged.connect(self.changedSettingEditor)
 
+		self.enableUser = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}user",self)
+		if config.ENABLE_USER_COMMAND: self.enableUser.setChecked(True)
+		self.enableUser.stateChanged.connect(self.changedSettingEditorConfig)
+
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
@@ -4143,14 +4170,14 @@ class Dialog(QDialog):
 			self.enableGoto.setEnabled(False)
 			self.enableIf.setEnabled(False)
 			self.enableWait.setEnabled(False)
+			self.enableUser.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.enableShell)
-		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.enableDelay)
-		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.enableConfig)
+		cmdLayout.addWidget(self.enableUser)
 		cmdLayout.addStretch()
 
 		cmdLayout2 = QHBoxLayout()
@@ -4837,6 +4864,7 @@ class Dialog(QDialog):
 		config.DELAY_AUTO_RECONNECTION = self.delayReconnect.isChecked()
 		config.RECONNECTION_DELAY = self.RECONNECTION_DELAY
 		config.AUTOCOMPLETE_USER = self.autocompleteUser.isChecked()
+		config.ENABLE_USER_COMMAND = self.enableUser.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

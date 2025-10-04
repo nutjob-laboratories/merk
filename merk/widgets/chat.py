@@ -3162,27 +3162,28 @@ class SpellTextEdit(QPlainTextEdit):
 
 			if config.ENABLE_AUTOCOMPLETE:
 
-				if config.AUTOCOMPLETE_USER:
-					if config.ISSUE_COMMAND_SYMBOL+'user' in self.text():
-						cursor.select(QTextCursor.WordUnderCursor)
-						self.setTextCursor(cursor)
-						if self.textCursor().hasSelection():
-							text = self.textCursor().selectedText()
+				if config.ENABLE_USER_COMMAND:
+					if config.AUTOCOMPLETE_USER:
+						if config.ISSUE_COMMAND_SYMBOL+'user' in self.text():
+							cursor.select(QTextCursor.WordUnderCursor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
 
-							settings = user.build_settings()
-							settings_list = []
-							for s in settings:
-								if s=="history": continue
-								if s=="commands": continue
-								settings_list.append(s)
+								settings = user.build_settings()
+								settings_list = []
+								for s in settings:
+									if s=="history": continue
+									if s=="commands": continue
+									settings_list.append(s)
 
-							for setting in settings_list:
-								if fnmatch.fnmatch(setting,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(f"{setting}")
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
+								for setting in settings_list:
+									if fnmatch.fnmatch(setting,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{setting}")
+										cursor.endEditBlock()
+										self.ensureCursorVisible()
+										return
 
 				if config.ENABLE_CONFIG_COMMAND:
 					if config.AUTOCOMPLETE_SETTINGS:

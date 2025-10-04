@@ -213,6 +213,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_CONFIG_COMMAND:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"config",'')
 
+	if not config.ENABLE_USER_COMMAND:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"user",'')
+
 	if not SSL_AVAILABLE:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"connectssl",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"xconnectssl",'')
@@ -312,6 +315,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+		if not config.ENABLE_USER_COMMAND:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>": continue
 		if not config.ENABLE_CONFIG_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>": continue
 		if not config.ENABLE_DELAY_COMMAND:
@@ -1150,6 +1155,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /user |
 	# |-------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_USER_COMMAND:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}user has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}user has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 		# No arguments dumps a list of all editable config values
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==1:
