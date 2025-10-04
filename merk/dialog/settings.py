@@ -1801,7 +1801,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Menubar")
+		entry.setText("Menus & Menubar")
 		entry.widget = self.menuPage
 		entry.setIcon(QIcon(MENU_ICON))
 		self.selector.addItem(entry)
@@ -2041,12 +2041,12 @@ class Dialog(QDialog):
 		menuLayout.addLayout(justifyLayout)
 		menuLayout.addWidget(self.menubarBold)
 		menuLayout.addWidget(self.menubarMenu)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,f"<b>\"{config.MAIN_MENU_WINDOWS_NAME}\" menu includes...</b>"))
-		menuLayout.addLayout(menu3Layout)
-		menuLayout.addWidget(self.showServerInfo)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
 		menuLayout.addWidget(self.menuNameDescription)
 		menuLayout.addLayout(nameMenuEntries)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,f"<b>\"{config.MAIN_MENU_WINDOWS_NAME}\" menu includes...</b>"))
+		menuLayout.addLayout(menu3Layout)
+		menuLayout.addWidget(self.showServerInfo)
 		menuLayout.addStretch()
 
 		self.menuPage.setLayout(menuLayout)
