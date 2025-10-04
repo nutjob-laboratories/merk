@@ -95,6 +95,7 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 							# Case insensitive
@@ -102,6 +103,7 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 				cursor.movePosition(QTextCursor.End)
@@ -169,6 +171,7 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 							# Case insensitive
@@ -176,6 +179,7 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 				cursor.movePosition(QTextCursor.End)
