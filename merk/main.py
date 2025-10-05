@@ -37,6 +37,7 @@ import platform
 import subprocess
 import fnmatch
 import time
+import random
 
 import emoji
 
@@ -2423,13 +2424,12 @@ class Merk(QMainWindow):
 			user_input = emoji.emojize(user_input,language=config.EMOJI_LANGUAGE)
 
 		if len(user_input)>0:
-			# Client has sent a chat message, so send the message
-			window.client.msg(window.name,user_input)
-			# ...and then display it to the user
+			# Client has issued a chat message, so send it
+			window.client.msg(window.name, user_input)
+			# Display the message to the user
 			t = Message(SELF_MESSAGE,window.client.nickname,user_input)
 			window.writeText(t)
 
-	
 	def handleConsoleInput(self,window,user_input):
 
 		# Build temporary aliases

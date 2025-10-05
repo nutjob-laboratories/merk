@@ -36,6 +36,7 @@ import time
 import uuid
 from collections import defaultdict
 from datetime import datetime
+import textwrap
 
 from twisted.internet import reactor, protocol
 
@@ -343,6 +344,44 @@ class IRC_Connection(irc.IRCClient):
 		phostmask = user.split('!')[1]
 
 		self.gui.privmsg(self,user,target,msg)
+
+	def msg(self, user, message, length=None):
+		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
+
+		# We have a very long message
+		if len(message_chunks)>1:
+			count = 0
+			for chunk in message_chunks:
+				if count==0:
+					# Send the first message right away
+					super().msg(user, chunk, length)
+				else:
+					# Send next chunks of the message once per second
+					# or every other second
+					reactor.callLater(random.randint(1, 2), super().msg,user,chunk,length)
+				count = count + 1
+		else:
+			# Message is not very long, so just send it
+			super().msg(user, message, length)
+
+	def notice(self, user, message, length=None):
+		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
+
+		# We have a very long message
+		if len(message_chunks)>1:
+			count = 0
+			for chunk in message_chunks:
+				if count==0:
+					# Send the first message right away
+					super().notice(user, chunk, length)
+				else:
+					# Send next chunks of the message once per second
+					# or every other second
+					reactor.callLater(random.randint(1, 2), super().notice,user,chunk,length)
+				count = count + 1
+		else:
+			# Message is not very long, so just send it
+			super().notice(user, message, length)
 
 	def noticed(self, user, channel, msg):
 		tok = user.split('!')

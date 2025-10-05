@@ -308,9 +308,11 @@ DELAY_AUTO_RECONNECTION = False
 RECONNECTION_DELAY = 30
 AUTOCOMPLETE_USER = True
 ENABLE_USER_COMMAND = True
+IRC_MAX_PAYLOAD_LENGTH = 400
 
 def build_settings():
 	settings = {
+		"chat_message_max_length": IRC_MAX_PAYLOAD_LENGTH,
 		"enable_user_command": ENABLE_USER_COMMAND,
 		"autocomplete_user_settings": AUTOCOMPLETE_USER,
 		"delay_automatic_reconnection": DELAY_AUTO_RECONNECTION,
@@ -585,6 +587,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "chat_message_max_length" in settings:
+		settings["chat_message_max_length"] = IRC_MAX_PAYLOAD_LENGTH
 	if not "enable_user_command" in settings:
 		settings["enable_user_command"] = ENABLE_USER_COMMAND
 	if not "autocomplete_user_settings" in settings:
@@ -1397,6 +1401,7 @@ def load_settings(filename):
 	global RECONNECTION_DELAY
 	global AUTOCOMPLETE_USER
 	global ENABLE_USER_COMMAND
+	global IRC_MAX_PAYLOAD_LENGTH
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1406,6 +1411,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		IRC_MAX_PAYLOAD_LENGTH = settings["chat_message_max_length"]
 		ENABLE_USER_COMMAND = settings["enable_user_command"]
 		AUTOCOMPLETE_USER = settings["autocomplete_user_settings"]
 		DELAY_AUTO_RECONNECTION = settings["delay_automatic_reconnection"]
