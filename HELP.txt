@@ -434,7 +434,7 @@ Appearance:
 <td>Requests information about previously connected users</td>
 </tr>
 <tr>
-<td><code>/windows</code></td>
+<td><code>/window</code></td>
 <td>Generates and displays a list of all connected windows</td>
 </tr>
 <tr>

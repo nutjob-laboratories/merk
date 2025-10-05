@@ -135,7 +135,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"clear",
 			cmdsymbol+"hide",
 			cmdsymbol+"show",
-			cmdsymbol+"windows",
+			cmdsymbol+"window",
 			cmdsymbol+"close",
 			cmdsymbol+"random",
 			cmdsymbol+"prints",

@@ -174,7 +174,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
 			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
-			config.ISSUE_COMMAND_SYMBOL+"windows": config.ISSUE_COMMAND_SYMBOL+"windows",
+			config.ISSUE_COMMAND_SYMBOL+"window": config.ISSUE_COMMAND_SYMBOL+"window",
 			config.ISSUE_COMMAND_SYMBOL+"close": config.ISSUE_COMMAND_SYMBOL+"close ",
 			config.ISSUE_COMMAND_SYMBOL+"random": config.ISSUE_COMMAND_SYMBOL+"random ",
 			config.ISSUE_COMMAND_SYMBOL+"prints": config.ISSUE_COMMAND_SYMBOL+"prints ",
@@ -294,7 +294,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"windows</b>", "Generates a list of all connected windows" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window</b>", "Generates a list of all connected windows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
@@ -2370,11 +2370,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |----------|
-	# | /windows |
-	# |----------|
+	# |---------|
+	# | /window |
+	# |---------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'windows' and len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==1:
 			
 			results = []
 			for w in gui.getAllAllConnectedSubWindows():
@@ -2417,14 +2417,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'windows':
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window':
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"windows")
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"window")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"windows")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"window")
 			window.writeTe
 
 	# |-------|
