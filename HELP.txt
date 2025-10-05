@@ -434,8 +434,8 @@ Appearance:
 <td>Requests information about previously connected users</td>
 </tr>
 <tr>
-<td><code>/window</code></td>
-<td>Generates and displays a list of all connected windows</td>
+<td><code>/window [move|size] [X] [Y]</code></td>
+<td>Moves or resizes the main application window</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

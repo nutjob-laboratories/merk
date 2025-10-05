@@ -4513,6 +4513,19 @@ class Merk(QMainWindow):
 				return True
 		return False
 
+	def is_move_valid_on_screen(self,window,x, y):
+		app = QApplication.instance()
+	
+		# Create a QRect for the proposed new position
+		window_rect = window.geometry()
+		new_rect = QRect(x, y, window_rect.width(), window_rect.height())
+		
+		# Iterate over all available screens and check for intersection
+		for screen in app.screens():
+			if screen.geometry().intersects(new_rect):
+				return True
+			
+
 	def is_valid_position(self, sub_window, new_x, new_y):
 		mdi_viewport = self.MDI.viewport()
 		viewport_rect = mdi_viewport.rect()

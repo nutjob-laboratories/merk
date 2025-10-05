@@ -150,6 +150,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"xreconnect",
 			cmdsymbol+"xreconnectssl",
 			cmdsymbol+"user",
+			cmdsymbol+"window move",
+			cmdsymbol+"window size",
 		]
 
 		script_only = [
@@ -162,6 +164,15 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"only",
 			"exclude",
 			"if",
+			"restrict server",
+			"restrict server channel",
+			"restrict server private",
+			"restrict channel",
+			"restrict channel server",
+			"restrict channel private",
+			"restrict private",
+			"restrict private server",
+			"restrict private channel",
 		]
 
 		script_full = [
