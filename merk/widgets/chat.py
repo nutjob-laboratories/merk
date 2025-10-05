@@ -3274,6 +3274,19 @@ class SpellTextEdit(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
+						self.COMMAND_LIST = commands.AUTOCOMPLETE_MULTI
+
+						for c in self.COMMAND_LIST:
+							cmd = c
+							rep = self.COMMAND_LIST[c]
+
+							if fnmatch.fnmatch(cmd,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(rep)
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
 				if config.AUTOCOMPLETE_NICKS:
 					# Auto-complete nicks
 					cursor.select(QTextCursor.WordUnderCursor)

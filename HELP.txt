@@ -434,8 +434,8 @@ Appearance:
 <td>Requests information about previously connected users</td>
 </tr>
 <tr>
-<td><code>/window [move|size] [X] [Y]</code></td>
-<td>Moves or resizes the main application window</td>
+<td><code>/window [COMMAND] [X] [Y]</code></td>
+<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, and <b><code>restore</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

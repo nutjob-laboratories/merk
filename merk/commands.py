@@ -65,6 +65,7 @@ ALIAS = {}
 TEMPORARY_ALIAS = {}
 TEMPORARY_ALIAS_AUTOCOMPLETE = {}
 AUTOCOMPLETE = {}
+AUTOCOMPLETE_MULTI = {}
 COMMAND_HELP_INFORMATION = []
 HELP = None
 HELP_PREFIX = None
@@ -112,6 +113,16 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	global HELP_PREFIX
 	global HELP_POSTFIX
 	global HELP_EPILOGUE
+	global AUTOCOMPLETE_MULTI
+
+	# Entries for command autocomplete
+	AUTOCOMPLETE_MULTI = {
+			config.ISSUE_COMMAND_SYMBOL+"window maximize": config.ISSUE_COMMAND_SYMBOL+"window maximize",
+			config.ISSUE_COMMAND_SYMBOL+"window minimize": config.ISSUE_COMMAND_SYMBOL+"window minimize",
+			config.ISSUE_COMMAND_SYMBOL+"window restore": config.ISSUE_COMMAND_SYMBOL+"window restore",
+			config.ISSUE_COMMAND_SYMBOL+"window move": config.ISSUE_COMMAND_SYMBOL+"window move ",
+			config.ISSUE_COMMAND_SYMBOL+"window size": config.ISSUE_COMMAND_SYMBOL+"window size ",
+	}
 
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
@@ -294,7 +305,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [move|size] [X] [Y]</b>", "Moves or resizes the main application window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>resize</b>, <b>maximize</b>, <b>minimize</b>, and <b>restore</b>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
@@ -2461,7 +2472,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-
 		# /window size X Y
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==4:
 			if tokens[1].lower()=='size':
@@ -2496,14 +2506,38 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.resize(x_val,y_val)
 				return True
 
+		# /window minimize
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='minimize':
+				gui.showMinimized()
+				return True
+			if tokens[1].lower()=='min':
+				gui.showMinimized()
+				return True
+
+		# /window maximized
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='maximize':
+				gui.showMaximized()
+				return True
+			if tokens[1].lower()=='max':
+				gui.showMaximized()
+				return True
+
+		# /window restore
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='restore':
+				gui.showNormal()
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window':
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"window [move|size] [X] [Y]")
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"window [move|size] [X] [Y]")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]")
 			window.writeTe
 
 	# |-------|
