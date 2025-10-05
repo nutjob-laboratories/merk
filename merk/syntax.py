@@ -155,8 +155,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window maximize",
 			cmdsymbol+"window minimize",
 			cmdsymbol+"window restore",
-			cmdsymbol+"window max",
-			cmdsymbol+"window min",
 		]
 
 		script_only = [
