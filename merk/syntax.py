@@ -155,6 +155,16 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window maximize",
 			cmdsymbol+"window minimize",
 			cmdsymbol+"window restore",
+			cmdsymbol+"ctcp version",
+			cmdsymbol+"ctcp userinfo",
+			cmdsymbol+"ctcp finger",
+			cmdsymbol+"ctcp source",
+			cmdsymbol+"ctcp time",
+			cmdsymbol+"ctcp VERSION",
+			cmdsymbol+"ctcp USERINFO",
+			cmdsymbol+"ctcp FINGER",
+			cmdsymbol+"ctcp SOURCE",
+			cmdsymbol+"ctcp TIME",
 		]
 
 		script_only = [

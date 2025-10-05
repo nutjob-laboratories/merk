@@ -152,7 +152,7 @@ Appearance:
 <td>Moves execution of the script to <code>WINDOW_NAME</code>; <b>can only be called from scripts</b></td>
 </tr>
 <tr>
-<td><code>/ctcp USER REQUEST</code></td>
+<td><code>/ctcp REQUEST USER</code></td>
 <td>Sends a CTCP request to <code>USER</code>; valid <code>REQUEST</code>s are TIME, VERSION, USERINFO, SOURCE, or FINGER</td>
 </tr>
 <tr>
