@@ -647,6 +647,13 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateMaxChat(self,state):
+		self.IRC_MAX_PAYLOAD_LENGTH = self.maxChat.value()
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
 	def updateHeartbeat(self,state):
 		self.heartbeat = self.heartbeatLength.value()
 		self.changed.show()
@@ -983,6 +990,10 @@ class Dialog(QDialog):
 			self.serverHeartbeatLabel.setEnabled(True)
 			self.heartbeatLength.setEnabled(True)
 			self.heartbeatLabelSpec.setEnabled(True)
+			self.maxChatLabel.setEnabled(True)
+			self.maxChat.setEnabled(True)
+			self.maxChatLabelSpec.setEnabled(True)
+
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -991,6 +1002,12 @@ class Dialog(QDialog):
 			self.serverHeartbeatLabel.setEnabled(False)
 			self.heartbeatLength.setEnabled(False)
 			self.heartbeatLabelSpec.setEnabled(False)
+			self.maxChatLabel.setEnabled(False)
+			self.maxChat.setEnabled(False)
+			self.maxChatLabelSpec.setEnabled(False)
+
+			self.maxChat.setValue(config.IRC_MAX_PAYLOAD_LENGTH)
+			self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
 
 			self.heartbeatLength.setValue(config.TWISTED_CLIENT_HEARTBEAT)
 			self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
@@ -1490,6 +1507,7 @@ class Dialog(QDialog):
 		self.INPUT_CURSOR_WIDTH = config.INPUT_CURSOR_WIDTH
 		self.HOSTMASK_FETCH_FREQUENCY = config.HOSTMASK_FETCH_FREQUENCY
 		self.RECONNECTION_DELAY = config.RECONNECTION_DELAY
+		self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -4509,6 +4527,23 @@ class Dialog(QDialog):
 		self.heartbeatLength.setEnabled(False)
 		self.heartbeatLabelSpec.setEnabled(False)
 
+		self.maxChatLabel = QLabel("Maximum chat length:")
+		self.maxChatLabelSpec = QLabel("characters")
+		self.maxChat = QSpinBox()
+		self.maxChat.setRange(1,512)
+		self.maxChat.setValue(self.IRC_MAX_PAYLOAD_LENGTH)
+		self.maxChat.valueChanged.connect(self.updateMaxChat)
+
+		maxLayout = QHBoxLayout()
+		maxLayout.addWidget(self.maxChatLabel)
+		maxLayout.addWidget(self.maxChat)
+		maxLayout.addWidget(self.maxChatLabelSpec)
+		maxLayout.addStretch()
+
+		self.maxChatLabel.setEnabled(False)
+		self.maxChat.setEnabled(False)
+		self.maxChatLabelSpec.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -4516,6 +4551,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addLayout(hbLayout)
+		advancedLayout.addLayout(maxLayout)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
@@ -4879,6 +4915,7 @@ class Dialog(QDialog):
 		config.RECONNECTION_DELAY = self.RECONNECTION_DELAY
 		config.AUTOCOMPLETE_USER = self.autocompleteUser.isChecked()
 		config.ENABLE_USER_COMMAND = self.enableUser.isChecked()
+		config.IRC_MAX_PAYLOAD_LENGTH = self.IRC_MAX_PAYLOAD_LENGTH
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
