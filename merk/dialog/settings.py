@@ -993,7 +993,7 @@ class Dialog(QDialog):
 			self.maxChatLabel.setEnabled(True)
 			self.maxChat.setEnabled(True)
 			self.maxChatLabelSpec.setEnabled(True)
-
+			self.floodProtection.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -1005,6 +1005,12 @@ class Dialog(QDialog):
 			self.maxChatLabel.setEnabled(False)
 			self.maxChat.setEnabled(False)
 			self.maxChatLabelSpec.setEnabled(False)
+			self.floodProtection.setEnabled(False)
+
+			if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
+				self.floodProtection.setChecked(True)
+			else:
+				self.floodProtection.setChecked(False)
 
 			self.maxChat.setValue(config.IRC_MAX_PAYLOAD_LENGTH)
 			self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
@@ -4527,7 +4533,7 @@ class Dialog(QDialog):
 		self.heartbeatLength.setEnabled(False)
 		self.heartbeatLabelSpec.setEnabled(False)
 
-		self.maxChatLabel = QLabel("Maximum chat length:")
+		self.maxChatLabel = QLabel("Max message length:")
 		self.maxChatLabelSpec = QLabel("characters")
 		self.maxChat = QSpinBox()
 		self.maxChat.setRange(1,512)
@@ -4544,6 +4550,11 @@ class Dialog(QDialog):
 		self.maxChat.setEnabled(False)
 		self.maxChatLabelSpec.setEnabled(False)
 
+		self.floodProtection = QCheckBox("Flood protection for long messages",self)
+		if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES: self.floodProtection.setChecked(True)
+		self.floodProtection.stateChanged.connect(self.changedSettingAdvanced)
+		self.floodProtection.setEnabled(False)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -4552,6 +4563,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
+		advancedLayout.addWidget(self.floodProtection)
 		advancedLayout.addWidget(self.enablePing)
 		advancedLayout.addWidget(self.logEverything)
 		advancedLayout.addWidget(self.writeConsole)
@@ -4916,6 +4928,7 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_USER = self.autocompleteUser.isChecked()
 		config.ENABLE_USER_COMMAND = self.enableUser.isChecked()
 		config.IRC_MAX_PAYLOAD_LENGTH = self.IRC_MAX_PAYLOAD_LENGTH
+		config.FLOOD_PROTECTION_FOR_LONG_MESSAGES = self.floodProtection.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

@@ -358,7 +358,10 @@ class IRC_Connection(irc.IRCClient):
 		# server in chunks
 		if len(message_chunks)>0:
 			for chunk in message_chunks:
-				reactor.callLater(random.randint(1, 2), super().msg,user,chunk,length)
+				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
+					reactor.callLater(random.randint(1, 2), super().msg,user,chunk,length)
+				else:
+					super().msg(user, chunk, length)
 
 	def notice(self, user, message, length=None):
 		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
@@ -373,7 +376,10 @@ class IRC_Connection(irc.IRCClient):
 		# server in chunks
 		if len(message_chunks)>0:
 			for chunk in message_chunks:
-				reactor.callLater(random.randint(1, 2), super().notice,user,chunk,length)
+				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
+					reactor.callLater(random.randint(1, 2), super().notice,user,chunk,length)
+				else:
+					super().notice(user, chunk, length)
 
 	def noticed(self, user, channel, msg):
 		tok = user.split('!')

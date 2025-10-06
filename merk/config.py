@@ -309,9 +309,11 @@ RECONNECTION_DELAY = 30
 AUTOCOMPLETE_USER = True
 ENABLE_USER_COMMAND = True
 IRC_MAX_PAYLOAD_LENGTH = 400
+FLOOD_PROTECTION_FOR_LONG_MESSAGES = True
 
 def build_settings():
 	settings = {
+		"flood_protection_for_sending_long_messages": FLOOD_PROTECTION_FOR_LONG_MESSAGES,
 		"chat_message_max_length": IRC_MAX_PAYLOAD_LENGTH,
 		"enable_user_command": ENABLE_USER_COMMAND,
 		"autocomplete_user_settings": AUTOCOMPLETE_USER,
@@ -587,6 +589,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "flood_protection_for_sending_long_messages" in settings:
+		settings["flood_protection_for_sending_long_messages"] = FLOOD_PROTECTION_FOR_LONG_MESSAGES
 	if not "chat_message_max_length" in settings:
 		settings["chat_message_max_length"] = IRC_MAX_PAYLOAD_LENGTH
 	if not "enable_user_command" in settings:
@@ -1402,6 +1406,7 @@ def load_settings(filename):
 	global AUTOCOMPLETE_USER
 	global ENABLE_USER_COMMAND
 	global IRC_MAX_PAYLOAD_LENGTH
+	global FLOOD_PROTECTION_FOR_LONG_MESSAGES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1411,6 +1416,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		FLOOD_PROTECTION_FOR_LONG_MESSAGES = settings["flood_protection_for_sending_long_messages"]
 		IRC_MAX_PAYLOAD_LENGTH = settings["chat_message_max_length"]
 		ENABLE_USER_COMMAND = settings["enable_user_command"]
 		AUTOCOMPLETE_USER = settings["autocomplete_user_settings"]
