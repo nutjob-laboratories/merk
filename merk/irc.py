@@ -127,6 +127,8 @@ class IRC_Connection(irc.IRCClient):
 		self.away_msg = ''
 		self.request_whois = []
 		self.do_whois = []
+		self.long_messages = []
+		self.long_notices = []
 
 		self.server_channel_list = []
 		self.channel_list_window = None
@@ -254,6 +256,14 @@ class IRC_Connection(irc.IRCClient):
 
 		self.uptime = self.uptime + 1
 
+		if len(self.long_messages)>0:
+			e = self.long_messages.pop(0)
+			self.msg(e[0],e[1])
+
+		if len(self.long_notices)>0:
+			e = self.long_notices.pop(0)
+			self.notice(e[0],e[1])
+
 		if config.USE_AUTOAWAY:
 			if self.last_interaction!=-1:
 				self.last_interaction = self.last_interaction + 1
@@ -359,7 +369,8 @@ class IRC_Connection(irc.IRCClient):
 		if len(message_chunks)>0:
 			for chunk in message_chunks:
 				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
-					reactor.callLater(random.randint(1, 2), super().msg,user,chunk,length)
+					m = [user,chunk]
+					self.long_messages.append(m)
 				else:
 					super().msg(user, chunk, length)
 
@@ -377,7 +388,8 @@ class IRC_Connection(irc.IRCClient):
 		if len(message_chunks)>0:
 			for chunk in message_chunks:
 				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
-					reactor.callLater(random.randint(1, 2), super().notice,user,chunk,length)
+					m = [user,chunk]
+					self.long_notices.append(m)
 				else:
 					super().notice(user, chunk, length)
 
