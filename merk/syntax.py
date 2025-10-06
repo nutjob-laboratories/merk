@@ -165,6 +165,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ctcp FINGER",
 			cmdsymbol+"ctcp SOURCE",
 			cmdsymbol+"ctcp TIME",
+			cmdsymbol+"macro",
 		]
 
 		script_only = [

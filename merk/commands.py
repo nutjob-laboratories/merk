@@ -73,17 +73,16 @@ HELP_POSTFIX = None
 HELP_EPILOGUE = None
 HALT_SCRIPT = []
 
-# USER_COMMANDS = {}
+USER_MACROS = {}
 
-# class UserCommand:
-# 	def __init__(self,name,script,chelp):
-# 		self.name = name
-# 		self.script = script
-# 		self.help = chelp
+class UserMacro:
+	def __init__(self,name,script):
+		self.name = name
+		self.script = script
 
-# def add_command(name,script,chelp):
-# 	e = UserCommand(name,script,chelp)
-# 	USER_COMMANDS[name] = e
+def add_command(name,script):
+	e = UserMacro(name,script)
+	USER_MACROS[name] = e
 
 def add_halt(script_id):
 	if script_id==None: return
@@ -215,6 +214,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"xreconnect": config.ISSUE_COMMAND_SYMBOL+"xreconnect ",
 			config.ISSUE_COMMAND_SYMBOL+"xreconnectssl": config.ISSUE_COMMAND_SYMBOL+"xreconnectssl ",
 			config.ISSUE_COMMAND_SYMBOL+"user": config.ISSUE_COMMAND_SYMBOL+"user ",
+			config.ISSUE_COMMAND_SYMBOL+"macro": config.ISSUE_COMMAND_SYMBOL+"macro ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -230,6 +230,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.SCRIPTING_ENGINE_ENABLED:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"script",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"edit",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"macro",'')
 
 	if not config.ENABLE_SHELL_COMMAND:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
@@ -335,10 +336,17 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server & executes connection script, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the user configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT...</b>", "Creates a macro, executable with "+config.ISSUE_COMMAND_SYMBOL+"NAME, that executes SCRIPT" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
 		COMMAND_HELP_INFORMATION.append(["<b>"+config.ISSUE_COMMAND_SYMBOL+"s FILENAME [ARGUMENTS]</b>", f"Shortcut for the {config.ISSUE_COMMAND_SYMBOL}script command"])
+
+	if config.SCRIPTING_ENGINE_ENABLED:
+		for m in USER_MACROS:
+			name = USER_MACROS[m].name
+			script = USER_MACROS[m].script
+			COMMAND_HELP_INFORMATION.append([ "<b>"+config.ISSUE_COMMAND_SYMBOL+name+"</b>", f"Executes script \"{script}\"" ])
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
@@ -359,6 +367,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"s FILENAME [ARGUMENTS]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT...</b>": continue
 		if not config.ENABLE_SHELL_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 		if not SSL_AVAILABLE:
@@ -1170,32 +1179,72 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if script_id!=None:
 			if is_halting(script_id): return True
 
-	# for c in USER_COMMANDS:
-	# 	a = USER_COMMANDS[c]
-	# 	if len(tokens)>=1:
-	# 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+a.name:
-	# 			tokens.pop(0)
-	# 			if len(tokens)>0:
-	# 				quoted_items = (f'"{item}"' for item in tokens)
-	# 				user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script} {' '.join(quoted_items)}"
-	# 				tokens = user_input.split()
-	# 			else:
-	# 				user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
-	# 				tokens = user_input.split()
+	# Insert macros
+	if config.SCRIPTING_ENGINE_ENABLED:
+		for c in USER_MACROS:
+			a = USER_MACROS[c]
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+a.name:
+					tokens.pop(0)
+					if len(tokens)>0:
+						quoted_items = (f'"{item}"' for item in tokens)
+						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script} {' '.join(quoted_items)}"
+						tokens = user_input.split()
+					else:
+						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
+						tokens = user_input.split()
 
-	# # |----------|
-	# # | /command |
-	# # |----------|
-	# if len(tokens)>=1:
-	# 	# /command name script help...
-	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'command' and len(tokens)>=4:
-	# 		tokens.pop(0)
-	# 		name = tokens.pop(0)
-	# 		script = tokens.pop(0)
-	# 		chelp = ' '.join(tokens)
+	# |--------|
+	# | /macro |
+	# |--------|
+	if len(tokens)>=1:
 
-	# 		add_command(name,script,chelp)
-	# 		return True
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Scripting is disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		# /macro name script
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(tokens)>=3:
+			tokens.pop(0)
+			name = tokens.pop(0)
+			script = ' '.join(tokens)
+
+			efilename = find_file(script,SCRIPT_FILE_EXTENSION)
+			if not efilename:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+script+"\" doesn't exist or is not readable.")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"\""+script+"\" doesn't exist or is not readable.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			add_command(name,script)
+			build_help_and_autocomplete()
+			t = Message(SYSTEM_MESSAGE,'',f"Added macro \"{name}\", executing \"{efilename}\"")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |----|
 	# | /s |

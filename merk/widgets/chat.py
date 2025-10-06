@@ -3287,6 +3287,16 @@ class SpellTextEdit(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
+						# Autocomplete macros
+						for c in commands.USER_MACROS:
+							cmd = config.ISSUE_COMMAND_SYMBOL+commands.USER_MACROS[c].name
+							if fnmatch.fnmatch(cmd,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(cmd)
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
 				if config.AUTOCOMPLETE_NICKS:
 					# Auto-complete nicks
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -3642,6 +3652,17 @@ class Highlighter(QSyntaxHighlighter):
 						do_not_spellcheck.append(c)
 						do_not_spellcheck.append(c[1:])
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), cmdformat)
+
+			# Style macros
+			cmdformat = syntax.format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)
+			for word_object in re.finditer(COMMANDS, text):
+				for c in commands.USER_MACROS:
+					cmd = config.ISSUE_COMMAND_SYMBOL+commands.USER_MACROS[c].name
+					if cmd==word_object.group():
+						do_not_spellcheck.append(cmd)
+						do_not_spellcheck.append(cmd[1:])
+						self.setFormat(word_object.start(), word_object.end() - word_object.start(), cmdformat)
+
 
 		# Highlight for spelling
 		if self.dict:
