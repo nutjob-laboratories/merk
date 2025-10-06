@@ -186,6 +186,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"restrict private",
 			"restrict private server",
 			"restrict private channel",
+			"halt",
 		]
 
 		script_full = [

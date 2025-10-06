@@ -71,8 +71,19 @@ HELP = None
 HELP_PREFIX = None
 HELP_POSTFIX = None
 HELP_EPILOGUE = None
-
 HALT_SCRIPT = []
+
+# USER_COMMANDS = {}
+
+# class UserCommand:
+# 	def __init__(self,name,script,chelp):
+# 		self.name = name
+# 		self.script = script
+# 		self.help = chelp
+
+# def add_command(name,script,chelp):
+# 	e = UserCommand(name,script,chelp)
+# 	USER_COMMANDS[name] = e
 
 def add_halt(script_id):
 	if script_id==None: return
@@ -1158,6 +1169,33 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if is_script:
 		if script_id!=None:
 			if is_halting(script_id): return True
+
+	# for c in USER_COMMANDS:
+	# 	a = USER_COMMANDS[c]
+	# 	if len(tokens)>=1:
+	# 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+a.name:
+	# 			tokens.pop(0)
+	# 			if len(tokens)>0:
+	# 				quoted_items = (f'"{item}"' for item in tokens)
+	# 				user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script} {' '.join(quoted_items)}"
+	# 				tokens = user_input.split()
+	# 			else:
+	# 				user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
+	# 				tokens = user_input.split()
+
+	# # |----------|
+	# # | /command |
+	# # |----------|
+	# if len(tokens)>=1:
+	# 	# /command name script help...
+	# 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'command' and len(tokens)>=4:
+	# 		tokens.pop(0)
+	# 		name = tokens.pop(0)
+	# 		script = tokens.pop(0)
+	# 		chelp = ' '.join(tokens)
+
+	# 		add_command(name,script,chelp)
+	# 		return True
 
 	# |----|
 	# | /s |
@@ -5746,6 +5784,23 @@ class ScriptThread(QThread):
 
 					tokens = line.split()
 
+					# |======|
+					# | halt |
+					# |======|
+					if len(tokens)>=2:
+						if tokens[0].lower()=='halt':
+							tokens.pop(0)
+							msg = ' '.join(tokens)
+							self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}: {msg}"])
+							loop = False
+							continue
+
+					if len(tokens)>0 and len(tokens)<2:
+						if tokens[0].lower()=='halt':
+							self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}"])
+							loop = False
+							continue
+					
 					# |====|
 					# | if |
 					# |====|

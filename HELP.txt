@@ -193,6 +193,10 @@ Appearance:
 <td>Moves execution of the script to <code>LINE_NUMBER</code>. The only script-only command that can be issued from an <code>if</code> command. Cannot be used to move execution to a line that consists of a script-only command other than <code>end</code>. <b>Can only be called from scripts</b></td>
 </tr>
 <tr>
+<td><code>halt [MESSAGE...]</code></td>
+<td>Halts a script's execution, and displays an error <code>MESSAGE</code> with line number and file name. <b>Can only be called from scripts</b></td>
+</tr>
+<tr>
 <td><code>/help [COMMAND]</code></td>
 <td>Displays command usage information</td>
 </tr>
