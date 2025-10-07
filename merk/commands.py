@@ -662,8 +662,9 @@ def find_file(filename,extension):
 	# Look for the script in the config directory
 	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return check_readable(os.path.join(config.CONFIG_DIRECTORY, filename))
 
-	# Look for the script in the install directory
-	if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return check_readable(os.path.join(INSTALL_DIRECTORY, filename))
+	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+		# Look for the script in the install directory
+		if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return check_readable(os.path.join(INSTALL_DIRECTORY, filename))
 
 	if extension!=None:
 		efilename = filename + "." + extension
@@ -677,8 +678,9 @@ def find_file(filename,extension):
 		# Look for the script in the config directory
 		if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return check_readable(os.path.join(config.CONFIG_DIRECTORY, efilename))
 
-		# Look for the script in the install directory
-		if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return check_readable(os.path.join(INSTALL_DIRECTORY, efilename))
+		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+			# Look for the script in the install directory
+			if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return check_readable(os.path.join(INSTALL_DIRECTORY, efilename))
 
 		# Still not found? Case insensitive seach
 		for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
@@ -689,9 +691,10 @@ def find_file(filename,extension):
 			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
 				return check_readable(os.path.join(root, filename))
 
-		for root, dirs, files in os.walk(INSTALL_DIRECTORY):
-			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
-				return check_readable(os.path.join(root, filename))
+		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+			for root, dirs, files in os.walk(INSTALL_DIRECTORY):
+				for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+					return check_readable(os.path.join(root, filename))
 
 	for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
 		for filename in fnmatch.filter(files, f"{filename}.*"):
@@ -701,9 +704,10 @@ def find_file(filename,extension):
 		for filename in fnmatch.filter(files, f"{filename}.*"):
 			return check_readable(os.path.join(root, filename))
 
-	for root, dirs, files in os.walk(INSTALL_DIRECTORY):
-		for filename in fnmatch.filter(files, f"{filename}.*"):
-			return check_readable(os.path.join(root, filename))
+	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+		for root, dirs, files in os.walk(INSTALL_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.*"):
+				return check_readable(os.path.join(root, filename))
 
 	return None
 
@@ -893,9 +897,10 @@ def list_files():
 	for root, _, files in os.walk(CONFIG_DIRECTORY):
 		for file in files:
 			file_paths.append(os.path.join(root, file))
-	for root, _, files in os.walk(INSTALL_DIRECTORY):
-		for file in files:
-			file_paths.append(os.path.join(root, file))
+	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+		for root, _, files in os.walk(INSTALL_DIRECTORY):
+			for file in files:
+				file_paths.append(os.path.join(root, file))
 	file_paths = list(set(file_paths))
 	return file_paths
 
@@ -1248,7 +1253,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 		# /macro name script
-		stokens = shlex.split(user_input, comments=False)
+		try:
+			stokens = shlex.split(user_input, comments=False)
+		except:
+			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==3:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -1312,7 +1320,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script usage
-		stokens = shlex.split(user_input, comments=False)
+		try:
+			stokens = shlex.split(user_input, comments=False)
+		except:
+			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==4:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -1377,7 +1388,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script usage
-		stokens = shlex.split(user_input, comments=False)
+		try:
+			stokens = shlex.split(user_input, comments=False)
+		except:
+			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -3394,6 +3408,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |-------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)==1:
+			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.setOverrideCursor(Qt.WaitCursor)
 			flist = list_files()
 
 			count = len(flist)
@@ -3404,12 +3419,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.restoreOverrideCursor()
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)>=2:
 			tokens.pop(0)
 			target = ' '.join(tokens)
 
+			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.setOverrideCursor(Qt.WaitCursor)
 			found = []
 			for f in list_files():
 				b = os.path.basename(f)
@@ -3423,6 +3440,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.restoreOverrideCursor()
 			return True
 
 	# |---------|

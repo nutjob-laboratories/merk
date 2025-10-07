@@ -4447,6 +4447,10 @@ class Dialog(QDialog):
 		self.examineTopic.stateChanged.connect(self.changedSetting)
 		self.examineTopic.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.searchInstall = QCheckBox(f"Search install directory for files",self)
+		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: self.searchInstall.setChecked(True)
+		self.searchInstall.stateChanged.connect(self.changedSetting)
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
@@ -4458,6 +4462,9 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addWidget(self.searchAllTerms)
 		miscLayout.addWidget(self.examineTopic)
+		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		miscLayout.addWidget(self.searchInstall)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
 
@@ -4929,6 +4936,7 @@ class Dialog(QDialog):
 		config.ENABLE_USER_COMMAND = self.enableUser.isChecked()
 		config.IRC_MAX_PAYLOAD_LENGTH = self.IRC_MAX_PAYLOAD_LENGTH
 		config.FLOOD_PROTECTION_FOR_LONG_MESSAGES = self.floodProtection.isChecked()
+		config.SEARCH_INSTALL_DIRECTORY_FOR_FILES = self.searchInstall.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
