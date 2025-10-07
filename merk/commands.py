@@ -5342,6 +5342,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(SYSTEM_MESSAGE,'',h)
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					found = True
+			# Check to see if the command is a macro, and
+			# display help if needed
+			for entry in MACRO_USAGE:
+				if cmd==entry:
+					h = HELP_ENTRY_COMMAND_TEMPLATE
+					h = h.replace("%_USAGE_%",MACRO_USAGE[entry])
+					if entry in MACRO_HELP:
+						h = h.replace("%_DESCRIPTION_%",MACRO_HELP[entry])
+					else:
+						h = h.replace("%_DESCRIPTION_%",f"Executes script \"{USER_MACROS[entry].script}\"")
+					t = Message(SYSTEM_MESSAGE,'',h)
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					found = True
 			if found: return True
 			if is_script:
 				add_halt(script_id)
