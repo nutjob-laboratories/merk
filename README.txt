@@ -266,7 +266,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
 | `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character                      |
 | `/log`                                  | Opens the log manager                                                                                                            |
-| `/macro NAME SCRIPT...`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
+| `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
 | `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
 | `/minimize [SERVER] [WINDOW]`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |

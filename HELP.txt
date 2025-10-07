@@ -241,7 +241,7 @@ Appearance:
 <td>Opens the log manager</td>
 </tr>
 <tr>
-<td><code>/macro NAME SCRIPT...</code></td>
+<td><code>/macro NAME SCRIPT [USAGE] [HELP]</code></td>
 <td>Creates a macro, executable with <code>/NAME</code>, that executes <code>SCRIPT</code></td>
 </tr>
 <tr>
