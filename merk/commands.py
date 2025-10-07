@@ -1193,16 +1193,25 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if config.SCRIPTING_ENGINE_ENABLED:
 		for c in USER_MACROS:
 			a = USER_MACROS[c]
+			symbol = config.ISSUE_COMMAND_SYMBOL+a.name
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+a.name:
+				if tokens[0]==symbol:
 					tokens.pop(0)
 					if len(tokens)>0:
-						quoted_items = (f'"{item}"' for item in tokens)
-						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script} {' '.join(quoted_items)}"
+						args = ' '.join(tokens)
+						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script} {args}"
 						tokens = user_input.split()
 					else:
 						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
 						tokens = user_input.split()
+
+	# |----|
+	# | /s |
+	# |----|
+	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
+		if len(tokens)>=1:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
+				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
 	# |--------|
 	# | /macro |
@@ -1294,14 +1303,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT...")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
-
-	# |----|
-	# | /s |
-	# |----|
-	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
-		if len(tokens)>=1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
-				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
 	# |-------|
 	# | /user |
@@ -4829,8 +4830,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)>=2:
 
-			tokens = shlex.split(user_input, comments=False)
 			tokens.pop(0)
+			tokens = shlex.split(' '.join(tokens), comments=False)
 			filename = tokens.pop(0)
 			arguments = list(tokens)
 

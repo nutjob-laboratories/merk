@@ -567,8 +567,8 @@ class Merk(QMainWindow):
 						serv_name = f"Log Manager ({c.target})"
 				elif c.window_type==README_WINDOW:
 					icon = README_ICON
-					serv_name = "README"
-					wname = "README"
+					serv_name = c.name
+					wname = c.name
 
 				if config.WINDOWBAR_SHOW_ICONS:
 					button = menubar.get_icon_windowbar_button(icon,wname)
@@ -692,8 +692,8 @@ class Merk(QMainWindow):
 						serv_name = f"Log Manager ({c.target})"
 				elif c.window_type==README_WINDOW:
 					icon = README_ICON
-					serv_name = "README"
-					wname = "README"
+					serv_name = c.name
+					wname = c.name
 
 				button = menubar.get_icon_only_toolbar_button(icon)
 				button.setWindow(window)
