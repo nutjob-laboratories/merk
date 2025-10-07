@@ -34,6 +34,7 @@ import os
 import math
 from importlib import metadata
 import ast
+import string
 
 from .version import *
 from .servers import *
@@ -430,6 +431,14 @@ class MathEvaluator(ast.NodeVisitor):
 		return node.value
 
 # Functions
+
+def contains_punctuation(text):
+	# Allow underscore
+	allowed = set(string.punctuation.replace('_', ''))
+	for char in text:
+		if char in allowed:
+			return True
+	return False
 
 def elide_text(text,max_length):
 	if len(text)>max_length:

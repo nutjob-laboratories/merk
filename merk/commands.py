@@ -714,6 +714,11 @@ def find_file(filename,extension):
 def is_valid_macro_name(name):
 	for c in AUTOCOMPLETE:
 		if c.lower()==config.ISSUE_COMMAND_SYMBOL+name: return False
+	if contains_punctuation(name): return False
+	return True
+
+def is_valid_alias_name(name):
+	if contains_punctuation(name): return False
 	return True
 
 def is_macro_name(name):
@@ -2559,6 +2564,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
+			if not is_valid_alias_name(a):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+a+"\" is not a valid alias name")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"\""+a+"\" is not a valid alias name")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			try:
 				low = int(low)
 			except:
@@ -3346,6 +3362,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
+			if not is_valid_alias_name(alias):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+alias+"\" is not a valid alias name")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"\""+alias+"\" is not a valid alias name")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			try:
 				result = subprocess.run(tokens, capture_output=True, text=True, check=True, shell=True)
 				stored = f"{result.stdout}"
@@ -4008,6 +4035,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
+
+			if not is_valid_alias_name(a):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+a+"\" is not a valid alias name")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"\""+a+"\" is not a valid alias name")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 			value = ' '.join(tokens)
 
