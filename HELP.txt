@@ -338,6 +338,10 @@ Appearance:
 <td>Sends unprocessed data to the server</td>
 </tr>
 <tr>
+<td><code>/reboot</code></td>
+<td>Restarts MERK, using the same command-line used to start MERK</td>
+</tr>
+<tr>
 <td><code>/reclaim NICKNAME</code></td>
 <td>Attempts to change nickname to <code>NICKNAME</code> until claimed</td>
 </tr>

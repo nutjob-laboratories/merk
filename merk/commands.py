@@ -223,6 +223,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"xreconnectssl": config.ISSUE_COMMAND_SYMBOL+"xreconnectssl ",
 			config.ISSUE_COMMAND_SYMBOL+"user": config.ISSUE_COMMAND_SYMBOL+"user ",
 			config.ISSUE_COMMAND_SYMBOL+"macro": config.ISSUE_COMMAND_SYMBOL+"macro ",
+			config.ISSUE_COMMAND_SYMBOL+"reboot": config.ISSUE_COMMAND_SYMBOL+"reboot",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -345,6 +346,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the user configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT [USAGE] [HELP]</b>", "Creates a macro, executable with "+config.ISSUE_COMMAND_SYMBOL+"NAME, that executes SCRIPT" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reboot</b>", f"Restarts the {APPLICATION_NAME} application" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1241,6 +1243,44 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |---------|
+	# | /reboot |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reboot' and len(tokens)==1:
+
+			msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any disconnected servers."
+
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(QUIT_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText(msg)
+			msgBox.setWindowTitle("Reboot")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				pass
+			else:
+				if is_running_from_pyinstaller():
+					subprocess.Popen([sys.executable,*sys.argv])
+					self.parent.close()
+					self.parent.app.exit()
+				else:
+					os.execl(sys.executable, sys.executable, *sys.argv)
+					sys.exit()
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reboot':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reboot")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reboot")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |--------|
 	# | /macro |

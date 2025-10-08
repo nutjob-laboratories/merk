@@ -290,6 +290,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
+| `/reboot`                          | Restarts MERK, using the same command-line used to start MERK                                               |
 | `/reclaim NICKNAME`                          | Attempts to change nickname to `NICKNAME` until claimed                                                                                             |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
