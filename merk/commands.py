@@ -715,10 +715,12 @@ def is_valid_macro_name(name):
 	for c in AUTOCOMPLETE:
 		if c.lower()==config.ISSUE_COMMAND_SYMBOL+name: return False
 	if contains_punctuation(name): return False
+	if ' ' in name: return False
 	return True
 
 def is_valid_alias_name(name):
 	if contains_punctuation(name): return False
+	if ' ' in name: return False
 	return True
 
 def is_macro_name(name):
