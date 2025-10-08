@@ -1372,7 +1372,7 @@ class Dialog(QDialog):
 		self.save()
 
 		if is_running_from_pyinstaller():
-			subprocess.Popen([sys.executable])
+			subprocess.Popen([sys.executable,*sys.argv])
 			self.parent.close()
 			self.parent.app.exit()
 		else:

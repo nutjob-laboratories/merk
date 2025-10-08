@@ -3381,7 +3381,7 @@ class Merk(QMainWindow):
 				config.DARK_MODE = True
 			config.save_settings(config.CONFIG_FILE)
 			if is_running_from_pyinstaller():
-				subprocess.Popen([sys.executable])
+				subprocess.Popen([sys.executable,*sys.argv])
 				self.close()
 				app.exit()
 			else:
