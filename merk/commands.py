@@ -1250,13 +1250,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reboot' and len(tokens)==1:
 
-			msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any disconnected servers."
+			msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any connected servers, and\nrestart using the same command-line used to start {APPLICATION_NAME}."
 
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(QUIT_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(msg)
-			msgBox.setWindowTitle("Reboot")
+			msgBox.setInformativeText("Click \"OK\" to restart, or \"Cancel\" to abort restart.")
+			msgBox.setWindowTitle(f"{config.ISSUE_COMMAND_SYMBOL}reboot")
 			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
 			rval = msgBox.exec()
