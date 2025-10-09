@@ -140,6 +140,14 @@ Appearance:
 <td>Changes a setting, or searches and displays one or all settings in the configuration file.  <strong>*Caution*</strong>: use at your own risk!</td>
 </tr>
 <tr>
+<td><code>/config export [FILENAME]</code></td>
+<td>Exports the current configuration file. <strong>*Caution*</strong>: use at your own risk!</td>
+</tr>
+<tr>
+<td><code>/config import [FILENAME]</code></td>
+<td>Imports a configuration file into settings.  <strong>*Caution*</strong>: use at your own risk!</td>
+</tr>
+<tr>
 <td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server</td>
 </tr>

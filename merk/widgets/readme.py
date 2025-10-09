@@ -44,10 +44,12 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
-	def __init__(self,parent=None):
+	def __init__(self,parent=None,source=None,title=None):
 		super(Window, self).__init__(parent)
 	
 		self.parent = parent
+		self.source = source
+		self.title = title
 
 		self.window_type = README_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
@@ -55,7 +57,15 @@ class Window(QMainWindow):
 
 		self.setWindowTitle("README")
 
-		filename = resource_path("./merk/resources/README.html")
+		if self.title!=None:
+			self.name = self.title
+			self.setWindowTitle(self.title)
+
+		if self.source==None:
+			filename = resource_path("./merk/resources/README.html")
+		else:
+			filename = self.source
+			self.window_type = HTML_WINDOW
 
 		f = open(filename,"r",encoding='utf-8')
 		readme = f.read()

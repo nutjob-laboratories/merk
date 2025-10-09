@@ -145,6 +145,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ctcp version": config.ISSUE_COMMAND_SYMBOL+"ctcp VERSION ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp source": config.ISSUE_COMMAND_SYMBOL+"ctcp SOURCE ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp finger": config.ISSUE_COMMAND_SYMBOL+"ctcp FINGER ",
+			config.ISSUE_COMMAND_SYMBOL+"config import": config.ISSUE_COMMAND_SYMBOL+"config import ",
+			config.ISSUE_COMMAND_SYMBOL+"config export": config.ISSUE_COMMAND_SYMBOL+"config export ",
 	}
 
 	# Entries for command autocomplete
@@ -3634,6 +3636,80 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}config has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
+			if tokens[1].lower()=='import':
+
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getOpenFileName(gui,"Import Configuration File", INSTALL_DIRECTORY, f"{APPLICATION_NAME} Configuration File (*.json);;Text Files (*.txt);;All Files (*)", options=options)
+				if fileName:
+					config.load_settings(fileName)
+					config.save_settings(config.CONFIG_FILE)
+					gui.reload_settings()
+					t = Message(SYSTEM_MESSAGE,'',f"Imported \"{fileName}\" configuration file")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}reboot to restart {APPLICATION_NAME}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				else:
+					return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)>=3:
+			if tokens[1].lower()=='import':
+				tokens.pop(0)
+				tokens.pop(0)
+				filename = ' '.join(tokens)
+				f = find_file(filename,"json")
+				if f!=None:
+					config.load_settings(f)
+					config.save_settings(config.CONFIG_FILE)
+					gui.reload_settings()
+					t = Message(SYSTEM_MESSAGE,'',f"Imported \"{f}\" configuration file")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}reboot to restart {APPLICATION_NAME}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}config: \"{filename}\" not found or is not readable")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}config: \"{filename}\" not found or is not readable")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
+			if tokens[1].lower()=='export':
+
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getSaveFileName(gui,"Export configuration as...",INSTALL_DIRECTORY,f"{APPLICATION_NAME} Configuration File (*.json);;All Files (*)", options=options)
+				if fileName:
+					_, file_extension = os.path.splitext(fileName)
+					if file_extension=='':
+						efl = len("json")+1
+						if fileName[-efl:].lower()!=f".json": fileName = fileName+f".json"
+					settings = config.build_settings()
+					config.save_settings(fileName,settings)
+					t = Message(SYSTEM_MESSAGE,'',f"Exported configuration to \"{fileName}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				else:
+					return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)>=3:
+			if tokens[1].lower()=='export':
+				tokens.pop(0)
+				tokens.pop(0)
+				filename = ' '.join(tokens)
+				settings = config.build_settings()
+				config.save_settings(filename,settings)
+				t = Message(SYSTEM_MESSAGE,'',f"Exported configuration to \"{filename}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
