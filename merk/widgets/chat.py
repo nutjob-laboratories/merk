@@ -3292,7 +3292,7 @@ class SpellTextEdit(QPlainTextEdit):
 							cmd = config.ISSUE_COMMAND_SYMBOL+commands.USER_MACROS[c].name
 							if fnmatch.fnmatch(cmd,f"{text}*"):
 								cursor.beginEditBlock()
-								cursor.insertText(cmd)
+								cursor.insertText(cmd+' ')
 								cursor.endEditBlock()
 								self.ensureCursorVisible()
 								return
