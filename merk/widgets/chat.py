@@ -3287,7 +3287,12 @@ class SpellTextEdit(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
-						# Autocomplete macros
+				if config.AUTOCOMPLETE_MACROS:
+					# Autocomplete macros
+					cursor.select(QTextCursor.BlockUnderCursor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
 						for c in commands.USER_MACROS:
 							cmd = config.ISSUE_COMMAND_SYMBOL+commands.USER_MACROS[c].name
 							if fnmatch.fnmatch(cmd,f"{text}*"):

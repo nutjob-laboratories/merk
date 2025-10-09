@@ -311,9 +311,11 @@ ENABLE_USER_COMMAND = True
 IRC_MAX_PAYLOAD_LENGTH = 400
 FLOOD_PROTECTION_FOR_LONG_MESSAGES = True
 SEARCH_INSTALL_DIRECTORY_FOR_FILES = False
+AUTOCOMPLETE_MACROS = True
 
 def build_settings():
 	settings = {
+		"autocomplete_macros": AUTOCOMPLETE_MACROS,
 		"search_install_directory_for_files": SEARCH_INSTALL_DIRECTORY_FOR_FILES,
 		"flood_protection_for_sending_long_messages": FLOOD_PROTECTION_FOR_LONG_MESSAGES,
 		"chat_message_max_length": IRC_MAX_PAYLOAD_LENGTH,
@@ -591,6 +593,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "autocomplete_macros" in settings:
+		settings["autocomplete_macros"] = AUTOCOMPLETE_MACROS
 	if not "search_install_directory_for_files" in settings:
 		settings["search_install_directory_for_files"] = SEARCH_INSTALL_DIRECTORY_FOR_FILES
 	if not "flood_protection_for_sending_long_messages" in settings:
@@ -1412,6 +1416,7 @@ def load_settings(filename):
 	global IRC_MAX_PAYLOAD_LENGTH
 	global FLOOD_PROTECTION_FOR_LONG_MESSAGES
 	global SEARCH_INSTALL_DIRECTORY_FOR_FILES
+	global AUTOCOMPLETE_MACROS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1421,6 +1426,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOCOMPLETE_MACROS = settings["autocomplete_macros"]
 		SEARCH_INSTALL_DIRECTORY_FOR_FILES = settings["search_install_directory_for_files"]
 		FLOOD_PROTECTION_FOR_LONG_MESSAGES = settings["flood_protection_for_sending_long_messages"]
 		IRC_MAX_PAYLOAD_LENGTH = settings["chat_message_max_length"]

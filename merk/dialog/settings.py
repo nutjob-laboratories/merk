@@ -454,6 +454,7 @@ class Dialog(QDialog):
 			self.autocompleteScripts.setEnabled(True)
 			self.autocompleteSettings.setEnabled(True)
 			self.autocompleteUser.setEnabled(True)
+			self.autocompleteMacro.setEnabled(True)
 		else:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -463,6 +464,7 @@ class Dialog(QDialog):
 			self.autocompleteScripts.setEnabled(False)
 			self.autocompleteSettings.setEnabled(False)
 			self.autocompleteUser.setEnabled(False)
+			self.autocompleteMacro.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -3515,6 +3517,10 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_USER: self.autocompleteUser.setChecked(True)
 		self.autocompleteUser.stateChanged.connect(self.changedSetting)
 
+		self.autocompleteMacro = QCheckBox("Macros",self)
+		if config.AUTOCOMPLETE_MACROS: self.autocompleteMacro.setChecked(True)
+		self.autocompleteMacro.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_AUTOCOMPLETE:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -3524,6 +3530,7 @@ class Dialog(QDialog):
 			self.autocompleteScripts.setEnabled(False)
 			self.autocompleteSettings.setEnabled(False)
 			self.autocompleteUser.setEnabled(False)
+			self.autocompleteMacro.setEnabled(False)
 
 		if not config.ENABLE_ALIASES:
 			self.autocompleteAlias.setEnabled(False)
@@ -3549,6 +3556,7 @@ class Dialog(QDialog):
 		autoSettingsLayout.addRow(self.autocompleteChans,self.autocompleteEmojis)
 		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteAlias)
 		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
+		autoSettingsLayout.addRow(self.autocompleteMacro)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
@@ -4937,6 +4945,7 @@ class Dialog(QDialog):
 		config.IRC_MAX_PAYLOAD_LENGTH = self.IRC_MAX_PAYLOAD_LENGTH
 		config.FLOOD_PROTECTION_FOR_LONG_MESSAGES = self.floodProtection.isChecked()
 		config.SEARCH_INSTALL_DIRECTORY_FOR_FILES = self.searchInstall.isChecked()
+		config.AUTOCOMPLETE_MACROS = self.autocompleteMacro.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
