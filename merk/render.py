@@ -231,6 +231,10 @@ def render_message(message,style,client=None,no_padding=False):
 	else:
 		nick = message.sender
 
+	if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY:
+		if len(nick)>config.NICKNAME_PAD_LENGTH:
+			nick = elide_text(nick,config.NICKNAME_PAD_LENGTH)
+
 	if config.FORCE_MONOSPACE_RENDERING:
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 

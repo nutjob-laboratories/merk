@@ -594,14 +594,6 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSettingRerenderPad(self,state):
-		if self.noPadding.isChecked():
-			self.padLengthLabel.setEnabled(False)
-			self.padLength.setEnabled(False)
-			self.padLengthLabelSpec.setEnabled(False)
-		else:
-			self.padLengthLabel.setEnabled(True)
-			self.padLength.setEnabled(True)
-			self.padLengthLabelSpec.setEnabled(True)
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
@@ -4026,10 +4018,9 @@ class Dialog(QDialog):
 		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
 		self.linkChannel.stateChanged.connect(self.changedSettingRerender)
 
-		self.noPadding = QCheckBox("Do not pad nicknames in chat\ndisplay",self)
+		self.noPadding = QCheckBox("Do not pad nicknames in chat display",self)
 		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
 		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
-		self.noPadding.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
 		self.ignoreCreateWindow = QCheckBox("Do not create windows for\nmessages from ignored users",self)
 		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
@@ -4041,7 +4032,7 @@ class Dialog(QDialog):
 		self.createNotice.stateChanged.connect(self.changedSetting)
 		self.createNotice.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.padLengthLabel = QLabel("Nickname padding:")
+		self.padLengthLabel = QLabel("Max nick size/padding:")
 		self.padLengthLabelSpec = QLabel("characters")
 		self.padLength = QSpinBox()
 		self.padLength.setRange(1,99)
@@ -4054,15 +4045,14 @@ class Dialog(QDialog):
 		padLayout.addWidget(self.padLengthLabelSpec)
 		padLayout.addStretch()
 
-		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY:
-			self.padLengthLabel.setEnabled(False)
-			self.padLength.setEnabled(False)
-			self.padLengthLabelSpec.setEnabled(False)
-
 		self.writeMessageOut = QCheckBox("Write outgoing private messages\nto the current window",self)
 		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
 		self.writeMessageOut.stateChanged.connect(self.changedSetting)
 		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.elideNick = QCheckBox("Elide long nicknames in chat display",self)
+		if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY: self.elideNick.setChecked(True)
+		self.elideNick.stateChanged.connect(self.changedSettingRerender)
 
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
@@ -4070,6 +4060,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.writeScroll)
+		messageLayout.addWidget(self.elideNick)
 		messageLayout.addWidget(self.noPadding)
 		messageLayout.addLayout(padLayout)
 		messageLayout.addWidget(QLabel(' '))
@@ -4946,6 +4937,7 @@ class Dialog(QDialog):
 		config.FLOOD_PROTECTION_FOR_LONG_MESSAGES = self.floodProtection.isChecked()
 		config.SEARCH_INSTALL_DIRECTORY_FOR_FILES = self.searchInstall.isChecked()
 		config.AUTOCOMPLETE_MACROS = self.autocompleteMacro.isChecked()
+		config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY = self.elideNick.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
