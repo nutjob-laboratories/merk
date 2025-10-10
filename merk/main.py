@@ -3908,6 +3908,12 @@ class Merk(QMainWindow):
 			self.showSubWindow(self.readme_window)
 		self.helpMenu.close()
 
+	def menuReadMeCmd(self):
+		if self.readme_window==None:
+			self.newReadmeWindow()
+		else:
+			self.showSubWindow(self.readme_window)
+
 	def openScripting(self):
 		filename = resource_path("./merk/resources/MERK_User_Guide.pdf")
 		url = QUrl.fromLocalFile(filename)

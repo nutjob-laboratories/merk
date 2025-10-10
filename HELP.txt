@@ -346,6 +346,10 @@ Appearance:
 <td>Sends unprocessed data to the server</td>
 </tr>
 <tr>
+<td><code>/readme</code></td>
+<td>Opens the MERK README in a subwindow</td>
+</tr>
+<tr>
 <td><code>/reboot</code></td>
 <td>Restarts MERK, using the same command-line used to start MERK</td>
 </tr>

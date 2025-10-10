@@ -226,6 +226,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"user": config.ISSUE_COMMAND_SYMBOL+"user ",
 			config.ISSUE_COMMAND_SYMBOL+"macro": config.ISSUE_COMMAND_SYMBOL+"macro ",
 			config.ISSUE_COMMAND_SYMBOL+"reboot": config.ISSUE_COMMAND_SYMBOL+"reboot",
+			config.ISSUE_COMMAND_SYMBOL+"readme": config.ISSUE_COMMAND_SYMBOL+"readme",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -349,6 +350,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the user configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT [USAGE] [HELP]</b>", "Creates a macro, executable with "+config.ISSUE_COMMAND_SYMBOL+"NAME, that executes SCRIPT" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reboot</b>", f"Restarts the {APPLICATION_NAME} application" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"readme</b>", f"Opens the {APPLICATION_NAME} README" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1245,6 +1247,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |---------|
+	# | /readme |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'readme' and len(tokens)>=1:
+			gui.menuReadMeCmd()
+			return True
 
 	# |---------|
 	# | /reboot |
@@ -3614,12 +3624,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /log |
 	# |------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log' and len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log' and len(tokens)>=1:
 			gui.menuExportLog()
-			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'log':
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"log")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |---------|
@@ -4765,7 +4771,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /style |
 	# |--------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style' and len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style' and len(tokens)>=1:
 			if not config.ENABLE_STYLE_EDITOR:
 				t = Message(ERROR_MESSAGE,'',"The style editor has been disabled in settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -4777,7 +4783,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /settings |
 	# |-----------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings' and len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'settings' and len(tokens)>=1:
 			gui.openSettings()
 			return True
 
@@ -6112,6 +6118,12 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script"])
+					no_errors = False
+
+			# /readme can't be called in scripts
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'readme':
+					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}readme cannot be called from a script"])
 					no_errors = False
 
 			# /end doesn't take any arguments
