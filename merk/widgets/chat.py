@@ -1126,6 +1126,7 @@ class Window(QMainWindow):
 		else:
 			if nick in self.hostmasks:
 				self.hostmasks.pop(nick)
+		self.rerenderUserlist()
 
 	def swapHostmask(self,oldnick,newnick):
 		if oldnick in self.hostmasks:
