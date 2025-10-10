@@ -566,6 +566,25 @@ class Window(QMainWindow):
 		e = textSeparator(self,"Script Commands")
 		self.commandMenu.addAction(e)
 
+		self.appCommands = self.commandMenu.addMenu(QIcon(APPLICATION_ICON),"Application")
+
+		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
+		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window minimize": self.insertIntoEditor(u))
+		self.appCommands.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
+		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window maximize": self.insertIntoEditor(u))
+		self.appCommands.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Restore window",self)
+		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window restore": self.insertIntoEditor(u))
+		self.appCommands.addAction(entry)
+
+		entry = QAction(QIcon(QUIT_ICON),f"Exit {APPLICATION_NAME}",self)
+		entry.triggered.connect(self.insertExit)
+		self.appCommands.addAction(entry)
+
+
 		self.winCommands = self.commandMenu.addMenu(QIcon(WINDOW_ICON),"Subwindows")
 
 		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
@@ -627,6 +646,11 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertIf)
 		self.scriptCommands.addAction(entry)
 
+		if config.ENABLE_DELAY_COMMAND:
+			entry = QAction(QIcon(EXE_ICON),"Delay command",self)
+			entry.triggered.connect(self.insertDelay)
+			self.scriptCommands.addAction(entry)
+
 		self.commentCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Comments")
 
 		entry = QAction(QIcon(SCRIPT_ICON),"Insert multiline comment",self)
@@ -655,6 +679,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertConnect)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(CONNECT_ICON),"Connect to server (reconnecting)",self)
+		entry.triggered.connect(self.insertReConnect)
+		self.commandMenu.addAction(entry)
+
 		if config.ENABLE_ALIASES:
 			entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
 			entry.triggered.connect(self.insertAlias)
@@ -673,17 +701,8 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertShell)
 			self.commandMenu.addAction(entry)
 
-		if config.ENABLE_DELAY_COMMAND:
-			entry = QAction(QIcon(EXE_ICON),"Delay command",self)
-			entry.triggered.connect(self.insertDelay)
-			self.commandMenu.addAction(entry)
-
 		entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
 		entry.triggered.connect(self.insertReclaim)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(APPLICATION_ICON),f"Exit {APPLICATION_NAME}",self)
-		entry.triggered.connect(self.insertExit)
 		self.commandMenu.addAction(entry)
 
 		if config.ENABLE_ALIASES:
@@ -1061,6 +1080,38 @@ class Window(QMainWindow):
 				my_command = config.ISSUE_COMMAND_SYMBOL+"connectssl"
 			else:
 				my_command = config.ISSUE_COMMAND_SYMBOL+"connect"
+
+		if len(port)==0: port = "6667"
+
+		if len(password)==0:
+			cmd = host+" "+port+"\n"
+		else:
+			cmd = host+" "+port+" "+password+"\n"
+
+		self.editor.insertPlainText(my_command+" "+cmd)
+		self.updateApplicationTitle()
+
+	def insertReConnect(self):
+		x = ConnectServer(self)
+		e = x.get_server_information(self)
+
+		if not e: return
+
+		host = e[0]
+		port = e[1]
+		password = e[2]
+		ssl = e[3]
+
+		if e[4]==True:
+			if ssl==True:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"xreconnectssl"
+			else:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"xreconnect"
+		else:
+			if ssl==True:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"reconnectssl"
+			else:
+				my_command = config.ISSUE_COMMAND_SYMBOL+"reconnect"
 
 		if len(port)==0: port = "6667"
 
