@@ -1449,7 +1449,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		# /macro name script usage
 		try:
-			stokens = shlex.split(user_input, comments=False)
+			stokens = shlex.split(shlex.quote(user_input), comments=False)
 		except:
 			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
@@ -5161,8 +5161,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'script' and len(tokens)>=2:
 
 			tokens.pop(0)
-			tokens = shlex.split(' '.join(tokens), comments=False)
 			filename = tokens.pop(0)
+			tokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
 			arguments = list(tokens)
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
@@ -5196,7 +5196,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				e = x.get_script_information(gui)
 				if e:
 					script = e[0]
-					args = shlex.split(e[1], comments=False)
+					args = shlex.split(shlex.quote(e[1]), comments=False)
 
 					# Check to see if the filename is a filename
 					# in the application's "path"
@@ -5900,7 +5900,7 @@ class ScriptThread(QThread):
 
 						# Use shlex to tokenize the input, so that we can
 						# handle filenames with spaces in them
-						ftokens = shlex.split(' '.join(tokens), comments=False)
+						ftokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
 
 						for f in ftokens:
 							f = interpolateAliases(f)
@@ -6261,7 +6261,7 @@ class ScriptThread(QThread):
 								continue
 
 							try:
-								stokens = shlex.split(line, comments=False)
+								stokens = shlex.split(shlex.quote(line), comments=False)
 							except:
 								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks"])
 								loop = False
