@@ -57,6 +57,15 @@ from .reclaim import Dialog as SetReclaim
 from .set_insert import Dialog as SetInsert
 from .set_nick import Dialog as SetNick
 from .set_if import Dialog as SetIf
+from .cmd_window import Dialog as SetWindow
+
+def WindowInfo(obj,xval,yval,measure):
+	x = SetWindow(obj,xval,yval,measure)
+	info = x.get_window_information(obj,xval,yval,measure)
+	del x
+
+	if not info: return None
+	return info
 
 def SetKeyDialog(parent):
 	x = SetKey(parent)

@@ -568,6 +568,14 @@ class Window(QMainWindow):
 
 		self.appCommands = self.commandMenu.addMenu(QIcon(APPLICATION_ICON),"Application")
 
+		entry = QAction(QIcon(WINDOW_ICON),f"Set window size",self)
+		entry.triggered.connect(self.insertAppSize)
+		self.appCommands.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),f"Move window",self)
+		entry.triggered.connect(self.insertAppMove)
+		self.appCommands.addAction(entry)
+
 		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
 		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window minimize": self.insertIntoEditor(u))
 		self.appCommands.addAction(entry)
@@ -1122,6 +1130,24 @@ class Window(QMainWindow):
 
 		self.editor.insertPlainText(my_command+" "+cmd)
 		self.updateApplicationTitle()
+
+	def insertAppMove(self):
+		x = WindowInfo(self,"X Value","Y Value","pixels")
+		if x:
+			w = x[0]
+			h = x[1]
+
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+f"window move {w} {h}\n")
+			self.updateApplicationTitle()
+
+	def insertAppSize(self):
+		x = WindowInfo(self,"Width","Height","pixels")
+		if x:
+			w = x[0]
+			h = x[1]
+
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+f"window size {w} {h}\n")
+			self.updateApplicationTitle()
 
 	def insertAllQuit(self):
 		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
