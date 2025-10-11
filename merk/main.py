@@ -1783,6 +1783,11 @@ class Merk(QMainWindow):
 
 		if len(mode.strip())==0: return
 
+		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES:
+			udisplay = user
+		else:
+			udisplay = nickname
+
 		if argument:
 			c = []
 			for e in argument:
@@ -1791,18 +1796,18 @@ class Merk(QMainWindow):
 		else:
 			argument = []
 
-		t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+' '.join(argument))
+		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+' '.join(argument))
 
 		if mode=='k':
-			t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+''.join(argument))
+			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-		t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
+		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
 		if mode=='k':
-			t = Message(SYSTEM_MESSAGE,'',user+" set mode +"+mode+" "+''.join(argument)+" on "+target)
+			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
@@ -1829,18 +1834,23 @@ class Merk(QMainWindow):
 
 		if len(mode.strip())==0: return
 
-		t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+' '.join(argument))
+		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES:
+			udisplay = user
+		else:
+			udisplay = nickname
+
+		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+' '.join(argument))
 
 		if mode=="k":
-			t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+''.join(argument))
+			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+''.join(argument))
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-		t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
+		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
 
 		if mode=="k":
-			t = Message(SYSTEM_MESSAGE,'',user+" set mode -"+mode+" "+''.join(argument)+" on "+target)
+			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)

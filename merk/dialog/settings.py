@@ -3990,7 +3990,6 @@ class Dialog(QDialog):
 		self.writeScroll = QCheckBox("Always scroll chat to bottom\nwhen displaying text",self)
 		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
 		self.writeScroll.stateChanged.connect(self.changedSetting)
-
 		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.sysPrepend = QComboBox(self)
@@ -4054,12 +4053,17 @@ class Dialog(QDialog):
 		if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY: self.elideNick.setChecked(True)
 		self.elideNick.stateChanged.connect(self.changedSettingRerender)
 
+		self.showFullMode = QCheckBox("Full user info in mode messages",self)
+		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES: self.showFullMode.setChecked(True)
+		self.showFullMode.stateChanged.connect(self.changedSettingRerender)
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
 		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.writeScroll)
+		messageLayout.addWidget(self.showFullMode)
 		messageLayout.addWidget(self.elideNick)
 		messageLayout.addWidget(self.noPadding)
 		messageLayout.addLayout(padLayout)
@@ -4938,6 +4942,7 @@ class Dialog(QDialog):
 		config.SEARCH_INSTALL_DIRECTORY_FOR_FILES = self.searchInstall.isChecked()
 		config.AUTOCOMPLETE_MACROS = self.autocompleteMacro.isChecked()
 		config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY = self.elideNick.isChecked()
+		config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = self.showFullMode.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
