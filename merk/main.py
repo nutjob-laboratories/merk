@@ -1971,6 +1971,23 @@ class Merk(QMainWindow):
 
 	def invited(self,client,user,channel):
 
+		p = user.split("!")
+		if len(p)==2:
+			nickname = p[0]
+			hostmask = p[1]
+		else:
+			nickname = user
+			hostmask = None
+
+		self.updateHostmask(client,nickname,hostmask)
+
+		if hostmask!=None:
+			ignored = self.is_ignored(nickname,hostmask)
+		else:
+			ignored = self.is_ignored(nickname,None)
+
+		if ignored: return
+
 		if config.FLASH_SYSTRAY_INVITE: self.show_notifications("Invited to "+channel+" by "+user)
 
 		if config.SOUND_NOTIFICATIONS:
