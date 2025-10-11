@@ -1936,20 +1936,7 @@ class Window(QMainWindow):
 
 		self.away[nickname] = message
 
-		for i in range(self.userlist.count()):
-			item = self.userlist.item(i)
-			
-			target = item.text()
-			target = target.replace('@','')
-			target = target.replace('+','')
-			target = target.replace('~','')
-			target = target.replace('&','')
-			target = target.replace('%','')
-			target = target.replace('!','')
-
-			if target==nickname:
-				self.change_to_away_display(item)
-				self.userlist.update()
+		self.rerenderUserlist()
 
 	def got_back(self,username):
 
@@ -1963,20 +1950,7 @@ class Window(QMainWindow):
 		if nickname in self.away:
 			del self.away[nickname]
 
-		for i in range(self.userlist.count()):
-			item = self.userlist.item(i)
-			
-			target = item.text()
-			target = target.replace('@','')
-			target = target.replace('+','')
-			target = target.replace('~','')
-			target = target.replace('&','')
-			target = target.replace('%','')
-			target = target.replace('!','')
-
-			if target==nickname:
-				self.change_to_back_display(item)
-				self.userlist.update()
+		self.rerenderUserlist()
 
 	def clean_nick(self,nick):
 		nick = nick.replace('@','')

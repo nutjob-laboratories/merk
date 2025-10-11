@@ -2071,6 +2071,11 @@ class Merk(QMainWindow):
 		else:
 			nickname = nick
 
+		if hostmask!=None:
+			ignored = self.is_ignored(nickname,hostmask)
+		else:
+			ignored = self.is_ignored(nickname,None)
+
 		for subwindow in windows:
 			c = subwindow.widget()
 			if hasattr(c,"client"):
@@ -2078,9 +2083,10 @@ class Merk(QMainWindow):
 					c.got_away(nick,msg)
 
 					if config.SHOW_AWAY_AND_BACK_MESSAGES:
-						if nickname in c.nicks:
-							t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({msg})")
-							c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						if not ignored:
+							if nickname in c.nicks:
+								t = Message(SYSTEM_MESSAGE,"",f"{nickname} is away ({msg})")
+								c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def gotBack(self,client,nick):
 		windows = self.getAllSubWindows(client)
@@ -2092,6 +2098,11 @@ class Merk(QMainWindow):
 		else:
 			nickname = nick
 
+		if hostmask!=None:
+			ignored = self.is_ignored(nickname,hostmask)
+		else:
+			ignored = self.is_ignored(nickname,None)
+
 		for subwindow in windows:
 			c = subwindow.widget()
 			if hasattr(c,"client"):
@@ -2099,9 +2110,10 @@ class Merk(QMainWindow):
 					c.got_back(nick)
 
 					if config.SHOW_AWAY_AND_BACK_MESSAGES:
-						if nickname in c.nicks:
-							t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
-							c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						if not ignored:
+							if nickname in c.nicks:
+								t = Message(SYSTEM_MESSAGE,"",f"{nickname} is back")
+								c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def resetAllAutoawayTimers(self):
 		for i in irc.CONNECTIONS:
