@@ -1391,11 +1391,12 @@ class Merk(QMainWindow):
 			# Notify if the message has the user's nick
 			# in it
 			if client.nickname in msg:
-				if config.FLASH_SYSTRAY_NICKNAME:
-					self.show_notifications("Mentioned by "+nickname+" in "+target)
-				if config.SOUND_NOTIFICATIONS:
-					if config.SOUND_NOTIFICATION_NICKNAME:
-						QSound.play(config.SOUND_NOTIFICATION_FILE)
+				if not ignored:
+					if config.FLASH_SYSTRAY_NICKNAME:
+						self.show_notifications("Mentioned by "+nickname+" in "+target)
+					if config.SOUND_NOTIFICATIONS:
+						if config.SOUND_NOTIFICATION_NICKNAME:
+							QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 			# Channel message
 			w = self.getWindow(target,client)
@@ -1415,8 +1416,9 @@ class Merk(QMainWindow):
 			if config.FLASH_SYSTRAY_PRIVATE: self.show_notifications("Received private message from "+nickname)
 
 			if config.SOUND_NOTIFICATIONS:
-				if config.SOUND_NOTIFICATION_PRIVATE:
-					QSound.play(config.SOUND_NOTIFICATION_FILE)
+				if not ignored:
+					if config.SOUND_NOTIFICATION_PRIVATE:
+						QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 			# It's a private message, so try to write the message
 			# to the private message window, if there is one
@@ -1538,8 +1540,9 @@ class Merk(QMainWindow):
 		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications("Received a notice from "+nickname)
 
 		if config.SOUND_NOTIFICATIONS:
-			if config.SOUND_NOTIFICATION_NOTICE:
-				QSound.play(config.SOUND_NOTIFICATION_FILE)
+			if not ignored:
+				if config.SOUND_NOTIFICATION_NOTICE:
+					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 		# Channel notice
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
