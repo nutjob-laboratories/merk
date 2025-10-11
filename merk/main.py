@@ -3887,7 +3887,7 @@ class Merk(QMainWindow):
 
 		if is_running_from_pyinstaller():
 
-			entry = QAction(QIcon(EXE_ICON),"UPX 5.0.1",self)
+			entry = QAction(QIcon(EXE_ICON),"UPX 5.0.2",self)
 			entry.triggered.connect(lambda state,u="https://upx.github.io/": self.openLinkInBrowser(u))
 			sm.addAction(entry)
 
