@@ -2786,6 +2786,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			mdi_viewport = gui.MDI.viewport()
 			viewport_size = mdi_viewport.size()
+			screen = gui.app.primaryScreen()
+			size = screen.size()
+
+			t = Message(SYSTEM_MESSAGE,'',f"Desktop area: {size.width()}x{size.height()}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			t = Message(SYSTEM_MESSAGE,'',f"Subwindow display area: {viewport_size.width()}x{viewport_size.height()}")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
