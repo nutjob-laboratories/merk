@@ -2034,7 +2034,6 @@ class Merk(QMainWindow):
 				return w.hasNickHostmask(nick)
 		return True
 
-
 	def swapHostmask(self,client,oldnick,newnick):
 		for window in self.getAllSubChatWindows(client):
 			c = window.widget()

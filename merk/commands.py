@@ -612,13 +612,13 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_USERNAME',window.client.username)
 	addTemporaryAlias('_WINDOW',window.name)
 	if window.window_type==SERVER_WINDOW:
-		addTemporaryAlias('_WINDOW_TYPE',"server")
+		addTemporaryAlias('_WTYPE',"server")
 	elif window.window_type==CHANNEL_WINDOW:
-		addTemporaryAlias('_WINDOW_TYPE',"channel")
+		addTemporaryAlias('_WTYPE',"channel")
 	elif window.window_type==PRIVATE_WINDOW:
-		addTemporaryAlias('_WINDOW_TYPE',"private")
+		addTemporaryAlias('_WTYPE',"private")
 	else:
-		addTemporaryAlias('_WINDOW_TYPE',"unknown")
+		addTemporaryAlias('_WTYPE',"unknown")
 	addTemporaryAlias('_YEAR',year)
 
 def handleChatCommands(gui,window,user_input):
