@@ -247,8 +247,8 @@ class Window(QMainWindow):
 			serverBar.setContentsMargins(1,1,1,1)
 			self.server_window_toolbar = QWidget()
 			self.server_window_toolbar.setLayout(serverBar)
-			self.server_window_toolbar.setMinimumHeight(config.INTERFACE_BUTTON_SIZE)
-			self.server_window_toolbar.setMaximumHeight(config.INTERFACE_BUTTON_SIZE)
+			self.server_window_toolbar.setMinimumHeight(config.INTERFACE_BUTTON_SIZE+1)
+			self.server_window_toolbar.setMaximumHeight(config.INTERFACE_BUTTON_SIZE+1)
 
 			if not config.SHOW_SERVER_WINDOW_TOOLBAR: self.server_window_toolbar.hide()
 

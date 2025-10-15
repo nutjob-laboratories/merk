@@ -1151,7 +1151,6 @@ def patch_settings(settings):
 	return settings
 
 def load_settings(filename):
-	global MDI_BACKGROUND_IMAGE
 	global APPLICATION_FONT
 	global DEFAULT_SUBWINDOW_WIDTH
 	global DEFAULT_SUBWINDOW_HEIGHT
