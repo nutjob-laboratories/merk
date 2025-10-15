@@ -604,6 +604,7 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
+		self.rerenderUsers = True
 		self.selector.setFocus()
 
 	def changedSettingHostmask(self,state):
@@ -1794,6 +1795,19 @@ class Dialog(QDialog):
 		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
 
+		self.padLengthLabel = QLabel("Max nick size/padding:")
+		self.padLengthLabelSpec = QLabel("characters")
+		self.padLength = QSpinBox()
+		self.padLength.setRange(1,99)
+		self.padLength.setValue(self.nicknamePadLength)
+		self.padLength.valueChanged.connect(self.updatePadLength)
+
+		padLayout = QHBoxLayout()
+		padLayout.addWidget(self.padLengthLabel)
+		padLayout.addWidget(self.padLength)
+		padLayout.addWidget(self.padLengthLabelSpec)
+		padLayout.addStretch()
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
@@ -1801,7 +1815,6 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
-		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
@@ -1809,6 +1822,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
 		appearanceLayout.addLayout(cursorLayout)
+		appearanceLayout.addLayout(padLayout)
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
@@ -4031,19 +4045,6 @@ class Dialog(QDialog):
 		self.createNotice.stateChanged.connect(self.changedSetting)
 		self.createNotice.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.padLengthLabel = QLabel("Max nick size/padding:")
-		self.padLengthLabelSpec = QLabel("characters")
-		self.padLength = QSpinBox()
-		self.padLength.setRange(1,99)
-		self.padLength.setValue(self.nicknamePadLength)
-		self.padLength.valueChanged.connect(self.updatePadLength)
-
-		padLayout = QHBoxLayout()
-		padLayout.addWidget(self.padLengthLabel)
-		padLayout.addWidget(self.padLength)
-		padLayout.addWidget(self.padLengthLabelSpec)
-		padLayout.addStretch()
-
 		self.writeMessageOut = QCheckBox("Write outgoing private messages\nto the current window",self)
 		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
 		self.writeMessageOut.stateChanged.connect(self.changedSetting)
@@ -4066,7 +4067,6 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.showFullMode)
 		messageLayout.addWidget(self.elideNick)
 		messageLayout.addWidget(self.noPadding)
-		messageLayout.addLayout(padLayout)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
 		messageLayout.addWidget(self.createWindow)

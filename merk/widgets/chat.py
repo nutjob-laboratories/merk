@@ -464,7 +464,7 @@ class Window(QMainWindow):
 			self.horizontalSplitter.splitterMoved.connect(self.splitterResize)
 
 			# Set the initial splitter ratio
-			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*15)
+			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
 			mwidth = self.width()-ulwidth
 			self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
@@ -1902,6 +1902,12 @@ class Window(QMainWindow):
 
 	def rerenderUserlist(self):
 		self.writeUserlist(self.users)
+
+		if hasattr(self,"horizontalSplitter"):
+			fm = QFontMetrics(self.app.font())
+			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
+			mwidth = self.width()-ulwidth
+			self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
 	def change_to_away_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
