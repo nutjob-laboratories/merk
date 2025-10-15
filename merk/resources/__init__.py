@@ -175,6 +175,7 @@ OPTIONS_ICON = ":/icon-options.png"
 BOLD_ICON = ":/icon-bold.png"
 ITALIC_ICON = ":/icon-italic.png"
 MDI_BACKGROUND = ":/gui-background.png"
+LENGTH_ICON = ":/icon-length.png"
 
 # Dark mode icons
 DARK_ROUND_UNCHECKED_ICON = ":/icon-dark_runchecked.png"
@@ -185,6 +186,7 @@ DARK_OPTIONS_ICON = ":/icon-dark_options.png"
 DARK_BOLD_ICON = ":/icon-dark_bold.png"
 DARK_ITALIC_ICON = ":/icon-dark_italic.png"
 DARK_MDI_BACKGROUND = ":/gui-dark_background.png"
+DARK_LENGTH_ICON = ":/icon-dark_length.png"
 
 # All other icons
 APPLICATION_ICON = ":/icon-app.png"
@@ -240,7 +242,6 @@ LOG_MENU_ICON = ":/icon-log_menu.png"
 APPLICATION_MENU_ICON = ":/icon-app_menu.png"
 SCRIPT_ICON = ":/icon-script.png"
 CLOSE_ICON = ":/icon-close.png"
-AUTOCOMPLETE_ICON = ":/icon-autocomplete.png"
 RUN_ICON = ":/icon-run.png"
 RUN_MENU_ICON = ":/icon-run_menu.png"
 JUSTIFY_ICON = ":/icon-justify.png"

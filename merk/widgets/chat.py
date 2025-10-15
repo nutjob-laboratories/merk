@@ -447,9 +447,17 @@ class Window(QMainWindow):
 				self.nick_display.hide()
 				self.mode_display.hide()
 
+		self.too_long_icon = QLabel(self)
+		pixmap = QPixmap(self.parent.length_icon)
+		pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+		self.too_long_icon.setPixmap(pixmap)
+		self.too_long_icon.setToolTip(f"Chat exceeds {config.IRC_MAX_PAYLOAD_LENGTH} characters")
+		self.too_long_icon.hide()
+
 		inputLayout = QHBoxLayout()
 		inputLayout.addLayout(nickLayout)
 		inputLayout.addWidget(self.input)
+		inputLayout.addWidget(self.too_long_icon)
 		inputLayout.addWidget(self.settingsButton)
 
 		if self.window_type==CHANNEL_WINDOW:
@@ -1898,7 +1906,6 @@ class Window(QMainWindow):
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
 				self.writeUserlist(self.full_nicks)
 
-
 		self.rerenderChatLog()
 		self.rerenderUserlist()
 
@@ -2635,6 +2642,8 @@ class Window(QMainWindow):
 		else:
 			self.parent.handleConsoleInput(self,user_input)
 
+		self.too_long_icon.hide()
+
 		# Move chat display to the bottom
 		self.moveChatToBottom(True)
 
@@ -3148,6 +3157,13 @@ class SpellTextEdit(QPlainTextEdit):
 			self.keyUp.emit()
 		elif event.key() == Qt.Key_Down:
 			self.keyDown.emit()
+		elif event.key() == Qt.Key_Delete or event.key() == Qt.Key_Backspace:
+			super().keyPressEvent(event)
+			if len(self.text())>config.IRC_MAX_PAYLOAD_LENGTH:
+				self.parent.too_long_icon.show()
+			else:
+				self.parent.too_long_icon.hide()
+			return
 		elif event.key() == Qt.Key_Tab:
 			cursor = self.textCursor()
 
@@ -3394,6 +3410,10 @@ class SpellTextEdit(QPlainTextEdit):
 			self.setTextCursor(cursor)
 
 		else:
+			if len(self.text())>config.IRC_MAX_PAYLOAD_LENGTH:
+				self.parent.too_long_icon.show()
+			else:
+				self.parent.too_long_icon.hide()
 			return super().keyPressEvent(event)
 
 	def text(self):
