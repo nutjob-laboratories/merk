@@ -101,6 +101,8 @@ class Window(QMainWindow):
 		self.halfop = False
 		self.protected = False
 
+		self.starting_pad_width = config.NICKNAME_PAD_LENGTH
+
 		self.banlist = []
 		self.away = {}
 
@@ -1904,10 +1906,12 @@ class Window(QMainWindow):
 		self.writeUserlist(self.users)
 
 		if hasattr(self,"horizontalSplitter"):
-			fm = QFontMetrics(self.app.font())
-			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
-			mwidth = self.width()-ulwidth
-			self.horizontalSplitter.setSizes([mwidth,ulwidth])
+			if self.starting_pad_width!=config.NICKNAME_PAD_LENGTH:
+				self.starting_pad_width = config.NICKNAME_PAD_LENGTH
+				fm = QFontMetrics(self.app.font())
+				ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
+				mwidth = self.width()-ulwidth
+				self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
 	def change_to_away_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
