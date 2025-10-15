@@ -1700,11 +1700,8 @@ class Dialog(QDialog):
 			<small>
 			This setting controls how <b>subwindows</b> and <b>widgets</b> look. Different <b>styles</b>
 			use different sets of <b>widgets</b>. Qt comes with a number of them
-			pre-installed, and you can select which one to use here. The selected
-			<b>widget style</b> will be applied immediately without having
-			to restart the application.
+			pre-installed, and you can select which one to use here.
 			</small>
-			<br>
 			""")
 		self.styleDescription.setWordWrap(True)
 		self.styleDescription.setAlignment(Qt.AlignJustify)
@@ -1726,7 +1723,6 @@ class Dialog(QDialog):
 			<b>Dark mode</b> changes the application palette to darker colors, which
 			is supposed to decrease eye strain. Text display colors are unchanged,
 			as those are set and controlled by the text style system.
-			<br><br>
 			<b>If dark mode is enabled or disabled, the application must be restarted to use the
 			new palette.</b>
 			</small>
@@ -1795,7 +1791,7 @@ class Dialog(QDialog):
 		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
 
-		self.padLengthLabel = QLabel("Max nick size/padding:")
+		self.padLengthLabel = QLabel("Nick size/padding:")
 		self.padLengthLabelSpec = QLabel("characters")
 		self.padLength = QSpinBox()
 		self.padLength.setRange(1,99)
@@ -1807,6 +1803,14 @@ class Dialog(QDialog):
 		padLayout.addWidget(self.padLength)
 		padLayout.addWidget(self.padLengthLabelSpec)
 		padLayout.addStretch()
+
+		self.elideNick = QCheckBox("Elide long nicknames in chat display",self)
+		if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY: self.elideNick.setChecked(True)
+		self.elideNick.stateChanged.connect(self.changedSettingRerender)
+
+		self.noPadding = QCheckBox("Do not pad nicknames in chat display",self)
+		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
+		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
 
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
@@ -1822,6 +1826,9 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
 		appearanceLayout.addLayout(cursorLayout)
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname displays</b>"))
+		appearanceLayout.addWidget(self.elideNick)
+		appearanceLayout.addWidget(self.noPadding)
 		appearanceLayout.addLayout(padLayout)
 		appearanceLayout.addStretch()
 
@@ -4030,10 +4037,6 @@ class Dialog(QDialog):
 		self.linkChannel = QCheckBox("Convert channel names to links",self)
 		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
 		self.linkChannel.stateChanged.connect(self.changedSettingRerender)
-
-		self.noPadding = QCheckBox("Do not pad nicknames in chat display",self)
-		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
-		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
 	
 		self.ignoreCreateWindow = QCheckBox("Do not create windows for\nmessages from ignored users",self)
 		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
@@ -4050,10 +4053,6 @@ class Dialog(QDialog):
 		self.writeMessageOut.stateChanged.connect(self.changedSetting)
 		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.elideNick = QCheckBox("Elide long nicknames in chat display",self)
-		if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY: self.elideNick.setChecked(True)
-		self.elideNick.stateChanged.connect(self.changedSettingRerender)
-
 		self.showFullMode = QCheckBox("Full user info in mode messages",self)
 		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES: self.showFullMode.setChecked(True)
 		self.showFullMode.stateChanged.connect(self.changedSettingRerender)
@@ -4065,8 +4064,6 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.showFullMode)
-		messageLayout.addWidget(self.elideNick)
-		messageLayout.addWidget(self.noPadding)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
 		messageLayout.addWidget(self.createWindow)
