@@ -1844,8 +1844,8 @@ class Window(QMainWindow):
 				self.input.setFocus()
 				self.input.moveCursor(QTextCursor.End)
 
-	def executeScript(self,script,filename=None):
-		commands.executeScript(self.parent,self,script,filename)
+	def executeScript(self,script,filename=None,args=[]):
+		commands.executeScript(self.parent,self,script,filename,args)
 
 	def generateStylesheet(self,obj,fore,back):
 
@@ -2627,6 +2627,12 @@ class Window(QMainWindow):
 
 		# Move chat display to the bottom
 		self.moveChatToBottom(True)
+
+	def injectInput(self,cmd):
+		if self.window_type!=SERVER_WINDOW:
+			self.parent.handleUserInput(self,cmd)
+		else:
+			self.parent.handleConsoleInput(self,cmd)
 
 	def changeSpellcheckLanguage(self,lang):
 

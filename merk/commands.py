@@ -790,10 +790,10 @@ def execute_script_end(data):
 	del gui.scripts[script_id]
 	remove_halt(script_id)
 
-def executeScript(gui,window,text,filename=None):
+def executeScript(gui,window,text,filename=None,args=[]):
 
 	script_id = str(uuid.uuid4())
-	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,[],filename)
+	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,filename)
 	gui.scripts[script_id].execLine.connect(execute_script_line)
 	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
