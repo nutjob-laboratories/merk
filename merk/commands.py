@@ -5430,6 +5430,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.notice(target,msg)
 
+			if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+				if config.IGNORE_CHANNEL_NOTICES: return True
+
 			# If we have the target's window open, write
 			# the message there
 			w = gui.getWindow(target,window.client)

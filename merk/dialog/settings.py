@@ -4068,6 +4068,10 @@ class Dialog(QDialog):
 		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES: self.showFullMode.setChecked(True)
 		self.showFullMode.stateChanged.connect(self.changedSettingRerender)
 
+		self.ignoreChannelNotice = QCheckBox("Reject all channel notices",self)
+		if config.REJECT_ALL_CHANNEL_NOTICES: self.ignoreChannelNotice.setChecked(True)
+		self.ignoreChannelNotice.stateChanged.connect(self.changedSetting)
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -4075,6 +4079,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.showFullMode)
+		messageLayout.addWidget(self.ignoreChannelNotice)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
 		messageLayout.addWidget(self.createWindow)
@@ -4953,6 +4958,7 @@ class Dialog(QDialog):
 		config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = self.showFullMode.isChecked()
 		config.DISPLAY_LONG_MESSAGE_INDICATOR = self.showLongMessage.isChecked()
 		config.CURSOR_BLINK = self.cursorBlink.isChecked()
+		config.REJECT_ALL_CHANNEL_NOTICES = self.ignoreChannelNotice.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

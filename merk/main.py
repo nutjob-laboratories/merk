@@ -1550,6 +1550,7 @@ class Merk(QMainWindow):
 
 		# Channel notice
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
+			if config.REJECT_ALL_CHANNEL_NOTICES: return
 			w = self.getWindow(target,client)
 			if w:
 				t = Message(NOTICE_MESSAGE,user,msg)

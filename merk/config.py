@@ -316,9 +316,11 @@ ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY = True
 DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = True
 DISPLAY_LONG_MESSAGE_INDICATOR = True
 CURSOR_BLINK = True
+REJECT_ALL_CHANNEL_NOTICES = False
 
 def build_settings():
 	settings = {
+		"reject_all_channel_notices": REJECT_ALL_CHANNEL_NOTICES,
 		"cursor_blink": CURSOR_BLINK,
 		"show_long_message_indicator": DISPLAY_LONG_MESSAGE_INDICATOR,
 		"display_full_user_info_in_mode_messages": DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES,
@@ -601,6 +603,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "reject_all_channel_notices" in settings:
+		settings["reject_all_channel_notices"] = REJECT_ALL_CHANNEL_NOTICES
 	if not "cursor_blink" in settings:
 		settings["cursor_blink"] = CURSOR_BLINK
 	if not "show_long_message_indicator" in settings:
@@ -1436,6 +1440,7 @@ def load_settings(filename):
 	global DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES
 	global DISPLAY_LONG_MESSAGE_INDICATOR
 	global CURSOR_BLINK
+	global REJECT_ALL_CHANNEL_NOTICES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1445,6 +1450,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		REJECT_ALL_CHANNEL_NOTICES = settings["reject_all_channel_notices"]
 		CURSOR_BLINK = settings["cursor_blink"]
 		DISPLAY_LONG_MESSAGE_INDICATOR = settings["show_long_message_indicator"]
 		DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = settings["display_full_user_info_in_mode_messages"]
