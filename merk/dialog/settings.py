@@ -3446,6 +3446,7 @@ class Dialog(QDialog):
 		self.historyButton.setToolTip("Change command history size")
 
 		historyLayout = QHBoxLayout()
+		historyLayout.addStretch()
 		historyLayout.addWidget(self.historyButton)
 		historyLayout.addWidget(self.historyLabel)
 		historyLayout.addStretch()
@@ -3456,7 +3457,6 @@ class Dialog(QDialog):
 			Use the <b>arrow keys</b> to move backwards (<b>&uarr;</b>) and forwards (<b>&darr;</b>) in the 
 			<b>command history</b> to issue any previously issued commands.
 			</small>
-			<br>
 			""")
 		self.historyDescription.setWordWrap(True)
 		self.historyDescription.setAlignment(Qt.AlignJustify)
@@ -3467,7 +3467,6 @@ class Dialog(QDialog):
 			<b>nickname</b>, <b>channel</b>, <b>emoji shortcode</b>, <b>script filename</b>, or <b>alias</b>
 			and then hit <b>tab</b> to complete the entry.
 			</small>
-			<br>
 			""")
 		self.autocompleteDescription.setWordWrap(True)
 		self.autocompleteDescription.setAlignment(Qt.AlignJustify)
