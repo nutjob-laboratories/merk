@@ -178,6 +178,10 @@ class Merk(QMainWindow):
 		# Set the widget font
 		self.setFont(self.application_font)
 
+		self.default_cursor_blink_rate = QApplication.cursorFlashTime()
+		if not config.CURSOR_BLINK:
+			QApplication.setCursorFlashTime(0)
+
 		# Internal attributes
 		self.quitting = {}
 		self.hiding = {}
@@ -2313,6 +2317,12 @@ class Merk(QMainWindow):
 			if hasattr(c,"key_value"): c.key_value.setFont(newfont)
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
+
+	def setCursorBlink(self):
+		if config.CURSOR_BLINK:
+			QApplication.setCursorFlashTime(self.default_cursor_blink_rate)
+		else:
+			QApplication.setCursorFlashTime(0)
 
 	def rerenderUserlists(self):
 		w = self.MDI.activeSubWindow()

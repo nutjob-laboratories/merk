@@ -1812,6 +1812,10 @@ class Dialog(QDialog):
 		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
 		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
 
+		self.cursorBlink = QCheckBox("Cursors blink",self)
+		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
+		self.cursorBlink.stateChanged.connect(self.changedSetting)
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
@@ -1825,6 +1829,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.enableStyle)
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
+		appearanceLayout.addWidget(self.cursorBlink)
 		appearanceLayout.addLayout(cursorLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname displays</b>"))
 		appearanceLayout.addWidget(self.elideNick)
@@ -4946,6 +4951,7 @@ class Dialog(QDialog):
 		config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY = self.elideNick.isChecked()
 		config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = self.showFullMode.isChecked()
 		config.DISPLAY_LONG_MESSAGE_INDICATOR = self.showLongMessage.isChecked()
+		config.CURSOR_BLINK = self.cursorBlink.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -5101,6 +5107,8 @@ class Dialog(QDialog):
 		self.parent.toggleCursorWidth()
 
 		self.parent.toggleUserinfo()
+
+		self.parent.setCursorBlink()
 
 		self.parent.refreshAllTopic()
 		if config.SHOW_CHANNEL_TOPIC:
