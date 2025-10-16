@@ -161,7 +161,6 @@ class Merk(QMainWindow):
 			self.options_icon = DARK_OPTIONS_ICON
 			self.bold_icon = DARK_BOLD_ICON
 			self.italic_icon = DARK_ITALIC_ICON
-			self.length_icon = DARK_LENGTH_ICON
 			self.dark_mode = True
 		else:
 			self.checked_icon = CHECKED_ICON
@@ -171,7 +170,6 @@ class Merk(QMainWindow):
 			self.options_icon = OPTIONS_ICON
 			self.bold_icon = BOLD_ICON
 			self.italic_icon = ITALIC_ICON
-			self.length_icon = LENGTH_ICON
 			self.dark_mode = False
 
 		# Set the application font

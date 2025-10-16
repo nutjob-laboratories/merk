@@ -448,7 +448,7 @@ class Window(QMainWindow):
 				self.mode_display.hide()
 
 		self.too_long_icon = QLabel(self)
-		pixmap = QPixmap(self.parent.length_icon)
+		pixmap = QPixmap(LENGTH_ICON)
 		pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.too_long_icon.setPixmap(pixmap)
 		self.too_long_icon.setToolTip(f"Chat exceeds {config.IRC_MAX_PAYLOAD_LENGTH} characters")
@@ -3159,8 +3159,11 @@ class SpellTextEdit(QPlainTextEdit):
 			self.keyDown.emit()
 		elif event.key() == Qt.Key_Delete or event.key() == Qt.Key_Backspace:
 			super().keyPressEvent(event)
-			if len(self.text())>config.IRC_MAX_PAYLOAD_LENGTH:
-				self.parent.too_long_icon.show()
+			if config.DISPLAY_LONG_MESSAGE_INDICATOR:
+				if len(self.text())>=config.IRC_MAX_PAYLOAD_LENGTH:
+					self.parent.too_long_icon.show()
+				else:
+					self.parent.too_long_icon.hide()
 			else:
 				self.parent.too_long_icon.hide()
 			return
@@ -3410,8 +3413,11 @@ class SpellTextEdit(QPlainTextEdit):
 			self.setTextCursor(cursor)
 
 		else:
-			if len(self.text())>config.IRC_MAX_PAYLOAD_LENGTH:
-				self.parent.too_long_icon.show()
+			if config.DISPLAY_LONG_MESSAGE_INDICATOR:
+				if len(self.text())>=config.IRC_MAX_PAYLOAD_LENGTH:
+					self.parent.too_long_icon.show()
+				else:
+					self.parent.too_long_icon.hide()
 			else:
 				self.parent.too_long_icon.hide()
 			return super().keyPressEvent(event)

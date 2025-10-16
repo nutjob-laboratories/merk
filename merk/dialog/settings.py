@@ -2417,10 +2417,15 @@ class Dialog(QDialog):
 		rbLayout.addWidget(self.windowRubberSize)
 		rbLayout.addWidget(self.windowRubberMove)
 
+		self.showLongMessage = QCheckBox("Show long message indicator",self)
+		if config.DISPLAY_LONG_MESSAGE_INDICATOR: self.showLongMessage.setChecked(True)
+		self.showLongMessage.stateChanged.connect(self.changedSetting)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showInputMenu)
+		subwindowLayout.addWidget(self.showLongMessage)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
 		subwindowLayout.addWidget(self.showInfo)
 		subwindowLayout.addLayout(rbLayout)
@@ -4940,6 +4945,7 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_MACROS = self.autocompleteMacro.isChecked()
 		config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY = self.elideNick.isChecked()
 		config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = self.showFullMode.isChecked()
+		config.DISPLAY_LONG_MESSAGE_INDICATOR = self.showLongMessage.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

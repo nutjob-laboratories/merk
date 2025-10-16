@@ -186,7 +186,6 @@ DARK_OPTIONS_ICON = ":/icon-dark_options.png"
 DARK_BOLD_ICON = ":/icon-dark_bold.png"
 DARK_ITALIC_ICON = ":/icon-dark_italic.png"
 DARK_MDI_BACKGROUND = ":/gui-dark_background.png"
-DARK_LENGTH_ICON = ":/icon-dark_length.png"
 
 # All other icons
 APPLICATION_ICON = ":/icon-app.png"

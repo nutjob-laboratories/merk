@@ -314,9 +314,11 @@ SEARCH_INSTALL_DIRECTORY_FOR_FILES = False
 AUTOCOMPLETE_MACROS = True
 ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY = True
 DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = True
+DISPLAY_LONG_MESSAGE_INDICATOR = True
 
 def build_settings():
 	settings = {
+		"show_long_message_indicator": DISPLAY_LONG_MESSAGE_INDICATOR,
 		"display_full_user_info_in_mode_messages": DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES,
 		"elide_long_nicknames_in_chat_display": ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY,
 		"autocomplete_macros": AUTOCOMPLETE_MACROS,
@@ -597,6 +599,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_long_message_indicator" in settings:
+		settings["show_long_message_indicator"] = DISPLAY_LONG_MESSAGE_INDICATOR
 	if not "display_full_user_info_in_mode_messages" in settings:
 		settings["display_full_user_info_in_mode_messages"] = DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES
 	if not "elide_long_nicknames_in_chat_display" in settings:
@@ -1426,6 +1430,7 @@ def load_settings(filename):
 	global AUTOCOMPLETE_MACROS
 	global ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY
 	global DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES
+	global DISPLAY_LONG_MESSAGE_INDICATOR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1435,6 +1440,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISPLAY_LONG_MESSAGE_INDICATOR = settings["show_long_message_indicator"]
 		DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES = settings["display_full_user_info_in_mode_messages"]
 		ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY = settings["elide_long_nicknames_in_chat_display"]
 		AUTOCOMPLETE_MACROS = settings["autocomplete_macros"]
