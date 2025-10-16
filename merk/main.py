@@ -2320,6 +2320,8 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"userlist"):
 				c.rerenderUserlist()
+			if hasattr(c,"readjustUserlist"):
+				c.readjustUserlist()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 

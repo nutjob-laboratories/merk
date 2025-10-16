@@ -101,7 +101,7 @@ class Window(QMainWindow):
 		self.halfop = False
 		self.protected = False
 
-		self.starting_pad_width = config.NICKNAME_PAD_LENGTH
+		self.userlist_nick_pad_width = config.NICKNAME_PAD_LENGTH
 
 		self.banlist = []
 		self.away = {}
@@ -451,7 +451,7 @@ class Window(QMainWindow):
 		pixmap = QPixmap(LENGTH_ICON)
 		pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.too_long_icon.setPixmap(pixmap)
-		self.too_long_icon.setToolTip(f"Chat exceeds {config.IRC_MAX_PAYLOAD_LENGTH} characters")
+		self.too_long_icon.setToolTip(f"Message exceeds {config.IRC_MAX_PAYLOAD_LENGTH} characters")
 		self.too_long_icon.hide()
 
 		inputLayout = QHBoxLayout()
@@ -1912,9 +1912,10 @@ class Window(QMainWindow):
 	def rerenderUserlist(self):
 		self.writeUserlist(self.users)
 
+	def readjustUserlist(self):
 		if hasattr(self,"horizontalSplitter"):
-			if self.starting_pad_width!=config.NICKNAME_PAD_LENGTH:
-				self.starting_pad_width = config.NICKNAME_PAD_LENGTH
+			if self.userlist_nick_pad_width!=config.NICKNAME_PAD_LENGTH:
+				self.userlist_nick_pad_width = config.NICKNAME_PAD_LENGTH
 				fm = QFontMetrics(self.app.font())
 				ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
 				mwidth = self.width()-ulwidth
