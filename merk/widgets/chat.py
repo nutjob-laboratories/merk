@@ -346,7 +346,7 @@ class Window(QMainWindow):
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel("<b>"+self.client.nickname+"&nbsp;</b>")
+		self.nick_display = QLabel("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
 		self.mode_display = QLabel("")
 
 		self.nick_display.installEventFilter(self)
@@ -2375,11 +2375,11 @@ class Window(QMainWindow):
 	def refreshNickDisplay(self):
 		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
 			if self.client.is_away:
-				self.nick_display.setText(self.client.nickname+" ")
+				self.nick_display.setText(" "+self.client.nickname+" ")
 			else:
-				self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+				self.nick_display.setText("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
 		else:
-			self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+			self.nick_display.setText("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
 
 	def writeText(self,message,write_to_log=True):
 

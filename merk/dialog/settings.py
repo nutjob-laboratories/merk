@@ -1812,7 +1812,7 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.enableStyle)
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname displays</b>"))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nicknames</b>"))
 		appearanceLayout.addWidget(self.elideNick)
 		appearanceLayout.addWidget(self.noPadding)
 		appearanceLayout.addLayout(padLayout)
