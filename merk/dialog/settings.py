@@ -635,6 +635,12 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateBlinkRate(self,state):
+		self.CURSOR_BLINK_RATE = self.blinkRate.value()
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def updateinputCursor(self,state):
 		self.INPUT_CURSOR_WIDTH = self.inputCursor.value()
 		self.changed.show()
@@ -1509,6 +1515,7 @@ class Dialog(QDialog):
 		self.HOSTMASK_FETCH_FREQUENCY = config.HOSTMASK_FETCH_FREQUENCY
 		self.RECONNECTION_DELAY = config.RECONNECTION_DELAY
 		self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
+		self.CURSOR_BLINK_RATE = config.CURSOR_BLINK_RATE
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3574,9 +3581,20 @@ class Dialog(QDialog):
 		cursorLayout.addWidget(self.inputCursorLabelSpec)
 		cursorLayout.addStretch()
 
-		self.cursorBlink = QCheckBox("Cursors blink",self)
+		self.cursorBlink = QCheckBox("Cursors blink every",self)
 		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
 		self.cursorBlink.stateChanged.connect(self.changedSetting)
+
+		self.blinkRateSpec = QLabel("ms")
+		self.blinkRate = QSpinBox()
+		self.blinkRate.setRange(1,5000)
+		self.blinkRate.setValue(self.CURSOR_BLINK_RATE)
+		self.blinkRate.valueChanged.connect(self.updateBlinkRate)
+
+		blinkLayout = QHBoxLayout()
+		blinkLayout.addWidget(self.cursorBlink)
+		blinkLayout.addWidget(self.blinkRate)
+		blinkLayout.addWidget(self.blinkRateSpec)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
@@ -3592,7 +3610,7 @@ class Dialog(QDialog):
 		inputLayout.addLayout(autoSettingsLayout)
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
-		inputLayout.addWidget(self.cursorBlink)
+		inputLayout.addLayout(blinkLayout)
 		inputLayout.addLayout(cursorLayout)
 		inputLayout.addStretch()
 
@@ -4959,6 +4977,7 @@ class Dialog(QDialog):
 		config.DISPLAY_LONG_MESSAGE_INDICATOR = self.showLongMessage.isChecked()
 		config.CURSOR_BLINK = self.cursorBlink.isChecked()
 		config.REJECT_ALL_CHANNEL_NOTICES = self.ignoreChannelNotice.isChecked()
+		config.CURSOR_BLINK_RATE = self.CURSOR_BLINK_RATE
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

@@ -178,9 +178,11 @@ class Merk(QMainWindow):
 		# Set the widget font
 		self.setFont(self.application_font)
 
-		self.default_cursor_blink_rate = QApplication.cursorFlashTime()
 		if not config.CURSOR_BLINK:
 			QApplication.setCursorFlashTime(0)
+		else:
+			QApplication.setCursorFlashTime(config.CURSOR_BLINK_RATE)
+
 
 		# Internal attributes
 		self.quitting = {}
@@ -2321,7 +2323,7 @@ class Merk(QMainWindow):
 
 	def setCursorBlink(self):
 		if config.CURSOR_BLINK:
-			QApplication.setCursorFlashTime(self.default_cursor_blink_rate)
+			QApplication.setCursorFlashTime(config.CURSOR_BLINK_RATE)
 		else:
 			QApplication.setCursorFlashTime(0)
 
