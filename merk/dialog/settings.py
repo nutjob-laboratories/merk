@@ -1774,19 +1774,6 @@ class Dialog(QDialog):
 		self.forceMono.stateChanged.connect(self.changedSettingRerender)
 		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.inputCursorLabel = QLabel("Input cursor width:")
-		self.inputCursorLabelSpec = QLabel("pixels")
-		self.inputCursor = QSpinBox()
-		self.inputCursor.setRange(1,99)
-		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
-		self.inputCursor.valueChanged.connect(self.updateinputCursor)
-
-		cursorLayout = QHBoxLayout()
-		cursorLayout.addWidget(self.inputCursorLabel)
-		cursorLayout.addWidget(self.inputCursor)
-		cursorLayout.addWidget(self.inputCursorLabelSpec)
-		cursorLayout.addStretch()
-
 		self.enableStyle = QCheckBox("Enable text style editor",self)
 		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
@@ -1812,10 +1799,6 @@ class Dialog(QDialog):
 		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
 		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
 
-		self.cursorBlink = QCheckBox("Cursors blink",self)
-		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
-		self.cursorBlink.stateChanged.connect(self.changedSetting)
-
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
@@ -1829,8 +1812,6 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(self.enableStyle)
 		appearanceLayout.addWidget(self.noStyles)
 		appearanceLayout.addWidget(self.forceMono)
-		appearanceLayout.addWidget(self.cursorBlink)
-		appearanceLayout.addLayout(cursorLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname displays</b>"))
 		appearanceLayout.addWidget(self.elideNick)
 		appearanceLayout.addWidget(self.noPadding)
@@ -3581,6 +3562,23 @@ class Dialog(QDialog):
 		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
 		autoSettingsLayout.addRow(self.autocompleteMacro)
 
+		self.inputCursorLabel = QLabel("Input cursor width:")
+		self.inputCursorLabelSpec = QLabel("pixels")
+		self.inputCursor = QSpinBox()
+		self.inputCursor.setRange(1,99)
+		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
+		self.inputCursor.valueChanged.connect(self.updateinputCursor)
+
+		cursorLayout = QHBoxLayout()
+		cursorLayout.addWidget(self.inputCursorLabel)
+		cursorLayout.addWidget(self.inputCursor)
+		cursorLayout.addWidget(self.inputCursorLabelSpec)
+		cursorLayout.addStretch()
+
+		self.cursorBlink = QCheckBox("Cursors blink",self)
+		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
+		self.cursorBlink.stateChanged.connect(self.changedSetting)
+
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
 		inputLayout.addWidget(self.historyDescription)
@@ -3593,6 +3591,10 @@ class Dialog(QDialog):
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSettingsLayout)
+		inputLayout.addWidget(QLabel(' '))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
+		inputLayout.addWidget(self.cursorBlink)
+		inputLayout.addLayout(cursorLayout)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
