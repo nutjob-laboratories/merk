@@ -339,14 +339,13 @@ class Window(QMainWindow):
 		self.input.setWordWrapMode(QTextOption.NoWrap)
 		self.input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.input.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
 		self.input.setCursorWidth(config.INPUT_CURSOR_WIDTH)
 
 		# Set input language for spell checker
 		self.input.changeLanguage(self.language)
 
 		# Nickname display
-		self.nick_display = QLabel("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
+		self.nick_display = QLabel("<b>"+self.client.nickname+"&nbsp;</b>")
 		self.mode_display = QLabel("")
 
 		self.nick_display.installEventFilter(self)
@@ -2276,22 +2275,16 @@ class Window(QMainWindow):
 			need_spacer = True
 			if self.operator:
 				self.op_icon.show()
-				need_spacer = False
 			if self.voiced:
 				self.voice_icon.show()
-				need_spacer = False
 			if self.owner:
 				self.owner_icon.show()
-				need_spacer = False
 			if self.admin:
 				self.admin_icon.show()
-				need_spacer = False
 			if self.halfop:
 				self.halfop_icon.show()
-				need_spacer = False
 			if self.protected:
 				self.protected_icon.show()
-				need_spacer = False
 
 			if need_spacer:
 				self.name_spacer.show()
@@ -2375,11 +2368,11 @@ class Window(QMainWindow):
 	def refreshNickDisplay(self):
 		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
 			if self.client.is_away:
-				self.nick_display.setText(" "+self.client.nickname+" ")
+				self.nick_display.setText(self.client.nickname+" ")
 			else:
-				self.nick_display.setText("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
+				self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
 		else:
-			self.nick_display.setText("<b>&nbsp;"+self.client.nickname+"&nbsp;</b>")
+			self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
 
 	def writeText(self,message,write_to_log=True):
 

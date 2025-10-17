@@ -3568,7 +3568,7 @@ class Dialog(QDialog):
 		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
 		autoSettingsLayout.addRow(self.autocompleteMacro)
 
-		self.inputCursorLabel = QLabel("Input cursor width:")
+		self.inputCursorLabel = QLabel("Input widget cursor width:")
 		self.inputCursorLabelSpec = QLabel("pixels")
 		self.inputCursor = QSpinBox()
 		self.inputCursor.setRange(1,99)
