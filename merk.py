@@ -218,6 +218,12 @@ if __name__ == '__main__':
 	# Apply new style
 	app.setStyle(config.QT_WINDOW_STYLE)
 
+	# Set cursor blink rate
+	if config.CURSOR_BLINK:
+		QApplication.setCursorFlashTime(config.CURSOR_BLINK_RATE)
+	else:
+		QApplication.setCursorFlashTime(0)
+
 	# Set dark mode if it's in the config file
 	if config.DARK_MODE==True:
 		args.darkmode = True
