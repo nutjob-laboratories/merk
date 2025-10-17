@@ -147,6 +147,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ctcp finger": config.ISSUE_COMMAND_SYMBOL+"ctcp FINGER ",
 			config.ISSUE_COMMAND_SYMBOL+"config import": config.ISSUE_COMMAND_SYMBOL+"config import ",
 			config.ISSUE_COMMAND_SYMBOL+"config export": config.ISSUE_COMMAND_SYMBOL+"config export ",
+			config.ISSUE_COMMAND_SYMBOL+"config restart": config.ISSUE_COMMAND_SYMBOL+"config restart",
 	}
 
 	# Entries for command autocomplete
@@ -225,7 +226,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"xreconnectssl": config.ISSUE_COMMAND_SYMBOL+"xreconnectssl ",
 			config.ISSUE_COMMAND_SYMBOL+"user": config.ISSUE_COMMAND_SYMBOL+"user ",
 			config.ISSUE_COMMAND_SYMBOL+"macro": config.ISSUE_COMMAND_SYMBOL+"macro ",
-			config.ISSUE_COMMAND_SYMBOL+"reboot": config.ISSUE_COMMAND_SYMBOL+"reboot",
 			config.ISSUE_COMMAND_SYMBOL+"readme": config.ISSUE_COMMAND_SYMBOL+"readme",
 		}
 
@@ -349,7 +349,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the user configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT [USAGE] [HELP]</b>", "Creates a macro, executable with "+config.ISSUE_COMMAND_SYMBOL+"NAME, that executes SCRIPT" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reboot</b>", f"Restarts the {APPLICATION_NAME} application" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"readme</b>", f"Opens the {APPLICATION_NAME} README" ],
 	]
 
@@ -1254,45 +1253,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'readme' and len(tokens)>=1:
 			gui.menuReadMeCmd()
-			return True
-
-	# |---------|
-	# | /reboot |
-	# |---------|
-	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reboot' and len(tokens)==1:
-
-			msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any connected servers, and\nrestart using the same command-line used to start {APPLICATION_NAME}."
-
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(QUIT_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText(msg)
-			msgBox.setInformativeText("Click \"OK\" to restart, or \"Cancel\" to abort restart.")
-			msgBox.setWindowTitle(f"{config.ISSUE_COMMAND_SYMBOL}reboot")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
-			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
-				pass
-			else:
-				if is_running_from_pyinstaller():
-					subprocess.Popen([sys.executable,*sys.argv])
-					self.parent.close()
-					self.parent.app.exit()
-				else:
-					os.execl(sys.executable, sys.executable, *sys.argv)
-					sys.exit()
-			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reboot':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reboot")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reboot")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |--------|
@@ -3651,6 +3611,32 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
+			if tokens[1].lower()=='restart':
+
+				msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any connected servers, and\nrestart using the same command-line used to start {APPLICATION_NAME}."
+
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(QUIT_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setText(msg)
+				msgBox.setInformativeText("Click \"OK\" to restart, or \"Cancel\" to abort restart.")
+				msgBox.setWindowTitle(f"{config.ISSUE_COMMAND_SYMBOL}reboot")
+				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+				rval = msgBox.exec()
+				if rval == QMessageBox.Cancel:
+					pass
+				else:
+					if is_running_from_pyinstaller():
+						subprocess.Popen([sys.executable,*sys.argv])
+						self.parent.close()
+						self.parent.app.exit()
+					else:
+						os.execl(sys.executable, sys.executable, *sys.argv)
+						sys.exit()
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
 			if tokens[1].lower()=='import':
 
 				options = QFileDialog.Options()
@@ -3662,7 +3648,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					gui.reload_settings()
 					t = Message(SYSTEM_MESSAGE,'',f"Imported \"{fileName}\" configuration file")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}reboot to restart {APPLICATION_NAME}")
+					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}config restart to restart {APPLICATION_NAME}")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				else:
@@ -3680,7 +3666,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					gui.reload_settings()
 					t = Message(SYSTEM_MESSAGE,'',f"Imported \"{f}\" configuration file")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}reboot to restart {APPLICATION_NAME}")
+					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}config restart to restart {APPLICATION_NAME}")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				else:
@@ -3917,6 +3903,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.reload_settings()
 
 				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}config restart to restart {APPLICATION_NAME}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:

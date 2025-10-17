@@ -169,6 +169,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"reboot",
 			cmdsymbol+"config import",
 			cmdsymbol+"config export",
+			cmdsymbol+"config restart",
 		]
 
 		script_only = [
@@ -223,6 +224,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"delay")
 		if not config.ENABLE_CONFIG_COMMAND:
 			merk.remove(cmdsymbol+"config")
+			merk.remove(cmdsymbol+"config import")
+			merk.remove(cmdsymbol+"config export")
+			merk.remove(cmdsymbol+"config restart")
 		if not config.ENABLE_GOTO_COMMAND: script_full = []
 		if not config.ENABLE_IF_COMMAND:
 			script_only.remove("if")

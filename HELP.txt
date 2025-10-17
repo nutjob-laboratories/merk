@@ -148,6 +148,10 @@ Appearance:
 <td>Imports a configuration file into settings.  <strong>*Caution*</strong>: use at your own risk!</td>
 </tr>
 <tr>
+<td><code>/config restart</code></td>
+<td>Restarts MERK, using the same command-line used to start MERK. <strong>*Caution*</strong>: use at your own risk!</td>
+</tr>
+<tr>
 <td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server</td>
 </tr>
@@ -348,10 +352,6 @@ Appearance:
 <tr>
 <td><code>/readme</code></td>
 <td>Opens the MERK README in a subwindow</td>
-</tr>
-<tr>
-<td><code>/reboot</code></td>
-<td>Restarts MERK, using the same command-line used to start MERK</td>
 </tr>
 <tr>
 <td><code>/reclaim NICKNAME</code></td>

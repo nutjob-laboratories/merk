@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.050.800">MERK 0.050.800</a></big></b><br>
-  <b>Current development version: 0.050.815</b><br><br>
+  <b>Current development version: 0.050.818</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
 </p>
 
@@ -30,13 +30,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.050.800 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.800)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.050.815 (12.05 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows EXE | [Download MERK 0.050.815 (48.90 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows Setup | [Download MERK 0.050.815 (46.07 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.050.818 (12.05 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows EXE | [Download MERK 0.050.818 (48.90 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows Setup | [Download MERK 0.050.818 (46.06 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.815**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.050.818**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.050.800](https://github.com/nutjob-laboratories/merk/releases/tag/0.050.800). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -118,7 +118,7 @@ There are three libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.050.800), and may reflect the current development version (0.050.815). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.050.800), and may reflect the current development version (0.050.818). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -243,6 +243,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk! |
 | `/config export [FILENAME]`          | Exports the current configuration file.  ***Caution**: use at your own risk! |
 | `/config import [FILENAME]`          | Imports a configuration file into settings.  ***Caution**: use at your own risk! |
+| `/config restart`          | Restarts MERK, using the same command-line used to start MERK.  ***Caution**: use at your own risk! |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
 | `context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; *can only be called from scripts*                                                  |
@@ -293,7 +294,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
 | `/readme`                          | Opens the MERK README in a subwindow                               |
-| `/reboot`                          | Restarts MERK, using the same command-line used to start MERK                                               |
 | `/reclaim NICKNAME`                          | Attempts to change nickname to `NICKNAME` until claimed                                                                                             |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
