@@ -350,6 +350,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the user configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT [USAGE] [HELP]</b>", "Creates a macro, executable with "+config.ISSUE_COMMAND_SYMBOL+"NAME, that executes SCRIPT" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"readme</b>", f"Opens the {APPLICATION_NAME} README" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config export [FILENAME]</b>", "Exports the current configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>", "Imports a configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config restart</b>", f"Restarts {APPLICATION_NAME}. <i><b>Caution</b>: use at your own risk</i>" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -376,6 +379,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>": continue
 		if not config.ENABLE_CONFIG_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config export [FILENAME]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config restart</b>": continue
 		if not config.ENABLE_DELAY_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>": continue
 		if not config.ENABLE_STYLE_EDITOR:
