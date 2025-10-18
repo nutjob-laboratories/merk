@@ -4554,10 +4554,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			filename = ' '.join(tokens)
 
+			# First, check to see if the argument passed
+			# to the command is a hostid for a connection
+			# script that already exists; if it is, then
+			# open up the appropriate connection script
+			USER.load_user(USER.USER_FILE)
+			if filename in USER.COMMANDS:
+				gui.newEditorWindowConnect(filename)
+				return True
+
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
 			if efilename!=None:
 				gui.newEditorWindowFile(efilename)
-
 			else:
 				if is_script:
 					add_halt(script_id)
