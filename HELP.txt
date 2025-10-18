@@ -249,10 +249,6 @@ Appearance:
 <td>Lists or searches channels on the server; use &quot;*&quot; for multi-character wildcard and &quot;?&quot; for single character</td>
 </tr>
 <tr>
-<td><code>/log</code></td>
-<td>Opens the log manager</td>
-</tr>
-<tr>
 <td><code>/macro NAME SCRIPT [USAGE] [HELP]</code></td>
 <td>Creates a macro, executable with <code>/NAME</code>, that executes <code>SCRIPT</code></td>
 </tr>
@@ -451,7 +447,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, and <b><code>settings</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, <b><code>settings</code></b>, and <b><code>logs</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>
