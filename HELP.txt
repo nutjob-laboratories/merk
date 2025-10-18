@@ -394,8 +394,8 @@ Appearance:
 <td>Shows a subwindow, if hidden; otherwise, shifts focus to that window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
-<td><code>/style</code></td>
-<td>Edits the current window&#39;s style</td>
+<td><code>/style [SERVER] [WINDOW]</code></td>
+<td>Opens a window&#39;s text style editor</td>
 </tr>
 <tr>
 <td><code>/tile</code></td>
