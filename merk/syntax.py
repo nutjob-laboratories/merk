@@ -170,6 +170,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"config export",
 			cmdsymbol+"config restart",
 			cmdsymbol+"window readme",
+			cmdsymbol+"window settings",
 		]
 
 		script_only = [

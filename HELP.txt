@@ -390,10 +390,6 @@ Appearance:
 <td>Executes a list of commands in a file</td>
 </tr>
 <tr>
-<td><code>/settings</code></td>
-<td>Opens the settings dialog</td>
-</tr>
-<tr>
 <td><code>/shell ALIAS COMMAND...</code></td>
 <td>Executes an external program, and stores the output in an alias</td>
 </tr>
@@ -455,7 +451,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, and <b><code>readme</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, and <b><code>settings</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>
