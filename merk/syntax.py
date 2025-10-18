@@ -166,10 +166,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ctcp SOURCE",
 			cmdsymbol+"ctcp TIME",
 			cmdsymbol+"macro",
-			cmdsymbol+"reboot",
 			cmdsymbol+"config import",
 			cmdsymbol+"config export",
 			cmdsymbol+"config restart",
+			cmdsymbol+"window readme",
 		]
 
 		script_only = [

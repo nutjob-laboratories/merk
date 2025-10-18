@@ -350,10 +350,6 @@ Appearance:
 <td>Sends unprocessed data to the server</td>
 </tr>
 <tr>
-<td><code>/readme</code></td>
-<td>Opens the MERK README in a subwindow</td>
-</tr>
-<tr>
 <td><code>/reclaim NICKNAME</code></td>
 <td>Attempts to change nickname to <code>NICKNAME</code> until claimed</td>
 </tr>
@@ -459,7 +455,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, and <b><code>restore</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, and <b><code>readme</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

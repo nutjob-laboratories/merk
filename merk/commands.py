@@ -148,6 +148,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"config import": config.ISSUE_COMMAND_SYMBOL+"config import ",
 			config.ISSUE_COMMAND_SYMBOL+"config export": config.ISSUE_COMMAND_SYMBOL+"config export ",
 			config.ISSUE_COMMAND_SYMBOL+"config restart": config.ISSUE_COMMAND_SYMBOL+"config restart",
+			config.ISSUE_COMMAND_SYMBOL+"window readme": config.ISSUE_COMMAND_SYMBOL+"window readme",
 	}
 
 	# Entries for command autocomplete
@@ -226,7 +227,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"xreconnectssl": config.ISSUE_COMMAND_SYMBOL+"xreconnectssl ",
 			config.ISSUE_COMMAND_SYMBOL+"user": config.ISSUE_COMMAND_SYMBOL+"user ",
 			config.ISSUE_COMMAND_SYMBOL+"macro": config.ISSUE_COMMAND_SYMBOL+"macro ",
-			config.ISSUE_COMMAND_SYMBOL+"readme": config.ISSUE_COMMAND_SYMBOL+"readme",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -334,7 +334,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>size</b>, <b>maximize</b>, <b>minimize</b>, and <b>restore</b>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>size</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, and <b>readme</b>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
@@ -349,7 +349,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the user configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT [USAGE] [HELP]</b>", "Creates a macro, executable with "+config.ISSUE_COMMAND_SYMBOL+"NAME, that executes SCRIPT" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"readme</b>", f"Opens the {APPLICATION_NAME} README" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config export [FILENAME]</b>", "Exports the current configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>", "Imports a configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config restart</b>", f"Restarts {APPLICATION_NAME}. <i><b>Caution</b>: use at your own risk</i>" ],
@@ -1253,14 +1252,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
-	# |---------|
-	# | /readme |
-	# |---------|
-	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'readme' and len(tokens)>=1:
-			gui.menuReadMeCmd()
-			return True
-
 	# |--------|
 	# | /macro |
 	# |--------|
@@ -1413,7 +1404,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			build_help_and_autocomplete()
 			return True
 
-		# /macro name script usage
+		# /macro name script usage help
 		try:
 			stokens = shlex.split(shlex.quote(user_input), comments=False)
 		except:
@@ -2728,7 +2719,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |---------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==1:
-			
 			results = []
 			for w in gui.getAllAllConnectedSubWindows():
 				if w.isVisible():
@@ -2774,6 +2764,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			return True
+
+		# /window readme
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='readme':
+				gui.menuReadMeCmd()
+				return True
 
 		# /window move X Y
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==4:
@@ -6120,12 +6116,6 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script"])
-					no_errors = False
-
-			# /readme can't be called in scripts
-			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'readme':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}readme cannot be called from a script"])
 					no_errors = False
 
 			# /end doesn't take any arguments

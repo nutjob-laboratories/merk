@@ -293,7 +293,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
-| `/readme`                          | Opens the MERK README in a subwindow                               |
 | `/reclaim NICKNAME`                          | Attempts to change nickname to `NICKNAME` until claimed                                                                                             |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
@@ -320,7 +319,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `move`, `size`, `maximize`, `minimize`, and `restore`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `move`, `size`, `maximize`, `minimize`, `restore`, and `readme`. Call with no arguments to see main window information and a list of subwindows                                                 |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |
