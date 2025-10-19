@@ -304,7 +304,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
 | `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                |
-| `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor                                                                                                 |
+| `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor. Cannot be called from scripts                                                                                                 |
 | `/tile`                                 | Tiles all subwindows                                                                                                             |
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |

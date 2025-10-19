@@ -172,6 +172,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window readme",
 			cmdsymbol+"window settings",
 			cmdsymbol+"window logs",
+			cmdsymbol+"edit",
 		]
 
 		script_only = [

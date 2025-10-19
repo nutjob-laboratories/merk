@@ -6172,12 +6172,6 @@ class ScriptThread(QThread):
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script"])
 					no_errors = False
 
-			# /edit can't be called in scripts
-			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'edit':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}edit cannot be called from a script"])
-					no_errors = False
-
 			# /end doesn't take any arguments
 			if len(tokens)>=1:
 				if tokens[0].lower()=='end' and len(tokens)>1: 

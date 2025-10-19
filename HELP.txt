@@ -395,7 +395,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/style [SERVER] [WINDOW]</code></td>
-<td>Opens a window&#39;s text style editor</td>
+<td>Opens a window&#39;s text style editor. Cannot be called from scripts</td>
 </tr>
 <tr>
 <td><code>/tile</code></td>
