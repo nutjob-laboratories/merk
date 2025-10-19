@@ -1250,7 +1250,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /macro |
 	# |--------|
 	if len(tokens)>=1:
-
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro':
 				if is_script:
