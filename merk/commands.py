@@ -6314,7 +6314,7 @@ class ScriptThread(QThread):
 								continue
 
 							try:
-								stokens = shlex.split(shlex.quote(line), comments=False)
+								stokens = shlex.split(line, comments=False)
 							except:
 								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks"])
 								loop = False
