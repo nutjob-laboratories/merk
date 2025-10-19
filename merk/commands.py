@@ -2612,6 +2612,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 			addAlias(a,f"{random.randint(low,high)}")
+			# if is_script: time.sleep(0.1)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random':
@@ -4250,6 +4251,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				# else:
+				# 	time.sleep(0.1)
 				return True
 			else:
 				if is_script:
