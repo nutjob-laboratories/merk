@@ -270,13 +270,15 @@ class Window(QMainWindow):
 								is_a_server_log = True
 								netname = netname[1:]
 
+						add_to_list = True
 						if self.target!=None:
-							if self.target.lower()!=netname.lower(): continue
+							if self.target.lower()!=netname.lower(): add_to_list = False
+							if self.target.lower() in channel.lower(): add_to_list = True
 
 						if is_a_server_log:
 							item = QListWidgetItem(netname+":"+channel+" (SERVER)")
 							item.file = log
-							servers.append(item)
+							if add_to_list: servers.append(item)
 						else:
 							netname = netname.upper()
 
@@ -293,7 +295,7 @@ class Window(QMainWindow):
 							item.file = log
 							item.network = netname
 							item.channel = channel
-							others.append(item)
+							if add_to_list: others.append(item)
 
 		# Sort channel/chat logs by network, THEN chat name
 		others = sorted(others,key=operator.attrgetter("network","channel"))

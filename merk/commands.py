@@ -150,7 +150,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"config restart": config.ISSUE_COMMAND_SYMBOL+"config restart",
 			config.ISSUE_COMMAND_SYMBOL+"window readme": config.ISSUE_COMMAND_SYMBOL+"window readme",
 			config.ISSUE_COMMAND_SYMBOL+"window settings": config.ISSUE_COMMAND_SYMBOL+"window settings",
-			config.ISSUE_COMMAND_SYMBOL+"window logs": config.ISSUE_COMMAND_SYMBOL+"window logs",
+			config.ISSUE_COMMAND_SYMBOL+"window logs": config.ISSUE_COMMAND_SYMBOL+"window logs ",
 	}
 
 	# Entries for command autocomplete
@@ -2767,6 +2767,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='logs':
 				gui.menuExportLog()
+				return True
+
+		# /window logs target
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
+			if tokens[1].lower()=='logs':
+				target = tokens[2]
+				gui.menuExportLogTarget(target)
 				return True
 
 		# /window settings
