@@ -124,10 +124,6 @@ Appearance:
 <td>Sets status as &quot;back&quot;</td>
 </tr>
 <tr>
-<td><code>/cascade</code></td>
-<td>Cascades all subwindows</td>
-</tr>
-<tr>
 <td><code>/clear [SERVER] [WINDOW]</code></td>
 <td>Clears a window&#39;s chat display. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
@@ -398,10 +394,6 @@ Appearance:
 <td>Opens a window&#39;s text style editor. Cannot be called from scripts</td>
 </tr>
 <tr>
-<td><code>/tile</code></td>
-<td>Tiles all subwindows</td>
-</tr>
-<tr>
 <td><code>/time</code></td>
 <td>Requests server time</td>
 </tr>
@@ -447,7 +439,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, <b><code>settings</code></b>, and <b><code>logs</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, <b><code>settings</code></b>, <b><code>logs</code></b>, <b><code>cascade</code></b>, and <b><code>tile</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

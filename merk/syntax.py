@@ -99,8 +99,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"maximize",
 			cmdsymbol+"minimize",
 			cmdsymbol+"restore",
-			cmdsymbol+"cascade",
-			cmdsymbol+"tile",
 			cmdsymbol+"away",
 			cmdsymbol+"back",
 			cmdsymbol+"raw",
@@ -173,6 +171,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window settings",
 			cmdsymbol+"window logs",
 			cmdsymbol+"edit",
+			cmdsymbol+"window cascade",
+			cmdsymbol+"window tile",
 		]
 
 		script_only = [

@@ -151,6 +151,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window readme": config.ISSUE_COMMAND_SYMBOL+"window readme",
 			config.ISSUE_COMMAND_SYMBOL+"window settings": config.ISSUE_COMMAND_SYMBOL+"window settings",
 			config.ISSUE_COMMAND_SYMBOL+"window logs": config.ISSUE_COMMAND_SYMBOL+"window logs ",
+			config.ISSUE_COMMAND_SYMBOL+"window cascade": config.ISSUE_COMMAND_SYMBOL+"window cascade",
+			config.ISSUE_COMMAND_SYMBOL+"window tile": config.ISSUE_COMMAND_SYMBOL+"window tile",
 	}
 
 	# Entries for command autocomplete
@@ -192,8 +194,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"print": config.ISSUE_COMMAND_SYMBOL+"print ",
 			config.ISSUE_COMMAND_SYMBOL+"maximize": config.ISSUE_COMMAND_SYMBOL+"maximize ",
 			config.ISSUE_COMMAND_SYMBOL+"minimize": config.ISSUE_COMMAND_SYMBOL+"minimize ",
-			config.ISSUE_COMMAND_SYMBOL+"cascade": config.ISSUE_COMMAND_SYMBOL+"cascade",
-			config.ISSUE_COMMAND_SYMBOL+"tile": config.ISSUE_COMMAND_SYMBOL+"tile",
 			config.ISSUE_COMMAND_SYMBOL+"clear": config.ISSUE_COMMAND_SYMBOL+"clear",
 			config.ISSUE_COMMAND_SYMBOL+"style": config.ISSUE_COMMAND_SYMBOL+"style ",
 			config.ISSUE_COMMAND_SYMBOL+"exit": config.ISSUE_COMMAND_SYMBOL+"exit ",
@@ -313,8 +313,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] [WINDOW]</b>", "Maximizes a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] [WINDOW]</b>", "Minimizes a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] [WINDOW]</b>", "Restores a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"cascade</b>", "Cascades all subwindows" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"tile</b>", "Tiles all subwindows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [SERVER] [WINDOW]</b>", "Clears a window's chat display" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
@@ -332,7 +330,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>size</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, and <b>logs</b>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>size</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>cascade</b>, and <b>tile</b>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
@@ -2764,6 +2762,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			return True
 
+		# /window cascade
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='cascade':
+				gui.MDI.cascadeSubWindows()
+				return True
+
+		# /window tile
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='tile':
+				gui.MDI.tileSubWindows()
+				return True
+
 		# /window logs
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='logs':
@@ -4934,46 +4944,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'clear':
 			window.clearChat()
-			return True
-
-	# |-------|
-	# | /tile |
-	# |-------|
-	if len(tokens)>=1:
-		if len(tokens)==1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'tile':
-				gui.MDI.tileSubWindows()
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'tile':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"tile")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"tile")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
-	# |----------|
-	# | /cascade |
-	# |----------|
-	if len(tokens)>=1:
-		if len(tokens)==1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'cascade':
-				gui.MDI.cascadeSubWindows()
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'cascade':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"cascade")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"cascade")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |----------|
