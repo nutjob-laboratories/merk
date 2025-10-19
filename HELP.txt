@@ -277,10 +277,6 @@ Appearance:
 <td>Displays a messagebox with a short message</td>
 </tr>
 <tr>
-<td><code>/next</code></td>
-<td>Shifts focus to the "next" subwindow</td>
-</tr>
-<tr>
 <td><code>/nick NEW_NICKNAME</code></td>
 <td>Changes your nickname</td>
 </tr>
@@ -308,10 +304,6 @@ Appearance:
 <tr>
 <td><code>/play FILENAME</code></td>
 <td>Plays a WAV file</td>
-</tr>
-<tr>
-<td><code>/previous</code></td>
-<td>Shifts focus to the "previous" subwindow</td>
 </tr>
 <tr>
 <td><code>/print [WINDOW] TEXT...</code></td>
@@ -439,7 +431,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, <b><code>settings</code></b>, <b><code>logs</code></b>, <b><code>cascade</code></b>, and <b><code>tile</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, <b><code>settings</code></b>, <b><code>logs</code></b>, <b><code>cascade</code></b>, <b><code>tile</code></b>, <b><code>next</code></b>, and <b><code>previous</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

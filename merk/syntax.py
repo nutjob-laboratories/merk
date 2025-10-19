@@ -173,6 +173,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"edit",
 			cmdsymbol+"window cascade",
 			cmdsymbol+"window tile",
+			cmdsymbol+"window next",
+			cmdsymbol+"window previous",
 		]
 
 		script_only = [

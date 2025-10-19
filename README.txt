@@ -275,7 +275,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context                                                                              |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
-| `/next`                    | Shifts focus to the "next" subwindow                                                                                                   |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
 | `only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
@@ -283,7 +282,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
 | `/play FILENAME`                        | Plays a WAV file                                                                                                                 |
-| `/previous`               | Shifts focus to the "previous" subwindow                                                                                    |
 | `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
 | `/prints [WINDOW] TEXT...`               | Prints system message to a window                                                                                                          |
 | `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
@@ -315,7 +313,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `move`, `size`, `maximize`, `minimize`, `restore`, `readme`, `settings`, `logs`, `cascade`, and `tile`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `move`, `size`, `maximize`, `minimize`, `restore`, `readme`, `settings`, `logs`, `cascade`, `tile`, `next`, and `previous`. Call with no arguments to see main window information and a list of subwindows                                                 |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |

@@ -153,6 +153,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window logs": config.ISSUE_COMMAND_SYMBOL+"window logs ",
 			config.ISSUE_COMMAND_SYMBOL+"window cascade": config.ISSUE_COMMAND_SYMBOL+"window cascade",
 			config.ISSUE_COMMAND_SYMBOL+"window tile": config.ISSUE_COMMAND_SYMBOL+"window tile",
+			config.ISSUE_COMMAND_SYMBOL+"window next": config.ISSUE_COMMAND_SYMBOL+"window next",
+			config.ISSUE_COMMAND_SYMBOL+"window previous": config.ISSUE_COMMAND_SYMBOL+"window previous",
 	}
 
 	# Entries for command autocomplete
@@ -207,8 +209,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"private": config.ISSUE_COMMAND_SYMBOL+"private ",
 			config.ISSUE_COMMAND_SYMBOL+"msgbox": config.ISSUE_COMMAND_SYMBOL+"msgbox ",
 			config.ISSUE_COMMAND_SYMBOL+"reclaim": config.ISSUE_COMMAND_SYMBOL+"reclaim ",
-			config.ISSUE_COMMAND_SYMBOL+"next": config.ISSUE_COMMAND_SYMBOL+"next",
-			config.ISSUE_COMMAND_SYMBOL+"previous": config.ISSUE_COMMAND_SYMBOL+"previous",
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
 			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
@@ -325,8 +325,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat window for NICKNAME" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME</b>", "Attempts to change nickname to NICKNAME until claimed" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"next</b>", "Shifts focus to the \"next\" subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"previous</b>", "Shifts focus to the \"previous\" subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
@@ -2762,6 +2760,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			return True
 
+		# /window next
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='next':
+				gui.MDI.activateNextSubWindow()
+				return True
+
+		# /window previous
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='previous':
+				gui.MDI.activatePreviousSubWindow()
+				return True
+
 		# /window cascade
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='cascade':
@@ -3138,43 +3148,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
-
-	# |-------|
-	# | /next |
-	# |-------|
-	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'next' and len(tokens)==1:
-			gui.MDI.activateNextSubWindow()
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'next':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"next")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"next")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
-	# |-----------|
-	# | /previous |
-	# |-----------|
-	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'previous' and len(tokens)==1:
-			gui.MDI.activateNextSubWindow()
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'previous':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"previous")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"previous")
-			window.writeTe
 
 	# |----------|
 	# | /reclaim |
