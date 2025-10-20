@@ -112,6 +112,12 @@ There are three libraries that comes bundled with **MERK**:
 -   Full scripting engine
     - Includes a built in script editor, with scripting macros and syntax highlighting
     - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
+ - Macros! Create your own commands
+  - Macros can take arguments, just like "regular" commands
+  - Macro functionality is done with scripts, allowing for complex behaviors
+- Create application-wide hotkeys
+  - Hotkeys can execute any command, script, or macro
+  - Command is executed in whatever subwindow is active
 -   Automatic logging of channel and private chats
     - Includes a utility to export logs to JSON, CSV, or your own custom format
     - Logs are stored in JSON, so parsing/scraping your own logs in easy
