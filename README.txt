@@ -113,8 +113,8 @@ There are three libraries that comes bundled with **MERK**:
     - Includes a built in script editor, with scripting macros and syntax highlighting
     - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
  - Macros! Create your own commands
-  - Macros can take arguments, just like "regular" commands
-  - Macro functionality is done with scripts, allowing for complex behaviors
+    - Macros can take arguments, just like "regular" commands
+    - Macro functionality is done with scripts, allowing for complex behaviors
 - Create application-wide hotkeys
   - Hotkeys can execute any command, script, or macro
   - Command is executed in whatever subwindow is active
