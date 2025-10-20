@@ -5249,7 +5249,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			tokens.pop(0)
 			filename = tokens.pop(0)
-			tokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
+			tokens = shlex.split(' '.join(tokens), comments=False)
 			arguments = list(tokens)
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
@@ -5283,7 +5283,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				e = x.get_script_information(gui)
 				if e:
 					script = e[0]
-					args = shlex.split(shlex.quote(e[1]), comments=False)
+					args = shlex.split(e[1], comments=False)
 
 					# Check to see if the filename is a filename
 					# in the application's "path"
@@ -5990,7 +5990,7 @@ class ScriptThread(QThread):
 
 						# Use shlex to tokenize the input, so that we can
 						# handle filenames with spaces in them
-						ftokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
+						ftokens = shlex.split(' '.join(tokens), comments=False)
 
 						for f in ftokens:
 							f = interpolateAliases(f)
