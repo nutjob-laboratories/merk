@@ -349,7 +349,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>", "Imports a configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config restart</b>", f"Restarts {APPLICATION_NAME}. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...</b>", f"Executes COMMAND when key SEQUENCE is pressed" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>", f"Removes a bind for SEQUENCE" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>", f"Removes a bind for SEQUENCE. Pass * as the only argument to remove all binds" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1467,7 +1467,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		# /macro name script usage help
 		try:
-			stokens = shlex.split(shlex.quote(user_input), comments=False)
+			stokens = shlex.split(user_input, comments=False)
 		except:
 			stokens = user_input.split()
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
@@ -2986,7 +2986,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]")
-			window.writeTe
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	# |-------|
 	# | /show |
