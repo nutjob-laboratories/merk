@@ -199,6 +199,7 @@ class Merk(QMainWindow):
 		self.log_manager = None
 		self.unread_messages = []
 		self.current_window = None
+		self.shortcuts = []
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -307,6 +308,36 @@ class Merk(QMainWindow):
 		self.uptimeTimer.beat.connect(self.uptime_beat)
 		self.uptimeTimer.start()
 
+	def add_shortcut(self,keys,script):
+		if not is_valid_shortcut_sequence(keys): return False
+		ks = QKeySequence(keys)
+		if ks.isEmpty(): return False
+		x = QShortcut(ks, self)
+		x.activated.connect(lambda u=script: self.execute_shortcut(u))
+		e = [keys,x]
+		self.shortcuts.append(e)
+		return True
+
+	def remove_shortcut(self,keys):
+		copy = []
+		for e in self.shortcuts:
+			if e[0].lower()==keys.lower():
+				e[1].setEnabled(False)
+				continue
+			copy.append(e)
+		self.shortcuts = list(copy)
+
+	def remove_all_shortcuts(self):
+		for e in self.shortcuts:
+			e[1].setEnabled(False)
+		self.shortcuts = []
+
+	def execute_shortcut(self,script):
+		w = self.MDI.activeSubWindow()
+		c = w.widget()
+		if hasattr(c,"window_type"):
+			if c.window_type==SERVER_WINDOW or c.window_type==PRIVATE_WINDOW or c.window_type==CHANNEL_WINDOW:
+				c.executeScript(script)
 
 	def uptime_beat(self):
 		self.client_uptime = self.client_uptime + 1

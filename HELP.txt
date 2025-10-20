@@ -124,6 +124,10 @@ Appearance:
 <td>Sets status as &quot;back&quot;</td>
 </tr>
 <tr>
+<td><code>/bind SEQUENCE COMMAND...</code></td>
+<td>Executes <code>COMMAND</code> every time key <code>SEQUENCE</code> is pressed</td>
+</tr>
+<tr>
 <td><code>/clear [SERVER] [WINDOW]</code></td>
 <td>Clears a window&#39;s chat display. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
@@ -396,6 +400,10 @@ Appearance:
 <tr>
 <td><code>/unalias TOKEN</code></td>
 <td>Deletes the alias referenced by <code>$TOKEN</code></td>
+</tr>
+<tr>
+<td><code>/unbind SEQUENCE</code></td>
+<td>Removes a bind for <code>SEQUENCE</code>. To remove all binds, use <code>*</code> as the argument</td>
 </tr>
 <tr>
 <td><code>/unignore USER</code></td>

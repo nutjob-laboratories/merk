@@ -390,6 +390,22 @@ class WhoWasData:
 		self.host = 'Unknown'
 		self.realname = 'Unknown'
 
+
+def is_valid_shortcut_sequence(sequence_str):
+	if not sequence_str:
+		return False
+	key_sequence = QKeySequence(sequence_str)
+	if key_sequence.count() == 0:
+		return False
+	key_code = key_sequence[0]
+	modifiers = Qt.CTRL | Qt.ALT | Qt.SHIFT | Qt.META
+	key = key_code & ~modifiers
+	has_modifier = (key_code & modifiers) > 0
+	is_function_key = (Qt.Key_F1 <= key <= Qt.Key_F35)
+	is_special_key = (Qt.Key_Home <= key <= Qt.Key_Semicolon)
+	
+	return has_modifier or is_function_key or is_special_key
+
 class MathEvaluator(ast.NodeVisitor):
 	def visit_Expression(self, node):
 		return self.visit(node.body)
