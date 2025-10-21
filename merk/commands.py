@@ -1322,6 +1322,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			seq = tokens.pop(0)
 			cmd = ' '.join(tokens)
+
+			# If the shortcut already exists, remove it first
+			if gui.is_shortcut(seq):
+				if not is_script:
+					t = Message(SYSTEM_MESSAGE,'',f"Previous bind for \"{seq}\" removed")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				gui.remove_shortcut(seq)
+
 			if not gui.add_shortcut(seq,cmd):
 				if is_script:
 					add_halt(script_id)

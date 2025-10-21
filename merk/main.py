@@ -318,6 +318,11 @@ class Merk(QMainWindow):
 		self.shortcuts.append(e)
 		return True
 
+	def is_shortcut(self,keys):
+		for e in self.shortcuts:
+			if e[0].lower()==keys.lower(): return True
+		return False
+
 	def remove_shortcut(self,keys):
 		copy = []
 		for e in self.shortcuts:
