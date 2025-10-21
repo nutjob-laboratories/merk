@@ -35,6 +35,8 @@ from ..resources import *
 from .. import commands
 from .. import config
 
+BLOCK_TAB = True
+
 # From https://sl-alex.net/gui/2022/08/21/shortcutedit_capturing_shortcuts_in_pyqt/
 class ShortcutEdit(QLineEdit):
 	shortcutChanged = QtCore.pyqtSignal(int, list)
@@ -84,11 +86,12 @@ class ShortcutEdit(QLineEdit):
 			key = event.key()
 			modifiers = int(event.modifiers())
 
-			# Re-enable the tab key, so that users
-			# can tab between text entries
-			if event.key() == Qt.Key_Tab:
-				super().keyPressEvent(event)
-				return True
+			if BLOCK_TAB:
+				# Re-enable the tab key, so that users
+				# can tab between text entries
+				if event.key() == Qt.Key_Tab:
+					super().keyPressEvent(event)
+					return True
 			
 			modifiers_dict = {}
 			for modifier in self.modmap.keys():
@@ -141,10 +144,18 @@ class Dialog(QDialog):
 
 		return retval
 
+	def clickTab(self):
+		global BLOCK_TAB
+		if self.allowTab.isChecked():
+			BLOCK_TAB = True
+		else:
+			BLOCK_TAB = False
+
 	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
+		self.block_tab = True
 
 		self.setWindowTitle("Create Bind")
 		self.setWindowIcon(QIcon(INPUT_ICON))
@@ -157,14 +168,19 @@ class Dialog(QDialog):
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJK")
 		self.name.setMinimumWidth(wwidth)
 
+		self.allowTab = QCheckBox("Block tab key",self)
+		self.allowTab.stateChanged.connect(self.clickTab)
+		self.allowTab.setChecked(True)
+
 		nameLayout.addWidget(self.nameLabel)
 		nameLayout.addWidget(self.name)
+		nameLayout.addWidget(self.allowTab)
 
 		self.argsLabel = QLabel("<b>Command:</b>")
 		
 		self.args = QLineEdit()
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCD")
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQR")
 		self.args.setMinimumWidth(wwidth)
 
 		argsLayout = QHBoxLayout()
