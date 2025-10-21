@@ -1285,6 +1285,23 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /bind |
 	# |-------|
 	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind' and len(tokens)==1:
+			r = gui.list_all_shortcuts()
+			if len(r)>0:
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(r)} binds")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				for i in r:
+					t = Message(SYSTEM_MESSAGE,'',f"{i}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(r)} binds")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				t = Message(SYSTEM_MESSAGE,'',f"No binds found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind' and len(tokens)>=3:
 			tokens.pop(0)
 			seq = tokens.pop(0)

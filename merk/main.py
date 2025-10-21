@@ -314,7 +314,7 @@ class Merk(QMainWindow):
 		if ks.isEmpty(): return False
 		x = QShortcut(ks, self)
 		x.activated.connect(lambda u=script: self.execute_shortcut(u))
-		e = [keys,x]
+		e = [keys,x,script]
 		self.shortcuts.append(e)
 		return True
 
@@ -331,6 +331,13 @@ class Merk(QMainWindow):
 		for e in self.shortcuts:
 			e[1].setEnabled(False)
 		self.shortcuts = []
+
+	def list_all_shortcuts(self):
+		ret = []
+		for e in self.shortcuts:
+			e = f"{e[0]} executes {e[2]}"
+			ret.append(e)
+		return ret
 
 	def execute_shortcut(self,script):
 		w = self.MDI.activeSubWindow()
