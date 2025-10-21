@@ -736,6 +736,13 @@ def does_macro_name_exist(name):
 		if USER_MACROS[c].name.lower()==name: return True
 	return False
 
+def list_all_macros():
+	ret = []
+	for c in USER_MACROS:
+		e = f"{config.ISSUE_COMMAND_SYMBOL}{USER_MACROS[c].name} executes {USER_MACROS[c].script}"
+		ret.append(e)
+	return ret
+
 def execute_script_line(data):
 	gui = data[0]
 	window = data[1]
@@ -1299,7 +1306,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			else:
 				t = Message(SYSTEM_MESSAGE,'',f"No binds found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind' and len(tokens)>=3:
@@ -1346,6 +1352,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
+
+		# /macro
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(tokens)==1:
+			r = list_all_macros()
+			if len(r)>0:
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(r)} macros")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				for i in r:
+					t = Message(SYSTEM_MESSAGE,'',f"{i}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(r)} macros")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				t = Message(SYSTEM_MESSAGE,'',f"No macros found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 		# /macro name script
 		try:
