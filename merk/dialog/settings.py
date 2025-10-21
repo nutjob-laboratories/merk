@@ -4168,8 +4168,7 @@ class Dialog(QDialog):
 		self.scriptingDescription = QLabel(f"""
 			<small><b>Scripting</b> allows <b>{APPLICATION_NAME}</b> to automate commands upon connection, as well
 			as for multiple commands to be executed in sequence. Turning off <b>scripting</b> will
-			prevent scripts and connection scripts from being executed or edited in <b>{APPLICATION_NAME}</b>,
-			but it will not turn off commands entered in the input widget.
+			prevent scripts and connection scripts from being executed or edited in <b>{APPLICATION_NAME}</b>.
 			</small>
 			
 			""")
