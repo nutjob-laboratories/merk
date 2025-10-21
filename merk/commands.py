@@ -738,9 +738,19 @@ def does_macro_name_exist(name):
 
 def list_all_macros():
 	ret = []
-	for c in USER_MACROS:
-		e = f"{config.ISSUE_COMMAND_SYMBOL}{USER_MACROS[c].name} executes {USER_MACROS[c].script}"
-		ret.append(e)
+	for m in USER_MACROS:
+		name = USER_MACROS[m].name
+		script = USER_MACROS[m].script
+		if m in MACRO_HELP:
+			if m in MACRO_USAGE:
+				ret.append(MACRO_USAGE[m]+" - "+MACRO_HELP[m])
+			else:
+				ret.append(config.ISSUE_COMMAND_SYMBOL+name+" - "+MACRO_HELP[m])
+		else:
+			if m in MACRO_USAGE:
+				ret.append(MACRO_USAGE[m]+f" - Executes script \"{script}\"")
+			else:
+				ret.append(config.ISSUE_COMMAND_SYMBOL+name+f" - Executes script \"{script}\"")
 	return ret
 
 def execute_script_line(data):
