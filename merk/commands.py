@@ -1302,7 +1302,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /bind |
 	# |-------|
 	if len(tokens)>=1:
-
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind' and len(tokens)==1:
 			r = gui.list_all_shortcuts()
 			if len(r)>0:
@@ -1324,10 +1323,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			cmd = ' '.join(tokens)
 
 			# If the shortcut already exists, remove it first
+			replaced = False
 			if gui.is_shortcut(seq):
-				if not is_script:
-					t = Message(SYSTEM_MESSAGE,'',f"Previous bind for \"{seq}\" removed")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				replaced = True
 				gui.remove_shortcut(seq)
 
 			if not gui.add_shortcut(seq,cmd):
@@ -1341,7 +1339,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if not is_script:
-					t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added")
+					if replaced:
+						t = Message(SYSTEM_MESSAGE,'',f"Replaced bind for \"{seq}\" (executes \"{cmd}\")")
+					else:
+						t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind':

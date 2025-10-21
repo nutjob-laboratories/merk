@@ -1,0 +1,190 @@
+#
+# ███╗   ███╗██████╗ ██████╗ ██╗  ██╗
+# ████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝
+# ██╔████╔██║███████║██████╔╝█████╔╝
+# ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
+# ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
+# ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+# Copyright (C) 2025  Daniel Hetrick
+# https://github.com/nutjob-laboratories/merk
+# https://github.com/nutjob-laboratories
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5 import QtCore
+
+import os
+import pathlib
+
+from ..resources import *
+from .. import commands
+from .. import config
+
+# From https://sl-alex.net/gui/2022/08/21/shortcutedit_capturing_shortcuts_in_pyqt/
+class ShortcutEdit(QLineEdit):
+	shortcutChanged = QtCore.pyqtSignal(int, list)
+
+	keymap = {}
+	modmap = {}
+	modkeyslist = []
+
+	current_modifiers = []
+	current_key = 0
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+		for key, value in vars(Qt).items():
+			if isinstance(value, Qt.Key):
+				self.keymap[value] = key.partition('_')[2]
+				
+		self.modmap = {
+			Qt.ControlModifier:     'Ctrl',
+			Qt.AltModifier:         'Alt',
+			Qt.ShiftModifier:       'Shift',
+			Qt.MetaModifier:        'Meta',
+			Qt.GroupSwitchModifier: 'AltGr',
+			Qt.KeypadModifier:      'Num',
+			}
+
+		self.modkeyslist = [
+			Qt.Key_Control,
+			Qt.Key_Alt,
+			Qt.Key_Shift,
+			Qt.Key_Meta,
+			Qt.Key_AltGr,
+			Qt.Key_NumLock,
+			]
+
+		self.installEventFilter(self)
+
+	def eventFilter(self, object, event):
+		if event.type() == QtCore.QEvent.KeyPress:
+			if event.key() == 0 and int(event.modifiers()) == 0:
+				return True
+
+			self.current_modifiers = []
+			self.current_key = 0
+
+			key = event.key()
+			modifiers = int(event.modifiers())
+
+			# Re-enable the tab key, so that users
+			# can tab between text entries
+			if event.key() == Qt.Key_Tab:
+				super().keyPressEvent(event)
+				return True
+			
+			modifiers_dict = {}
+			for modifier in self.modmap.keys():
+				if modifiers & modifier:
+					modifiers_dict[modifier] = self.modmap[modifier]
+
+			if key in self.modkeyslist:
+				key = 0
+
+			text = ''
+
+			for modifier in modifiers_dict:
+				if text != '':
+					text = text + '+'
+				text = text + modifiers_dict[modifier]
+				self.current_modifiers.append(modifier)
+			if Qt.KeypadModifier in modifiers_dict and key != 0:
+				text = text + self.keymap[key]
+				self.current_key = key
+			elif key in self.keymap:
+				if text != '':
+					text = text + '+'
+				text = text + self.keymap[key]
+				self.current_key = key
+
+			self.setText(text)
+			self.shortcutChanged.emit(self.current_key, self.current_modifiers)
+
+			return True
+		elif event.type() == QtCore.QEvent.KeyRelease:
+			return True
+
+		return False
+
+class Dialog(QDialog):
+
+	@staticmethod
+	def get_script_information(parent=None):
+		dialog = Dialog(parent)
+		r = dialog.exec_()
+		if r:
+			return dialog.return_info()
+		return None
+
+		self.close()
+
+	def return_info(self):
+
+		retval = [ self.name.text(), self.args.text() ]
+
+		return retval
+
+	def __init__(self,parent=None):
+		super(Dialog,self).__init__(parent)
+
+		self.parent = parent
+
+		self.setWindowTitle("Create Bind")
+		self.setWindowIcon(QIcon(INPUT_ICON))
+
+		nameLayout = QHBoxLayout()
+		self.nameLabel = QLabel("<b>Key Sequence:&nbsp;</b>")
+		
+		self.name = ShortcutEdit()
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJK")
+		self.name.setMinimumWidth(wwidth)
+
+		nameLayout.addWidget(self.nameLabel)
+		nameLayout.addWidget(self.name)
+
+		self.argsLabel = QLabel("<b>Command:</b>")
+		
+		self.args = QLineEdit()
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCD")
+		self.args.setMinimumWidth(wwidth)
+
+		argsLayout = QHBoxLayout()
+		argsLayout.addWidget(self.argsLabel)
+		argsLayout.addWidget(self.args)
+
+		# Buttons
+		buttons = QDialogButtonBox(self)
+		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+		buttons.accepted.connect(self.accept)
+		buttons.rejected.connect(self.reject)
+
+		finalLayout = QVBoxLayout()
+		finalLayout.addLayout(nameLayout)
+		finalLayout.addLayout(argsLayout)
+		finalLayout.addWidget(buttons)
+
+		self.setWindowFlags(self.windowFlags()
+                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+
+		self.setLayout(finalLayout)
+
+		self.name.setFocus()

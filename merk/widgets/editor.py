@@ -691,6 +691,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertReConnect)
 		self.commandMenu.addAction(entry)
 
+		entry = QAction(QIcon(INPUT_ICON),"Bind hotkey",self)
+		entry.triggered.connect(self.insertBind)
+		self.commandMenu.addAction(entry)
+
 		if config.ENABLE_ALIASES:
 			entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
 			entry.triggered.connect(self.insertAlias)
@@ -1361,6 +1365,15 @@ class Window(QMainWindow):
 		if not e: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"nick "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertBind(self):
+		x = SetBind(self)
+		e = x.get_script_information(self)
+
+		if not e: return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+f"bind {e[0]} {e[1]}\n")
 		self.updateApplicationTitle()
 
 	def insertScriptInsert(self):

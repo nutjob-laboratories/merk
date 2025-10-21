@@ -349,7 +349,7 @@ class Merk(QMainWindow):
 		c = w.widget()
 		if hasattr(c,"window_type"):
 			if c.window_type==SERVER_WINDOW or c.window_type==PRIVATE_WINDOW or c.window_type==CHANNEL_WINDOW:
-				c.executeScript(script)
+				c.handleHotkeyCommand(script)
 
 	def uptime_beat(self):
 		self.client_uptime = self.client_uptime + 1

@@ -1080,6 +1080,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.loadScript)
 			self.settingsMenu.addAction(entry)
 
+		entry = QAction(QIcon(INPUT_ICON),"Set hotkey",self)
+		entry.triggered.connect(self.setHotkey)
+		self.settingsMenu.addAction(entry)
+
 		if config.ENABLE_SPELLCHECK:
 			# Spellcheck Button
 			self.spellcheckMenu = QMenu("Spellcheck")
@@ -2357,6 +2361,18 @@ class Window(QMainWindow):
 				self.client.away(msg)
 				self.client.away_msg = msg
 
+	def setHotkey(self):
+		x = SetBind(self)
+		e = x.get_script_information(self)
+		if e:
+			seq = e[0]
+			cmd = e[1]
+
+			if self.parent.is_shortcut(seq):
+				self.parent.remove_shortcut(seq)
+
+			self.parent.add_shortcut(seq,cmd)
+
 	def joinChannel(self):
 		channel_info = JoinChannelDialog(self.parent)
 		if channel_info:
@@ -2640,6 +2656,12 @@ class Window(QMainWindow):
 
 		# Move chat display to the bottom
 		self.moveChatToBottom(True)
+
+	def handleHotkeyCommand(self,text):
+		if self.window_type!=SERVER_WINDOW:
+			self.parent.handleUserInput(self,text)
+		else:
+			self.parent.handleConsoleInput(self,text)
 
 	def injectInput(self,cmd):
 		if self.window_type!=SERVER_WINDOW:
