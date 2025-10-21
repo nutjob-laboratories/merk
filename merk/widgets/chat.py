@@ -2671,9 +2671,9 @@ class Window(QMainWindow):
 
 	def handleHotkeyCommand(self,text):
 		if self.window_type!=SERVER_WINDOW:
-			self.parent.handleUserInput(self,text)
+			self.parent.handleUserInputHotkey(self,text)
 		else:
-			self.parent.handleConsoleInput(self,text)
+			self.parent.handleConsoleInputHotkey(self,text)
 
 	def injectInput(self,cmd):
 		if self.window_type!=SERVER_WINDOW:

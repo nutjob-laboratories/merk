@@ -2503,6 +2503,40 @@ class Merk(QMainWindow):
 		self.buildSettingsMenu()
 		self.buildWindowsMenu()
 
+	def handleUserInputHotkey(self,window,user_input):
+
+		# Build temporary aliases
+		commands.buildTemporaryAliases(self,window)
+
+		# Interpolate aliases into user input
+		if config.INTERPOLATE_ALIASES_INTO_INPUT:
+			user_input = commands.interpolateAliases(user_input)
+
+		# Handle chat commands
+		if commands.handleChatCommands(self,window,user_input): return
+
+		# Handle common commands
+		if commands.handleCommonCommands(self,window,user_input): return
+
+		t = Message(ERROR_MESSAGE,'',f"\"{user_input}\" is not a recognized command")
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def handleConsoleInputHotkey(self,window,user_input):
+
+		# Build temporary aliases
+		commands.buildTemporaryAliases(self,window)
+
+		# Interpolate aliases into user input
+		if config.INTERPOLATE_ALIASES_INTO_INPUT:
+			user_input = commands.interpolateAliases(user_input)
+		
+		# Handle common commands
+		if commands.handleCommonCommands(self,window,user_input): return
+
+		t = Message(ERROR_MESSAGE,'',f"\"{user_input}\" is not a recognized command")
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+
 	def handleUserInput(self,window,user_input):
 
 		# Build temporary aliases
