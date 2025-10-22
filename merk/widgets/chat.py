@@ -1274,6 +1274,7 @@ class Window(QMainWindow):
 	def clearChat(self):
 		self.log = []
 		self.rerenderChatLog()
+		self.input.setFocus()
 
 	def rerenderChatLog(self):
 
@@ -2548,6 +2549,7 @@ class Window(QMainWindow):
 				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 				self.new_log = []
 			self.parent.buildToolsMenu()
+			self.input.setFocus()
 
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)
@@ -2588,6 +2590,8 @@ class Window(QMainWindow):
 			self.languageItalian.setEnabled(False)
 			self.languageRussian.setEnabled(False)
 			self.languagePortuguese.setEnabled(False)
+
+		self.input.setFocus()
 
 	def linkClicked(self,url):
 		if url.host():
