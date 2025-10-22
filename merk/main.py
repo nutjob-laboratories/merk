@@ -200,6 +200,7 @@ class Merk(QMainWindow):
 		self.unread_messages = []
 		self.current_window = None
 		self.shortcuts = []
+		self.hotkey_manager = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -315,16 +316,19 @@ class Merk(QMainWindow):
 
 		for w in QApplication.topLevelWidgets():
 			for other in w.findChildren(QShortcut):
-				if ks == other.key(): return SHORTCUT_IN_USE
-
-		# for other in self.findChildren(QShortcut):
-		# 	if ks == other.key(): return False
+				if ks == other.key():
+					if other.isEnabled():
+						return SHORTCUT_IN_USE
 
 		x = QShortcut(ks, self)
 		x.activated.connect(lambda u=script: self.execute_shortcut(u))
 		x.shortcutContext = Qt.ApplicationShortcut
 		e = [keys,x,script]
 		self.shortcuts.append(e)
+
+		if self.hotkey_manager!=None:
+			self.hotkey_manager.refresh()
+
 		return GOOD_SHORTCUT
 
 	def is_shortcut(self,keys):
@@ -334,17 +338,27 @@ class Merk(QMainWindow):
 
 	def remove_shortcut(self,keys):
 		copy = []
+		ds = None
 		for e in self.shortcuts:
 			if e[0].lower()==keys.lower():
 				e[1].setEnabled(False)
-				continue
-			copy.append(e)
+				e[1].setKey(QKeySequence())
+				ds = e[1]
+			else:
+				copy.append(e)
 		self.shortcuts = list(copy)
+		del ds
+
+		if self.hotkey_manager!=None:
+			self.hotkey_manager.refresh()
 
 	def remove_all_shortcuts(self):
 		for e in self.shortcuts:
 			e[1].setEnabled(False)
 		self.shortcuts = []
+
+		if self.hotkey_manager!=None:
+			self.hotkey_manager.refresh()
 
 	def list_all_shortcuts(self):
 		ret = []
@@ -355,10 +369,11 @@ class Merk(QMainWindow):
 
 	def execute_shortcut(self,script):
 		w = self.MDI.activeSubWindow()
-		c = w.widget()
-		if hasattr(c,"window_type"):
-			if c.window_type==SERVER_WINDOW or c.window_type==PRIVATE_WINDOW or c.window_type==CHANNEL_WINDOW:
-				c.handleHotkeyCommand(script)
+		if w:
+			c = w.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW or c.window_type==PRIVATE_WINDOW or c.window_type==CHANNEL_WINDOW:
+					c.handleHotkeyCommand(script)
 
 	def uptime_beat(self):
 		self.client_uptime = self.client_uptime + 1

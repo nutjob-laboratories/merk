@@ -49,6 +49,7 @@ from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
 from .. import syntax
 from .. import user
+from . import hotkey_manager
 
 class Window(QMainWindow):
 
@@ -1080,7 +1081,7 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.loadScript)
 			self.settingsMenu.addAction(entry)
 
-		entry = QAction(QIcon(INPUT_ICON),"Bind hotkey",self)
+		entry = QAction(QIcon(INPUT_ICON),"Hotkeys",self)
 		entry.triggered.connect(self.setHotkey)
 		self.settingsMenu.addAction(entry)
 
@@ -2363,26 +2364,11 @@ class Window(QMainWindow):
 				self.client.away_msg = msg
 
 	def setHotkey(self):
-		x = SetBind(self)
-		e = x.get_script_information(self)
-		if e:
-			seq = e[0]
-			cmd = e[1]
-
-			if is_valid_shortcut_sequence(seq):
-				r = self.parent.add_shortcut(seq,cmd)
-				if r==GOOD_SHORTCUT:
-					t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
-				elif r==SHORTCUT_IN_USE:
-					t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is already in use as a shortcut")
-				else:
-					t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence")
-				self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			else:
-				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
-				self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-		self.input.setFocus()
+		if self.parent.hotkey_manager==None:
+			self.parent.hotkey_manager = hotkey_manager.Window(self.parent)
+			self.parent.hotkey_manager.show()
+		else:
+			self.parent.hotkey_manager.show()
 
 	def joinChannel(self):
 		channel_info = JoinChannelDialog(self.parent)

@@ -199,7 +199,7 @@ class Dialog(QDialog):
 		palette = self.palette()
 		self.default_text_color = palette.color(QPalette.WindowText)
 
-		self.setWindowTitle("Create Bind")
+		self.setWindowTitle("Bind Hotkey")
 		self.setWindowIcon(QIcon(INPUT_ICON))
 
 		nameLayout = QHBoxLayout()
@@ -251,5 +251,7 @@ class Dialog(QDialog):
                     ^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.setFixedSize(self.sizeHint())
 
 		self.key_sequence.setFocus()

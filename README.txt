@@ -118,6 +118,7 @@ There are three libraries that comes bundled with **MERK**:
 - Create application-wide hotkeys
   - Hotkeys can execute any command, script, or macro
   - Command is executed in whatever subwindow is active
+  - Hotkeys can be set in scripts, from commands, or through the hotkey manager
 -   Automatic logging of channel and private chats
     - Includes a utility to export logs to JSON, CSV, or your own custom format
     - Logs are stored in JSON, so parsing/scraping your own logs in easy
