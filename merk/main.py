@@ -309,13 +309,13 @@ class Merk(QMainWindow):
 		self.uptimeTimer.start()
 
 	def add_shortcut(self,keys,script):
-		if not is_valid_shortcut_sequence(keys): return False
+		if not is_valid_shortcut_sequence(keys): return BAD_SHORTCUT
 		ks = QKeySequence(keys)
-		if ks.isEmpty(): return False
+		if ks.isEmpty(): return BAD_SHORTCUT
 
 		for w in QApplication.topLevelWidgets():
 			for other in w.findChildren(QShortcut):
-				if ks == other.key(): return False
+				if ks == other.key(): return SHORTCUT_IN_USE
 
 		# for other in self.findChildren(QShortcut):
 		# 	if ks == other.key(): return False
@@ -325,7 +325,7 @@ class Merk(QMainWindow):
 		x.shortcutContext = Qt.ApplicationShortcut
 		e = [keys,x,script]
 		self.shortcuts.append(e)
-		return True
+		return GOOD_SHORTCUT
 
 	def is_shortcut(self,keys):
 		for e in self.shortcuts:

@@ -1322,27 +1322,28 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			seq = tokens.pop(0)
 			cmd = ' '.join(tokens)
 
-			# If the shortcut already exists, remove it first
-			replaced = False
-			if gui.is_shortcut(seq):
-				replaced = True
-				gui.remove_shortcut(seq)
-
-			if not gui.add_shortcut(seq,cmd):
+			r = gui.add_shortcut(seq,cmd)
+			if r==BAD_SHORTCUT:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"bind: \"{seq}\" is not a valid key sequence or is already in use")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"bind: \"{seq}\" is not a valid key sequence")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
+				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			elif r==SHORTCUT_IN_USE:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"bind: \"{seq}\" is already in use as a shortcut")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is already in use as a shortcut")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if not is_script:
-					if replaced:
-						t = Message(SYSTEM_MESSAGE,'',f"Replaced bind for \"{seq}\" (executes \"{cmd}\")")
-					else:
-						t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
+					t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind':

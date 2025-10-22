@@ -2369,18 +2369,13 @@ class Window(QMainWindow):
 			cmd = e[1]
 
 			if is_valid_shortcut_sequence(seq):
-				replaced = False
-				if self.parent.is_shortcut(seq):
-					replaced = True
-					self.parent.remove_shortcut(seq)
-
-				if self.parent.add_shortcut(seq,cmd):
-					if replaced:
-						t = Message(SYSTEM_MESSAGE,'',f"Replaced bind for \"{seq}\" (executes \"{cmd}\")")
-					else:
-						t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
+				r = self.parent.add_shortcut(seq,cmd)
+				if r==GOOD_SHORTCUT:
+					t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
+				elif r==SHORTCUT_IN_USE:
+					t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is already in use as a shortcut")
 				else:
-					t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
+					t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence")
 				self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
