@@ -2374,15 +2374,16 @@ class Window(QMainWindow):
 					replaced = True
 					self.parent.remove_shortcut(seq)
 
-				self.parent.add_shortcut(seq,cmd)
-
-				if replaced:
-					t = Message(SYSTEM_MESSAGE,'',f"Replaced bind for \"{seq}\" (executes \"{cmd}\")")
+				if self.parent.add_shortcut(seq,cmd):
+					if replaced:
+						t = Message(SYSTEM_MESSAGE,'',f"Replaced bind for \"{seq}\" (executes \"{cmd}\")")
+					else:
+						t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
 				else:
-					t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
+					t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
 				self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
-				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence")
+				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
 				self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def joinChannel(self):

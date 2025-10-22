@@ -312,8 +312,17 @@ class Merk(QMainWindow):
 		if not is_valid_shortcut_sequence(keys): return False
 		ks = QKeySequence(keys)
 		if ks.isEmpty(): return False
+
+		for w in QApplication.topLevelWidgets():
+			for other in w.findChildren(QShortcut):
+				if ks == other.key(): return False
+
+		# for other in self.findChildren(QShortcut):
+		# 	if ks == other.key(): return False
+
 		x = QShortcut(ks, self)
 		x.activated.connect(lambda u=script: self.execute_shortcut(u))
+		x.shortcutContext = Qt.ApplicationShortcut
 		e = [keys,x,script]
 		self.shortcuts.append(e)
 		return True

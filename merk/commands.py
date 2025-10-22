@@ -1332,10 +1332,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"bind: \"{seq}\" is not a valid key sequence")
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"bind: \"{seq}\" is not a valid key sequence or is already in use")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence")
+				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if not is_script:
