@@ -77,21 +77,40 @@ class ShortcutEdit(QLineEdit):
 
 		self.installEventFilter(self)
 
+	def focusInEvent(self, event):
+
+		self.setText('')
+
+		palette = self.parent.keyLabel.palette()
+		palette.setColor(QPalette.WindowText, self.parent.default_text_color)  # Set text color to red
+		self.parent.keyLabel.setPalette(palette)
+
+		self.parent.status_label.setText("Enter key sequence.")
+
 	def focusOutEvent(self, event):
+
 		keys = self.text()
 		is_valid = True
 		if not is_valid_shortcut_sequence(keys): is_valid = False
 		ks = QKeySequence(keys)
 		if ks.isEmpty(): is_valid = False
 
+		is_taken = False
 		for w in QApplication.topLevelWidgets():
 			for other in w.findChildren(QShortcut):
-				if ks == other.key(): is_valid = False
+				if ks == other.key(): is_taken = True
+
+		if not is_valid or is_taken:
+			palette = self.parent.keyLabel.palette()
+			palette.setColor(QPalette.WindowText, QColor("red"))  # Set text color to red
+			self.parent.keyLabel.setPalette(palette)
 
 		if not is_valid:
-			palette = self.parent.nameLabel.palette()
-			palette.setColor(QPalette.WindowText, QColor("red"))  # Set text color to red
-			self.parent.nameLabel.setPalette(palette)
+			self.parent.status_label.setText("Invalid key sequence.")
+		elif is_taken:
+			self.parent.status_label.setText("Hotkey is already in use.")
+		else:
+			self.parent.status_label.setText("Ready.")
 
 		super().focusOutEvent(event)
 
@@ -160,7 +179,7 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = [ self.name.text(), self.args.text() ]
+		retval = [ self.key_sequence.text(), self.command.text() ]
 
 		return retval
 
@@ -177,35 +196,40 @@ class Dialog(QDialog):
 		self.parent = parent
 		self.block_tab = True
 
+		palette = self.palette()
+		self.default_text_color = palette.color(QPalette.WindowText)
+
 		self.setWindowTitle("Create Bind")
 		self.setWindowIcon(QIcon(INPUT_ICON))
 
 		nameLayout = QHBoxLayout()
-		self.nameLabel = QLabel("<b>Key Sequence:&nbsp;</b>")
+		self.keyLabel = QLabel("<b>Key Sequence:&nbsp;</b>")
 		
-		self.name = ShortcutEdit(self)
+		self.key_sequence = ShortcutEdit(self)
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJK")
-		self.name.setMinimumWidth(wwidth)
+		self.key_sequence.setMinimumWidth(wwidth)
 
 		self.allowTab = QCheckBox("Block tab key",self)
 		self.allowTab.stateChanged.connect(self.clickTab)
 		self.allowTab.setChecked(True)
 
-		nameLayout.addWidget(self.nameLabel)
-		nameLayout.addWidget(self.name)
+		nameLayout.addWidget(self.keyLabel)
+		nameLayout.addWidget(self.key_sequence)
 		nameLayout.addWidget(self.allowTab)
 
-		self.argsLabel = QLabel("<b>Command:</b>")
+		self.commandLabel = QLabel("<b>Command:</b>")
 		
-		self.args = QLineEdit(self)
+		self.command = QLineEdit(self)
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQR")
-		self.args.setMinimumWidth(wwidth)
+		self.command.setMinimumWidth(wwidth)
 
 		argsLayout = QHBoxLayout()
-		argsLayout.addWidget(self.argsLabel)
-		argsLayout.addWidget(self.args)
+		argsLayout.addWidget(self.commandLabel)
+		argsLayout.addWidget(self.command)
+
+		self.status_label = QLabel("Enter key sequence.")
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -216,15 +240,16 @@ class Dialog(QDialog):
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(nameLayout)
 		finalLayout.addLayout(argsLayout)
+		finalLayout.addWidget(self.status_label)
 		finalLayout.addWidget(buttons)
-
-		self.setTabOrder(self.name, self.args)
-		self.setTabOrder(self.args, buttons)
-		self.setTabOrder(buttons, self.name)
+		
+		self.setTabOrder(self.key_sequence, self.command)
+		self.setTabOrder(self.command, buttons)
+		self.setTabOrder(buttons, self.key_sequence)
 
 		self.setWindowFlags(self.windowFlags()
                     ^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
 
-		self.name.setFocus()
+		self.key_sequence.setFocus()
