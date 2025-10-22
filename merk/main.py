@@ -313,6 +313,7 @@ class Merk(QMainWindow):
 		if not is_valid_shortcut_sequence(keys): return BAD_SHORTCUT
 		ks = QKeySequence(keys)
 		if ks.isEmpty(): return BAD_SHORTCUT
+		if len(script.strip())==0: return BAD_SHORTCUT
 
 		for w in QApplication.topLevelWidgets():
 			for other in w.findChildren(QShortcut):
