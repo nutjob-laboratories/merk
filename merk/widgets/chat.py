@@ -2386,6 +2386,8 @@ class Window(QMainWindow):
 				t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
 				self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
+		self.input.setFocus()
+
 	def joinChannel(self):
 		channel_info = JoinChannelDialog(self.parent)
 		if channel_info:

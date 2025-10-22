@@ -48,8 +48,10 @@ class ShortcutEdit(QLineEdit):
 	current_modifiers = []
 	current_key = 0
 
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+	def __init__(self, parent=None, *args, **kwargs):
+		super().__init__(parent, *args, **kwargs)
+
+		self.parent = parent
 
 		for key, value in vars(Qt).items():
 			if isinstance(value, Qt.Key):
@@ -74,6 +76,24 @@ class ShortcutEdit(QLineEdit):
 			]
 
 		self.installEventFilter(self)
+
+	def focusOutEvent(self, event):
+		keys = self.text()
+		is_valid = True
+		if not is_valid_shortcut_sequence(keys): is_valid = False
+		ks = QKeySequence(keys)
+		if ks.isEmpty(): is_valid = False
+
+		for w in QApplication.topLevelWidgets():
+			for other in w.findChildren(QShortcut):
+				if ks == other.key(): is_valid = False
+
+		if not is_valid:
+			palette = self.parent.nameLabel.palette()
+			palette.setColor(QPalette.WindowText, QColor("red"))  # Set text color to red
+			self.parent.nameLabel.setPalette(palette)
+
+		super().focusOutEvent(event)
 
 	def eventFilter(self, object, event):
 		if event.type() == QtCore.QEvent.KeyPress:
@@ -163,7 +183,7 @@ class Dialog(QDialog):
 		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Key Sequence:&nbsp;</b>")
 		
-		self.name = ShortcutEdit()
+		self.name = ShortcutEdit(self)
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJK")
 		self.name.setMinimumWidth(wwidth)
@@ -178,7 +198,7 @@ class Dialog(QDialog):
 
 		self.argsLabel = QLabel("<b>Command:</b>")
 		
-		self.args = QLineEdit()
+		self.args = QLineEdit(self)
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQR")
 		self.args.setMinimumWidth(wwidth)
@@ -197,6 +217,10 @@ class Dialog(QDialog):
 		finalLayout.addLayout(nameLayout)
 		finalLayout.addLayout(argsLayout)
 		finalLayout.addWidget(buttons)
+
+		self.setTabOrder(self.name, self.args)
+		self.setTabOrder(self.args, buttons)
+		self.setTabOrder(buttons, self.name)
 
 		self.setWindowFlags(self.windowFlags()
                     ^ QtCore.Qt.WindowContextHelpButtonHint)
