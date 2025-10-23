@@ -108,7 +108,7 @@ class Window(QMainWindow):
 		
 		self.window_type = HOTKEY_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
-		self.setWindowIcon(QIcon(INPUT_ICON))
+		self.setWindowIcon(QIcon(HOTKEY_ICON))
 
 		self.name = f"Hotkeys"
 		self.setWindowTitle(f"Hotkeys")

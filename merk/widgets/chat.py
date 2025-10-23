@@ -1081,7 +1081,7 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.loadScript)
 			self.settingsMenu.addAction(entry)
 
-		entry = QAction(QIcon(INPUT_ICON),"Hotkeys",self)
+		entry = QAction(QIcon(HOTKEY_ICON),"Hotkeys",self)
 		entry.triggered.connect(self.setHotkey)
 		self.settingsMenu.addAction(entry)
 

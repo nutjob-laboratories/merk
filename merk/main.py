@@ -319,7 +319,7 @@ class Merk(QMainWindow):
 				errors.append(f"\"{seq}\" is already in use as a shortcut")
 		if len(errors)>0:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(INPUT_ICON))
+			msgBox.setIconPixmap(QPixmap(HOTKEY_ICON))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			if len(errors)>1:
 				msgBox.setText("There were errors loading hotkeys from the configuration file!")
@@ -3936,6 +3936,9 @@ class Merk(QMainWindow):
 			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','View, manage or export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 		self.toolsMenu.addAction(entry)
 
+		entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, delete, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
+		self.toolsMenu.addAction(entry)
+
 		self.toolsMenu.addSeparator()
 
 		if config.SCRIPTING_ENGINE_ENABLED:
@@ -4535,6 +4538,13 @@ class Merk(QMainWindow):
 	def openSettings(self):
 		self.settingsDialog = SettingsDialog(self.app,self)
 		self.settingsDialog.show()
+
+	def openHotkeys(self):
+		if self.hotkey_manager==None:
+			self.hotkey_manager = widgets.HotkeyManager(self)
+			self.hotkey_manager.show()
+		else:
+			self.hotkey_manager.show()
 
 	def showAbout(self):
 		self.__about_dialog = AboutDialog()
