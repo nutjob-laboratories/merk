@@ -177,6 +177,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window previous",
 			cmdsymbol+"bind",
 			cmdsymbol+"unbind",
+			cmdsymbol+"bind save",
 		]
 
 		script_only = [

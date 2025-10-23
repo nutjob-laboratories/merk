@@ -125,7 +125,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/bind SEQUENCE COMMAND...</code></td>
-<td>Executes <code>COMMAND</code> every time key <code>SEQUENCE</code> is pressed</td>
+<td>Executes <code>COMMAND</code> every time key <code>SEQUENCE</code> is pressed. Pass <code>save</code> as the only argument to save binds to the configuration file</td>
 </tr>
 <tr>
 <td><code>/clear [SERVER] [WINDOW]</code></td>

@@ -309,8 +309,26 @@ class Merk(QMainWindow):
 		self.uptimeTimer.beat.connect(self.uptime_beat)
 		self.uptimeTimer.start()
 
+		# Finally, load in hotkeys
+		errors = []
 		for seq in config.HOTKEYS:
-			self.add_shortcut(seq,config.HOTKEYS[seq])
+			r = self.add_shortcut(seq,config.HOTKEYS[seq])
+			if r==BAD_SHORTCUT:
+				errors.append(f"\"{seq}\" is not a valid key sequence")
+			elif r==SHORTCUT_IN_USE:
+				errors.append(f"\"{seq}\" is already in use as a shortcut")
+		if len(errors)>0:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(INPUT_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			if len(errors)>1:
+				msgBox.setText("There were errors loading hotkeys from the configuration file!")
+			else:
+				msgBox.setText("There was an error loading hotkeys from the configuration file!")
+			msgBox.setInformativeText("\n".join(errors))
+			msgBox.setWindowTitle("Hotkey load error")
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()
 
 	def add_shortcut(self,keys,script):
 		if not is_valid_shortcut_sequence(keys): return BAD_SHORTCUT
