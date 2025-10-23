@@ -1372,6 +1372,8 @@ class Window(QMainWindow):
 		e = x.get_script_information(self)
 
 		if not e: return
+		if len(e[0].strip())==0: return
+		if len(e[1].strip())==0: return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+f"bind {e[0]} {e[1]}\n")
 		self.updateApplicationTitle()
