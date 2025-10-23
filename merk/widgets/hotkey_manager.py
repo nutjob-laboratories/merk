@@ -95,6 +95,12 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
+	def save_keys(self):
+		config.HOTKEYS = {}
+		for e in self.parent.shortcuts:
+			config.HOTKEYS[e[0]]=e[2]
+		config.save_settings(config.CONFIG_FILE)
+
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
@@ -108,6 +114,8 @@ class Window(QMainWindow):
 		self.setWindowTitle(f"Hotkeys")
 
 		self.keys = QListWidget(self)
+		self.keys.setTextElideMode(Qt.ElideRight)
+		self.keys.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
 		for e in self.parent.shortcuts:
 			item = QListWidgetItem(f"{e[0]} - {e[2]}")
@@ -131,10 +139,19 @@ class Window(QMainWindow):
 		self.remove.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.remove.setFlat(True)
 
+		self.save = QPushButton("")
+		self.save.setIcon(QIcon(SAVEFILE_ICON))
+		self.save.setToolTip("Save hotkeys")
+		self.save.clicked.connect(self.save_keys)
+		self.save.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.save.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.save.setFlat(True)
+
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)
 
 		buttonLayout = QHBoxLayout()
+		buttonLayout.addWidget(self.save)
 		buttonLayout.addWidget(self.add)
 		buttonLayout.addWidget(self.remove)
 		buttonLayout.addStretch()

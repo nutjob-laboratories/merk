@@ -318,9 +318,11 @@ DISPLAY_LONG_MESSAGE_INDICATOR = True
 CURSOR_BLINK = True
 REJECT_ALL_CHANNEL_NOTICES = False
 CURSOR_BLINK_RATE = 1060
+HOTKEYS = {}
 
 def build_settings():
 	settings = {
+		"hotkeys": HOTKEYS,
 		"cursor_blink_rate": CURSOR_BLINK_RATE,
 		"reject_all_channel_notices": REJECT_ALL_CHANNEL_NOTICES,
 		"cursor_blink": CURSOR_BLINK,
@@ -605,6 +607,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "hotkeys" in settings:
+		settings["hotkeys"] = HOTKEYS
 	if not "cursor_blink_rate" in settings:
 		settings["cursor_blink_rate"] = CURSOR_BLINK_RATE
 	if not "reject_all_channel_notices" in settings:
@@ -1446,6 +1450,7 @@ def load_settings(filename):
 	global CURSOR_BLINK
 	global REJECT_ALL_CHANNEL_NOTICES
 	global CURSOR_BLINK_RATE
+	global HOTKEYS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1455,6 +1460,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HOTKEYS = settings["hotkeys"]
 		CURSOR_BLINK_RATE = settings["cursor_blink_rate"]
 		REJECT_ALL_CHANNEL_NOTICES = settings["reject_all_channel_notices"]
 		CURSOR_BLINK = settings["cursor_blink"]

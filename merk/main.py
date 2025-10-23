@@ -309,6 +309,9 @@ class Merk(QMainWindow):
 		self.uptimeTimer.beat.connect(self.uptime_beat)
 		self.uptimeTimer.start()
 
+		for seq in config.HOTKEYS:
+			self.add_shortcut(seq,config.HOTKEYS[seq])
+
 	def add_shortcut(self,keys,script):
 		if not is_valid_shortcut_sequence(keys): return BAD_SHORTCUT
 		ks = QKeySequence(keys)
