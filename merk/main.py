@@ -356,6 +356,7 @@ class Merk(QMainWindow):
 	def remove_all_shortcuts(self):
 		for e in self.shortcuts:
 			e[1].setEnabled(False)
+			e[1].setKey(QKeySequence())
 		self.shortcuts = []
 
 		if self.hotkey_manager!=None:
