@@ -47,7 +47,7 @@ class Window(QMainWindow):
 			if is_valid_shortcut_sequence(seq):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
-					pass
+					self.statusBar.showMessage("Hotkey added")
 					# t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
 				elif r==SHORTCUT_IN_USE:
 					pass
@@ -80,6 +80,8 @@ class Window(QMainWindow):
 				item.cmd = f"{e[2]}"
 				self.keys.addItem(item)
 
+			self.statusBar.showMessage("Hotkey removed")
+
 	def refresh(self):
 		self.keys.clear()
 		for e in self.parent.shortcuts:
@@ -100,6 +102,7 @@ class Window(QMainWindow):
 		for e in self.parent.shortcuts:
 			config.HOTKEYS[e[0]]=e[2]
 		config.save_settings(config.CONFIG_FILE)
+		self.statusBar.showMessage("Saved hotkeys")
 
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
@@ -150,6 +153,9 @@ class Window(QMainWindow):
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)
 
+		self.statusBar = QStatusBar(self)
+		self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
+
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(self.save)
 		buttonLayout.addWidget(self.add)
@@ -160,6 +166,7 @@ class Window(QMainWindow):
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.keys)
 		finalLayout.addLayout(buttonLayout)
+		finalLayout.addWidget(self.statusBar)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()
