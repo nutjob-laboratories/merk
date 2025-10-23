@@ -48,18 +48,12 @@ class Window(QMainWindow):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
 					self.statusBar.showMessage("Hotkey added")
-					# t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
 				elif r==SHORTCUT_IN_USE:
-					pass
-					# t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is already in use as a shortcut")
+					self.statusBar.showMessage(f"\"{seq}\" is already in use")
 				else:
-					pass
-					# t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence")
-				# self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					self.statusBar.showMessage(f"\"{seq}\" is not valid")
 			else:
-				pass
-				# t = Message(ERROR_MESSAGE,'',f"\"{seq}\" is not a valid key sequence or is already in use")
-				# self.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				self.statusBar.showMessage(f"\"{seq}\" was not added")
 
 			self.keys.clear()
 			for e in self.parent.shortcuts:
@@ -89,6 +83,7 @@ class Window(QMainWindow):
 			item.seq = f"{e[0]}"
 			item.cmd = f"{e[2]}"
 			self.keys.addItem(item)
+		self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
 
 	def closeEvent(self, event):
 

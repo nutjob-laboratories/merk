@@ -842,6 +842,7 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 	gui.connectToIrc(i)
 
 def exit_from_command(gui):
+	gui.disconnectAll()
 	gui.close()
 
 def check_for_sane_values(setting,value):
