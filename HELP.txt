@@ -148,10 +148,6 @@ Appearance:
 <td>Imports a configuration file into settings.  <strong>*Caution*</strong>: use at your own risk!</td>
 </tr>
 <tr>
-<td><code>/config restart</code></td>
-<td>Restarts MERK, using the same command-line used to start MERK. <strong>*Caution*</strong>: use at your own risk!</td>
-</tr>
-<tr>
 <td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server</td>
 </tr>
@@ -439,7 +435,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, <b><code>settings</code></b>, <b><code>logs</code></b>, <b><code>hotkey</code></b>, <b><code>cascade</code></b>, <b><code>tile</code></b>, <b><code>next</code></b>, and <b><code>previous</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <b><code>move</code></b>, <b><code>size</code></b>, <b><code>maximize</code></b>, <b><code>minimize</code></b>, <b><code>restore</code></b>, <b><code>readme</code></b>, <b><code>settings</code></b>, <b><code>logs</code></b>, <b><code>hotkey</code></b>, <b><code>restart</code></b>, <b><code>cascade</code></b>, <b><code>tile</code></b>, <b><code>next</code></b>, and <b><code>previous</code></b>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

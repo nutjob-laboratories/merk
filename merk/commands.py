@@ -147,7 +147,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ctcp finger": config.ISSUE_COMMAND_SYMBOL+"ctcp FINGER ",
 			config.ISSUE_COMMAND_SYMBOL+"config import": config.ISSUE_COMMAND_SYMBOL+"config import ",
 			config.ISSUE_COMMAND_SYMBOL+"config export": config.ISSUE_COMMAND_SYMBOL+"config export ",
-			config.ISSUE_COMMAND_SYMBOL+"config restart": config.ISSUE_COMMAND_SYMBOL+"config restart",
+			config.ISSUE_COMMAND_SYMBOL+"window restart": config.ISSUE_COMMAND_SYMBOL+"window restart",
 			config.ISSUE_COMMAND_SYMBOL+"window readme": config.ISSUE_COMMAND_SYMBOL+"window readme",
 			config.ISSUE_COMMAND_SYMBOL+"window settings": config.ISSUE_COMMAND_SYMBOL+"window settings",
 			config.ISSUE_COMMAND_SYMBOL+"window logs": config.ISSUE_COMMAND_SYMBOL+"window logs ",
@@ -340,7 +340,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>size</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>cascade</b>, and <b>tile</b>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>size</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>restart</b>, <b>next</b>, <b>previous</b>, <b>cascade</b>, and <b>tile</b>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
@@ -357,7 +357,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT [USAGE] [HELP]</b>", "Creates a macro, executable with "+config.ISSUE_COMMAND_SYMBOL+"NAME, that executes SCRIPT" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config export [FILENAME]</b>", "Exports the current configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>", "Imports a configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config restart</b>", f"Restarts {APPLICATION_NAME}. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...</b>", f"Executes COMMAND when key SEQUENCE is pressed" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>", f"Removes a bind for SEQUENCE. Pass * as the only argument to remove all binds" ],
 	]
@@ -392,7 +391,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config export [FILENAME]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>": continue
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"config restart</b>": continue
 		if not config.ENABLE_DELAY_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>": continue
 		if not config.ENABLE_STYLE_EDITOR:
@@ -3082,6 +3080,32 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.resize(x_val,y_val)
 				return True
 
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='restart':
+
+				msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any connected servers, and\nrestart using the same command-line used to start {APPLICATION_NAME}."
+
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(QUIT_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setText(msg)
+				msgBox.setInformativeText("Click \"OK\" to restart, or \"Cancel\" to abort restart.")
+				msgBox.setWindowTitle(f"{config.ISSUE_COMMAND_SYMBOL}reboot")
+				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+				rval = msgBox.exec()
+				if rval == QMessageBox.Cancel:
+					pass
+				else:
+					if is_running_from_pyinstaller():
+						subprocess.Popen([sys.executable,*sys.argv])
+						self.parent.close()
+						self.parent.app.exit()
+					else:
+						os.execl(sys.executable, sys.executable, *sys.argv)
+						sys.exit()
+				return True
+
 		# /window minimize
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='minimize':
@@ -3801,32 +3825,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
-			if tokens[1].lower()=='restart':
-
-				msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any connected servers, and\nrestart using the same command-line used to start {APPLICATION_NAME}."
-
-				msgBox = QMessageBox()
-				msgBox.setIconPixmap(QPixmap(QUIT_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				msgBox.setText(msg)
-				msgBox.setInformativeText("Click \"OK\" to restart, or \"Cancel\" to abort restart.")
-				msgBox.setWindowTitle(f"{config.ISSUE_COMMAND_SYMBOL}reboot")
-				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
-				rval = msgBox.exec()
-				if rval == QMessageBox.Cancel:
-					pass
-				else:
-					if is_running_from_pyinstaller():
-						subprocess.Popen([sys.executable,*sys.argv])
-						self.parent.close()
-						self.parent.app.exit()
-					else:
-						os.execl(sys.executable, sys.executable, *sys.argv)
-						sys.exit()
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
 			if tokens[1].lower()=='import':
 
 				options = QFileDialog.Options()
@@ -3838,7 +3836,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					gui.reload_settings()
 					t = Message(SYSTEM_MESSAGE,'',f"Imported \"{fileName}\" configuration file")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}config restart to restart {APPLICATION_NAME}")
+					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}window restart to restart {APPLICATION_NAME}")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				else:
@@ -3856,7 +3854,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					gui.reload_settings()
 					t = Message(SYSTEM_MESSAGE,'',f"Imported \"{f}\" configuration file")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}config restart to restart {APPLICATION_NAME}")
+					t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}window restart to restart {APPLICATION_NAME}")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				else:
@@ -4095,7 +4093,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}config restart to restart {APPLICATION_NAME}")
+				t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}window restart to restart {APPLICATION_NAME}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:

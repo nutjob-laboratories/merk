@@ -250,7 +250,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  ***Caution**: use at your own risk! |
 | `/config export [FILENAME]`          | Exports the current configuration file.  ***Caution**: use at your own risk! |
 | `/config import [FILENAME]`          | Imports a configuration file into settings.  ***Caution**: use at your own risk! |
-| `/config restart`          | Restarts MERK, using the same command-line used to start MERK.  ***Caution**: use at your own risk! |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
 | `context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; *can only be called from scripts*                                                  |
@@ -322,7 +321,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `move`, `size`, `maximize`, `minimize`, `restore`, `readme`, `settings`, `logs`, `hotkey`, `cascade`, `tile`, `next`, and `previous`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `move`, `size`, `maximize`, `minimize`, `restore`, `readme`, `settings`, `logs`, `hotkey`, `restart`, `cascade`, `tile`, `next`, and `previous`. Call with no arguments to see main window information and a list of subwindows                                                 |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |
