@@ -5166,6 +5166,10 @@ class Dialog(QDialog):
 		else:
 			self.parent.hideAllTopic()
 
+		if not config.ENABLE_HOTKEYS:
+			if self.parent.hotkey_manager!=None:
+				self.parent.hotkey_manager.close()
+
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()
 
