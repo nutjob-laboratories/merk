@@ -4484,6 +4484,11 @@ class Dialog(QDialog):
 		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: self.searchInstall.setChecked(True)
 		self.searchInstall.stateChanged.connect(self.changedSetting)
 
+		self.hotkeyCmd = QCheckBox(f"Execute hotkeys as commands, not\nscripts",self)
+		if config.EXECUTE_HOTKEY_AS_COMMAND: self.hotkeyCmd.setChecked(True)
+		self.hotkeyCmd.stateChanged.connect(self.changedSetting)
+		self.hotkeyCmd.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
@@ -4498,6 +4503,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		miscLayout.addWidget(self.searchInstall)
+		miscLayout.addWidget(self.hotkeyCmd)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
 
@@ -4977,6 +4983,7 @@ class Dialog(QDialog):
 		config.CURSOR_BLINK = self.cursorBlink.isChecked()
 		config.REJECT_ALL_CHANNEL_NOTICES = self.ignoreChannelNotice.isChecked()
 		config.CURSOR_BLINK_RATE = self.CURSOR_BLINK_RATE
+		config.EXECUTE_HOTKEY_AS_COMMAND = self.hotkeyCmd.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
