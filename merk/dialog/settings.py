@@ -383,6 +383,14 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingHotkey(self,state):
+		if self.enableHotkeys.isChecked():
+			self.hotkeyCmd.setEnabled(True)
+		else:
+			self.hotkeyCmd.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
 
 	def changedSetting(self,state):
 		self.changed.show()
@@ -2414,15 +2422,10 @@ class Dialog(QDialog):
 		if config.DISPLAY_LONG_MESSAGE_INDICATOR: self.showLongMessage.setChecked(True)
 		self.showLongMessage.stateChanged.connect(self.changedSetting)
 
-		self.enableHotkeys = QCheckBox("Enable hotkeys",self)
-		if config.ENABLE_HOTKEYS: self.enableHotkeys.setChecked(True)
-		self.enableHotkeys.stateChanged.connect(self.changedSetting)
-
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showInputMenu)
-		subwindowLayout.addWidget(self.enableHotkeys)
 		subwindowLayout.addWidget(self.showLongMessage)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
 		subwindowLayout.addWidget(self.showInfo)
@@ -4489,10 +4492,17 @@ class Dialog(QDialog):
 		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: self.searchInstall.setChecked(True)
 		self.searchInstall.stateChanged.connect(self.changedSetting)
 
+		self.enableHotkeys = QCheckBox("Enable hotkeys",self)
+		if config.ENABLE_HOTKEYS: self.enableHotkeys.setChecked(True)
+		self.enableHotkeys.stateChanged.connect(self.changedSettingHotkey)
+
 		self.hotkeyCmd = QCheckBox(f"Execute hotkeys as commands, not\nscripts",self)
 		if config.EXECUTE_HOTKEY_AS_COMMAND: self.hotkeyCmd.setChecked(True)
 		self.hotkeyCmd.stateChanged.connect(self.changedSetting)
 		self.hotkeyCmd.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		if not config.ENABLE_HOTKEYS:
+			self.hotkeyCmd.setEnabled(False)
 
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
@@ -4505,7 +4515,9 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addWidget(self.searchAllTerms)
 		miscLayout.addWidget(self.examineTopic)
-		miscLayout.addWidget(QLabel(' '))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
+		miscLayout.addWidget(self.enableHotkeys)
+		miscLayout.addWidget(self.hotkeyCmd)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		miscLayout.addWidget(self.searchInstall)
 		miscLayout.addWidget(self.hotkeyCmd)

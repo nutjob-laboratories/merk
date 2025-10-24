@@ -2504,6 +2504,8 @@ class Merk(QMainWindow):
 			self.MDI.setActiveSubWindow(w)
 
 	def reload_settings(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+		
 		config.load_settings(config.CONFIG_FILE)
 		user.load_user(user.USER_FILE)
 
@@ -2565,6 +2567,8 @@ class Merk(QMainWindow):
 		self.toggleUserinfo()
 		self.setCursorBlink()
 		self.refreshAllTopic()
+
+		QApplication.restoreOverrideCursor()
 
 	def handleUserInputHotkey(self,window,user_input):
 
