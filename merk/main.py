@@ -2505,7 +2505,7 @@ class Merk(QMainWindow):
 
 	def reload_settings(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
-		
+
 		config.load_settings(config.CONFIG_FILE)
 		user.load_user(user.USER_FILE)
 
@@ -2567,6 +2567,23 @@ class Merk(QMainWindow):
 		self.toggleUserinfo()
 		self.setCursorBlink()
 		self.refreshAllTopic()
+
+		if config.SHOW_CHANNEL_TOPIC:
+			self.showAllTopic()
+		else:
+			self.hideAllTopic()
+
+		if not config.ENABLE_HOTKEYS:
+			if self.hotkey_manager!=None:
+				self.hotkey_manager.close()
+
+		if config.SHOW_SYSTRAY_ICON:
+			self.tray.setVisible(True)
+			self.tray.show()
+			self.buildSystrayMenu()
+		else:
+			self.tray.setVisible(False)
+			self.tray.hide()
 
 		QApplication.restoreOverrideCursor()
 
