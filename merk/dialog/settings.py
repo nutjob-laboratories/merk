@@ -2414,10 +2414,15 @@ class Dialog(QDialog):
 		if config.DISPLAY_LONG_MESSAGE_INDICATOR: self.showLongMessage.setChecked(True)
 		self.showLongMessage.stateChanged.connect(self.changedSetting)
 
+		self.enableHotkeys = QCheckBox("Enable hotkeys",self)
+		if config.ENABLE_HOTKEYS: self.enableHotkeys.setChecked(True)
+		self.enableHotkeys.stateChanged.connect(self.changedSetting)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showContext)
 		subwindowLayout.addWidget(self.showInputMenu)
+		subwindowLayout.addWidget(self.enableHotkeys)
 		subwindowLayout.addWidget(self.showLongMessage)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
 		subwindowLayout.addWidget(self.showInfo)
@@ -4984,6 +4989,7 @@ class Dialog(QDialog):
 		config.REJECT_ALL_CHANNEL_NOTICES = self.ignoreChannelNotice.isChecked()
 		config.CURSOR_BLINK_RATE = self.CURSOR_BLINK_RATE
 		config.EXECUTE_HOTKEY_AS_COMMAND = self.hotkeyCmd.isChecked()
+		config.ENABLE_HOTKEYS = self.enableHotkeys.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

@@ -391,6 +391,7 @@ class Merk(QMainWindow):
 		return ret
 
 	def execute_shortcut(self,script):
+		if not config.ENABLE_HOTKEYS: return
 		w = self.MDI.activeSubWindow()
 		if w:
 			c = w.widget()
@@ -2543,7 +2544,7 @@ class Merk(QMainWindow):
 				if self.was_maximized:
 					self.showMaximized()
 				else:
-					self.showNormal()
+					self.show()
 
 		if config.SHOW_SYSTRAY_ICON==False:
 			self.tray.setVisible(False)
@@ -2552,6 +2553,18 @@ class Merk(QMainWindow):
 
 		self.buildSettingsMenu()
 		self.buildWindowsMenu()
+		self.toggleSpellcheck()
+		self.toggleInputMenu()
+		self.toggleServNickDisplay()
+		self.toggleRefreshButton()
+		self.updateStatusBar()
+		self.toggleServerToolbar()
+		self.toggleRubberbanding()
+		self.toggleScrollbar()
+		self.toggleCursorWidth()
+		self.toggleUserinfo()
+		self.setCursorBlink()
+		self.refreshAllTopic()
 
 	def handleUserInputHotkey(self,window,user_input):
 
@@ -3939,8 +3952,9 @@ class Merk(QMainWindow):
 			entry = widgets.ExtendedMenuItem(self,LOG_MENU_ICON,'Log Manager','View, manage or export&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.menuExportLog)
 		self.toolsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, delete, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
-		self.toolsMenu.addAction(entry)
+		if config.ENABLE_HOTKEYS:
+			entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, delete, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
+			self.toolsMenu.addAction(entry)
 
 		self.toolsMenu.addSeparator()
 

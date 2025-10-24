@@ -217,6 +217,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(ne\\)",
 		]
 
+		if not config.ENABLE_HOTKEYS:
+			merk.remove(cmdsymbol+"bind")
+			merk.remove(cmdsymbol+"unbind")
+			merk.remove(cmdsymbol+"window hotkey")
 		if not config.ENABLE_ALIASES:
 			merk.remove(cmdsymbol+"alias")
 			merk.remove(cmdsymbol+"unalias")

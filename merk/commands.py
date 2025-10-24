@@ -159,6 +159,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window hotkey": config.ISSUE_COMMAND_SYMBOL+"window hotkey",
 	}
 
+	if not config.ENABLE_HOTKEYS:
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"bind save",'')
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window hotkey",'')
+
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
 			config.ISSUE_COMMAND_SYMBOL+"part": config.ISSUE_COMMAND_SYMBOL+"part ",
@@ -236,6 +240,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	# Remove the style command if the style editor is turned off 
 	if not config.ENABLE_STYLE_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"style",'')
+
+	if not config.ENABLE_HOTKEYS:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"bind",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unbind",'')
 
 	if not config.ENABLE_ALIASES:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"alias",'')
@@ -374,6 +382,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+
+		if not config.ENABLE_HOTKEYS:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>": continue
 		if not config.ENABLE_USER_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"user [SETTING] [VALUE...]</b>": continue
 		if not config.ENABLE_CONFIG_COMMAND:
@@ -1274,6 +1286,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /unbind |
 	# |---------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_HOTKEYS:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unbind':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unbind: Hotkeys are disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Hotkeys are disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unbind' and len(tokens)==2:
 			tokens.pop(0)
 			seq = tokens.pop(0)
@@ -1305,6 +1330,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /bind |
 	# |-------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_HOTKEYS:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}bind: Hotkeys are disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Hotkeys are disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind' and len(tokens)==2:
 			if tokens[1].lower()=='save':
@@ -2903,6 +2940,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		# /window hotkey
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='hotkey':
+				if not config.ENABLE_HOTKEYS:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window hotkey: Hotkeys are disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Hotkeys are disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+
 				gui.openHotkeys()
 				return True
 
@@ -3860,6 +3909,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			for s in settings:
 				if s=="timestamp_format": continue
 				if s=="log_absolutely_all_messages_of_any_type": continue
+				if s=="hotkeys": continue
 				if not type(settings[s]) is list:
 					count = count + 1
 					if type(settings[s]).__name__=='bool':
@@ -3888,7 +3938,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list or my_setting=="timestamp_format" or my_setting=="log_absolutely_all_messages_of_any_type":
+				if type(settings[my_setting]) is list or my_setting=="timestamp_format" or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys":
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End 0 config search results")
@@ -3910,7 +3960,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				results = []
 				for a in settings:
 					if not type(settings[a]) is list:
-						if a!="timestamp_format" and a!="log_absolutely_all_messages_of_any_type":
+						if a!="timestamp_format" and a!="log_absolutely_all_messages_of_any_type" and a!="hotkeys":
 							if fnmatch.fnmatch(a,f"*{my_setting}*"):
 								results.append(a)
 
@@ -3961,7 +4011,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_value = ' '.join(tokens)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list or my_setting=="timestamp_format" or my_setting=="log_absolutely_all_messages_of_any_type":
+				if type(settings[my_setting]) is list or my_setting=="timestamp_format" or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys":
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:

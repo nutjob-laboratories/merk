@@ -1081,9 +1081,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.loadScript)
 			self.settingsMenu.addAction(entry)
 
-		entry = QAction(QIcon(HOTKEY_ICON),"Hotkeys",self)
-		entry.triggered.connect(self.setHotkey)
-		self.settingsMenu.addAction(entry)
+		if config.ENABLE_HOTKEYS:
+			entry = QAction(QIcon(HOTKEY_ICON),"Hotkeys",self)
+			entry.triggered.connect(self.setHotkey)
+			self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
 			# Spellcheck Button
