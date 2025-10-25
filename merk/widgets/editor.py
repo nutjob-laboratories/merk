@@ -532,39 +532,47 @@ class Window(QMainWindow):
 
 		self.commandMenu = self.menubar.addMenu("Commands")
 
-		e = textSeparator(self,"IRC Commands")
-		self.commandMenu.addAction(e)
+		self.ircCommands = self.commandMenu.addMenu(QIcon(CONNECT_ICON),"IRC")
 
 		entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
 		entry.triggered.connect(self.insertJoin)
-		self.commandMenu.addAction(entry)
+		self.ircCommands.addAction(entry)
 
 		entry = QAction(QIcon(CHANNEL_ICON),"Part channel",self)
 		entry.triggered.connect(self.insertPart)
-		self.commandMenu.addAction(entry)
+		self.ircCommands.addAction(entry)
 
 		entry = QAction(QIcon(PRIVATE_ICON),"Send private message",self)
 		entry.triggered.connect(self.insertPM)
-		self.commandMenu.addAction(entry)
+		self.ircCommands.addAction(entry)
 
 		entry = QAction(QIcon(PRIVATE_ICON),"Send notice",self)
 		entry.triggered.connect(self.insertNotice)
-		self.commandMenu.addAction(entry)
+		self.ircCommands.addAction(entry)
 
 		entry = QAction(QIcon(PRIVATE_ICON),"Set nickname",self)
 		entry.triggered.connect(self.insertNick)
-		self.commandMenu.addAction(entry)
+		self.ircCommands.addAction(entry)
+
+		entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
+		entry.triggered.connect(self.insertReclaim)
+		self.ircCommands.addAction(entry)
+
+		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
+		entry.triggered.connect(self.insertConnect)
+		self.ircCommands.addAction(entry)
+
+		entry = QAction(QIcon(CONNECT_ICON),"Connect to server (reconnecting)",self)
+		entry.triggered.connect(self.insertReConnect)
+		self.ircCommands.addAction(entry)
 
 		entry = QAction(QIcon(DISCONNECT_ICON),"Quit server",self)
 		entry.triggered.connect(self.insertQuit)
-		self.commandMenu.addAction(entry)
+		self.ircCommands.addAction(entry)
 
 		entry = QAction(QIcon(DISCONNECT_ICON),"Quit all servers",self)
 		entry.triggered.connect(self.insertAllQuit)
-		self.commandMenu.addAction(entry)
-
-		e = textSeparator(self,"Script Commands")
-		self.commandMenu.addAction(e)
+		self.ircCommands.addAction(entry)
 
 		self.appCommands = self.commandMenu.addMenu(QIcon(APPLICATION_ICON),"Application")
 
@@ -594,6 +602,10 @@ class Window(QMainWindow):
 
 
 		self.winCommands = self.commandMenu.addMenu(QIcon(WINDOW_ICON),"Subwindows")
+
+		entry = QAction(QIcon(WINDOW_ICON),"Focus window",self)
+		entry.triggered.connect(self.insertFocus)
+		self.winCommands.addAction(entry)
 
 		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
 		entry.triggered.connect(self.insertMax)
@@ -629,6 +641,20 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(OPENFILE_ICON),"Insert script",self)
 			entry.triggered.connect(self.insertScriptInsert)
 			self.scriptCommands.addAction(entry)
+
+		if config.ENABLE_ALIASES:
+			entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
+			entry.triggered.connect(self.insertAlias)
+			self.scriptCommands.addAction(entry)
+
+		if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
+			entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
+			entry.triggered.connect(self.insertShell)
+			self.scriptCommands.addAction(entry)
+
+		entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
+		entry.triggered.connect(self.insertContext)
+		self.scriptCommands.addAction(entry)
 
 		entry = QAction(QIcon(TIMESTAMP_ICON),"Pause",self)
 		entry.triggered.connect(self.insertPause)
@@ -679,14 +705,6 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertBox)
 		self.displayCommands.addAction(entry)
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
-		entry.triggered.connect(self.insertConnect)
-		self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(CONNECT_ICON),"Connect to server (reconnecting)",self)
-		entry.triggered.connect(self.insertReConnect)
-		self.commandMenu.addAction(entry)
-
 		entry = QAction(QIcon(EXE_ICON),"Create macro",self)
 		entry.triggered.connect(self.insertMacro)
 		self.commandMenu.addAction(entry)
@@ -700,26 +718,8 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertBind)
 			self.commandMenu.addAction(entry)
 
-		if config.ENABLE_ALIASES:
-			entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
-			entry.triggered.connect(self.insertAlias)
-			self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
-		entry.triggered.connect(self.insertContext)
-		self.commandMenu.addAction(entry)
-
 		entry = QAction(QIcon(NOTIFICATION_ICON),"Play a sound",self)
 		entry.triggered.connect(self.insertPlay)
-		self.commandMenu.addAction(entry)
-
-		if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
-			entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
-			entry.triggered.connect(self.insertShell)
-			self.commandMenu.addAction(entry)
-
-		entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
-		entry.triggered.connect(self.insertReclaim)
 		self.commandMenu.addAction(entry)
 
 		if config.ENABLE_ALIASES:
@@ -1191,6 +1191,15 @@ class Window(QMainWindow):
 			return
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"hide "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertFocus(self):
+		e = SetWindowDialog("Focus",self)
+
+		if not e:
+			return
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"focus "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertShow(self):
