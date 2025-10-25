@@ -57,12 +57,12 @@ from .reclaim import Dialog as SetReclaim
 from .set_insert import Dialog as SetInsert
 from .set_nick import Dialog as SetNick
 from .set_if import Dialog as SetIf
-from .cmd_window import Dialog as SetWindow
+from .cmd_window import Dialog as SetCmdWindow
 from .set_bind import Dialog as SetBind
 from .set_macro import Dialog as SetMacro
 
 def WindowInfo(obj,xval,yval,measure):
-	x = SetWindow(obj,xval,yval,measure)
+	x = SetCmdWindow(obj,xval,yval,measure)
 	info = x.get_window_information(obj,xval,yval,measure)
 	del x
 
