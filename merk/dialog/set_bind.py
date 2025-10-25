@@ -179,7 +179,7 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = [ self.key_sequence.text(), self.command.text() ]
+		retval = [ self.key_sequence.text(), self.command_text ]
 
 		return retval
 
@@ -190,11 +190,15 @@ class Dialog(QDialog):
 		else:
 			BLOCK_TAB = False
 
+	def on_text_changed(self, text):
+		self.command_text = text
+
 	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
 		self.block_tab = True
+		self.command_text = ''
 
 		palette = self.palette()
 		self.default_text_color = palette.color(QPalette.WindowText)
@@ -220,10 +224,39 @@ class Dialog(QDialog):
 
 		self.commandLabel = QLabel("<b>Command:</b>")
 		
-		self.command = QLineEdit(self)
+		# self.command = QLineEdit(self)
+		# fm = QFontMetrics(self.font())
+		# wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQR")
+		# self.command.setMinimumWidth(wwidth)
+
+		cmdlist = []
+		for e in commands.AUTOCOMPLETE:
+			cmdlist.append(e)
+		for e in commands.AUTOCOMPLETE_MULTI:
+			cmdlist.append(e)
+		cmdlist = sorted(cmdlist)
+
+		scripts = []
+		for f in commands.list_scripts():
+			scripts.append('/script '+f)
+		scripts = sorted(scripts)
+
+		cmdlist = scripts + cmdlist
+
+		self.command = QComboBox(self)
+		self.command.addItem("")
+		for e in cmdlist:
+			self.command.addItem(e)
+
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQR")
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
 		self.command.setMinimumWidth(wwidth)
+
+		# Make the QComboBox editable
+		self.command.setEditable(True)
+
+		# Connect a signal to handle text changes
+		self.command.currentTextChanged.connect(self.on_text_changed)
 
 		argsLayout = QHBoxLayout()
 		argsLayout.addWidget(self.commandLabel)
@@ -248,7 +281,7 @@ class Dialog(QDialog):
 		self.setTabOrder(buttons, self.key_sequence)
 
 		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
 
