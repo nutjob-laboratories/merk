@@ -344,7 +344,7 @@ class Merk(QMainWindow):
 
 		x = QShortcut(ks, self)
 		x.activated.connect(lambda u=script: self.execute_shortcut(u))
-		x.shortcutContext = Qt.ApplicationShortcut
+		x.shortcutContext = Qt.WindowShortcut
 		e = [keys,x,script]
 		self.shortcuts.append(e)
 
@@ -4293,12 +4293,10 @@ class Merk(QMainWindow):
 		self.windowsMenu.addSeparator()
 
 		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
-		entry3.setShortcut('Ctrl++')
 		entry3.triggered.connect(self.MDI.activateNextSubWindow)
 		self.windowsMenu.addAction(entry3)
 
 		entry4 = QAction(QIcon(PREVIOUS_ICON),"Previous window",self)
-		entry4.setShortcut('Ctrl+-')
 		entry4.triggered.connect(self.MDI.activatePreviousSubWindow)
 		self.windowsMenu.addAction(entry4)
 
