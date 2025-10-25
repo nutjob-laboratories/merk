@@ -1407,9 +1407,15 @@ class Window(QMainWindow):
 			if mhelp.strip()!='':
 				usage = f"{config.ISSUE_COMMAND_SYMBOL}{name} ARGUMENTS"
 
-		if ' ' in script: script = f"\"{script}\""
-		if ' ' in usage: usage = f"\"{usage}\""
-		if ' ' in mhelp: mhelp = f"\"{mhelp}\""
+		if ' ' in script:
+			script = script.replace('"','\\"')
+			script = f"\"{script}\""
+		if ' ' in usage:
+			usage = usage.replace('"','\\"')
+			usage = f"\"{usage}\""
+		if ' ' in mhelp:
+			mhelp = mhelp.replace('"','\\"')
+			mhelp = f"\"{mhelp}\""
 		
 		if usage.strip()!='' and mhelp.strip()=='':
 			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"macro "+str(name)+" "+str(script)+" "+str(usage)+"\n")
