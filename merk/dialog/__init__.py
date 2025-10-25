@@ -59,6 +59,7 @@ from .set_nick import Dialog as SetNick
 from .set_if import Dialog as SetIf
 from .cmd_window import Dialog as SetWindow
 from .set_bind import Dialog as SetBind
+from .set_macro import Dialog as SetMacro
 
 def WindowInfo(obj,xval,yval,measure):
 	x = SetWindow(obj,xval,yval,measure)

@@ -1176,7 +1176,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if script_id!=None:
 			if is_halting(script_id): return True
 
-	# Insert macros
+	# |---------------|
+	# | Insert macros |
+	# |---------------|
 	if config.SCRIPTING_ENGINE_ENABLED:
 		for c in USER_MACROS:
 			a = USER_MACROS[c]

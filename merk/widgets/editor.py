@@ -625,10 +625,6 @@ class Window(QMainWindow):
 
 		self.scriptCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Scripting")
 
-		entry = QAction(QIcon(EXE_ICON),"Execute script",self)
-		entry.triggered.connect(self.insertScript)
-		self.scriptCommands.addAction(entry)
-
 		if config.ENABLE_INSERT_COMMAND:
 			entry = QAction(QIcon(OPENFILE_ICON),"Insert script",self)
 			entry.triggered.connect(self.insertScriptInsert)
@@ -689,6 +685,14 @@ class Window(QMainWindow):
 
 		entry = QAction(QIcon(CONNECT_ICON),"Connect to server (reconnecting)",self)
 		entry.triggered.connect(self.insertReConnect)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(EXE_ICON),"Create macro",self)
+		entry.triggered.connect(self.insertMacro)
+		self.commandMenu.addAction(entry)
+
+		entry = QAction(QIcon(EXE_ICON),"Execute script",self)
+		entry.triggered.connect(self.insertScript)
 		self.commandMenu.addAction(entry)
 
 		if config.ENABLE_HOTKEYS:
@@ -1386,6 +1390,39 @@ class Window(QMainWindow):
 		if not e: return
 
 		self.editor.insertPlainText("insert "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertMacro(self):
+		x = SetMacro(self)
+		e = x.get_script_information(self)
+
+		if not e: return
+
+		name = e[0]
+		script = e[1]
+		usage = e[2]
+		mhelp = e[3]
+
+		if usage.strip()=='':
+			if mhelp.strip()!='':
+				usage = f"{config.ISSUE_COMMAND_SYMBOL}{name} ARGUMENTS"
+
+		if ' ' in script: script = f"\"{script}\""
+		if ' ' in usage: usage = f"\"{usage}\""
+		if ' ' in mhelp: mhelp = f"\"{mhelp}\""
+		
+		if usage.strip()!='' and mhelp.strip()=='':
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"macro "+str(name)+" "+str(script)+" "+str(usage)+"\n")
+			self.updateApplicationTitle()
+			return
+
+		if usage.strip()!='' and mhelp.strip()!='':
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"macro "+str(name)+" "+str(script)+" "+str(usage)+" "+str(mhelp)+"\n")
+			self.updateApplicationTitle()
+			return
+
+
+		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"macro "+str(name)+" "+str(script)+"\n")
 		self.updateApplicationTitle()
 
 	def insertScript(self):
