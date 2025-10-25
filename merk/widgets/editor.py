@@ -691,9 +691,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertReConnect)
 		self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(INPUT_ICON),"Bind hotkey",self)
-		entry.triggered.connect(self.insertBind)
-		self.commandMenu.addAction(entry)
+		if config.ENABLE_HOTKEYS:
+			entry = QAction(QIcon(INPUT_ICON),"Bind hotkey",self)
+			entry.triggered.connect(self.insertBind)
+			self.commandMenu.addAction(entry)
 
 		if config.ENABLE_ALIASES:
 			entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
