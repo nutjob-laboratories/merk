@@ -1699,12 +1699,20 @@ class Window(QMainWindow):
 					actBan = opMenu.addAction(QIcon(BAN_ICON),"Ban "+user_nick)
 					actKickBan = opMenu.addAction(QIcon(BAN_ICON),"Kick && Ban "+user_nick)
 
-				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
-
 				if is_hidden:
 					actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
 				else:
 					actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
+
+				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
+
+				ctcpMenu = menu.addMenu(QIcon(WHOIS_ICON),"Send CTCP request")
+
+				actUserinfo = ctcpMenu.addAction(QIcon(PRIVATE_ICON),"USERINFO")
+				actFinger= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"FINGER")
+				actSource= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"SOURCE")
+				actVersion= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"VERSION")
+				actTime= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"TIME")
 
 				if user_nick!=self.client.nickname:
 					actPriv = menu.addAction(QIcon(PRIVATE_ICON),"Open private chat")
@@ -1717,6 +1725,26 @@ class Window(QMainWindow):
 				actServer = clipMenu.addAction(QIcon(CONNECT_ICON),"Server information")
 
 				action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
+
+				if action==actTime:
+					self.client.ctcpMakeQuery(user_nick, [('TIME', '')])
+					return True
+
+				if action==actVersion:
+					self.client.ctcpMakeQuery(user_nick, [('VERSION', '')])
+					return True
+
+				if action==actSource:
+					self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')])
+					return True
+
+				if action==actUserinfo:
+					self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')])
+					return True
+
+				if action==actFinger:
+					self.client.ctcpMakeQuery(user_nick, [('FINGER', '')])
+					return True
 
 				if user_nick!=self.client.nickname:
 					if action == actPriv:
