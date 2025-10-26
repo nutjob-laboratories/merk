@@ -201,6 +201,7 @@ class Merk(QMainWindow):
 		self.current_window = None
 		self.shortcuts = []
 		self.hotkey_manager = None
+		self.ignore_manager = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -3679,12 +3680,6 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,SETTINGS_MENU_ICON,'Settings','Configure '+APPLICATION_NAME+' preferences&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openSettings)
 		self.settingsMenu.addAction(entry)
 
-		if len(config.IGNORE_LIST)>0:
-			self.settingsMenu.addSeparator()
-			entry = QAction(QIcon(SHOW_ICON),"Clear ignore list", self)
-			entry.triggered.connect(self.settingsClearIgnore)
-			self.settingsMenu.addAction(entry)
-
 		self.settingsMenu.addSeparator()
 
 		if config.DISPLAY_IRC_COLORS:
@@ -3976,6 +3971,9 @@ class Merk(QMainWindow):
 		if config.ENABLE_HOTKEYS:
 			entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, delete, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
 			self.toolsMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,HIDE_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
+		self.toolsMenu.addAction(entry)
 
 		self.toolsMenu.addSeparator()
 
@@ -4582,6 +4580,13 @@ class Merk(QMainWindow):
 		else:
 			self.hotkey_manager.show()
 
+	def openIgnore(self):
+		if self.ignore_manager==None:
+			self.ignore_manager = widgets.IgnoreManager(self)
+			self.ignore_manager.show()
+		else:
+			self.ignore_manager.show()
+
 	def showAbout(self):
 		self.__about_dialog = AboutDialog()
 		self.__about_dialog.show()
@@ -4706,6 +4711,8 @@ class Merk(QMainWindow):
 			event.ignore()
 			return
 
+		if self.hotkey_manager!=None: self.hotkey_manager.close()
+		if self.ignore_manager!=None: self.ignore_manager.close()
 		self.closeAndRemoveAllWindows()
 		event.accept()
 		self.app.quit()

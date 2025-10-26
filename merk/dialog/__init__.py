@@ -60,6 +60,14 @@ from .set_if import Dialog as SetIf
 from .cmd_window import Dialog as SetCmdWindow
 from .set_bind import Dialog as SetBind
 from .set_macro import Dialog as SetMacro
+from .set_ignore import Dialog as SetIgnore
+
+def GetIgnore(msg,parent):
+	x = SetIgnore(msg,parent)
+	info = x.get_message_information(msg,parent)
+	del x
+
+	return info
 
 def WindowInfo(obj,xval,yval,measure):
 	x = SetCmdWindow(obj,xval,yval,measure)

@@ -34,3 +34,4 @@ from .channel_list import Window as ChannelList
 from .readme import Window as ReadMe
 from .log_manager import Window as LogManager
 from .hotkey_manager import Window as HotkeyManager
+from .ignore_manager import Window as IgnoreManager

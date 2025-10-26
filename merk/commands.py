@@ -3661,6 +3661,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			gui.buildSettingsMenu()
 			gui.reRenderAll(True)
 			gui.rerenderUserlists()
+			if gui.ignore_manager!=None:
+				gui.ignore_manager.refresh()
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ignore':
@@ -3697,6 +3699,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.buildSettingsMenu()
 				gui.reRenderAll(True)
 				gui.rerenderUserlists()
+				if gui.ignore_manager!=None:
+					gui.ignore_manager.refresh()
 				return True
 
 			if target in config.IGNORE_LIST:
@@ -3717,6 +3721,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			gui.buildSettingsMenu()
 			gui.reRenderAll(True)
 			gui.rerenderUserlists()
+			if gui.ignore_manager!=None:
+				gui.ignore_manager.refresh()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unignore':
 			if is_script:

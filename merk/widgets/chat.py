@@ -1289,7 +1289,7 @@ class Window(QMainWindow):
 					nickname = line.sender.lower()
 					hostmask = None
 
-				if line.sender in config.IGNORE_LIST: do_render = False
+				# if line.sender in config.IGNORE_LIST: do_render = False
 				if self.is_ignored(nickname,hostmask): do_render = False
 
 			if not config.SHOW_DATES_IN_LOGS:
@@ -1761,6 +1761,8 @@ class Window(QMainWindow):
 						self.parent.buildSettingsMenu()
 						self.parent.reRenderAll(True)
 						self.parent.rerenderUserlists()
+						if self.parent.ignore_manager!=None:
+							self.parent.ignore_manager.refresh()
 						return True
 					else:
 						if user_hostmask:
@@ -1771,6 +1773,8 @@ class Window(QMainWindow):
 						self.parent.buildSettingsMenu()
 						self.parent.reRenderAll(True)
 						self.parent.rerenderUserlists()
+						if self.parent.ignore_manager!=None:
+							self.parent.ignore_manager.refresh()
 						return True
 
 				if action == actWhois:
@@ -2427,7 +2431,7 @@ class Window(QMainWindow):
 						nickname = message.sender.lower()
 						hostmask = None
 				
-					if message.sender in config.IGNORE_LIST: do_render = False
+					# if message.sender in config.IGNORE_LIST: do_render = False
 					if self.is_ignored(nickname,hostmask): do_render = False
 
 				# Save entered text to the current log
