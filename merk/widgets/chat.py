@@ -1713,6 +1713,7 @@ class Window(QMainWindow):
 				actSource= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"SOURCE")
 				actVersion= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"VERSION")
 				actTime= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"TIME")
+				actPing= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"PING")
 
 				if user_nick!=self.client.nickname:
 					actPriv = menu.addAction(QIcon(PRIVATE_ICON),"Open private chat")
@@ -1725,6 +1726,10 @@ class Window(QMainWindow):
 				actServer = clipMenu.addAction(QIcon(CONNECT_ICON),"Server information")
 
 				action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
+
+				if action==actPing:
+					self.client.ping(user_nick)
+					return True
 
 				if action==actTime:
 					self.client.ctcpMakeQuery(user_nick, [('TIME', '')])
