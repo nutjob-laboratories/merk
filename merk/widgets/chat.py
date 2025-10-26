@@ -49,7 +49,6 @@ from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
 from .. import syntax
 from .. import user
-from . import hotkey_manager
 
 class Window(QMainWindow):
 
@@ -1079,11 +1078,6 @@ class Window(QMainWindow):
 		if config.SCRIPTING_ENGINE_ENABLED:
 			entry = QAction(QIcon(RUN_ICON),"Run script",self)
 			entry.triggered.connect(self.loadScript)
-			self.settingsMenu.addAction(entry)
-
-		if config.ENABLE_HOTKEYS:
-			entry = QAction(QIcon(HOTKEY_ICON),"Hotkeys",self)
-			entry.triggered.connect(self.setHotkey)
 			self.settingsMenu.addAction(entry)
 
 		if config.ENABLE_SPELLCHECK:
@@ -2396,13 +2390,6 @@ class Window(QMainWindow):
 					commands.TEMPORARY_ALIAS = {}
 				self.client.away(msg)
 				self.client.away_msg = msg
-
-	def setHotkey(self):
-		if self.parent.hotkey_manager==None:
-			self.parent.hotkey_manager = hotkey_manager.Window(self.parent)
-			self.parent.hotkey_manager.show()
-		else:
-			self.parent.hotkey_manager.show()
 
 	def joinChannel(self):
 		channel_info = JoinChannelDialog(self.parent)
