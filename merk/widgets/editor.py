@@ -84,7 +84,7 @@ class Window(QMainWindow):
 
 		menu.addSeparator()
 
-		commented = QAction(QIcon(SCRIPT_ICON),"Comment out selection", self)
+		commented = QAction(QIcon(EDIT_ICON),"Comment out selection", self)
 		commented.triggered.connect(self.comment_selected)
 		menu.addAction(commented)
 
@@ -643,7 +643,7 @@ class Window(QMainWindow):
 			self.scriptCommands.addAction(entry)
 
 		if config.ENABLE_ALIASES:
-			entry = QAction(QIcon(SCRIPT_ICON),"Create alias",self)
+			entry = QAction(QIcon(EDIT_ICON),"Create alias",self)
 			entry.triggered.connect(self.insertAlias)
 			self.scriptCommands.addAction(entry)
 
@@ -672,7 +672,7 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.insertEnd)
 		self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),f"If statement",self)
+		entry = QAction(QIcon(EDIT_ICON),f"If statement",self)
 		entry.triggered.connect(self.insertIf)
 		self.scriptCommands.addAction(entry)
 
@@ -681,17 +681,17 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertDelay)
 			self.scriptCommands.addAction(entry)
 
-		self.commentCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Comments")
+		self.commentCommands = self.commandMenu.addMenu(QIcon(EDIT_ICON),"Comments")
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Insert multiline comment",self)
+		entry = QAction(QIcon(EDIT_ICON),"Insert multiline comment",self)
 		entry.triggered.connect(self.insertMLComment)
 		self.commentCommands.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"Insert comment",self)
+		entry = QAction(QIcon(EDIT_ICON),"Insert comment",self)
 		entry.triggered.connect(self.insertComment)
 		self.commentCommands.addAction(entry)
 
-		self.displayCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Display")
+		self.displayCommands = self.commandMenu.addMenu(QIcon(EDIT_ICON),"Display")
 
 		entry = QAction(QIcon(EDIT_ICON),"Print text",self)
 		entry.triggered.connect(self.insertWrite)
