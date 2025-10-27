@@ -388,6 +388,7 @@ class Dialog(QDialog):
 			self.hotkeyCmd.setEnabled(True)
 		else:
 			self.hotkeyCmd.setEnabled(False)
+		self.syntax_did_change = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -581,6 +582,14 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.swapUserlists = True
+		self.selector.setFocus()
+
+	def changedSettingIgnore(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.rerenderUsers = True
+		self.syntax_did_change = True
 		self.selector.setFocus()
 
 	def changedSettingRerender(self,state):
@@ -4098,6 +4107,10 @@ class Dialog(QDialog):
 		if config.REJECT_ALL_CHANNEL_NOTICES: self.ignoreChannelNotice.setChecked(True)
 		self.ignoreChannelNotice.stateChanged.connect(self.changedSetting)
 
+		self.enableIgnore = QCheckBox("Enable ignoring users",self)
+		if config.ENABLE_IGNORE: self.enableIgnore.setChecked(True)
+		self.enableIgnore.stateChanged.connect(self.changedSettingIgnore)
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -4106,6 +4119,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.showFullMode)
 		messageLayout.addWidget(self.ignoreChannelNotice)
+		messageLayout.addWidget(self.enableIgnore)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
 		messageLayout.addWidget(self.createWindow)
@@ -5002,6 +5016,7 @@ class Dialog(QDialog):
 		config.CURSOR_BLINK_RATE = self.CURSOR_BLINK_RATE
 		config.EXECUTE_HOTKEY_AS_COMMAND = self.hotkeyCmd.isChecked()
 		config.ENABLE_HOTKEYS = self.enableHotkeys.isChecked()
+		config.ENABLE_IGNORE = self.enableIgnore.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -5169,6 +5184,10 @@ class Dialog(QDialog):
 		if not config.ENABLE_HOTKEYS:
 			if self.parent.hotkey_manager!=None:
 				self.parent.hotkey_manager.close()
+
+		if not config.ENABLE_IGNORE:
+			if self.parent.ignore_manager!=None:
+				self.parent.ignore_manager.close()
 
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()

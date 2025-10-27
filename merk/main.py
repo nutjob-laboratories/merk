@@ -1455,6 +1455,8 @@ class Merk(QMainWindow):
 
 	def is_ignored(self,nick,hostmask):
 
+		if not config.ENABLE_IGNORE: return False
+
 		if nick!=None:
 			for i in config.IGNORE_LIST:
 				if i.lower()==nick.lower(): return True
@@ -3972,8 +3974,9 @@ class Merk(QMainWindow):
 			entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, delete, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
 			self.toolsMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,HIDE_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
-		self.toolsMenu.addAction(entry)
+		if config.ENABLE_IGNORE:
+			entry = widgets.ExtendedMenuItem(self,HIDE_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
+			self.toolsMenu.addAction(entry)
 
 		self.toolsMenu.addSeparator()
 

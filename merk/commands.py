@@ -163,6 +163,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_HOTKEYS:
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"bind save",'')
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window hotkey",'')
+	if not config.ENABLE_IGNORE:
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window ignore",'')
 
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
@@ -241,6 +243,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	# Remove the style command if the style editor is turned off 
 	if not config.ENABLE_STYLE_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"style",'')
+
+	if not config.ENABLE_IGNORE:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"ignore",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unignore",'')
 
 	if not config.ENABLE_HOTKEYS:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"bind",'')
@@ -382,7 +388,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
-
+		if not config.ENABLE_IGNORE:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>": continue
 		if not config.ENABLE_HOTKEYS:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>": continue
@@ -2879,6 +2887,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		# /window ignore
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='ignore':
+				if not config.ENABLE_IGNORE:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window ignore: Ignore is disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Ignore is disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
 				gui.openIgnore()
 				return True
 
@@ -3645,6 +3663,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /ignore |
 	# |---------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_IGNORE:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ignore':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}ignore has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}ignore has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ignore' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0).lower()
@@ -3694,6 +3725,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /unignore |
 	# |-----------|
 	if len(tokens)>=1:
+
+		if not config.ENABLE_IGNORE:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unignore':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unignore has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}unignore has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unignore' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0).lower()

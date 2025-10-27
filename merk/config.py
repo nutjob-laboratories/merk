@@ -321,9 +321,11 @@ CURSOR_BLINK_RATE = 1060
 HOTKEYS = {}
 EXECUTE_HOTKEY_AS_COMMAND = True
 ENABLE_HOTKEYS = True
+ENABLE_IGNORE = True
 
 def build_settings():
 	settings = {
+		"enable_ignore": ENABLE_IGNORE,
 		"enable_hotkeys": ENABLE_HOTKEYS,
 		"execute_hotkey_as_command": EXECUTE_HOTKEY_AS_COMMAND,
 		"hotkeys": HOTKEYS,
@@ -611,6 +613,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_ignore" in settings:
+		settings["enable_ignore"] = ENABLE_IGNORE
 	if not "enable_hotkeys" in settings:
 		settings["enable_hotkeys"] = ENABLE_HOTKEYS
 	if not "execute_hotkey_as_command" in settings:
@@ -1461,6 +1465,7 @@ def load_settings(filename):
 	global HOTKEYS
 	global EXECUTE_HOTKEY_AS_COMMAND
 	global ENABLE_HOTKEYS
+	global ENABLE_IGNORE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1470,6 +1475,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_IGNORE = settings["enable_ignore"]
 		ENABLE_HOTKEYS = settings["enable_hotkeys"]
 		EXECUTE_HOTKEY_AS_COMMAND = settings["execute_hotkey_as_command"]
 		HOTKEYS = settings["hotkeys"]

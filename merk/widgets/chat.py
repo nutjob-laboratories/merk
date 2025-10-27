@@ -1289,7 +1289,7 @@ class Window(QMainWindow):
 					nickname = line.sender.lower()
 					hostmask = None
 
-				if line.sender in config.IGNORE_LIST: do_render = False
+				# if line.sender in config.IGNORE_LIST: do_render = False
 				if self.is_ignored(nickname,hostmask): do_render = False
 
 			if not config.SHOW_DATES_IN_LOGS:
@@ -1693,10 +1693,11 @@ class Window(QMainWindow):
 					actBan = opMenu.addAction(QIcon(BAN_ICON),"Ban "+user_nick)
 					actKickBan = opMenu.addAction(QIcon(BAN_ICON),"Kick && Ban "+user_nick)
 
-				if is_hidden:
-					actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
-				else:
-					actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
+				if config.ENABLE_IGNORE:
+					if is_hidden:
+						actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
+					else:
+						actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
 
 				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
@@ -1750,32 +1751,33 @@ class Window(QMainWindow):
 						self.parent.openPrivate(self.client,user)
 						return True
 
-				if action == actIgnore:
-					if is_hidden:
-						if user_hostmask:
-							if user_hostmask.lower() in config.IGNORE_LIST:
-								config.IGNORE_LIST.remove(user_hostmask.lower())
-						if user_nick.lower() in config.IGNORE_LIST:
-							config.IGNORE_LIST.remove(user_nick.lower())
-						config.save_settings(config.CONFIG_FILE)
-						self.parent.buildSettingsMenu()
-						self.parent.reRenderAll(True)
-						self.parent.rerenderUserlists()
-						if self.parent.ignore_manager!=None:
-							self.parent.ignore_manager.refresh()
-						return True
-					else:
-						if user_hostmask:
-							config.IGNORE_LIST.append(user_hostmask.lower())
+				if config.ENABLE_IGNORE:
+					if action == actIgnore:
+						if is_hidden:
+							if user_hostmask:
+								if user_hostmask.lower() in config.IGNORE_LIST:
+									config.IGNORE_LIST.remove(user_hostmask.lower())
+							if user_nick.lower() in config.IGNORE_LIST:
+								config.IGNORE_LIST.remove(user_nick.lower())
+							config.save_settings(config.CONFIG_FILE)
+							self.parent.buildSettingsMenu()
+							self.parent.reRenderAll(True)
+							self.parent.rerenderUserlists()
+							if self.parent.ignore_manager!=None:
+								self.parent.ignore_manager.refresh()
+							return True
 						else:
-							config.IGNORE_LIST.append(user_nick.lower())
-						config.save_settings(config.CONFIG_FILE)
-						self.parent.buildSettingsMenu()
-						self.parent.reRenderAll(True)
-						self.parent.rerenderUserlists()
-						if self.parent.ignore_manager!=None:
-							self.parent.ignore_manager.refresh()
-						return True
+							if user_hostmask:
+								config.IGNORE_LIST.append(user_hostmask.lower())
+							else:
+								config.IGNORE_LIST.append(user_nick.lower())
+							config.save_settings(config.CONFIG_FILE)
+							self.parent.buildSettingsMenu()
+							self.parent.reRenderAll(True)
+							self.parent.rerenderUserlists()
+							if self.parent.ignore_manager!=None:
+								self.parent.ignore_manager.refresh()
+							return True
 
 				if action == actWhois:
 					self.client.sendLine("WHOIS "+user_nick)
@@ -2017,6 +2019,8 @@ class Window(QMainWindow):
 		return nick
 
 	def is_ignored(self,nick,hostmask):
+
+		if not config.ENABLE_IGNORE: return False
 
 		if nick in self.hostmasks:
 			for i in config.IGNORE_LIST:
@@ -2431,7 +2435,7 @@ class Window(QMainWindow):
 						nickname = message.sender.lower()
 						hostmask = None
 				
-					if message.sender in config.IGNORE_LIST: do_render = False
+					# if message.sender in config.IGNORE_LIST: do_render = False
 					if self.is_ignored(nickname,hostmask): do_render = False
 
 				# Save entered text to the current log
