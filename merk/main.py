@@ -3975,7 +3975,7 @@ class Merk(QMainWindow):
 			self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_IGNORE:
-			entry = widgets.ExtendedMenuItem(self,HIDE_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
+			entry = widgets.ExtendedMenuItem(self,HIDE_MENU_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
 			self.toolsMenu.addAction(entry)
 
 		self.toolsMenu.addSeparator()

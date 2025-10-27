@@ -293,6 +293,7 @@ MISC_ICON = ":/icon-misc.png"
 HOTKEY_ICON = ":/icon-hotkey.png"
 HOTKEY_MENU_ICON = ":/icon-hotkey_menu.png"
 HIDE_WINDOW_ICON = ":/icon-hide_window.png"
+HIDE_MENU_ICON = ":/icon-hide_menu.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"
