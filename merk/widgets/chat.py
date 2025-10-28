@@ -1289,7 +1289,6 @@ class Window(QMainWindow):
 					nickname = line.sender.lower()
 					hostmask = None
 
-				# if line.sender in config.IGNORE_LIST: do_render = False
 				if self.is_ignored(nickname,hostmask): do_render = False
 
 			if not config.SHOW_DATES_IN_LOGS:
@@ -2026,9 +2025,6 @@ class Window(QMainWindow):
 			for i in config.IGNORE_LIST:
 				if i.lower()==self.hostmasks[nick].lower(): return True
 
-		for i in config.IGNORE_LIST:
-			if i.lower()==nick.lower(): return True
-
 		if hostmask!=None:
 			for i in config.IGNORE_LIST:
 				if i.lower()==hostmask.lower(): return True
@@ -2037,6 +2033,9 @@ class Window(QMainWindow):
 			if fnmatch.fnmatch(nick,f"{i}"): return True
 			if hostmask!=None:
 				if fnmatch.fnmatch(hostmask,f"{i}"): return True
+
+		for i in config.IGNORE_LIST:
+			if i.lower()==nick.lower(): return True
 
 		return False
 
@@ -2435,7 +2434,6 @@ class Window(QMainWindow):
 						nickname = message.sender.lower()
 						hostmask = None
 				
-					# if message.sender in config.IGNORE_LIST: do_render = False
 					if self.is_ignored(nickname,hostmask): do_render = False
 
 				# Save entered text to the current log

@@ -596,6 +596,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window restore": self.insertIntoEditor(u))
 		self.appCommands.addAction(entry)
 
+		entry = QAction(QIcon(WINDOW_ICON),f"Restart {APPLICATION_NAME}",self)
+		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window restart": self.insertIntoEditor(u))
+		self.appCommands.addAction(entry)
+
 		entry = QAction(QIcon(QUIT_ICON),f"Exit {APPLICATION_NAME}",self)
 		entry.triggered.connect(self.insertExit)
 		self.appCommands.addAction(entry)

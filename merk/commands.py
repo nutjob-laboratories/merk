@@ -2076,7 +2076,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().input.setFocus()
@@ -2189,7 +2189,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						if gui.is_valid_position(w,x_val,y_val):
@@ -2391,7 +2391,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.resize(width,height)
@@ -2761,7 +2761,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.close()
@@ -3120,7 +3120,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						gui.showSubWindow(w)
@@ -3208,7 +3208,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.hide()
@@ -4976,7 +4976,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().pressedStyleButton()
@@ -4998,7 +4998,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			else:
 				t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
+			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
@@ -5045,7 +5045,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().clearChat()
@@ -5120,7 +5120,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.showNormal()
@@ -5195,7 +5195,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.showMinimized()
@@ -5267,7 +5267,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.server}".lower():
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.showMaximized()
@@ -6291,12 +6291,6 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='usage' and len(tokens)==1:
 					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: usage called without an argument"])
-					no_errors = False
-
-			# /style can't be called in scripts
-			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'style':
-					self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {config.ISSUE_COMMAND_SYMBOL}style cannot be called from a script"])
 					no_errors = False
 
 			# /end doesn't take any arguments

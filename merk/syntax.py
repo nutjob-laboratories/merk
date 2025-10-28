@@ -180,6 +180,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window hotkey",
 			cmdsymbol+"window restart",
 			cmdsymbol+"window ignore",
+			cmdsymbol+"style",
 		]
 
 		script_only = [
@@ -218,6 +219,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(ne\\)",
 		]
 
+		if not config.ENABLE_STYLE_EDITOR:
+			merk.remove(cmdsymbol+"style")
 		if not config.ENABLE_IGNORE:
 			merk.remove(cmdsymbol+"ignore")
 			merk.remove(cmdsymbol+"unignore")
