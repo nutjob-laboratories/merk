@@ -73,7 +73,17 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
+		self.windowDescription = QLabel(f"""
+			<small>
+			You can ignore users by <b>nickname</b> or <b>hostmask</b>. Use <b>*</b> as a wildcard for any series of characters, or <b>?</b> as a
+			wildcard for any single character.
+			</small>
+			""")
+		self.windowDescription.setWordWrap(True)
+		self.windowDescription.setAlignment(Qt.AlignJustify)
+
 		finalLayout = QVBoxLayout()
+		finalLayout.addWidget(self.windowDescription)
 		finalLayout.addLayout(nameLayout)
 		finalLayout.addWidget(buttons)
 

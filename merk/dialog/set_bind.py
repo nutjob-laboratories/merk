@@ -223,11 +223,6 @@ class Dialog(QDialog):
 		nameLayout.addWidget(self.allowTab)
 
 		self.commandLabel = QLabel("<b>Command:</b>")
-		
-		# self.command = QLineEdit(self)
-		# fm = QFontMetrics(self.font())
-		# wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQR")
-		# self.command.setMinimumWidth(wwidth)
 
 		cmdlist = []
 		for e in commands.AUTOCOMPLETE:
@@ -270,7 +265,19 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
+		self.windowDescription = QLabel(f"""
+			
+			<b>Hold down a key combination</b> to set a hotkey, and then <b>select or enter a command</b> to
+			be executed when the hotkey is pressed.<br><br><small><b>
+			Some hotkey combinations may be pre-empted
+			by the operating system or other applications, and may not work.</b>
+			</small>
+			""")
+		self.windowDescription.setWordWrap(True)
+		self.windowDescription.setAlignment(Qt.AlignJustify)
+
 		finalLayout = QVBoxLayout()
+		finalLayout.addWidget(self.windowDescription)
 		finalLayout.addLayout(nameLayout)
 		finalLayout.addLayout(argsLayout)
 		finalLayout.addWidget(self.status_label)

@@ -520,6 +520,7 @@ class Window(QMainWindow):
 			self.windowDescription.setAlignment(Qt.AlignJustify)
 
 		self.tabs = QTabWidget()
+		self.tabs.setStyleSheet("QTabBar::tab { font-weight: bold; }")
 
 		self.horizontalSplitter = QSplitter(Qt.Horizontal)
 		self.horizontalSplitter.addWidget(self.packlist)
@@ -534,7 +535,7 @@ class Window(QMainWindow):
 		self.horizontalSplitter.setStretchFactor(1, 1)
 
 		self.log_display = QWidget()
-		log_index = self.tabs.addTab(self.log_display, "Log Viewer  ")
+		log_index = self.tabs.addTab(self.log_display, "View ")
 
 		self.search = QLineEdit()
 		fm = QFontMetrics(self.font())
