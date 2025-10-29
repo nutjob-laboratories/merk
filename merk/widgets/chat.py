@@ -3251,7 +3251,8 @@ class SpellTextEdit(QPlainTextEdit):
 								settings = config.build_settings()
 								settings_list = []
 								for s in settings:
-									if s=="timestamp_format": continue
+									if s=="application_font": continue
+									if s=="hotkeys": continue
 									if s=="log_absolutely_all_messages_of_any_type": continue
 									if not type(settings[s]) is list: settings_list.append(s)
 
