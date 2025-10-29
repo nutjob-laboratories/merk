@@ -933,6 +933,13 @@ def check_for_sane_values(setting,value):
 	if setting=="subwindow_order":
 		if not value.lower() in v: return INVALID_ORDER
 
+	if setting=="sound_notification_file":
+		efilename = find_file(value,"wav")
+		if efilename!=None:
+			if not is_wav_file(efilename): return INVALID_SOUND
+		else:
+			return INVALID_SOUND
+
 	return ALL_VALID_SETTINGS
 
 def list_scripts():
@@ -4054,6 +4061,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = f"not a valid text style"
 					elif check==INVALID_ORDER:
 						reason = "must be \"creation\", \"stacking\", or \"activation\""
+					elif check==INVALID_SOUND:
+						reason = "must be a valid WAV file"
 					else:
 						reason = "unknown"
 					if is_script:
