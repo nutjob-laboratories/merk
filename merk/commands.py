@@ -915,19 +915,44 @@ def check_for_sane_values(setting,value):
 
 	v = ["bold","italic"]
 	if setting=="syntax_comment_style":
-		if not value.lower() in v: return INVALID_TEXT_STYLE
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
 
 	if setting=="syntax_command_style":
-		if not value.lower() in v: return INVALID_TEXT_STYLE
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
 
 	if setting=="syntax_channel_style":
-		if not value.lower() in v: return INVALID_TEXT_STYLE
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
 
 	if setting=="syntax_alias_style":
-		if not value.lower() in v: return INVALID_TEXT_STYLE
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
 
 	if setting=="syntax_script_only_style":
-		if not value.lower() in v: return INVALID_TEXT_STYLE
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
+
+	if setting=="syntax_operator_style":
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
+
+	if setting=="syntax_nickname_style":
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
+
+	if setting=="syntax_emoji_style":
+		for e in value.split():
+			if e.lower() in v: continue
+			return INVALID_TEXT_STYLE
 
 	v = ["creation","stacking","activation"]
 	if setting=="subwindow_order":
