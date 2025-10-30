@@ -110,7 +110,7 @@ class ShortcutEdit(QLineEdit):
 		elif is_taken:
 			self.parent.status_label.setText("Hotkey is already in use.")
 		else:
-			self.parent.status_label.setText("Ready.")
+			self.parent.status_label.setText("Enter or select command.")
 
 		super().focusOutEvent(event)
 
@@ -266,15 +266,19 @@ class Dialog(QDialog):
 		buttons.rejected.connect(self.reject)
 
 		self.windowDescription = QLabel(f"""
-			
 			<b>Hold down a key combination</b> to set a hotkey, and then <b>select or enter a command</b> to
-			be executed when the hotkey is pressed.<br><br><small><b>
+			be executed when the hotkey is pressed, %_INSERT_%<br><br><small><b>
 			Some hotkey combinations may be pre-empted
 			by the operating system or other applications, and may not work.</b>
 			</small>
 			""")
 		self.windowDescription.setWordWrap(True)
 		self.windowDescription.setAlignment(Qt.AlignJustify)
+
+		if config.EXECUTE_HOTKEY_AS_COMMAND:
+			self.windowDescription.setText( self.windowDescription.text().replace('%_INSERT_%','as text input.') )
+		else:
+			self.windowDescription.setText( self.windowDescription.text().replace('%_INSERT_%','as a script command.') )
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.windowDescription)

@@ -81,6 +81,26 @@ class Window(QMainWindow):
 			self.keys.addItem(item)
 		self.statusBar.showMessage(f"Displaying {len(config.IGNORE_LIST)} ignores")
 
+	def on_item_clicked(self, item):
+		old = item.ignore
+		i = GetIgnore(item.ignore,self)
+		if i:
+			config.IGNORE_LIST.remove(old)
+			config.IGNORE_LIST.append(i)
+			config.save_settings(config.CONFIG_FILE)
+			self.parent.buildSettingsMenu()
+			self.parent.reRenderAll(True)
+			self.parent.rerenderUserlists()
+
+			self.keys.clear()
+			for e in config.IGNORE_LIST:
+				item = QListWidgetItem(f"{e}")
+				item.ignore = f"{e}"
+				self.keys.addItem(item)
+
+			self.statusBar.showMessage("Ignore modified")
+		
+
 	def closeEvent(self, event):
 
 		self.parent.ignore_manager = None
@@ -105,6 +125,8 @@ class Window(QMainWindow):
 		self.keys = QListWidget(self)
 		self.keys.setTextElideMode(Qt.ElideRight)
 		self.keys.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.keys.itemDoubleClicked.connect(self.on_item_clicked)
 
 		for e in config.IGNORE_LIST:
 			item = QListWidgetItem(f"{e}")
