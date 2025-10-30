@@ -43,7 +43,6 @@ class Window(QMainWindow):
 
 			config.IGNORE_LIST.append(i)
 			config.save_settings(config.CONFIG_FILE)
-			self.parent.buildSettingsMenu()
 			self.parent.reRenderAll(True)
 			self.parent.rerenderUserlists()
 
@@ -61,7 +60,6 @@ class Window(QMainWindow):
 			i = selected_item.ignore
 			config.IGNORE_LIST.remove(i)
 			config.save_settings(config.CONFIG_FILE)
-			self.parent.buildSettingsMenu()
 			self.parent.reRenderAll(True)
 			self.parent.rerenderUserlists()
 

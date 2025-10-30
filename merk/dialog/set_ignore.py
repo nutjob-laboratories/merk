@@ -55,7 +55,10 @@ class Dialog(QDialog):
 		self.parent = parent
 		self.msg = msg
 
-		self.setWindowTitle("Add ignore")
+		if len(self.msg.strip())>0:
+			self.setWindowTitle("Edit ignore")
+		else:
+			self.setWindowTitle("Add ignore")
 		self.setWindowIcon(QIcon(HIDE_ICON))
 
 		fm = QFontMetrics(self.font())
