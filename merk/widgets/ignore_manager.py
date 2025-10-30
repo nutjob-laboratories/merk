@@ -43,8 +43,9 @@ class Window(QMainWindow):
 
 			config.IGNORE_LIST.append(i)
 			config.save_settings(config.CONFIG_FILE)
-			self.parent.reRenderAll(True)
-			self.parent.rerenderUserlists()
+			if self.update:
+				self.parent.reRenderAll(True)
+				self.parent.rerenderUserlists()
 
 			self.keys.clear()
 			for e in config.IGNORE_LIST:
@@ -60,8 +61,9 @@ class Window(QMainWindow):
 			i = selected_item.ignore
 			config.IGNORE_LIST.remove(i)
 			config.save_settings(config.CONFIG_FILE)
-			self.parent.reRenderAll(True)
-			self.parent.rerenderUserlists()
+			if self.update:
+				self.parent.reRenderAll(True)
+				self.parent.rerenderUserlists()
 
 			self.keys.clear()
 			for e in config.IGNORE_LIST:
@@ -70,6 +72,10 @@ class Window(QMainWindow):
 				self.keys.addItem(item)
 
 			self.statusBar.showMessage("Ignore removed")
+
+	def refresh_key(self):
+		self.parent.reRenderAll(True)
+		self.parent.rerenderUserlists()
 
 	def refresh(self):
 		self.keys.clear()
@@ -106,10 +112,17 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
+	def clickUpdate(self,state):
+		if self.doUpdate.isChecked():
+			self.update = True
+		else:
+			self.update = False
+
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
 		self.parent = parent
+		self.update = True
 
 		config.load_settings(config.CONFIG_FILE)
 		
@@ -147,20 +160,34 @@ class Window(QMainWindow):
 		self.remove.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.remove.setFlat(True)
 
+		self.brefresh = QPushButton("")
+		self.brefresh.setIcon(QIcon(REFRESH_ICON))
+		self.brefresh.setToolTip("Force chat refresh")
+		self.brefresh.clicked.connect(self.refresh_key)
+		self.brefresh.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.brefresh.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.brefresh.setFlat(True)
+
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)
 
 		self.statusBar = QStatusBar(self)
 		self.statusBar.showMessage(f"Displaying {len(config.IGNORE_LIST)} ignores")
 
+		self.doUpdate = QCheckBox("Automatically update chats",self)
+		self.doUpdate.stateChanged.connect(self.clickUpdate)
+		self.doUpdate.setChecked(True)
+
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(self.add)
 		buttonLayout.addWidget(self.remove)
+		buttonLayout.addWidget(self.brefresh)
 		buttonLayout.addStretch()
 		buttonLayout.addWidget(self.exit)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.keys)
+		finalLayout.addWidget(self.doUpdate)
 		finalLayout.addLayout(buttonLayout)
 		finalLayout.addWidget(self.statusBar)
 
