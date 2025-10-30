@@ -72,6 +72,12 @@ class Dialog(QDialog):
 			else:
 				self.script.setText(fileName)
 
+	def entered_usage(self):
+		if len(self.usage.text().strip())>0:
+			self.mhelp.setEnabled(True)
+		else:
+			self.mhelp.setEnabled(False)
+
 	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -99,7 +105,6 @@ class Dialog(QDialog):
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
 		self.script.setMinimumWidth(wwidth)
 		
-
 		self.file_button = QPushButton("")
 		self.file_button.setIcon(QIcon(SCRIPT_ICON))
 		self.file_button.clicked.connect(self.getFilename)
@@ -119,6 +124,7 @@ class Dialog(QDialog):
 		usageLayout = QHBoxLayout()
 		usageLayout.addWidget(self.usageLabel)
 		usageLayout.addWidget(self.usage)
+		self.usage.textChanged.connect(self.entered_usage)
 
 		self.mhelpLabel = QLabel("<b>Help:</b>")
 		
@@ -126,6 +132,7 @@ class Dialog(QDialog):
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
 		self.mhelp.setMinimumWidth(wwidth)
+		self.mhelp.setEnabled(False)
 
 		mhelpLayout = QHBoxLayout()
 		mhelpLayout.addWidget(self.mhelpLabel)
@@ -137,7 +144,19 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
+		self.windowDescription = QLabel(f"""
+			<small>
+			<b>Name</b> is how the macro will be called (as <b>{config.ISSUE_COMMAND_SYMBOL}name</b>), <b>script</b> is the
+			name of the script that will be executed when the macro is called, <b>usage</b> is the text that will
+			appear as the usage information in the <b>{config.ISSUE_COMMAND_SYMBOL}help</b> display, and <b>help</b> is the
+			text that will appear as the help information in the <b>{config.ISSUE_COMMAND_SYMBOL}help</b> display.
+			</small>
+			""")
+		self.windowDescription.setWordWrap(True)
+		self.windowDescription.setAlignment(Qt.AlignJustify)
+
 		finalLayout = QVBoxLayout()
+		finalLayout.addWidget(self.windowDescription)
 		finalLayout.addLayout(nameLayout)
 		finalLayout.addLayout(scriptLayout)
 		finalLayout.addLayout(usageLayout)
@@ -149,4 +168,4 @@ class Dialog(QDialog):
 
 		self.setLayout(finalLayout)
 
-		self.script.setFocus()
+		self.name.setFocus()
