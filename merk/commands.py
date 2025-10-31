@@ -3020,7 +3020,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 
 				if gui.is_move_valid_on_screen(gui,x_val,y_val):
-					gui.showNormal()
+					if gui.isMaximized() or gui.isMinimized(): gui.showNormal()
 					gui.move(x_val,y_val)
 				else:
 					if is_script:
@@ -3064,7 +3064,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-				gui.showNormal()
+				if gui.isMaximized() or gui.isMinimized(): gui.showNormal()
 				gui.resize(x_val,y_val)
 				return True
 
@@ -5709,7 +5709,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w = gui.getServerWindow(window.client)
 					if w:
 						written_to_server_window = True
-						t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
+						t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
 						w.writeText(t)
 
 			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:

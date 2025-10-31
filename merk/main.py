@@ -2650,6 +2650,13 @@ class Merk(QMainWindow):
 			t = Message(SELF_MESSAGE,window.client.nickname,user_input)
 			window.writeText(t)
 
+			if window.window_type==PRIVATE_WINDOW:
+				if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
+					w = self.getServerWindow(window.client)
+					if w:
+						t = Message(SELF_MESSAGE,"&rarr;"+window.name,user_input)
+						w.writeText(t)
+
 	def handleConsoleInput(self,window,user_input):
 
 		# Build temporary aliases
