@@ -291,7 +291,7 @@ class Window(QMainWindow):
 			p.setColor(QPalette.Base, QColor(col))
 			self.topic.setPalette(p)
 
-			# Create the uselist
+			# Create the userlist
 			self.userlist = QListWidget(self)
 			self.userlist.setFocusPolicy(Qt.NoFocus)
 			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)

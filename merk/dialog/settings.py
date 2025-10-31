@@ -3236,7 +3236,6 @@ class Dialog(QDialog):
 		self.promptFail = QCheckBox("Prompt for new server on\nconnection failure",self)
 		if config.PROMPT_ON_FAILED_CONNECTION: self.promptFail.setChecked(True)
 		self.promptFail.stateChanged.connect(self.changedSetting)
-
 		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.requestList = QCheckBox("Fetch channel list from server on\nconnection",self)
@@ -3287,12 +3286,17 @@ class Dialog(QDialog):
 		delayLayout.addWidget(self.delayTimeLabelSpec)
 		delayLayout.addStretch()
 
+		self.motdRaw = QCheckBox("Display MOTD as raw text",self)
+		if config.DISPLAY_MOTD_AS_RAW_TEXT: self.motdRaw.setChecked(True)
+		self.motdRaw.stateChanged.connect(self.changedSetting)
+
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addWidget(self.askBeforeDisconnect)
 		connectionsLayout.addWidget(self.notifyOnLostConnection)
 		connectionsLayout.addWidget(self.promptFail)
 		connectionsLayout.addWidget(self.showNetLinks)
+		connectionsLayout.addWidget(self.motdRaw)
 		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatic reconnection</b>"))
 		connectionsLayout.addWidget(self.askBeforeReconnect)
@@ -5017,6 +5021,7 @@ class Dialog(QDialog):
 		config.EXECUTE_HOTKEY_AS_COMMAND = self.hotkeyCmd.isChecked()
 		config.ENABLE_HOTKEYS = self.enableHotkeys.isChecked()
 		config.ENABLE_IGNORE = self.enableIgnore.isChecked()
+		config.DISPLAY_MOTD_AS_RAW_TEXT = self.motdRaw.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

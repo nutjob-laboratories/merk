@@ -1362,11 +1362,16 @@ class Merk(QMainWindow):
 
 	def receivedMOTD(self,client,motd):
 
-		m = "<br>".join(motd)
 		w = self.getServerWindow(client)
 		if w:
-			t = Message(SERVER_MESSAGE,'',m)
-			w.writeText(t)
+			if config.DISPLAY_MOTD_AS_RAW_TEXT:
+				m = "\n".join(motd)
+				t = Message(RAW_SYSTEM_MESSAGE,'',"<pre>"+m+"</pre>")
+				w.writeText(t)
+			else:
+				m = "<br>".join(motd)
+				t = Message(SERVER_MESSAGE,'',m)
+				w.writeText(t)
 
 		w = self.getServerWindow(client)
 		if w:

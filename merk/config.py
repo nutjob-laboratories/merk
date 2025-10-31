@@ -322,9 +322,11 @@ HOTKEYS = {}
 EXECUTE_HOTKEY_AS_COMMAND = True
 ENABLE_HOTKEYS = True
 ENABLE_IGNORE = True
+DISPLAY_MOTD_AS_RAW_TEXT = False
 
 def build_settings():
 	settings = {
+		"display_server_motd_as_raw_text": DISPLAY_MOTD_AS_RAW_TEXT,
 		"enable_ignore": ENABLE_IGNORE,
 		"enable_hotkeys": ENABLE_HOTKEYS,
 		"execute_hotkey_as_command": EXECUTE_HOTKEY_AS_COMMAND,
@@ -613,6 +615,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "display_server_motd_as_raw_text" in settings:
+		settings["display_server_motd_as_raw_text"] = DISPLAY_MOTD_AS_RAW_TEXT
 	if not "enable_ignore" in settings:
 		settings["enable_ignore"] = ENABLE_IGNORE
 	if not "enable_hotkeys" in settings:
@@ -1466,6 +1470,7 @@ def load_settings(filename):
 	global EXECUTE_HOTKEY_AS_COMMAND
 	global ENABLE_HOTKEYS
 	global ENABLE_IGNORE
+	global DISPLAY_MOTD_AS_RAW_TEXT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1475,6 +1480,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISPLAY_MOTD_AS_RAW_TEXT = settings["display_server_motd_as_raw_text"]
 		ENABLE_IGNORE = settings["enable_ignore"]
 		ENABLE_HOTKEYS = settings["enable_hotkeys"]
 		EXECUTE_HOTKEY_AS_COMMAND = settings["execute_hotkey_as_command"]
