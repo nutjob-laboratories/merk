@@ -3995,7 +3995,7 @@ class Merk(QMainWindow):
 					sm.addAction(entry)
 
 			if len(user.COMMANDS)>0:
-				sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Connection Scripts")
+				sm = self.toolsMenu.addMenu(QIcon(CONNECT_ICON),"Connection Scripts")
 
 				for f in user.COMMANDS:
 					entry = QAction(QIcon(README_ICON),f,self)
