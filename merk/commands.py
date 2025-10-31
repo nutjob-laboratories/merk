@@ -5716,11 +5716,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					if window == gui.getServerWindow(window.client):
 						if not written_to_server_window:
-							t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
+							t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
 							window.writeText(t)
 					else:
 						if window.name!=target:
-							t = Message(SELF_MESSAGE,"&rarr; "+target,msg)
+							t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
 							window.writeText(t)
 
 			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
