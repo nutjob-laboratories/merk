@@ -49,6 +49,9 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def home(self):
+		return f"{CONFIG_DIRECTORY}"
+
 	def alias(self,client,window,text):
 		if self._gui!=None:
 			w = self._gui.getSubWindow(window,client)

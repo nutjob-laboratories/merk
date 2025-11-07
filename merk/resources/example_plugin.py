@@ -241,7 +241,6 @@ EXAMPLE_PLUGIN="""#
 #    Returns:
 #      string (The channel's topic)
 #
-#
 #    |===========================|
 #    | alias(client,window,text) |
 #    |===========================|
@@ -259,6 +258,21 @@ EXAMPLE_PLUGIN="""#
 #
 #    Returns:
 #      string (The interpolated text)
+#
+#    |========|
+#    | home() |
+#    |========|
+# 
+#    Returns a string containing the local path to the
+#    directory where MERK's configuration files are
+#    stored. In this directory is also where MERK looks
+#    for the scripts, logs, and styles directory.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      string (Directory path)
 #
 # |-----------------------------|
 # | END PLUGIN BUILT-IN METHODS |
