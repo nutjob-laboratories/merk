@@ -5558,6 +5558,10 @@ class Dialog(QDialog):
 			if self.parent.ignore_manager!=None:
 				self.parent.ignore_manager.close()
 
+		if not config.ENABLE_PLUGINS:
+			if self.parent.plugin_manager!=None:
+				self.parent.plugin_manager.close()
+
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()
 
