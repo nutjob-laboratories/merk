@@ -36,6 +36,7 @@ from .. import widgets
 from .. import user
 from .. import irc
 from .. import commands
+from .. import plugins
 
 import emoji
 
@@ -394,6 +395,69 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSetting(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingPlugin(self,state):
+		if self.enablePlugins.isChecked():
+			self.plugInit.setEnabled(True)
+			self.plugMessage.setEnabled(True)
+			self.plugNotice.setEnabled(True)
+			self.plugAction.setEnabled(True)
+			self.plugLeft.setEnabled(True)
+			self.plugJoined.setEnabled(True)
+			self.plugPart.setEnabled(True)
+			self.plugJoin.setEnabled(True)
+			self.plugKick.setEnabled(True)
+			self.plugKicked.setEnabled(True)
+			self.plugMode.setEnabled(True)
+			self.plugUnmode.setEnabled(True)
+			self.plugTick.setEnabled(True)
+			self.plugQuit.setEnabled(True)
+			self.plugIn.setEnabled(True)
+			self.plugOut.setEnabled(True)
+			self.plugAway.setEnabled(True)
+			self.plugBack.setEnabled(True)
+			self.plugActivate.setEnabled(True)
+			self.plugInvite.setEnabled(True)
+			self.plugRename.setEnabled(True)
+			self.plugTopic.setEnabled(True)
+			self.plugConnected.setEnabled(True)
+			self.plugConnecting.setEnabled(True)
+			self.plugLost.setEnabled(True)
+			self.plugCtick.setEnabled(True)
+			self.plugNick.setEnabled(True)
+			self.plugDisconnect.setEnabled(True)
+		else:
+			self.plugInit.setEnabled(False)
+			self.plugMessage.setEnabled(False)
+			self.plugNotice.setEnabled(False)
+			self.plugAction.setEnabled(False)
+			self.plugLeft.setEnabled(False)
+			self.plugJoined.setEnabled(False)
+			self.plugPart.setEnabled(False)
+			self.plugJoin.setEnabled(False)
+			self.plugKick.setEnabled(False)
+			self.plugKicked.setEnabled(False)
+			self.plugMode.setEnabled(False)
+			self.plugUnmode.setEnabled(False)
+			self.plugTick.setEnabled(False)
+			self.plugQuit.setEnabled(False)
+			self.plugIn.setEnabled(False)
+			self.plugOut.setEnabled(False)
+			self.plugAway.setEnabled(False)
+			self.plugBack.setEnabled(False)
+			self.plugActivate.setEnabled(False)
+			self.plugInvite.setEnabled(False)
+			self.plugRename.setEnabled(False)
+			self.plugTopic.setEnabled(False)
+			self.plugConnected.setEnabled(False)
+			self.plugConnecting.setEnabled(False)
+			self.plugLost.setEnabled(False)
+			self.plugCtick.setEnabled(False)
+			self.plugNick.setEnabled(False)
+			self.plugDisconnect.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -1556,7 +1620,7 @@ class Dialog(QDialog):
 		fwidth = fm.width('X') * 22
 		self.selector.setMaximumWidth(fwidth)
 
-		add_factor = 13
+		add_factor = 12
 		self.selector.setIconSize(QSize(fm.height()+add_factor,fm.height()+add_factor))
 
 		self.selector.itemClicked.connect(self.selectorClick)
@@ -1707,7 +1771,7 @@ class Dialog(QDialog):
 
 		self.applicationPage.setLayout(applicationLayout)
 
-		# Widget page
+		# Appearance page
 
 		self.appearancePage = QWidget()
 
@@ -4322,6 +4386,276 @@ class Dialog(QDialog):
 
 		self.scriptingPage.setLayout(scriptingLayout)
 
+		# Plugins page
+
+		self.pluginPage = QWidget()
+
+		entry = QListWidgetItem()
+		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		entry.setText("Plugins")
+		entry.widget = self.pluginPage
+		entry.setIcon(QIcon(PLUGIN_ICON))
+		self.selector.addItem(entry)
+
+		self.stack.addWidget(self.pluginPage)
+
+		self.enablePlugins = QCheckBox("Enable plugins",self)
+		if config.ENABLE_PLUGINS: self.enablePlugins.setChecked(True)
+		self.enablePlugins.stateChanged.connect(self.changedSettingPlugin)
+
+		f = self.font()
+		f.setBold(True)
+
+		self.plugInit = QCheckBox("init",self)
+		if config.PLUGIN_INIT: self.plugInit.setChecked(True)
+		self.plugInit.stateChanged.connect(self.changedSetting)
+		self.plugInit.setFont(f)
+
+		self.plugMessage = QCheckBox("message",self)
+		if config.PLUGIN_MESSAGE: self.plugMessage.setChecked(True)
+		self.plugMessage.stateChanged.connect(self.changedSetting)
+
+		self.plugNotice = QCheckBox("notice",self)
+		if config.PLUGIN_NOTICE: self.plugNotice.setChecked(True)
+		self.plugNotice.stateChanged.connect(self.changedSetting)
+
+		self.plugAction = QCheckBox("action",self)
+		if config.PLUGIN_ACTION: self.plugAction.setChecked(True)
+		self.plugAction.stateChanged.connect(self.changedSetting)
+
+		self.plugLeft = QCheckBox("left",self)
+		if config.PLUGIN_LEFT: self.plugLeft.setChecked(True)
+		self.plugLeft.stateChanged.connect(self.changedSetting)
+
+		self.plugJoined = QCheckBox("joined",self)
+		if config.PLUGIN_JOINED: self.plugJoined.setChecked(True)
+		self.plugJoined.stateChanged.connect(self.changedSetting)
+
+		self.plugPart = QCheckBox("part",self)
+		if config.PLUGIN_PART: self.plugPart.setChecked(True)
+		self.plugPart.stateChanged.connect(self.changedSetting)
+
+		self.plugJoin = QCheckBox("join",self)
+		if config.PLUGIN_JOIN: self.plugJoin.setChecked(True)
+		self.plugJoin.stateChanged.connect(self.changedSetting)
+
+		self.plugKick = QCheckBox("kick",self)
+		if config.PLUGIN_KICK: self.plugKick.setChecked(True)
+		self.plugKick.stateChanged.connect(self.changedSetting)
+
+		self.plugKicked = QCheckBox("kicked",self)
+		if config.PLUGIN_KICKED: self.plugKicked.setChecked(True)
+		self.plugKicked.stateChanged.connect(self.changedSetting)
+
+		self.plugTick = QCheckBox("tick",self)
+		if config.PLUGIN_TICK: self.plugTick.setChecked(True)
+		self.plugTick.stateChanged.connect(self.changedSetting)
+		self.plugTick.setFont(f)
+
+		self.plugMode = QCheckBox("mode",self)
+		if config.PLUGIN_MODE: self.plugMode.setChecked(True)
+		self.plugMode.stateChanged.connect(self.changedSetting)
+
+		self.plugUnmode = QCheckBox("unmode",self)
+		if config.PLUGIN_UNMODE: self.plugUnmode.setChecked(True)
+		self.plugUnmode.stateChanged.connect(self.changedSetting)
+
+		self.plugQuit = QCheckBox("quit",self)
+		if config.PLUGIN_QUIT: self.plugQuit.setChecked(True)
+		self.plugQuit.stateChanged.connect(self.changedSetting)
+
+		self.plugIn = QCheckBox("line_in",self)
+		if config.PLUGIN_IN: self.plugIn.setChecked(True)
+		self.plugIn.stateChanged.connect(self.changedSetting)
+		self.plugIn.setFont(f)
+
+		self.plugOut = QCheckBox("line_out",self)
+		if config.PLUGIN_OUT: self.plugOut.setChecked(True)
+		self.plugOut.stateChanged.connect(self.changedSetting)
+		self.plugOut.setFont(f)
+
+		self.plugAway = QCheckBox("away",self)
+		if config.PLUGIN_AWAY: self.plugAway.setChecked(True)
+		self.plugAway.stateChanged.connect(self.changedSetting)
+
+		self.plugBack = QCheckBox("back",self)
+		if config.PLUGIN_BACK: self.plugBack.setChecked(True)
+		self.plugBack.stateChanged.connect(self.changedSetting)
+
+		self.plugActivate = QCheckBox("activate",self)
+		if config.PLUGIN_ACTIVATE: self.plugActivate.setChecked(True)
+		self.plugActivate.stateChanged.connect(self.changedSetting)
+		self.plugActivate.setFont(f)
+
+		self.plugInvite = QCheckBox("invite",self)
+		if config.PLUGIN_INVITE: self.plugInvite.setChecked(True)
+		self.plugInvite.stateChanged.connect(self.changedSetting)
+
+		self.plugRename = QCheckBox("rename",self)
+		if config.PLUGIN_RENAME: self.plugRename.setChecked(True)
+		self.plugRename.stateChanged.connect(self.changedSetting)
+
+		self.plugTopic = QCheckBox("topic",self)
+		if config.PLUGIN_TOPIC: self.plugTopic.setChecked(True)
+		self.plugTopic.stateChanged.connect(self.changedSetting)
+
+		self.plugConnected = QCheckBox("connected",self)
+		if config.PLUGIN_CONNECTED: self.plugConnected.setChecked(True)
+		self.plugConnected.stateChanged.connect(self.changedSetting)
+
+		self.plugConnecting = QCheckBox("connecting",self)
+		if config.PLUGIN_CONNECTING: self.plugConnecting.setChecked(True)
+		self.plugConnecting.stateChanged.connect(self.changedSetting)
+
+		self.plugLost = QCheckBox("lost",self)
+		if config.PLUGIN_LOST: self.plugLost.setChecked(True)
+		self.plugLost.stateChanged.connect(self.changedSetting)
+
+		self.plugCtick = QCheckBox("ctick",self)
+		if config.PLUGIN_CTICK: self.plugCtick.setChecked(True)
+		self.plugCtick.stateChanged.connect(self.changedSetting)
+		self.plugCtick.setFont(f)
+
+		self.plugNick = QCheckBox("nick",self)
+		if config.PLUGIN_NICK: self.plugNick.setChecked(True)
+		self.plugNick.stateChanged.connect(self.changedSetting)
+
+		self.plugDisconnect = QCheckBox("disconnect",self)
+		if config.PLUGIN_DISCONNECT: self.plugDisconnect.setChecked(True)
+		self.plugDisconnect.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_PLUGINS:
+			self.plugInit.setEnabled(False)
+			self.plugMessage.setEnabled(False)
+			self.plugNotice.setEnabled(False)
+			self.plugAction.setEnabled(False)
+			self.plugLeft.setEnabled(False)
+			self.plugJoined.setEnabled(False)
+			self.plugPart.setEnabled(False)
+			self.plugJoin.setEnabled(False)
+			self.plugKick.setEnabled(False)
+			self.plugKicked.setEnabled(False)
+			self.plugMode.setEnabled(False)
+			self.plugUnmode.setEnabled(False)
+			self.plugTick.setEnabled(False)
+			self.plugQuit.setEnabled(False)
+			self.plugIn.setEnabled(False)
+			self.plugOut.setEnabled(False)
+			self.plugAway.setEnabled(False)
+			self.plugBack.setEnabled(False)
+			self.plugActivate.setEnabled(False)
+			self.plugInvite.setEnabled(False)
+			self.plugRename.setEnabled(False)
+			self.plugTopic.setEnabled(False)
+			self.plugConnected.setEnabled(False)
+			self.plugConnecting.setEnabled(False)
+			self.plugLost.setEnabled(False)
+			self.plugCtick.setEnabled(False)
+			self.plugNick.setEnabled(False)
+			self.plugDisconnect.setEnabled(False)
+
+		row1Layout = QHBoxLayout()
+		row1Layout.addWidget(self.plugInit)
+		row1Layout.addWidget(self.plugIn)
+		row1Layout.addWidget(self.plugOut)
+
+		row2Layout = QHBoxLayout()
+		row2Layout.addWidget(self.plugTick)
+		row2Layout.addWidget(self.plugCtick)
+		row2Layout.addWidget(self.plugActivate)
+		
+		row3Layout = QHBoxLayout()
+		row3Layout.addWidget(self.plugPart)
+		row3Layout.addWidget(self.plugJoin)
+		row3Layout.addWidget(self.plugKick)
+
+		row4Layout = QHBoxLayout()
+		row4Layout.addWidget(self.plugKicked)
+		row4Layout.addWidget(self.plugMode)
+		row4Layout.addWidget(self.plugUnmode)
+
+		row5Layout = QHBoxLayout()
+		row5Layout.addWidget(self.plugQuit)
+		row5Layout.addWidget(self.plugAction)
+		row5Layout.addWidget(self.plugNotice)
+
+		row6Layout = QHBoxLayout()
+		row6Layout.addWidget(self.plugMessage)
+		row6Layout.addWidget(self.plugAway)
+		row6Layout.addWidget(self.plugBack)
+
+		row7Layout = QHBoxLayout()
+		row7Layout.addWidget(self.plugLeft)
+		row7Layout.addWidget(self.plugInvite)
+		row7Layout.addWidget(self.plugRename)
+
+		row8Layout = QHBoxLayout()
+		row8Layout.addWidget(self.plugTopic)
+		row8Layout.addWidget(self.plugConnected)
+		row8Layout.addWidget(self.plugConnecting)
+
+		row9Layout = QHBoxLayout()
+		row9Layout.addWidget(self.plugLost)
+		row9Layout.addWidget(self.plugJoined)
+		row9Layout.addWidget(self.plugNick)
+
+		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugDisconnect)
+		row10Layout.addStretch()
+
+		plugLayout = QHBoxLayout()
+		plugLayout.addStretch()
+		plugLayout.addWidget(self.enablePlugins)
+		plugLayout.addStretch()
+
+		self.pluginDescription = QLabel(f"""
+			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
+			in Python. %_INSERT_%
+			Plugins, just like <b>{APPLICATION_NAME}</b>, require Python 3.9 or greater.
+			<br>
+			</small>
+			
+			""")
+		self.pluginDescription.setWordWrap(True)
+		self.pluginDescription.setAlignment(Qt.AlignJustify)
+
+		if is_running_from_pyinstaller():
+			self.pluginDescription.setText( self.pluginDescription.text().replace('%_INSERT_%',"Plugins only have access to Qt, Twisted, and the Python standard library.") )
+		else:
+			self.pluginDescription.setText( self.pluginDescription.text().replace('%_INSERT_%',"Plugins have access to Qt, Twisted, the Python standard library, and any libraries installed globally.") )
+
+		self.eventDescription = QLabel(f"""
+			<small>
+			Uncheck an <b>event</b> to prevent that event from being triggered. The <b>init</b> event is triggered
+			when the plugin is initially loaded, and cannot be prevented from triggering after a plugin has been
+			loaded. Events in <b>bold</b> are <b>{APPLICATION_NAME}</b> specific, and are not necessarily IRC related.
+			</small>
+			
+			""")
+		self.eventDescription.setWordWrap(True)
+		self.eventDescription.setAlignment(Qt.AlignJustify)
+
+		pluginsLayout = QVBoxLayout()
+		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
+		pluginsLayout.addWidget(self.pluginDescription)
+		pluginsLayout.addLayout(plugLayout)
+		pluginsLayout.addWidget(QLabel(' '))
+		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
+		pluginsLayout.addWidget(self.eventDescription)
+		pluginsLayout.addLayout(row1Layout)
+		pluginsLayout.addLayout(row2Layout)
+		pluginsLayout.addLayout(row3Layout)
+		pluginsLayout.addLayout(row4Layout)
+		pluginsLayout.addLayout(row5Layout)
+		pluginsLayout.addLayout(row6Layout)
+		pluginsLayout.addLayout(row7Layout)
+		pluginsLayout.addLayout(row8Layout)
+		pluginsLayout.addLayout(row9Layout)
+		pluginsLayout.addLayout(row10Layout)
+		pluginsLayout.addStretch()
+
+		self.pluginPage.setLayout(pluginsLayout)
+
 		# Highlighting
 
 		self.syntaxPage = QWidget()
@@ -4336,9 +4670,9 @@ class Dialog(QDialog):
 		self.stack.addWidget(self.syntaxPage)
 
 		self.syntaxcomment = widgets.SyntaxColor('comment', "<b>Comments</b>",self.SYNTAX_COMMENT_COLOR,self.SYNTAX_COMMENT_STYLE,self)
-		self.syntaxcommand = widgets.SyntaxColor('command', "<b>Commands</b>",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
+		self.syntaxcommand = widgets.SyntaxColor('command', "<b>Commands/Keywords</b>",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
 		self.syntaxchannel = widgets.SyntaxColor('channel', "<b>Channels</b>",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
-		self.syntaxalias = widgets.SyntaxColor('alias', "<b>Aliases</b>",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
+		self.syntaxalias = widgets.SyntaxColor('alias', "<b>Aliases/Strings</b>",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
 		self.syntaxscript = widgets.SyntaxColor('script', "<b>Script-Only Commands</b>",self.SYNTAX_SCRIPT_COLOR,self.SYNTAX_SCRIPT_STYLE,self)
 		self.syntaxop = widgets.SyntaxColor('operator', "<b>\"if\" Operators</b>",self.SYNTAX_OPERATOR_COLOR,self.SYNTAX_OPERATOR_STYLE,self)
 		self.syntaxfore = widgets.SyntaxTextColor('fore', "<b>Text Color</b>",self.SYNTAX_FOREGROUND,self)
@@ -4362,8 +4696,8 @@ class Dialog(QDialog):
 
 		self.syntaxDescription = QLabel("""
 			<small>
-			<b>Syntax highlighting</b> is applied to both the script section of the
-			connection dialog, and the built-in script editor.
+			<b>Syntax highlighting</b> is applied to the script section of the
+			connection dialog, the built-in script editor, and the plugin editor.
 			</small>
 			""")
 		self.syntaxDescription.setWordWrap(True)
@@ -4696,6 +5030,7 @@ class Dialog(QDialog):
 
 		self.finalLayout = QVBoxLayout()
 		self.finalLayout.addLayout(mainLayout)
+		#self.finalLayout.addWidget(QLabel(' '))
 		self.finalLayout.addLayout(dialogButtonsLayout)
 		self.finalLayout.setContentsMargins(4,4,4,4)
 
@@ -5022,6 +5357,35 @@ class Dialog(QDialog):
 		config.ENABLE_HOTKEYS = self.enableHotkeys.isChecked()
 		config.ENABLE_IGNORE = self.enableIgnore.isChecked()
 		config.DISPLAY_MOTD_AS_RAW_TEXT = self.motdRaw.isChecked()
+		config.ENABLE_PLUGINS = self.enablePlugins.isChecked()
+		config.PLUGIN_INIT = self.plugInit.isChecked()
+		config.PLUGIN_MESSAGE = self.plugMessage.isChecked()
+		config.PLUGIN_NOTICE = self.plugNotice.isChecked()
+		config.PLUGIN_ACTION = self.plugAction.isChecked()
+		config.PLUGIN_LEFT = self.plugLeft.isChecked()
+		config.PLUGIN_JOINED = self.plugJoined.isChecked()
+		config.PLUGIN_PART = self.plugPart.isChecked()
+		config.PLUGIN_JOIN = self.plugJoin.isChecked()
+		config.PLUGIN_KICK = self.plugKick.isChecked()
+		config.PLUGIN_KICKED = self.plugKicked.isChecked()
+		config.PLUGIN_TICK = self.plugTick.isChecked()
+		config.PLUGIN_MODE = self.plugMode.isChecked()
+		config.PLUGIN_UNMODE = self.plugUnmode.isChecked()
+		config.PLUGIN_QUIT = self.plugQuit.isChecked()
+		config.PLUGIN_IN = self.plugIn.isChecked()
+		config.PLUGIN_OUT = self.plugOut.isChecked()
+		config.PLUGIN_AWAY = self.plugAway.isChecked()
+		config.PLUGIN_BACK = self.plugBack.isChecked()
+		config.PLUGIN_ACTIVATE = self.plugActivate.isChecked()
+		config.PLUGIN_INVITE = self.plugInvite.isChecked()
+		config.PLUGIN_RENAME = self.plugRename.isChecked()
+		config.PLUGIN_TOPIC = self.plugTopic.isChecked()
+		config.PLUGIN_CONNECTED = self.plugConnected.isChecked()
+		config.PLUGIN_CONNECTING = self.plugConnecting.isChecked()
+		config.PLUGIN_LOST = self.plugLost.isChecked()
+		config.PLUGIN_CTICK = self.plugCtick.isChecked()
+		config.PLUGIN_NICK = self.plugNick.isChecked()
+		config.PLUGIN_DISCONNECT = self.plugDisconnect.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -5204,6 +5568,21 @@ class Dialog(QDialog):
 					c = window.widget()
 					if hasattr(c,"refreshHighlighter"):
 						c.refreshHighlighter()
+
+		# En/disable plugins
+		errors = plugins.load_plugins(self.parent)
+		if len(errors)>0:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			if len(errors)>1:
+				msgBox.setText("There were errors loading plugins!")
+			else:
+				msgBox.setText("There was an error loading plugins!")
+			msgBox.setInformativeText("\n".join(errors))
+			msgBox.setWindowTitle("Plugin load error")
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()
 
 		w = self.parent.MDI.activeSubWindow()
 		self.parent.merk_subWindowActivated(w)

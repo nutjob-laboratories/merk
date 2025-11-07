@@ -323,9 +323,67 @@ EXECUTE_HOTKEY_AS_COMMAND = True
 ENABLE_HOTKEYS = True
 ENABLE_IGNORE = True
 DISPLAY_MOTD_AS_RAW_TEXT = False
+ENABLE_PLUGINS = True
+PLUGIN_INIT = True
+PLUGIN_MESSAGE = True
+PLUGIN_NOTICE = True
+PLUGIN_ACTION = True
+PLUGIN_LEFT = True
+PLUGIN_JOINED = True
+PLUGIN_PART = True
+PLUGIN_JOIN = True
+PLUGIN_KICK = True
+PLUGIN_KICKED = True
+PLUGIN_TICK = True
+PLUGIN_MODE = True
+PLUGIN_UNMODE = True
+PLUGIN_QUIT = True
+PLUGIN_IN = True
+PLUGIN_OUT = True
+PLUGIN_AWAY = True
+PLUGIN_BACK = True
+PLUGIN_ACTIVATE = True
+PLUGIN_INVITE = True
+PLUGIN_RENAME = True
+PLUGIN_TOPIC = True
+PLUGIN_CONNECTED = True
+PLUGIN_CONNECTING = True
+PLUGIN_LOST = True
+PLUGIN_CTICK = True
+PLUGIN_NICK = True
+PLUGIN_DISCONNECT = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_disconnect_event": PLUGIN_DISCONNECT,
+		"enable_plugin_nick_event": PLUGIN_NICK,
+		"enable_plugin_ctick_event": PLUGIN_CTICK,
+		"enable_plugin_lost_event": PLUGIN_LOST,
+		"enable_plugin_connected_event": PLUGIN_CONNECTED,
+		"enable_plugin_connecting_event": PLUGIN_CONNECTING,
+		"enable_plugin_topic_event": PLUGIN_TOPIC,
+		"enable_plugin_rename_event": PLUGIN_RENAME,
+		"enable_plugin_invite_event": PLUGIN_INVITE,
+		"enable_plugin_activate_event": PLUGIN_ACTIVATE,
+		"enable_plugin_away_event": PLUGIN_AWAY,
+		"enable_plugin_back_event": PLUGIN_BACK,
+		"enable_plugin_line_in_event": PLUGIN_IN,
+		"enable_plugin_line_out_event": PLUGIN_OUT,
+		"enable_plugin_quit_event": PLUGIN_QUIT,
+		"enable_plugin_mode_event": PLUGIN_MODE,
+		"enable_plugin_unmode_event": PLUGIN_UNMODE,
+		"enable_plugin_kick_event": PLUGIN_KICK,
+		"enable_plugin_kicked_event": PLUGIN_KICKED,
+		"enable_plugin_tick_event": PLUGIN_TICK,
+		"enable_plugin_part_event": PLUGIN_PART,
+		"enable_plugin_join_event": PLUGIN_JOIN,
+		"enable_plugin_left_event": PLUGIN_LEFT,
+		"enable_plugin_joined_event": PLUGIN_JOINED,
+		"enable_plugin_init_event": PLUGIN_INIT,
+		"enable_plugin_message_event": PLUGIN_MESSAGE,
+		"enable_plugin_notice_event": PLUGIN_NOTICE,
+		"enable_plugin_action_event": PLUGIN_ACTION,
+		"enable_plugins": ENABLE_PLUGINS,
 		"display_server_motd_as_raw_text": DISPLAY_MOTD_AS_RAW_TEXT,
 		"enable_ignore": ENABLE_IGNORE,
 		"enable_hotkeys": ENABLE_HOTKEYS,
@@ -615,6 +673,64 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_disconnect_event" in settings:
+		settings["enable_plugin_disconnect_event"] = PLUGIN_DISCONNECT
+	if not "enable_plugin_nick_event" in settings:
+		settings["enable_plugin_nick_event"] = PLUGIN_NICK
+	if not "enable_plugin_ctick_event" in settings:
+		settings["enable_plugin_ctick_event"] = PLUGIN_CTICK
+	if not "enable_plugin_lost_event" in settings:
+		settings["enable_plugin_lost_event"] = PLUGIN_LOST
+	if not "enable_plugin_connected_event" in settings:
+		settings["enable_plugin_connected_event"] = PLUGIN_CONNECTED
+	if not "enable_plugin_connecting_event" in settings:
+		settings["enable_plugin_connecting_event"] = PLUGIN_CONNECTING
+	if not "enable_plugin_topic_event" in settings:
+		settings["enable_plugin_topic_event"] = PLUGIN_TOPIC
+	if not "enable_plugin_rename_event" in settings:
+		settings["enable_plugin_rename_event"] = PLUGIN_RENAME
+	if not "enable_plugin_invite_event" in settings:
+		settings["enable_plugin_invite_event"] = PLUGIN_INVITE
+	if not "enable_plugin_activate_event" in settings:
+		settings["enable_plugin_activate_event"] = PLUGIN_ACTIVATE
+	if not "enable_plugin_away_event" in settings:
+		settings["enable_plugin_away_event"] = PLUGIN_AWAY
+	if not "enable_plugin_back_event" in settings:
+		settings["enable_plugin_back_event"] = PLUGIN_BACK
+	if not "enable_plugin_line_in_event" in settings:
+		settings["enable_plugin_line_in_event"] = PLUGIN_IN
+	if not "enable_plugin_line_out_event" in settings:
+		settings["enable_plugin_line_out_event"] = PLUGIN_OUT
+	if not "enable_plugin_quit_event" in settings:
+		settings["enable_plugin_quit_event"] = PLUGIN_QUIT
+	if not "enable_plugin_mode_event" in settings:
+		settings["enable_plugin_mode_event"] = PLUGIN_MODE
+	if not "enable_plugin_unmode_event" in settings:
+		settings["enable_plugin_unmode_event"] = PLUGIN_UNMODE
+	if not "enable_plugin_kick_event" in settings:
+		settings["enable_plugin_kick_event"] = PLUGIN_KICK
+	if not "enable_plugin_kicked_event" in settings:
+		settings["enable_plugin_kicked_event"] = PLUGIN_KICKED
+	if not "enable_plugin_tick_event" in settings:
+		settings["enable_plugin_tick_event"] = PLUGIN_TICK
+	if not "enable_plugin_part_event" in settings:
+		settings["enable_plugin_part_event"] = PLUGIN_PART
+	if not "enable_plugin_join_event" in settings:
+		settings["enable_plugin_join_event"] = PLUGIN_JOIN
+	if not "enable_plugin_left_event" in settings:
+		settings["enable_plugin_left_event"] = PLUGIN_LEFT
+	if not "enable_plugin_joined_event" in settings:
+		settings["enable_plugin_joined_event"] = PLUGIN_JOINED
+	if not "enable_plugin_init_event" in settings:
+		settings["enable_plugin_init_event"] = PLUGIN_INIT
+	if not "enable_plugin_message_event" in settings:
+		settings["enable_plugin_message_event"] = PLUGIN_MESSAGE
+	if not "enable_plugin_notice_event" in settings:
+		settings["enable_plugin_notice_event"] = PLUGIN_NOTICE
+	if not "enable_plugin_action_event" in settings:
+		settings["enable_plugin_action_event"] = PLUGIN_ACTION
+	if not "enable_plugins" in settings:
+		settings["enable_plugins"] = ENABLE_PLUGINS
 	if not "display_server_motd_as_raw_text" in settings:
 		settings["display_server_motd_as_raw_text"] = DISPLAY_MOTD_AS_RAW_TEXT
 	if not "enable_ignore" in settings:
@@ -1471,6 +1587,35 @@ def load_settings(filename):
 	global ENABLE_HOTKEYS
 	global ENABLE_IGNORE
 	global DISPLAY_MOTD_AS_RAW_TEXT
+	global ENABLE_PLUGINS
+	global PLUGIN_INIT
+	global PLUGIN_MESSAGE
+	global PLUGIN_NOTICE
+	global PLUGIN_ACTION
+	global PLUGIN_LEFT
+	global PLUGIN_JOINED
+	global PLUGIN_PART
+	global PLUGIN_JOIN
+	global PLUGIN_KICK
+	global PLUGIN_KICKED
+	global PLUGIN_TICK
+	global PLUGIN_MODE
+	global PLUGIN_UNMODE
+	global PLUGIN_QUIT
+	global PLUGIN_IN
+	global PLUGIN_OUT
+	global PLUGIN_AWAY
+	global PLUGIN_BACK
+	global PLUGIN_ACTIVATE
+	global PLUGIN_INVITE
+	global PLUGIN_RENAME
+	global PLUGIN_TOPIC
+	global PLUGIN_CONNECTED
+	global PLUGIN_CONNECTING
+	global PLUGIN_LOST
+	global PLUGIN_CTICK
+	global PLUGIN_NICK
+	global PLUGIN_DISCONNECT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1480,6 +1625,35 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_DISCONNECT = settings["enable_plugin_disconnect_event"]
+		PLUGIN_NICK = settings["enable_plugin_nick_event"]
+		PLUGIN_CTICK = settings["enable_plugin_ctick_event"]
+		PLUGIN_LOST = settings["enable_plugin_lost_event"]
+		PLUGIN_CONNECTED = settings["enable_plugin_connected_event"]
+		PLUGIN_CONNECTING = settings["enable_plugin_connecting_event"]
+		PLUGIN_TOPIC = settings["enable_plugin_topic_event"]
+		PLUGIN_RENAME = settings["enable_plugin_rename_event"]
+		PLUGIN_INVITE = settings["enable_plugin_invite_event"]
+		PLUGIN_ACTIVATE = settings["enable_plugin_activate_event"]
+		PLUGIN_AWAY = settings["enable_plugin_away_event"]
+		PLUGIN_BACK = settings["enable_plugin_back_event"]
+		PLUGIN_IN = settings["enable_plugin_line_in_event"]
+		PLUGIN_OUT = settings["enable_plugin_line_out_event"]
+		PLUGIN_QUIT = settings["enable_plugin_quit_event"]
+		PLUGIN_MODE = settings["enable_plugin_mode_event"]
+		PLUGIN_UNMODE = settings["enable_plugin_unmode_event"]
+		PLUGIN_KICK = settings["enable_plugin_kick_event"]
+		PLUGIN_KICKED = settings["enable_plugin_kicked_event"]
+		PLUGIN_TICK = settings["enable_plugin_tick_event"]
+		PLUGIN_PART = settings["enable_plugin_part_event"]
+		PLUGIN_JOIN = settings["enable_plugin_join_event"]
+		PLUGIN_LEFT = settings["enable_plugin_left_event"]
+		PLUGIN_JOINED = settings["enable_plugin_joined_event"]
+		PLUGIN_INIT = settings["enable_plugin_init_event"]
+		PLUGIN_MESSAGE = settings["enable_plugin_message_event"]
+		PLUGIN_NOTICE = settings["enable_plugin_notice_event"]
+		PLUGIN_ACTION = settings["enable_plugin_action_event"]
+		ENABLE_PLUGINS = settings["enable_plugins"]
 		DISPLAY_MOTD_AS_RAW_TEXT = settings["display_server_motd_as_raw_text"]
 		ENABLE_IGNORE = settings["enable_ignore"]
 		ENABLE_HOTKEYS = settings["enable_hotkeys"]

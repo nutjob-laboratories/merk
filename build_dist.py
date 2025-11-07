@@ -25,6 +25,7 @@ f.close()
 
 mi = int(minor)
 mi = mi + 1
+if mi>=1000: mi = 0
 minor = str(mi)
 
 # Format minor version so it is always

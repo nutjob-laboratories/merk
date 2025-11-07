@@ -105,6 +105,10 @@ class Dialog(QDialog):
 		emoji_credit.setAlignment(Qt.AlignCenter)
 		emoji_credit.setOpenExternalLinks(True)
 
+		pike_credit = QLabel(f"<b><small><a href=\"https://github.com/pyarmory/pike\">pike</a> by <a href=\"https://github.com/jmvrbanac\">John Vrbanac</a> and <a href=\"https://github.com/tomschr\">Tom Schraitle</a></small></b>")
+		pike_credit.setAlignment(Qt.AlignCenter)
+		pike_credit.setOpenExternalLinks(True)
+
 		gnu_credit = QLabel(f"<big><b><a href=\"https://www.gnu.org/licenses/gpl-3.0.en.html\">Gnu General Public License 3.0</a></b></big>")
 		gnu_credit.setAlignment(Qt.AlignCenter)
 		gnu_credit.setOpenExternalLinks(True)
@@ -170,6 +174,7 @@ class Dialog(QDialog):
 		creditsLayout.addWidget(font_credit)
 		creditsLayout.addWidget(spellcheck_credit)
 		creditsLayout.addWidget(emoji_credit)
+		creditsLayout.addWidget(pike_credit)
 		creditsLayout.addWidget(qr_credit)
 		if is_running_from_pyinstaller():
 			creditsLayout.addWidget(upx_credit)

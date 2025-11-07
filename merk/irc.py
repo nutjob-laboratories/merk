@@ -53,6 +53,7 @@ from twisted.words.protocols.irc import ctcpStringify
 from .resources import *
 from . import config
 from . import user
+from . import plugins
 
 CONNECTIONS = {}
 
@@ -354,6 +355,12 @@ class IRC_Connection(irc.IRCClient):
 		phostmask = user.split('!')[1]
 
 		self.gui.privmsg(self,user,target,msg)
+
+	def quit(self, message=''):
+
+		plugins.call("disconnect",client=self,message=message)
+
+		super().quit(message)
 
 	def msg(self, user, message, length=None):
 		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
@@ -867,6 +874,8 @@ class IRC_Connection(irc.IRCClient):
 
 	def sendLine(self,line):
 
+		plugins.call("line_out",client=self,line=str(line))
+
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
 			sys.stdout.write(f"{line}\n")
 
@@ -946,6 +955,8 @@ class IRC_Connection(irc.IRCClient):
 		# IRC events (this fixes an error raised when attempting
 		# to get a channel list from a server)
 		line = line2.encode('utf-8')
+
+		plugins.call("line_in",client=self,line=line)
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
 			sys.stdout.write(f"{self.kwargs["server"]}:{self.kwargs["port"]} {line}\n")

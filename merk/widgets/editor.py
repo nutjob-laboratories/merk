@@ -33,6 +33,7 @@ import os
 import fnmatch
 import re
 import os
+from collections import Counter
 
 from ..resources import *
 from ..dialog import *
@@ -40,6 +41,7 @@ from .. import config
 from .. import syntax
 from .. import commands
 from .. import user
+from .. import plugins
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import MenuLabel,menuHtml
 
@@ -196,6 +198,14 @@ class Window(QMainWindow):
 			self.wordwrap = True
 			self.ww_menu.setIcon(QIcon(self.parent.checked_icon))
 
+	def toggleIndent(self):
+		if self.auto_indent:
+			self.auto_indent = False
+			self.ai_menu.setIcon(QIcon(self.parent.unchecked_icon))
+		else:
+			self.auto_indent = True
+			self.ai_menu.setIcon(QIcon(self.parent.checked_icon))
+
 	def buildEditMenu(self):
 
 		self.editMenu.clear()
@@ -262,11 +272,12 @@ class Window(QMainWindow):
 		self.menuZoomOut.setShortcut("Ctrl+-")
 		self.editMenu.addAction(self.menuZoomOut)
 
-		self.editMenu.addSeparator()
+		if not self.python:
+			self.editMenu.addSeparator()
 
-		mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
-		mefind.triggered.connect(self.doStrip)
-		self.editMenu.addAction(mefind)
+			mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
+			mefind.triggered.connect(self.doStrip)
+			self.editMenu.addAction(mefind)
 
 	def generateStylesheet(self,obj,fore,back):
 
@@ -276,7 +287,10 @@ class Window(QMainWindow):
 		reset = False
 		if self.changed==False: reset = True
 		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
-			self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
+			if self.python:
+				self.highlight = syntax.PythonHighlighter(self.editor.document())
+			else:
+				self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
 			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 			if reset:
 				self.changed = False
@@ -385,7 +399,7 @@ class Window(QMainWindow):
 
 		self.status_line.setText(f"<small>{line_number}</small>")
 
-	def __init__(self,filename=None,parent=None,subwindow=None):
+	def __init__(self,filename=None,parent=None,subwindow=None,python=False):
 		super(Window, self).__init__(parent)
 
 		self.filename = filename
@@ -394,12 +408,15 @@ class Window(QMainWindow):
 		self.cscript_menu = None
 		self.window_type = EDITOR_WINDOW
 		self.subwindow = subwindow
+		self.python = python
 
 		self.editing_user_script = False
 		self.current_user_script = None
 		self.findWindow = None
 
-		self.name = "Untitled script"
+		self.auto_indent = True
+
+		self.name = "Untitled"
 
 		# Load in user settings
 		user.load_user(user.USER_FILE)
@@ -411,7 +428,10 @@ class Window(QMainWindow):
 		self.editor.cursorPositionChanged.connect(self.update_line_number)
 
 		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
-			self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
+			if self.python:
+				self.highlight = syntax.PythonHighlighter(self.editor.document())
+			else:
+				self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
 			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 		else:
 			self.highlight = None
@@ -429,6 +449,8 @@ class Window(QMainWindow):
 		self.editor.undoAvailable.connect(self.hasUndo)
 		self.editor.copyAvailable.connect(self.hasCopy)
 
+		self.editor.installEventFilter(self)
+
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
 
@@ -444,7 +466,10 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 		if self.filename:
-			f = commands.find_file(self.filename,SCRIPT_FILE_EXTENSION)
+			if self.python:
+				f = commands.find_plugin(self.filename,"py")
+			else:
+				f = commands.find_file(self.filename,SCRIPT_FILE_EXTENSION)
 			if f!=None:
 				x = open(f,mode="r",encoding="utf-8",errors="ignore")
 				source_code = str(x.read())
@@ -462,23 +487,31 @@ class Window(QMainWindow):
 		entry.setShortcut("Ctrl+O")
 		self.fileMenu.addAction(entry)
 
-		if len(user.COMMANDS)>0:
+		if not self.python:
+			if len(user.COMMANDS)>0:
+				self.cscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open connection script")
 
-			self.cscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open connection script")
+				for host in user.COMMANDS:
+					entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
+					entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
+					self.cscript_menu.addAction(entry)
 
-			for host in user.COMMANDS:
-				entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
-				entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
-				self.cscript_menu.addAction(entry)
-
-		entry = QAction(QIcon(NEWFILE_ICON),"New script",self)
+		if self.python:
+			entry = QAction(QIcon(NEWFILE_ICON),"New file",self)
+		else:
+			entry = QAction(QIcon(NEWFILE_ICON),"New script",self)
 		entry.triggered.connect(self.doNewFile)
 		entry.setShortcut("Ctrl+N")
 		self.fileMenu.addAction(entry)
 
-		entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
-		entry.triggered.connect(self.doNewScript)
-		self.fileMenu.addAction(entry)
+		if not self.python:
+			entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
+			entry.triggered.connect(self.doNewScript)
+			self.fileMenu.addAction(entry)
+		else:
+			entry = QAction(QIcon(PLUGIN_ICON),"New plugin",self)
+			entry.triggered.connect(self.doNewPlugin)
+			self.fileMenu.addAction(entry)
 
 		self.fileMenu.addSeparator()
 
@@ -519,6 +552,14 @@ class Window(QMainWindow):
 			self.ww_menu = QAction(QIcon(self.parent.unchecked_icon),"Word wrap",self)
 		self.ww_menu.triggered.connect(self.toggleWordwrap)
 		self.fileMenu.addAction(self.ww_menu)
+
+		if self.python:
+			if self.auto_indent:
+				self.ai_menu = QAction(QIcon(self.parent.checked_icon),"Auto-indent",self)
+			else:
+				self.ai_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-indent",self)
+			self.ai_menu.triggered.connect(self.toggleIndent)
+			self.fileMenu.addAction(self.ai_menu)
 		
 		self.fileMenu.addSeparator()
 
@@ -530,212 +571,215 @@ class Window(QMainWindow):
 
 		self.buildEditMenu()
 
-		self.commandMenu = self.menubar.addMenu("Commands")
+		if not self.python:
+			self.commandMenu = self.menubar.addMenu("Commands")
 
-		self.ircCommands = self.commandMenu.addMenu(QIcon(CONNECT_ICON),"IRC")
+			self.ircCommands = self.commandMenu.addMenu(QIcon(CONNECT_ICON),"IRC")
 
-		entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
-		entry.triggered.connect(self.insertJoin)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+			entry.triggered.connect(self.insertJoin)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(CHANNEL_ICON),"Part channel",self)
-		entry.triggered.connect(self.insertPart)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(CHANNEL_ICON),"Part channel",self)
+			entry.triggered.connect(self.insertPart)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Send private message",self)
-		entry.triggered.connect(self.insertPM)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(PRIVATE_ICON),"Send private message",self)
+			entry.triggered.connect(self.insertPM)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Send notice",self)
-		entry.triggered.connect(self.insertNotice)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(PRIVATE_ICON),"Send notice",self)
+			entry.triggered.connect(self.insertNotice)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Set nickname",self)
-		entry.triggered.connect(self.insertNick)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(PRIVATE_ICON),"Set nickname",self)
+			entry.triggered.connect(self.insertNick)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
-		entry.triggered.connect(self.insertReclaim)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
+			entry.triggered.connect(self.insertReclaim)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
-		entry.triggered.connect(self.insertConnect)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
+			entry.triggered.connect(self.insertConnect)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(CONNECT_ICON),"Connect to server (reconnecting)",self)
-		entry.triggered.connect(self.insertReConnect)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(CONNECT_ICON),"Connect to server (reconnecting)",self)
+			entry.triggered.connect(self.insertReConnect)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(DISCONNECT_ICON),"Quit server",self)
-		entry.triggered.connect(self.insertQuit)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(DISCONNECT_ICON),"Quit server",self)
+			entry.triggered.connect(self.insertQuit)
+			self.ircCommands.addAction(entry)
 
-		entry = QAction(QIcon(DISCONNECT_ICON),"Quit all servers",self)
-		entry.triggered.connect(self.insertAllQuit)
-		self.ircCommands.addAction(entry)
+			entry = QAction(QIcon(DISCONNECT_ICON),"Quit all servers",self)
+			entry.triggered.connect(self.insertAllQuit)
+			self.ircCommands.addAction(entry)
 
-		self.appCommands = self.commandMenu.addMenu(QIcon(APPLICATION_ICON),"Application")
+			self.appCommands = self.commandMenu.addMenu(QIcon(APPLICATION_ICON),"Application")
 
-		entry = QAction(QIcon(WINDOW_ICON),f"Set window size",self)
-		entry.triggered.connect(self.insertAppSize)
-		self.appCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),f"Set window size",self)
+			entry.triggered.connect(self.insertAppSize)
+			self.appCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),f"Move window",self)
-		entry.triggered.connect(self.insertAppMove)
-		self.appCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),f"Move window",self)
+			entry.triggered.connect(self.insertAppMove)
+			self.appCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
-		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window minimize": self.insertIntoEditor(u))
-		self.appCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
+			entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window minimize": self.insertIntoEditor(u))
+			self.appCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
-		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window maximize": self.insertIntoEditor(u))
-		self.appCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
+			entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window maximize": self.insertIntoEditor(u))
+			self.appCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Restore window",self)
-		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window restore": self.insertIntoEditor(u))
-		self.appCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Restore window",self)
+			entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window restore": self.insertIntoEditor(u))
+			self.appCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),f"Restart {APPLICATION_NAME}",self)
-		entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window restart": self.insertIntoEditor(u))
-		self.appCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),f"Restart {APPLICATION_NAME}",self)
+			entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}window restart": self.insertIntoEditor(u))
+			self.appCommands.addAction(entry)
 
-		entry = QAction(QIcon(QUIT_ICON),f"Exit {APPLICATION_NAME}",self)
-		entry.triggered.connect(self.insertExit)
-		self.appCommands.addAction(entry)
+			entry = QAction(QIcon(QUIT_ICON),f"Exit {APPLICATION_NAME}",self)
+			entry.triggered.connect(self.insertExit)
+			self.appCommands.addAction(entry)
 
 
-		self.winCommands = self.commandMenu.addMenu(QIcon(WINDOW_ICON),"Subwindows")
+			self.winCommands = self.commandMenu.addMenu(QIcon(WINDOW_ICON),"Subwindows")
 
-		entry = QAction(QIcon(WINDOW_ICON),"Focus window",self)
-		entry.triggered.connect(self.insertFocus)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Focus window",self)
+			entry.triggered.connect(self.insertFocus)
+			self.winCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
-		entry.triggered.connect(self.insertMax)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
+			entry.triggered.connect(self.insertMax)
+			self.winCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
-		entry.triggered.connect(self.insertMin)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Minimize window",self)
+			entry.triggered.connect(self.insertMin)
+			self.winCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Restore window",self)
-		entry.triggered.connect(self.insertRestore)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Restore window",self)
+			entry.triggered.connect(self.insertRestore)
+			self.winCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
-		entry.triggered.connect(self.insertShow)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
+			entry.triggered.connect(self.insertShow)
+			self.winCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Hide window",self)
-		entry.triggered.connect(self.insertHide)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(WINDOW_ICON),"Hide window",self)
+			entry.triggered.connect(self.insertHide)
+			self.winCommands.addAction(entry)
 
-		entry = QAction(QIcon(NEXT_ICON),"Next subwindow",self)
-		entry.triggered.connect(self.insertNext)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(NEXT_ICON),"Next subwindow",self)
+			entry.triggered.connect(self.insertNext)
+			self.winCommands.addAction(entry)
 
-		entry = QAction(QIcon(BACK_ICON),"Previous subwindow",self)
-		entry.triggered.connect(self.insertPrevious)
-		self.winCommands.addAction(entry)
+			entry = QAction(QIcon(BACK_ICON),"Previous subwindow",self)
+			entry.triggered.connect(self.insertPrevious)
+			self.winCommands.addAction(entry)
 
-		self.scriptCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Scripting")
+			self.scriptCommands = self.commandMenu.addMenu(QIcon(SCRIPT_ICON),"Scripting")
 
-		if config.ENABLE_INSERT_COMMAND:
-			entry = QAction(QIcon(OPENFILE_ICON),"Insert script",self)
-			entry.triggered.connect(self.insertScriptInsert)
+			if config.ENABLE_INSERT_COMMAND:
+				entry = QAction(QIcon(OPENFILE_ICON),"Insert script",self)
+				entry.triggered.connect(self.insertScriptInsert)
+				self.scriptCommands.addAction(entry)
+
+			if config.ENABLE_ALIASES:
+				entry = QAction(QIcon(EDIT_ICON),"Create alias",self)
+				entry.triggered.connect(self.insertAlias)
+				self.scriptCommands.addAction(entry)
+
+			if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
+				entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
+				entry.triggered.connect(self.insertShell)
+				self.scriptCommands.addAction(entry)
+
+			entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
+			entry.triggered.connect(self.insertContext)
 			self.scriptCommands.addAction(entry)
 
-		if config.ENABLE_ALIASES:
-			entry = QAction(QIcon(EDIT_ICON),"Create alias",self)
-			entry.triggered.connect(self.insertAlias)
+			entry = QAction(QIcon(TIMESTAMP_ICON),"Pause",self)
+			entry.triggered.connect(self.insertPause)
 			self.scriptCommands.addAction(entry)
 
-		if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
-			entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
-			entry.triggered.connect(self.insertShell)
+			entry = QAction(QIcon(SCRIPT_ICON),"Set usage",self)
+			entry.triggered.connect(self.insertUsage)
 			self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
-		entry.triggered.connect(self.insertContext)
-		self.scriptCommands.addAction(entry)
-
-		entry = QAction(QIcon(TIMESTAMP_ICON),"Pause",self)
-		entry.triggered.connect(self.insertPause)
-		self.scriptCommands.addAction(entry)
-
-		entry = QAction(QIcon(SCRIPT_ICON),"Set usage",self)
-		entry.triggered.connect(self.insertUsage)
-		self.scriptCommands.addAction(entry)
-
-		entry = QAction(QIcon(WINDOW_ICON),"Restrict script",self)
-		entry.triggered.connect(self.insertRestrict)
-		self.scriptCommands.addAction(entry)
-
-		entry = QAction(QIcon(QUIT_ICON),"End script",self)
-		entry.triggered.connect(self.insertEnd)
-		self.scriptCommands.addAction(entry)
-
-		entry = QAction(QIcon(EDIT_ICON),f"If statement",self)
-		entry.triggered.connect(self.insertIf)
-		self.scriptCommands.addAction(entry)
-
-		if config.ENABLE_DELAY_COMMAND:
-			entry = QAction(QIcon(EXE_ICON),"Delay command",self)
-			entry.triggered.connect(self.insertDelay)
+			entry = QAction(QIcon(WINDOW_ICON),"Restrict script",self)
+			entry.triggered.connect(self.insertRestrict)
 			self.scriptCommands.addAction(entry)
 
-		self.commentCommands = self.commandMenu.addMenu(QIcon(EDIT_ICON),"Comments")
+			entry = QAction(QIcon(QUIT_ICON),"End script",self)
+			entry.triggered.connect(self.insertEnd)
+			self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(EDIT_ICON),"Insert multiline comment",self)
-		entry.triggered.connect(self.insertMLComment)
-		self.commentCommands.addAction(entry)
+			entry = QAction(QIcon(EDIT_ICON),f"If statement",self)
+			entry.triggered.connect(self.insertIf)
+			self.scriptCommands.addAction(entry)
 
-		entry = QAction(QIcon(EDIT_ICON),"Insert comment",self)
-		entry.triggered.connect(self.insertComment)
-		self.commentCommands.addAction(entry)
+			if config.ENABLE_DELAY_COMMAND:
+				entry = QAction(QIcon(EXE_ICON),"Delay command",self)
+				entry.triggered.connect(self.insertDelay)
+				self.scriptCommands.addAction(entry)
 
-		self.displayCommands = self.commandMenu.addMenu(QIcon(EDIT_ICON),"Display")
+			self.commentCommands = self.commandMenu.addMenu(QIcon(EDIT_ICON),"Comments")
 
-		entry = QAction(QIcon(EDIT_ICON),"Print text",self)
-		entry.triggered.connect(self.insertWrite)
-		self.displayCommands.addAction(entry)
+			entry = QAction(QIcon(EDIT_ICON),"Insert multiline comment",self)
+			entry.triggered.connect(self.insertMLComment)
+			self.commentCommands.addAction(entry)
 
-		entry = QAction(QIcon(EDIT_ICON),"Print system message",self)
-		entry.triggered.connect(self.insertWriteSystem)
-		self.displayCommands.addAction(entry)
+			entry = QAction(QIcon(EDIT_ICON),"Insert comment",self)
+			entry.triggered.connect(self.insertComment)
+			self.commentCommands.addAction(entry)
 
-		entry = QAction(QIcon(WINDOW_ICON),"Display message box",self)
-		entry.triggered.connect(self.insertBox)
-		self.displayCommands.addAction(entry)
+			self.displayCommands = self.commandMenu.addMenu(QIcon(EDIT_ICON),"Display")
 
-		entry = QAction(QIcon(EXE_ICON),"Create macro",self)
-		entry.triggered.connect(self.insertMacro)
-		self.commandMenu.addAction(entry)
+			entry = QAction(QIcon(EDIT_ICON),"Print text",self)
+			entry.triggered.connect(self.insertWrite)
+			self.displayCommands.addAction(entry)
 
-		entry = QAction(QIcon(EXE_ICON),"Execute script",self)
-		entry.triggered.connect(self.insertScript)
-		self.commandMenu.addAction(entry)
+			entry = QAction(QIcon(EDIT_ICON),"Print system message",self)
+			entry.triggered.connect(self.insertWriteSystem)
+			self.displayCommands.addAction(entry)
 
-		if config.ENABLE_HOTKEYS:
-			entry = QAction(QIcon(INPUT_ICON),"Bind hotkey",self)
-			entry.triggered.connect(self.insertBind)
+			entry = QAction(QIcon(WINDOW_ICON),"Display message box",self)
+			entry.triggered.connect(self.insertBox)
+			self.displayCommands.addAction(entry)
+
+			entry = QAction(QIcon(EXE_ICON),"Create macro",self)
+			entry.triggered.connect(self.insertMacro)
 			self.commandMenu.addAction(entry)
 
-		entry = QAction(QIcon(NOTIFICATION_ICON),"Play a sound",self)
-		entry.triggered.connect(self.insertPlay)
-		self.commandMenu.addAction(entry)
+			entry = QAction(QIcon(EXE_ICON),"Execute script",self)
+			entry.triggered.connect(self.insertScript)
+			self.commandMenu.addAction(entry)
 
-		if config.ENABLE_ALIASES:
-			self.aliasMenu = self.menubar.addMenu("Aliases")
+			if config.ENABLE_HOTKEYS:
+				entry = QAction(QIcon(INPUT_ICON),"Bind hotkey",self)
+				entry.triggered.connect(self.insertBind)
+				self.commandMenu.addAction(entry)
 
-			self.buildAliasMenu(self.aliasMenu)
+			entry = QAction(QIcon(NOTIFICATION_ICON),"Play a sound",self)
+			entry.triggered.connect(self.insertPlay)
+			self.commandMenu.addAction(entry)
 
-		self.runMenu = self.menubar.addMenu("Run")
+			if config.ENABLE_ALIASES:
+				self.aliasMenu = self.menubar.addMenu("Aliases")
 
-		self.runMenu.aboutToShow.connect(self.buildRunMenu)
+				self.buildAliasMenu(self.aliasMenu)
+
+			self.runMenu = self.menubar.addMenu("Run")
+
+			self.runMenu.aboutToShow.connect(self.buildRunMenu)
 
 		self.setCentralWidget(self.editor)
+
+		if self.python and not self.filename: self.doNewPlugin()
 
 		self.editor.setFocus()
 
@@ -1033,6 +1077,23 @@ class Window(QMainWindow):
 		entry = QAction(QIcon(DISCONNECT_ICON),"No connected servers",self)
 		entry.setEnabled(False)
 		self.runMenu.addAction(entry)
+
+	def doNewPlugin(self):
+
+		self.filename = None
+		self.editor.clear()
+		self.editor.insertPlainText(EXAMPLE_PLUGIN)
+		self.menuSave.setEnabled(True)
+		self.changed = False
+		self.menuSave.setShortcut("Ctrl+S")
+		self.menuSaveAs.setShortcut(QKeySequence())
+		self.editing_user_script = False
+		self.current_user_script = None
+		self.updateApplicationTitle()
+
+		cursor = self.editor.textCursor()
+		cursor.movePosition(QTextCursor.Start)
+		self.editor.setTextCursor(cursor)
 
 	def doNewScript(self):
 
@@ -1594,8 +1655,8 @@ class Window(QMainWindow):
 				self.status_file.setText(f"<small><b>{self.filename}</b></small>")
 			self.name = f"{base}"
 		else:
-			self.setWindowTitle(f"Unnamed {APPLICATION_NAME} script")
-			self.name = "Untitled script"
+			self.setWindowTitle(f"Untitled")
+			self.name = "Untitled"
 			self.status_file.setText(f"<small><b>{self.name}</b></small>")
 		
 		self.parent.buildWindowsMenu()
@@ -1606,14 +1667,21 @@ class Window(QMainWindow):
 
 
 	def doFileSaveAs(self):
+		fname = f"{APPLICATION_NAME} Script"
+		exten = f"{SCRIPT_FILE_EXTENSION}"
+		direc = commands.SCRIPTS_DIRECTORY
+		if self.python:
+			fname = f"Python Module"
+			exten = f"py"
+			direc = plugins.PLUGIN_DIRECTORY
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getSaveFileName(self,"Save script as...",commands.SCRIPTS_DIRECTORY,f"{APPLICATION_NAME} Script (*.{SCRIPT_FILE_EXTENSION});;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getSaveFileName(self,"Save as...",direc,f"{fname} (*.{exten});;All Files (*)", options=options)
 		if fileName:
 			_, file_extension = os.path.splitext(fileName)
 			if file_extension=='':
-				efl = len(SCRIPT_FILE_EXTENSION)+1
-				if fileName[-efl:].lower()!=f".{SCRIPT_FILE_EXTENSION}": fileName = fileName+f".{SCRIPT_FILE_EXTENSION}"
+				efl = len(exten)+1
+				if fileName[-efl:].lower()!=f".{exten}": fileName = fileName+f".{exten}"
 			self.filename = fileName
 			code = open(self.filename,"w",encoding="utf-8",errors="ignore")
 			code.write(self.editor.toPlainText())
@@ -1642,9 +1710,17 @@ class Window(QMainWindow):
 
 		self.check_for_save()
 
+		fname = f"{APPLICATION_NAME} Script"
+		exten = f"{SCRIPT_FILE_EXTENSION}"
+		direc = commands.SCRIPTS_DIRECTORY
+		if self.python:
+			fname = f"Python Module"
+			exten = f"py"
+			direc = plugins.PLUGIN_DIRECTORY
+
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getOpenFileName(self,"Open Script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.{SCRIPT_FILE_EXTENSION});;Text Files (*.txt);;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getOpenFileName(self,"Open File", direc, f"{fname} (*.{exten});;Text Files (*.txt);;All Files (*)", options=options)
 		if fileName:
 			script = open(fileName,"r",encoding="utf-8",errors="ignore")
 			self.editor.setPlainText(script.read())
@@ -1685,6 +1761,62 @@ class Window(QMainWindow):
 		code.close()
 		self.changed = False
 		self.updateApplicationTitle()
+
+	def _infer_indent_style(self):
+		text = self.editor.toPlainText()
+		lines = text.split('\n')
+		indents = []
+		
+		for line in lines:
+			stripped = line.lstrip()
+			if line != stripped and stripped: 
+				indent = line[:len(line) - len(stripped)]
+				indents.append(indent)
+		
+		if indents:
+			most_common = Counter(indents).most_common(1)[0][0]
+			return most_common
+			
+		return "    " 
+
+	def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+		if not self.python: return super().eventFilter(watched, event)
+		if not self.auto_indent: return super().eventFilter(watched, event)
+
+		# If we're working on a Python file, like a plugin, this event
+		# will handle auto-indentation, trying to match the indent
+		# style (either space or tab) of the overall document
+
+		if watched is self.editor and event.type() == QEvent.KeyPress:
+			key_event: QKeyEvent = event
+			if key_event.key() in (Qt.Key_Return, Qt.Key_Enter):
+				cursor = self.editor.textCursor()
+
+				cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.MoveAnchor)
+				cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
+				current_line_text = cursor.selectedText()
+				
+				cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.MoveAnchor)
+
+				base_indentation = ""
+				for char in current_line_text:
+					if char in (' ', '\t'):
+						base_indentation += char
+					else:
+						break
+				
+				new_line_indent = base_indentation
+				stripped_line = current_line_text.strip()
+				
+				if stripped_line.endswith(':'):
+					extra_indent_unit = self._infer_indent_style()
+					new_line_indent += extra_indent_unit
+
+				cursor.insertText('\n' + new_line_indent)
+				
+				return True
+	
+		return super().eventFilter(watched, event)
 
 	def docModified(self):
 		if self.changed: return

@@ -55,6 +55,7 @@ from .resources import *
 from . import config
 from . import user as USER
 from . import dialog
+from . import plugins
 
 from .dialog.away import Dialog as Away
 
@@ -644,6 +645,13 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_WTYPE',"unknown")
 	addTemporaryAlias('_YEAR',year)
 
+def fullInterpolate(gui,window,user_input):
+	buildTemporaryAliases(gui,window)
+
+	user_input = interpolateAliases(user_input)
+	clearTemporaryAliases()
+	return user_input
+
 def handleChatCommands(gui,window,user_input):
 	buildTemporaryAliases(gui,window)
 
@@ -679,6 +687,34 @@ def check_readable(file):
 		return file
 	else:
 		return None
+
+def find_plugin(filename,extension):
+
+	# Check if it's a complete filename
+	if os.path.isfile(filename): return check_readable(filename)
+
+	# Look for the script in the scripts directory
+	if os.path.isfile(os.path.join(PLUGIN_DIRECTORY, filename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, filename))
+
+	if extension!=None:
+		efilename = filename + "." + extension
+
+		# Check if it's a complete filename
+		if os.path.isfile(efilename): return check_readable(filename)
+
+		# Look for the script in the scripts directory
+		if os.path.isfile(os.path.join(PLUGIN_DIRECTORY, efilename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, efilename))
+
+		# Still not found? Case insensitive seach
+		for root, dirs, files in os.walk(PLUGIN_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return check_readable(os.path.join(root, filename))
+
+	for root, dirs, files in os.walk(PLUGIN_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.*"):
+			return check_readable(os.path.join(root, filename))
+
+	return None
 
 def find_file(filename,extension):
 
@@ -739,6 +775,8 @@ def find_file(filename,extension):
 				return check_readable(os.path.join(root, filename))
 
 	return None
+
+
 
 def is_valid_macro_name(name):
 	for c in AUTOCOMPLETE:

@@ -39,6 +39,55 @@ except Exception as exception:
 from . import config
 # from . import resources
 
+class PythonHighlighter(QSyntaxHighlighter):
+	def __init__(self, document):
+		super().__init__(document)
+
+		keyword_format = format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)
+		string_format = format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
+		comment_format = format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE)
+
+		# Define highlighting rules
+		self.highlighting_rules = []
+
+		# Keywords
+		keywords = ['False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await',
+					'break', 'class', 'continue', 'def', 'del', 'elif',
+					'else', 'except', 'finally', 'for', 'from', 'global', 'if',
+					'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or',
+					'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
+
+					'self.alias', 'self.users', 'self.channel_topic', 'self.clients', 'self.windows',
+					'self.is_away', 'self.list', 'self.exec', 'self.wexec', 'self.print',
+					'self.send_message', 'self.send_notice', 'self.send_action',
+
+					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
+					'def kick', 'def kicked', 'def tick', 'def mode', 'def unmode', 'def quit', 'def line_in', 'def line_out', 
+					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
+					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init'
+					]
+		for word in keywords:
+			pattern = QRegExp(r'\b' + word + r'\b')
+			self.highlighting_rules.append((pattern, keyword_format))
+
+		# Strings
+		self.highlighting_rules.append((QRegExp(r'"[^"\\]*(\\.[^"\\]*)*"'), string_format))
+		self.highlighting_rules.append((QRegExp(r"'[^'\\]*(\\.[^'\\]*)*'"), string_format))
+
+		# Comments
+		self.highlighting_rules.append((QRegExp(r'#[^\n]*'), comment_format))
+
+	def highlightBlock(self, text):
+		for pattern, format in self.highlighting_rules:
+			expression = QRegExp(pattern)
+			index = expression.indexIn(text)
+			while index >= 0:
+				length = expression.matchedLength()
+				self.setFormat(index, length, format)
+				index = expression.indexIn(text, index + length)
+
+		self.setCurrentBlockState(0)
+
 def format(color, style=''):
 	"""Return a QTextCharFormat with the given attributes.
 	"""

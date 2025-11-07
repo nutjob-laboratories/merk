@@ -42,6 +42,7 @@ from .emoji1 import *
 from .emoji2 import *
 from .style import *
 from .release import *
+from .example_plugin import *
 
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
@@ -132,6 +133,7 @@ LOG_MANAGER_WINDOW = 6
 HTML_WINDOW = 7
 HOTKEY_WINDOW = 8
 IGNORE_WINDOW = 9
+PLUGIN_WINDOW = 10
 
 CHAT_WINDOW_WIDGET_SPACING = 5
 
@@ -296,6 +298,9 @@ HOTKEY_ICON = ":/icon-hotkey.png"
 HOTKEY_MENU_ICON = ":/icon-hotkey_menu.png"
 HIDE_WINDOW_ICON = ":/icon-hide_window.png"
 HIDE_MENU_ICON = ":/icon-hide_menu.png"
+PLUGIN_ICON = ":/icon-plugin.png"
+PLUGIN_MENU_ICON = ":/icon-plugin_menu.png"
+IMPORT_ICON = ":/icon-import.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"
@@ -348,6 +353,8 @@ HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 				%_ENDING_%
 			</tbody>
 		</table>'''
+
+EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace("%__FULL_VERSION__%",f"{APPLICATION_NAME} {APPLICATION_VERSION}")
 
 # Classes
 
@@ -595,6 +602,15 @@ def convertSeconds(seconds):
 	m = (seconds-h*60*60)//60
 	s = seconds-(h*60*60)-(m*60)
 	return [h, m, s]
+
+def prettySize(size_bytes):
+	if size_bytes == 0:
+		return "0 B"
+	size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+	i = int(math.floor(math.log(size_bytes, 1024)))
+	p = math.pow(1024, i)
+	s = round(size_bytes / p, 2)
+	return "%s %s" % (s, size_name[i])
 
 def prettyUptime(uptime):
 	t = convertSeconds(uptime)

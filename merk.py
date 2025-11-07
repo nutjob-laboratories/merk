@@ -59,11 +59,14 @@ import merk.logs as logs
 import merk.user as user
 import merk.commands as commands
 import merk.connection_script as connection_script
+import merk.plugins as plugins
 
 if not is_running_from_pyinstaller():
 	myprog = f"python {os.path.basename(__file__)}"
 else:
 	myprog = "merk.exe"
+
+ARG_ABSENT = object()
 
 parser = argparse.ArgumentParser(
 	prog=myprog,
@@ -186,6 +189,9 @@ if __name__ == '__main__':
 
 	# Initialize the logs system
 	logs.initialize(args.configdir,args.configname)
+
+	# Initialize the plugins system
+	plugins.initialize(args.configdir,args.configname)
 
 	# Load the config file
 	config.load_settings(config.CONFIG_FILE)

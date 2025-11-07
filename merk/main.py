@@ -49,6 +49,7 @@ from . import render
 from . import irc
 from . import logs
 from . import user
+from . import plugins
 from .dialog import *
 from . import commands
 from . import connection_script
@@ -202,6 +203,7 @@ class Merk(QMainWindow):
 		self.shortcuts = []
 		self.hotkey_manager = None
 		self.ignore_manager = None
+		self.plugin_manager = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -310,6 +312,21 @@ class Merk(QMainWindow):
 		self.uptimeTimer.beat.connect(self.uptime_beat)
 		self.uptimeTimer.start()
 
+		# Load in plugins
+		errors = plugins.load_plugins(self)
+		if len(errors)>0:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			if len(errors)>1:
+				msgBox.setText("There were errors loading plugins!")
+			else:
+				msgBox.setText("There was an error loading plugins!")
+			msgBox.setInformativeText("\n".join(errors))
+			msgBox.setWindowTitle("Plugin load error")
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()
+
 		# Finally, load in hotkeys
 		errors = []
 		for seq in config.HOTKEYS:
@@ -405,6 +422,7 @@ class Merk(QMainWindow):
 
 	def uptime_beat(self):
 		self.client_uptime = self.client_uptime + 1
+		plugins.call("ctick",uptime=self.client_uptime)
 
 	# Windowbar
 
@@ -640,6 +658,9 @@ class Merk(QMainWindow):
 							serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==EDITOR_WINDOW:
 					icon = SCRIPT_ICON
+					if hasattr(c,"python"):
+						if c.python:
+							icon = PLUGIN_ICON
 					if c.editing_user_script:
 						wname = c.current_user_script
 						serv_name = c.current_user_script
@@ -764,6 +785,9 @@ class Merk(QMainWindow):
 						serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==EDITOR_WINDOW:
 					icon = SCRIPT_ICON
+					if hasattr(c,"python"):
+						if c.python:
+							icon = PLUGIN_ICON
 					if c.editing_user_script:
 						wname = c.current_user_script
 						serv_name = c.current_user_script
@@ -1120,6 +1144,10 @@ class Merk(QMainWindow):
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 			sm.addAction(entry)
 
+			entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+			sm.addAction(entry)
+
 			if config.SCRIPTING_ENGINE_ENABLED:
 				entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
 				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
@@ -1189,13 +1217,14 @@ class Merk(QMainWindow):
 	# |==================|
 
 	def connectionMade(self,client):
+		plugins.call("connecting",client=client)
 		w = self.newServerWindow(client.server+":"+str(client.port),client)
 		c = w.widget()
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
 		c.writeText(t)
 
 	def connectionLost(self,client):
-		
+		plugins.call("lost",client=client)
 		windows = self.getAllSubWindows(client)
 		for w in windows:
 			if hasattr(w,"widget"):
@@ -1272,6 +1301,8 @@ class Merk(QMainWindow):
 
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			client.sendLine(f"LIST")
+
+		plugins.call("connected",client=client)
 
 	def receivedPing(self,client):
 		if config.SHOW_PINGS_IN_CONSOLE:
@@ -1384,6 +1415,8 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def joined(self,client,channel):
+
+		plugins.call("joined",client=client,channel=channel)
 		
 		# Create a new channel window
 		w = self.newChannelWindow(channel,client)
@@ -1399,6 +1432,8 @@ class Merk(QMainWindow):
 
 
 	def left(self,client,channel):
+
+		plugins.call("left",client=client,channel=channel)
 
 		w = self.getSubWindow(channel,client)
 		if w:
@@ -1478,6 +1513,8 @@ class Merk(QMainWindow):
 		return False
 
 	def privmsg(self,client,user,target,msg):
+
+		plugins.call("message",client=client,user=user,channel=target,message=msg)
 
 		p = user.split("!")
 		if len(p)==2:
@@ -1573,6 +1610,8 @@ class Merk(QMainWindow):
 
 	def action(self,client,user,target,msg):
 
+		plugins.call("action",client=client,user=user,channel=target,message=msg)
+
 		p = user.split("!")
 		if len(p)==2:
 			nickname = p[0]
@@ -1621,6 +1660,8 @@ class Merk(QMainWindow):
 						return
 
 	def noticed(self,client,user,target,msg):
+
+		plugins.call("notice",client=client,user=user,channel=target,message=msg)
 
 		p = user.split("!")
 		if len(p)==2:
@@ -1690,6 +1731,7 @@ class Merk(QMainWindow):
 			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
 
+
 	def gotTime(self,client,server,time):
 		w = self.getServerWindow(client)
 		if w:
@@ -1723,6 +1765,7 @@ class Merk(QMainWindow):
 					c.refreshNickDisplay()
 
 	def nickChanged(self,client):
+		plugins.call("nick",client=client,nickname=client.nickname)
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -1756,6 +1799,7 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 	def topicChanged(self,client,user,channel,newTopic):
+		plugins.call("topic",client=client,user=user,channel=channel,topic=newTopic)
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -1769,6 +1813,7 @@ class Merk(QMainWindow):
 								c.writeText(t,config.LOG_CHANNEL_TOPICS)
 
 	def userJoined(self,client,user,channel):
+		plugins.call("join",client=client,channel=channel,user=user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" joined "+channel)
@@ -1776,6 +1821,7 @@ class Merk(QMainWindow):
 			return
 
 	def userLeft(self,client,user,channel):
+		plugins.call("part",client=client,channel=channel,user=user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" left "+channel)
@@ -1783,6 +1829,7 @@ class Merk(QMainWindow):
 			return
 
 	def userRenamed(self,client,oldname,newname):
+		plugins.call("rename",client=client,old=oldname,new=newname)
 		windows = self.getAllSubWindows(client)
 
 		self.swapHostmask(client,oldname,newname)
@@ -1809,6 +1856,7 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def irc_QUIT(self,client,nickname,msg):
+		plugins.call("quit",client=client,user=nickname,message=msg)
 		windows = self.getAllSubWindows(client)
 
 		self.updateHostmask(client,nickname,None)
@@ -1834,6 +1882,7 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def serverSetMode(self,client,target,mode,argument):
+		plugins.call("mode",client=client,user="*",target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		if len(mode.strip())==0: return
@@ -1863,6 +1912,7 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def serverUnsetMode(self,client,target,mode):
+		plugins.call("unmode",client=client,user="*",target=target,mode=mode,arguments=())
 		self.refreshModeDisplay(client)
 
 		if len(mode.strip())==0: return
@@ -1878,6 +1928,7 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def setMode(self,client,user,target,mode,argument):
+		plugins.call("mode",client=client,user=user,target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		p = user.split("!")
@@ -1929,6 +1980,7 @@ class Merk(QMainWindow):
 					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 	def unsetMode(self,client,user,target,mode,argument):
+		plugins.call("unmode",client=client,user=user,target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		p = user.split("!")
@@ -1972,6 +2024,8 @@ class Merk(QMainWindow):
 					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 	def userKicked(self,client,kickee,channel,kicker,message):
+
+		plugins.call("kick",client=client,user=kicker,target=kickee,channel=channel,message=message)
 		
 		if len(message)>0:
 			t = Message(SYSTEM_MESSAGE,'',kicker+" kicked "+kickee+" from "+channel+" ("+message+")")
@@ -1985,6 +2039,8 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def kickedFrom(self,client,channel,kicker,message):
+
+		plugins.call("kicked",client=client,user=kicker,channel=channel,message=message)
 		
 		if config.FLASH_SYSTRAY_KICK: self.show_notifications("Kicked from "+channel+" by "+kicker+": "+message)
 
@@ -2016,6 +2072,8 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def uptime(self,client,uptime):
+
+		plugins.call("tick",client=client,uptime=uptime)
 
 		if config.USE_AUTOAWAY:
 			if client.last_interaction!=-1:
@@ -2079,7 +2137,7 @@ class Merk(QMainWindow):
 				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def invited(self,client,user,channel):
-
+		plugins.call("invite",client=client,user=user,channel=channel)
 		p = user.split("!")
 		if len(p)==2:
 			nickname = p[0]
@@ -2170,6 +2228,7 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 
 	def gotAway(self,client,nick,msg):
+		plugins.call("away",client=client,user=nick,message=msg)
 		windows = self.getAllSubWindows(client)
 
 		p = nick.split('!')
@@ -2197,6 +2256,7 @@ class Merk(QMainWindow):
 								c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def gotBack(self,client,nick):
+		plugins.call("back",client=client,user=nick)
 		windows = self.getAllSubWindows(client)
 
 		p = nick.split('!')
@@ -2801,6 +2861,17 @@ class Merk(QMainWindow):
 							return window
 		return None
 
+	def getAllClients(self):
+		output = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					if hasattr(c,"client"):
+						if c.client.registered:
+							output.append(c.client)
+		return output
+
 	def getAllServerNames(self):
 		retval = []
 		for window in self.MDI.subWindowList():
@@ -3155,6 +3226,48 @@ class Merk(QMainWindow):
 		w.setWidget(widgets.ScriptEditor(None,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		self.toolsMenu.close()
+		self.buildWindowsMenu()
+		w.show()
+
+		if config.RUBBER_BAND_RESIZE:
+			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		return w
+
+	def newEditorPlugin(self):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(None,self,w,True))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(PLUGIN_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		self.toolsMenu.close()
+		self.buildWindowsMenu()
+		w.show()
+
+		if config.RUBBER_BAND_RESIZE:
+			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		return w
+
+	def newEditorPluginFile(self,filename):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(filename,self,w,True))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(PLUGIN_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
@@ -3990,6 +4103,10 @@ class Merk(QMainWindow):
 			entry = widgets.ExtendedMenuItem(self,HIDE_MENU_ICON,'Ignores','Manage ignored users&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openIgnore)
 			self.toolsMenu.addAction(entry)
 
+		if config.ENABLE_PLUGINS:
+			entry = widgets.ExtendedMenuItem(self,PLUGIN_MENU_ICON,'Plugins','Manage and create plugins&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openPlugin)
+			self.toolsMenu.addAction(entry)
+
 		self.toolsMenu.addSeparator()
 
 		if config.SCRIPTING_ENGINE_ENABLED:
@@ -4035,6 +4152,10 @@ class Merk(QMainWindow):
 
 		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
 		sm.addAction(entry)
 
 		if config.SCRIPTING_ENGINE_ENABLED:
@@ -4114,6 +4235,10 @@ class Merk(QMainWindow):
 
 		entry = QAction(QIcon(PYTHON_ICON),"qt5reactor 0.6.3",self)
 		entry.triggered.connect(lambda state,u="https://github.com/twisted/qt5reactor": self.openLinkInBrowser(u))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(PYTHON_ICON),"pike 0.2.0",self)
+		entry.triggered.connect(lambda state,u="https://github.com/pyarmory/pike": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
 		if is_running_from_pyinstaller():
@@ -4285,7 +4410,11 @@ class Merk(QMainWindow):
 		if len(edwins)>0:
 			for win in edwins:
 				c = win.widget()
-				entry = QAction(QIcon(SCRIPT_ICON),c.name,self)
+				icon = SCRIPT_ICON
+				if hasattr(c,"python"):
+					if c.python:
+						icon = PLUGIN_ICON
+				entry = QAction(QIcon(icon),c.name,self)
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
 
@@ -4594,6 +4723,7 @@ class Merk(QMainWindow):
 			self.hotkey_manager.show()
 		else:
 			self.hotkey_manager.show()
+		self.toolsMenu.close()
 
 	def openIgnore(self):
 		if self.ignore_manager==None:
@@ -4601,6 +4731,15 @@ class Merk(QMainWindow):
 			self.ignore_manager.show()
 		else:
 			self.ignore_manager.show()
+		self.toolsMenu.close()
+
+	def openPlugin(self):
+		if self.plugin_manager==None:
+			self.plugin_manager = widgets.PluginManager(self)
+			self.plugin_manager.show()
+		else:
+			self.plugin_manager.show()
+		self.toolsMenu.close()
 
 	def showAbout(self):
 		self.__about_dialog = AboutDialog()
@@ -4728,6 +4867,7 @@ class Merk(QMainWindow):
 
 		if self.hotkey_manager!=None: self.hotkey_manager.close()
 		if self.ignore_manager!=None: self.ignore_manager.close()
+		if self.plugin_manager!=None: self.plugin_manager.close()
 		self.closeAndRemoveAllWindows()
 		event.accept()
 		self.app.quit()
@@ -4803,6 +4943,10 @@ class Merk(QMainWindow):
 		if hasattr(w,"client"):
 			if w.client.client_id in self.quitting:
 				return
+
+		if hasattr(w,"window_type"):
+			if w.window_type==SERVER_WINDOW or w.window_type==CHANNEL_WINDOW or w.window_type==PRIVATE_WINDOW:
+				plugins.call("activate",client=w.client,name=w.name)
 
 		# If the window has a text input widget,
 		# give it focus

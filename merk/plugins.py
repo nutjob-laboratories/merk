@@ -1,0 +1,378 @@
+#
+# ███╗   ███╗██████╗ ██████╗ ██╗  ██╗
+# ████╗ ████║╚═══╗██╗██╔══██╗██║ ██╔╝
+# ██╔████╔██║███████║██████╔╝█████╔╝
+# ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
+# ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
+# ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+# Copyright (C) 2025  Daniel Hetrick
+# https://github.com/nutjob-laboratories/merk
+# https://github.com/nutjob-laboratories
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+import sys
+import os
+from pathlib import Path
+import inspect
+
+from pike.manager import PikeManager
+
+from .resources import *
+from . import config
+from . import commands
+
+import emoji
+
+CONFIG_DIRECTORY = None
+PLUGIN_DIRECTORY = None
+PLUGINS = []
+
+class Plugin():
+
+	_gui = None
+
+	NAME = "Unknown"
+	AUTHOR = "Unknown"
+	VERSION = "1.0"
+	SOURCE = "Unknown"
+
+	def alias(self,client,window,text):
+		if self._gui!=None:
+			w = self._gui.getSubWindow(window,client)
+			if w:
+				return commands.fullInterpolate(self._gui,w.widget(),text)
+		return text
+
+	def channel_topic(self,client,channel):
+		if self._gui!=None:
+			w = self._gui.getSubWindow(channel,client)
+			if w:
+				c = w.widget()
+				if c.window_type==CHANNEL_WINDOW:
+					return c.channel_topic
+		return []
+
+	def users(self,client,channel):
+		if self._gui!=None:
+			w = self._gui.getSubWindow(channel,client)
+			if w:
+				c = w.widget()
+				if c.window_type==CHANNEL_WINDOW:
+					return c.users
+		return []
+
+	def clients(self):
+		if self._gui!=None:
+			return self._gui.getAllClients()
+		return []
+
+	def windows(self,client):
+		if self._gui!=None:
+			output = []
+			for w in self._gui.getAllConnectedWindows(client):
+				output.append(w.name)
+			return output
+		return []
+
+	def is_away(self,client):
+		if client.is_away:
+			return True
+		else:
+			return False
+	
+	def list(self,client):
+		if len(client.server_channel_list):
+			output = []
+			for entry in client.server_channel_list:
+				channel_name = entry[0]
+				channel_count = entry[1]
+				channel_topic = entry[2]
+
+				e = f"{channel_name},{channel_count},{channel_topic}"
+				output.append(e)
+			return output
+		else:
+			return []
+
+	def exec(self,client,command):
+		if self._gui!=None:
+			w = self._gui.getServerSubWindow(client)
+			if w:
+				c = w.widget()
+				c.handleHotkeyCommand(command)
+
+	def wexec(self,client,window,command):
+		if self._gui!=None:
+			w = self._gui.getSubWindow(window,client)
+			if w:
+				c = w.widget()
+				c.handleHotkeyCommand(command)
+
+	def print(self,target,message):
+		if self._gui!=None:
+			target_window=None
+			swins = self._gui.getAllServerWindows()
+			for win in swins:
+				if target.lower()==win.widget().name.lower():
+					target_window = win.widget()
+					break
+				if target.lower()==f"{win.widget().client.server.lower()}:{win.widget().client.port}":
+					target_window = win.widget()
+					break
+			if target_window==None:
+				for win in self._gui.getTotalWindows():
+					if target.lower()==win.name.lower():
+						target_window = win
+						break
+			if target_window!=None:
+				if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+				t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
+				target_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def send_message(self,client,target,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		client.msg(target,message)
+
+		if self._gui!=None:
+			w = self._gui.getWindow(target,client)
+			if w:
+				t = Message(CHAT_MESSAGE,client.nickname,message)
+				w.writeText(t)
+				return True
+		return False
+
+	def send_notice(self,client,target,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		client.notice(target,message)
+
+		if self._gui!=None:
+			w = self._gui.getWindow(target,client)
+			if w:
+				t = Message(NOTICE_MESSAGE,client.nickname,message)
+				w.writeText(t)
+				return True
+		return False
+
+	def send_action(self,client,target,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		client.describe(target,message)
+
+		if self._gui!=None:
+			w = self._gui.getWindow(target,client)
+			if w:
+				t = Message(ACTION_MESSAGE,client.nickname,message)
+				w.writeText(t)
+				return True
+		return False
+
+# def init():
+# 	if not config.ENABLE_PLUGINS: return
+# 	if not config.PLUGIN_INIT: return
+# 	for obj in PLUGINS:
+# 		if hasattr(obj,"init"):
+# 			obj.init()
+
+def init(obj):
+	if not config.ENABLE_PLUGINS: return
+	if not config.PLUGIN_INIT: return
+	if hasattr(obj,"init"):
+		obj.init()
+
+EVENTS = [
+	'message', 'notice', 'action', 'left', 'joined', 'part', 'join', 
+	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
+	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
+	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init'
+]
+
+def call(method,**arguments):
+	if not config.ENABLE_PLUGINS: return
+	if method=='message' and not config.PLUGIN_MESSAGE: return
+	if method=='notice' and not config.PLUGIN_NOTICE: return
+	if method=='action' and not config.PLUGIN_ACTION: return
+	if method=='left' and not config.PLUGIN_LEFT: return
+	if method=='joined' and not config.PLUGIN_JOINED: return
+	if method=='part' and not config.PLUGIN_PART: return
+	if method=='join' and not config.PLUGIN_JOIN: return
+	if method=='kick' and not config.PLUGIN_KICK: return
+	if method=='kicked' and not config.PLUGIN_KICKED: return
+	if method=='tick' and not config.PLUGIN_TICK: return
+	if method=='mode' and not config.PLUGIN_MODE: return
+	if method=='unmode' and not config.PLUGIN_UNMODE: return
+	if method=='quit' and not config.PLUGIN_QUIT: return
+	if method=='line_in' and not config.PLUGIN_IN: return
+	if method=='line_out' and not config.PLUGIN_OUT: return
+	if method=='away' and not config.PLUGIN_AWAY: return
+	if method=='back' and not config.PLUGIN_BACK: return
+	if method=='activate' and not config.PLUGIN_ACTIVATE: return
+	if method=='invite' and not config.PLUGIN_INVITE: return
+	if method=='rename' and not config.PLUGIN_RENAME: return
+	if method=='topic' and not config.PLUGIN_TOPIC: return
+	if method=='connected' and not config.PLUGIN_CONNECTED: return
+	if method=='connecting' and not config.PLUGIN_CONNECTING: return
+	if method=='lost' and not config.PLUGIN_LOST: return
+	if method=='ctick' and not config.PLUGIN_CTICK: return
+	if method=='nick' and not config.PLUGIN_NICK: return
+	if method=='disconnect' and not config.PLUGIN_DISCONNECT: return
+	for obj in PLUGINS:
+		if hasattr(obj,method):
+			m = getattr(obj,method)
+			m(**arguments)
+
+def load_plugins(gui,force_reload=False):
+	global PLUGINS
+
+	PLUGIN_FILENAMES = []
+	for o in PLUGINS:
+		if os.path.exists(o._filename) or os.path.isfile(o._filename):
+			PLUGIN_FILENAMES.append(f"{o._filename}")
+
+	PLUGIN_NAMES = []
+	for o in PLUGINS:
+		if os.path.exists(o._filename) or os.path.isfile(o._filename):
+			PLUGIN_NAMES.append(f"{o.NAME} {o.VERSION}")
+
+	PLUGIN_INIT = []
+	for o in PLUGINS:
+		if hasattr(o,"init"):
+			if os.path.exists(o._filename) or os.path.isfile(o._filename):
+				s = inspect.getsourcelines(o.init)
+				PLUGIN_INIT.append([o._filename,s])
+
+	PLUGINS = []
+	ERRORS = []
+
+	if not config.ENABLE_PLUGINS: return
+
+	with PikeManager([PLUGIN_DIRECTORY]) as mgr:
+		classes = mgr.get_classes()
+
+	for c in classes:
+		# Ignore the base plugin class
+		if c.__name__=="Plugin": continue
+
+		# Create an instance of the plugin class
+		obj = c()
+
+		# Make sure that the class has access to
+		# the "parent" window
+		obj._gui = gui
+
+		obj._filename = inspect.getfile(c)
+
+		do_init = True
+		for o in PLUGIN_FILENAMES:
+			if o==f"{obj._filename}":
+				do_init = False
+
+		if hasattr(obj,"init"):
+			s = inspect.getsourcelines(obj.init)
+			for o in PLUGIN_INIT:
+				if o[0]==obj._filename:
+					if o[1]!=s:
+						# The reloaded object's init() event
+						# has changed, so let's re-execute the
+						# event
+						do_init = True
+
+		obj._basename = os.path.basename(obj._filename)
+
+		obj._events = 0
+		obj._event_list = []
+		for e in EVENTS:
+			if hasattr(obj,e):
+				obj._events = obj._events + 1
+				obj._event_list.append(e)
+
+		# Make sure the plugin inherits from the "Plugin" class
+		if not issubclass(type(obj), Plugin):
+			ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
+
+		if not hasattr(obj,"NAME"): obj.NAME = "Unknown"
+		if not hasattr(obj,"AUTHOR"): obj.AUTHOR = "Unknown"
+		if not hasattr(obj,"SOURCE"): obj.SOURCE = "Unknown"
+		if not hasattr(obj,"VERSION"): obj.VERSION = "1.0"
+
+		obj._size = get_size(obj)
+
+		if obj._events==0:
+			ERRORS.append(f"{obj._basename} doesn't have any events to respond to")
+
+		no_error = True
+		for o in PLUGIN_NAMES:
+			if o==f"{obj.NAME} {obj.VERSION}":
+				no_error = False
+				# The plugin may have been edited in the manager.
+				# If the offending plugin has the same file name
+				# as the loaded plugin, then we will assume the
+				# plugin has been edited, not show an error, and
+				# load it anyway.
+				for p in PLUGIN_FILENAMES:
+					if p==obj._filename:
+						no_error = True
+		if no_error==False:
+			ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
+
+		# Add the plugin to the registry if
+		# the plugin had no errors
+		if len(ERRORS)==0:
+			PLUGINS.append(obj)
+
+			# Run plugin init
+			if do_init: init(obj)
+
+	# Reload the plugin manager, if it's open
+	if gui.plugin_manager!=None:
+		gui.plugin_manager.refresh()
+
+	# Return
+	return ERRORS
+
+def get_size(obj, seen=None):
+	"""Recursively finds size of objects"""
+	size = sys.getsizeof(obj)
+	if seen is None:
+		seen = set()
+	obj_id = id(obj)
+	if obj_id in seen:
+		return 0
+	# Important mark as seen *before* entering recursion to gracefully handle
+	# self-referential objects
+	seen.add(obj_id)
+	if isinstance(obj, dict):
+		size += sum([get_size(v, seen) for v in obj.values()])
+		size += sum([get_size(k, seen) for k in obj.keys()])
+	elif hasattr(obj, '__dict__'):
+		size += get_size(obj.__dict__, seen)
+	elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
+		size += sum([get_size(i, seen) for i in obj])
+	return size
+
+def initialize(directory,directory_name):
+	global CONFIG_DIRECTORY
+	global PLUGIN_DIRECTORY
+
+	# If the passed directory is set to None,
+	# set the storage directory to the user's
+	# home directory
+	if directory==None:
+		directory = str(Path.home())
+
+	# The config directory should already be created
+	CONFIG_DIRECTORY = os.path.join(directory,directory_name)
+
+	PLUGIN_DIRECTORY = os.path.join(CONFIG_DIRECTORY,"plugins")
+	if not os.path.isdir(PLUGIN_DIRECTORY): os.mkdir(PLUGIN_DIRECTORY)
