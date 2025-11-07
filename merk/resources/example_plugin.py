@@ -51,6 +51,147 @@ EXAMPLE_PLUGIN="""#
 # They can be called from the "self" object passed to
 # every event in the plugin.
 #
+#    |===========================|
+#    | alias(client,window,text) |
+#    |===========================|
+# 
+#    Returns a string, with the text having any existing
+#    aliases interpolated into the text. Both built-in
+#    and user-created aliases will be interpolated into
+#    the text.
+# 
+#    Arguments:
+#      client = The Twisted IRC client object
+#      window = The window whose context will be used
+#               to generate the alias table
+#      text = The text to interpolate
+#
+#    Returns:
+#      string (The interpolated text)
+#
+#    |===============================|
+#    | channel_topic(client,channel) |
+#    |===============================|
+# 
+#    Returns the topic for a channel that MERK is in. This
+#    will return an empty string if there is no topic sent
+#    or MERK is not actually in that channel.
+# 
+#    Arguments:
+#      client = The Twisted IRC client object
+#      channel = String. The channel to query
+#
+#    Returns:
+#      string (The channel's topic)
+#
+#    |===========|
+#    | clients() |
+#    |===========|
+# 
+#    Retrieves a list of Twisted IRC client object that MERK
+#    is using. If MERK is not connected to any IRC servers,
+#    this list will be empty
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      list (A list Twisted IRC client objects in use)
+#
+#    |======================|
+#    | exec(client,command) |
+#    |======================|
+# 
+#    Executes a command in the server window associated with a
+#    Twisted IRC client object. This functions exactly the same
+#    as if the command was typed into the server window's text
+#    input widget and return was pressed.
+# 
+#    Arguments:
+#      client = The Twisted IRC client object
+#      command = String. The command to execute
+#
+#    Returns:
+#      Nothing
+#
+#    |========|
+#    | home() |
+#    |========|
+# 
+#    Returns a string containing the local path to the
+#    directory where MERK's configuration files are
+#    stored. In this directory is also where MERK looks
+#    for the scripts, logs, and styles directory.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      string (Directory path)
+#
+#    |=================|
+#    | is_away(client) |
+#    |=================|
+# 
+#    Returns a boolean; true if the client is set to the away
+#    status, and false if the client is not set to away.
+# 
+#    Arguments:
+#      client = The Twisted IRC client object to query
+#
+#    Returns:
+#      boolean (True if the client is "away", and False if not)
+#
+#    |==============|
+#    | list(client) |
+#    |==============|
+# 
+#    Retrieves a channel list from a Twisted IRC client object,
+#    reflecting the IRC server's channel list. If the retrieved
+#    list is empty, the client may need to refresh the list from
+#    the server.
+# 
+#    Arguments:
+#      client = The Twisted IRC client object to query
+#
+#    Returns:
+#      list (A list of comma-delimited strings, in the following
+#            format: channel name, number of users, channel topic)
+#
+#    |=======================|
+#    | print(target,message) |
+#    |=======================|
+# 
+#    Prints text to a window. This text will not be written
+#    to log. HTML may be used in the message.
+# 
+#    Arguments:
+#      target = String. The name of the window to print to. This is
+#               the name that appears in the subwindows title
+#               bar. If MERK is in more than one subwindow with
+#               the same name, the meessage will be printed to
+#               the first subwindow found while searching.
+#      message = String. The message
+#
+#    Returns:
+#      Nothing
+#
+#    |====================================|
+#    | send_action(client,target,message) |
+#    |====================================|
+# 
+#    Sends an CTCP action message, with the message appearing
+#    as chat in the MERK GUI.
+# 
+#    Arguments:
+#      client = A Twisted IRC client object
+#      target = String. The target of the CTCP action message, either
+#               a channel or a user
+#      message = String. The message
+#
+#    Returns:
+#      Nothing
+#
 #    |=====================================|
 #    | send_message(client,target,message) |
 #    |=====================================|
@@ -83,55 +224,21 @@ EXAMPLE_PLUGIN="""#
 #    Returns:
 #      Nothing
 #
-#    |====================================|
-#    | send_action(client,target,message) |
-#    |====================================|
-# 
-#    Sends an CTCP action message, with the message appearing
-#    as chat in the MERK GUI.
-# 
-#    Arguments:
-#      client = A Twisted IRC client object
-#      target = String. The target of the CTCP action message, either
-#               a channel or a user
-#      message = String. The message
-#
-#    Returns:
-#      Nothing
-#
 #    |=======================|
-#    | print(target,message) |
+#    | users(client,channel) |
 #    |=======================|
 # 
-#    Prints text to a window. This text will not be written
-#    to log. HTML may be used in the message.
-# 
-#    Arguments:
-#      target = String. The name of the window to print to. This is
-#               the name that appears in the subwindows title
-#               bar. If MERK is in more than one subwindow with
-#               the same name, the meessage will be printed to
-#               the first subwindow found while searching.
-#      message = String. The message
-#
-#    Returns:
-#      Nothing
-#
-#    |======================|
-#    | exec(client,command) |
-#    |======================|
-# 
-#    Executes a command in the server window associated with a
-#    Twisted IRC client object. This functions exactly the same
-#    as if the command was typed into the server window's text
-#    input widget and return was pressed.
+#    Returns a list of users in a channel that MERK is in.
+#    If MERK is not in the specified channel, the returned
+#    list will be empty.
 # 
 #    Arguments:
 #      client = The Twisted IRC client object
-#      command = String. The command to execute
+#      channel = String. The channel to query
 #
 #    Returns:
-#      Nothing
+#      list (A list of strings, with each entry containing
+#            nickname of a user in the specified channel)
 #
 #    |==============================|
 #    | wexec(client,window,command) |
@@ -152,49 +259,6 @@ EXAMPLE_PLUGIN="""#
 #    Returns:
 #      Nothing
 #
-#    |==============|
-#    | list(client) |
-#    |==============|
-# 
-#    Retrieves a channel list from a Twisted IRC client object,
-#    reflecting the IRC server's channel list. If the retrieved
-#    list is empty, the client may need to refresh the list from
-#    the server.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object to query
-#
-#    Returns:
-#      list (A list of comma-delimited strings, in the following
-#            format: channel name, number of users, channel topic)
-#
-#    |=================|
-#    | is_away(client) |
-#    |=================|
-# 
-#    Returns a boolean; true if the client is set to the away
-#    status, and false if the client is not set to away.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object to query
-#
-#    Returns:
-#      boolean (True if the client is "away", and False if not)
-#
-#    |===========|
-#    | clients() |
-#    |===========|
-# 
-#    Retrieves a list of Twisted IRC client object that MERK
-#    is using. If MERK is not connected to any IRC servers,
-#    this list will be empty
-# 
-#    Arguments:
-#      None
-#
-#    Returns:
-#      list (A list Twisted IRC client objects in use)
-#
 #    |=================|
 #    | windows(client) |
 #    |=================|
@@ -209,70 +273,6 @@ EXAMPLE_PLUGIN="""#
 #      list (A list of strings, with each entry containing
 #            the name of a subwindow associated with the
 #            Twisted IRC client object specified)
-#
-#    |=======================|
-#    | users(client,channel) |
-#    |=======================|
-# 
-#    Returns a list of users in a channel that MERK is in.
-#    If MERK is not in the specified channel, the returned
-#    list will be empty.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      channel = String. The channel to query
-#
-#    Returns:
-#      list (A list of strings, with each entry containing
-#            nickname of a user in the specified channel)
-#
-#    |===============================|
-#    | channel_topic(client,channel) |
-#    |===============================|
-# 
-#    Returns the topic for a channel that MERK is in. This
-#    will return an empty string if there is no topic sent
-#    or MERK is not actually in that channel.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      channel = String. The channel to query
-#
-#    Returns:
-#      string (The channel's topic)
-#
-#    |===========================|
-#    | alias(client,window,text) |
-#    |===========================|
-# 
-#    Returns a string, with the text having any existing
-#    aliases interpolated into the text. Both built-in
-#    and user-created aliases will be interpolated into
-#    the text.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      window = The window whose context will be used
-#               to generate the alias table
-#      text = The text to interpolate
-#
-#    Returns:
-#      string (The interpolated text)
-#
-#    |========|
-#    | home() |
-#    |========|
-# 
-#    Returns a string containing the local path to the
-#    directory where MERK's configuration files are
-#    stored. In this directory is also where MERK looks
-#    for the scripts, logs, and styles directory.
-# 
-#    Arguments:
-#      None
-#
-#    Returns:
-#      string (Directory path)
 #
 # |-----------------------------|
 # | END PLUGIN BUILT-IN METHODS |

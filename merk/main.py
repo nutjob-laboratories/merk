@@ -4871,6 +4871,7 @@ class Merk(QMainWindow):
 		self.closeAndRemoveAllWindows()
 		event.accept()
 		self.app.quit()
+		exit(0)
 
 	def add_unread_message(self,client,target):
 
