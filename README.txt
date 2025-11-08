@@ -96,7 +96,7 @@ There are four libraries that comes bundled with **MERK**:
     - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK**, as well as [Python's standard library](https://docs.python.org/3/library/index.html)
   - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
   - Plugins can react to most IRC events
-    - Over 25 different IRC and application events!
+    - 30 different IRC and application events!
     - Individual plugin events can be enabled and disabled in the "Settings" dialog
   - Plugins can be created and edited directly in the application
     - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation.

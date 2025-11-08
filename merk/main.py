@@ -1393,7 +1393,7 @@ class Merk(QMainWindow):
 			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def receivedMOTD(self,client,motd):
-
+		plugins.call(self,"motd",text="\n".join(motd),window=self.getServerWindow(client))
 		w = self.getServerWindow(client)
 		if w:
 			if config.DISPLAY_MOTD_AS_RAW_TEXT:

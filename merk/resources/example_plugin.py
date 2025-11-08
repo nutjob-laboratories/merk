@@ -526,6 +526,22 @@ class ExamplePlugin(Plugin):
         arguments = args["arguments"]
 
     # |======|
+    # | motd |
+    # |======|
+    #
+    # This event is triggered whenever the message of the
+    # day is received from an IRC server. The MERK Window
+    # sent in the arguments is the client's server window.
+    #
+    # Arguments:
+    #   window = MERK Window
+    #   text = The text of the MOTD
+    #
+    def motd(self,**args):
+        window = args["window"]
+        text = args["text"]
+
+    # |======|
     # | nick |
     # |======|
     #

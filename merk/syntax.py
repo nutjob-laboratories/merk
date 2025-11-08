@@ -57,12 +57,13 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or',
 					'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 
-					'self.windows','self.is_away', 'self.list', 'self.clients', 'self.home',
+					'self.windows','self.is_away', 'self.list', 'self.clients', 'self.home', 'self.find',
+					'self.all_windows',
 
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
 					'def kick', 'def kicked', 'def tick', 'def mode', 'def unmode', 'def quit', 'def line_in', 'def line_out', 
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
-					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init'
+					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd'
 					]
 		for word in keywords:
 			pattern = QRegExp(r'\b' + word + r'\b')

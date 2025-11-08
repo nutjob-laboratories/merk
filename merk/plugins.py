@@ -246,6 +246,7 @@ def call(gui,method,**arguments):
 	if method=='nick' and not config.PLUGIN_NICK: return
 	if method=='disconnect' and not config.PLUGIN_DISCONNECT: return
 	if method=='ping' and not config.PLUGIN_PING: return
+	if method=='motd' and not config.PLUGIN_MOTD: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):
