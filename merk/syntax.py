@@ -57,9 +57,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or',
 					'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 
-					'self.alias', 'self.users', 'self.channel_topic', 'self.clients', 'self.windows',
-					'self.is_away', 'self.list', 'self.exec', 'self.wexec', 'self.print',
-					'self.send_message', 'self.send_notice', 'self.send_action',
+					'self.windows','self.is_away', 'self.list', 'self.clients', 'self.home',
 
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
 					'def kick', 'def kicked', 'def tick', 'def mode', 'def unmode', 'def quit', 'def line_in', 'def line_out', 

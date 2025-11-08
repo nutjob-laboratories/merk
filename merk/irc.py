@@ -358,7 +358,7 @@ class IRC_Connection(irc.IRCClient):
 
 	def quit(self, message=''):
 
-		plugins.call("disconnect",client=self,message=message)
+		plugins.call(self.gui,"disconnect",client=self,message=message)
 
 		super().quit(message)
 
@@ -874,7 +874,7 @@ class IRC_Connection(irc.IRCClient):
 
 	def sendLine(self,line):
 
-		plugins.call("line_out",client=self,line=str(line))
+		plugins.call(self.gui,"line_out",client=self,line=str(line))
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
 			sys.stdout.write(f"{line}\n")
@@ -956,7 +956,7 @@ class IRC_Connection(irc.IRCClient):
 		# to get a channel list from a server)
 		line = line2.encode('utf-8')
 
-		plugins.call("line_in",client=self,line=line)
+		plugins.call(self.gui,"line_in",client=self,line=line)
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
 			sys.stdout.write(f"{self.kwargs["server"]}:{self.kwargs["port"]} {line}\n")

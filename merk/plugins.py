@@ -40,6 +40,114 @@ CONFIG_DIRECTORY = None
 PLUGIN_DIRECTORY = None
 PLUGINS = []
 
+class Window():
+
+	def __init__(self,gui,window):
+		self._gui = gui
+		if hasattr(window,"widget"):
+			self._window = window.widget()
+		else:
+			self._window = window
+
+	def name(self):
+		return self._window.name
+
+	def type(self):
+		if self._window.window_type==CHANNEL_WINDOW:
+			return "channel"
+		elif self._window.window_type==PRIVATE_WINDOW:
+			return "private"
+		elif self._window.window_type==SERVER_WINDOW:
+			return "server"
+		else:
+			return "unknown"
+
+	def notice(self,target,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		message = commands.fullInterpolate(self._gui,self._window,message)
+		self._window.client.notice(target,message)
+		w = self._gui.getWindow(target,self._window.client)
+		if w:
+			t = Message(NOTICE_MESSAGE,self._window.client.nickname,message)
+			w.writeText(t)
+			return True
+		return False
+
+	def action(self,target,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		message = commands.fullInterpolate(self._gui,self._window,message)
+		self._window.client.describe(target,message)
+		w = self._gui.getWindow(target,self._window.client)
+		if w:
+			t = Message(ACTION_MESSAGE,self._window.client.nickname,message)
+			w.writeText(t)
+			return True
+		return False
+
+	def message(self,target,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		message = commands.fullInterpolate(self._gui,self._window,message)
+		self._window.client.msg(target,message)
+		w = self._gui.getWindow(target,self._window.client)
+		if w:
+			t = Message(CHAT_MESSAGE,self._window.client.nickname,message)
+			w.writeText(t)
+			return True
+		return False
+
+	def say(self,message):
+		if self._window.window_type==CHANNEL_WINDOW or self._window.window_type==PRIVATE_WINDOW:
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+			message = commands.fullInterpolate(self._gui,self._window,message)
+			self._window.client.msg(self._window.name,message)
+			t = Message(CHAT_MESSAGE,self._window.client.nickname,message)
+			self._window.writeText(t)
+			return True
+		return False
+
+	def note(self,message):
+		if self._window.window_type==CHANNEL_WINDOW or self._window.window_type==PRIVATE_WINDOW:
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+			message = commands.fullInterpolate(self._gui,self._window,message)
+			self._window.client.notice(self._window.name,message)
+			t = Message(NOTICE_MESSAGE,self._window.client.nickname,message)
+			self._window.writeText(t)
+			return True
+		return False
+
+	def describe(self,message):
+		if self._window.window_type==CHANNEL_WINDOW or self._window.window_type==PRIVATE_WINDOW:
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+			message = commands.fullInterpolate(self._gui,self._window,message)
+			self._window.client.describe(self._window.name,message)
+			t = Message(ACTION_MESSAGE,self._window.client.nickname,message)
+			self._window.writeText(t)
+			return True
+		return False
+
+	def execute(self,command):
+		self._window.handleHotkeyCommand(command)
+
+	def client(self):
+		return self._window.client
+
+	def print(self,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		message = commands.fullInterpolate(self._gui,self._window,message)
+		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
+		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def alias(self,text):
+		return commands.fullInterpolate(self._gui,self._window,text)
+
+	def users(self):
+		if self._window.window_type==CHANNEL_WINDOW: return self._window.users
+		return None
+
+	def topic(self):
+		if self._window.window_type==CHANNEL_WINDOW: return self._window.channel_topic
+		return None
+
 class Plugin():
 
 	_gui = None
@@ -52,31 +160,6 @@ class Plugin():
 	def home(self):
 		return f"{CONFIG_DIRECTORY}"
 
-	def alias(self,client,window,text):
-		if self._gui!=None:
-			w = self._gui.getSubWindow(window,client)
-			if w:
-				return commands.fullInterpolate(self._gui,w.widget(),text)
-		return text
-
-	def channel_topic(self,client,channel):
-		if self._gui!=None:
-			w = self._gui.getSubWindow(channel,client)
-			if w:
-				c = w.widget()
-				if c.window_type==CHANNEL_WINDOW:
-					return c.channel_topic
-		return []
-
-	def users(self,client,channel):
-		if self._gui!=None:
-			w = self._gui.getSubWindow(channel,client)
-			if w:
-				c = w.widget()
-				if c.window_type==CHANNEL_WINDOW:
-					return c.users
-		return []
-
 	def clients(self):
 		if self._gui!=None:
 			return self._gui.getAllClients()
@@ -86,7 +169,7 @@ class Plugin():
 		if self._gui!=None:
 			output = []
 			for w in self._gui.getAllConnectedWindows(client):
-				output.append(w.name)
+				output.append(Window(self._gui,w))
 			return output
 		return []
 
@@ -100,86 +183,14 @@ class Plugin():
 		if len(client.server_channel_list):
 			output = []
 			for entry in client.server_channel_list:
-				channel_name = entry[0]
-				channel_count = entry[1]
-				channel_topic = entry[2]
-
-				e = f"{channel_name},{channel_count},{channel_topic}"
+				e = []
+				e.append(entry[0])
+				e.append(entry[1])
+				e.append(entry[2])
 				output.append(e)
 			return output
 		else:
 			return []
-
-	def exec(self,client,command):
-		if self._gui!=None:
-			w = self._gui.getServerSubWindow(client)
-			if w:
-				c = w.widget()
-				c.handleHotkeyCommand(command)
-
-	def wexec(self,client,window,command):
-		if self._gui!=None:
-			w = self._gui.getSubWindow(window,client)
-			if w:
-				c = w.widget()
-				c.handleHotkeyCommand(command)
-
-	def print(self,target,message):
-		if self._gui!=None:
-			target_window=None
-			swins = self._gui.getAllServerWindows()
-			for win in swins:
-				if target.lower()==win.widget().name.lower():
-					target_window = win.widget()
-					break
-				if target.lower()==f"{win.widget().client.server.lower()}:{win.widget().client.port}":
-					target_window = win.widget()
-					break
-			if target_window==None:
-				for win in self._gui.getTotalWindows():
-					if target.lower()==win.name.lower():
-						target_window = win
-						break
-			if target_window!=None:
-				if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-				t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
-				target_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-	def send_message(self,client,target,message):
-		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-		client.msg(target,message)
-
-		if self._gui!=None:
-			w = self._gui.getWindow(target,client)
-			if w:
-				t = Message(CHAT_MESSAGE,client.nickname,message)
-				w.writeText(t)
-				return True
-		return False
-
-	def send_notice(self,client,target,message):
-		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-		client.notice(target,message)
-
-		if self._gui!=None:
-			w = self._gui.getWindow(target,client)
-			if w:
-				t = Message(NOTICE_MESSAGE,client.nickname,message)
-				w.writeText(t)
-				return True
-		return False
-
-	def send_action(self,client,target,message):
-		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-		client.describe(target,message)
-
-		if self._gui!=None:
-			w = self._gui.getWindow(target,client)
-			if w:
-				t = Message(ACTION_MESSAGE,client.nickname,message)
-				w.writeText(t)
-				return True
-		return False
 
 # def init():
 # 	if not config.ENABLE_PLUGINS: return
@@ -201,7 +212,7 @@ EVENTS = [
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init'
 ]
 
-def call(method,**arguments):
+def call(gui,method,**arguments):
 	if not config.ENABLE_PLUGINS: return
 	if method=='message' and not config.PLUGIN_MESSAGE: return
 	if method=='notice' and not config.PLUGIN_NOTICE: return
@@ -230,9 +241,14 @@ def call(method,**arguments):
 	if method=='ctick' and not config.PLUGIN_CTICK: return
 	if method=='nick' and not config.PLUGIN_NICK: return
 	if method=='disconnect' and not config.PLUGIN_DISCONNECT: return
+
 	for obj in PLUGINS:
 		if hasattr(obj,method):
 			m = getattr(obj,method)
+
+			if 'window' in arguments:
+				arguments["window"] = Window(gui,arguments["window"])
+
 			m(**arguments)
 
 def load_plugins(gui,force_reload=False):

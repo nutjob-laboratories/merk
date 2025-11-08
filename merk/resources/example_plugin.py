@@ -51,39 +51,6 @@ EXAMPLE_PLUGIN="""#
 # They can be called from the "self" object passed to
 # every event in the plugin.
 #
-#    |===========================|
-#    | alias(client,window,text) |
-#    |===========================|
-# 
-#    Returns a string, with the text having any existing
-#    aliases interpolated into the text. Both built-in
-#    and user-created aliases will be interpolated into
-#    the text.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      window = The window whose context will be used
-#               to generate the alias table
-#      text = The text to interpolate
-#
-#    Returns:
-#      string (The interpolated text)
-#
-#    |===============================|
-#    | channel_topic(client,channel) |
-#    |===============================|
-# 
-#    Returns the topic for a channel that MERK is in. This
-#    will return an empty string if there is no topic sent
-#    or MERK is not actually in that channel.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      channel = String. The channel to query
-#
-#    Returns:
-#      string (The channel's topic)
-#
 #    |===========|
 #    | clients() |
 #    |===========|
@@ -97,22 +64,6 @@ EXAMPLE_PLUGIN="""#
 #
 #    Returns:
 #      list (A list Twisted IRC client objects in use)
-#
-#    |======================|
-#    | exec(client,command) |
-#    |======================|
-# 
-#    Executes a command in the server window associated with a
-#    Twisted IRC client object. This functions exactly the same
-#    as if the command was typed into the server window's text
-#    input widget and return was pressed.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      command = String. The command to execute
-#
-#    Returns:
-#      Nothing
 #
 #    |========|
 #    | home() |
@@ -155,109 +106,14 @@ EXAMPLE_PLUGIN="""#
 #      client = The Twisted IRC client object to query
 #
 #    Returns:
-#      list (A list of comma-delimited strings, in the following
+#      list (A list of lists, in the following
 #            format: channel name, number of users, channel topic)
 #
-#    |=======================|
-#    | print(target,message) |
-#    |=======================|
-# 
-#    Prints text to a window. This text will not be written
-#    to log. HTML may be used in the message.
-# 
-#    Arguments:
-#      target = String. The name of the window to print to. This is
-#               the name that appears in the subwindows title
-#               bar. If MERK is in more than one subwindow with
-#               the same name, the meessage will be printed to
-#               the first subwindow found while searching.
-#      message = String. The message
-#
-#    Returns:
-#      Nothing
-#
-#    |====================================|
-#    | send_action(client,target,message) |
-#    |====================================|
-# 
-#    Sends an CTCP action message, with the message appearing
-#    as chat in the MERK GUI.
-# 
-#    Arguments:
-#      client = A Twisted IRC client object
-#      target = String. The target of the CTCP action message, either
-#               a channel or a user
-#      message = String. The message
-#
-#    Returns:
-#      Nothing
-#
-#    |=====================================|
-#    | send_message(client,target,message) |
-#    |=====================================|
-# 
-#    Sends an IRC message, with the message appearing as
-#    chat in the MERK GUI.
-# 
-#    Arguments:
-#      client = A Twisted IRC client object
-#      target = String. The target of the message, either a channel
-#               or a user
-#      message = String. The message
-#
-#    Returns:
-#      Nothing
-#
-#    |====================================|
-#    | send_notice(client,target,message) |
-#    |====================================|
-# 
-#    Sends an IRC notice, with the notice appearing as
-#    chat in the MERK GUI.
-# 
-#    Arguments:
-#      client = A Twisted IRC client object
-#      target = String. The target of the notice, either a channel
-#               or a user
-#      message = String. The message
-#
-#    Returns:
-#      Nothing
-#
-#    |=======================|
-#    | users(client,channel) |
-#    |=======================|
-# 
-#    Returns a list of users in a channel that MERK is in.
-#    If MERK is not in the specified channel, the returned
-#    list will be empty.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      channel = String. The channel to query
-#
-#    Returns:
-#      list (A list of strings, with each entry containing
-#            nickname of a user in the specified channel)
-#
-#    |==============================|
-#    | wexec(client,window,command) |
-#    |==============================|
-# 
-#    Executes a command in the subwindow associated with a
-#    Twisted IRC client object. This functions exactly the same
-#    as if the command was typed into the subwindow's text
-#    input widget and return was pressed.
-# 
-#    Arguments:
-#      client = The Twisted IRC client object
-#      window = String. The name of the window to execute the command
-#               in. This is the text that appears in the subwindow's
-#               title bar.
-#      command = String. The command to execute
-#
-#    Returns:
-#      Nothing
+#    Example:
+#      for channel in self.list(client):
+#          name = channel[0]
+#          user_count = channel[1]
+#          topic = channel[2]
 #
 #    |=================|
 #    | windows(client) |
@@ -270,9 +126,7 @@ EXAMPLE_PLUGIN="""#
 #      client = The Twisted IRC client object
 #
 #    Returns:
-#      list (A list of strings, with each entry containing
-#            the name of a subwindow associated with the
-#            Twisted IRC client object specified)
+#      list (A list of MERK Windows)
 #
 # |-----------------------------|
 # | END PLUGIN BUILT-IN METHODS |
@@ -335,13 +189,13 @@ class ExamplePlugin(Plugin):
     # CTCP action message.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window
     #   channel = The channel where the event occurred
     #   user = The user that sent the message
     #   message = The text of the message
     #
     def action(self,**args):
-        client = args["client"]
+        window = args["window"]
         channel = args["channel"]
         user = args["user"]
         message = args["message"]
@@ -354,12 +208,10 @@ class ExamplePlugin(Plugin):
     # or private chat window gains focus.
     #
     # Arguments:
-    #   client = The Twisted IRC object that the window uses
-    #   window = The name of the window
+    #   client = MERK Window
     #
     def activate(self,**args):
-        client = args["client"]
-        name = args["name"]
+        window = args["window"]
 
     # |======|
     # | away |
@@ -401,10 +253,10 @@ class ExamplePlugin(Plugin):
     # connection to an IRC server.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window object
     #
     def connected(self,**args):
-        client = args["client"]
+        window = args["window"]
 
     # |============|
     # | connecting |
@@ -474,12 +326,12 @@ class ExamplePlugin(Plugin):
     # presence of MERK.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window
     #   channel = The channel the user joined
     #   user = The user joined
     #
     def join(self,**args):
-        client = args["client"]
+        window = args["window"]
         channel = args["channel"]
         user = args["user"]
 
@@ -490,12 +342,12 @@ class ExamplePlugin(Plugin):
     # This event is triggered whenever MERK joins a channel
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
     #   channel = The channel MERK joined
+    #   window = MERK Window
     #
     def joined(self,**args):
-        client = args["client"]
         channel = args["channel"]
+        window = args["window"]
 
     # |======|
     # | kick |
@@ -505,14 +357,14 @@ class ExamplePlugin(Plugin):
     # a channel in MERK's presence
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window
     #   channel = The channel the user was kicked from
     #   user = The user that issued the kick
     #   target = The user that was kicked
     #   message = The kick message, if one was supplied
     #
     def kick(self,**args):
-        client = args["client"]
+        window = args["window"]
         channel = args["channel"]
         user = args["user"]
         target = args["target"]
@@ -544,7 +396,7 @@ class ExamplePlugin(Plugin):
     # This event is triggered whenever MERK leaves a channel.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = The Twisted IRC object that triggered the event
     #   channel = The channel MERK left
     #
     def left(self,**args):
@@ -606,13 +458,13 @@ class ExamplePlugin(Plugin):
     # message, the channel will be MERK's nickname.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window
     #   channel = The channel the message was sent to
     #   user = The user that sent the message
     #   message = The message
     #
     def message(self,**args):
-        client = args["client"]
+        window = args["window"]
         channel = args["channel"]
         user = args["user"]
         message = args["message"]
@@ -664,13 +516,13 @@ class ExamplePlugin(Plugin):
     # notice, the channel will be MERK's nickname.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window
     #   channel = The channel the notice was sent to
     #   user = The user that sent the notice
     #   message = The message
     #
     def notice(self,**args):
-        client = args["client"]
+        window = args["window"]
         channel = args["channel"]
         user = args["user"]
         message = args["message"]
@@ -683,12 +535,12 @@ class ExamplePlugin(Plugin):
     # in MERK's presence.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window
     #   channel = The channel the user left
     #   user = The user that left
     #
     def part(self,**args):
-        client = args["client"]
+        window = args["window"]
         channel = args["channel"]
         user = args["user"]
 
@@ -753,14 +605,14 @@ class ExamplePlugin(Plugin):
     # when MERK joins a channel.
     #
     # Arguments:
-    #   client = The Twisted IRC object that triggered the event
+    #   window = MERK Window
     #   user = The user that set the topic. This may be the
     #          server's name
     #   channel = The channel the topic was set on
     #   topic = The topic that was set
     #
     def topic(self,**args):
-        client = args["client"]
+        window = args["window"]
         user = args["user"]
         channel = args["channel"]
         topic = args["topic"]

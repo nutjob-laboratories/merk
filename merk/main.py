@@ -422,7 +422,7 @@ class Merk(QMainWindow):
 
 	def uptime_beat(self):
 		self.client_uptime = self.client_uptime + 1
-		plugins.call("ctick",uptime=self.client_uptime)
+		plugins.call(self,"ctick",uptime=self.client_uptime)
 
 	# Windowbar
 
@@ -1217,14 +1217,14 @@ class Merk(QMainWindow):
 	# |==================|
 
 	def connectionMade(self,client):
-		plugins.call("connecting",client=client)
+		plugins.call(self,"connecting",client=client)
 		w = self.newServerWindow(client.server+":"+str(client.port),client)
 		c = w.widget()
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
 		c.writeText(t)
 
 	def connectionLost(self,client):
-		plugins.call("lost",client=client)
+		plugins.call(self,"lost",client=client)
 		windows = self.getAllSubWindows(client)
 		for w in windows:
 			if hasattr(w,"widget"):
@@ -1302,7 +1302,7 @@ class Merk(QMainWindow):
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			client.sendLine(f"LIST")
 
-		plugins.call("connected",client=client)
+		plugins.call(self,"connected",window=self.getServerWindow(client))
 
 	def receivedPing(self,client):
 		if config.SHOW_PINGS_IN_CONSOLE:
@@ -1415,8 +1415,6 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def joined(self,client,channel):
-
-		plugins.call("joined",client=client,channel=channel)
 		
 		# Create a new channel window
 		w = self.newChannelWindow(channel,client)
@@ -1424,6 +1422,8 @@ class Merk(QMainWindow):
 			c = w.widget()
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
 			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			plugins.call(self,"joined",channel=channel,window=c)
 
 		w = self.getServerWindow(client)
 		if w:
@@ -1433,7 +1433,7 @@ class Merk(QMainWindow):
 
 	def left(self,client,channel):
 
-		plugins.call("left",client=client,channel=channel)
+		plugins.call(self,"left",client=client,channel=channel)
 
 		w = self.getSubWindow(channel,client)
 		if w:
@@ -1514,8 +1514,6 @@ class Merk(QMainWindow):
 
 	def privmsg(self,client,user,target,msg):
 
-		plugins.call("message",client=client,user=user,channel=target,message=msg)
-
 		p = user.split("!")
 		if len(p)==2:
 			nickname = p[0]
@@ -1549,6 +1547,8 @@ class Merk(QMainWindow):
 				t = Message(CHAT_MESSAGE,user,msg)
 				w.writeText(t)
 
+				plugins.call(self,"message",user=user,channel=target,message=msg,window=w)
+
 				if not self.isActiveWindow(w):
 					if not ignored:
 						# Not the current window
@@ -1572,6 +1572,8 @@ class Merk(QMainWindow):
 				t = Message(CHAT_MESSAGE,user,msg)
 				w.writeText(t)
 				displayed_private_message = True
+
+				plugins.call(self,"message",user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1598,6 +1600,7 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(CHAT_MESSAGE,user,msg)
 						c.writeText(t)
+						plugins.call(self,"message",user=user,channel=target,message=msg,window=c)
 						return
 
 			# Client has received a private message, and will
@@ -1609,8 +1612,6 @@ class Merk(QMainWindow):
 				c.writeText(t)
 
 	def action(self,client,user,target,msg):
-
-		plugins.call("action",client=client,user=user,channel=target,message=msg)
 
 		p = user.split("!")
 		if len(p)==2:
@@ -1633,6 +1634,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(ACTION_MESSAGE,user,msg)
 				w.writeText(t)
+				plugins.call(self,"action",user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1645,6 +1647,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(ACTION_MESSAGE,user,msg)
 			w.writeText(t)
+			plugins.call(self,"action",user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
 				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
@@ -1657,11 +1660,10 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(ACTION_MESSAGE,user,msg)
 						c.writeText(t)
+						plugins.call(self,"action",user=user,channel=target,message=msg,window=c)
 						return
 
 	def noticed(self,client,user,target,msg):
-
-		plugins.call("notice",client=client,user=user,channel=target,message=msg)
 
 		p = user.split("!")
 		if len(p)==2:
@@ -1684,6 +1686,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(NOTICE_MESSAGE,'',msg)
 				w.writeText(t)
+				plugins.call(self,"notice",user=user,channel=target,message=msg,window=w)
 			return
 
 		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications("Received a notice from "+nickname)
@@ -1700,6 +1703,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(NOTICE_MESSAGE,user,msg)
 				w.writeText(t,config.LOG_CHANNEL_NOTICE)
+				plugins.call(self,"notice",user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1712,6 +1716,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
+			plugins.call(self,"notice",user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES:
 				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
@@ -1724,6 +1729,7 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(NOTICE_MESSAGE,user,msg)
 						c.writeText(t)
+						plugins.call(self,"notice",user=user,channel=target,message=msg,window=c)
 
 		# Write the notice to the server window
 		w = self.getServerWindow(client)
@@ -1765,7 +1771,7 @@ class Merk(QMainWindow):
 					c.refreshNickDisplay()
 
 	def nickChanged(self,client):
-		plugins.call("nick",client=client,nickname=client.nickname)
+		plugins.call(self,"nick",client=client,nickname=client.nickname)
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -1799,7 +1805,6 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 	def topicChanged(self,client,user,channel,newTopic):
-		plugins.call("topic",client=client,user=user,channel=channel,topic=newTopic)
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -1807,29 +1812,29 @@ class Merk(QMainWindow):
 					if c.window_type==CHANNEL_WINDOW:
 						if c.name==channel:
 							c.setTopic(newTopic)
-
+							plugins.call(self,"topic",user=user,channel=channel,topic=newTopic,window=c)
 							if user!='':
 								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
 								c.writeText(t,config.LOG_CHANNEL_TOPICS)
 
 	def userJoined(self,client,user,channel):
-		plugins.call("join",client=client,channel=channel,user=user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" joined "+channel)
 			w.writeText(t,config.LOG_CHANNEL_JOIN)
+			plugins.call(self,"join",channel=channel,user=user,window=w)
 			return
 
 	def userLeft(self,client,user,channel):
-		plugins.call("part",client=client,channel=channel,user=user)
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" left "+channel)
 			w.writeText(t,config.LOG_CHANNEL_PART)
+			plugins.call(self,"part",channel=channel,user=user,window=w)
 			return
 
 	def userRenamed(self,client,oldname,newname):
-		plugins.call("rename",client=client,old=oldname,new=newname)
+		plugins.call(self,"rename",client=client,old=oldname,new=newname)
 		windows = self.getAllSubWindows(client)
 
 		self.swapHostmask(client,oldname,newname)
@@ -1856,7 +1861,7 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def irc_QUIT(self,client,nickname,msg):
-		plugins.call("quit",client=client,user=nickname,message=msg)
+		plugins.call(self,"quit",client=client,user=nickname,message=msg)
 		windows = self.getAllSubWindows(client)
 
 		self.updateHostmask(client,nickname,None)
@@ -1882,7 +1887,7 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def serverSetMode(self,client,target,mode,argument):
-		plugins.call("mode",client=client,user="*",target=target,mode=mode,arguments=argument)
+		plugins.call(self,"mode",client=client,user="*",target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		if len(mode.strip())==0: return
@@ -1912,7 +1917,7 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def serverUnsetMode(self,client,target,mode):
-		plugins.call("unmode",client=client,user="*",target=target,mode=mode,arguments=())
+		plugins.call(self,"unmode",client=client,user="*",target=target,mode=mode,arguments=())
 		self.refreshModeDisplay(client)
 
 		if len(mode.strip())==0: return
@@ -1928,7 +1933,7 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def setMode(self,client,user,target,mode,argument):
-		plugins.call("mode",client=client,user=user,target=target,mode=mode,arguments=argument)
+		plugins.call(self,"mode",client=client,user=user,target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		p = user.split("!")
@@ -1980,7 +1985,7 @@ class Merk(QMainWindow):
 					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 	def unsetMode(self,client,user,target,mode,argument):
-		plugins.call("unmode",client=client,user=user,target=target,mode=mode,arguments=argument)
+		plugins.call(self,"unmode",client=client,user=user,target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		p = user.split("!")
@@ -2024,8 +2029,6 @@ class Merk(QMainWindow):
 					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
 	def userKicked(self,client,kickee,channel,kicker,message):
-
-		plugins.call("kick",client=client,user=kicker,target=kickee,channel=channel,message=message)
 		
 		if len(message)>0:
 			t = Message(SYSTEM_MESSAGE,'',kicker+" kicked "+kickee+" from "+channel+" ("+message+")")
@@ -2033,14 +2036,16 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',kicker+" kicked "+kickee+" from "+channel)
 
 		w = self.getWindow(channel,client)
-		if w: w.writeText(t)
+		if w:
+			w.writeText(t)
+			plugins.call(self,"kick",user=kicker,target=kickee,channel=channel,message=message,window=w)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
 	def kickedFrom(self,client,channel,kicker,message):
 
-		plugins.call("kicked",client=client,user=kicker,channel=channel,message=message)
+		plugins.call(self,"kicked",client=client,user=kicker,channel=channel,message=message)
 		
 		if config.FLASH_SYSTRAY_KICK: self.show_notifications("Kicked from "+channel+" by "+kicker+": "+message)
 
@@ -2073,7 +2078,7 @@ class Merk(QMainWindow):
 
 	def uptime(self,client,uptime):
 
-		plugins.call("tick",client=client,uptime=uptime)
+		plugins.call(self,"tick",client=client,uptime=uptime)
 
 		if config.USE_AUTOAWAY:
 			if client.last_interaction!=-1:
@@ -2137,7 +2142,7 @@ class Merk(QMainWindow):
 				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def invited(self,client,user,channel):
-		plugins.call("invite",client=client,user=user,channel=channel)
+		plugins.call(self,"invite",client=client,user=user,channel=channel)
 		p = user.split("!")
 		if len(p)==2:
 			nickname = p[0]
@@ -2228,7 +2233,7 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 
 	def gotAway(self,client,nick,msg):
-		plugins.call("away",client=client,user=nick,message=msg)
+		plugins.call(self,"away",client=client,user=nick,message=msg)
 		windows = self.getAllSubWindows(client)
 
 		p = nick.split('!')
@@ -2256,7 +2261,7 @@ class Merk(QMainWindow):
 								c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def gotBack(self,client,nick):
-		plugins.call("back",client=client,user=nick)
+		plugins.call(self,"back",client=client,user=nick)
 		windows = self.getAllSubWindows(client)
 
 		p = nick.split('!')
@@ -4946,7 +4951,7 @@ class Merk(QMainWindow):
 
 		if hasattr(w,"window_type"):
 			if w.window_type==SERVER_WINDOW or w.window_type==CHANNEL_WINDOW or w.window_type==PRIVATE_WINDOW:
-				plugins.call("activate",client=w.client,name=w.name)
+				plugins.call(self,"activate",window=w)
 
 		# If the window has a text input widget,
 		# give it focus
