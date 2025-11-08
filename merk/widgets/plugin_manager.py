@@ -42,6 +42,7 @@ from pathlib import Path
 class Window(QMainWindow):
 
 	def add_plugin(self):
+		if not config.ENABLE_PLUGIN_EDITOR: return
 		self.parent.newEditorPlugin()
 
 	def remove_plugin(self):
@@ -131,6 +132,7 @@ class Window(QMainWindow):
 			self.plugin_list.addItem(e)
 
 	def on_item_clicked(self, item):
+		if not config.ENABLE_PLUGIN_EDITOR: return
 		self.parent.newEditorPluginFile(item.filename)
 
 	def import_plugin(self):
@@ -174,6 +176,12 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
+	def toggleEnableEditor(self):
+		if config.ENABLE_PLUGIN_EDITOR: 
+			self.add.show()
+		else:
+			self.add.hide()
+
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
@@ -204,6 +212,8 @@ class Window(QMainWindow):
 		self.add.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.add.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.add.setFlat(True)
+
+		if not config.ENABLE_PLUGIN_EDITOR: self.add.hide()
 
 		self.remove = QPushButton("")
 		self.remove.setIcon(QIcon(MINUS_ICON))

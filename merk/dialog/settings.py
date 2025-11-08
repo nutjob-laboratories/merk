@@ -431,6 +431,7 @@ class Dialog(QDialog):
 			self.plugDisconnect.setEnabled(True)
 			self.plugPing.setEnabled(True)
 			self.plugMotd.setEnabled(True)
+			self.plugEditor.setEnabled(True)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -462,6 +463,7 @@ class Dialog(QDialog):
 			self.plugDisconnect.setEnabled(False)
 			self.plugPing.setEnabled(False)
 			self.plugMotd.setEnabled(False)
+			self.plugEditor.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4536,6 +4538,10 @@ class Dialog(QDialog):
 		if config.PLUGIN_MOTD: self.plugMotd.setChecked(True)
 		self.plugMotd.stateChanged.connect(self.changedSetting)
 
+		self.plugEditor = QCheckBox("Enable plugin editor",self)
+		if config.ENABLE_PLUGIN_EDITOR: self.plugEditor.setChecked(True)
+		self.plugEditor.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4567,6 +4573,7 @@ class Dialog(QDialog):
 			self.plugDisconnect.setEnabled(False)
 			self.plugPing.setEnabled(False)
 			self.plugMotd.setEnabled(False)
+			self.plugEditor.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugInit)
@@ -4623,6 +4630,11 @@ class Dialog(QDialog):
 		plugLayout.addWidget(self.enablePlugins)
 		plugLayout.addStretch()
 
+		plugLayout2 = QHBoxLayout()
+		plugLayout2.addStretch()
+		plugLayout2.addWidget(self.plugEditor)
+		plugLayout2.addStretch()
+
 		self.pluginDescription = QLabel(f"""
 			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
 			in Python. %_INSERT_%
@@ -4654,6 +4666,7 @@ class Dialog(QDialog):
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
 		pluginsLayout.addWidget(self.pluginDescription)
 		pluginsLayout.addLayout(plugLayout)
+		pluginsLayout.addLayout(plugLayout2)
 		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
 		pluginsLayout.addWidget(self.eventDescription)
@@ -5403,6 +5416,7 @@ class Dialog(QDialog):
 		config.PLUGIN_DISCONNECT = self.plugDisconnect.isChecked()
 		config.PLUGIN_PING = self.plugPing.isChecked()
 		config.PLUGIN_MOTD = self.plugMotd.isChecked()
+		config.ENABLE_PLUGIN_EDITOR = self.plugEditor.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -5574,6 +5588,8 @@ class Dialog(QDialog):
 		if not config.ENABLE_IGNORE:
 			if self.parent.ignore_manager!=None:
 				self.parent.ignore_manager.close()
+
+		if self.parent.plugin_manager!=None: self.parent.plugin_manager.toggleEnableEditor()
 
 		if not config.ENABLE_PLUGINS:
 			if self.parent.plugin_manager!=None:

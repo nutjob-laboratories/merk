@@ -354,9 +354,11 @@ PLUGIN_NICK = True
 PLUGIN_DISCONNECT = True
 PLUGIN_PING = True
 PLUGIN_MOTD = True
+ENABLE_PLUGIN_EDITOR = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_editor": ENABLE_PLUGIN_EDITOR,
 		"enable_plugin_motd_event": PLUGIN_MOTD,
 		"enable_plugin_ping_event": PLUGIN_PING,
 		"enable_plugin_disconnect_event": PLUGIN_DISCONNECT,
@@ -677,6 +679,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_editor" in settings:
+		settings["enable_plugin_editor"] = ENABLE_PLUGIN_EDITOR
 	if not "enable_plugin_motd_event" in settings:
 		settings["enable_plugin_motd_event"] = PLUGIN_MOTD
 	if not "enable_plugin_ping_event" in settings:
@@ -1626,6 +1630,7 @@ def load_settings(filename):
 	global PLUGIN_DISCONNECT
 	global PLUGIN_PING
 	global PLUGIN_MOTD
+	global ENABLE_PLUGIN_EDITOR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1635,6 +1640,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_PLUGIN_EDITOR = settings["enable_plugin_editor"]
 		PLUGIN_MOTD = settings["enable_plugin_motd_event"]
 		PLUGIN_PING = settings["enable_plugin_ping_event"]
 		PLUGIN_DISCONNECT = settings["enable_plugin_disconnect_event"]
