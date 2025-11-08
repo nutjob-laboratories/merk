@@ -213,7 +213,7 @@ EVENTS = [
 	'message', 'notice', 'action', 'left', 'joined', 'part', 'join', 
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
-	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping'
+	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd'
 ]
 
 def call(gui,method,**arguments):
