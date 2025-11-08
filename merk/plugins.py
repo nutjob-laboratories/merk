@@ -157,6 +157,9 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def find(self,filename,extension=None):
+		return commands.find_file(filename,extension)
+
 	def home(self):
 		return f"{CONFIG_DIRECTORY}"
 

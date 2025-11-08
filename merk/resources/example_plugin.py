@@ -79,6 +79,24 @@ EXAMPLE_PLUGIN="""#
 #      list (A list Twisted IRC client objects in use)
 #
 #    |========|
+#    | find() |
+#    |========|
+# 
+#    Searches for a file in the directory where MERK's
+#    configuration files are stored. If a file extension
+#    is specified, that will be used in the file search.
+#    This will search the configuration directory, the
+#    scripts directory, and the directory where MERK is
+#    installed. Returns None if no file is found.
+# 
+#    Arguments:
+#      filename = String
+#      extension = String (optional, defaults to None)
+#
+#    Returns:
+#      string (the path to the found file)
+#
+#    |========|
 #    | home() |
 #    |========|
 # 

@@ -37,7 +37,7 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** can load plugins, written in Python, just like **MERK**, and can be edited and created directly in the application. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** can load plugins, written in Python, just like **MERK**, which can be edited and created directly in the application. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version !_RELEASE_!](!_RELEASE_URL_!). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -96,7 +96,10 @@ There are four libraries that comes bundled with **MERK**:
     - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK**, as well as [Python's standard library](https://docs.python.org/3/library/index.html)
   - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
   - Plugins can react to most IRC events
+    - Over 25 different IRC and application events!
     - Individual plugin events can be enabled and disabled in the "Settings" dialog
+  - Plugins can be created and edited directly in the application
+    - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation.
 - Audio notifications
   - Can be triggered by seven different events, with each one able to be turned on and off
   - Uses any WAV file as the notification sound, and can be set in the GUI
