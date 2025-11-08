@@ -55,7 +55,8 @@ EXAMPLE_PLUGIN="""#
 #    | all_windows() |
 #    |===============|
 # 
-#    Returns a list of all chat subwindows.
+#    Returns a list of all chat subwindows. If no chat
+#    windows are open, this list will be empty.
 # 
 #    Arguments:
 #      None
@@ -83,8 +84,8 @@ EXAMPLE_PLUGIN="""#
 # 
 #    Returns a string containing the local path to the
 #    directory where MERK's configuration files are
-#    stored. In this directory is also where MERK looks
-#    for the scripts, logs, and styles directory.
+#    stored. This directory is where MERK looks for
+#    the scripts, logs, and styles directory.
 # 
 #    Arguments:
 #      None
@@ -132,7 +133,9 @@ EXAMPLE_PLUGIN="""#
 #    |=================|
 # 
 #    Returns a list of subwindow names associated with a
-#    specific Twisted IRC client object.
+#    specific Twisted IRC client object. If there are no
+#    windows associated with the Twisted IRC object, this
+#    list will be empty.
 # 
 #    Arguments:
 #      client = The Twisted IRC client object

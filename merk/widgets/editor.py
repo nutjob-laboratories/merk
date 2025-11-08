@@ -1736,6 +1736,8 @@ class Window(QMainWindow):
 
 	def doFileSave(self):
 
+		if self.filename==None: return self.doFileSaveAs()
+
 		if self.editing_user_script:
 			contents = self.editor.toPlainText()
 			if len(contents)==0:
