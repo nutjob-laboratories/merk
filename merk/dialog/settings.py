@@ -432,6 +432,7 @@ class Dialog(QDialog):
 			self.plugPing.setEnabled(True)
 			self.plugMotd.setEnabled(True)
 			self.plugEditor.setEnabled(True)
+			self.plugServer.setEnabled(True)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -464,6 +465,7 @@ class Dialog(QDialog):
 			self.plugPing.setEnabled(False)
 			self.plugMotd.setEnabled(False)
 			self.plugEditor.setEnabled(False)
+			self.plugServer.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4542,6 +4544,10 @@ class Dialog(QDialog):
 		if config.ENABLE_PLUGIN_EDITOR: self.plugEditor.setChecked(True)
 		self.plugEditor.stateChanged.connect(self.changedSetting)
 
+		self.plugServer = QCheckBox("server",self)
+		if config.PLUGIN_SERVER: self.plugServer.setChecked(True)
+		self.plugServer.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4574,6 +4580,7 @@ class Dialog(QDialog):
 			self.plugPing.setEnabled(False)
 			self.plugMotd.setEnabled(False)
 			self.plugEditor.setEnabled(False)
+			self.plugServer.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAction)
@@ -4621,9 +4628,13 @@ class Dialog(QDialog):
 		row9Layout.addWidget(self.plugRename)
 
 		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugServer)
 		row10Layout.addWidget(self.plugTick)
 		row10Layout.addWidget(self.plugTopic)
-		row10Layout.addWidget(self.plugUnmode)
+
+		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugUnmode)
+		row11Layout.addStretch()
 
 		plugLayout = QHBoxLayout()
 		plugLayout.addStretch()
@@ -4680,6 +4691,7 @@ class Dialog(QDialog):
 		pluginsLayout.addLayout(row8Layout)
 		pluginsLayout.addLayout(row9Layout)
 		pluginsLayout.addLayout(row10Layout)
+		pluginsLayout.addLayout(row11Layout)
 		pluginsLayout.addStretch()
 
 		self.pluginPage.setLayout(pluginsLayout)
@@ -5417,6 +5429,7 @@ class Dialog(QDialog):
 		config.PLUGIN_PING = self.plugPing.isChecked()
 		config.PLUGIN_MOTD = self.plugMotd.isChecked()
 		config.ENABLE_PLUGIN_EDITOR = self.plugEditor.isChecked()
+		config.PLUGIN_SERVER = self.plugServer.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

@@ -213,7 +213,8 @@ EVENTS = [
 	'message', 'notice', 'action', 'left', 'joined', 'part', 'join', 
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
-	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd'
+	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
+	'server'
 ]
 
 def call(gui,method,**arguments):
@@ -247,6 +248,7 @@ def call(gui,method,**arguments):
 	if method=='disconnect' and not config.PLUGIN_DISCONNECT: return
 	if method=='ping' and not config.PLUGIN_PING: return
 	if method=='motd' and not config.PLUGIN_MOTD: return
+	if method=='server' and not config.PLUGIN_SERVER: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):

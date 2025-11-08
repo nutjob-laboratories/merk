@@ -1415,6 +1415,8 @@ class Merk(QMainWindow):
 			t = Message(SERVER_MESSAGE,'',msg)
 			w.writeText(t)
 
+			plugins.call(self,"server",message=msg,window=w)
+
 	def joined(self,client,channel):
 		
 		# Create a new channel window

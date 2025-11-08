@@ -642,6 +642,21 @@ class ExamplePlugin(Plugin):
         old_name = args["old"]
         new_name = args["new"]
 
+    # |========|
+    # | server |
+    # |========|
+    #
+    # This event is triggered a server message is received. The
+    # window passed in the arguments is the server's window.
+    #
+    # Arguments:
+    #   window = MERK Window
+    #   message = The message
+    #
+    def server(self,**args):
+        window = args["window"]
+        message = args["message"]
+
     # |======|
     # | tick |
     # |======|
