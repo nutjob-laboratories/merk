@@ -173,6 +173,14 @@ class Plugin():
 			return output
 		return []
 
+	def all_windows(self):
+		if self._gui!=None:
+			output = []
+			for w in self._gui.getTotalWindows():
+				output.append(Window(self._gui,w))
+			return output
+		return []
+
 	def is_away(self,client):
 		if client.is_away:
 			return True

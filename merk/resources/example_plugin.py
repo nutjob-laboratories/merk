@@ -51,6 +51,18 @@ EXAMPLE_PLUGIN="""#
 # They can be called from the "self" object passed to
 # every event in the plugin.
 #
+#    |===============|
+#    | all_windows() |
+#    |===============|
+# 
+#    Returns a list of all chat subwindows.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      list (A list of MERK Windows)
+#
 #    |===========|
 #    | clients() |
 #    |===========|
