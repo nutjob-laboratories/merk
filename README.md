@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.000">MERK 0.051.000</a></big></b><br>
-  <b>Current development version: 0.051.012</b><br><br>
+  <b>Current development version: 0.051.014</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
 </p>
 
@@ -18,6 +18,7 @@
  - [Screenshots](#screenshots)
  - [Usage](#usage)
  - [Commands](#commands)
+ - [Plugins](#plugins)
  - [Example command-line usage](#example-command-line-usage)
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
@@ -30,13 +31,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.051.000 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.000)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.051.012 (12.35 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows EXE | [Download MERK 0.051.012 (49.23 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows Setup | [Download MERK 0.051.012 (46.36 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.051.014 (12.35 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows EXE | [Download MERK 0.051.014 (49.23 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows Setup | [Download MERK 0.051.014 (46.36 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.012**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.014**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** can load plugins, written in Python, just like **MERK**, and can be edited and created directly in the application. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.051.000](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.000). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -132,7 +133,7 @@ There are four libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.051.000), and may reflect the current development version (0.051.012). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.000), and may reflect the current development version (0.051.014). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -171,7 +172,7 @@ There are four libraries that comes bundled with **MERK**:
   
   <p align="center">
  <center><a href="./graphics/editor_screenshot.png"><img src="./graphics/editor_screenshot_small.png"></a></center></br>
-  <center><i><small>The script editor, with an example file open. In the editor, you can edit, create, and execute MERK scripts. The editor features syntax highlighting, which highlights commands, channels, aliases, and comments, as well as command generator macros, making it easy to write scripts.</small></i></center>
+  <center><i><small>The script editor, with an example file open. In the editor, you can edit, create, and execute MERK scripts. The editor features syntax highlighting, which highlights commands, channels, aliases, and comments, as well as command generator macros, making it easy to write scripts. A special version of the editor, which features Python syntax highlighting, is used to create and edit MERK plugins.</small></i></center>
   </p>
 
 <p align="center">
@@ -333,6 +334,11 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |
 | `/xreconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script, reconnecting on disconnection                                                              |
+# Plugins
+**MERK** can load plugins! Plugins are written in Python, the same language that **MERK** is written in, and can react to over 25 different events. Each plugin has access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) that **MERK** uses to communicate with IRC servers, and can interact with both the client and any chat subwindows. The built-in "Plugin Manager" can edit, load, and create plugins, using a special version of the script editor just for Python code. The plugin editor features syntax highlighting, auto-indent, and all the features you'd expect out of a basic text editor.
+
+For more information on how plugins work, and how to write your own, the [MERK User Guide](./MERK_User_Guide.pdf) has all the information you'll need.
+
 # Example Command-line Usage
 In the following examples, the first command-line is how you would do the task using **MERK** as a Python script, and second command-line is how you would do it using the **MERK** Windows executable. Note that the command-lines, other than the initial executable, are the same!
 
@@ -405,3 +411,4 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
 
 [//]: # (End of document)
+
