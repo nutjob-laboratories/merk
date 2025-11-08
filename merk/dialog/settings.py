@@ -429,6 +429,7 @@ class Dialog(QDialog):
 			self.plugCtick.setEnabled(True)
 			self.plugNick.setEnabled(True)
 			self.plugDisconnect.setEnabled(True)
+			self.plugPing.setEnabled(True)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -458,6 +459,7 @@ class Dialog(QDialog):
 			self.plugCtick.setEnabled(False)
 			self.plugNick.setEnabled(False)
 			self.plugDisconnect.setEnabled(False)
+			self.plugPing.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4524,6 +4526,10 @@ class Dialog(QDialog):
 		if config.PLUGIN_DISCONNECT: self.plugDisconnect.setChecked(True)
 		self.plugDisconnect.stateChanged.connect(self.changedSetting)
 
+		self.plugPing = QCheckBox("ping",self)
+		if config.PLUGIN_PING: self.plugPing.setChecked(True)
+		self.plugPing.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4553,6 +4559,7 @@ class Dialog(QDialog):
 			self.plugCtick.setEnabled(False)
 			self.plugNick.setEnabled(False)
 			self.plugDisconnect.setEnabled(False)
+			self.plugPing.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugInit)
@@ -4601,7 +4608,8 @@ class Dialog(QDialog):
 
 		row10Layout = QHBoxLayout()
 		row10Layout.addWidget(self.plugDisconnect)
-		row10Layout.addStretch()
+		row10Layout.addWidget(self.plugPing)
+		row10Layout.addWidget(QLabel(' '))
 
 		plugLayout = QHBoxLayout()
 		plugLayout.addStretch()
@@ -5386,6 +5394,7 @@ class Dialog(QDialog):
 		config.PLUGIN_CTICK = self.plugCtick.isChecked()
 		config.PLUGIN_NICK = self.plugNick.isChecked()
 		config.PLUGIN_DISCONNECT = self.plugDisconnect.isChecked()
+		config.PLUGIN_PING = self.plugPing.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

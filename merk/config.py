@@ -352,9 +352,11 @@ PLUGIN_LOST = True
 PLUGIN_CTICK = True
 PLUGIN_NICK = True
 PLUGIN_DISCONNECT = True
+PLUGIN_PING = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_ping_event": PLUGIN_PING,
 		"enable_plugin_disconnect_event": PLUGIN_DISCONNECT,
 		"enable_plugin_nick_event": PLUGIN_NICK,
 		"enable_plugin_ctick_event": PLUGIN_CTICK,
@@ -673,6 +675,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_ping_event" in settings:
+		settings["enable_plugin_ping_event"] = PLUGIN_PING
 	if not "enable_plugin_disconnect_event" in settings:
 		settings["enable_plugin_disconnect_event"] = PLUGIN_DISCONNECT
 	if not "enable_plugin_nick_event" in settings:
@@ -1616,6 +1620,7 @@ def load_settings(filename):
 	global PLUGIN_CTICK
 	global PLUGIN_NICK
 	global PLUGIN_DISCONNECT
+	global PLUGIN_PING
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1625,6 +1630,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_PING = settings["enable_plugin_ping_event"]
 		PLUGIN_DISCONNECT = settings["enable_plugin_disconnect_event"]
 		PLUGIN_NICK = settings["enable_plugin_nick_event"]
 		PLUGIN_CTICK = settings["enable_plugin_ctick_event"]

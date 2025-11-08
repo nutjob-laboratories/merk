@@ -1305,6 +1305,7 @@ class Merk(QMainWindow):
 		plugins.call(self,"connected",window=self.getServerWindow(client))
 
 	def receivedPing(self,client):
+		plugins.call(self,"ping",window=self.getServerWindow(client))
 		if config.SHOW_PINGS_IN_CONSOLE:
 			if client.registered:
 				w = self.getServerWindow(client)

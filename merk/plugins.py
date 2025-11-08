@@ -203,13 +203,6 @@ class Plugin():
 		else:
 			return []
 
-# def init():
-# 	if not config.ENABLE_PLUGINS: return
-# 	if not config.PLUGIN_INIT: return
-# 	for obj in PLUGINS:
-# 		if hasattr(obj,"init"):
-# 			obj.init()
-
 def init(obj):
 	if not config.ENABLE_PLUGINS: return
 	if not config.PLUGIN_INIT: return
@@ -220,7 +213,7 @@ EVENTS = [
 	'message', 'notice', 'action', 'left', 'joined', 'part', 'join', 
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
-	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init'
+	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping'
 ]
 
 def call(gui,method,**arguments):
@@ -252,6 +245,7 @@ def call(gui,method,**arguments):
 	if method=='ctick' and not config.PLUGIN_CTICK: return
 	if method=='nick' and not config.PLUGIN_NICK: return
 	if method=='disconnect' and not config.PLUGIN_DISCONNECT: return
+	if method=='ping' and not config.PLUGIN_PING: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):

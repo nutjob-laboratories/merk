@@ -87,7 +87,8 @@ EXAMPLE_PLUGIN="""#
 #    is specified, that will be used in the file search.
 #    This will search the configuration directory, the
 #    scripts directory, and the directory where MERK is
-#    installed. Returns None if no file is found.
+#    installed, in that order. Returns None if no file
+#    is found.
 # 
 #    Arguments:
 #      filename = String
@@ -576,6 +577,20 @@ class ExamplePlugin(Plugin):
         window = args["window"]
         channel = args["channel"]
         user = args["user"]
+
+    # |======|
+    # | ping |
+    # |======|
+    #
+    # This event is triggered whenever the server sends a
+    # ping to the client. The MERK Window sent in the arguments
+    # is the client's server window.
+    #
+    # Arguments:
+    #   window = MERK Window
+    #
+    def ping(self,**args):
+        window = args["window"]
 
     # |======|
     # | quit |
