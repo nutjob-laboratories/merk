@@ -78,6 +78,20 @@ EXAMPLE_PLUGIN="""#
 #    Returns:
 #      list (A list Twisted IRC client objects in use)
 #
+#    |===========|
+#    | channel() |
+#    |===========|
+# 
+#    Returns a MERK Window class for channel's window.
+#    Returns None if the window isn't open or isn't found.
+# 
+#    Arguments:
+#      client = A Twisted IRC client object
+#      channel = The name of the channel
+#
+#    Returns:
+#      MERK Window
+#
 #    |========|
 #    | find() |
 #    |========|
@@ -146,6 +160,33 @@ EXAMPLE_PLUGIN="""#
 #          name = channel[0]
 #          user_count = channel[1]
 #          topic = channel[2]
+#
+#    |==========|
+#    | master() |
+#    |==========|
+# 
+#    Returns a MERK Window class for a connection's server
+#    window.
+# 
+#    Arguments:
+#      client = A Twisted IRC client object
+#
+#    Returns:
+#      MERK Window
+#
+#    |===========|
+#    | private() |
+#    |===========|
+# 
+#    Returns a MERK Window class for a private chat window.
+#    Returns None if the window isn't open or isn't found.
+# 
+#    Arguments:
+#      client = A Twisted IRC client object
+#      channel = The user name of the private chat
+#
+#    Returns:
+#      MERK Window
 #
 #    |=================|
 #    | windows(client) |
@@ -530,15 +571,14 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever the message of the
-    # day is received from an IRC server. The MERK Window
-    # sent in the arguments is the client's server window.
+    # day is received from an IRC server.
     #
     # Arguments:
-    #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   text = The text of the MOTD
     #
     def motd(self,**args):
-        window = args["window"]
+        client = args["client"]
         text = args["text"]
 
     # |======|
@@ -599,14 +639,13 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever the server sends a
-    # ping to the client. The MERK Window sent in the arguments
-    # is the client's server window.
+    # ping to the client.
     #
     # Arguments:
-    #   window = MERK Window
+    #   client = Twisted IRC object that triggered the event
     #
     def ping(self,**args):
-        window = args["window"]
+        client = args["client"]
 
     # |======|
     # | quit |
@@ -646,15 +685,14 @@ class ExamplePlugin(Plugin):
     # | server |
     # |========|
     #
-    # This event is triggered a server message is received. The
-    # window passed in the arguments is the server's window.
+    # This event is triggered if a server message is received.
     #
     # Arguments:
-    #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   message = The message
     #
     def server(self,**args):
-        window = args["window"]
+        client = args["client"]
         message = args["message"]
 
     # |======|

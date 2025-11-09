@@ -168,6 +168,31 @@ class Plugin():
 			return self._gui.getAllClients()
 		return []
 
+	def master(self,client):
+		if self._gui!=None:
+			w = self._gui.getServerSubWindow(client)
+			if w:
+				return Window(self._gui,w)
+		return None
+
+	def channel(self,client,channel):
+		if self._gui!=None:
+			w = self._gui.getSubWindow(channel,client)
+			if w:
+				c = w.widget()
+				if c.window_type==CHANNEL_WINDOW:
+					return Window(self._gui,c)
+		return None
+
+	def private(self,client,user):
+		if self._gui!=None:
+			w = self._gui.getSubWindow(channel,user)
+			if w:
+				c = w.widget()
+				if c.window_type==PRIVATE_WINDOW:
+					return Window(self._gui,c)
+		return None
+
 	def windows(self,client):
 		if self._gui!=None:
 			output = []

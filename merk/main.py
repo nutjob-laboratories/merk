@@ -1305,7 +1305,7 @@ class Merk(QMainWindow):
 		plugins.call(self,"connected",window=self.getServerWindow(client))
 
 	def receivedPing(self,client):
-		plugins.call(self,"ping",window=self.getServerWindow(client))
+		plugins.call(self,"ping",client=client)
 		if config.SHOW_PINGS_IN_CONSOLE:
 			if client.registered:
 				w = self.getServerWindow(client)
@@ -1393,7 +1393,7 @@ class Merk(QMainWindow):
 			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def receivedMOTD(self,client,motd):
-		plugins.call(self,"motd",text="\n".join(motd),window=self.getServerWindow(client))
+		plugins.call(self,"motd",text="\n".join(motd),client=client)
 		w = self.getServerWindow(client)
 		if w:
 			if config.DISPLAY_MOTD_AS_RAW_TEXT:
@@ -1410,12 +1410,11 @@ class Merk(QMainWindow):
 			w.refreshInfoMenu()
 
 	def serverMessage(self,client,msg):
+		plugins.call(self,"server",client=client,message=msg)
 		w = self.getServerWindow(client)
 		if w:
 			t = Message(SERVER_MESSAGE,'',msg)
 			w.writeText(t)
-
-			plugins.call(self,"server",message=msg,window=w)
 
 	def joined(self,client,channel):
 		
