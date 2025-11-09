@@ -31,14 +31,14 @@ from PyQt5 import QtCore
 from ..resources import *
 from .. import commands
 from .. import config
-from ..dialog import *
+from .. import dialog
 
 import uuid
 
 class Window(QMainWindow):
 
 	def add_key(self):
-		x = SetBind(self)
+		x = dialog.SetBind(self)
 		e = x.get_script_information(self)
 		if e:
 			seq = e[0]
@@ -55,25 +55,14 @@ class Window(QMainWindow):
 			else:
 				self.statusBar.showMessage(f"\"{seq}\" was not added")
 
-			self.keys.clear()
-			for e in self.parent.shortcuts:
-				item = QListWidgetItem(f"{e[0]} - {e[2]}")
-				item.seq = f"{e[0]}"
-				item.cmd = f"{e[2]}"
-				self.keys.addItem(item)
+			self.refresh()
 
 	def remove_key(self):
 		selected_item = self.keys.currentItem()
+		if selected_item.dummy: return
 		if selected_item:
 			self.parent.remove_shortcut(selected_item.seq)
-
-			self.keys.clear()
-			for e in self.parent.shortcuts:
-				item = QListWidgetItem(f"{e[0]} - {e[2]}")
-				item.seq = f"{e[0]}"
-				item.cmd = f"{e[2]}"
-				self.keys.addItem(item)
-
+			self.refresh()
 			self.statusBar.showMessage("Hotkey removed")
 
 	def refresh(self):
@@ -82,8 +71,14 @@ class Window(QMainWindow):
 			item = QListWidgetItem(f"{e[0]} - {e[2]}")
 			item.seq = f"{e[0]}"
 			item.cmd = f"{e[2]}"
+			item.dummy = False
 			self.keys.addItem(item)
 		self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
+
+		if len(self.parent.shortcuts)==0:
+			item = QListWidgetItem(f"No hotkeys found")
+			item.dummy = True
+			self.keys.addItem(item)
 
 	def closeEvent(self, event):
 
@@ -115,12 +110,6 @@ class Window(QMainWindow):
 		self.keys.setTextElideMode(Qt.ElideRight)
 		self.keys.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-		for e in self.parent.shortcuts:
-			item = QListWidgetItem(f"{e[0]} - {e[2]}")
-			item.seq = f"{e[0]}"
-			item.cmd = f"{e[2]}"
-			self.keys.addItem(item)
-
 		self.add = QPushButton("")
 		self.add.setIcon(QIcon(PLUS_ICON))
 		self.add.setToolTip("Add hotkey")
@@ -150,6 +139,8 @@ class Window(QMainWindow):
 
 		self.statusBar = QStatusBar(self)
 		self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
+
+		self.refresh()
 
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(self.save)

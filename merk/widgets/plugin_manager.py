@@ -48,6 +48,7 @@ class Window(QMainWindow):
 	def remove_plugin(self):
 
 		item = self.plugin_list.currentItem()
+		if item.dummy: return
 
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
@@ -125,14 +126,21 @@ class Window(QMainWindow):
 			item.VERSION = obj.VERSION
 			item.AUTHOR = obj.AUTHOR
 			item.SOURCE = obj.SOURCE
+			item.dummy = False
 			others.append(item)
 
 			others = sorted(others,key=operator.attrgetter("NAME","VERSION"))
 		for e in others:
 			self.plugin_list.addItem(e)
 
+		if len(others)==0:
+			item = QListWidgetItem(f"No plugins installed")
+			item.dummy = True
+			self.plugin_list.addItem(item)
+
 	def on_item_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
+		if item.dummy: return
 		self.parent.newEditorPluginFile(item.filename)
 
 	def import_plugin(self):

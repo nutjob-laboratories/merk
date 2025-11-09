@@ -31,14 +31,14 @@ from PyQt5 import QtCore
 from ..resources import *
 from .. import commands
 from .. import config
-from ..dialog import *
+from .. import dialog
 
 import uuid
 
 class Window(QMainWindow):
 
 	def add_key(self):
-		i = GetIgnore('',self)
+		i = dialog.GetIgnore('',self)
 		if i:
 
 			config.IGNORE_LIST.append(i)
@@ -47,16 +47,13 @@ class Window(QMainWindow):
 				self.parent.reRenderAll(True)
 				self.parent.rerenderUserlists()
 
-			self.keys.clear()
-			for e in config.IGNORE_LIST:
-				item = QListWidgetItem(f"{e}")
-				item.ignore = f"{e}"
-				self.keys.addItem(item)
+			self.refresh()
 
 			self.statusBar.showMessage("Ignore added")
 
 	def remove_key(self):
 		selected_item = self.keys.currentItem()
+		if selected_item.dummy: return
 		if selected_item:
 			i = selected_item.ignore
 			config.IGNORE_LIST.remove(i)
@@ -65,11 +62,7 @@ class Window(QMainWindow):
 				self.parent.reRenderAll(True)
 				self.parent.rerenderUserlists()
 
-			self.keys.clear()
-			for e in config.IGNORE_LIST:
-				item = QListWidgetItem(f"{e}")
-				item.ignore = f"{e}"
-				self.keys.addItem(item)
+			self.refresh()
 
 			self.statusBar.showMessage("Ignore removed")
 
@@ -82,12 +75,19 @@ class Window(QMainWindow):
 		for e in config.IGNORE_LIST:
 			item = QListWidgetItem(f"{e}")
 			item.ignore = f"{e}"
+			item.dummy = False
 			self.keys.addItem(item)
 		self.statusBar.showMessage(f"Displaying {len(config.IGNORE_LIST)} ignores")
 
+		if len(config.IGNORE_LIST)==0:
+			item = QListWidgetItem(f"No users ignored")
+			item.dummy = True
+			self.keys.addItem(item)
+
 	def on_item_clicked(self, item):
+		if item.dummy: return
 		old = item.ignore
-		i = GetIgnore(item.ignore,self)
+		i = dialog.GetIgnore(item.ignore,self)
 		if i:
 			config.IGNORE_LIST.remove(old)
 			config.IGNORE_LIST.append(i)
@@ -139,11 +139,6 @@ class Window(QMainWindow):
 
 		self.keys.itemDoubleClicked.connect(self.on_item_clicked)
 
-		for e in config.IGNORE_LIST:
-			item = QListWidgetItem(f"{e}")
-			item.ignore = f"{e}"
-			self.keys.addItem(item)
-
 		self.add = QPushButton("")
 		self.add.setIcon(QIcon(PLUS_ICON))
 		self.add.setToolTip("Add ignore")
@@ -177,6 +172,8 @@ class Window(QMainWindow):
 		self.doUpdate = QCheckBox("Automatically update chats",self)
 		self.doUpdate.stateChanged.connect(self.clickUpdate)
 		self.doUpdate.setChecked(True)
+
+		self.refresh()
 
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(self.add)
