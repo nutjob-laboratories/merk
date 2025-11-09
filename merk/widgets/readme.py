@@ -41,6 +41,8 @@ class Window(QMainWindow):
 		self.parent.closeSubWindow(self.subwindow_id)
 		self.parent.readme_window = None
 
+		self.parent.MDI.activatePreviousSubWindow()
+
 		event.accept()
 		self.close()
 
