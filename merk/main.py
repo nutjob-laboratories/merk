@@ -3150,9 +3150,8 @@ class Merk(QMainWindow):
 					self.MDI.removeSubWindow(window)
 					if hasattr(c,"hide"):
 						c.hide()
-			if hasattr(c,"window_type"):
-				if c.window_type==LOG_MANAGER_WINDOW:
-					self.MDI.activatePreviousSubWindow()
+			
+			self.MDI.activatePreviousSubWindow()
 
 		self.buildWindowsMenu()
 

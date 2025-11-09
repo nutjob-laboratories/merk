@@ -172,7 +172,6 @@ class Window(QMainWindow):
 
 		# Make sure the MDI window is closed
 		self.parent.closeSubWindow(self.subwindow_id)
-		self.parent.MDI.activatePreviousSubWindow()
 
 		event.accept()
 		self.close()
