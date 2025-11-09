@@ -3151,6 +3151,19 @@ class Merk(QMainWindow):
 					if hasattr(c,"hide"):
 						c.hide()
 			
+			if hasattr(c,"window_type"):
+				# If the editor was just closed, is in
+				# "plugin mode", and the plugin manager
+				# is open, move focus to the plugin manager
+				# instead of another subwindow
+				if c.window_type==EDITOR_WINDOW:
+					if self.plugin_manager!=None:
+						if hasattr(c,"python"):
+							if c.python==True:
+								self.plugin_manager.activateWindow()
+								self.buildWindowsMenu()
+								return
+
 			self.MDI.activatePreviousSubWindow()
 
 		self.buildWindowsMenu()
