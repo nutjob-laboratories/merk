@@ -49,6 +49,34 @@ class Window():
 		else:
 			self._window = window
 
+	def status(self,status=None):
+		if status==None:
+			if self._window.window_type!=CHANNEL_WINDOW: return 'normal'
+			if self._window.owner: return 'owner'
+			if self._window.admin: return 'admin'
+			if self._window.operator: return 'operator'
+			if self._window.halfop: return 'halfop'
+			if self._window.protected: return 'protected'
+			if self._window.voiced: return 'voiced'
+
+			return 'normal'
+
+		if self._window.window_type!=CHANNEL_WINDOW: return False
+		if self._window.owner and status.lower()=='owner': return True
+		if self._window.admin and status.lower()=='admin': return True
+		if self._window.operator and status.lower()=='operator': return True
+		if self._window.halfop and status.lower()=='halfop': return True
+		if self._window.protected and status.lower()=='protected': return True
+		if self._window.voiced and status.lower()=='voiced': return True
+		if status.lower()=='normal': return True
+		return False
+
+	def title(self,title=None):
+		if title==None:
+			self._window.setWindowTitle(self._window.name)
+		else:
+			self._window.setWindowTitle(title)
+
 	def script(self,script,arguments):
 		commands.executeScript(self._gui,self._window,script,None,arguments)
 
@@ -273,7 +301,7 @@ EVENTS = [
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
-	'server', 'subwindow', 'close'
+	'server', 'subwindow', 'close', 'me'
 ]
 
 def call(gui,method,**arguments):
@@ -310,13 +338,15 @@ def call(gui,method,**arguments):
 	if method=='server' and not config.PLUGIN_SERVER: return
 	if method=='subwindow' and not config.PLUGIN_SUBWINDOW: return
 	if method=='close' and not config.PLUGIN_CLOSE: return
+	if method=='me' and not config.PLUGIN_ME: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):
 			m = getattr(obj,method)
 
 			if 'window' in arguments:
-				arguments["window"] = Window(gui,arguments["window"])
+				if arguments['window']!=None:
+					arguments["window"] = Window(gui,arguments["window"])
 
 			m(**arguments)
 

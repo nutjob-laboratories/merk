@@ -363,6 +363,13 @@ class IRC_Connection(irc.IRCClient):
 		super().quit(message)
 
 	def msg(self, user, message, length=None):
+
+		window = self.gui.getWindow(user,self)
+		if window:
+			plugins.call(self.gui,"me",target=user,message=message,window=window,client=self)
+		else:
+			plugins.call(self.gui,"me",target=user,message=message,window=None,client=self)
+
 		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
 
 		# Send the first part of the message immediately

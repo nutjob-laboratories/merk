@@ -536,6 +536,26 @@ class ExamplePlugin(Plugin):
     def lost(self,**args):
         client = args["client"]
 
+    # |====|
+    # | me |
+    # |====|
+    #
+    # This event is triggered whenever MERK sends a channel or
+    # private chat message. If the target does not have a subwindow
+    # open for it, the "window" argument will be set to None.
+    #
+    # Arguments:
+    #   window = MERK Window
+    #   client = The Twisted IRC object that sent the message
+    #   target = The channel or user the message was sent to
+    #   message = The message
+    #
+    def me(self,**args):
+        window = args["window"]
+        client = args["client"]
+        target = args["target"]
+        message = args["message"]
+
     # |=========|
     # | message |
     # |=========|

@@ -358,9 +358,11 @@ ENABLE_PLUGIN_EDITOR = True
 PLUGIN_SERVER = True
 PLUGIN_SUBWINDOW = True
 PLUGIN_CLOSE = True
+PLUGIN_ME = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_me_event": PLUGIN_ME,
 		"enable_plugin_close_event": PLUGIN_CLOSE,
 		"enable_plugin_subwindow_event": PLUGIN_SUBWINDOW,
 		"enable_plugin_server_event": PLUGIN_SERVER,
@@ -685,6 +687,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_me_event" in settings:
+		settings["enable_plugin_me_event"] = PLUGIN_ME
 	if not "enable_plugin_close_event" in settings:
 		settings["enable_plugin_close_event"] = PLUGIN_CLOSE
 	if not "enable_plugin_subwindow_event" in settings:
@@ -1646,6 +1650,7 @@ def load_settings(filename):
 	global PLUGIN_SERVER
 	global PLUGIN_SUBWINDOW
 	global PLUGIN_CLOSE
+	global PLUGIN_ME
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1655,6 +1660,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_ME = settings["enable_plugin_me_event"]
 		PLUGIN_CLOSE = settings["enable_plugin_close_event"]
 		PLUGIN_SUBWINDOW = settings["enable_plugin_subwindow_event"]
 		PLUGIN_SERVER = settings["enable_plugin_server_event"]
