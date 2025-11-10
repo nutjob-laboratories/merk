@@ -49,6 +49,9 @@ class Window():
 		else:
 			self._window = window
 
+	def script(self,script,arguments):
+		commands.executeScript(self._gui,self._window,script,None,arguments)
+
 	def resize(self,width,height):
 		self._window.resize(width,height)
 
