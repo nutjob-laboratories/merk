@@ -365,7 +365,7 @@ class ExamplePlugin(Plugin):
     # | disconnect |
     # |============|
     #
-    # This event is triggered whenever a MERK issues the "quit"
+    # This event is triggered whenever MERK issues the "quit"
     # command and disconnects from an IRC server.
     #
     # Arguments:

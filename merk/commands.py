@@ -159,6 +159,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"bind save": config.ISSUE_COMMAND_SYMBOL+"bind save",
 			config.ISSUE_COMMAND_SYMBOL+"window hotkey": config.ISSUE_COMMAND_SYMBOL+"window hotkey",
 			config.ISSUE_COMMAND_SYMBOL+"window ignore": config.ISSUE_COMMAND_SYMBOL+"window ignore",
+			config.ISSUE_COMMAND_SYMBOL+"window plugin": config.ISSUE_COMMAND_SYMBOL+"window plugin",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -166,6 +167,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window hotkey",'')
 	if not config.ENABLE_IGNORE:
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window ignore",'')
+	if not config.ENABLE_PLUGINS:
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window plugin",'')
 
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
@@ -348,7 +351,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>resize</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>hotkey</b>, <b>ignore</b>, <b>restart</b>, <b>next</b>, <b>previous</b>, <b>cascade</b>, and <b>tile</b>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>resize</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>hotkey</b>, <b>ignore</b>, <b>plugin</b>, <b>restart</b>, <b>next</b>, <b>previous</b>, <b>cascade</b>, and <b>tile</b>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
@@ -2943,6 +2946,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			return True
 
+		# /window plugin
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='plugin':
+				if not config.ENABLE_PLUGINS:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window plugin: Plugins are disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				gui.openPlugin()
+				return True
+
 		# /window hotkey
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='hotkey':
@@ -2956,8 +2975,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',f"Hotkeys are disabled")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-
-
 				gui.openHotkeys()
 				return True
 

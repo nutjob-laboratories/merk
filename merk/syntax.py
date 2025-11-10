@@ -229,6 +229,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window restart",
 			cmdsymbol+"window ignore",
 			cmdsymbol+"style",
+			cmdsymbol+"window plugin",
 		]
 
 		script_only = [
