@@ -49,6 +49,37 @@ class Window():
 		else:
 			self._window = window
 
+	def resize(self,width,height):
+		self._window.resize(width,height)
+
+	def move(self,x,y):
+		if self._gui.is_valid_position(self._window,x,y):
+			self._window.move(x,y)
+			return True
+		else:
+			return False
+
+	def maximized(self):
+		return self._window.isMaximized()
+
+	def max(self):
+		self._window.showMaximized()
+
+	def minimized(self):
+		return self._window.isMinimized()
+
+	def mini(self):
+		self._window.showMinimized()
+
+	def hide(self):
+		self._window.hide()
+
+	def show(self):
+		self._window.show()
+
+	def restore(self):
+		self._window.showNormal()
+
 	def name(self):
 		return self._window.name
 
