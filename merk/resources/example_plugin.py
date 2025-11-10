@@ -388,6 +388,21 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         message = args["message"]
 
+    # |=======|
+    # | error |
+    # |=======|
+    #
+    # This event is triggered whenever MERK receives an error
+    # message from an IRC server.
+    #
+    # Arguments:
+    #   client = The Twisted IRC object that triggered the event
+    #   message = The error message
+    #
+    def error(self,**args):
+        client = args["client"]
+        message = args["message"]
+
     # |========|
     # | invite |
     # |========|

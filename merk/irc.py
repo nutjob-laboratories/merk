@@ -994,62 +994,62 @@ class IRC_Connection(irc.IRCClient):
 
 		if "Cannot join channel (+k)" in line2:
 			self.gui.receivedError(self,"Cannot join channel (wrong or missing password)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Cannot join channel (wrong or missing password)")
 		if "Cannot join channel (+l)" in line2:
 			self.gui.receivedError(self,"Cannot join channel (channel is full)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Cannot join channel (channel is full)")
 		if "Cannot join channel (+b)" in line2:
 			self.gui.receivedError(self,"Cannot join channel (banned)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Cannot join channel (banned)")
 		if "Cannot join channel (+i)" in line2:
 			self.gui.receivedError(self,"Cannot join channel (channel is invite only)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Cannot join channel (channel is invite only)")
 		if "not an IRC operator" in line2:
 			self.gui.receivedError(self,"Permission denied (you're not an IRC operator)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Permission denied (you're not an IRC operator)")
 		if "not channel operator" in line2:
 			if not self.is_listing_channels:
 				self.gui.receivedError(self,"Permission denied (you're not channel operator)")
-			pass
+				plugins.call(self.gui,"error",client=self,message="Permission denied (you're not channel operator)")
 		if "is already on channel" in line2:
 			self.gui.receivedError(self,"Invite failed (user is already in channel)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Invite failed (user is already in channel)")
 		if "not on that channel" in line2:
 			self.gui.receivedError(self,"Permission denied (you're not in channel)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Permission denied (you're not in channel)")
 		if "aren't on that channel" in line2:
 			self.gui.receivedError(self,"Permission denied (target user is not in channel)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Permission denied (target user is not in channel)")
 		if "have not registered" in line2:
 			self.gui.receivedError(self,"You're not registered")
-			pass
+			plugins.call(self.gui,"error",client=self,message="You're not registered")
 		if "may not reregister" in line2:
 			self.gui.receivedError(self,"You can't reregister")
-			pass
+			plugins.call(self.gui,"error",client=self,message="You can't reregister")
 		if "enough parameters" in line2:
 			self.gui.receivedError(self,"Not enough parameters supplied to command")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Not enough parameters supplied to command")
 		if "isn't among the privileged" in line2:
 			self.gui.receivedError(self,"Registration refused (server isn't setup to allow connections from your host)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Registration refused (server isn't setup to allow connections from your host)")
 		if "Password incorrect" in line2:
 			self.gui.receivedError(self,"Permission denied (incorrect password)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Permission denied (incorrect password)")
 		if "banned from this server" in line2:
 			self.gui.receivedError(self,"You are banned from this server")
-			pass
+			plugins.call(self.gui,"error",client=self,message="You are banned from this server")
 		if "kill a server" in line2:
 			self.gui.receivedError(self,"Permission denied (you can't kill a server)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Permission denied (you can't kill a server)")
 		if "O-lines for your host" in line2:
 			self.gui.receivedError(self,"No O-lines for your host")
-			pass
+			plugins.call(self.gui,"error",client=self,message="No O-lines for your host")
 		if "Unknown MODE flag" in line2:
 			self.gui.receivedError(self,"Unknown MODE flag")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Unknown MODE flag")
 		if "change mode for other users" in line2:
 			self.gui.receivedError(self,"Permission denied (can't change mode for other users)")
-			pass
+			plugins.call(self.gui,"error",client=self,message="Permission denied (can't change mode for other users)")
 
 		return irc.IRCClient.lineReceived(self, line)
 
