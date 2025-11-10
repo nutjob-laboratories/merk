@@ -3152,6 +3152,10 @@ class Merk(QMainWindow):
 						c.hide()
 			
 			if hasattr(c,"window_type"):
+
+				if c.window_type==SERVER_WINDOW or c.window_type==CHANNEL_WINDOW or c.window_type==PRIVATE_WINDOW:
+					plugins.call(self,"close",name=c.name)
+
 				# If the editor was just closed, is in
 				# "plugin mode", and the plugin manager
 				# is open, move focus to the plugin manager

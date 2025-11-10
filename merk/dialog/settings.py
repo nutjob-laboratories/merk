@@ -434,6 +434,7 @@ class Dialog(QDialog):
 			self.plugEditor.setEnabled(True)
 			self.plugServer.setEnabled(True)
 			self.plugSubwindow.setEnabled(True)
+			self.plugClose.setEnabled(True)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -468,6 +469,7 @@ class Dialog(QDialog):
 			self.plugEditor.setEnabled(False)
 			self.plugServer.setEnabled(False)
 			self.plugSubwindow.setEnabled(False)
+			self.plugClose.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4554,6 +4556,10 @@ class Dialog(QDialog):
 		if config.PLUGIN_SUBWINDOW: self.plugSubwindow.setChecked(True)
 		self.plugSubwindow.stateChanged.connect(self.changedSetting)
 
+		self.plugClose = QCheckBox("close",self)
+		if config.PLUGIN_CLOSE: self.plugClose.setChecked(True)
+		self.plugClose.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4588,6 +4594,7 @@ class Dialog(QDialog):
 			self.plugEditor.setEnabled(False)
 			self.plugServer.setEnabled(False)
 			self.plugSubwindow.setEnabled(False)
+			self.plugClose.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAction)
@@ -4596,53 +4603,53 @@ class Dialog(QDialog):
 
 		row2Layout = QHBoxLayout()
 		row2Layout.addWidget(self.plugBack)
+		row2Layout.addWidget(self.plugClose)
 		row2Layout.addWidget(self.plugConnected)
-		row2Layout.addWidget(self.plugConnecting)
 		
 		row3Layout = QHBoxLayout()
+		row3Layout.addWidget(self.plugConnecting)
 		row3Layout.addWidget(self.plugCtick)
 		row3Layout.addWidget(self.plugDisconnect)
-		row3Layout.addWidget(self.plugInit)
 
 		row4Layout = QHBoxLayout()
+		row4Layout.addWidget(self.plugInit)
 		row4Layout.addWidget(self.plugInvite)
 		row4Layout.addWidget(self.plugJoin)
-		row4Layout.addWidget(self.plugJoined)
 
 		row5Layout = QHBoxLayout()
+		row5Layout.addWidget(self.plugJoined)
 		row5Layout.addWidget(self.plugKick)
 		row5Layout.addWidget(self.plugKicked)
-		row5Layout.addWidget(self.plugLeft)
 
 		row6Layout = QHBoxLayout()
+		row6Layout.addWidget(self.plugLeft)
 		row6Layout.addWidget(self.plugIn)
 		row6Layout.addWidget(self.plugOut)
-		row6Layout.addWidget(self.plugLost)
 
 		row7Layout = QHBoxLayout()
+		row7Layout.addWidget(self.plugLost)
 		row7Layout.addWidget(self.plugMessage)
 		row7Layout.addWidget(self.plugMode)
-		row7Layout.addWidget(self.plugMotd)
 
 		row8Layout = QHBoxLayout()
+		row8Layout.addWidget(self.plugMotd)
 		row8Layout.addWidget(self.plugNick)
 		row8Layout.addWidget(self.plugNotice)
-		row8Layout.addWidget(self.plugPart)
 
 		row9Layout = QHBoxLayout()
+		row9Layout.addWidget(self.plugPart)
 		row9Layout.addWidget(self.plugPing)
 		row9Layout.addWidget(self.plugQuit)
-		row9Layout.addWidget(self.plugRename)
 
 		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugRename)
 		row10Layout.addWidget(self.plugServer)
 		row10Layout.addWidget(self.plugSubwindow)
-		row10Layout.addWidget(self.plugTick)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugTick)
 		row11Layout.addWidget(self.plugTopic)
 		row11Layout.addWidget(self.plugUnmode)
-		row11Layout.addWidget(QLabel(' '))
 
 		plugLayout = QHBoxLayout()
 		plugLayout.addStretch()
@@ -5439,6 +5446,7 @@ class Dialog(QDialog):
 		config.ENABLE_PLUGIN_EDITOR = self.plugEditor.isChecked()
 		config.PLUGIN_SERVER = self.plugServer.isChecked()
 		config.PLUGIN_SUBWINDOW = self.plugSubwindow.isChecked()
+		config.PLUGIN_CLOSE = self.plugClose.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

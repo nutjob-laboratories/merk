@@ -320,6 +320,18 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         user = args["user"]
 
+    # |=======|
+    # | close |
+    # |=======|
+    #
+    # This event is triggered whenever a chat subwindow is closed.
+    #
+    # Arguments:
+    #   name = The name of the subwindow
+    #
+    def close(self,**args):
+        name = args["name"]
+
     # |===========|
     # | connected |
     # |===========|

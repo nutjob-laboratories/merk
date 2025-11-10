@@ -239,7 +239,7 @@ EVENTS = [
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
-	'server', 'subwindow'
+	'server', 'subwindow', 'close'
 ]
 
 def call(gui,method,**arguments):
@@ -275,6 +275,7 @@ def call(gui,method,**arguments):
 	if method=='motd' and not config.PLUGIN_MOTD: return
 	if method=='server' and not config.PLUGIN_SERVER: return
 	if method=='subwindow' and not config.PLUGIN_SUBWINDOW: return
+	if method=='close' and not config.PLUGIN_CLOSE: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):
