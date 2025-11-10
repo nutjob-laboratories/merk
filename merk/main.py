@@ -3202,6 +3202,8 @@ class Merk(QMainWindow):
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
+		plugins.call(self,"subwindow",window=w.widget())
+
 		return w
 
 	def newServerWindow(self,name,client):
@@ -3222,6 +3224,8 @@ class Merk(QMainWindow):
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
+		plugins.call(self,"subwindow",window=w.widget())
+
 		return w
 
 	def newPrivateWindow(self,name,client):
@@ -3241,6 +3245,8 @@ class Merk(QMainWindow):
 			w.setOption(QMdiSubWindow.RubberBandMove, True)
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		plugins.call(self,"subwindow",window=w.widget())
 
 		return w
 

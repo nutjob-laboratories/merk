@@ -695,6 +695,19 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         message = args["message"]
 
+    # |===========|
+    # | subwindow |
+    # |===========|
+    #
+    # This event is triggered whenever a new chat subwindow is
+    # created.
+    #
+    # Arguments:
+    #   window = MERK Window
+    #
+    def subwindow(self,**args):
+        window = args["window"]
+
     # |======|
     # | tick |
     # |======|

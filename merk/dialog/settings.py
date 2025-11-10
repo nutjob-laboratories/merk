@@ -433,6 +433,7 @@ class Dialog(QDialog):
 			self.plugMotd.setEnabled(True)
 			self.plugEditor.setEnabled(True)
 			self.plugServer.setEnabled(True)
+			self.plugSubwindow.setEnabled(True)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -466,6 +467,7 @@ class Dialog(QDialog):
 			self.plugMotd.setEnabled(False)
 			self.plugEditor.setEnabled(False)
 			self.plugServer.setEnabled(False)
+			self.plugSubwindow.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4548,6 +4550,10 @@ class Dialog(QDialog):
 		if config.PLUGIN_SERVER: self.plugServer.setChecked(True)
 		self.plugServer.stateChanged.connect(self.changedSetting)
 
+		self.plugSubwindow = QCheckBox("subwindow",self)
+		if config.PLUGIN_SUBWINDOW: self.plugSubwindow.setChecked(True)
+		self.plugSubwindow.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4581,6 +4587,7 @@ class Dialog(QDialog):
 			self.plugMotd.setEnabled(False)
 			self.plugEditor.setEnabled(False)
 			self.plugServer.setEnabled(False)
+			self.plugSubwindow.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAction)
@@ -4629,12 +4636,13 @@ class Dialog(QDialog):
 
 		row10Layout = QHBoxLayout()
 		row10Layout.addWidget(self.plugServer)
+		row10Layout.addWidget(self.plugSubwindow)
 		row10Layout.addWidget(self.plugTick)
-		row10Layout.addWidget(self.plugTopic)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugTopic)
 		row11Layout.addWidget(self.plugUnmode)
-		row11Layout.addStretch()
+		row11Layout.addWidget(QLabel(' '))
 
 		plugLayout = QHBoxLayout()
 		plugLayout.addStretch()
@@ -5430,6 +5438,7 @@ class Dialog(QDialog):
 		config.PLUGIN_MOTD = self.plugMotd.isChecked()
 		config.ENABLE_PLUGIN_EDITOR = self.plugEditor.isChecked()
 		config.PLUGIN_SERVER = self.plugServer.isChecked()
+		config.PLUGIN_SUBWINDOW = self.plugSubwindow.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

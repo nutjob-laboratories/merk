@@ -63,7 +63,8 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
 					'def kick', 'def kicked', 'def tick', 'def mode', 'def unmode', 'def quit', 'def line_in', 'def line_out', 
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
-					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd'
+					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd',
+					'def server', 'def subwindow'
 					]
 		for word in keywords:
 			pattern = QRegExp(r'\b' + word + r'\b')
