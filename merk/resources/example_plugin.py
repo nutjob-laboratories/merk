@@ -51,6 +51,46 @@ EXAMPLE_PLUGIN="""#
 # They can be called from the "self" object passed to
 # every event in the plugin.
 #
+#    |================|
+#    | all_channels() |
+#    |================|
+# 
+#    Returns a list of all channel subwindows. If no
+#    channel windows are open, this list will be empty.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      list (A list of MERK Windows)
+#
+#    |===============|
+#    | all_masters() |
+#    |===============|
+# 
+#    Returns a list of all server subwindows. If no
+#    server windows are open, this list will be empty.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      list (A list of MERK Windows)
+#
+#    |================|
+#    | all_privates() |
+#    |================|
+# 
+#    Returns a list of all private chat subwindows. If
+#    no private chat windows are open, this list will be
+#    empty.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      list (A list of MERK Windows)
+#
 #    |===============|
 #    | all_windows() |
 #    |===============|
@@ -91,6 +131,19 @@ EXAMPLE_PLUGIN="""#
 #
 #    Returns:
 #      MERK Window
+#
+#    |============|
+#    | channels() |
+#    |============|
+# 
+#    Returns list of MERK windows for all channel windows
+#    on a client. Returns an empty list if none are found.
+# 
+#    Arguments:
+#      client = A Twisted IRC client object
+#
+#    Returns:
+#      List of MERK Windows
 #
 #    |========|
 #    | find() |
@@ -237,6 +290,19 @@ EXAMPLE_PLUGIN="""#
 #
 #    Returns:
 #      MERK Window
+#
+#    |============|
+#    | privates() |
+#    |============|
+# 
+#    Returns list of MERK windows for all private chat windows
+#    on a client. Returns an empty list if none are found.
+# 
+#    Arguments:
+#      client = A Twisted IRC client object
+#
+#    Returns:
+#      List of MERK Windows
 #
 #    |===========|
 #    | restore() |

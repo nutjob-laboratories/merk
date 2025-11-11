@@ -219,6 +219,51 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def all_masters(self):
+		if self._gui!=None:
+			output = []
+			for w in self._gui.getTotalWindows():
+				if w.window_type==SERVER_WINDOW:
+					output.append(Window(self._gui,w))
+			return output
+		return []
+
+	def all_privates(self):
+		if self._gui!=None:
+			output = []
+			for w in self._gui.getTotalWindows():
+				if w.window_type==PRIVATE_WINDOW:
+					output.append(Window(self._gui,w))
+			return output
+		return []
+
+	def privates(self,client):
+		if self._gui!=None:
+			output = []
+			for w in self._gui.getAllConnectedWindows(client):
+				if w.window_type==PRIVATE_WINDOW:
+					output.append(Window(self._gui,w))
+			return output
+		return []
+
+	def all_channels(self):
+		if self._gui!=None:
+			output = []
+			for w in self._gui.getTotalWindows():
+				if w.window_type==CHANNEL_WINDOW:
+					output.append(Window(self._gui,w))
+			return output
+		return []
+
+	def channels(self,client):
+		if self._gui!=None:
+			output = []
+			for w in self._gui.getAllConnectedWindows(client):
+				if w.window_type==CHANNEL_WINDOW:
+					output.append(Window(self._gui,w))
+			return output
+		return []
+
 	def restore(self):
 		self._gui.showNormal()
 
