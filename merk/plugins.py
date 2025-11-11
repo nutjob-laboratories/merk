@@ -99,7 +99,7 @@ class Window():
 	def minimized(self):
 		return self._window.isMinimized()
 
-	def mini(self):
+	def min(self):
 		self._window.showMinimized()
 
 	def hide(self):
@@ -219,6 +219,21 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def restore(self):
+		self._gui.showNormal()
+
+	def maximized(self):
+		return self._gui.isMaximized()
+
+	def max(self):
+		self._gui.showMaximized()
+
+	def minimized(self):
+		return self._gui.isMinimized()
+
+	def min(self):
+		self._gui.showMinimized()
+
 	def find(self,filename,extension=None):
 		return commands.find_file(filename,extension)
 
@@ -290,12 +305,6 @@ class Plugin():
 		else:
 			return []
 
-def init(obj):
-	if not config.ENABLE_PLUGINS: return
-	if not config.PLUGIN_INIT: return
-	if hasattr(obj,"init"):
-		obj.init()
-
 EVENTS = [
 	'message', 'notice', 'action', 'left', 'joined', 'part', 'join', 
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
@@ -303,6 +312,12 @@ EVENTS = [
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
 	'server', 'subwindow', 'close', 'me', 'error'
 ]
+
+def init(obj):
+	if not config.ENABLE_PLUGINS: return
+	if not config.PLUGIN_INIT: return
+	if hasattr(obj,"init"):
+		obj.init()
 
 def call(gui,method,**arguments):
 	if not config.ENABLE_PLUGINS: return

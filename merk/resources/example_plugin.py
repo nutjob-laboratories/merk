@@ -174,6 +174,56 @@ EXAMPLE_PLUGIN="""#
 #    Returns:
 #      MERK Window
 #
+#    |=======|
+#    | max() |
+#    |=======|
+# 
+#    Maximizes the MERK window.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      Nothing
+#
+#    |=============|
+#    | maximized() |
+#    |=============|
+# 
+#    Returns True if the MERK window is maximized, and
+#    False if not.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      Boolean
+#
+#    |=======|
+#    | min() |
+#    |=======|
+# 
+#    Minimizes the MERK window.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      Nothing
+#
+#    |=============|
+#    | minimized() |
+#    |=============|
+# 
+#    Returns True if the MERK window is minimized, and
+#    False if not.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      Boolean
+#
 #    |===========|
 #    | private() |
 #    |===========|
@@ -187,6 +237,18 @@ EXAMPLE_PLUGIN="""#
 #
 #    Returns:
 #      MERK Window
+#
+#    |===========|
+#    | restore() |
+#    |===========|
+# 
+#    Restores the MERK window.
+# 
+#    Arguments:
+#      None
+#
+#    Returns:
+#      Nothing
 #
 #    |=================|
 #    | windows(client) |
