@@ -4548,7 +4548,7 @@ class Dialog(QDialog):
 		if config.PLUGIN_MOTD: self.plugMotd.setChecked(True)
 		self.plugMotd.stateChanged.connect(self.changedSetting)
 
-		self.plugEditor = QCheckBox("Enable plugin editor",self)
+		self.plugEditor = QCheckBox("Enable editor",self)
 		if config.ENABLE_PLUGIN_EDITOR: self.plugEditor.setChecked(True)
 		self.plugEditor.stateChanged.connect(self.changedSetting)
 
@@ -4675,11 +4675,8 @@ class Dialog(QDialog):
 		plugLayout.addStretch()
 		plugLayout.addWidget(self.enablePlugins)
 		plugLayout.addStretch()
-
-		plugLayout2 = QHBoxLayout()
-		plugLayout2.addStretch()
-		plugLayout2.addWidget(self.plugEditor)
-		plugLayout2.addStretch()
+		plugLayout.addWidget(self.plugEditor)
+		plugLayout.addStretch()
 
 		self.pluginDescription = QLabel(f"""
 			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
@@ -4687,7 +4684,6 @@ class Dialog(QDialog):
 			Plugins, just like <b>{APPLICATION_NAME}</b>, require Python 3.9 or greater.
 			<br>
 			</small>
-			
 			""")
 		self.pluginDescription.setWordWrap(True)
 		self.pluginDescription.setAlignment(Qt.AlignJustify)
@@ -4712,7 +4708,6 @@ class Dialog(QDialog):
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
 		pluginsLayout.addWidget(self.pluginDescription)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addLayout(plugLayout2)
 		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
 		pluginsLayout.addWidget(self.eventDescription)
