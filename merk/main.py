@@ -2070,7 +2070,7 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def receivedError(self,client,message):
-
+		plugins.call(self,"error",client=client,message=message)
 		if not client.registered: return
 
 		t = Message(ERROR_MESSAGE,'',message)
