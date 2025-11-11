@@ -1217,11 +1217,12 @@ class Merk(QMainWindow):
 	# |==================|
 
 	def connectionMade(self,client):
-		plugins.call(self,"connecting",client=client)
 		w = self.newServerWindow(client.server+":"+str(client.port),client)
 		c = w.widget()
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
 		c.writeText(t)
+
+		plugins.call(self,"connecting",client=client)
 
 	def connectionLost(self,client):
 		plugins.call(self,"lost",client=client)
@@ -1604,6 +1605,8 @@ class Merk(QMainWindow):
 						c.writeText(t)
 						plugins.call(self,"message",user=user,channel=target,message=msg,window=c)
 						return
+			else:
+				plugins.call(self,"message",user=user,channel=target,message=msg,window=None)
 
 			# Client has received a private message, and will
 			# NOT see it, so write it to the current window
@@ -1664,6 +1667,8 @@ class Merk(QMainWindow):
 						c.writeText(t)
 						plugins.call(self,"action",user=user,channel=target,message=msg,window=c)
 						return
+			else:
+				plugins.call(self,"action",user=user,channel=target,message=msg,window=None)
 
 	def noticed(self,client,user,target,msg):
 
@@ -1732,6 +1737,8 @@ class Merk(QMainWindow):
 						t = Message(NOTICE_MESSAGE,user,msg)
 						c.writeText(t)
 						plugins.call(self,"notice",user=user,channel=target,message=msg,window=c)
+			else:
+				plugins.call(self,"notice",user=user,channel=target,message=msg,window=None)
 
 		# Write the notice to the server window
 		w = self.getServerWindow(client)
@@ -2080,8 +2087,6 @@ class Merk(QMainWindow):
 
 	def uptime(self,client,uptime):
 
-		plugins.call(self,"tick",client=client,uptime=uptime)
-
 		if config.USE_AUTOAWAY:
 			if client.last_interaction!=-1:
 				if client.last_interaction>config.AUTOAWAY_TIME:
@@ -2105,6 +2110,8 @@ class Merk(QMainWindow):
 			c = w.widget()
 			if hasattr(c,"tickUptime"):
 				c.tickUptime(uptime)
+
+		plugins.call(self,"tick",client=client,uptime=uptime)
 
 	def whois(self,client,whoisdata):
 
