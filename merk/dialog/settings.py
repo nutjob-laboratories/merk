@@ -5096,7 +5096,6 @@ class Dialog(QDialog):
 		dialogButtonsLayout.addWidget(self.cancelButton)
 
 		leftLayout = QVBoxLayout()
-		# leftLayout.addWidget(QLabel(' '))
 		leftLayout.addWidget(self.selector)
 
 		mainLayout = QHBoxLayout()
@@ -5106,7 +5105,6 @@ class Dialog(QDialog):
 
 		self.finalLayout = QVBoxLayout()
 		self.finalLayout.addLayout(mainLayout)
-		#self.finalLayout.addWidget(QLabel(' '))
 		self.finalLayout.addLayout(dialogButtonsLayout)
 		self.finalLayout.setContentsMargins(4,4,4,4)
 

@@ -75,7 +75,7 @@ class Window():
 		if title==None:
 			self._window.setWindowTitle(self._window.name)
 		else:
-			self._window.setWindowTitle(title)
+			return self._window.windowTitle()
 
 	def script(self,script,arguments):
 		commands.executeScript(self._gui,self._window,script,None,arguments)
