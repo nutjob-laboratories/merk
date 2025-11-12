@@ -469,7 +469,7 @@ def call(gui,method,**arguments):
 
 			m(**arguments)
 
-def load_plugins(gui,force_reload=False):
+def load_plugins(gui):
 	global PLUGINS
 
 	PLUGIN_FILENAMES = []

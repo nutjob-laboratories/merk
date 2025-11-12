@@ -1550,7 +1550,7 @@ class Merk(QMainWindow):
 				t = Message(CHAT_MESSAGE,user,msg)
 				w.writeText(t)
 
-				plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"message",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1576,7 +1576,7 @@ class Merk(QMainWindow):
 				w.writeText(t)
 				displayed_private_message = True
 
-				plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"message",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1603,10 +1603,10 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(CHAT_MESSAGE,user,msg)
 						c.writeText(t)
-						plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
+						plugins.call(self,"message",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
 						return
 			else:
-				plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
+				plugins.call(self,"message",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 			# Client has received a private message, and will
 			# NOT see it, so write it to the current window
@@ -1639,7 +1639,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(ACTION_MESSAGE,user,msg)
 				w.writeText(t)
-				plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1652,7 +1652,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(ACTION_MESSAGE,user,msg)
 			w.writeText(t)
-			plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+			plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
 				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
@@ -1665,10 +1665,10 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(ACTION_MESSAGE,user,msg)
 						c.writeText(t)
-						plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
+						plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
 						return
 			else:
-				plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
+				plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 	def noticed(self,client,user,target,msg):
 
@@ -1693,7 +1693,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(NOTICE_MESSAGE,'',msg)
 				w.writeText(t)
-				plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 			return
 
 		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications("Received a notice from "+nickname)
@@ -1710,7 +1710,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(NOTICE_MESSAGE,user,msg)
 				w.writeText(t,config.LOG_CHANNEL_NOTICE)
-				plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1723,7 +1723,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
-			plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
+			plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES:
 				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
@@ -1736,9 +1736,9 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(NOTICE_MESSAGE,user,msg)
 						c.writeText(t)
-						plugins.call(self,"notice",user=user,channel=target,message=msg,window=c)
+						plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
 			else:
-				plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
+				plugins.call(self,"notice",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 		# Write the notice to the server window
 		w = self.getServerWindow(client)
@@ -1814,6 +1814,7 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 	def topicChanged(self,client,user,channel,newTopic):
+		w = None
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
@@ -1821,26 +1822,29 @@ class Merk(QMainWindow):
 					if c.window_type==CHANNEL_WINDOW:
 						if c.name==channel:
 							c.setTopic(newTopic)
-							plugins.call(self,"topic",user=user,channel=channel,topic=newTopic,window=c)
+							w = c
 							if user!='':
 								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
 								c.writeText(t,config.LOG_CHANNEL_TOPICS)
+		plugins.call(self,"topic",client=client,user=user,channel=channel,topic=newTopic,window=w)
 
 	def userJoined(self,client,user,channel):
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" joined "+channel)
 			w.writeText(t,config.LOG_CHANNEL_JOIN)
-			plugins.call(self,"join",channel=channel,user=user,window=w)
-			return
+			plugins.call(self,"join",client=client,channel=channel,user=user,window=w)
+		else:
+			plugins.call(self,"join",client=client,channel=channel,user=user,window=None)
 
 	def userLeft(self,client,user,channel):
 		w = self.getWindow(channel,client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',user+" left "+channel)
 			w.writeText(t,config.LOG_CHANNEL_PART)
-			plugins.call(self,"part",channel=channel,user=user,window=w)
-			return
+			plugins.call(self,"part",client=client,channel=channel,user=user,window=w)
+		else:
+			plugins.call(self,"part",client=client,channel=channel,user=user,window=None)
 
 	def userRenamed(self,client,oldname,newname):
 		plugins.call(self,"rename",client=client,old=oldname,new=newname)

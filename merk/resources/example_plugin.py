@@ -92,12 +92,14 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   channel = The channel where the event occurred
     #   user = The user that sent the message
     #   message = The text of the message
     #
     def action(self,**args):
         window = args["window"]
+        client = args["client"]
         channel = args["channel"]
         user = args["user"]
         message = args["message"]
@@ -110,7 +112,7 @@ class ExamplePlugin(Plugin):
     # or private chat window gains focus.
     #
     # Arguments:
-    #   client = MERK Window
+    #   window = MERK Window
     #
     def activate(self,**args):
         window = args["window"]
@@ -256,11 +258,13 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the user joined
     #   user = The user joined
     #
     def join(self,**args):
         window = args["window"]
+        client = args["client"]
         channel = args["channel"]
         user = args["user"]
 
@@ -408,12 +412,14 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the message was sent to
     #   user = The user that sent the message
     #   message = The message
     #
     def message(self,**args):
         window = args["window"]
+        clinet = args["client"]
         channel = args["channel"]
         user = args["user"]
         message = args["message"]
@@ -481,12 +487,14 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the notice was sent to
     #   user = The user that sent the notice
     #   message = The message
     #
     def notice(self,**args):
         window = args["window"]
+        client = args["client"]
         channel = args["channel"]
         user = args["user"]
         message = args["message"]
@@ -500,11 +508,13 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the user left
     #   user = The user that left
     #
     def part(self,**args):
         window = args["window"]
+        client = args["client"]
         channel = args["channel"]
         user = args["user"]
 
@@ -610,6 +620,7 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   user = The user that set the topic. This may be the
     #          server's name
     #   channel = The channel the topic was set on
@@ -617,6 +628,7 @@ class ExamplePlugin(Plugin):
     #
     def topic(self,**args):
         window = args["window"]
+        client = args["client"]
         user = args["user"]
         channel = args["channel"]
         topic = args["topic"]
