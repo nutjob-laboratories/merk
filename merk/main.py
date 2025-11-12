@@ -1550,7 +1550,7 @@ class Merk(QMainWindow):
 				t = Message(CHAT_MESSAGE,user,msg)
 				w.writeText(t)
 
-				plugins.call(self,"message",user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1576,7 +1576,7 @@ class Merk(QMainWindow):
 				w.writeText(t)
 				displayed_private_message = True
 
-				plugins.call(self,"message",user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1603,10 +1603,10 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(CHAT_MESSAGE,user,msg)
 						c.writeText(t)
-						plugins.call(self,"message",user=user,channel=target,message=msg,window=c)
+						plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
 						return
 			else:
-				plugins.call(self,"message",user=user,channel=target,message=msg,window=None)
+				plugins.call(self,"message",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 			# Client has received a private message, and will
 			# NOT see it, so write it to the current window
@@ -1639,7 +1639,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(ACTION_MESSAGE,user,msg)
 				w.writeText(t)
-				plugins.call(self,"action",user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1652,7 +1652,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(ACTION_MESSAGE,user,msg)
 			w.writeText(t)
-			plugins.call(self,"action",user=user,channel=target,message=msg,window=w)
+			plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
 				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
@@ -1665,10 +1665,10 @@ class Merk(QMainWindow):
 						c = w.widget()
 						t = Message(ACTION_MESSAGE,user,msg)
 						c.writeText(t)
-						plugins.call(self,"action",user=user,channel=target,message=msg,window=c)
+						plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
 						return
 			else:
-				plugins.call(self,"action",user=user,channel=target,message=msg,window=None)
+				plugins.call(self,"action",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 	def noticed(self,client,user,target,msg):
 
@@ -1693,7 +1693,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(NOTICE_MESSAGE,'',msg)
 				w.writeText(t)
-				plugins.call(self,"notice",user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 			return
 
 		if config.FLASH_SYSTRAY_NOTICE: self.show_notifications("Received a notice from "+nickname)
@@ -1710,7 +1710,7 @@ class Merk(QMainWindow):
 			if w:
 				t = Message(NOTICE_MESSAGE,user,msg)
 				w.writeText(t,config.LOG_CHANNEL_NOTICE)
-				plugins.call(self,"notice",user=user,channel=target,message=msg,window=w)
+				plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 
 				if not self.isActiveWindow(w):
 					if not ignored:
@@ -1723,7 +1723,7 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(NOTICE_MESSAGE,user,msg)
 			w.writeText(t)
-			plugins.call(self,"notice",user=user,channel=target,message=msg,window=w)
+			plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES:
 				if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS and ignored:
@@ -1738,7 +1738,7 @@ class Merk(QMainWindow):
 						c.writeText(t)
 						plugins.call(self,"notice",user=user,channel=target,message=msg,window=c)
 			else:
-				plugins.call(self,"notice",user=user,channel=target,message=msg,window=None)
+				plugins.call(self,"notice",nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 		# Write the notice to the server window
 		w = self.getServerWindow(client)
