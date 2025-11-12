@@ -1303,7 +1303,7 @@ class Merk(QMainWindow):
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
 			client.sendLine(f"LIST")
 
-		plugins.call(self,"connected",window=self.getServerWindow(client))
+		plugins.call(self,"connected",client=client,window=self.getServerWindow(client))
 
 	def receivedPing(self,client):
 		plugins.call(self,"ping",client=client)
@@ -2051,7 +2051,9 @@ class Merk(QMainWindow):
 		w = self.getWindow(channel,client)
 		if w:
 			w.writeText(t)
-			plugins.call(self,"kick",user=kicker,target=kickee,channel=channel,message=message,window=w)
+			plugins.call(self,"kick",client=client,user=kicker,target=kickee,channel=channel,message=message,window=w)
+		else:
+			plugins.call(self,"kick",client=client,user=kicker,target=kickee,channel=channel,message=message,window=None)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)

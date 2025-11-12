@@ -170,9 +170,11 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window object
+    #   client = The Twisted IRC object that triggered the event
     #
     def connected(self,**args):
         window = args["window"]
+        client = args["client"]
 
     # |============|
     # | connecting |
