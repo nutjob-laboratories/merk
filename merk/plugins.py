@@ -219,6 +219,31 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def ignores(self):
+		return config.IGNORE_LIST
+
+	def unignore(self,user):
+		if self._gui!=None:
+			if not user in config.IGNORE_LIST: return False
+			config.IGNORE_LIST.remove(user)
+			config.save_settings(config.CONFIG_FILE)
+			self._gui.reRenderAll(True)
+			self._gui.rerenderUserlists()
+			if self._gui.ignore_manager!=None:
+				self._gui.ignore_manager.refresh()
+			return True
+
+	def ignore(self,user):
+		if self._gui!=None:
+			if user in config.IGNORE_LIST: return False
+			config.IGNORE_LIST.append(user)
+			config.save_settings(config.CONFIG_FILE)
+			self._gui.reRenderAll(True)
+			self._gui.rerenderUserlists()
+			if self._gui.ignore_manager!=None:
+				self._gui.ignore_manager.refresh()
+			return True
+
 	def all_masters(self):
 		if self._gui!=None:
 			output = []
