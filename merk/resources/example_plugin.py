@@ -88,7 +88,8 @@ class ExamplePlugin(Plugin):
     # |========|
     #
     # This event is triggered whenever MERK receives a
-    # CTCP action message.
+    # CTCP action message. Window will be set to None
+    # if the window can't be found.
     #
     # Arguments:
     #   window = MERK Window
@@ -256,7 +257,8 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered user joins a channel in the 
-    # presence of MERK.
+    # presence of MERK. Window will be set to None
+    # if the window can't be found.
     #
     # Arguments:
     #   window = MERK Window
@@ -289,10 +291,12 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever a user is kicked from
-    # a channel in MERK's presence
+    # a channel in MERK's presence. Window will be set to None
+    # if the window can't be found.
     #
     # Arguments:
     #   window = MERK Window
+    #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the user was kicked from
     #   user = The user that issued the kick
     #   target = The user that was kicked
@@ -300,6 +304,7 @@ class ExamplePlugin(Plugin):
     #
     def kick(self,**args):
         window = args["window"]
+        client = args["client"]
         channel = args["channel"]
         user = args["user"]
         target = args["target"]
@@ -309,12 +314,12 @@ class ExamplePlugin(Plugin):
     # | kicked |
     # |========|
     #
-    # This event is triggered the user is kicked from a
+    # This event is triggered if MERK is kicked from a
     # channel.
     #
     # Arguments:
     #   client = The Twisted IRC object that triggered the event
-    #   channel = The channel the user was kicked from
+    #   channel = The channel MERK was kicked from
     #   user = The user that issued the kick
     #   message = The kick message, if one was supplied
     #
@@ -410,7 +415,8 @@ class ExamplePlugin(Plugin):
     #
     # This event is triggered whenever MERK received a channel
     # or private chat message. If the message is a private chat
-    # message, the channel will be MERK's nickname.
+    # message, the channel will be MERK's nickname. Window will
+    # be set to None if the window can't be found.
     #
     # Arguments:
     #   window = MERK Window
@@ -485,7 +491,8 @@ class ExamplePlugin(Plugin):
     #
     # This event is triggered whenever MERK received a channel
     # or private notice. If the message is a private chat
-    # notice, the channel will be MERK's nickname.
+    # notice, the channel will be MERK's nickname. Window will
+    # be set to None if the window can't be found.
     #
     # Arguments:
     #   window = MERK Window
@@ -506,7 +513,8 @@ class ExamplePlugin(Plugin):
     # |======|
     #
     # This event is triggered whenever a user leaves a channel
-    # in MERK's presence.
+    # in MERK's presence. Window will be set to None if the
+    # window can't be found.
     #
     # Arguments:
     #   window = MERK Window
@@ -618,7 +626,8 @@ class ExamplePlugin(Plugin):
     #
     # This event is triggered whenever a channel's topic
     # changes in MERK's presence. This will also be triggered
-    # when MERK joins a channel.
+    # when MERK joins a channel. Window will be set to None if the
+    # window can't be found.
     #
     # Arguments:
     #   window = MERK Window
