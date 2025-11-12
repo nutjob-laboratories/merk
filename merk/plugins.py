@@ -219,6 +219,39 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def alias(self,alias=None,value=None):
+		if not config.ENABLE_ALIASES: return None
+
+		# Return list of aliases
+		if alias==None and value==None:
+			return commands.ALIAS
+
+		# Return alias value
+		if alias!=None and value==None:
+			if alias in commands.ALIAS:
+				return commands.ALIAS[alias]
+			else:
+				return None
+
+		# Set alias value
+		if alias!=None and value!=None:
+
+			# Make sure that the alias value starts with
+			# an alphabetical value, and never a number or
+			# punctuation, stripping out the alias interpolation
+			# symbol if it has been passed at the start of the
+			# name of the alias
+			if len(alias)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+				if alias[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+					alias = alias[il:]
+
+			if len(alias)>=1:
+				if not alias[0].isalpha(): return False
+
+			commands.ALIAS[alias] = value
+			return True
+
 	def ignores(self):
 		return config.IGNORE_LIST
 

@@ -51,20 +51,29 @@ class PythonHighlighter(QSyntaxHighlighter):
 		self.highlighting_rules = []
 
 		# Keywords
-		keywords = ['False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await',
+		keywords = [
+
+					# Python keywords
+					'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await',
 					'break', 'class', 'continue', 'def', 'del', 'elif',
 					'else', 'except', 'finally', 'for', 'from', 'global', 'if',
 					'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or',
 					'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 
+					# Built-in plugin methods
 					'self.windows','self.is_away', 'self.list', 'self.clients', 'self.home', 'self.find',
-					'self.all_windows',
+					'self.all_windows', 'self.ignore', 'self.unignore', 'self.ignores', 'self.all_masters',
+					'self.master', 'self.privates', 'self.all_privates', 'self.channels', 'self.all_channels',
+					'self.private','self.channel','self.restore','self.maximized','self.max','self.minimized',
+					'self.min', 'self.alias',
 
+					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
 					'def kick', 'def kicked', 'def tick', 'def mode', 'def unmode', 'def quit', 'def line_in', 'def line_out', 
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
 					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd',
 					'def server', 'def subwindow', 'def close', 'def me', 'def error'
+
 					]
 		for word in keywords:
 			pattern = QRegExp(r'\b' + word + r'\b')
