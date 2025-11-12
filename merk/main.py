@@ -1427,6 +1427,8 @@ class Merk(QMainWindow):
 			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			plugins.call(self,"joined",channel=channel,window=c)
+		else:
+			plugins.call(self,"joined",channel=channel,window=None)
 
 		w = self.getServerWindow(client)
 		if w:

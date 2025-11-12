@@ -167,7 +167,8 @@ class ExamplePlugin(Plugin):
     # |===========|
     #
     # This event is triggered whenever a MERK has completed
-    # connection to an IRC server.
+    # connection to an IRC server. Window will be set to None
+    # if the window can't be found.
     #
     # Arguments:
     #   window = MERK Window object
@@ -276,7 +277,8 @@ class ExamplePlugin(Plugin):
     # | joined |
     # |========|
     #
-    # This event is triggered whenever MERK joins a channel
+    # This event is triggered whenever MERK joins a channel.
+    # Window will be set to None if the window cannot be found.
     #
     # Arguments:
     #   channel = The channel MERK joined
@@ -380,7 +382,7 @@ class ExamplePlugin(Plugin):
     #
     # This event is triggered whenever a connection to an IRC
     # server is "lost"; that is, disconnected via a method that
-    # is not called for, such as a lost of Internet connection
+    # is not called for, such as a lost of Internet connection,
     # k-line, etc.
     #
     # Arguments:
