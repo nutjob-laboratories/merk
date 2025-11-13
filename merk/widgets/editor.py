@@ -278,6 +278,12 @@ class Window(QMainWindow):
 			mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
 			mefind.triggered.connect(self.doStrip)
 			self.editMenu.addAction(mefind)
+		else:
+			self.editMenu.addSeparator()
+
+			mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
+			mefind.triggered.connect(self.doStripPython)
+			self.editMenu.addAction(mefind)
 
 	def generateStylesheet(self,obj,fore,back):
 
@@ -332,6 +338,11 @@ class Window(QMainWindow):
 	def doStrip(self):
 		s = self.editor.toPlainText()
 		s = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,s)
+		self.editor.setPlainText(s)
+
+	def doStripPython(self):
+		s = self.editor.toPlainText()
+		s = strip_comments_and_docstrings_ast(s)
 		self.editor.setPlainText(s)
 
 	def doFind(self):
@@ -496,21 +507,22 @@ class Window(QMainWindow):
 					entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
 					self.cscript_menu.addAction(entry)
 
-		if self.python:
-			entry = QAction(QIcon(NEWFILE_ICON),"New file",self)
-		else:
 			entry = QAction(QIcon(NEWFILE_ICON),"New script",self)
-		entry.triggered.connect(self.doNewFile)
-		entry.setShortcut("Ctrl+N")
-		self.fileMenu.addAction(entry)
+			entry.triggered.connect(self.doNewFile)
+			entry.setShortcut("Ctrl+N")
+			self.fileMenu.addAction(entry)
 
-		if not self.python:
 			entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
 			entry.triggered.connect(self.doNewScript)
 			self.fileMenu.addAction(entry)
 		else:
 			entry = QAction(QIcon(PLUGIN_ICON),"New plugin",self)
 			entry.triggered.connect(self.doNewPlugin)
+			entry.setShortcut("Ctrl+N")
+			self.fileMenu.addAction(entry)
+
+			entry = QAction(QIcon(PLUGIN_ICON),"New plugin (no comments)",self)
+			entry.triggered.connect(self.doNewPluginComments)
 			self.fileMenu.addAction(entry)
 
 		self.fileMenu.addSeparator()
@@ -1083,6 +1095,22 @@ class Window(QMainWindow):
 		self.filename = None
 		self.editor.clear()
 		self.editor.insertPlainText(EXAMPLE_PLUGIN)
+		self.menuSave.setEnabled(True)
+		self.changed = False
+		self.menuSave.setShortcut("Ctrl+S")
+		self.menuSaveAs.setShortcut(QKeySequence())
+		self.editing_user_script = False
+		self.current_user_script = None
+		self.updateApplicationTitle()
+
+		cursor = self.editor.textCursor()
+		cursor.movePosition(QTextCursor.Start)
+		self.editor.setTextCursor(cursor)
+
+	def doNewPluginComments(self):
+		self.filename = None
+		self.editor.clear()
+		self.editor.insertPlainText(strip_comments_and_docstrings_ast(EXAMPLE_PLUGIN))
 		self.menuSave.setEnabled(True)
 		self.changed = False
 		self.menuSave.setShortcut("Ctrl+S")

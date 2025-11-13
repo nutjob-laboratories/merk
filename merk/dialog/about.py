@@ -184,7 +184,7 @@ class Dialog(QDialog):
 		okButton = QPushButton("Ok")
 		okButton.clicked.connect(self.close)
 
-		app_description = QLabel("<b>Free and Open Source IRC Client</b>")
+		app_description = QLabel("<big><b>Free and Open Source IRC Client</b></big>")
 		app_description.setAlignment(Qt.AlignCenter)
 		app_version = QLabel("<big><b>Version "+APPLICATION_VERSION+"</b></big>")
 		app_version.setAlignment(Qt.AlignCenter)

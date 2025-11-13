@@ -409,6 +409,13 @@ class WhoWasData:
 		self.host = 'Unknown'
 		self.realname = 'Unknown'
 
+def strip_comments_and_docstrings_ast(code_string):
+	tree = ast.parse(code_string)
+	for node in ast.walk(tree):
+		if isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Module)):
+			if node.body and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Str):
+				node.body.pop(0)
+	return ast.unparse(tree)
 
 def is_valid_shortcut_sequence(sequence_str):
 	if not sequence_str:
