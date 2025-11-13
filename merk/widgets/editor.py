@@ -1794,6 +1794,16 @@ class Window(QMainWindow):
 			if key_event.key() in (Qt.Key_Return, Qt.Key_Enter):
 				cursor = self.editor.textCursor()
 
+				# If the cursor is in the "middle" of a line
+				# and not at the end, we don't need to do any
+				# of the indent calculation stuff, we can just
+				# go ahead and do the enter key event
+				block = cursor.block()
+				block_length = block.length()
+				cursor_pos_in_block = cursor.positionInBlock()
+				if cursor_pos_in_block < block_length - 1:
+					return super().eventFilter(watched, event)
+
 				cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.MoveAnchor)
 				cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
 				current_line_text = cursor.selectedText()
