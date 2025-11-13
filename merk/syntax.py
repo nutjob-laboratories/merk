@@ -36,6 +36,8 @@ except ImportError as error:
 except Exception as exception:
 	pass
 
+import re
+
 from . import config
 # from . import resources
 
@@ -45,7 +47,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 
 		keyword_format = format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)
 		string_format = format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE)
-		comment_format = format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE)
+		self.comment_format = format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE)
 
 		# Define highlighting rules
 		self.highlighting_rules = []
@@ -84,7 +86,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 		self.highlighting_rules.append((QRegExp(r"'[^'\\]*(\\.[^'\\]*)*'"), string_format))
 
 		# Comments
-		self.highlighting_rules.append((QRegExp(r'#[^\n]*'), comment_format))
+		#self.highlighting_rules.append((QRegExp(r'#[^\n]*'), comment_format))
 
 	def highlightBlock(self, text):
 		for pattern, format in self.highlighting_rules:
@@ -94,6 +96,32 @@ class PythonHighlighter(QSyntaxHighlighter):
 				length = expression.matchedLength()
 				self.setFormat(index, length, format)
 				index = expression.indexIn(text, index + length)
+
+			# comment_start_match = re.search(r'(?:"[^"]*"|\'[^\']*\'|[^"#])*(#)', text)
+
+			# if comment_start_match:
+			# 	comment_start_index = comment_start_match.start(1) # Get index of the captured hash symbol
+			# 	# Apply comment format from the hash symbol to the end of the line
+				
+			# 	self.setFormat(comment_start_index, len(text) - comment_start_index, self.comment_format)
+
+			quote_chars = ['"', "'"]
+			in_string = False
+			quote_char = ''
+
+			for i, char in enumerate(text):
+				if char in quote_chars:
+					if not in_string:
+						in_string = True
+						quote_char = char
+					elif in_string and char == quote_char:
+						in_string = False
+						quote_char = ''
+				
+				if char == '#' and not in_string:
+					# Found the start of a valid comment
+					self.setFormat(i, len(text) - i, self.comment_format)
+					break # Stop processing the rest of the line, it's all comment
 
 		self.setCurrentBlockState(0)
 

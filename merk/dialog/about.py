@@ -245,7 +245,9 @@ class Dialog(QDialog):
 			<small>These are the wonderful humans that help keep<br>
 			    <b>{APPLICATION_NAME}</b> alive. Thank you for helping me keep IRC<br>
 			    alive in the 21st century! If you want your<br>
-			    name here, <b><a href=\"https://www.gofundme.com/f/keep-dans-opensource-projects-alive\">donate $50 or more today!</a></b></small><br>
+			    name here, <b><a href=\"https://www.gofundme.com/f/keep-dans-opensource-projects-alive\">donate $50 or more today!</a></b></small>
+			    <small>Or you<br>
+			    can just <b><a href="https://buymeacoffee.com/danhetrick">buy me a coffee!</a></b></small><br>
 			""")
 		patron_description.setAlignment(Qt.AlignJustify)
 		patron_description.setOpenExternalLinks(True)

@@ -362,9 +362,11 @@ PLUGIN_ME = True
 PLUGIN_ERROR = True
 PYTHON_AUTOINDENT = True
 PYTHON_SHOW_WHITESPACE = False
+EDITOR_WORDWRAP = False
 
 def build_settings():
 	settings = {
+		"editor_word_wrap": EDITOR_WORDWRAP,
 		"python_editor_auto_indent": PYTHON_AUTOINDENT,
 		"python_editor_show_whitespace": PYTHON_SHOW_WHITESPACE,
 		"enable_plugin_error_event": PLUGIN_ERROR,
@@ -693,6 +695,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "editor_word_wrap" in settings:
+		settings["editor_word_wrap"] = EDITOR_WORDWRAP
 	if not "python_editor_auto_indent" in settings:
 		settings["python_editor_auto_indent"] = PYTHON_AUTOINDENT
 	if not "python_editor_show_whitespace" in settings:
@@ -1666,6 +1670,7 @@ def load_settings(filename):
 	global PLUGIN_ERROR
 	global PYTHON_AUTOINDENT
 	global PYTHON_SHOW_WHITESPACE
+	global EDITOR_WORDWRAP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1675,6 +1680,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		EDITOR_WORDWRAP = settings["editor_word_wrap"]
 		PYTHON_AUTOINDENT = settings["python_editor_auto_indent"]
 		PYTHON_SHOW_WHITESPACE = settings["python_editor_show_whitespace"]
 		PLUGIN_ERROR = settings["enable_plugin_error_event"]

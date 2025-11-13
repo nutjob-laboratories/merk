@@ -189,14 +189,15 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def toggleWordwrap(self):
-		if self.wordwrap:
+		if config.EDITOR_WORDWRAP:
 			self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
-			self.wordwrap = False
+			config.EDITOR_WORDWRAP = False
 			self.ww_menu.setIcon(QIcon(self.parent.unchecked_icon))
 		else:
 			self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
-			self.wordwrap = True
+			config.EDITOR_WORDWRAP = True
 			self.ww_menu.setIcon(QIcon(self.parent.checked_icon))
+		config.save_settings(config.CONFIG_FILE)
 
 	def toggleIndent(self):
 		if config.PYTHON_AUTOINDENT:
@@ -470,8 +471,10 @@ class Window(QMainWindow):
 		if self.python:
 			self.toggle_whitespace()
 
-		self.wordwrap = True
-		self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+		if config.EDITOR_WORDWRAP:
+			self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+		else:
+			self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
 
 		self.editor.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.editor.customContextMenuRequested.connect(self.show_context_menu)
@@ -581,7 +584,7 @@ class Window(QMainWindow):
 		self.menuPrompt.triggered.connect(self.togglePrompt)
 		self.fileMenu.addAction(self.menuPrompt)
 
-		if self.wordwrap:
+		if config.EDITOR_WORDWRAP:
 			self.ww_menu = QAction(QIcon(self.parent.checked_icon),"Word wrap",self)
 		else:
 			self.ww_menu = QAction(QIcon(self.parent.unchecked_icon),"Word wrap",self)
