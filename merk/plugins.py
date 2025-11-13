@@ -78,6 +78,13 @@ class Window():
 			return self._window.windowTitle()
 
 	def script(self,script,arguments):
+
+		f = commands.find_file(script,SCRIPT_FILE_EXTENSION)
+		if f!=None:
+			s = open(f,"r")
+			script = s.read()
+			s.close()
+		
 		commands.executeScript(self._gui,self._window,script,None,arguments)
 
 	def resize(self,width,height):
@@ -102,11 +109,17 @@ class Window():
 	def min(self):
 		self._window.showMinimized()
 
+	def close(self):
+		self._window.close()
+		self._gui.initWindowbar()
+
 	def hide(self):
 		self._window.hide()
+		self._gui.initWindowbar()
 
 	def show(self):
 		self._window.show()
+		self._gui.initWindowbar()
 
 	def restore(self):
 		self._window.showNormal()
