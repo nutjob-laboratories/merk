@@ -199,26 +199,28 @@ class Window(QMainWindow):
 			self.ww_menu.setIcon(QIcon(self.parent.checked_icon))
 
 	def toggleIndent(self):
-		if self.auto_indent:
-			self.auto_indent = False
+		if config.PYTHON_AUTOINDENT:
+			config.PYTHON_AUTOINDENT = False
 			self.ai_menu.setIcon(QIcon(self.parent.unchecked_icon))
 		else:
-			self.auto_indent = True
+			config.PYTHON_AUTOINDENT = True
 			self.ai_menu.setIcon(QIcon(self.parent.checked_icon))
+		config.save_settings(config.CONFIG_FILE)
 
 	def toggleWhitespace(self):
-		if self.show_whitespace:
-			self.show_whitespace = False
+		if config.PYTHON_SHOW_WHITESPACE:
+			config.PYTHON_SHOW_WHITESPACE = False
 			self.sw_menu.setIcon(QIcon(self.parent.unchecked_icon))
 		else:
-			self.show_whitespace = True
+			config.PYTHON_SHOW_WHITESPACE = True
 			self.sw_menu.setIcon(QIcon(self.parent.checked_icon))
 		self.toggle_whitespace()
+		config.save_settings(config.CONFIG_FILE)
 
 	def toggle_whitespace(self):
 		document = self.editor.document()
 		option = document.defaultTextOption()
-		if self.show_whitespace:
+		if config.PYTHON_SHOW_WHITESPACE:
 			option.setFlags(option.flags() | QTextOption.ShowTabsAndSpaces)
 			option.setFlags(option.flags() | QTextOption.AddSpaceForLineAndParagraphSeparators) # Also show paragraph/line separators
 		else:
@@ -445,9 +447,6 @@ class Window(QMainWindow):
 		self.current_user_script = None
 		self.findWindow = None
 
-		self.auto_indent = True
-		self.show_whitespace = False
-
 		self.name = "Untitled"
 
 		# Load in user settings
@@ -590,14 +589,14 @@ class Window(QMainWindow):
 		self.fileMenu.addAction(self.ww_menu)
 
 		if self.python:
-			if self.auto_indent:
+			if config.PYTHON_AUTOINDENT:
 				self.ai_menu = QAction(QIcon(self.parent.checked_icon),"Auto-indent",self)
 			else:
 				self.ai_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-indent",self)
 			self.ai_menu.triggered.connect(self.toggleIndent)
 			self.fileMenu.addAction(self.ai_menu)
 
-			if self.show_whitespace:
+			if config.PYTHON_SHOW_WHITESPACE:
 				self.sw_menu = QAction(QIcon(self.parent.checked_icon),"Show whitespace",self)
 			else:
 				self.sw_menu = QAction(QIcon(self.parent.unchecked_icon),"Show whitespace",self)
@@ -1842,7 +1841,7 @@ class Window(QMainWindow):
 
 	def eventFilter(self, watched: QObject, event: QEvent) -> bool:
 		if not self.python: return super().eventFilter(watched, event)
-		if not self.auto_indent: return super().eventFilter(watched, event)
+		if not config.PYTHON_AUTOINDENT: return super().eventFilter(watched, event)
 
 		# If we're working on a Python file, like a plugin, this event
 		# will handle auto-indentation, trying to match the indent

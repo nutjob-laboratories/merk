@@ -360,9 +360,13 @@ PLUGIN_SUBWINDOW = True
 PLUGIN_CLOSE = True
 PLUGIN_ME = True
 PLUGIN_ERROR = True
+PYTHON_AUTOINDENT = True
+PYTHON_SHOW_WHITESPACE = False
 
 def build_settings():
 	settings = {
+		"python_editor_auto_indent": PYTHON_AUTOINDENT,
+		"python_editor_show_whitespace": PYTHON_SHOW_WHITESPACE,
 		"enable_plugin_error_event": PLUGIN_ERROR,
 		"enable_plugin_me_event": PLUGIN_ME,
 		"enable_plugin_close_event": PLUGIN_CLOSE,
@@ -689,6 +693,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "python_editor_auto_indent" in settings:
+		settings["python_editor_auto_indent"] = PYTHON_AUTOINDENT
+	if not "python_editor_show_whitespace" in settings:
+		settings["python_editor_show_whitespace"] = PYTHON_SHOW_WHITESPACE
 	if not "enable_plugin_error_event" in settings:
 		settings["enable_plugin_error_event"] = PLUGIN_ERROR
 	if not "enable_plugin_me_event" in settings:
@@ -1656,6 +1664,8 @@ def load_settings(filename):
 	global PLUGIN_CLOSE
 	global PLUGIN_ME
 	global PLUGIN_ERROR
+	global PYTHON_AUTOINDENT
+	global PYTHON_SHOW_WHITESPACE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1665,6 +1675,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PYTHON_AUTOINDENT = settings["python_editor_auto_indent"]
+		PYTHON_SHOW_WHITESPACE = settings["python_editor_show_whitespace"]
 		PLUGIN_ERROR = settings["enable_plugin_error_event"]
 		PLUGIN_ME = settings["enable_plugin_me_event"]
 		PLUGIN_CLOSE = settings["enable_plugin_close_event"]
