@@ -206,6 +206,26 @@ class Window(QMainWindow):
 			self.auto_indent = True
 			self.ai_menu.setIcon(QIcon(self.parent.checked_icon))
 
+	def toggleWhitespace(self):
+		if self.show_whitespace:
+			self.show_whitespace = False
+			self.sw_menu.setIcon(QIcon(self.parent.unchecked_icon))
+		else:
+			self.show_whitespace = True
+			self.sw_menu.setIcon(QIcon(self.parent.checked_icon))
+		self.toggle_whitespace()
+
+	def toggle_whitespace(self):
+		document = self.editor.document()
+		option = document.defaultTextOption()
+		if self.show_whitespace:
+			option.setFlags(option.flags() | QTextOption.ShowTabsAndSpaces)
+			option.setFlags(option.flags() | QTextOption.AddSpaceForLineAndParagraphSeparators) # Also show paragraph/line separators
+		else:
+			option.setFlags(option.flags() & ~QTextOption.ShowTabsAndSpaces)
+			option.setFlags(option.flags() & ~QTextOption.AddSpaceForLineAndParagraphSeparators)
+		document.setDefaultTextOption(option)
+
 	def buildEditMenu(self):
 
 		self.editMenu.clear()
@@ -426,6 +446,7 @@ class Window(QMainWindow):
 		self.findWindow = None
 
 		self.auto_indent = True
+		self.show_whitespace = False
 
 		self.name = "Untitled"
 
@@ -446,6 +467,9 @@ class Window(QMainWindow):
 			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 		else:
 			self.highlight = None
+
+		if self.python:
+			self.toggle_whitespace()
 
 		self.wordwrap = True
 		self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
@@ -572,6 +596,13 @@ class Window(QMainWindow):
 				self.ai_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-indent",self)
 			self.ai_menu.triggered.connect(self.toggleIndent)
 			self.fileMenu.addAction(self.ai_menu)
+
+			if self.show_whitespace:
+				self.sw_menu = QAction(QIcon(self.parent.checked_icon),"Show whitespace",self)
+			else:
+				self.sw_menu = QAction(QIcon(self.parent.unchecked_icon),"Show whitespace",self)
+			self.sw_menu.triggered.connect(self.toggleWhitespace)
+			self.fileMenu.addAction(self.sw_menu)
 		
 		self.fileMenu.addSeparator()
 
