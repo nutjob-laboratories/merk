@@ -85,6 +85,8 @@ class ExamplePlugin(Plugin):
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel where the event occurred
     #   user = The user that sent the message
+    #   nickname = The user's nickname
+    #   hostmask = The user's hostmask
     #   message = The text of the message
     #
     def action(self,**args):
@@ -92,6 +94,8 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         channel = args["channel"]
         user = args["user"]
+        nickname = args["nickname"]
+        hostmask = args["hostmask"]
         message = args["message"]
 
     # |==========|
@@ -414,6 +418,8 @@ class ExamplePlugin(Plugin):
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the message was sent to
     #   user = The user that sent the message
+    #   nickname = The user's nickname
+    #   hostmask = The user's hostmask
     #   message = The message
     #
     def message(self,**args):
@@ -421,6 +427,8 @@ class ExamplePlugin(Plugin):
         clinet = args["client"]
         channel = args["channel"]
         user = args["user"]
+        nickname = args["nickname"]
+        hostmask = args["hostmask"]
         message = args["message"]
 
     # |======|
@@ -490,6 +498,8 @@ class ExamplePlugin(Plugin):
     #   client = The Twisted IRC object that triggered the event
     #   channel = The channel the notice was sent to
     #   user = The user that sent the notice
+    #   nickname = The user's nickname
+    #   hostmask = The user's hostmask
     #   message = The message
     #
     def notice(self,**args):
@@ -497,6 +507,8 @@ class ExamplePlugin(Plugin):
         client = args["client"]
         channel = args["channel"]
         user = args["user"]
+        nickname = args["nickname"]
+        hostmask = args["hostmask"]
         message = args["message"]
 
     # |======|
