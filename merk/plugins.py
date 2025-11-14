@@ -107,7 +107,7 @@ class Window():
 			script = s.read()
 			s.close()
 		
-		commands.executeScript(self._gui,self._window,script,None,arguments)
+		commands.executeScript(self._gui,self._window,script,f,arguments)
 
 	def resize(self,width,height):
 		self._window.resize(width,height)
@@ -263,6 +263,21 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def script(self,client,script,arguments):
+
+		f = commands.find_file(script,SCRIPT_FILE_EXTENSION)
+		if f!=None:
+			s = open(f,"r")
+			script = s.read()
+			s.close()
+
+		if self._gui!=None:
+			w = self._gui.getServerSubWindow(client)
+			if w:
+				commands.executeScript(self._gui,w,script,f,arguments)
+				return True
+		return False
+		
 	def is_ignored(self,nickname,hostmask):
 		if self._gui==None: return False
 		return self._gui.is_ignored(nickname,hostmask)

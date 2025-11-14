@@ -43,8 +43,8 @@ class ExamplePlugin(Plugin):
     #   all_windows, channel, channels, clients, find,   #
     #   home, ignore, ignores, is_away, is_ignored,      #
     #   list, master, max, maximized, min, minimized,    #
-    #   modes, private, privates, restore, unignore,     #
-    #   windows                                          #
+    #   modes, private, privates, restore, script,       #
+    #   unignore, windows                                #
     #----------------------------------------------------#
 
     NAME = "Example Plugin"
