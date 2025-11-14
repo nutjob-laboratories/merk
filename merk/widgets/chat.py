@@ -1896,7 +1896,6 @@ class Window(QMainWindow):
 		commands.executeScript(self.parent,self,script,filename,args)
 
 	def generateStylesheet(self,obj,fore,back):
-
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
 	def pressedStyleButton(self):

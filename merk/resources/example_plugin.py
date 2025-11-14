@@ -41,9 +41,10 @@ class ExamplePlugin(Plugin):
     #-----------Methods inherited from Plugin------------#
     #   alias, all_channels, all_masters, all_privates,  #
     #   all_windows, channel, channels, clients, find,   #
-    #   home, ignore, ignores, is_away, list, master,    #
-    #   max, maximized, min, minimized, modes, private,  #
-    #   privates, restore, unignore, windows             #
+    #   home, ignore, ignores, is_away, is_ignored,      #
+    #   list, master, max, maximized, min, minimized,    #
+    #   modes, private, privates, restore, unignore,     #
+    #   windows                                          #
     #----------------------------------------------------#
 
     NAME = "Example Plugin"

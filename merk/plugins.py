@@ -263,6 +263,10 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def is_ignored(self,nickname,hostmask):
+		if self._gui==None: return False
+		return self._gui.is_ignored(nickname,hostmask)
+
 	def alias(self,alias=None,value=None):
 		if not config.ENABLE_ALIASES: return None
 
