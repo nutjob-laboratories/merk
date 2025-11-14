@@ -37,6 +37,7 @@ import uuid
 from collections import defaultdict
 from datetime import datetime
 import textwrap
+import platform
 
 from twisted.internet import reactor, protocol
 
@@ -56,6 +57,13 @@ from . import user
 from . import plugins
 
 CONNECTIONS = {}
+
+PYTHON_VERSION = f"{platform.python_version().strip()}"
+OS_VERSION = f"{platform.system().strip() + " " + platform.release().strip()}"
+if is_running_from_pyinstaller():
+	PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION} via PyInstaller {get_pyinstaller_version()}"
+else:
+	PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION}"
 
 def connect(**kwargs):
 	kwargs["client_id"] = str(uuid.uuid4())
@@ -84,6 +92,7 @@ class IRC_Connection(irc.IRCClient):
 
 	versionName = APPLICATION_NAME
 	versionNum = APPLICATION_VERSION
+	versionEnv = PLATFORM
 	sourceURL = APPLICATION_SOURCE
 
 	heartbeatInterval = config.TWISTED_CLIENT_HEARTBEAT
