@@ -49,6 +49,16 @@ class Window():
 		else:
 			self._window = window
 
+	def key(self):
+		if self._window.window_type!=CHANNEL_WINDOW: return None
+		if self._window.name in self._window.client.channelkeys:
+			return self._window.client.channelkeys[self._window.name]
+		else:
+			return None
+
+	def uptime(self):
+		return self._window.uptime
+
 	def modes(self):
 		if self._window.window_type!=CHANNEL_WINDOW: return None
 		if len(self._window.client.channelmodes[self._window.name])>0:
@@ -225,6 +235,12 @@ class Window():
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
+		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def prints(self,message):
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		message = commands.fullInterpolate(self._gui,self._window,message)
+		t = Message(SYSTEM_MESSAGE,'',f"{message}")
 		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def alias(self,text):
