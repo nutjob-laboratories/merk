@@ -223,7 +223,7 @@ class Window(QMainWindow):
 		option = document.defaultTextOption()
 		if config.PYTHON_SHOW_WHITESPACE:
 			option.setFlags(option.flags() | QTextOption.ShowTabsAndSpaces)
-			option.setFlags(option.flags() | QTextOption.AddSpaceForLineAndParagraphSeparators) # Also show paragraph/line separators
+			option.setFlags(option.flags() | QTextOption.AddSpaceForLineAndParagraphSeparators)
 		else:
 			option.setFlags(option.flags() & ~QTextOption.ShowTabsAndSpaces)
 			option.setFlags(option.flags() & ~QTextOption.AddSpaceForLineAndParagraphSeparators)
@@ -824,7 +824,9 @@ class Window(QMainWindow):
 
 		self.setCentralWidget(self.editor)
 
-		if self.python and not self.filename: self.doNewPlugin()
+		if self.python and not self.filename:
+			self.doNewPlugin()
+			self.changed = True
 
 		self.editor.setFocus()
 
