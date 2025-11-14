@@ -404,6 +404,19 @@ def render_message(message,style,client=None,no_padding=False):
 			if not no_padding:
 				if message.type!=NOTICE_MESSAGE and len(nick)>0:
 					idl = config.NICKNAME_PAD_LENGTH - len(nick)
+
+					# When non-standard ASCII characters are used
+					# that are over length, the nickname display
+					# can get messed up. This fixes that, by shortening
+					# the nickname padding by one. Kinda ham-handed,
+					# but it works right now. This only happens when
+					# the window is a little "small", and since I
+					# can't figure out how to get access to the chat
+					# window the message is being rendered in right
+					# now, it will remain commented out.
+
+					# if not msg_to_display.isascii(): idl = idl - 1
+
 					if idl>0:
 						nick = ('&nbsp;'*idl)+nick
 	else:

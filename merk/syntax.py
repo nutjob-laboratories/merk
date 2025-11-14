@@ -85,9 +85,6 @@ class PythonHighlighter(QSyntaxHighlighter):
 		self.highlighting_rules.append((QRegExp(r'"[^"\\]*(\\.[^"\\]*)*"'), string_format))
 		self.highlighting_rules.append((QRegExp(r"'[^'\\]*(\\.[^'\\]*)*'"), string_format))
 
-		# Comments
-		#self.highlighting_rules.append((QRegExp(r'#[^\n]*'), comment_format))
-
 	def highlightBlock(self, text):
 		for pattern, format in self.highlighting_rules:
 			expression = QRegExp(pattern)
@@ -97,18 +94,14 @@ class PythonHighlighter(QSyntaxHighlighter):
 				self.setFormat(index, length, format)
 				index = expression.indexIn(text, index + length)
 
-			# comment_start_match = re.search(r'(?:"[^"]*"|\'[^\']*\'|[^"#])*(#)', text)
-
-			# if comment_start_match:
-			# 	comment_start_index = comment_start_match.start(1) # Get index of the captured hash symbol
-			# 	# Apply comment format from the hash symbol to the end of the line
-				
-			# 	self.setFormat(comment_start_index, len(text) - comment_start_index, self.comment_format)
-
+			
+			# Now, we handle comments. Since the # symbol is so prevalent in
+			# IRC, we know that it will appear in quotes all the time.
+			# This makes sure that if the # appears in a quoted string,
+			# it won't be formatted as a comment
 			quote_chars = ['"', "'"]
 			in_string = False
 			quote_char = ''
-
 			for i, char in enumerate(text):
 				if char in quote_chars:
 					if not in_string:
@@ -119,9 +112,8 @@ class PythonHighlighter(QSyntaxHighlighter):
 						quote_char = ''
 				
 				if char == '#' and not in_string:
-					# Found the start of a valid comment
 					self.setFormat(i, len(text) - i, self.comment_format)
-					break # Stop processing the rest of the line, it's all comment
+					break
 
 		self.setCurrentBlockState(0)
 
