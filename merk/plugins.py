@@ -49,6 +49,18 @@ class Window():
 		else:
 			self._window = window
 
+	def modes(self):
+		if self._window.window_type!=CHANNEL_WINDOW: return None
+		if len(self._window.client.channelmodes[self._window.name])>0:
+			return self._window.client.channelmodes[self._window.name]
+
+	def bans(self):
+		if self._window.window_type!=CHANNEL_WINDOW: return None
+		if len(self._window.banlist)>0:
+			return self._window.banlist
+		else:
+			return []
+
 	def status(self,status=None):
 		if status==None:
 			if self._window.window_type!=CHANNEL_WINDOW: return 'normal'
@@ -89,6 +101,9 @@ class Window():
 
 	def resize(self,width,height):
 		self._window.resize(width,height)
+
+	def clear(self):
+		self._window.clearChat()
 
 	def move(self,x,y):
 		if self._gui.is_valid_position(self._window,x,y):
@@ -360,6 +375,9 @@ class Plugin():
 		if self._gui!=None:
 			return self._gui.getAllClients()
 		return []
+
+	def modes(self,client):
+		return client.usermodes
 
 	def master(self,client):
 		if self._gui!=None:
