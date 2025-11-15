@@ -1316,12 +1316,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"All binds removed")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if gui.hotkey_manager!=None:
+					gui.hotkey_manager.refresh()
 				return True
 
 			gui.remove_shortcut(seq)
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" removed")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if gui.hotkey_manager!=None:
+				gui.hotkey_manager.refresh()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unbind':
 			if is_script:
@@ -1404,6 +1408,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if gui.hotkey_manager!=None:
+					gui.hotkey_manager.refresh()
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind':
 			if is_script:

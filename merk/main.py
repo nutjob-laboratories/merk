@@ -1902,7 +1902,6 @@ class Merk(QMainWindow):
 						c.writeText(t)
 
 	def serverSetMode(self,client,target,mode,argument):
-		plugins.call(self,"mode",client=client,user="*",target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		if len(mode.strip())==0: return
@@ -1931,8 +1930,9 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
+		plugins.call(self,"mode",client=client,user="*",target=target,mode=mode,arguments=argument)
+
 	def serverUnsetMode(self,client,target,mode):
-		plugins.call(self,"unmode",client=client,user="*",target=target,mode=mode,arguments=())
 		self.refreshModeDisplay(client)
 
 		if len(mode.strip())==0: return
@@ -1947,8 +1947,9 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
+		plugins.call(self,"unmode",client=client,user="*",target=target,mode=mode,arguments=())
+
 	def setMode(self,client,user,target,mode,argument):
-		plugins.call(self,"mode",client=client,user=user,target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		p = user.split("!")
@@ -1999,8 +2000,9 @@ class Merk(QMainWindow):
 				if config.SOUND_NOTIFICATION_MODE:
 					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
+		plugins.call(self,"mode",client=client,user=user,target=target,mode=mode,arguments=argument)
+
 	def unsetMode(self,client,user,target,mode,argument):
-		plugins.call(self,"unmode",client=client,user=user,target=target,mode=mode,arguments=argument)
 		self.refreshModeDisplay(client)
 
 		p = user.split("!")
@@ -2043,6 +2045,8 @@ class Merk(QMainWindow):
 				if config.SOUND_NOTIFICATION_MODE:
 					QSound.play(config.SOUND_NOTIFICATION_FILE)
 
+		plugins.call(self,"unmode",client=client,user=user,target=target,mode=mode,arguments=argument)
+
 	def userKicked(self,client,kickee,channel,kicker,message):
 		
 		if len(message)>0:
@@ -2061,8 +2065,6 @@ class Merk(QMainWindow):
 		if w: w.writeText(t)
 
 	def kickedFrom(self,client,channel,kicker,message):
-
-		plugins.call(self,"kicked",client=client,user=kicker,channel=channel,message=message)
 		
 		if config.FLASH_SYSTRAY_KICK: self.show_notifications("Kicked from "+channel+" by "+kicker+": "+message)
 
@@ -2083,6 +2085,8 @@ class Merk(QMainWindow):
 			else:
 				t = Message(SYSTEM_MESSAGE,'',kicker+" kicked you from "+channel)
 			w.writeText(t)
+
+		plugins.call(self,"kicked",client=client,user=kicker,channel=channel,message=message)
 
 	def receivedError(self,client,message):
 		plugins.call(self,"error",client=client,message=message)

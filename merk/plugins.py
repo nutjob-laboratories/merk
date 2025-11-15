@@ -263,15 +263,31 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
-	def script(self,client,script,arguments):
-
-		f = commands.find_file(script,SCRIPT_FILE_EXTENSION)
-		if f!=None:
-			s = open(f,"r")
-			script = s.read()
-			s.close()
-
+	def unbind(self,sequence):
 		if self._gui!=None:
+			if sequence=='*':
+				self._gui.remove_all_shortcuts()
+				return
+			self._gui.remove_shortcut(sequence)
+
+	def bind(self,sequence,command):
+		if self._gui!=None:
+			r = self._gui.add_shortcut(sequence,command)
+			if r==BAD_SHORTCUT or r==SHORTCUT_IN_USE: return False
+			if self._gui.hotkey_manager!=None:
+				self._gui.hotkey_manager.refresh()
+			return True
+		return False
+
+	def script(self,client,script,arguments):
+		if self._gui!=None:
+
+			f = commands.find_file(script,SCRIPT_FILE_EXTENSION)
+			if f!=None:
+				s = open(f,"r")
+				script = s.read()
+				s.close()
+		
 			w = self._gui.getServerSubWindow(client)
 			if w:
 				commands.executeScript(self._gui,w,script,f,arguments)
