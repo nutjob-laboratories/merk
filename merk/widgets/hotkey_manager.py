@@ -59,7 +59,10 @@ class Window(QMainWindow):
 
 	def remove_key(self):
 		selected_item = self.keys.currentItem()
-		if selected_item.dummy: return
+		if hasattr(selected_item,'dummy'):
+			if selected_item.dummy: return
+		else:
+			return
 		if selected_item:
 			self.parent.remove_shortcut(selected_item.seq)
 			self.refresh()
@@ -95,6 +98,10 @@ class Window(QMainWindow):
 		self.statusBar.showMessage("Saved hotkeys")
 
 	def on_item_clicked(self, item):
+		if hasattr(item,'dummy'):
+			if item.dummy: return
+		else:
+			return
 		x = dialog.SetBind(self,item.seq,item.cmd)
 		e = x.get_script_information(self,item.seq,item.cmd)
 		if e:
