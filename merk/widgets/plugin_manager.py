@@ -52,11 +52,23 @@ class Window(QMainWindow):
 		else:
 			return
 
+		multiple = []
+		for obj in plugins.PLUGINS:
+			if item.filename==obj._filename:
+				multiple.append(f"{obj.NAME} {obj.VERSION} ({prettySize(obj._size)})")
+
+		if len(multiple)>1:
+			pid = "plugins"
+		else:
+			pid = "plugin"
+
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-		msgBox.setText(f"Are you sure you want to delete {item.NAME} {item.VERSION}?")
-		msgBox.setWindowTitle("Remove plugin")
+		msgBox.setText(f"Are you sure you want to delete \"{item.basename}\"?\nThis will remove the following {pid}:")
+		if len(multiple)>0:
+			msgBox.setInformativeText("\n".join(multiple))
+		msgBox.setWindowTitle("Delete plugin")
 		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
 		rval = msgBox.exec()
@@ -66,11 +78,11 @@ class Window(QMainWindow):
 			if os.path.exists(item.filename):
 				try:
 					os.remove(item.filename)
-					QMessageBox.information(self, 'Success', f'File "{item.filename}" deleted successfully.')
+					QMessageBox.information(self, 'Success', f'File "{item.basename}" deleted successfully.')
 				except OSError as e:
 					QMessageBox.critical(self, 'Error', f'Error deleting file: {e}')
 			else:
-				QMessageBox.warning(self, 'Warning', f'File "{item.filename}" not found.')
+				QMessageBox.warning(self, 'Warning', f'File "{item.basename}" not found.')
 
 			errors = plugins.load_plugins(self.parent)
 			if len(errors)>0:
