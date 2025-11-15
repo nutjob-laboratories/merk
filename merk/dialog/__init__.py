@@ -61,6 +61,7 @@ from .cmd_window import Dialog as SetCmdWindow
 from .set_bind import Dialog as SetBind
 from .set_macro import Dialog as SetMacro
 from .set_ignore import Dialog as SetIgnore
+from .key import Dialog as SetKey
 
 def GetIgnore(msg,parent):
 	x = SetIgnore(msg,parent)

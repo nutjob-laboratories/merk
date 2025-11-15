@@ -31,7 +31,6 @@ from PyQt5 import QtCore
 from ..resources import *
 from .. import commands
 from .. import config
-from ..dialog import *
 from .. import plugins
 
 import uuid
@@ -48,7 +47,10 @@ class Window(QMainWindow):
 	def remove_plugin(self):
 
 		item = self.plugin_list.currentItem()
-		if item.dummy: return
+		if hasattr(item,"dummy"):
+			if item.dummy: return
+		else:
+			return
 
 		msgBox = QMessageBox()
 		msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))

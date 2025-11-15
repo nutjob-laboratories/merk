@@ -41,7 +41,6 @@ from ..resources import *
 from .. import config
 from .. import styles
 from .. import render
-from ..dialog import *
 from .. import logs
 from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction
 from .text_separator import textSeparatorLabel,textSeparator
@@ -49,6 +48,7 @@ from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
 from .. import syntax
 from .. import user
+from .. import dialog
 
 class Window(QMainWindow):
 
@@ -783,8 +783,7 @@ class Window(QMainWindow):
 		self.client.mode(self.name,True,mode)
 
 	def lock_channel(self):
-
-		my_key = SetKeyDialog(self)
+		my_key = dialog.SetKeyDialog(self)
 		if my_key:
 			self.client.mode(self.name,True,'k '+my_key)
 
@@ -1370,7 +1369,7 @@ class Window(QMainWindow):
 
 		# Name click
 		if (event.type() == QtCore.QEvent.MouseButtonDblClick and source is self.nick_display):
-			info = NewNickDialog(self.client.nickname,self)
+			info = dialog.NewNickDialog(self.client.nickname,self)
 			if info!=None:
 				self.client.setNick(info)
 				return True
@@ -2360,7 +2359,7 @@ class Window(QMainWindow):
 				self.client.quit(msg)
 
 	def changeNick(self):
-		newnick = NewNickDialog(self.client.nickname,self.parent)
+		newnick = dialog.NewNickDialog(self.client.nickname,self.parent)
 		if newnick:
 			self.client.setNick(newnick)
 
@@ -2371,7 +2370,7 @@ class Window(QMainWindow):
 			self.client.back()
 		else:
 			if config.PROMPT_FOR_AWAY_MESSAGE:
-				msg = AwayDialog(self)
+				msg = dialog.AwayDialog(self)
 				if msg:
 					self.away_button.setToolTip("Set status to \"back\"")
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
@@ -2398,7 +2397,7 @@ class Window(QMainWindow):
 				self.client.away_msg = msg
 
 	def joinChannel(self):
-		channel_info = JoinChannelDialog(self.parent)
+		channel_info = dialog.JoinChannelDialog(self.parent)
 		if channel_info:
 			if channel_info[0][:1]=='#' or channel_info[0][:1]=='&' or channel_info[0][:1]=='!' or channel_info[0][:1]=='+':
 				self.client.join(channel_info[0],channel_info[1])

@@ -2752,11 +2752,6 @@ class Merk(QMainWindow):
 		# Interpolate aliases into user input
 		if config.INTERPOLATE_ALIASES_INTO_INPUT:
 			user_input = commands.interpolateAliases(user_input)
-
-		# if ';;' in user_input:
-		# 	script = "\n".join(user_input.split(';;'))
-		# 	commands.executeScript(self,window,script)
-		# 	return
 		
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return

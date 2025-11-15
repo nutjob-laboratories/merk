@@ -36,7 +36,7 @@ import os
 from collections import Counter
 
 from ..resources import *
-from ..dialog import *
+from .. import dialog
 from .. import config
 from .. import syntax
 from .. import commands
@@ -1004,7 +1004,7 @@ class Window(QMainWindow):
 		menu.addAction(entry)
 
 	def insertContext(self):
-		e = SetWindowDialog("Context",self)
+		e = dialog.SetWindowDialog("Context",self)
 
 		if not e: return
 
@@ -1162,7 +1162,7 @@ class Window(QMainWindow):
 
 		self.check_for_save()
 
-		x = NewConnectScript(self)
+		x = dialog.NewConnectScript(self)
 		e = x.get_server_information(self)
 
 		if not e: return
@@ -1205,7 +1205,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertConnect(self):
-		x = ConnectServer(self)
+		x = dialog.ConnectServer(self)
 		e = x.get_server_information(self)
 
 		if not e: return
@@ -1237,7 +1237,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertReConnect(self):
-		x = ConnectServer(self)
+		x = dialog.ConnectServer(self)
 		e = x.get_server_information(self)
 
 		if not e: return
@@ -1269,7 +1269,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertAppMove(self):
-		x = WindowInfo(self,"X Value","Y Value","pixels")
+		x = dialog.WindowInfo(self,"X Value","Y Value","pixels")
 		if x:
 			w = x[0]
 			h = x[1]
@@ -1278,7 +1278,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertAppSize(self):
-		x = WindowInfo(self,"Width","Height","pixels")
+		x = dialog.WindowInfo(self,"Width","Height","pixels")
 		if x:
 			w = x[0]
 			h = x[1]
@@ -1287,7 +1287,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertAllQuit(self):
-		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
+		x = dialog.SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
 		e = x.get_message_information(config.DEFAULT_QUIT_MESSAGE,self)
 
 		if e==None: return
@@ -1296,7 +1296,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertQuit(self):
-		x = SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
+		x = dialog.SetQuit(config.DEFAULT_QUIT_MESSAGE,self)
 		e = x.get_message_information(config.DEFAULT_QUIT_MESSAGE,self)
 
 		if e==None: return
@@ -1313,7 +1313,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertHide(self):
-		e = SetWindowDialog("Hide",self)
+		e = dialog.SetWindowDialog("Hide",self)
 
 		if not e:
 			return
@@ -1322,7 +1322,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertFocus(self):
-		e = SetWindowDialog("Focus",self)
+		e = dialog.SetWindowDialog("Focus",self)
 
 		if not e:
 			return
@@ -1331,7 +1331,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertShow(self):
-		e = SetWindowDialog("Show",self)
+		e = dialog.SetWindowDialog("Show",self)
 
 		if not e:
 			return
@@ -1340,7 +1340,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertRestore(self):
-		e = SetWindowDialog("Restore",self)
+		e = dialog.SetWindowDialog("Restore",self)
 
 		if not e:
 			return
@@ -1349,7 +1349,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertMin(self):
-		e = SetWindowDialog("Minimize",self)
+		e = dialog.SetWindowDialog("Minimize",self)
 
 		if not e:
 			return
@@ -1358,7 +1358,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertMax(self):
-		e = SetWindowDialog("Maximize",self)
+		e = dialog.SetWindowDialog("Maximize",self)
 
 		if not e:
 			return
@@ -1397,7 +1397,7 @@ class Window(QMainWindow):
 				self.show_error_message("Wrong file type","File is not a WAV file!\nOnly WAV files can be used with the "+config.ISSUE_COMMAND_SYMBOL+"play command.\nPlease select a valid file.")
 
 	def insertShell(self):
-		x = SetShell(self)
+		x = dialog.SetShell(self)
 		e = x.get_alias_information(self)
 
 		if not e: return
@@ -1412,7 +1412,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertAlias(self):
-		x = SetAlias(self)
+		x = dialog.SetAlias(self)
 		e = x.get_alias_information(self)
 
 		if not e: return
@@ -1427,7 +1427,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertReclaim(self):
-		x = SetReclaim(self)
+		x = dialog.SetReclaim(self)
 		e = x.get_nick_information(self)
 
 		if not e: return
@@ -1438,7 +1438,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertIf(self):
-		x = SetIf(self)
+		x = dialog.SetIf(self)
 		e = x.get_if_information(self)
 
 		if not e: return
@@ -1452,7 +1452,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertDelay(self):
-		x = SetDelay(self)
+		x = dialog.SetDelay(self)
 		e = x.get_alias_information(self)
 
 		if not e: return
@@ -1468,7 +1468,7 @@ class Window(QMainWindow):
 			return
 
 	def insertUsage(self):
-		x = SetUsage(self)
+		x = dialog.SetUsage(self)
 		e = x.get_alias_information(self)
 
 		if not e: return
@@ -1485,7 +1485,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertPart(self):
-		x = PartChannel(self)
+		x = dialog.PartChannel(self)
 		e = x.get_channel_information(self)
 
 		if not e: return
@@ -1501,7 +1501,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertNick(self):
-		x = SetNick(self)
+		x = dialog.SetNick(self)
 		e = x.get_nick_information(self)
 
 		if not e: return
@@ -1510,7 +1510,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertBind(self):
-		x = SetBind(self)
+		x = dialog.SetBind(self)
 		e = x.get_script_information(self)
 
 		if not e: return
@@ -1521,7 +1521,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertScriptInsert(self):
-		x = SetInsert(self)
+		x = dialog.SetInsert(self)
 		e = x.get_script_information(self)
 
 		if not e: return
@@ -1530,7 +1530,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertMacro(self):
-		x = SetMacro(self)
+		x = dialog.SetMacro(self)
 		e = x.get_script_information(self)
 
 		if not e: return
@@ -1569,7 +1569,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertScript(self):
-		x = SetScript(self)
+		x = dialog.SetScript(self)
 		e = x.get_script_information(self)
 
 		if not e: return
@@ -1581,7 +1581,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertNotice(self):
-		x = SendNotice(self)
+		x = dialog.SendNotice(self)
 		e = x.get_message_information(self)
 
 		if not e: return
@@ -1594,7 +1594,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertWriteSystem(self):
-		x = PrintMsg(self)
+		x = dialog.PrintMsg(self)
 		e = x.get_message_information(self)
 
 		if not e: return
@@ -1604,7 +1604,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertWrite(self):
-		x = PrintMsg(self)
+		x = dialog.PrintMsg(self)
 		e = x.get_message_information(self)
 
 		if not e: return
@@ -1614,7 +1614,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertBox(self):
-		x = PrintMsg(self)
+		x = dialog.PrintMsg(self)
 		e = x.get_message_information(self)
 
 		if not e: return
@@ -1624,7 +1624,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertPM(self):
-		x = SendPM(self)
+		x = dialog.SendPM(self)
 		e = x.get_message_information(self)
 
 		if not e: return
@@ -1637,7 +1637,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertPause(self):
-		x = Pause(self)
+		x = dialog.Pause(self)
 		e = x.get_time_information(self)
 
 		if not e: return
@@ -1646,7 +1646,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertRestrict(self):
-		x = SetRestrict(self)
+		x = dialog.SetRestrict(self)
 		e = x.get_restrict_information(self)
 
 		if not e: return
@@ -1655,7 +1655,7 @@ class Window(QMainWindow):
 		self.updateApplicationTitle()
 
 	def insertMLComment(self):
-		x = Comment(False,self)
+		x = dialog.Comment(False,self)
 		e = x.get_message_information(False,self)
 
 		if not e: return
@@ -1665,7 +1665,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertComment(self):
-		x = Comment(True,self)
+		x = dialog.Comment(True,self)
 		e = x.get_message_information(True,self)
 
 		if not e: return
@@ -1675,7 +1675,7 @@ class Window(QMainWindow):
 			self.updateApplicationTitle()
 
 	def insertJoin(self):
-		x = JoinChannel(self)
+		x = dialog.JoinChannel(self)
 		e = x.get_channel_information(self)
 
 		if not e: return
