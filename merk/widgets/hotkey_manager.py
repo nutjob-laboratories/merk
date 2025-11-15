@@ -55,6 +55,7 @@ class Window(QMainWindow):
 			else:
 				self.statusBar.showMessage(f"\"{seq}\" was not added")
 
+			self.show_status = False
 			self.refresh()
 
 	def remove_key(self):
@@ -76,7 +77,10 @@ class Window(QMainWindow):
 			item.cmd = f"{e[2]}"
 			item.dummy = False
 			self.keys.addItem(item)
-		self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
+		if self.show_status:
+			self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
+		else:
+			self.show_status = True
 
 		if len(self.parent.shortcuts)==0:
 			item = QListWidgetItem(f"No hotkeys found")
@@ -121,12 +125,14 @@ class Window(QMainWindow):
 			else:
 				self.statusBar.showMessage(f"\"{seq}\" was not added")
 
+			self.show_status = False
 			self.refresh()
 
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
 		self.parent = parent
+		self.show_status = True
 		
 		self.window_type = HOTKEY_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
