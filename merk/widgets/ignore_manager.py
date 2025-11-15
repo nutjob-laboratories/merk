@@ -43,6 +43,7 @@ class Window(QMainWindow):
 
 			config.IGNORE_LIST.append(i)
 			config.save_settings(config.CONFIG_FILE)
+			self.force_ignore_update = True
 			if self.update:
 				self.parent.reRenderAll(True)
 				self.parent.rerenderUserlists()
@@ -53,11 +54,15 @@ class Window(QMainWindow):
 
 	def remove_key(self):
 		selected_item = self.keys.currentItem()
-		if selected_item.dummy: return
+		if hasattr(selected_item,"dummy"):
+			if selected_item.dummy: return
+		else:
+			return
 		if selected_item:
 			i = selected_item.ignore
 			config.IGNORE_LIST.remove(i)
 			config.save_settings(config.CONFIG_FILE)
+			self.force_ignore_update = True
 			if self.update:
 				self.parent.reRenderAll(True)
 				self.parent.rerenderUserlists()
@@ -67,8 +72,10 @@ class Window(QMainWindow):
 			self.statusBar.showMessage("Ignore removed")
 
 	def refresh_key(self):
-		self.parent.reRenderAll(True)
-		self.parent.rerenderUserlists()
+		if self.force_ignore_update:
+			self.parent.reRenderAll(True)
+			self.parent.rerenderUserlists()
+			self.force_ignore_update = False
 
 	def refresh(self):
 		self.keys.clear()
@@ -85,16 +92,21 @@ class Window(QMainWindow):
 			self.keys.addItem(item)
 
 	def on_item_clicked(self, item):
-		if item.dummy: return
+		if hasattr(item,"dummy"):
+			if item.dummy: return
+		else:
+			return
 		old = item.ignore
 		i = dialog.GetIgnore(item.ignore,self)
 		if i:
 			config.IGNORE_LIST.remove(old)
 			config.IGNORE_LIST.append(i)
 			config.save_settings(config.CONFIG_FILE)
-			self.parent.buildSettingsMenu()
-			self.parent.reRenderAll(True)
-			self.parent.rerenderUserlists()
+			self.force_ignore_update = True
+			if self.update:
+				self.parent.buildSettingsMenu()
+				self.parent.reRenderAll(True)
+				self.parent.rerenderUserlists()
 
 			self.keys.clear()
 			for e in config.IGNORE_LIST:
@@ -123,6 +135,7 @@ class Window(QMainWindow):
 
 		self.parent = parent
 		self.update = True
+		self.force_ignore_update = False
 
 		config.load_settings(config.CONFIG_FILE)
 		
