@@ -263,6 +263,38 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def macro(self,name,script,musage=None,mhelp=None):
+		if self._gui!=None:
+			# If the first character is the issue command
+			# symbol, strip that out of the name
+			if len(name)>len(config.ISSUE_COMMAND_SYMBOL):
+				il = len(config.ISSUE_COMMAND_SYMBOL)
+				if name[:il] == config.ISSUE_COMMAND_SYMBOL:
+					name = name[il:]
+
+			# Make sure that macro names start with a letter
+			if len(name)>=1:
+				if not name[0].isalpha(): return False
+			else:
+				return False
+
+			if not commands.is_valid_macro_name(name): return False
+
+			if commands.does_macro_name_exist(name): return False
+
+			efilename = commands.find_file(script,SCRIPT_FILE_EXTENSION)
+			if not efilename: return False
+
+			if musage!=None and len(musage.strip())==0: musage = None
+			if mhelp!=None and len(mhelp.strip())==0: mhelp = None
+
+			if musage==None and mhelp!=None: musage = config.ISSUE_COMMAND_SYMBOL+name
+
+			commands.add_command(name,script,musage,mhelp)
+			commands.build_help_and_autocomplete()
+			return True
+		return False
+
 	def unbind(self,sequence):
 		if self._gui!=None:
 			if sequence=='*':

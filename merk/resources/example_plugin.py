@@ -42,9 +42,9 @@ class ExamplePlugin(Plugin):
     #   alias, all_channels, all_masters, all_privates,  #
     #   all_windows, bind, channel, channels, clients,   #
     #   find, home, ignore, ignores, is_away,            #
-    #   is_ignored, list, master, max, maximized, min,   #
-    #   minimized, modes, private, privates, restore,    #
-    #   script, unbind, unignore, windows                #
+    #   is_ignored, list, macro, master, max, maximized, #
+    #   min, minimized, modes, private, privates,        #
+    #   restore, script, unbind, unignore, windows       #
     #----------------------------------------------------#
 
     NAME = "Example Plugin"
