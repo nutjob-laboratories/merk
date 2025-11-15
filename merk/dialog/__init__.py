@@ -58,10 +58,10 @@ from .set_insert import Dialog as SetInsert
 from .set_nick import Dialog as SetNick
 from .set_if import Dialog as SetIf
 from .cmd_window import Dialog as SetCmdWindow
-from .set_bind import Dialog as SetBind
 from .set_macro import Dialog as SetMacro
 from .set_ignore import Dialog as SetIgnore
 from .key import Dialog as SetKey
+from .set_bind import Dialog as SetBind
 
 def GetIgnore(msg,parent):
 	x = SetIgnore(msg,parent)

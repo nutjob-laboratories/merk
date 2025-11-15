@@ -94,6 +94,28 @@ class Window(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.statusBar.showMessage("Saved hotkeys")
 
+	def on_item_clicked(self, item):
+		x = dialog.SetBind(self,item.seq,item.cmd)
+		e = x.get_script_information(self,item.seq,item.cmd)
+		if e:
+			seq = e[0]
+			cmd = e[1]
+
+			self.parent.remove_shortcut(seq)
+
+			if is_valid_shortcut_sequence(seq):
+				r = self.parent.add_shortcut(seq,cmd)
+				if r==GOOD_SHORTCUT:
+					self.statusBar.showMessage("Hotkey edited")
+				elif r==SHORTCUT_IN_USE:
+					self.statusBar.showMessage(f"\"{seq}\" is already in use")
+				else:
+					self.statusBar.showMessage(f"\"{seq}\" is not valid")
+			else:
+				self.statusBar.showMessage(f"\"{seq}\" was not added")
+
+			self.refresh()
+
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
@@ -109,6 +131,7 @@ class Window(QMainWindow):
 		self.keys = QListWidget(self)
 		self.keys.setTextElideMode(Qt.ElideRight)
 		self.keys.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.keys.itemDoubleClicked.connect(self.on_item_clicked)
 
 		self.add = QPushButton("")
 		self.add.setIcon(QIcon(PLUS_ICON))

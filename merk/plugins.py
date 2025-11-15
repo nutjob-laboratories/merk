@@ -682,6 +682,11 @@ def load_plugins(gui):
 		if not hasattr(obj,"VERSION"): obj.VERSION = "1.0"
 
 		obj._size = get_size(obj)
+		obj._class = obj.__class__.__name__
+
+		instance_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
+		obj._methods = len(instance_methods) - obj._events
+		if obj._methods<0: obj._methods = 0
 
 		if obj._events==0:
 			ERRORS.append(f"{obj._basename} doesn't have any events to respond to")

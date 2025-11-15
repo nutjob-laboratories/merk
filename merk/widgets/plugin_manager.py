@@ -123,14 +123,16 @@ class Window(QMainWindow):
 			basename = obj._basename
 			events = obj._events
 			event_list = obj._event_list
+			methods = obj._methods
 			size = prettySize(obj._size)
 			NAME = obj.NAME
 			VERSION = obj.VERSION
 			AUTHOR = obj.AUTHOR
 			SOURCE = obj.SOURCE
+			classname = obj._class
 
 			item = QListWidgetItem(f"{NAME} {VERSION}")
-			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nFilename: {basename}\nEvents: {events}\nSize: {size}")
+			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}\nSize: {size}")
 			item.filename = obj._filename
 			item.basename = obj._basename
 			item.events = obj._events
@@ -140,10 +142,12 @@ class Window(QMainWindow):
 			item.VERSION = obj.VERSION
 			item.AUTHOR = obj.AUTHOR
 			item.SOURCE = obj.SOURCE
+			item.classname = classname
+			item.methods = methods
 			item.dummy = False
 			others.append(item)
 
-			others = sorted(others,key=operator.attrgetter("NAME","VERSION"))
+		others = sorted(others,key=operator.attrgetter("filename","NAME","VERSION"))
 		for e in others:
 			self.plugin_list.addItem(e)
 

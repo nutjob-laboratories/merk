@@ -168,8 +168,8 @@ class ShortcutEdit(QLineEdit):
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_script_information(parent=None):
-		dialog = Dialog(parent)
+	def get_script_information(parent=None,hotkey=None,command=None):
+		dialog = Dialog(parent,hotkey,command)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -193,12 +193,14 @@ class Dialog(QDialog):
 	def on_text_changed(self, text):
 		self.command_text = text
 
-	def __init__(self,parent=None):
+	def __init__(self,parent=None,hotkey=None,command=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
 		self.block_tab = True
 		self.command_text = ''
+		self.ehotkey = hotkey
+		self.ecommand = command
 
 		palette = self.palette()
 		self.default_text_color = palette.color(QPalette.WindowText)
@@ -213,6 +215,9 @@ class Dialog(QDialog):
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJK")
 		self.key_sequence.setMinimumWidth(wwidth)
+
+		if self.ehotkey!=None:
+			self.key_sequence.setText(self.ehotkey)
 
 		self.allowTab = QCheckBox("Block tab key",self)
 		self.allowTab.stateChanged.connect(self.clickTab)
@@ -239,7 +244,10 @@ class Dialog(QDialog):
 		cmdlist = scripts + cmdlist
 
 		self.command = QComboBox(self)
-		self.command.addItem("")
+		if self.ecommand!=None:
+			self.command.addItem(self.ecommand)
+		else:
+			self.command.addItem("")
 		for e in cmdlist:
 			self.command.addItem(e)
 
@@ -298,4 +306,7 @@ class Dialog(QDialog):
 
 		self.setFixedSize(self.sizeHint())
 
-		self.key_sequence.setFocus()
+		if self.ehotkey!=None:
+			self.command.setFocus()
+		else:
+			self.key_sequence.setFocus()
