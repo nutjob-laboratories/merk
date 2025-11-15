@@ -49,11 +49,20 @@ class Window():
 		else:
 			self._window = window
 
-	def key(self):
+	def key(self,new_key=None):
 		if self._window.window_type!=CHANNEL_WINDOW: return None
 		if self._window.name in self._window.client.channelkeys:
-			return self._window.client.channelkeys[self._window.name]
+			if new_key==None:
+				return self._window.client.channelkeys[self._window.name]
+			else:
+				self._window.client.mode(self._window.name,False,'k '+new_key)
+				return True
 		else:
+			if new_key==None:
+				return None
+			else:
+				self._window.client.mode(self._window.name,True,'k '+new_key)
+				return True
 			return None
 
 	def uptime(self):
@@ -250,8 +259,23 @@ class Window():
 		if self._window.window_type==CHANNEL_WINDOW: return self._window.users
 		return None
 
-	def topic(self):
-		if self._window.window_type==CHANNEL_WINDOW: return self._window.channel_topic
+	def nicks(self):
+		if self._window.window_type==CHANNEL_WINDOW:
+			output = []
+			for u in self._window.users:
+				output.append(self._window.clean_nick(u))
+			return output
+		return None
+
+	def topic(self,new_topic=None):
+		if self._window.window_type==CHANNEL_WINDOW:
+			if new_topic==None:
+				return self._window.channel_topic
+			else:
+				self._window.client.topic(self._window.name,new_topic)
+				return True
+		else:
+			if new_topic!=None: return False
 		return None
 
 class Plugin():
