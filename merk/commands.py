@@ -56,7 +56,6 @@ from . import config
 from . import user as USER
 from . import dialog
 from . import plugins
-
 from .dialog.away import Dialog as Away
 
 CONFIG_DIRECTORY = None

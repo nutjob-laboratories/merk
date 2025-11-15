@@ -1899,9 +1899,9 @@ class Window(QMainWindow):
 
 	def pressedStyleButton(self):
 		if config.SIMPLIFIED_DIALOGS:
-			x = SimpleStylerDialog(self.client,self,self.parent)
+			x = dialog.SimpleStylerDialog(self.client,self,self.parent)
 		else:
-			x = StylerDialog(self.client,self,self.parent)
+			x = dialog.StylerDialog(self.client,self,self.parent)
 		if x:
 			QApplication.setOverrideCursor(Qt.WaitCursor)
 			self.applyStyle()
