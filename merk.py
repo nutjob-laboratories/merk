@@ -113,6 +113,7 @@ optiongroup.add_argument("-R","--run",dest="noask",help=f"Don't ask for connecti
 optiongroup.add_argument("-o","--on-top",dest="ontop",help=f"Application window always on top",action="store_true")
 optiongroup.add_argument("-f","--full-screen",dest="fullscreen",help=f"Application window displays full screen",action="store_true")
 optiongroup.add_argument("-s","--script",type=str,help="Use a file as a connection script",metavar="FILE",default='')
+optiongroup.add_argument("-P","--disable-plugins",dest="disable",help=f"Disables plugins",action="store_true")
 
 configuration_group = parser.add_argument_group('Files and Directories')
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)",metavar="NAME",default=".merk")
@@ -124,6 +125,7 @@ configuration_group.add_argument("--config-file",dest="configfile",type=str,help
 configuration_group.add_argument("--reset",dest="configdefault",help=f"Reset configuration file to default values",action="store_true")
 configuration_group.add_argument("--reset-user",dest="userdefault",help=f"Reset user file to default values",action="store_true")
 configuration_group.add_argument("--reset-all",dest="alldefault",help=f"Reset all configuration files to default values",action="store_true")
+configuration_group.add_argument("--uninstall-all",dest="uninstall",help=f"Deletes all installed plugins",action="store_true")
 
 misc_group = parser.add_argument_group('Appearance')
 misc_group.add_argument("-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)",metavar="NAME",default="")
@@ -198,6 +200,26 @@ if __name__ == '__main__':
 
 	# Initialize the scripts system
 	commands.initialize(args.configdir,args.configname,args.scriptdir)
+
+	# Uninstalls all plugins
+	if args.uninstall:
+		for root, _, files in os.walk(plugins.PLUGIN_DIRECTORY):
+			for file in files:
+				file_path = os.path.join(root, file)
+				if os.path.exists(file_path):
+					try:
+						os.remove(file_path)
+						sys.stdout.write(f"Deleted {file_path}\n")
+					except OSError as e:
+						sys.stdout.write(f"Error deleting file: {e}\n")
+				else:
+					sys.stdout.write(f"File {file_path} not found\n")
+		exit(0)
+
+	# Disabled plugins
+	if args.disable:
+		config.ENABLE_PLUGINS = False
+		if not args.donotsave: config.save_settings(config.CONFIG_FILE)
 
 	# Set the application font
 	if config.APPLICATION_FONT!=None:

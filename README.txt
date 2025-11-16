@@ -189,11 +189,11 @@ There are four libraries that comes bundled with **MERK**:
 usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
                       [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
-                      [-t] [-R] [-o] [-f] [-s FILENAME][--config-name NAME] 
+                      [-t] [-R] [-o] [-P] [-f] [-s FILENAME][--config-name NAME] 
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
-                      [--reset-all] [-Q NAME] [-D] [-L]
+                      [--reset-all] [--uninstall-all] [-Q NAME] [-D] [-L]
                       [SERVER] [PORT]
 
 
@@ -221,14 +221,15 @@ User Information:
                         Use this realname to connect
 
 Options:
-  -h, --help            Show help and usage information
-  -d, --donotsave       Do not save new user settings
-  -x, --donotexecute    Do not execute connection script
-  -t, --reconnect       Reconnect to servers on disconnection
-  -R, --run             Don't ask for connection information on start
-  -o, --on-top          Application window always on top
-  -f, --full-screen     Application window displays full screen
-  -s, --script FILE     Use a file as a connection script
+  -h, --help             Show help and usage information
+  -d, --donotsave        Do not save new user settings
+  -x, --donotexecute     Do not execute connection script
+  -t, --reconnect        Reconnect to servers on disconnection
+  -R, --run              Don't ask for connection information on start
+  -o, --on-top           Application window always on top
+  -f, --full-screen      Application window displays full screen
+  -s, --script FILE      Use a file as a connection script
+  -P, --disable-plugins  Disables plugins
 
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)
@@ -242,6 +243,7 @@ Files and Directories:
   --reset               Reset configuration file to default values
   --reset-user          Reset user file to default values
   --reset-all           Reset all configuration files to default values
+  --uninstall-all       Deletes all installed plugins
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)

@@ -2,7 +2,10 @@
 |                                   0.051.150                                  |
 |------------------------------------------------------------------------------|
 
-* Started changelog
+|=====================|
+| APPLICATION CHANGES |
+|=====================|
+
 * Tweaks to the "Plugins" page of the "Settings" dialog
 * Change to the wording of the "Plugins" entry in the "Tools" menu
 * Clarified how hotkeys are used (and saved/loaded) in the documentation
@@ -29,9 +32,26 @@
   and connection scripts.
 * Added a new icon for "tools" (for the new settings submenu) and "python"
   (for the new plugin file submenu)
-* New plugin Window class method: active(). This returns a boolean; True if
-  the window is currently active, and False if not
+* Added a new example plugin to the documentation
+* Added a new command-line flag: -P, --disable-plugins. This flag disables
+  plugins and prevents them from loading on startup
+* Added a new command-line flag: --uninstall-all. This flag deletes all
+  installed plugins, and is primarily meant for recovery if a plugin is
+  crashing MERK on load.
+
+|====================|
+| PLUGIN API CHANGES |
+|====================|
+
 * Fixed a bug in the title() plugin Window class method; window titles
   were not being set (or returned) properly
-* Added a new example plugin to the documentation
-* 
+* New plugin Window class method: active(). This returns a boolean; True if
+  the window is currently active, and False if not
+* New plugin Window class method: position(). This returns a list; the first
+  value in the list is the window's X value, the second value in the list
+  is the window's Y value. If the position cannot be determined, both
+  values will be set to 0.
+* New plugin Window class method: size(). This returns a list; the first
+  value in the list is the window's width, the second value in the list is
+  the window's height. If the size cannot be determinied, both values will
+  be set to 0.

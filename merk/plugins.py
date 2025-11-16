@@ -49,6 +49,21 @@ class Window():
 		else:
 			self._window = window
 
+	def size(self):
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			width = w.width()
+			height = w.height()
+			return [width,height]
+		return [0,0]
+
+	def position(self):
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			p = w.pos()
+			return [p.x(),p.y()]
+		return [0,0]
+
 	def active(self):
 		w = self._gui.getSubWindow(self._window.name,self._window.client)
 		if w:

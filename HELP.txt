@@ -44,11 +44,11 @@ pip <span class="hljs-keyword">install</span> service_identity
 <pre><code>usage: python merk.py [<span class="hljs-comment">--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]</span>
                       [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
                       [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x]
-                      [-t] [-R] [-o] [-f] [-s FILENAME][<span class="hljs-comment">--config-name NAME] </span>
+                      [-t] [-R] [-o] [-P] [-f] [-s FILENAME][<span class="hljs-comment">--config-name NAME] </span>
                       [<span class="hljs-comment">--config-directory DIRECTORY] [--config-local]</span>
                       [<span class="hljs-comment">--scripts-directory DIRECTORY] [--user-file FILENAME]</span>
                       [<span class="hljs-comment">--config-file FILENAME] [--reset] [--reset-user]</span>
-                      [<span class="hljs-comment">--reset-all] [-Q NAME] [-D] [-L]</span>
+                      [<span class="hljs-comment">--reset-all] [--uninstall-all] [-Q NAME] [-D] [-L]</span>
                       [SERVER] [PORT]
 
 
@@ -76,14 +76,15 @@ Connection:
                         <span class="hljs-keyword">Use</span> this realname <span class="hljs-keyword">to</span> <span class="hljs-keyword">connect</span>
 
 Options:
-  -h, <span class="hljs-comment">--help            Show help and usage information</span>
-  -d, <span class="hljs-comment">--donotsave       Do not save new user settings</span>
-  -x, <span class="hljs-comment">--donotexecute    Do not execute connection script</span>
-  -t, <span class="hljs-comment">--reconnect       Reconnect to servers on disconnection</span>
-  -R, <span class="hljs-comment">--run             Don't ask for connection information on start</span>
-  -o, <span class="hljs-comment">--on-top          Application window always on top</span>
-  -f, <span class="hljs-comment">--full-screen     Application window displays full screen</span>
-  -s, <span class="hljs-comment">--script FILE     Use a file as a connection script</span>
+  -h, <span class="hljs-comment">--help             Show help and usage information</span>
+  -d, <span class="hljs-comment">--donotsave        Do not save new user settings</span>
+  -x, <span class="hljs-comment">--donotexecute     Do not execute connection script</span>
+  -t, <span class="hljs-comment">--reconnect        Reconnect to servers on disconnection</span>
+  -R, <span class="hljs-comment">--run              Don't ask for connection information on start</span>
+  -o, <span class="hljs-comment">--on-top           Application window always on top</span>
+  -f, <span class="hljs-comment">--full-screen      Application window displays full screen</span>
+  -s, <span class="hljs-comment">--script FILE      Use a file as a connection script</span>
+  -P, <span class="hljs-comment">--disable-plugins  Disables plugins</span>
 
 Files <span class="hljs-keyword">and</span> Directories:
   <span class="hljs-comment">--config-name NAME    Name of the configuration file directory (default: .merk)</span>
@@ -97,6 +98,7 @@ Files <span class="hljs-keyword">and</span> Directories:
   <span class="hljs-comment">--reset               Reset configuration file to default values</span>
   <span class="hljs-comment">--reset-user          Reset user file to default values</span>
   <span class="hljs-comment">--reset-all           Reset all configuration files to default values</span>
+  <span class="hljs-comment">--uninstall-all       Deletes all install plugins</span>
 
 Appearance:
   -Q, <span class="hljs-comment">--qtstyle NAME    Set Qt widget style (default: Windows)</span>

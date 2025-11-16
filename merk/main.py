@@ -314,18 +314,19 @@ class Merk(QMainWindow):
 
 		# Load in plugins
 		errors = plugins.load_plugins(self)
-		if len(errors)>0:
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			if len(errors)>1:
-				msgBox.setText("There were errors loading plugins!")
-			else:
-				msgBox.setText("There was an error loading plugins!")
-			msgBox.setInformativeText("\n".join(errors))
-			msgBox.setWindowTitle("Plugin load error")
-			msgBox.setStandardButtons(QMessageBox.Ok)
-			msgBox.exec()
+		if errors!=None:
+			if len(errors)>0:
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				if len(errors)>1:
+					msgBox.setText("There were errors loading plugins!")
+				else:
+					msgBox.setText("There was an error loading plugins!")
+				msgBox.setInformativeText("\n".join(errors))
+				msgBox.setWindowTitle("Plugin load error")
+				msgBox.setStandardButtons(QMessageBox.Ok)
+				msgBox.exec()
 
 		# Finally, load in hotkeys
 		errors = []

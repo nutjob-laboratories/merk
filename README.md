@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.100">MERK 0.051.100</a></big></b><br>
-  <b>Current development version: 0.051.109</b><br><br>
+  <b>Current development version: 0.051.111</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Buy me a coffee!</a></b><br>
 </p>
@@ -32,13 +32,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.051.100 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.100)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.051.109 (12.46 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows EXE | [Download MERK 0.051.109 (49.35 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows Setup | [Download MERK 0.051.109 (46.44 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.051.111 (12.46 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows EXE | [Download MERK 0.051.111 (49.35 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows Setup | [Download MERK 0.051.111 (46.46 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.109**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** can load plugins, written in Python, just like **MERK**, which can be edited and created directly in the application. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.111**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** can load plugins, written in Python, just like **MERK**, which can be edited and created directly in the application. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.051.100](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.100). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf).
 
@@ -137,7 +137,7 @@ There are four libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.051.100), and may reflect the current development version (0.051.109). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.100), and may reflect the current development version (0.051.111). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -189,11 +189,11 @@ There are four libraries that comes bundled with **MERK**:
 usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
                       [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
-                      [-t] [-R] [-o] [-f] [-s FILENAME][--config-name NAME] 
+                      [-t] [-R] [-o] [-P] [-f] [-s FILENAME][--config-name NAME] 
                       [--config-directory DIRECTORY] [--config-local]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
-                      [--reset-all] [-Q NAME] [-D] [-L]
+                      [--reset-all] [--uninstall-all] [-Q NAME] [-D] [-L]
                       [SERVER] [PORT]
 
 
@@ -221,14 +221,15 @@ User Information:
                         Use this realname to connect
 
 Options:
-  -h, --help            Show help and usage information
-  -d, --donotsave       Do not save new user settings
-  -x, --donotexecute    Do not execute connection script
-  -t, --reconnect       Reconnect to servers on disconnection
-  -R, --run             Don't ask for connection information on start
-  -o, --on-top          Application window always on top
-  -f, --full-screen     Application window displays full screen
-  -s, --script FILE     Use a file as a connection script
+  -h, --help             Show help and usage information
+  -d, --donotsave        Do not save new user settings
+  -x, --donotexecute     Do not execute connection script
+  -t, --reconnect        Reconnect to servers on disconnection
+  -R, --run              Don't ask for connection information on start
+  -o, --on-top           Application window always on top
+  -f, --full-screen      Application window displays full screen
+  -s, --script FILE      Use a file as a connection script
+  -P, --disable-plugins  Disables plugins
 
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)
@@ -242,6 +243,7 @@ Files and Directories:
   --reset               Reset configuration file to default values
   --reset-user          Reset user file to default values
   --reset-all           Reset all configuration files to default values
+  --uninstall-all       Deletes all installed plugins
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
