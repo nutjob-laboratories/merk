@@ -6,6 +6,7 @@
 | APPLICATION CHANGES |
 |=====================|
 
+* Updated documentation to cover all new features and changes.
 * Tweaks to the "Plugins" page of the "Settings" dialog
 * Change to the wording of the "Plugins" entry in the "Tools" menu
 * Clarified how hotkeys are used (and saved/loaded) in the documentation
@@ -16,8 +17,10 @@
 * Updated the "Settings" menu screenshot on the repo
 * Disabling plugins in the settings menu now closes all Python editor
   windows
-* Disabling plugins in the "Settings" dialog now closses all Python
+* Disabling plugins in the "Settings" dialog now closes all Python
   editor windows
+* Disabling scripting in the "Settings" dialog now closes all script editor
+  windows
 * Fixed a bug where if the scripting engine was disabled while running,
   the "run script" button wouldn't be hidden on server windows
 * The "style" and "plugins" directories entries are now hidden in the
@@ -55,3 +58,12 @@
   value in the list is the window's width, the second value in the list is
   the window's height. If the size cannot be determinied, both values will
   be set to 0.
+* New plugin Window class method: history(). This returns a list of strings
+  representing the command history of a window's text input widget, in order
+  of most recent to least recent. The maximum size of this list is, by
+  default, 20 entries, unless changed in the settings dialog or with /config.
+  If command history is turned off, this will return an empty list.
+* New plugin Window class method: chat(). This returns a list of lists of
+  strings representing the chat currently being displayed in the window. If
+  the window is a server window, or there is no chat being displayed, this
+  will return an empty list.

@@ -49,6 +49,17 @@ class Window():
 		else:
 			self._window = window
 
+	def chat(self):
+		if self._window.window_type!=SERVER_WINDOW:
+			return self._window.dumpChat()
+		return []
+
+	def history(self):
+		if config.ENABLE_COMMAND_INPUT_HISTORY:
+			return self._window.history_buffer
+		else:
+			return []
+
 	def size(self):
 		w = self._gui.getSubWindow(self._window.name,self._window.client)
 		if w:

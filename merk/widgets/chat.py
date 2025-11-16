@@ -1269,6 +1269,23 @@ class Window(QMainWindow):
 		self.rerenderChatLog()
 		self.input.setFocus()
 
+	def dumpChat(self):
+		output = []
+		for line in self.log:
+			entry = []
+			if line.type==CHAT_MESSAGE:
+				sender = line.sender
+				contents = line.contents
+				entry = ['chat',sender,contents]
+
+			if line.type==ACTION_MESSAGE:
+				sender = line.sender
+				contents = line.contents
+				entry = ['action',sender,contents]
+
+			if len(entry)>0: output.append(entry)
+		return output
+
 	def rerenderChatLog(self):
 
 		QApplication.setOverrideCursor(Qt.WaitCursor)
