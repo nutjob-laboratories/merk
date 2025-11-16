@@ -4833,7 +4833,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
 			if efilename!=None:
-				gui.newEditorWindowFile(efilename)
+				gui.openEditor(efilename)
 			else:
 				if is_script:
 					add_halt(script_id)

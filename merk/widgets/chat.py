@@ -969,7 +969,7 @@ class Window(QMainWindow):
 
 					hostid = self.client.server+":"+str(self.client.port)
 					entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
-					entry.triggered.connect(lambda state,h=hostid: self.parent.newEditorWindowConnect(h))
+					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
 					menu.addAction(entry)
 
 				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:

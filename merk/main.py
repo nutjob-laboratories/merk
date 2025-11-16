@@ -3333,6 +3333,18 @@ class Merk(QMainWindow):
 
 		return w
 
+	def openPythonEditor(self,filename):
+		for window in self.getAllEditorWindows():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if c.python:
+					if c.filename==filename:
+						window.show()
+						self.toolsMenu.close()
+						window.setFocus()
+						return
+		self.newEditorPluginFile(filename)
+
 	def newEditorWindowFile(self,filename):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w))
@@ -3353,6 +3365,18 @@ class Merk(QMainWindow):
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
+
+	def openEditor(self,filename):
+		for window in self.getAllEditorWindows():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if not c.python:
+					if c.filename==filename:
+						window.show()
+						self.toolsMenu.close()
+						window.setFocus()
+						return
+		self.newEditorWindowFile(filename)
 
 	def newEditorWindowConnect(self,hostid):
 		w = QMdiSubWindow(self)
@@ -3377,6 +3401,18 @@ class Merk(QMainWindow):
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		return w
+
+	def openEditorConnect(self,hostid):
+		for window in self.getAllEditorWindows():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if not c.python:
+					if c.filename==None and c.current_user_script==hostid:
+						window.show()
+						self.toolsMenu.close()
+						window.setFocus()
+						return
+		self.newEditorWindowConnect(hostid)
 
 	def newListWindow(self,client,parent):
 		w = QMdiSubWindow(self)
@@ -4285,17 +4321,19 @@ class Merk(QMainWindow):
 		self.toolsMenu.addSeparator()
 
 		if config.ENABLE_PLUGINS:
-			file_paths = []
-			for root, _, files in os.walk(plugins.PLUGIN_DIRECTORY):
-				for file in files:
-					file_paths.append(os.path.join(root, file))
-			file_paths = list(set(file_paths))
-			if len(file_paths)>0:
+			if len(plugins.PLUGINS)>0:
 				sm = self.toolsMenu.addMenu(QIcon(PLUGIN_ICON),"Plugins")
+				for obj in plugins.PLUGINS:
+					filename = obj._filename
+					basename = obj._basename
+					events = obj._events
+					classname = obj._class
+					size = prettySize(obj._size)
+					NAME = obj.NAME
+					VERSION = obj.VERSION
 
-				for f in file_paths:
-					entry = QAction(QIcon(PYTHON_ICON),os.path.basename(f),self)
-					entry.triggered.connect(lambda state,h=f: self.newEditorPluginFile(h))
+					l = lambda h=filename: self.openPythonEditor(h)
+					entry = widgets.ExtendedMenuItem(self,PYTHON_MENU_ICON,f"{NAME} {VERSION}&nbsp;&nbsp;",f"{classname} ({basename}) - {events} events&nbsp;&nbsp;",CUSTOM_MENU_ICON_SIZE,l)
 					sm.addAction(entry)
 
 		if config.SCRIPTING_ENGINE_ENABLED:
@@ -4309,7 +4347,7 @@ class Merk(QMainWindow):
 
 				for f in file_paths:
 					entry = QAction(QIcon(README_ICON),os.path.basename(f),self)
-					entry.triggered.connect(lambda state,h=f: self.newEditorWindowFile(h))
+					entry.triggered.connect(lambda state,h=f: self.openEditor(h))
 					sm.addAction(entry)
 
 			if len(user.COMMANDS)>0:
@@ -4317,7 +4355,7 @@ class Merk(QMainWindow):
 
 				for f in user.COMMANDS:
 					entry = QAction(QIcon(README_ICON),f,self)
-					entry.triggered.connect(lambda state,h=f: self.newEditorWindowConnect(h))
+					entry.triggered.connect(lambda state,h=f: self.openEditorConnect(h))
 					sm.addAction(entry)
 
 		sm = self.toolsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")

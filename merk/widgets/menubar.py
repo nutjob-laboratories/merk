@@ -326,7 +326,7 @@ class wMenuButton(QPushButton):
 			if config.SCRIPTING_ENGINE_ENABLED:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
 				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
-				entry.triggered.connect(lambda state,h=hostid: self.window.parent.newEditorWindowConnect(h))
+				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
 				menu.addAction(entry)
 
 			menu.addSeparator()
@@ -501,7 +501,7 @@ class wIconMenuButton(QPushButton):
 			if config.SCRIPTING_ENGINE_ENABLED:
 				hostid = self.window.client.server+":"+str(self.window.client.port)
 				entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
-				entry.triggered.connect(lambda state,h=hostid: self.window.parent.newEditorWindowConnect(h))
+				entry.triggered.connect(lambda state,h=hostid: self.window.parent.openEditorConnect(h))
 				menu.addAction(entry)
 
 			menu.addSeparator()

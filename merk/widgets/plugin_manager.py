@@ -159,7 +159,7 @@ class Window(QMainWindow):
 	def on_item_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
 		if item.dummy: return
-		self.parent.newEditorPluginFile(item.filename)
+		self.parent.openPythonEditor(item.filename)
 
 	def import_plugin(self):
 		options = QFileDialog.Options()
