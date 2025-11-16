@@ -49,6 +49,15 @@ class Window():
 		else:
 			self._window = window
 
+	def active(self):
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			if self._gui.MDI.activeSubWindow()==w:
+				return True
+			else:
+				return False
+		return False
+
 	def key(self,new_key=None):
 		if self._window.window_type!=CHANNEL_WINDOW: return None
 		if self._window.name in self._window.client.channelkeys:

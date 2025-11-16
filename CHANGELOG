@@ -19,8 +19,7 @@
   the "run script" button wouldn't be hidden on server windows
 * The "style" and "plugins" directories entries are now hidden in the
   tools menu "directories" submenu if the style editor and plugins
-  are disabled, respectively
-* Made the above change to the systray menu as well
+  are disabled, respectively; change has also been made to the systray menu
 * Added a new submenu to the tools menu: a list of plugin files, allowing
   the user to open the files in the Python editor
 * When opening up a file in either the script editor or the Python editor,
@@ -30,4 +29,6 @@
   and connection scripts.
 * Added a new icon for "tools" (for the new settings submenu) and "python"
   (for the new plugin file submenu)
+* New plugin Window class method: active(). This returns a boolean; True if
+  the window is currently active, and False if not
 * 
