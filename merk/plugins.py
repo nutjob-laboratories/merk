@@ -113,9 +113,9 @@ class Window():
 
 	def title(self,title=None):
 		if title==None:
-			self._window.setWindowTitle(self._window.name)
-		else:
 			return self._window.windowTitle()
+		else:
+			self._window.setWindowTitle(title)
 
 	def script(self,script,arguments):
 

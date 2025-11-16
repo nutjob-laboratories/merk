@@ -31,4 +31,7 @@
   (for the new plugin file submenu)
 * New plugin Window class method: active(). This returns a boolean; True if
   the window is currently active, and False if not
+* Fixed a bug in the title() plugin Window class method; window titles
+  were not being set (or returned) properly
+* Added a new example plugin to the documentation
 * 
