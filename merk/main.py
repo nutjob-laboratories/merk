@@ -1136,17 +1136,19 @@ class Merk(QMainWindow):
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 			sm.addAction(entry)
 
-			entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
-			sm.addAction(entry)
+			if config.ENABLE_STYLE_EDITOR:
+				entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+				sm.addAction(entry)
 
 			entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 			sm.addAction(entry)
 
-			entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
-			sm.addAction(entry)
+			if config.ENABLE_PLUGINS:
+				entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
+				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+				sm.addAction(entry)
 
 			if config.SCRIPTING_ENGINE_ENABLED:
 				entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
@@ -4282,6 +4284,20 @@ class Merk(QMainWindow):
 
 		self.toolsMenu.addSeparator()
 
+		if config.ENABLE_PLUGINS:
+			file_paths = []
+			for root, _, files in os.walk(plugins.PLUGIN_DIRECTORY):
+				for file in files:
+					file_paths.append(os.path.join(root, file))
+			file_paths = list(set(file_paths))
+			if len(file_paths)>0:
+				sm = self.toolsMenu.addMenu(QIcon(PLUGIN_ICON),"Plugins")
+
+				for f in file_paths:
+					entry = QAction(QIcon(PYTHON_ICON),os.path.basename(f),self)
+					entry.triggered.connect(lambda state,h=f: self.newEditorPluginFile(h))
+					sm.addAction(entry)
+
 		if config.SCRIPTING_ENGINE_ENABLED:
 			file_paths = []
 			for root, _, files in os.walk(commands.SCRIPTS_DIRECTORY):
@@ -4319,17 +4335,19 @@ class Merk(QMainWindow):
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
-		sm.addAction(entry)
+		if config.ENABLE_STYLE_EDITOR:
+			entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+			sm.addAction(entry)
 
 		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
 		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
 		sm.addAction(entry)
 
-		entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
-		sm.addAction(entry)
+		if config.ENABLE_PLUGINS:
+			entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+			sm.addAction(entry)
 
 		if config.SCRIPTING_ENGINE_ENABLED:
 			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
