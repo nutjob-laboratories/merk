@@ -3727,6 +3727,64 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsPlugins(self):
+		if config.ENABLE_PLUGINS:
+			config.ENABLE_PLUGINS = False
+		else:
+			config.ENABLE_PLUGINS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
+		if not config.ENABLE_PLUGINS:
+			if self.plugin_manager!=None:
+				self.plugin_manager.close()
+
+	def settingsStyle(self):
+		if config.ENABLE_STYLE_EDITOR:
+			config.ENABLE_STYLE_EDITOR = False
+		else:
+			config.ENABLE_STYLE_EDITOR = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
+	def settingsHotkeys(self):
+		if config.ENABLE_HOTKEYS:
+			config.ENABLE_HOTKEYS = False
+		else:
+			config.ENABLE_HOTKEYS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
+		if not config.ENABLE_HOTKEYS:
+			if self.hotkey_manager!=None:
+				self.hotkey_manager.close()
+
+		for window in self.getAllEditorWindows():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if hasattr(c,"refreshHighlighter"):
+					c.refreshHighlighter()
+
+	def settingsIgnores(self):
+		if config.ENABLE_IGNORE:
+			config.ENABLE_IGNORE = False
+		else:
+			config.ENABLE_IGNORE = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
+		if not config.ENABLE_IGNORE:
+			if self.ignore_manager!=None:
+				self.ignore_manager.close()
+
+		self.reRenderAll()
+		self.rerenderUserlists()
+		for window in self.getAllEditorWindows():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if hasattr(c,"refreshHighlighter"):
+					c.refreshHighlighter()
+
 	def settingsFull(self):
 		if config.SHOW_FULL_SCREEN:
 			config.SHOW_FULL_SCREEN = False
@@ -3956,6 +4014,36 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
 		entry.triggered.connect(self.settingsDarkMode)
 		self.settingsMenu.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
+
+		if config.ENABLE_STYLE_EDITOR:
+			entry = QAction(QIcon(self.checked_icon),"Enable style editor", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable style editor", self)
+		entry.triggered.connect(self.settingsStyle)
+		sm.addAction(entry)
+
+		if config.ENABLE_HOTKEYS:
+			entry = QAction(QIcon(self.checked_icon),"Enable hotkeys", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable hotkeys", self)
+		entry.triggered.connect(self.settingsHotkeys)
+		sm.addAction(entry)
+
+		if config.ENABLE_IGNORE:
+			entry = QAction(QIcon(self.checked_icon),"Enable ignores", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable ignores", self)
+		entry.triggered.connect(self.settingsIgnores)
+		sm.addAction(entry)
+
+		if config.ENABLE_PLUGINS:
+			entry = QAction(QIcon(self.checked_icon),"Enable plugins", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable plugins", self)
+		entry.triggered.connect(self.settingsPlugins)
+		sm.addAction(entry)
 
 		if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS:
 

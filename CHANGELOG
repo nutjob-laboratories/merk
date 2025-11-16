@@ -10,4 +10,11 @@
 * Changed to the wording of the "Hotkeys" entry in the "Tools" menu
 * Fixed a bug where users with the protected status were being identified as
   being privledged
+* Added "Enable plugins" option to the "Settings" menu
+* Added "Enable hotkeys" option to the "Settings" menu
+* Added "Enable ignores" option to the "Settings" menu
+* Added "Enable style editor" option to the "Settings" menu
+* Added the four previous options to a submenu in the "Settings" menu,
+  named "Tools". Added a new icon for tools
+* Updated the "Settings" menu screenshot on the repo
 * 
