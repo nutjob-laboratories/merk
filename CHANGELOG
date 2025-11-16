@@ -8,4 +8,6 @@
 * Tweaked the layout of the "Plugins" page of the "Settings" dialog
 * Clarified how hotkeys are used (and saved/loaded) in the documentation
 * Changed to the wording of the "Hotkeys" entry in the "Tools" menu
+* Fixed a bug where users with the protected status were being identified as
+  being privledged
 * 

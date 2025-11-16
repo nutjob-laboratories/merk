@@ -792,13 +792,11 @@ class Window(QMainWindow):
 		if self.halfop: return True
 		if self.owner: return True
 		if self.admin: return True
-		if self.protected: return True
 
 	def is_operator(self):
 		if self.operator: return True
 		if self.owner: return True
 		if self.admin: return True
-		if self.protected: return True
 
 	def buildOperatorMenu(self):
 
