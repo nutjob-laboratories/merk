@@ -17,4 +17,11 @@
 * Added the four previous options to a submenu in the "Settings" menu,
   named "Tools". Added a new icon for tools
 * Updated the "Settings" menu screenshot on the repo
+* Disabling plugins in the settings menu now closes all Python editor
+  windows
+* Disabling plugins in the "Settings" dialog now closses all Python
+  editor windows
+* Added "Enable scripting" option to the "Settings" menu
+* Fixed a bug where if the scripting engine was disabled while running,
+  the "run script" button wouldn't be hidden on server windows
 * 

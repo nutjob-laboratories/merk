@@ -168,6 +168,12 @@ class Window(QMainWindow):
 
 	def closeEvent(self, event):
 
+		if self.force_close:
+			self.parent.closeSubWindow(self.subwindow_id)
+			event.accept()
+			self.close()
+			return
+
 		self.check_for_save()
 
 		# Make sure the MDI window is closed
@@ -443,6 +449,7 @@ class Window(QMainWindow):
 		self.window_type = EDITOR_WINDOW
 		self.subwindow = subwindow
 		self.python = python
+		self.force_close = False
 
 		self.editing_user_script = False
 		self.current_user_script = None

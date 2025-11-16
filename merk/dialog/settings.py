@@ -5625,6 +5625,22 @@ class Dialog(QDialog):
 		else:
 			self.parent.hideAllTopic()
 
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			for window in self.parent.getAllEditorWindows():
+				if hasattr(window,"widget"):
+					c = window.widget()
+					if not c.python:
+						c.force_close = True
+						c.close()
+
+			for w in self.parent.getAllServerWindows():
+				c = w.widget()
+				c.script_button.hide()
+		else:
+			for w in self.parent.getAllServerWindows():
+				c = w.widget()
+				c.script_button.show()
+
 		if not config.ENABLE_HOTKEYS:
 			if self.parent.hotkey_manager!=None:
 				self.parent.hotkey_manager.close()
@@ -5638,6 +5654,13 @@ class Dialog(QDialog):
 		if not config.ENABLE_PLUGINS:
 			if self.parent.plugin_manager!=None:
 				self.parent.plugin_manager.close()
+
+			for window in self.parent.getAllEditorWindows():
+				if hasattr(window,"widget"):
+					c = window.widget()
+					if c.python:
+						c.force_close=True
+						c.close()
 
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()

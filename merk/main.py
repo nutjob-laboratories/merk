@@ -3739,6 +3739,37 @@ class Merk(QMainWindow):
 			if self.plugin_manager!=None:
 				self.plugin_manager.close()
 
+			for window in self.getAllEditorWindows():
+				if hasattr(window,"widget"):
+					c = window.widget()
+					if c.python:
+						c.force_close = True
+						c.close()
+
+	def settingsScripting(self):
+		if config.SCRIPTING_ENGINE_ENABLED:
+			config.SCRIPTING_ENGINE_ENABLED = False
+		else:
+			config.SCRIPTING_ENGINE_ENABLED = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
+		if not config.SCRIPTING_ENGINE_ENABLED:
+			for window in self.getAllEditorWindows():
+				if hasattr(window,"widget"):
+					c = window.widget()
+					if not c.python:
+						c.force_close = True
+						c.close()
+
+			for w in self.getAllServerWindows():
+				c = w.widget()
+				c.script_button.hide()
+		else:
+			for w in self.getAllServerWindows():
+				c = w.widget()
+				c.script_button.show()
+
 	def settingsStyle(self):
 		if config.ENABLE_STYLE_EDITOR:
 			config.ENABLE_STYLE_EDITOR = False
@@ -4016,6 +4047,13 @@ class Merk(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
+
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = QAction(QIcon(self.checked_icon),"Enable scripting", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable scripting", self)
+		entry.triggered.connect(self.settingsScripting)
+		sm.addAction(entry)
 
 		if config.ENABLE_STYLE_EDITOR:
 			entry = QAction(QIcon(self.checked_icon),"Enable style editor", self)
