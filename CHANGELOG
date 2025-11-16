@@ -1,0 +1,11 @@
+|------------------------------------------------------------------------------|
+|                                   0.051.150                                  |
+|------------------------------------------------------------------------------|
+
+* Started changelog
+* Tweak to the wording on the "Plugins" page of the "Settings" dialog
+* Change to the wording of the "Plugins" entry in the "Tools" menu
+* Tweaked the layout of the "Plugins" page of the "Settings" dialog
+* Clarified how hotkeys are used (and saved/loaded) in the documentation
+* Changed to the wording of the "Hotkeys" entry in the "Tools" menu
+* 

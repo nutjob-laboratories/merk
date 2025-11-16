@@ -4681,8 +4681,8 @@ class Dialog(QDialog):
 		self.pluginDescription = QLabel(f"""
 			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
 			in Python. %_INSERT_%
-			Plugins, just like <b>{APPLICATION_NAME}</b>, require Python 3.9 or greater.
-			<br>
+			Plugins can be created, edited, installed, and uninstalled with the plugin manager, available in the
+			<b>{config.MAIN_MENU_TOOLS_NAME}</b> menu.
 			</small>
 			""")
 		self.pluginDescription.setWordWrap(True)
@@ -4699,7 +4699,6 @@ class Dialog(QDialog):
 			when the plugin is initially loaded, and cannot be prevented from triggering after a plugin has been
 			loaded. Events in <b>bold</b> are <b>{APPLICATION_NAME}</b> specific, and are not necessarily IRC related.
 			</small>
-			
 			""")
 		self.eventDescription.setWordWrap(True)
 		self.eventDescription.setAlignment(Qt.AlignJustify)
@@ -4708,7 +4707,6 @@ class Dialog(QDialog):
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
 		pluginsLayout.addWidget(self.pluginDescription)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
 		pluginsLayout.addWidget(self.eventDescription)
 		pluginsLayout.addLayout(row1Layout)

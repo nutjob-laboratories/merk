@@ -4143,7 +4143,7 @@ class Merk(QMainWindow):
 		self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_HOTKEYS:
-			entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, delete, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
+			entry = widgets.ExtendedMenuItem(self,HOTKEY_MENU_ICON,'Hotkeys','Create, edit, and save&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openHotkeys)
 			self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_IGNORE:
@@ -4151,7 +4151,7 @@ class Merk(QMainWindow):
 			self.toolsMenu.addAction(entry)
 
 		if config.ENABLE_PLUGINS:
-			entry = widgets.ExtendedMenuItem(self,PLUGIN_MENU_ICON,'Plugins','Manage and create plugins&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openPlugin)
+			entry = widgets.ExtendedMenuItem(self,PLUGIN_MENU_ICON,'Plugins','Create, edit, and install&nbsp;&nbsp;',CUSTOM_MENU_ICON_SIZE,self.openPlugin)
 			self.toolsMenu.addAction(entry)
 
 		self.toolsMenu.addSeparator()
