@@ -39,14 +39,16 @@
 * Added a new command-line flag: -P, --disable-plugins. This flag disables
   plugins and prevents them from loading on startup
 * Added a new command-line flag: --uninstall-all. This flag deletes all
-  installed plugins, and is primarily meant for recovery if a plugin is
-  crashing MERK on load.
+  installed plugins, and is primarily meant for recovery if one or more 
+  plugins are crashing MERK on load.
 * Changed the window titles of the hotkey, ignore, and plugin managers to
   have "manager" in the title
 * Changed the "Log Manager" entry in the "Tools" menu to "Logs"
 * Log Manager now shows the output on the "Export" tab. This output
   display will update every time a log is selected, and every time
   an export setting is changed.
+* Added a "Settings" section to the documentation, covering the settings
+  dialog and menu.
 
 |====================|
 | PLUGIN API CHANGES |

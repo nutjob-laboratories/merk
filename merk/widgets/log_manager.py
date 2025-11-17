@@ -548,7 +548,7 @@ class Window(QMainWindow):
 		self.verticalSplitter.addWidget(file_display)
 		self.verticalSplitter.setStretchFactor(0, 0)
 		self.verticalSplitter.setStretchFactor(1, 1)
-		self.verticalSplitter.setHandleWidth(3)
+		self.verticalSplitter.setHandleWidth(2)
 
 		if self.parent.dark_mode:
 			self.verticalSplitter.setStyleSheet("QSplitter::handle{background-color: lightGray;}")
