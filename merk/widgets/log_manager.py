@@ -45,6 +45,26 @@ from ..resources import *
 
 class Window(QMainWindow):
 
+	def view_export(self):
+		item = self.packlist.currentItem()
+		if item==None: return ''
+
+		elog = item.file
+		channel = item.channel
+		dlog = self.delimiter
+		llog = self.linedelim
+		do_json = self.do_json
+		do_epoch = self.epoch
+
+		if not do_json:
+			return logs.dumpLog(elog,dlog,llog,do_epoch)
+		else:
+			return logs.dumpLogJson(elog,do_epoch)
+
+	def update_sample(self):
+		if not hasattr(self,"sample"): return
+		self.sample.setPlainText(self.view_export())
+
 	def do_export(self):
 
 		item = self.packlist.currentItem()
@@ -85,8 +105,10 @@ class Window(QMainWindow):
 	def clickTime(self,state):
 		if state == Qt.Checked:
 			self.epoch = True
+			self.update_sample()
 		else:
 			self.epoch = False
+			self.update_sample()
 
 	def setLine(self):
 
@@ -96,6 +118,8 @@ class Window(QMainWindow):
 		if dtype=='Tab': self.linedelim = "\t"
 		if dtype=='Comma': self.linedelim = ","
 		if dtype=='Pipe': self.linedelim = "|"
+
+		self.update_sample()
 
 	def setType(self):
 
@@ -108,6 +132,8 @@ class Window(QMainWindow):
 		if dtype=='Double Colon': self.delimiter = '::'
 		if dtype=='Pipe': self.delimiter = '|'
 		if dtype=='Double Pipe': self.delimiter = '||'
+
+		self.update_sample()
 
 	def closeEvent(self, event):
 
@@ -194,6 +220,8 @@ class Window(QMainWindow):
 		self.button_export.setEnabled(False)
 		self.file_icon.setPixmap(self.blank_file)
 
+		self.sample.setPlainText('')
+
 	def closeEvent(self, event):
 
 		# Make sure the MDI window is closed
@@ -249,6 +277,8 @@ class Window(QMainWindow):
 		self.line.setEnabled(False)
 		self.time.setEnabled(False)
 		self.button_export.setEnabled(False)
+
+		self.update_sample()
 
 		servers = []
 		others = []
@@ -340,6 +370,11 @@ class Window(QMainWindow):
 		self.private_file = QPixmap(PRIVATE_ICON)
 		self.blank_file = QPixmap(LOG_ICON)
 
+		icon_size = QSize(35, 35)
+		self.channel_file = self.channel_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+		self.private_file = self.private_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+		self.blank_file = self.blank_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+
 		self.style = styles.loadDefault()
 
 		self.packlist = QListWidget(self)
@@ -387,7 +422,7 @@ class Window(QMainWindow):
 		self.lineLabel = QLabel("Entry Delimiter:")
 		delimLayout.addRow(self.lineLabel, self.line)
 
-		self.button_export=QPushButton("  Export Log  ")
+		self.button_export=QPushButton("  Save Export  ")
 		self.button_export.clicked.connect(self.do_export)
 
 		self.button_close = QPushButton("Close")
@@ -473,11 +508,18 @@ class Window(QMainWindow):
 		detailsLayout.addWidget(self.filename)
 		detailsLayout.addWidget(self.filetype)
 		detailsLayout.addWidget(self.filesize)
-		detailsLayout.addStretch()
 
 		iconLayout = QVBoxLayout()
 		iconLayout.addWidget(self.file_icon)
-		iconLayout.addStretch()
+
+		self.sample = QPlainTextEdit(self)
+		self.sample.setReadOnly(True)
+
+		size_policy = self.sample.sizePolicy()
+		size_policy.setVerticalPolicy(QSizePolicy.Expanding)
+		self.sample.setSizePolicy(size_policy)
+
+		self.update_sample()
 
 		fileinfoLayout = QHBoxLayout()
 		fileinfoLayout.addLayout(iconLayout)
@@ -487,23 +529,38 @@ class Window(QMainWindow):
 
 		otherLayout = QHBoxLayout()
 		otherLayout.addLayout(sideLayout)
-		otherLayout.addStretch()
 
 		bottomLayout2 = QVBoxLayout()
 		bottomLayout2.addLayout(fileinfoLayout)
-		bottomLayout2.addWidget(QLabel(' '))
 		bottomLayout2.addLayout(otherLayout)
 
+		file_info = QWidget()
+		file_info.setLayout(bottomLayout2)
+		
+		bottomLayout4 = QVBoxLayout()
+		bottomLayout4.addWidget(self.sample)
+
+		file_display = QWidget()
+		file_display.setLayout(bottomLayout4)
+
+		self.verticalSplitter = QSplitter(Qt.Vertical)
+		self.verticalSplitter.addWidget(file_info)
+		self.verticalSplitter.addWidget(file_display)
+		self.verticalSplitter.setStretchFactor(0, 0)
+		self.verticalSplitter.setStretchFactor(1, 1)
+		self.verticalSplitter.setHandleWidth(3)
+
+		if self.parent.dark_mode:
+			self.verticalSplitter.setStyleSheet("QSplitter::handle{background-color: lightGray;}")
+		else:
+			self.verticalSplitter.setStyleSheet("QSplitter::handle{background-color: darkGray;}")
+
 		bottomLayout3 = QVBoxLayout()
-		bottomLayout3.addStretch()
-		bottomLayout3.addLayout(bottomLayout2)
-		bottomLayout3.addStretch()
+		bottomLayout3.addWidget(self.verticalSplitter)
 		bottomLayout3.addLayout(buttons)
 
 		bottomLayout=QHBoxLayout()
-		bottomLayout.addStretch()
 		bottomLayout.addLayout(bottomLayout3)
-		bottomLayout.addStretch()
 
 		if not self.simplified:
 			self.windowDescription = QLabel(f"""
@@ -680,6 +737,8 @@ class Window(QMainWindow):
 
 		self.filename.setText(f"<b>{item.channel}</b>")
 
+		self.update_sample()
+
 	def on_item_clicked(self, item):
 
 		self.tabs.setCurrentWidget(self.log_display)
@@ -762,6 +821,8 @@ class Window(QMainWindow):
 
 		QApplication.restoreOverrideCursor()
 
+		self.update_sample()
+
 	def toggleSetting(self,setting):
 
 		self.export_format = setting
@@ -775,6 +836,7 @@ class Window(QMainWindow):
 			self.line.setEnabled(False)
 			self.lineLabel.setEnabled(False)
 			self.format.setText("JSON file")
+			self.update_sample()
 			return
 
 		if setting=='text':
@@ -786,4 +848,5 @@ class Window(QMainWindow):
 			self.line.setEnabled(True)
 			self.lineLabel.setEnabled(True)
 			self.format.setText("ASCII text file")
+			self.update_sample()
 			return

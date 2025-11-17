@@ -44,6 +44,9 @@
 * Changed the window titles of the hotkey, ignore, and plugin managers to
   have "manager" in the title
 * Changed the "Log Manager" entry in the "Tools" menu to "Logs"
+* Log Manager now shows the output on the "Export" tab. This output
+  display will update every time a log is selected, and every time
+  an export setting is changed.
 
 |====================|
 | PLUGIN API CHANGES |
