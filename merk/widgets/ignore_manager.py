@@ -144,7 +144,7 @@ class Window(QMainWindow):
 		self.setWindowIcon(QIcon(HIDE_ICON))
 
 		self.name = f"Ignores"
-		self.setWindowTitle(f"Ignores")
+		self.setWindowTitle(f"Ignore Manager")
 
 		self.keys = QListWidget(self)
 		self.keys.setTextElideMode(Qt.ElideRight)

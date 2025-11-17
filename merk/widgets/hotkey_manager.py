@@ -139,7 +139,7 @@ class Window(QMainWindow):
 		self.setWindowIcon(QIcon(HOTKEY_ICON))
 
 		self.name = f"Hotkeys"
-		self.setWindowTitle(f"Hotkeys")
+		self.setWindowTitle(f"Hotkey Manager")
 
 		self.keys = QListWidget(self)
 		self.keys.setTextElideMode(Qt.ElideRight)

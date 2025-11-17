@@ -26,8 +26,8 @@
 * The "style" and "plugins" directories entries are now hidden in the
   tools menu "directories" submenu if the style editor and plugins
   are disabled, respectively; change has also been made to the systray menu
-* Added a new submenu to the tools menu: a list of plugin files, allowing
-  the user to open the files in the Python editor
+* Added a new submenu to the tools menu: a list of plugins, allowing
+  the user to open the plugin files in the Python editor
 * When opening up a file in either the script editor or the Python editor,
   the application will no longer open multiple windows for the same file.
   If the file is already open in an editor, that editor is "shown" and the
@@ -41,6 +41,9 @@
 * Added a new command-line flag: --uninstall-all. This flag deletes all
   installed plugins, and is primarily meant for recovery if a plugin is
   crashing MERK on load.
+* Changed the window titles of the hotkey, ignore, and plugin managers to
+  have "manager" in the title
+* Changed the "Log Manager" entry in the "Tools" menu to "Logs"
 
 |====================|
 | PLUGIN API CHANGES |

@@ -220,7 +220,7 @@ class Window(QMainWindow):
 		self.setWindowIcon(QIcon(PLUGIN_ICON))
 
 		self.name = f"Plugins"
-		self.setWindowTitle(f"Plugins")
+		self.setWindowTitle(f"Plugin Manager")
 
 		self.plugin_list = QListWidget(self)
 		self.plugin_list.setTextElideMode(Qt.ElideRight)
