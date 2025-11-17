@@ -65,6 +65,11 @@ class Window(QMainWindow):
 		if not hasattr(self,"sample"): return
 		self.sample.setPlainText(self.view_export())
 
+	def settings_update_sample(self):
+		if not hasattr(self,"sample"): return
+		if self.sample.toPlainText()!='':
+			self.sample.setPlainText(self.view_export())
+
 	def do_export(self):
 
 		item = self.packlist.currentItem()
@@ -105,10 +110,10 @@ class Window(QMainWindow):
 	def clickTime(self,state):
 		if state == Qt.Checked:
 			self.epoch = True
-			self.update_sample()
+			self.settings_update_sample()
 		else:
 			self.epoch = False
-			self.update_sample()
+			self.settings_update_sample()
 
 	def setLine(self):
 
@@ -119,7 +124,7 @@ class Window(QMainWindow):
 		if dtype=='Comma': self.linedelim = ","
 		if dtype=='Pipe': self.linedelim = "|"
 
-		self.update_sample()
+		self.settings_update_sample()
 
 	def setType(self):
 
@@ -133,7 +138,7 @@ class Window(QMainWindow):
 		if dtype=='Pipe': self.delimiter = '|'
 		if dtype=='Double Pipe': self.delimiter = '||'
 
-		self.update_sample()
+		self.settings_update_sample()
 
 	def closeEvent(self, event):
 
@@ -278,7 +283,7 @@ class Window(QMainWindow):
 		self.time.setEnabled(False)
 		self.button_export.setEnabled(False)
 
-		self.update_sample()
+		self.sample.setPlainText('')
 
 		servers = []
 		others = []
@@ -737,11 +742,9 @@ class Window(QMainWindow):
 
 		self.filename.setText(f"<b>{item.channel}</b>")
 
-		self.update_sample()
+		self.sample.setPlainText('')
 
 	def on_item_clicked(self, item):
-
-		self.tabs.setCurrentWidget(self.log_display)
 
 		start_time = time.time()
 		QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -836,7 +839,7 @@ class Window(QMainWindow):
 			self.line.setEnabled(False)
 			self.lineLabel.setEnabled(False)
 			self.format.setText("JSON file")
-			self.update_sample()
+			self.settings_update_sample()
 			return
 
 		if setting=='text':
@@ -848,5 +851,5 @@ class Window(QMainWindow):
 			self.line.setEnabled(True)
 			self.lineLabel.setEnabled(True)
 			self.format.setText("ASCII text file")
-			self.update_sample()
+			self.settings_update_sample()
 			return
