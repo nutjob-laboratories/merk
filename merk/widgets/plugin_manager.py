@@ -127,7 +127,7 @@ class Window(QMainWindow):
 		multiple = []
 		for obj in plugins.PLUGINS:
 			if item.filename==obj._filename:
-				multiple.append(f"{obj.NAME} {obj.VERSION} ({prettySize(obj._size)})")
+				multiple.append(f"{obj.NAME} {obj.VERSION})")
 
 		if len(multiple)>1:
 			pid = "plugins"
@@ -207,7 +207,6 @@ class Window(QMainWindow):
 			events = obj._events
 			event_list = obj._event_list
 			methods = obj._methods
-			size = prettySize(obj._size)
 			NAME = obj.NAME
 			VERSION = obj.VERSION
 			AUTHOR = obj.AUTHOR
@@ -221,12 +220,11 @@ class Window(QMainWindow):
 				icon_filename = None
 
 			item = QListWidgetItem()
-			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}\nSize: {size}")
+			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}")
 			item.filename = obj._filename
 			item.basename = obj._basename
 			item.events = obj._events
 			item.event_list = obj._event_list
-			item.size = obj._size
 			item.NAME = obj.NAME
 			item.VERSION = obj.VERSION
 			item.AUTHOR = obj.AUTHOR
@@ -236,9 +234,9 @@ class Window(QMainWindow):
 			item.dummy = False
 
 			if is_url(SOURCE):
-				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b> ({size})",icon_filename,32)
+				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b>",icon_filename,32)
 			else:
-				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: {AUTHOR}</a></b> ({size})",icon_filename,32)
+				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: {AUTHOR}</a></b>",icon_filename,32)
 			item.setSizeHint(widget.sizeHint())
 
 			self.plugin_list.addItem(item)

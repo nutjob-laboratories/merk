@@ -78,6 +78,10 @@
   file will not overwrite existing files with the same filename.
 * Plugins in the form of a single Python file are now COPIED into the
   plugin directory rather than being MOVED.
+* Fixed a bug in measuring the size of plugins in memory; attempting to
+  measure the memory size of a plugin, in certain circumstances, could
+  crash the client while operating in PyInstaller. This ability has been
+  removed.
 
 |====================|
 | PLUGIN API CHANGES |

@@ -4335,7 +4335,6 @@ class Merk(QMainWindow):
 					basename = obj._basename
 					events = obj._events
 					classname = obj._class
-					size = prettySize(obj._size)
 					NAME = obj.NAME
 					VERSION = obj.VERSION
 
