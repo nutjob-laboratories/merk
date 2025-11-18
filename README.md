@@ -101,6 +101,7 @@ There are four libraries that comes bundled with **MERK**:
     - Individual plugin events can be enabled and disabled in the "Settings" dialog
   - Plugins can be created and edited directly in the application
     - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation.
+    - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples).
 - Audio notifications
   - Can be triggered by seven different events, with each one able to be turned on and off
   - Uses any WAV file as the notification sound, and can be set in the GUI
@@ -417,4 +418,3 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: `#merk` on the Libera network (`irc.libera.chat`, port 6667 for TCP/IP and port 6697 for SSL). I work a lot, so I'm not always active, but I idle in `#merk` everyday, and pop in to talk to people when I have a spare minute.
 
 [//]: # (End of document)
-
