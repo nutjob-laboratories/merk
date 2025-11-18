@@ -101,8 +101,37 @@ def pluginItemHtml(text,description1,description2):
 	</table>
 	'''
 
-def pluginItem(name,d1,d2):
-	pi = QLabel(pluginItemHtml(name,d1,d2))
+def pluginItemHtmlIcon(text,description1,description2,icon,icon_size):
+	return f'''
+<table style="width: 100%" border="0" cellspacing="2" cellpadding="2">
+	  <tbody>
+		<tr>
+		  <td style="text-align: center; vertical-align: middle;">&nbsp;<img src="{icon}" width="{icon_size}" height="{icon_size}"></td>
+		  <td>
+			<table style="width: 100%" border="0">
+			  <tbody>
+				<tr>
+				  <td style="font-weight: bold;"><big>{text}</big></td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;"><small>{description1}</small></td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;"><small>{description2}</small></td>
+				</tr>
+			  </tbody>
+			</table>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	'''
+
+def pluginItem(name,d1,d2,icon=None,icon_size=None):
+	if icon!=None:
+		pi = QLabel(pluginItemHtmlIcon(name,d1,d2,icon,icon_size))
+	else:
+		pi = QLabel(pluginItemHtml(name,d1,d2))
 	pi.setOpenExternalLinks(True)
 	l = QHBoxLayout()
 	l.addWidget(pi)

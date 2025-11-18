@@ -68,6 +68,15 @@
   editing hotkeys are now reported to the user via messages boxes.
 * Removed the status bar from the Ignore Manager, to match the other
   managers.
+* Plugins can now have icons. If a PNG file is in the plugins directory
+  with the same name as a plugin (example: plugin is named "example.py",
+  and the PNG is named "example.png"), this PNG will be used as the
+  plugin's icon, and will be displayed in the Plugin Manager. Icons are
+  rendered at 32x32 pixels.
+* Plugins can now be imported in ZIP files. The plugin's ZIP file is
+  extracted into MERK's plugin directory.
+* Plugins in the form of a single Python file are now COPIED into the
+  plugin directory rather than being MOVED.
 
 |====================|
 | PLUGIN API CHANGES |

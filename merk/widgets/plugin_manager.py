@@ -38,8 +38,36 @@ import uuid
 import operator
 import shutil
 from pathlib import Path
+import zipfile
 
 class Window(QMainWindow):
+
+	def import_zip(self,filename):
+		try:
+			with zipfile.ZipFile(filename, 'r') as zip_ref:
+				zip_ref.extractall(plugins.PLUGIN_DIRECTORY)
+			QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(filename)}" imported.')
+		except zipfile.BadZipFile:
+			QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+		except FileNotFoundError:
+			QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+		except Exception as e:
+			QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+
+		errors = plugins.load_plugins(self.parent)
+		if len(errors)>0:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			if len(errors)>1:
+				msgBox.setText("There were errors loading plugins!")
+			else:
+				msgBox.setText("There was an error loading plugins!")
+			msgBox.setInformativeText("\n".join(errors))
+			msgBox.setWindowTitle("Plugin load error")
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()
+		self.refresh()
 
 	def add_plugin(self):
 		if not config.ENABLE_PLUGIN_EDITOR: return
@@ -72,6 +100,12 @@ class Window(QMainWindow):
 		msgBox.setWindowTitle("Delete plugin")
 		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
+		# See if the plugin has an icon
+		name_without_extension, extension = os.path.splitext(item.filename)
+		icon_filename = name_without_extension + ".png"
+		if not os.path.exists(icon_filename):
+			icon_filename = None
+
 		rval = msgBox.exec()
 		if rval == QMessageBox.Cancel:
 			pass
@@ -84,6 +118,12 @@ class Window(QMainWindow):
 					QMessageBox.critical(self, 'Error', f'Error deleting file: {e}')
 			else:
 				QMessageBox.warning(self, 'Warning', f'File "{item.basename}" not found.')
+
+			if icon_filename!=None:
+				try:
+					os.remove(icon_filename)
+				except OSError as e:
+					QMessageBox.critical(self, 'Error', f'Error deleting file: {e}')
 
 			errors = plugins.load_plugins(self.parent)
 			if len(errors)>0:
@@ -131,7 +171,12 @@ class Window(QMainWindow):
 			SOURCE = obj.SOURCE
 			classname = obj._class
 
-			# item = QListWidgetItem(f"{NAME} {VERSION}")
+			# See if the plugin has an icon
+			name_without_extension, extension = os.path.splitext(filename)
+			icon_filename = name_without_extension + ".png"
+			if not os.path.exists(icon_filename):
+				icon_filename = None
+
 			item = QListWidgetItem()
 			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}\nSize: {size}")
 			item.filename = obj._filename
@@ -148,9 +193,9 @@ class Window(QMainWindow):
 			item.dummy = False
 
 			if is_url(SOURCE):
-				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b> ({size})")
+				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b> ({size})",icon_filename,32)
 			else:
-				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: {AUTHOR}</a></b> ({size})")
+				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: {AUTHOR}</a></b> ({size})",icon_filename,32)
 			item.setSizeHint(widget.sizeHint())
 
 			self.plugin_list.addItem(item)
@@ -170,36 +215,41 @@ class Window(QMainWindow):
 	def import_plugin(self):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getOpenFileName(self,"Import File", str(Path.home()), f"MERK Plugin (*.py);;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getOpenFileName(self,"Import File", str(Path.home()), f"Zip Files (*.zip);;MERK Plugin (*.py);;All Files (*)", options=options)
 		if fileName:
 			base = os.path.basename(fileName)
 			imported_file = os.path.join(plugins.PLUGIN_DIRECTORY,base)
 
-			import_file = True
-			if os.path.exists(imported_file) or os.path.isfile(imported_file):
-				import_file = False
+			name_without_extension, extension = os.path.splitext(fileName)
+			if extension.lower()=='.zip':
+				self.import_zip(fileName)
+			else:
 
-				msgBox = QMessageBox()
-				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				msgBox.setText("Plugin file already exists! Overwrite?")
-				msgBox.setWindowTitle("Overwrite File")
-				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+				import_file = True
+				if os.path.exists(imported_file) or os.path.isfile(imported_file):
+					import_file = False
 
-				rval = msgBox.exec()
-				if rval == QMessageBox.Cancel:
-					pass
-				else:
-					import_file = True
+					msgBox = QMessageBox()
+					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setText("Plugin file already exists! Overwrite?")
+					msgBox.setWindowTitle("Overwrite File")
+					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
-			if import_file:
-				try:
-					shutil.move(fileName, imported_file)
-					self.reload_plugins()
-				except FileNotFoundError:
-					QMessageBox.critical(self, 'Error', f"Source file '{fileName}' not found.")
-				except Exception as e:
-					QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+					rval = msgBox.exec()
+					if rval == QMessageBox.Cancel:
+						pass
+					else:
+						import_file = True
+
+				if import_file:
+					try:
+						shutil.copy(fileName, imported_file)
+						self.reload_plugins()
+					except FileNotFoundError:
+						QMessageBox.critical(self, 'Error', f"Source file '{fileName}' not found.")
+					except Exception as e:
+						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
 
 	def closeEvent(self, event):
 
