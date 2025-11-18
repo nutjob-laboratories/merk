@@ -4406,7 +4406,7 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,APPLICATION_MENU_ICON,'About '+APPLICATION_NAME,"Version "+APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE,self.showAbout)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,INFO_MENU_ICON,APPLICATION_NAME+" User Manual","A guide to using "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.openScripting)
+		entry = widgets.ExtendedMenuItem(self,INFO_MENU_ICON,APPLICATION_NAME+" User Guide","A manual for using "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.openScripting)
 		self.helpMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,"README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
