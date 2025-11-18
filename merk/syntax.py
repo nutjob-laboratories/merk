@@ -254,7 +254,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window previous",
 			cmdsymbol+"bind",
 			cmdsymbol+"unbind",
-			cmdsymbol+"bind save",
 			cmdsymbol+"window hotkey",
 			cmdsymbol+"window restart",
 			cmdsymbol+"window ignore",

@@ -155,7 +155,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window tile": config.ISSUE_COMMAND_SYMBOL+"window tile",
 			config.ISSUE_COMMAND_SYMBOL+"window next": config.ISSUE_COMMAND_SYMBOL+"window next",
 			config.ISSUE_COMMAND_SYMBOL+"window previous": config.ISSUE_COMMAND_SYMBOL+"window previous",
-			config.ISSUE_COMMAND_SYMBOL+"bind save": config.ISSUE_COMMAND_SYMBOL+"bind save",
 			config.ISSUE_COMMAND_SYMBOL+"window hotkey": config.ISSUE_COMMAND_SYMBOL+"window hotkey",
 			config.ISSUE_COMMAND_SYMBOL+"window ignore": config.ISSUE_COMMAND_SYMBOL+"window ignore",
 			config.ISSUE_COMMAND_SYMBOL+"window plugin": config.ISSUE_COMMAND_SYMBOL+"window plugin",
@@ -1316,6 +1315,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"All binds removed")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				gui.save_shortcuts()
 				if gui.hotkey_manager!=None:
 					gui.hotkey_manager.refresh()
 				return True
@@ -1324,6 +1324,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" removed")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			gui.save_shortcuts()
 			if gui.hotkey_manager!=None:
 				gui.hotkey_manager.refresh()
 			return True
@@ -1352,16 +1353,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Hotkeys are disabled")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind' and len(tokens)==2:
-			if tokens[1].lower()=='save':
-				config.HOTKEYS = {}
-				for e in gui.shortcuts:
-					config.HOTKEYS[e[0]]=e[2]
-				config.save_settings(config.CONFIG_FILE)
-				t = Message(SYSTEM_MESSAGE,'',f"Hotkeys saved")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -1408,6 +1399,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"Bind for \"{seq}\" added (executes \"{cmd}\")")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				gui.save_shortcuts()
 				if gui.hotkey_manager!=None:
 					gui.hotkey_manager.refresh()
 			return True

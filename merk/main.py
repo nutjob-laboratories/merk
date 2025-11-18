@@ -349,6 +349,12 @@ class Merk(QMainWindow):
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
 
+	def save_shortcuts(self):
+		config.HOTKEYS = {}
+		for e in self.shortcuts:
+			config.HOTKEYS[e[0]]=e[2]
+		config.save_settings(config.CONFIG_FILE)
+
 	def add_shortcut(self,keys,script):
 		if not is_valid_shortcut_sequence(keys): return BAD_SHORTCUT
 		ks = QKeySequence(keys)

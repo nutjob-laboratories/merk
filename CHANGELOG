@@ -59,6 +59,9 @@
   other managers.
 * The "no [WHATEVER ITEMS]" entry in all Hotkey, Plugin, and Ignore
   Managers are no longer selectable.
+* Hotkeys are now saved to the configuration file automatically whenever
+  they are added or removed. The "disk" button has been removed from
+  the hotkey manager, and the "/bind save" command has been removed.
 
 |====================|
 | PLUGIN API CHANGES |

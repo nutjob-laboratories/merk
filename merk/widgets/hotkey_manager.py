@@ -49,6 +49,7 @@ class Window(QMainWindow):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
 					self.statusBar.showMessage("Hotkey added")
+					self.parent.save_shortcuts()
 				elif r==SHORTCUT_IN_USE:
 					self.statusBar.showMessage(f"\"{seq}\" is already in use")
 				else:
@@ -67,6 +68,7 @@ class Window(QMainWindow):
 			return
 		if selected_item:
 			self.parent.remove_shortcut(selected_item.seq)
+			self.parent.save_shortcuts()
 			self.refresh()
 			self.statusBar.showMessage("Hotkey removed")
 
@@ -101,13 +103,6 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
-	def save_keys(self):
-		config.HOTKEYS = {}
-		for e in self.parent.shortcuts:
-			config.HOTKEYS[e[0]]=e[2]
-		config.save_settings(config.CONFIG_FILE)
-		self.statusBar.showMessage("Saved hotkeys")
-
 	def on_item_clicked(self, item):
 		if hasattr(item,'dummy'):
 			if item.dummy: return
@@ -125,6 +120,7 @@ class Window(QMainWindow):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
 					self.statusBar.showMessage("Hotkey edited")
+					self.parent.save_shortcuts()
 				elif r==SHORTCUT_IN_USE:
 					self.statusBar.showMessage(f"\"{seq}\" is already in use")
 				else:
@@ -183,14 +179,6 @@ class Window(QMainWindow):
 		self.remove.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.remove.setFlat(True)
 
-		self.save = QPushButton("")
-		self.save.setIcon(QIcon(SAVEFILE_ICON))
-		self.save.setToolTip("Save hotkeys")
-		self.save.clicked.connect(self.save_keys)
-		self.save.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.save.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-		self.save.setFlat(True)
-
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)
 
@@ -200,7 +188,6 @@ class Window(QMainWindow):
 		self.refresh()
 
 		buttonLayout = QHBoxLayout()
-		buttonLayout.addWidget(self.save)
 		buttonLayout.addWidget(self.add)
 		buttonLayout.addWidget(self.remove)
 		buttonLayout.addStretch()
