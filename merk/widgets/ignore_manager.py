@@ -89,6 +89,7 @@ class Window(QMainWindow):
 		if len(config.IGNORE_LIST)==0:
 			item = QListWidgetItem(f"No users ignored")
 			item.dummy = True
+			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
 			self.keys.addItem(item)
 
 	def on_item_clicked(self, item):

@@ -32,6 +32,7 @@ from ..resources import *
 from .. import commands
 from .. import config
 from .. import dialog
+from . import extendedmenuitem
 
 import uuid
 
@@ -72,11 +73,16 @@ class Window(QMainWindow):
 	def refresh(self):
 		self.keys.clear()
 		for e in self.parent.shortcuts:
-			item = QListWidgetItem(f"{e[0]} - {e[2]}")
+			item = QListWidgetItem()
 			item.seq = f"{e[0]}"
 			item.cmd = f"{e[2]}"
 			item.dummy = False
+
+			widget = extendedmenuitem.hotkeyItem(f"{e[0]}",f"{e[2]}")
+			item.setSizeHint(widget.sizeHint())
+
 			self.keys.addItem(item)
+			self.keys.setItemWidget(item, widget)
 		if self.show_status:
 			self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
 		else:
@@ -85,6 +91,7 @@ class Window(QMainWindow):
 		if len(self.parent.shortcuts)==0:
 			item = QListWidgetItem(f"No hotkeys found")
 			item.dummy = True
+			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
 			self.keys.addItem(item)
 
 	def closeEvent(self, event):
@@ -127,6 +134,7 @@ class Window(QMainWindow):
 
 			self.show_status = False
 			self.refresh()
+		
 
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
@@ -145,6 +153,19 @@ class Window(QMainWindow):
 		self.keys.setTextElideMode(Qt.ElideRight)
 		self.keys.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.keys.itemDoubleClicked.connect(self.on_item_clicked)
+
+		if self.parent.dark_mode:
+			self.keys.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: darkGray;
+				}}
+			""")
+		else:
+			self.keys.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: lightGray;
+				}}
+			""")
 
 		self.add = QPushButton("")
 		self.add.setIcon(QIcon(PLUS_ICON))

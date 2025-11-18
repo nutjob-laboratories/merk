@@ -159,6 +159,7 @@ class Window(QMainWindow):
 		if self.plugin_list.count()==0:
 			item = QListWidgetItem(f"No plugins installed")
 			item.dummy = True
+			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
 			self.plugin_list.addItem(item)
 
 	def on_item_clicked(self, item):
@@ -231,8 +232,20 @@ class Window(QMainWindow):
 		self.plugin_list.setTextElideMode(Qt.ElideRight)
 		self.plugin_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.plugin_list.setSelectionMode(QListWidget.SingleSelection)
-
 		self.plugin_list.itemDoubleClicked.connect(self.on_item_clicked)
+
+		if self.parent.dark_mode:
+			self.plugin_list.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: darkGray;
+				}}
+			""")
+		else:
+			self.plugin_list.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: lightGray;
+				}}
+			""")
 
 		self.refresh()
 

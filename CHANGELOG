@@ -53,6 +53,10 @@
   of the plugin and the version. Each entry shows the name, version, class
   name, file name, author, and size in memory of each plugin. Other than
   that, it works identically.
+* Entries in the Hotkey Manager now look similar to the entries in the
+  new Plugin Manager.
+* The "no [WHATEVER] items" in all Hotkey, Plugin, and Ignore Managers are
+  no longer selectable.
 
 |====================|
 | PLUGIN API CHANGES |
