@@ -51,8 +51,6 @@ class Window(QMainWindow):
 
 			self.refresh()
 
-			self.statusBar.showMessage("Ignore added")
-
 	def remove_key(self):
 		selected_item = self.keys.currentItem()
 		if hasattr(selected_item,"dummy"):
@@ -69,8 +67,6 @@ class Window(QMainWindow):
 				self.parent.rerenderUserlists()
 
 			self.refresh()
-
-			self.statusBar.showMessage("Ignore removed")
 
 	def refresh_key(self):
 		if self.force_ignore_update:
@@ -90,7 +86,6 @@ class Window(QMainWindow):
 
 			self.keys.addItem(item)
 			self.keys.setItemWidget(item, widget)
-		self.statusBar.showMessage(f"Displaying {len(config.IGNORE_LIST)} ignores")
 
 		if len(config.IGNORE_LIST)==0:
 			item = QListWidgetItem(f"No users ignored")
@@ -120,8 +115,6 @@ class Window(QMainWindow):
 				item = QListWidgetItem(f"{e}")
 				item.ignore = f"{e}"
 				self.keys.addItem(item)
-
-			self.statusBar.showMessage("Ignore modified")
 		
 
 	def closeEvent(self, event):
@@ -198,9 +191,6 @@ class Window(QMainWindow):
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)
 
-		self.statusBar = QStatusBar(self)
-		self.statusBar.showMessage(f"Displaying {len(config.IGNORE_LIST)} ignores")
-
 		self.doUpdate = QCheckBox("Automatically update chats",self)
 		self.doUpdate.stateChanged.connect(self.clickUpdate)
 		self.doUpdate.setChecked(True)
@@ -218,11 +208,8 @@ class Window(QMainWindow):
 		finalLayout.addWidget(self.keys)
 		finalLayout.addWidget(self.doUpdate)
 		finalLayout.addLayout(buttonLayout)
-		finalLayout.addWidget(self.statusBar)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()
 		self.centralWidget.setLayout(finalLayout)
 		self.setCentralWidget(self.centralWidget)
-
-		# self.setFixedSize(self.sizeHint())

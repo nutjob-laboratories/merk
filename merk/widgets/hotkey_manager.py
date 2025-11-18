@@ -48,16 +48,15 @@ class Window(QMainWindow):
 			if is_valid_shortcut_sequence(seq):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
-					self.statusBar.showMessage("Hotkey added")
 					self.parent.save_shortcuts()
+					QMessageBox.information(self, 'Success', f'Hotkey "{seq}" added.')
 				elif r==SHORTCUT_IN_USE:
-					self.statusBar.showMessage(f"\"{seq}\" is already in use")
+					QMessageBox.critical(self, 'Error', f'Hotkey \"{seq}\" is already in use.')
 				else:
-					self.statusBar.showMessage(f"\"{seq}\" is not valid")
+					QMessageBox.critical(self, 'Error', f'\"{seq}\" is not a valid hotkey.')
 			else:
-				self.statusBar.showMessage(f"\"{seq}\" was not added")
+				QMessageBox.warning(self, 'Warning', f'Hotkey \"{seq}\" was not added.')
 
-			self.show_status = False
 			self.refresh()
 
 	def remove_key(self):
@@ -70,7 +69,6 @@ class Window(QMainWindow):
 			self.parent.remove_shortcut(selected_item.seq)
 			self.parent.save_shortcuts()
 			self.refresh()
-			self.statusBar.showMessage("Hotkey removed")
 
 	def refresh(self):
 		self.keys.clear()
@@ -85,10 +83,6 @@ class Window(QMainWindow):
 
 			self.keys.addItem(item)
 			self.keys.setItemWidget(item, widget)
-		if self.show_status:
-			self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
-		else:
-			self.show_status = True
 
 		if len(self.parent.shortcuts)==0:
 			item = QListWidgetItem(f"No hotkeys found")
@@ -119,16 +113,15 @@ class Window(QMainWindow):
 			if is_valid_shortcut_sequence(seq):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
-					self.statusBar.showMessage("Hotkey edited")
 					self.parent.save_shortcuts()
+					QMessageBox.information(self, 'Success', f'Hotkey "{item.seq}" edited.')
 				elif r==SHORTCUT_IN_USE:
-					self.statusBar.showMessage(f"\"{seq}\" is already in use")
+					QMessageBox.critical(self, 'Error', f'Hotkey \"{seq}\" is already in use.')
 				else:
-					self.statusBar.showMessage(f"\"{seq}\" is not valid")
+					QMessageBox.critical(self, 'Error', f'\"{seq}\" is not a valid hotkey.')
 			else:
-				self.statusBar.showMessage(f"\"{seq}\" was not added")
+				QMessageBox.warning(self, 'Warning', f'Hotkey \"{seq}\" was not added.')
 
-			self.show_status = False
 			self.refresh()
 		
 
@@ -136,7 +129,6 @@ class Window(QMainWindow):
 		super(Window,self).__init__(parent)
 
 		self.parent = parent
-		self.show_status = True
 		
 		self.window_type = HOTKEY_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
@@ -182,9 +174,6 @@ class Window(QMainWindow):
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)
 
-		self.statusBar = QStatusBar(self)
-		self.statusBar.showMessage(f"Displaying {len(self.parent.shortcuts)} hotkeys")
-
 		self.refresh()
 
 		buttonLayout = QHBoxLayout()
@@ -196,11 +185,8 @@ class Window(QMainWindow):
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.keys)
 		finalLayout.addLayout(buttonLayout)
-		finalLayout.addWidget(self.statusBar)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()
 		self.centralWidget.setLayout(finalLayout)
 		self.setCentralWidget(self.centralWidget)
-
-		# self.setFixedSize(self.sizeHint())

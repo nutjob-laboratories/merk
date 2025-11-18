@@ -61,9 +61,13 @@
   Managers are no longer selectable.
 * Hotkeys are now saved to the configuration file automatically whenever
   they are added or removed. The "disk" button has been removed from
-  the hotkey manager, and the "/bind save" command has been removed.
+  the Hotkey Manager, and the "/bind save" command has been removed.
 * Changed the documentation title (and the link to the documentation
   in the application) to reflect the document's actual filename.
+* Removed the status bar from the Hotkey Manager; errors in adding or
+  editing hotkeys are now reported to the user via messages boxes.
+* Removed the status bar from the Ignore Manager, to match the other
+  managers.
 
 |====================|
 | PLUGIN API CHANGES |

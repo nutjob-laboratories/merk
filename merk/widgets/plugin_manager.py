@@ -302,5 +302,3 @@ class Window(QMainWindow):
 		self.centralWidget = QWidget()
 		self.centralWidget.setLayout(finalLayout)
 		self.setCentralWidget(self.centralWidget)
-
-		# self.setFixedSize(self.sizeHint())
