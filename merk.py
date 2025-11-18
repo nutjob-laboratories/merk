@@ -145,7 +145,7 @@ if __name__ == '__main__':
 		else:
 			# Tell user the style is invalid and exit
 			sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
-			sys.stdout.write(f"Valid available styles: {", ".join(QStyleFactory.keys())}\n")
+			sys.stdout.write(f"Valid available styles: {', '.join(QStyleFactory.keys())}\n")
 			exit(1)
 
 	app = QApplication([])
