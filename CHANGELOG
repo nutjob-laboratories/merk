@@ -73,8 +73,9 @@
   and the PNG is named "example.png"), this PNG will be used as the
   plugin's icon, and will be displayed in the Plugin Manager. Icons are
   rendered at 32x32 pixels.
-* Plugins can now be imported in ZIP files. The plugin's ZIP file is
-  extracted into MERK's plugin directory.
+* Plugins can now be imported in ZIP files. Only PY and PNG files in the
+  ZIP file are extracted into the plugins directory. Importing a zip
+  file will not overwrite existing files with the same filename.
 * Plugins in the form of a single Python file are now COPIED into the
   plugin directory rather than being MOVED.
 

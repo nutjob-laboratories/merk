@@ -43,31 +43,74 @@ import zipfile
 class Window(QMainWindow):
 
 	def import_zip(self,filename):
+
+		overwrite = False
+		ofiles = []
 		try:
-			with zipfile.ZipFile(filename, 'r') as zip_ref:
-				zip_ref.extractall(plugins.PLUGIN_DIRECTORY)
-			QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(filename)}" imported.')
+			with zipfile.ZipFile(filename, 'r') as zf:
+				for member in zf.infolist():
+					file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+					extract_file = False
+					name_without_extension, extension = os.path.splitext(file_path)
+					if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+					if extract_file:
+						if os.path.exists(file_path):
+							overwrite = True
+							ofiles.append(file_path)
 		except zipfile.BadZipFile:
 			QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+			return
 		except FileNotFoundError:
 			QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+			return
 		except Exception as e:
 			QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+			return
 
-		errors = plugins.load_plugins(self.parent)
-		if len(errors)>0:
+		if not overwrite:
+			try:
+				with zipfile.ZipFile(filename, 'r') as zf:
+					for member in zf.infolist():
+						file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+						extract_file = False
+						name_without_extension, extension = os.path.splitext(file_path)
+						if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+						if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
+				QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(filename)}" imported.')
+			except zipfile.BadZipFile:
+				QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+			except FileNotFoundError:
+				QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+			except Exception as e:
+				QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+
+			errors = plugins.load_plugins(self.parent)
+			if len(errors)>0:
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				if len(errors)>1:
+					msgBox.setText("There were errors loading plugins!")
+				else:
+					msgBox.setText("There was an error loading plugins!")
+				msgBox.setInformativeText("\n".join(errors))
+				msgBox.setWindowTitle("Plugin load error")
+				msgBox.setStandardButtons(QMessageBox.Ok)
+				msgBox.exec()
+			self.refresh()
+		else:
 			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setIcon(QMessageBox.Critical)
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			if len(errors)>1:
-				msgBox.setText("There were errors loading plugins!")
-			else:
-				msgBox.setText("There was an error loading plugins!")
-			msgBox.setInformativeText("\n".join(errors))
-			msgBox.setWindowTitle("Plugin load error")
+			msgBox.setText(f"Import failed! The following files in \"{os.path.basename(filename)}\" will overwrite files in the plugin directory:")
+			msgBox.setInformativeText("\n".join(ofiles))
+			msgBox.setWindowTitle("Plugin import error")
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
-		self.refresh()
 
 	def add_plugin(self):
 		if not config.ENABLE_PLUGIN_EDITOR: return
