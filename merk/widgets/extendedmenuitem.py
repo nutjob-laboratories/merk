@@ -76,6 +76,44 @@ def menuHtmlSpaced(icon,text,description,icon_size):
 	</table>
 	'''
 
+def pluginItemHtml(text,description1,description2):
+	return f'''
+<table style="width: 100%" border="0" cellspacing="2" cellpadding="2">
+	  <tbody>
+		<tr>
+		  <td>
+			<table style="width: 100%" border="0">
+			  <tbody>
+				<tr>
+				  <td style="font-weight: bold;"><big>{text}</big></td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;"><small>{description1}</small></td>
+				</tr>
+				<tr>
+				  <td style="font-style: normal; font-weight: normal;"><small>{description2}</small></td>
+				</tr>
+			  </tbody>
+			</table>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	'''
+
+def pluginItem(name,d1,d2):
+	pi = QLabel(pluginItemHtml(name,d1,d2))
+	pi.setOpenExternalLinks(True)
+	l = QHBoxLayout()
+	l.addWidget(pi)
+	l.setContentsMargins(0,0,0,0)
+	l.setSizeConstraint(QLayout.SetFixedSize)
+
+	w = QWidget()
+	w.setLayout(l)
+
+	return w
+
 class MenuLabel(QLabel):
 	clicked=pyqtSignal()
 

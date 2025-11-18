@@ -32,6 +32,7 @@ from ..resources import *
 from .. import commands
 from .. import config
 from .. import plugins
+from . import extendedmenuitem
 
 import uuid
 import operator
@@ -117,7 +118,6 @@ class Window(QMainWindow):
 
 	def refresh(self):
 		self.plugin_list.clear()
-		others = []
 		for obj in plugins.PLUGINS:
 			filename = obj._filename
 			basename = obj._basename
@@ -131,7 +131,8 @@ class Window(QMainWindow):
 			SOURCE = obj.SOURCE
 			classname = obj._class
 
-			item = QListWidgetItem(f"{NAME} {VERSION}")
+			# item = QListWidgetItem(f"{NAME} {VERSION}")
+			item = QListWidgetItem()
 			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}\nSize: {size}")
 			item.filename = obj._filename
 			item.basename = obj._basename
@@ -145,13 +146,17 @@ class Window(QMainWindow):
 			item.classname = classname
 			item.methods = methods
 			item.dummy = False
-			others.append(item)
 
-		others = sorted(others,key=operator.attrgetter("filename","NAME","VERSION"))
-		for e in others:
-			self.plugin_list.addItem(e)
+			if is_url(SOURCE):
+				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b> ({size})")
+			else:
+				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: {AUTHOR}</a></b> ({size})")
+			item.setSizeHint(widget.sizeHint())
 
-		if len(others)==0:
+			self.plugin_list.addItem(item)
+			self.plugin_list.setItemWidget(item, widget)
+
+		if self.plugin_list.count()==0:
 			item = QListWidgetItem(f"No plugins installed")
 			item.dummy = True
 			self.plugin_list.addItem(item)

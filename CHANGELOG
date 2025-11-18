@@ -49,6 +49,10 @@
   an export setting is changed.
 * Added a "Settings" section to the documentation, covering the settings
   dialog and menu.
+* Entries in the Plugin Manager now provide more information than the name
+  of the plugin and the version. Each entry shows the name, version, class
+  name, file name, author, and size in memory of each plugin. Other than
+  that, it works identically.
 
 |====================|
 | PLUGIN API CHANGES |

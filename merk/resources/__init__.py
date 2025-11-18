@@ -35,6 +35,7 @@ import math
 from importlib import metadata
 import ast
 import string
+import re
 
 from .version import *
 from .servers import *
@@ -410,6 +411,12 @@ class WhoWasData:
 		self.username = 'Unknown'
 		self.host = 'Unknown'
 		self.realname = 'Unknown'
+
+def is_url(text):
+	url_pattern = re.compile(
+		r'^(https?://)?(www\.)?([a-zA-Z0-9-]+\.){1,}([a-zA-Z]{2,6})(/[a-zA-Z0-9-._~:/?#[\]@!$&\'()*+,;=]*)?$'
+	)
+	return bool(url_pattern.match(text))
 
 def strip_comments_and_docstrings_ast(code_string):
 	tree = ast.parse(code_string)
