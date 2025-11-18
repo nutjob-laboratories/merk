@@ -149,6 +149,37 @@ def hotkeyItem(name,d1):
 
 	return w
 
+def ignoreItemHtml(text):
+	return f'''
+<table style="width: 100%" border="0" cellspacing="2" cellpadding="2">
+	  <tbody>
+		<tr>
+		  <td>
+			<table style="width: 100%" border="0">
+			  <tbody>
+				<tr>
+				  <td style="font-weight: bold;">{text}</td>
+				</tr>
+			  </tbody>
+			</table>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
+	'''
+
+def ignoreItem(name):
+	pi = QLabel(ignoreItemHtml(name))
+	l = QHBoxLayout()
+	l.addWidget(pi)
+	l.setContentsMargins(0,0,0,0)
+	l.setSizeConstraint(QLayout.SetFixedSize)
+
+	w = QWidget()
+	w.setLayout(l)
+
+	return w
+
 class MenuLabel(QLabel):
 	clicked=pyqtSignal()
 

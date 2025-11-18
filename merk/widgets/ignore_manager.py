@@ -32,6 +32,7 @@ from ..resources import *
 from .. import commands
 from .. import config
 from .. import dialog
+from . import extendedmenuitem
 
 import uuid
 
@@ -80,10 +81,15 @@ class Window(QMainWindow):
 	def refresh(self):
 		self.keys.clear()
 		for e in config.IGNORE_LIST:
-			item = QListWidgetItem(f"{e}")
+			item = QListWidgetItem()
 			item.ignore = f"{e}"
 			item.dummy = False
+
+			widget = extendedmenuitem.ignoreItem(f"{e}")
+			item.setSizeHint(widget.sizeHint())
+
 			self.keys.addItem(item)
+			self.keys.setItemWidget(item, widget)
 		self.statusBar.showMessage(f"Displaying {len(config.IGNORE_LIST)} ignores")
 
 		if len(config.IGNORE_LIST)==0:
@@ -150,8 +156,20 @@ class Window(QMainWindow):
 		self.keys = QListWidget(self)
 		self.keys.setTextElideMode(Qt.ElideRight)
 		self.keys.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
 		self.keys.itemDoubleClicked.connect(self.on_item_clicked)
+
+		if self.parent.dark_mode:
+			self.keys.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: darkGray;
+				}}
+			""")
+		else:
+			self.keys.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: lightGray;
+				}}
+			""")
 
 		self.add = QPushButton("")
 		self.add.setIcon(QIcon(PLUS_ICON))

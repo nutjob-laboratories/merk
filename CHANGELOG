@@ -55,8 +55,10 @@
   that, it works identically.
 * Entries in the Hotkey Manager now look similar to the entries in the
   new Plugin Manager.
-* The "no [WHATEVER] items" in all Hotkey, Plugin, and Ignore Managers are
-  no longer selectable.
+* Entries in the Ignore Manager now look similar to the entries in the
+  other managers.
+* The "no [WHATEVER ITEMS]" entry in all Hotkey, Plugin, and Ignore
+  Managers are no longer selectable.
 
 |====================|
 | PLUGIN API CHANGES |
