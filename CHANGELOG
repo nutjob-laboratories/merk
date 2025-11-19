@@ -93,6 +93,9 @@
 * The Plugin Manager can now export plugins to a ZIP archive. This will
   package a plugin file (and its icon, if it exists) into a ZIP output
   file selected by the user.
+* Fixed a bug with eliding very long nicknames. If nicknames were greater
+  than the nick pad length by a significant margin, they would occasionally
+  be incorrectly elided, with the nickname being split up over two lines.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

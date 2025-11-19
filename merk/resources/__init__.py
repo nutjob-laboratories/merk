@@ -492,21 +492,10 @@ def contains_punctuation(text):
 			return True
 	return False
 
-def elide_text(text,max_length):
-	if len(text)>max_length:
-		if len(text)>=max_length+3:
-			offset = max_length-3
-		elif len(text)==max_length+2:
-			offset = max_length-2
-		elif len(text)==max_length+1:
-			offset = max_length-1
-		else:
-			offset = max_length
-		out = text[0:offset]+"..."
-	else:
-		out = text
-
-	return out
+def elide_text(text, max_len, suffix='...'):
+	if len(text) <= max_len:
+		return text
+	return text[:max_len - len(suffix)] + suffix
 
 def is_string(msg):
 	try:
