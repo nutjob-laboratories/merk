@@ -7,10 +7,6 @@
 |==============================================================================|
 
 * Updated documentation to cover all new features and changes.
-* Tweaks to the "Plugins" page of the "Settings" dialog
-* Change to the wording of the "Plugins" entry in the "Tools" menu
-* Clarified how hotkeys are used (and saved/loaded) in the documentation
-* Changed to the wording of the "Hotkeys" entry in the "Tools" menu
 * Fixed a bug where users with the protected status were being identified as
   being privledged
 * Added new feature toggles to the settings menu
@@ -100,6 +96,10 @@
   file" icon for the "import file" button in the Plugin Manager.
 * Both the "export plugin" button and "remove plugin" buttons are now
   hidden in the Plugin Manager if there are no loaded plugins.
+* Tweaks to the "Plugins" page of the "Settings" dialog
+* Change to the wording of the "Plugins" entry in the "Tools" menu
+* Clarified how hotkeys are used (and saved/loaded) in the documentation
+* Changed to the wording of the "Hotkeys" entry in the "Tools" menu
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
