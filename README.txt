@@ -93,6 +93,7 @@ There are four libraries that comes bundled with **MERK**:
 - Built-in [documentation](./MERK_User_Guide.pdf)!
 - Dark mode
 - Plugins
+  - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf). 
   - Plugins are written in Python, and have access to everything that Python can do
     - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK**, as well as [Python's standard library](https://docs.python.org/3/library/index.html)
   - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
@@ -101,6 +102,7 @@ There are four libraries that comes bundled with **MERK**:
     - Individual plugin events can be enabled and disabled in the "Settings" dialog
   - Plugins can be created and edited directly in the application
     - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation.
+    - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**.
     - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples).
 - Audio notifications
   - Can be triggered by seven different events, with each one able to be turned on and off

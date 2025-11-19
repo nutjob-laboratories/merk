@@ -279,8 +279,10 @@ class Window(QMainWindow):
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
 			self.plugin_list.addItem(item)
 			self.save.hide()
+			self.remove.hide()
 		else:
 			self.save.show()
+			self.remove.show()
 
 	def on_item_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
@@ -387,9 +389,10 @@ class Window(QMainWindow):
 		self.remove.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.remove.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.remove.setFlat(True)
+		self.remove.hide()
 
 		self.plugImport = QPushButton("")
-		self.plugImport.setIcon(QIcon(IMPORT_ICON))
+		self.plugImport.setIcon(QIcon(OPENFILE_ICON))
 		self.plugImport.setToolTip("Import plugin")
 		self.plugImport.clicked.connect(self.import_plugin)
 		self.plugImport.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))

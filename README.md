@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.100">MERK 0.051.100</a></big></b><br>
-  <b>Current development version: 0.051.143</b><br><br>
+  <b>Current development version: 0.051.144</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Buy me a coffee!</a></b><br>
 </p>
@@ -32,13 +32,13 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK 0.051.100 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.100)  |
-| Zip Archive|  Cross-platform  | [Download MERK 0.051.143 (12.55 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Windows EXE | [Download MERK 0.051.143 (49.44 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-|   Windows Installer|  Windows Setup | [Download MERK 0.051.143 (46.55 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
+| Zip Archive|  Cross-platform  | [Download MERK 0.051.144 (12.55 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Windows EXE | [Download MERK 0.051.144 (49.44 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+|   Windows Installer|  Windows Setup | [Download MERK 0.051.144 (46.55 MB)](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.143**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** can load plugins, written in Python, just like **MERK**, which can be edited and created directly in the application. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.144**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on both Windows and Linux. **MERK** can load plugins, written in Python, just like **MERK**, which can be edited and created directly in the application. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.051.100](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.100). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf). The [CHANGELOG](./CHANGELOG) reflects changes in the client in [the current development version](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) which will be present in the next release.
 
@@ -93,6 +93,7 @@ There are four libraries that comes bundled with **MERK**:
 - Built-in [documentation](./MERK_User_Guide.pdf)!
 - Dark mode
 - Plugins
+  - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf). 
   - Plugins are written in Python, and have access to everything that Python can do
     - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK**, as well as [Python's standard library](https://docs.python.org/3/library/index.html)
   - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
@@ -101,6 +102,7 @@ There are four libraries that comes bundled with **MERK**:
     - Individual plugin events can be enabled and disabled in the "Settings" dialog
   - Plugins can be created and edited directly in the application
     - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation.
+    - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**.
     - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples).
 - Audio notifications
   - Can be triggered by seven different events, with each one able to be turned on and off
@@ -138,7 +140,7 @@ There are four libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.051.100), and may reflect the current development version (0.051.143). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.100), and may reflect the current development version (0.051.144). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>

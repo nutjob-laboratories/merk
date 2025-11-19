@@ -301,7 +301,6 @@ HIDE_WINDOW_ICON = ":/icon-hide_window.png"
 HIDE_MENU_ICON = ":/icon-hide_menu.png"
 PLUGIN_ICON = ":/icon-plugin.png"
 PLUGIN_MENU_ICON = ":/icon-plugin_menu.png"
-IMPORT_ICON = ":/icon-import.png"
 TOOLS_ICON = ":/icon-tools.png"
 PYTHON_MENU_ICON = ":/icon-python_menu.png"
 

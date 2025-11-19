@@ -96,6 +96,10 @@
 * Fixed a bug with eliding very long nicknames. If nicknames were greater
   than the nick pad length by a significant margin, they would occasionally
   be incorrectly elided, with the nickname being split up over two lines.
+* Removed the "import" icon from the resource file, and now use th "open
+  file" icon for the "import file" button in the Plugin Manager.
+* Both the "export plugin" button and "remove plugin" buttons are now
+  hidden in the Plugin Manager if there are no loaded plugins.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
