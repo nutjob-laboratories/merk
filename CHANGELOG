@@ -2,9 +2,9 @@
 |                                   0.051.150                                  |
 |------------------------------------------------------------------------------|
 
-|=====================|
-| APPLICATION CHANGES |
-|=====================|
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
 
 * Updated documentation to cover all new features and changes.
 * Tweaks to the "Plugins" page of the "Settings" dialog
@@ -33,6 +33,8 @@
   If the file is already open in an editor, that editor is "shown" and the
   focus is switched to the open editor. This works for plugin files, scripts,
   and connection scripts.
+* Added a new submenu in the settings menu: "tools", which allow users to
+  toggle various features on and off (like scripting, plugins, etc.)
 * Added a new icon for "tools" (for the new settings submenu) and "python"
   (for the new plugin file submenu)
 * Added a new example plugin to the documentation
@@ -68,6 +70,8 @@
   editing hotkeys are now reported to the user via messages boxes.
 * Removed the status bar from the Ignore Manager, to match the other
   managers.
+* Status messages in the Hotkey and Ignore managers are now relayed
+  via message boxes, much like the Plugin Manager.
 * Plugins can now have icons. If a PNG file is in the plugins directory
   with the same name as a plugin (example: plugin is named "example.py",
   and the PNG is named "example.png"), this PNG will be used as the
@@ -80,12 +84,16 @@
   plugin directory rather than being MOVED.
 * Fixed a bug in measuring the size of plugins in memory; attempting to
   measure the memory size of a plugin, in certain circumstances, could
-  crash the client while operating in PyInstaller. This ability has been
-  removed.
+  crash the client, but only while operating in PyInstaller. This
+  feature has been removed, as its only use was to display to the user
+  how much memory the plugin consumed.
+* Added a new option to toggle whether to overwrite files when
+  importing plugins. At the moment, only added to the configuration
+  file. Set to "false" by default.
 
-|====================|
-| PLUGIN API CHANGES |
-|====================|
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
 
 * Fixed a bug in the title() plugin Window class method; window titles
   were not being set (or returned) properly

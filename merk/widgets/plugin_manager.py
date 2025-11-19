@@ -44,30 +44,34 @@ class Window(QMainWindow):
 
 	def import_zip(self,filename):
 
-		overwrite = False
-		ofiles = []
-		try:
-			with zipfile.ZipFile(filename, 'r') as zf:
-				for member in zf.infolist():
-					file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+		if not config.OVERWRITE_FILES_ON_IMPORT:
+			overwrite = False
+			ofiles = []
+			try:
+				with zipfile.ZipFile(filename, 'r') as zf:
+					for member in zf.infolist():
+						file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
 
-					extract_file = False
-					name_without_extension, extension = os.path.splitext(file_path)
-					if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+						extract_file = False
+						name_without_extension, extension = os.path.splitext(file_path)
+						if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
 
-					if extract_file:
-						if os.path.exists(file_path):
-							overwrite = True
-							ofiles.append(file_path)
-		except zipfile.BadZipFile:
-			QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
-			return
-		except FileNotFoundError:
-			QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
-			return
-		except Exception as e:
-			QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
-			return
+						if extract_file:
+							if os.path.exists(file_path):
+								overwrite = True
+								ofiles.append(file_path)
+			except zipfile.BadZipFile:
+				QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+				return
+			except FileNotFoundError:
+				QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+				return
+			except Exception as e:
+				QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+				return
+		else:
+			overwrite = False
+			ofiles = []
 
 		if not overwrite:
 			try:
@@ -127,7 +131,7 @@ class Window(QMainWindow):
 		multiple = []
 		for obj in plugins.PLUGINS:
 			if item.filename==obj._filename:
-				multiple.append(f"{obj.NAME} {obj.VERSION})")
+				multiple.append(f"{obj.NAME} {obj.VERSION}")
 
 		if len(multiple)>1:
 			pid = "plugins"
@@ -266,22 +270,20 @@ class Window(QMainWindow):
 				self.import_zip(fileName)
 			else:
 
-				import_file = True
-				if os.path.exists(imported_file) or os.path.isfile(imported_file):
-					import_file = False
+				if not config.OVERWRITE_FILES_ON_IMPORT:
+					import_file = True
+					if os.path.exists(imported_file) or os.path.isfile(imported_file):
+						import_file = False
 
-					msgBox = QMessageBox()
-					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-					msgBox.setText("Plugin file already exists! Overwrite?")
-					msgBox.setWindowTitle("Overwrite File")
-					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
-					rval = msgBox.exec()
-					if rval == QMessageBox.Cancel:
-						pass
-					else:
-						import_file = True
+						msgBox = QMessageBox()
+						msgBox.setIcon(QMessageBox.Critical)
+						msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+						msgBox.setText(f"Import failed! \"{os.path.basename(fileName)}\" already exists in the plugin directory.")
+						msgBox.setWindowTitle("Plugin import error")
+						msgBox.setStandardButtons(QMessageBox.Ok)
+						msgBox.exec()
+				else:
+					import_file = True
 
 				if import_file:
 					try:
