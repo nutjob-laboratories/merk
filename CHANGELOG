@@ -107,6 +107,9 @@
 
 * Fixed a bug in the title() plugin Window class method; window titles
   were not being set (or returned) properly
+* Fixed a bug where using the plugin Window class methods bind() and unbind()
+  did not save hotkeys to the configuration file.
+* Fixed a bug in the private() built-in Plugin method.
 * New plugin Window class method: active(). This returns a boolean; True if
   the window is currently active, and False if not
 * New plugin Window class method: position(). This returns a list; the first
@@ -126,3 +129,8 @@
   strings representing the chat currently being displayed in the window. If
   the window is a server window, or there is no chat being displayed, this
   will return an empty list.
+* New Plugin method: emojize(). This takes a string, converts and emoji
+  shortcodes in it into emojis, and returns the altered string.
+* Changes to the private() Plugin method: a new optional argument, a
+  boolean, can be passed to the method. If the boolean is set to "true",
+  then a private window will be created if none is found.

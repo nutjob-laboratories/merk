@@ -322,6 +322,9 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def emojize(self,message):
+		return emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+
 	def macro(self,name,script,musage=None,mhelp=None):
 		if self._gui!=None:
 			# If the first character is the issue command
@@ -358,13 +361,17 @@ class Plugin():
 		if self._gui!=None:
 			if sequence=='*':
 				self._gui.remove_all_shortcuts()
-				return
-			self._gui.remove_shortcut(sequence)
+			else:
+				self._gui.remove_shortcut(sequence)
+			self._gui.save_shortcuts()
+			if self._gui.hotkey_manager!=None:
+				self._gui.hotkey_manager.refresh()
 
 	def bind(self,sequence,command):
 		if self._gui!=None:
 			r = self._gui.add_shortcut(sequence,command)
 			if r==BAD_SHORTCUT or r==SHORTCUT_IN_USE: return False
+			self._gui.save_shortcuts()
 			if self._gui.hotkey_manager!=None:
 				self._gui.hotkey_manager.refresh()
 			return True
@@ -406,11 +413,6 @@ class Plugin():
 		# Set alias value
 		if alias!=None and value!=None:
 
-			# Make sure that the alias value starts with
-			# an alphabetical value, and never a number or
-			# punctuation, stripping out the alias interpolation
-			# symbol if it has been passed at the start of the
-			# name of the alias
 			if len(alias)>len(config.ALIAS_INTERPOLATION_SYMBOL):
 				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
 				if alias[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
@@ -537,13 +539,17 @@ class Plugin():
 					return Window(self._gui,c)
 		return None
 
-	def private(self,client,user):
+	def private(self,client,user,create_new=False):
 		if self._gui!=None:
-			w = self._gui.getSubWindow(channel,user)
+			w = self._gui.getSubWindow(user,user)
 			if w:
 				c = w.widget()
 				if c.window_type==PRIVATE_WINDOW:
 					return Window(self._gui,c)
+			if create_new:
+				w = self._gui.openPrivate(client,user)
+				w.show()
+				return Window(self._gui,w.widget())
 		return None
 
 	def windows(self,client):
