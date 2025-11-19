@@ -322,6 +322,19 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def resize(self,x_val,y_val):
+		if self._gui!=None:
+			if self._gui.isMaximized() or self._gui.isMinimized(): self._gui.showNormal()
+			self._gui.resize(x_val,y_val)
+
+	def move(self,x_val,y_val):
+		if self._gui!=None:
+			if self._gui.is_move_valid_on_screen(self._gui,x_val,y_val):
+				if self._gui.isMaximized() or self._gui.isMinimized(): self._gui.showNormal()
+				self._gui.move(x_val,y_val)
+				return True
+		return False
+
 	def emojize(self,message):
 		return emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 

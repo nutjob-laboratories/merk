@@ -67,7 +67,8 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'self.all_windows', 'self.ignore', 'self.unignore', 'self.ignores', 'self.all_masters',
 					'self.master', 'self.privates', 'self.all_privates', 'self.channels', 'self.all_channels',
 					'self.private','self.channel','self.restore','self.maximized','self.max','self.minimized',
-					'self.min', 'self.alias', 'self.bind', 'self.unbind', 'self.macro',
+					'self.min', 'self.alias', 'self.bind', 'self.unbind', 'self.macro', 'self.move', 'self.emojize',
+					'self.resize',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 

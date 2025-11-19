@@ -43,8 +43,9 @@ class ExamplePlugin(Plugin):
     #   all_windows, bind, channel, channels, clients,    #
     #   emojize, find, home, ignore, ignores, is_away,    #
     #   is_ignored, list, macro, master, max, maximized,  #
-    #   min, minimized, modes, private, privates,         #
-    #   restore, script, unbind, unignore, windows        #
+    #   min, minimized, modes, move, private, privates,   #
+    #   resize, restore, script, unbind, unignore,        #
+    #   windows                                           #
     #-----------------------------------------------------#
 
     NAME = "Example Plugin"

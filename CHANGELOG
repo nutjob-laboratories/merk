@@ -134,3 +134,8 @@
 * Changes to the private() Plugin method: a new optional argument, a
   boolean, can be passed to the method. If the boolean is set to "true",
   then a private window will be created if none is found.
+* New Plugin method: move(). This moves the main application window to a
+  set location; if the new location would place the window somplace it can
+  not be interacted with, the move fails. Returns "true" if the move is
+  successful, and "false" if not.
+* New Plugin method: resize(). This resizes the main application window.
