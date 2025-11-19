@@ -42,6 +42,33 @@ import zipfile
 
 class Window(QMainWindow):
 
+	def export_plugin(self):
+		item = self.plugin_list.currentItem()
+		if hasattr(item,"dummy"):
+			if item.dummy: return
+		else:
+			return
+
+		name_without_extension, extension = os.path.splitext(item.filename)
+		icon_filename = name_without_extension + ".png"
+		if not os.path.exists(icon_filename):
+			icon_filename = None
+
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,f"Export {item.NAME} {item.VERSION}",str(Path.home()),f"ZIP Files (*.zip);;All Files (*)", options=options)
+		if fileName:
+			_, file_extension = os.path.splitext(fileName)
+			if file_extension=='':
+				efl = len("zip")+1
+				if fileName[-efl:].lower()!=f".zip": fileName = fileName+f".zip"
+
+				with zipfile.ZipFile(fileName, "w") as zipf:
+					zipf.write(item.filename, arcname=os.path.basename(item.filename))
+					if icon_filename!=None: zipf.write(icon_filename, arcname=os.path.basename(icon_filename))
+
+				QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(fileName)}" exported.')
+
 	def import_zip(self,filename):
 
 		if not config.OVERWRITE_FILES_ON_IMPORT:
@@ -251,6 +278,9 @@ class Window(QMainWindow):
 			item.dummy = True
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
 			self.plugin_list.addItem(item)
+			self.save.hide()
+		else:
+			self.save.show()
 
 	def on_item_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
@@ -340,8 +370,6 @@ class Window(QMainWindow):
 				}}
 			""")
 
-		self.refresh()
-
 		self.add = QPushButton("")
 		self.add.setIcon(QIcon(PLUS_ICON))
 		self.add.setToolTip("Create new plugin")
@@ -368,6 +396,15 @@ class Window(QMainWindow):
 		self.plugImport.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.plugImport.setFlat(True)
 
+		self.save = QPushButton("")
+		self.save.setIcon(QIcon(SAVEFILE_ICON))
+		self.save.setToolTip("Export plugin")
+		self.save.clicked.connect(self.export_plugin)
+		self.save.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.save.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.save.setFlat(True)
+		self.save.hide()
+
 		self.brefresh = QPushButton("")
 		self.brefresh.setIcon(QIcon(REFRESH_ICON))
 		self.brefresh.setToolTip("Reload plugins")
@@ -379,10 +416,13 @@ class Window(QMainWindow):
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)
 
+		self.refresh()
+
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(self.add)
 		buttonLayout.addWidget(self.remove)
 		buttonLayout.addWidget(self.plugImport)
+		buttonLayout.addWidget(self.save)
 		buttonLayout.addWidget(self.brefresh)
 		buttonLayout.addStretch()
 		buttonLayout.addWidget(self.exit)

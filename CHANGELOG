@@ -90,6 +90,9 @@
 * Added a new option to toggle whether to overwrite files when
   importing plugins. At the moment, only added to the configuration
   file. Set to "false" by default.
+* The Plugin Manager can now export plugins to a ZIP archive. This will
+  package a plugin file (and its icon, if it exists) into a ZIP output
+  file selected by the user.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
