@@ -9,7 +9,9 @@
 * Updated documentation to cover all new features and changes.
 * Fixed a bug where users with the protected status were being identified as
   being privledged
-* Added new feature toggles to the settings menu
+* Overhauled the "Plugins" page of the "Settings" dialog, and added links to
+  the documentation to the "Scripting", "Plugins", and "Advanced" pages.
+* Added new feature toggles to the "Settings" menu
 * Updated the "Settings" menu screenshot on the repo
 * Disabling plugins in the settings menu now closes all Python editor
   windows

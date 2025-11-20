@@ -4271,15 +4271,19 @@ class Dialog(QDialog):
 		if not config.ENABLE_ALIASES:
 			self.enableShell.setEnabled(False)
 
+		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
+
 		self.scriptingDescription = QLabel(f"""
 			<small><b>Scripting</b> allows <b>{APPLICATION_NAME}</b> to automate commands upon connection, as well
 			as for multiple commands to be executed in sequence. Turning off <b>scripting</b> will
-			prevent scripts and connection scripts from being executed or edited in <b>{APPLICATION_NAME}</b>.
+			prevent scripts and connection scripts from being executed or edited in <b>{APPLICATION_NAME}</b>. For
+			more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
 			</small>
 			
 			""")
 		self.scriptingDescription.setWordWrap(True)
 		self.scriptingDescription.setAlignment(Qt.AlignJustify)
+		self.scriptingDescription.setOpenExternalLinks(True)
 
 		seLayout = QHBoxLayout()
 		seLayout.addStretch()
@@ -4678,15 +4682,18 @@ class Dialog(QDialog):
 		plugLayout.addWidget(self.plugEditor)
 		plugLayout.addStretch()
 
+		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
+
 		self.pluginDescription = QLabel(f"""
 			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
 			in Python. %_INSERT_%
 			Plugins can be created, edited, installed, and uninstalled with the plugin manager, available in the
-			<b>{config.MAIN_MENU_TOOLS_NAME}</b> menu.
+			<b>{config.MAIN_MENU_TOOLS_NAME}</b> menu. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
 			</small>
 			""")
 		self.pluginDescription.setWordWrap(True)
 		self.pluginDescription.setAlignment(Qt.AlignJustify)
+		self.pluginDescription.setOpenExternalLinks(True)
 
 		if is_running_from_pyinstaller():
 			self.pluginDescription.setText( self.pluginDescription.text().replace('%_INSERT_%',"Plugins only have access to Qt, Twisted, and the Python standard library.") )
@@ -4695,7 +4702,7 @@ class Dialog(QDialog):
 
 		self.eventDescription = QLabel(f"""
 			<small>
-			Uncheck an <b>event</b> to prevent that event from being triggered. The <b>init</b> event is triggered
+			Uncheck an <b>event</b> to prevent that event from being triggered. The <b>init()</b> event is triggered
 			when the plugin is initially loaded, and cannot be prevented from triggering after a plugin has been
 			loaded. Events in <b>bold</b> are <b>{APPLICATION_NAME}</b> specific, and are not necessarily IRC related.
 			</small>
@@ -4703,28 +4710,29 @@ class Dialog(QDialog):
 		self.eventDescription.setWordWrap(True)
 		self.eventDescription.setAlignment(Qt.AlignJustify)
 
+		allEvents = QVBoxLayout()
+		allEvents.setSpacing(0)
+		allEvents.addLayout(row1Layout)
+		allEvents.addLayout(row2Layout)
+		allEvents.addLayout(row3Layout)
+		allEvents.addLayout(row4Layout)
+		allEvents.addLayout(row5Layout)
+		allEvents.addLayout(row6Layout)
+		allEvents.addLayout(row7Layout)
+		allEvents.addLayout(row8Layout)
+		allEvents.addLayout(row9Layout)
+		allEvents.addLayout(row10Layout)
+		allEvents.addLayout(row11Layout)
+		allEvents.addLayout(row12Layout)
+
 		pluginsLayout = QVBoxLayout()
-		pluginsLayout.setSpacing(0)
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
 		pluginsLayout.addWidget(self.pluginDescription)
-		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addLayout(plugLayout)
 		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
 		pluginsLayout.addWidget(self.eventDescription)
-		pluginsLayout.addWidget(QLabel(' '))
-		pluginsLayout.addLayout(row1Layout)
-		pluginsLayout.addLayout(row2Layout)
-		pluginsLayout.addLayout(row3Layout)
-		pluginsLayout.addLayout(row4Layout)
-		pluginsLayout.addLayout(row5Layout)
-		pluginsLayout.addLayout(row6Layout)
-		pluginsLayout.addLayout(row7Layout)
-		pluginsLayout.addLayout(row8Layout)
-		pluginsLayout.addLayout(row9Layout)
-		pluginsLayout.addLayout(row10Layout)
-		pluginsLayout.addLayout(row11Layout)
-		pluginsLayout.addLayout(row12Layout)
+		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
 
 		self.pluginPage.setLayout(pluginsLayout)
@@ -4970,17 +4978,21 @@ class Dialog(QDialog):
 		self.logEverything.stateChanged.connect(self.changedSettingAdvanced)
 		self.logEverything.setEnabled(False)
 
+		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
+
 		self.advancedDescription = QLabel(f"""
 			<center><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
 			break existing scripts, or fill up your hard drive!</b></center><small><br>
 			If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
-			settings to the default, and should fix any fatal problems.
+			settings to the default, and should fix any fatal problems. For more information about these settings,
+			please see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
 			</small>
 			
 			""")
 		self.advancedDescription.setWordWrap(True)
 		self.advancedDescription.setAlignment(Qt.AlignJustify)
+		self.advancedDescription.setOpenExternalLinks(True)
 
 		self.writeConsole = QCheckBox("Write all network input and\noutput to STDOUT",self)
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE: self.writeConsole.setChecked(True)
