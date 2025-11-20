@@ -49,11 +49,6 @@ class Window(QMainWindow):
 		else:
 			return
 
-		name_without_extension, extension = os.path.splitext(item.filename)
-		icon_filename = name_without_extension + ".png"
-		if not os.path.exists(icon_filename):
-			icon_filename = None
-
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getSaveFileName(self,f"Export {item.NAME} {item.VERSION}",str(Path.home()),f"ZIP Files (*.zip);;All Files (*)", options=options)
@@ -65,7 +60,7 @@ class Window(QMainWindow):
 
 				with zipfile.ZipFile(fileName, "w") as zipf:
 					zipf.write(item.filename, arcname=os.path.basename(item.filename))
-					if icon_filename!=None: zipf.write(icon_filename, arcname=os.path.basename(icon_filename))
+					if icon_filename!=None: zipf.write(item.icon, arcname=os.path.basename(item.icon))
 
 				QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(fileName)}" exported.')
 
@@ -173,12 +168,6 @@ class Window(QMainWindow):
 		msgBox.setWindowTitle("Delete plugin")
 		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
-		# See if the plugin has an icon
-		name_without_extension, extension = os.path.splitext(item.filename)
-		icon_filename = name_without_extension + ".png"
-		if not os.path.exists(icon_filename):
-			icon_filename = None
-
 		rval = msgBox.exec()
 		if rval == QMessageBox.Cancel:
 			pass
@@ -191,9 +180,9 @@ class Window(QMainWindow):
 			else:
 				QMessageBox.warning(self, 'Warning', f'File "{item.basename}" not found.')
 
-			if icon_filename!=None:
+			if item.icon!=None:
 				try:
-					os.remove(icon_filename)
+					os.remove(item.icon)
 				except OSError as e:
 					QMessageBox.critical(self, 'Error', f'Error deleting file: {e}')
 
@@ -241,12 +230,7 @@ class Window(QMainWindow):
 			AUTHOR = obj.AUTHOR
 			SOURCE = obj.SOURCE
 			classname = obj._class
-
-			# See if the plugin has an icon
-			name_without_extension, extension = os.path.splitext(filename)
-			icon_filename = name_without_extension + ".png"
-			if not os.path.exists(icon_filename):
-				icon_filename = None
+			icon = obj._icon
 
 			item = QListWidgetItem()
 			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}")
@@ -261,9 +245,10 @@ class Window(QMainWindow):
 			item.classname = classname
 			item.methods = methods
 			item.dummy = False
+			item.icon = icon
 
 			if is_url(SOURCE):
-				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b>",icon_filename,32)
+				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b>",icon,32)
 			else:
 				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: {AUTHOR}</a></b>",icon_filename,32)
 			item.setSizeHint(widget.sizeHint())

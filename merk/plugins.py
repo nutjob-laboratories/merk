@@ -702,6 +702,13 @@ def load_plugins(gui):
 
 		obj._filename = inspect.getfile(c)
 
+		name_without_extension, extension = os.path.splitext(obj._filename)
+		icon_filename = name_without_extension + ".png"
+		if not os.path.exists(icon_filename):
+			icon_filename = None
+
+		obj._icon = icon_filename
+
 		do_init = True
 		for o in PLUGIN_FILENAMES:
 			if o==f"{obj._filename}":

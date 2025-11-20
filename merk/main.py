@@ -4337,9 +4337,12 @@ class Merk(QMainWindow):
 					classname = obj._class
 					NAME = obj.NAME
 					VERSION = obj.VERSION
+					icon = obj._icon
+
+					if icon==None: icon = PYTHON_MENU_ICON
 
 					l = lambda h=filename: self.openPythonEditor(h)
-					entry = widgets.ExtendedMenuItem(self,PYTHON_MENU_ICON,f"{NAME} {VERSION}&nbsp;&nbsp;",f"{classname} ({basename}) - {events} events&nbsp;&nbsp;",CUSTOM_MENU_ICON_SIZE,l)
+					entry = widgets.ExtendedMenuItem(self,icon,f"{NAME} {VERSION}&nbsp;&nbsp;",f"{classname} ({basename}) - {events} events&nbsp;&nbsp;",CUSTOM_MENU_ICON_SIZE,l)
 					sm.addAction(entry)
 
 		if config.SCRIPTING_ENGINE_ENABLED:

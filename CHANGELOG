@@ -17,3 +17,18 @@
   a remote user to "log in" to the plugin and issue commands via private
   message.
 * Added zip versions of all plugins in the plugin examples folder in the repo.
+* The "Plugins" submenu in the "Tools" menu now displays a loaded plugin's icon,
+  if it exists. If the icon doesn't exist, a generic "Python" icon is shown
+* Some command-line flags would throw an error if ran via the PyInstaller
+  version, not because the code behind the flags didn't work, but because the
+  PyInstaller version cannot print to STDOUT. The PyInstaller version no
+  longer tries to print to STDOUT, and exits properly.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Changed how plugin icons are set; a plugin's icon's filename, if it exists,
+  is now a part of the loaded icon's internal object. This allows anything that
+  can access the loaded plugin list access to the plugin's icon without having
+  to look for the file.

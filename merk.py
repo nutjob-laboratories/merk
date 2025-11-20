@@ -144,9 +144,10 @@ if __name__ == '__main__':
 			pass
 		else:
 			# Tell user the style is invalid and exit
-			sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
-			sys.stdout.write(f"Valid available styles: {', '.join(QStyleFactory.keys())}\n")
-			exit(1)
+			if not is_running_from_pyinstaller():
+				sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
+				sys.stdout.write(f"Valid available styles: {', '.join(QStyleFactory.keys())}\n")
+			sys.exit(1)
 
 	app = QApplication([])
 
@@ -173,7 +174,8 @@ if __name__ == '__main__':
 
 	# Reset the config files to the default values
 	if args.configdefault:
-		sys.stdout.write("Resetting configuration file to defaults\n")
+		if not is_running_from_pyinstaller():
+			sys.stdout.write("Resetting configuration file to defaults\n")
 		config.save_settings(config.CONFIG_FILE)
 
 	# Initialize the user system
@@ -183,7 +185,8 @@ if __name__ == '__main__':
 		user.initialize(args.configdir,args.configname)
 
 	if args.userdefault:
-		sys.stdout.write("Resetting user file to defaults\n")
+		if not is_running_from_pyinstaller():
+			sys.stdout.write("Resetting user file to defaults\n")
 		user.save_user(user.USER_FILE)
 
 	# Initialize the styles system
@@ -209,12 +212,17 @@ if __name__ == '__main__':
 				if os.path.exists(file_path):
 					try:
 						os.remove(file_path)
-						sys.stdout.write(f"Deleted {file_path}\n")
+						if not is_running_from_pyinstaller():
+							sys.stdout.write(f"Deleted {file_path}\n")
 					except OSError as e:
-						sys.stdout.write(f"Error deleting file: {e}\n")
+						if not is_running_from_pyinstaller():
+							sys.stdout.write(f"Error deleting file: {e}\n")
+						sys.exit(1)
 				else:
-					sys.stdout.write(f"File {file_path} not found\n")
-		exit(0)
+					if not is_running_from_pyinstaller():
+						sys.stdout.write(f"File {file_path} not found\n")
+					sys.exit(1)
+		sys.exit(0)
 
 	# Disabled plugins
 	if args.disable:
@@ -325,7 +333,8 @@ if __name__ == '__main__':
 		user_info_changed = False
 		if args.nickname=='':
 			if len(user.NICKNAME.strip())==0:
-				sys.stdout.write("No nickname set!\n")
+				if not is_running_from_pyinstaller():
+					sys.stdout.write("No nickname set!\n")
 				sys.exit(1)
 			args.nickname = user.NICKNAME
 		else:
@@ -406,7 +415,8 @@ if __name__ == '__main__':
 					connection_script.add_connection_script(f"{host}:{port}",cscript)
 				else:
 					# throw error
-					sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable.\n")
+					if not is_running_from_pyinstaller():
+						sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable.\n")
 					sys.exit(1)
 
 		i = ConnectInfo(
@@ -524,7 +534,8 @@ if __name__ == '__main__':
 					try:
 						int(port)
 					except:
-						sys.stdout.write("Port must be a number!\n")
+						if not is_running_from_pyinstaller():
+							sys.stdout.write("Port must be a number!\n")
 						sys.exit(1)
 
 					port = int(port)
@@ -551,7 +562,8 @@ if __name__ == '__main__':
 					try:
 						int(port)
 					except:
-						sys.stdout.write("Port must be a number!\n")
+						if not is_running_from_pyinstaller():
+							sys.stdout.write("Port must be a number!\n")
 						sys.exit(1)
 
 					port = int(port)
