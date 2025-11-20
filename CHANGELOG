@@ -22,7 +22,11 @@
 * Some command-line flags would throw an error if ran via the PyInstaller
   version, not because the code behind the flags didn't work, but because the
   PyInstaller version cannot print to STDOUT. The PyInstaller version no
-  longer tries to print to STDOUT, and exits properly.
+  longer tries to print to STDOUT, and shows message boxes instead, when
+  possible.
+* Updated the README (and the documentation), explaining that the PyInstaller
+  version will not always display progress or error messages with command-line
+  flags.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

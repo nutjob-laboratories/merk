@@ -136,6 +136,13 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
 
+	def show_message(title,message):
+		msgBox = QMessageBox()
+		msgBox.setText(message)
+		msgBox.setWindowTitle(title)
+		msgBox.setStandardButtons(QMessageBox.Ok)
+		msgBox.exec()
+
 	# If the user passes us a new Qt window style...
 	if args.qtstyle!="":
 		# Check to see if it's a valid style
@@ -147,6 +154,8 @@ if __name__ == '__main__':
 			if not is_running_from_pyinstaller():
 				sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
 				sys.stdout.write(f"Valid available styles: {', '.join(QStyleFactory.keys())}\n")
+			else:
+				show_message("Invalid style",f"Valid available styles: {', '.join(QStyleFactory.keys())}")
 			sys.exit(1)
 
 	app = QApplication([])
@@ -217,11 +226,17 @@ if __name__ == '__main__':
 					except OSError as e:
 						if not is_running_from_pyinstaller():
 							sys.stdout.write(f"Error deleting file: {e}\n")
+						else:
+							show_message("Error",f"Error deleting file: {e}")
 						sys.exit(1)
 				else:
 					if not is_running_from_pyinstaller():
 						sys.stdout.write(f"File {file_path} not found\n")
+					else:
+						show_message("Error",f"File {file_path} not found")
 					sys.exit(1)
+		if is_running_from_pyinstaller():
+			show_message("Finished",f"All plugins deleted!")
 		sys.exit(0)
 
 	# Disabled plugins
@@ -335,6 +350,8 @@ if __name__ == '__main__':
 			if len(user.NICKNAME.strip())==0:
 				if not is_running_from_pyinstaller():
 					sys.stdout.write("No nickname set!\n")
+				else:
+					show_message("Error",f"No nickname set!")
 				sys.exit(1)
 			args.nickname = user.NICKNAME
 		else:
@@ -417,6 +434,8 @@ if __name__ == '__main__':
 					# throw error
 					if not is_running_from_pyinstaller():
 						sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable.\n")
+					else:
+						show_message("Error",f"File \"{args.script}\" does not exist or is not readable.")
 					sys.exit(1)
 
 		i = ConnectInfo(
@@ -536,6 +555,8 @@ if __name__ == '__main__':
 					except:
 						if not is_running_from_pyinstaller():
 							sys.stdout.write("Port must be a number!\n")
+						else:
+							show_message("Error",f"Port must be a number!")
 						sys.exit(1)
 
 					port = int(port)
@@ -564,6 +585,8 @@ if __name__ == '__main__':
 					except:
 						if not is_running_from_pyinstaller():
 							sys.stdout.write("Port must be a number!\n")
+						else:
+							show_message("Error",f"Port must be a number!")
 						sys.exit(1)
 
 					port = int(port)

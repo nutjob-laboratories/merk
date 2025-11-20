@@ -41,6 +41,7 @@ pip <span class="hljs-keyword">install</span> service_identity
 <li><a href="https://github.com/pyarmory/pike">pike 0.2.0</a></li>
 </ul>
 <h1 id="usage">Usage</h1>
+<p>The PyInstaller version of MERK will not always display progress or error messages when using command-line flags. When using this version, if <b>MERK</b> fails to launch when using a command-line flag that would normally launch <b>MERK</b>, assume that an error has occurred, re-check the command-line flags you are using, and check the documentation.</p>
 <pre><code>usage: python merk.py [<span class="hljs-comment">--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]</span>
                       [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
                       [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x]
