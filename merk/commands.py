@@ -695,7 +695,7 @@ def find_plugin(filename,extension):
 	if os.path.isfile(filename): return check_readable(filename)
 
 	# Look for the script in the scripts directory
-	if os.path.isfile(os.path.join(PLUGIN_DIRECTORY, filename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, filename))
+	if os.path.isfile(os.path.join(plugins.PLUGIN_DIRECTORY, filename)): return check_readable(os.path.join(plugins.PLUGIN_DIRECTORY, filename))
 
 	if extension!=None:
 		efilename = filename + "." + extension
@@ -704,16 +704,90 @@ def find_plugin(filename,extension):
 		if os.path.isfile(efilename): return check_readable(filename)
 
 		# Look for the script in the scripts directory
-		if os.path.isfile(os.path.join(PLUGIN_DIRECTORY, efilename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, efilename))
+		if os.path.isfile(os.path.join(plugins.PLUGIN_DIRECTORY, efilename)): return check_readable(os.path.join(plugins.PLUGIN_DIRECTORY, efilename))
 
 		# Still not found? Case insensitive seach
-		for root, dirs, files in os.walk(PLUGIN_DIRECTORY):
+		for root, dirs, files in os.walk(plugins.PLUGIN_DIRECTORY):
 			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
 				return check_readable(os.path.join(root, filename))
 
-	for root, dirs, files in os.walk(PLUGIN_DIRECTORY):
+	for root, dirs, files in os.walk(plugins.PLUGIN_DIRECTORY):
 		for filename in fnmatch.filter(files, f"{filename}.*"):
 			return check_readable(os.path.join(root, filename))
+
+	return None
+
+def find_file_plugin(filename,extension):
+
+	# Check if it's a complete filename
+	if os.path.isfile(filename): return check_readable(filename)
+
+	# Look for the script in the plugins directory
+	if os.path.isfile(os.path.join(plugins.PLUGIN_DIRECTORY, filename)): return check_readable(os.path.join(plugins.PLUGIN_DIRECTORY, filename))
+
+	# Look for the script in the scripts directory
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, filename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, filename))
+
+	# Look for the script in the config directory
+	if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, filename)): return check_readable(os.path.join(config.CONFIG_DIRECTORY, filename))
+
+	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+		# Look for the script in the install directory
+		if os.path.isfile(os.path.join(INSTALL_DIRECTORY, filename)): return check_readable(os.path.join(INSTALL_DIRECTORY, filename))
+
+	if extension!=None:
+		efilename = filename + "." + extension
+
+		# Check if it's a complete filename
+		if os.path.isfile(efilename): return check_readable(filename)
+
+		# Look for the script in the scripts directory
+		if os.path.isfile(os.path.join(plugins.PLUGIN_DIRECTORY, efilename)): return check_readable(os.path.join(plugins.PLUGIN_DIRECTORY, efilename))
+
+		# Look for the script in the scripts directory
+		if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, efilename))
+
+		# Look for the script in the config directory
+		if os.path.isfile(os.path.join(config.CONFIG_DIRECTORY, efilename)): return check_readable(os.path.join(config.CONFIG_DIRECTORY, efilename))
+
+		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+			# Look for the script in the install directory
+			if os.path.isfile(os.path.join(INSTALL_DIRECTORY, efilename)): return check_readable(os.path.join(INSTALL_DIRECTORY, efilename))
+
+		# Still not found? Case insensitive seach
+		for root, dirs, files in os.walk(plugins.PLUGIN_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return check_readable(os.path.join(root, filename))
+
+		for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return check_readable(os.path.join(root, filename))
+
+		for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return check_readable(os.path.join(root, filename))
+
+		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+			for root, dirs, files in os.walk(INSTALL_DIRECTORY):
+				for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+					return check_readable(os.path.join(root, filename))
+
+	for root, dirs, files in os.walk(plugins.PLUGIN_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.*"):
+			return check_readable(os.path.join(root, filename))
+
+	for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.*"):
+			return check_readable(os.path.join(root, filename))
+
+	for root, dirs, files in os.walk(config.CONFIG_DIRECTORY):
+		for filename in fnmatch.filter(files, f"{filename}.*"):
+			return check_readable(os.path.join(root, filename))
+
+	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+		for root, dirs, files in os.walk(INSTALL_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.*"):
+				return check_readable(os.path.join(root, filename))
 
 	return None
 
@@ -776,8 +850,6 @@ def find_file(filename,extension):
 				return check_readable(os.path.join(root, filename))
 
 	return None
-
-
 
 def is_valid_macro_name(name):
 	for c in AUTOCOMPLETE:

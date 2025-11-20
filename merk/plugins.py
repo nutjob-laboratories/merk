@@ -523,7 +523,7 @@ class Plugin():
 		self._gui.showMinimized()
 
 	def find(self,filename,extension=None):
-		return commands.find_file(filename,extension)
+		return commands.find_file_plugin(filename,extension)
 
 	def home(self):
 		return f"{CONFIG_DIRECTORY}"

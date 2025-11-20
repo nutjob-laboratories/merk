@@ -27,6 +27,11 @@
 * Updated the README (and the documentation), explaining that the PyInstaller
   version will not always display progress or error messages with command-line
   flags.
+* Fixed a bug with finding plugin files.
+* Changed how the Plugin find() method works. It now searches the plugin
+  directory, the scripts directory, the configuration directory, and the
+  installation directory (if that option is enabled in settings) for files, in
+  that order.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
