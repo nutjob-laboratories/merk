@@ -111,7 +111,6 @@ class Window(QMainWindow):
 						if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
 
 						if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
-				QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(filename)}" imported.')
 			except zipfile.BadZipFile:
 				QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
 			except FileNotFoundError:
@@ -187,7 +186,6 @@ class Window(QMainWindow):
 			if os.path.exists(item.filename):
 				try:
 					os.remove(item.filename)
-					QMessageBox.information(self, 'Success', f'File "{item.basename}" deleted successfully.')
 				except OSError as e:
 					QMessageBox.critical(self, 'Error', f'Error deleting file: {e}')
 			else:

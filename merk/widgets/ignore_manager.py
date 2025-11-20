@@ -92,6 +92,9 @@ class Window(QMainWindow):
 			item.dummy = True
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
 			self.keys.addItem(item)
+			self.remove.hide()
+		else:
+			self.remove.show()
 
 	def on_item_clicked(self, item):
 		if hasattr(item,"dummy"):
@@ -179,6 +182,7 @@ class Window(QMainWindow):
 		self.remove.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.remove.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.remove.setFlat(True)
+		self.remove.hide()
 
 		self.brefresh = QPushButton("")
 		self.brefresh.setIcon(QIcon(REFRESH_ICON))

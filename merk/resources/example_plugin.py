@@ -426,7 +426,7 @@ class ExamplePlugin(Plugin):
     #
     def message(self,**args):
         window = args["window"]
-        clinet = args["client"]
+        client = args["client"]
         channel = args["channel"]
         user = args["user"]
         nickname = args["nickname"]

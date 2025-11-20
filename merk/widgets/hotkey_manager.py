@@ -49,7 +49,6 @@ class Window(QMainWindow):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
 					self.parent.save_shortcuts()
-					QMessageBox.information(self, 'Success', f'Hotkey "{seq}" added.')
 				elif r==SHORTCUT_IN_USE:
 					QMessageBox.critical(self, 'Error', f'Hotkey \"{seq}\" is already in use.')
 				else:
@@ -89,6 +88,9 @@ class Window(QMainWindow):
 			item.dummy = True
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
 			self.keys.addItem(item)
+			self.remove.hide()
+		else:
+			self.remove.show()
 
 	def closeEvent(self, event):
 
@@ -114,7 +116,6 @@ class Window(QMainWindow):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
 					self.parent.save_shortcuts()
-					QMessageBox.information(self, 'Success', f'Hotkey "{item.seq}" edited.')
 				elif r==SHORTCUT_IN_USE:
 					QMessageBox.critical(self, 'Error', f'Hotkey \"{seq}\" is already in use.')
 				else:
@@ -170,6 +171,7 @@ class Window(QMainWindow):
 		self.remove.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.remove.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.remove.setFlat(True)
+		self.remove.hide()
 
 		self.exit = QPushButton("Close")
 		self.exit.clicked.connect(self.close)

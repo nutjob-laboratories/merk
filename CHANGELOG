@@ -1,143 +1,19 @@
 |------------------------------------------------------------------------------|
-|                                   0.051.150                                  |
+|                                   0.051.200                                  |
 |------------------------------------------------------------------------------|
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
 
-* Updated documentation to cover all new features and changes.
-* Fixed a bug where users with the protected status were being identified as
-  being privledged
-* Overhauled the "Plugins" page of the "Settings" dialog, and added links to
-  the documentation to the "Scripting", "Plugins", and "Advanced" pages.
-* Added new feature toggles to the "Settings" menu
-* Updated the "Settings" menu screenshot on the repo
-* Disabling plugins in the settings menu now closes all Python editor
-  windows
-* Disabling plugins in the "Settings" dialog now closes all Python
-  editor windows
-* Disabling scripting in the "Settings" dialog now closes all script editor
-  windows
-* Fixed a bug where if the scripting engine was disabled while running,
-  the "run script" button wouldn't be hidden on server windows
-* The "style" and "plugins" directories entries are now hidden in the
-  tools menu "directories" submenu if the style editor and plugins
-  are disabled, respectively; change has also been made to the systray menu
-* Added a new submenu to the tools menu: a list of plugins, allowing
-  the user to open the plugin files in the Python editor
-* When opening up a file in either the script editor or the Python editor,
-  the application will no longer open multiple windows for the same file.
-  If the file is already open in an editor, that editor is "shown" and the
-  focus is switched to the open editor. This works for plugin files, scripts,
-  and connection scripts.
-* Added a new submenu in the settings menu: "tools", which allow users to
-  toggle various features on and off (like scripting, plugins, etc.)
-* Added a new icon for "tools" (for the new settings submenu) and "python"
-  (for the new plugin file submenu)
-* Added a new example plugin to the documentation
-* Added a new command-line flag: -P, --disable-plugins. This flag disables
-  plugins and prevents them from loading on startup
-* Added a new command-line flag: --uninstall-all. This flag deletes all
-  installed plugins, and is primarily meant for recovery if one or more 
-  plugins are crashing MERK on load.
-* Changed the window titles of the hotkey, ignore, and plugin managers to
-  have "manager" in the title
-* Changed the "Log Manager" entry in the "Tools" menu to "Logs"
-* Log Manager now shows the output on the "Export" tab. This output
-  display will update every time a log is selected, and every time
-  an export setting is changed.
-* Added a "Settings" section to the documentation, covering the settings
-  dialog and menu.
-* Entries in the Plugin Manager now provide more information than the name
-  of the plugin and the version. Each entry shows the name, version, class
-  name, file name, author, and size in memory of each plugin. Other than
-  that, it works identically.
-* Entries in the Hotkey Manager now look similar to the entries in the
-  new Plugin Manager.
-* Entries in the Ignore Manager now look similar to the entries in the
-  other managers.
-* The "no [WHATEVER ITEMS]" entry in all Hotkey, Plugin, and Ignore
-  Managers are no longer selectable.
-* Hotkeys are now saved to the configuration file automatically whenever
-  they are added or removed. The "disk" button has been removed from
-  the Hotkey Manager, and the "/bind save" command has been removed.
-* Changed the documentation title (and the link to the documentation
-  in the application) to reflect the document's actual filename.
-* Removed the status bar from the Hotkey Manager; errors in adding or
-  editing hotkeys are now reported to the user via messages boxes.
-* Removed the status bar from the Ignore Manager, to match the other
-  managers.
-* Status messages in the Hotkey and Ignore managers are now relayed
-  via message boxes, much like the Plugin Manager.
-* Plugins can now have icons. If a PNG file is in the plugins directory
-  with the same name as a plugin (example: plugin is named "example.py",
-  and the PNG is named "example.png"), this PNG will be used as the
-  plugin's icon, and will be displayed in the Plugin Manager. Icons are
-  rendered at 32x32 pixels.
-* Plugins can now be imported in ZIP files. Only PY and PNG files in the
-  ZIP file are extracted into the plugins directory. Importing a zip
-  file will not overwrite existing files with the same filename.
-* Plugins in the form of a single Python file are now COPIED into the
-  plugin directory rather than being MOVED.
-* Fixed a bug in measuring the size of plugins in memory; attempting to
-  measure the memory size of a plugin, in certain circumstances, could
-  crash the client, but only while operating in PyInstaller. This
-  feature has been removed, as its only use was to display to the user
-  how much memory the plugin consumed.
-* Added a new option to toggle whether to overwrite files when
-  importing plugins. At the moment, only added to the configuration
-  file. Set to "false" by default.
-* The Plugin Manager can now export plugins to a ZIP archive. This will
-  package a plugin file (and its icon, if it exists) into a ZIP output
-  file selected by the user.
-* Fixed a bug with eliding very long nicknames. If nicknames were greater
-  than the nick pad length by a significant margin, they would occasionally
-  be incorrectly elided, with the nickname being split up over two lines.
-* Removed the "import" icon from the resource file, and now use th "open
-  file" icon for the "import file" button in the Plugin Manager.
-* Both the "export plugin" button and "remove plugin" buttons are now
-  hidden in the Plugin Manager if there are no loaded plugins.
-* Tweaks to the "Plugins" page of the "Settings" dialog
-* Change to the wording of the "Plugins" entry in the "Tools" menu
-* Clarified how hotkeys are used (and saved/loaded) in the documentation
-* Changed to the wording of the "Hotkeys" entry in the "Tools" menu
-
-|==============================================================================|
-|                              PLUGIN API CHANGES                              |
-|==============================================================================|
-
-* Fixed a bug in the title() plugin Window class method; window titles
-  were not being set (or returned) properly
-* Fixed a bug where using the plugin Window class methods bind() and unbind()
-  did not save hotkeys to the configuration file.
-* Fixed a bug in the private() built-in Plugin method.
-* New plugin Window class method: active(). This returns a boolean; True if
-  the window is currently active, and False if not
-* New plugin Window class method: position(). This returns a list; the first
-  value in the list is the window's X value, the second value in the list
-  is the window's Y value. If the position cannot be determined, both
-  values will be set to 0.
-* New plugin Window class method: size(). This returns a list; the first
-  value in the list is the window's width, the second value in the list is
-  the window's height. If the size cannot be determinied, both values will
-  be set to 0.
-* New plugin Window class method: history(). This returns a list of strings
-  representing the command history of a window's text input widget, in order
-  of most recent to least recent. The maximum size of this list is, by
-  default, 20 entries, unless changed in the settings dialog or with /config.
-  If command history is turned off, this will return an empty list.
-* New plugin Window class method: chat(). This returns a list of lists of
-  strings representing the chat currently being displayed in the window. If
-  the window is a server window, or there is no chat being displayed, this
-  will return an empty list.
-* New Plugin method: emojize(). This takes a string, converts and emoji
-  shortcodes in it into emojis, and returns the altered string.
-* Changes to the private() Plugin method: a new optional argument, a
-  boolean, can be passed to the method. If the boolean is set to "true",
-  then a private window will be created if none is found.
-* New Plugin method: move(). This moves the main application window to a
-  set location; if the new location would place the window somplace it can
-  not be interacted with, the move fails. Returns "true" if the move is
-  successful, and "false" if not.
-* New Plugin method: resize(). This resizes the main application window.
+* The Ignore and Hotkey Managers now hide the "delete" button if the the list
+  is empty.
+* The Hotkey Manager no longer shows a message box when adding or editing a
+  hotkey was successful.
+* The Plugin Manager no longer shows a message box when importing a plugin was
+  successful, or deleting a plugin was successful (after the message box asking
+  if the user wants to actually delete the plugin).
+* Added a new example plugin to the documentation: MERK "Backdoor", that allows
+  a remote user to "log in" to the plugin and issue commands via private
+  message.
+* Added zip versions of all plugins in the plugin examples folder in the repo.
