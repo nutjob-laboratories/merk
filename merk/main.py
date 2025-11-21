@@ -3341,6 +3341,7 @@ class Merk(QMainWindow):
 		return w
 
 	def openPythonEditor(self,filename):
+		if not config.ENABLE_PLUGIN_EDITOR: return
 		for window in self.getAllEditorWindows():
 			if hasattr(window,"widget"):
 				c = window.widget()

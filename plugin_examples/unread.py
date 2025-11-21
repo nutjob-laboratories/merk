@@ -12,8 +12,7 @@ class MentionNotify(Plugin):
         channel = args["channel"]
         user = args["user"]
         message = args["message"]
-        client = window.client()
-
+        client = args["client"]
         if window!=None:
             if window.type()!="server":
                 if window.title()==window.name():

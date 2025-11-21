@@ -5678,6 +5678,19 @@ class Dialog(QDialog):
 						c.force_close=True
 						c.close()
 
+		if not config.ENABLE_PLUGIN_EDITOR:
+			for window in self.parent.getAllEditorWindows():
+				if hasattr(window,"widget"):
+					c = window.widget()
+					if c.python:
+						c.force_close=True
+						c.close()
+			if self.parent.plugin_manager!=None:
+				self.parent.plugin_manager.add.hide()
+		else:
+			if self.parent.plugin_manager!=None:
+				self.parent.plugin_manager.add.show()
+
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()
 
