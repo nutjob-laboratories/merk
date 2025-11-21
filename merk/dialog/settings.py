@@ -478,6 +478,13 @@ class Dialog(QDialog):
 			self.plugError.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginImport.setEnabled(False)
+		if self.pluginImport.isChecked():
+			if self.enablePlugins.isChecked():
+				self.pluginOverwrite.setEnabled(True)
+			else:
+				self.pluginOverwrite.setEnabled(False)
+		else:
+			self.pluginOverwrite.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -1019,7 +1026,18 @@ class Dialog(QDialog):
 		else:
 			self.stmList.setEnabled(True)
 			self.stmLogs.setEnabled(True)
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
 
+	def changedSettingImport(self,state):
+		if self.pluginImport.isChecked():
+			self.pluginOverwrite.setEnabled(True)
+		else:
+			self.pluginOverwrite.setEnabled(False)
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
 
 	def changedSystrayNotification(self,state):
 		if self.systrayNotify.isChecked():
@@ -4587,7 +4605,7 @@ class Dialog(QDialog):
 
 		self.pluginImport = QCheckBox("Enable plugin import",self)
 		if config.ENABLE_PLUGIN_IMPORT: self.pluginImport.setChecked(True)
-		self.pluginImport.stateChanged.connect(self.changedSetting)
+		self.pluginImport.stateChanged.connect(self.changedSettingImport)
 
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
@@ -4751,7 +4769,6 @@ class Dialog(QDialog):
 		pluginsLayout.addLayout(plugLayout)
 		pluginsLayout.addWidget(self.pluginImport)
 		pluginsLayout.addWidget(self.pluginOverwrite)
-		# pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
