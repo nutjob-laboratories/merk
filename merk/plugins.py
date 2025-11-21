@@ -27,6 +27,7 @@ import sys
 import os
 from pathlib import Path
 import inspect
+import uuid
 
 from pike.manager import PikeManager
 
@@ -154,7 +155,9 @@ class Window():
 		commands.executeScript(self._gui,self._window,script,f,arguments)
 
 	def resize(self,width,height):
-		self._window.resize(width,height)
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			w.resize(width,height)
 
 	def clear(self):
 		self._window.clearChat()
@@ -167,31 +170,49 @@ class Window():
 			return False
 
 	def maximized(self):
-		return self._window.isMaximized()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			return w.isMaximized()
+		return False
 
 	def max(self):
-		self._window.showMaximized()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			w.showMaximized()
 
 	def minimized(self):
-		return self._window.isMinimized()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			return w.isMinimized()
+		return False
 
 	def min(self):
-		self._window.showMinimized()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			w.showMinimized()
 
 	def close(self):
-		self._window.close()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			w.close()
 		self._gui.initWindowbar()
 
 	def hide(self):
-		self._window.hide()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			w.hide()
 		self._gui.initWindowbar()
 
 	def show(self):
-		self._window.show()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			w.show()
 		self._gui.initWindowbar()
 
 	def restore(self):
-		self._window.showNormal()
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			w.showNormal()
 
 	def name(self):
 		return self._window.name
@@ -321,6 +342,9 @@ class Plugin():
 	AUTHOR = "Unknown"
 	VERSION = "1.0"
 	SOURCE = "Unknown"
+
+	def id(self):
+		return self._id
 
 	def resize(self,x_val,y_val):
 		if self._gui!=None:
@@ -681,6 +705,10 @@ def load_plugins(gui):
 				s = inspect.getsourcelines(o.init)
 				PLUGIN_INIT.append([o._filename,s])
 
+	PLUGIN_IDS = {}
+	for o in PLUGINS:
+		PLUGIN_IDS[o._filename] = o._id
+
 	PLUGINS = []
 	ERRORS = []
 
@@ -701,6 +729,15 @@ def load_plugins(gui):
 		obj._gui = gui
 
 		obj._filename = inspect.getfile(c)
+
+		# Generate an UUID for the plugin, but
+		# make sure it's only generated the first
+		# time the plugin is "loaded", and stays
+		# the same during runtime.
+		if obj._filename in PLUGIN_IDS:
+			obj._id = PLUGIN_IDS[obj._filename]
+		else:
+			obj._id = str(uuid.uuid4())
 
 		name_without_extension, extension = os.path.splitext(obj._filename)
 		icon_filename = name_without_extension + ".png"

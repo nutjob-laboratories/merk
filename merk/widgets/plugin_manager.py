@@ -231,6 +231,7 @@ class Window(QMainWindow):
 			SOURCE = obj.SOURCE
 			classname = obj._class
 			icon = obj._icon
+			uuid = obj._id
 
 			item = QListWidgetItem()
 			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}")

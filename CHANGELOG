@@ -48,6 +48,13 @@
   directory, the scripts directory, the configuration directory, and the
   installation directory (if that option is enabled in settings) for files, in
   that order.
+* Plugins now have a UUID that is generated at load, and stays the same
+  during runtime, even if the plugin is reloaded.
+* New Plugin method: id(), that returns the UUID generated for the plugin as
+  load.
+* Bugfix for several Window methods (max(), maximize(), min(), minimized()
+  close(), hide(), show(), and restore()). These should function as expected,
+  now.
 
 --------------------------------------------------------------------------------
 ################################################################################
