@@ -437,6 +437,8 @@ class Dialog(QDialog):
 			self.plugClose.setEnabled(True)
 			self.plugMe.setEnabled(True)
 			self.plugError.setEnabled(True)
+			self.pluginOverwrite.setEnabled(True)
+			self.pluginImport.setEnabled(True)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -474,6 +476,8 @@ class Dialog(QDialog):
 			self.plugClose.setEnabled(False)
 			self.plugMe.setEnabled(False)
 			self.plugError.setEnabled(False)
+			self.pluginOverwrite.setEnabled(False)
+			self.pluginImport.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4577,6 +4581,14 @@ class Dialog(QDialog):
 		if config.PLUGIN_ERROR: self.plugError.setChecked(True)
 		self.plugError.stateChanged.connect(self.changedSetting)
 
+		self.pluginOverwrite = QCheckBox("Overwrite files on import",self)
+		if config.OVERWRITE_FILES_ON_IMPORT: self.pluginOverwrite.setChecked(True)
+		self.pluginOverwrite.stateChanged.connect(self.changedSetting)
+
+		self.pluginImport = QCheckBox("Enable plugin import",self)
+		if config.ENABLE_PLUGIN_IMPORT: self.pluginImport.setChecked(True)
+		self.pluginImport.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4614,6 +4626,8 @@ class Dialog(QDialog):
 			self.plugClose.setEnabled(False)
 			self.plugMe.setEnabled(False)
 			self.plugError.setEnabled(False)
+			self.pluginOverwrite.setEnabled(False)
+			self.pluginImport.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAction)
@@ -4676,11 +4690,8 @@ class Dialog(QDialog):
 		row12Layout.addWidget(QLabel(' '))
 
 		plugLayout = QHBoxLayout()
-		plugLayout.addStretch()
 		plugLayout.addWidget(self.enablePlugins)
-		plugLayout.addStretch()
 		plugLayout.addWidget(self.plugEditor)
-		plugLayout.addStretch()
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
@@ -4688,7 +4699,7 @@ class Dialog(QDialog):
 			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
 			in Python. %_INSERT_%
 			Plugins can be created, edited, installed, and uninstalled with the plugin manager, available in the
-			<b>{config.MAIN_MENU_TOOLS_NAME}</b> menu. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
+			<b>{config.MAIN_MENU_TOOLS_NAME}</b> menu. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
 			</small>
 			""")
 		self.pluginDescription.setWordWrap(True)
@@ -4725,13 +4736,23 @@ class Dialog(QDialog):
 		allEvents.addLayout(row11Layout)
 		allEvents.addLayout(row12Layout)
 
+		pTop = QVBoxLayout()
+		pTop.setSpacing(0)
+		pTop.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
+		pTop.addWidget(self.pluginDescription)
+
+		pBottom = QVBoxLayout()
+		pBottom.setSpacing(0)
+		pBottom.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
+		pBottom.addWidget(self.eventDescription)
+
 		pluginsLayout = QVBoxLayout()
-		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
-		pluginsLayout.addWidget(self.pluginDescription)
+		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addWidget(QLabel(' '))
-		pluginsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
-		pluginsLayout.addWidget(self.eventDescription)
+		pluginsLayout.addWidget(self.pluginImport)
+		pluginsLayout.addWidget(self.pluginOverwrite)
+		# pluginsLayout.addWidget(QLabel(' '))
+		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
 
@@ -5477,6 +5498,8 @@ class Dialog(QDialog):
 		config.PLUGIN_CLOSE = self.plugClose.isChecked()
 		config.PLUGIN_ME = self.plugMe.isChecked()
 		config.PLUGIN_ERROR = self.plugError.isChecked()
+		config.OVERWRITE_FILES_ON_IMPORT = self.pluginOverwrite.isChecked()
+		config.ENABLE_PLUGIN_IMPORT = self.pluginImport.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -5690,6 +5713,13 @@ class Dialog(QDialog):
 		else:
 			if self.parent.plugin_manager!=None:
 				self.parent.plugin_manager.add.show()
+
+		if config.ENABLE_PLUGIN_IMPORT:
+			if self.parent.plugin_manager!=None:
+				self.parent.plugin_manager.plugImport.show()
+		else:
+			if self.parent.plugin_manager!=None:
+				self.parent.plugin_manager.plugImport.hide()
 
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()

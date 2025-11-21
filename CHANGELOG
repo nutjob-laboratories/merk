@@ -32,6 +32,9 @@
   windows will be closed, the "create" plugin button in the Plugin Manager
   will be hidden, and both the Plugin Manager and the "Tools" menu will no
   longer be able to edit any installed plugins.
+* Added the "overwrite files on plugin import" option to the "Settings"
+  dialog.
+* Added a new option to en/disable plugin importing.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

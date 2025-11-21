@@ -273,6 +273,7 @@ class Window(QMainWindow):
 		self.parent.openPythonEditor(item.filename)
 
 	def import_plugin(self):
+		if not config.ENABLE_PLUGIN_IMPORT: return
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Import File", str(Path.home()), f"Zip Files (*.zip);;MERK Plugin (*.py);;All Files (*)", options=options)
@@ -381,6 +382,8 @@ class Window(QMainWindow):
 		self.plugImport.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.plugImport.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.plugImport.setFlat(True)
+
+		if not config.ENABLE_PLUGIN_IMPORT: self.plugImport.hide()
 
 		self.save = QPushButton("")
 		self.save.setIcon(QIcon(SAVEFILE_ICON))
