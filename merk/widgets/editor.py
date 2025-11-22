@@ -1806,8 +1806,6 @@ class Window(QMainWindow):
 
 	def doFileSave(self):
 
-		if self.filename==None: return self.doFileSaveAs()
-
 		if self.editing_user_script:
 			contents = self.editor.toPlainText()
 			if len(contents)==0:
@@ -1827,6 +1825,8 @@ class Window(QMainWindow):
 			self.changed = False
 			self.updateApplicationTitle()
 			return
+
+		if self.filename==None: return self.doFileSaveAs()
 
 		code = open(self.filename,"w",encoding="utf-8",errors="ignore")
 		code.write(self.editor.toPlainText())

@@ -41,6 +41,9 @@
 * Revamped the Plugin Manager. All buttons are removed, and everything is
   done through a menu now. The Manager still works the same way, its just a
   change to the GUI.
+* Bugfix: saving connection scripts in the script editor stopped functioning,
+  due to another bugfix having a side effect. This has been fixed, and
+  connection script saving works again.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
