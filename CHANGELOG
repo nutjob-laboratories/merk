@@ -39,12 +39,16 @@
   consuming.
 * The Plugin Manager window now is wider when it launches.
 * Revamped the Plugin Manager. All buttons are removed, and everything is
-  done through a menu now. The Manager still works the same way, its just a
+  done through menus now. The Manager still works the same way, it's just a
   change to the GUI.
 * Bugfix: saving connection scripts in the script editor stopped functioning,
   due to another bugfix having a side effect. This has been fixed, and
   connection script saving works again.
 * Added an option to the Python editor to create a new, blank file.
+* Added a right click context menu to items in the Plugin Manager; this is
+  now how plugins are exported and uninstalled.
+* Plugin consoles can now be shown/hidden from the item right click menu
+  in the Plugin Manager.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

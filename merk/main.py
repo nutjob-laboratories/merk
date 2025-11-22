@@ -3539,6 +3539,15 @@ class Merk(QMainWindow):
 
 		return w
 
+	def getConsole(self,plugin):
+		for window in self.MDI.subWindowList():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if c.window_type==PLUGIN_CONSOLE:
+					if c.plugin._id==plugin._id:
+						return [window,c]
+		return [None,None]
+
 	def closeConsole(self,plugin):
 		for window in self.MDI.subWindowList():
 			if hasattr(window,"widget"):

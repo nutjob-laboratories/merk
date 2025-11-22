@@ -4607,6 +4607,9 @@ class Dialog(QDialog):
 		if config.ENABLE_PLUGIN_IMPORT: self.pluginImport.setChecked(True)
 		self.pluginImport.stateChanged.connect(self.changedSettingImport)
 
+		if not config.ENABLE_PLUGIN_IMPORT:
+			self.pluginOverwrite.setEnabled(False)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)

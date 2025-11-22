@@ -42,8 +42,7 @@ import zipfile
 
 class Window(QMainWindow):
 
-	def export_plugin(self):
-		item = self.plugin_list.currentItem()
+	def do_export(self,item):
 		if hasattr(item,"dummy"):
 			if item.dummy: return
 		else:
@@ -63,6 +62,10 @@ class Window(QMainWindow):
 					if icon_filename!=None: zipf.write(item.icon, arcname=os.path.basename(item.icon))
 
 				QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(fileName)}" exported.')
+
+	def export_plugin(self):
+		item = self.plugin_list.currentItem()
+		self.do_export(item)
 
 	def import_zip(self,filename):
 
@@ -141,14 +144,7 @@ class Window(QMainWindow):
 		if not config.ENABLE_PLUGIN_EDITOR: return
 		self.parent.newEditorPlugin()
 
-	def remove_plugin(self):
-
-		item = self.plugin_list.currentItem()
-		if hasattr(item,"dummy"):
-			if item.dummy: return
-		else:
-			return
-
+	def delete_plugin(self,item):
 		multiple = []
 		for obj in plugins.PLUGINS:
 			if item.filename==obj._filename:
@@ -201,6 +197,16 @@ class Window(QMainWindow):
 				msgBox.setStandardButtons(QMessageBox.Ok)
 				msgBox.exec()
 			self.refresh()
+
+	def remove_plugin(self):
+
+		item = self.plugin_list.currentItem()
+		if hasattr(item,"dummy"):
+			if item.dummy: return
+		else:
+			return
+
+		self.delete_plugin(item)
 
 	def reload_plugins(self):
 		errors = plugins.load_plugins(self.parent)
@@ -281,13 +287,6 @@ class Window(QMainWindow):
 
 			self.plugin_list.clearSelection()
 
-			# self.plugin_list.addItem(item)
-			self.menuExport.setEnabled(False)
-			self.menuDelete.setEnabled(False)
-		else:
-			self.menuExport.setEnabled(True)
-			self.menuDelete.setEnabled(True)
-
 	def on_item_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
 		if item.dummy: return
@@ -338,6 +337,45 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
+	def show_context_menu(self, position: QPoint):
+		menu = QMenu(self)
+		item = self.plugin_list.itemAt(position)
+
+		if item is not None:
+				if hasattr(item,"dummy"):
+					if item.dummy==False:
+						edit_action = QAction(QIcon(PYTHON_ICON),"Edit plugin", self)
+						edit_action.triggered.connect(lambda: self.on_item_clicked(item))
+						menu.addAction(edit_action)
+
+						if not config.ENABLE_PLUGIN_EDITOR: edit_action.setVisible(False)
+
+						export_action = QAction(QIcon(SAVEFILE_ICON),"Export plugin", self)
+						export_action.triggered.connect(lambda: self.do_export(item))
+						menu.addAction(export_action)
+
+						if not config.ENABLE_PLUGIN_IMPORT: export_action.setVisible(False)
+
+						subwindow,widget = self.parent.getConsole(item.plugin)
+						if subwindow!=None:
+							menu.addSeparator()
+							if subwindow.isVisible():
+								console_action = QAction(QIcon(HIDE_WINDOW_ICON),"Hide console", self)
+								console_action.triggered.connect(lambda: subwindow.close())
+								menu.addAction(console_action)
+							else:
+								console_action = QAction(QIcon(WINDOW_ICON),"Show console", self)
+								console_action.triggered.connect(lambda: subwindow.show())
+								menu.addAction(console_action)
+
+						menu.addSeparator()
+
+						delete_action = QAction(QIcon(MINUS_ICON),"Uninstall plugin", self)
+						delete_action.triggered.connect(lambda: self.delete_plugin(item))
+						menu.addAction(delete_action)
+
+						menu.exec_(self.plugin_list.mapToGlobal(position))
+
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
@@ -357,6 +395,8 @@ class Window(QMainWindow):
 		self.plugin_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.plugin_list.setSelectionMode(QListWidget.SingleSelection)
 		self.plugin_list.itemDoubleClicked.connect(self.on_item_clicked)
+		self.plugin_list.setContextMenuPolicy(Qt.CustomContextMenu)
+		self.plugin_list.customContextMenuRequested.connect(self.show_context_menu)
 
 		if self.parent.dark_mode:
 			self.plugin_list.setStyleSheet(f"""
@@ -387,21 +427,13 @@ class Window(QMainWindow):
 
 		if not config.ENABLE_PLUGIN_IMPORT: self.menuImport.setVisible(False)
 
-		self.menuExport = QAction(QIcon(SAVEFILE_ICON),"Export plugin",self)
-		self.menuExport.triggered.connect(self.export_plugin)
-		self.pluginMenu.addAction(self.menuExport)
-
-		self.pluginMenu.addSeparator()
-
-		self.menuDelete = QAction(QIcon(MINUS_ICON),"Uninstall plugin",self)
-		self.menuDelete.triggered.connect(self.remove_plugin)
-		self.pluginMenu.addAction(self.menuDelete)
-
 		self.pluginMenu.addSeparator()
 
 		self.menuRefresh = QAction(QIcon(REFRESH_ICON),"Reload plugins",self)
 		self.menuRefresh.triggered.connect(self.reload_plugins)
 		self.pluginMenu.addAction(self.menuRefresh)
+
+		self.pluginMenu.addSeparator()
 
 		self.menuClose = QAction(QIcon(CLOSE_ICON),"Close",self)
 		self.menuClose.triggered.connect(self.close)
