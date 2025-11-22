@@ -334,6 +334,87 @@ class Window():
 			if new_topic!=None: return False
 		return None
 
+class Console():
+	_console = None
+
+	def __init__(self,gui,plugin):
+		self._gui = gui
+		self._plugin = plugin
+
+		self._subwindow,self._console = self._gui.openConsole(self._plugin)
+
+	def print(self,message):
+		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
+		self._console.writeText(t)
+
+	def prints(self,message):
+		t = Message(SYSTEM_MESSAGE,'',f"{message}")
+		self._console.writeText(t)
+
+	def html(self,message):
+		self._console.writeText(message)
+
+	def title(self,title=None):
+		if title==None:
+			return self._subwindow.windowTitle()
+		else:
+			self._subwindow.setWindowTitle(title)
+
+	def clear(self):
+		self._subwindow.chat.clear()
+
+	def min(self):
+		self._subwindow.showMinimized()
+
+	def max(self):
+		self._subwindow.showMaximized()
+
+	def minimized(self):
+		if self._subwindow.isMinimized():
+			return True
+		else:
+			return False
+
+	def maximized(self):
+		if self._subwindow.isMaximized():
+			return True
+		else:
+			return False
+
+	def restore(self):
+		self._subwindow.showNormal()
+
+	def show(self):
+		self._subwindow.show()
+
+	def hide(self):
+		self._subwindow.close()
+
+	def close(self):
+		self._console.force_close = True
+		self._console.close()
+		self._subwindow.close()
+
+	def move(self,x_val,y_val):
+		if self._gui.is_move_valid_on_screen(self._gui,x_val,y_val):
+			if self._subwindow.isMaximized() or self._subwindow.isMinimized(): self._subwindow.showNormal()
+			self._subwindow.move(x_val,y_val)
+			return True
+		return False
+
+	def resize(self,x_val,y_val):
+		if self._subwindow.isMaximized() or self._subwindow.isMinimized(): self._subwindow.showNormal()
+		self._subwindow.resize(x_val,y_val)
+
+	def size(self):
+		width = self._subwindow.width()
+		height = self._subwindow.height()
+		return [width,height]
+
+	def position(self):
+		p = self._subwindow.pos()
+		return [p.x(),p.y()]
+
 class Plugin():
 
 	_gui = None
@@ -342,6 +423,9 @@ class Plugin():
 	AUTHOR = "Unknown"
 	VERSION = "1.0"
 	SOURCE = "Unknown"
+
+	def console(self):
+		return Console(self._gui,self)
 
 	def id(self):
 		return self._id

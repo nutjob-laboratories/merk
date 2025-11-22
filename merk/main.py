@@ -3539,6 +3539,50 @@ class Merk(QMainWindow):
 
 		return w
 
+	def closeConsole(self,plugin):
+		for window in self.MDI.subWindowList():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if c.window_type==PLUGIN_CONSOLE:
+					if c.plugin._id==plugin._id:
+						c.force_close = True
+						c.close()
+						window.close()
+
+	def openConsole(self,plugin):
+		for window in self.MDI.subWindowList():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if c.window_type==PLUGIN_CONSOLE:
+					if c.plugin._id==plugin._id:
+						return [window,c]
+		w = self.newPluginConsole(plugin)
+		c = w.widget()
+		return [w,c]
+
+	def newPluginConsole(self,plugin):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ConsoleWindow(self,plugin))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		icon = PLUGIN_ICON
+		if plugin._icon!=None: icon = plugin._icon
+		w.setWindowIcon(QIcon(icon))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		# w.show()
+
+		if config.RUBBER_BAND_RESIZE:
+			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
+		self.buildWindowsMenu()
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		return w
+
 	def openLinkInBrowser(self,url):
 		u = QUrl()
 		u.setUrl(url)

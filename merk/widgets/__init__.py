@@ -36,3 +36,4 @@ from .log_manager import Window as LogManager
 from .hotkey_manager import Window as HotkeyManager
 from .ignore_manager import Window as IgnoreManager
 from .plugin_manager import Window as PluginManager
+from .console import Window as ConsoleWindow

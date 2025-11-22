@@ -175,6 +175,7 @@ class Window(QMainWindow):
 			if os.path.exists(item.filename):
 				try:
 					os.remove(item.filename)
+					self.parent.closeConsole(item.plugin)
 				except OSError as e:
 					QMessageBox.critical(self, 'Error', f'Error deleting file: {e}')
 			else:
@@ -248,6 +249,7 @@ class Window(QMainWindow):
 			item.methods = methods
 			item.dummy = False
 			item.icon = icon
+			item.plugin = obj
 
 			if is_url(SOURCE):
 				widget = extendedmenuitem.pluginItem(

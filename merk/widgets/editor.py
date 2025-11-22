@@ -558,6 +558,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doNewPluginComments)
 			self.fileMenu.addAction(entry)
 
+			entry = QAction(QIcon(NEWFILE_ICON),"New file",self)
+			entry.triggered.connect(self.doNewFile)
+			self.fileMenu.addAction(entry)
+
 		self.fileMenu.addSeparator()
 
 		self.menuSave = QAction(QIcon(SAVEFILE_ICON),"Save",self)

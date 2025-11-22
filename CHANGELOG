@@ -44,6 +44,7 @@
 * Bugfix: saving connection scripts in the script editor stopped functioning,
   due to another bugfix having a side effect. This has been fixed, and
   connection script saving works again.
+* Added an option to the Python editor to create a new, blank file.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -64,6 +65,13 @@
 * Bugfix for several Window methods (max(), maximize(), min(), minimized()
   close(), hide(), show(), and restore()). These should function as expected,
   now.
+* Plugins now have access to a "console" subwindow to display data to the user.
+  Each plugin has their own console, and is created when it is initially
+  accessed. When created the console is hidden, and the plugin must use the
+  console's show() method to make it visible. The console can display time-
+  stamped strings or raw HTML. It is only accesable through the inherited
+  Plugin class method console(), which returns a class that allows the plugin
+  to interact with the console.
 
 --------------------------------------------------------------------------------
 ################################################################################
