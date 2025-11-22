@@ -232,9 +232,10 @@ class Window(QMainWindow):
 			classname = obj._class
 			icon = obj._icon
 			uuid = obj._id
+			size = prettySize(get_memory_size(obj))
 
 			item = QListWidgetItem()
-			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}")
+			item.setToolTip(f"Author: {AUTHOR}\nURL: {SOURCE}\nClassname: {classname}\nFilename: {basename}\nEvents: {events}\nMethods: {methods}\nMemory: {size}")
 			item.filename = obj._filename
 			item.basename = obj._basename
 			item.events = obj._events
@@ -249,24 +250,41 @@ class Window(QMainWindow):
 			item.icon = icon
 
 			if is_url(SOURCE):
-				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: <a href=\"{SOURCE}\">{AUTHOR}</a></b>",icon,32)
+				widget = extendedmenuitem.pluginItem(
+					f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
+					f"<b>Author:</b> <a href=\"{SOURCE}\">{AUTHOR}</a>",
+					icon,32
+				)
 			else:
-				widget = extendedmenuitem.pluginItem(f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",f"<b>Author: {AUTHOR}</a></b>",icon_filename,32)
+				widget = extendedmenuitem.pluginItem(
+					f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
+					f"<b>Author:</b> {AUTHOR}</a>",
+					icon_filename,32
+				)
 			item.setSizeHint(widget.sizeHint())
 
 			self.plugin_list.addItem(item)
 			self.plugin_list.setItemWidget(item, widget)
 
 		if self.plugin_list.count()==0:
-			item = QListWidgetItem(f"No plugins installed")
+			# item = QListWidgetItem(f"No plugins installed")
+			item = QListWidgetItem()
 			item.dummy = True
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
+
+			widget = extendedmenuitem.ignoreItem("No plugins installed")
+			item.setSizeHint(widget.sizeHint())
 			self.plugin_list.addItem(item)
-			self.save.hide()
-			self.remove.hide()
+			self.plugin_list.setItemWidget(item, widget)
+
+			self.plugin_list.clearSelection()
+
+			# self.plugin_list.addItem(item)
+			self.menuExport.setEnabled(False)
+			self.menuDelete.setEnabled(False)
 		else:
-			self.save.show()
-			self.remove.show()
+			self.menuExport.setEnabled(True)
+			self.menuDelete.setEnabled(True)
 
 	def on_item_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
@@ -318,12 +336,6 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
-	def toggleEnableEditor(self):
-		if config.ENABLE_PLUGIN_EDITOR: 
-			self.add.show()
-		else:
-			self.add.hide()
-
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
@@ -357,71 +369,50 @@ class Window(QMainWindow):
 				}}
 			""")
 
-		self.add = QPushButton("")
-		self.add.setIcon(QIcon(PLUS_ICON))
-		self.add.setToolTip("Create new plugin")
-		self.add.clicked.connect(self.add_plugin)
-		self.add.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.add.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-		self.add.setFlat(True)
+		self.menubar = self.menuBar()
 
-		if not config.ENABLE_PLUGIN_EDITOR: self.add.hide()
+		self.pluginMenu = self.menubar.addMenu("Plugins")
 
-		self.remove = QPushButton("")
-		self.remove.setIcon(QIcon(MINUS_ICON))
-		self.remove.setToolTip("Delete plugin")
-		self.remove.clicked.connect(self.remove_plugin)
-		self.remove.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.remove.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-		self.remove.setFlat(True)
-		self.remove.hide()
+		self.menuNew = QAction(QIcon(PLUS_ICON),"Create new plugin",self)
+		self.menuNew.triggered.connect(self.add_plugin)
+		self.pluginMenu.addAction(self.menuNew)
 
-		self.plugImport = QPushButton("")
-		self.plugImport.setIcon(QIcon(OPENFILE_ICON))
-		self.plugImport.setToolTip("Import plugin")
-		self.plugImport.clicked.connect(self.import_plugin)
-		self.plugImport.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.plugImport.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-		self.plugImport.setFlat(True)
+		if not config.ENABLE_PLUGIN_EDITOR: self.menuNew.setVisible(False)
 
-		if not config.ENABLE_PLUGIN_IMPORT: self.plugImport.hide()
+		self.menuImport = QAction(QIcon(OPENFILE_ICON),"Install plugin",self)
+		self.menuImport.triggered.connect(self.import_plugin)
+		self.pluginMenu.addAction(self.menuImport)
 
-		self.save = QPushButton("")
-		self.save.setIcon(QIcon(SAVEFILE_ICON))
-		self.save.setToolTip("Export plugin")
-		self.save.clicked.connect(self.export_plugin)
-		self.save.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.save.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-		self.save.setFlat(True)
-		self.save.hide()
+		if not config.ENABLE_PLUGIN_IMPORT: self.menuImport.setVisible(False)
 
-		self.brefresh = QPushButton("")
-		self.brefresh.setIcon(QIcon(REFRESH_ICON))
-		self.brefresh.setToolTip("Reload plugins")
-		self.brefresh.clicked.connect(self.reload_plugins)
-		self.brefresh.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.brefresh.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-		self.brefresh.setFlat(True)
+		self.menuExport = QAction(QIcon(SAVEFILE_ICON),"Export plugin",self)
+		self.menuExport.triggered.connect(self.export_plugin)
+		self.pluginMenu.addAction(self.menuExport)
 
-		self.exit = QPushButton("Close")
-		self.exit.clicked.connect(self.close)
+		self.pluginMenu.addSeparator()
+
+		self.menuDelete = QAction(QIcon(MINUS_ICON),"Uninstall plugin",self)
+		self.menuDelete.triggered.connect(self.remove_plugin)
+		self.pluginMenu.addAction(self.menuDelete)
+
+		self.pluginMenu.addSeparator()
+
+		self.menuRefresh = QAction(QIcon(REFRESH_ICON),"Reload plugins",self)
+		self.menuRefresh.triggered.connect(self.reload_plugins)
+		self.pluginMenu.addAction(self.menuRefresh)
+
+		self.menuClose = QAction(QIcon(CLOSE_ICON),"Close",self)
+		self.menuClose.triggered.connect(self.close)
+		self.pluginMenu.addAction(self.menuClose)
 
 		self.refresh()
 
-		buttonLayout = QHBoxLayout()
-		buttonLayout.addWidget(self.add)
-		buttonLayout.addWidget(self.remove)
-		buttonLayout.addWidget(self.plugImport)
-		buttonLayout.addWidget(self.save)
-		buttonLayout.addWidget(self.brefresh)
-		buttonLayout.addStretch()
-		buttonLayout.addWidget(self.exit)
-
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.plugin_list)
-		finalLayout.addLayout(buttonLayout)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()
 		self.centralWidget.setLayout(finalLayout)
 		self.setCentralWidget(self.centralWidget)
+
+		self.resize(350,300)

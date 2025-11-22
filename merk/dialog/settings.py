@@ -5705,8 +5705,6 @@ class Dialog(QDialog):
 			if self.parent.ignore_manager!=None:
 				self.parent.ignore_manager.close()
 
-		if self.parent.plugin_manager!=None: self.parent.plugin_manager.toggleEnableEditor()
-
 		if not config.ENABLE_PLUGINS:
 			if self.parent.plugin_manager!=None:
 				self.parent.plugin_manager.close()
@@ -5726,17 +5724,17 @@ class Dialog(QDialog):
 						c.force_close=True
 						c.close()
 			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.add.hide()
+				self.parent.plugin_manager.menuNew.setVisible(False)
 		else:
 			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.add.show()
+				self.parent.plugin_manager.menuNew.setVisible(True)
 
 		if config.ENABLE_PLUGIN_IMPORT:
 			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.plugImport.show()
+				self.parent.plugin_manager.menuImport.setVisible(True)
 		else:
 			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.plugImport.hide()
+				self.parent.plugin_manager.menuImport.setVisible(False)
 
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()

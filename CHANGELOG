@@ -35,6 +35,12 @@
 * Added the "overwrite files on plugin import" option to the "Settings"
   dialog.
 * Added a new option to en/disable plugin importing.
+* The Plugin Manager now shows how much memory an individual plugin is
+  consuming.
+* The Plugin Manager window now is wider when it launches.
+* Revamped the Plugin Manager. All buttons are removed, and everything is
+  done through a menu now. The Manager still works the same way, its just a
+  change to the GUI.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
