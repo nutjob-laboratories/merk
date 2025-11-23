@@ -55,6 +55,9 @@
   being included in the source distribution.
 * Fixed a bug with trying to check if an input port is a number running
   under PyInstaller for the command-line flag interface.
+* Re-worked the command-line help interface. Changed the ASCII logo, and
+  the -h/--help flag now shows a message box telling the user to check the
+  User Guide for help if running under PyInstaller.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -73,9 +73,10 @@ parser = argparse.ArgumentParser(
 	formatter_class=argparse.RawDescriptionHelpFormatter,
 	add_help=False,
 	description=f'''
-╔╦╗╔═╗╦═╗╦╔═  ╦╦═╗╔═╗  ╔═╗╦  ╦╔═╗╔╗╔╔╦╗
-║║║║╣ ╠╦╝╠╩╗  ║╠╦╝║    ║  ║  ║║╣ ║║║ ║  Version
-╩ ╩╚═╝╩╚═╩ ╩  ╩╩╚═╚═╝  ╚═╝╩═╝╩╚═╝╝╚╝ ╩  {APPLICATION_VERSION}
+┳┳┓┏┓┳┓┓┏┓  ┳┳┓┏┓  ┏┓┓ ┳┏┓┳┓┏┳┓
+┃┃┃┣ ┣┫┃┫   ┃┣┫┃   ┃ ┃ ┃┣ ┃┃ ┃  Version
+┛ ┗┗┛┛┗┛┗┛  ┻┛┗┗┛  ┗┛┗┛┻┗┛┛┗ ┻  {APPLICATION_VERSION}
+
 https://github.com/nutjob-laboratories/merk
 https://github.com/danhetrick
 
@@ -105,7 +106,7 @@ usergroup.add_argument("-a","--alternate",type=str,help="Use this alternate nick
 usergroup.add_argument("-r","--realname",type=str,help="Use this realname to connect",metavar="REALNAME",default='')
 
 optiongroup = parser.add_argument_group('Options')
-optiongroup.add_argument("-h","--help",help=f"Show help and usage information",action="help")
+optiongroup.add_argument('-h', '--help', action='store_true', help='Show help and usage information')
 optiongroup.add_argument("-d","--donotsave",help=f"Do not save new user settings",action="store_true")
 optiongroup.add_argument("-x","--donotexecute",help=f"Do not execute connection script",action="store_true")
 optiongroup.add_argument("-t","--reconnect",help=f"Reconnect to servers on disconnection",action="store_true")
@@ -148,6 +149,13 @@ if __name__ == '__main__':
 		for l in val:
 			if not l in n: return False
 		return True
+
+	if args.help:
+		if is_running_from_pyinstaller():
+			show_message("Help",f"Please see the {APPLICATION_NAME} User Guide for command-line options.")
+		else:
+			parser.print_help()
+		sys.exit(0)
 
 	# If the user passes us a new Qt window style...
 	if args.qtstyle!="":
