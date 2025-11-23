@@ -289,7 +289,13 @@ class Window(QMainWindow):
 	def on_item_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
 		if item.dummy: return
-		self.parent.openPythonEditor(item.filename)
+
+		subwindow,widget = self.parent.getConsole(item.plugin)
+		if subwindow!=None:
+			if subwindow.isVisible():
+				subwindow.close()
+			else:
+				subwindow.show()
 
 	def import_plugin(self):
 		if not config.ENABLE_PLUGIN_IMPORT: return
@@ -343,29 +349,18 @@ class Window(QMainWindow):
 		if item is not None:
 				if hasattr(item,"dummy"):
 					if item.dummy==False:
-						edit_action = QAction(QIcon(PYTHON_ICON),"Edit plugin", self)
-						edit_action.triggered.connect(lambda: self.on_item_clicked(item))
+						edit_action = QAction(QIcon(SCRIPT_ICON),"Edit plugin", self)
+						#edit_action.triggered.connect(lambda: self.on_item_clicked(item))
+						edit_action.triggered.connect(lambda: self.parent.openPythonEditor(item.filename))
 						menu.addAction(edit_action)
 
 						if not config.ENABLE_PLUGIN_EDITOR: edit_action.setVisible(False)
 
-						export_action = QAction(QIcon(SAVEFILE_ICON),"Export plugin", self)
+						export_action = QAction(QIcon(EXPORT_ICON),"Export plugin", self)
 						export_action.triggered.connect(lambda: self.do_export(item))
 						menu.addAction(export_action)
 
 						if not config.ENABLE_PLUGIN_IMPORT: export_action.setVisible(False)
-
-						subwindow,widget = self.parent.getConsole(item.plugin)
-						if subwindow!=None:
-							menu.addSeparator()
-							if subwindow.isVisible():
-								console_action = QAction(QIcon(HIDE_WINDOW_ICON),"Hide console", self)
-								console_action.triggered.connect(lambda: subwindow.close())
-								menu.addAction(console_action)
-							else:
-								console_action = QAction(QIcon(WINDOW_ICON),"Show console", self)
-								console_action.triggered.connect(lambda: subwindow.show())
-								menu.addAction(console_action)
 
 						menu.addSeparator()
 
@@ -420,7 +415,7 @@ class Window(QMainWindow):
 
 		if not config.ENABLE_PLUGIN_EDITOR: self.menuNew.setVisible(False)
 
-		self.menuImport = QAction(QIcon(OPENFILE_ICON),"Install plugin",self)
+		self.menuImport = QAction(QIcon(IMPORT_ICON),"Install plugin",self)
 		self.menuImport.triggered.connect(self.import_plugin)
 		self.pluginMenu.addAction(self.menuImport)
 

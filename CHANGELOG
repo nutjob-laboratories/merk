@@ -59,6 +59,12 @@
   README.
 * Default indentation for the Python editor can now be set in the config
   file.
+* New "import" and "export" icons for the Plugin Manager.
+* Changed the icon for "edit plugin" in the Plugin Manager.
+* Double clicking on a plugin in the Plugin Manager now opens up a plugin's
+  console (if it exists) instead of editing the plugin.
+* To edit a plugin from the Plugin Manager, use the plugin's right click
+  menu.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
