@@ -222,7 +222,6 @@ class Window(QMainWindow):
 			msgBox.setWindowTitle("Plugin load error")
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
-		self.refresh()
 
 	def refresh(self):
 		self.plugin_list.clear()

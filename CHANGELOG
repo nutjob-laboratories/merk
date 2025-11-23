@@ -49,6 +49,10 @@
   now how plugins are exported and uninstalled.
 * Plugin consoles can now be shown/hidden from the item right click menu
   in the Plugin Manager.
+* The plugins directory is now accessable from the "Plugins" menu in the
+  Plugin Manager.
+* Fixed a bug with the distribution build scripts; the "pike" library wasn't
+  being included in the source distribution.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

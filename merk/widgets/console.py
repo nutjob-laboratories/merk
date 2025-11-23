@@ -154,7 +154,10 @@ class Window(QMainWindow):
 
 		self.chat.clear()
 		for line in self.log:
-			t = render.render_message(line,self.style,None,True)
-			self.chat.append(t)
+			if type(line)==type(str()):
+				self.chat.append(message)
+			else:
+				t = render.render_message(line,self.style,None,True)
+				self.chat.append(t)
 
 		self.chat.moveCursor(QTextCursor.End)
