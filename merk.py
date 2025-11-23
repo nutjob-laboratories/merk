@@ -169,7 +169,7 @@ if __name__ == '__main__':
 				sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
 				sys.stdout.write(f"Valid available styles: {', '.join(QStyleFactory.keys())}\n")
 			else:
-				show_message("Invalid style",f"Valid available styles: {', '.join(QStyleFactory.keys())}")
+				show_message("Invalid Qt window style",f"Valid available styles: {', '.join(QStyleFactory.keys())}")
 			sys.exit(1)
 
 	app = QApplication([])
@@ -263,7 +263,7 @@ if __name__ == '__main__':
 						show_message("Error",f"File {file_path} not found")
 					sys.exit(1)
 		if is_running_from_pyinstaller():
-			show_message("Finished",f"All plugins deleted!")
+			show_message("Uninstall",f"All plugins uninstalled")
 		sys.exit(0)
 
 	# Disabled plugins
@@ -376,9 +376,9 @@ if __name__ == '__main__':
 		if args.nickname=='':
 			if len(user.NICKNAME.strip())==0:
 				if not is_running_from_pyinstaller():
-					sys.stdout.write("No nickname set!\n")
+					sys.stdout.write("No nickname set\n")
 				else:
-					show_message("Error",f"No nickname set!")
+					show_message("Error",f"No nickname set")
 				sys.exit(1)
 			args.nickname = user.NICKNAME
 		else:
@@ -460,9 +460,9 @@ if __name__ == '__main__':
 				else:
 					# throw error
 					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable.\n")
+						sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable\n")
 					else:
-						show_message("Error",f"File \"{args.script}\" does not exist or is not readable.")
+						show_message("Error",f"File \"{args.script}\" does not exist or is not readable")
 					sys.exit(1)
 
 		i = ConnectInfo(
@@ -579,13 +579,13 @@ if __name__ == '__main__':
 
 					if is_running_from_pyinstaller():
 						if not check_for_number(port):
-							show_message("Error",f"\"{port}\" is not a valid port number!")
+							show_message("Error",f"\"{port}\" is not a valid port number")
 							sys.exit(1)
 					else:
 						try:
 							int(port)
 						except:
-							sys.stdout.write(f"\"{port}\" is not a valid port number!\n")
+							sys.stdout.write(f"\"{port}\" is not a valid port number\n")
 							sys.exit(1)
 
 					port = int(port)
@@ -611,13 +611,13 @@ if __name__ == '__main__':
 
 					if is_running_from_pyinstaller():
 						if not check_for_number(port):
-							show_message("Error",f"\"{port}\" is not a valid port number!")
+							show_message("Error",f"\"{port}\" is not a valid port number")
 							sys.exit(1)
 					else:
 						try:
 							int(port)
 						except:
-							sys.stdout.write(f"\"{port}\" is not a valid port number!\n")
+							sys.stdout.write(f"\"{port}\" is not a valid port number\n")
 							sys.exit(1)
 
 					port = int(port)

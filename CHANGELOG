@@ -63,6 +63,8 @@
 * With minor differences, the command-line interface of MERK now works
   identically, no matter what platform MERK is being ran on. This change has
   been noted in the documentation.
+* Added references to MERK running on macOS to the documentation adn the
+  README.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
