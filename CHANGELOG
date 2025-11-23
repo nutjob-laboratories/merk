@@ -19,14 +19,6 @@
 * Added zip versions of all plugins in the plugin examples folder in the repo.
 * The "Plugins" submenu in the "Tools" menu now displays a loaded plugin's icon,
   if it exists. If the icon doesn't exist, a generic "Python" icon is shown
-* Some command-line flags would throw an error if ran via the PyInstaller
-  version, not because the code behind the flags didn't work, but because the
-  PyInstaller version cannot print to STDOUT. The PyInstaller version no
-  longer tries to print to STDOUT, and shows message boxes instead, when
-  possible.
-* Updated the README (and the documentation), explaining that the PyInstaller
-  version will not always display progress or error messages with command-line
-  flags.
 * Fixed a bug with finding plugin files.
 * Disabling the Python editor now functions correctly: all Python editor
   windows will be closed, the "create" plugin button in the Plugin Manager
@@ -63,8 +55,10 @@
 * With minor differences, the command-line interface of MERK now works
   identically, no matter what platform MERK is being ran on. This change has
   been noted in the documentation.
-* Added references to MERK running on macOS to the documentation adn the
+* Added references to MERK running on macOS to the documentation and the
   README.
+* Default indentation for the Python editor can now be set in the config
+  file.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

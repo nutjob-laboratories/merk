@@ -1853,7 +1853,7 @@ class Window(QMainWindow):
 			most_common = Counter(indents).most_common(1)[0][0]
 			return most_common
 			
-		return "    " 
+		return config.DEFAULT_PYTHON_INDENT
 
 	def eventFilter(self, watched: QObject, event: QEvent) -> bool:
 		if not self.python: return super().eventFilter(watched, event)

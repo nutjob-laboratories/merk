@@ -365,9 +365,11 @@ PYTHON_SHOW_WHITESPACE = False
 EDITOR_WORDWRAP = False
 OVERWRITE_FILES_ON_IMPORT = False
 ENABLE_PLUGIN_IMPORT = True
+DEFAULT_PYTHON_INDENT = "    "
 
 def build_settings():
 	settings = {
+		"default_python_indentation": DEFAULT_PYTHON_INDENT,
 		"enable_plugin_import": ENABLE_PLUGIN_IMPORT,
 		"overwrite_files_on_plugin_import": OVERWRITE_FILES_ON_IMPORT,
 		"editor_word_wrap": EDITOR_WORDWRAP,
@@ -699,6 +701,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "default_python_indentation" in settings:
+		settings["default_python_indentation"] = DEFAULT_PYTHON_INDENT
 	if not "enable_plugin_import" in settings:
 		settings["enable_plugin_import"] = ENABLE_PLUGIN_IMPORT
 	if not "overwrite_files_on_plugin_import" in settings:
@@ -1681,6 +1685,7 @@ def load_settings(filename):
 	global EDITOR_WORDWRAP
 	global OVERWRITE_FILES_ON_IMPORT
 	global ENABLE_PLUGIN_IMPORT
+	global DEFAULT_PYTHON_INDENT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1690,6 +1695,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DEFAULT_PYTHON_INDENT = settings["default_python_indentation"]
 		ENABLE_PLUGIN_IMPORT = settings["enable_plugin_import"]
 		OVERWRITE_FILES_ON_IMPORT = settings["overwrite_files_on_plugin_import"]
 		EDITOR_WORDWRAP = settings["editor_word_wrap"]
