@@ -429,6 +429,10 @@ class Window(QMainWindow):
 
 		self.pluginMenu.addSeparator()
 
+		entry = QAction(QIcon(FOLDER_ICON),"Plugins directory",self)
+		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+		self.pluginMenu.addAction(entry)
+
 		self.menuRefresh = QAction(QIcon(REFRESH_ICON),"Reload plugins",self)
 		self.menuRefresh.triggered.connect(self.reload_plugins)
 		self.pluginMenu.addAction(self.menuRefresh)
