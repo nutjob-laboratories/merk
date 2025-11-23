@@ -199,6 +199,10 @@ if __name__ == '__main__':
 	if args.configdefault:
 		if not is_running_from_pyinstaller():
 			sys.stdout.write("Resetting configuration file to defaults\n")
+		else:
+			if not args.alldefault:
+				show_message("Reset","Configuration file set to defaults")
+				sys.exit(0)
 		config.save_settings(config.CONFIG_FILE)
 
 	# Initialize the user system
@@ -210,7 +214,16 @@ if __name__ == '__main__':
 	if args.userdefault:
 		if not is_running_from_pyinstaller():
 			sys.stdout.write("Resetting user file to defaults\n")
+		else:
+			if not args.alldefault:
+				show_message("Reset","User file set to defaults")
+				sys.exit(0)
 		user.save_user(user.USER_FILE)
+
+	if args.alldefault:
+		if is_running_from_pyinstaller():
+			show_message("Reset","Configuration and user files set to defaults")
+			sys.exit(0)
 
 	# Initialize the styles system
 	styles.initialize(args.configdir,args.configname)

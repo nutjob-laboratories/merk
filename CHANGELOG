@@ -58,6 +58,11 @@
 * Re-worked the command-line help interface. Changed the ASCII logo, and
   the -h/--help flag now shows a message box telling the user to check the
   User Guide for help if running under PyInstaller.
+* The PyInstaller version of the app now shows a message box and exits when
+  resetting the user and configuration files to defaults.
+* With minor differences, the command-line interface of MERK now works
+  identically, no matter what platform MERK is being ran on. This change has
+  been noted in the documentation.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
