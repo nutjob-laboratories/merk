@@ -69,6 +69,7 @@ class Dialog(QDialog):
 		self.name.setPlaceholderText(self.msg)
 		nameLayout.addWidget(self.name)
 		self.name.setMinimumWidth(wwidth)
+		self.name.setFocusPolicy(Qt.StrongFocus)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)

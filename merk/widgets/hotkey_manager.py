@@ -173,16 +173,12 @@ class Window(QMainWindow):
 		self.remove.setFlat(True)
 		self.remove.hide()
 
-		self.exit = QPushButton("Close")
-		self.exit.clicked.connect(self.close)
-
 		self.refresh()
 
 		buttonLayout = QHBoxLayout()
 		buttonLayout.addWidget(self.add)
 		buttonLayout.addWidget(self.remove)
 		buttonLayout.addStretch()
-		buttonLayout.addWidget(self.exit)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.keys)

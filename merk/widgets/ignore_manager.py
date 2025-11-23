@@ -192,9 +192,6 @@ class Window(QMainWindow):
 		self.brefresh.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.brefresh.setFlat(True)
 
-		self.exit = QPushButton("Close")
-		self.exit.clicked.connect(self.close)
-
 		self.doUpdate = QCheckBox("Automatically update chats",self)
 		self.doUpdate.stateChanged.connect(self.clickUpdate)
 		self.doUpdate.setChecked(True)
@@ -206,7 +203,6 @@ class Window(QMainWindow):
 		buttonLayout.addWidget(self.remove)
 		buttonLayout.addWidget(self.brefresh)
 		buttonLayout.addStretch()
-		buttonLayout.addWidget(self.exit)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.keys)

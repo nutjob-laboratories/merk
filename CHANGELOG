@@ -6,6 +6,7 @@
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
 
+* Updated documentation will all changes.
 * The Ignore and Hotkey Managers now hide the "delete" button if the list
   is empty.
 * The Hotkey Manager no longer shows a message box when adding or editing a
@@ -69,6 +70,7 @@
   application installer.
 * Changed the filename for the setup archive in the distributions.
 * The Plugin Manager now displays if a plugin has an open console or not.
+* Removed the "Close" buttons from the Hotkey and Ignore Managers.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
