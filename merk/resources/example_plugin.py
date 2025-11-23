@@ -41,11 +41,11 @@ class ExamplePlugin(Plugin):
     #-----------Methods inherited from Plugin-------------#
     #   alias, all_channels, all_masters, all_privates,   #
     #   all_windows, bind, channel, channels, clients,    #
-    #   emojize, find, home, id, ignore, ignores,         #
-    #   is_away, is_ignored, list, macro, master, max,    #
-    #   maximized, min, minimized, modes, move, private,  #
-    #   privates, resize, restore, script, unbind,        #
-    #   unignore, windows                                 #
+    #   console, emojize, find, home, id, ignore,         #
+    #   ignores, is_away, is_ignored, list, macro,        #
+    #   master, max, maximized, min, minimized, modes,    #
+    #   move, private, privates, resize, restore, script, #
+    #   unbind, unignore, windows                         #
     #-----------------------------------------------------#
 
     NAME = "Example Plugin"
