@@ -49,13 +49,8 @@ win_latest_file_size =  os.path.getsize("./downloads/merk-windows-latest.zip")
 file_size_kb = win_latest_file_size / 1024
 file_size_mb = file_size_kb / 1024
 readme = readme.replace("!_WINZIP_!",f"{file_size_mb:.2f} MB")
-# !_WINEXE_!
-# win_single_file_size =  os.path.getsize("./downloads/merk-windows-standalone.zip")
-# file_size_kb = win_single_file_size / 1024
-# file_size_mb = file_size_kb / 1024
-# readme = readme.replace("!_WINEXE_!",f"{file_size_mb:.2f} MB")
 # !_WINSETUP_!
-win_setup_file_size =  os.path.getsize("./downloads/merk_setup.zip")
+win_setup_file_size =  os.path.getsize("./downloads/merk-windows-setup.zip")
 file_size_kb = win_setup_file_size / 1024
 file_size_mb = file_size_kb / 1024
 readme = readme.replace("!_WINSETUP_!",f"{file_size_mb:.2f} MB")

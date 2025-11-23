@@ -5,10 +5,10 @@ powershell -Command "Compress-Archive -Path 'LICENSE' -Update -DestinationPath '
 powershell -Command "Compress-Archive -Path 'CHANGELOG' -Update -DestinationPath 'merk.zip'"
 iscc merk_setup.iss
 move .\Output\merk_setup.exe .\setup.exe
-powershell.exe -noprofile -command "Compress-Archive -Path \"setup.exe\" -DestinationPath \"merk_setup.zip\""
-powershell -Command "Compress-Archive -Path 'README.html' -Update -DestinationPath 'merk_setup.zip'"
-powershell -Command "Compress-Archive -Path 'LICENSE' -Update -DestinationPath 'merk_setup.zip'"
-powershell -Command "Compress-Archive -Path 'CHANGELOG' -Update -DestinationPath 'merk_setup.zip'"
+powershell.exe -noprofile -command "Compress-Archive -Path \"setup.exe\" -DestinationPath \"merk-windows-setup.zip\""
+powershell -Command "Compress-Archive -Path 'README.html' -Update -DestinationPath 'merk-windows-setup.zip'"
+powershell -Command "Compress-Archive -Path 'LICENSE' -Update -DestinationPath 'merk-windows-setup.zip'"
+powershell -Command "Compress-Archive -Path 'CHANGELOG' -Update -DestinationPath 'merk-windows-setup.zip'"
 rmdir /s /q build
 rmdir /s /q dist
 rmdir /s /q Output

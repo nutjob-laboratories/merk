@@ -48,24 +48,12 @@ shutil.copy(archive_name, "./downloads/merk-windows-latest.zip")
 
 os.remove(archive_name)
 
-# os.system("make_single.bat")
+shutil.copy("merk-windows-setup.zip", f"./downloads/merk-setup-{major}.{minor}.zip")
 
-# archive_name = f"merk-windows-standalone.zip"
+if os.path.isfile(f"./downloads/merk-windows-setup.zip"): os.remove(f"./downloads/merk-windows-setup.zip")
 
-# if os.path.isfile(f"./downloads/{archive_name}"): os.remove(f"./downloads/{archive_name}")
+shutil.copy("merk-windows-setup.zip", "./downloads/merk-windows-setup.zip")
 
-# shutil.copy(archive_name, "./downloads/"+archive_name)
-
-# shutil.copy(archive_name, "./downloads/"+f"merk-windows-standalone-{major}.{minor}.zip")
-
-# os.remove(archive_name)
-
-shutil.copy("merk_setup.zip", f"./downloads/merk_setup-{major}.{minor}.zip")
-
-if os.path.isfile(f"./downloads/merk_setup.zip"): os.remove(f"./downloads/merk_setup.zip")
-
-shutil.copy("merk_setup.zip", "./downloads/merk_setup.zip")
-
-os.remove("merk_setup.zip")
+os.remove("merk-windows-setup.zip")
 os.remove("setup.exe")
 # os.remove("merk.exe")
