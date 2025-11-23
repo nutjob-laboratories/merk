@@ -49,6 +49,7 @@ Source: "dist\merk\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dist\merk\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.html"; DestDir: "{app}"; Flags: ignoreversion
+Source: "CHANGELOG"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

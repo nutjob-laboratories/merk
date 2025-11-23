@@ -6,7 +6,7 @@
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
 
-* The Ignore and Hotkey Managers now hide the "delete" button if the the list
+* The Ignore and Hotkey Managers now hide the "delete" button if the list
   is empty.
 * The Hotkey Manager no longer shows a message box when adding or editing a
   hotkey was successful.
@@ -41,7 +41,7 @@
   now how plugins are exported and uninstalled.
 * Plugin consoles can now be shown/hidden from the item right click menu
   in the Plugin Manager.
-* The plugins directory is now accessable from the "Plugins" menu in the
+* The plugins directory is now accessible from the "Plugins" menu in the
   Plugin Manager.
 * Fixed a bug with the distribution build scripts; the "pike" library wasn't
   being included in the source distribution.
@@ -65,6 +65,8 @@
   console (if it exists) instead of editing the plugin.
 * To edit a plugin from the Plugin Manager, use the plugin's right click
   menu.
+* CHANGELOG has been added to the various distributions, including the
+  application installer.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -89,7 +91,7 @@
   Each plugin has their own console, and is created when it is initially
   accessed. When created the console is hidden, and the plugin must use the
   console's show() method to make it visible. The console can display time-
-  stamped strings or HTML.  It is accessable programmatically or by double
+  stamped strings or HTML.  It is accessible programmatically or by double
   clicking a plugin's entry in the Plugin Manager.
 
 --------------------------------------------------------------------------------
@@ -106,7 +108,7 @@
 
 * Updated documentation to cover all new features and changes.
 * Fixed a bug where users with the protected status were being identified as
-  being privledged
+  being privileged
 * Overhauled the "Plugins" page of the "Settings" dialog, and added links to
   the documentation to the "Scripting", "Plugins", and "Advanced" pages.
 * Added new feature toggles to the "Settings" menu
@@ -192,7 +194,7 @@
 * Fixed a bug with eliding very long nicknames. If nicknames were greater
   than the nick pad length by a significant margin, they would occasionally
   be incorrectly elided, with the nickname being split up over two lines.
-* Removed the "import" icon from the resource file, and now use th "open
+* Removed the "import" icon from the resource file, and now use the "open
   file" icon for the "import file" button in the Plugin Manager.
 * Both the "export plugin" button and "remove plugin" buttons are now
   hidden in the Plugin Manager if there are no loaded plugins.
@@ -218,7 +220,7 @@
   values will be set to 0.
 * New plugin Window class method: size(). This returns a list; the first
   value in the list is the window's width, the second value in the list is
-  the window's height. If the size cannot be determinied, both values will
+  the window's height. If the size cannot be determined, both values will
   be set to 0.
 * New plugin Window class method: history(). This returns a list of strings
   representing the command history of a window's text input widget, in order
@@ -235,7 +237,7 @@
   boolean, can be passed to the method. If the boolean is set to "true",
   then a private window will be created if none is found.
 * New Plugin method: move(). This moves the main application window to a
-  set location; if the new location would place the window somplace it can
+  set location; if the new location would place the window someplace it can
   not be interacted with, the move fails. Returns "true" if the move is
   successful, and "false" if not.
 * New Plugin method: resize(). This resizes the main application window.

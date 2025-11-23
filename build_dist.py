@@ -121,6 +121,7 @@ shutil.copy("./merk.py", "./dist/merk.py")
 shutil.copy("./LICENSE", "./dist/LICENSE")
 shutil.copy("./merk.ico", "./dist/merk.ico")
 shutil.copy("./README.html", "./dist/README.html")
+shutil.copy("./CHANGELOG", "./dist/CHANGELOG")
 
 if "Windows" in devp:
 	os.system("powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('dist', 'dist.zip'); }\" ")
