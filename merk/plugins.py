@@ -343,6 +343,8 @@ class Console():
 
 		self._subwindow,self._console = self._gui.openConsole(self._plugin)
 
+		if self._gui.plugin_manager!=None: self._gui.plugin_manager.update_console(self._plugin)
+
 	def dump(self):
 		return self._console.dump()
 
@@ -395,6 +397,8 @@ class Console():
 		self._console.force_close = True
 		self._console.close()
 		self._subwindow.close()
+
+		if self._gui.plugin_manager!=None: self._gui.plugin_manager.update_console(self._plugin)
 
 	def move(self,x_val,y_val):
 		if self._gui.is_move_valid_on_screen(self._gui,x_val,y_val):

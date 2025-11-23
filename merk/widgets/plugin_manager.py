@@ -34,6 +34,10 @@ from .. import config
 from .. import plugins
 from . import extendedmenuitem
 
+import emoji
+
+MAGNIFYING_GLASS = emoji.emojize(":magnifying_glass_tilted_left:",language="alias")
+
 import uuid
 import operator
 import shutil
@@ -223,6 +227,45 @@ class Window(QMainWindow):
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
 
+	def update_console(self,plugin):
+		for i in range(self.plugin_list.count()):
+			item = self.plugin_list.item(i)
+
+			if hasattr(item,"dummy"):
+				if item.dummy: continue
+
+			if item.plugin==plugin:
+				subwindow,widget = self.parent.getConsole(plugin)
+
+				if is_url(item.SOURCE):
+					if subwindow==None:
+						widget = extendedmenuitem.pluginItem(
+							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
+							f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a>",
+							item.icon,32
+						)
+					else:
+						widget = extendedmenuitem.pluginItem(
+							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
+							f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a> {MAGNIFYING_GLASS}",
+							item.icon,32
+						)
+				else:
+					if subwindow==None:
+						widget = extendedmenuitem.pluginItem(
+							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
+							f"<b>Author:</b> {item.AUTHOR}</a>",
+							item.icon,32
+						)
+					else:
+						widget = extendedmenuitem.pluginItem(
+							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
+							f"<b>Author:</b> {item.AUTHOR}</a> {MAGNIFYING_GLASS}",
+							item.icon,32
+						)
+				self.plugin_list.setItemWidget(item, widget)
+
+
 	def refresh(self):
 		self.plugin_list.clear()
 		for obj in plugins.PLUGINS:
@@ -256,25 +299,40 @@ class Window(QMainWindow):
 			item.icon = icon
 			item.plugin = obj
 
+			subwindow,widget = self.parent.getConsole(item.plugin)
+
 			if is_url(SOURCE):
-				widget = extendedmenuitem.pluginItem(
-					f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
-					f"<b>Author:</b> <a href=\"{SOURCE}\">{AUTHOR}</a>",
-					icon,32
-				)
+				if subwindow==None:
+					widget = extendedmenuitem.pluginItem(
+						f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
+						f"<b>Author:</b> <a href=\"{SOURCE}\">{AUTHOR}</a>",
+						icon,32
+					)
+				else:
+					widget = extendedmenuitem.pluginItem(
+						f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
+						f"<b>Author:</b> <a href=\"{SOURCE}\">{AUTHOR}</a> {MAGNIFYING_GLASS}",
+						icon,32
+					)
 			else:
-				widget = extendedmenuitem.pluginItem(
-					f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
-					f"<b>Author:</b> {AUTHOR}</a>",
-					icon_filename,32
-				)
+				if subwindow==None:
+					widget = extendedmenuitem.pluginItem(
+						f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
+						f"<b>Author:</b> {AUTHOR}</a>",
+						icon,32
+					)
+				else:
+					widget = extendedmenuitem.pluginItem(
+						f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
+						f"<b>Author:</b> {AUTHOR}</a> {MAGNIFYING_GLASS}",
+						icon,32
+					)
 			item.setSizeHint(widget.sizeHint())
 
 			self.plugin_list.addItem(item)
 			self.plugin_list.setItemWidget(item, widget)
 
 		if self.plugin_list.count()==0:
-			# item = QListWidgetItem(f"No plugins installed")
 			item = QListWidgetItem()
 			item.dummy = True
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)

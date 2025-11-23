@@ -68,6 +68,7 @@
 * CHANGELOG has been added to the various distributions, including the
   application installer.
 * Changed the filename for the setup archive in the distributions.
+* The Plugin Manager now displays if a plugin has an open console or not.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
