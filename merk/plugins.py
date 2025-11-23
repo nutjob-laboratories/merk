@@ -343,6 +343,9 @@ class Console():
 
 		self._subwindow,self._console = self._gui.openConsole(self._plugin)
 
+	def dump(self):
+		return self._console.dump()
+
 	def print(self,message):
 		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
 		self._console.writeText(t)
@@ -351,9 +354,6 @@ class Console():
 		t = Message(SYSTEM_MESSAGE,'',f"{message}")
 		self._console.writeText(t)
 
-	def html(self,message):
-		self._console.writeText(message)
-
 	def title(self,title=None):
 		if title==None:
 			return self._subwindow.windowTitle()
@@ -361,7 +361,8 @@ class Console():
 			self._subwindow.setWindowTitle(title)
 
 	def clear(self):
-		self._subwindow.chat.clear()
+		self._console.chat.clear()
+		self._console.log = []
 
 	def min(self):
 		self._subwindow.showMinimized()

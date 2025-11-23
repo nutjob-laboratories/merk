@@ -89,9 +89,8 @@
   Each plugin has their own console, and is created when it is initially
   accessed. When created the console is hidden, and the plugin must use the
   console's show() method to make it visible. The console can display time-
-  stamped strings or raw HTML. It is only accesable through the inherited
-  Plugin class method console(), which returns a class that allows the plugin
-  to interact with the console.
+  stamped strings or HTML.  It is accessable programmatically or by double
+  clicking a plugin's entry in the Plugin Manager.
 
 --------------------------------------------------------------------------------
 ################################################################################

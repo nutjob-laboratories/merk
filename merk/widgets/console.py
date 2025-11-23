@@ -104,15 +104,17 @@ class Window(QMainWindow):
 			self.chat.setSource(QUrl())
 			sb.setValue(og_value)
 
+	def dump(self):
+		output = []
+		for line in self.log:
+			output.append([line.timestamp,line.contents])
+		return output
+
 	def writeText(self,message):
 		try:
-			if type(message)==type(str()):
-				self.chat.append(message)
-				self.log.append(message)
-			else:
-				t = render.render_message(message,self.style,None,True)
-				self.chat.append(t)
-				self.log.append(message)
+			t = render.render_message(message,self.style,None,True)
+			self.chat.append(t)
+			self.log.append(message)
 
 			self.moveChatToBottom(True)
 		except:

@@ -9,7 +9,7 @@ class MentionLogPlugin(Plugin):
 
     def init(self):
         c = self.console()
-        c.html("<h1>Mention Log</h1>")
+        c.print("<h1>Mention Log</h1>")
 
     def message(self,**args):
         window = args["window"]
