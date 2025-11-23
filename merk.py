@@ -143,6 +143,12 @@ if __name__ == '__main__':
 		msgBox.setStandardButtons(QMessageBox.Ok)
 		msgBox.exec()
 
+	def check_for_number(val):
+		n = ["0","1","2","3","4","5","6","7","8","9","0"]
+		for l in val:
+			if not l in n: return False
+		return True
+
 	# If the user passes us a new Qt window style...
 	if args.qtstyle!="":
 		# Check to see if it's a valid style
@@ -550,14 +556,16 @@ if __name__ == '__main__':
 						port = 6667
 						password = ''
 
-					try:
-						int(port)
-					except:
-						if not is_running_from_pyinstaller():
-							sys.stdout.write("Port must be a number!\n")
-						else:
-							show_message("Error",f"Port must be a number!")
-						sys.exit(1)
+					if is_running_from_pyinstaller():
+						if not check_for_number(port):
+							show_message("Error",f"\"{port}\" is not a valid port number!")
+							sys.exit(1)
+					else:
+						try:
+							int(port)
+						except:
+							sys.stdout.write(f"\"{port}\" is not a valid port number!\n")
+							sys.exit(1)
 
 					port = int(port)
 
@@ -580,14 +588,16 @@ if __name__ == '__main__':
 						port = 6697
 						password = ''
 
-					try:
-						int(port)
-					except:
-						if not is_running_from_pyinstaller():
-							sys.stdout.write("Port must be a number!\n")
-						else:
-							show_message("Error",f"Port must be a number!")
-						sys.exit(1)
+					if is_running_from_pyinstaller():
+						if not check_for_number(port):
+							show_message("Error",f"\"{port}\" is not a valid port number!")
+							sys.exit(1)
+					else:
+						try:
+							int(port)
+						except:
+							sys.stdout.write(f"\"{port}\" is not a valid port number!\n")
+							sys.exit(1)
 
 					port = int(port)
 

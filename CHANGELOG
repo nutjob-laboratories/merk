@@ -53,6 +53,8 @@
   Plugin Manager.
 * Fixed a bug with the distribution build scripts; the "pike" library wasn't
   being included in the source distribution.
+* Fixed a bug with trying to check if an input port is a number running
+  under PyInstaller for the command-line flag interface.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
