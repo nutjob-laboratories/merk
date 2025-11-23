@@ -59,7 +59,7 @@ class Window(QMainWindow):
 
 				with zipfile.ZipFile(fileName, "w") as zipf:
 					zipf.write(item.filename, arcname=os.path.basename(item.filename))
-					if icon_filename!=None: zipf.write(item.icon, arcname=os.path.basename(item.icon))
+					if item.icon!=None: zipf.write(item.icon, arcname=os.path.basename(item.icon))
 
 				QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(fileName)}" exported.')
 
