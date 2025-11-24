@@ -1,0 +1,3 @@
+if $_ARGS (eq) 0 goto 3
+/call save $_0
+end

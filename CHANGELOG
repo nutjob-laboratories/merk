@@ -87,6 +87,7 @@
 * Added a new setting: en/disable /call command
 * Fixed a bug with some commands not appearing properly highlighted in the
   script editor.
+* Added a new example plugin to the documentation.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
