@@ -440,6 +440,7 @@ class Dialog(QDialog):
 			self.pluginOverwrite.setEnabled(True)
 			self.pluginCall.setEnabled(True)
 			self.pluginOverwrite.setEnabled(True)
+			self.pluginScripts.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -485,6 +486,7 @@ class Dialog(QDialog):
 			self.autocompleteMethods.setEnabled(False)
 			self.pluginCall.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
+			self.pluginScripts.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4611,6 +4613,10 @@ class Dialog(QDialog):
 		if config.ENABLE_CALL_COMMAND: self.pluginCall.setChecked(True)
 		self.pluginCall.stateChanged.connect(self.changedSettingEditor)
 
+		self.pluginScripts = QCheckBox("Import scripts in plugin packages",self)
+		if config.IMPORT_SCRIPTS_IN_PLUGINS: self.pluginScripts.setChecked(True)
+		self.pluginScripts.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4650,6 +4656,7 @@ class Dialog(QDialog):
 			self.plugError.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginCall.setEnabled(False)
+			self.pluginScripts.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAction)
@@ -4771,6 +4778,7 @@ class Dialog(QDialog):
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
+		pluginsLayout.addWidget(self.pluginScripts)
 		pluginsLayout.addWidget(self.pluginOverwrite)
 		pluginsLayout.addWidget(self.pluginCall)
 		pluginsLayout.addLayout(pBottom)
@@ -5522,6 +5530,7 @@ class Dialog(QDialog):
 		config.OVERWRITE_PLUGINS_ON_IMPORT = self.pluginOverwrite.isChecked()
 		config.AUTOCOMPLETE_METHODS = self.autocompleteMethods.isChecked()
 		config.ENABLE_CALL_COMMAND = self.pluginCall.isChecked()
+		config.IMPORT_SCRIPTS_IN_PLUGINS = self.pluginScripts.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

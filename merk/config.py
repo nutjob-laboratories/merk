@@ -367,9 +367,11 @@ OVERWRITE_PLUGINS_ON_IMPORT = False
 DEFAULT_PYTHON_INDENT = "    "
 AUTOCOMPLETE_METHODS = True
 ENABLE_CALL_COMMAND = True
+IMPORT_SCRIPTS_IN_PLUGINS = True
 
 def build_settings():
 	settings = {
+		"import_scripts_in_plugin_packages": IMPORT_SCRIPTS_IN_PLUGINS,
 		"enable_call_command": ENABLE_CALL_COMMAND,
 		"autocomplete_methods": AUTOCOMPLETE_METHODS,
 		"default_python_indentation": DEFAULT_PYTHON_INDENT,
@@ -703,6 +705,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "import_scripts_in_plugin_packages" in settings:
+		settings["import_scripts_in_plugin_packages"] = IMPORT_SCRIPTS_IN_PLUGINS
 	if not "enable_call_command" in settings:
 		settings["enable_call_command"] = ENABLE_CALL_COMMAND
 	if not "autocomplete_methods" in settings:
@@ -1691,6 +1695,7 @@ def load_settings(filename):
 	global DEFAULT_PYTHON_INDENT
 	global AUTOCOMPLETE_METHODS
 	global ENABLE_CALL_COMMAND
+	global IMPORT_SCRIPTS_IN_PLUGINS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1700,6 +1705,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		IMPORT_SCRIPTS_IN_PLUGINS = settings["import_scripts_in_plugin_packages"]
 		ENABLE_CALL_COMMAND = settings["enable_call_command"]
 		AUTOCOMPLETE_METHODS = settings["autocomplete_methods"]
 		DEFAULT_PYTHON_INDENT = settings["default_python_indentation"]

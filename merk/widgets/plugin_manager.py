@@ -85,6 +85,12 @@ class Window(QMainWindow):
 						name_without_extension, extension = os.path.splitext(file_path)
 						if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
 
+						if config.IMPORT_SCRIPTS_IN_PLUGINS:
+							file_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+							name_without_extension, extension = os.path.splitext(file_path)
+							if extension.lower()=='.merk': extract_file = True
+
+
 						if extract_file:
 							if os.path.exists(file_path):
 								overwrite = True
@@ -113,6 +119,16 @@ class Window(QMainWindow):
 						if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
 
 						if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
+
+						if config.IMPORT_SCRIPTS_IN_PLUGINS:
+							file_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+
+							extract_file = False
+							name_without_extension, extension = os.path.splitext(file_path)
+							if extension.lower()=='.merk': extract_file = True
+
+							if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
+
 			except zipfile.BadZipFile:
 				QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
 			except FileNotFoundError:
@@ -138,7 +154,7 @@ class Window(QMainWindow):
 			msgBox = QMessageBox()
 			msgBox.setIcon(QMessageBox.Critical)
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText(f"Import failed! The following files in \"{os.path.basename(filename)}\" will overwrite files in the plugin directory:")
+			msgBox.setText(f"Import failed! The following files in \"{os.path.basename(filename)}\" will overwrite existing files:")
 			msgBox.setInformativeText("\n".join(ofiles))
 			msgBox.setWindowTitle("Plugin import error")
 			msgBox.setStandardButtons(QMessageBox.Ok)

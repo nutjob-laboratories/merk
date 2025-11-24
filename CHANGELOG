@@ -92,6 +92,8 @@
   ability to import plugins is on by default, and cannot be turned off.
 * The script editor can now import scripts; users select a MERK script,
   which is then copied into MERK's script directory and opened.
+* MERK scripts included in plugin ZIP files can now be automatically
+  copied into the scripts directory on plugin install.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
