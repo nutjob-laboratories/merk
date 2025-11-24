@@ -249,6 +249,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	if not config.ENABLE_PLUGINS:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"call",'')
+	else:
+		if not config.ENABLE_CALL_COMMAND:
+			AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"call",'')
 
 	if not config.ENABLE_IGNORE:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"ignore",'')
@@ -397,6 +400,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	for e in COMMAND_HELP_INFORMATION:
 		if not config.ENABLE_PLUGINS:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD ARGUMENTS...</b>": continue
+		else:
+			if not config.ENABLE_CALL_COMMAND:
+				if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD ARGUMENTS...</b>": continue
 		if not config.ENABLE_IGNORE:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>": continue
@@ -1382,6 +1388,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Plugins are disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		if not config.ENABLE_CALL_COMMAND:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'call':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}call has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}call has been disabled in settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 

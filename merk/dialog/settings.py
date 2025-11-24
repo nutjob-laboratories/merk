@@ -439,6 +439,7 @@ class Dialog(QDialog):
 			self.plugError.setEnabled(True)
 			self.pluginOverwrite.setEnabled(True)
 			self.pluginImport.setEnabled(True)
+			self.pluginCall.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -483,6 +484,7 @@ class Dialog(QDialog):
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginImport.setEnabled(False)
 			self.autocompleteMethods.setEnabled(False)
+			self.pluginCall.setEnabled(False)
 		if self.pluginImport.isChecked():
 			if self.enablePlugins.isChecked():
 				self.pluginOverwrite.setEnabled(True)
@@ -4617,13 +4619,17 @@ class Dialog(QDialog):
 		if config.PLUGIN_ERROR: self.plugError.setChecked(True)
 		self.plugError.stateChanged.connect(self.changedSetting)
 
-		self.pluginOverwrite = QCheckBox("Overwrite files on import",self)
+		self.pluginOverwrite = QCheckBox("Overwrite files",self)
 		if config.OVERWRITE_FILES_ON_IMPORT: self.pluginOverwrite.setChecked(True)
 		self.pluginOverwrite.stateChanged.connect(self.changedSetting)
 
-		self.pluginImport = QCheckBox("Enable plugin import",self)
+		self.pluginImport = QCheckBox("Enable plugin install",self)
 		if config.ENABLE_PLUGIN_IMPORT: self.pluginImport.setChecked(True)
 		self.pluginImport.stateChanged.connect(self.changedSettingImport)
+
+		self.pluginCall = QCheckBox(f"Enable \"{config.ISSUE_COMMAND_SYMBOL}call\" command",self)
+		if config.ENABLE_CALL_COMMAND: self.pluginCall.setChecked(True)
+		self.pluginCall.stateChanged.connect(self.changedSettingEditor)
 
 		if not config.ENABLE_PLUGIN_IMPORT:
 			self.pluginOverwrite.setEnabled(False)
@@ -4667,6 +4673,7 @@ class Dialog(QDialog):
 			self.plugError.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginImport.setEnabled(False)
+			self.pluginCall.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAction)
@@ -4732,6 +4739,10 @@ class Dialog(QDialog):
 		plugLayout.addWidget(self.enablePlugins)
 		plugLayout.addWidget(self.plugEditor)
 
+		plugLayout2 = QHBoxLayout()
+		plugLayout2.addWidget(self.pluginImport)
+		plugLayout2.addWidget(self.pluginOverwrite)
+
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.pluginDescription = QLabel(f"""
@@ -4788,8 +4799,8 @@ class Dialog(QDialog):
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addWidget(self.pluginImport)
-		pluginsLayout.addWidget(self.pluginOverwrite)
+		pluginsLayout.addLayout(plugLayout2)
+		pluginsLayout.addWidget(self.pluginCall)
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
@@ -5539,6 +5550,7 @@ class Dialog(QDialog):
 		config.OVERWRITE_FILES_ON_IMPORT = self.pluginOverwrite.isChecked()
 		config.ENABLE_PLUGIN_IMPORT = self.pluginImport.isChecked()
 		config.AUTOCOMPLETE_METHODS = self.autocompleteMethods.isChecked()
+		config.ENABLE_CALL_COMMAND = self.pluginCall.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

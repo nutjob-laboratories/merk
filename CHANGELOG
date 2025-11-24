@@ -84,6 +84,7 @@
   in the /call command, they will all be executed.
 * Added /call-able methods to input autocomplete.
 * Added a new setting: en/disable /call method autocomplete.
+* Added a new setting: en/disable /call command
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

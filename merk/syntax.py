@@ -302,6 +302,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_PLUGINS:
 			merk.remove(cmdsymbol+"call")
 			merk.remove(cmdsymbol+"window plugin")
+		else:
+			if not config.ENABLE_CALL_COMMAND:
+				merk.remove(cmdsymbol+"call")
 		if not config.ENABLE_STYLE_EDITOR:
 			merk.remove(cmdsymbol+"style")
 		if not config.ENABLE_IGNORE:
