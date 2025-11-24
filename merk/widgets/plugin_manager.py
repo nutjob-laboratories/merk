@@ -36,7 +36,7 @@ from . import extendedmenuitem
 
 import emoji
 
-MAGNIFYING_GLASS = emoji.emojize(":magnifying_glass_tilted_left:",language="alias")
+HAS_CONSOLE = emoji.emojize(":light_bulb:",language="alias")
 
 import uuid
 import operator
@@ -247,7 +247,7 @@ class Window(QMainWindow):
 					else:
 						widget = extendedmenuitem.pluginItem(
 							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
-							f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a> {MAGNIFYING_GLASS}",
+							f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a> {HAS_CONSOLE}",
 							item.icon,32
 						)
 				else:
@@ -260,7 +260,7 @@ class Window(QMainWindow):
 					else:
 						widget = extendedmenuitem.pluginItem(
 							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
-							f"<b>Author:</b> {item.AUTHOR}</a> {MAGNIFYING_GLASS}",
+							f"<b>Author:</b> {item.AUTHOR}</a> {HAS_CONSOLE}",
 							item.icon,32
 						)
 				self.plugin_list.setItemWidget(item, widget)
@@ -311,7 +311,7 @@ class Window(QMainWindow):
 				else:
 					widget = extendedmenuitem.pluginItem(
 						f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
-						f"<b>Author:</b> <a href=\"{SOURCE}\">{AUTHOR}</a> {MAGNIFYING_GLASS}",
+						f"<b>Author:</b> <a href=\"{SOURCE}\">{AUTHOR}</a> {HAS_CONSOLE}",
 						icon,32
 					)
 			else:
@@ -324,7 +324,7 @@ class Window(QMainWindow):
 				else:
 					widget = extendedmenuitem.pluginItem(
 						f"{NAME} {VERSION}",f"<b>{classname}</b> in {basename}",
-						f"<b>Author:</b> {AUTHOR}</a> {MAGNIFYING_GLASS}",
+						f"<b>Author:</b> {AUTHOR}</a> {HAS_CONSOLE}",
 						icon,32
 					)
 			item.setSizeHint(widget.sizeHint())

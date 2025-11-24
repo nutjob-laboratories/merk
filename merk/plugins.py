@@ -361,6 +361,7 @@ class Console():
 			return self._subwindow.windowTitle()
 		else:
 			self._subwindow.setWindowTitle(title)
+			self._gui.buildWindowsMenu()
 
 	def clear(self):
 		self._console.chat.clear()

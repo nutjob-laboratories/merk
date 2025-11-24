@@ -2787,7 +2787,7 @@ class Merk(QMainWindow):
 					commands.TEMPORARY_ALIAS = {}
 					
 				c.client.quit(msg)
-
+			
 	def openPrivate(self,client,nick):
 
 		# Find and raise the private chat window
@@ -4709,6 +4709,17 @@ class Merk(QMainWindow):
 				entry = QAction(QIcon(icon),c.name,self)
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)
+
+		for window in self.MDI.subWindowList():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if c.window_type==PLUGIN_CONSOLE:
+					icon = PLUGIN_ICON
+					if c.plugin._icon!=None: icon = c.plugin._icon
+					title = window.windowTitle()
+					entry = QAction(QIcon(icon),title,self)
+					entry.triggered.connect(lambda state,u=window: self.showSubWindow(u))
+					self.windowsMenu.addAction(entry)
 
 		if self.log_manager!=None:
 			if self.log_manager.isVisible():

@@ -71,6 +71,8 @@
 * Changed the filename for the setup archive in the distributions.
 * The Plugin Manager now displays if a plugin has an open console or not.
 * Removed the "Close" buttons from the Hotkey and Ignore Managers.
+* Plugin console windows now appear in the "Windows" menu. The title of the
+  entry in the menu is whatever the title of the console window currently is.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
