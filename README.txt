@@ -100,6 +100,7 @@ There are four libraries that comes bundled with **MERK**:
   - Plugins can react to most IRC events
     - Over 30 different IRC and application events!
     - Individual plugin events can be enabled and disabled in the "Settings" dialog
+    - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command.
   - Plugins can be created and edited directly in the application
     - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation.
     - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**.
