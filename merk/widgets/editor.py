@@ -603,19 +603,19 @@ class Window(QMainWindow):
 		self.fileMenu.addAction(self.ww_menu)
 
 		if self.python:
-			if config.PYTHON_AUTOINDENT:
-				self.ai_menu = QAction(QIcon(self.parent.checked_icon),"Auto-indent",self)
-			else:
-				self.ai_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-indent",self)
-			self.ai_menu.triggered.connect(self.toggleIndent)
-			self.fileMenu.addAction(self.ai_menu)
-
 			if config.PYTHON_SHOW_WHITESPACE:
 				self.sw_menu = QAction(QIcon(self.parent.checked_icon),"Show whitespace",self)
 			else:
 				self.sw_menu = QAction(QIcon(self.parent.unchecked_icon),"Show whitespace",self)
 			self.sw_menu.triggered.connect(self.toggleWhitespace)
 			self.fileMenu.addAction(self.sw_menu)
+
+			if config.PYTHON_AUTOINDENT:
+				self.ai_menu = QAction(QIcon(self.parent.checked_icon),"Auto-indent",self)
+			else:
+				self.ai_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-indent",self)
+			self.ai_menu.triggered.connect(self.toggleIndent)
+			self.fileMenu.addAction(self.ai_menu)
 		
 		self.fileMenu.addSeparator()
 
