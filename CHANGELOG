@@ -73,6 +73,8 @@
 * Removed the "Close" buttons from the Hotkey and Ignore Managers.
 * Plugin console windows now appear in the "Windows" menu. The title of the
   entry in the menu is whatever the title of the console window currently is.
+* The application now makes sure that it at least *attempts* to close all
+  subwindows "manually" on close.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

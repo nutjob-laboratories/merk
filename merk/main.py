@@ -2787,7 +2787,10 @@ class Merk(QMainWindow):
 					commands.TEMPORARY_ALIAS = {}
 					
 				c.client.quit(msg)
-			
+			else:
+				if hasattr(c,"force_close"): c.force_close = True
+				window.close()
+
 	def openPrivate(self,client,nick):
 
 		# Find and raise the private chat window
