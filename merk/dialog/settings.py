@@ -438,8 +438,8 @@ class Dialog(QDialog):
 			self.plugMe.setEnabled(True)
 			self.plugError.setEnabled(True)
 			self.pluginOverwrite.setEnabled(True)
-			self.pluginImport.setEnabled(True)
 			self.pluginCall.setEnabled(True)
+			self.pluginOverwrite.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -482,15 +482,8 @@ class Dialog(QDialog):
 			self.plugMe.setEnabled(False)
 			self.plugError.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
-			self.pluginImport.setEnabled(False)
 			self.autocompleteMethods.setEnabled(False)
 			self.pluginCall.setEnabled(False)
-		if self.pluginImport.isChecked():
-			if self.enablePlugins.isChecked():
-				self.pluginOverwrite.setEnabled(True)
-			else:
-				self.pluginOverwrite.setEnabled(False)
-		else:
 			self.pluginOverwrite.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
@@ -1038,15 +1031,6 @@ class Dialog(QDialog):
 		else:
 			self.stmList.setEnabled(True)
 			self.stmLogs.setEnabled(True)
-		self.selector.setFocus()
-		self.changed.show()
-		self.boldApply()
-
-	def changedSettingImport(self,state):
-		if self.pluginImport.isChecked():
-			self.pluginOverwrite.setEnabled(True)
-		else:
-			self.pluginOverwrite.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -4619,20 +4603,13 @@ class Dialog(QDialog):
 		if config.PLUGIN_ERROR: self.plugError.setChecked(True)
 		self.plugError.stateChanged.connect(self.changedSetting)
 
-		self.pluginOverwrite = QCheckBox("Overwrite files",self)
-		if config.OVERWRITE_FILES_ON_IMPORT: self.pluginOverwrite.setChecked(True)
+		self.pluginOverwrite = QCheckBox("Overwrite files on install",self)
+		if config.OVERWRITE_PLUGINS_ON_IMPORT: self.pluginOverwrite.setChecked(True)
 		self.pluginOverwrite.stateChanged.connect(self.changedSetting)
-
-		self.pluginImport = QCheckBox("Enable plugin install",self)
-		if config.ENABLE_PLUGIN_IMPORT: self.pluginImport.setChecked(True)
-		self.pluginImport.stateChanged.connect(self.changedSettingImport)
 
 		self.pluginCall = QCheckBox(f"Enable \"{config.ISSUE_COMMAND_SYMBOL}call\" command",self)
 		if config.ENABLE_CALL_COMMAND: self.pluginCall.setChecked(True)
 		self.pluginCall.stateChanged.connect(self.changedSettingEditor)
-
-		if not config.ENABLE_PLUGIN_IMPORT:
-			self.pluginOverwrite.setEnabled(False)
 
 		if not config.ENABLE_PLUGINS:
 			self.plugInit.setEnabled(False)
@@ -4672,7 +4649,6 @@ class Dialog(QDialog):
 			self.plugMe.setEnabled(False)
 			self.plugError.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
-			self.pluginImport.setEnabled(False)
 			self.pluginCall.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
@@ -4739,10 +4715,6 @@ class Dialog(QDialog):
 		plugLayout.addWidget(self.enablePlugins)
 		plugLayout.addWidget(self.plugEditor)
 
-		plugLayout2 = QHBoxLayout()
-		plugLayout2.addWidget(self.pluginImport)
-		plugLayout2.addWidget(self.pluginOverwrite)
-
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.pluginDescription = QLabel(f"""
@@ -4799,7 +4771,7 @@ class Dialog(QDialog):
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addLayout(plugLayout2)
+		pluginsLayout.addWidget(self.pluginOverwrite)
 		pluginsLayout.addWidget(self.pluginCall)
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
@@ -5547,8 +5519,7 @@ class Dialog(QDialog):
 		config.PLUGIN_CLOSE = self.plugClose.isChecked()
 		config.PLUGIN_ME = self.plugMe.isChecked()
 		config.PLUGIN_ERROR = self.plugError.isChecked()
-		config.OVERWRITE_FILES_ON_IMPORT = self.pluginOverwrite.isChecked()
-		config.ENABLE_PLUGIN_IMPORT = self.pluginImport.isChecked()
+		config.OVERWRITE_PLUGINS_ON_IMPORT = self.pluginOverwrite.isChecked()
 		config.AUTOCOMPLETE_METHODS = self.autocompleteMethods.isChecked()
 		config.ENABLE_CALL_COMMAND = self.pluginCall.isChecked()
 
@@ -5762,13 +5733,6 @@ class Dialog(QDialog):
 		else:
 			if self.parent.plugin_manager!=None:
 				self.parent.plugin_manager.menuNew.setVisible(True)
-
-		if config.ENABLE_PLUGIN_IMPORT:
-			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.menuImport.setVisible(True)
-		else:
-			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.menuImport.setVisible(False)
 
 		if reset_built_in: commands.clearTemporaryAliases()
 		commands.build_help_and_autocomplete()

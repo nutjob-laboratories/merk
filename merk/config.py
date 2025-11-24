@@ -363,8 +363,7 @@ PLUGIN_ERROR = True
 PYTHON_AUTOINDENT = True
 PYTHON_SHOW_WHITESPACE = False
 EDITOR_WORDWRAP = False
-OVERWRITE_FILES_ON_IMPORT = False
-ENABLE_PLUGIN_IMPORT = True
+OVERWRITE_PLUGINS_ON_IMPORT = False
 DEFAULT_PYTHON_INDENT = "    "
 AUTOCOMPLETE_METHODS = True
 ENABLE_CALL_COMMAND = True
@@ -374,8 +373,7 @@ def build_settings():
 		"enable_call_command": ENABLE_CALL_COMMAND,
 		"autocomplete_methods": AUTOCOMPLETE_METHODS,
 		"default_python_indentation": DEFAULT_PYTHON_INDENT,
-		"enable_plugin_import": ENABLE_PLUGIN_IMPORT,
-		"overwrite_files_on_plugin_import": OVERWRITE_FILES_ON_IMPORT,
+		"overwrite_files_on_plugin_import": OVERWRITE_PLUGINS_ON_IMPORT,
 		"editor_word_wrap": EDITOR_WORDWRAP,
 		"python_editor_auto_indent": PYTHON_AUTOINDENT,
 		"python_editor_show_whitespace": PYTHON_SHOW_WHITESPACE,
@@ -711,10 +709,8 @@ def patch_settings(settings):
 		settings["autocomplete_methods"] = AUTOCOMPLETE_METHODS
 	if not "default_python_indentation" in settings:
 		settings["default_python_indentation"] = DEFAULT_PYTHON_INDENT
-	if not "enable_plugin_import" in settings:
-		settings["enable_plugin_import"] = ENABLE_PLUGIN_IMPORT
 	if not "overwrite_files_on_plugin_import" in settings:
-		settings["overwrite_files_on_plugin_import"] = OVERWRITE_FILES_ON_IMPORT
+		settings["overwrite_files_on_plugin_import"] = OVERWRITE_PLUGINS_ON_IMPORT
 	if not "editor_word_wrap" in settings:
 		settings["editor_word_wrap"] = EDITOR_WORDWRAP
 	if not "python_editor_auto_indent" in settings:
@@ -1691,8 +1687,7 @@ def load_settings(filename):
 	global PYTHON_AUTOINDENT
 	global PYTHON_SHOW_WHITESPACE
 	global EDITOR_WORDWRAP
-	global OVERWRITE_FILES_ON_IMPORT
-	global ENABLE_PLUGIN_IMPORT
+	global OVERWRITE_PLUGINS_ON_IMPORT
 	global DEFAULT_PYTHON_INDENT
 	global AUTOCOMPLETE_METHODS
 	global ENABLE_CALL_COMMAND
@@ -1708,8 +1703,7 @@ def load_settings(filename):
 		ENABLE_CALL_COMMAND = settings["enable_call_command"]
 		AUTOCOMPLETE_METHODS = settings["autocomplete_methods"]
 		DEFAULT_PYTHON_INDENT = settings["default_python_indentation"]
-		ENABLE_PLUGIN_IMPORT = settings["enable_plugin_import"]
-		OVERWRITE_FILES_ON_IMPORT = settings["overwrite_files_on_plugin_import"]
+		OVERWRITE_PLUGINS_ON_IMPORT = settings["overwrite_files_on_plugin_import"]
 		EDITOR_WORDWRAP = settings["editor_word_wrap"]
 		PYTHON_AUTOINDENT = settings["python_editor_auto_indent"]
 		PYTHON_SHOW_WHITESPACE = settings["python_editor_show_whitespace"]

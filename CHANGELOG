@@ -88,6 +88,10 @@
 * Fixed a bug with some commands not appearing properly highlighted in the
   script editor.
 * Added a new example plugin to the documentation.
+* Plugins no longer need a setting to be "true" to import plugins; the
+  ability to import plugins is on by default, and cannot be turned off.
+* The script editor can now import scripts; users select a MERK script,
+  which is then copied into MERK's script directory and opened.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

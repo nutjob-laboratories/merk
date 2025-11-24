@@ -73,7 +73,7 @@ class Window(QMainWindow):
 
 	def import_zip(self,filename):
 
-		if not config.OVERWRITE_FILES_ON_IMPORT:
+		if not config.OVERWRITE_PLUGINS_ON_IMPORT:
 			overwrite = False
 			ofiles = []
 			try:
@@ -356,7 +356,6 @@ class Window(QMainWindow):
 				subwindow.show()
 
 	def import_plugin(self):
-		if not config.ENABLE_PLUGIN_IMPORT: return
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Import File", str(Path.home()), f"Zip Files (*.zip);;MERK Plugin (*.py);;All Files (*)", options=options)
@@ -369,7 +368,7 @@ class Window(QMainWindow):
 				self.import_zip(fileName)
 			else:
 
-				if not config.OVERWRITE_FILES_ON_IMPORT:
+				if not config.OVERWRITE_PLUGINS_ON_IMPORT:
 					import_file = True
 					if os.path.exists(imported_file) or os.path.isfile(imported_file):
 						import_file = False
@@ -417,8 +416,6 @@ class Window(QMainWindow):
 						export_action = QAction(QIcon(EXPORT_ICON),"Export plugin", self)
 						export_action.triggered.connect(lambda: self.do_export(item))
 						menu.addAction(export_action)
-
-						if not config.ENABLE_PLUGIN_IMPORT: export_action.setVisible(False)
 
 						menu.addSeparator()
 
@@ -476,8 +473,6 @@ class Window(QMainWindow):
 		self.menuImport = QAction(QIcon(IMPORT_ICON),"Install plugin",self)
 		self.menuImport.triggered.connect(self.import_plugin)
 		self.pluginMenu.addAction(self.menuImport)
-
-		if not config.ENABLE_PLUGIN_IMPORT: self.menuImport.setVisible(False)
 
 		self.pluginMenu.addSeparator()
 

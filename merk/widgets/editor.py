@@ -34,6 +34,8 @@ import fnmatch
 import re
 import os
 from collections import Counter
+from pathlib import Path
+import shutil
 
 from ..resources import *
 from .. import dialog
@@ -439,6 +441,47 @@ class Window(QMainWindow):
 
 		self.status_line.setText(f"<small>{line_number}</small>")
 
+	def doImport(self):
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Import Script", str(Path.home()), f"MERK Script (*.merk);;All Files (*)", options=options)
+		if fileName:
+			base = os.path.basename(fileName)
+			imported_file = os.path.join(commands.SCRIPTS_DIRECTORY,base)
+
+			do_overwrite = True
+			if os.path.exists(imported_file) or os.path.isfile(imported_file):
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(SCRIPT_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setText(f"\"{base}\" already exists. Overwrite script?")
+				msgBox.setWindowTitle("Overwrite File")
+				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+				rval = msgBox.exec()
+				if rval == QMessageBox.Cancel:
+					do_overwrite = False
+			
+			if do_overwrite:
+				try:
+					shutil.copy(fileName, imported_file)
+				except FileNotFoundError:
+					QMessageBox.critical(self, 'Error', f"Source file '{fileName}' not found.")
+					return
+				except Exception as e:
+					QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+					return
+
+				self.filename = imported_file
+				f = commands.find_file(self.filename,SCRIPT_FILE_EXTENSION)
+				if f!=None:
+					x = open(f,mode="r",encoding="utf-8",errors="ignore")
+					source_code = str(x.read())
+					x.close()
+					self.editor.setPlainText(source_code)
+					self.changed = False
+					self.updateApplicationTitle()
+
 	def __init__(self,filename=None,parent=None,subwindow=None,python=False):
 		super(Window, self).__init__(parent)
 
@@ -547,6 +590,10 @@ class Window(QMainWindow):
 
 			entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
 			entry.triggered.connect(self.doNewScript)
+			self.fileMenu.addAction(entry)
+
+			entry = QAction(QIcon(IMPORT_ICON),"Import script",self)
+			entry.triggered.connect(self.doImport)
 			self.fileMenu.addAction(entry)
 		else:
 			entry = QAction(QIcon(PLUGIN_ICON),"New plugin",self)
