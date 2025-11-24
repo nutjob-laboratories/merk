@@ -59,7 +59,7 @@
 * Added references to MERK running on macOS to the documentation and the
   README.
 * Default indentation for the Python editor can now be set in the config
-  file.
+  file. Editing of this setting with /config has been disabled.
 * New "import" and "export" icons for the Plugin Manager.
 * Changed the icon for "edit plugin" in the Plugin Manager.
 * Double clicking on a plugin in the Plugin Manager now opens up a plugin's
@@ -85,6 +85,8 @@
 * Added /call-able methods to input autocomplete.
 * Added a new setting: en/disable /call method autocomplete.
 * Added a new setting: en/disable /call command
+* Fixed a bug with some commands not appearing properly highlighted in the
+  script editor.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
