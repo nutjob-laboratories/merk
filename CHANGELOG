@@ -75,6 +75,15 @@
   entry in the menu is whatever the title of the console window currently is.
 * The application now makes sure that it at least *attempts* to close all
   subwindows "manually" on close.
+* New command: /call, which allows methods in plugins to be called directly.
+  The method must not have the same name as an event or inherited method,
+  and only takes two arguments (a Window class, and a list of strings that
+  represent the arguments passed to the /call command). The new command takes
+  at least one argument, the name of the method, and all other arguments
+  are passed to the method. If multiple plugins contain the method named
+  in the /call command, they will all be executed.
+* Added /call-able methods to input autocomplete.
+* Added a new setting: en/disable /call method autocomplete.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -101,6 +110,7 @@
   console's show() method to make it visible. The console can display time-
   stamped strings or HTML.  It is accessible programmatically or by double
   clicking a plugin's entry in the Plugin Manager.
+* Plugins can now have methods callable by the new /call command.
 
 --------------------------------------------------------------------------------
 ################################################################################

@@ -240,11 +240,15 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"macro": config.ISSUE_COMMAND_SYMBOL+"macro ",
 			config.ISSUE_COMMAND_SYMBOL+"bind": config.ISSUE_COMMAND_SYMBOL+"bind ",
 			config.ISSUE_COMMAND_SYMBOL+"unbind": config.ISSUE_COMMAND_SYMBOL+"unbind ",
+			config.ISSUE_COMMAND_SYMBOL+"call": config.ISSUE_COMMAND_SYMBOL+"call ",
 		}
 
 	# Remove the style command if the style editor is turned off 
 	if not config.ENABLE_STYLE_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"style",'')
+
+	if not config.ENABLE_PLUGINS:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"call",'')
 
 	if not config.ENABLE_IGNORE:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"ignore",'')
@@ -368,6 +372,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>", "Imports a configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...</b>", f"Executes COMMAND when key SEQUENCE is pressed" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>", f"Removes a bind for SEQUENCE. Pass * as the only argument to remove all binds" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD [ARGUMENTS...]</b>", f"Executes METHOD in any plugin that contains METHOD" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -390,6 +395,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+		if not config.ENABLE_PLUGINS:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD ARGUMENTS...</b>": continue
 		if not config.ENABLE_IGNORE:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>": continue
@@ -1360,6 +1367,68 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |-------|
+	# | /call |
+	# |-------|
+	if len(tokens)>=1:
+
+		if not config.ENABLE_PLUGINS:
+			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'call':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}call: Plugins are disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Plugins are disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'call' and len(tokens)>=2:
+			tokens.pop(0)
+			method = tokens.pop(0)
+
+			mcheck = plugins.does_have_call(method)
+			if mcheck==NO_METHOD:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}call: Plugin method \"{method}\" can't be found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Plugin method \"{method}\" can't be found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			elif mcheck==EVENT_METHOD or mcheck==BUILT_IN_METHOD:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}call: Plugin method \"{method}\" can't be called")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Plugin method \"{method}\" can't be called")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if len(tokens)==0:
+				args = []
+			else:
+				args = shlex.split(' '.join(tokens), comments=False)
+
+			plugins.command_call(gui,window,method,args)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'call':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"call METHOD [ARGUMENTS...]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"call METHOD [ARGUMENTS...]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /unbind |

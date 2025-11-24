@@ -722,6 +722,16 @@ EVENTS = [
 	'server', 'subwindow', 'close', 'me', 'error'
 ]
 
+BUILT_IN = [
+	'alias', 'all_channels', 'all_masters', 'all_privates',
+    'all_windows', 'bind', 'channel', 'channels', 'clients',
+    'console', 'emojize', 'find', 'home', 'id', 'ignore',
+    'ignores', 'is_away', 'is_ignored', 'list', 'macro',
+    'master', 'max', 'maximized', 'min', 'minimized', 'modes',
+    'move', 'private', 'privates', 'resize', 'restore', 'script',
+    'unbind', 'unignore', 'windows'   
+]
+
 def init(obj):
 	if not config.ENABLE_PLUGINS: return
 	if not config.PLUGIN_INIT: return
@@ -774,6 +784,40 @@ def call(gui,method,**arguments):
 					arguments["window"] = Window(gui,arguments["window"])
 
 			m(**arguments)
+
+def command_call(gui,window,method,arguments):
+	if not config.ENABLE_PLUGINS: return
+	window = Window(gui,window)
+	for obj in PLUGINS:
+		if hasattr(obj,method):
+			m = getattr(obj,method)
+
+			specs = inspect.getfullargspec(m)
+			if len(specs.args)==3:
+				m(window,arguments)
+
+def list_all_call_methods():
+	output = []
+	for obj in PLUGINS:
+		all_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
+		method_names = [name for name, method in all_methods]
+
+		for m in method_names:
+			if m=='__init__': continue
+			if m in EVENTS: continue
+			if m in BUILT_IN: continue
+			mi = getattr(obj,m)
+			specs = inspect.getfullargspec(mi)
+			if len(specs.args)!=3: continue
+			output.append(m)
+	return output
+
+def does_have_call(method):
+	if method in EVENTS: return EVENT_METHOD
+	if method in BUILT_IN: return BUILT_IN_METHOD
+	for obj in PLUGINS:
+		if hasattr(obj,method): return VALID_METHOD
+	return NO_METHOD
 
 def load_plugins(gui):
 	global PLUGINS

@@ -49,6 +49,7 @@ from .. import commands
 from .. import syntax
 from .. import user
 from .. import dialog
+from .. import plugins
 
 class Window(QMainWindow):
 
@@ -3293,6 +3294,23 @@ class SpellTextEdit(QPlainTextEdit):
 									cursor.endEditBlock()
 									self.ensureCursorVisible()
 									return
+
+				if config.ENABLE_PLUGINS:
+					if config.AUTOCOMPLETE_METHODS:
+						# Auto-complete script filenames
+						if config.ISSUE_COMMAND_SYMBOL+'call' in self.text():
+							cursor.select(QTextCursor.WordUnderCursor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
+
+								for method in plugins.list_all_call_methods():
+									if fnmatch.fnmatch(method,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{method}")
+										cursor.endEditBlock()
+										self.ensureCursorVisible()
+										return
 
 				if config.ENABLE_ALIASES:
 					if config.INTERPOLATE_ALIASES_INTO_INPUT:

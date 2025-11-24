@@ -439,6 +439,10 @@ class Dialog(QDialog):
 			self.plugError.setEnabled(True)
 			self.pluginOverwrite.setEnabled(True)
 			self.pluginImport.setEnabled(True)
+			if self.enableAutocomplete.isChecked():
+				self.autocompleteMethods.setEnabled(True)
+			else:
+				self.autocompleteMethods.setEnabled(False)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -478,6 +482,7 @@ class Dialog(QDialog):
 			self.plugError.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginImport.setEnabled(False)
+			self.autocompleteMethods.setEnabled(False)
 		if self.pluginImport.isChecked():
 			if self.enablePlugins.isChecked():
 				self.pluginOverwrite.setEnabled(True)
@@ -555,6 +560,10 @@ class Dialog(QDialog):
 			self.autocompleteSettings.setEnabled(True)
 			self.autocompleteUser.setEnabled(True)
 			self.autocompleteMacro.setEnabled(True)
+			if self.enablePlugins.isChecked():
+				self.autocompleteMethods.setEnabled(True)
+			else:
+				self.autocompleteMethods.setEnabled(False)
 		else:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -565,6 +574,7 @@ class Dialog(QDialog):
 			self.autocompleteSettings.setEnabled(False)
 			self.autocompleteUser.setEnabled(False)
 			self.autocompleteMacro.setEnabled(False)
+			self.autocompleteMethods.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -3654,6 +3664,10 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_MACROS: self.autocompleteMacro.setChecked(True)
 		self.autocompleteMacro.stateChanged.connect(self.changedSetting)
 
+		self.autocompleteMethods = QCheckBox("Plugin methods",self)
+		if config.AUTOCOMPLETE_METHODS: self.autocompleteMethods.setChecked(True)
+		self.autocompleteMethods.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_AUTOCOMPLETE:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -3664,6 +3678,7 @@ class Dialog(QDialog):
 			self.autocompleteSettings.setEnabled(False)
 			self.autocompleteUser.setEnabled(False)
 			self.autocompleteMacro.setEnabled(False)
+			self.autocompleteMethods.setEnabled(False)
 
 		if not config.ENABLE_ALIASES:
 			self.autocompleteAlias.setEnabled(False)
@@ -3673,6 +3688,9 @@ class Dialog(QDialog):
 
 		if not config.ENABLE_CONFIG_COMMAND:
 			self.autocompleteSettings.setEnabled(False)
+
+		if not config.ENABLE_PLUGINS:
+			self.autocompleteMethods.setEnabled(False)
 
 		autoMaster = QHBoxLayout()
 		autoMaster.addStretch()
@@ -3689,7 +3707,7 @@ class Dialog(QDialog):
 		autoSettingsLayout.addRow(self.autocompleteChans,self.autocompleteEmojis)
 		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteAlias)
 		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
-		autoSettingsLayout.addRow(self.autocompleteMacro)
+		autoSettingsLayout.addRow(self.autocompleteMacro,self.autocompleteMethods)
 
 		self.inputCursorLabel = QLabel("Input widget cursor width:")
 		self.inputCursorLabelSpec = QLabel("pixels")
@@ -5520,6 +5538,7 @@ class Dialog(QDialog):
 		config.PLUGIN_ERROR = self.plugError.isChecked()
 		config.OVERWRITE_FILES_ON_IMPORT = self.pluginOverwrite.isChecked()
 		config.ENABLE_PLUGIN_IMPORT = self.pluginImport.isChecked()
+		config.AUTOCOMPLETE_METHODS = self.autocompleteMethods.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

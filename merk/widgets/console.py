@@ -80,7 +80,7 @@ class Window(QMainWindow):
 
 		self.chat = QTextBrowser(self)
 		self.chat.anchorClicked.connect(self.linkClicked)
-		self.chat.setLineWrapMode(QPlainTextEdit.NoWrap)
+		self.chat.setLineWrapMode(QTextEdit.NoWrap)
 		self.chat.setReadOnly(True)
 
 		self.applyStyle()

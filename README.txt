@@ -262,6 +262,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/away [MESSAGE]`                       | Sets status as "away"                                                                                                            |
 | `/back`                                 | Sets status as "back"                                                                                                            |
 | `/bind SEQUENCE COMMAND...`           | Executes `COMMAND` every time key `SEQUENCE` is pressed. Pass `save` as the only argument to save binds to the configuration file                                                                                                           |
+| `/call METHOD [ARGUMENTS...]`         | Executes `METHOD` in any plugin that contains that `METHOD`  |
 | `/clear [SERVER] [WINDOW]`              | Clears a window's chat display. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                    |
 | `/close [SERVER] [WINDOW]`              | Closes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  **Caution**: use at your own risk! |

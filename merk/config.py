@@ -366,9 +366,11 @@ EDITOR_WORDWRAP = False
 OVERWRITE_FILES_ON_IMPORT = False
 ENABLE_PLUGIN_IMPORT = True
 DEFAULT_PYTHON_INDENT = "    "
+AUTOCOMPLETE_METHODS = True
 
 def build_settings():
 	settings = {
+		"autocomplete_methods": AUTOCOMPLETE_METHODS,
 		"default_python_indentation": DEFAULT_PYTHON_INDENT,
 		"enable_plugin_import": ENABLE_PLUGIN_IMPORT,
 		"overwrite_files_on_plugin_import": OVERWRITE_FILES_ON_IMPORT,
@@ -701,6 +703,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "autocomplete_methods" in settings:
+		settings["autocomplete_methods"] = AUTOCOMPLETE_METHODS
 	if not "default_python_indentation" in settings:
 		settings["default_python_indentation"] = DEFAULT_PYTHON_INDENT
 	if not "enable_plugin_import" in settings:
@@ -1686,6 +1690,7 @@ def load_settings(filename):
 	global OVERWRITE_FILES_ON_IMPORT
 	global ENABLE_PLUGIN_IMPORT
 	global DEFAULT_PYTHON_INDENT
+	global AUTOCOMPLETE_METHODS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1695,6 +1700,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOCOMPLETE_METHODS = settings["autocomplete_methods"]
 		DEFAULT_PYTHON_INDENT = settings["default_python_indentation"]
 		ENABLE_PLUGIN_IMPORT = settings["enable_plugin_import"]
 		OVERWRITE_FILES_ON_IMPORT = settings["overwrite_files_on_plugin_import"]

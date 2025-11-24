@@ -132,6 +132,10 @@ Appearance:
 <td>Executes <code>COMMAND</code> every time key <code>SEQUENCE</code> is pressed. Pass <code>save</code> as the only argument to save binds to the configuration file</td>
 </tr>
 <tr>
+<td><code>/call METHOD [ARGUMENTS...]</code></td>
+<td>Executes <code>METHOD</code> in any plugin that contains that <code>METHOD</code></td>
+</tr>
+<tr>
 <td><code>/clear [SERVER] [WINDOW]</code></td>
 <td>Clears a window&#39;s chat display. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
