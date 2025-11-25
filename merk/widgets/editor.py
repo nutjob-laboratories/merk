@@ -740,151 +740,160 @@ class Window(QMainWindow):
 		if self.python:
 			self.pInsertMenu = self.menubar.addMenu("Insert")
 
-			entry = QAction(QIcon(APPLICATION_ICON),f"{config.ISSUE_COMMAND_SYMBOL}call method",self)
-			entry.triggered.connect(self.insertCallMethod)
-			self.pInsertMenu.addAction(entry)
-
-			e = textSeparator(self,"events")
-			self.pInsertMenu.addAction(e)
+			self.menv = self.pInsertMenu.addMenu(QIcon(APPLICATION_ICON),f"{APPLICATION_NAME} Events")
 
 			entry = QAction(QIcon(APPLICATION_ICON),"init",self)
 			entry.triggered.connect(self.doInsertInitMethod)
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"action",self)
-			entry.triggered.connect(lambda state,u="action": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"activate",self)
 			entry.triggered.connect(lambda state,u="activate": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"away",self)
-			entry.triggered.connect(lambda state,u="away": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"back",self)
-			entry.triggered.connect(lambda state,u="back": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"close",self)
 			entry.triggered.connect(lambda state,u="close": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"connected",self)
-			entry.triggered.connect(lambda state,u="connected": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"connecting",self)
-			entry.triggered.connect(lambda state,u="connecting": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"ctick",self)
 			entry.triggered.connect(lambda state,u="ctick": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"disconnect",self)
-			entry.triggered.connect(lambda state,u="disconnect": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"error",self)
-			entry.triggered.connect(lambda state,u="error": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"invite",self)
-			entry.triggered.connect(lambda state,u="invite": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"join",self)
-			entry.triggered.connect(lambda state,u="join": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"joined",self)
-			entry.triggered.connect(lambda state,u="joined": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"kick",self)
-			entry.triggered.connect(lambda state,u="kick": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"kicked",self)
-			entry.triggered.connect(lambda state,u="kicked": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"left",self)
-			entry.triggered.connect(lambda state,u="left": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"line_in",self)
 			entry.triggered.connect(lambda state,u="line_in": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"line_out",self)
 			entry.triggered.connect(lambda state,u="line_out": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"lost",self)
-			entry.triggered.connect(lambda state,u="lost": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"me",self)
 			entry.triggered.connect(lambda state,u="me": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"message",self)
-			entry.triggered.connect(lambda state,u="message": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"mode",self)
-			entry.triggered.connect(lambda state,u="mode": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"motd",self)
-			entry.triggered.connect(lambda state,u="motd": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"nick",self)
-			entry.triggered.connect(lambda state,u="nick": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"notice",self)
-			entry.triggered.connect(lambda state,u="notice": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"ping",self)
-			entry.triggered.connect(lambda state,u="ping": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"part",self)
-			entry.triggered.connect(lambda state,u="part": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"quit",self)
-			entry.triggered.connect(lambda state,u="quit": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"rename",self)
-			entry.triggered.connect(lambda state,u="rename": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
-
-			entry = QAction(QIcon(CONNECT_ICON),"server",self)
-			entry.triggered.connect(lambda state,u="server": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"subwindow",self)
 			entry.triggered.connect(lambda state,u="subwindow": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
 			entry = QAction(QIcon(APPLICATION_ICON),"tick",self)
 			entry.triggered.connect(lambda state,u="tick": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(CONNECT_ICON),"topic",self)
-			entry.triggered.connect(lambda state,u="topic": self.doInsertEventMethod(u))
-			self.pInsertMenu.addAction(entry)
+			self.messenv = self.pInsertMenu.addMenu(QIcon(PRIVATE_ICON),f"Message Events")
 
-			entry = QAction(QIcon(CONNECT_ICON),"unmode",self)
+			entry = QAction(QIcon(PRIVATE_ICON),"action",self)
+			entry.triggered.connect(lambda state,u="action": self.doInsertEventMethod(u))
+			self.messenv.addAction(entry)
+
+			entry = QAction(QIcon(PRIVATE_ICON),"message",self)
+			entry.triggered.connect(lambda state,u="message": self.doInsertEventMethod(u))
+			self.messenv.addAction(entry)
+
+			entry = QAction(QIcon(PRIVATE_ICON),"notice",self)
+			entry.triggered.connect(lambda state,u="notice": self.doInsertEventMethod(u))
+			self.messenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"server",self)
+			entry.triggered.connect(lambda state,u="server": self.doInsertEventMethod(u))
+			self.messenv.addAction(entry)
+
+			self.conenv = self.pInsertMenu.addMenu(QIcon(CONNECT_ICON),f"Connection Events")
+
+			entry = QAction(QIcon(CONNECT_ICON),"connected",self)
+			entry.triggered.connect(lambda state,u="connected": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"connecting",self)
+			entry.triggered.connect(lambda state,u="connecting": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"disconnect",self)
+			entry.triggered.connect(lambda state,u="disconnect": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"error",self)
+			entry.triggered.connect(lambda state,u="error": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"lost",self)
+			entry.triggered.connect(lambda state,u="lost": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"motd",self)
+			entry.triggered.connect(lambda state,u="motd": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"ping",self)
+			entry.triggered.connect(lambda state,u="ping": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"quit",self)
+			entry.triggered.connect(lambda state,u="quit": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
+			self.statenv = self.pInsertMenu.addMenu(QIcon(OP_USER),f"Status Events")
+
+			entry = QAction(QIcon(GO_AWAY_ICON),"away",self)
+			entry.triggered.connect(lambda state,u="away": self.doInsertEventMethod(u))
+			self.statenv.addAction(entry)
+
+			entry = QAction(QIcon(GO_AWAY_ICON),"back",self)
+			entry.triggered.connect(lambda state,u="back": self.doInsertEventMethod(u))
+			self.statenv.addAction(entry)
+
+			entry = QAction(QIcon(PRIVATE_ICON),"mode",self)
+			entry.triggered.connect(lambda state,u="mode": self.doInsertEventMethod(u))
+			self.statenv.addAction(entry)
+
+			entry = QAction(QIcon(PRIVATE_ICON),"unmode",self)
 			entry.triggered.connect(lambda state,u="unmode": self.doInsertEventMethod(u))
+			self.statenv.addAction(entry)
+
+			entry = QAction(QIcon(PRIVATE_ICON),"nick",self)
+			entry.triggered.connect(lambda state,u="nick": self.doInsertEventMethod(u))
+			self.statenv.addAction(entry)
+
+			entry = QAction(QIcon(PRIVATE_ICON),"rename",self)
+			entry.triggered.connect(lambda state,u="rename": self.doInsertEventMethod(u))
+			self.statenv.addAction(entry)
+
+			self.chanenv = self.pInsertMenu.addMenu(QIcon(CHANNEL_ICON),f"Channel Events")
+
+			entry = QAction(QIcon(CHANNEL_ICON),"invite",self)
+			entry.triggered.connect(lambda state,u="invite": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			entry = QAction(QIcon(CHANNEL_ICON),"join",self)
+			entry.triggered.connect(lambda state,u="join": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			entry = QAction(QIcon(CHANNEL_ICON),"joined",self)
+			entry.triggered.connect(lambda state,u="joined": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			entry = QAction(QIcon(KICK_ICON),"kick",self)
+			entry.triggered.connect(lambda state,u="kick": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			entry = QAction(QIcon(KICK_ICON),"kicked",self)
+			entry.triggered.connect(lambda state,u="kicked": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			entry = QAction(QIcon(CHANNEL_ICON),"left",self)
+			entry.triggered.connect(lambda state,u="left": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			entry = QAction(QIcon(CHANNEL_ICON),"part",self)
+			entry.triggered.connect(lambda state,u="part": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			entry = QAction(QIcon(CHANNEL_ICON),"topic",self)
+			entry.triggered.connect(lambda state,u="topic": self.doInsertEventMethod(u))
+			self.chanenv.addAction(entry)
+
+			self.pInsertMenu.addSeparator()
+
+			entry = QAction(QIcon(APPLICATION_ICON),f"{config.ISSUE_COMMAND_SYMBOL}call method",self)
+			entry.triggered.connect(self.insertCallMethod)
 			self.pInsertMenu.addAction(entry)
 
 		self.editMenu = self.menubar.addMenu("Edit")
