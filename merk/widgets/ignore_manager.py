@@ -88,10 +88,13 @@ class Window(QMainWindow):
 			self.keys.setItemWidget(item, widget)
 
 		if len(config.IGNORE_LIST)==0:
-			item = QListWidgetItem(f"No users ignored")
+			item = QListWidgetItem()
 			item.dummy = True
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
+			widget = extendedmenuitem.ignoreItem("No users ignored")
+			item.setSizeHint(widget.sizeHint())
 			self.keys.addItem(item)
+			self.keys.setItemWidget(item, widget)
 			self.remove.hide()
 		else:
 			self.remove.show()

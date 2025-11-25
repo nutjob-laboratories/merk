@@ -496,6 +496,40 @@ class Window(QMainWindow):
 			
 			QMessageBox.information(self, 'Success', f'File written to "{os.path.basename(fileName)}"!')
 
+	def doInsertCallMethod(self,method):
+		self.editor.insertPlainText(f"def {method}(self,window,arguments):")
+		self.insert_indent()
+		self.editor.insertPlainText(f"pass")
+		self.updateApplicationTitle()
+
+	def doInsertEventMethod(self,method):
+		self.editor.insertPlainText(f"def {method}(self,**arguments):")
+		self.insert_indent()
+		self.editor.insertPlainText(f"pass")
+		self.updateApplicationTitle()
+
+	def doInsertInitMethod(self):
+		self.editor.insertPlainText(f"def init(self):")
+		self.insert_indent()
+		self.editor.insertPlainText(f"pass")
+		self.updateApplicationTitle()
+
+	def insertCallMethod(self):
+		e = dialog.SetMethodDialog(self)
+
+		if not e: return
+
+		valid = True
+		if e in plugins.EVENTS: valid = False
+		if e in plugins.BUILT_IN: valid = False
+		if e == '__init__': valid = False
+
+		if not valid:
+			QMessageBox.critical(self, 'Error', f"\"{e}\" is not a valid method name")
+			return
+
+		self.doInsertCallMethod(e)
+
 	def __init__(self,filename=None,parent=None,subwindow=None,python=False):
 		super(Window, self).__init__(parent)
 
@@ -702,6 +736,156 @@ class Window(QMainWindow):
 		entry = QAction(QIcon(CLOSE_ICON),"Close",self)
 		entry.triggered.connect(self.close)
 		self.fileMenu.addAction(entry)
+
+		if self.python:
+			self.pInsertMenu = self.menubar.addMenu("Insert")
+
+			entry = QAction(f"{config.ISSUE_COMMAND_SYMBOL}call method",self)
+			entry.triggered.connect(self.insertCallMethod)
+			self.pInsertMenu.addAction(entry)
+
+			e = textSeparator(self,"events")
+			self.pInsertMenu.addAction(e)
+
+			entry = QAction(f"init",self)
+			entry.triggered.connect(self.doInsertInitMethod)
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("action",self)
+			entry.triggered.connect(lambda state,u="action": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("activate",self)
+			entry.triggered.connect(lambda state,u="activate": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("away",self)
+			entry.triggered.connect(lambda state,u="away": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("back",self)
+			entry.triggered.connect(lambda state,u="back": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("close",self)
+			entry.triggered.connect(lambda state,u="close": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("connected",self)
+			entry.triggered.connect(lambda state,u="connected": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("connecting",self)
+			entry.triggered.connect(lambda state,u="connecting": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("ctick",self)
+			entry.triggered.connect(lambda state,u="ctick": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("disconnect",self)
+			entry.triggered.connect(lambda state,u="disconnect": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("error",self)
+			entry.triggered.connect(lambda state,u="error": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("invite",self)
+			entry.triggered.connect(lambda state,u="invite": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("join",self)
+			entry.triggered.connect(lambda state,u="join": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("joined",self)
+			entry.triggered.connect(lambda state,u="joined": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("kick",self)
+			entry.triggered.connect(lambda state,u="kick": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("kicked",self)
+			entry.triggered.connect(lambda state,u="kicked": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("left",self)
+			entry.triggered.connect(lambda state,u="left": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("line_in",self)
+			entry.triggered.connect(lambda state,u="line_in": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("line_out",self)
+			entry.triggered.connect(lambda state,u="line_out": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("lost",self)
+			entry.triggered.connect(lambda state,u="lost": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("me",self)
+			entry.triggered.connect(lambda state,u="me": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("message",self)
+			entry.triggered.connect(lambda state,u="message": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("mode",self)
+			entry.triggered.connect(lambda state,u="mode": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("motd",self)
+			entry.triggered.connect(lambda state,u="motd": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("nick",self)
+			entry.triggered.connect(lambda state,u="nick": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("notice",self)
+			entry.triggered.connect(lambda state,u="notice": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("ping",self)
+			entry.triggered.connect(lambda state,u="ping": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("part",self)
+			entry.triggered.connect(lambda state,u="part": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("quit",self)
+			entry.triggered.connect(lambda state,u="quit": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("rename",self)
+			entry.triggered.connect(lambda state,u="rename": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("server",self)
+			entry.triggered.connect(lambda state,u="server": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("subwindow",self)
+			entry.triggered.connect(lambda state,u="subwindow": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("tick",self)
+			entry.triggered.connect(lambda state,u="tick": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("topic",self)
+			entry.triggered.connect(lambda state,u="topic": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
+
+			entry = QAction("unmode",self)
+			entry.triggered.connect(lambda state,u="unmode": self.doInsertEventMethod(u))
+			self.pInsertMenu.addAction(entry)
 
 		self.editMenu = self.menubar.addMenu("Edit")
 
@@ -1950,43 +2134,45 @@ class Window(QMainWindow):
 		if watched is self.editor and event.type() == QEvent.KeyPress:
 			key_event: QKeyEvent = event
 			if key_event.key() in (Qt.Key_Return, Qt.Key_Enter):
-				cursor = self.editor.textCursor()
-
-				# If the cursor is in the "middle" of a line
-				# and not at the end, we don't need to do any
-				# of the indent calculation stuff, we can just
-				# go ahead and do the enter key event
-				block = cursor.block()
-				block_length = block.length()
-				cursor_pos_in_block = cursor.positionInBlock()
-				if cursor_pos_in_block < block_length - 1:
-					return super().eventFilter(watched, event)
-
-				cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.MoveAnchor)
-				cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
-				current_line_text = cursor.selectedText()
-				
-				cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.MoveAnchor)
-
-				base_indentation = ""
-				for char in current_line_text:
-					if char in (' ', '\t'):
-						base_indentation += char
-					else:
-						break
-				
-				new_line_indent = base_indentation
-				stripped_line = current_line_text.strip()
-				
-				if stripped_line.endswith(':'):
-					extra_indent_unit = self._infer_indent_style()
-					new_line_indent += extra_indent_unit
-
-				cursor.insertText('\n' + new_line_indent)
-				
+				self.insert_indent()
 				return True
 	
 		return super().eventFilter(watched, event)
+
+	def insert_indent(self):
+		cursor = self.editor.textCursor()
+
+		# If the cursor is in the "middle" of a line
+		# and not at the end, we don't need to do any
+		# of the indent calculation stuff, we can just
+		# go ahead and do the enter key event
+		block = cursor.block()
+		block_length = block.length()
+		cursor_pos_in_block = cursor.positionInBlock()
+		if cursor_pos_in_block < block_length - 1:
+			return super().eventFilter(watched, event)
+
+		cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.MoveAnchor)
+		cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
+		current_line_text = cursor.selectedText()
+		
+		cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.MoveAnchor)
+
+		base_indentation = ""
+		for char in current_line_text:
+			if char in (' ', '\t'):
+				base_indentation += char
+			else:
+				break
+		
+		new_line_indent = base_indentation
+		stripped_line = current_line_text.strip()
+		
+		if stripped_line.endswith(':'):
+			extra_indent_unit = self._infer_indent_style()
+			new_line_indent += extra_indent_unit
+
+		cursor.insertText('\n' + new_line_indent)
 
 	def docModified(self):
 		if self.changed: return

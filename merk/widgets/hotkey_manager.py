@@ -84,10 +84,13 @@ class Window(QMainWindow):
 			self.keys.setItemWidget(item, widget)
 
 		if len(self.parent.shortcuts)==0:
-			item = QListWidgetItem(f"No hotkeys found")
+			item = QListWidgetItem()
 			item.dummy = True
 			item.setFlags(item.flags() & ~Qt.ItemIsSelectable)
+			widget = extendedmenuitem.ignoreItem("No hotkeys set")
+			item.setSizeHint(widget.sizeHint())
 			self.keys.addItem(item)
+			self.keys.setItemWidget(item, widget)
 			self.remove.hide()
 		else:
 			self.remove.show()

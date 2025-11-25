@@ -62,6 +62,15 @@ from .set_macro import Dialog as SetMacro
 from .set_ignore import Dialog as SetIgnore
 from .key import Dialog as SetKey
 from .set_bind import Dialog as SetBind
+from .set_method import Dialog as SetMethod
+
+def SetMethodDialog(obj):
+	x = SetMethod(obj)
+	info = x.get_window_information(obj)
+	del x
+
+	if not info: return None
+	return info
 
 def GetIgnore(msg,parent):
 	x = SetIgnore(msg,parent)

@@ -7,6 +7,13 @@
 |==============================================================================|
 
 * Changed the "ban" icon.
+* Changed the "No users ignored" entry in the Ignore Manager to match the
+  "empty list" design of the other managers.
+* Changed the "No hotkeys set" entry in the Hotkey Manager to match the other
+  Managers.
+* Added an "insert" menu to the Python editor; this will insert plugin methods
+  into source code, complete with proper indentation. It includes an entry
+  to insert methods for use with the /call command.
 
 --------------------------------------------------------------------------------
 ################################################################################
