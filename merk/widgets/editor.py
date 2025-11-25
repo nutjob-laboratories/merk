@@ -36,6 +36,7 @@ import os
 from collections import Counter
 from pathlib import Path
 import shutil
+import zipfile
 
 from ..resources import *
 from .. import dialog
@@ -482,6 +483,19 @@ class Window(QMainWindow):
 					self.changed = False
 					self.updateApplicationTitle()
 
+	def doZip(self):
+		if self.filename==None: return
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Write to ZIP", str(Path.home()), f"ZIP File (*.zip);;All Files (*)", options=options)
+		if fileName:
+			base = os.path.basename(self.filename)
+
+			with zipfile.ZipFile(fileName, 'a') as zip_ref:
+				zip_ref.writestr(base, self.editor.toPlainText())
+			
+			QMessageBox.information(self, 'Success', f'File written to "{os.path.basename(fileName)}"!')
+
 	def __init__(self,filename=None,parent=None,subwindow=None,python=False):
 		super(Window, self).__init__(parent)
 
@@ -592,9 +606,19 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doNewScript)
 			self.fileMenu.addAction(entry)
 
+			self.fileMenu.addSeparator()
+
+			entry = QAction(QIcon(FOLDER_ICON),"Scripts directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			self.fileMenu.addAction(entry)
+
 			entry = QAction(QIcon(IMPORT_ICON),"Import script",self)
 			entry.triggered.connect(self.doImport)
 			self.fileMenu.addAction(entry)
+
+			self.zip = QAction(QIcon(EXPORT_ICON),"Write file to ZIP",self)
+			self.zip.triggered.connect(self.doZip)
+			self.fileMenu.addAction(self.zip)
 		else:
 			entry = QAction(QIcon(PLUGIN_ICON),"New plugin",self)
 			entry.triggered.connect(self.doNewPlugin)
@@ -609,6 +633,12 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doNewFile)
 			self.fileMenu.addAction(entry)
 
+			self.fileMenu.addSeparator()
+
+			entry = QAction(QIcon(FOLDER_ICON),"Plugins directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+			self.fileMenu.addAction(entry)
+
 		self.fileMenu.addSeparator()
 
 		self.menuSave = QAction(QIcon(SAVEFILE_ICON),"Save",self)
@@ -618,6 +648,9 @@ class Window(QMainWindow):
 
 		if self.filename==None:
 			self.menuSave.setEnabled(False)
+			if not self.python: self.zip.setEnabled(False)
+		else:
+			if not self.python: self.zip.setEnabled(True)
 
 		self.menuSaveAs = QAction(QIcon(SAVEASFILE_ICON),"Save as...",self)
 		self.menuSaveAs.triggered.connect(self.doFileSaveAs)
@@ -1767,6 +1800,8 @@ class Window(QMainWindow):
 			return
 
 		if self.filename!=None:
+			if hasattr(self,'zip'):
+				if not self.python: self.zip.setEnabled(True)
 			base = os.path.basename(self.filename)
 			if self.changed:
 				self.setWindowTitle(base+"*")
@@ -1779,6 +1814,8 @@ class Window(QMainWindow):
 			self.setWindowTitle(f"Untitled")
 			self.name = "Untitled"
 			self.status_file.setText(f"<small><b>{self.name}</b></small>")
+			if hasattr(self,'zip'):
+				if not self.python: self.zip.setEnabled(False)
 		
 		self.parent.buildWindowsMenu()
 

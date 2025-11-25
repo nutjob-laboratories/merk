@@ -27,7 +27,6 @@
   longer be able to edit any installed plugins.
 * Added the "overwrite files on plugin import" option to the "Settings"
   dialog.
-* Added a new option to en/disable plugin importing.
 * The Plugin Manager now shows how much memory an individual plugin is
   consuming.
 * The Plugin Manager window now is wider when it launches.
@@ -40,8 +39,6 @@
 * Added an option to the Python editor to create a new, blank file.
 * Added a right click context menu to items in the Plugin Manager; this is
   now how plugins are exported and uninstalled.
-* Plugin consoles can now be shown/hidden from the item right click menu
-  in the Plugin Manager.
 * The plugins directory is now accessible from the "Plugins" menu in the
   Plugin Manager.
 * Fixed a bug with the distribution build scripts; the "pike" library wasn't
@@ -94,6 +91,10 @@
   which is then copied into MERK's script directory and opened.
 * MERK scripts included in plugin ZIP files can now be automatically
   copied into the scripts directory on plugin install.
+* The script editor can now write script files directly into ZIP files,
+  allowing the full plugin development cycle to happen inside MERK.
+* The scripts directory can now be opened from the script editor.
+* The plugins directory can now be opened from the Python editor.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
