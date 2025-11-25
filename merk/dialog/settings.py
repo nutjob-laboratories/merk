@@ -4591,10 +4591,12 @@ class Dialog(QDialog):
 		self.plugSubwindow = QCheckBox("subwindow",self)
 		if config.PLUGIN_SUBWINDOW: self.plugSubwindow.setChecked(True)
 		self.plugSubwindow.stateChanged.connect(self.changedSetting)
+		self.plugSubwindow.setFont(f)
 
 		self.plugClose = QCheckBox("close",self)
 		if config.PLUGIN_CLOSE: self.plugClose.setChecked(True)
 		self.plugClose.stateChanged.connect(self.changedSetting)
+		self.plugClose.setFont(f)
 
 		self.plugMe = QCheckBox("me",self)
 		if config.PLUGIN_ME: self.plugMe.setChecked(True)
