@@ -48,7 +48,7 @@ shutil.copy(archive_name, "./downloads/merk-windows-latest.zip")
 
 os.remove(archive_name)
 
-shutil.copy("merk-windows-setup.zip", f"./downloads/merk-setup-{major}.{minor}.zip")
+shutil.copy("merk-windows-setup.zip", f"./downloads/merk-windows-setup-{major}.{minor}.zip")
 
 if os.path.isfile(f"./downloads/merk-windows-setup.zip"): os.remove(f"./downloads/merk-windows-setup.zip")
 
