@@ -14,6 +14,9 @@
 * Added an "insert" menu to the Python editor; this will insert plugin methods
   into source code, complete with proper indentation. It includes an entry
   to insert methods for use with the /call command.
+* Importing a plugin from the Plugin Manager now asks the user if they want to
+  overwrite files, and does so if the user wishes. If the option to overwrite
+  is turned on, this is done automatically.
 
 --------------------------------------------------------------------------------
 ################################################################################

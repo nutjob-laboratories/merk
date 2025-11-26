@@ -1407,7 +1407,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			method = tokens.pop(0)
 
-			mcheck = plugins.does_have_call(method)
+			mcheck = plugins.is_valid_call_method(method)
 			if mcheck==NO_METHOD:
 				if is_script:
 					add_halt(script_id)

@@ -108,6 +108,21 @@ class Window(QMainWindow):
 			overwrite = False
 			ofiles = []
 
+		if not config.OVERWRITE_PLUGINS_ON_IMPORT and overwrite==True:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText("The following files already exist. Overwrite?")
+			msgBox.setInformativeText("\n".join(ofiles))
+			msgBox.setWindowTitle("Overwrite")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				pass
+			else:
+				overwrite = False
+
 		if not overwrite:
 			try:
 				with zipfile.ZipFile(filename, 'r') as zf:

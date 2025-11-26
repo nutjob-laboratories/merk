@@ -812,7 +812,7 @@ def list_all_call_methods():
 			output.append(m)
 	return output
 
-def does_have_call(method):
+def is_valid_call_method(method):
 	if method in EVENTS: return EVENT_METHOD
 	if method in BUILT_IN: return BUILT_IN_METHOD
 	for obj in PLUGINS:
