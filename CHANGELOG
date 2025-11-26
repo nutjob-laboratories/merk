@@ -25,7 +25,8 @@
   Python editor.
 * Added the ability to hide the operating environment (OS, Python version, and
   PyInstaller version) in CTCP VERSION replies.
-* Added the option to disable replying to CTCP VERSION requests
+* Added the option to disable replying to CTCP VERSION requests.
+* Added the option to disable replying to CTCP SOURCE requests.
 
 --------------------------------------------------------------------------------
 ################################################################################

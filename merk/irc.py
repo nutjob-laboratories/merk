@@ -118,6 +118,11 @@ class IRC_Connection(irc.IRCClient):
 
 	def reset_environment(self):
 
+		if config.DO_NOT_REPLY_TO_CTCP_SOURCE:
+			self.sourceURL = None
+		else:
+			self.sourceURL = APPLICATION_SOURCE
+
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
 			self.versionName = None
 			self.versionNum = None

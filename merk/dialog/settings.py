@@ -5009,6 +5009,10 @@ class Dialog(QDialog):
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
 			self.noEnviron.setEnabled(False)
 
+		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE",self)
+		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
+		self.noSource.stateChanged.connect(self.changedSetting)
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
@@ -5023,6 +5027,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(self.hotkeyCmd)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		miscLayout.addWidget(self.searchInstall)
+		miscLayout.addWidget(self.noSource)
 		miscLayout.addWidget(self.noVersion)
 		miscLayout.addWidget(self.noEnviron)
 		miscLayout.addStretch()
@@ -5554,6 +5559,7 @@ class Dialog(QDialog):
 		config.IMPORT_SCRIPTS_IN_PLUGINS = self.pluginScripts.isChecked()
 		config.NO_ENVIRONMENT_IN_CTCP_REPLIES = self.noEnviron.isChecked()
 		config.DO_NOT_REPLY_TO_CTCP_VERSION = self.noVersion.isChecked()
+		config.DO_NOT_REPLY_TO_CTCP_SOURCE = self.noSource.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
