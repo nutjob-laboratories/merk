@@ -6,6 +6,7 @@
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
 
+* Updated the documentation to reflect all new changes.
 * Changed the "ban" icon.
 * Changed the "No users ignored" entry in the Ignore Manager to match the
   "empty list" design of the other managers.
@@ -20,6 +21,8 @@
 * Writing a file to a ZIP with the script editor now overwrites that file if
   the file already exists in the ZIP. This was kind of a bug, but not really?
   Anyway, it's fixed.
+* Moved the "Insert" menu to being directly after the "Edit" menu in the
+  Python editor.
 
 --------------------------------------------------------------------------------
 ################################################################################

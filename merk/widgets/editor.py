@@ -769,6 +769,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(self.close)
 		self.fileMenu.addAction(entry)
 
+		self.editMenu = self.menubar.addMenu("Edit")
+
+		self.buildEditMenu()
+
 		if self.python:
 			self.pInsertMenu = self.menubar.addMenu("Insert")
 
@@ -928,10 +932,6 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertCallMethod)
 			self.pInsertMenu.addAction(entry)
 
-		self.editMenu = self.menubar.addMenu("Edit")
-
-		self.buildEditMenu()
-
 		if not self.python:
 			self.commandMenu = self.menubar.addMenu("Commands")
 
@@ -1006,7 +1006,6 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(QUIT_ICON),f"Exit {APPLICATION_NAME}",self)
 			entry.triggered.connect(self.insertExit)
 			self.appCommands.addAction(entry)
-
 
 			self.winCommands = self.commandMenu.addMenu(QIcon(WINDOW_ICON),"Subwindows")
 
