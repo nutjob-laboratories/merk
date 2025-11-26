@@ -483,17 +483,52 @@ class Window(QMainWindow):
 					self.changed = False
 					self.updateApplicationTitle()
 
+	def write_file_to_zip(self,zip_file,filename):
+		# Check to see if the file already exists
+		# in the zip
+		do_replace = False
+		with zipfile.ZipFile(zip_file, 'r') as zf:
+			for member in zf.infolist():
+				if member.filename==filename: do_replace = True
+		if not do_replace:
+			# File does not already exist, so just write it
+			# to the zip file and return
+			with zipfile.ZipFile(zip_file, 'a') as zip_ref:
+				zip_ref.writestr(filename, self.editor.toPlainText())
+			return
+
+		# Copy everything in the old zip to a temp zip
+		# except for the file to replace
+		temp_zip_filename = zip_file + str(uuid.uuid4())[:8]
+		with zipfile.ZipFile(zip_file, 'r') as zin:
+			with zipfile.ZipFile(temp_zip_filename, 'w') as zout:
+				for item in zin.infolist():
+					if item.filename != filename:
+						buffer = zin.read(item.filename)
+						zout.writestr(item, buffer)
+
+		# Replace the original file with the new one
+		os.remove(zip_file)
+		os.rename(temp_zip_filename, zip_file)
+
+		# Write the new file to the zip
+		with zipfile.ZipFile(zip_file, 'a') as zip_ref:
+			zip_ref.writestr(filename, self.editor.toPlainText())
+
 	def doZip(self):
-		if self.filename==None: return
+		if self.filename==None:
+			e = dialog.SetFilenameDialog(self)
+
+			if not e: return
+			out_file = e
+		else:
+			out_file = os.path.basename(self.filename)
+
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Write to ZIP", str(Path.home()), f"ZIP File (*.zip);;All Files (*)", options=options)
 		if fileName:
-			base = os.path.basename(self.filename)
-
-			with zipfile.ZipFile(fileName, 'a') as zip_ref:
-				zip_ref.writestr(base, self.editor.toPlainText())
-			
+			self.write_file_to_zip(fileName,out_file)
 			QMessageBox.information(self, 'Success', f'File written to "{os.path.basename(fileName)}"!')
 
 	def doInsertCallMethod(self,method):
@@ -682,9 +717,6 @@ class Window(QMainWindow):
 
 		if self.filename==None:
 			self.menuSave.setEnabled(False)
-			if not self.python: self.zip.setEnabled(False)
-		else:
-			if not self.python: self.zip.setEnabled(True)
 
 		self.menuSaveAs = QAction(QIcon(SAVEASFILE_ICON),"Save as...",self)
 		self.menuSaveAs.triggered.connect(self.doFileSaveAs)
@@ -1993,8 +2025,6 @@ class Window(QMainWindow):
 			return
 
 		if self.filename!=None:
-			if hasattr(self,'zip'):
-				if not self.python: self.zip.setEnabled(True)
 			base = os.path.basename(self.filename)
 			if self.changed:
 				self.setWindowTitle(base+"*")
@@ -2006,9 +2036,7 @@ class Window(QMainWindow):
 		else:
 			self.setWindowTitle(f"Untitled")
 			self.name = "Untitled"
-			self.status_file.setText(f"<small><b>{self.name}</b></small>")
-			if hasattr(self,'zip'):
-				if not self.python: self.zip.setEnabled(False)
+			self.status_file.setText(f"<small><b>{self.name}</b></small>")		
 		
 		self.parent.buildWindowsMenu()
 

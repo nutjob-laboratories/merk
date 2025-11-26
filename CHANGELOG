@@ -17,6 +17,9 @@
 * Importing a plugin from the Plugin Manager now asks the user if they want to
   overwrite files, and does so if the user wishes. If the option to overwrite
   is turned on, this is done automatically.
+* Writing a file to a ZIP with the script editor now overwrites that file if
+  the file already exists in the ZIP. This was kind of a bug, but not really?
+  Anyway, it's fixed.
 
 --------------------------------------------------------------------------------
 ################################################################################

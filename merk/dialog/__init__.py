@@ -63,6 +63,15 @@ from .set_ignore import Dialog as SetIgnore
 from .key import Dialog as SetKey
 from .set_bind import Dialog as SetBind
 from .set_method import Dialog as SetMethod
+from .set_file import Dialog as SetFilename
+
+def SetFilenameDialog(obj):
+	x = SetFilename(obj)
+	info = x.get_window_information(obj)
+	del x
+
+	if not info: return None
+	return info
 
 def SetMethodDialog(obj):
 	x = SetMethod(obj)
