@@ -1402,6 +1402,15 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def changedSettingVersion(self):
+		if self.noVersion.isChecked():
+			self.noEnviron.setEnabled(False)
+		else:
+			self.noEnviron.setEnabled(True)
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
 	def setMainMenu(self):
 		info = dialog.SetMenuNameDialog(self.default_main_menu,self)
 
@@ -4913,7 +4922,6 @@ class Dialog(QDialog):
 			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
 			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
 			</small>
-			<br>
 			""")
 		self.emojiDescription.setWordWrap(True)
 		self.emojiDescription.setAlignment(Qt.AlignJustify)
@@ -4994,14 +5002,19 @@ class Dialog(QDialog):
 		self.noEnviron.stateChanged.connect(self.changedSetting)
 		self.noEnviron.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION",self)
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
+		self.noVersion.stateChanged.connect(self.changedSettingVersion)
+
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
+			self.noEnviron.setEnabled(False)
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
-		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
-		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addWidget(self.searchAllTerms)
 		miscLayout.addWidget(self.examineTopic)
@@ -5010,6 +5023,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(self.hotkeyCmd)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		miscLayout.addWidget(self.searchInstall)
+		miscLayout.addWidget(self.noVersion)
 		miscLayout.addWidget(self.noEnviron)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
@@ -5539,6 +5553,7 @@ class Dialog(QDialog):
 		config.ENABLE_CALL_COMMAND = self.pluginCall.isChecked()
 		config.IMPORT_SCRIPTS_IN_PLUGINS = self.pluginScripts.isChecked()
 		config.NO_ENVIRONMENT_IN_CTCP_REPLIES = self.noEnviron.isChecked()
+		config.DO_NOT_REPLY_TO_CTCP_VERSION = self.noVersion.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

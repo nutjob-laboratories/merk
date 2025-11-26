@@ -369,9 +369,11 @@ AUTOCOMPLETE_METHODS = True
 ENABLE_CALL_COMMAND = True
 IMPORT_SCRIPTS_IN_PLUGINS = True
 NO_ENVIRONMENT_IN_CTCP_REPLIES = False
+DO_NOT_REPLY_TO_CTCP_VERSION = False
 
 def build_settings():
 	settings = {
+		"do_not_reply_to_ctcp_version": DO_NOT_REPLY_TO_CTCP_VERSION,
 		"do_not_show_environment_in_ctcp_version": NO_ENVIRONMENT_IN_CTCP_REPLIES,
 		"import_scripts_in_plugin_packages": IMPORT_SCRIPTS_IN_PLUGINS,
 		"enable_call_command": ENABLE_CALL_COMMAND,
@@ -707,6 +709,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "do_not_reply_to_ctcp_version" in settings:
+		settings["do_not_reply_to_ctcp_version"] = DO_NOT_REPLY_TO_CTCP_VERSION
 	if not "do_not_show_environment_in_ctcp_version" in settings:
 		settings["do_not_show_environment_in_ctcp_version"] = NO_ENVIRONMENT_IN_CTCP_REPLIES
 	if not "import_scripts_in_plugin_packages" in settings:
@@ -1701,6 +1705,7 @@ def load_settings(filename):
 	global ENABLE_CALL_COMMAND
 	global IMPORT_SCRIPTS_IN_PLUGINS
 	global NO_ENVIRONMENT_IN_CTCP_REPLIES
+	global DO_NOT_REPLY_TO_CTCP_VERSION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1710,6 +1715,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DO_NOT_REPLY_TO_CTCP_VERSION = settings["do_not_reply_to_ctcp_version"]
 		NO_ENVIRONMENT_IN_CTCP_REPLIES = settings["do_not_show_environment_in_ctcp_version"]
 		IMPORT_SCRIPTS_IN_PLUGINS = settings["import_scripts_in_plugin_packages"]
 		ENABLE_CALL_COMMAND = settings["enable_call_command"]
