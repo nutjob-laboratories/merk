@@ -368,9 +368,11 @@ DEFAULT_PYTHON_INDENT = "    "
 AUTOCOMPLETE_METHODS = True
 ENABLE_CALL_COMMAND = True
 IMPORT_SCRIPTS_IN_PLUGINS = True
+NO_ENVIRONMENT_IN_CTCP_REPLIES = False
 
 def build_settings():
 	settings = {
+		"do_not_show_environment_in_ctcp_version": NO_ENVIRONMENT_IN_CTCP_REPLIES,
 		"import_scripts_in_plugin_packages": IMPORT_SCRIPTS_IN_PLUGINS,
 		"enable_call_command": ENABLE_CALL_COMMAND,
 		"autocomplete_methods": AUTOCOMPLETE_METHODS,
@@ -705,6 +707,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "do_not_show_environment_in_ctcp_version" in settings:
+		settings["do_not_show_environment_in_ctcp_version"] = NO_ENVIRONMENT_IN_CTCP_REPLIES
 	if not "import_scripts_in_plugin_packages" in settings:
 		settings["import_scripts_in_plugin_packages"] = IMPORT_SCRIPTS_IN_PLUGINS
 	if not "enable_call_command" in settings:
@@ -1696,6 +1700,7 @@ def load_settings(filename):
 	global AUTOCOMPLETE_METHODS
 	global ENABLE_CALL_COMMAND
 	global IMPORT_SCRIPTS_IN_PLUGINS
+	global NO_ENVIRONMENT_IN_CTCP_REPLIES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1705,6 +1710,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		NO_ENVIRONMENT_IN_CTCP_REPLIES = settings["do_not_show_environment_in_ctcp_version"]
 		IMPORT_SCRIPTS_IN_PLUGINS = settings["import_scripts_in_plugin_packages"]
 		ENABLE_CALL_COMMAND = settings["enable_call_command"]
 		AUTOCOMPLETE_METHODS = settings["autocomplete_methods"]

@@ -1231,6 +1231,8 @@ class Merk(QMainWindow):
 		t = Message(SYSTEM_MESSAGE,'',"Connected to "+client.server+":"+str(client.port)+"!")
 		c.writeText(t)
 
+		client.reset_environment()
+
 		plugins.call(self,"connecting",client=client)
 
 	def connectionLost(self,client):

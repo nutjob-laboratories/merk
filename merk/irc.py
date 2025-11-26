@@ -85,6 +85,22 @@ def reconnectSSL(**kwargs):
 	bot = IRC_ReConnection_Factory(**kwargs)
 	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
 
+def regenerate_environment_variables():
+	global PYTHON_VERSION
+	global OS_VERSION
+	global PLATFORM
+
+	PYTHON_VERSION = f"{platform.python_version().strip()}"
+	OS_VERSION = f"{platform.system().strip() + " " + platform.release().strip()}"
+	if is_running_from_pyinstaller():
+		PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION} via PyInstaller {get_pyinstaller_version()}"
+	else:
+		PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION}"
+
+def reset_environment():
+	for c in CONNECTIONS:
+		CONNECTIONS[c].reset_environment()
+
 class IRC_Connection(irc.IRCClient):
 	nickname = 'merk'
 	realname = 'merk'
@@ -99,6 +115,14 @@ class IRC_Connection(irc.IRCClient):
 
 	fingerReply = None
 	userinfo = None
+
+	def reset_environment(self):
+
+		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES:
+			self.versionEnv = None
+		else:
+			regenerate_environment_variables()
+			self.versionEnv = PLATFORM
 
 	def __init__(self,**kwargs):
 

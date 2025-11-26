@@ -23,6 +23,8 @@
   Anyway, it's fixed.
 * Moved the "Insert" menu to being directly after the "Edit" menu in the
   Python editor.
+* Added the ability to hide the operating environment (OS, Python version, and
+  PyInstaller version) in CTCP replies.
 
 --------------------------------------------------------------------------------
 ################################################################################

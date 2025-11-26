@@ -4989,6 +4989,11 @@ class Dialog(QDialog):
 		if not config.ENABLE_HOTKEYS:
 			self.hotkeyCmd.setEnabled(False)
 
+		self.noEnviron = QCheckBox(f"Do not show environment in CTCP\nVERSION replies",self)
+		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
+		self.noEnviron.stateChanged.connect(self.changedSetting)
+		self.noEnviron.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
@@ -5005,7 +5010,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(self.hotkeyCmd)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		miscLayout.addWidget(self.searchInstall)
-		miscLayout.addWidget(self.hotkeyCmd)
+		miscLayout.addWidget(self.noEnviron)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
 
@@ -5533,6 +5538,7 @@ class Dialog(QDialog):
 		config.AUTOCOMPLETE_METHODS = self.autocompleteMethods.isChecked()
 		config.ENABLE_CALL_COMMAND = self.pluginCall.isChecked()
 		config.IMPORT_SCRIPTS_IN_PLUGINS = self.pluginScripts.isChecked()
+		config.NO_ENVIRONMENT_IN_CTCP_REPLIES = self.noEnviron.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -5771,6 +5777,8 @@ class Dialog(QDialog):
 				msgBox.setWindowTitle("Plugin load error")
 				msgBox.setStandardButtons(QMessageBox.Ok)
 				msgBox.exec()
+
+		irc.reset_environment()
 
 		w = self.parent.MDI.activeSubWindow()
 		self.parent.merk_subWindowActivated(w)
