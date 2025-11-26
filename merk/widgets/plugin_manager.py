@@ -86,8 +86,8 @@ class Window(QMainWindow):
 						if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
 
 						if config.IMPORT_SCRIPTS_IN_PLUGINS:
-							file_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
-							name_without_extension, extension = os.path.splitext(file_path)
+							sfile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+							name_without_extension, extension = os.path.splitext(sfile_path)
 							if extension.lower()=='.merk': extract_file = True
 
 
@@ -95,6 +95,9 @@ class Window(QMainWindow):
 							if os.path.exists(file_path):
 								overwrite = True
 								ofiles.append(file_path)
+							if os.path.exists(sfile_path):
+								overwrite = True
+								ofiles.append(sfile_path)
 			except zipfile.BadZipFile:
 				QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
 				return
