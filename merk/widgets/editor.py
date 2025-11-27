@@ -850,6 +850,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="error": self.doInsertEventMethod(u))
 			self.conenv.addAction(entry)
 
+			entry = QAction(QIcon(CONNECT_ICON),"isupport",self)
+			entry.triggered.connect(lambda state,u="isupport": self.doInsertEventMethod(u))
+			self.conenv.addAction(entry)
+
 			entry = QAction(QIcon(CONNECT_ICON),"lost",self)
 			entry.triggered.connect(lambda state,u="lost": self.doInsertEventMethod(u))
 			self.conenv.addAction(entry)

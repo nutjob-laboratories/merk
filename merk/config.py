@@ -371,9 +371,11 @@ IMPORT_SCRIPTS_IN_PLUGINS = True
 NO_ENVIRONMENT_IN_CTCP_REPLIES = False
 DO_NOT_REPLY_TO_CTCP_VERSION = False
 DO_NOT_REPLY_TO_CTCP_SOURCE = False
+PLUGIN_ISUPPORT = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_isupport_event": PLUGIN_ISUPPORT,
 		"do_not_reply_to_ctcp_source": DO_NOT_REPLY_TO_CTCP_SOURCE,
 		"do_not_reply_to_ctcp_version": DO_NOT_REPLY_TO_CTCP_VERSION,
 		"do_not_show_environment_in_ctcp_version": NO_ENVIRONMENT_IN_CTCP_REPLIES,
@@ -711,6 +713,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_isupport_event" in settings:
+		settings["enable_plugin_isupport_event"] = PLUGIN_ISUPPORT
 	if not "do_not_reply_to_ctcp_source" in settings:
 		settings["do_not_reply_to_ctcp_source"] = DO_NOT_REPLY_TO_CTCP_SOURCE
 	if not "do_not_reply_to_ctcp_version" in settings:
@@ -1711,6 +1715,7 @@ def load_settings(filename):
 	global NO_ENVIRONMENT_IN_CTCP_REPLIES
 	global DO_NOT_REPLY_TO_CTCP_VERSION
 	global DO_NOT_REPLY_TO_CTCP_SOURCE
+	global PLUGIN_ISUPPORT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1720,6 +1725,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_ISUPPORT = settings["enable_plugin_isupport_event"]
 		DO_NOT_REPLY_TO_CTCP_SOURCE = settings["do_not_reply_to_ctcp_source"]
 		DO_NOT_REPLY_TO_CTCP_VERSION = settings["do_not_reply_to_ctcp_version"]
 		NO_ENVIRONMENT_IN_CTCP_REPLIES = settings["do_not_show_environment_in_ctcp_version"]

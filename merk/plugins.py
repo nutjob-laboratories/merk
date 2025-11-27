@@ -719,7 +719,7 @@ EVENTS = [
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
-	'server', 'subwindow', 'close', 'me', 'error'
+	'server', 'subwindow', 'close', 'me', 'error', 'isupport'
 ]
 
 BUILT_IN = [
@@ -774,6 +774,7 @@ def call(gui,method,**arguments):
 	if method=='close' and not config.PLUGIN_CLOSE: return
 	if method=='me' and not config.PLUGIN_ME: return
 	if method=='error' and not config.PLUGIN_ERROR: return
+	if method=='isupport' and not config.PLUGIN_ISUPPORT: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):

@@ -28,6 +28,13 @@
 * Added the option to disable replying to CTCP VERSION requests.
 * Added the option to disable replying to CTCP SOURCE requests.
 
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* New Plugin event: isupport, which triggers when the server sends the client
+  a list of the options the server supports.
+
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------

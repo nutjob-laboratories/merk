@@ -441,6 +441,7 @@ class Dialog(QDialog):
 			self.pluginCall.setEnabled(True)
 			self.pluginOverwrite.setEnabled(True)
 			self.pluginScripts.setEnabled(True)
+			self.plugSupport.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -487,6 +488,7 @@ class Dialog(QDialog):
 			self.pluginCall.setEnabled(False)
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginScripts.setEnabled(False)
+			self.plugSupport.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4616,6 +4618,10 @@ class Dialog(QDialog):
 		if config.PLUGIN_ERROR: self.plugError.setChecked(True)
 		self.plugError.stateChanged.connect(self.changedSetting)
 
+		self.plugSupport = QCheckBox("isupport",self)
+		if config.PLUGIN_ISUPPORT: self.plugSupport.setChecked(True)
+		self.plugSupport.stateChanged.connect(self.changedSetting)
+
 		self.pluginOverwrite = QCheckBox("Overwrite files on install",self)
 		if config.OVERWRITE_PLUGINS_ON_IMPORT: self.pluginOverwrite.setChecked(True)
 		self.pluginOverwrite.stateChanged.connect(self.changedSetting)
@@ -4668,6 +4674,7 @@ class Dialog(QDialog):
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginCall.setEnabled(False)
 			self.pluginScripts.setEnabled(False)
+			self.plugSupport.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
 		row1Layout.addWidget(self.plugAction)
@@ -4690,44 +4697,44 @@ class Dialog(QDialog):
 		row4Layout.addWidget(self.plugInvite)
 
 		row5Layout = QHBoxLayout()
+		row5Layout.addWidget(self.plugSupport)
 		row5Layout.addWidget(self.plugJoin)
 		row5Layout.addWidget(self.plugJoined)
-		row5Layout.addWidget(self.plugKick)
 
 		row6Layout = QHBoxLayout()
+		row6Layout.addWidget(self.plugKick)
 		row6Layout.addWidget(self.plugKicked)
 		row6Layout.addWidget(self.plugLeft)
-		row6Layout.addWidget(self.plugIn)
 
 		row7Layout = QHBoxLayout()
+		row7Layout.addWidget(self.plugIn)
 		row7Layout.addWidget(self.plugOut)
 		row7Layout.addWidget(self.plugLost)
-		row7Layout.addWidget(self.plugMe)
 
 		row8Layout = QHBoxLayout()
+		row8Layout.addWidget(self.plugMe)
 		row8Layout.addWidget(self.plugMessage)
 		row8Layout.addWidget(self.plugMode)
-		row8Layout.addWidget(self.plugMotd)
 
 		row9Layout = QHBoxLayout()
+		row9Layout.addWidget(self.plugMotd)
 		row9Layout.addWidget(self.plugNick)
 		row9Layout.addWidget(self.plugNotice)
-		row9Layout.addWidget(self.plugPart)
 
 		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugPart)
 		row10Layout.addWidget(self.plugPing)
 		row10Layout.addWidget(self.plugQuit)
-		row10Layout.addWidget(self.plugRename)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugRename)
 		row11Layout.addWidget(self.plugServer)
 		row11Layout.addWidget(self.plugSubwindow)
-		row11Layout.addWidget(self.plugTick)
 
 		row12Layout = QHBoxLayout()
+		row12Layout.addWidget(self.plugTick)
 		row12Layout.addWidget(self.plugTopic)
 		row12Layout.addWidget(self.plugUnmode)
-		row12Layout.addWidget(QLabel(' '))
 
 		plugLayout = QHBoxLayout()
 		plugLayout.addWidget(self.enablePlugins)
@@ -5002,14 +5009,14 @@ class Dialog(QDialog):
 		self.noEnviron.stateChanged.connect(self.changedSetting)
 		self.noEnviron.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION",self)
+		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION request",self)
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
 		self.noVersion.stateChanged.connect(self.changedSettingVersion)
 
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
 			self.noEnviron.setEnabled(False)
 
-		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE",self)
+		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE request",self)
 		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
 		self.noSource.stateChanged.connect(self.changedSetting)
 
@@ -5560,6 +5567,7 @@ class Dialog(QDialog):
 		config.NO_ENVIRONMENT_IN_CTCP_REPLIES = self.noEnviron.isChecked()
 		config.DO_NOT_REPLY_TO_CTCP_VERSION = self.noVersion.isChecked()
 		config.DO_NOT_REPLY_TO_CTCP_SOURCE = self.noSource.isChecked()
+		config.PLUGIN_ISUPPORT = self.plugSupport.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

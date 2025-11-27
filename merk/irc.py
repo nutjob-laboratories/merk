@@ -1082,6 +1082,8 @@ class IRC_Connection(irc.IRCClient):
 	def isupport(self,options):
 		self.options = options
 
+		plugins.call(self.gui,"isupport",client=self,options=options)
+
 		for o in options:
 			p = o.split('=')
 			if len(p)==2:

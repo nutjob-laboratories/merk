@@ -248,6 +248,21 @@ class ExamplePlugin(Plugin):
         user = args["user"]
         channel = args["channel"]
 
+    # |==========|
+    # | isupport |
+    # |==========|
+    #
+    # This event is triggered whenever the server sends the
+    # client a list of options the server supports.
+    #
+    # Arguments:
+    #   client = The Twisted IRC object that triggered the event
+    #   options = List of strings. The options the server supports
+    #
+    def isupport(self,**args):
+        client = args["client"]
+        options = args["options"]
+
     # |======|
     # | join |
     # |======|
