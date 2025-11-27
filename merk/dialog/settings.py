@@ -5009,14 +5009,14 @@ class Dialog(QDialog):
 		self.noEnviron.stateChanged.connect(self.changedSetting)
 		self.noEnviron.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION request",self)
+		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
 		self.noVersion.stateChanged.connect(self.changedSettingVersion)
 
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
 			self.noEnviron.setEnabled(False)
 
-		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE request",self)
+		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
 		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
 		self.noSource.stateChanged.connect(self.changedSetting)
 
