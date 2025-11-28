@@ -495,7 +495,7 @@ class Window(QMainWindow):
 			self.banlist_menu.hide()
 
 			self.channel_menu = QPushButton("")
-			self.channel_menu.setIcon(QIcon(MODES_ICON))
+			self.channel_menu.setIcon(QIcon(OP_USER))
 			self.channel_menu.setMenu(buildBanMenu(self,self.client))
 			self.channel_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 			self.channel_menu.setToolTip("Set channel modes")

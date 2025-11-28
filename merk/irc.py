@@ -529,6 +529,9 @@ class IRC_Connection(irc.IRCClient):
 				if m=='o':
 					self.gui.setMode(self,user,channel,m,[args[0]])
 					continue
+				if m=='b':
+					self.gui.setMode(self,user,channel,m,[args[0]])
+					continue
 				self.gui.setMode(self,user,channel,m,[])
 
 			else:
@@ -541,6 +544,9 @@ class IRC_Connection(irc.IRCClient):
 				if m=="k":
 					if channel in self.channelkeys: del self.channelkeys[channel]
 				if m=='o':
+					self.gui.unsetMode(self,user,channel,m,[args[0]])
+					continue
+				if m=='b':
 					self.gui.unsetMode(self,user,channel,m,[args[0]])
 					continue
 

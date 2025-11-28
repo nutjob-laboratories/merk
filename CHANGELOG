@@ -27,6 +27,13 @@
   PyInstaller version) in CTCP VERSION replies.
 * Added the option to disable replying to CTCP VERSION requests.
 * Added the option to disable replying to CTCP SOURCE requests.
+* Added a new example plugin to the documentation; this one uses "urllib"
+  from Python's standard library, thus showing how plugins can use Python libs
+  on all platforms/distributions.
+* Changed the icon for the channel mode menu. The icon the menu uses is now
+  the same as the channel operator icon.
+* Fixed a bug where the target of a channel ban or unban was not being
+  displayed properly.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
