@@ -34,6 +34,8 @@
   the same as the channel operator icon.
 * Fixed a bug where the target of a channel ban or unban was not being
   displayed properly.
+* Refined how modes being set or unset were displayed to the user; now, more
+  information about the mode details are being displayed.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
