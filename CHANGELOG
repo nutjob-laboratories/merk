@@ -20,7 +20,7 @@
   is turned on, this is done automatically.
 * Writing a file to a ZIP with the script editor now overwrites that file if
   the file already exists in the ZIP. This was kind of a bug, but not really?
-  Anyway, it's fixed.
+  Anyway, it's fixed/working as intended.
 * Moved the "Insert" menu to being directly after the "Edit" menu in the
   Python editor.
 * Added the ability to hide the operating environment (OS, Python version, and
@@ -36,6 +36,7 @@
   displayed properly.
 * Refined how modes being set or unset were displayed to the user; now, more
   information about the mode details are being displayed.
+* Tweaked the spacing on a few of the "pages" in the Settings dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

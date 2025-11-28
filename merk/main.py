@@ -1918,6 +1918,10 @@ class Merk(QMainWindow):
 		if len(mode.strip())==0: return
 
 		argument = list(dict.fromkeys(argument))
+		clean = []
+		for e in argument:
+			if e!=None: clean.append(e)
+		argument = clean
 
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument))
 

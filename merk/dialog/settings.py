@@ -1901,6 +1901,7 @@ class Dialog(QDialog):
 		app2Layout.addStretch()
 
 		forceLayout = QFormLayout()
+		forceLayout.setSpacing(0)
 		forceLayout.addRow(self.forceDefault,self.notInputWidget)
 		forceLayout.addRow(self.notUserlist)
 
@@ -2374,6 +2375,7 @@ class Dialog(QDialog):
 			self.windowBarBold.setEnabled(False)
 
 		includesLayout = QFormLayout()
+		includesLayout.setSpacing(0)
 		includesLayout.addRow(self.windowbarChannels,self.windowbarPrivate)
 		includesLayout.addRow(self.windowBarServers,self.windowBarEditor)
 		includesLayout.addRow(self.windowbarLists,self.windowbarManager)
@@ -2491,6 +2493,7 @@ class Dialog(QDialog):
 		self.showStatusEditor.stateChanged.connect(self.changedSetting)
 
 		statusLayout = QFormLayout()
+		statusLayout.setSpacing(0)
 		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
 		statusLayout.addRow(self.showStatusList,self.showStatusEditor)
 
@@ -2642,14 +2645,17 @@ class Dialog(QDialog):
 		discLay.addStretch()
 
 		nickPriv = QHBoxLayout()
+		nickPriv.setSpacing(0)
 		nickPriv.addWidget(self.systrayNickname)
 		nickPriv.addWidget(self.systrayPrivate)
 
 		kickInvite = QHBoxLayout()
+		kickInvite.setSpacing(0)
 		kickInvite.addWidget(self.systrayKick)
 		kickInvite.addWidget(self.systrayInvite)
 
 		noticeMode = QHBoxLayout()
+		noticeMode.setSpacing(0)
 		noticeMode.addWidget(self.systrayNotice)
 		noticeMode.addWidget(self.systrayMode)
 
@@ -3702,6 +3708,7 @@ class Dialog(QDialog):
 		historyMaster.addStretch()
 
 		autoSettingsLayout = QFormLayout()
+		autoSettingsLayout.setSpacing(0)
 		autoSettingsLayout.addRow(self.autocompleteCommands,self.autocompleteNicks)
 		autoSettingsLayout.addRow(self.autocompleteChans,self.autocompleteEmojis)
 		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteAlias)
