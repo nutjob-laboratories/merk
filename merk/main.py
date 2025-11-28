@@ -1974,8 +1974,6 @@ class Merk(QMainWindow):
 		else:
 			udisplay = nickname
 
-		argument = list(dict.fromkeys(argument))
-
 		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+' '.join(argument))
 
 		if mode=='k':
@@ -2013,8 +2011,6 @@ class Merk(QMainWindow):
 			hostmask = None
 
 		self.updateHostmask(client,nickname,hostmask)
-
-		argument = list(dict.fromkeys(argument))
 
 		if len(mode.strip())==0: return
 

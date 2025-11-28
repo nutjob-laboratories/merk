@@ -502,6 +502,12 @@ class IRC_Connection(irc.IRCClient):
 		if "o" in modes: self.sendLine("NAMES "+channel)
 		if "v" in modes: self.sendLine("NAMES "+channel)
 
+		largs = list(args)
+		cleaned = []
+		for e in largs:
+			if e!=None: cleaned.append(e)
+		largs = cleaned
+
 		for m in modes:
 			if mset:
 				
@@ -522,10 +528,15 @@ class IRC_Connection(irc.IRCClient):
 				# Remove 'k' from channel modes
 				self.channelmodes[channel] = self.channelmodes[channel].replace('k','')
 
-				if m=='k':
-					self.channelkeys[channel] = args[0]
+				try:
+					marg = largs.pop(0)
+				except:
+					marg = ''
 
-				self.gui.setMode(self,user,channel,m,list(args))
+				if m=='k':
+					self.channelkeys[channel] = marg
+
+				self.gui.setMode(self,user,channel,m,[marg])
 			else:
 				if channel==self.nickname: self.usermodes = self.usermodes.replace(m,'')
 
@@ -534,8 +545,13 @@ class IRC_Connection(irc.IRCClient):
 
 				if m=="k":
 					if channel in self.channelkeys: del self.channelkeys[channel]
+
+				try:
+					marg = largs.pop(0)
+				except:
+					marg = ''
 				
-				self.gui.unsetMode(self,user,channel,m,list(args))
+				self.gui.unsetMode(self,user,channel,m,[marg])
 
 	def irc_RPL_CHANNELMODEIS(self, prefix, params):
 		params.pop(0)
