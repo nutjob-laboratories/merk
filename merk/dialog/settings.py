@@ -5638,6 +5638,9 @@ class Dialog(QDialog):
 					self.parent.setWindowFlags(self.parent.windowFlags() | Qt.WindowStaysOnTopHint)
 					if not self.parent.is_hidden:
 						self.parent.show()
+					if self.parent.hotkey_manager!=None: self.parent.hotkey_manager.toggleTop()
+					if self.parent.ignore_manager!=None: self.parent.ignore_manager.toggleTop()
+					if self.parent.plugin_manager!=None: self.parent.plugin_manager.toggleTop()
 		else:
 			if config.ALWAYS_ON_TOP:
 				config.ALWAYS_ON_TOP = False
@@ -5645,6 +5648,9 @@ class Dialog(QDialog):
 					self.parent.setWindowFlags(self.parent.windowFlags() & ~Qt.WindowStaysOnTopHint)
 					if not self.parent.is_hidden:
 						self.parent.show()
+					if self.parent.hotkey_manager!=None: self.parent.hotkey_manager.toggleTop()
+					if self.parent.ignore_manager!=None: self.parent.ignore_manager.toggleTop()
+					if self.parent.plugin_manager!=None: self.parent.plugin_manager.toggleTop()
 
 		if self.interval!=config.LOG_SAVE_INTERVAL:
 			config.LOG_SAVE_INTERVAL = self.interval

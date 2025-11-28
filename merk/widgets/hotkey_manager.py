@@ -127,8 +127,15 @@ class Window(QMainWindow):
 				QMessageBox.warning(self, 'Warning', f'Hotkey \"{seq}\" was not added.')
 
 			self.refresh()
-		
 
+	def toggleTop(self):
+		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):
+			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+			self.show()
+		else:
+			self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+			self.show()
+		
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
@@ -191,3 +198,6 @@ class Window(QMainWindow):
 		self.centralWidget = QWidget()
 		self.centralWidget.setLayout(finalLayout)
 		self.setCentralWidget(self.centralWidget)
+
+		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):
+			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)

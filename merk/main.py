@@ -2631,8 +2631,15 @@ class Merk(QMainWindow):
 		if not self.ontop:
 			if config.ALWAYS_ON_TOP:
 				self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+				if self.hotkey_manager!=None: self.hotkey_manager.toggleTop()
+				if self.ignore_manager!=None: self.ignore_manager.toggleTop()
+				if self.plugin_manager!=None: self.plugin_manager.toggleTop()
+
 			else:
 				self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+				if self.hotkey_manager!=None: self.hotkey_manager.toggleTop()
+				if self.ignore_manager!=None: self.ignore_manager.toggleTop()
+				if self.plugin_manager!=None: self.plugin_manager.toggleTop()
 
 		if not self.fullscreen:
 			if config.SHOW_FULL_SCREEN:
@@ -3928,10 +3935,16 @@ class Merk(QMainWindow):
 		if config.ALWAYS_ON_TOP:
 			config.ALWAYS_ON_TOP = False
 			self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+			if self.hotkey_manager!=None: self.hotkey_manager.toggleTop()
+			if self.ignore_manager!=None: self.ignore_manager.toggleTop()
+			if self.plugin_manager!=None: self.plugin_manager.toggleTop()
 			self.show()
 		else:
 			config.ALWAYS_ON_TOP = True
 			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+			if self.hotkey_manager!=None: self.hotkey_manager.toggleTop()
+			if self.ignore_manager!=None: self.ignore_manager.toggleTop()
+			if self.plugin_manager!=None: self.plugin_manager.toggleTop()
 			self.show()
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()

@@ -37,6 +37,9 @@
 * Refined how modes being set or unset were displayed to the user; now, more
   information about the mode details are being displayed.
 * Tweaked the spacing on a few of the "pages" in the Settings dialog.
+* If "always on top" is turned on while running, any of the managers that are
+  open will now have the same setting, and will be updated without having
+  to close and restart them.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

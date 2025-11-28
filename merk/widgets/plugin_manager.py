@@ -459,6 +459,14 @@ class Window(QMainWindow):
 
 						menu.exec_(self.plugin_list.mapToGlobal(position))
 
+	def toggleTop(self):
+		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):
+			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+			self.show()
+		else:
+			self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
+			self.show()
+
 	def __init__(self,parent=None):
 		super(Window,self).__init__(parent)
 
@@ -535,3 +543,6 @@ class Window(QMainWindow):
 		self.setCentralWidget(self.centralWidget)
 
 		self.resize(350,300)
+
+		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):
+			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
