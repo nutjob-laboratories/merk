@@ -4870,6 +4870,7 @@ class Dialog(QDialog):
 		self.toggleSyntaxInput.stateChanged.connect(self.changedSetting)
 
 		tbLay = QFormLayout()
+		tbLay.setSpacing(0)
 		tbLay.addRow(self.syntaxfore, self.syntaxback)
 		tbLay.addRow(self.syntaxcomment, self.syntaxcommand)
 		tbLay.addRow(self.syntaxchannel, self.syntaxalias)

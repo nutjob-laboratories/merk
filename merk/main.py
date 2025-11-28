@@ -1917,13 +1917,7 @@ class Merk(QMainWindow):
 
 		if len(mode.strip())==0: return
 
-		if argument:
-			c = []
-			for e in argument:
-				if e: c.append(e)
-			argument = c
-		else:
-			argument = []
+		argument = list(dict.fromkeys(argument))
 
 		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument))
 
@@ -1980,13 +1974,7 @@ class Merk(QMainWindow):
 		else:
 			udisplay = nickname
 
-		if argument:
-			c = []
-			for e in argument:
-				if e: c.append(e)
-			argument = c
-		else:
-			argument = []
+		argument = list(dict.fromkeys(argument))
 
 		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+' '.join(argument))
 
@@ -2025,6 +2013,8 @@ class Merk(QMainWindow):
 			hostmask = None
 
 		self.updateHostmask(client,nickname,hostmask)
+
+		argument = list(dict.fromkeys(argument))
 
 		if len(mode.strip())==0: return
 

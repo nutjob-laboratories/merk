@@ -524,12 +524,9 @@ class IRC_Connection(irc.IRCClient):
 
 				if m=='k':
 					self.channelkeys[channel] = args[0]
-					self.gui.setMode(self,user,channel,m,args[0])
-					continue
-				self.gui.setMode(self,user,channel,m,list(args))
 
+				self.gui.setMode(self,user,channel,m,list(args))
 			else:
-				
 				if channel==self.nickname: self.usermodes = self.usermodes.replace(m,'')
 
 				if channel in self.channelmodes:
@@ -537,6 +534,7 @@ class IRC_Connection(irc.IRCClient):
 
 				if m=="k":
 					if channel in self.channelkeys: del self.channelkeys[channel]
+				
 				self.gui.unsetMode(self,user,channel,m,list(args))
 
 	def irc_RPL_CHANNELMODEIS(self, prefix, params):
