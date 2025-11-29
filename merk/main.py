@@ -1495,7 +1495,7 @@ class Merk(QMainWindow):
 				t = Message(SYSTEM_MESSAGE,'',f"You are marked as being back")
 				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-	def gotVersion(self,client,server,version):
+	def gotServerVersion(self,client,server,version):
 		w = self.getServerWindow(client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',f"{server} VERSION: {version}")
@@ -1922,10 +1922,10 @@ class Merk(QMainWindow):
 			if e!=None: clean.append(e)
 		argument = clean
 
-		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument))
+		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
 		if mode=="k":
-			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument))
+			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1948,7 +1948,7 @@ class Merk(QMainWindow):
 
 		if len(mode.strip())==0: return
 
-		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode)
+		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode+" on "+target)
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1958,7 +1958,7 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
 
-		plugins.call(self,"unmode",client=client,user="*",target=target,mode=mode,arguments=())
+		plugins.call(self,"unmode",client=client,user="*",target=target,mode=mode,arguments=[])
 
 	def setMode(self,client,user,target,mode,argument):
 		self.refreshModeDisplay(client)
@@ -1980,10 +1980,10 @@ class Merk(QMainWindow):
 		else:
 			udisplay = nickname
 
-		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+' '.join(argument))
+		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
 		if mode=='k':
-			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+''.join(argument))
+			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode +"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2025,10 +2025,10 @@ class Merk(QMainWindow):
 		else:
 			udisplay = nickname
 
-		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+' '.join(argument))
+		t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+' '.join(argument)+" on "+target)
 
 		if mode=="k":
-			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+''.join(argument))
+			t = Message(SYSTEM_MESSAGE,'',udisplay+" set mode -"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)

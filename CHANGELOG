@@ -44,6 +44,10 @@
   dialog to the Settings dialog.
 * The "plugin has an open console" marker in the Plugin Manager can now be
   set in the config file.
+* The "arguments" argument to the mode() and unmode() Plugin events is now
+  always passed as a list of strings, rather than a tuple.
+* Mode setting and unsetting messages now always display the target of the
+  set or unset in every window the message is displayed in.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

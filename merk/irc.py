@@ -691,7 +691,7 @@ class IRC_Connection(irc.IRCClient):
 		sversion = params[1]
 		server = params[2]
 
-		self.gui.gotVersion(self,server,sversion)
+		self.gui.gotServerVersion(self,server,sversion)
 
 	def irc_QUIT(self,prefix,params):
 		x = prefix.split('!')
