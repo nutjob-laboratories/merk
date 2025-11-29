@@ -821,7 +821,13 @@ def is_valid_call_method(method):
 	if method in EVENTS: return EVENT_METHOD
 	if method in BUILT_IN: return BUILT_IN_METHOD
 	for obj in PLUGINS:
-		if hasattr(obj,method): return VALID_METHOD
+		if hasattr(obj,method):
+			mi = getattr(obj,method)
+			specs = inspect.getfullargspec(mi)
+			if len(specs.args)==3:
+				return VALID_METHOD
+			else:
+				return INVALID_METHOD
 	return NO_METHOD
 
 def load_plugins(gui):

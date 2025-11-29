@@ -1418,6 +1418,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',f"Plugin method \"{method}\" can't be found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
+			elif mcheck==INVALID_METHOD:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}call: Plugin method \"{method}\" accepts the wrong number of arguments")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Plugin method \"{method}\" accepts the wrong number of arguments")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			elif mcheck==EVENT_METHOD or mcheck==BUILT_IN_METHOD:
 				if is_script:
 					add_halt(script_id)
