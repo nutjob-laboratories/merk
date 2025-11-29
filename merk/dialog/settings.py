@@ -2492,10 +2492,15 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
 		self.showStatusEditor.stateChanged.connect(self.changedSetting)
 
-		statusLayout = QFormLayout()
-		statusLayout.setSpacing(0)
-		statusLayout.addRow(self.showStatusServer,self.showStatusChat)
-		statusLayout.addRow(self.showStatusList,self.showStatusEditor)
+		statusLayout2 = QFormLayout()
+		statusLayout2.setSpacing(1)
+		statusLayout2.addRow(self.showStatusServer,self.showStatusChat)
+		statusLayout2.addRow(self.showStatusList,self.showStatusEditor)
+
+		statusLayout = QHBoxLayout()
+		statusLayout.addStretch()
+		statusLayout.addLayout(statusLayout2)
+		statusLayout.addStretch()
 
 		self.enableDisconnect = QCheckBox("Closing server window disconnects\nfrom server",self)
 		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
@@ -2545,6 +2550,11 @@ class Dialog(QDialog):
 		if config.DISPLAY_LONG_MESSAGE_INDICATOR: self.showLongMessage.setChecked(True)
 		self.showLongMessage.stateChanged.connect(self.changedSetting)
 
+		self.enableNickClick = QCheckBox("Double click nick display to change\nnickname",self)
+		if config.DOUBLECLICK_NICK_DISPLAY: self.enableNickClick.setChecked(True)
+		self.enableNickClick.stateChanged.connect(self.changedSetting)
+		self.enableNickClick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addWidget(self.showContext)
@@ -2552,6 +2562,7 @@ class Dialog(QDialog):
 		subwindowLayout.addWidget(self.showLongMessage)
 		subwindowLayout.addWidget(self.autoMaxSubwindow)
 		subwindowLayout.addWidget(self.showInfo)
+		subwindowLayout.addWidget(self.enableNickClick)
 		subwindowLayout.addLayout(rbLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>order subwindows on...</b>"))
 		subwindowLayout.addLayout(orderLayout)
@@ -5576,6 +5587,7 @@ class Dialog(QDialog):
 		config.DO_NOT_REPLY_TO_CTCP_VERSION = self.noVersion.isChecked()
 		config.DO_NOT_REPLY_TO_CTCP_SOURCE = self.noSource.isChecked()
 		config.PLUGIN_ISUPPORT = self.plugSupport.isChecked()
+		config.DOUBLECLICK_NICK_DISPLAY = self.enableNickClick.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

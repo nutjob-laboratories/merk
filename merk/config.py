@@ -372,9 +372,11 @@ NO_ENVIRONMENT_IN_CTCP_REPLIES = False
 DO_NOT_REPLY_TO_CTCP_VERSION = False
 DO_NOT_REPLY_TO_CTCP_SOURCE = False
 PLUGIN_ISUPPORT = True
+DOUBLECLICK_NICK_DISPLAY = True
 
 def build_settings():
 	settings = {
+		"doubleclick_nick_display_to_change_nick": DOUBLECLICK_NICK_DISPLAY,
 		"enable_plugin_isupport_event": PLUGIN_ISUPPORT,
 		"do_not_reply_to_ctcp_source": DO_NOT_REPLY_TO_CTCP_SOURCE,
 		"do_not_reply_to_ctcp_version": DO_NOT_REPLY_TO_CTCP_VERSION,
@@ -713,6 +715,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "doubleclick_nick_display_to_change_nick" in settings:
+		settings["doubleclick_nick_display_to_change_nick"] = DOUBLECLICK_NICK_DISPLAY
 	if not "enable_plugin_isupport_event" in settings:
 		settings["enable_plugin_isupport_event"] = PLUGIN_ISUPPORT
 	if not "do_not_reply_to_ctcp_source" in settings:
@@ -1716,6 +1720,7 @@ def load_settings(filename):
 	global DO_NOT_REPLY_TO_CTCP_VERSION
 	global DO_NOT_REPLY_TO_CTCP_SOURCE
 	global PLUGIN_ISUPPORT
+	global DOUBLECLICK_NICK_DISPLAY
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1725,6 +1730,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DOUBLECLICK_NICK_DISPLAY = settings["doubleclick_nick_display_to_change_nick"]
 		PLUGIN_ISUPPORT = settings["enable_plugin_isupport_event"]
 		DO_NOT_REPLY_TO_CTCP_SOURCE = settings["do_not_reply_to_ctcp_source"]
 		DO_NOT_REPLY_TO_CTCP_VERSION = settings["do_not_reply_to_ctcp_version"]

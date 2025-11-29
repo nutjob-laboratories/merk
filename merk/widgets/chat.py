@@ -1385,10 +1385,11 @@ class Window(QMainWindow):
 
 		# Name click
 		if (event.type() == QtCore.QEvent.MouseButtonDblClick and source is self.nick_display):
-			info = dialog.NewNickDialog(self.client.nickname,self)
-			if info!=None:
-				self.client.setNick(info)
-				return True
+			if config.DOUBLECLICK_NICK_DISPLAY:
+				info = dialog.NewNickDialog(self.client.nickname,self)
+				if info!=None:
+					self.client.setNick(info)
+					return True
 
 		if config.USERLIST_CONTEXT_MENU:
 			# User List Menu

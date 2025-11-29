@@ -40,6 +40,8 @@
 * If "always on top" is turned on while running, any of the managers that are
   open will now have the same setting, and will be updated without having
   to close and restart them.
+* Added option to en/disable the "double click nick display to change nick"
+  dialog to the Settings dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
