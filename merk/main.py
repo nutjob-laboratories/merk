@@ -1930,7 +1930,10 @@ class Merk(QMainWindow):
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
+		if len(argument)>0:
+			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
+		else:
+			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" on "+target)
 
 		if mode=="k":
 			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument)+" on "+target)

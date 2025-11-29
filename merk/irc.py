@@ -566,7 +566,7 @@ class IRC_Connection(irc.IRCClient):
 						params.pop(0)
 						chankey = params.pop(0)
 						self.channelkeys[target] = chankey
-						self.gui.serverSetMode(self,target,m,chankey)
+						self.gui.serverSetMode(self,target,m,[chankey])
 						continue
 
 					if target==self.nickname:
