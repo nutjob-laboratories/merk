@@ -184,7 +184,6 @@ class Merk(QMainWindow):
 		else:
 			QApplication.setCursorFlashTime(config.CURSOR_BLINK_RATE)
 
-
 		# Internal attributes
 		self.quitting = {}
 		self.hiding = {}
@@ -5247,7 +5246,6 @@ class Merk(QMainWindow):
 		if subwindow==None: return
 
 		w = subwindow.widget()
-		self.current_window = w
 
 		# If the window belongs to a client that
 		# is quitting, don't do anything
@@ -5257,7 +5255,9 @@ class Merk(QMainWindow):
 
 		if hasattr(w,"window_type"):
 			if w.window_type==SERVER_WINDOW or w.window_type==CHANNEL_WINDOW or w.window_type==PRIVATE_WINDOW:
-				plugins.call(self,"activate",window=w)
+				plugins.call(self,"activate",window=w,last=self.current_window)
+
+		self.current_window = w
 
 		# If the window has a text input widget,
 		# give it focus

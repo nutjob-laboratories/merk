@@ -109,9 +109,11 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   window = MERK Window
+    #   last = Previous MERK Window
     #
     def activate(self,**args):
         window = args["window"]
+        last = args["last"]
 
     # |======|
     # | away |

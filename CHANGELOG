@@ -49,6 +49,8 @@
 
 * New Plugin event: isupport, which triggers when the server sends the client
   a list of the options the server supports.
+* Added a new argument to the activate() Plugin event: "last", a Window class
+  for the previously activated window.
 
 --------------------------------------------------------------------------------
 ################################################################################
