@@ -581,7 +581,7 @@ class IRC_Connection(irc.IRCClient):
 						else:
 							self.channelmodes[target] = m
 
-					self.gui.serverSetMode(self,target,m,None)
+					self.gui.serverSetMode(self,target,m,[])
 
 				else:
 					m = m[1:]

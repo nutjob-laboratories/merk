@@ -42,6 +42,8 @@
   to close and restart them.
 * Added option to en/disable the "double click nick display to change nick"
   dialog to the Settings dialog.
+* The "plugin has an open console" marker in the Plugin Manager can now be
+  set in the config file.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -2263,6 +2263,7 @@ class Merk(QMainWindow):
 			hostmask = p[1]
 		else:
 			nickname = nick
+			hostmask = None
 
 		if hostmask!=None:
 			ignored = self.is_ignored(nickname,hostmask)
@@ -2291,6 +2292,7 @@ class Merk(QMainWindow):
 			hostmask = p[1]
 		else:
 			nickname = nick
+			hostmask = None
 
 		if hostmask!=None:
 			ignored = self.is_ignored(nickname,hostmask)

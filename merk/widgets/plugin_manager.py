@@ -36,7 +36,7 @@ from . import extendedmenuitem
 
 import emoji
 
-HAS_CONSOLE = emoji.emojize(":light_bulb:",language="alias")
+HAS_CONSOLE = emoji.emojize(config.PLUGIN_HAS_CONSOLE_MARKER,language="alias")
 
 import uuid
 import operator
