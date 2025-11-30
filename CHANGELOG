@@ -61,6 +61,8 @@
 * Added a new argument to the activate() Plugin event: "last", a Window class
   for the previously activated window. If the window doesn't exist when the
   event is triggered, "last" is set to "None".
+* Changed the plugin icon size to 48x48. All example plugins have been updated
+  with new, properly sized icons.
 
 --------------------------------------------------------------------------------
 ################################################################################

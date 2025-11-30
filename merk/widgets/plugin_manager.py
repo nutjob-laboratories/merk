@@ -351,7 +351,7 @@ class Window(QMainWindow):
 				name_tag,
 				class_tag,
 				author_tag,
-				icon,32
+				icon,48
 			)
 
 			item.setSizeHint(widget.sizeHint())
