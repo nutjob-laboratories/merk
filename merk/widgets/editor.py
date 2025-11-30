@@ -1450,7 +1450,7 @@ class Window(QMainWindow):
 		self.editor.clear()
 		self.editor.insertPlainText(EXAMPLE_PLUGIN)
 		self.menuSave.setEnabled(True)
-		self.changed = False
+		self.changed = True
 		self.menuSave.setShortcut("Ctrl+S")
 		self.menuSaveAs.setShortcut(QKeySequence())
 		self.editing_user_script = False
@@ -1466,7 +1466,7 @@ class Window(QMainWindow):
 		self.editor.clear()
 		self.editor.insertPlainText(strip_comments_and_docstrings_ast(EXAMPLE_PLUGIN))
 		self.menuSave.setEnabled(True)
-		self.changed = False
+		self.changed = True
 		self.menuSave.setShortcut("Ctrl+S")
 		self.menuSaveAs.setShortcut(QKeySequence())
 		self.editing_user_script = False

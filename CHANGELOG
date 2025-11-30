@@ -71,6 +71,7 @@
 * Changed the plugin icon size to 48x48. All example plugins have been updated
   with new, properly sized icons.
 * Plugins no longer count inherited methods towards the plugin's method count.
+* Changed the "default" plugin skeleton.
 
 --------------------------------------------------------------------------------
 ################################################################################

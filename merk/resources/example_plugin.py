@@ -33,25 +33,33 @@ EXAMPLE_PLUGIN="""#   __  __ _____ ____  _  __  ____  _    _   _  ____ ___ _   _
 #
 # Information on how to write plugins and how to use inherited
 # Plugin methods can be found in the MERK User Guide.
+#
+#--------------Methods inherited from Plugin--------------#
+#     alias, all_channels, all_masters, all_privates,     #
+#     all_windows, bind, channel, channels, clients,      #
+#     console, emojize, find, home, id, ignore, ignores,  #
+#     is_away, is_ignored, list, macro, master, max       #
+#     maximized, min, minimized, modes, move, private,    #
+#     privates, resize, restore, script, unbind,          #
+#     unignore, windows                                   #
+#---------------------------------------------------------#
 
 from merk import Plugin
 
 class ExamplePlugin(Plugin):
 
-    #-----------Methods inherited from Plugin-------------#
-    #   alias, all_channels, all_masters, all_privates,   #
-    #   all_windows, bind, channel, channels, clients,    #
-    #   console, emojize, find, home, id, ignore,         #
-    #   ignores, is_away, is_ignored, list, macro,        #
-    #   master, max, maximized, min, minimized, modes,    #
-    #   move, private, privates, resize, restore, script, #
-    #   unbind, unignore, windows                         #
-    #-----------------------------------------------------#
+    # |------------------------|
+    # | BEGIN PLUGIN ATTIBUTES |
+    # |------------------------|
 
     NAME = "Example Plugin"
     AUTHOR = "MERK"
     VERSION = "1.0"
     SOURCE = "https://github.com/nutjob-laboratories/merk"
+
+    # |-----------------------|
+    # | END PLUGIN ATTRIBUTES |
+    # |-----------------------|
 
     # |---------------------|
     # | BEGIN PLUGIN EVENTS |
