@@ -817,6 +817,21 @@ def list_all_call_methods():
 			output.append(m)
 	return output
 
+def count_callable_methods(obj):
+	callables = 0
+	all_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
+	method_names = [name for name, method in all_methods]
+
+	for m in method_names:
+		if m=='__init__': continue
+		if m in EVENTS: continue
+		if m in BUILT_IN: continue
+		mi = getattr(obj,m)
+		specs = inspect.getfullargspec(mi)
+		if len(specs.args)!=3: continue
+		callables = callables + 1
+	return callables
+
 def is_valid_call_method(method):
 	if method in EVENTS: return EVENT_METHOD
 	if method in BUILT_IN: return BUILT_IN_METHOD
@@ -908,6 +923,8 @@ def load_plugins(gui):
 
 		obj._basename = os.path.basename(obj._filename)
 
+		obj._calls = count_callable_methods(obj)
+
 		obj._events = 0
 		obj._event_list = []
 		for e in EVENTS:
@@ -928,6 +945,7 @@ def load_plugins(gui):
 
 		instance_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
 		obj._methods = len(instance_methods) - obj._events
+		obj._methods = obj._methods - len(BUILT_IN)
 		if obj._methods<0: obj._methods = 0
 
 		if obj._events==0:

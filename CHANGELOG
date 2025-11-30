@@ -55,6 +55,9 @@
   to view a plugin's console, if it has one.
 * Removed the "Author:" label from plugin items in the Plugin Manager. The
   plugin item still displays the author, it's just no longer labeled.
+* Changed plugin tool tips in the Plugin Manager. They no longer show the
+  author or URL, and now show the number of methods callable with the /call
+  command.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -67,6 +70,7 @@
   event is triggered, "last" is set to "None".
 * Changed the plugin icon size to 48x48. All example plugins have been updated
   with new, properly sized icons.
+* Plugins no longer count inherited methods towards the plugin's method count.
 
 --------------------------------------------------------------------------------
 ################################################################################
