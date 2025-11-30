@@ -51,6 +51,10 @@
 * Mode setting and unsetting messages from the server now display the
   hostname (if available; if not, the connecting IP and port), rather than
   stating "Server set...".
+* Added an option to the right click menu of a plugin in the Plugin Manager
+  to view a plugin's console, if it has one.
+* Removed the "Author:" label from plugin items in the Plugin Manager. The
+  plugin item still displays the author, it's just no longer labeled.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

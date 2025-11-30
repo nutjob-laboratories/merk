@@ -277,9 +277,9 @@ class Window(QMainWindow):
 					console_tag = f" {HAS_CONSOLE}"
 
 				if is_url(item.SOURCE):
-					author_tag = f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a>{console_tag}"
+					author_tag = f"<b><a href=\"{item.SOURCE}\">{item.AUTHOR}</a></b>{console_tag}"
 				else:
-					author_tag = f"<b>Author:</b> {item.AUTHOR}{console_tag}"
+					author_tag = f"<b>{item.AUTHOR}</b>{console_tag}"
 
 				name_tag = f"{item.NAME} {item.VERSION}"
 				class_tag = f"<b>{item.classname}</b> in {item.basename}"
@@ -333,9 +333,9 @@ class Window(QMainWindow):
 				console_tag = f" {HAS_CONSOLE}"
 
 			if is_url(SOURCE):
-				author_tag = f"<b>Author:</b> <a href=\"{SOURCE}\">{AUTHOR}</a>{console_tag}"
+				author_tag = f"<b><a href=\"{SOURCE}\">{AUTHOR}</a></b>{console_tag}"
 			else:
-				author_tag = f"<b>Author:</b> {AUTHOR}{console_tag}"
+				author_tag = f"<b>{AUTHOR}</b>{console_tag}"
 
 			name_tag = f"{NAME} {VERSION}"
 			class_tag = f"<b>{classname}</b> in {basename}"
@@ -364,7 +364,7 @@ class Window(QMainWindow):
 
 			self.plugin_list.clearSelection()
 
-	def on_item_clicked(self, item):
+	def on_item_double_clicked(self, item):
 		if not config.ENABLE_PLUGIN_EDITOR: return
 		if item.dummy: return
 
@@ -426,8 +426,14 @@ class Window(QMainWindow):
 		if item is not None:
 				if hasattr(item,"dummy"):
 					if item.dummy==False:
+
+						subwindow,widget = self.parent.getConsole(item.plugin)
+						if subwindow!=None:
+							edit_action = QAction(QIcon(WINDOW_ICON),"View console", self)
+							edit_action.triggered.connect(lambda: self.on_item_double_clicked(item))
+							menu.addAction(edit_action)
+
 						edit_action = QAction(QIcon(SCRIPT_ICON),"Edit plugin", self)
-						#edit_action.triggered.connect(lambda: self.on_item_clicked(item))
 						edit_action.triggered.connect(lambda: self.parent.openPythonEditor(item.filename))
 						menu.addAction(edit_action)
 
@@ -471,7 +477,7 @@ class Window(QMainWindow):
 		self.plugin_list.setTextElideMode(Qt.ElideRight)
 		self.plugin_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.plugin_list.setSelectionMode(QListWidget.SingleSelection)
-		self.plugin_list.itemDoubleClicked.connect(self.on_item_clicked)
+		self.plugin_list.itemDoubleClicked.connect(self.on_item_double_clicked)
 		self.plugin_list.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.plugin_list.customContextMenuRequested.connect(self.show_context_menu)
 

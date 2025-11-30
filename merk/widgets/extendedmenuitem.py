@@ -91,7 +91,7 @@ def pluginItemHtml(text,description1,description2):
 				  <td style="font-style: normal; font-weight: normal;"><small>{description1}</small></td>
 				</tr>
 				<tr>
-				  <td style="font-style: normal; font-weight: normal;"><small>{description2}</small></td>
+				  <td style="font-style: normal; font-weight: normal;">{description2}</td>
 				</tr>
 			  </tbody>
 			</table>
@@ -117,7 +117,7 @@ def pluginItemHtmlIcon(text,description1,description2,icon,icon_size):
 				  <td style="font-style: normal; font-weight: normal;"><small>{description1}</small></td>
 				</tr>
 				<tr>
-				  <td style="font-style: normal; font-weight: normal;"><small>{description2}</small></td>
+				  <td style="font-style: normal; font-weight: normal;">{description2}</td>
 				</tr>
 			  </tbody>
 			</table>
