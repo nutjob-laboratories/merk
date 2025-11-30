@@ -43,8 +43,6 @@ class Window(QMainWindow):
 		if self.force_close:
 			# Make sure the MDI window is closed
 			self.parent.closeSubWindow(self.subwindow_id)
-			self.parent.readme_window = None
-
 			event.accept()
 			self.close()
 		else:
@@ -116,7 +114,6 @@ class Window(QMainWindow):
 			t = render.render_message(message,self.style,None,True)
 			self.chat.append(t)
 			self.log.append(message)
-
 			self.moveChatToBottom(True)
 		except:
 			pass

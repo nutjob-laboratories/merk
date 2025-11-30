@@ -269,36 +269,28 @@ class Window(QMainWindow):
 				if item.dummy: continue
 
 			if item.plugin==plugin:
+
 				subwindow,widget = self.parent.getConsole(plugin)
+				if subwindow==None:
+					console_tag = ''
+				else:
+					console_tag = f" {HAS_CONSOLE}"
 
 				if is_url(item.SOURCE):
-					if subwindow==None:
-						widget = extendedmenuitem.pluginItem(
-							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
-							f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a>",
-							item.icon,32
-						)
-					else:
-						widget = extendedmenuitem.pluginItem(
-							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
-							f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a> {HAS_CONSOLE}",
-							item.icon,32
-						)
+					author_tag = f"<b>Author:</b> <a href=\"{item.SOURCE}\">{item.AUTHOR}</a>{console_tag}"
 				else:
-					if subwindow==None:
-						widget = extendedmenuitem.pluginItem(
-							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
-							f"<b>Author:</b> {item.AUTHOR}</a>",
-							item.icon,32
-						)
-					else:
-						widget = extendedmenuitem.pluginItem(
-							f"{item.NAME} {item.VERSION}",f"<b>{item.classname}</b> in {item.basename}",
-							f"<b>Author:</b> {item.AUTHOR}</a> {HAS_CONSOLE}",
-							item.icon,32
-						)
-				self.plugin_list.setItemWidget(item, widget)
+					author_tag = f"<b>Author:</b> {item.AUTHOR}{console_tag}"
 
+				name_tag = f"{item.NAME} {item.VERSION}"
+				class_tag = f"<b>{item.classname}</b> in {item.basename}"
+
+				widget = extendedmenuitem.pluginItem(
+					name_tag,
+					class_tag,
+					author_tag,
+					icon,48
+				)
+				self.plugin_list.setItemWidget(item, widget)
 
 	def refresh(self):
 		self.plugin_list.clear()
@@ -332,6 +324,7 @@ class Window(QMainWindow):
 			item.dummy = False
 			item.icon = icon
 			item.plugin = obj
+			item.size = size
 
 			subwindow,widget = self.parent.getConsole(item.plugin)
 			if subwindow==None:
