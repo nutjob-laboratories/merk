@@ -48,6 +48,9 @@
   always passed as a list of strings, rather than a tuple.
 * Mode setting and unsetting messages now always display the target of the
   set or unset in every window the message is displayed in.
+* Mode setting and unsetting messages from the server now display the
+  hostname (if available; if not, the connecting IP and port), rather than
+  stating "Server set...".
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -56,7 +59,8 @@
 * New Plugin event: isupport, which triggers when the server sends the client
   a list of the options the server supports.
 * Added a new argument to the activate() Plugin event: "last", a Window class
-  for the previously activated window.
+  for the previously activated window. If the window doesn't exist when the
+  event is triggered, "last" is set to "None".
 
 --------------------------------------------------------------------------------
 ################################################################################

@@ -1922,21 +1922,26 @@ class Merk(QMainWindow):
 			if e!=None: clean.append(e)
 		argument = clean
 
-		t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
+		if client.hostname:
+			server = client.hostname
+		else:
+			server = f"{client.server}:{client.port}"
+
+		t = Message(SYSTEM_MESSAGE,'',server+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 
 		if mode=="k":
-			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument)+" on "+target)
+			t = Message(SYSTEM_MESSAGE,'',server+" set mode +"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		if len(argument)>0:
-			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+' '.join(argument)+" on "+target)
+			t = Message(SYSTEM_MESSAGE,'',server+" set mode +"+mode+" "+' '.join(argument)+" on "+target)
 		else:
-			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" on "+target)
+			t = Message(SYSTEM_MESSAGE,'',server+" set mode +"+mode+" on "+target)
 
 		if mode=="k":
-			t = Message(SYSTEM_MESSAGE,'',"Server set mode +"+mode+" "+''.join(argument)+" on "+target)
+			t = Message(SYSTEM_MESSAGE,'',server+" set mode +"+mode+" "+''.join(argument)+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
@@ -1948,12 +1953,17 @@ class Merk(QMainWindow):
 
 		if len(mode.strip())==0: return
 
-		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode+" on "+target)
+		if client.hostname:
+			server = client.hostname
+		else:
+			server = f"{client.server}:{client.port}"
+
+		t = Message(SYSTEM_MESSAGE,'',server+" set mode -"+mode+" on "+target)
 
 		w = self.getWindow(target,client)
 		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-		t = Message(SYSTEM_MESSAGE,'',"Server set mode -"+mode+" on "+target)
+		t = Message(SYSTEM_MESSAGE,'',server+" set mode -"+mode+" on "+target)
 
 		w = self.getServerWindow(client)
 		if w: w.writeText(t)
@@ -5294,6 +5304,8 @@ class Merk(QMainWindow):
 					self.remove_unread_message(w.client,w.name)
 
 		self.buildWindowbar()
+
+		if w.window_type==PLUGIN_CONSOLE: return
 
 		# Reset the window title
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
