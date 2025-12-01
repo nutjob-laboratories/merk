@@ -58,6 +58,7 @@
 * Changed plugin tool tips in the Plugin Manager. They no longer show the
   author or URL, and now show the number of methods callable with the /call
   command.
+* Extensive tweaks to the layout of the Settings dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
