@@ -59,6 +59,8 @@
   author or URL, and now show the number of methods callable with the /call
   command.
 * Extensive tweaks to the layout of the Settings dialog.
+* The Plugin Manager no longer displays how much memory a plugin is using.
+  This was causing crashing.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

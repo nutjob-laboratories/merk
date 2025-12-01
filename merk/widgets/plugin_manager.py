@@ -307,11 +307,10 @@ class Window(QMainWindow):
 			classname = obj._class
 			icon = obj._icon
 			uuid = obj._id
-			size = prettySize(get_memory_size(obj))
 			calls = obj._calls
 
 			item = QListWidgetItem()
-			item.setToolTip(f"Filename: {basename}\nEvents: {events}\nMethods: {methods}\nCallable methods: {calls}\nMemory: {size}")
+			item.setToolTip(f"Filename: {basename}\nEvents: {events}\nMethods: {methods}\nCallable methods: {calls}")
 			item.filename = obj._filename
 			item.basename = obj._basename
 			item.events = obj._events
@@ -325,7 +324,6 @@ class Window(QMainWindow):
 			item.dummy = False
 			item.icon = icon
 			item.plugin = obj
-			item.size = size
 
 			subwindow,widget = self.parent.getConsole(item.plugin)
 			if subwindow==None:

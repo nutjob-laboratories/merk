@@ -423,23 +423,6 @@ class WhoWasData:
 
 # Functions
 
-def get_memory_size(obj, seen=None):
-	size = sys.getsizeof(obj)
-	if seen is None:
-		seen = set()
-	obj_id = id(obj)
-	if obj_id in seen:
-		return 0
-	seen.add(obj_id)
-	if isinstance(obj, dict):
-		size += sum([get_memory_size(v, seen) for v in obj.values()])
-		size += sum([get_memory_size(k, seen) for k in obj.keys()])
-	elif hasattr(obj, '__dict__'):
-		size += get_memory_size(obj.__dict__, seen)
-	elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
-		size += sum([get_memory_size(i, seen) for i in obj])
-	return size
-
 def is_url(text):
 	url_pattern = re.compile(
 		r'^(https?://)?(www\.)?([a-zA-Z0-9-]+\.){1,}([a-zA-Z]{2,6})(/[a-zA-Z0-9-._~:/?#[\]@!$&\'()*+,;=]*)?$'
