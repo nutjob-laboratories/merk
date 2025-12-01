@@ -364,6 +364,10 @@ HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 			</tbody>
 		</table>'''
 
+EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace("%_VERSION_%", f"{APPLICATION_NAME} {APPLICATION_VERSION}")
+pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
+EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace("%_DATE_%", f"{pretty_timestamp}")
+
 # Classes
 
 class Message:
