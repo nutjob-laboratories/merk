@@ -364,8 +364,6 @@ HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 			</tbody>
 		</table>'''
 
-EXAMPLE_PLUGIN = EXAMPLE_PLUGIN.replace("%__FULL_VERSION__%",f"{APPLICATION_NAME} {APPLICATION_VERSION}")
-
 # Classes
 
 class Message:
