@@ -1870,7 +1870,7 @@ class Dialog(QDialog):
 		if config.DARK_MODE: self.darkMode.setChecked(True)
 		self.darkMode.stateChanged.connect(self.setDarkMode)
 
-		self.forceDefault = QCheckBox("Chat windows",self)
+		self.forceDefault = QCheckBox("Chat windows    ",self)
 		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
 		self.forceDefault.stateChanged.connect(self.changeSettingStyle)
 
@@ -4378,7 +4378,7 @@ class Dialog(QDialog):
 		if config.ENABLE_CONFIG_COMMAND: self.enableConfig.setChecked(True)
 		self.enableConfig.stateChanged.connect(self.changedSettingEditorConfig)
 
-		self.restrictError = QCheckBox(f"Display error for violations of\nonly and restrict commands",self)
+		self.restrictError = QCheckBox(f"Display errors for violations of\nonly and restrict commands",self)
 		if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION: self.restrictError.setChecked(True)
 		self.restrictError.stateChanged.connect(self.changedSetting)
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -4482,7 +4482,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.pluginPage)
 
-		self.enablePlugins = QCheckBox("Enable plugins",self)
+		self.enablePlugins = QCheckBox("Enable plugins    ",self)
 		if config.ENABLE_PLUGINS: self.enablePlugins.setChecked(True)
 		self.enablePlugins.stateChanged.connect(self.changedSettingPlugin)
 
@@ -4760,10 +4760,6 @@ class Dialog(QDialog):
 		row12Layout.addWidget(self.plugTopic)
 		row12Layout.addWidget(self.plugUnmode)
 
-		plugLayout = QHBoxLayout()
-		plugLayout.addWidget(self.enablePlugins)
-		plugLayout.addWidget(self.plugEditor)
-
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.pluginDescription = QLabel(f"""
@@ -4817,12 +4813,20 @@ class Dialog(QDialog):
 		pBottom.addWidget(widgets.textSeparatorLabel(self,"<b>plugin events</b>"))
 		pBottom.addWidget(self.eventDescription)
 
+		plugLayout = QHBoxLayout()
+		plugLayout.addWidget(self.enablePlugins)
+		plugLayout.addWidget(self.plugEditor)
+
+		plugLayout = QFormLayout()
+		plugLayout.setSpacing(2)
+		plugLayout.addRow(self.enablePlugins,self.plugEditor)
+		plugLayout.addRow(self.pluginScripts)
+		plugLayout.addRow(self.pluginOverwrite)
+		plugLayout.addRow(self.pluginCall)
+
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addWidget(self.pluginScripts)
-		pluginsLayout.addWidget(self.pluginOverwrite)
-		pluginsLayout.addWidget(self.pluginCall)
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
@@ -4884,7 +4888,6 @@ class Dialog(QDialog):
 			current chat and <b>emoji shortcodes</b> will be highlighted using the
 			colors and format settings below.
 			</small>
-			<br>
 			""")
 		self.syntaxInput.setWordWrap(True)
 		self.syntaxInput.setAlignment(Qt.AlignJustify)
@@ -5003,15 +5006,13 @@ class Dialog(QDialog):
 		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
 		quitBox.setSizePolicy(size_policy)
 
-		self.searchAllTerms = QCheckBox("Search for all terms in\nchannel list searches",self)
+		self.searchAllTerms = QCheckBox("Search for all terms in channel list",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.searchAllTerms.setChecked(True)
 		self.searchAllTerms.stateChanged.connect(self.changedSetting)
-		self.searchAllTerms.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.examineTopic = QCheckBox("Examine topics in channel\nlist searches",self)
+		self.examineTopic = QCheckBox("Examine topics in channel list ",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.examineTopic.setChecked(True)
 		self.examineTopic.stateChanged.connect(self.changedSetting)
-		self.examineTopic.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.searchInstall = QCheckBox(f"Search install directory for files",self)
 		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: self.searchInstall.setChecked(True)
@@ -5045,6 +5046,23 @@ class Dialog(QDialog):
 		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
 		self.noSource.stateChanged.connect(self.changedSetting)
 
+		setLayout = QFormLayout()
+		setLayout.setSpacing(2)
+		setLayout.addWidget(self.searchAllTerms)
+		setLayout.addWidget(self.examineTopic)
+
+		hkLayout = QFormLayout()
+		hkLayout.setSpacing(2)
+		hkLayout.addWidget(self.enableHotkeys)
+		hkLayout.addWidget(self.hotkeyCmd)
+
+		mmLayout = QFormLayout()
+		mmLayout.setSpacing(2)
+		mmLayout.addWidget(self.searchInstall)
+		mmLayout.addWidget(self.noSource)
+		mmLayout.addWidget(self.noVersion)
+		mmLayout.addWidget(self.noEnviron)
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
@@ -5052,16 +5070,11 @@ class Dialog(QDialog):
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
-		miscLayout.addWidget(self.searchAllTerms)
-		miscLayout.addWidget(self.examineTopic)
+		miscLayout.addLayout(setLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
-		miscLayout.addWidget(self.enableHotkeys)
-		miscLayout.addWidget(self.hotkeyCmd)
+		miscLayout.addLayout(hkLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		miscLayout.addWidget(self.searchInstall)
-		miscLayout.addWidget(self.noSource)
-		miscLayout.addWidget(self.noVersion)
-		miscLayout.addWidget(self.noEnviron)
+		miscLayout.addLayout(mmLayout)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
 
@@ -5163,6 +5176,14 @@ class Dialog(QDialog):
 		self.floodProtection.stateChanged.connect(self.changedSettingAdvanced)
 		self.floodProtection.setEnabled(False)
 
+		asetLayout = QFormLayout()
+		asetLayout.setSpacing(2)
+		asetLayout.addRow(self.floodProtection)
+		asetLayout.addRow(self.enablePing)
+		asetLayout.addRow(self.logEverything)
+		asetLayout.addRow(self.writeConsole)
+		asetLayout.addRow(self.writeFile)
+
 		advancedLayout = QVBoxLayout()
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
@@ -5171,11 +5192,7 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
-		advancedLayout.addWidget(self.floodProtection)
-		advancedLayout.addWidget(self.enablePing)
-		advancedLayout.addWidget(self.logEverything)
-		advancedLayout.addWidget(self.writeConsole)
-		advancedLayout.addWidget(self.writeFile)
+		advancedLayout.addLayout(asetLayout)
 		advancedLayout.addStretch()
 
 		self.advancedPage.setLayout(advancedLayout)
