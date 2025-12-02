@@ -7,6 +7,9 @@
 |==============================================================================|
 
 * Fixed a bug with MERK exiting cleanly when using the /exit command.
+* Changed the layout of the "Logs" and "Plugins" sections of the Settings
+  dialog.
+* Fixed some of the text on the "Input" section of the Settings dialog.
 
 --------------------------------------------------------------------------------
 ################################################################################

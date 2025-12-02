@@ -3623,11 +3623,14 @@ class Dialog(QDialog):
 		self.historyDescription.setWordWrap(True)
 		self.historyDescription.setAlignment(Qt.AlignJustify)
 
-		self.autocompleteDescription = QLabel("""
+		self.autocompleteDescription = QLabel(f"""
 			<small>
 			To use autocomplete, type the first few characters of a <b>command</b>,
-			<b>nickname</b>, <b>channel</b>, <b>emoji shortcode</b>, <b>script filename</b>, or <b>alias</b>
-			and then hit <b>tab</b> to complete the entry.
+			<b>nickname</b>, <b>channel</b>, <b>emoji shortcode</b>, <b>script filename</b>, <b>alias</b>,
+			or <b>macro</b> and then hit <b>tab</b> to complete the entry. Autocomplete can also
+			complete settings with the <b>{config.ISSUE_COMMAND_SYMBOL}config</b> and <b>{config.ISSUE_COMMAND_SYMBOL}user</b>
+			commands, methods callable with the <b>{config.ISSUE_COMMAND_SYMBOL}call</b> command, or script
+			filenames usable with the <b>{config.ISSUE_COMMAND_SYMBOL}script</b> command.
 			</small>
 			""")
 		self.autocompleteDescription.setWordWrap(True)
@@ -3728,10 +3731,10 @@ class Dialog(QDialog):
 		autoSettingsLayout.setSpacing(0)
 		autoSettingsLayout.addRow(self.autocompleteCommands,self.autocompleteNicks)
 		autoSettingsLayout.addRow(self.autocompleteChans,self.autocompleteEmojis)
-		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteAlias)
+		autoSettingsLayout.addRow(self.autocompleteMacro,self.autocompleteAlias)
+		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteMethods)
 		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
-		autoSettingsLayout.addRow(self.autocompleteMacro,self.autocompleteMethods)
-
+		
 		self.inputCursorLabel = QLabel("Input widget cursor width:")
 		self.inputCursorLabelSpec = QLabel("pixels")
 		self.inputCursor = QSpinBox()
@@ -4145,9 +4148,6 @@ class Dialog(QDialog):
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
-		logLayout.addWidget(self.logDescription)
-		logLayout.addLayout(logsizeLayout)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
 		logLayout.addLayout(privLayout)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel logs</b>"))
@@ -4155,6 +4155,11 @@ class Dialog(QDialog):
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
 		logLayout.addLayout(contLayout)
 		logLayout.addLayout(cont2Layout)
+		logLayout.addWidget(QLabel(' '))
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
+		logLayout.addWidget(self.logDescription)
+		logLayout.addLayout(logsizeLayout)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		logLayout.addWidget(self.markLog)
 		logLayout.addLayout(intervalBox)
@@ -4822,6 +4827,7 @@ class Dialog(QDialog):
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
+		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
