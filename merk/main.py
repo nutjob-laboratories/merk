@@ -203,6 +203,7 @@ class Merk(QMainWindow):
 		self.hotkey_manager = None
 		self.ignore_manager = None
 		self.plugin_manager = None
+		self.app_exiting = False
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -2789,17 +2790,18 @@ class Merk(QMainWindow):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"client"):
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_QUIT_MESSAGE
+				if c.window_type==SERVER_WINDOW:
+					if config.ENABLE_EMOJI_SHORTCODES:
+						msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
+					else:
+						msg = config.DEFAULT_QUIT_MESSAGE
 
-				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-					commands.buildTemporaryAliases(self,c)
-					msg = commands.interpolateAliases(msg)
-					commands.TEMPORARY_ALIAS = {}
-					
-				c.client.quit(msg)
+					if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+						commands.buildTemporaryAliases(self,c)
+						msg = commands.interpolateAliases(msg)
+						commands.TEMPORARY_ALIAS = {}
+						
+					c.client.quit(msg)
 			else:
 				if hasattr(c,"force_close"): c.force_close = True
 				window.close()
@@ -5193,9 +5195,12 @@ class Merk(QMainWindow):
 		if self.hotkey_manager!=None: self.hotkey_manager.close()
 		if self.ignore_manager!=None: self.ignore_manager.close()
 		if self.plugin_manager!=None: self.plugin_manager.close()
+		self.app_exiting = True
 		self.closeAndRemoveAllWindows()
 		event.accept()
-		self.app.quit()
+
+		if self.connected_to_something==False:
+			self.app.quit()
 
 	def add_unread_message(self,client,target):
 

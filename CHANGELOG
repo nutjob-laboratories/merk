@@ -61,6 +61,12 @@
 * Extensive tweaks to the layout of the Settings dialog.
 * The Plugin Manager no longer displays how much memory a plugin is using.
   This was causing crashing.
+* Fixed a bug where the user could set the alias interpolation symbol to
+  a blank string in the Settings dialog.
+* Fixed a bug with MERK closing. If MERK was closed (via the window controls
+  or quitting from the menu) without disconnecting from any servers, MERK
+  would just close the client connection, and not send a QUIT command to the
+  server. This has been fixed.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

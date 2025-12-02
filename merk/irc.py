@@ -1281,6 +1281,11 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
+		if self.kwargs["gui"].app_exiting==True:
+			if self.kwargs["gui"].connected_to_something==False:
+				self.kwargs["gui"].app.quit()
+			return
+
 		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
 			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost."
 
@@ -1336,6 +1341,11 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		self.kwargs["gui"].reconnecting[self.kwargs["client_id"]] = 0
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
+
+		if self.kwargs["gui"].app_exiting==True:
+			if self.kwargs["gui"].connected_to_something==False:
+				self.kwargs["gui"].app.quit()
+			return
 
 		if config.ASK_BEFORE_RECONNECT:
 			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.\n\nTry to reconnect?"

@@ -5279,6 +5279,10 @@ class Dialog(QDialog):
 			got_errors = True
 			errors.append("Help menu name is blank or only contains whitespace")
 
+		if self.alias_symbol.text()=='':
+			got_errors = True
+			errors.append("Alias interpolation symbol is blank")
+
 		if got_errors:
 
 			detailed = ''
