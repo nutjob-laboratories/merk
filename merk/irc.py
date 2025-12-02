@@ -1281,6 +1281,10 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
+		# If we're trying to exit the app without disconnecting
+		# to servers, the connection will be "lost" at some point.
+		# We need to make sure that all connections are closed
+		# cleanly before we exit the app.
 		if self.kwargs["gui"].app_exiting==True:
 			if self.kwargs["gui"].connected_to_something==False:
 				self.kwargs["gui"].app.quit()
@@ -1342,6 +1346,10 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
 
+		# If we're trying to exit the app without disconnecting
+		# to servers, the connection will be "lost" at some point.
+		# We need to make sure that all connections are closed
+		# cleanly before we exit the app.
 		if self.kwargs["gui"].app_exiting==True:
 			if self.kwargs["gui"].connected_to_something==False:
 				self.kwargs["gui"].app.quit()
