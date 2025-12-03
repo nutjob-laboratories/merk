@@ -10,6 +10,9 @@
 * Changed the layout of the "Logs" and "Plugins" sections of the Settings
   dialog.
 * Fixed some of the text on the "Input" section of the Settings dialog.
+* Fixed a bug with autoindent in the Python editor.
+* The tab key in the Python editor is now overridden if autoindent is turned
+  on, and inserts the default indent when pressed.
 
 --------------------------------------------------------------------------------
 ################################################################################

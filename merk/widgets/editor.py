@@ -2174,12 +2174,16 @@ class Window(QMainWindow):
 		if watched is self.editor and event.type() == QEvent.KeyPress:
 			key_event: QKeyEvent = event
 			if key_event.key() in (Qt.Key_Return, Qt.Key_Enter):
-				self.insert_indent()
+				self.insert_indent(watched)
+				return True
+
+			if key_event.key() == Qt.Key_Tab:
+				self.insert_indent(watched,True)
 				return True
 	
 		return super().eventFilter(watched, event)
 
-	def insert_indent(self):
+	def insert_indent(self,watched,no_newline=False):
 		cursor = self.editor.textCursor()
 
 		# If the cursor is in the "middle" of a line
@@ -2212,7 +2216,10 @@ class Window(QMainWindow):
 			extra_indent_unit = self._infer_indent_style()
 			new_line_indent += extra_indent_unit
 
-		cursor.insertText('\n' + new_line_indent)
+		if no_newline:
+			cursor.insertText(config.DEFAULT_PYTHON_INDENT)
+		else:
+			cursor.insertText('\n' + new_line_indent)
 
 	def docModified(self):
 		if self.changed: return
