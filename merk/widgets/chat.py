@@ -102,6 +102,14 @@ class Window(QMainWindow):
 		self.halfop = False
 		self.protected = False
 
+		self.users_operator = []
+		self.users_voiced = []
+		self.users_owner = []
+		self.users_admin = []
+		self.users_halfop = []
+		self.users_protected = []
+		self.users_normal = []
+
 		self.userlist_nick_pad_width = config.NICKNAME_PAD_LENGTH
 
 		self.banlist = []
@@ -2142,6 +2150,14 @@ class Window(QMainWindow):
 		voiced.sort(key=str.lower)
 		normal.sort(key=str.lower)
 		protected.sort(key=str.lower)
+
+		self.users_operator = list(ops)
+		self.users_voiced = list(voiced)
+		self.users_owner = list(owners)
+		self.users_admin = list(admins)
+		self.users_halfop = list(halfops)
+		self.users_protected = list(protected)
+		self.users_normal = list(normal)
 
 		# Add owners
 		for u in owners:

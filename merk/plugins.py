@@ -125,7 +125,6 @@ class Window():
 			if self._window.halfop: return 'halfop'
 			if self._window.protected: return 'protected'
 			if self._window.voiced: return 'voiced'
-
 			return 'normal'
 
 		if self._window.window_type!=CHANNEL_WINDOW: return False
@@ -311,9 +310,39 @@ class Window():
 	def alias(self,text):
 		return commands.fullInterpolate(self._gui,self._window,text)
 
-	def users(self):
-		if self._window.window_type==CHANNEL_WINDOW: return self._window.users
-		return None
+	def users(self,status=None):
+		if self._window.window_type!=CHANNEL_WINDOW: return []
+		if status==None: return self._window.users
+
+		if status.lower()=='normal':
+			if len(self._window.users_normal)==0: return []
+			return self._window.users_normal
+
+		if status.lower()=='protected':
+			if len(self._window.users_protected)==0: return []
+			return self._window.users_protected
+
+		if status.lower()=='halfop':
+			if len(self._window.users_halfop)==0: return []
+			return self._window.users_halfop
+
+		if status.lower()=='admin':
+			if len(self._window.users_admin)==0: return []
+			return self._window.users_admin
+
+		if status.lower()=='owner':
+			if len(self._window.users_owner)==0: return []
+			return self._window.users_owner
+
+		if status.lower()=='voiced':
+			if len(self._window.users_voiced)==0: return []
+			return self._window.users_voiced
+		
+		if status.lower()=='operator':
+			if len(self._window.users_operator)==0: return []
+			return self._window.users_operator
+
+		return []
 
 	def nicks(self):
 		if self._window.window_type==CHANNEL_WINDOW:
@@ -321,7 +350,7 @@ class Window():
 			for u in self._window.users:
 				output.append(self._window.clean_nick(u))
 			return output
-		return None
+		return []
 
 	def topic(self,new_topic=None):
 		if self._window.window_type==CHANNEL_WINDOW:

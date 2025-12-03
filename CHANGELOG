@@ -14,6 +14,17 @@
 * The tab key in the Python editor is now overridden if autoindent is turned
   on, and inserts the default indent when pressed.
 
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* The Window nicks() method no longer returns None.
+* The Window users() method no longer returns None.
+* Changes to the Window users() method: now, if a string containing a channel
+  status is passed as an argument, a list of users in the channel with that
+  status is returned, with an empty list being returned if there are no users
+  with that status.
+
 --------------------------------------------------------------------------------
 ################################################################################
 --------------------------------------------------------------------------------
