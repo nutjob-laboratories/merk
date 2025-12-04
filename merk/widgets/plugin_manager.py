@@ -43,6 +43,7 @@ import operator
 import shutil
 from pathlib import Path
 import zipfile
+from datetime import datetime
 
 class Window(QMainWindow):
 
@@ -52,10 +53,46 @@ class Window(QMainWindow):
 		else:
 			return
 
+		added_icon = None
+		if item.icon==None:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText("Plugin does not have an icon. Do you want to add one?")
+			msgBox.setWindowTitle("Add icon")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				pass
+			else:
+				options = QFileDialog.Options()
+				options |= QFileDialog.DontUseNativeDialog
+				fileName, _ = QFileDialog.getOpenFileName(self,"Import Icon", str(Path.home()), f"48x48 PNG (*.png);;All Files (*)", options=options)
+				if fileName:
+					efl = len("png")+1
+					if fileName[-efl:].lower()!=f".png": fileName = fileName+f".png"
+					
+					name_without_extension, extension = os.path.splitext(item.filename)
+					imported_file = name_without_extension+".png"
+					imported_file = os.path.join(plugins.PLUGIN_DIRECTORY, imported_file)
+					added_icon = imported_file
+
+					shutil.copy(icon_file, imported_file)
+
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getSaveFileName(self,f"Export {item.NAME} {item.VERSION}",str(Path.home()),f"ZIP Files (*.zip);;All Files (*)", options=options)
 		if fileName:
+
+			README = DEFAULT_PLUGIN_README
+			README = README.replace("%_NAME_%",item.NAME)
+			README = README.replace("%_VERSION_%",item.VERSION)
+			README = README.replace("%_AUTHOR_%",item.AUTHOR)
+			README = README.replace("%_URL_%",item.SOURCE)
+			pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
+			README = README.replace("%_DATE_%", f"{pretty_timestamp}")
+
 			_, file_extension = os.path.splitext(fileName)
 			if file_extension=='':
 				efl = len("zip")+1
@@ -64,8 +101,15 @@ class Window(QMainWindow):
 				with zipfile.ZipFile(fileName, "w") as zipf:
 					zipf.write(item.filename, arcname=os.path.basename(item.filename))
 					if item.icon!=None: zipf.write(item.icon, arcname=os.path.basename(item.icon))
+					if added_icon!=None: zipf.write(added_icon, arcname=os.path.basename(added_icon))
+
+					zipf.writestr("README", README)
 
 				QMessageBox.information(self, 'Success', f'Plugin archive "{os.path.basename(fileName)}" exported.')
+
+		if added_icon!=None:
+			self.reload_plugins()
+			self.refresh()
 
 	def export_plugin(self):
 		item = self.plugin_list.currentItem()

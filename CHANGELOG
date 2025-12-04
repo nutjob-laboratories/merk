@@ -13,6 +13,9 @@
 * Fixed a bug with autoindent in the Python editor.
 * The tab key in the Python editor is now overridden if autoindent is turned
   on, and inserts the default indent when pressed.
+* The Plugin Manager now generates a README file for exported plugin zips.
+* The Plugin Manager now prompts for an icon on export, if the plugin doesn't
+  already have one. Selecting an icon is not mandatory for export.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
