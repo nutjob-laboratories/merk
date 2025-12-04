@@ -13,6 +13,7 @@
  - [Downloads](#Downloads)
  - [Summary](#Summary)
  - [Running MERK on Windows](#running-merk-on-windows)
+ - [Running MERK on Linux](#running-merk-on-linux)
  - [Running MERK with Python](#running-merk-with-python)
  - [Python Requirements](#python-requirements)
  - [Features](#Features)
@@ -33,6 +34,7 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  -  | [MERK !_RELEASE_! Release](!_RELEASE_URL_!)  |
 | Zip Archive|  Cross-platform  | [Download MERK !_FULL_VERSION_! (!_PYSIZE_!)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Linux Executable | [Download MERK !_FULL_VERSION_! (!_LINZIP_!)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
 | Zip Archive|  Windows EXE | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
 |   Windows Installer|  Windows Setup | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
@@ -50,6 +52,13 @@ Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat netwo
 To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [download the installer](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
 
 If you have previously installed **MERK** and would like to update to a new version, just download the installer for the newer version and install **MERK** again; your install will be updated to the newer version. To update the `merk.exe` version, extract the [zip file](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), overwriting the older version of **MERK**.
+
+A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
+
+# Running MERK on Linux
+**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
+
+To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1) and unzip to any directory, and double click on `merk` to run the client. 
 
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
@@ -71,7 +80,7 @@ To connect to IRC servers via SSL, two additional libraries may be needed:
     pip install pyOpenSSL
     pip install service_identity
 
-**MERK** is being developed with Python 3.13 on Windows 11 and Linux Mint.
+**MERK** is being developed with Python 3.13 on Windows 11 and Python 3.12 on Linux Mint 22.2.
 
 If you're running Windows, and you're getting errors when trying to run **MERK**, you may have to install another library, [pywin32](https://pypi.org/project/pywin32/). You can also install this with [**pip**](https://pypi.org/project/pip/):
 
@@ -87,6 +96,7 @@ There are four libraries that comes bundled with **MERK**:
 
 # Features
 -   Runs on Windows, Linux, and macOS
+- Binaries for both Windows and Linux are available
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)

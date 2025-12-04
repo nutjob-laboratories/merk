@@ -16,6 +16,7 @@
 * The Plugin Manager now generates a README file for exported plugin zips.
 * The Plugin Manager now prompts for an icon on export, if the plugin doesn't
   already have one. Selecting an icon is not mandatory for export.
+* Added a Linux binary distribution.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
