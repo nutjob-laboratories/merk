@@ -54,36 +54,37 @@ class Window(QMainWindow):
 			return
 
 		added_icon = None
-		if item.icon==None:
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText("Plugin does not have an icon. Do you want to add one?")
-			msgBox.setWindowTitle("Add icon")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
-			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
-				pass
-			else:
-				options = QFileDialog.Options()
-				options |= QFileDialog.DontUseNativeDialog
-				fileName, _ = QFileDialog.getOpenFileName(self,"Import Icon", str(Path.home()), f"48x48 PNG (*.png);;All Files (*)", options=options)
-				if fileName:
-					efl = len("png")+1
-					if fileName[-efl:].lower()!=f".png": fileName = fileName+f".png"
-					
-					name_without_extension, extension = os.path.splitext(item.filename)
-					imported_file = name_without_extension+".png"
-					imported_file = os.path.join(plugins.PLUGIN_DIRECTORY, imported_file)
-					added_icon = imported_file
-
-					shutil.copy(icon_file, imported_file)
 
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getSaveFileName(self,f"Export {item.NAME} {item.VERSION}",str(Path.home()),f"ZIP Files (*.zip);;All Files (*)", options=options)
 		if fileName:
+
+			if item.icon==None:
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setText("Plugin does not have an icon. Do you want to add one?")
+				msgBox.setWindowTitle("Add icon")
+				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+				rval = msgBox.exec()
+				if rval == QMessageBox.Cancel:
+					pass
+				else:
+					options = QFileDialog.Options()
+					options |= QFileDialog.DontUseNativeDialog
+					ifileName, _ = QFileDialog.getOpenFileName(self,"Import Icon", str(Path.home()), f"48x48 PNG (*.png);;All Files (*)", options=options)
+					if ifileName:
+						efl = len("png")+1
+						if ifileName[-efl:].lower()!=f".png": ifileName = ifileName+f".png"
+						
+						name_without_extension, extension = os.path.splitext(item.filename)
+						imported_file = name_without_extension+".png"
+						imported_file = os.path.join(plugins.PLUGIN_DIRECTORY, imported_file)
+						added_icon = imported_file
+
+						shutil.copy(ifileName, imported_file)
 
 			README = DEFAULT_PLUGIN_README
 			README = README.replace("%_NAME_%",item.NAME)
