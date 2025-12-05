@@ -1015,19 +1015,6 @@ class Merk(QMainWindow):
 
 		self.trayMenu.clear()
 
-		entry = widgets.ExtendedMenuItemNoAction(self,APPLICATION_MENU_ICON,APPLICATION_NAME,APPLICATION_VERSION,CUSTOM_MENU_ICON_SIZE)
-		self.trayMenu.addAction(entry)
-
-		if config.MINIMIZE_TO_SYSTRAY:
-			if self.is_hidden:
-				entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
-			else:
-				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",self)
-			entry.triggered.connect(self.toggleHide)
-			self.trayMenu.addAction(entry)
-
-			self.trayMenu.addSeparator()
-
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU:
 
 			windows = self.getAllServerWindows()
@@ -1067,18 +1054,6 @@ class Merk(QMainWindow):
 						else:
 							mynet = "Unknown"
 
-						if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
-							netlink = get_network_link(mynet)
-							if netlink!=None:
-								desc = f"<a href=\"{netlink}\">Network Website</a>"
-							else:
-								desc = "IRC Network"
-						else:
-							desc = "IRC Network"
-
-						entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
-						sm.addAction(entry)
-
 						if config.SHOW_LIST_IN_SYSTRAY_MENU:
 							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
 							entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
@@ -1117,14 +1092,20 @@ class Merk(QMainWindow):
 		self.trayMenu.addSeparator()
 
 		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU:
-			if hasattr(self,"settingsMenu"):
-				entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
-				entry.setMenu(self.settingsMenu)
-				self.trayMenu.addAction(entry)
+			entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
+			entry.triggered.connect(self.openSettings)
+			self.trayMenu.addAction(entry)
+
+		if config.MINIMIZE_TO_SYSTRAY:
+			if self.is_hidden:
+				entry = QAction(QIcon(WINDOW_ICON),"Show window",self)
 			else:
-				entry = QAction(QIcon(SETTINGS_ICON),"Settings",self)
-				entry.triggered.connect(self.openSettings)
-				self.trayMenu.addAction(entry)
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",self)
+			entry.triggered.connect(self.toggleHide)
+			self.trayMenu.addAction(entry)
+
+		if config.SHOW_SETTINGS_IN_SYSTRAY_MENU or config.MINIMIZE_TO_SYSTRAY:
+			self.trayMenu.addSeparator()
 
 		if config.SHOW_DIRECTORIES_IN_SYSTRAY_MENU:
 

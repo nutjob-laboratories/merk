@@ -624,6 +624,7 @@ class Window(QMainWindow):
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
+				if not hasattr(self.client,"network"): self.client.network = "Unknown"
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
 					if netlink!=None:
