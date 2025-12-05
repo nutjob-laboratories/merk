@@ -18,6 +18,14 @@ f = open("./merk/data/win_minor.txt","r")
 win_minor = f.read()
 f.close()
 
+f = open("./merk/data/lin_major.txt","r")
+lin_major = f.read()
+f.close()
+
+f = open("./merk/data/lin_minor.txt","r")
+lin_minor = f.read()
+f.close()
+
 f = open("./merk/data/release.txt","r")
 release = f.read()
 f.close()
@@ -36,6 +44,7 @@ readme = readme.replace("!_VERSION_!",major)
 readme = readme.replace("!_MINOR_!",minor)
 readme = readme.replace("!_FULL_VERSION_!",major+"."+minor)
 readme = readme.replace("!_WIN_VERSION_!",win_major+"."+win_minor)
+readme = readme.replace("!_LIN_VERSION_!",lin_major+"."+lin_minor)
 readme = readme.replace("!_RELEASE_!",release)
 readme = readme.replace("!_RELEASE_URL_!",rurl)
 

@@ -13,63 +13,12 @@ else:
 	print("This platform is not supported")
 	sys.exit(1)
 
-# Load and increment version numbers
-
 f = open("./merk/data/major.txt","r")
 major = f.read()
 f.close()
 
 f = open("./merk/data/minor.txt","r")
 minor = f.read()
-f.close()
-
-mi = int(minor)
-mi = mi + 1
-if mi>=1000: mi = 0
-minor = str(mi)
-
-# Format minor version so it is always
-# at least three digits long
-if len(minor)==1:
-	minor = f"00{minor}"
-elif len(minor)==2:
-	minor = f"0{minor}"
-
-f = open("./merk/data/minor.txt","w")
-f.write(minor)
-f.close()
-
-# Write version to python file to be loaded in
-f = open("./merk/resources/version.py","w")
-f.write(f"APPLICATION_VERSION = \"{major}.{minor}\"")
-f.close()
-
-# Format minor version so it is always
-# at least three digits long
-if len(minor)==1:
-	minor = f"00{minor}"
-elif len(minor)==2:
-	minor = f"0{minor}"
-
-f = open("./merk/data/win_major.txt","r")
-win_major = f.read()
-f.close()
-
-f = open("./merk/data/win_minor.txt","r")
-win_minor = f.read()
-f.close()
-
-f = open("./merk/data/url.txt","r")
-rurl = f.read()
-f.close()
-
-f = open("./merk/data/release.txt","r")
-rversion = f.read()
-f.close()
-
-# Write version to python file to be loaded in
-f = open("./merk/resources/release.py","w")
-f.write(f"APPLICATION_RELEASE = \"{rurl}\"\nAPPLICATION_RELEASE_VERSION = \"{rversion}\"")
 f.close()
 
 # Build README
@@ -81,7 +30,6 @@ x.close()
 readme = readme.replace("!_VERSION_!",major)
 readme = readme.replace("!_MINOR_!",minor)
 readme = readme.replace("!_FULL_VERSION_!",major+"."+minor)
-readme = readme.replace("!_WIN_VERSION_!",win_major+"."+win_minor)
 
 os.remove("README.md")
 f = open("README.md",mode="w", encoding='latin-1')
@@ -95,7 +43,6 @@ x.close()
 helptext = helptext.replace("!_VERSION_!",major)
 helptext = helptext.replace("!_MINOR_!",minor)
 helptext = helptext.replace("!_FULL_VERSION_!",major+"."+minor)
-helptext = helptext.replace("!_WIN_VERSION_!",win_major+"."+win_minor)
 
 os.remove("README.html")
 f = open("README.html",mode="w", encoding='latin-1')
@@ -130,7 +77,7 @@ elif "Linux" in devp:
 
 shutil.rmtree('./dist')
 
-archive_name = f"merk-{major}.zip"
+archive_name = f"merk-{major}-{minor}.zip"
 
 os.rename('dist.zip', archive_name)
 
