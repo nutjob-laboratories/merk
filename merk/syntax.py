@@ -354,9 +354,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_ALIASES: 
 			STYLES['alias'] = format(config.SYNTAX_FOREGROUND,'')
 
-		# Comments
-		self.script_comments = (QRegExp("(\\/\\*|\\*\\/|\n)"), 1, STYLES['comments'])
-
 		rules = []
 
 		# Commands
@@ -404,29 +401,3 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 
 		self.setCurrentBlockState(0)
 
-		# Do multi-line comments
-		in_multiline = self.match_multiline(text, *self.script_comments)
-
-	def match_multiline(self, text, delimiter, in_state, style):
-		if self.previousBlockState() == in_state:
-			start = 0
-			add = 0
-		else:
-			start = delimiter.indexIn(text)
-			add = delimiter.matchedLength()
-
-		while start >= 0:
-			end = delimiter.indexIn(text, start + add)
-			if end >= add:
-				length = end - start + add + delimiter.matchedLength()
-				self.setCurrentBlockState(0)
-			else:
-				self.setCurrentBlockState(in_state)
-				length = len(text) - start + add
-			self.setFormat(start, length, style)
-			start = delimiter.indexIn(text, start + length)
-
-		if self.currentBlockState() == in_state:
-			return True
-		else:
-			return False

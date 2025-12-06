@@ -22,6 +22,9 @@
   rendering at all under Linux, and honestly, didn't really do much of anything
   except look a little pretty.
 * Completely re-wrote the build system for both Windows and Linux.
+* Scripting no longer has multi-line comments; they were not very useful, and
+  actively interfered with some script-only commands like goto. Now, scripts
+  can only comment by using the /rem command.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

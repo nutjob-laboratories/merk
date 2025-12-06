@@ -6332,9 +6332,6 @@ class ScriptThread(QThread):
 		self.filename = filename
 		self.ALIAS = {}
 
-		# Strip comments from script
-		self.script = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,self.script)
-
 	def process_inserts(self):
 		script = []
 		got_error = False
@@ -6345,8 +6342,6 @@ class ScriptThread(QThread):
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
-
-			line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
 			skip_this_line = False
 
@@ -6399,8 +6394,6 @@ class ScriptThread(QThread):
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
-
-			line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
 			# |=========|
 			# | exclude |
@@ -6657,8 +6650,6 @@ class ScriptThread(QThread):
 					loop =  False
 				else:
 					line = script[index]
-
-					line = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,line)
 
 					tokens = line.split()
 
