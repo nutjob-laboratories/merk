@@ -4540,9 +4540,10 @@ class Merk(QMainWindow):
 
 		if is_running_from_pyinstaller():
 
-			entry = QAction(QIcon(EXE_ICON),"UPX 5.0.2",self)
-			entry.triggered.connect(lambda state,u="https://upx.github.io/": self.openLinkInBrowser(u))
-			sm.addAction(entry)
+			if not "Linux" in platform.system():
+				entry = QAction(QIcon(EXE_ICON),"UPX 5.0.2",self)
+				entry.triggered.connect(lambda state,u="https://upx.github.io/": self.openLinkInBrowser(u))
+				sm.addAction(entry)
 
 			piv = get_pyinstaller_version()
 			if piv:

@@ -21,6 +21,7 @@
 * Removed some of the decoration from the systray context menu. It wasn't
   rendering at all under Linux, and honestly, didn't really do much of anything
   except look a little pretty.
+* Completely re-wrote the build system for both Windows and Linux.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
