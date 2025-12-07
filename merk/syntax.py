@@ -201,7 +201,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"unignore",
 			cmdsymbol+"find",
 			cmdsymbol+"ping",
-			cmdsymbol+"shell",
 			cmdsymbol+"ctcp",
 			cmdsymbol+"private",
 			cmdsymbol+"msgbox",
@@ -213,7 +212,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"show",
 			cmdsymbol+"window",
 			cmdsymbol+"close",
-			cmdsymbol+"random",
 			cmdsymbol+"prints",
 			cmdsymbol+"quitall",
 			cmdsymbol+"rem",
@@ -317,10 +315,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_ALIASES:
 			merk.remove(cmdsymbol+"alias")
 			merk.remove(cmdsymbol+"unalias")
-			merk.remove(cmdsymbol+"shell")
-			merk.remove(cmdsymbol+"random")
-		if not config.ENABLE_SHELL_COMMAND:
-			merk.remove(cmdsymbol+"shell")
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")

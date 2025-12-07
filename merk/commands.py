@@ -215,7 +215,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"unignore": config.ISSUE_COMMAND_SYMBOL+"unignore ",
 			config.ISSUE_COMMAND_SYMBOL+"find": config.ISSUE_COMMAND_SYMBOL+"find ",
 			config.ISSUE_COMMAND_SYMBOL+"ping": config.ISSUE_COMMAND_SYMBOL+"ping ",
-			config.ISSUE_COMMAND_SYMBOL+"shell": config.ISSUE_COMMAND_SYMBOL+"shell ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp": config.ISSUE_COMMAND_SYMBOL+"ctcp ",
 			config.ISSUE_COMMAND_SYMBOL+"private": config.ISSUE_COMMAND_SYMBOL+"private ",
 			config.ISSUE_COMMAND_SYMBOL+"msgbox": config.ISSUE_COMMAND_SYMBOL+"msgbox ",
@@ -224,7 +223,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
 			config.ISSUE_COMMAND_SYMBOL+"window": config.ISSUE_COMMAND_SYMBOL+"window ",
 			config.ISSUE_COMMAND_SYMBOL+"close": config.ISSUE_COMMAND_SYMBOL+"close ",
-			config.ISSUE_COMMAND_SYMBOL+"random": config.ISSUE_COMMAND_SYMBOL+"random ",
 			config.ISSUE_COMMAND_SYMBOL+"prints": config.ISSUE_COMMAND_SYMBOL+"prints ",
 			config.ISSUE_COMMAND_SYMBOL+"quitall": config.ISSUE_COMMAND_SYMBOL+"quitall",
 			config.ISSUE_COMMAND_SYMBOL+"fullscreen": config.ISSUE_COMMAND_SYMBOL+"fullscreen",
@@ -263,16 +261,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_ALIASES:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"alias",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unalias",'')
-		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
-		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"random",'')
 
 	if not config.SCRIPTING_ENGINE_ENABLED:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"script",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"edit",'')
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"macro",'')
-
-	if not config.ENABLE_SHELL_COMMAND:
-		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"shell",'')
 
 	if not config.ENABLE_DELAY_COMMAND:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"delay",'')
@@ -347,7 +340,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>", "Un-hides a user's chat. To un-hide all users, use * as the argument" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"find [TERMS]</b>", "Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ping USER [TEXT]</b>", "Sends a CTCP ping to a user" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>", "Executes an external program, and stores the output in an alias" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp REQUEST USER</b>", "Sends a CTCP request; valid requests are TIME, VERSION, USERINFO, SOURCE, or FINGER" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat window for NICKNAME" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
@@ -356,7 +348,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>resize</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>hotkey</b>, <b>ignore</b>, <b>plugin</b>, <b>restart</b>, <b>next</b>, <b>previous</b>, <b>cascade</b>, and <b>tile</b>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>", "Generates a random number between LOW and HIGH and stores it in ALIAS" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fullscreen</b>", "Toggles full screen mode" ],
@@ -420,15 +411,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		if not config.ENABLE_ALIASES:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias [TOKEN] [TEXT...]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH</b>": continue
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"s FILENAME [ARGUMENTS]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"macro NAME SCRIPT...</b>": continue
-		if not config.ENABLE_SHELL_COMMAND:
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...</b>": continue
 		if not SSL_AVAILABLE:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"connectssl SERVER [PORT] [PASSWORD]</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnectssl SERVER [PORT] [PASSWORD]</b>": continue
@@ -2876,101 +2863,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |---------|
-	# | /random |
-	# |---------|
-	if len(tokens)>=1:
-
-		if not config.ENABLE_ALIASES:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random':
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: Aliases have been disabled in settings")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random' and len(tokens)==4:
-			
-			tokens.pop(0)
-			a =  tokens.pop(0)
-			low = tokens.pop(0)
-			high = tokens.pop(0)
-
-			# If the first character is the interpolation
-			# symbol, strip it from the name
-			if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
-				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
-				if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
-					a = a[il:]
-
-			if len(a)>=1:
-				if not a[0].isalpha():
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: Alias tokens must begin with a letter")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
-					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-
-			if not is_valid_alias_name(a):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+a+"\" is not a valid alias name")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"\""+a+"\" is not a valid alias name")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			try:
-				low = int(low)
-			except:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: \"{low}\" is not a number")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',f"\"{low}\" is not a number")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			try:
-				high = int(high)
-			except:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}random: \"{high}\" is not a number")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',f"\"{high}\" is not a number")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			addAlias(a,f"{random.randint(low,high)}")
-			# if is_script: time.sleep(0.1)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'random':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"random ALIAS LOW HIGH")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
 	# |--------|
 	# | /close |
 	# |--------|
@@ -3727,98 +3619,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"ctcp REQUEST USER")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
-	# |--------|
-	# | /shell |
-	# |--------|
-	if len(tokens)>=1:
-
-		if not config.ENABLE_ALIASES:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}shell: Aliases have been disabled in settings")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
-			if not config.ENABLE_SHELL_COMMAND:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"shell has been disabled in settings")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"shell has been disabled in settings")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell' and len(tokens)>=3:
-			tokens.pop(0)
-			alias = tokens.pop(0)
-
-			# If the first character is the interpolation
-			# symbol, strip it from the name
-			if len(alias)>len(config.ALIAS_INTERPOLATION_SYMBOL):
-				il = len(config.ALIAS_INTERPOLATION_SYMBOL)
-				if alias[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
-					alias = alias[il:]
-
-			if len(alias)>=1:
-				if not alias[0].isalpha():
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}shell: Alias tokens must begin with a letter")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
-					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-
-			if not is_valid_alias_name(alias):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+alias+"\" is not a valid alias name")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"\""+alias+"\" is not a valid alias name")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			try:
-				result = subprocess.run(tokens, capture_output=True, text=True, check=True, shell=True)
-				stored = f"{result.stdout}"
-				addAlias(alias,stored)
-			except subprocess.CalledProcessError as e:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}:{config.ISSUE_COMMAND_SYMBOL}shell returned \"{e.stderr}\"")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',f"Error executing {config.ISSUE_COMMAND_SYMBOL}shell {alias} {' '.join(tokens)}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(ERROR_MESSAGE,'',f"{e.stderr}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'shell':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"shell ALIAS COMMAND...")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

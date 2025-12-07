@@ -613,7 +613,6 @@ class Dialog(QDialog):
 			self.alias_symbol.setEnabled(True)
 			self.autoAliasAway.setEnabled(True)
 			self.autoAliasQuit.setEnabled(True)
-			self.enableShell.setEnabled(True)
 			self.enableBuiltin.setEnabled(True)
 		else:
 			self.autocompleteAlias.setEnabled(False)
@@ -623,7 +622,6 @@ class Dialog(QDialog):
 			self.alias_symbol.setEnabled(False)
 			self.autoAliasAway.setEnabled(False)
 			self.autoAliasQuit.setEnabled(False)
-			self.enableShell.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
 		self.changed.show()
 		self.syntax_did_change = True
@@ -4327,13 +4325,6 @@ class Dialog(QDialog):
 		aliasLayout.addWidget(self.alias_symbol_label)
 		aliasLayout.addStretch()
 
-		self.enableShell = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}shell",self)
-		if config.ENABLE_SHELL_COMMAND: self.enableShell.setChecked(True)
-		self.enableShell.stateChanged.connect(self.changedSettingEditor)
-
-		if not config.ENABLE_ALIASES:
-			self.enableShell.setEnabled(False)
-
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.scriptingDescription = QLabel(f"""
@@ -4423,7 +4414,6 @@ class Dialog(QDialog):
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
-		cmdLayout.addWidget(self.enableShell)
 		cmdLayout.addWidget(self.enableDelay)
 		cmdLayout.addWidget(self.enableConfig)
 		cmdLayout.addWidget(self.enableUser)
@@ -5520,7 +5510,6 @@ class Dialog(QDialog):
 		config.SYNTAX_SCRIPT_STYLE = self.SYNTAX_SCRIPT_STYLE
 		config.AUTOCOMPLETE_SETTINGS = self.autocompleteSettings.isChecked()
 		config.ENABLE_CONFIG_COMMAND = self.enableConfig.isChecked()
-		config.ENABLE_SHELL_COMMAND = self.enableShell.isChecked()
 		config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION = self.restrictError.isChecked()
 		config.MENUBAR_DOCKED_AT_TOP = self.menubarTop.isChecked()
 		config.NICKNAME_PAD_LENGTH = self.nicknamePadLength

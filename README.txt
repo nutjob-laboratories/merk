@@ -323,7 +323,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
-| `/random ALIAS LOW HIGH`                | Generates a random number beween `LOW` and `HIGH` and stores it in `ALIAS`                             |
 | `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
@@ -334,7 +333,6 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                                |
 | `/s FILENAME [ARGUMENTS]`                      | A shortcut for the `/script` command                                                                                            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
-| `/shell ALIAS COMMAND...`               | Executes an external program, and stores the output in an alias                                                                  |
 | `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                |
 | `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor                                                                                               |
 | `/time`                                 | Requests server time                                                                                                             |

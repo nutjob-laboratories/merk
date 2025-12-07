@@ -27,6 +27,10 @@
   can only comment by using the /rem command.
 * Removed the /reclaim command. This functionality can be implemented with
   plugins, now, and do not require a separate, threaded command.
+* Removed the /shell command. This functionality can also be implemented with
+  plugins (and honestly implemented better).
+* Removed the /random command. Again, this can be better implemented with a
+  plugin.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

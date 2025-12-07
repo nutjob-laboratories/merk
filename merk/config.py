@@ -239,7 +239,6 @@ SHOW_MISSPELLED_WORDS_IN_COLOR = False
 SCRIPTING_ENGINE_ENABLED = True
 SHOW_PINGS_IN_CONSOLE = False
 CLOSING_SERVER_WINDOW_DISCONNECTS = False
-ENABLE_SHELL_COMMAND = True
 SHOW_IGNORE_STATUS_IN_USERLISTS = True
 MAXIMUM_INSERT_DEPTH = 10
 WINDOWBAR_SHOW_UNREAD_MESSAGES = True
@@ -509,7 +508,6 @@ def build_settings():
 		"windowbar_show_unread_messages": WINDOWBAR_SHOW_UNREAD_MESSAGES,
 		"maximum_insert_file_depth": MAXIMUM_INSERT_DEPTH,
 		"show_ignore_status_in_userlists": SHOW_IGNORE_STATUS_IN_USERLISTS,
-		"enable_shell_command": ENABLE_SHELL_COMMAND,
 		"closing_server_window_disconnects_from_server": CLOSING_SERVER_WINDOW_DISCONNECTS,
 		"display_server_pings_in_server_window": SHOW_PINGS_IN_CONSOLE,
 		"enable_scripting": SCRIPTING_ENGINE_ENABLED,
@@ -981,8 +979,6 @@ def patch_settings(settings):
 		settings["maximum_insert_file_depth"] = MAXIMUM_INSERT_DEPTH
 	if not "show_ignore_status_in_userlists" in settings:
 		settings["show_ignore_status_in_userlists"] = SHOW_IGNORE_STATUS_IN_USERLISTS
-	if not "enable_shell_command" in settings:
-		settings["enable_shell_command"] = ENABLE_SHELL_COMMAND
 	if not "closing_server_window_disconnects_from_server" in settings:
 		settings["closing_server_window_disconnects_from_server"] = CLOSING_SERVER_WINDOW_DISCONNECTS
 	if not "display_server_pings_in_server_window" in settings:
@@ -1587,7 +1583,6 @@ def load_settings(filename):
 	global SCRIPTING_ENGINE_ENABLED
 	global SHOW_PINGS_IN_CONSOLE
 	global CLOSING_SERVER_WINDOW_DISCONNECTS
-	global ENABLE_SHELL_COMMAND
 	global SHOW_IGNORE_STATUS_IN_USERLISTS
 	global MAXIMUM_INSERT_DEPTH
 	global WINDOWBAR_SHOW_UNREAD_MESSAGES
@@ -1863,7 +1858,6 @@ def load_settings(filename):
 		WINDOWBAR_SHOW_UNREAD_MESSAGES = settings["windowbar_show_unread_messages"]
 		MAXIMUM_INSERT_DEPTH = settings["maximum_insert_file_depth"]
 		SHOW_IGNORE_STATUS_IN_USERLISTS = settings["show_ignore_status_in_userlists"]
-		ENABLE_SHELL_COMMAND = settings["enable_shell_command"]
 		CLOSING_SERVER_WINDOW_DISCONNECTS = settings["closing_server_window_disconnects_from_server"]
 		SHOW_PINGS_IN_CONSOLE = settings["display_server_pings_in_server_window"]
 		SCRIPTING_ENGINE_ENABLED = settings["enable_scripting"]

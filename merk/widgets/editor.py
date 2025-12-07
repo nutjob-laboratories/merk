@@ -961,10 +961,6 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertNick)
 			self.ircCommands.addAction(entry)
 
-			entry = QAction(QIcon(PRIVATE_ICON),"Reclaim nickname",self)
-			entry.triggered.connect(self.insertReclaim)
-			self.ircCommands.addAction(entry)
-
 			entry = QAction(QIcon(CONNECT_ICON),"Connect to server",self)
 			entry.triggered.connect(self.insertConnect)
 			self.ircCommands.addAction(entry)
@@ -1055,11 +1051,6 @@ class Window(QMainWindow):
 			if config.ENABLE_ALIASES:
 				entry = QAction(QIcon(EDIT_ICON),"Create alias",self)
 				entry.triggered.connect(self.insertAlias)
-				self.scriptCommands.addAction(entry)
-
-			if config.ENABLE_ALIASES and config.ENABLE_SHELL_COMMAND:
-				entry = QAction(QIcon(EXE_ICON),"Insert shell command",self)
-				entry.triggered.connect(self.insertShell)
 				self.scriptCommands.addAction(entry)
 
 			entry = QAction(QIcon(WINDOW_ICON),"Switch context",self)
@@ -1715,21 +1706,6 @@ class Window(QMainWindow):
 			else:
 				self.show_error_message("Wrong file type","File is not a WAV file!\nOnly WAV files can be used with the "+config.ISSUE_COMMAND_SYMBOL+"play command.\nPlease select a valid file.")
 
-	def insertShell(self):
-		x = dialog.SetShell(self)
-		e = x.get_alias_information(self)
-
-		if not e: return
-
-		aname = e[0]
-		avalue = e[1]
-
-		if len(aname)==0: return
-		if len(avalue)==0: avalue = 'X'
-
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"shell "+aname+" "+avalue+"\n")
-		self.updateApplicationTitle()
-
 	def insertAlias(self):
 		x = dialog.SetAlias(self)
 		e = x.get_alias_information(self)
@@ -1743,17 +1719,6 @@ class Window(QMainWindow):
 		if len(avalue)==0: avalue = 'X'
 
 		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"alias "+aname+" "+avalue+"\n")
-		self.updateApplicationTitle()
-
-	def insertReclaim(self):
-		x = dialog.SetReclaim(self)
-		e = x.get_nick_information(self)
-
-		if not e: return
-
-		if len(e)==0: return
-
-		self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"reclaim "+e+"\n")
 		self.updateApplicationTitle()
 
 	def insertIf(self):
