@@ -342,10 +342,6 @@ Appearance:
 <td>Sends unprocessed data to the server</td>
 </tr>
 <tr>
-<td><code>/reclaim NICKNAME</code></td>
-<td>Attempts to change nickname to <code>NICKNAME</code> until claimed</td>
-</tr>
-<tr>
 <td><code>/reconnect SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server, reconnecting on disconnection</td>
 </tr>

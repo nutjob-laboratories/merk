@@ -219,7 +219,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ctcp": config.ISSUE_COMMAND_SYMBOL+"ctcp ",
 			config.ISSUE_COMMAND_SYMBOL+"private": config.ISSUE_COMMAND_SYMBOL+"private ",
 			config.ISSUE_COMMAND_SYMBOL+"msgbox": config.ISSUE_COMMAND_SYMBOL+"msgbox ",
-			config.ISSUE_COMMAND_SYMBOL+"reclaim": config.ISSUE_COMMAND_SYMBOL+"reclaim ",
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
 			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
@@ -352,7 +351,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp REQUEST USER</b>", "Sends a CTCP request; valid requests are TIME, VERSION, USERINFO, SOURCE, or FINGER" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat window for NICKNAME" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME</b>", "Attempts to change nickname to NICKNAME until claimed" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
@@ -3576,34 +3574,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |----------|
-	# | /reclaim |
-	# |----------|
-	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reclaim' and len(tokens)==2:
-			tokens.pop(0)
-			nickname = tokens.pop(0)
-
-			script_id = str(uuid.uuid4())
-			gui.scripts[script_id] = ReclaimThread(script_id,gui,window,nickname,config.RECLAIM_NICKNAME_FREQUENCY)
-			gui.scripts[script_id].threadEnd.connect(execute_script_end)
-			gui.scripts[script_id].reclaim.connect(do_reclaim)
-			gui.scripts[script_id].already.connect(do_already)
-			gui.scripts[script_id].tstart.connect(do_start)
-			gui.scripts[script_id].start()
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reclaim':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"reclaim NICKNAME")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
 	# |---------|
 	# | /msgbox |
 	# |---------|
@@ -6247,57 +6217,6 @@ class DelayThread(QThread):
 		self.finished.emit([self.gui,self.window,self.script,self.id])
 
 		self.threadEnd.emit([self.gui,self.id])
-
-def do_reclaim(data):
-	window = data[0]
-	nickname = data[1]
-	window.client.setNick(nickname)
-
-def do_already(data):
-	window = data[0]
-	nickname = data[1]
-	
-	t = Message(SYSTEM_MESSAGE,'',f"Nickname \"{nickname}\" already claimed")
-	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-def do_start(data):
-	window = data[0]
-	nickname = data[1]
-	t = Message(SYSTEM_MESSAGE,'',f"Reclaiming nickname \"{nickname}\"...")
-	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-class ReclaimThread(QThread):
-
-	threadEnd = pyqtSignal(list)
-	reclaim = pyqtSignal(list)
-	finished = pyqtSignal(list)
-	already = pyqtSignal(list)
-	tstart = pyqtSignal(object)
-
-	def __init__(self,sid,gui,window,nickname,wait,parent=None):
-		super(ReclaimThread, self).__init__(parent)
-		self.id = sid
-		self.gui = gui
-		self.window = window
-		self.nickname = nickname
-		self.time = wait
-
-	def run(self):
-
-		if self.window.client.nickname==self.nickname:
-			self.already.emit([self.window,self.nickname])
-			self.threadEnd.emit([self.gui,self.id])
-		else:
-			self.tstart.emit([self.window,self.nickname])
-			needreclaim = True
-			while needreclaim:
-				if self.window.client.nickname==self.nickname:
-					needreclaim = False
-					break
-				self.reclaim.emit([self.window,self.nickname])
-				time.sleep(self.time)
-
-			self.threadEnd.emit([self.gui,self.id])
 
 
 class ExitThread(QThread):

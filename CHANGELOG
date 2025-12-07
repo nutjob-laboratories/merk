@@ -25,6 +25,8 @@
 * Scripting no longer has multi-line comments; they were not very useful, and
   actively interfered with some script-only commands like goto. Now, scripts
   can only comment by using the /rem command.
+* Removed the /reclaim command. This functionality can be implemented with
+  plugins, now, and do not require a separate, threaded command.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

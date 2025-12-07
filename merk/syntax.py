@@ -205,7 +205,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ctcp",
 			cmdsymbol+"private",
 			cmdsymbol+"msgbox",
-			cmdsymbol+"reclaim",
 			cmdsymbol+"next",
 			cmdsymbol+"previous",
 			cmdsymbol+"delay",

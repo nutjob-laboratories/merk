@@ -256,7 +256,6 @@ LOG_CHANNEL_NOTICE = True
 SHOW_DATES_IN_LOGS = True
 INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = True
 INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = True
-RECLAIM_NICKNAME_FREQUENCY = 30
 HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = False
 ASK_FOR_SERVER_ON_STARTUP = True
 PROMPT_FOR_SCRIPT_FILE = False
@@ -494,7 +493,6 @@ def build_settings():
 		"prompt_for_file_on_calling_script_with_no_arguments": PROMPT_FOR_SCRIPT_FILE,
 		"show_connection_dialog_on_startup": ASK_FOR_SERVER_ON_STARTUP,
 		"hide_logo_on_initial_connection_dialog": HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG,
-		"reclaim_nickname_frequency": RECLAIM_NICKNAME_FREQUENCY,
 		"interpolate_aliases_into_quit_message": INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE,
 		"interpolate_aliases_into_away_message": INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE,
 		"display_dates_in_logs": SHOW_DATES_IN_LOGS,
@@ -951,8 +949,6 @@ def patch_settings(settings):
 		settings["show_connection_dialog_on_startup"] = ASK_FOR_SERVER_ON_STARTUP
 	if not "hide_logo_on_initial_connection_dialog" in settings:
 		settings["hide_logo_on_initial_connection_dialog"] = HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
-	if not "reclaim_nickname_frequency" in settings:
-		settings["reclaim_nickname_frequency"] = RECLAIM_NICKNAME_FREQUENCY
 	if not "interpolate_aliases_into_quit_message" in settings:
 		settings["interpolate_aliases_into_quit_message"] = INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE
 	if not "interpolate_aliases_into_away_message" in settings:
@@ -1608,7 +1604,6 @@ def load_settings(filename):
 	global SHOW_DATES_IN_LOGS
 	global INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE
 	global INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE
-	global RECLAIM_NICKNAME_FREQUENCY
 	global HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG
 	global ASK_FOR_SERVER_ON_STARTUP
 	global PROMPT_FOR_SCRIPT_FILE
@@ -1852,7 +1847,6 @@ def load_settings(filename):
 		PROMPT_FOR_SCRIPT_FILE = settings["prompt_for_file_on_calling_script_with_no_arguments"]
 		ASK_FOR_SERVER_ON_STARTUP = settings["show_connection_dialog_on_startup"]
 		HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG = settings["hide_logo_on_initial_connection_dialog"]
-		RECLAIM_NICKNAME_FREQUENCY = settings["reclaim_nickname_frequency"]
 		INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE = settings["interpolate_aliases_into_quit_message"]
 		INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE = settings["interpolate_aliases_into_away_message"]
 		SHOW_DATES_IN_LOGS = settings["display_dates_in_logs"]
