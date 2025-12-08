@@ -180,7 +180,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"restore",
 			cmdsymbol+"away",
 			cmdsymbol+"back",
-			cmdsymbol+"raw",
+			cmdsymbol+"quote",
 			cmdsymbol+"oper",
 			cmdsymbol+"time",
 			cmdsymbol+"print",
@@ -265,6 +265,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ison",
 			cmdsymbol+"_kill",
 			cmdsymbol+"links",
+			cmdsymbol+"lusers",
+			cmdsymbol+"_rehash",
 		]
 
 		script_only = [

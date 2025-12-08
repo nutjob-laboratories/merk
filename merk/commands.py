@@ -188,7 +188,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"oper": config.ISSUE_COMMAND_SYMBOL+"oper ",
 			config.ISSUE_COMMAND_SYMBOL+"away": config.ISSUE_COMMAND_SYMBOL+"away ",
 			config.ISSUE_COMMAND_SYMBOL+"back": config.ISSUE_COMMAND_SYMBOL+"back",
-			config.ISSUE_COMMAND_SYMBOL+"raw": config.ISSUE_COMMAND_SYMBOL+"raw ",
+			config.ISSUE_COMMAND_SYMBOL+"quote": config.ISSUE_COMMAND_SYMBOL+"quote ",
 			config.ISSUE_COMMAND_SYMBOL+"time": config.ISSUE_COMMAND_SYMBOL+"time",
 			config.ISSUE_COMMAND_SYMBOL+"version": config.ISSUE_COMMAND_SYMBOL+"version",
 			config.ISSUE_COMMAND_SYMBOL+"refresh" : config.ISSUE_COMMAND_SYMBOL+"refresh",
@@ -245,6 +245,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ison": config.ISSUE_COMMAND_SYMBOL+"ison ",
 			config.ISSUE_COMMAND_SYMBOL+"_kill": config.ISSUE_COMMAND_SYMBOL+"_kill ",
 			config.ISSUE_COMMAND_SYMBOL+"links": config.ISSUE_COMMAND_SYMBOL+"links",
+			config.ISSUE_COMMAND_SYMBOL+"lusers": config.ISSUE_COMMAND_SYMBOL+"lusers",
+			config.ISSUE_COMMAND_SYMBOL+"_rehash": config.ISSUE_COMMAND_SYMBOL+"_rehash",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -320,7 +322,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD</b>", "Logs into an operator account" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"away [MESSAGE]</b>", "Sets status as \"away\"" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"back</b>", "Sets status as \"back\"" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"raw TEXT...</b>", "Sends unprocessed data to the server" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quote TEXT...</b>", "Sends unprocessed data to the server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"time</b>", "Requests server time" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"version [SERVER]</b>", "Requests server version" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"list [TERMS]</b>", "Lists or searches channels on the server; use \"*\" for multi-character wildcard, \"?\" for single character" ],
@@ -379,6 +381,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ison NICKNAME(S)...</b>", f"Displays if the specified nicknames are currently online" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"links [REMOTE [MASK]]</b>", f"Requests a list of servers the server is connected to" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_kill CLIENT COMMENT...</b>", f"Forcibly removes CLIENT from the network. May only be issued by IRC operators" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"lusers [MASK [SERVER]]</b>", f"Requests statistics about the server" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_rehash</b>", f"Causes the server to reprocess and reload configuration files. May only be issued by IRC operators" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1371,6 +1375,48 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |----------|
+	# | /_rehash |
+	# |----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_rehash' and len(tokens)==1:
+			window.client.sendLine('REHASH')
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_rehash':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"_rehash")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"_rehash")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |---------|
+	# | /lusers |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'lusers' and len(tokens)>=2:
+			tokens.pop(0)
+			target = ' '.join(tokens)
+			window.client.sendLine('LUSERS '+target)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'lusers' and len(tokens)==1:
+			tokens.pop(0)
+			window.client.sendLine('LUSERS')
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'lusers':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"lusers [MASK [SERVER]]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"lusers [MASK [SERVER]]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |--------|
 	# | /links |
@@ -5040,24 +5086,24 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |------|
-	# | /raw |
-	# |------|
+	# |--------|
+	# | /quote |
+	# |--------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'raw' and len(tokens)>=2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quote' and len(tokens)>=2:
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			window.client.sendLine(msg)
 			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'raw' and len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quote' and len(tokens)==1:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"raw TEXT")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"raw TEXT")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quote TEXT")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

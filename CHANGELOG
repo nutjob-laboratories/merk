@@ -47,6 +47,10 @@
   and can only be issued by IRC operators.
 * New command: /links. This requests a list of the servers the IRC server is
   connected to.
+* New command: /lusers. This requests statistics about the server.
+* New command: /_rehash. This causes the server to reprocess and reload
+  configuration files, and can only be issued by IRC operators.
+* Renamed the /raw command to /quote, to match other IRC clients.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -281,6 +281,10 @@ Appearance:
 <td>Lists or searches channels on the server; use &quot;*&quot; for multi-character wildcard and &quot;?&quot; for single character</td>
 </tr>
 <tr>
+<td><code>/lusers [MASK [SERVER]]</code></td>
+<td>Requests statistics about the server</td>
+</tr>
+<tr>
 <td><code>/macro NAME SCRIPT [USAGE] [HELP]</code></td>
 <td>Creates a macro, executable with <code>/NAME</code>, that executes <code>SCRIPT</code></td>
 </tr>
@@ -362,7 +366,7 @@ Appearance:
 <td>Disconnects from all IRC servers</td>
 </tr>
 <tr>
-<td><code>/raw TEXT...</code></td>
+<td><code>/quote TEXT...</code></td>
 <td>Sends unprocessed data to the server</td>
 </tr>
 <tr>
@@ -376,6 +380,10 @@ Appearance:
 <tr>
 <td><code>/refresh</code></td>
 <td>Requests a new list of channels from the server</td>
+</tr>
+<tr>
+<td><code>/_rehash</code></td>
+<td>Causes the server to reprocess and reload configuration files. May only be issued by IRC operators</td>
 </tr>
 <tr>
 <td><code>/rem [TEXT...]</code></td>

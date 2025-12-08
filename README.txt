@@ -310,6 +310,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
 | `/links [REMOTE [MASK]]`                         | Requests a list of servers the server is connected to |
 | `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character                      |
+| `/lusers [MASK [SERVERS]]`                         | Requests statistics about the server |
 | `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
 | `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
@@ -330,10 +331,11 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
-| `/raw TEXT...`                          | Sends unprocessed data to the server                                                                                             |
+| `/quote TEXT...`                          | Sends unprocessed data to the server. |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
+| `/_rehash`                              | Causes the server to reprocess and reload configuration files. May only be issued by IRC operators |
 | `/rem [TEXT...]`                        | Does nothing. Can be used as a target for `goto`                                                                              |
 | `/resize [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                              |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |

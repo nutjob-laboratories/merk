@@ -210,6 +210,28 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			self.fingerReply = user.FINGER
 
+	def irc_RPL_LUSERCHANNELS(self,prefix,params):
+		data = f"CHANNELS: {params[1]} {params[2]}"
+		self.gui.luserInfo(self,data)
+
+	def irc_RPL_LUSERCLIENT(self,prefix,params):
+		data = f"CLIENT: {params[1]}"
+		self.gui.luserInfo(self,data)
+
+	def irc_RPL_LUSERME(self,prefix,params):
+		data = f"ME: {params[1]}"
+		self.gui.luserInfo(self,data)
+
+	def irc_RPL_LUSEROP(self,prefix,params):
+		data = f"OPS: {params[1]} {params[2]}"
+		self.gui.luserInfo(self,data)
+
+	def irc_RPL_LUSERUNKNOWN(self,prefix,params):
+		if len(params)>1:
+			params.pop(0)
+			for e in params:
+				self.gui.luserInfo(self,f"UNKNOWN: {e}")
+
 	def irc_RPL_LINKS(self,prefix,params):
 		ltype = params[1]
 		host = params[2]
