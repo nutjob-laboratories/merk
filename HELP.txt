@@ -253,6 +253,10 @@ Appearance:
 <td>Sends a channel invitation</td>
 </tr>
 <tr>
+<td><code>/ison NICKNAME(S)...</code></td>
+<td>Displays if the specified nicknames are online</td>
+</tr>
+<tr>
 <td><code>/join CHANNEL [KEY]</code></td>
 <td>Joins a channel</td>
 </tr>
@@ -261,8 +265,16 @@ Appearance:
 <td>Kicks a user from a channel</td>
 </tr>
 <tr>
+<td><code>/_kill CLIENT COMMENT...</code></td>
+<td>Forcibly removes <code>CLIENT</code< from the network. May only be issued by IRC operators</td>
+</tr>
+<tr>
 <td><code>/knock CHANNEL [MESSAGE]</code></td>
 <td>Requests an invitation to a channel</td>
+</tr>
+<tr>
+<td><code>/links [REMOTE [MASK]]</code></td>
+<td>Requests a list of servers the server is connected to</td>
 </tr>
 <tr>
 <td><code>/list [TERMS]</code></td>

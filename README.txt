@@ -301,11 +301,14 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`). *Can only be called from scripts*    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/info [TARGET]`                          | Requests server information                         |
-| `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
 | `insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script; *can only be called by scripts*            |
+| `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                   |
+| `/ison NICKNAME(S)...`              | Displays if the specified nicknames are online          |
 | `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |
-| `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                                                                                      |
+| `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                          |
+| `/_kill CLIENT COMMENT...`      | Forcibly removes `CLIENT` from the network. May only be issued by IRC operators                     |
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
+| `/links [REMOTE [MASK]]`                         | Requests a list of servers the server is connected to |
 | `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character                      |
 | `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
 | `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |

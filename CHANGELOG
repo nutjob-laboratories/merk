@@ -41,6 +41,12 @@
 * New command: /_connect. This tells the server (or another server) to connect
   to a server. Can only be issued by server operators.
 * New command: /info. This requests server information from the server.
+* New command: /ison. This displays if the nicknames passed to it are currently
+  online.
+* New command: /_kill. This forcibly removes a client from the IRC network,
+  and can only be issued by IRC operators.
+* New command: /links. This requests a list of the servers the IRC server is
+  connected to.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

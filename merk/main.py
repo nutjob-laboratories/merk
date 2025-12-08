@@ -2120,6 +2120,24 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"tick",client=client,uptime=uptime)
 
+	def linksInfo(self,client,data):
+		if len(data)==0: return
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			for d in data:
+				e = f"{d[1]} ({d[0]}) - {d[2]}"
+				m = Message(SERVER_MESSAGE,'', e)
+				c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def isonInfo(self,client,data):
+		if len(data)==0: return
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			m = Message(SERVER_MESSAGE,'', "Online: "+", ".join(data))
+			c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 	def infoInfo(self,client,data):
 		w = self.MDI.activeSubWindow()
 		if w:

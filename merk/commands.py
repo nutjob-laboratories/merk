@@ -242,6 +242,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"_die": config.ISSUE_COMMAND_SYMBOL+"_die",
 			config.ISSUE_COMMAND_SYMBOL+"_connect": config.ISSUE_COMMAND_SYMBOL+"_connect",
 			config.ISSUE_COMMAND_SYMBOL+"info": config.ISSUE_COMMAND_SYMBOL+"info ",
+			config.ISSUE_COMMAND_SYMBOL+"ison": config.ISSUE_COMMAND_SYMBOL+"ison ",
+			config.ISSUE_COMMAND_SYMBOL+"_kill": config.ISSUE_COMMAND_SYMBOL+"_kill ",
+			config.ISSUE_COMMAND_SYMBOL+"links": config.ISSUE_COMMAND_SYMBOL+"links",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -373,6 +376,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_die</b>", f"Instructs the server to shut down. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_connect SERVER PORT [REMOTE]</b>", f"Instructs the server to connect to another server. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"info [TARGET]</b>", f"Requests server information" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ison NICKNAME(S)...</b>", f"Displays if the specified nicknames are currently online" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"links [REMOTE [MASK]]</b>", f"Requests a list of servers the server is connected to" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_kill CLIENT COMMENT...</b>", f"Forcibly removes CLIENT from the network. May only be issued by IRC operators" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1366,6 +1372,71 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
+	# |--------|
+	# | /links |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'links' and len(tokens)>=2:
+			tokens.pop(0)
+			target = ' '.join(tokens)
+			window.client.sendLine('LINKS '+target)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'links' and len(tokens)==1:
+			tokens.pop(0)
+			window.client.sendLine('LINKS')
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'links':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"links [REMOTE [MASK]]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"links [REMOTE [MASK]]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |--------|
+	# | /_kill |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_kill' and len(tokens)>=3:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			comment = ' '.join(tokens)
+			window.client.sendLine('KILL '+target+' '+comment)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_kill':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"_kill CLIENT COMMENT...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"_kill CLIENT COMMENT...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |-------|
+	# | /ison |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ison' and len(tokens)>=2:
+			tokens.pop(0)
+			target = ' '.join(tokens)
+			window.client.sendLine('ISON '+target)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ison':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"ison NICKNAME(S)...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"ison NICKNAME(S)...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
 	# |-------|
 	# | /info |
 	# |-------|
@@ -1385,7 +1456,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"info [TARGET]")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"info [TARGET]]")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"info [TARGET]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

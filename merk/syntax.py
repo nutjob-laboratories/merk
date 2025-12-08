@@ -262,6 +262,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"_die",
 			cmdsymbol+"_connect",
 			cmdsymbol+"info",
+			cmdsymbol+"ison",
+			cmdsymbol+"_kill",
+			cmdsymbol+"links",
 		]
 
 		script_only = [

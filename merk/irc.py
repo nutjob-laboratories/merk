@@ -196,6 +196,7 @@ class IRC_Connection(irc.IRCClient):
 		self.autoaway = False
 
 		self.info_data = []
+		self.links_info = []
 
 		self.banlists = defaultdict(list)
 
@@ -208,6 +209,25 @@ class IRC_Connection(irc.IRCClient):
 			self.fingerReply = None
 		else:
 			self.fingerReply = user.FINGER
+
+	def irc_RPL_LINKS(self,prefix,params):
+		ltype = params[1]
+		host = params[2]
+		desc = params [3]
+
+		e = [ltype,host,desc]
+		self.links_info.append(e)
+
+	def irc_RPL_ENDOFLINKS(self,prefix,params):
+		self.gui.linksInfo(self,self.links_info)
+		self.links_info = []
+
+	def irc_RPL_ISON(self,prefix,params):
+		online = []
+		for e in params[1].split(' '):
+			online.append(e)
+
+		self.gui.isonInfo(self,online)
 
 	def irc_RPL_ENDOFINFO(self,prefix,params):
 		self.gui.infoInfo(self,self.info_data)
