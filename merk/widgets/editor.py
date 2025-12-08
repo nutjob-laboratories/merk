@@ -67,31 +67,11 @@ class Window(QMainWindow):
 			return start_block_number != end_block_number
 		return False
 
-	def comment_selected(self):
-		cursor = self.editor.textCursor()
-		selected_text = cursor.selectedText()
-
-		if selected_text:
-
-			if self.is_multi_line_selection_by_block():
-				selected_text = re.sub(os.linesep + r'\Z','',selected_text)
-				text = "/*\n"+selected_text+"\n*/"
-			else:
-				text = "/* "+selected_text+" */"
-			
-			cursor.beginEditBlock()
-			cursor.insertText(text)
-			cursor.endEditBlock()
-
 	def show_context_menu(self,pos):
 
 		menu = self.editor.createStandardContextMenu()
 
 		menu.addSeparator()
-
-		commented = QAction(QIcon(EDIT_ICON),"Comment out selection", self)
-		commented.triggered.connect(self.comment_selected)
-		menu.addAction(commented)
 
 		smenu = menu.addMenu(QIcon(PRIVATE_ICON),"Insert user info")
 
@@ -304,13 +284,7 @@ class Window(QMainWindow):
 		self.menuZoomOut.setShortcut("Ctrl+-")
 		self.editMenu.addAction(self.menuZoomOut)
 
-		if not self.python:
-			self.editMenu.addSeparator()
-
-			mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
-			mefind.triggered.connect(self.doStrip)
-			self.editMenu.addAction(mefind)
-		else:
+		if self.python:
 			self.editMenu.addSeparator()
 
 			mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
@@ -366,11 +340,6 @@ class Window(QMainWindow):
 			self.status.show()
 		else:
 			self.status.hide()
-
-	def doStrip(self):
-		s = self.editor.toPlainText()
-		s = re.sub(re.compile("/\\*.*?\\*/",re.DOTALL ) ,"" ,s)
-		self.editor.setPlainText(s)
 
 	def doStripPython(self):
 		s = self.editor.toPlainText()
@@ -1945,7 +1914,9 @@ class Window(QMainWindow):
 		if not e: return
 
 		if len(e)>0:
-			self.editor.insertPlainText("/*\n"+e+"\n*/\n")
+			for l in e.split("\n"):
+				self.editor.insertPlainText(f"{config.ISSUE_COMMAND_SYMBOL}rem {l}\n")
+
 			self.updateApplicationTitle()
 
 	def insertComment(self):
@@ -1955,7 +1926,7 @@ class Window(QMainWindow):
 		if not e: return
 
 		if len(e)>0:
-			self.editor.insertPlainText("/* "+e+" */\n")
+			self.editor.insertPlainText(f"{config.ISSUE_COMMAND_SYMBOL}rem {e}\n")
 			self.updateApplicationTitle()
 
 	def insertJoin(self):
