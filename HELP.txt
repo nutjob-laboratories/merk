@@ -120,6 +120,10 @@ Appearance:
 <td>Creates an alias that can be referenced by <code>$TOKEN</code>. Call with only <code>TOKEN</code> as an argument to see <code>TOKEN</code>'s value. If <code>TEXT</code> is a mathematical statement, it will be evaluated and the result used as the alias' value. Operations supported are parenthesis, addition (<code>+</code>), subtraction (<code>-</code>), multiplication (<code>*</code>), division (<code>/</code>), modulus (<code>%</code>), and exponents(<code>**</code>).  Call without any arguments to see all aliases and their values</td>
 </tr>
 <tr>
+<td><code>/admin [SERVER]</code></td>
+<td>Requests administration information from the server</td>
+</tr>
+<tr>
 <td><code>/away [MESSAGE]</code></td>
 <td>Sets status as &quot;away&quot;</td>
 </tr>
@@ -156,6 +160,10 @@ Appearance:
 <td>Imports a configuration file into settings.  <strong>*Caution*</strong>: use at your own risk!</td>
 </tr>
 <tr>
+<td><code>/_connect SERVER PORT [REMOTE]</code></td>
+<td>Instructs a server to connect to another server. May only be issued by server operators</td>
+</tr>
+<tr>
 <td><code>/connect SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server</td>
 </tr>
@@ -174,6 +182,10 @@ Appearance:
 <tr>
 <td><code>/delay SECONDS COMMAND...</code></td>
 <td>Executes <code>COMMAND</code> after <code>SECONDS</code> seconds</td>
+</tr>
+<tr>
+<td><code>/_die</code></td>
+<td>Instructs the server to shut down. May only be issued by server operators</td>
 </tr>
 <tr>
 <td><code>/edit [FILENAME]</code></td>
@@ -227,6 +239,10 @@ Appearance:
 <tr>
 <td><code>/ignore USER</code></td>
 <td>Hides a <code>USER</code>&#39;s chat; use <code>*</code> as multiple character wildcards, and <code>?</code> as single character wildcards</td>
+</tr>
+<tr>
+<td><code>info [TARGET]</code></td>
+<td>Requests server information</td>
 </tr>
 <tr>
 <td><code>insert FILE [FILE...]</code></td>

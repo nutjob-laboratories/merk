@@ -31,6 +31,16 @@
   plugins (and honestly implemented better).
 * Removed the /random command. Again, this can be better implemented with a
   plugin.
+* New command: /admin. This requests (and displays) administrative information
+  from an IRC server.
+* Commands that can only be used by server operators will start with an under-
+  score. This is to prevent users from "accidentally" using or autocompleting
+  the command, and to distinguish them from normal commands.
+* New command: /_die. This tells the server to shut down, and can only be issued
+  by server operators.
+* New command: /_connect. This tells the server (or another server) to connect
+  to a server. Can only be issued by server operators.
+* New command: /info. This requests server information from the server.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

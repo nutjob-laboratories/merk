@@ -195,6 +195,8 @@ class IRC_Connection(irc.IRCClient):
 		self.last_interaction = 0
 		self.autoaway = False
 
+		self.info_data = []
+
 		self.banlists = defaultdict(list)
 
 		if user.USERINFO=='':
@@ -206,6 +208,43 @@ class IRC_Connection(irc.IRCClient):
 			self.fingerReply = None
 		else:
 			self.fingerReply = user.FINGER
+
+	def irc_RPL_ENDOFINFO(self,prefix,params):
+		self.gui.infoInfo(self,self.info_data)
+		self.info_data = []
+
+	def irc_RPL_INFO(self,prefix,params):
+		data = params[1]
+		self.info_data.append(data)
+
+	def irc_RPL_ADMINME(self,prefix,params):
+		hostname = prefix
+		admin = params[0]
+		hostname = params[1]
+		details = params[2]
+
+		self.gui.adminInfo(self,admin,details)
+
+	def irc_RPL_ADMINEMAIL(self,prefix,params):
+		hostname = prefix
+		admin = params[0]
+		email = params[1]
+
+		self.gui.adminInfo(self,admin,f"Email: {email}")
+
+	def irc_RPL_ADMINLOC1(self,prefix,params):
+		hostname = prefix
+		admin = params[0]
+		name = params[1]
+
+		self.gui.adminInfo(self,admin,f"Name: {name}")
+
+	def irc_RPL_ADMINLOC2(self,prefix,params):
+		hostname = prefix
+		admin = params[0]
+		location = params[1]
+
+		self.gui.adminInfo(self,admin,f"Location: {location}")
 
 	def yourHost(self,info):
 

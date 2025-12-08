@@ -269,6 +269,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 
 | Commands                                | Description                                                                                                                      |
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `/admin [SERVER]`                       | Requests administration information from the server  |
 | `/alias [TOKEN] [TEXT...]`                  | Creates an alias that can be referenced by `$TOKEN`. Call with only `TOKEN` as an argument to see `TOKEN`'s value. If `TEXT` is a mathematical statement, it will be evaluated and the result used as the alias' value. Operations supported are parenthesis, addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`), modulus (`%`), and exponents(`**`). Call without any arguments to see all aliases and their values'                                                                              |
 | `/away [MESSAGE]`                       | Sets status as "away"                                                                                                            |
 | `/back`                                 | Sets status as "back"                                                                                                            |
@@ -279,11 +280,13 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  **Caution**: use at your own risk! |
 | `/config export [FILENAME]`          | Exports the current configuration file.  **Caution**: use at your own risk! |
 | `/config import [FILENAME]`          | Imports a configuration file into settings.  **Caution**: use at your own risk! |
+| `/_connect SERVER PORT [REMOTE]`     | Instructs a server to connect to another server. May only be issued by server operators |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
 | `context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; *can only be called from scripts*                                                  |
 | `/ctcp REQUEST USER`                  | Sends a CTCP request to `USER`; valid `REQUEST`s are TIME, VERSION, USERINFO, SOURCE, or FINGER                                                  |
 | `/delay SECONDS COMMAND...`                  | Executes `COMMAND` after `SECONDS` seconds                                                 |
+| `/_die`                  | Instructs the server to shut down. May only be issued by server operators                               |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
 | `end`                                  | Immediately ends a script; *can only be called from scripts*                                                                       |
 | `exclude WINDOW...`                       | Prevents a script from executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
@@ -297,6 +300,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                              |
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`). *Can only be called from scripts*    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
+| `/info [TARGET]`                          | Requests server information                         |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                                                                                       |
 | `insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script; *can only be called by scripts*            |
 | `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |

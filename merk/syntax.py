@@ -258,6 +258,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"style",
 			cmdsymbol+"window plugin",
 			cmdsymbol+"call",
+			cmdsymbol+"admin",
+			cmdsymbol+"_die",
+			cmdsymbol+"_connect",
+			cmdsymbol+"info",
 		]
 
 		script_only = [

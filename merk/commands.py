@@ -238,6 +238,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"bind": config.ISSUE_COMMAND_SYMBOL+"bind ",
 			config.ISSUE_COMMAND_SYMBOL+"unbind": config.ISSUE_COMMAND_SYMBOL+"unbind ",
 			config.ISSUE_COMMAND_SYMBOL+"call": config.ISSUE_COMMAND_SYMBOL+"call ",
+			config.ISSUE_COMMAND_SYMBOL+"admin": config.ISSUE_COMMAND_SYMBOL+"admin ",
+			config.ISSUE_COMMAND_SYMBOL+"_die": config.ISSUE_COMMAND_SYMBOL+"_die",
+			config.ISSUE_COMMAND_SYMBOL+"_connect": config.ISSUE_COMMAND_SYMBOL+"_connect",
+			config.ISSUE_COMMAND_SYMBOL+"info": config.ISSUE_COMMAND_SYMBOL+"info ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -365,6 +369,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...</b>", f"Executes COMMAND when key SEQUENCE is pressed" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>", f"Removes a bind for SEQUENCE. Pass * as the only argument to remove all binds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD [ARGUMENTS...]</b>", f"Executes METHOD in any plugin that contains METHOD" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"admin [SERVER]</b>", f"Requests administration information" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_die</b>", f"Instructs the server to shut down. May only be issued by server operators" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_connect SERVER PORT [REMOTE]</b>", f"Instructs the server to connect to another server. May only be issued by server operators" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"info [TARGET]</b>", f"Requests server information" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1357,6 +1365,88 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |-------|
+	# | /info |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'info' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			window.client.sendLine('INFO '+target)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'info' and len(tokens)==1:
+			window.client.sendLine('INFO')
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'info':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"info [TARGET]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"info [TARGET]]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |-----------|
+	# | /_connect |
+	# |-----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_connect' and len(tokens)==3:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			port = tokens.pop(0)
+			window.client.sendLine('CONNECT '+target+' '+port)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_connect' and len(tokens)==4:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			port = tokens.pop(0)
+			remote = tokens.pop(0)
+			window.client.sendLine('CONNECT '+target+' '+port+' '+remote)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_connect':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"_connect SERVER PORT [REMOTE]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"_connect SERVER PORT [REMOTE]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |-------|
+	# | /_die |
+	# |-------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_die' and len(tokens)==1:
+			window.client.sendLine('DIE')
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_die':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"_die")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"_die")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |--------|
+	# | /admin |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'admin' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			window.client.sendLine('ADMIN '+target)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'admin' and len(tokens)==1:
+			window.client.sendLine('ADMIN')
+			return True
 
 	# |-------|
 	# | /call |

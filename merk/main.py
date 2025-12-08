@@ -2120,6 +2120,21 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"tick",client=client,uptime=uptime)
 
+	def infoInfo(self,client,data):
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			for d in data:
+				m = Message(SERVER_MESSAGE,'', d)
+				c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+	def adminInfo(self,client,admin,data):
+		d = Message(WHOIS_MESSAGE,admin, "\x02"+data+"\x0F")
+		w = self.MDI.activeSubWindow()
+		if w:
+			c = w.widget()
+			c.writeText(d,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 	def whois(self,client,whoisdata):
 
 		displaynick = "["+whoisdata.nickname+"]"

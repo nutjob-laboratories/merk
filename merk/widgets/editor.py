@@ -50,23 +50,6 @@ from .extendedmenuitem import MenuLabel,menuHtml
 
 class Window(QMainWindow):
 
-	def is_multi_line_selection_by_block(self):
-		cursor = self.editor.textCursor()
-		if cursor.hasSelection():
-			start_position = cursor.selectionStart()
-			end_position = cursor.selectionEnd()
-
-			temp_cursor = self.editor.textCursor()
-
-			temp_cursor.setPosition(start_position)
-			start_block_number = temp_cursor.blockNumber()
-
-			temp_cursor.setPosition(end_position)
-			end_block_number = temp_cursor.blockNumber()
-
-			return start_block_number != end_block_number
-		return False
-
 	def show_context_menu(self,pos):
 
 		menu = self.editor.createStandardContextMenu()
@@ -119,9 +102,6 @@ class Window(QMainWindow):
 				entry = QAction(QIcon(CHANNEL_ICON),c,self)
 				entry.triggered.connect(lambda state,u=f"{c}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
-
-		selected_text = self.editor.textCursor().selectedText()
-		commented.setEnabled(bool(selected_text))
 
 		menu.exec_(self.editor.mapToGlobal(pos))
 
