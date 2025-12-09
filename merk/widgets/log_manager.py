@@ -430,9 +430,6 @@ class Window(QMainWindow):
 		self.button_export=QPushButton("  Save Export  ")
 		self.button_export.clicked.connect(self.do_export)
 
-		self.button_close = QPushButton("Close")
-		self.button_close.clicked.connect(self.close)
-
 		self.time = QCheckBox("Epoch format for date/time ",self)
 		self.time.stateChanged.connect(self.clickTime)
 		self.time.toggle()
@@ -648,7 +645,6 @@ class Window(QMainWindow):
 		buttonbar = QHBoxLayout()
 		buttonbar.addLayout(sbar)
 		buttonbar.addStretch()
-		buttonbar.addWidget(self.button_close)
 
 		managerLayout = QHBoxLayout()
 		managerLayout.addWidget(self.horizontalSplitter)

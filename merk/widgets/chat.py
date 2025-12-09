@@ -342,14 +342,6 @@ class Window(QMainWindow):
 		self.input.keyUp.connect(self.keyPressUp)
 		self.input.keyDown.connect(self.keyPressDown)
 
-		# Text input widget should only be one line
-		fm = self.input.fontMetrics()
-		self.input.setFixedHeight(fm.height()+10)
-		self.input.setWordWrapMode(QTextOption.NoWrap)
-		self.input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.input.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.input.setCursorWidth(config.INPUT_CURSOR_WIDTH)
-
 		# Set input language for spell checker
 		self.input.changeLanguage(self.language)
 
@@ -457,6 +449,7 @@ class Window(QMainWindow):
 
 		self.too_long_icon = QLabel(self)
 		pixmap = QPixmap(LENGTH_ICON)
+		fm = self.fontMetrics()
 		pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.too_long_icon.setPixmap(pixmap)
 		self.too_long_icon.setToolTip(f"Message exceeds {config.IRC_MAX_PAYLOAD_LENGTH} characters")
@@ -3242,7 +3235,12 @@ class SpellTextEdit(QPlainTextEdit):
 		# inside the input widget and "drag" the view hiding
 		# the text already in the widget. This *ACTUALLY* fixes
 		# the "drag bug", and works!!
-		self.setFixedHeight(self.sizeHint().height()) 
+		fm = self.fontMetrics()
+		self.setFixedHeight(fm.height()+10)
+		self.setWordWrapMode(QTextOption.NoWrap)
+		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setCursorWidth(config.INPUT_CURSOR_WIDTH)
 		self.filter = StrictViewportFilter(self)
 		self.viewport().installEventFilter(self.filter)
 		self.verticalScrollBar().valueChanged.connect(self.lock_vertical_position)
@@ -3257,13 +3255,9 @@ class SpellTextEdit(QPlainTextEdit):
 		self.lock_vertical_position(0)
 
 	def enforce_single_line(self,text_edit):
-		# Get the current text
 		current_text = text_edit.toPlainText()
-		# Strip any newline characters
 		new_text = current_text.replace('\n', '')
-		# If a change occurred (meaning newlines were pasted), update the text
 		if new_text != current_text:
-			# Block signals temporarily to prevent infinite recursion
 			text_edit.blockSignals(True)
 			text_edit.setPlainText(new_text)
 			text_edit.blockSignals(False)
@@ -3276,14 +3270,6 @@ class SpellTextEdit(QPlainTextEdit):
 					self.parent.client.back()
 
 		self.parent.client.last_interaction = 0
-
-		# BUGFIX: the user can "drag" the view "down"
-		# with the mouse; this resets the widget to
-		# "normal" every time the user presses a key
-		# Man, I wish Qt had a rich-text-enabled QLineEdit :-(
-		sb = self.verticalScrollBar()
-		sb.setValue(sb.minimum())
-		self.ensureCursorVisible()
 
 		if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
 			self.returnPressed.emit()

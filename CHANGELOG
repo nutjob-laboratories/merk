@@ -59,6 +59,9 @@
   hiding the text in the input widget. The text input widget will always show
   the single line of input text now, regardless of whether the users drags the
   mouse inside of the widget.
+* Removed the "close" button from the log manager.
+* Moved some of the "single line" management code for the text input widget
+  into the widget class itself.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
