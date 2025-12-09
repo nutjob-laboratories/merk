@@ -3180,34 +3180,6 @@ class TopicEdit(QLineEdit):
 		self.setReadOnly(True)
 		self.setCursorPosition(0)
 
-class StrictViewportFilter(QObject):
-	def __init__(self, editor_widget, parent=None):
-		super().__init__(parent)
-		self.editor = editor_widget
-		self._mouse_press_pos = QPoint()
-		self._tracking_interaction = False
-
-	def eventFilter(self, watched: QObject, event: QEvent) -> bool:
-		if event.type() == QEvent.MouseButtonPress and event.button() == Qt.LeftButton:
-			self._mouse_press_pos = event.pos()
-			self._tracking_interaction = True
-			return False
-		
-		elif event.type() == QEvent.MouseButtonRelease:
-			self._tracking_interaction = False
-			return False
-
-		elif event.type() == QEvent.MouseMove and self._tracking_interaction:
-			mouse_event = event
-			delta = mouse_event.pos() - self._mouse_press_pos
-			distance = delta.manhattanLength()
-			
-			if distance >= QApplication.startDragDistance():
-				if abs(delta.y()) > abs(delta.x()):
-					self._tracking_interaction = False 
-					return True
-		return False
-
 class SpellTextEdit(QPlainTextEdit):
 
 	returnPressed = pyqtSignal()

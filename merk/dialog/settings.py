@@ -51,15 +51,40 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 
 		self.parent = args[0]
 
-	def keyPressEvent(self,event):
+		self.textChanged.connect(lambda: self.enforce_single_line(self))
 
-		# BUGFIX: the user can "drag" the view "down"
-		# with the mouse; this resets the widget to
-		# "normal" every time the user presses a key
-		# Man, I wish Qt had a rich-text-enabled QLineEdit :-(
-		sb = self.verticalScrollBar()
-		sb.setValue(sb.minimum())
-		self.ensureCursorVisible()
+		# BUGFIX: This fixes the bug where the user could drag
+		# inside the input widget and "drag" the view hiding
+		# the text already in the widget. This *ACTUALLY* fixes
+		# the "drag bug", and works!!
+		fm = self.fontMetrics()
+		self.setFixedHeight(fm.height()+10)
+		self.setWordWrapMode(QTextOption.NoWrap)
+		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setCursorWidth(config.INPUT_CURSOR_WIDTH)
+		self.filter = StrictViewportFilter(self)
+		self.viewport().installEventFilter(self.filter)
+		self.verticalScrollBar().valueChanged.connect(self.lock_vertical_position)
+
+	def lock_vertical_position(self, value):
+		v_bar = self.verticalScrollBar()
+		if value != v_bar.minimum():
+			v_bar.setValue(v_bar.minimum())
+			
+	def ensureCursorVisible(self):
+		super().ensureCursorVisible()
+		self.lock_vertical_position(0)
+
+	def enforce_single_line(self,text_edit):
+		current_text = text_edit.toPlainText()
+		new_text = current_text.replace('\n', '')
+		if new_text != current_text:
+			text_edit.blockSignals(True)
+			text_edit.setPlainText(new_text)
+			text_edit.blockSignals(False)
+
+	def keyPressEvent(self,event):
 
 		if event.key() == Qt.Key_Tab:
 
@@ -126,15 +151,40 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 
 		self.parent = args[0]
 
-	def keyPressEvent(self,event):
+		self.textChanged.connect(lambda: self.enforce_single_line(self))
 
-		# BUGFIX: the user can "drag" the view "down"
-		# with the mouse; this resets the widget to
-		# "normal" every time the user presses a key
-		# Man, I wish Qt had a rich-text-enabled QLineEdit :-(
-		sb = self.verticalScrollBar()
-		sb.setValue(sb.minimum())
-		self.ensureCursorVisible()
+		# BUGFIX: This fixes the bug where the user could drag
+		# inside the input widget and "drag" the view hiding
+		# the text already in the widget. This *ACTUALLY* fixes
+		# the "drag bug", and works!!
+		fm = self.fontMetrics()
+		self.setFixedHeight(fm.height()+10)
+		self.setWordWrapMode(QTextOption.NoWrap)
+		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setCursorWidth(config.INPUT_CURSOR_WIDTH)
+		self.filter = StrictViewportFilter(self)
+		self.viewport().installEventFilter(self.filter)
+		self.verticalScrollBar().valueChanged.connect(self.lock_vertical_position)
+
+	def lock_vertical_position(self, value):
+		v_bar = self.verticalScrollBar()
+		if value != v_bar.minimum():
+			v_bar.setValue(v_bar.minimum())
+			
+	def ensureCursorVisible(self):
+		super().ensureCursorVisible()
+		self.lock_vertical_position(0)
+
+	def enforce_single_line(self,text_edit):
+		current_text = text_edit.toPlainText()
+		new_text = current_text.replace('\n', '')
+		if new_text != current_text:
+			text_edit.blockSignals(True)
+			text_edit.setPlainText(new_text)
+			text_edit.blockSignals(False)
+
+	def keyPressEvent(self,event):
 
 		if event.key() == Qt.Key_Tab:
 

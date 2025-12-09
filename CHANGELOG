@@ -58,11 +58,13 @@
 * Major bugfix: users can no longer "drag" the view in the input widget, thus
   hiding the text in the input widget. The text input widget will always show
   the single line of input text now, regardless of whether the users drags the
-  mouse inside of the widget.
+  mouse inside of the widget. This bugfix has also been applied to the text
+  entry widgets for the default quit message and default away message in the
+  settings dialog.
 * Removed the "close" button from the log manager.
 * Moved some of the "single line" management code for the text input widget
   into the widget class itself.
-* Fixed a bug that only seemed to occur in the Python (non-PyInstaller)
+* Fixed a bug that only seemed to occur in the Linux Python (non-PyInstaller)
   version of the app: when all visible subwindows were closed, the app would
   hang on closing the last window. This no longer occurs, in any version.
 
@@ -78,6 +80,8 @@
   with that status.
 * New plugin event: ison(). This triggers when a response to the ISON command
   is received.
+* Fixed a bug with the closed() plugin event; the event no longer fires with
+  the name of *every* existing window whenever a window closes.
 
 --------------------------------------------------------------------------------
 ################################################################################

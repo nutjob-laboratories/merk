@@ -3260,6 +3260,11 @@ class Merk(QMainWindow):
 			if window.isVisible(): has_visible = True
 		if has_visible:
 			self.MDI.activatePreviousSubWindow()
+		else:
+			if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
+				self.setWindowTitle(' ')
+			else:
+				self.setWindowTitle(self.application_title_name)
 		self.buildWindowsMenu()
 
 	def hasSubWindow(self,subwindow):
