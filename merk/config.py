@@ -374,9 +374,11 @@ DOUBLECLICK_NICK_DISPLAY = True
 PLUGIN_HAS_CONSOLE_MARKER = ":eye_in_speech_bubble:"
 SHOW_LUSER_INFO_IN_CURRENT_WINDOW = False
 SHOW_ISON_INFO_IN_CURRENT_WINDOW = False
+PLUGIN_ISON = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_ison_event": PLUGIN_ISON,
 		"show_ison_response_in_current_window": SHOW_ISON_INFO_IN_CURRENT_WINDOW,
 		"show_lusers_response_in_current_window": SHOW_LUSER_INFO_IN_CURRENT_WINDOW,
 		"plugin_manager_console_identifier": PLUGIN_HAS_CONSOLE_MARKER,
@@ -717,6 +719,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_ison_event" in settings:
+		settings["enable_plugin_ison_event"] = PLUGIN_ISON
 	if not "show_ison_response_in_current_window" in settings:
 		settings["show_ison_response_in_current_window"] = SHOW_ISON_INFO_IN_CURRENT_WINDOW
 	if not "show_lusers_response_in_current_window" in settings:
@@ -1726,6 +1730,7 @@ def load_settings(filename):
 	global PLUGIN_HAS_CONSOLE_MARKER
 	global SHOW_LUSER_INFO_IN_CURRENT_WINDOW
 	global SHOW_ISON_INFO_IN_CURRENT_WINDOW
+	global PLUGIN_ISON
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1735,6 +1740,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_ISON = settings["enable_plugin_ison_event"]
 		SHOW_ISON_INFO_IN_CURRENT_WINDOW = settings["show_ison_response_in_current_window"]
 		SHOW_LUSER_INFO_IN_CURRENT_WINDOW = settings["show_lusers_response_in_current_window"]
 		PLUGIN_HAS_CONSOLE_MARKER = settings["plugin_manager_console_identifier"]

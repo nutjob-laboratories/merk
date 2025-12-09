@@ -3187,6 +3187,34 @@ class TopicEdit(QLineEdit):
 		self.setReadOnly(True)
 		self.setCursorPosition(0)
 
+class StrictViewportFilter(QObject):
+	def __init__(self, editor_widget, parent=None):
+		super().__init__(parent)
+		self.editor = editor_widget
+		self._mouse_press_pos = QPoint()
+		self._tracking_interaction = False
+
+	def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+		if event.type() == QEvent.MouseButtonPress and event.button() == Qt.LeftButton:
+			self._mouse_press_pos = event.pos()
+			self._tracking_interaction = True
+			return False
+		
+		elif event.type() == QEvent.MouseButtonRelease:
+			self._tracking_interaction = False
+			return False
+
+		elif event.type() == QEvent.MouseMove and self._tracking_interaction:
+			mouse_event = event
+			delta = mouse_event.pos() - self._mouse_press_pos
+			distance = delta.manhattanLength()
+			
+			if distance >= QApplication.startDragDistance():
+				if abs(delta.y()) > abs(delta.x()):
+					self._tracking_interaction = False 
+					return True
+		return False
+
 class SpellTextEdit(QPlainTextEdit):
 
 	returnPressed = pyqtSignal()
@@ -3207,6 +3235,38 @@ class SpellTextEdit(QPlainTextEdit):
 		self.highlighter.setParent(self.parent)
 
 		self.nicks = []
+
+		self.textChanged.connect(lambda: self.enforce_single_line(self))
+
+		# BUGFIX: This fixes the bug where the user could drag
+		# inside the input widget and "drag" the view hiding
+		# the text already in the widget. This *ACTUALLY* fixes
+		# the "drag bug", and works!!
+		self.setFixedHeight(self.sizeHint().height()) 
+		self.filter = StrictViewportFilter(self)
+		self.viewport().installEventFilter(self.filter)
+		self.verticalScrollBar().valueChanged.connect(self.lock_vertical_position)
+
+	def lock_vertical_position(self, value):
+		v_bar = self.verticalScrollBar()
+		if value != v_bar.minimum():
+			v_bar.setValue(v_bar.minimum())
+			
+	def ensureCursorVisible(self):
+		super().ensureCursorVisible()
+		self.lock_vertical_position(0)
+
+	def enforce_single_line(self,text_edit):
+		# Get the current text
+		current_text = text_edit.toPlainText()
+		# Strip any newline characters
+		new_text = current_text.replace('\n', '')
+		# If a change occurred (meaning newlines were pasted), update the text
+		if new_text != current_text:
+			# Block signals temporarily to prevent infinite recursion
+			text_edit.blockSignals(True)
+			text_edit.setPlainText(new_text)
+			text_edit.blockSignals(False)
 
 	def keyPressEvent(self,event):
 

@@ -55,6 +55,10 @@
   by default, it is turned off, and will only display in the server window.
 * Added an option to toggle showing ISON responses in the current window;
   by default, it is turned off, and will only display in the server window.
+* Major bugfix: users can no longer "drag" the view in the input widget, thus
+  hiding the text in the input widget. The text input widget will always show
+  the single line of input text now, regardless of whether the users drags the
+  mouse inside of the widget.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -66,6 +70,8 @@
   status is passed as an argument, a list of users in the channel with that
   status is returned, with an empty list being returned if there are no users
   with that status.
+* New plugin event: ison(). This triggers when a response to the ISON command
+  is received.
 
 --------------------------------------------------------------------------------
 ################################################################################

@@ -2150,6 +2150,7 @@ class Merk(QMainWindow):
 				c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def isonInfo(self,client,data):
+		plugins.call(self,"ison",client=client,users=data)
 		if len(data)==0: return
 		m = Message(SERVER_MESSAGE,'', "Online: "+", ".join(data))
 		w = self.getServerWindow(client)

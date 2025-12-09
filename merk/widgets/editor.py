@@ -829,6 +829,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="back": self.doInsertEventMethod(u))
 			self.statenv.addAction(entry)
 
+			entry = QAction(QIcon(PRIVATE_ICON),"ison",self)
+			entry.triggered.connect(lambda state,u="ison": self.doInsertEventMethod(u))
+			self.statenv.addAction(entry)
+
 			entry = QAction(QIcon(PRIVATE_ICON),"mode",self)
 			entry.triggered.connect(lambda state,u="mode": self.doInsertEventMethod(u))
 			self.statenv.addAction(entry)

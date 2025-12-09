@@ -239,6 +239,21 @@ class ExamplePlugin(Plugin):
         user = args["user"]
         channel = args["channel"]
 
+    # |======|
+    # | ison |
+    # |======|
+    #
+    # This event is triggered whenever the server sends a
+    # response to the ISON command
+    #
+    # Arguments:
+    #   client = The Twisted IRC object that triggered the event
+    #   users = List of strings. The users that are online
+    #
+    def ison(self,**args):
+        client = args["client"]
+        users = args["users"]
+
     # |==========|
     # | isupport |
     # |==========|

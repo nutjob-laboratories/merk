@@ -442,6 +442,7 @@ class Dialog(QDialog):
 			self.pluginOverwrite.setEnabled(True)
 			self.pluginScripts.setEnabled(True)
 			self.plugSupport.setEnabled(True)
+			self.pluginIson.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -489,6 +490,7 @@ class Dialog(QDialog):
 			self.pluginOverwrite.setEnabled(False)
 			self.pluginScripts.setEnabled(False)
 			self.plugSupport.setEnabled(False)
+			self.pluginIson.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4646,6 +4648,10 @@ class Dialog(QDialog):
 		if config.PLUGIN_ISUPPORT: self.plugSupport.setChecked(True)
 		self.plugSupport.stateChanged.connect(self.changedSetting)
 
+		self.pluginIson = QCheckBox("ison",self)
+		if config.PLUGIN_ISON: self.pluginIson.setChecked(True)
+		self.pluginIson.stateChanged.connect(self.changedSetting)
+
 		self.pluginOverwrite = QCheckBox("Overwrite files on install",self)
 		if config.OVERWRITE_PLUGINS_ON_IMPORT: self.pluginOverwrite.setChecked(True)
 		self.pluginOverwrite.stateChanged.connect(self.changedSetting)
@@ -4659,6 +4665,7 @@ class Dialog(QDialog):
 		self.pluginScripts.stateChanged.connect(self.changedSetting)
 
 		if not config.ENABLE_PLUGINS:
+			self.pluginIson.setEnabled(False)
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
 			self.plugNotice.setEnabled(False)
@@ -4721,44 +4728,48 @@ class Dialog(QDialog):
 		row4Layout.addWidget(self.plugInvite)
 
 		row5Layout = QHBoxLayout()
+		row5Layout.addWidget(self.pluginIson)
 		row5Layout.addWidget(self.plugSupport)
 		row5Layout.addWidget(self.plugJoin)
-		row5Layout.addWidget(self.plugJoined)
 
 		row6Layout = QHBoxLayout()
+		row6Layout.addWidget(self.plugJoined)
 		row6Layout.addWidget(self.plugKick)
 		row6Layout.addWidget(self.plugKicked)
-		row6Layout.addWidget(self.plugLeft)
 
 		row7Layout = QHBoxLayout()
+		row7Layout.addWidget(self.plugLeft)
 		row7Layout.addWidget(self.plugIn)
 		row7Layout.addWidget(self.plugOut)
-		row7Layout.addWidget(self.plugLost)
 
 		row8Layout = QHBoxLayout()
+		row8Layout.addWidget(self.plugLost)
 		row8Layout.addWidget(self.plugMe)
 		row8Layout.addWidget(self.plugMessage)
-		row8Layout.addWidget(self.plugMode)
 
 		row9Layout = QHBoxLayout()
+		row9Layout.addWidget(self.plugMode)
 		row9Layout.addWidget(self.plugMotd)
 		row9Layout.addWidget(self.plugNick)
-		row9Layout.addWidget(self.plugNotice)
 
 		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugNotice)
 		row10Layout.addWidget(self.plugPart)
 		row10Layout.addWidget(self.plugPing)
-		row10Layout.addWidget(self.plugQuit)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugQuit)
 		row11Layout.addWidget(self.plugRename)
 		row11Layout.addWidget(self.plugServer)
-		row11Layout.addWidget(self.plugSubwindow)
 
 		row12Layout = QHBoxLayout()
+		row12Layout.addWidget(self.plugSubwindow)
 		row12Layout.addWidget(self.plugTick)
 		row12Layout.addWidget(self.plugTopic)
-		row12Layout.addWidget(self.plugUnmode)
+
+		row13Layout = QHBoxLayout()
+		row13Layout.addWidget(self.plugUnmode)
+		row13Layout.addStretch()
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
@@ -4802,6 +4813,7 @@ class Dialog(QDialog):
 		allEvents.addLayout(row10Layout)
 		allEvents.addLayout(row11Layout)
 		allEvents.addLayout(row12Layout)
+		allEvents.addLayout(row13Layout)
 
 		pTop = QVBoxLayout()
 		pTop.setSpacing(0)
@@ -4827,7 +4839,6 @@ class Dialog(QDialog):
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
-		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
@@ -5617,6 +5628,7 @@ class Dialog(QDialog):
 		config.DOUBLECLICK_NICK_DISPLAY = self.enableNickClick.isChecked()
 		config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW = self.showLusers.isChecked()
 		config.SHOW_ISON_INFO_IN_CURRENT_WINDOW = self.showIson.isChecked()
+		config.PLUGIN_ISON = self.pluginIson.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
