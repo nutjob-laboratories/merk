@@ -62,6 +62,9 @@
 * Removed the "close" button from the log manager.
 * Moved some of the "single line" management code for the text input widget
   into the widget class itself.
+* Fixed a bug that only seemed to occur in the Python (non-PyInstaller)
+  version of the app: when all visible subwindows were closed, the app would
+  hang on closing the last window. This no longer occurs, in any version.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

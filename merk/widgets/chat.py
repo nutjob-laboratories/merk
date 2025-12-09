@@ -2480,8 +2480,8 @@ class Window(QMainWindow):
 		# This will be true if the window is closed
 		# with the window bar "X" button or if Alt-F4
 		# is pressed
-		if event.spontaneous():
-			pass
+		# if event.spontaneous():
+		# 	pass
 
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:

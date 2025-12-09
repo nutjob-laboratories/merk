@@ -211,6 +211,13 @@ class IRC_Connection(irc.IRCClient):
 			self.fingerReply = user.FINGER
 
 	def irc_RPL_LUSERCHANNELS(self,prefix,params):
+
+		try:
+			ccount = int({params[1]})
+			self.actual_server_channel_count = ccount
+		except:
+			pass
+		
 		data = f"{prefix}: {params[1]} {params[2]}"
 		self.gui.luserInfo(self,data)
 
@@ -223,6 +230,13 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.luserInfo(self,data)
 
 	def irc_RPL_LUSEROP(self,prefix,params):
+
+		try:
+			opcount = int({params[1]})
+			self.server_op_count = opcount
+		except:
+			pass
+
 		data = f"{prefix}: {params[1]} {params[2]}"
 		self.gui.luserInfo(self,data)
 
@@ -292,7 +306,6 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.adminInfo(self,admin,f"Location: {location}")
 
 	def yourHost(self,info):
-
 		i = info.split()
 		try:
 			self.server_software = i[6]
@@ -300,8 +313,6 @@ class IRC_Connection(irc.IRCClient):
 			self.server_software = "Unknown"
 
 	def ctcpReply(self, user, channel, messages):
-		# sys.stdout.write(f"{user} - {channel} - {messages}\n")
-
 		for e in messages:
 			ctype = e[0]
 			data = e[1]
@@ -332,12 +343,6 @@ class IRC_Connection(irc.IRCClient):
 			self.actual_server_channel_count = ccount
 		except:
 			pass
-
-	def luserClient(self,info):
-		pass
-
-	def luserMe(self,info):
-		pass
 
 	def luserOp(self,ops):
 		try:

@@ -3239,25 +3239,27 @@ class Merk(QMainWindow):
 					if hasattr(c,"hide"):
 						c.hide()
 			
-			if hasattr(c,"window_type"):
+					if hasattr(c,"window_type"):
 
-				if c.window_type==SERVER_WINDOW or c.window_type==CHANNEL_WINDOW or c.window_type==PRIVATE_WINDOW:
-					plugins.call(self,"close",name=c.name)
+						if c.window_type==SERVER_WINDOW or c.window_type==CHANNEL_WINDOW or c.window_type==PRIVATE_WINDOW:
+							plugins.call(self,"close",name=c.name)
 
-				# If the editor was just closed, is in
-				# "plugin mode", and the plugin manager
-				# is open, move focus to the plugin manager
-				# instead of another subwindow
-				if c.window_type==EDITOR_WINDOW:
-					if self.plugin_manager!=None:
-						if hasattr(c,"python"):
-							if c.python==True:
-								self.plugin_manager.activateWindow()
-								self.buildWindowsMenu()
-								return
-
+						# If the editor was just closed, is in
+						# "plugin mode", and the plugin manager
+						# is open, move focus to the plugin manager
+						# instead of another subwindow
+						if c.window_type==EDITOR_WINDOW:
+							if self.plugin_manager!=None:
+								if hasattr(c,"python"):
+									if c.python==True:
+										self.plugin_manager.activateWindow()
+										self.buildWindowsMenu()
+										return
+		has_visible = False
+		for window in self.MDI.subWindowList():
+			if window.isVisible(): has_visible = True
+		if has_visible:
 			self.MDI.activatePreviousSubWindow()
-
 		self.buildWindowsMenu()
 
 	def hasSubWindow(self,subwindow):
