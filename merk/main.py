@@ -2125,10 +2125,11 @@ class Merk(QMainWindow):
 		w = self.getServerWindow(client)
 		if w:
 			w.writeText(m)
-		w = self.MDI.activeSubWindow()
-		if w:
-			c = w.widget()
-			c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+		if client.registered:
+			w = self.MDI.activeSubWindow()
+			if w:
+				c = w.widget()
+				c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def linksInfo(self,client,data):
 		if len(data)==0: return
@@ -5317,14 +5318,7 @@ class Merk(QMainWindow):
 
 		if hasattr(w,"window_type"):
 			if w.window_type==SERVER_WINDOW or w.window_type==CHANNEL_WINDOW or w.window_type==PRIVATE_WINDOW:
-				if hasattr(self.current_window,"window_type"):
-					if self.current_window.window_type==SERVER_WINDOW or self.current_window.window_type==CHANNEL_WINDOW or self.current_window.window_type==PRIVATE_WINDOW:
-						alast = self.current_window
-					else:
-						alast = None
-				else:
-					alast = None
-				plugins.call(self,"activate",window=w,last=alast)
+				plugins.call(self,"activate",window=w)
 
 		self.current_window = w
 

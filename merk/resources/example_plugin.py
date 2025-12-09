@@ -96,17 +96,13 @@ class ExamplePlugin(Plugin):
     # |==========|
     #
     # This event is triggered whenever a server, channel,
-    # or private chat window gains focus. If the Window
-    # in the "last" argument does not exist, "last" may
-    # be set to None.
+    # or private chat window gains focus.
     #
     # Arguments:
     #   window = MERK Window
-    #   last = Previous MERK Window
     #
     def activate(self,**args):
         window = args["window"]
-        last = args["last"]
 
     # |======|
     # | away |
