@@ -372,9 +372,13 @@ DO_NOT_REPLY_TO_CTCP_SOURCE = False
 PLUGIN_ISUPPORT = True
 DOUBLECLICK_NICK_DISPLAY = True
 PLUGIN_HAS_CONSOLE_MARKER = ":eye_in_speech_bubble:"
+SHOW_LUSER_INFO_IN_CURRENT_WINDOW = False
+SHOW_ISON_INFO_IN_CURRENT_WINDOW = False
 
 def build_settings():
 	settings = {
+		"show_ison_response_in_current_window": SHOW_ISON_INFO_IN_CURRENT_WINDOW,
+		"show_lusers_response_in_current_window": SHOW_LUSER_INFO_IN_CURRENT_WINDOW,
 		"plugin_manager_console_identifier": PLUGIN_HAS_CONSOLE_MARKER,
 		"doubleclick_nick_display_to_change_nick": DOUBLECLICK_NICK_DISPLAY,
 		"enable_plugin_isupport_event": PLUGIN_ISUPPORT,
@@ -713,6 +717,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_ison_response_in_current_window" in settings:
+		settings["show_ison_response_in_current_window"] = SHOW_ISON_INFO_IN_CURRENT_WINDOW
+	if not "show_lusers_response_in_current_window" in settings:
+		settings["show_lusers_response_in_current_window"] = SHOW_LUSER_INFO_IN_CURRENT_WINDOW
 	if not "plugin_manager_console_identifier" in settings:
 		settings["plugin_manager_console_identifier"] = PLUGIN_HAS_CONSOLE_MARKER
 	if not "doubleclick_nick_display_to_change_nick" in settings:
@@ -1716,6 +1724,8 @@ def load_settings(filename):
 	global PLUGIN_ISUPPORT
 	global DOUBLECLICK_NICK_DISPLAY
 	global PLUGIN_HAS_CONSOLE_MARKER
+	global SHOW_LUSER_INFO_IN_CURRENT_WINDOW
+	global SHOW_ISON_INFO_IN_CURRENT_WINDOW
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1725,6 +1735,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_ISON_INFO_IN_CURRENT_WINDOW = settings["show_ison_response_in_current_window"]
+		SHOW_LUSER_INFO_IN_CURRENT_WINDOW = settings["show_lusers_response_in_current_window"]
 		PLUGIN_HAS_CONSOLE_MARKER = settings["plugin_manager_console_identifier"]
 		DOUBLECLICK_NICK_DISPLAY = settings["doubleclick_nick_display_to_change_nick"]
 		PLUGIN_ISUPPORT = settings["enable_plugin_isupport_event"]

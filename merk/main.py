@@ -2126,10 +2126,11 @@ class Merk(QMainWindow):
 		if w:
 			w.writeText(m)
 		if client.registered:
-			w = self.MDI.activeSubWindow()
-			if w:
-				c = w.widget()
-				c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW:
+				w = self.MDI.activeSubWindow()
+				if w:
+					c = w.widget()
+					c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def linksInfo(self,client,data):
 		if len(data)==0: return
@@ -2151,25 +2152,28 @@ class Merk(QMainWindow):
 	def isonInfo(self,client,data):
 		if len(data)==0: return
 		m = Message(SERVER_MESSAGE,'', "Online: "+", ".join(data))
-		w = self.MDI.activeSubWindow()
-		if w:
-			c = w.widget()
-			c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 		w = self.getServerWindow(client)
 		if w:
 			w.writeText(m)
+		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW:
+			w = self.MDI.activeSubWindow()
+			if w:
+				c = w.widget()
+				c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def infoInfo(self,client,data):
-		
+		if len(data)==0: return
 		w = self.MDI.activeSubWindow()
 		if w:
 			c = w.widget()
 			for d in data:
 				m = Message(SERVER_MESSAGE,'', d)
 				c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				s = self.getServerWindow(client)
-				if s:
-					s.writeText(m)
+		s = self.getServerWindow(client)
+		if s:
+			for d in data:
+				m = Message(SERVER_MESSAGE,'', d)
+				s.writeText(m)
 
 	def adminInfo(self,client,admin,data):
 		d = Message(SERVER_MESSAGE,admin, "\x02"+data+"\x0F")

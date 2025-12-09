@@ -51,6 +51,10 @@
 * New command: /_rehash. This causes the server to reprocess and reload
   configuration files, and can only be issued by IRC operators.
 * Renamed the /raw command to /quote, to match other IRC clients.
+* Added an option to toggle showing LUSERS responses in the current window;
+  by default, it is turned off, and will only display in the server window.
+* Added an option to toggle showing ISON responses in the current window;
+  by default, it is turned off, and will only display in the server window.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

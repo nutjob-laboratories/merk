@@ -229,8 +229,11 @@ class IRC_Connection(irc.IRCClient):
 	def irc_RPL_LUSERUNKNOWN(self,prefix,params):
 		if len(params)>1:
 			params.pop(0)
-			for e in params:
-				self.gui.luserInfo(self,f"UNKNOWN: {e}")
+			if len(params)>1:
+				d = " ".join(params)
+			else:
+				d = f"{params}"
+			self.gui.luserInfo(self,f"{prefix}: {d}")
 
 	def irc_RPL_LINKS(self,prefix,params):
 		ltype = params[1]

@@ -4258,6 +4258,14 @@ class Dialog(QDialog):
 		if config.ENABLE_IGNORE: self.enableIgnore.setChecked(True)
 		self.enableIgnore.stateChanged.connect(self.changedSettingIgnore)
 
+		self.showLusers = QCheckBox("Show LUSERS in the current window",self)
+		if config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW: self.showLusers.setChecked(True)
+		self.showLusers.stateChanged.connect(self.changedSetting)
+
+		self.showIson = QCheckBox("Show ISON in the current window",self)
+		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
+		self.showIson.stateChanged.connect(self.changedSetting)
+
 		messageLayout = QVBoxLayout()
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
@@ -4267,6 +4275,8 @@ class Dialog(QDialog):
 		messageLayout.addWidget(self.showFullMode)
 		messageLayout.addWidget(self.ignoreChannelNotice)
 		messageLayout.addWidget(self.enableIgnore)
+		messageLayout.addWidget(self.showLusers)
+		messageLayout.addWidget(self.showIson)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
 		messageLayout.addWidget(self.createWindow)
 		messageLayout.addWidget(self.createNotice)
@@ -5605,6 +5615,8 @@ class Dialog(QDialog):
 		config.DO_NOT_REPLY_TO_CTCP_SOURCE = self.noSource.isChecked()
 		config.PLUGIN_ISUPPORT = self.plugSupport.isChecked()
 		config.DOUBLECLICK_NICK_DISPLAY = self.enableNickClick.isChecked()
+		config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW = self.showLusers.isChecked()
+		config.SHOW_ISON_INFO_IN_CURRENT_WINDOW = self.showIson.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
