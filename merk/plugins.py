@@ -814,10 +814,6 @@ def call(gui,method,**arguments):
 				if arguments['window']!=None:
 					arguments["window"] = Window(gui,arguments["window"])
 
-			if 'last' in arguments and method=='activate':
-				if arguments['last']!=None:
-					arguments["last"] = Window(gui,arguments["last"])
-
 			m(**arguments)
 
 def command_call(gui,window,method,arguments):

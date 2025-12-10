@@ -210,6 +210,13 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			self.fingerReply = user.FINGER
 
+	def irc_RPL_USERHOST(self,prefix,params):
+		data = []
+		if len(params)>0:
+			data = params[1].split(' ')
+
+		self.gui.userhostInfo(self,data)
+
 	def irc_RPL_LUSERCHANNELS(self,prefix,params):
 
 		try:

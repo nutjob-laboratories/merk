@@ -362,7 +362,6 @@ class Window(QMainWindow):
 				self.nick_display.hide()
 		if self.window_type==SERVER_WINDOW: self.mode_display.hide()
 
-
 		self.settingsMenu = QMenu("")
 
 		self.buildInputOptionsMenu()

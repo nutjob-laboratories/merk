@@ -267,6 +267,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"links",
 			cmdsymbol+"lusers",
 			cmdsymbol+"_rehash",
+			cmdsymbol+"wallops",
+			cmdsymbol+"userhost",
 		]
 
 		script_only = [

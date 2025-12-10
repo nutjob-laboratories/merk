@@ -17,7 +17,7 @@
 * The Plugin Manager now prompts for an icon on export, if the plugin doesn't
   already have one. Selecting an icon is not mandatory for export.
 * Added a Linux binary distribution.
-* Fixed a bug with IRCd's without a "network" attribute set.
+* Fixed a bug for IRCds without a "network" attribute set.
 * Removed some of the decoration from the systray context menu. It wasn't
   rendering at all under Linux, and honestly, didn't really do much of anything
   except look a little pretty.
@@ -67,6 +67,9 @@
 * Fixed a bug that only seemed to occur in the Linux Python (non-PyInstaller)
   version of the app: when all visible subwindows were closed, the app would
   hang on closing the last window. This no longer occurs, in any version.
+* New command: /wallops. This sends a message to all operators.
+* New command: /userhost. This requests information about users from the
+  server.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

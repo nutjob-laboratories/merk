@@ -2120,6 +2120,20 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"tick",client=client,uptime=uptime)
 
+	def userhostInfo(self,client,data):
+		w = self.getServerWindow(client)
+		a = self.MDI.activeSubWindow()
+		if w:
+			for e in data:
+				if client.hostname:
+					m = Message(SERVER_MESSAGE,'', f"{client.hostname}: {e}")
+				else:
+					m = Message(SERVER_MESSAGE,'', f"{client.server}:{client.port}: {e}")
+				w.writeText(m)
+				if a:
+					c = a.widget()
+					c.writeText(m,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 	def luserInfo(self,client,data):
 		m = Message(SERVER_MESSAGE,'', data)
 		w = self.getServerWindow(client)

@@ -247,6 +247,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"links": config.ISSUE_COMMAND_SYMBOL+"links",
 			config.ISSUE_COMMAND_SYMBOL+"lusers": config.ISSUE_COMMAND_SYMBOL+"lusers",
 			config.ISSUE_COMMAND_SYMBOL+"_rehash": config.ISSUE_COMMAND_SYMBOL+"_rehash",
+			config.ISSUE_COMMAND_SYMBOL+"wallops": config.ISSUE_COMMAND_SYMBOL+"wallops ",
+			config.ISSUE_COMMAND_SYMBOL+"userhost": config.ISSUE_COMMAND_SYMBOL+"userhost ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -383,6 +385,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_kill CLIENT COMMENT...</b>", f"Forcibly removes CLIENT from the network. May only be issued by IRC operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"lusers [MASK [SERVER]]</b>", f"Requests statistics about the server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_rehash</b>", f"Causes the server to reprocess and reload configuration files. May only be issued by IRC operators" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"wallops MESSAGE</b>", f"Sends a message to all operators" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"userhost NICK(S)...</b>", f"Requests information about users from the server" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -527,6 +531,7 @@ def interpolateAliases(text):
 	counter = 0
 	while detect_alias(text):
 		for a in TEMPORARY_ALIAS:
+			if TEMPORARY_ALIAS[a]==None: continue
 			text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,TEMPORARY_ALIAS[a])
 		counter = counter + 1
 		if counter>=99: break
@@ -1375,6 +1380,47 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |-----------|
+	# | /userhost |
+	# |-----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userhost' and len(tokens)>=2:
+			tokens.pop(0)
+			msg = " ".join(tokens)
+			window.client.sendLine('USERHOST '+msg)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wallops':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"userhost NICK(S)...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"userhost NICK(S)...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |----------|
+	# | /wallops |
+	# |----------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wallops' and len(tokens)>=2:
+			tokens.pop(0)
+			msg = " ".join(tokens)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			window.client.sendLine('WALLOPS '+msg)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wallops':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"wallops MESSAGE")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"wallops MESSAGE")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |----------|
 	# | /_rehash |

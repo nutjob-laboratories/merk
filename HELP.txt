@@ -453,12 +453,20 @@ Appearance:
 <td>Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass <code>*</code> as <code>VALUE</code> to set a setting as blank. <strong>*Caution*</strong>: use at your own risk!</td>
 </tr>
 <tr>
+<td><code>/userhost NICK(S)...</code></td>
+<td>Requests information about users from the server</td>
+</tr>
+<tr>
 <td><code>/version [SERVER]</code></td>
 <td>Requests server version</td>
 </tr>
 <tr>
 <td><code>wait SECONDS</code></td>
 <td>Pauses script execution for <code>SECONDS</code>; <strong>can only be called from scripts</strong></td>
+</tr>
+<tr>
+<td><code>/wallops MESSAGE</code></td>
+<td>Sends a message to all operators</td>
 </tr>
 <tr>
 <td><code>/who NICKNAME [o]</code></td>

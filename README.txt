@@ -343,8 +343,10 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
 | `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. *Can only be called by scripts*                                                        |
 | `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk! |
+| `/userhost NICK(S)...`          | Requests information about users from the server |
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
 | `wait SECONDS`                         | Pauses script execution for `SECONDS`; *can only be called from scripts*                                                           |
+| `/wallops MESSAGE`                         | Sends a message to all operators  |
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
