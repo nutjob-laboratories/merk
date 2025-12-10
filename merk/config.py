@@ -375,9 +375,11 @@ PLUGIN_HAS_CONSOLE_MARKER = ":eye_in_speech_bubble:"
 SHOW_LUSER_INFO_IN_CURRENT_WINDOW = False
 SHOW_ISON_INFO_IN_CURRENT_WINDOW = False
 PLUGIN_ISON = True
+BAD_NICKNAME_FALLBACK = 'Guest'
 
 def build_settings():
 	settings = {
+		"bad_nickname_fallback": BAD_NICKNAME_FALLBACK,
 		"enable_plugin_ison_event": PLUGIN_ISON,
 		"show_ison_response_in_current_window": SHOW_ISON_INFO_IN_CURRENT_WINDOW,
 		"show_lusers_response_in_current_window": SHOW_LUSER_INFO_IN_CURRENT_WINDOW,
@@ -719,6 +721,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "bad_nickname_fallback" in settings:
+		settings["bad_nickname_fallback"] = BAD_NICKNAME_FALLBACK
 	if not "enable_plugin_ison_event" in settings:
 		settings["enable_plugin_ison_event"] = PLUGIN_ISON
 	if not "show_ison_response_in_current_window" in settings:
@@ -1731,6 +1735,7 @@ def load_settings(filename):
 	global SHOW_LUSER_INFO_IN_CURRENT_WINDOW
 	global SHOW_ISON_INFO_IN_CURRENT_WINDOW
 	global PLUGIN_ISON
+	global BAD_NICKNAME_FALLBACK
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1740,6 +1745,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		BAD_NICKNAME_FALLBACK = settings["bad_nickname_fallback"]
 		PLUGIN_ISON = settings["enable_plugin_ison_event"]
 		SHOW_ISON_INFO_IN_CURRENT_WINDOW = settings["show_ison_response_in_current_window"]
 		SHOW_LUSER_INFO_IN_CURRENT_WINDOW = settings["show_lusers_response_in_current_window"]

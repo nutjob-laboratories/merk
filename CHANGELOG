@@ -70,6 +70,14 @@
 * New command: /wallops. This sends a message to all operators.
 * New command: /userhost. This requests information about users from the
   server.
+* Moved MansionNET into its proper place in the server list.
+* Fixed a bug where there was no fallback nickname if the nickname trying
+  to be set failed the server's rules. The fallback nickname ("Guest") is now
+  set in the configuration file, under "bad_nickname_fallback".
+* Changed how nick collisions are handled: if an alternate nick is not provided
+  or is also in use, a random number from between 1 and 999 is selected and
+  appended to the nickname and tried. Previously, the random number would be
+  from 1 to 99.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -105,6 +105,7 @@ class IRC_Connection(irc.IRCClient):
 	nickname = 'merk'
 	realname = 'merk'
 	username = 'merk'
+	erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
 
 	versionName = APPLICATION_NAME
 	versionNum = APPLICATION_VERSION
@@ -755,11 +756,11 @@ class IRC_Connection(irc.IRCClient):
 			# our primary choice is taken, attach a random
 			# number to our primary choice and try again
 			if self.last_tried_nickname=='':
-				self.last_tried_nickname = self.nickname+str(random.randrange(1,99))
+				self.last_tried_nickname = self.nickname+str(random.randrange(1,999))
 				self.setNick(self.last_tried_nickname)
 				return
 
-		rannum = random.randrange(1,99)
+		rannum = random.randrange(1,999)
 
 		self.last_tried_nickname = self.last_tried_nickname + str(rannum)
 		self.setNick(self.last_tried_nickname)

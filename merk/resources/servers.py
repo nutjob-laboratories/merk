@@ -121,6 +121,7 @@ irc.kbfail.net:6667:KBFail:normal
 irc.krstarica.com:6667:Krstarica:normal
 irc.libera.chat:6697:Libera.Chat:ssl
 irc.librairc.net:6667:LibraIRC:normal
+irc.inthemansion.com:6697:MansionNET:ssl
 irc.mindforge.org:6667:MindForge:normal
 irc.mixxnet.net:6667:MIXXnet:normal
 irc.mozilla.org:6667:Moznet:normal
@@ -153,5 +154,4 @@ irc.techtronix.net:6667:Techtronix:normal
 irc.servx.ru:6667:TURLINet:normal
 us.undernet.org:6667:UnderNet:normal
 irc.worldnet.net:6667:Worldnet:normal
-irc.xertion.org:6667:Xertion:normal
-irc.inthemansion.com:6697:MansionNET:ssl"""
+irc.xertion.org:6667:Xertion:normal"""
