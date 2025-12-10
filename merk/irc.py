@@ -1115,11 +1115,11 @@ class IRC_Connection(irc.IRCClient):
 		plugins.call(self.gui,"line_in",client=self,line=line)
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
-			sys.stdout.write(f"{self.kwargs["server"]}:{self.kwargs["port"]} {line}\n")
+			sys.stdout.write(f"{self.kwargs['server']}:{self.kwargs['port']} {line}\n")
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
 			try:
-				self.dump_file.write(f"{int(time.time())}\t{self.kwargs["server"]}:{self.kwargs["port"]} {line}\n")
+				self.dump_file.write(f"{int(time.time())}\t{self.kwargs['server']}:{self.kwargs['port']} {line}\n")
 			except:
 				pass
 
