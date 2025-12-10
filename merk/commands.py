@@ -4324,7 +4324,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if check!=ALL_VALID_SETTINGS:
 					if check==INVALID_STYLE:
 						qlist = [f"\"{item}\"" for item in QStyleFactory.keys()]
-						reason = f"must be {", ".join(qlist[:-1]) + " or " + qlist[-1]}"
+						reason = f"must be {', '.join(qlist[:-1]) + ' or ' + qlist[-1]}"
 					elif check==INVALID_JUSTIFY:
 						reason = "must be \"center\", \"left\", or \"right\""
 					elif check==INVALID_COLOR:

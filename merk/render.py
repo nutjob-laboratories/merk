@@ -176,7 +176,7 @@ def render_message(message,style,client=None,no_padding=False):
 	# Messages from /list results are special, and thus have their message built here
 	# rather than being built from the default Message() object
 	if message.type==LIST_MESSAGE:
-		link = f"<a href=\"{message.channel}\"><span style=\"{style["hyperlink"]}\">{message.channel}</span></a>"
+		link = f"<a href=\"{message.channel}\"><span style=\"{style['hyperlink']}\">{message.channel}</span></a>"
 		if len(message.channel_topic)>0:
 			msg_to_display = link+" ("+message.channel_count+" users) - \""+message.channel_topic+"\""
 		else:

@@ -59,7 +59,7 @@ from . import plugins
 CONNECTIONS = {}
 
 PYTHON_VERSION = f"{platform.python_version().strip()}"
-OS_VERSION = f"{platform.system().strip() + " " + platform.release().strip()}"
+OS_VERSION = f"{platform.system().strip()} {platform.release().strip()}"
 if is_running_from_pyinstaller():
 	PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION} via PyInstaller {get_pyinstaller_version()}"
 else:
@@ -91,7 +91,7 @@ def regenerate_environment_variables():
 	global PLATFORM
 
 	PYTHON_VERSION = f"{platform.python_version().strip()}"
-	OS_VERSION = f"{platform.system().strip() + " " + platform.release().strip()}"
+	OS_VERSION = f"{platform.system().strip()} {platform.release().strip()}"
 	if is_running_from_pyinstaller():
 		PLATFORM = f"{OS_VERSION} + Python {PYTHON_VERSION} via PyInstaller {get_pyinstaller_version()}"
 	else:
@@ -433,7 +433,7 @@ class IRC_Connection(irc.IRCClient):
 	def connectionMade(self):
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
-			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs["server"]}-{self.kwargs["port"]}.txt")
+			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs['server']}-{self.kwargs['port']}.txt")
 			self.dump_file = open(dump_filename,"a")
 
 		self.sendLine("CAP REQ :chghost")
