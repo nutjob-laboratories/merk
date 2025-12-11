@@ -127,7 +127,7 @@ configuration_group.add_argument("--config-file",dest="configfile",type=str,help
 configuration_group.add_argument("--reset",dest="configdefault",help=f"Reset configuration file to default values",action="store_true")
 configuration_group.add_argument("--reset-user",dest="userdefault",help=f"Reset user file to default values",action="store_true")
 configuration_group.add_argument("--reset-all",dest="alldefault",help=f"Reset all configuration files to default values",action="store_true")
-configuration_group.add_argument("--uninstall-all",dest="uninstall",help=f"Deletes all installed plugins",action="store_true")
+configuration_group.add_argument("--uninstall",nargs='?',type=str,const='',default=None,dest="uninstall",help=f"Deletes an installed plugin",metavar="FILE")
 configuration_group.add_argument("--install",dest="install",type=str,help="Install plugin ZIP or Python module",metavar="FILE",default=None)
 
 misc_group = parser.add_argument_group('Appearance')
@@ -156,6 +156,26 @@ if __name__ == '__main__':
 			else:
 				show_message(f'Error importing file: {e}')
 			sys.exit(1)
+
+		name_without_extension, extension = os.path.splitext(filename)
+		plugin_icon = name_without_extension + ".png"
+		if os.path.isfile(plugin_icon):
+			base = os.path.basename(plugin_icon)
+			imported_file = os.path.join(plugins.PLUGIN_DIRECTORY,base)
+			try:
+				shutil.copy(plugin_icon, imported_file)
+			except FileNotFoundError:
+				if not is_running_from_pyinstaller():
+					sys.stdout.write(f"Source file \"{plugin_icon}\" not found\n")
+				else:
+					show_message("Error",f"Source file \"{plugin_icon}\" not found")
+				sys.exit(1)
+			except Exception as e:
+				if not is_running_from_pyinstaller():
+					sys.stdout.write(f'Error importing file: {e}\n')
+				else:
+					show_message(f'Error importing file: {e}')
+				sys.exit(1)
 
 	def install_zip_plugin(filename):
 		try:
@@ -301,28 +321,79 @@ if __name__ == '__main__':
 	commands.initialize(args.configdir,args.configname,args.scriptdir)
 
 	# Uninstalls all plugins
-	if args.uninstall:
-		for root, _, files in os.walk(plugins.PLUGIN_DIRECTORY):
-			for file in files:
-				file_path = os.path.join(root, file)
-				if os.path.exists(file_path) and (file.endswith(".py") or file.endswith(".png")):
-					try:
-						os.remove(file_path)
-						if not is_running_from_pyinstaller():
-							sys.stdout.write(f"Deleted {file_path}\n")
-					except OSError as e:
-						if not is_running_from_pyinstaller():
-							sys.stdout.write(f"Error deleting file: {e}\n")
-						else:
-							show_message("Error",f"Error deleting file: {e}")
-						sys.exit(1)
-		if is_running_from_pyinstaller():
-			show_message("Uninstall",f"All plugins uninstalled")
-		sys.exit(0)
+	if args.uninstall!=None:
+		if args.uninstall=='':
+			p = plugins.list_plugins()
+			if is_running_from_pyinstaller():
+				show_message("Plugins",f"{'\n'.join(p)}")
+			else:
+				for e in p:
+					sys.stdout.write(f"{e}\n")
+			sys.exit(0)
+		if args.uninstall=='all':
+			for root, _, files in os.walk(plugins.PLUGIN_DIRECTORY):
+				for file in files:
+					file_path = os.path.join(root, file)
+					if os.path.exists(file_path) and (file.endswith(".py") or file.endswith(".png")):
+						try:
+							os.remove(file_path)
+							if not is_running_from_pyinstaller():
+								sys.stdout.write(f"Deleted {file_path}\n")
+						except OSError as e:
+							if not is_running_from_pyinstaller():
+								sys.stdout.write(f"Error deleting file: {e}\n")
+							else:
+								show_message("Error",f"Error deleting file: {e}")
+							sys.exit(1)
+			if is_running_from_pyinstaller():
+				show_message("Uninstall",f"All plugins uninstalled")
+			else:
+				sys.stdout.write(f"All plugins uninstalled\n")
+			sys.exit(0)
+		if args.uninstall!='':
+			file_path = os.path.join(plugins.PLUGIN_DIRECTORY, args.uninstall)
+			name_without_extension, extension = os.path.splitext(args.uninstall)
+			icon_path = os.path.join(plugins.PLUGIN_DIRECTORY, name_without_extension+".png")
+
+			uninstalled = False
+			if os.path.exists(file_path) and file_path.endswith(".py"):
+				try:
+					os.remove(file_path)
+					if not is_running_from_pyinstaller():
+						sys.stdout.write(f"Deleted {file_path}\n")
+					uninstalled = True
+				except OSError as e:
+					if not is_running_from_pyinstaller():
+						sys.stdout.write(f"Error deleting file: {e}\n")
+					else:
+						show_message("Error",f"Error deleting file: {e}")
+					sys.exit(1)
+
+			if os.path.exists(icon_path) and icon_path.endswith(".png"):
+				try:
+					os.remove(icon_path)
+					if not is_running_from_pyinstaller():
+						sys.stdout.write(f"Deleted {icon_path}\n")
+				except OSError as e:
+					if not is_running_from_pyinstaller():
+						sys.stdout.write(f"Error deleting file: {e}\n")
+					else:
+						show_message("Error",f"Error deleting file: {e}")
+					sys.exit(1)
+			if uninstalled:
+				if is_running_from_pyinstaller():
+					show_message("Uninstall",f"Plugin uninstalled")
+				else:
+					sys.stdout.write(f"Plugin uninstalled\n")
+			else:
+				if is_running_from_pyinstaller():
+					show_message("Uninstall",f"Plugin \"{args.uninstall}\" not uninstalled")
+				else:
+					sys.stdout.write(f"Plugin \"{args.uninstall}\" not uninstalled\n")
+			sys.exit(0)
 
 	if args.install:
 		base = os.path.basename(args.install)
-
 		name_without_extension, extension = os.path.splitext(args.install)
 		if extension.lower()=='.zip':
 			install_zip_plugin(args.install)

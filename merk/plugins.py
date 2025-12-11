@@ -1007,6 +1007,16 @@ def load_plugins(gui):
 	# Return
 	return ERRORS
 
+def list_plugins():
+	file_paths = []
+	for root, _, files in os.walk(PLUGIN_DIRECTORY):
+		for file in files:
+			name_without_extension, extension = os.path.splitext(file)
+			if extension.lower()=='.py':
+				file_paths.append(os.path.basename(os.path.join(root, file)))
+	file_paths = list(set(file_paths))
+	return file_paths
+
 def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
 	global PLUGIN_DIRECTORY

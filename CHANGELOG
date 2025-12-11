@@ -6,17 +6,26 @@
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
 
-* Fixed a "bug" that caused versions of Python lower than 3.12 (I think) to be
+* Fixed a "bug" that caused versions of Python lower than 3.11 (I think) to be
   unable to execute merk.py
 * Modified the "--uninstall-all" command-line flag to ONLY delete Python and
   PNG files, and leave all other files intact.
 * Fixed a bug in the Linux PyInstaller version of the app: the "Directories"
   subdirectory in the "Tools" menu would not open the desired directory in the
-  default file manager on this platform. This is fixed.
+  default file manager on this platform; the Python version of the app could
+  open these directories in the default file manager, but not the Pyinstaller
+  version. This is fixed.
 * Added a command-line option to install plugins. Plugins must be ZIP files or
-  Python modules, and only Python modules, PNG files, and MERK scripts will be
-  extracted into the plugins directory. Plugins installed with this method
-  will ALWAYS overwrite existing files in the plugins or scripts directory.
+  Python modules, and only Python modules and PNG files will be extracted into
+  the plugins directory; MERK script will be extracted into the scripts
+  directory. If a Python module is installed, if the icon is in the same 
+  directory as the module, it will be installed along with the module. Plugins
+  installed with this method will ALWAYS overwrite existing files in the
+  plugins or scripts directory.
+* The --uninstall-all command-line option has been removed, and replaced with
+  the --uninstall option. Call --uninstall without any arguments to see a list
+  of installed plugin filenames, pass an filename as an argument to uninstall
+  the plugin (and icon), and pass 'all' as an argument to uninstall all plugins.
 
 --------------------------------------------------------------------------------
 ################################################################################

@@ -199,7 +199,7 @@ usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [--config-directory DIRECTORY] [--config-local] [-D] [-L]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
-                      [--reset-all] [--uninstall-all] [-Q NAME] [--install FILE]
+                      [--reset-all] [--uninstall [FILE]] [-Q NAME] [--install FILE]
                       [SERVER] [PORT]
 
 
@@ -249,7 +249,7 @@ Files and Directories:
   --reset               Reset configuration file to default values
   --reset-user          Reset user file to default values
   --reset-all           Reset all configuration files to default values
-  --uninstall-all       Deletes all installed plugins
+  --uninstall [FILE]    Deletes an installed plugin
   --install FILE        Install plugin ZIP or Python module
 
 Appearance:
