@@ -117,6 +117,7 @@ def generate_menu_toolbar(self):
 	fheight = fm.height()
 		
 	toolbar.setFixedHeight(fheight+8)
+	toolbar.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
 	return toolbar
 

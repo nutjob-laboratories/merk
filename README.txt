@@ -196,10 +196,10 @@ usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
                       [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
                       [-t] [-R] [-o] [-P] [-f] [-s FILENAME][--config-name NAME] 
-                      [--config-directory DIRECTORY] [--config-local]
+                      [--config-directory DIRECTORY] [--config-local] [-D] [-L]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME]
                       [--config-file FILENAME] [--reset] [--reset-user]
-                      [--reset-all] [--uninstall-all] [-Q NAME] [-D] [-L]
+                      [--reset-all] [--uninstall-all] [-Q NAME] [--install FILE]
                       [SERVER] [PORT]
 
 
@@ -250,6 +250,7 @@ Files and Directories:
   --reset-user          Reset user file to default values
   --reset-all           Reset all configuration files to default values
   --uninstall-all       Deletes all installed plugins
+  --install FILE        Install plugin ZIP or Python module
 
 Appearance:
   -Q, --qtstyle NAME    Set Qt widget style (default: Windows)

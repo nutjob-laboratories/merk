@@ -13,6 +13,14 @@
 * Fixed a bug in the Linux PyInstaller version of the app: the "Directories"
   subdirectory in the "Tools" menu would not open the desired directory in the
   default file manager on this platform. This is fixed.
+* Added a command-line option to install plugins. Plugins must be ZIP files or
+  Python modules, and only Python modules, PNG files, and MERK scripts will be
+  extracted into the plugins directory. Plugins installed with this method
+  will ALWAYS overwrite existing files in the plugins or scripts directory.
+
+--------------------------------------------------------------------------------
+################################################################################
+--------------------------------------------------------------------------------
 
 |------------------------------------------------------------------------------|
 |                                   0.051.300                                  |

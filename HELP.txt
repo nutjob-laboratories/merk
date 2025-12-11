@@ -56,7 +56,7 @@ pip <span class="hljs-keyword">install</span> service_identity
                       [-t] [-R] [-o] [-P] [-f] [-s FILENAME][<span class="hljs-comment">--config-name NAME] </span>
                       [<span class="hljs-comment">--config-directory DIRECTORY] [--config-local]</span>
                       [<span class="hljs-comment">--scripts-directory DIRECTORY] [--user-file FILENAME]</span>
-                      [<span class="hljs-comment">--config-file FILENAME] [--reset] [--reset-user]</span>
+                      [<span class="hljs-comment">--config-file FILENAME] [--reset] [--reset-user] [--install FILE]</span>
                       [<span class="hljs-comment">--reset-all] [--uninstall-all] [-Q NAME] [-D] [-L]</span>
                       [SERVER] [PORT]
 
@@ -108,6 +108,7 @@ Files <span class="hljs-keyword">and</span> Directories:
   <span class="hljs-comment">--reset-user          Reset user file to default values</span>
   <span class="hljs-comment">--reset-all           Reset all configuration files to default values</span>
   <span class="hljs-comment">--uninstall-all       Deletes all install plugins</span>
+  <span class="hljs-comment">--install FILE        Install plugin ZIP or Python module</span>
 
 Appearance:
   -Q, <span class="hljs-comment">--qtstyle NAME    Set Qt widget style (default: Windows)</span>

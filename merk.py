@@ -29,6 +29,7 @@ import random
 import shutil
 import sys
 import datetime
+import zipfile
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -127,6 +128,7 @@ configuration_group.add_argument("--reset",dest="configdefault",help=f"Reset con
 configuration_group.add_argument("--reset-user",dest="userdefault",help=f"Reset user file to default values",action="store_true")
 configuration_group.add_argument("--reset-all",dest="alldefault",help=f"Reset all configuration files to default values",action="store_true")
 configuration_group.add_argument("--uninstall-all",dest="uninstall",help=f"Deletes all installed plugins",action="store_true")
+configuration_group.add_argument("--install",dest="install",type=str,help="Install plugin ZIP or Python module",metavar="FILE",default=None)
 
 misc_group = parser.add_argument_group('Appearance')
 misc_group.add_argument("-Q","--qtstyle",dest="qtstyle",type=str,help="Set Qt widget style (default: Windows)",metavar="NAME",default="")
@@ -136,6 +138,64 @@ misc_group.add_argument("-L","--light",dest="lightmode",help=f"Run in light mode
 args = parser.parse_args()
 
 if __name__ == '__main__':
+
+	def install_python_plugin(filename):
+		base = os.path.basename(filename)
+		imported_file = os.path.join(plugins.PLUGIN_DIRECTORY,base)
+		try:
+			shutil.copy(filename, imported_file)
+		except FileNotFoundError:
+			if not is_running_from_pyinstaller():
+				sys.stdout.write(f"Source file \"{filename}\" not found\n")
+			else:
+				show_message("Error",f"Source file \"{filename}\" not found")
+			sys.exit(1)
+		except Exception as e:
+			if not is_running_from_pyinstaller():
+				sys.stdout.write(f'Error importing file: {e}\n')
+			else:
+				show_message(f'Error importing file: {e}')
+			sys.exit(1)
+
+	def install_zip_plugin(filename):
+		try:
+			with zipfile.ZipFile(filename, 'r') as zf:
+				for member in zf.infolist():
+					file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+					extract_file = False
+					name_without_extension, extension = os.path.splitext(file_path)
+					if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+					if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
+
+					if config.IMPORT_SCRIPTS_IN_PLUGINS:
+						file_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+
+						extract_file = False
+						name_without_extension, extension = os.path.splitext(file_path)
+						if extension.lower()=='.merk': extract_file = True
+
+						if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
+
+		except zipfile.BadZipFile:
+			if not is_running_from_pyinstaller():
+				sys.stdout.write(f"\"{filename}\" is not a valid zip file\n")
+			else:
+				show_message("Error",f"\"{filename}\" is not a valid zip file")
+			sys.exit(1)
+		except FileNotFoundError:
+			if not is_running_from_pyinstaller():
+				sys.stdout.write(f"Plugin archive \"{filename}\" not found\n")
+			else:
+				show_message("Error",f"Plugin archive \"{filename}\" not found.")
+			sys.exit(1)
+		except Exception as e:
+			if not is_running_from_pyinstaller():
+				sys.stdout.write(f'Error importing file: {e}\n')
+			else:
+				show_message("Error",f'Error importing file: {e}')
+			sys.exit(1)
 
 	def show_message(title,message):
 		msgBox = QMessageBox()
@@ -258,6 +318,26 @@ if __name__ == '__main__':
 						sys.exit(1)
 		if is_running_from_pyinstaller():
 			show_message("Uninstall",f"All plugins uninstalled")
+		sys.exit(0)
+
+	if args.install:
+		base = os.path.basename(args.install)
+
+		name_without_extension, extension = os.path.splitext(args.install)
+		if extension.lower()=='.zip':
+			install_zip_plugin(args.install)
+		elif extension.lower()=='.py':
+			install_python_plugin(args.install)
+		else:
+			if not is_running_from_pyinstaller():
+				sys.stdout.write(f"\"{args.install}\" is not a ZIP or a Python module\n")
+			else:
+				show_message("Error",f"\"{args.install}\" is not a ZIP or a Python module")
+			sys.exit(1)
+		if not is_running_from_pyinstaller():
+			sys.stdout.write(f"\"{args.install}\" installed\n")
+		else:
+			show_message("Success",f"\"{args.install}\" installed")
 		sys.exit(0)
 
 	# Disabled plugins
