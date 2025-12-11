@@ -1004,6 +1004,18 @@ class Merk(QMainWindow):
 			self.is_hidden = True
 		self.buildSystrayMenu()
 
+	def open_folder(self,path):
+		abs_path = os.path.abspath(path)
+		
+		if sys.platform.startswith('linux'):
+			# Use QProcess for explicit command on Linux
+			command = f"xdg-open {abs_path}"
+			QProcess.startDetached(command)
+		else:
+			# QDesktopServices works well on Windows and macOS
+			url = QUrl.fromLocalFile(abs_path)
+			QDesktopServices.openUrl(url)
+
 	def buildSystrayMenu(self):
 
 		if config.SYSTRAY_MENU==False:
@@ -1113,34 +1125,41 @@ class Merk(QMainWindow):
 
 			if not is_running_from_pyinstaller():
 				entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+				# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+				entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
 				sm.addAction(entry)
 			else:
 				entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+				# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+				entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
 				sm.addAction(entry)
 
 			entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+			# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+			entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
 			sm.addAction(entry)
 
 			if config.ENABLE_STYLE_EDITOR:
 				entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
-				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+				# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+				entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
 				sm.addAction(entry)
 
 			entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+			# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+			entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
 			sm.addAction(entry)
 
 			if config.ENABLE_PLUGINS:
 				entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
-				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+				# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+				entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
 				sm.addAction(entry)
 
 			if config.SCRIPTING_ENGINE_ENABLED:
 				entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-				entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+				# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+				entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
 				sm.addAction(entry)
 
 		if config.SHOW_LINKS_IN_SYSTRAY_MENU:
@@ -4517,34 +4536,41 @@ class Merk(QMainWindow):
 
 		if not is_running_from_pyinstaller():
 			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+			# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+INSTALL_DIRECTORY))))
+			entry.triggered.connect((lambda : self.open_folder(INSTALL_DIRECTORY)))
 			sm.addAction(entry)
 		else:
 			entry = QAction(QIcon(APPLICATION_ICON),APPLICATION_NAME+" installation",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+			#entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+os.path.dirname(sys.executable)))))
+			entry.triggered.connect((lambda : self.open_folder(os.path.dirname(sys.executable))))
 			sm.addAction(entry)
 
 		entry = QAction(QIcon(SETTINGS_ICON),"Settings directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		#entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+config.CONFIG_DIRECTORY))))
+		entry.triggered.connect((lambda : self.open_folder(config.CONFIG_DIRECTORY)))
 		sm.addAction(entry)
 
 		if config.ENABLE_STYLE_EDITOR:
 			entry = QAction(QIcon(STYLE_ICON),"Styles directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+			# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+styles.STYLE_DIRECTORY))))
+			entry.triggered.connect((lambda : self.open_folder(styles.STYLE_DIRECTORY)))
 			sm.addAction(entry)
 
 		entry = QAction(QIcon(LOG_ICON),"Logs directory",self)
-		entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+logs.LOG_DIRECTORY))))
+		entry.triggered.connect((lambda : self.open_folder(logs.LOG_DIRECTORY)))
 		sm.addAction(entry)
 
 		if config.ENABLE_PLUGINS:
 			entry = QAction(QIcon(PLUGIN_ICON),"Plugins directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+			# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+plugins.PLUGIN_DIRECTORY))))
+			entry.triggered.connect((lambda : self.open_folder(plugins.PLUGIN_DIRECTORY)))
 			sm.addAction(entry)
 
 		if config.SCRIPTING_ENGINE_ENABLED:
 			entry = QAction(QIcon(SCRIPT_ICON),"Scripts directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			# entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
 			sm.addAction(entry)
 
 	def buildHelpMenu(self):

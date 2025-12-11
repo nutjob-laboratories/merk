@@ -1,4 +1,20 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.350                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Fixed a "bug" that caused versions of Python lower than 3.12 (I think) to be
+  unable to execute merk.py
+* Modified the "--uninstall-all" command-line flag to ONLY delete Python and
+  PNG files, and leave all other files intact.
+* Fixed a bug in the Linux PyInstaller version of the app: the "Directories"
+  subdirectory in the "Tools" menu would not open the desired directory in the
+  default file manager on this platform. This is fixed.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.300                                  |
 |------------------------------------------------------------------------------|
 

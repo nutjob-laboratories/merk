@@ -245,7 +245,7 @@ if __name__ == '__main__':
 		for root, _, files in os.walk(plugins.PLUGIN_DIRECTORY):
 			for file in files:
 				file_path = os.path.join(root, file)
-				if os.path.exists(file_path):
+				if os.path.exists(file_path) and (file.endswith(".py") or file.endswith(".png")):
 					try:
 						os.remove(file_path)
 						if not is_running_from_pyinstaller():
@@ -256,12 +256,6 @@ if __name__ == '__main__':
 						else:
 							show_message("Error",f"Error deleting file: {e}")
 						sys.exit(1)
-				else:
-					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"File {file_path} not found\n")
-					else:
-						show_message("Error",f"File {file_path} not found")
-					sys.exit(1)
 		if is_running_from_pyinstaller():
 			show_message("Uninstall",f"All plugins uninstalled")
 		sys.exit(0)
