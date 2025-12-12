@@ -116,6 +116,7 @@ optiongroup.add_argument("-o","--on-top",dest="ontop",help=f"Application window 
 optiongroup.add_argument("-f","--full-screen",dest="fullscreen",help=f"Application window displays full screen",action="store_true")
 optiongroup.add_argument("-s","--script",type=str,help="Use a file as a connection script",metavar="FILE",default='')
 optiongroup.add_argument("-P","--disable-plugins",dest="disable",help=f"Disables plugins",action="store_true")
+optiongroup.add_argument("-E","--enable-plugins",dest="enable",help=f"Enables plugins",action="store_true")
 
 configuration_group = parser.add_argument_group('Files and Directories')
 configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)",metavar="NAME",default=".merk")
@@ -320,13 +321,14 @@ if __name__ == '__main__':
 	# Initialize the scripts system
 	commands.initialize(args.configdir,args.configname,args.scriptdir)
 
-	# Uninstalls all plugins
+	# Uninstall plugin
 	if args.uninstall!=None:
 		if args.uninstall=='':
 			p = plugins.list_plugins()
 			if is_running_from_pyinstaller():
-				show_message("Plugins",f"{'\n'.join(p)}")
+				show_message("Installed Plugins",f"{'\n'.join(p)}")
 			else:
+				sys.stdout.write(f"Installed plugins:\n")
 				for e in p:
 					sys.stdout.write(f"{e}\n")
 			sys.exit(0)
@@ -411,9 +413,21 @@ if __name__ == '__main__':
 			show_message("Success",f"\"{args.install}\" installed")
 		sys.exit(0)
 
+	if args.disable and args.enable:
+		if not is_running_from_pyinstaller():
+			sys.stdout.write(f"Plugins cannot be both enabled and disabled\n")
+		else:
+			show_message("Error",f"Plugins cannot be both enabled and disabled")
+		sys.exit(1)
+
 	# Disabled plugins
 	if args.disable:
 		config.ENABLE_PLUGINS = False
+		if not args.donotsave: config.save_settings(config.CONFIG_FILE)
+
+	# Enables plugins
+	if args.enable:
+		config.ENABLE_PLUGINS = True
 		if not args.donotsave: config.save_settings(config.CONFIG_FILE)
 
 	# Set the application font

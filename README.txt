@@ -197,9 +197,9 @@ usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
                       [-t] [-R] [-o] [-P] [-f] [-s FILENAME][--config-name NAME] 
                       [--config-directory DIRECTORY] [--config-local] [-D] [-L]
-                      [--scripts-directory DIRECTORY] [--user-file FILENAME]
-                      [--config-file FILENAME] [--reset] [--reset-user]
-                      [--reset-all] [--uninstall [FILE]] [-Q NAME] [--install FILE]
+                      [--scripts-directory DIRECTORY] [--user-file FILENAME] [-E]
+                      [--config-file FILENAME] [--reset] [--reset-user] [-Q NAME]
+                      [--reset-all] [--uninstall [FILE]] [--install FILE]
                       [SERVER] [PORT]
 
 
@@ -236,6 +236,7 @@ Options:
   -f, --full-screen      Application window displays full screen
   -s, --script FILE      Use a file as a connection script
   -P, --disable-plugins  Disables plugins
+  -E, --enable-plugins   Enables plugins
 
 Files and Directories:
   --config-name NAME    Name of the configuration file directory (default: .merk)
