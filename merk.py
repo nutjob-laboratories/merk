@@ -423,12 +423,12 @@ if __name__ == '__main__':
 	# Disabled plugins
 	if args.disable:
 		config.ENABLE_PLUGINS = False
-		if not args.donotsave: config.save_settings(config.CONFIG_FILE)
+		config.save_settings(config.CONFIG_FILE)
 
 	# Enables plugins
 	if args.enable:
 		config.ENABLE_PLUGINS = True
-		if not args.donotsave: config.save_settings(config.CONFIG_FILE)
+		config.save_settings(config.CONFIG_FILE)
 
 	# Set the application font
 	if config.APPLICATION_FONT!=None:

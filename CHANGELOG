@@ -30,6 +30,10 @@
 * New command-line option: --enable-plugins (-E). This enables plugins. If both
   --enable-plugins and --disable-plugins are issued at the same time, an error
   is shown, and MERK will not start.
+* Enabling or disabling plugins on the command-line will ALWAYS save to the
+  config file, even if --donotsave is enabled. This fixes a bug where if you
+  enabled or disabled plugins, and chose not to save settings, plugins would
+  not actually be enabled or disabled.
 
 --------------------------------------------------------------------------------
 ################################################################################
