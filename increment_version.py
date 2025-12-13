@@ -54,62 +54,61 @@ f = open("./merk/resources/release.py","w")
 f.write(f"APPLICATION_RELEASE = \"{rurl}\"\nAPPLICATION_RELEASE_VERSION = \"{rversion}\"")
 f.close()
 
-devp = platform.system()
-if "Windows" in devp:
-	f = open("./merk/data/win_major.txt","r")
-	major = f.read()
-	f.close()
 
-	f = open("./merk/data/win_minor.txt","r")
-	minor = f.read()
-	f.close()
+f = open("./merk/data/win_major.txt","r")
+major = f.read()
+f.close()
 
-	mi = int(minor)
-	mi = mi + 1
-	if mi>=1000: mi = 0
-	minor = str(mi)
+f = open("./merk/data/win_minor.txt","r")
+minor = f.read()
+f.close()
 
-	# Format minor version so it is always
-	# at least three digits long
-	if len(minor)==1:
-		minor = f"00{minor}"
-	elif len(minor)==2:
-		minor = f"0{minor}"
+mi = int(minor)
+mi = mi + 1
+if mi>=1000: mi = 0
+minor = str(mi)
 
-	f = open("./merk/data/win_minor.txt","w")
-	f.write(minor)
-	f.close()
+# Format minor version so it is always
+# at least three digits long
+if len(minor)==1:
+	minor = f"00{minor}"
+elif len(minor)==2:
+	minor = f"0{minor}"
 
-	f = open("merk_setup.txt","r")
-	setup = f.read()
-	f.close()
+f = open("./merk/data/win_minor.txt","w")
+f.write(minor)
+f.close()
 
-	setup = setup.replace("!_WIN_VERSION_!",major+"."+minor)
+f = open("merk_setup.txt","r")
+setup = f.read()
+f.close()
 
-	f = open("merk_setup.iss","w")
-	f.write(setup)
-	f.close()
-elif "Linux" in devp:
-	f = open("./merk/data/lin_major.txt","r")
-	major = f.read()
-	f.close()
+setup = setup.replace("!_WIN_VERSION_!",major+"."+minor)
 
-	f = open("./merk/data/lin_minor.txt","r")
-	minor = f.read()
-	f.close()
+f = open("merk_setup.iss","w")
+f.write(setup)
+f.close()
 
-	mi = int(minor)
-	mi = mi + 1
-	if mi>=1000: mi = 0
-	minor = str(mi)
+f = open("./merk/data/lin_major.txt","r")
+major = f.read()
+f.close()
 
-	# Format minor version so it is always
-	# at least three digits long
-	if len(minor)==1:
-		minor = f"00{minor}"
-	elif len(minor)==2:
-		minor = f"0{minor}"
+f = open("./merk/data/lin_minor.txt","r")
+minor = f.read()
+f.close()
 
-	f = open("./merk/data/lin_minor.txt","w")
-	f.write(minor)
-	f.close()
+mi = int(minor)
+mi = mi + 1
+if mi>=1000: mi = 0
+minor = str(mi)
+
+# Format minor version so it is always
+# at least three digits long
+if len(minor)==1:
+	minor = f"00{minor}"
+elif len(minor)==2:
+	minor = f"0{minor}"
+
+f = open("./merk/data/lin_minor.txt","w")
+f.write(minor)
+f.close()

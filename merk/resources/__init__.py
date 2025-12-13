@@ -585,7 +585,7 @@ def escape_for_filename(filename):
 	filename = filename.replace('*','_ax_')
 	filename = filename.replace(LOG_AND_STYLE_FILENAME_DELIMITER,'_dm_')
 
-	return filename
+	return filename.lower()
 
 def deescape_for_filename(filename):
 	filename = filename.replace('_lt_','<')
@@ -599,7 +599,7 @@ def deescape_for_filename(filename):
 	filename = filename.replace('_ax_','*')
 	filename = filename.replace('_dm_',LOG_AND_STYLE_FILENAME_DELIMITER)
 
-	return filename
+	return filename.lower()
 
 def remove_duplicate_sublists(list_of_lists):
 	seen = set()

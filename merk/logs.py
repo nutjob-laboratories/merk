@@ -48,7 +48,27 @@ def initialize(directory,directory_name):
 	CONFIG_DIRECTORY = os.path.join(directory,directory_name)
 
 	LOG_DIRECTORY = os.path.join(CONFIG_DIRECTORY,"logs")
-	if not os.path.isdir(LOG_DIRECTORY): os.mkdir(LOG_DIRECTORY)
+	if not os.path.isdir(LOG_DIRECTORY):
+		os.mkdir(LOG_DIRECTORY)
+	else:
+		# Make sure all logs are all lower case
+		for root, dirs, files in os.walk(LOG_DIRECTORY):
+			for filename in files:
+				# If any log file has any capital letters in the
+				# filename, rename the file so that the file no
+				# longer has capital letters in the filename.
+				# This is for backwards compatability.
+				if any(c.isupper() for c in filename):
+					old_file = os.path.join(root, filename)
+					new_file = os.path.join(root, filename.lower())
+					try:
+						os.rename(old_file, new_file)
+					except FileExistsError:
+						pass
+					except PermissionError:
+						pass
+					except Exception as e:
+						pass
 
 # Functions
 

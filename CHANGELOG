@@ -34,6 +34,7 @@
   config file, even if --donotsave is enabled. This fixes a bug where if you
   enabled or disabled plugins, and chose not to save settings, plugins would
   not actually be enabled or disabled.
+* Logs are now saved in ONLY lowercase letters in the filename.
 
 --------------------------------------------------------------------------------
 ################################################################################
