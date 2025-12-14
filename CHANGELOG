@@ -35,6 +35,7 @@
   enabled or disabled plugins, and chose not to save settings, plugins would
   not actually be enabled or disabled.
 * Logs are now saved in ONLY lowercase letters in the filename.
+* Added the "erroneous nickname" default to the settings dialog.
 
 --------------------------------------------------------------------------------
 ################################################################################

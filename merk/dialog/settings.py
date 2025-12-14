@@ -3062,6 +3062,7 @@ class Dialog(QDialog):
 		self.realname = QLineEdit(user.REALNAME)
 		self.userinfo = QLineEdit(user.USERINFO)
 		self.finger = QLineEdit(user.FINGER)
+		self.erroneous = QNoSpaceLineEdit(config.BAD_NICKNAME_FALLBACK)
 
 		self.nick.textChanged.connect(self.changeUser)
 		self.alternative.textChanged.connect(self.changeUser)
@@ -3069,6 +3070,7 @@ class Dialog(QDialog):
 		self.realname.textChanged.connect(self.changeUser)
 		self.userinfo.textChanged.connect(self.changeUser)
 		self.finger.textChanged.connect(self.changeUser)
+		self.erroneous.textChanged.connect(self.changedSetting)
 
 		nickLayout = QFormLayout()
 		nickLayout.addRow(self.nick)
@@ -3126,12 +3128,23 @@ class Dialog(QDialog):
 
 		fingerBox.setFont(font)
 
+		errorLayout = QFormLayout()
+		errorLayout.addRow(self.erroneous)
+		errorLayout.addRow(QLabel("<center><small>Default for erroneous nickname (should be short)</small></center>"))
+		errorBox = QGroupBox("Nickname Alternate")
+		errorBox.setAlignment(Qt.AlignLeft)
+		errorBox.setLayout(errorLayout)
+
+		errorBox.setFont(font)
+
 		userLayout = QVBoxLayout()
+		userLayout.setSpacing(2)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
 		userLayout.addWidget(nickBox)
 		userLayout.addWidget(alternateBox)
 		userLayout.addWidget(userBox)
 		userLayout.addWidget(realnameBox)
+		userLayout.addWidget(errorBox)
 		userLayout.addWidget(userinfoBox)
 		userLayout.addWidget(fingerBox)
 		userLayout.addStretch()
@@ -5767,6 +5780,8 @@ class Dialog(QDialog):
 			user.USERINFO = self.userinfo.text().strip()
 			user.FINGER = self.finger.text().strip()
 			user.save_user(user.USER_FILE)
+
+		config.BAD_NICKNAME_FALLBACK = self.erroneous
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

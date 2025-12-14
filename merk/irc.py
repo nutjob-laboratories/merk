@@ -1371,6 +1371,8 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		return bot
 
 	def clientConnectionLost(self, connector, reason):
+
+		config.load_settings(config.CONFIG_FILE)
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
@@ -1400,6 +1402,8 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			msgBox.exec()
 
 	def clientConnectionFailed(self, connector, reason):
+
+		config.load_settings(config.CONFIG_FILE)
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
@@ -1432,6 +1436,8 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 		return bot
 
 	def clientConnectionLost(self, connector, reason):
+
+		config.load_settings(config.CONFIG_FILE)
 
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
@@ -1506,6 +1512,8 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 					reactor.connectTCP(self.kwargs["server"],self.kwargs["port"],bot)
 
 	def clientConnectionFailed(self, connector, reason):
+
+		config.load_settings(config.CONFIG_FILE)
 
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
