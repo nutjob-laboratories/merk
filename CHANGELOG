@@ -36,6 +36,9 @@
   not actually be enabled or disabled.
 * Logs are now saved in ONLY lowercase letters in the filename.
 * Added the "erroneous nickname" default to the settings dialog.
+* Removed the option to convert channel names to "links" to channels in chat.
+  This was really slowing down chat rendering, and honestly, didn't seem to
+  be of much use.
 
 --------------------------------------------------------------------------------
 ################################################################################

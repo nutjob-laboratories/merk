@@ -170,6 +170,7 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 def render_message(message,style,client=None,no_padding=False):
 
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+	is_background_light = test_if_background_is_light(style["all"])
 	
 	msg_to_display = message.contents
 
@@ -190,30 +191,6 @@ def render_message(message,style,client=None,no_padding=False):
 	if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE:
 		if message.type==RAW_SYSTEM_MESSAGE or message.type==SYSTEM_MESSAGE:
 			msg_to_display = html.escape(msg_to_display)
-
-	if config.CONVERT_CHANNELS_TO_LINKS:
-		if client!=None:
-			if config.DO_NOT_APPLY_STYLES_TO_TEXT:
-				mystyle = f"color:{foreground};"
-			else:
-				mystyle = style["hyperlink"]
-			if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
-				try:
-					d = []
-					for w in msg_to_display.split():
-						x = html.unescape(w)
-						if x[:1]=='#' or x[:1]=='&' or x[:1]=='!' or x[:1]=='+':
-							# Check to make sure the channel exists on the server; if the channel
-							# doesn't exist, the channel link will not be created
-							if client.server_has_channel(x) and len(x)>1:
-								o = "<a href=\""+x+"\" "
-								o = o + "style=\""+mystyle+"\">"+x+"</a>"
-								w = o
-
-						d.append(w)
-					msg_to_display = ' '.join(d)
-				except:
-					pass
 
 	if config.CONVERT_URLS_TO_LINKS:
 		msg_to_display = inject_www_links(msg_to_display,style)
@@ -277,7 +254,7 @@ def render_message(message,style,client=None,no_padding=False):
 			output_style = style["raw"]
 		elif message.type==HORIZONTAL_RULE_MESSAGE:
 
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = HORIZONTAL_RULE
 			else:
 				output = LIGHT_HORIZONTAL_RULE
@@ -285,7 +262,7 @@ def render_message(message,style,client=None,no_padding=False):
 			style = style["message"]
 		elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
 
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = HARD_HORIZONTAL_RULE
 			else:
 				output = HARD_LIGHT_HORIZONTAL_RULE
@@ -293,7 +270,7 @@ def render_message(message,style,client=None,no_padding=False):
 			style = style["message"]
 		elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
 
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = TEXT_HORIZONTAL_RULE_TEMPLATE
 			else:
 				output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
@@ -304,7 +281,7 @@ def render_message(message,style,client=None,no_padding=False):
 			output_style = style["server"]
 		elif message.type==DATE_MESSAGE:
 
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = DATE_MESSAGE_TEMPLATE
 			else:
 				output = LIGHT_DATE_MESSAGE_TEMPLATE
@@ -341,17 +318,17 @@ def render_message(message,style,client=None,no_padding=False):
 		elif message.type==RAW_SYSTEM_MESSAGE:
 			output = SYSTEM_TEMPLATE
 		elif message.type==HORIZONTAL_RULE_MESSAGE:
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = HORIZONTAL_RULE
 			else:
 				output = LIGHT_HORIZONTAL_RULE
 		elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = HARD_HORIZONTAL_RULE
 			else:
 				output = HARD_LIGHT_HORIZONTAL_RULE
 		elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = TEXT_HORIZONTAL_RULE_TEMPLATE
 			else:
 				output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
@@ -359,7 +336,7 @@ def render_message(message,style,client=None,no_padding=False):
 			output = MESSAGE_TEMPLATE
 		elif message.type==DATE_MESSAGE:
 
-			if test_if_background_is_light(style["all"]):
+			if is_background_light:
 				output = DATE_MESSAGE_TEMPLATE
 			else:
 				output = LIGHT_DATE_MESSAGE_TEMPLATE
@@ -404,19 +381,6 @@ def render_message(message,style,client=None,no_padding=False):
 			if not no_padding:
 				if message.type!=NOTICE_MESSAGE and len(nick)>0:
 					idl = config.NICKNAME_PAD_LENGTH - len(nick)
-
-					# When non-standard ASCII characters are used
-					# that are over length, the nickname display
-					# can get messed up. This fixes that, by shortening
-					# the nickname padding by one. Kinda ham-handed,
-					# but it works right now. This only happens when
-					# the window is a little "small", and since I
-					# can't figure out how to get access to the chat
-					# window the message is being rendered in right
-					# now, it will remain commented out.
-
-					# if not msg_to_display.isascii(): idl = idl - 1
-
 					if idl>0:
 						nick = ('&nbsp;'*idl)+nick
 	else:

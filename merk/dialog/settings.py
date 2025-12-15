@@ -4291,10 +4291,6 @@ class Dialog(QDialog):
 		prepLayout = QVBoxLayout()
 		prepLayout.addWidget(self.setSystemPrepend)
 		prepLayout.addLayout(prepSel)
-
-		self.linkChannel = QCheckBox("Convert channel names to links",self)
-		if config.CONVERT_CHANNELS_TO_LINKS: self.linkChannel.setChecked(True)
-		self.linkChannel.stateChanged.connect(self.changedSettingRerender)
 	
 		self.ignoreCreateWindow = QCheckBox("Do not create windows for\nmessages from ignored users",self)
 		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
@@ -4335,7 +4331,6 @@ class Dialog(QDialog):
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addWidget(self.showColors)
 		messageLayout.addWidget(self.showLinks)
-		messageLayout.addWidget(self.linkChannel)
 		messageLayout.addWidget(self.writeScroll)
 		messageLayout.addWidget(self.showFullMode)
 		messageLayout.addWidget(self.ignoreChannelNotice)
@@ -5529,7 +5524,6 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY = self.showAwayNick.isChecked()
 		config.PROMPT_FOR_AWAY_MESSAGE = self.promptAway.isChecked()
 		config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = self.createWindowOut.isChecked()
-		config.CONVERT_CHANNELS_TO_LINKS = self.linkChannel.isChecked()
 		config.DO_NOT_APPLY_STYLES_TO_TEXT = self.noStyles.isChecked()
 		config.TYPING_INPUT_CANCELS_AUTOAWAY = self.typeCancelInput.isChecked()
 		config.WINDOW_INTERACTION_CANCELS_AUTOAWAY = self.windowCancelAway.isChecked()
@@ -5781,7 +5775,7 @@ class Dialog(QDialog):
 			user.FINGER = self.finger.text().strip()
 			user.save_user(user.USER_FILE)
 
-		config.BAD_NICKNAME_FALLBACK = self.erroneous
+		config.BAD_NICKNAME_FALLBACK = self.erroneous.text()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

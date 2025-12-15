@@ -196,7 +196,6 @@ USE_AUTOAWAY = False
 AUTOAWAY_TIME = 3600
 PROMPT_FOR_AWAY_MESSAGE = False
 CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = False
-CONVERT_CHANNELS_TO_LINKS = False
 DO_NOT_APPLY_STYLES_TO_TEXT = False
 TYPING_INPUT_CANCELS_AUTOAWAY = True
 WINDOW_INTERACTION_CANCELS_AUTOAWAY = False
@@ -558,7 +557,6 @@ def build_settings():
 		"window_interaction_cancels_autoaway": WINDOW_INTERACTION_CANCELS_AUTOAWAY,
 		"typing_input_cancels_autoaway": TYPING_INPUT_CANCELS_AUTOAWAY,
 		"do_not_apply_styles_to_text": DO_NOT_APPLY_STYLES_TO_TEXT,
-		"convert_channel_names_to_links": CONVERT_CHANNELS_TO_LINKS,
 		"create_window_for_outgoing_private_messages": CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES,
 		"prompt_for_away_message": PROMPT_FOR_AWAY_MESSAGE,
 		"autoaway": USE_AUTOAWAY,
@@ -1079,8 +1077,6 @@ def patch_settings(settings):
 		settings["typing_input_cancels_autoaway"] = TYPING_INPUT_CANCELS_AUTOAWAY
 	if not "do_not_apply_styles_to_text" in settings:
 		settings["do_not_apply_styles_to_text"] = DO_NOT_APPLY_STYLES_TO_TEXT
-	if not "convert_channel_names_to_links" in settings:
-		settings["convert_channel_names_to_links"] = CONVERT_CHANNELS_TO_LINKS
 	if not "create_window_for_outgoing_private_messages" in settings:
 		settings["create_window_for_outgoing_private_messages"] = CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES
 	if not "prompt_for_away_message" in settings:
@@ -1556,7 +1552,6 @@ def load_settings(filename):
 	global AUTOAWAY_TIME
 	global PROMPT_FOR_AWAY_MESSAGE
 	global CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES
-	global CONVERT_CHANNELS_TO_LINKS
 	global DO_NOT_APPLY_STYLES_TO_TEXT
 	global TYPING_INPUT_CANCELS_AUTOAWAY
 	global WINDOW_INTERACTION_CANCELS_AUTOAWAY
@@ -1924,7 +1919,6 @@ def load_settings(filename):
 		WINDOW_INTERACTION_CANCELS_AUTOAWAY = settings["window_interaction_cancels_autoaway"]
 		TYPING_INPUT_CANCELS_AUTOAWAY = settings["typing_input_cancels_autoaway"]
 		DO_NOT_APPLY_STYLES_TO_TEXT = settings["do_not_apply_styles_to_text"]
-		CONVERT_CHANNELS_TO_LINKS = settings["convert_channel_names_to_links"]
 		CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES = settings["create_window_for_outgoing_private_messages"]
 		PROMPT_FOR_AWAY_MESSAGE = settings["prompt_for_away_message"]
 		USE_AUTOAWAY = settings["autoaway"]
