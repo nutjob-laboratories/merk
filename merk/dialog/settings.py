@@ -693,7 +693,6 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(True)
 			self.syntaxscript.setEnabled(True)
 			self.enableWait.setEnabled(True)
-			self.enableUser.setEnabled(True)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
@@ -706,7 +705,6 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(False)
 			self.syntaxscript.setEnabled(False)
 			self.enableWait.setEnabled(False)
-			self.enableUser.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -4464,6 +4462,10 @@ class Dialog(QDialog):
 		if config.ENABLE_USER_COMMAND: self.enableUser.setChecked(True)
 		self.enableUser.stateChanged.connect(self.changedSettingEditorConfig)
 
+		self.pluginCall = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}call",self)
+		if config.ENABLE_CALL_COMMAND: self.pluginCall.setChecked(True)
+		self.pluginCall.stateChanged.connect(self.changedSettingEditor)
+
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
@@ -4480,10 +4482,10 @@ class Dialog(QDialog):
 			self.enableGoto.setEnabled(False)
 			self.enableIf.setEnabled(False)
 			self.enableWait.setEnabled(False)
-			self.enableUser.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
+		cmdLayout.addWidget(self.pluginCall)
 		cmdLayout.addWidget(self.enableDelay)
 		cmdLayout.addWidget(self.enableConfig)
 		cmdLayout.addWidget(self.enableUser)
@@ -4714,10 +4716,6 @@ class Dialog(QDialog):
 		if config.OVERWRITE_PLUGINS_ON_IMPORT: self.pluginOverwrite.setChecked(True)
 		self.pluginOverwrite.stateChanged.connect(self.changedSetting)
 
-		self.pluginCall = QCheckBox(f"Enable \"{config.ISSUE_COMMAND_SYMBOL}call\" command",self)
-		if config.ENABLE_CALL_COMMAND: self.pluginCall.setChecked(True)
-		self.pluginCall.stateChanged.connect(self.changedSettingEditor)
-
 		self.pluginScripts = QCheckBox("Import scripts in plugin packages",self)
 		if config.IMPORT_SCRIPTS_IN_PLUGINS: self.pluginScripts.setChecked(True)
 		self.pluginScripts.stateChanged.connect(self.changedSetting)
@@ -4892,7 +4890,6 @@ class Dialog(QDialog):
 		plugLayout.addRow(self.enablePlugins,self.plugEditor)
 		plugLayout.addRow(self.pluginScripts)
 		plugLayout.addRow(self.pluginOverwrite)
-		plugLayout.addRow(self.pluginCall)
 
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)

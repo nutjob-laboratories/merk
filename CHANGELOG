@@ -39,6 +39,9 @@
 * Removed the option to convert channel names to "links" to channels in chat.
   This was really slowing down chat rendering, and honestly, didn't seem to
   be of much use.
+* Moved the option to turn the /call command on and off to the scripting page
+  in the Settings dialog.
+* Fixed a bug with disabling the /user command in the Settings dialog.
 
 --------------------------------------------------------------------------------
 ################################################################################

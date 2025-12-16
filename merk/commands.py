@@ -48,6 +48,7 @@ import subprocess
 import shlex
 import random
 import ast
+import zipfile
 
 import emoji
 
@@ -1390,7 +1391,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = " ".join(tokens)
 			window.client.sendLine('USERHOST '+msg)
 			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wallops':
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userhost':
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
