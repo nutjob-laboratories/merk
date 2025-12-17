@@ -348,7 +348,8 @@ class Window(QMainWindow):
 		# Nickname display
 		self.nick_display = QLabel("<b>"+self.client.nickname+"&nbsp;</b>")
 		self.mode_display = QLabel("")
-
+		self.nick_display.setFocusPolicy(Qt.NoFocus)
+		self.mode_display.setFocusPolicy(Qt.NoFocus)
 		self.nick_display.installEventFilter(self)
 
 		if len(self.client.usermodes)>0:
@@ -367,8 +368,9 @@ class Window(QMainWindow):
 		self.buildInputOptionsMenu()
 
 		self.settingsButton = QPushButton(QIcon(self.parent.options_icon),"")
+		self.settingsButton.setFocusPolicy(Qt.NoFocus)
 		self.settingsButton.setIconSize(QSize(self.input.height()-10,self.input.height()))
-		self.settingsButton.setFixedSize(self.input.height()-10,self.input.height())
+		self.settingsButton.setFixedSize(self.input.height()-15,self.input.height())
 		self.settingsButton.setToolTip("Options")
 		self.settingsButton.setMenu(self.settingsMenu)
 		self.settingsButton.setFlat(True)
@@ -418,6 +420,14 @@ class Window(QMainWindow):
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.protected_icon.setPixmap(pixmap)
 
+			self.op_icon.setFocusPolicy(Qt.NoFocus)
+			self.voice_icon.setFocusPolicy(Qt.NoFocus)
+			self.owner_icon.setFocusPolicy(Qt.NoFocus)
+			self.admin_icon.setFocusPolicy(Qt.NoFocus)
+			self.halfop_icon.setFocusPolicy(Qt.NoFocus)
+			self.key_icon.setFocusPolicy(Qt.NoFocus)
+			self.protected_icon.setFocusPolicy(Qt.NoFocus)
+
 			self.op_icon.hide()
 			self.voice_icon.hide()
 			self.owner_icon.hide()
@@ -427,6 +437,7 @@ class Window(QMainWindow):
 			self.protected_icon.hide()
 
 			self.name_spacer = QLabel("")
+			self.name_spacer.setFocusPolicy(Qt.NoFocus)
 
 		nickLayout = QHBoxLayout()
 		if self.window_type!=SERVER_WINDOW:
@@ -453,6 +464,7 @@ class Window(QMainWindow):
 		self.too_long_icon.setPixmap(pixmap)
 		self.too_long_icon.setToolTip(f"Message exceeds {config.IRC_MAX_PAYLOAD_LENGTH} characters")
 		self.too_long_icon.hide()
+		self.too_long_icon.setFocusPolicy(Qt.NoFocus)
 
 		inputLayout = QHBoxLayout()
 		inputLayout.addLayout(nickLayout)

@@ -42,6 +42,10 @@
 * Moved the option to turn the /call command on and off to the scripting page
   in the Settings dialog.
 * Fixed a bug with disabling the /user command in the Settings dialog.
+* Shrunk the width of the input options button on chat windows, and fixed a
+  bug where the input options button could gain focus.
+* Fixed a bug where some non-interactable elements of chat windows could gain
+  focus.
 
 --------------------------------------------------------------------------------
 ################################################################################
