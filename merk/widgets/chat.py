@@ -680,45 +680,46 @@ class Window(QMainWindow):
 
 		# Only channel and private chat windows load logs
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
-			if load_logs:
+			if load_logs: self.doLoadLoad()
 
-				# Load log from disk
-				loadLog = logs.readLog(self.client.network,self.name,logs.LOG_DIRECTORY)
-				# If the log is too long (which, after a while, it *will* be), we
-				# trim it, so that the chat window doesn't take up 50GB of memory
-				if len(loadLog)>config.MAXIMUM_LOADED_LOG_SIZE:
-					loadLog = logs.trimLog(loadLog,config.MAXIMUM_LOADED_LOG_SIZE)
-				# If there's been log data loaded, add it to the internal
-				# log of the chat window
-				if len(loadLog)>0:
-					self.log = loadLog + self.log
-					if config.SHOW_DATES_IN_LOGS:
-						# Now, we insert day markers; starting with the first saved
-						# log message, we will insert a separator before the first
-						# message of a new day containing the date the following
-						# messages will have taken place on. This makes reading
-						# the loaded log a bit clearer. We step through the loaded
-						# log data, checking the date of each message, placing
-						# our markers whenever the date changes, the then replace
-						# the loaded log data with our "altered" log.
-						cdate = None
-						marked = []
-						for e in self.log:
-							ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
-							if cdate!=ndate:
-								cdate = ndate
-								m = Message(DATE_MESSAGE,'',cdate)
-								marked.append(m)
-							marked.append(e)
-						self.log = marked
-					# Mark end of loaded log
-					if config.MARK_END_OF_LOADED_LOG:
-						t = datetime.timestamp(datetime.now())
-						pretty_timestamp = datetime.fromtimestamp(t).strftime('%m/%d/%Y, '+config.TIMESTAMP_FORMAT)
-						self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
-				# Now, rerender all text in the log, so that
-				# the loaded log data is displayed
-				self.rerenderChatLog()
+	def doLoadLoad(self):
+		# Load log from disk
+		loadLog = logs.readLog(self.client.network,self.name,logs.LOG_DIRECTORY)
+		# If the log is too long (which, after a while, it *will* be), we
+		# trim it, so that the chat window doesn't take up 50GB of memory
+		if len(loadLog)>config.MAXIMUM_LOADED_LOG_SIZE:
+			loadLog = logs.trimLog(loadLog,config.MAXIMUM_LOADED_LOG_SIZE)
+		# If there's been log data loaded, add it to the internal
+		# log of the chat window
+		if len(loadLog)>0:
+			self.log = loadLog + []
+			if config.SHOW_DATES_IN_LOGS:
+				# Now, we insert day markers; starting with the first saved
+				# log message, we will insert a separator before the first
+				# message of a new day containing the date the following
+				# messages will have taken place on. This makes reading
+				# the loaded log a bit clearer. We step through the loaded
+				# log data, checking the date of each message, placing
+				# our markers whenever the date changes, the then replace
+				# the loaded log data with our "altered" log.
+				cdate = None
+				marked = []
+				for e in self.log:
+					ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
+					if cdate!=ndate:
+						cdate = ndate
+						m = Message(DATE_MESSAGE,'',cdate)
+						marked.append(m)
+					marked.append(e)
+				self.log = marked
+			# Mark end of loaded log
+			if config.MARK_END_OF_LOADED_LOG:
+				t = datetime.timestamp(datetime.now())
+				pretty_timestamp = datetime.fromtimestamp(t).strftime('%m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
+		# Now, rerender all text in the log, so that
+		# the loaded log data is displayed
+		self.rerenderChatLog()
 
 	def showChannelList(self):
 		if len(self.client.server_channel_list)==0:
@@ -1235,6 +1236,17 @@ class Window(QMainWindow):
 						m = Message(DATE_MESSAGE,'',cdate)
 						d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 						self.chat.append(d2)
+
+			# text_content = self.chat.document().toPlainText()
+			# byte_size = len(text_content.encode('utf-8'))
+			# kb_size = byte_size / 1024
+
+			# if kb_size>500:
+			# 	logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+			# 	self.chat.clear()
+			# 	self.new_log = []
+			# 	self.log = []
+			# 	self.doLoadLoad()
 
 	def refreshBanMenu(self):
 		self.banlist_menu.setMenu(buildBanMenu(self,self.client))

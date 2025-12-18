@@ -269,6 +269,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"_rehash",
 			cmdsymbol+"wallops",
 			cmdsymbol+"userhost",
+			cmdsymbol+"window install",
+			cmdsymbol+"window uninstall",
 		]
 
 		script_only = [
@@ -310,6 +312,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_PLUGINS:
 			merk.remove(cmdsymbol+"call")
 			merk.remove(cmdsymbol+"window plugin")
+			merk.remove(cmdsymbol+"window install")
+			merk.remove(cmdsymbol+"window uninstall")
 		else:
 			if not config.ENABLE_CALL_COMMAND:
 				merk.remove(cmdsymbol+"call")

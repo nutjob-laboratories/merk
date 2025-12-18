@@ -5334,6 +5334,14 @@ class Merk(QMainWindow):
 			if w.window_type==SERVER_WINDOW or w.window_type==CHANNEL_WINDOW or w.window_type==PRIVATE_WINDOW:
 				plugins.call(self,"activate",window=w)
 
+				# text_content = w.chat.document().toPlainText()
+				# byte_size = len(text_content.encode('utf-8'))
+				# kb_size = byte_size / 1024
+
+				# sys.stdout.write(f"Window: {w.name}\n")
+				# sys.stdout.write(f"Approximate memory size (bytes): {byte_size}\n")
+				# sys.stdout.write(f"Approximate memory size (KB): {kb_size:.2f} KB\n\n")
+
 		self.current_window = w
 
 		# If the window has a text input widget,

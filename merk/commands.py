@@ -49,6 +49,7 @@ import shlex
 import random
 import ast
 import zipfile
+import shutil
 
 import emoji
 
@@ -159,6 +160,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window hotkey": config.ISSUE_COMMAND_SYMBOL+"window hotkey",
 			config.ISSUE_COMMAND_SYMBOL+"window ignore": config.ISSUE_COMMAND_SYMBOL+"window ignore",
 			config.ISSUE_COMMAND_SYMBOL+"window plugin": config.ISSUE_COMMAND_SYMBOL+"window plugin",
+			config.ISSUE_COMMAND_SYMBOL+"window install": config.ISSUE_COMMAND_SYMBOL+"window install ",
+			config.ISSUE_COMMAND_SYMBOL+"window uninstall": config.ISSUE_COMMAND_SYMBOL+"window uninstall ",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -168,6 +171,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window ignore",'')
 	if not config.ENABLE_PLUGINS:
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window plugin",'')
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window install",'')
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window uninstall",'')
 
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
@@ -358,7 +363,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>resize</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>hotkey</b>, <b>ignore</b>, <b>plugin</b>, <b>restart</b>, <b>next</b>, <b>previous</b>, <b>cascade</b>, and <b>tile</b>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>resize</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>hotkey</b>, <b>ignore</b>, <b>plugin</b>, <b>install</b>, <b>uninstall</b>, <b>restart</b>, <b>next</b>, <b>previous</b>, <b>cascade</b>, and <b>tile</b>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
@@ -3254,6 +3259,266 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			return True
+
+		# /window uninstall|install
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='uninstall' or tokens[1].lower()=='install':
+				if not config.ENABLE_PLUGINS:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window uninstall: Plugins are disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				p = plugins.list_plugins()
+				if len(p)>0:
+					count = 0
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(p)} plugins")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					for plug in p:
+						count = count + 1
+						t = Message(SYSTEM_MESSAGE,'',f"{count}) {', '.join(p)}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(p)} plugins")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"No plugins installed")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		# /window uninstall FILE
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
+			if tokens[1].lower()=='uninstall':
+
+				if not config.ENABLE_PLUGINS:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window uninstall: Plugins are disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				
+				tokens.pop(0)
+				tokens.pop(0)
+				plugin = tokens.pop(0)
+
+				file_path = os.path.join(plugins.PLUGIN_DIRECTORY, plugin)
+				name_without_extension, extension = os.path.splitext(plugin)
+				icon_path = os.path.join(plugins.PLUGIN_DIRECTORY, name_without_extension+".png")
+
+				uninstalled = False
+				if os.path.exists(file_path) and file_path.endswith(".py"):
+					try:
+						os.remove(file_path)
+						uninstalled = True
+					except OSError as e:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {e}")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"{e}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+
+				if os.path.exists(icon_path) and icon_path.endswith(".png"):
+					try:
+						os.remove(icon_path)
+					except OSError as e:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {e}")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"{e}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+				if uninstalled:
+					errors = plugins.load_plugins(gui)
+					if len(errors)>0:
+						t = Message(ERROR_MESSAGE,'',f"Plugin load errors: {', '.join(errors)}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					else:
+						t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" uninstalled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" was not uninstalled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				return True
+
+		# /window install FILE
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)>=3:
+			if tokens[1].lower()=='install':
+				if not config.ENABLE_PLUGINS:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window install: Plugins are disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				
+				tokens.pop(0)
+				tokens.pop(0)
+				file = " ".join(tokens)
+
+				efile = find_file(file,None)
+				if not efile:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				
+				file = efile
+
+				base = os.path.basename(file)
+				name_without_extension, extension = os.path.splitext(file)
+				if extension==".py":
+					imported_file = os.path.join(plugins.PLUGIN_DIRECTORY,base)
+					try:
+						shutil.copy(file, imported_file)
+					except FileNotFoundError:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					except Exception as e:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {e}")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"{e}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+
+					plugin_icon = name_without_extension + ".png"
+					if os.path.isfile(plugin_icon):
+						base = os.path.basename(plugin_icon)
+						imported_file = os.path.join(plugins.PLUGIN_DIRECTORY,base)
+						try:
+							shutil.copy(plugin_icon, imported_file)
+						except FileNotFoundError:
+							if is_script:
+								add_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{plugin_icon}\" not found")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',f"Usage: \"{plugin_icon}\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						except Exception as e:
+							if is_script:
+								add_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {e}")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',f"{e}")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+
+					errors = plugins.load_plugins(gui)
+					if len(errors)>0:
+						t = Message(ERROR_MESSAGE,'',f"Plugin load errors: {', '.join(errors)}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					else:
+						t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{file}\" installed")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				elif extension==".zip":
+					try:
+						with zipfile.ZipFile(file, 'r') as zf:
+							for member in zf.infolist():
+								file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+								extract_file = False
+								name_without_extension, extension = os.path.splitext(file_path)
+								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+								if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
+
+								if config.IMPORT_SCRIPTS_IN_PLUGINS:
+									file_path = os.path.join(SCRIPTS_DIRECTORY, member.filename)
+
+									extract_file = False
+									name_without_extension, extension = os.path.splitext(file_path)
+									if extension.lower()=='.merk': extract_file = True
+
+									if extract_file: zf.extract(member, SCRIPTS_DIRECTORY)
+
+					except zipfile.BadZipFile:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" is not a valid ZIP file")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" is not a valid ZIP file")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					except FileNotFoundError:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					except Exception as e:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {e}")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"{e}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+
+					errors = plugins.load_plugins(gui)
+					if len(errors)>0:
+						t = Message(ERROR_MESSAGE,'',f"Plugin load errors: {', '.join(errors)}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					else:
+						t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{file}\" installed")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" is not a Python file or ZIP")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" is not a Python file or ZIP")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				return True
 
 		# /window plugin
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:

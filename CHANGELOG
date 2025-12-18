@@ -46,6 +46,8 @@
   bug where the input options button could gain focus.
 * Fixed a bug where some non-interactable elements of chat windows could gain
   focus.
+* Added two new subcommands to the /windows command: install and uninstall,
+  which install and uninstall plugins, respectively.
 
 --------------------------------------------------------------------------------
 ################################################################################
