@@ -255,6 +255,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"_rehash": config.ISSUE_COMMAND_SYMBOL+"_rehash",
 			config.ISSUE_COMMAND_SYMBOL+"wallops": config.ISSUE_COMMAND_SYMBOL+"wallops ",
 			config.ISSUE_COMMAND_SYMBOL+"userhost": config.ISSUE_COMMAND_SYMBOL+"userhost ",
+			config.ISSUE_COMMAND_SYMBOL+"python": config.ISSUE_COMMAND_SYMBOL+"python ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -344,7 +345,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style [SERVER] [WINDOW]</b>", "Opens up a window's text style editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias [TOKEN] [TEXT...]</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>", "Deletes the alias referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens a script in the editor" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens the script editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print [WINDOW] TEXT...</b>", "Prints text to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] [WINDOW]</b>", "Maximizes a window" ],
@@ -393,6 +394,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_rehash</b>", f"Causes the server to reprocess and reload configuration files. May only be issued by IRC operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"wallops MESSAGE</b>", f"Sends a message to all operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"userhost NICK(S)...</b>", f"Requests information about users from the server" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"python [FILE]</b>", f"Opens the Python editor" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1386,6 +1388,29 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |---------|
+	# | /python |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'python' and len(tokens)>=1:
+			if len(tokens)>=2:
+				tokens.pop(0)
+				file = " ".join(tokens)
+			else:
+				file = None
+			gui.openPythonEditorCommand(file)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'python':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"python [FILE]")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"python [FILE]")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |-----------|
 	# | /userhost |
@@ -3351,7 +3376,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				else:
-					t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" was not uninstalled")
+					t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" was not uninstalled, or does not exist")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				return True
@@ -3382,7 +3407,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" not found")
+					t = Message(ERROR_MESSAGE,'',f"\"{file}\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				
@@ -3392,6 +3417,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				name_without_extension, extension = os.path.splitext(file)
 				if extension==".py":
 					imported_file = os.path.join(plugins.PLUGIN_DIRECTORY,base)
+
+					if not config.OVERWRITE_PLUGINS_ON_IMPORT:
+						if os.path.isfile(imported_file):
+							if is_script:
+								add_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{imported_file}\" already exists")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',f" \"{imported_file}\" already exists")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+
 					try:
 						shutil.copy(file, imported_file)
 					except FileNotFoundError:
@@ -3401,7 +3439,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
-						t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" not found")
+						t = Message(ERROR_MESSAGE,'',f"\"{file}\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					except Exception as e:
@@ -3428,7 +3466,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 									t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{plugin_icon}\" not found")
 									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 								return True
-							t = Message(ERROR_MESSAGE,'',f"Usage: \"{plugin_icon}\" not found")
+							t = Message(ERROR_MESSAGE,'',f"\"{plugin_icon}\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
 						except Exception as e:
@@ -3451,6 +3489,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				elif extension==".zip":
 					try:
+						unextracted = []
 						with zipfile.ZipFile(file, 'r') as zf:
 							for member in zf.infolist():
 								file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
@@ -3458,6 +3497,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 								extract_file = False
 								name_without_extension, extension = os.path.splitext(file_path)
 								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+								if not config.OVERWRITE_PLUGINS_ON_IMPORT:
+									if os.path.isfile(file_path):
+										extract_file = False
+										unextracted.append(member.filename)
 
 								if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
 
@@ -3468,6 +3512,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 									name_without_extension, extension = os.path.splitext(file_path)
 									if extension.lower()=='.merk': extract_file = True
 
+									if not config.OVERWRITE_PLUGINS_ON_IMPORT:
+										if os.path.isfile(file_path):
+											extract_file = False
+											unextracted.append(member.filename)
+
 									if extract_file: zf.extract(member, SCRIPTS_DIRECTORY)
 
 					except zipfile.BadZipFile:
@@ -3477,7 +3526,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" is not a valid ZIP file")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
-						t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" is not a valid ZIP file")
+						t = Message(ERROR_MESSAGE,'',f"\"{file}\" is not a valid ZIP file")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					except FileNotFoundError:
@@ -3487,7 +3536,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: \"{file}\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
-						t = Message(ERROR_MESSAGE,'',f"Usage: \"{file}\" not found")
+						t = Message(ERROR_MESSAGE,'',f"\"{file}\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					except Exception as e:
@@ -3498,6 +3547,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
 						t = Message(ERROR_MESSAGE,'',f"{e}")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+
+					if len(unextracted)>0:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Files not overwritten: {', '.join(unextracted)}")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"Files not overwritten: {', '.join(unextracted)}")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 

@@ -47,7 +47,11 @@
 * Fixed a bug where some non-interactable elements of chat windows could gain
   focus.
 * Added two new subcommands to the /windows command: install and uninstall,
-  which install and uninstall plugins, respectively.
+  which install and uninstall plugins, respectively. The "install" subcommand
+  will NOT overwrite files unless that option is turned on.
+* The help menu is now "manually" closed after clicking on the document entries
+  in the menu.
+* New command: /python, which opens the Python editor.
 
 --------------------------------------------------------------------------------
 ################################################################################

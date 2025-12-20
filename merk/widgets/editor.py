@@ -514,7 +514,7 @@ class Window(QMainWindow):
 
 		self.doInsertCallMethod(e)
 
-	def __init__(self,filename=None,parent=None,subwindow=None,python=False):
+	def __init__(self,filename=None,parent=None,subwindow=None,python=False,blank=False):
 		super(Window, self).__init__(parent)
 
 		self.filename = filename
@@ -525,6 +525,7 @@ class Window(QMainWindow):
 		self.subwindow = subwindow
 		self.python = python
 		self.force_close = False
+		self.blank = blank
 
 		self.editing_user_script = False
 		self.current_user_script = None
@@ -586,7 +587,11 @@ class Window(QMainWindow):
 
 		if self.filename:
 			if self.python:
-				f = commands.find_plugin(self.filename,"py")
+				if not self.blank:
+					f = commands.find_plugin(self.filename,"py")
+				else:
+					f = commands.find_plugin(self.filename,"py")
+					if f==None: f = commands.find_file(self.filename,"py")
 			else:
 				f = commands.find_file(self.filename,SCRIPT_FILE_EXTENSION)
 			if f!=None:
@@ -1087,7 +1092,7 @@ class Window(QMainWindow):
 
 		self.setCentralWidget(self.editor)
 
-		if self.python and not self.filename:
+		if self.python and not self.filename and not self.blank:
 			self.doNewPlugin()
 			self.changed = True
 

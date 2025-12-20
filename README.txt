@@ -323,6 +323,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
 | `/prints [WINDOW] TEXT...`               | Prints system message to a window                                                                                                          |
 | `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
+| `/python [FILENAME]`               | Opens a file in the Python editor                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/quote TEXT...`                          | Sends unprocessed data to the server. |

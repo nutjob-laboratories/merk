@@ -367,6 +367,10 @@ Appearance:
 <td>Opens a private chat subwindow for <code>NICKNAME</code></td>
 </tr>
 <tr>
+<td><code>/python [FILENAME]</code></td>
+<td>Opens a file in the Python editor</td>
+</tr>
+<tr>
 <td><code>/quit [MESSAGE]</code></td>
 <td>Disconnects from the current IRC server</td>
 </tr>

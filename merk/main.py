@@ -3390,6 +3390,27 @@ class Merk(QMainWindow):
 
 		return w
 
+	def newEditorPluginFileBlank(self,filename):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(filename,self,w,True,True))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(PLUGIN_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		self.toolsMenu.close()
+		self.buildWindowsMenu()
+		w.show()
+
+		if config.RUBBER_BAND_RESIZE:
+			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		return w
+
 	def newEditorPlugin(self):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w,True))
@@ -3444,6 +3465,19 @@ class Merk(QMainWindow):
 						window.setFocus()
 						return
 		self.newEditorPluginFile(filename)
+
+	def openPythonEditorCommand(self,filename):
+		if not config.ENABLE_PLUGIN_EDITOR: return
+		for window in self.getAllEditorWindows():
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if c.python:
+					if c.filename==filename:
+						window.show()
+						self.toolsMenu.close()
+						window.setFocus()
+						return
+		self.newEditorPluginFileBlank(filename)
 
 	def newEditorWindowFile(self,filename):
 		w = QMdiSubWindow(self)
@@ -4650,21 +4684,25 @@ class Merk(QMainWindow):
 		filename = resource_path("./merk/resources/MERK_User_Guide.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
+		self.helpMenu.close()
 
 	def openShortcodes(self):
 		filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
+		self.helpMenu.close()
 
 	def open1459(self):
 		filename = resource_path("./merk/resources/rfc1459.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
+		self.helpMenu.close()
 
 	def open2812(self):
 		filename = resource_path("./merk/resources/rfc2812.pdf")
 		url = QUrl.fromLocalFile(filename)
 		QDesktopServices.openUrl(url)
+		self.helpMenu.close()
 
 	def menuRefreshList(self,sw):
 		c = sw.widget()
