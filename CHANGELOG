@@ -51,7 +51,14 @@
   will NOT overwrite files unless that option is turned on.
 * The help menu is now "manually" closed after clicking on the document entries
   in the menu.
-* New command: /python, which opens the Python editor.
+* New command: /python, which opens the Python editor. The command is disabled
+  if the plugins or the Python editor is disabled.
+* Fixed a bug where the Python editor could be opened even if the editor was
+  disabled, by clicking on a plugin in the "Tools" menu.
+* Fixed a bug where the full height of entries in the menubar was not shown in
+  the gui. The menubar's height has now been slightly increased, as has the
+  "button" menu entry points.
+* The windowbar now has the same height as the menubar.
 
 --------------------------------------------------------------------------------
 ################################################################################

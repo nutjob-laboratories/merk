@@ -40,7 +40,9 @@ toolbar_button_style = '''
 		border: 0px;
 		color: $FOREGROUND;
 	}
-	QPushButton::menu-indicator{width:0px;}
+	QPushButton::menu-indicator{
+		width: 0px;
+	}
 	QPushButton::open{
 		background-color: $BACKGROUND;
 		color: $FOREGROUND;
@@ -55,7 +57,9 @@ toolbar_button_style_hover = '''
 		color: $FOREGROUND;
 		font: bold;
 	}
-	QPushButton::menu-indicator{width:0px;}
+	QPushButton::menu-indicator{
+		width: 0px;
+	}
 	QPushButton::open{
 		background-color: $HIGH;
 		color: $LOW;
@@ -112,13 +116,6 @@ def generate_menu_toolbar(self):
 	toolbar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
 	toolbar.setStyleSheet(''' QToolBar { spacing: 8px; } ''')
 
-	f = toolbar.font()
-	fm = QFontMetrics(f)
-	fheight = fm.height()
-		
-	toolbar.setFixedHeight(fheight+8)
-	toolbar.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-
 	return toolbar
 
 def add_toolbar_menu(toolbar,name,menu):
@@ -132,6 +129,12 @@ def add_toolbar_menu(toolbar,name,menu):
 			)
 
 	toolMenuButton.setStyleSheet(toolbar_button_style)
+
+	# Set menu "button" height
+	f = toolbar.font()
+	fm = QFontMetrics(f)
+	fheight = fm.height()
+	toolMenuButton.setFixedHeight(fheight+10)
 	
 	toolMenuButton.setMenu(menu)
 	toolbar.addWidget(toolMenuButton)
@@ -627,12 +630,6 @@ def generate_window_toolbar(self):
 
 	toolbar.setAllowedAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea)
 	toolbar.setStyleSheet(''' QToolBar { spacing: 8px; } ''')
-
-	f = toolbar.font()
-	fm = QFontMetrics(f)
-	fheight = fm.height()
-		
-	toolbar.setFixedHeight(fheight+8)
 
 	return toolbar
 

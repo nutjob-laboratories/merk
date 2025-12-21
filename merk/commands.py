@@ -262,8 +262,12 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_STYLE_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"style",'')
 
+	if not config.ENABLE_PLUGIN_EDITOR:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"python",'')
+
 	if not config.ENABLE_PLUGINS:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"call",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"python",'')
 	else:
 		if not config.ENABLE_CALL_COMMAND:
 			AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"call",'')
@@ -417,8 +421,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+		if not config.ENABLE_PLUGIN_EDITOR:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"python [FILE]</b>": continue
 		if not config.ENABLE_PLUGINS:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD ARGUMENTS...</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"python [FILE]</b>": continue
 		else:
 			if not config.ENABLE_CALL_COMMAND:
 				if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD ARGUMENTS...</b>": continue
@@ -1394,6 +1401,26 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |---------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'python' and len(tokens)>=1:
+			if not config.ENABLE_PLUGINS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}python: Plugins are disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			if not config.ENABLE_PLUGIN_EDITOR:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: {config.ISSUE_COMMAND_SYMBOL}python: The Python editor has been disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"The Python editor has been disabled")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 			if len(tokens)>=2:
 				tokens.pop(0)
 				file = " ".join(tokens)

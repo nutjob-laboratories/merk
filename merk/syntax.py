@@ -271,6 +271,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"userhost",
 			cmdsymbol+"window install",
 			cmdsymbol+"window uninstall",
+			cmdsymbol+"python",
 		]
 
 		script_only = [
@@ -309,11 +310,16 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(ne\\)",
 		]
 
+		if not config.ENABLE_PLUGIN_EDITOR:
+			merk.remove(cmdsymbol+"python")
+
 		if not config.ENABLE_PLUGINS:
 			merk.remove(cmdsymbol+"call")
 			merk.remove(cmdsymbol+"window plugin")
 			merk.remove(cmdsymbol+"window install")
 			merk.remove(cmdsymbol+"window uninstall")
+			if config.ENABLE_PLUGIN_EDITOR:
+				merk.remove(cmdsymbol+"python")
 		else:
 			if not config.ENABLE_CALL_COMMAND:
 				merk.remove(cmdsymbol+"call")

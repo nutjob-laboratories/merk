@@ -460,6 +460,13 @@ class Merk(QMainWindow):
 			self.addToolBar(Qt.TopToolBarArea,self.windowbar)
 		else:
 			self.addToolBar(Qt.BottomToolBarArea,self.windowbar)
+
+		f = self.font()
+		fm = QFontMetrics(f)
+		fheight = fm.height()
+			
+		self.windowbar.setFixedHeight(fheight+10)
+
 		self.windowbar.hide()
 
 		self.buildWindowbar()
@@ -4509,7 +4516,10 @@ class Merk(QMainWindow):
 
 					if icon==None: icon = PYTHON_MENU_ICON
 
-					l = lambda h=filename: self.openPythonEditor(h)
+					if config.ENABLE_PLUGIN_EDITOR:
+						l = lambda h=filename: self.openPythonEditor(h)
+					else:
+						l = lambda: None
 					entry = widgets.ExtendedMenuItem(self,icon,f"{NAME} {VERSION}&nbsp;&nbsp;",f"{classname} ({basename}) - {events} events&nbsp;&nbsp;",CUSTOM_MENU_ICON_SIZE,l)
 					sm.addAction(entry)
 
@@ -4983,8 +4993,12 @@ class Merk(QMainWindow):
 			if config.MENUBAR_JUSTIFY.lower()=='center' or config.MENUBAR_JUSTIFY.lower()=='right':
 				menubar.add_toolbar_stretch(self.menuTool)
 
-			#menubar.add_toolbar_stretch(self.menuTool)
-			#menubar.add_toolbar_image(self.menuTool,APPLICATION_ICON)
+			# Set menubar height
+			f = self.font()
+			fm = QFontMetrics(f)
+			fheight = fm.height()
+			self.menuTool.setFixedHeight(fheight+12)
+			self.menuTool.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_IRC_NAME,self.mainMenu)
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_SETTINGS_NAME,self.settingsMenu)
