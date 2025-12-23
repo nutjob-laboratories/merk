@@ -140,6 +140,134 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
 
+	def find_file(file):
+		if os.path.exists(file) and os.access(file, os.R_OK): return file
+		if args.scriptdir!=None:
+			file2 = os.path.join(args.scriptdir,file)
+			if os.path.exists(file2) and os.access(file2, os.R_OK): return file2
+		return commands.find_file(file,SCRIPT_FILE_EXTENSION)
+
+	def create_connection(host,port,password,ssl):
+		if password=='':
+			pword = None
+		else:
+			pword = password
+
+		# Load in user settings
+		user.load_user(user.USER_FILE)
+
+		user_info_changed = False
+		if args.nickname=='':
+			if len(user.NICKNAME.strip())==0:
+				if not is_running_from_pyinstaller():
+					sys.stdout.write("No nickname set\n")
+				else:
+					show_message("Error",f"No nickname set")
+				sys.exit(1)
+			args.nickname = user.NICKNAME
+		else:
+			user.NICKNAME = args.nickname
+			user_info_changed = True
+
+		if args.username=='':
+			if len(user.USERNAME.strip())==0:
+				args.username = args.nickname
+			else:
+				args.username = user.USERNAME
+		else:
+			user.USERNAME = args.username
+			user_info_changed = True
+
+		if args.alternate=='':
+			if len(user.ALTERNATE.strip())==0:
+				args.alternate = args.nickname + str(random.randint(1,99))
+			else:
+				args.alternate = user.ALTERNATE
+		else:
+			user.ALTERNATE = args.alternate
+			user_info_changed = True
+
+		if args.realname=='':
+			if len(user.REALNAME.strip())==0:
+				args.realname = APPLICATION_NAME +" "+APPLICATION_VERSION
+			else:
+				args.realname = user.REALNAME
+		else:
+			user.REALNAME = args.realname
+			user_info_changed = True
+
+		if not args.donotsave:
+			# Add connection to history
+			user_history = list(user.HISTORY)
+
+			# Check to make sure that the connection isn't
+			# already in the user's history
+			inhistory = False
+			for s in user_history:
+				if s[0]==host:
+					if s[1]==str(port):
+						inhistory = True
+
+			# If the connection isn't already in the user's
+			# history, then add it
+			if inhistory==False:
+				if ssl:
+					ussl = "ssl"
+				else:
+					ussl = "normal"
+				if pword==None:
+					spass = ''
+				else:
+					spass = pword
+				entry = [ host,str(port),UNKNOWN_NETWORK,ussl,spass ]
+				user_history.append(entry)
+				user.HISTORY = user_history
+				user_info_changed = True
+
+			if user_info_changed:
+				user.save_user(user.USER_FILE)
+
+		if args.donotexecute==True:
+			EXECUTE_CONNECTION_SCRIPT = False
+		else:
+			EXECUTE_CONNECTION_SCRIPT = True
+
+			if args.script!='':
+				file = find_file(args.script)
+
+				if file!=None:
+					f = open(file,"r")
+					cscript = f.read()
+					f.close()
+
+					connection_script.add_connection_script(f"{host}:{port}",cscript)
+				else:
+					# throw error
+					if not is_running_from_pyinstaller():
+						sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable\n")
+					else:
+						show_message("Error",f"File \"{args.script}\" does not exist or is not readable")
+					sys.exit(1)
+
+		i = ConnectInfo(
+			args.nickname,
+			args.alternate,
+			args.username,
+			args.realname,
+			host,
+			port,
+			pword,
+			args.reconnect,
+			ssl,
+			EXECUTE_CONNECTION_SCRIPT, # execute script
+			)
+
+		return i
+
+	def startMERK(app,gui):
+		gui.show()
+		sys.exit(reactor.run())
+
 	def install_python_plugin(filename):
 		base = os.path.basename(filename)
 		imported_file = os.path.join(plugins.PLUGIN_DIRECTORY,base)
@@ -182,19 +310,15 @@ if __name__ == '__main__':
 		try:
 			with zipfile.ZipFile(filename, 'r') as zf:
 				for member in zf.infolist():
-					file_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
-
 					extract_file = False
-					name_without_extension, extension = os.path.splitext(file_path)
+					name_without_extension, extension = os.path.splitext(member.filename)
 					if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
 
 					if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
 
 					if config.IMPORT_SCRIPTS_IN_PLUGINS:
-						file_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
-
 						extract_file = False
-						name_without_extension, extension = os.path.splitext(file_path)
+						name_without_extension, extension = os.path.splitext(member.filename)
 						if extension.lower()=='.merk': extract_file = True
 
 						if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
@@ -514,134 +638,6 @@ if __name__ == '__main__':
 				border: 1px solid {styles.parseColor(style["separator"])};
 			}}
 			""")
-
-	def find_file(file):
-		if os.path.exists(file) and os.access(file, os.R_OK): return file
-		if args.scriptdir!=None:
-			file2 = os.path.join(args.scriptdir,file)
-			if os.path.exists(file2) and os.access(file2, os.R_OK): return file2
-		return commands.find_file(file,SCRIPT_FILE_EXTENSION)
-
-	def create_connection(host,port,password,ssl):
-		if password=='':
-			pword = None
-		else:
-			pword = password
-
-		# Load in user settings
-		user.load_user(user.USER_FILE)
-
-		user_info_changed = False
-		if args.nickname=='':
-			if len(user.NICKNAME.strip())==0:
-				if not is_running_from_pyinstaller():
-					sys.stdout.write("No nickname set\n")
-				else:
-					show_message("Error",f"No nickname set")
-				sys.exit(1)
-			args.nickname = user.NICKNAME
-		else:
-			user.NICKNAME = args.nickname
-			user_info_changed = True
-
-		if args.username=='':
-			if len(user.USERNAME.strip())==0:
-				args.username = args.nickname
-			else:
-				args.username = user.USERNAME
-		else:
-			user.USERNAME = args.username
-			user_info_changed = True
-
-		if args.alternate=='':
-			if len(user.ALTERNATE.strip())==0:
-				args.alternate = args.nickname + str(random.randint(1,99))
-			else:
-				args.alternate = user.ALTERNATE
-		else:
-			user.ALTERNATE = args.alternate
-			user_info_changed = True
-
-		if args.realname=='':
-			if len(user.REALNAME.strip())==0:
-				args.realname = APPLICATION_NAME +" "+APPLICATION_VERSION
-			else:
-				args.realname = user.REALNAME
-		else:
-			user.REALNAME = args.realname
-			user_info_changed = True
-
-		if not args.donotsave:
-			# Add connection to history
-			user_history = list(user.HISTORY)
-
-			# Check to make sure that the connection isn't
-			# already in the user's history
-			inhistory = False
-			for s in user_history:
-				if s[0]==host:
-					if s[1]==str(port):
-						inhistory = True
-
-			# If the connection isn't already in the user's
-			# history, then add it
-			if inhistory==False:
-				if ssl:
-					ussl = "ssl"
-				else:
-					ussl = "normal"
-				if pword==None:
-					spass = ''
-				else:
-					spass = pword
-				entry = [ host,str(port),UNKNOWN_NETWORK,ussl,spass ]
-				user_history.append(entry)
-				user.HISTORY = user_history
-				user_info_changed = True
-
-			if user_info_changed:
-				user.save_user(user.USER_FILE)
-
-		if args.donotexecute==True:
-			EXECUTE_CONNECTION_SCRIPT = False
-		else:
-			EXECUTE_CONNECTION_SCRIPT = True
-
-			if args.script!='':
-				file = find_file(args.script)
-
-				if file!=None:
-					f = open(file,"r")
-					cscript = f.read()
-					f.close()
-
-					connection_script.add_connection_script(f"{host}:{port}",cscript)
-				else:
-					# throw error
-					if not is_running_from_pyinstaller():
-						sys.stdout.write(f"File \"{args.script}\" does not exist or is not readable\n")
-					else:
-						show_message("Error",f"File \"{args.script}\" does not exist or is not readable")
-					sys.exit(1)
-
-		i = ConnectInfo(
-			args.nickname,
-			args.alternate,
-			args.username,
-			args.realname,
-			host,
-			port,
-			pword,
-			args.reconnect,
-			ssl,
-			EXECUTE_CONNECTION_SCRIPT, # execute script
-			)
-
-		return i
-
-	def startMERK(app,gui):
-		gui.show()
-		sys.exit(reactor.run())
 
 	# Handle connecting to a server if one has been provided
 	if args.server:

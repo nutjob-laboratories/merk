@@ -282,6 +282,7 @@ class Merk(QMainWindow):
 
 		self.trayMenu = QMenu()
 		self.tray.setContextMenu(self.trayMenu)
+
 		self.buildSystrayMenu()
 
 		self.tray.activated.connect(self.systray_clicked)
@@ -465,7 +466,7 @@ class Merk(QMainWindow):
 		fm = QFontMetrics(f)
 		fheight = fm.height()
 			
-		self.windowbar.setFixedHeight(fheight+10)
+		self.windowbar.setFixedHeight(fheight+12)
 
 		self.windowbar.hide()
 
@@ -674,7 +675,7 @@ class Merk(QMainWindow):
 					icon = SCRIPT_ICON
 					if hasattr(c,"python"):
 						if c.python:
-							icon = PLUGIN_ICON
+							icon = PYTHON_ICON
 					if c.editing_user_script:
 						wname = c.current_user_script
 						serv_name = c.current_user_script
@@ -801,7 +802,7 @@ class Merk(QMainWindow):
 					icon = SCRIPT_ICON
 					if hasattr(c,"python"):
 						if c.python:
-							icon = PLUGIN_ICON
+							icon = PYTHON_ICON
 					if c.editing_user_script:
 						wname = c.current_user_script
 						serv_name = c.current_user_script
@@ -1075,11 +1076,15 @@ class Merk(QMainWindow):
 							if not c.client.registered: entry.setEnabled(False)
 
 						if config.SHOW_LOGS_IN_SYSTRAY_MENU:
-							entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
-							entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
-							sm.addAction(entry)
+							if mynet=="Unknown":
+								entry = QAction(QIcon(LOG_ICON),f"Logs",self)
+								entry.triggered.connect(self.menuExportLog)
+								sm.addAction(entry)
+							else:
+								entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
+								entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+								sm.addAction(entry)
 
-							if mynet=="Unknown": entry.setVisible(False)
 							if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
 
 						sm.addSeparator()
@@ -3401,7 +3406,7 @@ class Merk(QMainWindow):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w,True,True))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(PLUGIN_ICON))
+		w.setWindowIcon(QIcon(PYTHON_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
@@ -3422,7 +3427,7 @@ class Merk(QMainWindow):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w,True))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(PLUGIN_ICON))
+		w.setWindowIcon(QIcon(PYTHON_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
@@ -3443,7 +3448,7 @@ class Merk(QMainWindow):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w,True))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
-		w.setWindowIcon(QIcon(PLUGIN_ICON))
+		w.setWindowIcon(QIcon(PYTHON_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
@@ -4834,7 +4839,7 @@ class Merk(QMainWindow):
 				icon = SCRIPT_ICON
 				if hasattr(c,"python"):
 					if c.python:
-						icon = PLUGIN_ICON
+						icon = PYTHON_ICON
 				entry = QAction(QIcon(icon),c.name,self)
 				entry.triggered.connect(lambda state,u=win: self.showSubWindow(u))
 				self.windowsMenu.addAction(entry)

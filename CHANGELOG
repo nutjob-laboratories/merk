@@ -59,6 +59,10 @@
   the gui. The menubar's height has now been slightly increased, as has the
   "button" menu entry points.
 * The windowbar now has the same height as the menubar.
+* The log manager can now be launched from the systray menu for servers that
+  don't belong to a network.
+* The Python editor's window icon is now the Python icon.
+* Changed the Python icon to something more modern.
 
 --------------------------------------------------------------------------------
 ################################################################################

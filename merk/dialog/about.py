@@ -237,7 +237,8 @@ class Dialog(QDialog):
 			       Brian, Harry Oxnard, Vincent, Wayne Windsor,<br>
 			       Brian, Nancy Hetrick, Nancy Golumbia, Toni<br>
 			       Dewees, Drew Diller, Allison L Perrine, Dust<br>
-			       Machine, Ray Hatfield, Nick Peters
+			       Machine, Ray Hatfield, Nick Peters, Michael<br>
+			       Clemens
 			</small>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)
