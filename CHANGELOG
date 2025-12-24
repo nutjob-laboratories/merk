@@ -63,6 +63,11 @@
   don't belong to a network.
 * The Python editor's window icon is now the Python icon.
 * Changed the Python icon to something more modern.
+* Added a windowbar option: flash entry on unread nickname mentions. This is
+  turned off by default, and can be set independently of the "flash on unread
+  messages" option.
+* If "autocomplete script filenames" is turned on, this will now work with
+  the /python command for Python plugin files.
 
 --------------------------------------------------------------------------------
 ################################################################################

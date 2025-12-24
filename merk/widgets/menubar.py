@@ -299,6 +299,10 @@ class wMenuButton(QPushButton):
 		self.subwindow.close()
 		self.window.parent.initWindowbar()
 
+	def clear_unread(self,i,h):
+		self.window.parent.remove_unread_message(i,h)
+		self.window.parent.remove_unread_mention(i,h)
+
 	def show_context_menu(self,position):
 
 		if not config.WINDOWBAR_ENTRY_MENU: return
@@ -355,10 +359,10 @@ class wMenuButton(QPushButton):
 
 		if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
 
-			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
-				if self.window.parent.has_unread_messages(self.window.client,self.window.name):
+			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES or config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
+				if self.window.parent.has_unread_messages(self.window.client,self.window.name) or self.window.parent.has_unread_mentions(self.window.client,self.window.name):
 					entry = QAction(QIcon(HIDE_ICON),"Clear unread messages",self)
-					entry.triggered.connect(lambda state,i=self.window.client,h=self.window.name: self.window.parent.remove_unread_message(i,h))
+					entry.triggered.connect(lambda state,i=self.window.client,h=self.window.name: self.clear_unread(i,h))
 					menu.addAction(entry)
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
@@ -521,10 +525,10 @@ class wIconMenuButton(QPushButton):
 
 		if self.window.window_type==CHANNEL_WINDOW or self.window.window_type==PRIVATE_WINDOW:
 
-			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
-				if self.window.parent.has_unread_messages(self.window.client,self.window.name):
+			if config.WINDOWBAR_SHOW_UNREAD_MESSAGES or config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
+				if self.window.parent.has_unread_messages(self.window.client,self.window.name) or self.window.parent.has_unread_mentions(self.window.client,self.window.name):
 					entry = QAction(QIcon(HIDE_ICON),"Clear unread messages",self)
-					entry.triggered.connect(lambda state,i=self.window.client,h=self.window.name: self.window.parent.remove_unread_message(i,h))
+					entry.triggered.connect(lambda state,i=self.window.client,h=self.window.name: self.clear_unread(i,h))
 					menu.addAction(entry)
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
@@ -814,6 +818,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.showUnread)
 		menu.addAction(entry)
 
+		if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show unread mentions", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show unread mentions", self)
+		entry.triggered.connect(self.showMention)
+		menu.addAction(entry)
+
 		if config.WINDOWBAR_ENTRY_MENU:
 			entry = QAction(QIcon(self.parent.checked_icon),"Entry context menu", self)
 		else:
@@ -1037,6 +1048,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = False
 		else:
 			config.WINDOWBAR_SHOW_UNREAD_MESSAGES = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def showMention(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
+			config.WINDOWBAR_SHOW_UNREAD_MENTIONS = False
+		else:
+			config.WINDOWBAR_SHOW_UNREAD_MENTIONS = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)

@@ -1389,6 +1389,7 @@ class Dialog(QDialog):
 			self.autoHide.setEnabled(True)
 			self.windowbarReadme.setEnabled(True)
 			self.windowBarBold.setEnabled(True)
+			self.windowbarMention.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1415,6 +1416,7 @@ class Dialog(QDialog):
 			self.autoHide.setEnabled(False)
 			self.windowbarReadme.setEnabled(False)
 			self.windowBarBold.setEnabled(False)
+			self.windowbarMention.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -2395,6 +2397,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_BOLD_ACTIVE_WINDOW: self.windowBarBold.setChecked(True)
 		self.windowBarBold.stateChanged.connect(self.menuChange)
 
+		self.windowbarMention = QCheckBox("Flash on unread nickname mentions",self)
+		if config.WINDOWBAR_SHOW_UNREAD_MENTIONS: self.windowbarMention.setChecked(True)
+		self.windowbarMention.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2421,6 +2427,7 @@ class Dialog(QDialog):
 			self.autoHide.setEnabled(False)
 			self.windowbarReadme.setEnabled(False)
 			self.windowBarBold.setEnabled(False)
+			self.windowbarMention.setEnabled(False)
 
 		includesLayout2 = QFormLayout()
 		includesLayout2.setSpacing(0)
@@ -2439,9 +2446,6 @@ class Dialog(QDialog):
 		windowbar1Layout.addWidget(self.windowBar)
 		windowbar1Layout.addStretch()
 
-		wbMenuLayout = QFormLayout()
-		wbMenuLayout.addRow(self.windowbarMenu,self.windowbarEntryMenu)
-
 		windowbar2Layout = QHBoxLayout()
 		windowbar2Layout.addWidget(self.windowBarFloat)
 		windowbar2Layout.addWidget(self.windowBarTop)
@@ -2458,19 +2462,25 @@ class Dialog(QDialog):
 		wbAppearLayout.addWidget(self.windowBarUnderline)
 		wbAppearLayout.addStretch()
 
+		wbOpts = QVBoxLayout()
+		wbOpts.setSpacing(2)
+		wbOpts.addWidget(self.windowbarMenu)
+		wbOpts.addWidget(self.windowbarEntryMenu)
+		wbOpts.addWidget(self.windowBarFirst)
+		wbOpts.addWidget(self.windowBarHover)
+		wbOpts.addWidget(self.windowBarIcons)
+		wbOpts.addWidget(self.windowbarClick)
+		wbOpts.addWidget(self.windowbarUnread)
+		wbOpts.addWidget(self.windowbarMention)
+		wbOpts.addWidget(self.windowbarItalics)
+
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
 		windowbarLayout.addWidget(self.windowbarDescription)
 		windowbarLayout.addLayout(windowbar1Layout)
 		windowbarLayout.addLayout(windowbar2Layout)
 		windowbarLayout.addLayout(justifyLayout)
-		windowbarLayout.addWidget(self.windowBarFirst)
-		windowbarLayout.addWidget(self.windowBarHover)
-		windowbarLayout.addWidget(self.windowBarIcons)
-		windowbarLayout.addWidget(self.windowbarClick)
-		windowbarLayout.addWidget(self.windowbarUnread)
-		windowbarLayout.addWidget(self.windowbarItalics)
-		windowbarLayout.addLayout(wbMenuLayout)
+		windowbarLayout.addLayout(wbOpts)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show active window in...</b>"))
 		windowbarLayout.addLayout(wbAppearLayout)
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
@@ -3689,9 +3699,10 @@ class Dialog(QDialog):
 			To use autocomplete, type the first few characters of a <b>command</b>,
 			<b>nickname</b>, <b>channel</b>, <b>emoji shortcode</b>, <b>script filename</b>, <b>alias</b>,
 			or <b>macro</b> and then hit <b>tab</b> to complete the entry. Autocomplete can also
-			complete settings with the <b>{config.ISSUE_COMMAND_SYMBOL}config</b> and <b>{config.ISSUE_COMMAND_SYMBOL}user</b>
-			commands, methods callable with the <b>{config.ISSUE_COMMAND_SYMBOL}call</b> command, or script
-			filenames usable with the <b>{config.ISSUE_COMMAND_SYMBOL}script</b> command.
+			complete settings with the <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060config</b> and <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060user</b>
+			commands, methods callable with the <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060call</b> command, or
+			filenames usable with the <b>{config.ISSUE_COMMAND_SYMBOL}script</b>, <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060edit</b>, or
+			<b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060python</b> commands.
 			</small>
 			""")
 		self.autocompleteDescription.setWordWrap(True)
@@ -3734,7 +3745,7 @@ class Dialog(QDialog):
 		if config.ENABLE_AUTOCOMPLETE: self.enableAutocomplete.setChecked(True)
 		self.enableAutocomplete.stateChanged.connect(self.changedAutocomplete)
 
-		self.autocompleteScripts = QCheckBox("Script filenames",self)
+		self.autocompleteScripts = QCheckBox("Filenames",self)
 		if config.AUTOCOMPLETE_SCRIPTS: self.autocompleteScripts.setChecked(True)
 		self.autocompleteScripts.stateChanged.connect(self.changedSetting)
 
@@ -3795,6 +3806,11 @@ class Dialog(QDialog):
 		autoSettingsLayout.addRow(self.autocompleteMacro,self.autocompleteAlias)
 		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteMethods)
 		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
+
+		autoSetCenter = QHBoxLayout()
+		autoSetCenter.addStretch()
+		autoSetCenter.addLayout(autoSettingsLayout)
+		autoSetCenter.addStretch()
 		
 		self.inputCursorLabel = QLabel("Input widget cursor width:")
 		self.inputCursorLabelSpec = QLabel("pixels")
@@ -3833,9 +3849,8 @@ class Dialog(QDialog):
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addLayout(autoMaster)
-		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
-		inputLayout.addLayout(autoSettingsLayout)
+		inputLayout.addLayout(autoSetCenter)
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
 		inputLayout.addLayout(blinkLayout)
@@ -5683,6 +5698,7 @@ class Dialog(QDialog):
 		config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW = self.showLusers.isChecked()
 		config.SHOW_ISON_INFO_IN_CURRENT_WINDOW = self.showIson.isChecked()
 		config.PLUGIN_ISON = self.pluginIson.isChecked()
+		config.WINDOWBAR_SHOW_UNREAD_MENTIONS = self.windowbarMention.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

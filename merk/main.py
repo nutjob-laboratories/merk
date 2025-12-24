@@ -204,6 +204,7 @@ class Merk(QMainWindow):
 		self.ignore_manager = None
 		self.plugin_manager = None
 		self.app_exiting = False
+		self.unread_mentions = []
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -637,6 +638,7 @@ class Merk(QMainWindow):
 				c = window.widget()
 
 				do_pulse = False
+				do_mention = False
 
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
@@ -649,6 +651,7 @@ class Merk(QMainWindow):
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
+					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==PRIVATE_WINDOW:
 					icon = PRIVATE_ICON
 					wname = c.name
@@ -660,6 +663,7 @@ class Merk(QMainWindow):
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
+					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==SERVER_WINDOW:
 					icon = CONSOLE_ICON
 					wname = c.name
@@ -759,12 +763,16 @@ class Merk(QMainWindow):
 				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
 					if do_pulse: button.pulse()
 
+				if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
+					if do_mention: button.pulse()
+
 
 		for window in partial_display:
 			if hasattr(window,"widget"):
 				c = window.widget()
 
 				do_pulse = False
+				do_mention = False
 
 				if c.window_type==CHANNEL_WINDOW:
 					icon = CHANNEL_ICON
@@ -777,6 +785,8 @@ class Merk(QMainWindow):
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
+					if self.has_unread_mentions(c.client,c.name): do_mention = True
+
 				elif c.window_type==PRIVATE_WINDOW:
 					icon = PRIVATE_ICON
 					wname = c.name
@@ -788,6 +798,7 @@ class Merk(QMainWindow):
 					if c.client.network:
 						serv_name = serv_name + " ("+c.client.network+")"
 					if self.has_unread_messages(c.client,c.name): do_pulse = True
+					if self.has_unread_mentions(c.client,c.name): do_mention = True
 				elif c.window_type==SERVER_WINDOW:
 					icon = CONSOLE_ICON
 					wname = c.name
@@ -877,6 +888,9 @@ class Merk(QMainWindow):
 
 				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
 					if do_pulse: button.pulse()
+
+				if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
+					if do_mention: button.pulse()
 
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
 			if len(button_list)>0:
@@ -1568,6 +1582,11 @@ class Merk(QMainWindow):
 					if not ignored:
 						# Not the current window
 						self.add_unread_message(client,w.name)
+				if not self.isActiveWindow(w):
+					if not ignored:
+						# Not the current window
+						if client.nickname in msg:
+							self.add_unread_mention(client,w.name)
 				return
 
 		if target==client.nickname:
@@ -1594,6 +1613,11 @@ class Merk(QMainWindow):
 					if not ignored:
 						# Not the current window
 						self.add_unread_message(client,w.name)
+				if not self.isActiveWindow(w):
+					if not ignored:
+						# Not the current window
+						if client.nickname in msg:
+							self.add_unread_mention(client,w.name)
 
 			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 				# Write the private message to the server window
@@ -1657,6 +1681,11 @@ class Merk(QMainWindow):
 					if not ignored:
 						# Not the current window
 						self.add_unread_message(client,w.name)
+				if not self.isActiveWindow(w):
+					if not ignored:
+						# Not the current window
+						if client.nickname in msg:
+							self.add_unread_mention(client,w.name)
 				return
 
 		# Try to display it as a private message
@@ -1664,6 +1693,15 @@ class Merk(QMainWindow):
 		if w:
 			t = Message(ACTION_MESSAGE,user,msg)
 			w.writeText(t)
+			if not self.isActiveWindow(w):
+				if not ignored:
+					# Not the current window
+					self.add_unread_message(client,w.name)
+			if not self.isActiveWindow(w):
+				if not ignored:
+					# Not the current window
+					if client.nickname in msg:
+						self.add_unread_mention(client,w.name)
 			plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
@@ -1728,6 +1766,11 @@ class Merk(QMainWindow):
 					if not ignored:
 						# Not the current window
 						self.add_unread_message(client,w.name)
+				if not self.isActiveWindow(w):
+					if not ignored:
+						# Not the current window
+						if client.nickname in msg:
+							self.add_unread_mention(client,w.name)
 				return
 
 		# Try and send the message to the right window
@@ -5316,6 +5359,41 @@ class Merk(QMainWindow):
 		if self.connected_to_something==False:
 			self.app.quit()
 
+	def add_unread_mention(self,client,target):
+
+		c = self.current_window
+		if hasattr(c,"name"):
+			if hasattr(c,"client"):
+				if c.name==target and c.client==client: return
+
+		for e in self.unread_mentions:
+			if e[0]==client and e[1]==target:
+				return
+
+		e = [client,target]
+		self.unread_mentions.append(e)
+		self.buildWindowbar()
+
+	def remove_unread_mention(self,client,target):
+		copy = []
+		for e in self.unread_mentions:
+			if e[0]==client and e[1]==target:
+				pass
+			else:
+				copy.append(e)
+
+		self.unread_mentions = list(copy)
+
+		w = self.MDI.activeSubWindow()
+		self.buildWindowbar()
+		self.MDI.setActiveSubWindow(w)
+
+	def has_unread_mentions(self,client,target):
+		for e in self.unread_mentions:
+			if e[0]==client and e[1]==target:
+				return True
+		return False
+
 	def add_unread_message(self,client,target):
 
 		c = self.current_window
@@ -5422,6 +5500,8 @@ class Merk(QMainWindow):
 			if hasattr(w,"client"):
 				if self.has_unread_messages(w.client,w.name):
 					self.remove_unread_message(w.client,w.name)
+				if self.has_unread_mentions(w.client,w.name):
+					self.remove_unread_mention(w.client,w.name)
 
 		self.buildWindowbar()
 

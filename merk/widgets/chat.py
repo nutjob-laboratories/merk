@@ -3355,6 +3355,23 @@ class SpellTextEdit(QPlainTextEdit):
 									return
 
 				if config.ENABLE_PLUGINS:
+					if config.AUTOCOMPLETE_SCRIPTS:
+						# Auto-complete plugin filenames
+						if config.ISSUE_COMMAND_SYMBOL+'python' in self.text():
+							cursor.select(QTextCursor.WordUnderCursor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
+
+								for script in plugins.list_plugins():
+									if fnmatch.fnmatch(script,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{script}")
+										cursor.endEditBlock()
+										self.ensureCursorVisible()
+										return
+
+				if config.ENABLE_PLUGINS:
 					if config.AUTOCOMPLETE_METHODS:
 						# Auto-complete script filenames
 						if config.ISSUE_COMMAND_SYMBOL+'call' in self.text():
