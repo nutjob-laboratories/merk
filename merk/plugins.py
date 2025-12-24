@@ -765,7 +765,14 @@ def init(obj):
 	if not config.ENABLE_PLUGINS: return
 	if not config.PLUGIN_INIT: return
 	if hasattr(obj,"init"):
-		obj.init()
+		try:
+			obj.init()
+		except Exception as e:
+			if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+				QMessageBox.critical(obj._gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"init\": {e}')
+				sys.stdout.write(f"Error executing {obj._filename} event \"init\": {e}\n")
+			else:
+				sys.stdout.write(f"Error executing {obj._filename} event \"init\": {e}\n")
 
 def call(gui,method,**arguments):
 	if not config.ENABLE_PLUGINS: return
@@ -814,7 +821,14 @@ def call(gui,method,**arguments):
 				if arguments['window']!=None:
 					arguments["window"] = Window(gui,arguments["window"])
 
-			m(**arguments)
+			try:
+				m(**arguments)
+			except Exception as e:
+				if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+					QMessageBox.critical(gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"{method}\": {e}')
+					sys.stdout.write(f"Error executing {obj._filename} event \"{method}\": {e}\n")
+				else:
+					sys.stdout.write(f"Error executing {obj._filename} event \"{method}\": {e}\n")
 
 def command_call(gui,window,method,arguments):
 	if not config.ENABLE_PLUGINS: return
@@ -825,7 +839,14 @@ def command_call(gui,window,method,arguments):
 
 			specs = inspect.getfullargspec(m)
 			if len(specs.args)==3:
-				m(window,arguments)
+				try:
+					m(window,arguments)
+				except Exception as e:
+					if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+						QMessageBox.critical(gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"{method}\": {e}')
+						sys.stdout.write(f"Error executing {obj._filename} event \"{method}\": {e}\n")
+					else:
+						sys.stdout.write(f"Error executing {obj._filename} event \"{method}\": {e}\n")
 
 def list_all_call_methods():
 	output = []

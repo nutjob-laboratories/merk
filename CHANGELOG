@@ -8,8 +8,6 @@
 
 * Fixed a "bug" that caused versions of Python lower than 3.11 (I think) to be
   unable to execute merk.py
-* Modified the "--uninstall-all" command-line flag to ONLY delete Python and
-  PNG files, and leave all other files intact.
 * Fixed a bug in the Linux PyInstaller version of the app: the "Directories"
   subdirectory in the "Tools" menu would not open the desired directory in the
   default file manager on this platform; the Python version of the app could
@@ -68,6 +66,16 @@
   messages" option.
 * If "autocomplete script filenames" is turned on, this will now work with
   the /python command for Python plugin files.
+* If both the Python editor and the plugin manager are open, the plugin manager
+  will reload plugins when the Python editor is closed, but only if the current
+  file has been saved. This behavior is turned on by default, but can be turned
+  off by the user in the "File" menu. The setting is saved to the config file.
+  Plugins will only be reloaded if the saved Python file is in the plugins
+  directory, and only if the saved file has the ".py" file extension.
+* Plugin events are now wrapped in "try" calls to prevent plugins from crashing
+  the client.
+* Plugin event execution errors are now displayed in a message box to the user.
+  This can be toggled in the settings dialog.
 
 --------------------------------------------------------------------------------
 ################################################################################

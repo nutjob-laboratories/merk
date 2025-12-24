@@ -493,6 +493,7 @@ class Dialog(QDialog):
 			self.pluginScripts.setEnabled(True)
 			self.plugSupport.setEnabled(True)
 			self.pluginIson.setEnabled(True)
+			self.pluginMsg.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -541,6 +542,7 @@ class Dialog(QDialog):
 			self.pluginScripts.setEnabled(False)
 			self.plugSupport.setEnabled(False)
 			self.pluginIson.setEnabled(False)
+			self.pluginMsg.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -4735,7 +4737,12 @@ class Dialog(QDialog):
 		if config.IMPORT_SCRIPTS_IN_PLUGINS: self.pluginScripts.setChecked(True)
 		self.pluginScripts.stateChanged.connect(self.changedSetting)
 
+		self.pluginMsg = QCheckBox("Display plugin runtime errors",self)
+		if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS: self.pluginMsg.setChecked(True)
+		self.pluginMsg.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_PLUGINS:
+			self.pluginMsg.setEnabled(False)
 			self.pluginIson.setEnabled(False)
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -4905,6 +4912,7 @@ class Dialog(QDialog):
 		plugLayout.addRow(self.enablePlugins,self.plugEditor)
 		plugLayout.addRow(self.pluginScripts)
 		plugLayout.addRow(self.pluginOverwrite)
+		plugLayout.addRow(self.pluginMsg)
 
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
@@ -5699,6 +5707,7 @@ class Dialog(QDialog):
 		config.SHOW_ISON_INFO_IN_CURRENT_WINDOW = self.showIson.isChecked()
 		config.PLUGIN_ISON = self.pluginIson.isChecked()
 		config.WINDOWBAR_SHOW_UNREAD_MENTIONS = self.windowbarMention.isChecked()
+		config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = self.pluginMsg.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

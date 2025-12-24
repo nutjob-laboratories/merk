@@ -376,9 +376,13 @@ SHOW_ISON_INFO_IN_CURRENT_WINDOW = False
 PLUGIN_ISON = True
 BAD_NICKNAME_FALLBACK = 'Guest'
 WINDOWBAR_SHOW_UNREAD_MENTIONS = False
+AUTO_RELOAD_ON_CLOSE = True
+DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = True
 
 def build_settings():
 	settings = {
+		"display_messagebox_on_plugin_error": DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS,
+		"automatically_reload_plugins_on_editor_close": AUTO_RELOAD_ON_CLOSE,
 		"windowbar_show_unread_mentions": WINDOWBAR_SHOW_UNREAD_MENTIONS,
 		"bad_nickname_fallback": BAD_NICKNAME_FALLBACK,
 		"enable_plugin_ison_event": PLUGIN_ISON,
@@ -721,6 +725,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "display_messagebox_on_plugin_error" in settings:
+		settings["display_messagebox_on_plugin_error"] = DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS
+	if not "automatically_reload_plugins_on_editor_close" in settings:
+		settings["automatically_reload_plugins_on_editor_close"] = AUTO_RELOAD_ON_CLOSE
 	if not "windowbar_show_unread_mentions" in settings:
 		settings["windowbar_show_unread_mentions"] = WINDOWBAR_SHOW_UNREAD_MENTIONS
 	if not "bad_nickname_fallback" in settings:
@@ -1736,6 +1744,8 @@ def load_settings(filename):
 	global PLUGIN_ISON
 	global BAD_NICKNAME_FALLBACK
 	global WINDOWBAR_SHOW_UNREAD_MENTIONS
+	global AUTO_RELOAD_ON_CLOSE
+	global DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1745,6 +1755,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = settings["display_messagebox_on_plugin_error"]
+		AUTO_RELOAD_ON_CLOSE = settings["automatically_reload_plugins_on_editor_close"]
 		WINDOWBAR_SHOW_UNREAD_MENTIONS = settings["windowbar_show_unread_mentions"]
 		BAD_NICKNAME_FALLBACK = settings["bad_nickname_fallback"]
 		PLUGIN_ISON = settings["enable_plugin_ison_event"]

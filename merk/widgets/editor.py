@@ -168,6 +168,15 @@ class Window(QMainWindow):
 			self.ww_menu.setIcon(QIcon(self.parent.checked_icon))
 		config.save_settings(config.CONFIG_FILE)
 
+	def toggleReload(self):
+		if config.AUTO_RELOAD_ON_CLOSE:
+			config.AUTO_RELOAD_ON_CLOSE = False
+			self.ar_menu.setIcon(QIcon(self.parent.unchecked_icon))
+		else:
+			config.AUTO_RELOAD_ON_CLOSE = True
+			self.ar_menu.setIcon(QIcon(self.parent.checked_icon))
+		config.save_settings(config.CONFIG_FILE)
+
 	def toggleIndent(self):
 		if config.PYTHON_AUTOINDENT:
 			config.PYTHON_AUTOINDENT = False
@@ -482,19 +491,19 @@ class Window(QMainWindow):
 
 	def doInsertCallMethod(self,method):
 		self.editor.insertPlainText(f"def {method}(self,window,arguments):")
-		self.insert_indent()
+		self.insert_raw_indent()
 		self.editor.insertPlainText(f"pass")
 		self.updateApplicationTitle()
 
 	def doInsertEventMethod(self,method):
 		self.editor.insertPlainText(f"def {method}(self,**arguments):")
-		self.insert_indent()
+		self.insert_raw_indent()
 		self.editor.insertPlainText(f"pass")
 		self.updateApplicationTitle()
 
 	def doInsertInitMethod(self):
 		self.editor.insertPlainText(f"def init(self):")
-		self.insert_indent()
+		self.insert_raw_indent()
 		self.editor.insertPlainText(f"pass")
 		self.updateApplicationTitle()
 
@@ -513,6 +522,21 @@ class Window(QMainWindow):
 			return
 
 		self.doInsertCallMethod(e)
+
+	def is_in_plugin_directory(self):
+		if self.filename==None: return False
+
+		known_dir = os.path.realpath(plugins.PLUGIN_DIRECTORY)
+		target_file = os.path.realpath(self.filename)
+
+		if os.path.commonpath([known_dir, target_file]) == known_dir:
+			name_without_extension, extension = os.path.splitext(self.filename)
+			if extension.lower()=='.py':
+				return True
+			else:
+				return False
+		else:
+			return False
 
 	def __init__(self,filename=None,parent=None,subwindow=None,python=False,blank=False):
 		super(Window, self).__init__(parent)
@@ -716,6 +740,13 @@ class Window(QMainWindow):
 				self.ai_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-indent",self)
 			self.ai_menu.triggered.connect(self.toggleIndent)
 			self.fileMenu.addAction(self.ai_menu)
+
+			if config.AUTO_RELOAD_ON_CLOSE:
+				self.ar_menu = QAction(QIcon(self.parent.checked_icon),"Auto-reload plugins on close",self)
+			else:
+				self.ar_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-reload plugins on close",self)
+			self.ar_menu.triggered.connect(self.toggleReload)
+			self.fileMenu.addAction(self.ar_menu)
 		
 		self.fileMenu.addSeparator()
 
@@ -2105,6 +2136,36 @@ class Window(QMainWindow):
 				return self.insert_indent(watched,event,True)
 	
 		return super().eventFilter(watched, event)
+
+	def insert_raw_indent(self,no_newline=False):
+		cursor = self.editor.textCursor()
+
+		cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.MoveAnchor)
+		cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
+		current_line_text = cursor.selectedText()
+		
+		cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.MoveAnchor)
+
+		base_indentation = ""
+		for char in current_line_text:
+			if char in (' ', '\t'):
+				base_indentation += char
+			else:
+				break
+		
+		new_line_indent = base_indentation
+		stripped_line = current_line_text.strip()
+		
+		if stripped_line.endswith(':'):
+			extra_indent_unit = self._infer_indent_style()
+			new_line_indent += extra_indent_unit
+
+		if no_newline:
+			cursor.insertText(config.DEFAULT_PYTHON_INDENT)
+			return True
+		else:
+			cursor.insertText('\n' + new_line_indent)
+			return True
 
 	def insert_indent(self,watched,event,no_newline=False):
 		cursor = self.editor.textCursor()
