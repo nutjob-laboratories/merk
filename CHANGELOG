@@ -76,6 +76,12 @@
   the client.
 * Plugin event execution errors are now displayed in a message box to the user.
   This can be toggled in the settings dialog.
+* The "event generators" in the Python editor menu now also create local
+  variables for the values passed to the event methods.
+* Fixed a bug where scripts execution would halt on script-only command errors,
+  regardless if "halt on execution" was turned off.
+* Fixed a bug where the "halt" script only command would not actually halt a
+  script if "halt script on error" was turned off.
 
 --------------------------------------------------------------------------------
 ################################################################################

@@ -6606,8 +6606,8 @@ def execute_delay(data):
 
 class DelayThread(QThread):
 
-	threadEnd = pyqtSignal(list)
-	finished = pyqtSignal(list)
+	threadEnd = pyqtSignal(object)
+	finished = pyqtSignal(object)
 
 	def __init__(self,sid,gui,window,script,wait,parent=None):
 		super(DelayThread, self).__init__(parent)
@@ -6643,9 +6643,9 @@ class ExitThread(QThread):
 
 class ScriptThread(QThread):
 
-	execLine = pyqtSignal(list)
-	scriptEnd = pyqtSignal(list)
-	scriptError = pyqtSignal(list)
+	execLine = pyqtSignal(object)
+	scriptEnd = pyqtSignal(object)
+	scriptError = pyqtSignal(object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None):
 		super(ScriptThread, self).__init__(parent)
@@ -6707,7 +6707,7 @@ class ScriptThread(QThread):
 				script.append(line)
 
 		if len(script)>0: self.script = interpolateAliases("\n".join(script))
-
+		if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: got_error = False
 		return got_error
 
 	def check_for_errors(self,script,filename):
@@ -6894,7 +6894,7 @@ class ScriptThread(QThread):
 					if tokens[0].lower()=='wait':
 						self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait has been disabled"])
 						no_errors = False
-
+		if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: no_errors = True
 		return no_errors
 
 	def math(self,statement):
@@ -6970,6 +6970,7 @@ class ScriptThread(QThread):
 				index = index + 1
 				line_number = index + 1
 				script_only_command = False
+				halt_issued = False
 
 				if index==len(script):
 					loop =  False
@@ -6987,12 +6988,14 @@ class ScriptThread(QThread):
 							msg = ' '.join(tokens)
 							self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}: {msg}"])
 							loop = False
+							halt_issued = True
 							continue
 
-					if len(tokens)>0 and len(tokens)<2:
+					if len(tokens)>0 and len(tokens)==1:
 						if tokens[0].lower()=='halt':
 							self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}"])
 							loop = False
+							halt_issued = True
 							continue
 					
 					# |====|
@@ -7318,6 +7321,8 @@ class ScriptThread(QThread):
 								script_only_command = True
 								loop = False
 								continue
+					if not config.HALT_SCRIPT_EXECUTION_ON_ERROR:
+						if not halt_issued: loop = True
 					try:
 						self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
 					except:
