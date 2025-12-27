@@ -330,13 +330,18 @@ class Dialog(QDialog):
 		self.EXECUTE = True
 		self.SAVE = True
 
-		self.exeTemplate = f"""
-			<small>
-			Execute these commands upon connection to <b>%__SERVER__%</b>. To insert a pause in between commands,
-			use the <b>wait</b> command, passing the number
-			of seconds to pause as an argument.
-			</small>
-		"""
+		if not self.not_simplified:
+			self.exeTemplate = f"""
+				<center><b>%__SERVER__%</b></center>
+			"""
+		else:
+			self.exeTemplate = f"""
+				<small>
+				Execute these commands upon connection to <b>%__SERVER__%</b>. To insert a pause in between commands,
+				use the <b>wait</b> command, passing the number
+				of seconds to pause as an argument.
+				</small>
+			"""
 
 		if self.initial:
 			self.setWindowTitle(f"{APPLICATION_NAME} IRC Client {APPLICATION_VERSION}")
@@ -485,8 +490,7 @@ class Dialog(QDialog):
 
 		commandsLayout = QVBoxLayout()
 		commandsLayout.addLayout(bannerLayout)
-		if self.not_simplified:
-			commandsLayout.addWidget(self.commandHost)
+		commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
 		commandsLayout.setContentsMargins(5,5,5,5)
 

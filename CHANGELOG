@@ -82,6 +82,11 @@
   regardless if "halt on execution" was turned off.
 * Fixed a bug where the "halt" script only command would not actually halt a
   script if "halt script on error" was turned off.
+* Fixed a bug where some entries in the "Help" menu would crash MERK if the
+  program was being ran from a directory that was NOT the program installation
+  directory.
+* Added a server identifier to the "script"  tab in the connection dialog, if
+  simplified dialogs are turned on.
 
 --------------------------------------------------------------------------------
 ################################################################################
