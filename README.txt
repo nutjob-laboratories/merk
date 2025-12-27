@@ -116,16 +116,16 @@ There are four libraries that comes bundled with **MERK**:
         - Individual plugin events can be enabled and disabled in the "Settings" dialog
         - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command.
       - Plugins can be created and edited directly in the application
-        - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation.
-        - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**.
+        - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation
+        - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**
         - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples).
     - Audio notifications
       - Can be triggered by seven different events, with each one able to be turned on and off
       - Uses any WAV file as the notification sound, and can be set in the GUI
     - Very configurable, without having to manually edit a configuration file
-        - Control application behavior, logging, features, and more!
-        - Over 300 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function.
-        - Almost all settings can be changed in the settings dialog without a restart. Have fun testing different options!
+        - Control application behavior, logging, features, and more
+        - Over 300 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function
+        - Almost all settings can be changed in the settings dialog without a restart
     -   All text colors (and backgrounds) can be customized
         - Individual channels can have their own color schemes
         - User input text can highlight channels, nicknames, commands, and more as you type!
@@ -167,7 +167,7 @@ There are four libraries that comes bundled with **MERK**:
 
   <p align="center">
  <center><a href="./graphics/connect_1.png"><img src="./graphics/connect_1_small.png"></a><a href="./graphics/connect_2.png"><img src="./graphics/connect_2_small.png"></a><a href="./graphics/connect_3.png"><img src="./graphics/connect_3_small.png"></a></center></br>
-  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text describing how the individual settings work can be removed with the "Simplified dialogs" option in settings.</small></i></center>
+  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text (describing how the individual settings work) can be removed with the "Simplified dialogs" option in settings.</small></i></center>
   </p>
 
   <p align="center">
@@ -259,12 +259,12 @@ Appearance:
   -L, --light           Run in light mode
 ```
 # Commands
-All of these commands can be issued in the client, or from scripts, unless otherwise noted.
+All of these commands can be issued in the client or from scripts, unless otherwise noted. Commands that do not start with `/` can only be issued in scripts.
 
 | Commands                                | Description                                                                                                                      |
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | `/admin [SERVER]`                       | Requests administration information from the server  |
-| `/alias [TOKEN] [TEXT...]`                  | Creates an alias that can be referenced by `$TOKEN`. Call with only `TOKEN` as an argument to see `TOKEN`'s value. If `TEXT` is a mathematical statement, it will be evaluated and the result used as the alias' value. Operations supported are parenthesis, addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`), modulus (`%`), and exponents(`**`). Call without any arguments to see all aliases and their values'                                                                              |
+| `/alias [TOKEN] [TEXT...]`                  | Creates an alias that can be referenced by `$TOKEN`. Call with only `TOKEN` as an argument to see `TOKEN`'s value. If `TEXT` is a mathematical statement, it will be evaluated and the result used as the alias' value. Operations supported are parenthesis, addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`), modulus (`%`), and exponents(`**`). Call without any arguments to see all aliases and their values                                                                              |
 | `/away [MESSAGE]`                       | Sets status as "away"                                                                                                            |
 | `/back`                                 | Sets status as "back"                                                                                                            |
 | `/bind SEQUENCE COMMAND...`           | Executes `COMMAND` every time key `SEQUENCE` is pressed. Pass `save` as the only argument to save binds to the configuration file                                                                                                           |
@@ -303,7 +303,7 @@ All of these commands can be issued in the client, or from scripts, unless other
 | `/_kill CLIENT COMMENT...`      | Forcibly removes `CLIENT` from the network. May only be issued by IRC operators                     |
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
 | `/links [REMOTE [MASK]]`                         | Requests a list of servers the server is connected to |
-| `/list [TERMS]`                         | Lists or searches channels on the server; use "*" for multi-character wildcard and "?" for single character                      |
+| `/list [TERMS]`                         | Lists or searches channels on the server; use `*` for multi-character wildcard and `?` for single character wildcard                      |
 | `/lusers [MASK [SERVERS]]`                         | Requests statistics about the server |
 | `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
 | `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |

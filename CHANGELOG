@@ -80,13 +80,16 @@
   variables for the values passed to the event methods.
 * Fixed a bug where scripts execution would halt on script-only command errors,
   regardless if "halt on execution" was turned off.
-* Fixed a bug where the "halt" script only command would not actually halt a
+* Fixed a bug where the "halt" script-only command would not actually halt a
   script if "halt script on error" was turned off.
 * Fixed a bug where some entries in the "Help" menu would crash MERK if the
   program was being ran from a directory that was NOT the program installation
   directory.
 * Added a server identifier to the "script"  tab in the connection dialog, if
   simplified dialogs are turned on.
+* Cleaned up the connection dialog. The tab "labels" (that appeared at the top
+  of the tab contents) have been removed, and the spacing of the widgets in the
+  layout has been tweaked.
 
 --------------------------------------------------------------------------------
 ################################################################################

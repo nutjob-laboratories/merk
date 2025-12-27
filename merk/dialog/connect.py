@@ -434,15 +434,6 @@ class Dialog(QDialog):
 		self.serverDescription.setWordWrap(True)
 		self.serverDescription.setAlignment(Qt.AlignJustify)
 
-		banner = QLabel()
-		pixmap = QPixmap(CONNECT_DIALOG_ICON)
-		banner.setPixmap(pixmap)
-
-		bannerLayout = QHBoxLayout()
-		bannerLayout.addWidget(banner)
-		bannerLayout.addWidget(QLabel("<big><b>Internet Relay Chat Server</b></big>"))
-		bannerLayout.addStretch()
-
 		optionLayout = QFormLayout()
 		if not SSL_AVAILABLE:
 			optionLayout.addRow(self.reconnect)
@@ -451,15 +442,15 @@ class Dialog(QDialog):
 
 		if config.SCRIPTING_ENGINE_ENABLED:
 			optionLayout.addRow(self.exe,QLabel(''))
+		optionLayout.setVerticalSpacing(0)
 
 		serverInfoLayout = QVBoxLayout()
-		serverInfoLayout.addLayout(bannerLayout)
 		if self.not_simplified:
 			serverInfoLayout.addWidget(self.serverDescription)
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)
-		serverInfoLayout.setContentsMargins(5,5,5,5)
+		serverInfoLayout.setContentsMargins(3,3,3,3)
 
 		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
 		self.commandHost.setWordWrap(True)
@@ -474,25 +465,15 @@ class Dialog(QDialog):
 
 		height = self.servers.height()+self.reconnect.height()
 		if self.not_simplified:
-			height = height + serverLayout.sizeHint().height() + 130
+			height = height + serverLayout.sizeHint().height() + 125
 		else:
 			height = height + serverLayout.sizeHint().height() + 80
 		self.commands.setFixedHeight(height)
 
-		banner = QLabel()
-		pixmap = QPixmap(SCRIPT_MENU_ICON)
-		banner.setPixmap(pixmap)
-
-		bannerLayout = QHBoxLayout()
-		bannerLayout.addWidget(banner)
-		bannerLayout.addWidget(QLabel("<big><b>Connection Script</b></big>"))
-		bannerLayout.addStretch()
-
 		commandsLayout = QVBoxLayout()
-		commandsLayout.addLayout(bannerLayout)
 		commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
-		commandsLayout.setContentsMargins(5,5,5,5)
+		commandsLayout.setContentsMargins(3,3,3,3)
 
 		self.tabs = QTabWidget()
 		self.tabs.setStyleSheet("QTabWidget::tab-bar { alignment: center; }")
@@ -503,7 +484,7 @@ class Dialog(QDialog):
 			<b>alternate</b> (optional) is used if your primary choice is taken. If both <b>nickname</b>
 			and <b>alternate</b> are taken, a random number will be attached to <b>nickname</b>, and that
 			will be used as the nickname. All settings are saved when you click <b>Connect</b>,
-			unless you uncheck <b>Save to user settings file</b> below.<br>
+			unless you uncheck <b>Save to user settings file</b> below.
 			</small>
 
 			""")
@@ -516,17 +497,7 @@ class Dialog(QDialog):
 
 		if self.donotsave: self.saveU.toggle()
 
-		banner = QLabel()
-		pixmap = QPixmap(PRIVATE_MENU_ICON)
-		banner.setPixmap(pixmap)
-
-		bannerLayout = QHBoxLayout()
-		bannerLayout.addWidget(banner)
-		bannerLayout.addWidget(QLabel("<big><b>User Information</b></big>"))
-		bannerLayout.addStretch()
-
 		userPageLayout = QVBoxLayout()
-		userPageLayout.addLayout(bannerLayout)
 		if self.not_simplified:
 			userPageLayout.addWidget(self.userDescription)
 		else:
