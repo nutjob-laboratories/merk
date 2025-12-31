@@ -38,6 +38,7 @@ import subprocess
 import fnmatch
 import time
 import random
+import zipfile
 
 import emoji
 
@@ -92,6 +93,147 @@ class GlobalActivityFilter(QObject):
 				watched.window_interacted_with()
 
 		return False
+
+class MdiArea(QMdiArea):
+
+	openPython = pyqtSignal(object)
+	openScript = pyqtSignal(object)
+
+	def __init__(self, parent=None):
+		super().__init__(parent)
+		self.parent = parent
+		self.setAcceptDrops(True) # Required to enable drop functionality
+
+	def dragEnterEvent(self, event):
+		# Only accept the drag if it contains file URLs
+		if event.mimeData().hasUrls():
+			event.accept()
+		else:
+			event.ignore()
+
+	def dragMoveEvent(self, event):
+		# Mandatory for visual feedback during the drag
+		if event.mimeData().hasUrls():
+			event.accept()
+		else:
+			event.ignore()
+
+	def dropEvent(self, event):
+		# Extract file paths from the dropped event
+		files = [u.toLocalFile() for u in event.mimeData().urls()]
+		installed = []
+		for file_path in files:
+			name_without_extension, extension = os.path.splitext(file_path)
+
+			if extension==".merk":
+				self.openScript.emit(file_path)
+			elif extension==".py":
+				self.openPython.emit(file_path)
+			elif extension==".zip":
+				if not config.OVERWRITE_PLUGINS_ON_IMPORT:
+					overwrite = False
+					ofiles = []
+					try:
+						with zipfile.ZipFile(file_path, 'r') as zf:
+							for member in zf.infolist():
+								efile_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+								extract_file = False
+								name_without_extension, extension = os.path.splitext(efile_path)
+								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+								if config.IMPORT_SCRIPTS_IN_PLUGINS:
+									sfile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+									name_without_extension, extension = os.path.splitext(sfile_path)
+									if extension.lower()=='.merk': extract_file = True
+								if extract_file:
+									if os.path.exists(efile_path):
+										overwrite = True
+										ofiles.append(efile_path)
+									if os.path.exists(sfile_path):
+										overwrite = True
+										ofiles.append(sfile_path)
+					except zipfile.BadZipFile:
+						QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+						return
+					except FileNotFoundError:
+						QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+						return
+					except Exception as e:
+						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+						return
+				else:
+					overwrite = False
+					ofiles = []
+
+				if not config.OVERWRITE_PLUGINS_ON_IMPORT and overwrite==True:
+					msgBox = QMessageBox()
+					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setText("The following files already exist. Overwrite?")
+					msgBox.setInformativeText("\n".join(ofiles))
+					msgBox.setWindowTitle("Overwrite")
+					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+					rval = msgBox.exec()
+					if rval == QMessageBox.Cancel:
+						pass
+					else:
+						overwrite = False
+
+				if not overwrite:
+					try:
+						with zipfile.ZipFile(file_path, 'r') as zf:
+							for member in zf.infolist():
+								efile_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+								extract_file = False
+								name_without_extension, extension = os.path.splitext(efile_path)
+								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+								if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
+
+								if config.IMPORT_SCRIPTS_IN_PLUGINS:
+									efile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+
+									extract_file = False
+									name_without_extension, extension = os.path.splitext(efile_path)
+									if extension.lower()=='.merk': extract_file = True
+
+									if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
+
+					except zipfile.BadZipFile:
+						QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+					except FileNotFoundError:
+						QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+					except Exception as e:
+						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+
+					errors = plugins.load_plugins(self.parent)
+					if len(errors)>0:
+						msgBox = QMessageBox()
+						msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+						msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+						if len(errors)>1:
+							msgBox.setText("There were errors loading plugins!")
+						else:
+							msgBox.setText("There was an error loading plugins!")
+						msgBox.setInformativeText("\n".join(errors))
+						msgBox.setWindowTitle("Plugin load error")
+						msgBox.setStandardButtons(QMessageBox.Ok)
+						msgBox.exec()
+					else:
+						installed.append(os.path.basename(file_path))
+
+		if len(installed)>0:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText("The following plugin files were installed:")
+			msgBox.setInformativeText("\n".join(installed))
+			msgBox.setWindowTitle("Plugin Installation")
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()
 
 class Merk(QMainWindow):
 
@@ -212,9 +354,13 @@ class Merk(QMainWindow):
 
 		# Create the central object of the client,
 		# the MDI widget
-		self.MDI = QMdiArea()
+		self.MDI = MdiArea(self)
 		self.setCentralWidget(self.MDI)
 		self.MDI.subWindowActivated.connect(self.merk_subWindowActivated)
+
+		# Drag-n-drop for MERK scripts and Python files
+		self.MDI.openPython.connect(self.openPythonEditor)
+		self.MDI.openScript.connect(self.openEditor)
 
 		# Set the background image of the MDI widget
 		if self.dark_mode:

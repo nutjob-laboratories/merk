@@ -995,8 +995,8 @@ def load_plugins(gui):
 		obj._methods = obj._methods - len(BUILT_IN)
 		if obj._methods<0: obj._methods = 0
 
-		if obj._events==0:
-			ERRORS.append(f"{obj._basename} doesn't have any events to respond to")
+		if obj._events==0 and obj._calls==0:
+			ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
 
 		no_error = True
 		for o in PLUGIN_NAMES:

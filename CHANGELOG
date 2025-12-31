@@ -90,6 +90,19 @@
 * Cleaned up the connection dialog. The tab "labels" (that appeared at the top
   of the tab contents) have been removed, and the spacing of the widgets in the
   layout has been tweaked.
+* Drag-and-drop has been added to the main application. Users can drag MERK
+  scripts or Python scripts onto the main application window to open up those
+  files in editors.
+* Plugin ZIP files can now be dragged-and-dropped onto the main application
+  window to install them.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Plugins no longer have to have an event method to be loaded without errors;
+  they can have methods executable with the /call command without any event
+  methods.
 
 --------------------------------------------------------------------------------
 ################################################################################
