@@ -105,31 +105,47 @@ class MdiArea(QMdiArea):
 		self.setAcceptDrops(True) # Required to enable drop functionality
 
 	def dragEnterEvent(self, event):
-		# Only accept the drag if it contains file URLs
+		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
+			event.ignore()
+			return
 		if event.mimeData().hasUrls():
 			event.accept()
 		else:
 			event.ignore()
 
 	def dragMoveEvent(self, event):
-		# Mandatory for visual feedback during the drag
+		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
+			event.ignore()
+			return
 		if event.mimeData().hasUrls():
 			event.accept()
 		else:
 			event.ignore()
 
 	def dropEvent(self, event):
-		# Extract file paths from the dropped event
+		if not config.DRAG_AND_DROP_MAIN_APPLICATION: return
 		files = [u.toLocalFile() for u in event.mimeData().urls()]
 		installed = []
 		for file_path in files:
 			name_without_extension, extension = os.path.splitext(file_path)
 
 			if extension==".merk":
+				if not config.SCRIPTING_ENGINE_ENABLED:
+					event.ignore()
+					return
 				self.openScript.emit(file_path)
 			elif extension==".py":
+				if not config.ENABLE_PLUGINS:
+					event.ignore()
+					return
+				if not config.ENABLE_PLUGIN_EDITOR:
+					event.ignore()
+					return
 				self.openPython.emit(file_path)
 			elif extension==".zip":
+				if not config.ENABLE_PLUGINS: 
+					event.ignore()
+					return
 				if not config.OVERWRITE_PLUGINS_ON_IMPORT:
 					overwrite = False
 					ofiles = []
@@ -154,10 +170,10 @@ class MdiArea(QMdiArea):
 										overwrite = True
 										ofiles.append(sfile_path)
 					except zipfile.BadZipFile:
-						QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+						QMessageBox.critical(self, 'Error', f"\"{file_path}\" is not a valid zip file")
 						return
 					except FileNotFoundError:
-						QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+						QMessageBox.critical(self, 'Error', f"Plugin archive \"{file_path}\" not found.")
 						return
 					except Exception as e:
 						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
@@ -203,9 +219,9 @@ class MdiArea(QMdiArea):
 									if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
 
 					except zipfile.BadZipFile:
-						QMessageBox.critical(self, 'Error', f"\"{filename}\" is not a valid zip file")
+						QMessageBox.critical(self, 'Error', f"\"{file_path}\" is not a valid zip file")
 					except FileNotFoundError:
-						QMessageBox.critical(self, 'Error', f"Plugin archive \"{filename}\" not found.")
+						QMessageBox.critical(self, 'Error', f"Plugin archive \"{file_path}\" not found.")
 					except Exception as e:
 						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
 
@@ -1596,15 +1612,17 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'',"Joined "+channel)
 			c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-			plugins.call(self,"joined",channel=channel,window=c)
-		else:
-			plugins.call(self,"joined",channel=channel,window=None)
-
 		w = self.getServerWindow(client)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'',"You joined "+channel)
 			w.writeText(t)
 
+	def joinedEvent(self,client,channel):
+		w = self.getWindow(channel,client)
+		if w:
+			plugins.call(self,"joined",channel=channel,window=w)
+		else:
+			plugins.call(self,"joined",channel=channel,window=None)
 
 	def left(self,client,channel):
 

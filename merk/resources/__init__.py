@@ -436,6 +436,16 @@ class WhoWasData:
 
 # Functions
 
+def join_with_and(items):
+	if not items:
+		return ""
+	elif len(items) == 1:
+		return items[0]
+	elif len(items) == 2:
+		return f"{items[0]} and {items[1]}"
+	else:
+		return f"{', '.join(items[:-1])}, and {items[-1]}"
+
 class StrictViewportFilter(QObject):
 	def __init__(self, editor_widget, parent=None):
 		super().__init__(parent)

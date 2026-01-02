@@ -817,11 +817,16 @@ def call(gui,method,**arguments):
 		if hasattr(obj,method):
 			m = getattr(obj,method)
 
-			if 'window' in arguments:
-				if arguments['window']!=None:
-					arguments["window"] = Window(gui,arguments["window"])
+			# if 'window' in arguments:
+			# 	if arguments['window']!=None:
+			# 		arguments["window"] = Window(gui,arguments["window"])
 
 			try:
+
+				if 'window' in arguments:
+					if arguments['window']!=None:
+						arguments["window"] = Window(gui,arguments["window"])
+
 				m(**arguments)
 			except Exception as e:
 				if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:

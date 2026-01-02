@@ -176,6 +176,7 @@ class IRC_Connection(irc.IRCClient):
 		self.do_whois = []
 		self.long_messages = []
 		self.long_notices = []
+		self.joined_channel = []
 
 		self.server_channel_list = []
 		self.channel_list_window = None
@@ -487,6 +488,7 @@ class IRC_Connection(irc.IRCClient):
 		self.sendLine(f"MODE {channel} +b")
 
 		self.gui.joined(self,channel)
+		self.joined_channel.append(channel)
 
 	def left(self, channel):
 		self.channelmodes.pop(channel,None)
@@ -837,6 +839,10 @@ class IRC_Connection(irc.IRCClient):
 		if channel in self.names:
 			self.gui.names(self,channel,self.names[channel])
 			del self.names[channel]
+
+		if channel in self.joined_channel:
+			self.joined_channel.remove(channel)
+			self.gui.joinedEvent(self,channel)
 
 	def irc_RPL_TOPIC(self, prefix, params):
 		if not params[2].isspace():

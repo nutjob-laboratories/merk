@@ -1830,6 +1830,11 @@ class Dialog(QDialog):
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.enableDnD = QCheckBox("Enable drag-and-drop for plugins\nand scripts",self)
+		if config.DRAG_AND_DROP_MAIN_APPLICATION: self.enableDnD.setChecked(True)
+		self.enableDnD.stateChanged.connect(self.changedSetting)
+		self.enableDnD.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
 		screenLayout2 = QHBoxLayout()
 		screenLayout2.addStretch()
 		screenLayout2.addWidget(self.alwaysOnTop)
@@ -1866,6 +1871,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(self.simpleConnect)
 		applicationLayout.addWidget(self.showConnect)
 		applicationLayout.addWidget(self.noConnectLogo)
+		applicationLayout.addWidget(self.enableDnD)
 		applicationLayout.addStretch()
 
 		self.applicationPage.setLayout(applicationLayout)
@@ -5708,6 +5714,7 @@ class Dialog(QDialog):
 		config.PLUGIN_ISON = self.pluginIson.isChecked()
 		config.WINDOWBAR_SHOW_UNREAD_MENTIONS = self.windowbarMention.isChecked()
 		config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = self.pluginMsg.isChecked()
+		config.DRAG_AND_DROP_MAIN_APPLICATION = self.enableDnD.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

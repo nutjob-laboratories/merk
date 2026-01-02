@@ -95,6 +95,10 @@
   files in editors.
 * Plugin ZIP files can now be dragged-and-dropped onto the main application
   window to install them.
+* Drag-and-drop can now be turned off in the settings dialog.
+* The /help command now shows what "subcommands" for the /window command are
+  currently enabled.
+* Tweaked the /help command display to fix some typos and formatting errors.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -103,6 +107,8 @@
 * Plugins no longer have to have an event method to be loaded without errors;
   they can have methods executable with the /call command without any event
   methods.
+* The "joined" event is now slightly delayed until the channel's userlist is
+  fully populated.
 
 --------------------------------------------------------------------------------
 ################################################################################

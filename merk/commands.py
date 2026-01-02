@@ -165,7 +165,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	}
 
 	if not config.ENABLE_HOTKEYS:
-		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"bind save",'')
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window hotkey",'')
 	if not config.ENABLE_IGNORE:
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window ignore",'')
@@ -314,6 +313,24 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		else:
 			AUTOCOMPLETE.update(new_autocomplete)
 
+	W_COMMAND = [
+		"<b>move</b>","<b>resize</b>","<b>maximize</b>","<b>minimize</b>",
+		"<b>restore</b>","<b>readme</b>","<b>settings</b>","<b>logs</b>",
+		"<b>restart</b>","<b>next</b>","<b>previous</b>","<b>cascade</b>",
+		"<b>tile</b>"
+	]
+
+	if config.ENABLE_HOTKEYS: W_COMMAND.append("<b>hotkey</b>")
+	if config.ENABLE_IGNORE: W_COMMAND.append("<b>ignore</b>")
+	if config.ENABLE_PLUGINS:
+		W_COMMAND.append("<b>plugin</b>")
+		W_COMMAND.append("<b>install</b>")
+		W_COMMAND.append("<b>uninstall</b>")
+
+	W_COMMAND.sort()
+
+	WINDOW_COMMANDS = join_with_and(W_COMMAND)
+
 	# The command help system
 	COMMAND_HELP_INFORMATION = [
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help [COMMAND]</b>", "Displays command usage information" ],
@@ -338,7 +355,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quote TEXT...</b>", "Sends unprocessed data to the server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"time</b>", "Requests server time" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"version [SERVER]</b>", "Requests server version" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"list [TERMS]</b>", "Lists or searches channels on the server; use \"*\" for multi-character wildcard, \"?\" for single character" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"list [TERMS]</b>", "Lists or searches channels on the server; use <b>*</b> for multi-character wildcard, <b>?</b> for single character" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"refresh</b>", "Requests a new list of channels from the server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"knock CHANNEL [MESSAGE]</b>", "Requests an invitation to a channel" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"connect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server" ],
@@ -359,8 +376,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>", "Hides a user's chat. USER can be a nickname or hostmask" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>", "Un-hides a user's chat. To un-hide all users, use * as the argument" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"find [TERMS]</b>", "Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unignore USER</b>", "Un-hides a user's chat. To un-hide all users, use <b>*</b> as the argument" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"find [TERMS]</b>", "Finds filenames that can be found by other commands; use <b>*</b> for multi-character wildcards, and <b>?</b> for single character wildcards" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ping USER [TEXT]</b>", "Sends a CTCP ping to a user" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp REQUEST USER</b>", "Sends a CTCP request; valid requests are TIME, VERSION, USERINFO, SOURCE, or FINGER" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat window for NICKNAME" ],
@@ -368,7 +385,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", "Manipulates the main application window. Valid commands are <b>move</b>, <b>resize</b>, <b>maximize</b>, <b>minimize</b>, <b>restore</b>, <b>readme</b>, <b>settings</b>, <b>logs</b>, <b>hotkey</b>, <b>ignore</b>, <b>plugin</b>, <b>install</b>, <b>uninstall</b>, <b>restart</b>, <b>next</b>, <b>previous</b>, <b>cascade</b>, and <b>tile</b>" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", f"Manipulates the main application window. Valid commands are {WINDOW_COMMANDS}" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
@@ -385,7 +402,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config export [FILENAME]</b>", "Exports the current configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config import [FILENAME]</b>", "Imports a configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...</b>", f"Executes COMMAND when key SEQUENCE is pressed" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>", f"Removes a bind for SEQUENCE. Pass * as the only argument to remove all binds" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unbind SEQUENCE</b>", f"Removes a bind for SEQUENCE. Pass <b>*</b> as the only argument to remove all binds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"call METHOD [ARGUMENTS...]</b>", f"Executes METHOD in any plugin that contains METHOD" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"admin [SERVER]</b>", f"Requests administration information" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_die</b>", f"Instructs the server to shut down. May only be issued by server operators" ],

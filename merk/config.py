@@ -378,9 +378,11 @@ BAD_NICKNAME_FALLBACK = 'Guest'
 WINDOWBAR_SHOW_UNREAD_MENTIONS = False
 AUTO_RELOAD_ON_CLOSE = True
 DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = True
+DRAG_AND_DROP_MAIN_APPLICATION = True
 
 def build_settings():
 	settings = {
+		"enable_application_drag_and_drop": DRAG_AND_DROP_MAIN_APPLICATION,
 		"display_messagebox_on_plugin_error": DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS,
 		"automatically_reload_plugins_on_editor_close": AUTO_RELOAD_ON_CLOSE,
 		"windowbar_show_unread_mentions": WINDOWBAR_SHOW_UNREAD_MENTIONS,
@@ -725,6 +727,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_application_drag_and_drop" in settings:
+		settings["enable_application_drag_and_drop"] = DRAG_AND_DROP_MAIN_APPLICATION
 	if not "display_messagebox_on_plugin_error" in settings:
 		settings["display_messagebox_on_plugin_error"] = DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS
 	if not "automatically_reload_plugins_on_editor_close" in settings:
@@ -1746,6 +1750,7 @@ def load_settings(filename):
 	global WINDOWBAR_SHOW_UNREAD_MENTIONS
 	global AUTO_RELOAD_ON_CLOSE
 	global DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS
+	global DRAG_AND_DROP_MAIN_APPLICATION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1755,6 +1760,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DRAG_AND_DROP_MAIN_APPLICATION = settings["enable_application_drag_and_drop"]
 		DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = settings["display_messagebox_on_plugin_error"]
 		AUTO_RELOAD_ON_CLOSE = settings["automatically_reload_plugins_on_editor_close"]
 		WINDOWBAR_SHOW_UNREAD_MENTIONS = settings["windowbar_show_unread_mentions"]
