@@ -99,6 +99,8 @@
 * The /help command now shows what "subcommands" for the /window command are
   currently enabled.
 * Tweaked the /help command display to fix some typos and formatting errors.
+* Added an option (which is turned on by default) that places hotkey, ignore,
+  and plugin managers on top of the main window.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -109,6 +111,8 @@
   methods.
 * The "joined" event is now slightly delayed until the channel's userlist is
   fully populated.
+* The Twisted client that triggered the event is now passed to the "joined"
+  event as an argument.
 
 --------------------------------------------------------------------------------
 ################################################################################

@@ -580,5 +580,8 @@ class Window(QMainWindow):
 
 		self.resize(350,300)
 
+		if config.MANAGERS_ALWAYS_ON_TOP:
+			self.setWindowFlags(self.windowFlags() | Qt.WindowType.Dialog)
+
 		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):
 			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)

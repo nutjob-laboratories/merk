@@ -1620,9 +1620,9 @@ class Merk(QMainWindow):
 	def joinedEvent(self,client,channel):
 		w = self.getWindow(channel,client)
 		if w:
-			plugins.call(self,"joined",channel=channel,window=w)
+			plugins.call(self,"joined",client=client,channel=channel,window=w)
 		else:
-			plugins.call(self,"joined",channel=channel,window=None)
+			plugins.call(self,"joined",client=client,channel=channel,window=None)
 
 	def left(self,client,channel):
 

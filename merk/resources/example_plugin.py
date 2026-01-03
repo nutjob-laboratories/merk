@@ -298,11 +298,13 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   channel = The channel MERK joined
+    #   client = The Twisted IRC object that triggered the event
     #   window = MERK Window
     #
     def joined(self,**args):
         channel = args["channel"]
         window = args["window"]
+        client = args["client"]
 
     # |======|
     # | kick |

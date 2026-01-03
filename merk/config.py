@@ -379,9 +379,11 @@ WINDOWBAR_SHOW_UNREAD_MENTIONS = False
 AUTO_RELOAD_ON_CLOSE = True
 DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = True
 DRAG_AND_DROP_MAIN_APPLICATION = True
+MANAGERS_ALWAYS_ON_TOP = True
 
 def build_settings():
 	settings = {
+		"managers_always_on_top": MANAGERS_ALWAYS_ON_TOP,
 		"enable_application_drag_and_drop": DRAG_AND_DROP_MAIN_APPLICATION,
 		"display_messagebox_on_plugin_error": DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS,
 		"automatically_reload_plugins_on_editor_close": AUTO_RELOAD_ON_CLOSE,
@@ -727,6 +729,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "managers_always_on_top" in settings:
+		settings["managers_always_on_top"] = MANAGERS_ALWAYS_ON_TOP
 	if not "enable_application_drag_and_drop" in settings:
 		settings["enable_application_drag_and_drop"] = DRAG_AND_DROP_MAIN_APPLICATION
 	if not "display_messagebox_on_plugin_error" in settings:
@@ -1751,6 +1755,7 @@ def load_settings(filename):
 	global AUTO_RELOAD_ON_CLOSE
 	global DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS
 	global DRAG_AND_DROP_MAIN_APPLICATION
+	global MANAGERS_ALWAYS_ON_TOP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1760,6 +1765,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MANAGERS_ALWAYS_ON_TOP = settings["managers_always_on_top"]
 		DRAG_AND_DROP_MAIN_APPLICATION = settings["enable_application_drag_and_drop"]
 		DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = settings["display_messagebox_on_plugin_error"]
 		AUTO_RELOAD_ON_CLOSE = settings["automatically_reload_plugins_on_editor_close"]

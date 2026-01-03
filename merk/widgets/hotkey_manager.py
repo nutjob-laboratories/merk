@@ -199,5 +199,8 @@ class Window(QMainWindow):
 		self.centralWidget.setLayout(finalLayout)
 		self.setCentralWidget(self.centralWidget)
 
+		if config.MANAGERS_ALWAYS_ON_TOP:
+			self.setWindowFlags(self.windowFlags() | Qt.WindowType.Dialog)
+
 		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):
 			self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)

@@ -901,7 +901,7 @@ class Window(QMainWindow):
 			self.chanenv.addAction(entry)
 
 			entry = QAction(QIcon(CHANNEL_ICON),"joined",self)
-			entry.triggered.connect(lambda state,u="joined",v=["window","channel"]: self.doInsertEventMethod(u,v))
+			entry.triggered.connect(lambda state,u="joined",v=["window","channel","client"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
 
 			entry = QAction(QIcon(KICK_ICON),"kick",self)
