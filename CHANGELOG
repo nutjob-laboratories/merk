@@ -101,6 +101,20 @@
 * Tweaked the /help command display to fix some typos and formatting errors.
 * Added an option (which is turned on by default) that places hotkey, ignore,
   and plugin managers on top of the main window.
+* Removed the colons (:) from the text input lables on the connect dialog.
+* Scripting threads now have their main execution loop wrapped in a try/except
+  statement. Scripts could sometimes exit pre-maturely, and would take down
+  the client with it; this should no longer occur.
+* Error messages encountered while executing individual lines in scripts should
+  be more informative.
+* Exiting MERK on Linux no longer causes a segmentation fault/core dump. I'm
+  still not exactly sure why this was occuring (I'm assuming because of the
+  multi-threaded nature of various features); os._exit() is now used to
+  terminate the application upon exit.
+* Scripting threads are now closed "properly" before being deleted. This was
+  causing race-condition crashing in certain circumstances. The timeout for the
+  thread closing is set by default to 1000ms, but can be changed in the config
+  file.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -113,6 +127,8 @@
   fully populated.
 * The Twisted client that triggered the event is now passed to the "joined"
   event as an argument.
+* Plugin load and refresh mechanism has been streamlined, making loading and
+  reloading the full plugin list slightly faster.
 
 --------------------------------------------------------------------------------
 ################################################################################

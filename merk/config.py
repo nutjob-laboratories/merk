@@ -380,9 +380,11 @@ AUTO_RELOAD_ON_CLOSE = True
 DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = True
 DRAG_AND_DROP_MAIN_APPLICATION = True
 MANAGERS_ALWAYS_ON_TOP = True
+SCRIPT_THREAD_QUIT_TIMEOUT = 1000
 
 def build_settings():
 	settings = {
+		"script_thread_quit_timeout": SCRIPT_THREAD_QUIT_TIMEOUT,
 		"managers_always_on_top": MANAGERS_ALWAYS_ON_TOP,
 		"enable_application_drag_and_drop": DRAG_AND_DROP_MAIN_APPLICATION,
 		"display_messagebox_on_plugin_error": DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS,
@@ -729,6 +731,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "script_thread_quit_timeout" in settings:
+		settings["script_thread_quit_timeout"] = SCRIPT_THREAD_QUIT_TIMEOUT
 	if not "managers_always_on_top" in settings:
 		settings["managers_always_on_top"] = MANAGERS_ALWAYS_ON_TOP
 	if not "enable_application_drag_and_drop" in settings:
@@ -1756,6 +1760,7 @@ def load_settings(filename):
 	global DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS
 	global DRAG_AND_DROP_MAIN_APPLICATION
 	global MANAGERS_ALWAYS_ON_TOP
+	global SCRIPT_THREAD_QUIT_TIMEOUT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1765,6 +1770,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SCRIPT_THREAD_QUIT_TIMEOUT = settings["script_thread_quit_timeout"]
 		MANAGERS_ALWAYS_ON_TOP = settings["managers_always_on_top"]
 		DRAG_AND_DROP_MAIN_APPLICATION = settings["enable_application_drag_and_drop"]
 		DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = settings["display_messagebox_on_plugin_error"]

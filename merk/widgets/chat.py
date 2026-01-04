@@ -3363,7 +3363,7 @@ class SpellTextEdit(QPlainTextEdit):
 							if self.textCursor().hasSelection():
 								text = self.textCursor().selectedText()
 
-								for script in plugins.list_plugins():
+								for script in plugins.list_plugin_files():
 									if fnmatch.fnmatch(script,f"{text}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{script}")

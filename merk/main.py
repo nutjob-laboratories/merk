@@ -3496,7 +3496,6 @@ class Merk(QMainWindow):
 											if c.is_in_plugin_directory():
 												if config.AUTO_RELOAD_ON_CLOSE:
 													self.plugin_manager.reload_plugins()
-										self.buildWindowsMenu()
 							else:
 								if hasattr(c,"python"):
 									if c.python==True:
@@ -3516,8 +3515,6 @@ class Merk(QMainWindow):
 														msgBox.setWindowTitle("Plugin load error")
 														msgBox.setStandardButtons(QMessageBox.Ok)
 														msgBox.exec()
-												self.buildWindowsMenu()
-										return
 		has_visible = False
 		for window in self.MDI.subWindowList():
 			if window.isVisible(): has_visible = True

@@ -817,16 +817,10 @@ def call(gui,method,**arguments):
 		if hasattr(obj,method):
 			m = getattr(obj,method)
 
-			# if 'window' in arguments:
-			# 	if arguments['window']!=None:
-			# 		arguments["window"] = Window(gui,arguments["window"])
-
 			try:
-
 				if 'window' in arguments:
 					if arguments['window']!=None:
 						arguments["window"] = Window(gui,arguments["window"])
-
 				m(**arguments)
 			except Exception as e:
 				if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
@@ -901,28 +895,24 @@ def load_plugins(gui):
 	global PLUGINS
 
 	PLUGIN_FILENAMES = []
-	for o in PLUGINS:
-		if os.path.exists(o._filename) or os.path.isfile(o._filename):
-			PLUGIN_FILENAMES.append(f"{o._filename}")
-
 	PLUGIN_NAMES = []
-	for o in PLUGINS:
-		if os.path.exists(o._filename) or os.path.isfile(o._filename):
-			PLUGIN_NAMES.append(f"{o.NAME} {o.VERSION}")
-
 	PLUGIN_INIT = []
-	for o in PLUGINS:
-		if hasattr(o,"init"):
-			if os.path.exists(o._filename) or os.path.isfile(o._filename):
-				s = inspect.getsourcelines(o.init)
-				PLUGIN_INIT.append([o._filename,s])
-
 	PLUGIN_IDS = {}
-	for o in PLUGINS:
-		PLUGIN_IDS[o._filename] = o._id
-
-	PLUGINS = []
 	ERRORS = []
+
+	if len(PLUGINS)>0:
+		for o in PLUGINS:
+			if os.path.exists(o._filename) or os.path.isfile(o._filename):
+				PLUGIN_FILENAMES.append(f"{o._filename}")
+			if os.path.exists(o._filename) or os.path.isfile(o._filename):
+				PLUGIN_NAMES.append(f"{o.NAME} {o.VERSION}")
+			if hasattr(o,"init"):
+				if os.path.exists(o._filename) or os.path.isfile(o._filename):
+					s = inspect.getsourcelines(o.init)
+					PLUGIN_INIT.append([str(o._filename),s])
+			PLUGIN_IDS[o._filename] = str(o._id)
+
+	PLUGINS.clear()
 
 	if not config.ENABLE_PLUGINS: return
 
@@ -1033,7 +1023,7 @@ def load_plugins(gui):
 	# Return
 	return ERRORS
 
-def list_plugins():
+def list_plugin_files():
 	file_paths = []
 	for root, _, files in os.walk(PLUGIN_DIRECTORY):
 		for file in files:

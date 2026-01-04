@@ -266,7 +266,9 @@ if __name__ == '__main__':
 
 	def startMERK(app,gui):
 		gui.show()
-		sys.exit(reactor.run())
+		# sys.exit(reactor.run())
+		reactor.run()
+		os._exit(0)
 
 	def install_python_plugin(filename):
 		base = os.path.basename(filename)

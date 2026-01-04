@@ -991,6 +991,9 @@ def execute_script_end(data):
 	gui = data[0]
 	script_id = data[1]
 
+	gui.scripts[script_id].quit()
+	gui.scripts[script_id].wait(config.SCRIPT_THREAD_QUIT_TIMEOUT)
+
 	del gui.scripts[script_id]
 	remove_halt(script_id)
 
@@ -3342,7 +3345,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				p = plugins.list_plugins()
+				p = plugins.list_plugin_files()
 				if len(p)>0:
 					count = 0
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(p)} plugins")
@@ -6926,425 +6929,432 @@ class ScriptThread(QThread):
 
 	def run(self):
 
-		if self.filename==None:
-			filename = "script"
-		else:
-			filename = self.filename
+		try:
+			if self.filename==None:
+				filename = "script"
+			else:
+				filename = self.filename
 
-		no_errors = True
+			no_errors = True
 
-		# This should never happen, but if it does...
-		# Do not execute any scripts if scripting is disabled
-		if not config.SCRIPTING_ENGINE_ENABLED:
-			self.scriptError.emit([self.gui,self.window,f"Scripting has been disabled"])
-			no_errors = False
+			# This should never happen, but if it does...
+			# Do not execute any scripts if scripting is disabled
+			if not config.SCRIPTING_ENGINE_ENABLED:
+				self.scriptError.emit([self.gui,self.window,f"Scripting has been disabled"])
+				no_errors = False
 
-		counter = 1
-		for a in self.arguments:
-			addTemporaryAlias(f"_{counter}",a)
-			counter = counter + 1
+			counter = 1
+			for a in self.arguments:
+				addTemporaryAlias(f"_{counter}",a)
+				counter = counter + 1
 
-		if len(self.arguments)>0:
-			addTemporaryAlias(f"_0",' '.join(self.arguments))
-		else:
-			addTemporaryAlias(f"_0",'none')
+			if len(self.arguments)>0:
+				addTemporaryAlias(f"_0",' '.join(self.arguments))
+			else:
+				addTemporaryAlias(f"_0",'none')
+				
+			addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
+
+			if self.filename!=None:
+				addTemporaryAlias(f"_FILE",self.filename)
+				addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
+
+			self.script = interpolateAliases(self.script)
 			
-		addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
+			# First passes through the script,
+			# insert any files that are to be
+			# /inserted into the script, up to
+			# the maximum depth
+			if no_errors:
+				if config.ENABLE_INSERT_COMMAND:
+					counter = 0
+					while counter<config.MAXIMUM_INSERT_DEPTH:
+						counter = counter + 1
+						err = self.process_inserts()
+						if err:
+							no_errors = False
+							break
 
-		if self.filename!=None:
-			addTemporaryAlias(f"_FILE",self.filename)
-			addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
+			# Second pass, check for errors
+			if no_errors:
+				no_errors = self.check_for_errors(self.script,self.filename)
 
-		self.script = interpolateAliases(self.script)
-		
-		# First passes through the script,
-		# insert any files that are to be
-		# /inserted into the script, up to
-		# the maximum depth
-		if no_errors:
-			if config.ENABLE_INSERT_COMMAND:
-				counter = 0
-				while counter<config.MAXIMUM_INSERT_DEPTH:
-					counter = counter + 1
-					err = self.process_inserts()
-					if err:
-						no_errors = False
-						break
+			# Third pass through the script, here's
+			# where we actually do stuff
+			if no_errors:
 
-		# Second pass, check for errors
-		if no_errors:
-			no_errors = self.check_for_errors(self.script,self.filename)
+				script = self.script.split("\n")
+				index = -1
+				loop = True
 
-		# Third pass through the script, here's
-		# where we actually do stuff
-		if no_errors:
+				while(loop):
+					index = index + 1
+					line_number = index + 1
+					script_only_command = False
+					halt_issued = False
 
-			script = self.script.split("\n")
-			index = -1
-			loop = True
+					if index==len(script):
+						loop =  False
+					else:
+						line = script[index]
 
-			while(loop):
-				index = index + 1
-				line_number = index + 1
-				script_only_command = False
-				halt_issued = False
+						tokens = line.split()
 
-				if index==len(script):
-					loop =  False
-				else:
-					line = script[index]
-
-					tokens = line.split()
-
-					# |======|
-					# | halt |
-					# |======|
-					if len(tokens)>=2:
-						if tokens[0].lower()=='halt':
-							tokens.pop(0)
-							msg = ' '.join(tokens)
-							self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}: {msg}"])
-							loop = False
-							halt_issued = True
-							continue
-
-					if len(tokens)>0 and len(tokens)==1:
-						if tokens[0].lower()=='halt':
-							self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}"])
-							loop = False
-							halt_issued = True
-							continue
-					
-					# |====|
-					# | if |
-					# |====|
-					if len(tokens)>=5:
-						if tokens[0].lower()=='if':
-
-							if not config.ENABLE_IF_COMMAND:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if has been disabled"])
+						# |======|
+						# | halt |
+						# |======|
+						if len(tokens)>=2:
+							if tokens[0].lower()=='halt':
+								tokens.pop(0)
+								msg = ' '.join(tokens)
+								self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}: {msg}"])
 								loop = False
+								halt_issued = True
 								continue
 
-							try:
-								stokens = shlex.split(line, comments=False)
-							except:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks"])
+						if len(tokens)>0 and len(tokens)==1:
+							if tokens[0].lower()=='halt':
+								self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}"])
 								loop = False
+								halt_issued = True
 								continue
+						
+						# |====|
+						# | if |
+						# |====|
+						if len(tokens)>=5:
+							if tokens[0].lower()=='if':
 
-							stokens.pop(0)
-
-							buildTemporaryAliases(self.gui,self.window)
-							examine = interpolateAliases(stokens.pop(0))
-							operator = interpolateAliases(stokens.pop(0))
-							target = interpolateAliases(stokens.pop(0))
-
-							r,error = self.math(examine)
-							if not error: examine = r
-
-							r,error = self.math(target)
-							if not error: target = r
-
-							valid_operator = False
-							do_command = False
-							if operator.lower()=='(is)':
-								examine = str(examine)
-								target = str(target)
-								valid_operator = True
-								if examine.lower()==target.lower():
-									do_command = True
-							if operator.lower()=='(not)':
-								examine = str(examine)
-								target = str(target)
-								valid_operator = True
-								if examine.lower()!=target.lower():
-									do_command = True
-							if operator.lower()=='(in)':
-								examine = str(examine)
-								target = str(target)
-								valid_operator = True
-								if examine.lower() in target.lower():
-									do_command = True
-
-							if operator.lower()=='(lt)':
-								valid_operator = True
-								try:
-									ei = float(examine)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+								if not config.ENABLE_IF_COMMAND:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if has been disabled"])
 									loop = False
 									continue
-								try:
-									ti = float(target)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
-									loop = False
-									continue
-								if ei<ti:
-									do_command = True
 
-							if operator.lower()=='(gt)':
-								valid_operator = True
 								try:
-									ei = float(examine)
+									stokens = shlex.split(line, comments=False)
 								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: Error tokenizing if command. Try using quotation marks"])
 									loop = False
 									continue
-								try:
-									ti = float(target)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
-									loop = False
-									continue
-								if ei>ti: 
-									do_command = True
 
-							if operator.lower()=='(eq)':
-								valid_operator = True
-								try:
-									ei = float(examine)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
-									loop = False
-									continue
-								try:
-									ti = float(target)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
-									loop = False
-									continue
-								if ei==ti: 
-									do_command = True
+								stokens.pop(0)
 
-							if operator.lower()=='(ne)':
-								valid_operator = True
-								try:
-									ei = float(examine)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
-									loop = False
-									continue
-								try:
-									ti = float(target)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
-									loop = False
-									continue
-								if ei!=ti: 
-									do_command = True
+								buildTemporaryAliases(self.gui,self.window)
+								examine = interpolateAliases(stokens.pop(0))
+								operator = interpolateAliases(stokens.pop(0))
+								target = interpolateAliases(stokens.pop(0))
 
-							if not valid_operator:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{operator}\" is not a valid \"if\" operator"])
-								loop = False
+								r,error = self.math(examine)
+								if not error: examine = r
+
+								r,error = self.math(target)
+								if not error: target = r
+
+								valid_operator = False
 								do_command = False
-								continue
+								if operator.lower()=='(is)':
+									examine = str(examine)
+									target = str(target)
+									valid_operator = True
+									if examine.lower()==target.lower():
+										do_command = True
+								if operator.lower()=='(not)':
+									examine = str(examine)
+									target = str(target)
+									valid_operator = True
+									if examine.lower()!=target.lower():
+										do_command = True
+								if operator.lower()=='(in)':
+									examine = str(examine)
+									target = str(target)
+									valid_operator = True
+									if examine.lower() in target.lower():
+										do_command = True
 
-							if do_command:
-								handled_goto = False
-								if len(stokens)==2:
-									if stokens[0].lower()=='goto':
-										if config.ENABLE_GOTO_COMMAND:
-											try:
-												ln = int(stokens[1])
-											except:
-												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
-												loop = False
+								if operator.lower()=='(lt)':
+									valid_operator = True
+									try:
+										ei = float(examine)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+										loop = False
+										continue
+									try:
+										ti = float(target)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+										loop = False
+										continue
+									if ei<ti:
+										do_command = True
+
+								if operator.lower()=='(gt)':
+									valid_operator = True
+									try:
+										ei = float(examine)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+										loop = False
+										continue
+									try:
+										ti = float(target)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+										loop = False
+										continue
+									if ei>ti: 
+										do_command = True
+
+								if operator.lower()=='(eq)':
+									valid_operator = True
+									try:
+										ei = float(examine)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+										loop = False
+										continue
+									try:
+										ti = float(target)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+										loop = False
+										continue
+									if ei==ti: 
+										do_command = True
+
+								if operator.lower()=='(ne)':
+									valid_operator = True
+									try:
+										ei = float(examine)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{examine}\" is not a number"])
+										loop = False
+										continue
+									try:
+										ti = float(target)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a number"])
+										loop = False
+										continue
+									if ei!=ti: 
+										do_command = True
+
+								if not valid_operator:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{operator}\" is not a valid \"if\" operator"])
+									loop = False
+									do_command = False
+									continue
+
+								if do_command:
+									handled_goto = False
+									if len(stokens)==2:
+										if stokens[0].lower()=='goto':
+											if config.ENABLE_GOTO_COMMAND:
+												try:
+													ln = int(stokens[1])
+												except:
+													self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
+													loop = False
+													continue
+												ln = ln - 1
+												try:
+													code = script[ln]
+												except:
+													self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
+													loop = False
+													continue
+												index = ln
+												self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
+												handled_goto = True
 												continue
-											ln = ln - 1
-											try:
-												code = script[ln]
-											except:
-												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{stokens[1]}\" is not a valid line number"])
+											else:
+												self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: goto has been disabled"])
 												loop = False
+												handled_goto = True
 												continue
-											index = ln
-											self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
-											handled_goto = True
-											continue
-										else:
-											self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: goto has been disabled"])
-											loop = False
-											handled_goto = True
-											continue
-								if not handled_goto:
-									self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
-								script_only_command = True
-								continue
+									if not handled_goto:
+										self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
+									script_only_command = True
+									continue
 
-					if len(tokens)>0 and len(tokens)<5:
-						if tokens[0].lower()=='if':
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if called without enough arguments"])
-							loop = False
-							continue
-
-					# |=========|
-					# | context |
-					# |=========|
-					if len(tokens)==2:
-						if tokens[0].lower()=='context':
-							target = tokens[1]
-
-							buildTemporaryAliases(self.gui,self.window)
-							target = interpolateAliases(target)
-
-							is_valid = False
-							valids = self.gui.getAllConnectedWindows(self.window.client)
-							for c in valids:
-								if c.name==target:
-									self.window = c
-									is_valid = True
-
-							if is_valid==False:
-								valids = self.gui.getAllAllConnectedWindows()
-								for c in valids:
-									if c.name==target:
-										self.window = c
-										is_valid = True
-
-							if is_valid==False:
-								valids = self.gui.getAllConnectedServerWindows()
-								for w in valids:
-									c = w.widget()
-									if c.name==target:
-										self.window = c
-										is_valid = True
-									elif target==f"{c.client.server}":
-										self.window = c
-										is_valid = True
-									elif target==f"{c.client.server}:{c.client.port}":
-										self.window = c
-										is_valid = True
-
-							script_only_command = True
-
-							if not is_valid:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context cannot find window \"{target}\""])
-								loop = False
-							else:
-								continue
-
-					if len(tokens)>=1:
-						if tokens[0].lower()=='context' and len(tokens)==1:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context called without an argument"])
-							script_only_command = True
-							loop = False
-
-						if tokens[0].lower()=='context' and len(tokens)>2:
-							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context called with too many arguments"])
-							script_only_command = True
-							loop = False
-
-					# |======|
-					# | wait |
-					# |======|
-					if len(tokens)==2:
-						if tokens[0].lower()=='wait':
-							count = tokens[1]
-
-							buildTemporaryAliases(self.gui,self.window)
-							count = interpolateAliases(count)
-							try:
-								count = float(count)
-							except:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait called with a non-numerical argument"])
-								script_only_command = True
-								loop = False
-								continue
-							time.sleep(count)
-							script_only_command = True
-							continue
-
-					# |=====|
-					# | end |
-					# |=====|
-					if len(tokens)==1:
-						if tokens[0].lower()=='end':
-							loop = False
-							script_only_command = True
-							continue
-
-					# Bypass usage, already handled
-					if len(tokens)>=1:
-						if tokens[0].lower()=='usage':
-							script_only_command = True
-							continue
-
-					# Bypass restrict, already handled
-					if len(tokens)>=1:
-						if tokens[0].lower()=='restrict':
-							script_only_command = True
-							continue
-
-					# Bypass only, already handled
-					if len(tokens)>=1:
-						if tokens[0].lower()=='only':
-							script_only_command = True
-							continue
-
-					# Bypass exclude, already handled
-					if len(tokens)>=1:
-						if tokens[0].lower()=='exclude':
-							script_only_command = True
-							continue
-
-					# Bypass if, already handled
-					if len(tokens)>=1:
-						if tokens[0].lower()=='if':
-							script_only_command = True
-							continue
-
-					# Bypass insert, already handled
-					if len(tokens)>=1:
-						if tokens[0].lower()=='insert':
-							if config.ENABLE_INSERT_COMMAND:
-								script_only_command = True
-								continue
-							else:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: insert has been disabled"])
-								script_only_command = True
+						if len(tokens)>0 and len(tokens)<5:
+							if tokens[0].lower()=='if':
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: if called without enough arguments"])
 								loop = False
 								continue
 
-					if len(tokens)==2:
-						if tokens[0].lower()=='goto':
-							if config.ENABLE_GOTO_COMMAND:
+						# |=========|
+						# | context |
+						# |=========|
+						if len(tokens)==2:
+							if tokens[0].lower()=='context':
 								target = tokens[1]
 
 								buildTemporaryAliases(self.gui,self.window)
 								target = interpolateAliases(target)
 
-								try:
-									target = int(target)
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
+								is_valid = False
+								valids = self.gui.getAllConnectedWindows(self.window.client)
+								for c in valids:
+									if c.name==target:
+										self.window = c
+										is_valid = True
+
+								if is_valid==False:
+									valids = self.gui.getAllAllConnectedWindows()
+									for c in valids:
+										if c.name==target:
+											self.window = c
+											is_valid = True
+
+								if is_valid==False:
+									valids = self.gui.getAllConnectedServerWindows()
+									for w in valids:
+										c = w.widget()
+										if c.name==target:
+											self.window = c
+											is_valid = True
+										elif target==f"{c.client.server}":
+											self.window = c
+											is_valid = True
+										elif target==f"{c.client.server}:{c.client.port}":
+											self.window = c
+											is_valid = True
+
+								script_only_command = True
+
+								if not is_valid:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context cannot find window \"{target}\""])
 									loop = False
-									script_only_command = True
-									continue
-								try:
-									code = script[target-1]
-								except:
-									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
-									loop = False
+								else:
 									continue
 
-								index = target-1
-								self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
-								script_only_command = True
-								continue
-							else:
-								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: goto has been disabled"])
+						if len(tokens)>=1:
+							if tokens[0].lower()=='context' and len(tokens)==1:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context called without an argument"])
 								script_only_command = True
 								loop = False
-								continue
-					if not config.HALT_SCRIPT_EXECUTION_ON_ERROR:
-						if not halt_issued: loop = True
-					try:
-						self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
-					except:
-						pass
 
+							if tokens[0].lower()=='context' and len(tokens)>2:
+								self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: context called with too many arguments"])
+								script_only_command = True
+								loop = False
+
+						# |======|
+						# | wait |
+						# |======|
+						if len(tokens)==2:
+							if tokens[0].lower()=='wait':
+								count = tokens[1]
+
+								buildTemporaryAliases(self.gui,self.window)
+								count = interpolateAliases(count)
+								try:
+									count = float(count)
+								except:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: wait called with a non-numerical argument"])
+									script_only_command = True
+									loop = False
+									continue
+								time.sleep(count)
+								script_only_command = True
+								continue
+
+						# |=====|
+						# | end |
+						# |=====|
+						if len(tokens)==1:
+							if tokens[0].lower()=='end':
+								loop = False
+								script_only_command = True
+								continue
+
+						# Bypass usage, already handled
+						if len(tokens)>=1:
+							if tokens[0].lower()=='usage':
+								script_only_command = True
+								continue
+
+						# Bypass restrict, already handled
+						if len(tokens)>=1:
+							if tokens[0].lower()=='restrict':
+								script_only_command = True
+								continue
+
+						# Bypass only, already handled
+						if len(tokens)>=1:
+							if tokens[0].lower()=='only':
+								script_only_command = True
+								continue
+
+						# Bypass exclude, already handled
+						if len(tokens)>=1:
+							if tokens[0].lower()=='exclude':
+								script_only_command = True
+								continue
+
+						# Bypass if, already handled
+						if len(tokens)>=1:
+							if tokens[0].lower()=='if':
+								script_only_command = True
+								continue
+
+						# Bypass insert, already handled
+						if len(tokens)>=1:
+							if tokens[0].lower()=='insert':
+								if config.ENABLE_INSERT_COMMAND:
+									script_only_command = True
+									continue
+								else:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: insert has been disabled"])
+									script_only_command = True
+									loop = False
+									continue
+
+						if len(tokens)==2:
+							if tokens[0].lower()=='goto':
+								if config.ENABLE_GOTO_COMMAND:
+									target = tokens[1]
+
+									buildTemporaryAliases(self.gui,self.window)
+									target = interpolateAliases(target)
+
+									try:
+										target = int(target)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
+										loop = False
+										script_only_command = True
+										continue
+									try:
+										code = script[target-1]
+									except:
+										self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: \"{target}\" is not a valid line number"])
+										loop = False
+										continue
+
+									index = target-1
+									self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
+									script_only_command = True
+									continue
+								else:
+									self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: goto has been disabled"])
+									script_only_command = True
+									loop = False
+									continue
+						if not config.HALT_SCRIPT_EXECUTION_ON_ERROR:
+							if not halt_issued: loop = True
+						try:
+							self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
+						except Exception as e:
+							self.scriptError.emit([self.gui,self.window,f"Error on line {line_number} in {os.path.basename(filename)}: {e}"])
+		except Exception as e:
+			if self.filename==None:
+				filename = "script"
+			else:
+				filename = self.filename
+			self.scriptError.emit([self.gui,self.window,f"Error executing {os.path.basename(filename)}: {e}"])
+									
 		self.scriptEnd.emit([self.gui,self.id])
 
 def initialize(directory,directory_name,folder):

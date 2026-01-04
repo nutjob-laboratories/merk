@@ -368,10 +368,10 @@ class Dialog(QDialog):
 		self.username = QNoSpaceLineEdit(username)
 		self.realname = QLineEdit(realname)
 
-		nickl = QLabel("<b>Nickname:</b>")
-		altl = QLabel("<b>Alternate:</b>")
-		usrl = QLabel("<b>Username:</b>")
-		reall = QLabel("<b>Real name:</b>")
+		nickl = QLabel("<b>Nickname</b>")
+		altl = QLabel("<b>Alternate</b>")
+		usrl = QLabel("<b>Username</b>")
+		reall = QLabel("<b>Real name</b>")
 
 		userLayout = QFormLayout()
 		userLayout.addRow(nickl, self.nick)
@@ -394,13 +394,13 @@ class Dialog(QDialog):
 
 		serverLayout = QFormLayout()
 
-		hostl = QLabel("<b>Host:</b>")
+		hostl = QLabel("<b>Host</b>")
 		serverLayout.addRow(hostl, self.host)
 
-		portl = QLabel("<b>Port:</b>")
+		portl = QLabel("<b>Port</b>")
 		serverLayout.addRow(portl, self.port)
 
-		passl = QLabel("<b>Password:</b>")
+		passl = QLabel("<b>Password</b>")
 		serverLayout.addRow(passl, self.password)
 
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
