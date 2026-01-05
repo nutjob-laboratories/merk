@@ -266,8 +266,9 @@ if __name__ == '__main__':
 
 	def startMERK(app,gui):
 		gui.show()
-		# sys.exit(reactor.run())
 		reactor.run()
+		# Not sure why, but exiting this way prevents
+		# a segfault on linux. Ugh.
 		os._exit(0)
 
 	def install_python_plugin(filename):

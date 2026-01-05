@@ -963,6 +963,8 @@ def execute_script_line(data):
 					if config.DISPLAY_SCRIPT_ERRORS:
 						t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: end called with too many arguments")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
+						sys.stdout.write(f"Error on line {line_number}: end called with too many arguments\n")
 					return
 
 		if config.DISPLAY_SCRIPT_ERRORS:
@@ -978,10 +980,20 @@ def execute_script_line(data):
 					t = Message(ERROR_MESSAGE,'',f"Error on line {line_number}: Line \"{line}\" contains no command")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
+		if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
+			if not script_only_command:
+				if line[0]==config.ISSUE_COMMAND_SYMBOL:
+					sys.stdout.write(f"Error on line {line_number}: Unrecognized command \"{line}\"\n")
+				else:
+					sys.stdout.write(f"Error on line {line_number}: Line \"{line}\" contains no command\n")
+
 def execute_script_error(data):
 	gui = data[0]
 	window = data[1]
 	line = data[2]
+
+	if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
+		sys.stdout.write(f"{line}\n")
 
 	if config.DISPLAY_SCRIPT_ERRORS:
 		t = Message(ERROR_MESSAGE,'',line)

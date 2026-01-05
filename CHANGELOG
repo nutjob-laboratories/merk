@@ -115,6 +115,9 @@
   causing race-condition crashing in certain circumstances. The timeout for the
   thread closing is set by default to 1000ms, but can be changed in the config
   file.
+* Re-worked the layout of the settings dialog to be more compact.
+* New setting: write all script errors to STDOUT. This setting is turned off
+  by default, and can be toggled on the "advanced" page in the settings dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

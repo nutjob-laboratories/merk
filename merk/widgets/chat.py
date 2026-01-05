@@ -2467,6 +2467,11 @@ class Window(QMainWindow):
 
 		if self.client.client_id in self.parent.quitting: return
 
+		if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
+			if message.type==ERROR_MESSAGE:
+				if "Error on line" in message.contents:
+					sys.stdout.write(f"{message.contents}\n")
+
 		try:
 			if type(message)==type(str()):
 				self.chat.append(message)
