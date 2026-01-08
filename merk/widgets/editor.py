@@ -1361,7 +1361,7 @@ class Window(QMainWindow):
 				if hasattr(c.client,"network"):
 					network = c.client.network
 				else:
-					network = "Unknown network"
+					network = config.UNKNOWN_NETWORK_NAME+" network"
 				if hasattr(c.client,"server"):
 					if hasattr(c.client,"port"):
 						cname = f"{c.client.server}:{c.client.port}"
@@ -1381,7 +1381,7 @@ class Window(QMainWindow):
 					if hasattr(c.client,"network"):
 						network = c.client.network
 					else:
-						network = "Unknown network"
+						network = config.UNKNOWN_NETWORK_NAME+" network"
 					if hasattr(c.client,"hostname"):
 						cname = c.client.hostname
 					else:

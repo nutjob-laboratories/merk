@@ -1242,7 +1242,7 @@ class Merk(QMainWindow):
 						if hasattr(c.client,"network"):
 							mynet = c.client.network
 						else:
-							mynet = "Unknown"
+							mynet = config.UNKNOWN_NETWORK_NAME
 
 						if config.SHOW_LIST_IN_SYSTRAY_MENU:
 							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
@@ -1252,7 +1252,7 @@ class Merk(QMainWindow):
 							if not c.client.registered: entry.setEnabled(False)
 
 						if config.SHOW_LOGS_IN_SYSTRAY_MENU:
-							if mynet=="Unknown":
+							if mynet==config.UNKNOWN_NETWORK_NAME:
 								entry = QAction(QIcon(LOG_ICON),f"Logs",self)
 								entry.triggered.connect(self.menuExportLog)
 								sm.addAction(entry)
@@ -4999,7 +4999,7 @@ class Merk(QMainWindow):
 					if hasattr(c.client,"network"):
 						mynet = c.client.network
 					else:
-						mynet = "Unknown"
+						mynet = config.UNKNOWN_NETWORK_NAME
 
 					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 						netlink = get_network_link(mynet)
@@ -5037,7 +5037,7 @@ class Merk(QMainWindow):
 						entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
 						sm.addAction(entry)
 
-						if mynet=="Unknown": entry.setVisible(False)
+						if mynet==config.UNKNOWN_NETWORK_NAME: entry.setVisible(False)
 						if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
 
 					sm.addSeparator()

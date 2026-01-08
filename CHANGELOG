@@ -23,6 +23,13 @@
   to save to the user config is turned on in the connection dialog, that will
   be the new default while the app is running. This option is not saved to the
   config file.
+* New option: toggle saving connection history to the user file.
+* Fixed a bug in the log manager: doing a search from the tab bar now switches
+  to the log viewer tab when activated.
+* Added a setting to the config file that sets the "name" of networks on IRC
+  servers that aren't on a network; by default, this is set to "Unknown".
+  This setting is not settable in the settings dialog, but can be changed with
+  the /config command or by editing the config file manually.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.350                                  |

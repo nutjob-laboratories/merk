@@ -3543,11 +3543,16 @@ class Dialog(QDialog):
 		if config.DISPLAY_MOTD_AS_RAW_TEXT: self.motdRaw.setChecked(True)
 		self.motdRaw.stateChanged.connect(self.changedSetting)
 
+		self.saveHistory = QCheckBox("Save connection history",self)
+		if config.SAVE_CONNECTION_HISTORY: self.saveHistory.setChecked(True)
+		self.saveHistory.stateChanged.connect(self.changedSetting)
+
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(2)
 		csLayout.addWidget(self.askBeforeDisconnect)
 		csLayout.addWidget(self.notifyOnLostConnection)
 		csLayout.addWidget(self.promptFail)
+		csLayout.addWidget(self.saveHistory)
 		csLayout.addWidget(self.showNetLinks)
 		csLayout.addWidget(self.motdRaw)
 
@@ -5805,6 +5810,7 @@ class Dialog(QDialog):
 		config.DRAG_AND_DROP_MAIN_APPLICATION = self.enableDnD.isChecked()
 		config.MANAGERS_ALWAYS_ON_TOP = self.managerTop.isChecked()
 		config.PRINT_SCRIPT_ERRORS_TO_STDOUT = self.errorConsole.isChecked()
+		config.SAVE_CONNECTION_HISTORY = self.saveHistory.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

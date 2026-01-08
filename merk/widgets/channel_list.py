@@ -64,7 +64,7 @@ class Window(QMainWindow):
 		if hasattr(self.client,"network"):
 			self.network = self.client.network
 		else:
-			self.network = "Unknown network"
+			self.network = config.UNKNOWN_NETWORK_NAME+" network"
 
 		self.setWindowTitle(f"Channels on {self.server_name} ({self.network})")
 

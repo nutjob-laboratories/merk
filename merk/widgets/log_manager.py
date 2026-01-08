@@ -665,6 +665,7 @@ class Window(QMainWindow):
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 	def on_search(self):
+		self.tabs.setCurrentWidget(self.log_display)
 		search_text = self.search.text()
 
 		if search_text:
@@ -676,6 +677,7 @@ class Window(QMainWindow):
 				self.chat.find(search_text, QTextDocument.FindFlags())
 
 	def on_back(self):
+		self.tabs.setCurrentWidget(self.log_display)
 		search_text = self.search.text()
 		flags = QTextDocument.FindFlags() | QTextDocument.FindBackward
 

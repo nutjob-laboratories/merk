@@ -382,9 +382,13 @@ DRAG_AND_DROP_MAIN_APPLICATION = True
 MANAGERS_ALWAYS_ON_TOP = True
 SCRIPT_THREAD_QUIT_TIMEOUT = 1000
 PRINT_SCRIPT_ERRORS_TO_STDOUT = False
+SAVE_CONNECTION_HISTORY = True
+UNKNOWN_NETWORK_NAME = "Unknown"
 
 def build_settings():
 	settings = {
+		"unknown_network_name": UNKNOWN_NETWORK_NAME,
+		"save_connection_history": SAVE_CONNECTION_HISTORY,
 		"print_script_errors_to_stdout": PRINT_SCRIPT_ERRORS_TO_STDOUT,
 		"script_thread_quit_timeout": SCRIPT_THREAD_QUIT_TIMEOUT,
 		"managers_always_on_top": MANAGERS_ALWAYS_ON_TOP,
@@ -733,6 +737,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "unknown_network_name" in settings:
+		settings["unknown_network_name"] = UNKNOWN_NETWORK_NAME
+	if not "save_connection_history" in settings:
+		settings["save_connection_history"] = SAVE_CONNECTION_HISTORY
 	if not "print_script_errors_to_stdout" in settings:
 		settings["print_script_errors_to_stdout"] = PRINT_SCRIPT_ERRORS_TO_STDOUT
 	if not "script_thread_quit_timeout" in settings:
@@ -1766,6 +1774,8 @@ def load_settings(filename):
 	global MANAGERS_ALWAYS_ON_TOP
 	global SCRIPT_THREAD_QUIT_TIMEOUT
 	global PRINT_SCRIPT_ERRORS_TO_STDOUT
+	global SAVE_CONNECTION_HISTORY
+	global UNKNOWN_NETWORK_NAME
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1775,6 +1785,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		UNKNOWN_NETWORK_NAME = settings["unknown_network_name"]
+		SAVE_CONNECTION_HISTORY = settings["save_connection_history"]
 		PRINT_SCRIPT_ERRORS_TO_STDOUT = settings["print_script_errors_to_stdout"]
 		SCRIPT_THREAD_QUIT_TIMEOUT = settings["script_thread_quit_timeout"]
 		MANAGERS_ALWAYS_ON_TOP = settings["managers_always_on_top"]

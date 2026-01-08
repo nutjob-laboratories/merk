@@ -628,7 +628,7 @@ class Window(QMainWindow):
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-				if not hasattr(self.client,"network"): self.client.network = "Unknown"
+				if not hasattr(self.client,"network"): self.client.network = config.UNKNOWN_NETWORK_NAME
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
 					if netlink!=None:
@@ -3009,7 +3009,7 @@ def buildServerSettingsMenu(self,client):
 	if hasattr(client,"network"):
 		mynet = client.network
 	else:
-		mynet = "Unknown"
+		mynet = config.UNKNOWN_NETWORK_NAME
 
 	e = plainTextAction(self,"<b>Host"+f":</b> {name}")
 	optionsMenu.addAction(e)
