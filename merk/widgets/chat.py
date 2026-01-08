@@ -3343,24 +3343,25 @@ class SpellTextEdit(QPlainTextEdit):
 										self.ensureCursorVisible()
 										return
 				
-				if config.AUTOCOMPLETE_SCRIPTS:
-					# Auto-complete script filenames
-					if config.ISSUE_COMMAND_SYMBOL+'script' in self.text() or config.ISSUE_COMMAND_SYMBOL+'edit' in self.text():
-						cursor.select(QTextCursor.WordUnderCursor)
-						self.setTextCursor(cursor)
-						if self.textCursor().hasSelection():
-							text = self.textCursor().selectedText()
+				if config.SCRIPTING_ENGINE_ENABLED:
+					if config.AUTOCOMPLETE_FILENAMES:
+						# Auto-complete script filenames
+						if config.ISSUE_COMMAND_SYMBOL+'script' in self.text() or config.ISSUE_COMMAND_SYMBOL+'edit' in self.text():
+							cursor.select(QTextCursor.WordUnderCursor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
 
-							for script in commands.list_scripts():
-								if fnmatch.fnmatch(script,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(f"{script}")
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
+								for script in commands.list_scripts():
+									if fnmatch.fnmatch(script,f"{text}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{script}")
+										cursor.endEditBlock()
+										self.ensureCursorVisible()
+										return
 
 				if config.ENABLE_PLUGINS:
-					if config.AUTOCOMPLETE_SCRIPTS:
+					if config.AUTOCOMPLETE_FILENAMES:
 						# Auto-complete plugin filenames
 						if config.ISSUE_COMMAND_SYMBOL+'python' in self.text():
 							cursor.select(QTextCursor.WordUnderCursor)
@@ -3408,7 +3409,7 @@ class SpellTextEdit(QPlainTextEdit):
 								text = self.textCursor().selectedText()
 
 								for a in commands.ALIAS:
-									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text}*") or fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
 										cursor.endEditBlock()
@@ -3416,7 +3417,7 @@ class SpellTextEdit(QPlainTextEdit):
 										return
 
 								for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
-									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text}*") or fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
 										cursor.endEditBlock()
@@ -3484,7 +3485,7 @@ class SpellTextEdit(QPlainTextEdit):
 							# Skip client's nickname
 							if nick==self.parent.client.nickname:
 								continue
-							if fnmatch.fnmatch(nick,f"{text}*"):
+							if fnmatch.fnmatch(nick.lower(),f"{text}*") or fnmatch.fnmatch(nick,f"{text}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(f"{nick}")
 								cursor.endEditBlock()
@@ -3505,7 +3506,7 @@ class SpellTextEdit(QPlainTextEdit):
 
 						# Channel/server names
 						for name in self.parent.parent.getAllChatNames():
-							if fnmatch.fnmatch(name,f"{text}*"):
+							if fnmatch.fnmatch(name.lower(),f"{text}*") or fnmatch.fnmatch(name,f"{text}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(f"{name}")
 								cursor.endEditBlock()
@@ -3528,7 +3529,7 @@ class SpellTextEdit(QPlainTextEdit):
 
 							# Channel/server names
 							for name in self.parent.parent.getAllChatNames():
-								if fnmatch.fnmatch(name,f"{text}*"):
+								if fnmatch.fnmatch(name.lower(),f"{text}*") or fnmatch.fnmatch(name,f"{text}*"):
 									cursor.beginEditBlock()
 									cursor.insertText(f"{name}")
 									cursor.endEditBlock()
@@ -3655,9 +3656,6 @@ class SpellTextEdit(QPlainTextEdit):
 		# suggestions if it is.
 		if self.textCursor().hasSelection():
 			text = self.textCursor().selectedText()
-
-			# Make sure that words in the custom dictionary aren't flagged as misspelled
-			#if not text in config.DICTIONARY:
 
 			if config.ENABLE_SPELLCHECK:
 

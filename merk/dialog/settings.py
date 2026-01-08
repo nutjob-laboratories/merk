@@ -3815,7 +3815,7 @@ class Dialog(QDialog):
 		self.enableAutocomplete.stateChanged.connect(self.changedAutocomplete)
 
 		self.autocompleteScripts = QCheckBox("Filenames",self)
-		if config.AUTOCOMPLETE_SCRIPTS: self.autocompleteScripts.setChecked(True)
+		if config.AUTOCOMPLETE_FILENAMES: self.autocompleteScripts.setChecked(True)
 		self.autocompleteScripts.stateChanged.connect(self.changedSetting)
 
 		self.autocompleteSettings = QCheckBox("Settings",self)
@@ -5693,7 +5693,7 @@ class Dialog(QDialog):
 		config.ENABLE_DELAY_COMMAND = self.enableDelay.isChecked()
 		config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = self.windowbarItalics.isChecked()
 		config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = self.dcPrivate.isChecked()
-		config.AUTOCOMPLETE_SCRIPTS = self.autocompleteScripts.isChecked()
+		config.AUTOCOMPLETE_FILENAMES = self.autocompleteScripts.isChecked()
 		config.MAXIMIZE_SUBWINDOWS_ON_CREATION = self.autoMaxSubwindow.isChecked()
 		config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = self.nameTitleDisplay.isChecked()
 		config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = self.channelHidden.isChecked()

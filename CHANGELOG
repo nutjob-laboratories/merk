@@ -1,4 +1,30 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.400                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Fixed a bug where nickname, aliases, and channel name autocomplete was
+  case-sensitive.
+* Fixed a bug where script filename autocomplete worked even if scripting was
+  disabled.
+* Changed the name of the configuration file setting for autocompleting file-
+  names for /edit, /script, and /python commands to "autocomplete_filenames"
+  to reflect its current usage.
+* Fixed a bug where user information was being saved *while* checking for its
+  validity in the connection dialog.
+* Changed how the connection history is written. Now, connections are only
+  written to the history in the user config file when a connection has been
+  successfully completed (that is, registration has finished successfully).
+* Connection history now respects the "--donotsave" command-line flag.
+* "--donotsave" only sets the default for the connection dialog. If the option
+  to save to the user config is turned on in the connection dialog, that will
+  be the new default while the app is running. This option is not saved to the
+  config file.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.350                                  |
 |------------------------------------------------------------------------------|
 

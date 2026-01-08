@@ -143,6 +143,8 @@ class IRC_Connection(irc.IRCClient):
 
 		objectconfig(self,**kwargs)
 
+		user.load_user(user.USER_FILE)
+
 		self.oldnick = self.nickname
 		self.uptime = 0
 		self.registered = False
@@ -1287,23 +1289,48 @@ class IRC_Connection(irc.IRCClient):
 			for s in supports:
 				self.supports.append(s)
 
+		# Now, since we have a successful connection, we
+		# write the connection to the history in the user
+		# config file
 		if hasattr(self,'network'):
 			if self.network:
 
+				if not self.gui.donotsave:
+					user_history = list(user.HISTORY)
+
+					already_in_history = False
+					for s in user_history:
+						if s[0]==self.server:
+							if s[1]==str(self.port):
+								already_in_history = True
+
+					if not already_in_history:
+						if self.usessl:
+							sval = 'ssl'
+						else:
+							sval = 'normal'
+						entry = [ self.server,str(self.port),self.network,sval,self.password ]
+						user_history.append(entry)
+						user.HISTORY = list(user_history)
+						user.save_user(user.USER_FILE)
+		else:
+			if not self.gui.donotsave:
 				user_history = list(user.HISTORY)
 
-				newhistory = []
-				change = False
+				already_in_history = False
 				for s in user_history:
 					if s[0]==self.server:
 						if s[1]==str(self.port):
-							if s[2]==UNKNOWN_NETWORK:
-								s[2] = self.network
-								change = True
-					newhistory.append(s)
+							already_in_history = True
 
-				if change:
-					user.HISTORY = newhistory
+				if not already_in_history:
+					if self.usessl:
+						sval = 'ssl'
+					else:
+						sval = 'normal'
+					entry = [ self.server,str(self.port),'Unknown',sval,self.password ]
+					user_history.append(entry)
+					user.HISTORY = list(user_history)
 					user.save_user(user.USER_FILE)
 
 

@@ -262,7 +262,7 @@ HIDE_SERVER_WINDOWS_ON_SIGNON = False
 ENABLE_DELAY_COMMAND = True
 WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = True
 DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = True
-AUTOCOMPLETE_SCRIPTS = True
+AUTOCOMPLETE_FILENAMES = True
 MAXIMIZE_SUBWINDOWS_ON_CREATION = False
 SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = True
 SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = True
@@ -504,7 +504,7 @@ def build_settings():
 		"show_hidden_channel_windows_in_windowbar": SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR,
 		"show_channel_name_in_subwindow_title": SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE,
 		"maximize_subwindows_on_creation": MAXIMIZE_SUBWINDOWS_ON_CREATION,
-		"autocomplete_scripts": AUTOCOMPLETE_SCRIPTS,
+		"autocomplete_filenames": AUTOCOMPLETE_FILENAMES,
 		"doubleclick_userlist_to_open_private_chat": DOUBLECLICK_TO_OPEN_PRIVATE_CHAT,
 		"windowbar_show_connecting_server_windows_in_italics": WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS,
 		"enable_delay_command": ENABLE_DELAY_COMMAND,
@@ -971,8 +971,8 @@ def patch_settings(settings):
 		settings["show_channel_name_in_subwindow_title"] = SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE
 	if not "maximize_subwindows_on_creation" in settings:
 		settings["maximize_subwindows_on_creation"] = MAXIMIZE_SUBWINDOWS_ON_CREATION
-	if not "autocomplete_scripts" in settings:
-		settings["autocomplete_scripts"] = AUTOCOMPLETE_SCRIPTS
+	if not "autocomplete_filenames" in settings:
+		settings["autocomplete_filenames"] = AUTOCOMPLETE_FILENAMES
 	if not "doubleclick_userlist_to_open_private_chat" in settings:
 		settings["doubleclick_userlist_to_open_private_chat"] = DOUBLECLICK_TO_OPEN_PRIVATE_CHAT
 	if not "windowbar_show_connecting_server_windows_in_italics" in settings:
@@ -1646,7 +1646,7 @@ def load_settings(filename):
 	global ENABLE_DELAY_COMMAND
 	global WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS
 	global DOUBLECLICK_TO_OPEN_PRIVATE_CHAT
-	global AUTOCOMPLETE_SCRIPTS
+	global AUTOCOMPLETE_FILENAMES
 	global MAXIMIZE_SUBWINDOWS_ON_CREATION
 	global SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE
 	global SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR
@@ -1894,7 +1894,7 @@ def load_settings(filename):
 		SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR = settings["show_hidden_channel_windows_in_windowbar"]
 		SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE = settings["show_channel_name_in_subwindow_title"]
 		MAXIMIZE_SUBWINDOWS_ON_CREATION = settings["maximize_subwindows_on_creation"]
-		AUTOCOMPLETE_SCRIPTS = settings["autocomplete_scripts"]
+		AUTOCOMPLETE_FILENAMES = settings["autocomplete_filenames"]
 		DOUBLECLICK_TO_OPEN_PRIVATE_CHAT = settings["doubleclick_userlist_to_open_private_chat"]
 		WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS = settings["windowbar_show_connecting_server_windows_in_italics"]
 		ENABLE_DELAY_COMMAND = settings["enable_delay_command"]
