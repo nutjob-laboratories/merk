@@ -30,6 +30,7 @@ import shutil
 import sys
 import datetime
 import zipfile
+import platform
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -65,9 +66,10 @@ import merk.plugins as plugins
 if not is_running_from_pyinstaller():
 	myprog = f"python {os.path.basename(__file__)}"
 else:
-	myprog = "merk.exe"
-
-ARG_ABSENT = object()
+	if "Windows" in platform.system():
+		myprog = "merk.exe"
+	else:
+		myprog = "merk"
 
 parser = argparse.ArgumentParser(
 	prog=myprog,
@@ -379,8 +381,6 @@ if __name__ == '__main__':
 			else:
 				show_message("Invalid Qt window style",f"Valid available styles: {', '.join(QStyleFactory.keys())}")
 			sys.exit(1)
-
-	app = QApplication([])
 
 	# If user wants to store config data in the install
 	# directory, then set that up here

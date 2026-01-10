@@ -263,6 +263,8 @@ class Merk(QMainWindow):
 					add_to_list = True
 					for j in self.hiding:
 						if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+					for j in self.quitting:
+						if irc.CONNECTIONS[i].client_id == j: add_to_list = False
 					if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
 				if len(listOfConnections)==0: return
@@ -693,6 +695,8 @@ class Merk(QMainWindow):
 			add_to_list = True
 			for j in self.hiding:
 				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			for j in self.quitting:
+				if irc.CONNECTIONS[i].client_id == j: add_to_list = False
 			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
 		if len(listOfConnections)==0: self.connected_to_something = False
@@ -1220,6 +1224,8 @@ class Merk(QMainWindow):
 				add_to_list = True
 				for j in self.hiding:
 					if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+				for j in self.quitting:
+					if irc.CONNECTIONS[i].client_id == j: add_to_list = False
 				if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
 			if len(listOfConnections)>0:
@@ -2616,6 +2622,8 @@ class Merk(QMainWindow):
 			add_to_list = True
 			for j in self.hiding:
 				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			for j in self.quitting:
+				if irc.CONNECTIONS[i].client_id == j: add_to_list = False
 			if add_to_list:
 				if irc.CONNECTIONS[i].last_interaction!=-1:
 					irc.CONNECTIONS[i].last_interaction = 0
@@ -4966,6 +4974,8 @@ class Merk(QMainWindow):
 			add_to_list = True
 			for j in self.hiding:
 				if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+			for j in self.quitting:
+				if irc.CONNECTIONS[i].client_id == j: add_to_list = False
 			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
 			# Reset application title, due to there being
@@ -5259,6 +5269,11 @@ class Merk(QMainWindow):
 			x = StylerDefaultDialog(self)
 
 	def disconnectAll(self,disco_msg=None):
+
+		# Hide all windows
+		for window in self.MDI.subWindowList():
+			window.hide()
+
 		if not isinstance(disco_msg,str): disco_msg = None
 		windows = self.getAllServerWindows()
 		if len(windows)>0:
@@ -5301,6 +5316,8 @@ class Merk(QMainWindow):
 							commands.TEMPORARY_ALIAS = {}
 
 						c.client.quit(msg)
+
+					self.buildWindowbar()
 
 			QApplication.restoreOverrideCursor()
 

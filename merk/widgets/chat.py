@@ -2393,6 +2393,14 @@ class Window(QMainWindow):
 		do_disconnect = self.parent.askDisconnect(self.client)
 
 		if do_disconnect:
+
+			# Hide all windows associated with this disconnection
+			for window in self.parent.MDI.subWindowList():
+				c = window.widget()
+				if hasattr(c,"client"):
+					if c.client==self.client:
+						window.hide()
+
 			if no_hostname:
 				self.parent.quitting[self.client.client_id] = 0
 				self.client.quit()
@@ -2407,6 +2415,8 @@ class Window(QMainWindow):
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
 				self.client.quit(msg)
+
+			self.parent.buildWindowbar()
 
 	def changeNick(self):
 		newnick = dialog.NewNickDialog(self.client.nickname,self.parent)

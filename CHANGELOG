@@ -30,6 +30,15 @@
   servers that aren't on a network; by default, this is set to "Unknown".
   This setting is not settable in the settings dialog, but can be changed with
   the /config command or by editing the config file manually.
+* Bugfix: removed a duplicate call to QApplication() from merk.py. This was
+  preventing the initial connection dialog from being shown on some 32-bit
+  Linux installs.
+* Tweak to merk.py to show the proper executable name in the help display,
+  depending on platform.
+* All windows associated with a given connection are hidden before closing when
+  that connection is disconnected.
+* The windowbar now correctly hides windows for connections in the process of
+  disconnecting.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.350                                  |
