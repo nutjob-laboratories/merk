@@ -74,7 +74,7 @@ ASK_BEFORE_RECONNECT = False
 NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
 ALWAYS_SCROLL_TO_BOTTOM = False
 PROMPT_ON_FAILED_CONNECTION = True
-DISPLAY_ACTIVE_CHAT_IN_TITLE = True
+DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE = True
 TIMESTAMP_FORMAT = "%H:%M:%S"
 TIMESTAMP_24_HOUR = True
 TIMESTAMP_SHOW_SECONDS = True
@@ -384,9 +384,11 @@ SCRIPT_THREAD_QUIT_TIMEOUT = 1000
 PRINT_SCRIPT_ERRORS_TO_STDOUT = False
 SAVE_CONNECTION_HISTORY = True
 UNKNOWN_NETWORK_NAME = "Unknown"
+WINDOWBAR_TOPIC_IN_TOOLTIP = False
 
 def build_settings():
 	settings = {
+		"windowbar_channel_topic_in_tooltip": WINDOWBAR_TOPIC_IN_TOOLTIP,
 		"unknown_network_name": UNKNOWN_NETWORK_NAME,
 		"save_connection_history": SAVE_CONNECTION_HISTORY,
 		"print_script_errors_to_stdout": PRINT_SCRIPT_ERRORS_TO_STDOUT,
@@ -661,7 +663,7 @@ def build_settings():
 		"notify_on_lost_or_failed_connection": NOTIFY_ON_LOST_OR_FAILED_CONNECTION,
 		"always_scroll_to_bottom": ALWAYS_SCROLL_TO_BOTTOM,
 		"prompt_on_failed_connection": PROMPT_ON_FAILED_CONNECTION,
-		"display_active_chat_in_title": DISPLAY_ACTIVE_CHAT_IN_TITLE,
+		"display_active_subwindow_in_title": DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE,
 		"timestamp_24_hour": TIMESTAMP_24_HOUR,
 		"timestamp_show_seconds": TIMESTAMP_SHOW_SECONDS,
 		"plain_user_lists": PLAIN_USER_LISTS,
@@ -737,6 +739,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "windowbar_channel_topic_in_tooltip" in settings:
+		settings["windowbar_channel_topic_in_tooltip"] = WINDOWBAR_TOPIC_IN_TOOLTIP
 	if not "unknown_network_name" in settings:
 		settings["unknown_network_name"] = UNKNOWN_NETWORK_NAME
 	if not "save_connection_history" in settings:
@@ -1331,8 +1335,8 @@ def patch_settings(settings):
 		settings["timestamp_24_hour"] = TIMESTAMP_24_HOUR
 	if not "timestamp_show_seconds" in settings:
 		settings["timestamp_show_seconds"] = TIMESTAMP_SHOW_SECONDS
-	if not "display_active_chat_in_title" in settings:
-		settings["display_active_chat_in_title"] = DISPLAY_ACTIVE_CHAT_IN_TITLE
+	if not "display_active_subwindow_in_title" in settings:
+		settings["display_active_subwindow_in_title"] = DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE
 	if not "prompt_on_failed_connection" in settings:
 		settings["prompt_on_failed_connection"] = PROMPT_ON_FAILED_CONNECTION
 	if not "always_scroll_to_bottom" in settings:
@@ -1468,7 +1472,7 @@ def load_settings(filename):
 	global NOTIFY_ON_LOST_OR_FAILED_CONNECTION
 	global ALWAYS_SCROLL_TO_BOTTOM
 	global PROMPT_ON_FAILED_CONNECTION
-	global DISPLAY_ACTIVE_CHAT_IN_TITLE
+	global DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE
 	global TIMESTAMP_24_HOUR
 	global TIMESTAMP_SHOW_SECONDS
 	global PLAIN_USER_LISTS
@@ -1776,6 +1780,7 @@ def load_settings(filename):
 	global PRINT_SCRIPT_ERRORS_TO_STDOUT
 	global SAVE_CONNECTION_HISTORY
 	global UNKNOWN_NETWORK_NAME
+	global WINDOWBAR_TOPIC_IN_TOOLTIP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1785,6 +1790,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_TOPIC_IN_TOOLTIP = settings["windowbar_channel_topic_in_tooltip"]
 		UNKNOWN_NETWORK_NAME = settings["unknown_network_name"]
 		SAVE_CONNECTION_HISTORY = settings["save_connection_history"]
 		PRINT_SCRIPT_ERRORS_TO_STDOUT = settings["print_script_errors_to_stdout"]
@@ -2072,7 +2078,7 @@ def load_settings(filename):
 		PLAIN_USER_LISTS = settings["plain_user_lists"]
 		TIMESTAMP_24_HOUR = settings["timestamp_24_hour"]
 		TIMESTAMP_SHOW_SECONDS = settings["timestamp_show_seconds"]
-		DISPLAY_ACTIVE_CHAT_IN_TITLE = settings["display_active_chat_in_title"]
+		DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE = settings["display_active_subwindow_in_title"]
 		PROMPT_ON_FAILED_CONNECTION = settings["prompt_on_failed_connection"]
 		ALWAYS_SCROLL_TO_BOTTOM = settings["always_scroll_to_bottom"]
 		NOTIFY_ON_LOST_OR_FAILED_CONNECTION = settings["notify_on_lost_or_failed_connection"]

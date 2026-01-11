@@ -1399,6 +1399,7 @@ class Dialog(QDialog):
 			self.windowbarReadme.setEnabled(True)
 			self.windowBarBold.setEnabled(True)
 			self.windowbarMention.setEnabled(True)
+			self.windowbarChannelTopic.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1426,6 +1427,7 @@ class Dialog(QDialog):
 			self.windowbarReadme.setEnabled(False)
 			self.windowBarBold.setEnabled(False)
 			self.windowbarMention.setEnabled(False)
+			self.windowbarChannelTopic.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -1833,7 +1835,7 @@ class Dialog(QDialog):
 		self.noShowServerTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showChatInTitle = QCheckBox("Show active subwindow title in\napplication title",self)
-		if config.DISPLAY_ACTIVE_CHAT_IN_TITLE: self.showChatInTitle.setChecked(True)
+		if config.DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
 		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
@@ -2424,6 +2426,10 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_SHOW_UNREAD_MENTIONS: self.windowbarMention.setChecked(True)
 		self.windowbarMention.stateChanged.connect(self.menuChange)
 
+		self.windowbarChannelTopic = QCheckBox("Channel topic in tooltip",self)
+		if config.WINDOWBAR_TOPIC_IN_TOOLTIP: self.windowbarChannelTopic.setChecked(True)
+		self.windowbarChannelTopic.stateChanged.connect(self.menuChange)
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2451,6 +2457,7 @@ class Dialog(QDialog):
 			self.windowbarReadme.setEnabled(False)
 			self.windowBarBold.setEnabled(False)
 			self.windowbarMention.setEnabled(False)
+			self.windowbarChannelTopic.setEnabled(False)
 
 		includesLayout2 = QFormLayout()
 		includesLayout2.setSpacing(0)
@@ -2470,9 +2477,11 @@ class Dialog(QDialog):
 		windowbar1Layout.addStretch()
 
 		windowbar2Layout = QHBoxLayout()
+		windowbar2Layout.addStretch()
 		windowbar2Layout.addWidget(self.windowBarFloat)
 		windowbar2Layout.addWidget(self.windowBarTop)
 		windowbar2Layout.addWidget(self.autoHide)
+		windowbar2Layout.addStretch()
 
 		hiddenLayout = QHBoxLayout()
 		hiddenLayout.addWidget(self.serverHidden)
@@ -2485,13 +2494,19 @@ class Dialog(QDialog):
 		wbAppearLayout.addWidget(self.windowBarUnderline)
 		wbAppearLayout.addStretch()
 
+		entLayout = QHBoxLayout()
+		entLayout.addStretch()
+		entLayout.addWidget(self.windowbarMenu)
+		entLayout.addStretch()
+		entLayout.addWidget(self.windowbarEntryMenu)
+		entLayout.addStretch()
+
 		wbOpts = QVBoxLayout()
 		wbOpts.setSpacing(2)
 		wbOpts.addLayout(windowbar1Layout)
 		wbOpts.addLayout(windowbar2Layout)
+		wbOpts.addLayout(entLayout)
 		wbOpts.addLayout(justifyLayout)
-		wbOpts.addWidget(self.windowbarMenu)
-		wbOpts.addWidget(self.windowbarEntryMenu)
 		wbOpts.addWidget(self.windowBarFirst)
 		wbOpts.addWidget(self.windowBarHover)
 		wbOpts.addWidget(self.windowBarIcons)
@@ -2499,6 +2514,7 @@ class Dialog(QDialog):
 		wbOpts.addWidget(self.windowbarUnread)
 		wbOpts.addWidget(self.windowbarMention)
 		wbOpts.addWidget(self.windowbarItalics)
+		wbOpts.addWidget(self.windowbarChannelTopic)
 
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
@@ -5506,7 +5522,7 @@ class Dialog(QDialog):
 			if not self.enableBuiltin.isChecked():
 				reset_built_in = True
 
-		config.DISPLAY_ACTIVE_CHAT_IN_TITLE = self.showChatInTitle.isChecked()
+		config.DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE = self.showChatInTitle.isChecked()
 		config.PROMPT_ON_FAILED_CONNECTION = self.promptFail.isChecked()
 		config.ALWAYS_SCROLL_TO_BOTTOM = self.writeScroll.isChecked()
 		config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = self.notifyOnLostConnection.isChecked()
@@ -5811,6 +5827,7 @@ class Dialog(QDialog):
 		config.MANAGERS_ALWAYS_ON_TOP = self.managerTop.isChecked()
 		config.PRINT_SCRIPT_ERRORS_TO_STDOUT = self.errorConsole.isChecked()
 		config.SAVE_CONNECTION_HISTORY = self.saveHistory.isChecked()
+		config.WINDOWBAR_TOPIC_IN_TOOLTIP = self.windowbarChannelTopic.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

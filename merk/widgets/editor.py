@@ -2070,12 +2070,12 @@ class Window(QMainWindow):
 			script.close()
 			self.filename = fileName
 			self.changed = False
-			self.updateApplicationTitle()
 			self.menuSave.setEnabled(True)
 			self.menuSave.setShortcut("Ctrl+S")
 			self.menuSaveAs.setShortcut(QKeySequence())
 			self.editing_user_script = False
 			self.current_user_script = None
+			self.updateApplicationTitle()
 
 	def doFileSave(self):
 

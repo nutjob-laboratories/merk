@@ -33,12 +33,27 @@
 * Bugfix: removed a duplicate call to QApplication() from merk.py. This was
   preventing the initial connection dialog from being shown on some 32-bit
   Linux installs.
-* Tweak to merk.py to show the proper executable name in the help display,
+* Tweak to merk.py to show the proper executable name in the --help display,
   depending on platform.
 * All windows associated with a given connection are hidden before closing when
   that connection is disconnected.
 * The windowbar now correctly hides windows for connections in the process of
   disconnecting.
+* New option: display channel topic in the tooltip for channel entries in the
+  windowbar. Disabled by default.
+* Bugfix: the application title will now no longer change for subwindows that
+  are not visible or are in the process of disconnecting from the server. The
+  application title will show the "default" window title in both of those
+  cases.
+* Bugfix: fixed the application title not correctly updating when switching
+  from editing a connection script to a user script.
+* Changed the internal and config file name of the "display active subwindow
+  in application title" setting to reflect how the settin actually works.
+* ALL script error messages now show the name of the file the error occurred
+  in, not just errors in script-only commands. If the error occurred in a
+  connection script, the filename is set to SERVER:PORT, and if the filename
+  is not known or does not exist, it is set to 'script'. The base filename of
+  the script is used (without the path).
 
 |------------------------------------------------------------------------------|
 |                                   0.051.350                                  |
