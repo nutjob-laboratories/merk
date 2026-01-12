@@ -68,14 +68,14 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'self.master', 'self.privates', 'self.all_privates', 'self.channels', 'self.all_channels',
 					'self.private','self.channel','self.restore','self.maximized','self.max','self.minimized',
 					'self.min', 'self.alias', 'self.bind', 'self.unbind', 'self.macro', 'self.move', 'self.emojize',
-					'self.resize', 'self.id', 'self.console',
+					'self.resize', 'self.id', 'self.console', 'self.unmacro',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
 					'def kick', 'def kicked', 'def tick', 'def mode', 'def unmode', 'def quit', 'def line_in', 'def line_out', 
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
 					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd',
-					'def server', 'def subwindow', 'def close', 'def me', 'def error', 'def isupport',
+					'def server', 'def subwindow', 'def close', 'def me', 'def error', 'def isupport', 'def uninstall',
 
 					]
 		for word in keywords:
@@ -272,6 +272,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window install",
 			cmdsymbol+"window uninstall",
 			cmdsymbol+"python",
+			cmdsymbol+"unmacro",
 		]
 
 		script_only = [

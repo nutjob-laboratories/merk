@@ -376,7 +376,7 @@ SHOW_ISON_INFO_IN_CURRENT_WINDOW = False
 PLUGIN_ISON = True
 BAD_NICKNAME_FALLBACK = 'Guest'
 WINDOWBAR_SHOW_UNREAD_MENTIONS = False
-AUTO_RELOAD_ON_CLOSE = True
+AUTO_RELOAD_ON_CLOSE = False
 DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = True
 DRAG_AND_DROP_MAIN_APPLICATION = True
 MANAGERS_ALWAYS_ON_TOP = True
@@ -385,9 +385,17 @@ PRINT_SCRIPT_ERRORS_TO_STDOUT = False
 SAVE_CONNECTION_HISTORY = True
 UNKNOWN_NETWORK_NAME = "Unknown"
 WINDOWBAR_TOPIC_IN_TOOLTIP = False
+EXECUTE_INIT_ON_PLUGIN_RELOAD = True
+CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = True
+RELOAD_PLUGINS_AFTER_UNINSTALL = True
+PLUGIN_UNINSTALL = True
 
 def build_settings():
 	settings = {
+		"enable_plugin_uninstall_event": PLUGIN_UNINSTALL,
+		"reload_plugins_after_uninstall": RELOAD_PLUGINS_AFTER_UNINSTALL,
+		"clear_plugins_from_memory_on_reload": CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD,
+		"execute_init_event_on_plugin_reload": EXECUTE_INIT_ON_PLUGIN_RELOAD,
 		"windowbar_channel_topic_in_tooltip": WINDOWBAR_TOPIC_IN_TOOLTIP,
 		"unknown_network_name": UNKNOWN_NETWORK_NAME,
 		"save_connection_history": SAVE_CONNECTION_HISTORY,
@@ -396,7 +404,7 @@ def build_settings():
 		"managers_always_on_top": MANAGERS_ALWAYS_ON_TOP,
 		"enable_application_drag_and_drop": DRAG_AND_DROP_MAIN_APPLICATION,
 		"display_messagebox_on_plugin_error": DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS,
-		"automatically_reload_plugins_on_editor_close": AUTO_RELOAD_ON_CLOSE,
+		"reload_plugins_on_editor_close": AUTO_RELOAD_ON_CLOSE,
 		"windowbar_show_unread_mentions": WINDOWBAR_SHOW_UNREAD_MENTIONS,
 		"bad_nickname_fallback": BAD_NICKNAME_FALLBACK,
 		"enable_plugin_ison_event": PLUGIN_ISON,
@@ -739,6 +747,14 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_plugin_uninstall_event" in settings:
+		settings["enable_plugin_uninstall_event"] = PLUGIN_UNINSTALL
+	if not "reload_plugins_after_uninstall" in settings:
+		settings["reload_plugins_after_uninstall"] = RELOAD_PLUGINS_AFTER_UNINSTALL
+	if not "clear_plugins_from_memory_on_reload" in settings:
+		settings["clear_plugins_from_memory_on_reload"] = CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD
+	if not "execute_init_event_on_plugin_reload" in settings:
+		settings["execute_init_event_on_plugin_reload"] = EXECUTE_INIT_ON_PLUGIN_RELOAD
 	if not "windowbar_channel_topic_in_tooltip" in settings:
 		settings["windowbar_channel_topic_in_tooltip"] = WINDOWBAR_TOPIC_IN_TOOLTIP
 	if not "unknown_network_name" in settings:
@@ -755,8 +771,8 @@ def patch_settings(settings):
 		settings["enable_application_drag_and_drop"] = DRAG_AND_DROP_MAIN_APPLICATION
 	if not "display_messagebox_on_plugin_error" in settings:
 		settings["display_messagebox_on_plugin_error"] = DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS
-	if not "automatically_reload_plugins_on_editor_close" in settings:
-		settings["automatically_reload_plugins_on_editor_close"] = AUTO_RELOAD_ON_CLOSE
+	if not "reload_plugins_on_editor_close" in settings:
+		settings["reload_plugins_on_editor_close"] = AUTO_RELOAD_ON_CLOSE
 	if not "windowbar_show_unread_mentions" in settings:
 		settings["windowbar_show_unread_mentions"] = WINDOWBAR_SHOW_UNREAD_MENTIONS
 	if not "bad_nickname_fallback" in settings:
@@ -1781,6 +1797,10 @@ def load_settings(filename):
 	global SAVE_CONNECTION_HISTORY
 	global UNKNOWN_NETWORK_NAME
 	global WINDOWBAR_TOPIC_IN_TOOLTIP
+	global EXECUTE_INIT_ON_PLUGIN_RELOAD
+	global CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD
+	global RELOAD_PLUGINS_AFTER_UNINSTALL
+	global PLUGIN_UNINSTALL
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1790,6 +1810,10 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PLUGIN_UNINSTALL = settings["enable_plugin_uninstall_event"]
+		RELOAD_PLUGINS_AFTER_UNINSTALL = settings["reload_plugins_after_uninstall"]
+		CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = settings["clear_plugins_from_memory_on_reload"]
+		EXECUTE_INIT_ON_PLUGIN_RELOAD = settings["execute_init_event_on_plugin_reload"]
 		WINDOWBAR_TOPIC_IN_TOOLTIP = settings["windowbar_channel_topic_in_tooltip"]
 		UNKNOWN_NETWORK_NAME = settings["unknown_network_name"]
 		SAVE_CONNECTION_HISTORY = settings["save_connection_history"]
@@ -1798,7 +1822,7 @@ def load_settings(filename):
 		MANAGERS_ALWAYS_ON_TOP = settings["managers_always_on_top"]
 		DRAG_AND_DROP_MAIN_APPLICATION = settings["enable_application_drag_and_drop"]
 		DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS = settings["display_messagebox_on_plugin_error"]
-		AUTO_RELOAD_ON_CLOSE = settings["automatically_reload_plugins_on_editor_close"]
+		AUTO_RELOAD_ON_CLOSE = settings["reload_plugins_on_editor_close"]
 		WINDOWBAR_SHOW_UNREAD_MENTIONS = settings["windowbar_show_unread_mentions"]
 		BAD_NICKNAME_FALLBACK = settings["bad_nickname_fallback"]
 		PLUGIN_ISON = settings["enable_plugin_ison_event"]

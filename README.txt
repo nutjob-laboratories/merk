@@ -80,7 +80,7 @@ To connect to IRC servers via SSL, two additional libraries may be needed:
     pip install pyOpenSSL
     pip install service_identity
 
-**MERK** is being developed with Python 3.13 on Windows 11 and Python 3.12 on Linux Mint 22.2. Most development work is being done on Linux.
+**MERK** is being developed with Python 3.13 on Windows 11 and Python 3.12 on Linux Mint 22.3. Most development work is being done on Linux.
 
 If you're running Windows, and you're getting errors when trying to run **MERK**, you may have to install another library, [pywin32](https://pypi.org/project/pywin32/). You can also install this with [**pip**](https://pypi.org/project/pip/):
 
@@ -344,6 +344,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
 | `/unbind SEQUENCE`                        | Removes a bind for `SEQUENCE`. To remove all binds, pass `*` as the argument                                                        |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
+| `/unmacro NAME`                        | Deletes the macro named `NAME`  |
 | `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. *Can only be called by scripts*                                                        |
 | `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk! |
 | `/userhost NICK(S)...`          | Requests information about users from the server |

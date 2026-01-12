@@ -432,6 +432,10 @@ class wMenuButton(QPushButton):
 			self.setStyleSheet(self.normal_style)
 		return False
 
+	def focusOutEvent(self, event):
+		self.setStyleSheet(self.normal_style)
+		super(wMenuButton, self).focusOutEvent(event)
+
 	def pulse(self):
 		self.effect = QGraphicsOpacityEffect(self)
 		self.setGraphicsEffect(self.effect)
@@ -450,6 +454,10 @@ class wMenuButton(QPushButton):
 class wIconMenuButton(QPushButton):
 	doubleClicked = pyqtSignal()
 	clicked = pyqtSignal()
+
+	def focusOutEvent(self, event):
+		self.setStyleSheet(self.normal_style)
+		super(wIconMenuButton, self).focusOutEvent(event)
 
 	def setWindow(self,window):
 		self.window = window.widget()

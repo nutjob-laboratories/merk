@@ -56,13 +56,26 @@ class ExamplePlugin(Plugin):
     # | init |
     # |======|
     #
-    # This event is triggered when the plugin is loaded.
-    # It will only be triggered once.
+    # This event is triggered whenever the plugin is
+    # loaded or reloaded.
     #
     # Arguments:
     #   None
     #
     def init(self):
+        pass
+
+    # |===========|
+    # | uninstall |
+    # |===========|
+    #
+    # This event is triggered whenever the plugin is
+    # uninstalled with the plugin manager.
+    #
+    # Arguments:
+    #   None
+    #
+    def uninstall(self):
         pass
 
     # |========|

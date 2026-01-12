@@ -54,6 +54,39 @@
   connection script, the filename is set to SERVER:PORT, and if the filename
   is not known or does not exist, it is set to 'script'. The base filename of
   the script is used (without the path).
+* Added a setting to toggle re-execution of plugin init() events on plugin
+  reload.
+* The default setting to auto-reload plugins on Python editor close has been
+  changed from "true" to "false". Users can still change this setting. The
+  name for this setting has been changed in the configuration file to make
+  sure that this setting is changed for all users going forward.
+* Clicking "apply" on the settings dialog no longer reloads plugins.
+* Bugfix: an error encountered while loading plugins stop any plugins from
+  loading. Plugin load errors are now handled properly, and any plugins NOT
+  showing errors will load fully.
+* Added a setting to toggle whether plugins are automatically reloaded when a
+  plugin is uninstalled with the plugin manager.
+* New command: /unmacro, which removes macros from memory.
+* Bugfix: the "bold on hover" effect no longer "gets stuck" on the menu- and
+  windowbar.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Plugins are now completely removed from memory before being reloaded. This
+  behavior can be toggled in the settings dialog, but is turned on by default.
+* Plugin init() events are now executed EVERY TIME a plugin is loaded or
+  reloaded. The documentation and the plugin skeleton have been updated to
+  note this change.
+* Re-execution of init() events can be turned off in settings or with the
+  /config command.
+* New plugin inherited method: unmacro(), which removes a macro from memory,
+  much like the /unmacro command.
+* New plugin event: uninstall(), which is triggered when the plugin manager is
+  used to uninstall a plugin.
+* The example plugins in the repo have been updated to use the uninstall()
+  event.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.350                                  |

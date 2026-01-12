@@ -28,6 +28,8 @@ import os
 from pathlib import Path
 import inspect
 import uuid
+import importlib
+import gc
 
 from pike.manager import PikeManager
 
@@ -481,6 +483,13 @@ class Plugin():
 	def emojize(self,message):
 		return emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 
+	def unmacro(self,name):
+		if self._gui!=None:
+			if not commands.does_macro_name_exist(name): return False
+			commands.remove_command(name)
+			commands.build_help_and_autocomplete()
+			return True
+
 	def macro(self,name,script,musage=None,mhelp=None):
 		if self._gui!=None:
 			# If the first character is the issue command
@@ -748,18 +757,31 @@ EVENTS = [
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
-	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison'
+	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall'
 ]
 
 BUILT_IN = [
 	'alias', 'all_channels', 'all_masters', 'all_privates',
-    'all_windows', 'bind', 'channel', 'channels', 'clients',
-    'console', 'emojize', 'find', 'home', 'id', 'ignore',
-    'ignores', 'is_away', 'is_ignored', 'list', 'macro',
-    'master', 'max', 'maximized', 'min', 'minimized', 'modes',
-    'move', 'private', 'privates', 'resize', 'restore', 'script',
-    'unbind', 'unignore', 'windows'   
+	'all_windows', 'bind', 'channel', 'channels', 'clients',
+	'console', 'emojize', 'find', 'home', 'id', 'ignore',
+	'ignores', 'is_away', 'is_ignored', 'list', 'macro',
+	'master', 'max', 'maximized', 'min', 'minimized', 'modes',
+	'move', 'private', 'privates', 'resize', 'restore', 'script',
+	'unbind', 'unignore', 'windows'   
 ]
+
+def uninstall(obj):
+	if not config.ENABLE_PLUGINS: return
+	if not config.PLUGIN_UNINSTALL: return
+	if hasattr(obj,"uninstall"):
+		try:
+			obj.uninstall()
+		except Exception as e:
+			if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+				QMessageBox.critical(obj._gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"uninstall\": {e}')
+				sys.stdout.write(f"Error executing {obj._filename} event \"uninstall\": {e}\n")
+			else:
+				sys.stdout.write(f"Error executing {obj._filename} event \"uninstall\": {e}\n")
 
 def init(obj):
 	if not config.ENABLE_PLUGINS: return
@@ -896,7 +918,6 @@ def load_plugins(gui):
 
 	PLUGIN_FILENAMES = []
 	PLUGIN_NAMES = []
-	PLUGIN_INIT = []
 	PLUGIN_IDS = {}
 	ERRORS = []
 
@@ -906,15 +927,22 @@ def load_plugins(gui):
 				PLUGIN_FILENAMES.append(f"{o._filename}")
 			if os.path.exists(o._filename) or os.path.isfile(o._filename):
 				PLUGIN_NAMES.append(f"{o.NAME} {o.VERSION}")
-			if hasattr(o,"init"):
-				if os.path.exists(o._filename) or os.path.isfile(o._filename):
-					s = inspect.getsourcelines(o.init)
-					PLUGIN_INIT.append([str(o._filename),s])
 			PLUGIN_IDS[o._filename] = str(o._id)
 
+	# Remove the old plugins from memory
+	if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
+		modules_to_reload = set(obj.__class__.__module__ for obj in PLUGINS)
+		
 	PLUGINS.clear()
 
-	if not config.ENABLE_PLUGINS: return
+	if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
+		for mod_name in modules_to_reload:
+			if mod_name in sys.modules:
+				del sys.modules[mod_name]
+
+	if not config.ENABLE_PLUGINS:
+		if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD: gc.collect()
+		return
 
 	with PikeManager([PLUGIN_DIRECTORY]) as mgr:
 		classes = mgr.get_classes()
@@ -922,6 +950,8 @@ def load_plugins(gui):
 	for c in classes:
 		# Ignore the base plugin class
 		if c.__name__=="Plugin": continue
+
+		LOCAL_ERRORS = []
 
 		# Create an instance of the plugin class
 		obj = c()
@@ -948,21 +978,6 @@ def load_plugins(gui):
 
 		obj._icon = icon_filename
 
-		do_init = True
-		for o in PLUGIN_FILENAMES:
-			if o==f"{obj._filename}":
-				do_init = False
-
-		if hasattr(obj,"init"):
-			s = inspect.getsourcelines(obj.init)
-			for o in PLUGIN_INIT:
-				if o[0]==obj._filename:
-					if o[1]!=s:
-						# The reloaded object's init() event
-						# has changed, so let's re-execute the
-						# event
-						do_init = True
-
 		obj._basename = os.path.basename(obj._filename)
 
 		obj._calls = count_callable_methods(obj)
@@ -976,7 +991,7 @@ def load_plugins(gui):
 
 		# Make sure the plugin inherits from the "Plugin" class
 		if not issubclass(type(obj), Plugin):
-			ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
+			LOCAL_ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
 
 		if not hasattr(obj,"NAME"): obj.NAME = "Unknown"
 		if not hasattr(obj,"AUTHOR"): obj.AUTHOR = "Unknown"
@@ -991,36 +1006,45 @@ def load_plugins(gui):
 		if obj._methods<0: obj._methods = 0
 
 		if obj._events==0 and obj._calls==0:
-			ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
+			LOCAL_ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
+
+		if obj._filename in PLUGIN_FILENAMES:
+			plugin_is_being_reloaded = True
+		else:
+			plugin_is_being_reloaded = False
 
 		no_error = True
 		for o in PLUGIN_NAMES:
 			if o==f"{obj.NAME} {obj.VERSION}":
-				no_error = False
-				# The plugin may have been edited in the manager.
-				# If the offending plugin has the same file name
-				# as the loaded plugin, then we will assume the
-				# plugin has been edited, not show an error, and
-				# load it anyway.
-				for p in PLUGIN_FILENAMES:
-					if p==obj._filename:
-						no_error = True
+				if plugin_is_being_reloaded:
+					no_error = True
+				else:
+					no_error = False
+
 		if no_error==False:
-			ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
+			LOCAL_ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
 
 		# Add the plugin to the registry if
 		# the plugin had no errors
-		if len(ERRORS)==0:
+		if len(LOCAL_ERRORS)==0:
 			PLUGINS.append(obj)
 
 			# Run plugin init
-			if do_init: init(obj)
+			if config.EXECUTE_INIT_ON_PLUGIN_RELOAD:
+				init(obj)
+			else:
+				if not plugin_is_being_reloaded:
+					init(obj)
+
+		for e in LOCAL_ERRORS:
+			ERRORS.append(e)
 
 	# Reload the plugin manager, if it's open
 	if gui.plugin_manager!=None:
 		gui.plugin_manager.refresh()
 
 	# Return
+	if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD: gc.collect()
 	return ERRORS
 
 def list_plugin_files():

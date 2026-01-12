@@ -512,6 +512,12 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(f"pass")
 		self.updateApplicationTitle()
 
+	def doInsertUninstallMethod(self):
+		self.editor.insertPlainText(f"def uninstall(self):")
+		self.insert_raw_indent()
+		self.editor.insertPlainText(f"pass")
+		self.updateApplicationTitle()
+
 	def insertCallMethod(self):
 		e = dialog.SetMethodDialog(self)
 
@@ -772,6 +778,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doInsertInitMethod)
 			self.menv.addAction(entry)
 
+			entry = QAction(QIcon(APPLICATION_ICON),"uninstall",self)
+			entry.triggered.connect(self.doInsertUninstallMethod)
+			self.menv.addAction(entry)
+			
 			entry = QAction(QIcon(APPLICATION_ICON),"activate",self)
 			entry.triggered.connect(lambda state,u="activate",v=["window"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)

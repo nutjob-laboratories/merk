@@ -451,6 +451,10 @@ Appearance:
 <td>Un-hides a <code>USER</code>'s chat. To un-hide all users, use <code>*</code> as the argument</td>
 </tr>
 <tr>
+<td><code>/unmacro NAME</code></td>
+<td>Deletes the macro named <code>NAME</code></td>
+</tr>
+<tr>
 <td><code>usage NUMBER [MESSAGE...]</code></td>
 <td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. <strong>Can only be called by scripts</strong></td>
 </tr>

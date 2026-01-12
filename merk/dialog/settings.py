@@ -449,6 +449,17 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedClear(self,state):
+
+		if self.pluginClear.isChecked():
+			self.reloadInit.setEnabled(True)
+		else:
+			self.reloadInit.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSettingPlugin(self,state):
 		if self.enablePlugins.isChecked():
 			self.plugInit.setEnabled(True)
@@ -494,10 +505,16 @@ class Dialog(QDialog):
 			self.plugSupport.setEnabled(True)
 			self.pluginIson.setEnabled(True)
 			self.pluginMsg.setEnabled(True)
+			self.reloadInit.setEnabled(True)
+			self.pluginClear.setEnabled(True)
+			self.uninstallReload.setEnabled(True)
+			self.pluginUninstall.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
 				self.autocompleteMethods.setEnabled(False)
+			if not self.pluginClear.isChecked():
+				self.reloadInit.setEnabled(False)
 		else:
 			self.plugInit.setEnabled(False)
 			self.plugMessage.setEnabled(False)
@@ -543,6 +560,10 @@ class Dialog(QDialog):
 			self.plugSupport.setEnabled(False)
 			self.pluginIson.setEnabled(False)
 			self.pluginMsg.setEnabled(False)
+			self.reloadInit.setEnabled(False)
+			self.pluginClear.setEnabled(False)
+			self.uninstallReload.setEnabled(False)
+			self.pluginUninstall.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -1705,6 +1726,7 @@ class Dialog(QDialog):
 		self.RECONNECTION_DELAY = config.RECONNECTION_DELAY
 		self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
 		self.CURSOR_BLINK_RATE = config.CURSOR_BLINK_RATE
+		self.plugin_changed = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -4850,7 +4872,31 @@ class Dialog(QDialog):
 		if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS: self.pluginMsg.setChecked(True)
 		self.pluginMsg.stateChanged.connect(self.changedSetting)
 
+		self.reloadInit = QCheckBox("Re-execute init() on plugin reload",self)
+		if config.EXECUTE_INIT_ON_PLUGIN_RELOAD: self.reloadInit.setChecked(True)
+		self.reloadInit.stateChanged.connect(self.changedSetting)
+
+		self.pluginClear = QCheckBox("Clear plugins from memory on reload",self)
+		if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD: self.pluginClear.setChecked(True)
+		self.pluginClear.stateChanged.connect(self.changedClear)
+
+		self.uninstallReload = QCheckBox("Reload after plugin uninstall",self)
+		if config.RELOAD_PLUGINS_AFTER_UNINSTALL: self.uninstallReload.setChecked(True)
+		self.uninstallReload.stateChanged.connect(self.changedSetting)
+
+		self.pluginUninstall = QCheckBox("uninstall",self)
+		if config.PLUGIN_UNINSTALL: self.pluginUninstall.setChecked(True)
+		self.pluginUninstall.stateChanged.connect(self.changedSetting)
+		self.pluginUninstall.setFont(f)
+
+		if not config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
+			self.reloadInit.setEnabled(False)
+
 		if not config.ENABLE_PLUGINS:
+			self.pluginUninstall.setEnabled(False)
+			self.uninstallReload.setEnabled(False)
+			self.pluginClear.setEnabled(False)
+			self.reloadInit.setEnabled(False)
 			self.pluginMsg.setEnabled(False)
 			self.pluginIson.setEnabled(False)
 			self.plugInit.setEnabled(False)
@@ -4955,32 +5001,26 @@ class Dialog(QDialog):
 		row12Layout.addWidget(self.plugTopic)
 
 		row13Layout = QHBoxLayout()
+		row13Layout.addWidget(self.pluginUninstall)
 		row13Layout.addWidget(self.plugUnmode)
-		row13Layout.addStretch()
+		row13Layout.addWidget(QLabel(' '))
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.pluginDescription = QLabel(f"""
 			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
-			in Python. %_INSERT_%
-			Plugins can be created, edited, installed, and uninstalled with the plugin manager, available in the
-			<b>{config.MAIN_MENU_TOOLS_NAME}</b> menu. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
+			in Python. Plugins can be created, edited, installed, and uninstalled with the plugin manager. For more
+			information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
 			</small>
 			""")
 		self.pluginDescription.setWordWrap(True)
 		self.pluginDescription.setAlignment(Qt.AlignJustify)
 		self.pluginDescription.setOpenExternalLinks(True)
 
-		if is_running_from_pyinstaller():
-			self.pluginDescription.setText( self.pluginDescription.text().replace('%_INSERT_%',"Plugins only have access to Qt, Twisted, and the Python standard library.") )
-		else:
-			self.pluginDescription.setText( self.pluginDescription.text().replace('%_INSERT_%',"Plugins have access to Qt, Twisted, the Python standard library, and any libraries installed globally.") )
-
 		self.eventDescription = QLabel(f"""
 			<small>
-			Uncheck an <b>event</b> to prevent that event from being triggered. The <b>init()</b> event is triggered
-			when the plugin is initially loaded, and cannot be prevented from triggering after a plugin has been
-			loaded. Events in <b>bold</b> are <b>{APPLICATION_NAME}</b> specific, and are not necessarily IRC related.
+			Uncheck an <b>event</b> to prevent that event from being triggered. Events in <b>bold</b>
+			are <b>{APPLICATION_NAME}</b> specific, and are not necessarily IRC related.
 			</small>
 			""")
 		self.eventDescription.setWordWrap(True)
@@ -5017,11 +5057,14 @@ class Dialog(QDialog):
 		plugLayout.addWidget(self.plugEditor)
 
 		plugLayout = QFormLayout()
-		plugLayout.setSpacing(2)
+		plugLayout.setSpacing(0)
 		plugLayout.addRow(self.enablePlugins,self.plugEditor)
 		plugLayout.addRow(self.pluginScripts)
 		plugLayout.addRow(self.pluginOverwrite)
+		plugLayout.addRow(self.uninstallReload)
 		plugLayout.addRow(self.pluginMsg)
+		plugLayout.addRow(self.pluginClear)
+		plugLayout.addRow(self.reloadInit)
 
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
@@ -5828,6 +5871,10 @@ class Dialog(QDialog):
 		config.PRINT_SCRIPT_ERRORS_TO_STDOUT = self.errorConsole.isChecked()
 		config.SAVE_CONNECTION_HISTORY = self.saveHistory.isChecked()
 		config.WINDOWBAR_TOPIC_IN_TOOLTIP = self.windowbarChannelTopic.isChecked()
+		config.EXECUTE_INIT_ON_PLUGIN_RELOAD = self.reloadInit.isChecked()
+		config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = self.pluginClear.isChecked()
+		config.RELOAD_PLUGINS_AFTER_UNINSTALL = self.uninstallReload.isChecked()
+		config.PLUGIN_UNINSTALL = self.pluginUninstall.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -6058,22 +6105,6 @@ class Dialog(QDialog):
 					c = window.widget()
 					if hasattr(c,"refreshHighlighter"):
 						c.refreshHighlighter()
-
-		# En/disable plugins
-		errors = plugins.load_plugins(self.parent)
-		if errors!=None:
-			if len(errors)>0:
-				msgBox = QMessageBox()
-				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				if len(errors)>1:
-					msgBox.setText("There were errors loading plugins!")
-				else:
-					msgBox.setText("There was an error loading plugins!")
-				msgBox.setInformativeText("\n".join(errors))
-				msgBox.setWindowTitle("Plugin load error")
-				msgBox.setStandardButtons(QMessageBox.Ok)
-				msgBox.exec()
 
 		irc.reset_environment()
 
