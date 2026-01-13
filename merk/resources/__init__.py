@@ -381,6 +381,13 @@ ZIP into {APPLICATION_NAME}'s plugin directory, .merk/plugins in your home
 directory.
 """
 
+IRC_COLORS = {
+	'00': '#FFFFFF', '01': '#000000', '02': '#00007F', '03': '#009300',
+	'04': '#FF0000', '05': '#7F0000', '06': '#9C009C', '07': '#FC7F00',
+	'08': '#FFFF00', '09': '#00FC00', '10': '#009393', '11': '#00FFFF',
+	'12': '#0000FC', '13': '#FF00FF', '14': '#7F7F7F', '15': '#D2D2D2',
+}
+
 # Classes
 
 class Message:
@@ -435,6 +442,20 @@ class WhoWasData:
 		self.realname = 'Unknown'
 
 # Functions
+
+def markdown_to_irc(text):
+	BOLD = "\x02"
+	ITALIC = "\x1D"
+	UNDERLINE = "\x1F"
+	RESET = "\x0F"
+
+	# Replacement Patterns
+	text = re.sub(r'\*\*(.*?)\*\*', f'{BOLD}\\1{BOLD}', text)  # **bold**
+	text = re.sub(r'__(.*?)__', f'{UNDERLINE}\\1{UNDERLINE}', text)  # __underline__
+	text = re.sub(r'\*(.*?)\*', f'{ITALIC}\\1{ITALIC}', text)  # *italic*
+	text = re.sub(r'_(.*?)_', f'{ITALIC}\\1{ITALIC}', text)  # _italic_
+
+	return text
 
 def join_with_and(items):
 	if not items:

@@ -197,7 +197,7 @@ def render_message(message,style,client=None,no_padding=False):
 
 	if config.DISPLAY_IRC_COLORS:
 		if string_has_irc_formatting_codes(msg_to_display):
-			msg_to_display = convert_irc_color_to_html(msg_to_display)
+			msg_to_display = convert_irc_color_to_html(msg_to_display,style)
 	else:
 		if string_has_irc_formatting_codes(msg_to_display):
 			msg_to_display = strip_color(msg_to_display)
@@ -422,197 +422,51 @@ def string_has_irc_formatting_codes(data):
 		if code in data: return True
 	return False
 
-def convert_irc_color_to_html(text):
+def convert_irc_color_to_html(text,style):
+	background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F)')
+	
+	state = {'bold': False, 'italic': False, 'underline': False, 'fg': None, 'bg': None}
+	parts = pattern.split(text)
+	result = []
 
-	html_tag = "font"
+	def get_style(s):
+		styles = []
+		if s['bold']: styles.append("font-weight: bold;")
+		if s['italic']: styles.append("font-style: italic;")
+		if s['underline']: styles.append("text-decoration: underline;")
 
-	# other format tags
-	fout = ''
-	inbold = False
-	initalic = False
-	inunderline = False
-	incolor = False
-	for l in text:
-		if l=="\x02":
-			inbold = True
-			fout = fout + "<b>"
-			continue
-		if l=="\x1D":
-			initalic = True
-			fout = fout + "<i>"
-			continue
-		if l=="\x1F":
-			inunderline = True
-			fout = fout + "<u>"
-			continue
-		if l=="\x03":
-			incolor = True
-			fout = fout + l
-			continue
+		fg_color = IRC_COLORS.get(s['fg'].zfill(2)) if s['fg'] else foreground
+		bg_color = IRC_COLORS.get(s['bg'].zfill(2)) if s['bg'] else background
+		
+		styles.append(f"color: {fg_color};")
+		styles.append(f"background-color: {bg_color};")
 
-		if l=="\x0F":
-			if incolor:
-				incolor = False
-				fout = fout + f"</{html_tag}>"
-				continue
-			if inbold:
-				fout = fout + "</b>"
-				inbold = False
-				continue
-			if initalic:
-				fout = fout + "</i>"
-				initalic = False
-				continue
-			if inunderline:
-				fout = fout + "</u>"
-				inunderline = False
-				continue
+		return " ".join(styles)
 
-		fout = fout + l
+	for part in parts:
+		if not part: continue
+		
+		# Handle formatting characters
+		char = part[0]
+		if char == '\x02': state['bold'] = not state['bold']
+		elif char == '\x1D': state['italic'] = not state['italic']
+		elif char == '\x1F': state['underline'] = not state['underline']
+		# Now we handle color...
+		elif char == '\x03':
+			if len(part) > 1:
+				colors = part[1:].split(',')
+				state['fg'] = colors[0]
+				if len(colors) > 1: state['bg'] = colors[1]
+			else: # Reset color
+				state['fg'], state['bg'] = None, None
+		elif char == '\x0F': # Reset everything
+			state = {k: False if isinstance(v, bool) else None for k, v in state.items()}
+		else:
+			style = get_style(state)
+			result.append(f'<span style="{style}">{part}</span>' if style else part)
 
-	if inbold: fout = fout + "</b>"
-	if initalic: fout = fout + "</i>"
-	if inunderline: fout = fout + "</u>"
-
-	text = fout
-
-	combos = list(combinations(["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15"],2))
-	for c in combos:
-		fore = c[0]
-		back = c[1]
-
-		if int(fore)==0: foreground = str(IRC_00)
-		if int(fore)==1: foreground = str(IRC_01)
-		if int(fore)==2: foreground = str(IRC_02)
-		if int(fore)==3: foreground = str(IRC_03)
-		if int(fore)==4: foreground = str(IRC_04)
-		if int(fore)==5: foreground = str(IRC_05)
-		if int(fore)==6: foreground = str(IRC_06)
-		if int(fore)==7: foreground = str(IRC_07)
-		if int(fore)==8: foreground = str(IRC_08)
-		if int(fore)==9: foreground = str(IRC_09)
-		if int(fore)==10: foreground = str(IRC_10)
-		if int(fore)==11: foreground = str(IRC_11)
-		if int(fore)==12: foreground = str(IRC_12)
-		if int(fore)==13: foreground = str(IRC_13)
-		if int(fore)==14: foreground = str(IRC_14)
-		if int(fore)==15: foreground = str(IRC_15)
-
-		if int(back)==0: background = str(IRC_00)
-		if int(back)==1: background = str(IRC_01)
-		if int(back)==2: background = str(IRC_02)
-		if int(back)==3: background = str(IRC_03)
-		if int(back)==4: background = str(IRC_04)
-		if int(back)==5: background = str(IRC_05)
-		if int(back)==6: background = str(IRC_06)
-		if int(back)==7: background = str(IRC_07)
-		if int(back)==8: background = str(IRC_08)
-		if int(back)==9: background = str(IRC_09)
-		if int(back)==10: background = str(IRC_10)
-		if int(back)==11: background = str(IRC_11)
-		if int(back)==12: background = str(IRC_12)
-		if int(back)==13: background = str(IRC_13)
-		if int(back)==14: background = str(IRC_14)
-		if int(back)==15: background = str(IRC_15)
-
-		t = f"\x03{fore},{back}"
-		r = f"<{html_tag} style=\"color: {foreground}; background-color: {background}\">"
-		text = text.replace(t,r)
-
-	combos = list(combinations(["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"],2))
-	for c in combos:
-		fore = c[0]
-		back = c[1]
-
-		if int(fore)==0: foreground = str(IRC_00)
-		if int(fore)==1: foreground = str(IRC_01)
-		if int(fore)==2: foreground = str(IRC_02)
-		if int(fore)==3: foreground = str(IRC_03)
-		if int(fore)==4: foreground = str(IRC_04)
-		if int(fore)==5: foreground = str(IRC_05)
-		if int(fore)==6: foreground = str(IRC_06)
-		if int(fore)==7: foreground = str(IRC_07)
-		if int(fore)==8: foreground = str(IRC_08)
-		if int(fore)==9: foreground = str(IRC_09)
-		if int(fore)==10: foreground = str(IRC_10)
-		if int(fore)==11: foreground = str(IRC_11)
-		if int(fore)==12: foreground = str(IRC_12)
-		if int(fore)==13: foreground = str(IRC_13)
-		if int(fore)==14: foreground = str(IRC_14)
-		if int(fore)==15: foreground = str(IRC_15)
-
-		if int(back)==0: background = str(IRC_00)
-		if int(back)==1: background = str(IRC_01)
-		if int(back)==2: background = str(IRC_02)
-		if int(back)==3: background = str(IRC_03)
-		if int(back)==4: background = str(IRC_04)
-		if int(back)==5: background = str(IRC_05)
-		if int(back)==6: background = str(IRC_06)
-		if int(back)==7: background = str(IRC_07)
-		if int(back)==8: background = str(IRC_08)
-		if int(back)==9: background = str(IRC_09)
-		if int(back)==10: background = str(IRC_10)
-		if int(back)==11: background = str(IRC_11)
-		if int(back)==12: background = str(IRC_12)
-		if int(back)==13: background = str(IRC_13)
-		if int(back)==14: background = str(IRC_14)
-		if int(back)==15: background = str(IRC_15)
-
-		t = f"\x03{fore},{back}"
-		r = f"<{html_tag} style=\"color: {foreground}; background-color: {background}\">"
-		text = text.replace(t,r)
-
-	text = text.replace("\x0310",f"<{html_tag} style=\"color: {IRC_10};\">")
-	text = text.replace("\x0311",f"<{html_tag} style=\"color: {IRC_11};\">")
-	text = text.replace("\x0312",f"<{html_tag} style=\"color: {IRC_12};\">")
-	text = text.replace("\x0313",f"<{html_tag} style=\"color: {IRC_13};\">")
-	text = text.replace("\x0314",f"<{html_tag} style=\"color: {IRC_14};\">")
-	text = text.replace("\x0315",f"<{html_tag} style=\"color: {IRC_15};\">")
-
-	text = text.replace("\x0300",f"<{html_tag} style=\"color: {IRC_00};\">")
-	text = text.replace("\x0301",f"<{html_tag} style=\"color: {IRC_01};\">")
-	text = text.replace("\x0302",f"<{html_tag} style=\"color: {IRC_02};\">")
-	text = text.replace("\x0303",f"<{html_tag} style=\"color: {IRC_03};\">")
-	text = text.replace("\x0304",f"<{html_tag} style=\"color: {IRC_04};\">")
-	text = text.replace("\x0305",f"<{html_tag} style=\"color: {IRC_05};\">")
-	text = text.replace("\x0306",f"<{html_tag} style=\"color: {IRC_06};\">")
-	text = text.replace("\x0307",f"<{html_tag} style=\"color: {IRC_07};\">")
-	text = text.replace("\x0308",f"<{html_tag} style=\"color: {IRC_08};\">")
-	text = text.replace("\x0309",f"<{html_tag} style=\"color: {IRC_09};\">")
-
-	text = text.replace("\x030",f"<{html_tag} style=\"color: {IRC_00};\">")
-	text = text.replace("\x031",f"<{html_tag} style=\"color: {IRC_01};\">")
-	text = text.replace("\x032",f"<{html_tag} style=\"color: {IRC_02};\">")
-	text = text.replace("\x033",f"<{html_tag} style=\"color: {IRC_03};\">")
-	text = text.replace("\x034",f"<{html_tag} style=\"color: {IRC_04};\">")
-	text = text.replace("\x035",f"<{html_tag} style=\"color: {IRC_05};\">")
-	text = text.replace("\x036",f"<{html_tag} style=\"color: {IRC_06};\">")
-	text = text.replace("\x037",f"<{html_tag} style=\"color: {IRC_07};\">")
-	text = text.replace("\x038",f"<{html_tag} style=\"color: {IRC_08};\">")
-	text = text.replace("\x039",f"<{html_tag} style=\"color: {IRC_09};\">")
-
-	text = text.replace("\x03",f"</{html_tag}>")
-
-	# close font tags
-	if f"<{html_tag} style=" in text:
-		if not f"</{html_tag}>" in text: text = text + f"</{html_tag}>"
-
-	out = []
-	indiv = False
-	for w in text.split(' '):
-
-		if indiv:
-			if w==f"<{html_tag}":
-				out.append(f"</{html_tag}>")
-
-		if w==f"<{html_tag}": indiv = True
-		if w==f"</{html_tag}>": indiv = False
-
-		out.append(w)
-
-	text = ' '.join(out)
-
-	return text
+	return "".join(result)
 
 def strip_color(text):
 

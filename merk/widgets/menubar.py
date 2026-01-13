@@ -216,6 +216,7 @@ class MenuButton(QPushButton):
 			return True
 		elif event.type() == QEvent.Leave:
 			self.setStyleSheet(self.normal_style)
+			return True
 		return False
 
 class IconMenuButton(QPushButton):
@@ -430,6 +431,7 @@ class wMenuButton(QPushButton):
 			return True
 		elif event.type() == QEvent.Leave:
 			self.setStyleSheet(self.normal_style)
+			return True
 		return False
 
 	def focusOutEvent(self, event):
@@ -595,6 +597,7 @@ class wIconMenuButton(QPushButton):
 			return True
 		elif event.type() == QEvent.Leave:
 			self.setStyleSheet(self.normal_style)
+			return True
 		return False
 
 	def pulse(self):

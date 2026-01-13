@@ -370,7 +370,7 @@ DO_NOT_REPLY_TO_CTCP_VERSION = False
 DO_NOT_REPLY_TO_CTCP_SOURCE = False
 PLUGIN_ISUPPORT = True
 DOUBLECLICK_NICK_DISPLAY = True
-PLUGIN_HAS_CONSOLE_MARKER = ":eye_in_speech_bubble:"
+PLUGIN_HAS_CONSOLE_MARKER = ":left_speech_bubble:"
 SHOW_LUSER_INFO_IN_CURRENT_WINDOW = False
 SHOW_ISON_INFO_IN_CURRENT_WINDOW = False
 PLUGIN_ISON = True
@@ -389,9 +389,15 @@ EXECUTE_INIT_ON_PLUGIN_RELOAD = True
 CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = True
 RELOAD_PLUGINS_AFTER_UNINSTALL = True
 PLUGIN_UNINSTALL = True
+PLUGIN_UNLOAD = True
+SHOW_PLUGIN_CONSOLE_ON_CREATION = False
+USE_MARKDOWN_IN_INPUT = True
 
 def build_settings():
 	settings = {
+		"use_markdown_for_formatting_input": USE_MARKDOWN_IN_INPUT,
+		"show_plugin_consoles_on_creation": SHOW_PLUGIN_CONSOLE_ON_CREATION,
+		"enable_plugin_unload_event": PLUGIN_UNLOAD,
 		"enable_plugin_uninstall_event": PLUGIN_UNINSTALL,
 		"reload_plugins_after_uninstall": RELOAD_PLUGINS_AFTER_UNINSTALL,
 		"clear_plugins_from_memory_on_reload": CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD,
@@ -410,7 +416,7 @@ def build_settings():
 		"enable_plugin_ison_event": PLUGIN_ISON,
 		"show_ison_response_in_current_window": SHOW_ISON_INFO_IN_CURRENT_WINDOW,
 		"show_lusers_response_in_current_window": SHOW_LUSER_INFO_IN_CURRENT_WINDOW,
-		"plugin_manager_console_identifier": PLUGIN_HAS_CONSOLE_MARKER,
+		"plugin_manager_console_icon": PLUGIN_HAS_CONSOLE_MARKER,
 		"doubleclick_nick_display_to_change_nick": DOUBLECLICK_NICK_DISPLAY,
 		"enable_plugin_isupport_event": PLUGIN_ISUPPORT,
 		"do_not_reply_to_ctcp_source": DO_NOT_REPLY_TO_CTCP_SOURCE,
@@ -747,6 +753,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "use_markdown_for_formatting_input" in settings:
+		settings["use_markdown_for_formatting_input"] = USE_MARKDOWN_IN_INPUT
+	if not "show_plugin_consoles_on_creation" in settings:
+		settings["show_plugin_consoles_on_creation"] = SHOW_PLUGIN_CONSOLE_ON_CREATION
+	if not "enable_plugin_unload_event" in settings:
+		settings["enable_plugin_unload_event"] = PLUGIN_UNLOAD
 	if not "enable_plugin_uninstall_event" in settings:
 		settings["enable_plugin_uninstall_event"] = PLUGIN_UNINSTALL
 	if not "reload_plugins_after_uninstall" in settings:
@@ -783,8 +795,8 @@ def patch_settings(settings):
 		settings["show_ison_response_in_current_window"] = SHOW_ISON_INFO_IN_CURRENT_WINDOW
 	if not "show_lusers_response_in_current_window" in settings:
 		settings["show_lusers_response_in_current_window"] = SHOW_LUSER_INFO_IN_CURRENT_WINDOW
-	if not "plugin_manager_console_identifier" in settings:
-		settings["plugin_manager_console_identifier"] = PLUGIN_HAS_CONSOLE_MARKER
+	if not "plugin_manager_console_icon" in settings:
+		settings["plugin_manager_console_icon"] = PLUGIN_HAS_CONSOLE_MARKER
 	if not "doubleclick_nick_display_to_change_nick" in settings:
 		settings["doubleclick_nick_display_to_change_nick"] = DOUBLECLICK_NICK_DISPLAY
 	if not "enable_plugin_isupport_event" in settings:
@@ -1801,6 +1813,9 @@ def load_settings(filename):
 	global CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD
 	global RELOAD_PLUGINS_AFTER_UNINSTALL
 	global PLUGIN_UNINSTALL
+	global PLUGIN_UNLOAD
+	global SHOW_PLUGIN_CONSOLE_ON_CREATION
+	global USE_MARKDOWN_IN_INPUT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1810,6 +1825,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		USE_MARKDOWN_IN_INPUT = settings["use_markdown_for_formatting_input"]
+		SHOW_PLUGIN_CONSOLE_ON_CREATION = settings["show_plugin_consoles_on_creation"]
+		PLUGIN_UNLOAD = settings["enable_plugin_unload_event"]
 		PLUGIN_UNINSTALL = settings["enable_plugin_uninstall_event"]
 		RELOAD_PLUGINS_AFTER_UNINSTALL = settings["reload_plugins_after_uninstall"]
 		CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = settings["clear_plugins_from_memory_on_reload"]
@@ -1828,7 +1846,7 @@ def load_settings(filename):
 		PLUGIN_ISON = settings["enable_plugin_ison_event"]
 		SHOW_ISON_INFO_IN_CURRENT_WINDOW = settings["show_ison_response_in_current_window"]
 		SHOW_LUSER_INFO_IN_CURRENT_WINDOW = settings["show_lusers_response_in_current_window"]
-		PLUGIN_HAS_CONSOLE_MARKER = settings["plugin_manager_console_identifier"]
+		PLUGIN_HAS_CONSOLE_MARKER = settings["plugin_manager_console_icon"]
 		DOUBLECLICK_NICK_DISPLAY = settings["doubleclick_nick_display_to_change_nick"]
 		PLUGIN_ISUPPORT = settings["enable_plugin_isupport_event"]
 		DO_NOT_REPLY_TO_CTCP_SOURCE = settings["do_not_reply_to_ctcp_source"]

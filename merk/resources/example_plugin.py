@@ -79,6 +79,19 @@ class ExamplePlugin(Plugin):
         pass
 
     # |========|
+    # | unload |
+    # |========|
+    #
+    # This event is triggered whenever the plugin is
+    # unloaded when the application exits.
+    #
+    # Arguments:
+    #   None
+    #
+    def unload(self):
+        pass
+
+    # |========|
     # | action |
     # |========|
     #

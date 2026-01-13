@@ -509,6 +509,8 @@ class Dialog(QDialog):
 			self.pluginClear.setEnabled(True)
 			self.uninstallReload.setEnabled(True)
 			self.pluginUninstall.setEnabled(True)
+			self.plugUnload.setEnabled(True)
+			self.showConsole.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -564,6 +566,8 @@ class Dialog(QDialog):
 			self.pluginClear.setEnabled(False)
 			self.uninstallReload.setEnabled(False)
 			self.pluginUninstall.setEnabled(False)
+			self.plugUnload.setEnabled(False)
+			self.showConsole.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -3923,50 +3927,43 @@ class Dialog(QDialog):
 		autoSetCenter.addStretch()
 		autoSetCenter.addLayout(autoSettingsLayout)
 		autoSetCenter.addStretch()
-		
-		self.inputCursorLabel = QLabel("Input widget cursor width:")
-		self.inputCursorLabelSpec = QLabel("pixels")
-		self.inputCursor = QSpinBox()
-		self.inputCursor.setRange(1,99)
-		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
-		self.inputCursor.valueChanged.connect(self.updateinputCursor)
 
-		cursorLayout = QHBoxLayout()
-		cursorLayout.addWidget(self.inputCursorLabel)
-		cursorLayout.addWidget(self.inputCursor)
-		cursorLayout.addWidget(self.inputCursorLabelSpec)
-		cursorLayout.addStretch()
+		self.mdDescription = QLabel("""
+			<small>
+			Use markdown to format input in <i>italics</i> (input * before and after text), <b>bold</b> (input ** before and after text),
+			or <u>underline</u> (input __ before and after text).
+			If IRC colors are turned off, this will not be displayed in the client, but will be sent to the server.
+			</small>
+			""")
+		self.mdDescription.setWordWrap(True)
+		self.mdDescription.setAlignment(Qt.AlignJustify)
+		self.mdDescription.setOpenExternalLinks(True)
 
-		self.cursorBlink = QCheckBox("Cursors blink every",self)
-		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
-		self.cursorBlink.stateChanged.connect(self.changedSetting)
+		self.useMd = QCheckBox("Use markdown to format input",self)
+		if config.USE_MARKDOWN_IN_INPUT: self.useMd.setChecked(True)
+		self.useMd.stateChanged.connect(self.changedSetting)
 
-		self.blinkRateSpec = QLabel("ms")
-		self.blinkRate = QSpinBox()
-		self.blinkRate.setRange(1,5000)
-		self.blinkRate.setValue(self.CURSOR_BLINK_RATE)
-		self.blinkRate.valueChanged.connect(self.updateBlinkRate)
+		umLayout = QHBoxLayout()
+		umLayout.addStretch()
+		umLayout.addWidget(self.useMd)
+		umLayout.addStretch()
 
-		blinkLayout = QHBoxLayout()
-		blinkLayout.addWidget(self.cursorBlink)
-		blinkLayout.addWidget(self.blinkRate)
-		blinkLayout.addWidget(self.blinkRateSpec)
+		mdLayout = QVBoxLayout()
+		mdLayout.addWidget(self.mdDescription)
+		mdLayout.addLayout(umLayout)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyMaster)
 		inputLayout.addLayout(historyLayout)
-		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addLayout(autoMaster)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSetCenter)
-		inputLayout.addWidget(QLabel(' '))
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
-		inputLayout.addLayout(blinkLayout)
-		inputLayout.addLayout(cursorLayout)
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown</b>"))
+		inputLayout.addLayout(mdLayout)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -4889,10 +4886,21 @@ class Dialog(QDialog):
 		self.pluginUninstall.stateChanged.connect(self.changedSetting)
 		self.pluginUninstall.setFont(f)
 
+		self.plugUnload = QCheckBox("unload",self)
+		if config.PLUGIN_UNLOAD: self.plugUnload.setChecked(True)
+		self.plugUnload.stateChanged.connect(self.changedSetting)
+		self.plugUnload.setFont(f)
+
+		self.showConsole = QCheckBox("Show plugin consoles on creation",self)
+		if config.SHOW_PLUGIN_CONSOLE_ON_CREATION: self.showConsole.setChecked(True)
+		self.showConsole.stateChanged.connect(self.changedSetting)
+
 		if not config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
 			self.reloadInit.setEnabled(False)
 
 		if not config.ENABLE_PLUGINS:
+			self.showConsole.setEnabled(False)
+			self.plugUnload.setEnabled(False)
 			self.pluginUninstall.setEnabled(False)
 			self.uninstallReload.setEnabled(False)
 			self.pluginClear.setEnabled(False)
@@ -5002,8 +5010,8 @@ class Dialog(QDialog):
 
 		row13Layout = QHBoxLayout()
 		row13Layout.addWidget(self.pluginUninstall)
+		row13Layout.addWidget(self.plugUnload)
 		row13Layout.addWidget(self.plugUnmode)
-		row13Layout.addWidget(QLabel(' '))
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
@@ -5065,6 +5073,7 @@ class Dialog(QDialog):
 		plugLayout.addRow(self.pluginMsg)
 		plugLayout.addRow(self.pluginClear)
 		plugLayout.addRow(self.reloadInit)
+		plugLayout.addRow(self.showConsole)
 
 		pluginsLayout = QVBoxLayout()
 		pluginsLayout.addLayout(pTop)
@@ -5305,6 +5314,39 @@ class Dialog(QDialog):
 		mmLayout.addWidget(self.noVersion)
 		mmLayout.addWidget(self.noEnviron)
 
+		self.inputCursorLabel = QLabel("Input widget cursor width:")
+		self.inputCursorLabelSpec = QLabel("pixels")
+		self.inputCursor = QSpinBox()
+		self.inputCursor.setRange(1,99)
+		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
+		self.inputCursor.valueChanged.connect(self.updateinputCursor)
+
+		cursorLayout = QHBoxLayout()
+		cursorLayout.addWidget(self.inputCursorLabel)
+		cursorLayout.addWidget(self.inputCursor)
+		cursorLayout.addWidget(self.inputCursorLabelSpec)
+		cursorLayout.addStretch()
+
+		self.cursorBlink = QCheckBox("Cursors blink every",self)
+		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
+		self.cursorBlink.stateChanged.connect(self.changedSetting)
+
+		self.blinkRateSpec = QLabel("ms")
+		self.blinkRate = QSpinBox()
+		self.blinkRate.setRange(1,5000)
+		self.blinkRate.setValue(self.CURSOR_BLINK_RATE)
+		self.blinkRate.valueChanged.connect(self.updateBlinkRate)
+
+		blinkLayout = QHBoxLayout()
+		blinkLayout.addWidget(self.cursorBlink)
+		blinkLayout.addWidget(self.blinkRate)
+		blinkLayout.addWidget(self.blinkRateSpec)
+
+		cursLayout = QVBoxLayout()
+		cursLayout.setSpacing(2)
+		cursLayout.addLayout(blinkLayout)
+		cursLayout.addLayout(cursorLayout)
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
@@ -5316,6 +5358,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
 		miscLayout.addLayout(hkLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		miscLayout.addLayout(cursLayout)
 		miscLayout.addLayout(mmLayout)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
@@ -5875,6 +5918,9 @@ class Dialog(QDialog):
 		config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD = self.pluginClear.isChecked()
 		config.RELOAD_PLUGINS_AFTER_UNINSTALL = self.uninstallReload.isChecked()
 		config.PLUGIN_UNINSTALL = self.pluginUninstall.isChecked()
+		config.PLUGIN_UNLOAD = self.plugUnload.isChecked()
+		config.SHOW_PLUGIN_CONSOLE_ON_CREATION = self.showConsole.isChecked()
+		config.USE_MARKDOWN_IN_INPUT = self.useMd.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

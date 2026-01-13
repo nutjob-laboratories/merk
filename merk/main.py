@@ -3054,6 +3054,8 @@ class Merk(QMainWindow):
 		if config.INTERPOLATE_ALIASES_INTO_INPUT:
 			user_input = commands.interpolateAliases(user_input)
 
+		if config.USE_MARKDOWN_IN_INPUT: user_input = markdown_to_irc(user_input)
+
 		# Handle chat commands
 		if commands.handleChatCommands(self,window,user_input): return
 
@@ -3086,6 +3088,8 @@ class Merk(QMainWindow):
 		# Interpolate aliases into user input
 		if config.INTERPOLATE_ALIASES_INTO_INPUT:
 			user_input = commands.interpolateAliases(user_input)
+
+		if config.USE_MARKDOWN_IN_INPUT: user_input = markdown_to_irc(user_input)
 		
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return
@@ -3965,7 +3969,7 @@ class Merk(QMainWindow):
 		w.setWindowIcon(QIcon(icon))
 		w.setAttribute(Qt.WA_DeleteOnClose)
 		self.MDI.addSubWindow(w)
-		# w.show()
+		if config.SHOW_PLUGIN_CONSOLE_ON_CREATION: w.show()
 
 		if config.RUBBER_BAND_RESIZE:
 			w.setOption(QMdiSubWindow.RubberBandResize, True)
@@ -5285,7 +5289,11 @@ class Merk(QMainWindow):
 
 		# Hide all windows
 		for window in self.MDI.subWindowList():
-			window.hide()
+			if hasattr(window,"widget"):
+				c = window.widget()
+				if hasattr(c,"window_type"):
+					if c.window_type==SERVER_WINDOW or c.window_type==PRIVATE_WINDOW or c.window_type==CHANNEL_WINDOW or c.window_type==LIST_WINDOW:
+						window.hide()
 
 		if not isinstance(disco_msg,str): disco_msg = None
 		windows = self.getAllServerWindows()
@@ -5563,6 +5571,8 @@ class Merk(QMainWindow):
 		if not do_close:
 			event.ignore()
 			return
+
+		plugins.call(self,"unload")
 
 		if self.hotkey_manager!=None: self.hotkey_manager.close()
 		if self.ignore_manager!=None: self.ignore_manager.close()

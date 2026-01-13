@@ -486,8 +486,7 @@ class Plugin():
 	def unmacro(self,name):
 		if self._gui!=None:
 			if not commands.does_macro_name_exist(name): return False
-			commands.remove_command(name)
-			commands.build_help_and_autocomplete()
+			commands.remove_macro(name)
 			return True
 
 	def macro(self,name,script,musage=None,mhelp=None):
@@ -517,8 +516,7 @@ class Plugin():
 
 			if musage==None and mhelp!=None: musage = config.ISSUE_COMMAND_SYMBOL+name
 
-			commands.add_command(name,script,musage,mhelp)
-			commands.build_help_and_autocomplete()
+			commands.add_macro(name,script,musage,mhelp)
 			return True
 		return False
 
@@ -757,7 +755,8 @@ EVENTS = [
 	'kick', 'kicked', 'tick', 'mode', 'unmode', 'quit', 'line_in', 'line_out', 
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
-	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall'
+	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall',
+	'unload',
 ]
 
 BUILT_IN = [
@@ -834,6 +833,7 @@ def call(gui,method,**arguments):
 	if method=='error' and not config.PLUGIN_ERROR: return
 	if method=='isupport' and not config.PLUGIN_ISUPPORT: return
 	if method=='ison' and not config.PLUGIN_ISON: return
+	if method=='unload' and not config.PLUGIN_UNLOAD: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):

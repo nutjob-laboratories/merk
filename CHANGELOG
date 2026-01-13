@@ -69,6 +69,28 @@
 * New command: /unmacro, which removes macros from memory.
 * Bugfix: the "bold on hover" effect no longer "gets stuck" on the menu- and
   windowbar.
+* Updated icons in the "Insert" menu in the Python editor.
+* Bugfix: fixed errors with the /macro command's error reporting.
+* Bugfix: the plugin manager could throw an error when trying to update a
+  plugin console while it's open.
+* Bugfix: the plugin console identifier in the plugin manager was not being
+  set from the config file properly.
+* The "icon" emoji that is used to signify a plugin's console is open in the
+  plugin manager was changed to one that is more universal across platforms.
+* Added an option (disabled by default) to show a plugin's console as soon as
+  it is created for the first time.
+* Added an option to the plugin manager to show/hide plugin consoles to the
+  right click menu on plugin entries.
+* Bugfix: plugin consoles would not be able to be shown from the plugin manager
+  right click menu when the Python editor was disabled. This no longer occurs.
+* Bugfix: mIRC colors now work properly, and "close" text formatting properly.
+* Bugfix: disconnecting from all servers closed or hid ALL subwindows, even
+  those not involved with network activity.
+* Moved the cursor settings from the "Input" section of the settings dialog to
+  the "Miscellaneous" section of the dialog.
+* New feature: use markdown to format input text. Supported markdown "tags" are
+  italic, bold, and underline. Only displayed in the client if IRC colors are
+  turned on.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -87,6 +109,8 @@
   used to uninstall a plugin.
 * The example plugins in the repo have been updated to use the uninstall()
   event.
+* New plugin event: unload(), which is triggered when the plugin is unloaded
+  upon exit of the application.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.350                                  |

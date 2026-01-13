@@ -518,6 +518,12 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(f"pass")
 		self.updateApplicationTitle()
 
+	def doInsertUnloadMethod(self):
+		self.editor.insertPlainText(f"def unload(self):")
+		self.insert_raw_indent()
+		self.editor.insertPlainText(f"pass")
+		self.updateApplicationTitle()
+
 	def insertCallMethod(self):
 		e = dialog.SetMethodDialog(self)
 
@@ -781,16 +787,20 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(APPLICATION_ICON),"uninstall",self)
 			entry.triggered.connect(self.doInsertUninstallMethod)
 			self.menv.addAction(entry)
+
+			entry = QAction(QIcon(APPLICATION_ICON),"unload",self)
+			entry.triggered.connect(self.doInsertUnloadMethod)
+			self.menv.addAction(entry)
 			
-			entry = QAction(QIcon(APPLICATION_ICON),"activate",self)
+			entry = QAction(QIcon(WINDOW_ICON),"activate",self)
 			entry.triggered.connect(lambda state,u="activate",v=["window"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"close",self)
+			entry = QAction(QIcon(WINDOW_ICON),"close",self)
 			entry.triggered.connect(lambda state,u="close",v=["name"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"ctick",self)
+			entry = QAction(QIcon(TIMESTAMP_ICON),"ctick",self)
 			entry.triggered.connect(lambda state,u="ctick",v=["uptime"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
@@ -802,15 +812,15 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="line_out",v=["client","line"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"me",self)
+			entry = QAction(QIcon(PRIVATE_ICON),"me",self)
 			entry.triggered.connect(lambda state,u="me",v=["window","client","target","message"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"subwindow",self)
+			entry = QAction(QIcon(WINDOW_ICON),"subwindow",self)
 			entry.triggered.connect(lambda state,u="subwindow",v=["window"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
-			entry = QAction(QIcon(APPLICATION_ICON),"tick",self)
+			entry = QAction(QIcon(TIMESTAMP_ICON),"tick",self)
 			entry.triggered.connect(lambda state,u="tick",v=["client","uptime"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 

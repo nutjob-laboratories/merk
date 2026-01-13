@@ -80,7 +80,7 @@ To connect to IRC servers via SSL, two additional libraries may be needed:
     pip install pyOpenSSL
     pip install service_identity
 
-**MERK** is being developed with Python 3.13 on Windows 11 and Python 3.12 on Linux Mint 22.3. Most development work is being done on Linux.
+**MERK** is being developed with Python 3.13 on Windows 11 and Python 3.12 on Linux Mint 22.2. Most development work is being done on Linux.
 
 If you're running Windows, and you're getting errors when trying to run **MERK**, you may have to install another library, [pywin32](https://pypi.org/project/pywin32/). You can also install this with [**pip**](https://pypi.org/project/pip/):
 

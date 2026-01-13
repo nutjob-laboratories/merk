@@ -84,7 +84,7 @@ class UserMacro:
 		self.name = name
 		self.script = script
 
-def add_command(name,script,usage=None,mhelp=None):
+def add_macro(name,script,usage=None,mhelp=None):
 	e = UserMacro(name,script)
 	USER_MACROS[name] = e
 
@@ -94,10 +94,14 @@ def add_command(name,script,usage=None,mhelp=None):
 	if mhelp!=None:
 		MACRO_HELP[name] = mhelp
 
-def remove_command(name):
+	build_help_and_autocomplete()
+
+def remove_macro(name):
 	USER_MACROS.pop(name,'')
 	MACRO_USAGE.pop(name,'')
 	MACRO_HELP.pop(name,'')
+
+	build_help_and_autocomplete()
 
 def add_halt(script_id):
 	if script_id==None: return
@@ -1987,7 +1991,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: Macro names must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
@@ -2027,8 +2031,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			else:
 				t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			add_command(name,script)
-			build_help_and_autocomplete()
+			add_macro(name,script)
 			return True
 
 		# /macro name script usage
@@ -2055,7 +2058,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: Macro names must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
@@ -2095,8 +2098,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			else:
 				t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			add_command(name,script,usage)
-			build_help_and_autocomplete()
+			add_macro(name,script,usage)
 			return True
 
 		# /macro name script usage help
@@ -2124,7 +2126,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: Macro names must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 					t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
@@ -2164,8 +2166,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			else:
 				t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			add_command(name,script,usage,mhelp)
-			build_help_and_autocomplete()
+			add_macro(name,script,usage,mhelp)
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro':
@@ -2200,8 +2201,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			name = stokens.pop(0)
 
 			if does_macro_name_exist(name):
-				remove_command(name)
-				build_help_and_autocomplete()
+				remove_macro(name)
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"Macro \"{name}\" removed")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)

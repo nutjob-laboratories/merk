@@ -36,8 +36,6 @@ from . import extendedmenuitem
 
 import emoji
 
-HAS_CONSOLE = emoji.emojize(config.PLUGIN_HAS_CONSOLE_MARKER,language="alias")
-
 import uuid
 import operator
 import shutil
@@ -324,7 +322,7 @@ class Window(QMainWindow):
 				if subwindow==None:
 					console_tag = ''
 				else:
-					console_tag = f" {HAS_CONSOLE}"
+					console_tag = f" {self.HAS_CONSOLE}"
 
 				if is_url(item.SOURCE):
 					author_tag = f"<b><a href=\"{item.SOURCE}\">{item.AUTHOR}</a></b>{console_tag}"
@@ -338,7 +336,7 @@ class Window(QMainWindow):
 					name_tag,
 					class_tag,
 					author_tag,
-					icon,48
+					item.icon,48
 				)
 				self.plugin_list.setItemWidget(item, widget)
 
@@ -379,7 +377,7 @@ class Window(QMainWindow):
 			if subwindow==None:
 				console_tag = ''
 			else:
-				console_tag = f" {HAS_CONSOLE}"
+				console_tag = f" {self.HAS_CONSOLE}"
 
 			if is_url(SOURCE):
 				author_tag = f"<b><a href=\"{SOURCE}\">{AUTHOR}</a></b>{console_tag}"
@@ -414,7 +412,6 @@ class Window(QMainWindow):
 			self.plugin_list.clearSelection()
 
 	def on_item_double_clicked(self, item):
-		if not config.ENABLE_PLUGIN_EDITOR: return
 		if item.dummy: return
 
 		subwindow,widget = self.parent.getConsole(item.plugin)
@@ -423,6 +420,16 @@ class Window(QMainWindow):
 				subwindow.close()
 			else:
 				subwindow.show()
+
+	def is_console_visible(self,item):
+		if item.dummy: return False
+		subwindow,widget = self.parent.getConsole(item.plugin)
+		if subwindow!=None:
+			if subwindow.isVisible():
+				return True
+			else:
+				return False
+		return False
 
 	def import_plugin(self):
 		options = QFileDialog.Options()
@@ -478,7 +485,10 @@ class Window(QMainWindow):
 
 						subwindow,widget = self.parent.getConsole(item.plugin)
 						if subwindow!=None:
-							edit_action = QAction(QIcon(WINDOW_ICON),"View console", self)
+							if self.is_console_visible(item):
+								edit_action = QAction(QIcon(WINDOW_ICON),"Hide console", self)
+							else:
+								edit_action = QAction(QIcon(WINDOW_ICON),"Show console", self)
 							edit_action.triggered.connect(lambda: self.on_item_double_clicked(item))
 							menu.addAction(edit_action)
 
@@ -514,6 +524,8 @@ class Window(QMainWindow):
 		self.parent = parent
 
 		config.load_settings(config.CONFIG_FILE)
+
+		self.HAS_CONSOLE = emoji.emojize(config.PLUGIN_HAS_CONSOLE_MARKER,language="alias")
 		
 		self.window_type = PLUGIN_WINDOW
 		self.subwindow_id = str(uuid.uuid4())

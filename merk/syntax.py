@@ -76,6 +76,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
 					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd',
 					'def server', 'def subwindow', 'def close', 'def me', 'def error', 'def isupport', 'def uninstall',
+					'def unload',
 
 					]
 		for word in keywords:
