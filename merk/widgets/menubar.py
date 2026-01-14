@@ -815,6 +815,13 @@ class Windowbar(QToolBar):
 		entry.triggered.connect(self.icons)
 		menu.addAction(entry)
 
+		if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
+			entry = QAction(QIcon(self.parent.checked_icon),"Show topic in tooltip", self)
+		else:
+			entry = QAction(QIcon(self.parent.unchecked_icon),"Show topic in tooltip", self)
+		entry.triggered.connect(self.showTopic)
+		menu.addAction(entry)
+
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED:
 			entry = QAction(QIcon(self.parent.checked_icon),"Double click to maximize", self)
 		else:
@@ -1169,6 +1176,16 @@ class Windowbar(QToolBar):
 			config.WINDOWBAR_INCLUDE_SERVERS = False
 		else:
 			config.WINDOWBAR_INCLUDE_SERVERS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.initWindowbar()
+		self.parent.MDI.setActiveSubWindow(w)
+
+	def showTopic(self):
+		w = self.parent.MDI.activeSubWindow()
+		if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
+			config.WINDOWBAR_TOPIC_IN_TOOLTIP = False
+		else:
+			config.WINDOWBAR_TOPIC_IN_TOOLTIP = True
 		config.save_settings(config.CONFIG_FILE)
 		self.parent.initWindowbar()
 		self.parent.MDI.setActiveSubWindow(w)

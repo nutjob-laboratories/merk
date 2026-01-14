@@ -117,7 +117,7 @@ Appearance:
   -L, --light           Run in light mode
 </code></pre>
 <h1 id="commands">Commands</h1>
-<p>All of these commands can be issued from the text input widget, or from scripts.</p>
+<p>All of these commands can be issued from the text input widget, or from scripts. Commands that start with <code>/_</code> are usually limited to IRCops, and usually display their output in server windows.</p>
 <table>
 <thead>
 <tr>
@@ -437,6 +437,10 @@ Appearance:
 <tr>
 <td><code>/topic CHANNEL NEW_TOPIC</code></td>
 <td>Sets a channel topic</td>
+</tr>
+<tr>
+<td><code>/_trace TARGET</code></td>
+<td>Executes a trace on a server or user. May only be issued by server operators</td>
 </tr>
 <tr>
 <td><code>/unalias TOKEN</code></td>

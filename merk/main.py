@@ -4176,6 +4176,14 @@ class Merk(QMainWindow):
 		self.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		self.buildSettingsMenu()
 
+	def settingsMarkdown(self):
+		if config.USE_MARKDOWN_IN_INPUT:
+			config.USE_MARKDOWN_IN_INPUT = False
+		else:
+			config.USE_MARKDOWN_IN_INPUT = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsIrcColors(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		if config.DISPLAY_IRC_COLORS:
@@ -4386,6 +4394,14 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsDnd(self):
+		if config.DRAG_AND_DROP_MAIN_APPLICATION:
+			config.DRAG_AND_DROP_MAIN_APPLICATION = False
+		else:
+			config.DRAG_AND_DROP_MAIN_APPLICATION = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsAway(self):
 		if config.USE_AUTOAWAY:
 			config.USE_AUTOAWAY = False
@@ -4435,6 +4451,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Show IRC colors", self)
 		entry.triggered.connect(self.settingsIrcColors)
+		self.settingsMenu.addAction(entry)
+
+		if config.USE_MARKDOWN_IN_INPUT:
+			entry = QAction(QIcon(self.checked_icon),"Use markdown in input", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Use markdown in input", self)
+		entry.triggered.connect(self.settingsMarkdown)
 		self.settingsMenu.addAction(entry)
 
 		if config.DISPLAY_TIMESTAMP:
@@ -4515,6 +4538,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Simplified dialogs", self)
 		entry.triggered.connect(self.settingsSimplified)
+		self.settingsMenu.addAction(entry)
+
+		if config.DRAG_AND_DROP_MAIN_APPLICATION:
+			entry = QAction(QIcon(self.checked_icon),"Enable drag and drop", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable drag and drop", self)
+		entry.triggered.connect(self.settingsDnd)
 		self.settingsMenu.addAction(entry)
 
 		if config.DARK_MODE:

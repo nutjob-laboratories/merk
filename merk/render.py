@@ -418,15 +418,15 @@ def inject_www_links(txt,style):
 # IRC COLOR CODES
 
 def string_has_irc_formatting_codes(data):
-	for code in ["\x03","\x02","\x1D","\x1F","\x0F"]:
+	for code in ["\x03","\x02","\x1D","\x1F","\x0F","\x1E"]:
 		if code in data: return True
 	return False
 
-def convert_irc_color_to_html(text,style):
-	background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
-	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F)')
+def convert_irc_color_to_html(text, style):
+	background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F|\x1E)')  # Added \x1E for strikethrough
 	
-	state = {'bold': False, 'italic': False, 'underline': False, 'fg': None, 'bg': None}
+	state = {'bold': False, 'italic': False, 'underline': False, 'strikethrough': False, 'fg': None, 'bg': None}
 	parts = pattern.split(text)
 	result = []
 
@@ -435,32 +435,40 @@ def convert_irc_color_to_html(text,style):
 		if s['bold']: styles.append("font-weight: bold;")
 		if s['italic']: styles.append("font-style: italic;")
 		if s['underline']: styles.append("text-decoration: underline;")
-
+		if s['strikethrough']: styles.append("text-decoration: line-through;")
+		
 		fg_color = IRC_COLORS.get(s['fg'].zfill(2)) if s['fg'] else foreground
 		bg_color = IRC_COLORS.get(s['bg'].zfill(2)) if s['bg'] else background
 		
-		styles.append(f"color: {fg_color};")
-		styles.append(f"background-color: {bg_color};")
-
+		if fg_color:
+			styles.append(f"color: {fg_color};")
+		if bg_color:
+			styles.append(f"background-color: {bg_color};")
 		return " ".join(styles)
 
 	for part in parts:
-		if not part: continue
+		if not part:
+			continue
 		
 		# Handle formatting characters
 		char = part[0]
-		if char == '\x02': state['bold'] = not state['bold']
-		elif char == '\x1D': state['italic'] = not state['italic']
-		elif char == '\x1F': state['underline'] = not state['underline']
-		# Now we handle color...
+		if char == '\x02': 
+			state['bold'] = not state['bold']
+		elif char == '\x1D': 
+			state['italic'] = not state['italic']
+		elif char == '\x1F': 
+			state['underline'] = not state['underline']
+		elif char == '\x1E':  # Strikethrough toggle
+			state['strikethrough'] = not state['strikethrough']
 		elif char == '\x03':
 			if len(part) > 1:
 				colors = part[1:].split(',')
 				state['fg'] = colors[0]
-				if len(colors) > 1: state['bg'] = colors[1]
-			else: # Reset color
+				if len(colors) > 1:
+					state['bg'] = colors[1]
+			else:  # Reset color
 				state['fg'], state['bg'] = None, None
-		elif char == '\x0F': # Reset everything
+		elif char == '\x0F':  # Reset all styles
 			state = {k: False if isinstance(v, bool) else None for k, v in state.items()}
 		else:
 			style = get_style(state)

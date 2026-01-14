@@ -3813,12 +3813,9 @@ class Dialog(QDialog):
 		self.autocompleteDescription = QLabel(f"""
 			<small>
 			To use autocomplete, type the first few characters of a <b>command</b>,
-			<b>nickname</b>, <b>channel</b>, <b>emoji shortcode</b>, <b>script filename</b>, <b>alias</b>,
-			or <b>macro</b> and then hit <b>tab</b> to complete the entry. Autocomplete can also
-			complete settings with the <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060config</b> and <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060user</b>
-			commands, methods callable with the <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060call</b> command, or
-			filenames usable with the <b>{config.ISSUE_COMMAND_SYMBOL}script</b>, <b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060edit</b>, or
-			<b>\u2060{config.ISSUE_COMMAND_SYMBOL}\u2060python</b> commands.
+			<b>nickname</b>, <b>channel</b>, <b>emoji shortcode</b>, <b>filename</b>, <b>alias</b>,
+			<b>plugin method</b>, <b>setting</b>,
+			or <b>macro</b> and then hit <b>tab</b> to complete the entry.
 			</small>
 			""")
 		self.autocompleteDescription.setWordWrap(True)
@@ -3930,9 +3927,11 @@ class Dialog(QDialog):
 
 		self.mdDescription = QLabel("""
 			<small>
-			Use markdown to format input in <i>italics</i> (input * before and after text), <b>bold</b> (input ** before and after text),
+			Use markdown to format input in <i>italics</i> (input * before and after text), <b>bold</b> (input **
+			before and after text), <s>strikethrough</s> (input ~ before and after text),
 			or <u>underline</u> (input __ before and after text).
 			If IRC colors are turned off, this will not be displayed in the client, but will be sent to the server.
+			Not all clients support the <s>strikethrough</s> display.
 			</small>
 			""")
 		self.mdDescription.setWordWrap(True)

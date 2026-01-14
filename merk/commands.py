@@ -265,6 +265,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"userhost": config.ISSUE_COMMAND_SYMBOL+"userhost ",
 			config.ISSUE_COMMAND_SYMBOL+"python": config.ISSUE_COMMAND_SYMBOL+"python ",
 			config.ISSUE_COMMAND_SYMBOL+"unmacro": config.ISSUE_COMMAND_SYMBOL+"unmacro ",
+			config.ISSUE_COMMAND_SYMBOL+"_trace": config.ISSUE_COMMAND_SYMBOL+"_trace ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -428,6 +429,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"userhost NICK(S)...</b>", f"Requests information about users from the server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"python [FILE]</b>", f"Opens the Python editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unmacro NAME</b>", f"Removes a macro" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET</b>", f"Executes a trace on a server or user. May only be issued by server operators" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -490,7 +492,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnectssl SERVER [PORT] [PASSWORD]</b>": continue
 
 		COPY.append(e)
-	COMMAND_HELP_INFORMATION = sorted(COPY)
+
+	def ignore_underscore_in_command_name(item):
+		return item[0].replace('_', '').casefold()
+
+	COMMAND_HELP_INFORMATION = sorted(COPY,key=ignore_underscore_in_command_name)
 
 	if new_help!=None:
 		if isinstance(new_help, list):
@@ -1453,6 +1459,26 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |---------|
+	# | /_trace |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_trace' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			window.client.sendLine(f'TRACE {target}')
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_trace':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /python |

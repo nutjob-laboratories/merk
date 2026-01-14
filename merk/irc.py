@@ -214,6 +214,39 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			self.fingerReply = user.FINGER
 
+	def irc_RPL_TRACELINK(self, prefix, params):
+		self.gui.serverMessage(self,f"200 LINK: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACECONNECTING(self, prefix, params):
+		self.gui.serverMessage(self,f"201 CONNECTING: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACEHANDSHAKE(self, prefix, params):
+		self.gui.serverMessage(self,f"202 HANDSHAKE: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACEUNKNOWN(self, prefix, params):
+		self.gui.serverMessage(self,f"203 UNKNOWN: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACEOPERATOR(self, prefix, params):
+		self.gui.serverMessage(self,f"204 OPERATOR: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACESERVER(self, prefix, params):
+		self.gui.serverMessage(self,f"205 SERVER: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACESERVICE(self, prefix, params):
+		self.gui.serverMessage(self,f"206 SERVICE: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACENEWTYPE(self, prefix, params):
+		self.gui.serverMessage(self,f"207 NEWTYPE: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACECLASS(self, prefix, params):
+		self.gui.serverMessage(self,f"209 CLASS: {' '.join(params[1:])}")
+
+	def irc_RPL_TRACEEND(self, prefix, params):
+		self.gui.serverMessage(self,f"262 END: {params[-1]}")
+
+	def irc_ERR_NOSUCHSERVER(self, prefix, params):
+		self.gui.receivedError(self,f"Error: Server {params[1]} not found.")
+
 	def irc_RPL_USERHOST(self,prefix,params):
 		data = []
 		if len(params)>0:

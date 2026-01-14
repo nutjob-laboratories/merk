@@ -89,8 +89,21 @@
 * Moved the cursor settings from the "Input" section of the settings dialog to
   the "Miscellaneous" section of the dialog.
 * New feature: use markdown to format input text. Supported markdown "tags" are
-  italic, bold, and underline. Only displayed in the client if IRC colors are
-  turned on.
+  italic, bold, strikethrough, and underline. Only displayed in the client if
+  IRC colors are turned on, but the messages will be sent to the server with
+  the formatting codes.
+* Added "use markdown in input" option to the settings menu and the settings
+  dialog.
+* Added some of the new settings to the settings menu and windowbar context
+  menu.
+* New command: /_trace, which executes a TRACE command on the server. This
+  command is usually limited to IRCops. All command output is displayed in the
+  server window for the server the command was issued on.
+* Bugfix: Underscores in command names are now ignored for the purpose of
+  sorting the command list with the /help command display. Previously, all the
+  commands that started with an underscore were displayed at the very top of
+  the command list; all commands are now in alphabetical order, while ignoring
+  the underscores in the name of the command.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

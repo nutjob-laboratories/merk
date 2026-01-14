@@ -447,9 +447,10 @@ def markdown_to_irc(text):
 	BOLD = "\x02"
 	ITALIC = "\x1D"
 	UNDERLINE = "\x1F"
+	STRIKETHROUGH = "\x1E"
 	RESET = "\x0F"
 
-	# Replacement Patterns
+	text = re.sub(r'~(.*?)~', f'{STRIKETHROUGH}\\1{STRIKETHROUGH}', text)
 	text = re.sub(r'\*\*(.*?)\*\*', f'{BOLD}\\1{BOLD}', text)  # **bold**
 	text = re.sub(r'__(.*?)__', f'{UNDERLINE}\\1{UNDERLINE}', text)  # __underline__
 	text = re.sub(r'\*(.*?)\*', f'{ITALIC}\\1{ITALIC}', text)  # *italic*

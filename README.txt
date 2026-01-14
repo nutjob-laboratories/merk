@@ -107,21 +107,36 @@ There are four libraries that comes bundled with **MERK**:
     - Extensive command-line options
     - Dark mode
     - Plugins
-      - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf). 
-      - Plugins are written in Python, and have access to everything that Python can do
-        - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK**, as well as [Python's standard library](https://docs.python.org/3/library/index.html)
+      - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf)
+      - Plugins are written in Python, and have access to everything that Python has
+        - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK** ([Twisted](https://twistedmatrix.com/trac/), [PyQt5](https://pypi.org/project/PyQt5/), [pyspellchecker](https://github.com/barrust/pyspellchecker), [emoji](https://github.com/carpedm20/emoji), and [pike](https://github.com/pyarmory/pike)), as well as [Python's standard library](https://docs.python.org/3/library/index.html)
       - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
       - Plugins can react to most IRC events
-        - Over 30 different IRC and application events!
+        - Over 30 different IRC and application events
         - Individual plugin events can be enabled and disabled in the "Settings" dialog
-        - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command.
+        - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command
       - Plugins can be created and edited directly in the application
-        - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting and auto-indentation
+        - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting, auto-indentation, and code generators for all events
         - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**
-        - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples).
+        - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples)
+      - Plugins can be installed by [drag-and-drop](https://en.wikipedia.org/wiki/Drag_and_drop), with the plugin manager, or from the command-line
+    -   Full scripting engine
+        - Includes a built in script editor, with command generators and syntax highlighting
+        - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
+        - Scripts have rudimentary flow control
+    - Macros
+        - Macros can take arguments, just like "regular" commands
+        - Macro functionality is done with scripts, allowing for complex behaviors
+    - Application-wide hotkeys
+      - Hotkeys can execute any command, script, or macro
+      - Command is executed in whatever subwindow is active
+      - Hotkeys can be set in scripts, from commands, or through the hotkey manager
+    -   Automatic logging of channel and private chats
+        - Includes a utility to export logs to JSON, CSV, or your own custom format
+        - Logs are stored in JSON, so parsing/scraping your own logs in easy
     - Audio notifications
       - Can be triggered by seven different events, with each one able to be turned on and off
-      - Uses any WAV file as the notification sound, and can be set in the GUI
+      - Uses any WAV file as the notification sound, and can be set in the GUI. **MERK** uses a built-in public domain "bell" sound by default
     - Very configurable, without having to manually edit a configuration file
         - Control application behavior, logging, features, and more
         - Over 300 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function
@@ -131,25 +146,15 @@ There are four libraries that comes bundled with **MERK**:
         - User input text can highlight channels, nicknames, commands, and more as you type!
         - Styles are saved and loaded automatically
         - Easy to use GUI text style editor is built-in
-        - Changes to text style are immediate, without having to restart!
+        - Changes to text style are immediate, without having to restart
     -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, German, Portuguese, Italian, Dutch, and Russian)
     -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
         -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
         -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
     -   Full IRC color support
-    -   Full scripting engine
-        - Includes a built in script editor, with scripting macros and syntax highlighting
-        - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
-     - Macros
-        - Macros can take arguments, just like "regular" commands
-        - Macro functionality is done with scripts, allowing for complex behaviors
-    - Create application-wide hotkeys
-      - Hotkeys can execute any command, script, or macro
-      - Command is executed in whatever subwindow is active
-      - Hotkeys can be set in scripts, from commands, or through the hotkey manager
-    -   Automatic logging of channel and private chats
-        - Includes a utility to export logs to JSON, CSV, or your own custom format
-        - Logs are stored in JSON, so parsing/scraping your own logs in easy
+        - Colors and formatting can be optionally stripped from display
+    - Markdown support for formatting input
+        - Messages can use the italics, bold, and underline markdown tags
 
 # Screenshots
 
@@ -187,7 +192,7 @@ There are four libraries that comes bundled with **MERK**:
 
   <p align="center">
  <center><a href="./graphics/channels.png"><img src="./graphics/channels_small.png"></a></center></br>
-  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera</a> network. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
+  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://www.undernet.org/">Undernet</a> network. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
   </p>
 
 # Usage
@@ -259,7 +264,7 @@ Appearance:
   -L, --light           Run in light mode
 ```
 # Commands
-All of these commands can be issued in the client or from scripts, unless otherwise noted. Commands that do not start with `/` can only be issued in scripts.
+All of these commands can be issued in the client or from scripts, unless otherwise noted. Commands that do not start with `/` can only be issued in scripts. Commands that start with `/_` are commands that are usually limited to [IRCops](https://en.wikipedia.org/wiki/IRC_operator), and usually display all output in server windows.
 
 | Commands                                | Description                                                                                                                      |
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
@@ -341,6 +346,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor                                                                                               |
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
+| `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
 | `/unbind SEQUENCE`                        | Removes a bind for `SEQUENCE`. To remove all binds, pass `*` as the argument                                                        |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |

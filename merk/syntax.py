@@ -274,6 +274,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window uninstall",
 			cmdsymbol+"python",
 			cmdsymbol+"unmacro",
+			cmdsymbol+"_trace",
 		]
 
 		script_only = [
