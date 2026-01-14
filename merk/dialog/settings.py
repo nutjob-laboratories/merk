@@ -91,7 +91,7 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 			if not self.parent.autocompleteEmojisInQuit:
 				self.parent.autoEmojiQuit.setFocus()
 
-			elif not config.ENABLE_EMOJI_SHORTCODES:
+			elif not config.ENABLE_EMOJI_SHORTCODES and not config.ENABLE_ASCIIMOJI_SHORTCODES:
 				self.parent.autoEmojiQuit.setFocus()
 
 			elif not self.parent.enableEmojis.isChecked():
@@ -115,6 +115,36 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 						text = self.textCursor().selectedText()
 
 						for c in EMOJI_AUTOCOMPLETE:
+
+							# Case sensitive
+							if fnmatch.fnmatchcase(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
+							# Case insensitive
+							if fnmatch.fnmatch(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
+				if config.ENABLE_ASCIIMOJI_SHORTCODES:
+					# Autocomplete emojis
+					cursor.select(QTextCursor.WordUnderCursor)
+					oldpos = cursor.position()
+					cursor.select(QTextCursor.WordUnderCursor)
+					newpos = cursor.selectionStart() - 1
+					cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+					cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
+
+						for c in ASCIIMOIJI:
 
 							# Case sensitive
 							if fnmatch.fnmatchcase(c,f"{text}*"):
@@ -191,7 +221,7 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 			if not self.parent.autocompleteEmojisInAway:
 				self.parent.autoEmojiAway.setFocus()
 
-			elif not config.ENABLE_EMOJI_SHORTCODES:
+			elif not config.ENABLE_EMOJI_SHORTCODES and not config.ENABLE_ASCIIMOJI_SHORTCODES:
 				self.parent.autoEmojiAway.setFocus()
 
 			elif not self.parent.enableEmojis.isChecked():
@@ -216,6 +246,36 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 						text = self.textCursor().selectedText()
 
 						for c in EMOJI_AUTOCOMPLETE:
+
+							# Case sensitive
+							if fnmatch.fnmatchcase(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
+							# Case insensitive
+							if fnmatch.fnmatch(c,f"{text}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(c)
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
+				if config.ENABLE_ASCIIMOJI_SHORTCODES:
+					# Autocomplete emojis
+					cursor.select(QTextCursor.WordUnderCursor)
+					oldpos = cursor.position()
+					cursor.select(QTextCursor.WordUnderCursor)
+					newpos = cursor.selectionStart() - 1
+					cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+					cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
+
+						for c in ASCIIMOIJI:
 
 							# Case sensitive
 							if fnmatch.fnmatchcase(c,f"{text}*"):
@@ -626,7 +686,7 @@ class Dialog(QDialog):
 			self.autocompleteCommands.setEnabled(True)
 			self.autocompleteNicks.setEnabled(True)
 			self.autocompleteChans.setEnabled(True)
-			if self.enableEmojis.isChecked():
+			if self.enableEmojis.isChecked() or self.enableAscii.isChecked():
 				self.autocompleteEmojis.setEnabled(True)
 			else:
 				self.autocompleteEmojis.setEnabled(False)
@@ -1161,7 +1221,7 @@ class Dialog(QDialog):
 		self.boldApply()
 
 	def changedEmoji(self,state):
-		if self.enableEmojis.isChecked():
+		if self.enableEmojis.isChecked() or self.enableAscii.isChecked():
 			self.autocompleteEmojis.setEnabled(True)
 			self.syntaxemoji.setEnabled(True)
 			self.autoEmojiAway.setEnabled(True)
@@ -1701,8 +1761,8 @@ class Dialog(QDialog):
 		self.windowbar_justify = config.WINDOWBAR_JUSTIFY
 		self.menubar_justify = config.MENUBAR_JUSTIFY
 		self.system_prepend = config.SYSTEM_MESSAGE_PREFIX
-		self.autocompleteEmojisInAway = config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
-		self.autocompleteEmojisInQuit = config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
+		self.autocompleteEmojisInAway = config.AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET
+		self.autocompleteEmojisInQuit = config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET
 		self.user_changed = False
 		self.refreshTopics = False
 		self.refreshTitles = False
@@ -3403,7 +3463,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
 		menuLayout.addLayout(infoExist)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
@@ -3721,8 +3781,8 @@ class Dialog(QDialog):
 
 		self.awayMsg.textChanged.connect(self.setAwayMsg)
 
-		self.autoEmojiAway = QCheckBox(f"Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
+		self.autoEmojiAway = QCheckBox(f"Autocomplete shortcodes",self)
+		if config.AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
 		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
 
 		if not config.ENABLE_EMOJI_SHORTCODES:
@@ -3739,9 +3799,12 @@ class Dialog(QDialog):
 		awayLayout.addWidget(self.awayMsg)
 		awayLayout.addWidget(self.autoEmojiAway)
 		awayLayout.addWidget(self.autoAliasAway)
-		awayBox = QGroupBox("")
-		awayBox.setAlignment(Qt.AlignLeft)
+
+		awayBox = QGroupBox("Default Away Message")
 		awayBox.setLayout(awayLayout)
+		awayBox.setAlignment(Qt.AlignHCenter)
+		awayBox.setObjectName("myGroupBox")
+		awayBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
 
 		asLayout = QVBoxLayout()
 		asLayout.setSpacing(2)
@@ -3757,14 +3820,13 @@ class Dialog(QDialog):
 		aasLayout.addWidget(self.appCancelAway)
 
 		awayLayout = QVBoxLayout()
+		awayLayout.addWidget(awayBox)
+		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addLayout(asLayout)
 		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autoaway settiings</b>"))
 		awayLayout.addLayout(aasLayout)
-		awayLayout.addWidget(QLabel(' '))
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		awayLayout.addWidget(awayBox)
 		awayLayout.addStretch()
 
 		self.awayPage.setLayout(awayLayout)
@@ -3833,11 +3895,11 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_CHANNELS: self.autocompleteChans.setChecked(True)
 		self.autocompleteChans.stateChanged.connect(self.changedSetting)
 
-		self.autocompleteEmojis = QCheckBox("Emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS: self.autocompleteEmojis.setChecked(True)
+		self.autocompleteEmojis = QCheckBox("Shortcodes",self)
+		if config.AUTOCOMPLETE_SHORTCODES: self.autocompleteEmojis.setChecked(True)
 		self.autocompleteEmojis.stateChanged.connect(self.changedSetting)
 
-		if config.ENABLE_EMOJI_SHORTCODES:
+		if config.ENABLE_EMOJI_SHORTCODES or config.ENABLE_ASCIIMOJI_SHORTCODES:
 			self.autocompleteEmojis.setEnabled(True)
 		else:
 			self.autocompleteEmojis.setEnabled(False)
@@ -4449,6 +4511,22 @@ class Dialog(QDialog):
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
+		self.noEnviron = QCheckBox(f"Do not show environment in CTCP\nVERSION replies",self)
+		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
+		self.noEnviron.stateChanged.connect(self.changedSetting)
+		self.noEnviron.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
+		self.noVersion.stateChanged.connect(self.changedSettingVersion)
+
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
+			self.noEnviron.setEnabled(False)
+
+		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
+		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
+		self.noSource.stateChanged.connect(self.changedSetting)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(2)
 		msLayout.addWidget(self.showColors)
@@ -4459,6 +4537,9 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.enableIgnore)
 		msLayout.addWidget(self.showLusers)
 		msLayout.addWidget(self.showIson)
+		msLayout.addWidget(self.noSource)
+		msLayout.addWidget(self.noVersion)
+		msLayout.addWidget(self.noEnviron)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(2)
@@ -5105,7 +5186,7 @@ class Dialog(QDialog):
 		self.syntaxfore = widgets.SyntaxTextColor('fore', "<b>Text Color</b>",self.SYNTAX_FOREGROUND,self)
 		self.syntaxback = widgets.SyntaxTextColor('back', "<b>Background</b>",self.SYNTAX_BACKGROUND,self)
 		self.syntaxnick = widgets.SyntaxColor('nick', "<b>Nicknames</b>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
-		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Emoji Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
+		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
 
 		self.syntaxcomment.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxcommand.syntaxChanged.connect(self.syntaxChanged)
@@ -5135,7 +5216,7 @@ class Dialog(QDialog):
 			<b>Syntax highlighting</b> can also be applied to the input widget in
 			all server and chat windows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
-			current chat and <b>emoji shortcodes</b> will be highlighted using the
+			current chat and <b>emoji</b> and <b>ASCIImoji shortcodes</b> will be highlighted using the
 			colors and format settings below.
 			</small>
 			""")
@@ -5202,20 +5283,35 @@ class Dialog(QDialog):
 
 		self.emojiDescription = QLabel(f"""
 			<small>
-			If <b>emoji shortcodes</b> are enabled, you can insert <b>emojis</b> into
+			If <b>shortcodes</b> are enabled, you can insert <b>emojis</b> and <b>ASCIImojis</b> into
 			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			You can find a complete list of supported <b>shortcodes</b> <a href="{url}">
+			You can find a complete list of supported <b>emoji shortcodes</b> <a href="{url}">
 			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
+			You can find a complete list of supported <b>ASCIImoji shortcodes</b> <a href="https://asciimoji.com/">here</a>.
 			</small>
 			""")
 		self.emojiDescription.setWordWrap(True)
 		self.emojiDescription.setAlignment(Qt.AlignJustify)
 		self.emojiDescription.setOpenExternalLinks(True)
 
-		escLayout = QHBoxLayout()
-		escLayout.addStretch()
-		escLayout.addWidget(self.enableEmojis)
-		escLayout.addStretch()
+		self.enableAscii = QCheckBox("Enable ASCIImoji shortcodes",self)
+		if config.ENABLE_ASCIIMOJI_SHORTCODES: self.enableAscii.setChecked(True)
+		self.enableAscii.stateChanged.connect(self.changedEmoji)
+
+		escLayout1 = QHBoxLayout()
+		escLayout1.addStretch()
+		escLayout1.addWidget(self.enableEmojis)
+		escLayout1.addStretch()
+
+		escLayout2 = QHBoxLayout()
+		escLayout2.addStretch()
+		escLayout2.addWidget(self.enableAscii)
+		escLayout2.addStretch()
+
+		escLayout = QVBoxLayout()
+		escLayout.setSpacing(2)
+		escLayout.addLayout(escLayout1)
+		escLayout.addLayout(escLayout2)
 
 		self.partMsg = EmojiQuitAutocomplete(self)
 		self.partMsg.setText(self.default_quit_part)
@@ -5228,8 +5324,8 @@ class Dialog(QDialog):
 
 		self.partMsg.textChanged.connect(self.setQuitMsg)
 
-		self.autoEmojiQuit = QCheckBox(f"Autocomplete emoji shortcodes",self)
-		if config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
+		self.autoEmojiQuit = QCheckBox(f"Autocomplete shortcodes",self)
+		if config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
 		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
 
 		if not config.ENABLE_EMOJI_SHORTCODES:
@@ -5247,9 +5343,11 @@ class Dialog(QDialog):
 		qfLayout.addWidget(self.autoEmojiQuit)
 		qfLayout.addWidget(self.autoAliasQuit)
 
-		quitBox = QGroupBox("")
-		quitBox.setAlignment(Qt.AlignLeft)
+		quitBox = QGroupBox("Default Quit/Part Message")
+		quitBox.setAlignment(Qt.AlignHCenter)
 		quitBox.setLayout(qfLayout)
+		quitBox.setObjectName("myGroupBox")
+		quitBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
 
 		size_policy = quitBox.sizePolicy()
 		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
@@ -5280,22 +5378,6 @@ class Dialog(QDialog):
 		if not config.ENABLE_HOTKEYS:
 			self.hotkeyCmd.setEnabled(False)
 
-		self.noEnviron = QCheckBox(f"Do not show environment in CTCP\nVERSION replies",self)
-		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
-		self.noEnviron.stateChanged.connect(self.changedSetting)
-		self.noEnviron.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
-		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
-		self.noVersion.stateChanged.connect(self.changedSettingVersion)
-
-		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
-			self.noEnviron.setEnabled(False)
-
-		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
-		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
-		self.noSource.stateChanged.connect(self.changedSetting)
-
 		setLayout = QFormLayout()
 		setLayout.setSpacing(2)
 		setLayout.addWidget(self.searchAllTerms)
@@ -5309,9 +5391,6 @@ class Dialog(QDialog):
 		mmLayout = QFormLayout()
 		mmLayout.setSpacing(2)
 		mmLayout.addWidget(self.searchInstall)
-		mmLayout.addWidget(self.noSource)
-		mmLayout.addWidget(self.noVersion)
-		mmLayout.addWidget(self.noEnviron)
 
 		self.inputCursorLabel = QLabel("Input widget cursor width:")
 		self.inputCursorLabelSpec = QLabel("pixels")
@@ -5347,9 +5426,8 @@ class Dialog(QDialog):
 		cursLayout.addLayout(cursorLayout)
 
 		miscLayout = QVBoxLayout()
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit/part message</b>"))
 		miscLayout.addWidget(quitBox)
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>emoji shortcodes</b>"))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
@@ -5630,7 +5708,7 @@ class Dialog(QDialog):
 		config.LOAD_PRIVATE_LOGS = self.loadPrivLogs.isChecked()
 		config.AUTOCOMPLETE_COMMANDS = self.autocompleteCommands.isChecked()
 		config.AUTOCOMPLETE_NICKS = self.autocompleteNicks.isChecked()
-		config.AUTOCOMPLETE_EMOJIS = self.autocompleteEmojis.isChecked()
+		config.AUTOCOMPLETE_SHORTCODES = self.autocompleteEmojis.isChecked()
 		config.ASK_BEFORE_DISCONNECT = self.askBeforeDisconnect.isChecked()
 		config.DEFAULT_SUBWINDOW_WIDTH = self.subWidth
 		config.DEFAULT_SUBWINDOW_HEIGHT = self.subHeight
@@ -5749,7 +5827,7 @@ class Dialog(QDialog):
 		config.WINDOW_INTERACTION_CANCELS_AUTOAWAY = self.windowCancelAway.isChecked()
 		config.APP_INTERACTION_CANCELS_AUTOAWAY = self.appCancelAway.isChecked()
 		config.DEFAULT_AWAY_MESSAGE = self.default_away
-		config.AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
+		config.AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET = self.autocompleteEmojisInAway
 		config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = self.doubleclickRestore.isChecked()
 		config.LOG_CHANNEL_TOPICS = self.topicLog.isChecked()
 		config.LOG_CHANNEL_JOIN = self.joinLog.isChecked()
@@ -5761,7 +5839,7 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_MENU = self.showChanMenu.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = self.writeConsole.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_FILE = self.writeFile.isChecked()
-		config.AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = self.autoEmojiQuit.isChecked()
+		config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET = self.autoEmojiQuit.isChecked()
 		config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = self.showStatusEditor.isChecked()
 		config.ENABLE_ALIASES = self.enableAlias.isChecked()
 		config.ENABLE_AUTOCOMPLETE = self.enableAutocomplete.isChecked()
@@ -5920,6 +5998,7 @@ class Dialog(QDialog):
 		config.PLUGIN_UNLOAD = self.plugUnload.isChecked()
 		config.SHOW_PLUGIN_CONSOLE_ON_CREATION = self.showConsole.isChecked()
 		config.USE_MARKDOWN_IN_INPUT = self.useMd.isChecked()
+		config.ENABLE_ASCIIMOJI_SHORTCODES = self.enableAscii.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

@@ -104,6 +104,18 @@
   commands that started with an underscore were displayed at the very top of
   the command list; all commands are now in alphabetical order, while ignoring
   the underscores in the name of the command.
+* Bugfix: /quitall ignored the quit message passed to it in some circumstances.
+* Added ASCIImoji (https://asciimoji.com/) support! ASCIImoji shortcodes are in
+  the format (text). Autocomplete, syntax highlighting in the text input
+  widget, and inserting ASCIImoji shortcodes every place that emoji shortcodes
+  could go is supported. Settings specific for emojis have now, in many cases,
+  been changed to support both emoji and ASCIImoji shortcodes. Both emoji and
+  ASCIImoji shortcodes can be en/disabled separately; one can be used without
+  the other. Autocomplete in the settings dialog for away and quit messages has
+  been updated to use both types of *mojis.
+* Much of the formatting of the settings dialog has been updated.
+* The emoji that is used in the plugin manager to show that a plugin's console
+  is open or in use can now use an ASCIImoji, instead.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -124,6 +136,8 @@
   event.
 * New plugin event: unload(), which is triggered when the plugin is unloaded
   upon exit of the application.
+* New plugin inherited method: asciimojize(), which inserts ASCIImojis into
+  text with shortcodes.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.350                                  |

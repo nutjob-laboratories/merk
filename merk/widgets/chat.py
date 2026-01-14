@@ -1041,10 +1041,9 @@ class Window(QMainWindow):
 				menu.addSeparator()
 
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_QUIT_MESSAGE
+				msg = config.DEFAULT_QUIT_MESSAGE
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -2407,10 +2406,9 @@ class Window(QMainWindow):
 				self.parent.hideServerWindow(self.client)
 			else:
 				self.parent.quitting[self.client.client_id] = 0
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_QUIT_MESSAGE
+				msg = config.DEFAULT_QUIT_MESSAGE
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -2434,8 +2432,8 @@ class Window(QMainWindow):
 				if msg:
 					self.away_button.setToolTip("Set status to \"back\"")
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
-					if config.ENABLE_EMOJI_SHORTCODES:
-						msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 						commands.buildTemporaryAliases(self.parent,self)
 						msg = commands.interpolateAliases(msg)
@@ -2445,10 +2443,9 @@ class Window(QMainWindow):
 			else:
 				self.away_button.setToolTip("Set status to \"back\"")
 				self.away_button.setIcon(QIcon(GO_BACK_ICON))
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_AWAY_MESSAGE
+				msg = config.DEFAULT_AWAY_MESSAGE
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -2523,10 +2520,9 @@ class Window(QMainWindow):
 
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
-			if config.ENABLE_EMOJI_SHORTCODES:
-				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-			else:
-				msg = config.DEFAULT_QUIT_MESSAGE
+			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 				commands.buildTemporaryAliases(self.parent,self)
 				msg = commands.interpolateAliases(msg)
@@ -3547,7 +3543,7 @@ class SpellTextEdit(QPlainTextEdit):
 									return
 
 				if config.ENABLE_EMOJI_SHORTCODES:
-					if config.AUTOCOMPLETE_EMOJIS:
+					if config.AUTOCOMPLETE_SHORTCODES:
 						# Autocomplete emojis
 						cursor.select(QTextCursor.WordUnderCursor)
 						oldpos = cursor.position()
@@ -3560,6 +3556,37 @@ class SpellTextEdit(QPlainTextEdit):
 							text = self.textCursor().selectedText()
 
 							for c in EMOJI_AUTOCOMPLETE:
+
+								# Case sensitive
+								if fnmatch.fnmatchcase(c,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
+
+								# Case insensitive
+								if fnmatch.fnmatch(c,f"{text}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
+
+				if config.ENABLE_ASCIIMOJI_SHORTCODES:
+					if config.AUTOCOMPLETE_SHORTCODES:
+						# Autocomplete emojis
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - 1
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+
+							for c in ASCIIMOIJI:
 
 								# Case sensitive
 								if fnmatch.fnmatchcase(c,f"{text}*"):
@@ -3725,6 +3752,7 @@ class Highlighter(QSyntaxHighlighter):
 	CHANNELS_3 = r'(\!+[^\!\s]+)'
 	CHANNELS_4 = r'(\++[^\+\s]+)'
 	EMOJIS = r":\w+:"
+	ASCIIMOJIS = r"\(\w+\)"
 	SPECIAL = ['\\','^','$','.','|','?','*','+','(',')','{']
 
 	def __init__(self, *args):
@@ -3769,6 +3797,14 @@ class Highlighter(QSyntaxHighlighter):
 						if code==word_object.group():
 							do_not_spellcheck.append(code[1:-1])
 							self.setFormat(word_object.start(), word_object.end() - word_object.start(), emojiformat)
+
+			if config.ENABLE_ASCIIMOJI_SHORTCODES:
+				asciimojiformat = syntax.format(config.SYNTAX_EMOJI_COLOR,config.SYNTAX_EMOJI_STYLE)
+				for word_object in re.finditer(self.ASCIIMOJIS, text):
+					for code in ASCIIMOIJI:
+						if code==word_object.group():
+							do_not_spellcheck.append(code[1:-1])
+							self.setFormat(word_object.start(), word_object.end() - word_object.start(), asciimojiformat)
 
 			# Apply syntax style to nicknames
 			nickformat = syntax.format(config.SYNTAX_NICKNAME_COLOR,config.SYNTAX_NICKNAME_STYLE)

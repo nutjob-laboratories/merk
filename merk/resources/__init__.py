@@ -44,6 +44,7 @@ from .emoji2 import *
 from .style import *
 from .release import *
 from .example_plugin import *
+from .asciimoji import *
 
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")

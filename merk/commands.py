@@ -588,6 +588,7 @@ def interpolateAliases(text):
 		if counter>=99: break
 
 	if config.ENABLE_EMOJI_SHORTCODES: text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
+	if config.ENABLE_ASCIIMOJI_SHORTCODES: text = emojize(text)
 
 	return text
 
@@ -1081,7 +1082,7 @@ def check_for_sane_values(setting,value):
 	if setting=="syntax_nickname_color":
 		if not QColor(value).isValid(): return INVALID_COLOR
 
-	if setting=="syntax_emoji_color":
+	if setting=="syntax_shortcode_color":
 		if not QColor(value).isValid(): return INVALID_COLOR
 
 	if setting=="syntax_alias_color":
@@ -1151,7 +1152,7 @@ def check_for_sane_values(setting,value):
 			if e.lower() in v: continue
 			return INVALID_TEXT_STYLE
 
-	if setting=="syntax_emoji_style":
+	if setting=="syntax_shortcode_style":
 		for e in value.split():
 			if e.lower() in v: continue
 			return INVALID_TEXT_STYLE
@@ -1302,6 +1303,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 					target = tokens.pop(0)
 					msg = ' '.join(tokens)
 					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					if len(msg.strip())==0: msg = None
 					window.client.kick(channel,target,msg)
 					return True
@@ -1338,6 +1340,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.describe(window.name,msg)
 			t = Message(ACTION_MESSAGE,window.client.nickname,msg)
 			window.writeText(t)
@@ -1372,6 +1375,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 					channel = window.name
 					msg = ' '.join(tokens)
 					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					window.client.topic(channel,msg)
 					return True
 				else:
@@ -1394,10 +1398,9 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==1:
 			channel = window.name
-			if config.ENABLE_EMOJI_SHORTCODES:
-				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-			else:
-				msg = config.DEFAULT_QUIT_MESSAGE
+			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 				buildTemporaryAliases(gui,window)
 				msg = interpolateAliases(msg)
@@ -1414,6 +1417,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				channel = window.name
 				msg = ' '.join(tokens)
 				if config.ENABLE_EMOJI_SHORTCODES:  msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					buildTemporaryAliases(gui,window)
 					msg = interpolateAliases(msg)
@@ -1551,6 +1555,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			msg = " ".join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine('WALLOPS '+msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wallops':
@@ -3241,15 +3246,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			if config.ENABLE_EMOJI_SHORTCODES:
-				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-			else:
-				msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 				buildTemporaryAliases(gui,window)
 				msg = interpolateAliases(msg)
-
 
 			gui.disconnectAll(msg)
 			return True
@@ -3267,6 +3269,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = ' '.join(tokens)
 				if len(msg)>0:
 					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
@@ -3282,6 +3285,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			msg = target+' '+' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 			# Get the current active window
 			w = gui.MDI.activeSubWindow()
@@ -4246,6 +4250,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			w = window.parent.openPrivate(window.client,target)
 			window.client.msg(target,msg)
 			t = Message(SELF_MESSAGE,window.client.nickname,msg)
@@ -4274,6 +4279,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				target = tokens.pop(0)
 				msg = ' '.join(tokens)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 
 				# If we have the target's window open, write
 				# the message there
@@ -4930,6 +4936,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			message = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine('KNOCK '+target+' '+message)
 			return True
 
@@ -5560,6 +5567,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = ' '.join(tokens)
 				if len(msg)>0:
 					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
@@ -5575,6 +5583,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			msg = target+' '+' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 			# Get the current active window
 			w = gui.MDI.activeSubWindow()
@@ -5622,6 +5631,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine(msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quote' and len(tokens)==1:
@@ -5661,6 +5671,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.away(msg)
 			window.client.away_msg = msg
 			return True
@@ -5670,13 +5681,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = x.get_away_information(gui)
 				if msg:
 					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					window.client.away(msg)
 					window.client.away_msg = msg
 			else:
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_AWAY_MESSAGE
+				msg = config.DEFAULT_AWAY_MESSAGE
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 					buildTemporaryAliases(gui,window)
 					msg = interpolateAliases(msg)
@@ -6339,6 +6350,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if len(msg.strip())==0: msg = None
 			window.client.kick(channel,target,msg)
 			return True
@@ -6384,6 +6396,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.notice(target,msg)
 
 			if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
@@ -6417,6 +6430,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.msg(target,msg)
 
 			# If we have the target's window open, write
@@ -6524,6 +6538,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			channel = tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.topic(channel,msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'topic':
@@ -6546,12 +6561,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if not gui.askDisconnect(window.client): return True
 
 			if len(config.DEFAULT_QUIT_MESSAGE)>0:
-
-				if config.ENABLE_EMOJI_SHORTCODES:
-					msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-				else:
-					msg = config.DEFAULT_QUIT_MESSAGE
-
+				msg = config.DEFAULT_QUIT_MESSAGE
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					buildTemporaryAliases(gui,window)
 					msg = interpolateAliases(msg)
@@ -6568,6 +6580,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.quit(msg)
 			gui.quitting[window.client.client_id] = 0
 			return True
@@ -6607,10 +6620,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==2:
 			tokens.pop(0)
 			channel = tokens.pop(0)
-			if config.ENABLE_EMOJI_SHORTCODES:
-				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-			else:
-				msg = config.DEFAULT_QUIT_MESSAGE
+			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 				buildTemporaryAliases(gui,window)
 				msg = interpolateAliases(msg)
@@ -6621,6 +6633,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			channel = tokens.pop(0)
 			msg = ' '.join(tokens)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 				buildTemporaryAliases(gui,window)
 				msg = interpolateAliases(msg)

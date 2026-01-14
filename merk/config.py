@@ -55,7 +55,7 @@ DISPLAY_IRC_COLORS = True
 CONVERT_URLS_TO_LINKS = True
 AUTOCOMPLETE_COMMANDS = True
 AUTOCOMPLETE_NICKS = True
-AUTOCOMPLETE_EMOJIS = True
+AUTOCOMPLETE_SHORTCODES = True
 MAXIMUM_LOADED_LOG_SIZE = 500
 MARK_END_OF_LOADED_LOG = True
 SAVE_CHANNEL_LOGS = True
@@ -200,7 +200,7 @@ DO_NOT_APPLY_STYLES_TO_TEXT = False
 TYPING_INPUT_CANCELS_AUTOAWAY = True
 WINDOW_INTERACTION_CANCELS_AUTOAWAY = False
 APP_INTERACTION_CANCELS_AUTOAWAY = False
-AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = True
+AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET = True
 DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = True
 CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = True
 LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = False
@@ -216,7 +216,7 @@ SHOW_CHANNEL_MENU = True
 EMOJI_LANGUAGE = 'alias'
 WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = False
 WRITE_INPUT_AND_OUTPUT_TO_FILE = False
-AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = True
+AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET = True
 SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = True
 USERLIST_ICON_SIZE = 16
 ENABLE_ALIASES = True
@@ -392,9 +392,11 @@ PLUGIN_UNINSTALL = True
 PLUGIN_UNLOAD = True
 SHOW_PLUGIN_CONSOLE_ON_CREATION = False
 USE_MARKDOWN_IN_INPUT = True
+ENABLE_ASCIIMOJI_SHORTCODES = True
 
 def build_settings():
 	settings = {
+		"enable_asciimoji_shortcodes": ENABLE_ASCIIMOJI_SHORTCODES,
 		"use_markdown_for_formatting_input": USE_MARKDOWN_IN_INPUT,
 		"show_plugin_consoles_on_creation": SHOW_PLUGIN_CONSOLE_ON_CREATION,
 		"enable_plugin_unload_event": PLUGIN_UNLOAD,
@@ -570,7 +572,7 @@ def build_settings():
 		"enable_aliases": ENABLE_ALIASES,
 		"userlist_status_icon_size": USERLIST_ICON_SIZE,
 		"show_status_bar_on_editor_windows": SHOW_STATUS_BAR_ON_EDITOR_WINDOWS,
-		"autocomplete_emojis_in_quit_message_widget": AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET,
+		"autocomplete_shortcodes_in_quit_message_widget": AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET,
 		"write_network_input_and_output_to_file": WRITE_INPUT_AND_OUTPUT_TO_FILE,
 		"write_network_input_and_output_to_console": WRITE_INPUT_AND_OUTPUT_TO_CONSOLE,
 		"emoji_shortcode_language": EMOJI_LANGUAGE,
@@ -586,7 +588,7 @@ def build_settings():
 		"log_absolutely_all_messages_of_any_type": LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE,
 		"click_systray_icon_to_minimize_to_tray": CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY,
 		"doubleclick_to_restore_from_systray": DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY,
-		"autocomplete_emojis_in_away_message_widget": AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET,
+		"autocomplete_shortcodes_in_away_message_widget": AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET,
 		"app_interaction_cancels_autoaway": APP_INTERACTION_CANCELS_AUTOAWAY,
 		"window_interaction_cancels_autoaway": WINDOW_INTERACTION_CANCELS_AUTOAWAY,
 		"typing_input_cancels_autoaway": TYPING_INPUT_CANCELS_AUTOAWAY,
@@ -602,8 +604,8 @@ def build_settings():
 		"hide_horizontal_scrollbar_on_userlists": HIDE_USERLIST_HORIZONTAL_SCROLLBAR,
 		"syntax_nickname_color": SYNTAX_NICKNAME_COLOR,
 		"syntax_nickname_style": SYNTAX_NICKNAME_STYLE,
-		"syntax_emoji_color": SYNTAX_EMOJI_COLOR,
-		"syntax_emoji_style": SYNTAX_EMOJI_STYLE,
+		"syntax_shortcode_color": SYNTAX_EMOJI_COLOR,
+		"syntax_shortcode_style": SYNTAX_EMOJI_STYLE,
 		"apply_syntax_highlighting_to_input_widget": APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET,
 		"do_not_show_application_name_in_title": DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE,
 		"do_not_apply_text_style_to_userlist": DO_NOT_APPLY_STYLE_TO_USERLIST,
@@ -658,7 +660,7 @@ def build_settings():
 		"convert_urls_to_links": CONVERT_URLS_TO_LINKS,
 		"autocomplete_commands": AUTOCOMPLETE_COMMANDS,
 		"autocomplete_nicks": AUTOCOMPLETE_NICKS,
-		"autocomplete_emojis": AUTOCOMPLETE_EMOJIS,
+		"autocomplete_shortcodes": AUTOCOMPLETE_SHORTCODES,
 		"maximum_loaded_log_size": MAXIMUM_LOADED_LOG_SIZE,
 		"mark_end_of_loaded_log": MARK_END_OF_LOADED_LOG,
 		"save_channel_logs": SAVE_CHANNEL_LOGS,
@@ -753,6 +755,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_asciimoji_shortcodes" in settings:
+		settings["enable_asciimoji_shortcodes"] = ENABLE_ASCIIMOJI_SHORTCODES
 	if not "use_markdown_for_formatting_input" in settings:
 		settings["use_markdown_for_formatting_input"] = USE_MARKDOWN_IN_INPUT
 	if not "show_plugin_consoles_on_creation" in settings:
@@ -1103,8 +1107,8 @@ def patch_settings(settings):
 		settings["userlist_status_icon_size"] = USERLIST_ICON_SIZE
 	if not "show_status_bar_on_editor_windows" in settings:
 		settings["show_status_bar_on_editor_windows"] = SHOW_STATUS_BAR_ON_EDITOR_WINDOWS
-	if not "autocomplete_emojis_in_quit_message_widget" in settings:
-		settings["autocomplete_emojis_in_quit_message_widget"] = AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
+	if not "autocomplete_shortcodes_in_quit_message_widget" in settings:
+		settings["autocomplete_shortcodes_in_quit_message_widget"] = AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET
 	if not "write_network_input_and_output_to_file" in settings:
 		settings["write_network_input_and_output_to_file"] = WRITE_INPUT_AND_OUTPUT_TO_FILE
 	if not "write_network_input_and_output_to_console" in settings:
@@ -1135,8 +1139,8 @@ def patch_settings(settings):
 		settings["click_systray_icon_to_minimize_to_tray"] = CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
 	if not "doubleclick_to_restore_from_systray" in settings:
 		settings["doubleclick_to_restore_from_systray"] = DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
-	if not "autocomplete_emojis_in_away_message_widget" in settings:
-		settings["autocomplete_emojis_in_away_message_widget"] = AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
+	if not "autocomplete_shortcodes_in_away_message_widget" in settings:
+		settings["autocomplete_shortcodes_in_away_message_widget"] = AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET
 	if not "app_interaction_cancels_autoaway" in settings:
 		settings["app_interaction_cancels_autoaway"] = APP_INTERACTION_CANCELS_AUTOAWAY
 	if not "window_interaction_cancels_autoaway" in settings:
@@ -1167,10 +1171,10 @@ def patch_settings(settings):
 		settings["syntax_nickname_color"] = SYNTAX_NICKNAME_COLOR
 	if not "syntax_nickname_style" in settings:
 		settings["syntax_nickname_style"] = SYNTAX_NICKNAME_STYLE
-	if not "syntax_emoji_color" in settings:
-		settings["syntax_emoji_color"] = SYNTAX_EMOJI_COLOR
-	if not "syntax_emoji_style" in settings:
-		settings["syntax_emoji_style"] = SYNTAX_EMOJI_STYLE
+	if not "syntax_shortcode_color" in settings:
+		settings["syntax_shortcode_color"] = SYNTAX_EMOJI_COLOR
+	if not "syntax_shortcode_style" in settings:
+		settings["syntax_shortcode_style"] = SYNTAX_EMOJI_STYLE
 	if not "apply_syntax_highlighting_to_input_widget" in settings:
 		settings["apply_syntax_highlighting_to_input_widget"] = APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET
 	if not "do_not_show_application_name_in_title" in settings:
@@ -1433,8 +1437,8 @@ def patch_settings(settings):
 		settings["autocomplete_commands"] = AUTOCOMPLETE_COMMANDS
 	if not "autocomplete_nicks" in settings:
 		settings["autocomplete_nicks"] = AUTOCOMPLETE_NICKS
-	if not "autocomplete_emojis" in settings:
-		settings["autocomplete_emojis"] = AUTOCOMPLETE_EMOJIS
+	if not "autocomplete_shortcodes" in settings:
+		settings["autocomplete_shortcodes"] = AUTOCOMPLETE_SHORTCODES
 	if not "maximum_loaded_log_size" in settings:
 		settings["maximum_loaded_log_size"] = MAXIMUM_LOADED_LOG_SIZE
 	if not "mark_end_of_loaded_log" in settings:
@@ -1481,7 +1485,7 @@ def load_settings(filename):
 	global CONVERT_URLS_TO_LINKS
 	global AUTOCOMPLETE_COMMANDS
 	global AUTOCOMPLETE_NICKS
-	global AUTOCOMPLETE_EMOJIS
+	global AUTOCOMPLETE_SHORTCODES
 	global MAXIMUM_LOADED_LOG_SIZE
 	global MARK_END_OF_LOADED_LOG
 	global SAVE_CHANNEL_LOGS
@@ -1624,7 +1628,7 @@ def load_settings(filename):
 	global TYPING_INPUT_CANCELS_AUTOAWAY
 	global WINDOW_INTERACTION_CANCELS_AUTOAWAY
 	global APP_INTERACTION_CANCELS_AUTOAWAY
-	global AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET
+	global AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET
 	global DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY
 	global CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY
 	global LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE
@@ -1640,7 +1644,7 @@ def load_settings(filename):
 	global EMOJI_LANGUAGE
 	global WRITE_INPUT_AND_OUTPUT_TO_CONSOLE
 	global WRITE_INPUT_AND_OUTPUT_TO_FILE
-	global AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET
+	global AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET
 	global SHOW_STATUS_BAR_ON_EDITOR_WINDOWS
 	global USERLIST_ICON_SIZE
 	global ENABLE_ALIASES
@@ -1816,6 +1820,7 @@ def load_settings(filename):
 	global PLUGIN_UNLOAD
 	global SHOW_PLUGIN_CONSOLE_ON_CREATION
 	global USE_MARKDOWN_IN_INPUT
+	global ENABLE_ASCIIMOJI_SHORTCODES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1825,6 +1830,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_ASCIIMOJI_SHORTCODES = settings["enable_asciimoji_shortcodes"]
 		USE_MARKDOWN_IN_INPUT = settings["use_markdown_for_formatting_input"]
 		SHOW_PLUGIN_CONSOLE_ON_CREATION = settings["show_plugin_consoles_on_creation"]
 		PLUGIN_UNLOAD = settings["enable_plugin_unload_event"]
@@ -2000,7 +2006,7 @@ def load_settings(filename):
 		ENABLE_ALIASES = settings["enable_aliases"]
 		USERLIST_ICON_SIZE = settings["userlist_status_icon_size"]
 		SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = settings["show_status_bar_on_editor_windows"]
-		AUTOCOMPLETE_EMOJIS_IN_QUIT_MESSAGE_WIDGET = settings["autocomplete_emojis_in_quit_message_widget"]
+		AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET = settings["autocomplete_shortcodes_in_quit_message_widget"]
 		WRITE_INPUT_AND_OUTPUT_TO_FILE = settings["write_network_input_and_output_to_file"]
 		WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = settings["write_network_input_and_output_to_console"]
 		EMOJI_LANGUAGE = settings["emoji_shortcode_language"]
@@ -2016,7 +2022,7 @@ def load_settings(filename):
 		LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = settings["log_absolutely_all_messages_of_any_type"]
 		CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY = settings["click_systray_icon_to_minimize_to_tray"]
 		DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY = settings["doubleclick_to_restore_from_systray"]
-		AUTOCOMPLETE_EMOJIS_IN_AWAY_MESSAGE_WIDGET = settings["autocomplete_emojis_in_away_message_widget"]
+		AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET = settings["autocomplete_shortcodes_in_away_message_widget"]
 		APP_INTERACTION_CANCELS_AUTOAWAY = settings["app_interaction_cancels_autoaway"]
 		WINDOW_INTERACTION_CANCELS_AUTOAWAY = settings["window_interaction_cancels_autoaway"]
 		TYPING_INPUT_CANCELS_AUTOAWAY = settings["typing_input_cancels_autoaway"]
@@ -2032,8 +2038,8 @@ def load_settings(filename):
 		HIDE_USERLIST_HORIZONTAL_SCROLLBAR = settings["hide_horizontal_scrollbar_on_userlists"]
 		SYNTAX_NICKNAME_COLOR = settings["syntax_nickname_color"]
 		SYNTAX_NICKNAME_STYLE = settings["syntax_nickname_style"]
-		SYNTAX_EMOJI_COLOR = settings["syntax_emoji_color"]
-		SYNTAX_EMOJI_STYLE = settings["syntax_emoji_style"]
+		SYNTAX_EMOJI_COLOR = settings["syntax_shortcode_color"]
+		SYNTAX_EMOJI_STYLE = settings["syntax_shortcode_style"]
 		APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = settings["apply_syntax_highlighting_to_input_widget"]
 		DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE = settings["do_not_show_application_name_in_title"]
 		DO_NOT_APPLY_STYLE_TO_USERLIST = settings["do_not_apply_text_style_to_userlist"]
@@ -2155,7 +2161,7 @@ def load_settings(filename):
 		CONVERT_URLS_TO_LINKS = settings["convert_urls_to_links"]
 		AUTOCOMPLETE_COMMANDS = settings["autocomplete_commands"]
 		AUTOCOMPLETE_NICKS = settings["autocomplete_nicks"]
-		AUTOCOMPLETE_EMOJIS = settings["autocomplete_emojis"]
+		AUTOCOMPLETE_SHORTCODES = settings["autocomplete_shortcodes"]
 		MAXIMUM_LOADED_LOG_SIZE = settings["maximum_loaded_log_size"]
 		MARK_END_OF_LOADED_LOG = settings["mark_end_of_loaded_log"]
 		SYNTAX_COMMENT_COLOR = settings["syntax_comment_color"]

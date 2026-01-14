@@ -388,10 +388,9 @@ class wMenuButton(QPushButton):
 				menu.addAction(entry)
 
 			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
-			if config.ENABLE_EMOJI_SHORTCODES:
-				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-			else:
-				msg = config.DEFAULT_QUIT_MESSAGE
+			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.window.parent,self.window)
 					msg = commands.interpolateAliases(msg)
@@ -554,10 +553,9 @@ class wIconMenuButton(QPushButton):
 			menu.addSeparator()
 
 			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
-			if config.ENABLE_EMOJI_SHORTCODES:
-				msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-			else:
-				msg = config.DEFAULT_QUIT_MESSAGE
+			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.window.parent,self.window)
 					msg = commands.interpolateAliases(msg)

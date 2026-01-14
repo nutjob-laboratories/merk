@@ -2342,10 +2342,9 @@ class Merk(QMainWindow):
 			if client.last_interaction!=-1:
 				if client.last_interaction>config.AUTOAWAY_TIME:
 					if not client.is_away:
-						if config.ENABLE_EMOJI_SHORTCODES:
-							msg = emoji.emojize(config.DEFAULT_AWAY_MESSAGE,language=config.EMOJI_LANGUAGE)
-						else:
-							msg = config.DEFAULT_AWAY_MESSAGE
+						msg = config.DEFAULT_AWAY_MESSAGE
+						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 							w = self.getServerSubWindow(client)
 							if w:
@@ -3063,8 +3062,8 @@ class Merk(QMainWindow):
 		if commands.handleCommonCommands(self,window,user_input): return
 		
 		# Add emojis to the message
-		if config.ENABLE_EMOJI_SHORTCODES:
-			user_input = emoji.emojize(user_input,language=config.EMOJI_LANGUAGE)
+		if config.ENABLE_EMOJI_SHORTCODES: user_input = emoji.emojize(user_input,language=config.EMOJI_LANGUAGE)
+		if config.ENABLE_ASCIIMOJI_SHORTCODES: user_input = emojize(user_input)
 
 		if len(user_input)>0:
 			# Client has issued a chat message, so send it
@@ -3102,11 +3101,9 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"client"):
 				if c.window_type==SERVER_WINDOW:
-					if config.ENABLE_EMOJI_SHORTCODES:
-						msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-					else:
-						msg = config.DEFAULT_QUIT_MESSAGE
-
+					msg = config.DEFAULT_QUIT_MESSAGE
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 						commands.buildTemporaryAliases(self,c)
 						msg = commands.interpolateAliases(msg)
@@ -4867,6 +4864,9 @@ class Merk(QMainWindow):
 			entry.triggered.connect((lambda : self.open_folder(commands.SCRIPTS_DIRECTORY)))
 			sm.addAction(entry)
 
+	def openASCIImoji(self):
+		self.openLinkInBrowser("https://asciimoji.com/")
+
 	def buildHelpMenu(self):
 
 		self.helpMenu.clear()
@@ -4881,6 +4881,9 @@ class Merk(QMainWindow):
 		self.helpMenu.addAction(entry)
 
 		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
+		self.helpMenu.addAction(entry)
+
+		entry = widgets.ExtendedMenuItem(self,NETWORK_MENU_ICON,"ASCIImoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openASCIImoji)
 		self.helpMenu.addAction(entry)
 
 		self.helpMenu.addSeparator()
@@ -5351,15 +5354,13 @@ class Merk(QMainWindow):
 					else:
 						self.quitting[c.client.client_id] = 0
 						if disco_msg==None:
-							if config.ENABLE_EMOJI_SHORTCODES:
-								msg = emoji.emojize(config.DEFAULT_QUIT_MESSAGE,language=config.EMOJI_LANGUAGE)
-							else:
-								msg = config.DEFAULT_QUIT_MESSAGE
+							msg = config.DEFAULT_QUIT_MESSAGE
+							if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+							if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						else:
-							if config.ENABLE_EMOJI_SHORTCODES:
-								msg = emoji.emojize(disco_msg,language=config.EMOJI_LANGUAGE)
-							else:
-								msg = disco_msg
+							if config.ENABLE_EMOJI_SHORTCODES: disco_msg = emoji.emojize(disco_msg,language=config.EMOJI_LANGUAGE)
+							if config.ENABLE_ASCIIMOJI_SHORTCODES: disco_msg = emojize(disco_msg)
+							msg = disco_msg
 
 						if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 							commands.buildTemporaryAliases(self,c)

@@ -148,13 +148,19 @@ There are four libraries that comes bundled with **MERK**:
         - Easy to use GUI text style editor is built-in
         - Changes to text style are immediate, without having to restart
     -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, German, Portuguese, Italian, Dutch, and Russian)
+    -   Autocomplete for commands, nicknames, channels, and more
     -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
         -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
+        -   Built-in autocomplete for all supported emojis
         -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
+    -   [ASCIImoji](https://asciimoji.com/) support
+        -   Insert ASCIImojis into chat by using shortcodes (such as `(bear)` ʕ·͡ᴥ·ʔ, `(lol)` L(° O °L), etc.)
+        -   Built-in autocomplete for all supported ASCIImojis
+        -   A list of supported ASCIImoji shortcodes can be found [here](https://asciimoji.com/)
     -   Full IRC color support
         - Colors and formatting can be optionally stripped from display
-    - Markdown support for formatting input
-        - Messages can use the italics, bold, and underline markdown tags
+    - Markdown support for formatting messages with IRC control codes
+        - Messages can use the *italics*, **bold**, ~~strikethrough~~, and <u>underline</u>
 
 # Screenshots
 
