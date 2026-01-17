@@ -144,6 +144,11 @@ class IRC_Connection(irc.IRCClient):
 		objectconfig(self,**kwargs)
 
 		user.load_user(user.USER_FILE)
+		config.load_settings(config.CONFIG_FILE)
+
+		self.reset_environment()
+		self.erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
+		self.heartbeatInterval = config.TWISTED_CLIENT_HEARTBEAT
 
 		self.oldnick = self.nickname
 		self.uptime = 0

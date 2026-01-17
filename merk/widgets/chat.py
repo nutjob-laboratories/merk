@@ -123,6 +123,9 @@ class Window(QMainWindow):
 
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
+		# Make sure that the client has a network set, even if the server doesn't
+		if not hasattr(self.client,"network"): self.client.network = config.UNKNOWN_NETWORK_NAME
+
 		self.dosave = QTimer(self)
 		self.dosave.timeout.connect(self.saveLogs)
 		self.dosave.start(config.LOG_SAVE_INTERVAL)
@@ -628,7 +631,6 @@ class Window(QMainWindow):
 				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				self.secure_icon.setPixmap(pixmap)
 				self.status.addPermanentWidget(self.secure_icon,0)
-				if not hasattr(self.client,"network"): self.client.network = config.UNKNOWN_NETWORK_NAME
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
 					if netlink!=None:
@@ -1235,17 +1237,6 @@ class Window(QMainWindow):
 						m = Message(DATE_MESSAGE,'',cdate)
 						d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 						self.chat.append(d2)
-
-			# text_content = self.chat.document().toPlainText()
-			# byte_size = len(text_content.encode('utf-8'))
-			# kb_size = byte_size / 1024
-
-			# if kb_size>500:
-			# 	logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
-			# 	self.chat.clear()
-			# 	self.new_log = []
-			# 	self.log = []
-			# 	self.doLoadLoad()
 
 	def refreshBanMenu(self):
 		self.banlist_menu.setMenu(buildBanMenu(self,self.client))

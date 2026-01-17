@@ -52,10 +52,13 @@ class Window():
 		else:
 			self._window = window
 
+		if hasattr(self._window,"window_type"):
+			self.wtype = self._window.window_type
+		else:
+			self.wtype = None
+
 	def chat(self):
-		if self._window.window_type!=SERVER_WINDOW:
-			return self._window.dumpChat()
-		return []
+		return self._window.dumpChat()
 
 	def history(self):
 		if config.ENABLE_COMMAND_INPUT_HISTORY:
@@ -88,7 +91,7 @@ class Window():
 		return False
 
 	def key(self,new_key=None):
-		if self._window.window_type!=CHANNEL_WINDOW: return None
+		if self.wtype!=CHANNEL_WINDOW: return None
 		if self._window.name in self._window.client.channelkeys:
 			if new_key==None:
 				return self._window.client.channelkeys[self._window.name]
@@ -107,12 +110,12 @@ class Window():
 		return self._window.uptime
 
 	def modes(self):
-		if self._window.window_type!=CHANNEL_WINDOW: return None
+		if self.wtype!=CHANNEL_WINDOW: return None
 		if len(self._window.client.channelmodes[self._window.name])>0:
 			return self._window.client.channelmodes[self._window.name]
 
 	def bans(self):
-		if self._window.window_type!=CHANNEL_WINDOW: return None
+		if self.wtype!=CHANNEL_WINDOW: return None
 		if len(self._window.banlist)>0:
 			return self._window.banlist
 		else:
@@ -120,7 +123,7 @@ class Window():
 
 	def status(self,status=None):
 		if status==None:
-			if self._window.window_type!=CHANNEL_WINDOW: return 'normal'
+			if self.wtype!=CHANNEL_WINDOW: return 'normal'
 			if self._window.owner: return 'owner'
 			if self._window.admin: return 'admin'
 			if self._window.operator: return 'operator'
@@ -129,7 +132,7 @@ class Window():
 			if self._window.voiced: return 'voiced'
 			return 'normal'
 
-		if self._window.window_type!=CHANNEL_WINDOW: return False
+		if self.wtype!=CHANNEL_WINDOW: return False
 		if self._window.owner and status.lower()=='owner': return True
 		if self._window.admin and status.lower()=='admin': return True
 		if self._window.operator and status.lower()=='operator': return True
@@ -219,11 +222,11 @@ class Window():
 		return self._window.name
 
 	def type(self):
-		if self._window.window_type==CHANNEL_WINDOW:
+		if self.wtype==CHANNEL_WINDOW:
 			return "channel"
-		elif self._window.window_type==PRIVATE_WINDOW:
+		elif self.wtype==PRIVATE_WINDOW:
 			return "private"
-		elif self._window.window_type==SERVER_WINDOW:
+		elif self.wtype==SERVER_WINDOW:
 			return "server"
 		else:
 			return "unknown"
@@ -265,7 +268,7 @@ class Window():
 		return False
 
 	def say(self,message):
-		if self._window.window_type==CHANNEL_WINDOW or self._window.window_type==PRIVATE_WINDOW:
+		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			message = commands.fullInterpolate(self._gui,self._window,message)
@@ -276,7 +279,7 @@ class Window():
 		return False
 
 	def note(self,message):
-		if self._window.window_type==CHANNEL_WINDOW or self._window.window_type==PRIVATE_WINDOW:
+		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			message = commands.fullInterpolate(self._gui,self._window,message)
@@ -287,7 +290,7 @@ class Window():
 		return False
 
 	def describe(self,message):
-		if self._window.window_type==CHANNEL_WINDOW or self._window.window_type==PRIVATE_WINDOW:
+		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			message = commands.fullInterpolate(self._gui,self._window,message)
@@ -321,7 +324,7 @@ class Window():
 		return commands.fullInterpolate(self._gui,self._window,text)
 
 	def users(self,status=None):
-		if self._window.window_type!=CHANNEL_WINDOW: return []
+		if self.wtype!=CHANNEL_WINDOW: return []
 		if status==None: return self._window.users
 
 		if status.lower()=='normal':
@@ -355,7 +358,7 @@ class Window():
 		return []
 
 	def nicks(self):
-		if self._window.window_type==CHANNEL_WINDOW:
+		if self.wtype==CHANNEL_WINDOW:
 			output = []
 			for u in self._window.users:
 				output.append(self._window.clean_nick(u))
@@ -363,7 +366,7 @@ class Window():
 		return []
 
 	def topic(self,new_topic=None):
-		if self._window.window_type==CHANNEL_WINDOW:
+		if self.wtype==CHANNEL_WINDOW:
 			if new_topic==None:
 				return self._window.channel_topic
 			else:
@@ -468,6 +471,12 @@ class Plugin():
 	AUTHOR = "Unknown"
 	VERSION = "1.0"
 	SOURCE = "Unknown"
+
+	def connect(self,server,port,password=None,ssl=False,reconnect=False):
+		commands.connect_to_irc(self._gui,None,server,port,password,ssl,reconnect)
+
+	def xconnect(self,server,port,password=None,ssl=False,reconnect=False):
+		commands.connect_to_irc(self._gui,None,server,port,password,ssl,reconnect,True)
 
 	def console(self):
 		return Console(self._gui,self)
@@ -962,93 +971,99 @@ def load_plugins(gui):
 		# Ignore the base plugin class
 		if c.__name__=="Plugin": continue
 
-		LOCAL_ERRORS = []
+		# Only load Plugin subclasses as plugins
+		# Do not try to create an instance of classes
+		# that are not plugin classes
+		if issubclass(c, Plugin):
 
-		# Create an instance of the plugin class
-		obj = c()
+			# Store any loading errors
+			LOCAL_ERRORS = []
 
-		# Make sure that the class has access to
-		# the "parent" window
-		obj._gui = gui
+			# Create an instance of the plugin class
+			obj = c()
 
-		obj._filename = inspect.getfile(c)
+			# Make sure that the class has access to
+			# the "parent" window
+			obj._gui = gui
 
-		# Generate an UUID for the plugin, but
-		# make sure it's only generated the first
-		# time the plugin is "loaded", and stays
-		# the same during runtime.
-		if obj._filename in PLUGIN_IDS:
-			obj._id = PLUGIN_IDS[obj._filename]
-		else:
-			obj._id = str(uuid.uuid4())
+			obj._filename = inspect.getfile(c)
 
-		name_without_extension, extension = os.path.splitext(obj._filename)
-		icon_filename = name_without_extension + ".png"
-		if not os.path.exists(icon_filename):
-			icon_filename = None
-
-		obj._icon = icon_filename
-
-		obj._basename = os.path.basename(obj._filename)
-
-		obj._calls = count_callable_methods(obj)
-
-		obj._events = 0
-		obj._event_list = []
-		for e in EVENTS:
-			if hasattr(obj,e):
-				obj._events = obj._events + 1
-				obj._event_list.append(e)
-
-		# Make sure the plugin inherits from the "Plugin" class
-		if not issubclass(type(obj), Plugin):
-			LOCAL_ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
-
-		if not hasattr(obj,"NAME"): obj.NAME = "Unknown"
-		if not hasattr(obj,"AUTHOR"): obj.AUTHOR = "Unknown"
-		if not hasattr(obj,"SOURCE"): obj.SOURCE = "Unknown"
-		if not hasattr(obj,"VERSION"): obj.VERSION = "1.0"
-
-		obj._class = obj.__class__.__name__
-
-		instance_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
-		obj._methods = len(instance_methods) - obj._events
-		obj._methods = obj._methods - len(BUILT_IN)
-		if obj._methods<0: obj._methods = 0
-
-		if obj._events==0 and obj._calls==0:
-			LOCAL_ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
-
-		if obj._filename in PLUGIN_FILENAMES:
-			plugin_is_being_reloaded = True
-		else:
-			plugin_is_being_reloaded = False
-
-		no_error = True
-		for o in PLUGIN_NAMES:
-			if o==f"{obj.NAME} {obj.VERSION}":
-				if plugin_is_being_reloaded:
-					no_error = True
-				else:
-					no_error = False
-
-		if no_error==False:
-			LOCAL_ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
-
-		# Add the plugin to the registry if
-		# the plugin had no errors
-		if len(LOCAL_ERRORS)==0:
-			PLUGINS.append(obj)
-
-			# Run plugin init
-			if config.EXECUTE_INIT_ON_PLUGIN_RELOAD:
-				init(obj)
+			# Generate an UUID for the plugin, but
+			# make sure it's only generated the first
+			# time the plugin is "loaded", and stays
+			# the same during runtime.
+			if obj._filename in PLUGIN_IDS:
+				obj._id = PLUGIN_IDS[obj._filename]
 			else:
-				if not plugin_is_being_reloaded:
-					init(obj)
+				obj._id = str(uuid.uuid4())
 
-		for e in LOCAL_ERRORS:
-			ERRORS.append(e)
+			name_without_extension, extension = os.path.splitext(obj._filename)
+			icon_filename = name_without_extension + ".png"
+			if not os.path.exists(icon_filename):
+				icon_filename = None
+
+			obj._icon = icon_filename
+
+			obj._basename = os.path.basename(obj._filename)
+
+			obj._calls = count_callable_methods(obj)
+
+			obj._events = 0
+			obj._event_list = []
+			for e in EVENTS:
+				if hasattr(obj,e):
+					obj._events = obj._events + 1
+					obj._event_list.append(e)
+
+			# Make sure the plugin inherits from the "Plugin" class
+			if not issubclass(type(obj), Plugin):
+				LOCAL_ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
+
+			if not hasattr(obj,"NAME"): obj.NAME = "Unknown"
+			if not hasattr(obj,"AUTHOR"): obj.AUTHOR = "Unknown"
+			if not hasattr(obj,"SOURCE"): obj.SOURCE = "Unknown"
+			if not hasattr(obj,"VERSION"): obj.VERSION = "1.0"
+
+			obj._class = obj.__class__.__name__
+
+			instance_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
+			obj._methods = len(instance_methods) - obj._events
+			obj._methods = obj._methods - len(BUILT_IN)
+			if obj._methods<0: obj._methods = 0
+
+			if obj._events==0 and obj._calls==0:
+				LOCAL_ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
+
+			if obj._filename in PLUGIN_FILENAMES:
+				plugin_is_being_reloaded = True
+			else:
+				plugin_is_being_reloaded = False
+
+			no_error = True
+			for o in PLUGIN_NAMES:
+				if o==f"{obj.NAME} {obj.VERSION}":
+					if plugin_is_being_reloaded:
+						no_error = True
+					else:
+						no_error = False
+
+			if no_error==False:
+				LOCAL_ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
+
+			# Add the plugin to the registry if
+			# the plugin had no errors
+			if len(LOCAL_ERRORS)==0:
+				PLUGINS.append(obj)
+
+				# Run plugin init
+				if config.EXECUTE_INIT_ON_PLUGIN_RELOAD:
+					init(obj)
+				else:
+					if not plugin_is_being_reloaded:
+						init(obj)
+
+			for e in LOCAL_ERRORS:
+				ERRORS.append(e)
 
 	# Reload the plugin manager, if it's open
 	if gui.plugin_manager!=None:

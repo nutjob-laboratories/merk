@@ -31,23 +31,6 @@ from .resources import *
 from . import config
 from . import styles
 
-IRC_00 = "#FFFFFF"
-IRC_01 = "#000000"
-IRC_02 = "#00007F"
-IRC_03 = "#009300"
-IRC_04 = "#FF0000"
-IRC_05 = "#7F0000"
-IRC_06 = "#9C009C"
-IRC_07 = "#FC7F00"
-IRC_08 = "#FFFF00"
-IRC_09 = "#00FC00"
-IRC_10 = "#009393"
-IRC_11 = "#00FFFF"
-IRC_12 = "#0000FC"
-IRC_13 = "#FF00FF"
-IRC_14 = "#7F7F7F"
-IRC_15 = "#D2D2D2"
-
 TIMESTAMP_TEMPLATE = """<td style="vertical-align:top; font-size:small; text-align:left;"><div style="!TIMESTAMP_STYLE!">[!TIME!]</div></td><td style="font-size:small;">&nbsp;</td>"""
 
 MESSAGE_TEMPLATE = f"""
@@ -404,10 +387,9 @@ def inject_www_links(txt,style):
 	else:
 		style = style["hyperlink"]
 
-	# New URL search pattern includes # as part of the URL
 	search_for_urls = r"(https?:\/\/[a-zA-Z0-9\-\.]+(?:\.[a-zA-Z]{2,6})(?::[0-9]{1,5})?(?:\/([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]*))?(?:#([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]+))?)"
-	found_urls = re.finditer(search_for_urls, txt)
-	urls = [match.group(0) for match in found_urls]
+	found_urls = re.finditer(search_for_urls, html.unescape(txt))
+	urls = [match.group(0).rstrip('.,;:!?()[]{}<>\'"').lstrip('.,;:!?()[]{}<>\'"') for match in found_urls]
 
 	for u in urls:
 		u = re.sub('<[^<]+?>', '', u)

@@ -320,16 +320,13 @@ class ExamplePlugin(Plugin):
     # |========|
     #
     # This event is triggered whenever MERK joins a channel.
-    # Window will be set to None if the window cannot be found.
     #
     # Arguments:
     #   channel = The channel MERK joined
     #   client = The Twisted IRC object that triggered the event
-    #   window = MERK Window
     #
     def joined(self,**args):
         channel = args["channel"]
-        window = args["window"]
         client = args["client"]
 
     # |======|

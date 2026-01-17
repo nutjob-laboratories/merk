@@ -23,8 +23,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import sys
-
 def emojize(text):
 	for a in ASCIIMOIJI:
 		if a in text: text = text.replace(a,ASCIIMOIJI[a])
@@ -118,7 +116,7 @@ ASCIIMOIJI = {'(--)': '–',
  '(diamond)': '♦',
  '(diesis)': '♯',
  '(dj)': 'd[-_-]b',
- '(do not want)': 'ヽ(｀Д´)ﾉ',
+ '(do_not_want)': 'ヽ(｀Д´)ﾉ',
  '(dog)': '(◕ᴥ◕ʋ)',
  '(dollar)': '$',
  '(dong)': '(̿▀̿\u2009̿Ĺ̯̿̿▀̿ ̿)̄',
@@ -389,7 +387,7 @@ ASCIIMOIJI = {'(--)': '–',
  '(woo)': '＼(＾O＾)／',
  '(wtf)': "(⊙＿⊙')",
  '(wut)': '⊙ω⊙',
- '(y u no)': 'u no (屮ﾟДﾟ)屮 Y U NO',
+ '(y_u_no)': 'u no (屮ﾟДﾟ)屮 Y U NO',
  '(y)': 'u no (屮ﾟДﾟ)屮 Y U NO',
  '(yay)': '\\( ﾟヮﾟ)/',
  '(yeah)': '(•̀ᴗ•́)و ̑̑',

@@ -1636,11 +1636,7 @@ class Merk(QMainWindow):
 			w.writeText(t)
 
 	def joinedEvent(self,client,channel):
-		w = self.getWindow(channel,client)
-		if w:
-			plugins.call(self,"joined",client=client,channel=channel,window=w)
-		else:
-			plugins.call(self,"joined",client=client,channel=channel,window=None)
+		plugins.call(self,"joined",client=client,channel=channel)
 
 	def left(self,client,channel):
 

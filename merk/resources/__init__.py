@@ -455,7 +455,6 @@ def markdown_to_irc(text):
 	text = re.sub(r'\*\*(.*?)\*\*', f'{BOLD}\\1{BOLD}', text)  # **bold**
 	text = re.sub(r'__(.*?)__', f'{UNDERLINE}\\1{UNDERLINE}', text)  # __underline__
 	text = re.sub(r'\*(.*?)\*', f'{ITALIC}\\1{ITALIC}', text)  # *italic*
-	text = re.sub(r'_(.*?)_', f'{ITALIC}\\1{ITALIC}', text)  # _italic_
 
 	return text
 
@@ -499,8 +498,21 @@ class StrictViewportFilter(QObject):
 
 def is_url(text):
 	url_pattern = re.compile(
-		r'^(https?://)?(www\.)?([a-zA-Z0-9-]+\.){1,}([a-zA-Z]{2,6})(/[a-zA-Z0-9-._~:/?#[\]@!$&\'()*+,;=]*)?$'
+		r'^(https?|ftp):\/\/'             # Scheme
+		r'(\S+(:\S*)?@)?'                 # Authentication (?)
+		r'('
+		r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}' # Domain name
+		r'|'                              # or
+		r'\d{1,3}(\.\d{1,3}){3}'          # IPv4
+		r'|'                              # or
+		r'\[?[A-Fa-f0-9:]+\]?'            # IPv6
+		r')'
+		r'(:\d+)?'                        # Port (?)
+		r'(/[^\s]*)?'                     # Path and arguments
+		r'$',
+		re.IGNORECASE
 	)
+
 	return bool(url_pattern.match(text))
 
 def strip_comments_and_docstrings_ast(code_string):

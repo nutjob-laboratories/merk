@@ -48,7 +48,7 @@ DISPLAY_TIMESTAMP = True
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = True
 WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = True
 ISSUE_COMMAND_SYMBOL = '/'
-DEFAULT_QUIT_MESSAGE = APPLICATION_NAME+" "+APPLICATION_VERSION
+DEFAULT_QUIT_MESSAGE = APPLICATION_NAME+" $_VERSION"
 DEFAULT_SPELLCHECK_LANGUAGE = "en"
 SYSTEM_MESSAGE_PREFIX = "&diams;"
 DISPLAY_IRC_COLORS = True
@@ -191,7 +191,7 @@ HIDE_USERLIST_HORIZONTAL_SCROLLBAR = True
 SHOW_AWAY_AND_BACK_MESSAGES = True
 SHOW_AWAY_STATUS_IN_USERLISTS = True
 SHOW_AWAY_STATUS_IN_NICK_DISPLAY = True
-DEFAULT_AWAY_MESSAGE = "Busy"
+DEFAULT_AWAY_MESSAGE = "Away at $_DATE $_TIME"
 USE_AUTOAWAY = False
 AUTOAWAY_TIME = 3600
 PROMPT_FOR_AWAY_MESSAGE = False
@@ -597,7 +597,7 @@ def build_settings():
 		"prompt_for_away_message": PROMPT_FOR_AWAY_MESSAGE,
 		"autoaway": USE_AUTOAWAY,
 		"autoaway_time": AUTOAWAY_TIME,
-		"default_away_message": DEFAULT_AWAY_MESSAGE,
+		"away_message": DEFAULT_AWAY_MESSAGE,
 		"show_away_status_in_nick_display": SHOW_AWAY_STATUS_IN_NICK_DISPLAY,
 		"show_away_status_in_userlists": SHOW_AWAY_STATUS_IN_USERLISTS,
 		"show_away_and_back_messages": SHOW_AWAY_AND_BACK_MESSAGES,
@@ -653,7 +653,7 @@ def build_settings():
 		"create_window_for_incoming_private_messages": CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES,
 		"write_private_messages_to_server_window": WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW,
 		"issue_command_symbol": ISSUE_COMMAND_SYMBOL,
-		"default_quit_message": DEFAULT_QUIT_MESSAGE,
+		"quit_message": DEFAULT_QUIT_MESSAGE,
 		"default_spellcheck_language": DEFAULT_SPELLCHECK_LANGUAGE,
 		"system_message_prefix": SYSTEM_MESSAGE_PREFIX,
 		"display_irc_colors": DISPLAY_IRC_COLORS,
@@ -1157,8 +1157,8 @@ def patch_settings(settings):
 		settings["autoaway"] = USE_AUTOAWAY
 	if not "autoaway_time" in settings:
 		settings["autoaway_time"] = AUTOAWAY_TIME
-	if not "default_away_message" in settings:
-		settings["default_away_message"] = DEFAULT_AWAY_MESSAGE
+	if not "away_message" in settings:
+		settings["away_message"] = DEFAULT_AWAY_MESSAGE
 	if not "show_away_status_in_nick_display" in settings:
 		settings["show_away_status_in_nick_display"] = SHOW_AWAY_STATUS_IN_NICK_DISPLAY
 	if not "show_away_status_in_userlists" in settings:
@@ -1423,8 +1423,8 @@ def patch_settings(settings):
 		settings["write_private_messages_to_server_window"] = WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW
 	if not "issue_command_symbol" in settings:
 		settings["issue_command_symbol"] = ISSUE_COMMAND_SYMBOL
-	if not "default_quit_message" in settings:
-		settings["default_quit_message"] = DEFAULT_QUIT_MESSAGE
+	if not "quit_message" in settings:
+		settings["quit_message"] = DEFAULT_QUIT_MESSAGE
 	if not "default_spellcheck_language" in settings:
 		settings["default_spellcheck_language"] = DEFAULT_SPELLCHECK_LANGUAGE
 	if not "system_message_prefix" in settings:
@@ -2031,7 +2031,7 @@ def load_settings(filename):
 		PROMPT_FOR_AWAY_MESSAGE = settings["prompt_for_away_message"]
 		USE_AUTOAWAY = settings["autoaway"]
 		AUTOAWAY_TIME = settings["autoaway_time"]
-		DEFAULT_AWAY_MESSAGE = settings["default_away_message"]
+		DEFAULT_AWAY_MESSAGE = settings["away_message"]
 		SHOW_AWAY_STATUS_IN_NICK_DISPLAY = settings["show_away_status_in_nick_display"]
 		SHOW_AWAY_STATUS_IN_USERLISTS = settings["show_away_status_in_userlists"]
 		SHOW_AWAY_AND_BACK_MESSAGES = settings["show_away_and_back_messages"]
@@ -2154,7 +2154,7 @@ def load_settings(filename):
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES = settings["create_window_for_incoming_private_messages"]
 		WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW = settings["write_private_messages_to_server_window"]
 		ISSUE_COMMAND_SYMBOL = settings["issue_command_symbol"]
-		DEFAULT_QUIT_MESSAGE = settings["default_quit_message"]
+		DEFAULT_QUIT_MESSAGE = settings["quit_message"]
 		DEFAULT_SPELLCHECK_LANGUAGE = settings["default_spellcheck_language"]
 		SYSTEM_MESSAGE_PREFIX = settings["system_message_prefix"]
 		DISPLAY_IRC_COLORS = settings["display_irc_colors"]

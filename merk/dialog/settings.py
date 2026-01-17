@@ -2105,16 +2105,17 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
 		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nicknames</b>"))
 		appearanceLayout.addLayout(nLayout)
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addStretch()
 
 		self.appearancePage.setLayout(appearanceLayout)
@@ -2771,6 +2772,7 @@ class Dialog(QDialog):
 		subwindowLayout.addLayout(orderLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow status bars</b>"))
 		subwindowLayout.addLayout(statusLayout)
+		subwindowLayout.addWidget(QLabel(' '))
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server subwindows</b>"))
 		subwindowLayout.addLayout(ssLayout)
 		subwindowLayout.addStretch()
@@ -3465,8 +3467,10 @@ class Dialog(QDialog):
 		menuLayout.addLayout(infoExist)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addLayout(miscDisplay)
 		menuLayout.addStretch()
@@ -3875,7 +3879,7 @@ class Dialog(QDialog):
 		self.autocompleteDescription = QLabel(f"""
 			<small>
 			To use autocomplete, type the first few characters of a <b>command</b>,
-			<b>nickname</b>, <b>channel</b>, <b>emoji shortcode</b>, <b>filename</b>, <b>alias</b>,
+			<b>nickname</b>, <b>channel</b>, <b>ASCIImoji</b> or <b>emoji shortcode</b>, <b>filename</b>, <b>alias</b>,
 			<b>plugin method</b>, <b>setting</b>,
 			or <b>macro</b> and then hit <b>tab</b> to complete the entry.
 			</small>
@@ -3989,11 +3993,10 @@ class Dialog(QDialog):
 
 		self.mdDescription = QLabel("""
 			<small>
-			Use markdown to format input in <i>italics</i> (input * before and after text), <b>bold</b> (input **
-			before and after text), <s>strikethrough</s> (input ~ before and after text),
-			or <u>underline</u> (input __ before and after text).
+			Use markdown to format input in <i>italics</i> (input <b>*</b> before and after text), <b>bold</b> (<b>**</b>), <s>strikethrough</s> (<b>~</b>),
+			or <u>underline</u> (<b>__</b>).
 			If IRC colors are turned off, this will not be displayed in the client, but will be sent to the server.
-			Not all clients support the <s>strikethrough</s> display.
+			Not all clients support the <s>strikethrough</s> display.<br>
 			</small>
 			""")
 		self.mdDescription.setWordWrap(True)
@@ -4014,15 +4017,19 @@ class Dialog(QDialog):
 		mdLayout.addLayout(umLayout)
 
 		inputLayout = QVBoxLayout()
+		inputLayout.setSpacing(2)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyMaster)
 		inputLayout.addLayout(historyLayout)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addLayout(autoMaster)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSetCenter)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown</b>"))
 		inputLayout.addLayout(mdLayout)
 		inputLayout.addStretch()
@@ -4426,7 +4433,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.messagePage)
 
-		self.showColors = QCheckBox("Show IRC colors",self)
+		self.showColors = QCheckBox("Show IRC colors and formatting",self)
 		if config.DISPLAY_IRC_COLORS: self.showColors.setChecked(True)
 		self.showColors.stateChanged.connect(self.changedSettingRerender)
 

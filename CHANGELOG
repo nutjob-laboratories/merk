@@ -116,6 +116,17 @@
 * Much of the formatting of the settings dialog has been updated.
 * The emoji that is used in the plugin manager to show that a plugin's console
   is open or in use can now use an ASCIImoji, instead.
+* Changed the URL "detector" in the to be a bit more permissive in the types of
+  URLs it detects.
+* Bugfix: the link creator in the text renderer now properly creates links that
+  might contain leading or trailing punctuation.
+* Changed the default quit and away messages to use built-in aliases. The name
+  of each setting has been changed in the configuration file so that newer
+  installs use the new version.
+* Bugfix: if servers did not have a network, channel or private chat subwindows
+  could not be created. This has been fixed; the network is now set to the
+  default unknown network name (which is "Unknown"). This can be changed in the
+  config file or with the /config command.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -138,6 +149,15 @@
   upon exit of the application.
 * New plugin inherited method: asciimojize(), which inserts ASCIImojis into
   text with shortcodes.
+* Bugfix: plugins can now contain classes that do NOT inherit from Plugin; they
+  will not be loaded into memory as a plugin, but can be used by plugins.
+* The "window" argument is no longer passed to the "joined" event. Due to a
+  race condition, this could cause errors to trigger in certain circumstances.
+  The channel's window can still be obtained with the channel() inherited
+  method.
+* New Plugin inherited methods: connect() (which connects MERK to an IRC server
+  WITHOUT executing any existing connection scripts) and xconnect() (which
+  connects MERK to an IRC server AND executes any existing connection scripts).
 
 |------------------------------------------------------------------------------|
 |                                   0.051.350                                  |
