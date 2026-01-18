@@ -83,7 +83,9 @@ class ExamplePlugin(Plugin):
     # |========|
     #
     # This event is triggered whenever the plugin is
-    # unloaded when the application exits.
+    # unloaded. This will be triggered when the plugin
+    # list is reloaded, when the plugin is uninstalled,
+    # and on application exit.
     #
     # Arguments:
     #   None

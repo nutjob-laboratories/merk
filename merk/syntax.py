@@ -367,6 +367,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			'alias': format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE),
 			'script': format(config.SYNTAX_SCRIPT_COLOR,config.SYNTAX_SCRIPT_STYLE),
 			'operator': format(config.SYNTAX_OPERATOR_COLOR,config.SYNTAX_OPERATOR_STYLE),
+			'string': format(config.SYNTAX_ALIAS_COLOR,config.SYNTAX_ALIAS_STYLE),
 		}
 
 		if not config.ENABLE_ALIASES: 

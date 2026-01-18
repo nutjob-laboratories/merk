@@ -197,6 +197,7 @@ class Window(QMainWindow):
 			except Exception as e:
 				QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
 
+			plugins.call(self.parent,"unload")
 			errors = plugins.load_plugins(self.parent)
 			if len(errors)>0:
 				msgBox = QMessageBox()
@@ -250,9 +251,6 @@ class Window(QMainWindow):
 			pass
 		else:
 
-			# Trigger the uninstall event on the plugin
-			plugins.uninstall(item.plugin)
-
 			if os.path.exists(item.filename):
 				try:
 					os.remove(item.filename)
@@ -269,6 +267,8 @@ class Window(QMainWindow):
 					QMessageBox.critical(self, 'Error', f'Error deleting file: {e}')
 
 			if config.RELOAD_PLUGINS_AFTER_UNINSTALL:
+				plugins.call(self.parent,"unload")
+				plugins.uninstall(item.plugin)
 				errors = plugins.load_plugins(self.parent)
 				if len(errors)>0:
 					msgBox = QMessageBox()
@@ -282,6 +282,9 @@ class Window(QMainWindow):
 					msgBox.setWindowTitle("Plugin load error")
 					msgBox.setStandardButtons(QMessageBox.Ok)
 					msgBox.exec()
+			else:
+				plugins.remove_plugin(item.plugin)
+
 			self.refresh()
 
 	def remove_plugin(self):
@@ -295,6 +298,7 @@ class Window(QMainWindow):
 		self.delete_plugin(item)
 
 	def reload_plugins(self):
+		plugins.call(self.parent,"unload")
 		errors = plugins.load_plugins(self.parent)
 		if len(errors)>0:
 			msgBox = QMessageBox()

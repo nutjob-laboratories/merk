@@ -225,6 +225,7 @@ class MdiArea(QMdiArea):
 					except Exception as e:
 						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
 
+					plugins.call(self.parent,"unload")
 					errors = plugins.load_plugins(self.parent)
 					if len(errors)>0:
 						msgBox = QMessageBox()
@@ -3520,6 +3521,7 @@ class Merk(QMainWindow):
 										if c.changed==False:
 											if c.is_in_plugin_directory():
 												if config.AUTO_RELOAD_ON_CLOSE:
+													plugins.call(self,"unload")
 													errors = plugins.load_plugins(self)
 													if len(errors)>0:
 														msgBox = QMessageBox()

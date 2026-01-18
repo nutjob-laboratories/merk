@@ -802,6 +802,37 @@ def uninstall(obj):
 			else:
 				sys.stdout.write(f"Error executing {obj._filename} event \"uninstall\": {e}\n")
 
+def remove_plugin(obj):
+	global PLUGINS
+	if not config.ENABLE_PLUGINS: return
+	if config.PLUGIN_UNINSTALL:
+		if hasattr(obj,"uninstall"):
+			try:
+				obj.uninstall()
+			except Exception as e:
+				if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+					QMessageBox.critical(obj._gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"uninstall\": {e}')
+					sys.stdout.write(f"Error executing {obj._filename} event \"uninstall\": {e}\n")
+				else:
+					sys.stdout.write(f"Error executing {obj._filename} event \"uninstall\": {e}\n")
+
+	if config.PLUGIN_UNLOAD:
+		if hasattr(obj,"unload"):
+			try:
+				obj.unload()
+			except Exception as e:
+				if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+					QMessageBox.critical(obj._gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"unload\": {e}')
+					sys.stdout.write(f"Error executing {obj._filename} event \"unload\": {e}\n")
+				else:
+					sys.stdout.write(f"Error executing {obj._filename} event \"unload\": {e}\n")
+
+	if obj._module in sys.modules:
+		del sys.modules[obj._module]
+
+	PLUGINS.remove(obj)
+	gc.collect()
+
 def init(obj):
 	if not config.ENABLE_PLUGINS: return
 	if not config.PLUGIN_INIT: return
@@ -933,6 +964,12 @@ def is_valid_call_method(method):
 				return INVALID_METHOD
 	return NO_METHOD
 
+def get_plugin(path):
+	for obj in PLUGINS:
+		if obj._filename==path: return obj
+		if obj._basename==os.path.basename(path): return obj
+	return None
+
 def load_plugins(gui):
 	global PLUGINS
 
@@ -1008,6 +1045,8 @@ def load_plugins(gui):
 
 			obj._calls = count_callable_methods(obj)
 
+			obj._module = obj.__class__.__module__
+
 			obj._events = 0
 			obj._event_list = []
 			for e in EVENTS:
@@ -1072,6 +1111,12 @@ def load_plugins(gui):
 	# Return
 	if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD: gc.collect()
 	return ERRORS
+
+def list_all_plugins():
+	output = {}
+	for obj in PLUGINS:
+		output[f"{obj.NAME} {obj.VERSION}"] = obj._basename
+	return output
 
 def list_plugin_files():
 	file_paths = []

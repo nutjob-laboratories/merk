@@ -3308,7 +3308,7 @@ class SpellTextEdit(QPlainTextEdit):
 									settings_list.append(s)
 
 								for setting in settings_list:
-									if fnmatch.fnmatch(setting,f"{text}*"):
+									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{setting}")
 										cursor.endEditBlock()
@@ -3333,7 +3333,7 @@ class SpellTextEdit(QPlainTextEdit):
 									if not type(settings[s]) is list: settings_list.append(s)
 
 								for setting in settings_list:
-									if fnmatch.fnmatch(setting,f"{text}*"):
+									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{setting}")
 										cursor.endEditBlock()
@@ -3350,7 +3350,7 @@ class SpellTextEdit(QPlainTextEdit):
 								text = self.textCursor().selectedText()
 
 								for script in commands.list_scripts():
-									if fnmatch.fnmatch(script,f"{text}*"):
+									if fnmatch.fnmatch(script.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{script}")
 										cursor.endEditBlock()
@@ -3367,7 +3367,7 @@ class SpellTextEdit(QPlainTextEdit):
 								text = self.textCursor().selectedText()
 
 								for script in plugins.list_plugin_files():
-									if fnmatch.fnmatch(script,f"{text}*"):
+									if fnmatch.fnmatch(script.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{script}")
 										cursor.endEditBlock()
@@ -3384,7 +3384,7 @@ class SpellTextEdit(QPlainTextEdit):
 								text = self.textCursor().selectedText()
 
 								for method in plugins.list_all_call_methods():
-									if fnmatch.fnmatch(method,f"{text}*"):
+									if fnmatch.fnmatch(method.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{method}")
 										cursor.endEditBlock()
@@ -3406,7 +3406,7 @@ class SpellTextEdit(QPlainTextEdit):
 								text = self.textCursor().selectedText()
 
 								for a in commands.ALIAS:
-									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text}*") or fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
 										cursor.endEditBlock()
@@ -3414,7 +3414,7 @@ class SpellTextEdit(QPlainTextEdit):
 										return
 
 								for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
-									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text}*") or fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a,f"{text}*"):
+									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
 										cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
 										cursor.endEditBlock()
@@ -3434,7 +3434,7 @@ class SpellTextEdit(QPlainTextEdit):
 							cmd = c
 							rep = self.COMMAND_LIST[c]
 
-							if fnmatch.fnmatch(cmd,f"{text}*"):
+							if fnmatch.fnmatch(cmd.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(rep)
 								cursor.endEditBlock()
@@ -3447,7 +3447,7 @@ class SpellTextEdit(QPlainTextEdit):
 							cmd = c
 							rep = self.COMMAND_LIST[c]
 
-							if fnmatch.fnmatch(cmd,f"{text}*"):
+							if fnmatch.fnmatch(cmd.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(rep)
 								cursor.endEditBlock()
@@ -3462,7 +3462,7 @@ class SpellTextEdit(QPlainTextEdit):
 						text = self.textCursor().selectedText()
 						for c in commands.USER_MACROS:
 							cmd = config.ISSUE_COMMAND_SYMBOL+commands.USER_MACROS[c].name
-							if fnmatch.fnmatch(cmd,f"{text}*"):
+							if fnmatch.fnmatch(cmd.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(cmd+' ')
 								cursor.endEditBlock()
@@ -3482,7 +3482,7 @@ class SpellTextEdit(QPlainTextEdit):
 							# Skip client's nickname
 							if nick==self.parent.client.nickname:
 								continue
-							if fnmatch.fnmatch(nick.lower(),f"{text}*") or fnmatch.fnmatch(nick,f"{text}*"):
+							if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(f"{nick}")
 								cursor.endEditBlock()
@@ -3503,7 +3503,7 @@ class SpellTextEdit(QPlainTextEdit):
 
 						# Channel/server names
 						for name in self.parent.parent.getAllChatNames():
-							if fnmatch.fnmatch(name.lower(),f"{text}*") or fnmatch.fnmatch(name,f"{text}*"):
+							if fnmatch.fnmatch(name.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(f"{name}")
 								cursor.endEditBlock()
@@ -3526,7 +3526,7 @@ class SpellTextEdit(QPlainTextEdit):
 
 							# Channel/server names
 							for name in self.parent.parent.getAllChatNames():
-								if fnmatch.fnmatch(name.lower(),f"{text}*") or fnmatch.fnmatch(name,f"{text}*"):
+								if fnmatch.fnmatch(name.lower(),f"{text.lower()}*"):
 									cursor.beginEditBlock()
 									cursor.insertText(f"{name}")
 									cursor.endEditBlock()
@@ -3549,15 +3549,7 @@ class SpellTextEdit(QPlainTextEdit):
 							for c in EMOJI_AUTOCOMPLETE:
 
 								# Case sensitive
-								if fnmatch.fnmatchcase(c,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(c)
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
-
-								# Case insensitive
-								if fnmatch.fnmatch(c,f"{text}*"):
+								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 									cursor.beginEditBlock()
 									cursor.insertText(c)
 									cursor.endEditBlock()
@@ -3580,15 +3572,7 @@ class SpellTextEdit(QPlainTextEdit):
 							for c in ASCIIMOIJI:
 
 								# Case sensitive
-								if fnmatch.fnmatchcase(c,f"{text}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(c)
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
-
-								# Case insensitive
-								if fnmatch.fnmatch(c,f"{text}*"):
+								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 									cursor.beginEditBlock()
 									cursor.insertText(c)
 									cursor.endEditBlock()

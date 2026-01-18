@@ -3445,9 +3445,22 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			return True
 
-		# /window uninstall|install
+		# /window install
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
-			if tokens[1].lower()=='uninstall' or tokens[1].lower()=='install':
+			if tokens[1].lower()=='install':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"window install FILE")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"window install FILE")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		# /window uninstall
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='uninstall':
 				if not config.ENABLE_PLUGINS:
 					if is_script:
 						add_halt(script_id)
@@ -3458,14 +3471,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				p = plugins.list_plugin_files()
+				p = plugins.list_all_plugins()
 				if len(p)>0:
 					count = 0
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(p)} plugins")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					for plug in p:
 						count = count + 1
-						t = Message(SYSTEM_MESSAGE,'',f"{count}) {', '.join(p)}")
+						t = Message(SYSTEM_MESSAGE,'',f"{count}) {plug} ({p[plug]})")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(p)} plugins")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -3496,6 +3509,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				file_path = os.path.join(plugins.PLUGIN_DIRECTORY, plugin)
 				name_without_extension, extension = os.path.splitext(plugin)
 				icon_path = os.path.join(plugins.PLUGIN_DIRECTORY, name_without_extension+".png")
+				uninstalled_plugin = plugins.get_plugin(file_path)
 
 				uninstalled = False
 				if os.path.exists(file_path) and file_path.endswith(".py"):
@@ -3527,13 +3541,37 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 				if uninstalled:
-					errors = plugins.load_plugins(gui)
-					if len(errors)>0:
-						t = Message(ERROR_MESSAGE,'',f"Plugin load errors: {', '.join(errors)}")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					if config.RELOAD_PLUGINS_AFTER_UNINSTALL:
+						plugins.call(gui,"unload")
+						if uninstalled_plugin!=None: plugins.uninstall(uninstalled_plugin)
+						errors = plugins.load_plugins(gui)
+						if len(errors)>0:
+							if is_script:
+								add_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Plugin load errors: {', '.join(errors)}")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',f"Plugin load errors: {', '.join(errors)}")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" uninstalled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					else:
-						t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" uninstalled")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						if uninstalled_plugin!=None:
+							plugins.remove_plugin(uninstalled_plugin)
+							if gui.plugin_manager!=None: gui.plugin_manager.refresh()
+							t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" uninstalled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							if is_script:
+								add_halt(script_id)
+								if config.DISPLAY_SCRIPT_ERRORS:
+									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window uninstall: \"{plugin}\" not removed from memory")
+									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+								return True
+							t = Message(ERROR_MESSAGE,'',f"\"{plugin}\" not removed from memory")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				else:
 					t = Message(SYSTEM_MESSAGE,'',f"Plugin \"{plugin}\" was not uninstalled, or does not exist")
@@ -3640,6 +3678,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
 
+					plugins.call(gui,"unload")
 					errors = plugins.load_plugins(gui)
 					if len(errors)>0:
 						t = Message(ERROR_MESSAGE,'',f"Plugin load errors: {', '.join(errors)}")
@@ -3721,6 +3760,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
 
+					plugins.call(gui,"unload")
 					errors = plugins.load_plugins(gui)
 					if len(errors)>0:
 						t = Message(ERROR_MESSAGE,'',f"Plugin load errors: {', '.join(errors)}")
@@ -3917,6 +3957,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.resize(x_val,y_val)
 				return True
 
+		# /window restart
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='restart':
 
@@ -3976,6 +4017,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |-------|
 	# | /show |
