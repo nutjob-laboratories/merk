@@ -436,12 +436,12 @@ class Merk(QMainWindow):
 
 		self.tray = QSystemTrayIcon() 
 		self.tray.setIcon(self.tray_icon)
+		self.tray.setToolTip(APPLICATION_NAME+" IRC client")
 		if config.SHOW_SYSTRAY_ICON==False:
 			self.tray.setVisible(False)
 		else:
 			self.tray.setVisible(True)
-		self.tray.setToolTip(APPLICATION_NAME+" IRC client")
-
+		
 		self.tray_notifications = []
 		self.tray_width = self.width()
 		self.tray_height = self.height()

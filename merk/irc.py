@@ -249,9 +249,6 @@ class IRC_Connection(irc.IRCClient):
 	def irc_RPL_TRACEEND(self, prefix, params):
 		self.gui.serverMessage(self,f"262 END: {params[-1]}")
 
-	def irc_ERR_NOSUCHSERVER(self, prefix, params):
-		self.gui.receivedError(self,f"Error: Server {params[1]} not found.")
-
 	def irc_RPL_USERHOST(self,prefix,params):
 		data = []
 		if len(params)>0:

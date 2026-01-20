@@ -3567,10 +3567,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if is_script:
 								add_halt(script_id)
 								if config.DISPLAY_SCRIPT_ERRORS:
-									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window uninstall: \"{plugin}\" not removed from memory")
+									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window uninstall: \"{plugin}\" uninstalled, but not removed from memory")
 									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 								return True
-							t = Message(ERROR_MESSAGE,'',f"\"{plugin}\" not removed from memory")
+							t = Message(ERROR_MESSAGE,'',f"\"{plugin}\" uninstalled, but not removed from memory")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				else:
