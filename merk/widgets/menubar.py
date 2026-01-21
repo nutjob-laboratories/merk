@@ -207,6 +207,10 @@ class MenuButton(QPushButton):
 		self.normal_style = normal_style
 		self.hover_style = hover_style
 
+	def focusOutEvent(self, event):
+		self.setStyleSheet(self.normal_style)
+		super(MenuButton, self).focusOutEvent(event)
+
 	def eventFilter(self, object, event):
 		if event.type() == QEvent.Enter:
 			if config.MENUBAR_HOVER_EFFECT:
@@ -229,6 +233,10 @@ class IconMenuButton(QPushButton):
 
 		self.normal_style = normal_style
 		self.hover_style = hover_style
+
+	def focusOutEvent(self, event):
+		self.setStyleSheet(self.normal_style)
+		super(IconMenuButton, self).focusOutEvent(event)
 
 	def eventFilter(self, object, event):
 		if event.type() == QEvent.Enter:

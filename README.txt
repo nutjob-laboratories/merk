@@ -159,8 +159,11 @@ There are four libraries that comes bundled with **MERK**:
         -   A list of supported ASCIImoji shortcodes can be found [here](https://asciimoji.com/)
     -   Full IRC color support
         - Colors and formatting can be optionally stripped from display
+        - If colors and formatting in input are stripped from display, they will still be sent to the server.
     - Markdown support for formatting messages with IRC control codes
         - Messages can use the *italics*, **bold**, ~~strikethrough~~, and <u>underline</u>
+    - Inject [IRC colors](https://www.mirc.com/colors.html) into input with plain text
+        - Open a color block with `<NUMBER` to set the foreground color, and `<NUMBER,NUMBER` to set the foreground and background colors, and close the color block with `>`.
 
 # Screenshots
 

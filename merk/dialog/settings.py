@@ -1892,16 +1892,14 @@ class Dialog(QDialog):
 		if config.ASK_BEFORE_CLOSE: self.askBeforeExit.setChecked(True)
 		self.askBeforeExit.stateChanged.connect(self.changedSetting)
 
-		self.noAppNameTitle = QCheckBox("Do not show application name in\napplication title",self)
+		self.noAppNameTitle = QCheckBox("Do not show application name in title",self)
 		if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE: self.noAppNameTitle.setChecked(True)
 		self.noAppNameTitle.stateChanged.connect(self.changedSetting)
-		self.noAppNameTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.noConnectLogo = QCheckBox(f"Hide {APPLICATION_NAME} logo on the initial\nconnection dialog",self)
+		
+		self.noConnectLogo = QCheckBox(f"Hide {APPLICATION_NAME} logo on the initial connection dialog",self)
 		if config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG: self.noConnectLogo.setChecked(True)
 		self.noConnectLogo.stateChanged.connect(self.changedSetting)
-		self.noConnectLogo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.showConnect = QCheckBox("Show connection dialog on startup",self)
 		if config.ASK_FOR_SERVER_ON_STARTUP: self.showConnect.setChecked(True)
 		self.showConnect.stateChanged.connect(self.changedSetting)
@@ -1910,27 +1908,23 @@ class Dialog(QDialog):
 		if config.SHOW_FULL_SCREEN: self.fullScreen.setChecked(True)
 		self.fullScreen.stateChanged.connect(self.changedSetting)
 
-		self.showTopicInTitle = QCheckBox("Show current channel topic in\napplication title",self)
+		self.showTopicInTitle = QCheckBox("Show current channel topic in title",self)
 		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)
 		self.showTopicInTitle.stateChanged.connect(self.changedSetting)
-		self.showTopicInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.noShowServerTitle = QCheckBox("Do not show server in application\ntitle",self)
+		
+		self.noShowServerTitle = QCheckBox("Do not show server in title",self)
 		if config.DO_NOT_SHOW_SERVER_IN_TITLE: self.noShowServerTitle.setChecked(True)
 		self.noShowServerTitle.stateChanged.connect(self.changedSetting)
-		self.noShowServerTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showChatInTitle = QCheckBox("Show active subwindow title in\napplication title",self)
+		
+		self.showChatInTitle = QCheckBox("Show active subwindow title in title",self)
 		if config.DISPLAY_ACTIVE_SUBWINDOW_IN_TITLE: self.showChatInTitle.setChecked(True)
 		self.showChatInTitle.stateChanged.connect(self.changedSetting)
-		self.showChatInTitle.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.enableDnD = QCheckBox("Enable drag-and-drop for plugins\nand scripts",self)
+		
+		self.enableDnD = QCheckBox("Enable drag-and-drop for plugins and scripts",self)
 		if config.DRAG_AND_DROP_MAIN_APPLICATION: self.enableDnD.setChecked(True)
 		self.enableDnD.stateChanged.connect(self.changedSetting)
-		self.enableDnD.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.managerTop = QCheckBox("Hotkey, ignore, and plugin manager\nwindows always on top of application",self)
+		
+		self.managerTop = QCheckBox("Hotkey, ignore, and plugin manager windows\nalways on top of application",self)
 		if config.MANAGERS_ALWAYS_ON_TOP: self.managerTop.setChecked(True)
 		self.managerTop.stateChanged.connect(self.changedSetting)
 		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -2058,11 +2052,10 @@ class Dialog(QDialog):
 		forceLayout.addRow(self.forceDefault,self.notInputWidget)
 		forceLayout.addRow(self.notUserlist)
 
-		self.forceMono = QCheckBox("Force monospace rendering\nof all message text",self)
+		self.forceMono = QCheckBox("Force monospace rendering of all message text",self)
 		if config.FORCE_MONOSPACE_RENDERING: self.forceMono.setChecked(True)
 		self.forceMono.stateChanged.connect(self.changedSettingRerender)
-		self.forceMono.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.enableStyle = QCheckBox("Enable text style editor",self)
 		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
 		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
@@ -2561,9 +2554,10 @@ class Dialog(QDialog):
 		windowbar1Layout.addStretch()
 
 		windowbar2Layout = QHBoxLayout()
-		windowbar2Layout.addStretch()
 		windowbar2Layout.addWidget(self.windowBarFloat)
+		windowbar2Layout.addStretch()
 		windowbar2Layout.addWidget(self.windowBarTop)
+		windowbar2Layout.addStretch()
 		windowbar2Layout.addWidget(self.autoHide)
 		windowbar2Layout.addStretch()
 
@@ -2579,7 +2573,6 @@ class Dialog(QDialog):
 		wbAppearLayout.addStretch()
 
 		entLayout = QHBoxLayout()
-		entLayout.addStretch()
 		entLayout.addWidget(self.windowbarMenu)
 		entLayout.addStretch()
 		entLayout.addWidget(self.windowbarEntryMenu)
@@ -2627,16 +2620,15 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.subwindowPage)
 
-		self.showInfo = QCheckBox("Show nickname display on all chat\nwindows",self)
+		self.showInfo = QCheckBox("Show nickname display on all chat windows",self)
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
 		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
-		self.showInfo.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.showInputMenu = QCheckBox("Show input menu button",self)
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
 		self.showInputMenu.stateChanged.connect(self.changedSetting)
 
-		self.showContext = QCheckBox("Context menus on channel, private,\nand server text displays",self)
+		self.showContext = QCheckBox("Context menus on channel, private, and server\ntext displays",self)
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
 		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -2649,25 +2641,22 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
 		self.showStatusChat.stateChanged.connect(self.changedSetting)
 
-		self.displayServNicks = QCheckBox("Show nickname display on server\nwindows",self)
+		self.displayServNicks = QCheckBox("Show nickname display on server windows",self)
 		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
 		self.displayServNicks.stateChanged.connect(self.changedSetting)
-		self.displayServNicks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.showServToolbar = QCheckBox("Show toolbar on server windows",self)
 		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
 		self.showServToolbar.stateChanged.connect(self.changedSetting)
 
-		self.showServRefresh = QCheckBox("Show channel list refresh button\non server window toolbars and menus",self)
+		self.showServRefresh = QCheckBox("Show channel list refresh button on server window\ntoolbars and menus",self)
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
 		self.showServRefresh.stateChanged.connect(self.changedSetting)
-
 		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.showServList = QCheckBox("Show channel list button\non server window toolbars and menus",self)
+		self.showServList = QCheckBox("Show channel list button on server window\ntoolbars and menus",self)
 		if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS: self.showServList.setChecked(True)
 		self.showServList.stateChanged.connect(self.changedSetting)
-
 		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showStatusList = QCheckBox("Channel lists",self)
@@ -2688,12 +2677,11 @@ class Dialog(QDialog):
 		statusLayout.addLayout(statusLayout2)
 		statusLayout.addStretch()
 
-		self.enableDisconnect = QCheckBox("Closing server window disconnects\nfrom server",self)
+		self.enableDisconnect = QCheckBox("Closing server window disconnects from server",self)
 		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
 		self.enableDisconnect.stateChanged.connect(self.changedSetting)
-		self.enableDisconnect.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.hideServer = QCheckBox("Hide server windows when\nregistration is complete",self)
+		
+		self.hideServer = QCheckBox("Hide server windows when registration is\ncomplete",self)
 		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
 		self.hideServer.stateChanged.connect(self.changedSetting)
 		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -2738,11 +2726,10 @@ class Dialog(QDialog):
 		if config.DISPLAY_LONG_MESSAGE_INDICATOR: self.showLongMessage.setChecked(True)
 		self.showLongMessage.stateChanged.connect(self.changedSetting)
 
-		self.enableNickClick = QCheckBox("Double click nick display to change\nnickname",self)
+		self.enableNickClick = QCheckBox("Double click nick display to change nickname",self)
 		if config.DOUBLECLICK_NICK_DISPLAY: self.enableNickClick.setChecked(True)
 		self.enableNickClick.stateChanged.connect(self.changedSetting)
-		self.enableNickClick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		swsSettings = QVBoxLayout()
 		swsSettings.setSpacing(2)
 		swsSettings.addWidget(self.showContext)
@@ -2796,7 +2783,7 @@ class Dialog(QDialog):
 		if config.MINIMIZE_TO_SYSTRAY: self.minSystray.setChecked(True)
 		self.minSystray.stateChanged.connect(self.changedSystrayMin)
 
-		self.systrayNotify = QCheckBox("Show system tray notifications\nwhen minimized to system tray",self)
+		self.systrayNotify = QCheckBox("Show system tray notifications when minimized\nto system tray",self)
 		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
 		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
 		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -2809,35 +2796,31 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
 		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
 
-		self.systrayNickname = QCheckBox("Nickname\nmentions",self)
+		self.systrayNickname = QCheckBox("Nickname mentions",self)
 		if config.FLASH_SYSTRAY_NICKNAME: self.systrayNickname.setChecked(True)
 		self.systrayNickname.stateChanged.connect(self.changedSetting)
-		self.systrayNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayPrivate = QCheckBox("Private\nmessages",self)
+		
+		self.systrayPrivate = QCheckBox("Private messages",self)
 		if config.FLASH_SYSTRAY_PRIVATE: self.systrayPrivate.setChecked(True)
 		self.systrayPrivate.stateChanged.connect(self.changedSetting)
-		self.systrayPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.systrayKick = QCheckBox("Channel kick",self)
 		if config.FLASH_SYSTRAY_KICK: self.systrayKick.setChecked(True)
 		self.systrayKick.stateChanged.connect(self.changedSetting)
 
-		self.systrayInvite = QCheckBox("Channel\ninvitation",self)
+		self.systrayInvite = QCheckBox("Channel invite",self)
 		if config.FLASH_SYSTRAY_INVITE: self.systrayInvite.setChecked(True)
 		self.systrayInvite.stateChanged.connect(self.changedSetting)
-		self.systrayInvite.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.systrayNotice = QCheckBox("Notice",self)
 		if config.FLASH_SYSTRAY_NOTICE: self.systrayNotice.setChecked(True)
 		self.systrayNotice.stateChanged.connect(self.changedSetting)
 
-		self.systrayMode = QCheckBox("Mode set on\nuser",self)
+		self.systrayMode = QCheckBox("Mode set on user",self)
 		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
 		self.systrayMode.stateChanged.connect(self.changedSetting)
-		self.systrayMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.systrayMinOnClose = QCheckBox("Closing main window with window\ncontrols minimizes to tray",self)
+		
+		self.systrayMinOnClose = QCheckBox("Closing main window with window controls\nminimizes to tray",self)
 		if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY: self.systrayMinOnClose.setChecked(True)
 		self.systrayMinOnClose.stateChanged.connect(self.changedSetting)
 		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -2846,24 +2829,24 @@ class Dialog(QDialog):
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
 		self.showSystray.stateChanged.connect(self.changedSystrayMin)
 
-		discLay = QHBoxLayout()
-		discLay.addWidget(self.systrayDisconnect)
-		discLay.addStretch()
-
 		nickPriv = QHBoxLayout()
-		nickPriv.setSpacing(0)
 		nickPriv.addWidget(self.systrayNickname)
 		nickPriv.addWidget(self.systrayPrivate)
 
 		kickInvite = QHBoxLayout()
-		kickInvite.setSpacing(0)
 		kickInvite.addWidget(self.systrayKick)
 		kickInvite.addWidget(self.systrayInvite)
 
 		noticeMode = QHBoxLayout()
-		noticeMode.setSpacing(0)
 		noticeMode.addWidget(self.systrayNotice)
 		noticeMode.addWidget(self.systrayMode)
+
+		notiLayout = QVBoxLayout()
+		notiLayout.setSpacing(0)
+		notiLayout.addLayout(nickPriv)
+		notiLayout.addLayout(kickInvite)
+		notiLayout.addLayout(noticeMode)
+		notiLayout.addWidget(self.systrayDisconnect)
 
 		self.setFlashInterval = QLabel("Flash icon every ")
 
@@ -2893,16 +2876,14 @@ class Dialog(QDialog):
 		flashBox.addWidget(self.flashInterval)
 		flashBox.addStretch()
 
-		self.doubleclickRestore = QCheckBox("Double click to restore window\nfrom system tray",self)
+		self.doubleclickRestore = QCheckBox("Double click to restore window from system tray",self)
 		if config.DOUBLECLICK_TO_RESTORE_WINDOW_FROM_SYSTRAY: self.doubleclickRestore.setChecked(True)
 		self.doubleclickRestore.stateChanged.connect(self.changedSetting)
-		self.doubleclickRestore.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.clickToMinimize = QCheckBox("Click systray icon to minimize\nto system tray",self)
+		
+		self.clickToMinimize = QCheckBox("Click systray icon to minimize to system tray",self)
 		if config.CLICK_SYSTRAY_ICON_TO_MINIMIZE_TO_TRAY: self.clickToMinimize.setChecked(True)
 		self.clickToMinimize.stateChanged.connect(self.changedSetting)
-		self.clickToMinimize.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.stmConnections = QCheckBox("Connections",self)
 		if config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU: self.stmConnections.setChecked(True)
 		self.stmConnections.stateChanged.connect(self.changedSettingConnections)
@@ -2978,10 +2959,7 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
 		systrayLayout.addLayout(nsLayout)
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
-		systrayLayout.addLayout(nickPriv)
-		systrayLayout.addLayout(kickInvite)
-		systrayLayout.addLayout(noticeMode)
-		systrayLayout.addLayout(discLay)
+		systrayLayout.addLayout(notiLayout)
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray menu includes...</b>"))
 		systrayLayout.addLayout(menuBox)
 		systrayLayout.addStretch()
@@ -3066,16 +3044,14 @@ class Dialog(QDialog):
 		if config.SOUND_NOTIFICATION_DISCONNECT: self.notifyDisco.setChecked(True)
 		self.notifyDisco.stateChanged.connect(self.changedSetting)
 
-		self.notifyNickname = QCheckBox("Nickname\nmention",self)
+		self.notifyNickname = QCheckBox("Nickname mention",self)
 		if config.SOUND_NOTIFICATION_NICKNAME: self.notifyNickname.setChecked(True)
 		self.notifyNickname.stateChanged.connect(self.changedSetting)
-		self.notifyNickname.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.notifyPrivate = QCheckBox("Private\nmessage",self)
+		
+		self.notifyPrivate = QCheckBox("Private message",self)
 		if config.SOUND_NOTIFICATION_PRIVATE: self.notifyPrivate.setChecked(True)
 		self.notifyPrivate.stateChanged.connect(self.changedSetting)
-		self.notifyPrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.notifyNotice = QCheckBox("Notice",self)
 		if config.SOUND_NOTIFICATION_NOTICE: self.notifyNotice.setChecked(True)
 		self.notifyNotice.stateChanged.connect(self.changedSetting)
@@ -3088,10 +3064,9 @@ class Dialog(QDialog):
 		if config.SOUND_NOTIFICATION_INVITE: self.notifyInvite.setChecked(True)
 		self.notifyInvite.stateChanged.connect(self.changedSetting)
 
-		self.notifyMode = QCheckBox("Channel mode\nchange",self)
+		self.notifyMode = QCheckBox("Channel mode change",self)
 		if config.SOUND_NOTIFICATION_MODE: self.notifyMode.setChecked(True)
 		self.notifyMode.stateChanged.connect(self.changedSetting)
-		self.notifyMode.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		
 		self.notifyDescription = QLabel("""
 			<small>
@@ -3104,10 +3079,6 @@ class Dialog(QDialog):
 		self.notifyDescription.setWordWrap(True)
 		self.notifyDescription.setAlignment(Qt.AlignJustify)
 
-		adiscLay = QHBoxLayout()
-		adiscLay.addWidget(self.notifyDisco)
-		adiscLay.addStretch()
-
 		anickPriv = QHBoxLayout()
 		anickPriv.addWidget(self.notifyNickname)
 		anickPriv.addWidget(self.notifyPrivate)
@@ -3119,6 +3090,13 @@ class Dialog(QDialog):
 		anoticeMode = QHBoxLayout()
 		anoticeMode.addWidget(self.notifyNotice)
 		anoticeMode.addWidget(self.notifyMode)
+
+		eventsLayout = QVBoxLayout()
+		eventsLayout.setSpacing(0)
+		eventsLayout.addLayout(anickPriv)
+		eventsLayout.addLayout(akickInvite)
+		eventsLayout.addLayout(anoticeMode)
+		eventsLayout.addWidget(self.notifyDisco)
 
 		bname = os.path.basename(self.sound)
 		self.soundLabel = QLabel("<b>"+bname+"</b>")
@@ -3179,10 +3157,7 @@ class Dialog(QDialog):
 		audioLayout.addWidget(self.notifyDescription)
 		audioLayout.addLayout(audioMaster)
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
-		audioLayout.addLayout(anickPriv)
-		audioLayout.addLayout(akickInvite)
-		audioLayout.addLayout(anoticeMode)
-		audioLayout.addLayout(adiscLay)
+		audioLayout.addLayout(eventsLayout)
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>sound file</b>"))
 		audioLayout.addLayout(sbLayout)
 		audioLayout.addLayout(sbLayout2)
@@ -3583,25 +3558,22 @@ class Dialog(QDialog):
 		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION: self.notifyOnLostConnection.setChecked(True)
 		self.notifyOnLostConnection.stateChanged.connect(self.changedSetting)
 
-		self.promptFail = QCheckBox("Prompt for new server on\nconnection failure",self)
+		self.promptFail = QCheckBox("Prompt for new server on connection failure",self)
 		if config.PROMPT_ON_FAILED_CONNECTION: self.promptFail.setChecked(True)
 		self.promptFail.stateChanged.connect(self.changedSetting)
-		self.promptFail.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.requestList = QCheckBox("Fetch channel list from server on\nconnection",self)
+		
+		self.requestList = QCheckBox("Fetch channel list from server on connection",self)
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
 		self.requestList.stateChanged.connect(self.changedSetting)
-		self.requestList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.autoHostmasks = QCheckBox("Fetch user hostmasks on channel join",self)
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
 		self.autoHostmasks.stateChanged.connect(self.changedSettingHostmask)
 
-		self.showNetLinks = QCheckBox("Show known links to network\nhomepages",self)
+		self.showNetLinks = QCheckBox("Show known links to network homepages",self)
 		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
-		self.showNetLinks.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.fetchFreqLabel = QLabel("Fetch hostmask every")
 		self.fetchFreqLabelSpec = QLabel("seconds")
 		self.fetchFreq = QSpinBox()
@@ -3688,7 +3660,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.awayPage)
 
-		self.promptAway = QCheckBox(f"Prompt for away message if one is\nnot provided with the {config.ISSUE_COMMAND_SYMBOL}away command\nor when pressing the \"Set status to\naway\" button on the server window\ntoolbar",self)
+		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided\nwith the {config.ISSUE_COMMAND_SYMBOL}away command or when pressing the\n\"Set status to away\" button on the server\nwindow toolbar",self)
 		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
 		self.promptAway.stateChanged.connect(self.changedSetting)
 		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -3731,31 +3703,27 @@ class Dialog(QDialog):
 		intervalBox.addWidget(self.autoawayInterval)
 		intervalBox.addStretch()
 
-		self.showAwayBack = QCheckBox("Show user away and back\nnotification messages",self)
+		self.showAwayBack = QCheckBox("Show user away and back notification messages",self)
 		if config.SHOW_AWAY_AND_BACK_MESSAGES: self.showAwayBack.setChecked(True)
 		self.showAwayBack.stateChanged.connect(self.changedSettingRerender)
-		self.showAwayBack.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.showAwayNick = QCheckBox("Show away status in nickname\ndisplay",self)
+		
+		self.showAwayNick = QCheckBox("Show away status in nickname display",self)
 		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY: self.showAwayNick.setChecked(True)
 		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNick)
-		self.showAwayNick.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-	
-		self.typeCancelInput = QCheckBox("Interacting with the text\ninput widget cancels autoaway",self)
+		
+		self.typeCancelInput = QCheckBox("Interacting with the text input widget cancels\nautoaway",self)
 		if config.TYPING_INPUT_CANCELS_AUTOAWAY: self.typeCancelInput.setChecked(True)
 		self.typeCancelInput.stateChanged.connect(self.changedSetting)
 		self.typeCancelInput.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
-		self.windowCancelAway = QCheckBox("Interacting with subwindows\ncancels autoaway",self)
+		self.windowCancelAway = QCheckBox("Interacting with subwindows cancels autoaway",self)
 		if config.WINDOW_INTERACTION_CANCELS_AUTOAWAY: self.windowCancelAway.setChecked(True)
 		self.windowCancelAway.stateChanged.connect(self.changedSetting)
-		self.windowCancelAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-	
-		self.appCancelAway = QCheckBox("Interacting with application\ncancels autoaway",self)
+		
+		self.appCancelAway = QCheckBox("Interacting with application cancels autoaway",self)
 		if config.APP_INTERACTION_CANCELS_AUTOAWAY: self.appCancelAway.setChecked(True)
 		self.appCancelAway.stateChanged.connect(self.changedSetting)
-		self.appCancelAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-	
+		
 		if not config.USE_AUTOAWAY:
 			self.autoawayInterval.setEnabled(False)
 			self.typeCancelInput.setEnabled(False)
@@ -3798,6 +3766,11 @@ class Dialog(QDialog):
 		awayBox.setAlignment(Qt.AlignHCenter)
 		awayBox.setObjectName("myGroupBox")
 		awayBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
+
+		size_policy = awayBox.sizePolicy()
+		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
+		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
+		awayBox.setSizePolicy(size_policy)
 
 		asLayout = QVBoxLayout()
 		asLayout.setSpacing(2)
@@ -3982,8 +3955,12 @@ class Dialog(QDialog):
 			<small>
 			Use markdown to format input in <i>italics</i> (input <b>*</b> before and after text), <b>bold</b> (<b>**</b>), <s>strikethrough</s> (<b>~</b>),
 			or <u>underline</u> (<b>__</b>).
-			If IRC colors are turned off, this will not be displayed in the client, but will be sent to the server.
-			Not all clients support the <s>strikethrough</s> display.<br>
+			Not all clients support the <s>strikethrough</s> display.<br><br>
+			To use <a href="https://www.mirc.com/colors.html">IRC colors</a> in input, open a color block with <b>&lt;NUMBER</b> to set the foreground color, and
+			<b>&lt;NUMBER,NUMBER</b> to set the foreground and background colors. Close the color block with <b>&gt;</b>.
+			Valid IRC color numbers are <b>0</b> to <b>15</b>.<br><br>
+			If IRC colors are turned off, neither of these will be displayed in the client, but will be sent to the server.
+			The formatting and colors will only be applied to text typed in the text input widget.<br>
 			</small>
 			""")
 		self.mdDescription.setWordWrap(True)
@@ -3994,14 +3971,25 @@ class Dialog(QDialog):
 		if config.USE_MARKDOWN_IN_INPUT: self.useMd.setChecked(True)
 		self.useMd.stateChanged.connect(self.changedSetting)
 
+		self.useIRCc = QCheckBox("Use IRC colors to format input",self)
+		if config.USE_IRC_COLORS_IN_INPUT: self.useIRCc.setChecked(True)
+		self.useIRCc.stateChanged.connect(self.changedSetting)
+
 		umLayout = QHBoxLayout()
 		umLayout.addStretch()
 		umLayout.addWidget(self.useMd)
 		umLayout.addStretch()
 
+		ircLayout = QHBoxLayout()
+		ircLayout.addStretch()
+		ircLayout.addWidget(self.useIRCc)
+		ircLayout.addStretch()
+
 		mdLayout = QVBoxLayout()
+		mdLayout.setSpacing(0)
 		mdLayout.addWidget(self.mdDescription)
 		mdLayout.addLayout(umLayout)
+		mdLayout.addLayout(ircLayout)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.setSpacing(2)
@@ -4014,8 +4002,9 @@ class Dialog(QDialog):
 		inputLayout.addLayout(autoMaster)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSetCenter)
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown</b>"))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC colors</b>"))
 		inputLayout.addLayout(mdLayout)
+
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -4420,26 +4409,22 @@ class Dialog(QDialog):
 		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
 		self.showLinks.stateChanged.connect(self.changedSettingRerender)
 
-		self.createWindow = QCheckBox("Create windows for incoming\nprivate chat",self)
+		self.createWindow = QCheckBox("Create windows for incoming private chat",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
 		self.createWindow.stateChanged.connect(self.changedSetting)
-		self.createWindow.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.createWindowOut = QCheckBox("Create windows for outgoing\nprivate chat",self)
+		
+		self.createWindowOut = QCheckBox("Create windows for outgoing private chat",self)
 		if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES: self.createWindowOut.setChecked(True)
 		self.createWindowOut.stateChanged.connect(self.changedSetting)
-		self.createWindowOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.writePrivate = QCheckBox("Write private messages to\nserver window",self)
+		
+		self.writePrivate = QCheckBox("Write private messages to server window",self)
 		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
 		self.writePrivate.stateChanged.connect(self.changedSetting)
-		self.writePrivate.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.writeScroll = QCheckBox("Always scroll chat to bottom\nwhen displaying text",self)
+		
+		self.writeScroll = QCheckBox("Always scroll to bottom when displaying text",self)
 		if config.ALWAYS_SCROLL_TO_BOTTOM: self.writeScroll.setChecked(True)
 		self.writeScroll.stateChanged.connect(self.changedSetting)
-		self.writeScroll.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.sysPrepend = QComboBox(self)
 		if config.SYSTEM_MESSAGE_PREFIX=='':
 			current = "Nothing"
@@ -4462,17 +4447,16 @@ class Dialog(QDialog):
 		prepLayout.addWidget(self.setSystemPrepend)
 		prepLayout.addLayout(prepSel)
 	
-		self.ignoreCreateWindow = QCheckBox("Do not create windows for\nmessages from ignored users",self)
+		self.ignoreCreateWindow = QCheckBox("Do not create windows for ignored users",self)
 		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
 		self.ignoreCreateWindow.stateChanged.connect(self.changedSetting)
-		self.ignoreCreateWindow.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.createNotice = QCheckBox("Create windows for incoming\nprivate notices",self)
+		
+		self.createNotice = QCheckBox("Create windows for incoming private notices",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
 		self.createNotice.stateChanged.connect(self.changedSetting)
 		self.createNotice.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
-		self.writeMessageOut = QCheckBox("Write outgoing private messages\nto the current window",self)
+		self.writeMessageOut = QCheckBox("Write outgoing private messages to the current\nwindow",self)
 		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
 		self.writeMessageOut.stateChanged.connect(self.changedSetting)
 		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -4497,11 +4481,10 @@ class Dialog(QDialog):
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
-		self.noEnviron = QCheckBox(f"Do not show environment in CTCP\nVERSION replies",self)
+		self.noEnviron = QCheckBox(f"Do not show environment in CTCP VERSION",self)
 		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
 		self.noEnviron.stateChanged.connect(self.changedSetting)
-		self.noEnviron.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
 		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
 		self.noVersion.stateChanged.connect(self.changedSettingVersion)
@@ -4514,7 +4497,7 @@ class Dialog(QDialog):
 		self.noSource.stateChanged.connect(self.changedSetting)
 
 		msLayout = QVBoxLayout()
-		msLayout.setSpacing(2)
+		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
 		msLayout.addWidget(self.showLinks)
 		msLayout.addWidget(self.writeScroll)
@@ -4528,7 +4511,7 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.noEnviron)
 
 		pmLayout = QVBoxLayout()
-		pmLayout.setSpacing(2)
+		pmLayout.setSpacing(0)
 		pmLayout.addWidget(self.createWindow)
 		pmLayout.addWidget(self.createNotice)
 		pmLayout.addWidget(self.ignoreCreateWindow)
@@ -4560,7 +4543,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.scriptingPage)
 
-		self.interpolateAlias = QCheckBox("Interpolate aliases into input\nfrom the text input widget",self)
+		self.interpolateAlias = QCheckBox("Interpolate aliases into input from the text\ninput widget",self)
 		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
 		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
 		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
@@ -4574,11 +4557,10 @@ class Dialog(QDialog):
 		if config.SCRIPTING_ENGINE_ENABLED: self.enableScripts.setChecked(True)
 		self.enableScripts.stateChanged.connect(self.changedScripting)
 
-		self.showErrors = QCheckBox("Show error messages when\nexecuting scripts",self)
+		self.showErrors = QCheckBox("Show error messages when executing scripts",self)
 		if config.DISPLAY_SCRIPT_ERRORS: self.showErrors.setChecked(True)
 		self.showErrors.stateChanged.connect(self.changedSetting)
-		self.showErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("AA")
 
@@ -4623,7 +4605,7 @@ class Dialog(QDialog):
 		if config.ENABLE_INSERT_COMMAND: self.enableInsert.setChecked(True)
 		self.enableInsert.stateChanged.connect(self.changedSettingEditor)
 
-		self.promptScript = QCheckBox(f"Prompt for file when calling\n{config.ISSUE_COMMAND_SYMBOL}script with no arguments",self)
+		self.promptScript = QCheckBox(f"Prompt for file when calling {config.ISSUE_COMMAND_SYMBOL}script with no\narguments",self)
 		if config.PROMPT_FOR_SCRIPT_FILE: self.promptScript.setChecked(True)
 		self.promptScript.stateChanged.connect(self.changedSetting)
 		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -4636,7 +4618,7 @@ class Dialog(QDialog):
 		if config.ENABLE_CONFIG_COMMAND: self.enableConfig.setChecked(True)
 		self.enableConfig.stateChanged.connect(self.changedSettingEditorConfig)
 
-		self.restrictError = QCheckBox(f"Display errors for violations of\nonly and restrict commands",self)
+		self.restrictError = QCheckBox(f"Display errors for violations of only and\nrestrict",self)
 		if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION: self.restrictError.setChecked(True)
 		self.restrictError.stateChanged.connect(self.changedSetting)
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -5355,11 +5337,10 @@ class Dialog(QDialog):
 		if config.ENABLE_HOTKEYS: self.enableHotkeys.setChecked(True)
 		self.enableHotkeys.stateChanged.connect(self.changedSettingHotkey)
 
-		self.hotkeyCmd = QCheckBox(f"Execute hotkeys as commands, not\nscripts",self)
+		self.hotkeyCmd = QCheckBox(f"Execute hotkeys as commands, not scripts",self)
 		if config.EXECUTE_HOTKEY_AS_COMMAND: self.hotkeyCmd.setChecked(True)
 		self.hotkeyCmd.stateChanged.connect(self.changedSetting)
-		self.hotkeyCmd.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
+		
 		if not config.ENABLE_HOTKEYS:
 			self.hotkeyCmd.setEnabled(False)
 
@@ -5462,13 +5443,12 @@ class Dialog(QDialog):
 		self.advancedDescription.setAlignment(Qt.AlignJustify)
 		self.advancedDescription.setOpenExternalLinks(True)
 
-		self.writeConsole = QCheckBox("Write all network input and\noutput to STDOUT",self)
+		self.writeConsole = QCheckBox("Write all network input and output to STDOUT",self)
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE: self.writeConsole.setChecked(True)
 		self.writeConsole.stateChanged.connect(self.changedSettingAdvanced)
 		self.writeConsole.setEnabled(False)
-		self.writeConsole.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-
-		self.writeFile = QCheckBox("Write all network input and\noutput to a file in the user's\nsettings directory",self)
+		
+		self.writeFile = QCheckBox("Write all network input and output to a file in\nthe user's settings directory",self)
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE: self.writeFile.setChecked(True)
 		self.writeFile.stateChanged.connect(self.changedSettingAdvanced)
 		self.writeFile.setEnabled(False)
@@ -5986,6 +5966,7 @@ class Dialog(QDialog):
 		config.SHOW_PLUGIN_CONSOLE_ON_CREATION = self.showConsole.isChecked()
 		config.USE_MARKDOWN_IN_INPUT = self.useMd.isChecked()
 		config.ENABLE_ASCIIMOJI_SHORTCODES = self.enableAscii.isChecked()
+		config.USE_IRC_COLORS_IN_INPUT = self.useIRCc.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

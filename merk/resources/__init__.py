@@ -444,6 +444,75 @@ class WhoWasData:
 
 # Functions
 
+def inject_irc_colors(text, default_reset=True):
+	set_both_pattern = r'<(\d{1,2})\s*,\s*(\d{1,2})'
+	set_fg_pattern = r'<(\d{1,2})'
+	reset_pattern = r'>'
+
+	inside_color = False
+	color_set = False
+
+	result = []
+
+	last_index = 0
+
+	for match in re.finditer(
+		rf'{set_both_pattern}|{set_fg_pattern}|{reset_pattern}',
+		text
+	):
+		start, end = match.span()
+		result.append(text[last_index:start])
+		token = match.group()
+
+		if re.match(set_both_pattern, token):
+			fg_bg_match = re.match(set_both_pattern, token)
+			fg_str, bg_str = fg_bg_match.groups()
+			try:
+				fg_num = int(fg_str)
+				bg_num = int(bg_str)
+				# Validate IRC color range 0-15
+				if 0 <= fg_num <= 15 and 0 <= bg_num <= 15:
+					result.append(f'\x03{fg_num:02},{bg_num:02}')
+					inside_color = True
+					color_set = True
+				else:
+					# Invalid color range; strip the command (do not append anything)
+					pass
+			except ValueError:
+				# Malformed number; strip the command
+				pass
+		elif re.match(set_fg_pattern, token):
+			fg_match = re.match(set_fg_pattern, token)
+			fg_str = fg_match.group(1)
+			try:
+				fg_num = int(fg_str)
+				if 0 <= fg_num <= 15:
+					result.append(f'\x03{fg_num:02}')
+					inside_color = True
+					color_set = True
+				else:
+					# Invalid foreground color; strip
+					pass
+			except ValueError:
+				# Malformed number; strip
+				pass
+		elif re.match(reset_pattern, token):
+			if inside_color:
+				result.append('\x0F')
+				inside_color = False
+			else:
+				# Reset command outside color context; remove or keep? Here, remove:
+				pass
+
+		last_index = end
+
+	result.append(text[last_index:])
+
+	if default_reset and color_set:
+		result.append('\x0F')
+
+	return ''.join(result)
+
 def markdown_to_irc(text):
 	BOLD = "\x02"
 	ITALIC = "\x1D"

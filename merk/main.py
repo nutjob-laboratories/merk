@@ -3051,6 +3051,7 @@ class Merk(QMainWindow):
 			user_input = commands.interpolateAliases(user_input)
 
 		if config.USE_MARKDOWN_IN_INPUT: user_input = markdown_to_irc(user_input)
+		if config.USE_IRC_COLORS_IN_INPUT: user_input = inject_irc_colors(user_input)
 
 		# Handle chat commands
 		if commands.handleChatCommands(self,window,user_input): return
@@ -3086,6 +3087,7 @@ class Merk(QMainWindow):
 			user_input = commands.interpolateAliases(user_input)
 
 		if config.USE_MARKDOWN_IN_INPUT: user_input = markdown_to_irc(user_input)
+		if config.USE_IRC_COLORS_IN_INPUT: user_input = inject_irc_colors(user_input)
 		
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return

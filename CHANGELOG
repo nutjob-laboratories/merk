@@ -1,4 +1,34 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.450                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* The settings dialog has been revamped.
+* The plugin loading mechanism now tries to catch errors that arise while
+  creating an instance of the plugin, and inform the user rather than crash the
+  client.
+* Bugfix: the plugin manager now reports the correct number of additional
+  methods a plugin has.
+* New feature: inject IRC colors into input. Both fore- and background colors
+  can be set. <NUMBER to start a color block with only a foreground color, 
+  or <NUMBER,NUMBER to start a color block with both foreground and background
+  colors. Close color blocks with >. Just like with the markdown formatting
+  injection feature, this can be turned off by the user.
+* Color and markdown formatting input have been added to the documentation.
+* Bugfix: entries in the menubar no longer get stuck on bold (if that option
+  is turned on).
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Bugfix: alias interpolation is handled before shortcode injection in inherited
+  messaging methods due to sometimes unexpected behavior.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.400                                  |
 |------------------------------------------------------------------------------|
 

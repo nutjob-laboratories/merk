@@ -232,9 +232,9 @@ class Window():
 			return "unknown"
 
 	def notice(self,target,message):
+		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-		message = commands.fullInterpolate(self._gui,self._window,message)
 		self._window.client.notice(target,message)
 		w = self._gui.getWindow(target,self._window.client)
 		if w:
@@ -244,9 +244,9 @@ class Window():
 		return False
 
 	def action(self,target,message):
+		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-		message = commands.fullInterpolate(self._gui,self._window,message)
 		self._window.client.describe(target,message)
 		w = self._gui.getWindow(target,self._window.client)
 		if w:
@@ -256,9 +256,9 @@ class Window():
 		return False
 
 	def message(self,target,message):
+		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-		message = commands.fullInterpolate(self._gui,self._window,message)
 		self._window.client.msg(target,message)
 		w = self._gui.getWindow(target,self._window.client)
 		if w:
@@ -269,9 +269,9 @@ class Window():
 
 	def say(self,message):
 		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
+			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-			message = commands.fullInterpolate(self._gui,self._window,message)
 			self._window.client.msg(self._window.name,message)
 			t = Message(CHAT_MESSAGE,self._window.client.nickname,message)
 			self._window.writeText(t)
@@ -280,9 +280,9 @@ class Window():
 
 	def note(self,message):
 		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
+			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-			message = commands.fullInterpolate(self._gui,self._window,message)
 			self._window.client.notice(self._window.name,message)
 			t = Message(NOTICE_MESSAGE,self._window.client.nickname,message)
 			self._window.writeText(t)
@@ -291,9 +291,9 @@ class Window():
 
 	def describe(self,message):
 		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
+			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-			message = commands.fullInterpolate(self._gui,self._window,message)
 			self._window.client.describe(self._window.name,message)
 			t = Message(ACTION_MESSAGE,self._window.client.nickname,message)
 			self._window.writeText(t)
@@ -307,16 +307,16 @@ class Window():
 		return self._window.client
 
 	def print(self,message):
+		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-		message = commands.fullInterpolate(self._gui,self._window,message)
 		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
 		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def prints(self,message):
+		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
-		message = commands.fullInterpolate(self._gui,self._window,message)
 		t = Message(SYSTEM_MESSAGE,'',f"{message}")
 		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
@@ -786,7 +786,8 @@ BUILT_IN = [
 	'ignores', 'is_away', 'is_ignored', 'list', 'macro',
 	'master', 'max', 'maximized', 'min', 'minimized', 'modes',
 	'move', 'private', 'privates', 'resize', 'restore', 'script',
-	'unbind', 'unignore', 'windows'   
+	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
+	'connect', 'xconnect'
 ]
 
 def uninstall(obj):
@@ -973,15 +974,12 @@ def get_plugin(path):
 def load_plugins(gui):
 	global PLUGINS
 
-	PLUGIN_FILENAMES = []
 	PLUGIN_NAMES = []
 	PLUGIN_IDS = {}
 	ERRORS = []
 
 	if len(PLUGINS)>0:
 		for o in PLUGINS:
-			if os.path.exists(o._filename) or os.path.isfile(o._filename):
-				PLUGIN_FILENAMES.append(f"{o._filename}")
 			if os.path.exists(o._filename) or os.path.isfile(o._filename):
 				PLUGIN_NAMES.append(f"{o.NAME} {o.VERSION}")
 			PLUGIN_IDS[o._filename] = str(o._id)
@@ -1014,94 +1012,94 @@ def load_plugins(gui):
 		if issubclass(c, Plugin):
 
 			# Store any loading errors
-			LOCAL_ERRORS = []
+			PLUGIN_LOAD_ERRORS = []
 
-			# Create an instance of the plugin class
-			obj = c()
+			try:
+				# Create an instance of the plugin class
+				obj = c()
 
-			# Make sure that the class has access to
-			# the "parent" window
-			obj._gui = gui
+				# Make sure that the class has access to
+				# the "parent" window
+				obj._gui = gui
 
-			obj._filename = inspect.getfile(c)
+				obj._filename = inspect.getfile(c)
 
-			# Generate an UUID for the plugin, but
-			# make sure it's only generated the first
-			# time the plugin is "loaded", and stays
-			# the same during runtime.
-			if obj._filename in PLUGIN_IDS:
-				obj._id = PLUGIN_IDS[obj._filename]
-			else:
-				obj._id = str(uuid.uuid4())
-
-			name_without_extension, extension = os.path.splitext(obj._filename)
-			icon_filename = name_without_extension + ".png"
-			if not os.path.exists(icon_filename):
-				icon_filename = None
-
-			obj._icon = icon_filename
-
-			obj._basename = os.path.basename(obj._filename)
-
-			obj._calls = count_callable_methods(obj)
-
-			obj._module = obj.__class__.__module__
-
-			obj._events = 0
-			obj._event_list = []
-			for e in EVENTS:
-				if hasattr(obj,e):
-					obj._events = obj._events + 1
-					obj._event_list.append(e)
-
-			# Make sure the plugin inherits from the "Plugin" class
-			if not issubclass(type(obj), Plugin):
-				LOCAL_ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
-
-			if not hasattr(obj,"NAME"): obj.NAME = "Unknown"
-			if not hasattr(obj,"AUTHOR"): obj.AUTHOR = "Unknown"
-			if not hasattr(obj,"SOURCE"): obj.SOURCE = "Unknown"
-			if not hasattr(obj,"VERSION"): obj.VERSION = "1.0"
-
-			obj._class = obj.__class__.__name__
-
-			instance_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
-			obj._methods = len(instance_methods) - obj._events
-			obj._methods = obj._methods - len(BUILT_IN)
-			if obj._methods<0: obj._methods = 0
-
-			if obj._events==0 and obj._calls==0:
-				LOCAL_ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
-
-			if obj._filename in PLUGIN_FILENAMES:
-				plugin_is_being_reloaded = True
-			else:
-				plugin_is_being_reloaded = False
-
-			no_error = True
-			for o in PLUGIN_NAMES:
-				if o==f"{obj.NAME} {obj.VERSION}":
-					if plugin_is_being_reloaded:
-						no_error = True
-					else:
-						no_error = False
-
-			if no_error==False:
-				LOCAL_ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
-
-			# Add the plugin to the registry if
-			# the plugin had no errors
-			if len(LOCAL_ERRORS)==0:
-				PLUGINS.append(obj)
-
-				# Run plugin init
-				if config.EXECUTE_INIT_ON_PLUGIN_RELOAD:
-					init(obj)
+				# Generate an UUID for the plugin, but
+				# make sure it's only generated the first
+				# time the plugin is "loaded", and stays
+				# the same during runtime.
+				if obj._filename in PLUGIN_IDS:
+					obj._id = PLUGIN_IDS[obj._filename]
+					plugin_is_being_reloaded = True
 				else:
-					if not plugin_is_being_reloaded:
-						init(obj)
+					obj._id = str(uuid.uuid4())
+					plugin_is_being_reloaded = False
 
-			for e in LOCAL_ERRORS:
+				name_without_extension, extension = os.path.splitext(obj._filename)
+				icon_filename = name_without_extension + ".png"
+				if not os.path.exists(icon_filename):
+					icon_filename = None
+
+				obj._icon = icon_filename
+
+				obj._basename = os.path.basename(obj._filename)
+
+				obj._calls = count_callable_methods(obj)
+
+				obj._module = obj.__class__.__module__
+
+				obj._events = 0
+				obj._event_list = []
+				for e in EVENTS:
+					if hasattr(obj,e):
+						obj._events = obj._events + 1
+						obj._event_list.append(e)
+
+				# Make sure the plugin inherits from the "Plugin" class
+				if not issubclass(type(obj), Plugin):
+					PLUGIN_LOAD_ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
+
+				if not hasattr(obj,"NAME"): obj.NAME = "Unknown"
+				if not hasattr(obj,"AUTHOR"): obj.AUTHOR = "Unknown"
+				if not hasattr(obj,"SOURCE"): obj.SOURCE = "Unknown"
+				if not hasattr(obj,"VERSION"): obj.VERSION = "1.0"
+
+				obj._class = obj.__class__.__name__
+
+				instance_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
+				obj._methods = len(instance_methods) - obj._events
+				obj._methods = obj._methods - len(BUILT_IN)
+				if obj._methods<0: obj._methods = 0
+
+				if obj._events==0 and obj._calls==0:
+					PLUGIN_LOAD_ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
+
+				no_error = True
+				for o in PLUGIN_NAMES:
+					if o==f"{obj.NAME} {obj.VERSION}":
+						if plugin_is_being_reloaded:
+							no_error = True
+						else:
+							no_error = False
+
+				if no_error==False:
+					PLUGIN_LOAD_ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
+
+				# Add the plugin to the registry if
+				# the plugin had no errors
+				if len(PLUGIN_LOAD_ERRORS)==0:
+					PLUGINS.append(obj)
+
+					# Run plugin init
+					if config.EXECUTE_INIT_ON_PLUGIN_RELOAD:
+						init(obj)
+					else:
+						if not plugin_is_being_reloaded:
+							init(obj)
+			except Exception as e:
+				PLUGIN_LOAD_ERRORS.append(f"Error loading plugin class \"{c.__name__}\": {e}")
+
+			for e in PLUGIN_LOAD_ERRORS:
 				ERRORS.append(e)
 
 	# Reload the plugin manager, if it's open

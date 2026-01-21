@@ -406,7 +406,7 @@ def string_has_irc_formatting_codes(data):
 
 def convert_irc_color_to_html(text, style):
 	background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
-	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F|\x1E)')  # Added \x1E for strikethrough
+	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F|\x1E)')
 	
 	state = {'bold': False, 'italic': False, 'underline': False, 'strikethrough': False, 'fg': None, 'bg': None}
 	parts = pattern.split(text)

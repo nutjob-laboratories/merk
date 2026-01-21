@@ -393,9 +393,11 @@ PLUGIN_UNLOAD = True
 SHOW_PLUGIN_CONSOLE_ON_CREATION = False
 USE_MARKDOWN_IN_INPUT = True
 ENABLE_ASCIIMOJI_SHORTCODES = True
+USE_IRC_COLORS_IN_INPUT = True
 
 def build_settings():
 	settings = {
+		"use_irc_colors_in_input": USE_IRC_COLORS_IN_INPUT,
 		"enable_asciimoji_shortcodes": ENABLE_ASCIIMOJI_SHORTCODES,
 		"use_markdown_for_formatting_input": USE_MARKDOWN_IN_INPUT,
 		"show_plugin_consoles_on_creation": SHOW_PLUGIN_CONSOLE_ON_CREATION,
@@ -755,6 +757,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "use_irc_colors_in_input" in settings:
+		settings["use_irc_colors_in_input"] = USE_IRC_COLORS_IN_INPUT
 	if not "enable_asciimoji_shortcodes" in settings:
 		settings["enable_asciimoji_shortcodes"] = ENABLE_ASCIIMOJI_SHORTCODES
 	if not "use_markdown_for_formatting_input" in settings:
@@ -1821,6 +1825,7 @@ def load_settings(filename):
 	global SHOW_PLUGIN_CONSOLE_ON_CREATION
 	global USE_MARKDOWN_IN_INPUT
 	global ENABLE_ASCIIMOJI_SHORTCODES
+	global USE_IRC_COLORS_IN_INPUT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1830,6 +1835,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		USE_IRC_COLORS_IN_INPUT = settings["use_irc_colors_in_input"]
 		ENABLE_ASCIIMOJI_SHORTCODES = settings["enable_asciimoji_shortcodes"]
 		USE_MARKDOWN_IN_INPUT = settings["use_markdown_for_formatting_input"]
 		SHOW_PLUGIN_CONSOLE_ON_CREATION = settings["show_plugin_consoles_on_creation"]
