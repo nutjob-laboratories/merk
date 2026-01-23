@@ -155,19 +155,18 @@ def render_message(message,style,client=None,no_padding=False):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 	is_background_light = test_if_background_is_light(style["all"])
 	
+	# Set message contents
 	msg_to_display = message.contents
 
-	# Messages from /list results are special, and thus have their message built here
-	# rather than being built from the default Message() object
-	if message.type==LIST_MESSAGE:
-		link = f"<a href=\"{message.channel}\"><span style=\"{style['hyperlink']}\">{message.channel}</span></a>"
-		if len(message.channel_topic)>0:
-			msg_to_display = link+" ("+message.channel_count+" users) - \""+message.channel_topic+"\""
-		else:
-			msg_to_display = link+" ("+message.channel_count+" users)"
+	# Set nickname
+	p = message.sender.split('!')
+	if len(p)==2:
+		nick = p[0]
+	else:
+		nick = message.sender
 
 	# Escape all HTML
-	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE and message.type!=LIST_MESSAGE:
+	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE:
 		msg_to_display = html.escape(msg_to_display)
 
 	# Escape HTML if it's turned on for /print
@@ -175,9 +174,12 @@ def render_message(message,style,client=None,no_padding=False):
 		if message.type==RAW_SYSTEM_MESSAGE or message.type==SYSTEM_MESSAGE:
 			msg_to_display = html.escape(msg_to_display)
 
+	# Convert URLs to links
 	if config.CONVERT_URLS_TO_LINKS:
-		msg_to_display = inject_www_links(msg_to_display,style)
+		if has_url(msg_to_display):
+			msg_to_display = inject_www_links(msg_to_display,style)
 
+	# Insert or remove IRC colors
 	if config.DISPLAY_IRC_COLORS:
 		if string_has_irc_formatting_codes(msg_to_display):
 			msg_to_display = convert_irc_color_to_html(msg_to_display,style)
@@ -185,168 +187,87 @@ def render_message(message,style,client=None,no_padding=False):
 		if string_has_irc_formatting_codes(msg_to_display):
 			msg_to_display = strip_color(msg_to_display)
 
-	p = message.sender.split('!')
-	if len(p)==2:
-		nick = p[0]
-	else:
-		nick = message.sender
-
+	# Elide nicknames if we need to
 	if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY:
 		if len(nick)>config.NICKNAME_PAD_LENGTH:
 			nick = elide_text(nick,config.NICKNAME_PAD_LENGTH)
 
+	# Add system message prefix if necessary
+	if message.type==SYSTEM_MESSAGE or message.type==ERROR_MESSAGE:
+		if config.SYSTEM_MESSAGE_PREFIX!='':
+			msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
+
+	# Force monospace rendering if need be
 	if config.FORCE_MONOSPACE_RENDERING:
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 
+	# Assign template and style to the message
+	message_templates = {
+		SYSTEM_MESSAGE: SYSTEM_TEMPLATE,
+		ERROR_MESSAGE: SYSTEM_TEMPLATE,
+		ACTION_MESSAGE: SYSTEM_TEMPLATE,
+		SERVER_MESSAGE: SYSTEM_TEMPLATE,
+		RAW_SYSTEM_MESSAGE: SYSTEM_TEMPLATE,
+		NOTICE_MESSAGE: SYSTEM_TEMPLATE if len(nick) == 0 else MESSAGE_TEMPLATE,
+	}
+	message_styles = {
+		SYSTEM_MESSAGE: "system",
+		ERROR_MESSAGE: "error",
+		ACTION_MESSAGE: "action",
+		CHAT_MESSAGE: "message",
+		SELF_MESSAGE: "message",
+		NOTICE_MESSAGE: "notice" if len(nick) == 0 else "message",
+		SERVER_MESSAGE: "server",
+		PRIVATE_MESSAGE: "message",
+		RAW_SYSTEM_MESSAGE: "raw",
+		WHOIS_MESSAGE: "server",
+	}
+	horizontal_rule_messages = {
+		HORIZONTAL_RULE_MESSAGE: (HORIZONTAL_RULE if is_background_light else LIGHT_HORIZONTAL_RULE),
+		HARD_HORIZONTAL_RULE_MESSAGE: (HARD_HORIZONTAL_RULE if is_background_light else HARD_LIGHT_HORIZONTAL_RULE),
+		TEXT_HORIZONTAL_RULE_MESSAGE: (TEXT_HORIZONTAL_RULE_TEMPLATE if is_background_light else LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE),
+		DATE_MESSAGE: (DATE_MESSAGE_TEMPLATE if is_background_light else LIGHT_DATE_MESSAGE_TEMPLATE),
+	}
 	if not config.DO_NOT_APPLY_STYLES_TO_TEXT:
-
-		if message.type==SYSTEM_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			output_style = style["system"]
-			if config.SYSTEM_MESSAGE_PREFIX!='':
-				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
-		elif message.type==ERROR_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			output_style = style["error"]
-			if config.SYSTEM_MESSAGE_PREFIX!='':
-				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
-		elif message.type==ACTION_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			output_style = style["action"]
-		elif message.type==CHAT_MESSAGE:
-			output = MESSAGE_TEMPLATE
-			output_style = style["message"]
-		elif message.type==SELF_MESSAGE:
-			output = MESSAGE_TEMPLATE
-			output_style = style["message"]
-		elif message.type==NOTICE_MESSAGE:
-			if len(nick)==0:
-				output = SYSTEM_TEMPLATE
-				output_style = style["notice"]
-			else:
-				output = MESSAGE_TEMPLATE
-				output_style = style["message"]
-		elif message.type==SERVER_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			output_style = style["server"]
-		elif message.type==PRIVATE_MESSAGE:
-			output = MESSAGE_TEMPLATE
-			output_style = style["message"]
-		elif message.type==RAW_SYSTEM_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			output_style = style["raw"]
-		elif message.type==HORIZONTAL_RULE_MESSAGE:
-
-			if is_background_light:
-				output = HORIZONTAL_RULE
-			else:
-				output = LIGHT_HORIZONTAL_RULE
-
-			style = style["message"]
-		elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
-
-			if is_background_light:
-				output = HARD_HORIZONTAL_RULE
-			else:
-				output = HARD_LIGHT_HORIZONTAL_RULE
-
-			style = style["message"]
-		elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
-
-			if is_background_light:
-				output = TEXT_HORIZONTAL_RULE_TEMPLATE
-			else:
-				output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
-
-			style = style["message"]
-		elif message.type==WHOIS_MESSAGE:
-			output = MESSAGE_TEMPLATE
-			output_style = style["server"]
-		elif message.type==DATE_MESSAGE:
-
-			if is_background_light:
-				output = DATE_MESSAGE_TEMPLATE
-			else:
-				output = LIGHT_DATE_MESSAGE_TEMPLATE
-
-			style = style["message"]
-		elif message.type==LIST_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			output_style = style["message"]
-
+		output = message_templates.get(message.type, MESSAGE_TEMPLATE)
+		style_key = message_styles.get(message.type, "message")
+		output_style = style[style_key]
 	else:
-		if message.type==SYSTEM_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			if config.SYSTEM_MESSAGE_PREFIX!='':
-				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
-		elif message.type==ERROR_MESSAGE:
-			output = SYSTEM_TEMPLATE
-			if config.SYSTEM_MESSAGE_PREFIX!='':
-				msg_to_display = config.SYSTEM_MESSAGE_PREFIX + " " + msg_to_display
-		elif message.type==ACTION_MESSAGE:
-			output = SYSTEM_TEMPLATE
-		elif message.type==CHAT_MESSAGE:
-			output = MESSAGE_TEMPLATE
-		elif message.type==SELF_MESSAGE:
-			output = MESSAGE_TEMPLATE
-		elif message.type==NOTICE_MESSAGE:
-			if len(nick)==0:
-				output = SYSTEM_TEMPLATE
-			else:
-				output = MESSAGE_TEMPLATE
-		elif message.type==SERVER_MESSAGE:
-			output = SYSTEM_TEMPLATE
-		elif message.type==PRIVATE_MESSAGE:
-			output = MESSAGE_TEMPLATE
-		elif message.type==RAW_SYSTEM_MESSAGE:
-			output = SYSTEM_TEMPLATE
-		elif message.type==HORIZONTAL_RULE_MESSAGE:
-			if is_background_light:
-				output = HORIZONTAL_RULE
-			else:
-				output = LIGHT_HORIZONTAL_RULE
-		elif message.type==HARD_HORIZONTAL_RULE_MESSAGE:
-			if is_background_light:
-				output = HARD_HORIZONTAL_RULE
-			else:
-				output = HARD_LIGHT_HORIZONTAL_RULE
-		elif message.type==TEXT_HORIZONTAL_RULE_MESSAGE:
-			if is_background_light:
-				output = TEXT_HORIZONTAL_RULE_TEMPLATE
-			else:
-				output = LIGHT_TEXT_HORIZONTAL_RULE_TEMPLATE
-		elif message.type==WHOIS_MESSAGE:
-			output = MESSAGE_TEMPLATE
-		elif message.type==DATE_MESSAGE:
-
-			if is_background_light:
-				output = DATE_MESSAGE_TEMPLATE
-			else:
-				output = LIGHT_DATE_MESSAGE_TEMPLATE
-		elif message.type==LIST_MESSAGE:
-			output = SYSTEM_TEMPLATE
+		output = message_templates.get(message.type, MESSAGE_TEMPLATE)
 		output_style = f"color:{foreground};"
+	if message.type in horizontal_rule_messages:
+		output = horizontal_rule_messages[message.type]
+		style = style["message"]
 
-	if style=="":
-		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_NO_STYLE_TEMPLATE)
+	# Insert message info into the appropriate
+	# template, and make sure styles are applied
+
+	replacements = {}
+	if style == "":
+		replacements["!INSERT_MESSAGE_TEMPLATE!"] = MESSAGE_NO_STYLE_TEMPLATE
 	else:
-		output = output.replace("!INSERT_MESSAGE_TEMPLATE!",MESSAGE_STYLE_TEMPLATE)
-		output = output.replace("!MESSAGE_STYLE!",output_style)
+		replacements["!INSERT_MESSAGE_TEMPLATE!"] = MESSAGE_STYLE_TEMPLATE
+		replacements["!MESSAGE_STYLE!"] = output_style
 
-	if message.type!=HORIZONTAL_RULE_MESSAGE and message.type!=HARD_HORIZONTAL_RULE_MESSAGE and message.type!=TEXT_HORIZONTAL_RULE_MESSAGE and message.type!=DATE_MESSAGE:
-
+	# Handle timestamps
+	if (message.type != HORIZONTAL_RULE_MESSAGE and
+		message.type != HARD_HORIZONTAL_RULE_MESSAGE and
+		message.type != TEXT_HORIZONTAL_RULE_MESSAGE and
+		message.type != DATE_MESSAGE):
 		if config.DISPLAY_TIMESTAMP:
 			pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(config.TIMESTAMP_FORMAT)
-
-			ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!",style["timestamp"])
-			ts = ts.replace("!TIME!",pretty_timestamp)
-
-			output = output.replace("!TIMESTAMP!",ts)
+			ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!", style["timestamp"]).replace("!TIME!", pretty_timestamp)
+			replacements["!TIMESTAMP!"] = ts
 		else:
-			output = output.replace("!TIMESTAMP!",'')
+			replacements["!TIMESTAMP!"] = ''
 
+	# Apply all insertions to the template
+	for key, value in replacements.items():
+		output = output.replace(key, value)
+
+	# Assign style to the nick, and modify it
+	# if we need to
 	if not config.DO_NOT_APPLY_STYLES_TO_TEXT:
-
 		if message.type==SELF_MESSAGE:
 			user_style = style["self"]
 		elif message.type==CHAT_MESSAGE:
@@ -359,7 +280,6 @@ def render_message(message,style,client=None,no_padding=False):
 			user_style = style["username"]
 		else:
 			user_style = ''
-
 		if message.type!=ACTION_MESSAGE:
 			if not no_padding:
 				if message.type!=NOTICE_MESSAGE and len(nick)>0:
@@ -369,14 +289,19 @@ def render_message(message,style,client=None,no_padding=False):
 	else:
 		user_style = f"color:{foreground};"
 
-	output = output.replace("!ID_STYLE!",user_style)
-	output = output.replace("!ID!",nick)
-
-	if message.type==ACTION_MESSAGE:
-		output = output.replace("!MESSAGE!",nick +" " +msg_to_display)
+	# Insert nicks into the template
+	replacements = {
+		"!ID_STYLE!": user_style,
+		"!ID!": nick,
+	}
+	if message.type == ACTION_MESSAGE:
+		replacements["!MESSAGE!"] = nick + " " + msg_to_display
 	else:
-		output = output.replace("!MESSAGE!",msg_to_display)
+		replacements["!MESSAGE!"] = msg_to_display
+	for key, value in replacements.items():
+		output = output.replace(key, value)
 
+	# Message has been rendered, so return it
 	return output
 
 def inject_www_links(txt,style):
@@ -396,13 +321,6 @@ def inject_www_links(txt,style):
 		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"
 		txt = txt.replace(u,link)
 	return txt
-
-# IRC COLOR CODES
-
-def string_has_irc_formatting_codes(data):
-	for code in ["\x03","\x02","\x1D","\x1F","\x0F","\x1E"]:
-		if code in data: return True
-	return False
 
 def convert_irc_color_to_html(text, style):
 	background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
@@ -457,61 +375,3 @@ def convert_irc_color_to_html(text, style):
 			result.append(f'<span style="{style}">{part}</span>' if style else part)
 
 	return "".join(result)
-
-def strip_color(text):
-
-	html_tag = "font"
-
-	combos = list(combinations(["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"],2))
-	for c in combos:
-		fore = c[0]
-		back = c[1]
-
-		t = f"\x03{fore},{back}"
-		text = text.replace(t,'')
-
-	combos = list(combinations(["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15"],2))
-	for c in combos:
-		fore = c[0]
-		back = c[1]
-
-		t = f"\x03{fore},{back}"
-		text = text.replace(t,'')
-
-	text = text.replace("\x0310","")
-	text = text.replace("\x0311","")
-	text = text.replace("\x0312","")
-	text = text.replace("\x0313","")
-	text = text.replace("\x0314","")
-	text = text.replace("\x0315","")
-
-	text = text.replace("\x0300","")
-	text = text.replace("\x0301","")
-	text = text.replace("\x0302","")
-	text = text.replace("\x0303","")
-	text = text.replace("\x0304","")
-	text = text.replace("\x0305","")
-	text = text.replace("\x0306","")
-	text = text.replace("\x0307","")
-	text = text.replace("\x0308","")
-	text = text.replace("\x0309","")
-
-	text = text.replace("\x030","")
-	text = text.replace("\x031","")
-	text = text.replace("\x032","")
-	text = text.replace("\x033","")
-	text = text.replace("\x034","")
-	text = text.replace("\x035","")
-	text = text.replace("\x036","")
-	text = text.replace("\x037","")
-	text = text.replace("\x038","")
-	text = text.replace("\x039","")
-
-	text = text.replace("\x03","")
-
-	text = text.replace("\x02","")
-	text = text.replace("\x1D","")
-	text = text.replace("\x1F","")
-	text = text.replace("\x0F","")
-
-	return text

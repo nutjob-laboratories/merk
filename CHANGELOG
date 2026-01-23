@@ -20,6 +20,15 @@
 * Color and markdown formatting input have been added to the documentation.
 * Bugfix: entries in the menubar no longer get stuck on bold (if that option
   is turned on).
+* Rewrote the "strip IRC color and formatting" algorithm to use some simple
+  regexes rather than a bunch of replace() calls.
+* Removed the ability to set/change the "erroneous nickname" setting from the
+  settings dialog. The setting still exists, and can be changed by using the
+  /config command or editing the configuration file.
+* The text renderer now checks if text has a URL in it before trying to render
+  URL links.
+* Rewrote the text renderer's template and style system to make it a little
+  more readable and efficient.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -27,6 +36,15 @@
 
 * Bugfix: alias interpolation is handled before shortcode injection in inherited
   messaging methods due to sometimes unexpected behavior.
+* New inherited method: color(), which takes a string with MERK IRC color tags
+  and returns a string with the appropriate IRC color codes inserted into it.
+* New inherited method: markdown(), which takes a string with MERK markdown
+  formatting and returns a string with the appropriate IRC formatting codes
+  inserted into it.
+* New inherited method: strip(), which strips all IRC color and formatting
+  codes from a string and returns the result.
+* New inherited method: colored(), which returns True if a string contains IRC
+  color/formatting codes, and False if not.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.400                                  |

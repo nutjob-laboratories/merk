@@ -36,6 +36,7 @@ from pike.manager import PikeManager
 from .resources import *
 from . import config
 from . import commands
+from . import render
 
 import emoji
 
@@ -472,6 +473,18 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def colored(text):
+		return string_has_irc_formatting_codes(text)
+
+	def strip(self,text):
+		return render.strip_color(text)
+
+	def markdown(self,text):
+		return markdown_to_irc(text)
+
+	def color(self,text):
+		return inject_irc_colors(text)
+
 	def connect(self,server,port,password=None,ssl=False,reconnect=False):
 		commands.connect_to_irc(self._gui,None,server,port,password,ssl,reconnect)
 
@@ -787,7 +800,7 @@ BUILT_IN = [
 	'master', 'max', 'maximized', 'min', 'minimized', 'modes',
 	'move', 'private', 'privates', 'resize', 'restore', 'script',
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
-	'connect', 'xconnect'
+	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 ]
 
 def uninstall(obj):

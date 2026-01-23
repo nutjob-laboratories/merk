@@ -1307,7 +1307,10 @@ class Dialog(QDialog):
 	def prependChange(self,i):
 		self.system_prepend = self.sysPrepend.itemText(i)
 
-		self.setSystemPrepend.setText(f"Prefix system messages with: <big>{self.system_prepend}</big>")
+		if self.system_prepend.lower()=='nothing':
+			self.setSystemPrepend.setText(f"Do not display prefix ")
+		else:
+			self.setSystemPrepend.setText(f"Currently selected: <big>{self.system_prepend}</big> ")
 
 		if self.system_prepend=="Nothing": self.system_prepend = ''
 
@@ -2426,7 +2429,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_DOUBLECLICK_TO_SHOW_MAXIMIZED: self.windowbarClick.setChecked(True)
 		self.windowbarClick.stateChanged.connect(self.menuChange)
 
-		self.windowBarEditor = QCheckBox("Editor windows",self)
+		self.windowBarEditor = QCheckBox("Editors",self)
 		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
 		self.windowBarEditor.stateChanged.connect(self.menuChange)
 
@@ -2543,10 +2546,25 @@ class Dialog(QDialog):
 		includesLayout2.addRow(self.windowbarLists,self.windowbarManager)
 		includesLayout2.addRow(self.windowbarReadme)
 
-		includesLayout = QHBoxLayout()
-		includesLayout.addStretch()
-		includesLayout.addLayout(includesLayout2)
-		includesLayout.addStretch()
+		incLayout1 = QHBoxLayout()
+		incLayout1.addWidget(self.windowbarChannels)
+		incLayout1.addWidget(self.windowbarPrivate)
+		incLayout1.addWidget(self.windowBarServers)
+
+		incLayout2 = QHBoxLayout()
+		incLayout2.addWidget(self.windowBarEditor)
+		incLayout2.addWidget(self.windowbarLists)
+		incLayout2.addWidget(self.windowbarManager)
+
+		incLayout3 = QHBoxLayout()
+		incLayout3.addWidget(self.windowbarReadme)
+		incLayout3.addStretch()
+
+		includesLayout = QVBoxLayout()
+		includesLayout.setSpacing(0)
+		includesLayout.addLayout(incLayout1)
+		includesLayout.addLayout(incLayout2)
+		includesLayout.addLayout(incLayout3)
 
 		windowbar1Layout = QHBoxLayout()
 		windowbar1Layout.addStretch()
@@ -3184,7 +3202,6 @@ class Dialog(QDialog):
 		self.realname = QLineEdit(user.REALNAME)
 		self.userinfo = QLineEdit(user.USERINFO)
 		self.finger = QLineEdit(user.FINGER)
-		self.erroneous = QNoSpaceLineEdit(config.BAD_NICKNAME_FALLBACK)
 
 		self.nick.textChanged.connect(self.changeUser)
 		self.alternative.textChanged.connect(self.changeUser)
@@ -3192,7 +3209,6 @@ class Dialog(QDialog):
 		self.realname.textChanged.connect(self.changeUser)
 		self.userinfo.textChanged.connect(self.changeUser)
 		self.finger.textChanged.connect(self.changeUser)
-		self.erroneous.textChanged.connect(self.changedSetting)
 
 		nickLayout = QFormLayout()
 		nickLayout.addRow(self.nick)
@@ -3234,8 +3250,7 @@ class Dialog(QDialog):
 
 		userinfoLayout = QFormLayout()
 		userinfoLayout.addRow(self.userinfo)
-		userinfoLayout.addRow(QLabel("<center><small>Reply for CTCP USERINFO queries</small></center>"))
-		userinfoBox = QGroupBox("USERINFO (optional)")
+		userinfoBox = QGroupBox("USERINFO Reply (optional)")
 		userinfoBox.setAlignment(Qt.AlignLeft)
 		userinfoBox.setLayout(userinfoLayout)
 
@@ -3243,30 +3258,43 @@ class Dialog(QDialog):
 
 		fingerLayout = QFormLayout()
 		fingerLayout.addRow(self.finger)
-		fingerLayout.addRow(QLabel("<center><small>Reply for CTCP FINGER queries</small></center>"))
-		fingerBox = QGroupBox("FINGER (optional)")
+		fingerBox = QGroupBox("FINGER Reply (optional)")
 		fingerBox.setAlignment(Qt.AlignLeft)
 		fingerBox.setLayout(fingerLayout)
 
 		fingerBox.setFont(font)
 
-		errorLayout = QFormLayout()
-		errorLayout.addRow(self.erroneous)
-		errorLayout.addRow(QLabel("<center><small>Default for erroneous nickname (should be short)</small></center>"))
-		errorBox = QGroupBox("Nickname Fallback")
-		errorBox.setAlignment(Qt.AlignLeft)
-		errorBox.setLayout(errorLayout)
+		self.userDescription = QLabel(f"""
+			<small>
+			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP replies</b>.
+			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
+			current connections. 
+			</small>
+			""")
+		self.userDescription.setWordWrap(True)
+		self.userDescription.setAlignment(Qt.AlignJustify)
 
-		errorBox.setFont(font)
+		# Changes to <b>USERINFO Reply</b> and <b>FINGER Reply</b> will be used immediately after changing them.
+
+		self.ctcpDescription = QLabel(f"""
+			<small>
+			Changes to <b>USERINFO</b> and <b>FINGER</b> replies will be used immediately.
+			</small>
+			""")
+		self.ctcpDescription.setWordWrap(True)
+		self.ctcpDescription.setAlignment(Qt.AlignJustify)
 
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(2)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
+		userLayout.addWidget(self.userDescription)
 		userLayout.addWidget(nickBox)
 		userLayout.addWidget(alternateBox)
-		userLayout.addWidget(errorBox)
 		userLayout.addWidget(userBox)
 		userLayout.addWidget(realnameBox)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP replies</b>"))
+		userLayout.addWidget(self.ctcpDescription)
 		userLayout.addWidget(userinfoBox)
 		userLayout.addWidget(fingerBox)
 		userLayout.addStretch()
@@ -3938,18 +3966,30 @@ class Dialog(QDialog):
 		historyMaster.addWidget(self.enableHistory)
 		historyMaster.addStretch()
 
-		autoSettingsLayout = QFormLayout()
-		autoSettingsLayout.setSpacing(0)
-		autoSettingsLayout.addRow(self.autocompleteCommands,self.autocompleteNicks)
-		autoSettingsLayout.addRow(self.autocompleteChans,self.autocompleteEmojis)
-		autoSettingsLayout.addRow(self.autocompleteMacro,self.autocompleteAlias)
-		autoSettingsLayout.addRow(self.autocompleteScripts,self.autocompleteMethods)
-		autoSettingsLayout.addRow(self.autocompleteSettings,self.autocompleteUser)
+		asL1 = QHBoxLayout()
+		asL1.addWidget(self.autocompleteCommands)
+		asL1.addWidget(self.autocompleteNicks)
+		asL1.addWidget(self.autocompleteChans)
 
-		autoSetCenter = QHBoxLayout()
-		autoSetCenter.addStretch()
-		autoSetCenter.addLayout(autoSettingsLayout)
-		autoSetCenter.addStretch()
+		asL2 = QHBoxLayout()
+		asL2.addWidget(self.autocompleteEmojis)
+		asL2.addWidget(self.autocompleteMacro)
+		asL2.addWidget(self.autocompleteAlias)
+
+		asL3 = QHBoxLayout()
+		asL3.addWidget(self.autocompleteScripts)
+		asL3.addWidget(self.autocompleteMethods)
+		asL3.addWidget(self.autocompleteSettings)
+
+		asL4 = QHBoxLayout()
+		asL4.addWidget(self.autocompleteUser)
+		asL4.addStretch()
+
+		autoSetCenter = QVBoxLayout()
+		autoSetCenter.addLayout(asL1)
+		autoSetCenter.addLayout(asL2)
+		autoSetCenter.addLayout(asL3)
+		autoSetCenter.addLayout(asL4)
 
 		self.mdDescription = QLabel("""
 			<small>
@@ -3967,29 +4007,25 @@ class Dialog(QDialog):
 		self.mdDescription.setAlignment(Qt.AlignJustify)
 		self.mdDescription.setOpenExternalLinks(True)
 
-		self.useMd = QCheckBox("Use markdown to format input",self)
+		self.useMd = QCheckBox("Markdown input",self)
 		if config.USE_MARKDOWN_IN_INPUT: self.useMd.setChecked(True)
 		self.useMd.stateChanged.connect(self.changedSetting)
 
-		self.useIRCc = QCheckBox("Use IRC colors to format input",self)
+		self.useIRCc = QCheckBox("IRC color input",self)
 		if config.USE_IRC_COLORS_IN_INPUT: self.useIRCc.setChecked(True)
 		self.useIRCc.stateChanged.connect(self.changedSetting)
 
-		umLayout = QHBoxLayout()
-		umLayout.addStretch()
-		umLayout.addWidget(self.useMd)
-		umLayout.addStretch()
+		inoptLayout = QHBoxLayout()
+		inoptLayout.addStretch()
+		inoptLayout.addWidget(self.useMd)
+		inoptLayout.addStretch()
+		inoptLayout.addWidget(self.useIRCc)
+		inoptLayout.addStretch()
 
-		ircLayout = QHBoxLayout()
-		ircLayout.addStretch()
-		ircLayout.addWidget(self.useIRCc)
-		ircLayout.addStretch()
-
-		mdLayout = QVBoxLayout()
-		mdLayout.setSpacing(0)
-		mdLayout.addWidget(self.mdDescription)
-		mdLayout.addLayout(umLayout)
-		mdLayout.addLayout(ircLayout)
+		inputOptionsLayout = QVBoxLayout()
+		inputOptionsLayout.setSpacing(0)
+		inputOptionsLayout.addWidget(self.mdDescription)
+		inputOptionsLayout.addLayout(inoptLayout)
 
 		inputLayout = QVBoxLayout()
 		inputLayout.setSpacing(2)
@@ -4003,7 +4039,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSetCenter)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC colors</b>"))
-		inputLayout.addLayout(mdLayout)
+		inputLayout.addLayout(inputOptionsLayout)
 
 		inputLayout.addStretch()
 
@@ -4436,16 +4472,12 @@ class Dialog(QDialog):
 			self.sysPrepend.addItem(s)
 		self.sysPrepend.currentIndexChanged.connect(self.prependChange)
 
-		self.setSystemPrepend = QLabel(f"Prefix system messages with: <big>{current}</big>")
+		self.setSystemPrepend = QLabel(f"Currently selected: <big>{current}</big> ")
 
-		prepSel = QHBoxLayout()
-		prepSel.addWidget(QLabel("Select a symbol:"))
-		prepSel.addWidget(self.sysPrepend)
-		prepSel.addStretch()
-
-		prepLayout = QVBoxLayout()
+		prepLayout = QHBoxLayout()
 		prepLayout.addWidget(self.setSystemPrepend)
-		prepLayout.addLayout(prepSel)
+		prepLayout.addWidget(self.sysPrepend)
+		prepLayout.addStretch()
 	
 		self.ignoreCreateWindow = QCheckBox("Do not create windows for ignored users",self)
 		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
@@ -4519,7 +4551,49 @@ class Dialog(QDialog):
 		pmLayout.addWidget(self.writePrivate)
 		pmLayout.addWidget(self.writeMessageOut)
 
+		self.partMsg = EmojiQuitAutocomplete(self)
+		self.partMsg.setText(self.default_quit_part)
+
+		fm = self.partMsg.fontMetrics()
+		self.partMsg.setFixedHeight(fm.height()+10)
+		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
+		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+		self.partMsg.textChanged.connect(self.setQuitMsg)
+
+		self.autoEmojiQuit = QCheckBox(f"Autocomplete shortcodes",self)
+		if config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
+		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
+
+		if not config.ENABLE_EMOJI_SHORTCODES:
+			self.autoEmojiQuit.setEnabled(False)
+
+		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
+		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
+		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
+
+		if not config.ENABLE_ALIASES:
+			self.autoAliasQuit.setEnabled(False)
+
+		qfLayout = QVBoxLayout()
+		qfLayout.addWidget(self.partMsg)
+		qfLayout.addWidget(self.autoEmojiQuit)
+		qfLayout.addWidget(self.autoAliasQuit)
+
+		quitBox = QGroupBox("Default Quit/Part Message")
+		quitBox.setAlignment(Qt.AlignHCenter)
+		quitBox.setLayout(qfLayout)
+		quitBox.setObjectName("myGroupBox")
+		quitBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
+
+		size_policy = quitBox.sizePolicy()
+		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
+		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
+		quitBox.setSizePolicy(size_policy)
+
 		messageLayout = QVBoxLayout()
+		messageLayout.addWidget(quitBox)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addLayout(msLayout)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
@@ -5075,8 +5149,7 @@ class Dialog(QDialog):
 
 		self.eventDescription = QLabel(f"""
 			<small>
-			Uncheck an <b>event</b> to prevent that event from being triggered. Events in <b>bold</b>
-			are <b>{APPLICATION_NAME}</b> specific, and are not necessarily IRC related.
+			Uncheck an <b>event</b> to prevent that event from being triggered.
 			</small>
 			""")
 		self.eventDescription.setWordWrap(True)
@@ -5280,47 +5353,6 @@ class Dialog(QDialog):
 		escLayout.addLayout(escLayout1)
 		escLayout.addLayout(escLayout2)
 
-		self.partMsg = EmojiQuitAutocomplete(self)
-		self.partMsg.setText(self.default_quit_part)
-
-		fm = self.partMsg.fontMetrics()
-		self.partMsg.setFixedHeight(fm.height()+10)
-		self.partMsg.setWordWrapMode(QTextOption.NoWrap)
-		self.partMsg.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.partMsg.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		self.partMsg.textChanged.connect(self.setQuitMsg)
-
-		self.autoEmojiQuit = QCheckBox(f"Autocomplete shortcodes",self)
-		if config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
-		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
-
-		if not config.ENABLE_EMOJI_SHORTCODES:
-			self.autoEmojiQuit.setEnabled(False)
-
-		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
-		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
-		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
-
-		if not config.ENABLE_ALIASES:
-			self.autoAliasQuit.setEnabled(False)
-
-		qfLayout = QVBoxLayout()
-		qfLayout.addWidget(self.partMsg)
-		qfLayout.addWidget(self.autoEmojiQuit)
-		qfLayout.addWidget(self.autoAliasQuit)
-
-		quitBox = QGroupBox("Default Quit/Part Message")
-		quitBox.setAlignment(Qt.AlignHCenter)
-		quitBox.setLayout(qfLayout)
-		quitBox.setObjectName("myGroupBox")
-		quitBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
-
-		size_policy = quitBox.sizePolicy()
-		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
-		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
-		quitBox.setSizePolicy(size_policy)
-
 		self.searchAllTerms = QCheckBox("Search for all terms in channel list",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.searchAllTerms.setChecked(True)
 		self.searchAllTerms.stateChanged.connect(self.changedSetting)
@@ -5392,7 +5424,6 @@ class Dialog(QDialog):
 		cursLayout.addLayout(cursorLayout)
 
 		miscLayout = QVBoxLayout()
-		miscLayout.addWidget(quitBox)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
@@ -6055,8 +6086,6 @@ class Dialog(QDialog):
 			user.USERINFO = self.userinfo.text().strip()
 			user.FINGER = self.finger.text().strip()
 			user.save_user(user.USER_FILE)
-
-		config.BAD_NICKNAME_FALLBACK = self.erroneous.text()
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

@@ -74,20 +74,10 @@ SYSTEM_PREPEND_OPTIONS = [
 	"&bull;",
 	"&mdash;",
 	"*",
-	"**",
-	"***",
 	"#",
-	"##",
-	"###",
 	"@",
-	"@@",
-	"@@@",
 	"&",
-	"&&",
-	"&&&",
 	"$",
-	"$$",
-	"$$$",
 ]
 
 LOG_AND_STYLE_FILENAME_DELIMITER = "-"
@@ -154,7 +144,6 @@ HARD_HORIZONTAL_RULE_MESSAGE = 10
 TEXT_HORIZONTAL_RULE_MESSAGE = 11
 WHOIS_MESSAGE = 12
 DATE_MESSAGE = 13
-LIST_MESSAGE = 14
 
 GOOD_SHORTCUT = 0
 BAD_SHORTCUT = 1
@@ -444,6 +433,17 @@ class WhoWasData:
 
 # Functions
 
+def string_has_irc_formatting_codes(data):
+	for code in ["\x03","\x02","\x1D","\x1F","\x0F","\x1E"]:
+		if code in data: return True
+	return False
+
+def strip_color(text):
+	text = re.sub(r'[\x00-\x1F\x7F]', '', text)
+	text = re.sub(r'\x03(\d{0,2})(?:,(\d{0,2}))?', '', text)
+	text = re.sub(r'[,\d]+', '', text)
+	return text
+
 def inject_irc_colors(text, default_reset=True):
 	set_both_pattern = r'<(\d{1,2})\s*,\s*(\d{1,2})'
 	set_fg_pattern = r'<(\d{1,2})'
@@ -565,6 +565,23 @@ class StrictViewportFilter(QObject):
 					return True
 		return False
 
+def has_url(text):
+	url_pattern = re.compile(
+		r'(https?):\/\/'            	  # Scheme
+		r'(\S+(:\S*)?@)?'                 # Authentication (optional)
+		r'('
+		r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}' # Domain name
+		r'|'                              # or
+		r'\d{1,3}(\.\d{1,3}){3}'          # IPv4
+		r'|'                              # or
+		r'\[?[A-Fa-f0-9:]+\]?'            # IPv6
+		r')'
+		r'(:\d+)?'                        # Port (optional)
+		r'(/[^\s]*)?',                    # Path and arguments (optional)
+		re.IGNORECASE
+	)
+	return bool(url_pattern.search(text))
+
 def is_url(text):
 	url_pattern = re.compile(
 		r'^(https?|ftp):\/\/'             # Scheme
@@ -581,7 +598,6 @@ def is_url(text):
 		r'$',
 		re.IGNORECASE
 	)
-
 	return bool(url_pattern.match(text))
 
 def strip_comments_and_docstrings_ast(code_string):
