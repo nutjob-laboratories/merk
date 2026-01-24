@@ -63,13 +63,14 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 
 					# Built-in plugin methods
-					'self.windows','self.is_away', 'self.list', 'self.clients', 'self.home', 'self.find',
-					'self.all_windows', 'self.ignore', 'self.unignore', 'self.ignores', 'self.all_masters',
-					'self.master', 'self.privates', 'self.all_privates', 'self.channels', 'self.all_channels',
-					'self.private','self.channel','self.restore','self.maximized','self.max','self.minimized',
-					'self.min', 'self.alias', 'self.bind', 'self.unbind', 'self.macro', 'self.move', 'self.emojize',
-					'self.resize', 'self.id', 'self.console', 'self.unmacro', 'self.asciimojize',
-					'self.connect','self.xconnect', 'self.markdown', 'self.color', 'self.strip', 'self.colored',
+					'.windows','.is_away', '.list', '.clients', '.home', '.find',
+					'.all_windows', '.ignore', '.unignore', '.ignores', '.all_masters',
+					'.master', '.privates', '.all_privates', '.channels', '.all_channels',
+					'.private','.channel','.restore','.maximized','.max','.minimized',
+					'.min', '.alias', '.bind', '.unbind', '.macro', '.move', '.emojize',
+					'.resize', '.id', '.console', '.unmacro', '.asciimojize',
+					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
+					'.browser', '.folder', '.current',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
@@ -77,7 +78,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
 					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd',
 					'def server', 'def subwindow', 'def close', 'def me', 'def error', 'def isupport', 'def uninstall',
-					'def unload',
+					'def unload', 'def uptime',
 
 					]
 		for word in keywords:
@@ -276,6 +277,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"python",
 			cmdsymbol+"unmacro",
 			cmdsymbol+"_trace",
+			cmdsymbol+"browser",
 		]
 
 		script_only = [

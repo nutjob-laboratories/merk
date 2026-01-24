@@ -1192,6 +1192,8 @@ class Window(QMainWindow):
 
 	def tickUptime(self,uptime):
 
+		plugins.call(self,"uptime",window=self,uptime=uptime)
+
 		if config.SHOW_CHANNEL_UPTIME:
 			if hasattr(self,"channelUptime"): 
 				if not self.channelUptime.isVisible(): self.channelUptime.show()
@@ -2658,7 +2660,6 @@ class Window(QMainWindow):
 
 	def linkClicked(self,url):
 		if url.host():
-			#sys.stdout.write(f"{url.toString()}\n")
 			# It's an internet link, so open it
 			# in the default browser
 			sb = self.chat.verticalScrollBar()

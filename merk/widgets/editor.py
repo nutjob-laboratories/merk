@@ -824,6 +824,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(lambda state,u="tick",v=["client","uptime"]: self.doInsertEventMethod(u,v))
 			self.menv.addAction(entry)
 
+			entry = QAction(QIcon(WINDOW_ICON),"uptime",self)
+			entry.triggered.connect(lambda state,u="uptime",v=["window","uptime"]: self.doInsertEventMethod(u,v))
+			self.menv.addAction(entry)
+
 			self.messenv = self.pInsertMenu.addMenu(QIcon(PRIVATE_ICON),f"Message Events")
 
 			entry = QAction(QIcon(PRIVATE_ICON),"action",self)
@@ -2130,19 +2134,39 @@ class Window(QMainWindow):
 	def _infer_indent_style(self):
 		text = self.editor.toPlainText()
 		lines = text.split('\n')
-		indents = []
 		
+		space_indents = []
+		tab_indents = []
+		mixed_indents = []
+
 		for line in lines:
 			stripped = line.lstrip()
-			if line != stripped and stripped: 
+			if line != stripped and stripped:
 				indent = line[:len(line) - len(stripped)]
-				indents.append(indent)
+				if '\t' in indent and ' ' in indent:
+					mixed_indents.append(indent)
+				elif '\t' in indent:
+					tab_indents.append(indent)
+				elif ' ' in indent:
+					space_indents.append(indent)
 		
-		if indents:
-			most_common = Counter(indents).most_common(1)[0][0]
-			return most_common
-			
-		return config.DEFAULT_PYTHON_INDENT
+		if len(tab_indents) > len(space_indents):
+			return '\t'
+		elif len(space_indents) > 0:
+			space_counts = [len(indent) for indent in space_indents]
+			common_size = Counter(space_counts).most_common(1)[0][0]
+
+			smaller_sizes = [size for size in set(space_counts) if size < common_size]
+			if smaller_sizes:
+				min_size = min(smaller_sizes)
+				if common_size % min_size == 0:
+					common_size = min_size
+
+			return ' ' * common_size
+		elif mixed_indents:
+			return config.DEFAULT_PYTHON_INDENT
+		else:
+			return config.DEFAULT_PYTHON_INDENT
 
 	def eventFilter(self, watched: QObject, event: QEvent) -> bool:
 		if not self.python: return super().eventFilter(watched, event)

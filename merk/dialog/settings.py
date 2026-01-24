@@ -354,13 +354,9 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def setHistorySize(self):
-
-		x = dialog.HistorySizeDialog(self)
-		if x:
-			self.historysize = x
-			self.historyLabel.setText(f"History size: <b>{str(self.historysize)} lines</b>")
-			self.changed.show()
-			self.boldApply()
+		self.historysize = self.historySizeBox.value()
+		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def selEnglish(self):
@@ -571,6 +567,7 @@ class Dialog(QDialog):
 			self.pluginUninstall.setEnabled(True)
 			self.plugUnload.setEnabled(True)
 			self.showConsole.setEnabled(True)
+			self.plugUptime.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -628,6 +625,7 @@ class Dialog(QDialog):
 			self.pluginUninstall.setEnabled(False)
 			self.plugUnload.setEnabled(False)
 			self.showConsole.setEnabled(False)
+			self.plugUptime.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -720,11 +718,11 @@ class Dialog(QDialog):
 
 	def changedHistory(self,state):
 		if self.enableHistory.isChecked():
-			self.historyButton.setEnabled(True)
-			self.historyLabel.setEnabled(True)
+			self.historySizeBox.setEnabled(True)
+			self.historySizeLabel.setEnabled(True)
 		else:
-			self.historyButton.setEnabled(False)
-			self.historyLabel.setEnabled(False)
+			self.historySizeBox.setEnabled(False)
+			self.historySizeLabel.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -2096,6 +2094,39 @@ class Dialog(QDialog):
 		nLayout.addWidget(self.noPadding)
 		nLayout.addLayout(padLayout)
 
+		self.inputCursorLabel = QLabel("Input widget cursor width:")
+		self.inputCursorLabelSpec = QLabel("pixels")
+		self.inputCursor = QSpinBox()
+		self.inputCursor.setRange(1,99)
+		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
+		self.inputCursor.valueChanged.connect(self.updateinputCursor)
+
+		cursorLayout = QHBoxLayout()
+		cursorLayout.addWidget(self.inputCursorLabel)
+		cursorLayout.addWidget(self.inputCursor)
+		cursorLayout.addWidget(self.inputCursorLabelSpec)
+		cursorLayout.addStretch()
+
+		self.cursorBlink = QCheckBox("Cursors blink every",self)
+		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
+		self.cursorBlink.stateChanged.connect(self.changedSetting)
+
+		self.blinkRateSpec = QLabel("ms")
+		self.blinkRate = QSpinBox()
+		self.blinkRate.setRange(1,5000)
+		self.blinkRate.setValue(self.CURSOR_BLINK_RATE)
+		self.blinkRate.valueChanged.connect(self.updateBlinkRate)
+
+		blinkLayout = QHBoxLayout()
+		blinkLayout.addWidget(self.cursorBlink)
+		blinkLayout.addWidget(self.blinkRate)
+		blinkLayout.addWidget(self.blinkRateSpec)
+
+		cursLayout = QVBoxLayout()
+		cursLayout.setSpacing(2)
+		cursLayout.addLayout(blinkLayout)
+		cursLayout.addLayout(cursorLayout)
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
@@ -2107,6 +2138,8 @@ class Dialog(QDialog):
 		appearanceLayout.addLayout(forceLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nicknames</b>"))
 		appearanceLayout.addLayout(nLayout)
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
+		appearanceLayout.addLayout(cursLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addStretch()
@@ -3836,22 +3869,16 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.inputPage)
 
-		self.historyLabel = QLabel(f"History size: <b>{str(self.historysize)} lines</b>",self)
-
-		self.historyButton = QPushButton("")
-		self.historyButton.clicked.connect(self.setHistorySize)
-		self.historyButton.setAutoDefault(False)
-
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		self.historyButton.setFixedSize(fheight +10,fheight + 10)
-		self.historyButton.setIcon(QIcon(EDIT_ICON))
-		self.historyButton.setToolTip("Change command history size")
+		self.historySizeLabel = QLabel("Number of lines to save in history:")
+		self.historySizeBox = QSpinBox()
+		self.historySizeBox.setRange(1,100)
+		self.historySizeBox.setValue(self.historysize)
+		self.historySizeBox.valueChanged.connect(self.setHistorySize)
 
 		historyLayout = QHBoxLayout()
 		historyLayout.addStretch()
-		historyLayout.addWidget(self.historyButton)
-		historyLayout.addWidget(self.historyLabel)
+		historyLayout.addWidget(self.historySizeLabel)
+		historyLayout.addWidget(self.historySizeBox)
 		historyLayout.addStretch()
 
 		self.historyDescription = QLabel("""
@@ -3905,8 +3932,8 @@ class Dialog(QDialog):
 		self.enableHistory.stateChanged.connect(self.changedHistory)
 
 		if not config.ENABLE_COMMAND_INPUT_HISTORY:
-			self.historyButton.setEnabled(False)
-			self.historyLabel.setEnabled(False)
+			self.historySizeBox.setEnabled(False)
+			self.historySizeLabel.setEnabled(False)
 
 		self.enableAutocomplete = QCheckBox("Enable autocomplete",self)
 		if config.ENABLE_AUTOCOMPLETE: self.enableAutocomplete.setChecked(True)
@@ -3995,7 +4022,9 @@ class Dialog(QDialog):
 			<small>
 			Use markdown to format input in <i>italics</i> (input <b>*</b> before and after text), <b>bold</b> (<b>**</b>), <s>strikethrough</s> (<b>~</b>),
 			or <u>underline</u> (<b>__</b>).
-			Not all clients support the <s>strikethrough</s> display.<br><br>
+			Not all clients support the <s>strikethrough</s> display.
+			To escape a markdown character so it's not used for formatting, place a <b>forward slash</b> (<b>\\</b>) before it.
+			<br><br>
 			To use <a href="https://www.mirc.com/colors.html">IRC colors</a> in input, open a color block with <b>&lt;NUMBER</b> to set the foreground color, and
 			<b>&lt;NUMBER,NUMBER</b> to set the foreground and background colors. Close the color block with <b>&gt;</b>.
 			Valid IRC color numbers are <b>0</b> to <b>15</b>.<br><br>
@@ -5017,10 +5046,16 @@ class Dialog(QDialog):
 		if config.SHOW_PLUGIN_CONSOLE_ON_CREATION: self.showConsole.setChecked(True)
 		self.showConsole.stateChanged.connect(self.changedSetting)
 
+		self.plugUptime = QCheckBox("uptime",self)
+		if config.PLUGIN_UPTIME: self.plugUptime.setChecked(True)
+		self.plugUptime.stateChanged.connect(self.changedSetting)
+		self.plugUptime.setFont(f)
+
 		if not config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
 			self.reloadInit.setEnabled(False)
 
 		if not config.ENABLE_PLUGINS:
+			self.plugUptime.setEnabled(False)
 			self.showConsole.setEnabled(False)
 			self.plugUnload.setEnabled(False)
 			self.pluginUninstall.setEnabled(False)
@@ -5135,6 +5170,10 @@ class Dialog(QDialog):
 		row13Layout.addWidget(self.plugUnload)
 		row13Layout.addWidget(self.plugUnmode)
 
+		row14Layout = QHBoxLayout()
+		row14Layout.addWidget(self.plugUptime)
+		row14Layout.addStretch()
+
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.pluginDescription = QLabel(f"""
@@ -5170,6 +5209,7 @@ class Dialog(QDialog):
 		allEvents.addLayout(row11Layout)
 		allEvents.addLayout(row12Layout)
 		allEvents.addLayout(row13Layout)
+		allEvents.addLayout(row14Layout)
 
 		pTop = QVBoxLayout()
 		pTop.setSpacing(0)
@@ -5390,39 +5430,6 @@ class Dialog(QDialog):
 		mmLayout.setSpacing(2)
 		mmLayout.addWidget(self.searchInstall)
 
-		self.inputCursorLabel = QLabel("Input widget cursor width:")
-		self.inputCursorLabelSpec = QLabel("pixels")
-		self.inputCursor = QSpinBox()
-		self.inputCursor.setRange(1,99)
-		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
-		self.inputCursor.valueChanged.connect(self.updateinputCursor)
-
-		cursorLayout = QHBoxLayout()
-		cursorLayout.addWidget(self.inputCursorLabel)
-		cursorLayout.addWidget(self.inputCursor)
-		cursorLayout.addWidget(self.inputCursorLabelSpec)
-		cursorLayout.addStretch()
-
-		self.cursorBlink = QCheckBox("Cursors blink every",self)
-		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
-		self.cursorBlink.stateChanged.connect(self.changedSetting)
-
-		self.blinkRateSpec = QLabel("ms")
-		self.blinkRate = QSpinBox()
-		self.blinkRate.setRange(1,5000)
-		self.blinkRate.setValue(self.CURSOR_BLINK_RATE)
-		self.blinkRate.valueChanged.connect(self.updateBlinkRate)
-
-		blinkLayout = QHBoxLayout()
-		blinkLayout.addWidget(self.cursorBlink)
-		blinkLayout.addWidget(self.blinkRate)
-		blinkLayout.addWidget(self.blinkRateSpec)
-
-		cursLayout = QVBoxLayout()
-		cursLayout.setSpacing(2)
-		cursLayout.addLayout(blinkLayout)
-		cursLayout.addLayout(cursorLayout)
-
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
@@ -5432,7 +5439,6 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
 		miscLayout.addLayout(hkLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		miscLayout.addLayout(cursLayout)
 		miscLayout.addLayout(mmLayout)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
@@ -5998,6 +6004,7 @@ class Dialog(QDialog):
 		config.USE_MARKDOWN_IN_INPUT = self.useMd.isChecked()
 		config.ENABLE_ASCIIMOJI_SHORTCODES = self.enableAscii.isChecked()
 		config.USE_IRC_COLORS_IN_INPUT = self.useIRCc.isChecked()
+		config.PLUGIN_UPTIME = self.plugUptime.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

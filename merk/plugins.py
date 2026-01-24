@@ -473,6 +473,25 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def current(self):
+		if self._gui!=None:
+			w = self._gui.getCurrentChat()
+			if w==None:
+				return None
+			else:
+				return Window(self._gui,w)
+		return None
+
+	def folder(self,path):
+		if self._gui!=None:
+			if os.path.isdir(path):
+				self._gui.open_folder(path)
+
+	def browser(self,url):
+		if self._gui!=None:
+			if has_url(url) and url.count(' ')==0:
+				self._gui.openLinkInBrowser(url)
+
 	def colored(text):
 		return string_has_irc_formatting_codes(text)
 
@@ -789,7 +808,7 @@ EVENTS = [
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
 	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall',
-	'unload',
+	'unload', 'uptime',
 ]
 
 BUILT_IN = [
@@ -801,6 +820,7 @@ BUILT_IN = [
 	'move', 'private', 'privates', 'resize', 'restore', 'script',
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
+	'browser', 'folder', 'current',
 ]
 
 def uninstall(obj):
@@ -899,6 +919,7 @@ def call(gui,method,**arguments):
 	if method=='isupport' and not config.PLUGIN_ISUPPORT: return
 	if method=='ison' and not config.PLUGIN_ISON: return
 	if method=='unload' and not config.PLUGIN_UNLOAD: return
+	if method=='uptime' and not config.PLUGIN_UPTIME: return
 
 	for obj in PLUGINS:
 		if hasattr(obj,method):

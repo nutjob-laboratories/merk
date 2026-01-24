@@ -520,12 +520,75 @@ def markdown_to_irc(text):
 	STRIKETHROUGH = "\x1E"
 	RESET = "\x0F"
 
-	text = re.sub(r'~(.*?)~', f'{STRIKETHROUGH}\\1{STRIKETHROUGH}', text)
-	text = re.sub(r'\*\*(.*?)\*\*', f'{BOLD}\\1{BOLD}', text)  # **bold**
-	text = re.sub(r'__(.*?)__', f'{UNDERLINE}\\1{UNDERLINE}', text)  # __underline__
-	text = re.sub(r'\*(.*?)\*', f'{ITALIC}\\1{ITALIC}', text)  # *italic*
+	output = []
+	open_format = None
+	i = 0
+	length = len(text)
 
-	return text
+	while i < length:
+		c = text[i]
+
+		if c == '\\':
+			if i + 1 < length:
+				next_char = text[i + 1]
+				if next_char in ('*', '_', '~'):
+					output.append(next_char)
+					i += 2
+					continue
+
+		# Handle bold, italic, strikethrough
+		if c in ('*', '~'):
+			next_char = text[i + 1] if i + 1 < length else ''
+			is_double = (next_char == c)
+			symbol_length = 2 if is_double else 1
+			marker = c * symbol_length
+
+			if marker == '**':
+				code = BOLD
+			elif marker == '*':
+				code = ITALIC
+			elif marker == '~':
+				code = STRIKETHROUGH
+			else:
+				code = None
+
+			# Toggle formatting
+			if open_format == code:
+				output.append(RESET)
+				open_format = None
+			else:
+				output.append(code)
+				open_format = code
+
+			i += symbol_length
+			continue
+
+		# Handle underscores:
+		if c == '_':
+			next_char = text[i + 1] if i + 1 < length else ''
+			if next_char == '_':
+				# Double underscore: toggle underline
+				if open_format == UNDERLINE:
+					output.append(RESET)
+					open_format = None
+				else:
+					output.append(UNDERLINE)
+					open_format = UNDERLINE
+				i += 2
+			else:
+				# Single underscore: just output
+				output.append(c)
+				i += 1
+			continue
+
+		# Normal characters
+		output.append(c)
+		i += 1
+
+	if open_format:
+		output.append(RESET)
+
+	return ''.join(output)
 
 def join_with_and(items):
 	if not items:

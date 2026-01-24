@@ -147,6 +147,10 @@ Appearance:
 <td>Executes <code>COMMAND</code> every time key <code>SEQUENCE</code> is pressed. Pass <code>save</code> as the only argument to save binds to the configuration file</td>
 </tr>
 <tr>
+<td><code>/browser URL</code></td>
+<td>Opens <code>URL</code> in the default browser</td>
+</tr>
+<tr>
 <td><code>/call METHOD [ARGUMENTS...]</code></td>
 <td>Executes <code>METHOD</code> in any plugin that contains that <code>METHOD</code></td>
 </tr>

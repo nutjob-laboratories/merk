@@ -29,6 +29,14 @@
   URL links.
 * Rewrote the text renderer's template and style system to make it a little
   more readable and efficient.
+* New command: /browser, which opens a URL in the default browser.
+* Tweak to the Python editor syntax highlighting; Plugin inherited methods now
+  no longer need the 'self' identifier to be highlighted.
+* Removed a now-unneeded dialog from the settings dialog.
+* Bugfix: autoindentation in the Python editor no longer inserts extra levels
+  of indentation occasionally.
+* Bugfix: markdown input can now be escaped with \.
+* Bugfix: markdown input no longer prevents link creation from some URLs.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -45,6 +53,14 @@
   codes from a string and returns the result.
 * New inherited method: colored(), which returns True if a string contains IRC
   color/formatting codes, and False if not.
+* New inherited method: browser(), which opens a URL in the default browser.
+* New inherited method: folder(), which opens a directory in the default file
+  manager.
+* New inherited method: current(), which returns a MERK Window object for the
+  currently active chat window, or None if the currently active window is not a
+  chat window.
+* New plugin event: uptime(), which triggers once a second for every server,
+  channel, or private chat window while they are connected to a server.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.400                                  |
