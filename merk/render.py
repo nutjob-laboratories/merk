@@ -304,23 +304,47 @@ def render_message(message,style,client=None,no_padding=False):
 	# Message has been rendered, so return it
 	return output
 
-def inject_www_links(txt,style):
-
+def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
-		background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
-		style = f"color:{foreground};"
+		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+		style_str = f"color:{foreground};"
 	else:
-		style = style["hyperlink"]
+		style_str = style["hyperlink"]
+		
+	# More robust URL pattern
+	url_pattern = re.compile(
+		r"(https?:\/\/[^\s<>\'\"()]+)", re.IGNORECASE
+	)
 
-	search_for_urls = r"(https?:\/\/[a-zA-Z0-9\-\.]+(?:\.[a-zA-Z]{2,6})(?::[0-9]{1,5})?(?:\/([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]*))?(?:#([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]+))?)"
-	found_urls = re.finditer(search_for_urls, html.unescape(txt))
-	urls = [match.group(0).rstrip('.,;:!?()[]{}<>\'"').lstrip('.,;:!?()[]{}<>\'"') for match in found_urls]
+	def replace_url(match):
+		u = match.group(0)
+		# Remove surrounding punctuation
+		u_stripped = u.rstrip('.,;:!?()[]{}<>\'"')
+		u_stripped = re.sub('<[^<]+?>', '', u_stripped)
+		link = f'<a href="{u_stripped}"><span style="{style_str}">{u_stripped}</span></a>'
+		return link
 
-	for u in urls:
-		u = re.sub('<[^<]+?>', '', u)
-		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"
-		txt = txt.replace(u,link)
+	# Replace URLs with links
+	txt = re.sub(url_pattern, replace_url, html.unescape(txt))
 	return txt
+
+# def inject_www_links(txt,style):
+
+# 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
+# 		background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+# 		style = f"color:{foreground};"
+# 	else:
+# 		style = style["hyperlink"]
+
+# 	search_for_urls = r"(https?:\/\/[a-zA-Z0-9\-\.]+(?:\.[a-zA-Z]{2,6})(?::[0-9]{1,5})?(?:\/([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]*))?(?:#([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]+))?)"
+# 	found_urls = re.finditer(search_for_urls, html.unescape(txt))
+# 	urls = [match.group(0).rstrip('.,;:!?()[]{}<>\'"').lstrip('.,;:!?()[]{}<>\'"') for match in found_urls]
+
+# 	for u in urls:
+# 		u = re.sub('<[^<]+?>', '', u)
+# 		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"
+# 		txt = txt.replace(u,link)
+# 	return txt
 
 def convert_irc_color_to_html(text, style):
 	background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
