@@ -278,6 +278,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"unmacro",
 			cmdsymbol+"_trace",
 			cmdsymbol+"browser",
+			cmdsymbol+"folder",
 		]
 
 		script_only = [
@@ -318,6 +319,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 
 		if not config.ENABLE_PLUGIN_EDITOR:
 			merk.remove(cmdsymbol+"python")
+
+		if not config.ENABLE_BROWSER_COMMAND:
+			merk.remove(cmdsymbol+"browser")
 
 		if not config.ENABLE_PLUGINS:
 			merk.remove(cmdsymbol+"call")

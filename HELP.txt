@@ -227,6 +227,10 @@ Appearance:
 <td>Sets focus on a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
+<td><code>/folder PATH [PATH...]</code></td>
+<td>Opens <code>PATH</code>(s) in the default file manager</td>
+</tr>
+<tr>
 <td><code>/fullscreen</code></td>
 <td>Toggles full screen mode</td>
 </tr>

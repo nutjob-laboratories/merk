@@ -58,6 +58,8 @@ from . import config
 from . import user as USER
 from . import dialog
 from . import plugins
+from . import logs
+from . import styles
 from .dialog.away import Dialog as Away
 
 CONFIG_DIRECTORY = None
@@ -267,11 +269,15 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"unmacro": config.ISSUE_COMMAND_SYMBOL+"unmacro ",
 			config.ISSUE_COMMAND_SYMBOL+"_trace": config.ISSUE_COMMAND_SYMBOL+"_trace ",
 			config.ISSUE_COMMAND_SYMBOL+"browser": config.ISSUE_COMMAND_SYMBOL+"browser ",
+			config.ISSUE_COMMAND_SYMBOL+"folder": config.ISSUE_COMMAND_SYMBOL+"folder ",
 		}
 
 	# Remove the style command if the style editor is turned off 
 	if not config.ENABLE_STYLE_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"style",'')
+
+	if not config.ENABLE_BROWSER_COMMAND:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"browser",'')
 
 	if not config.ENABLE_PLUGIN_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"python",'')
@@ -432,6 +438,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unmacro NAME</b>", f"Removes a macro" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET</b>", f"Executes a trace on a server or user. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>", f"Opens URL in the default browser" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH [PATH...]</b>", f"Opens PATH(s) in the default file manager" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -454,6 +461,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+		if not config.ENABLE_BROWSER_COMMAND:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>": continue
 		if not config.ENABLE_PLUGIN_EDITOR:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"python [FILE]</b>": continue
 		if not config.ENABLE_PLUGINS:
@@ -602,7 +611,7 @@ def buildTemporaryAliases(gui,window):
 
 	if not config.ENABLE_ALIASES: return
 	if not config.ENABLE_BUILT_IN_ALIASES: return
-
+	
 	timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime(config.TIMESTAMP_FORMAT)
 	mytime = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%H:%M:%S")
 	mydate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
@@ -628,6 +637,11 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_HOST',window.client.server+":"+str(window.client.port))
 	addTemporaryAlias('_DATE',mydate)
 	addTemporaryAlias('_DAY',day)
+	addTemporaryAlias('_DLOGS',logs.LOG_DIRECTORY)
+	addTemporaryAlias('_DPLUGINS',plugins.PLUGIN_DIRECTORY)
+	addTemporaryAlias('_DSCRIPTS',SCRIPTS_DIRECTORY)
+	addTemporaryAlias('_DSETTINGS',config.CONFIG_DIRECTORY)
+	addTemporaryAlias('_DSTYLES',styles.STYLE_DIRECTORY)
 	addTemporaryAlias('_EDATE',myedate)
 	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
 	if window.client.usermodes!='':
@@ -1466,10 +1480,54 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
 
+	# |---------|
+	# | /folder |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'folder' and len(tokens)>=2:
+			tokens.pop(0)
+			dirs = shlex.split(' '.join(tokens), comments=False)
+			for d in dirs:
+				if os.path.isdir(d):
+					gui.open_folder(d)
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{d}\" is not a valid path")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{d}\" is not a valid path")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'folder':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"folder PATH")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"folder PATH")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
 	# |----------|
 	# | /browser |
 	# |----------|
 	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'browser' and len(tokens)>=1:
+			if not config.ENABLE_BROWSER_COMMAND:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}browser has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}browser has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'browser' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)

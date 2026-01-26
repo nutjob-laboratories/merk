@@ -344,13 +344,9 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def setLogSize(self):
-
-		x = dialog.LogSizeDialog(self)
-		if x:
-			self.logsize = x
-			self.logLabel.setText(f"<b>{str(self.logsize)} lines</b>")
-			self.changed.show()
-			self.boldApply()
+		self.logsize = self.logSizeBox.value()
+		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def setHistorySize(self):
@@ -428,12 +424,16 @@ class Dialog(QDialog):
 	def changedLoadLogs(self,state):
 		if self.loadChanLogs.isChecked() or self.loadPrivLogs.isChecked():
 			self.markLog.setEnabled(True)
-			self.logsizeButton.setEnabled(True)
-			self.logLabel.setEnabled(True)
+			self.logSizeBox.setEnabled(True)
+			self.logSizeLabel.setEnabled(True)
 		else:
 			self.markLog.setEnabled(False)
-			self.logsizeButton.setEnabled(False)
-			self.logLabel.setEnabled(False)
+			self.logSizeBox.setEnabled(False)
+			self.logSizeLabel.setEnabled(False)
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
 
 	def changedPrivLogs(self,state):
 		if self.savePrivLogs.isChecked() or self.saveChanLogs.isChecked():
@@ -4276,11 +4276,7 @@ class Dialog(QDialog):
 		if config.MARK_END_OF_LOADED_LOG: self.markLog.setChecked(True)
 		self.markLog.stateChanged.connect(self.changedSetting)
 		
-		self.logLabel = QLabel(f"<b>{str(self.logsize)} lines</b>",self)
-
-		self.logsizeButton = QPushButton("")
-		self.logsizeButton.clicked.connect(self.setLogSize)
-		self.logsizeButton.setAutoDefault(False)
+		# self.logLabel = QLabel(f"<b>{str(self.logsize)} lines</b>",self)
 
 		self.intermittentLog = QCheckBox("Save logs every",self)
 		if config.DO_INTERMITTENT_LOG_SAVES: self.intermittentLog.setChecked(True)
@@ -4329,30 +4325,30 @@ class Dialog(QDialog):
 			controls how much of the <b>log</b> is loaded into the application
 			for display.
 			</small>
-			<br>
 			""")
 		self.logDescription.setWordWrap(True)
 		self.logDescription.setAlignment(Qt.AlignJustify)
 
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		self.logsizeButton.setFixedSize(fheight +10,fheight + 10)
-		self.logsizeButton.setIcon(QIcon(EDIT_ICON))
-		self.logsizeButton.setToolTip("Change log load size")
+		self.logSizeLabel = QLabel("lines")
+		self.logSizeBox = QSpinBox()
+		self.logSizeBox.setRange(1,1000)
+		self.logSizeBox.setValue(self.logsize)
+		self.logSizeBox.valueChanged.connect(self.setLogSize)
 
 		logsizeLayout = QHBoxLayout()
-		logsizeLayout.addWidget(self.logsizeButton)
-		logsizeLayout.addWidget(self.logLabel)
+		logsizeLayout.addStretch()
+		logsizeLayout.addWidget(self.logSizeBox)
+		logsizeLayout.addWidget(self.logSizeLabel)
 		logsizeLayout.addStretch()
 
 		if config.LOAD_CHANNEL_LOGS or config.LOAD_PRIVATE_LOGS:
 			self.markLog.setEnabled(True)
-			self.logsizeButton.setEnabled(True)
-			self.logLabel.setEnabled(True)
+			self.logSizeBox.setEnabled(True)
+			self.logSizeLabel.setEnabled(True)
 		else:
 			self.markLog.setEnabled(False)
-			self.logsizeButton.setEnabled(False)
-			self.logLabel.setEnabled(False)
+			self.logSizeBox.setEnabled(False)
+			self.logSizeLabel.setEnabled(False)
 
 		self.logFullDescription = QLabel(f"""
 			<small>
@@ -4750,6 +4746,10 @@ class Dialog(QDialog):
 		if config.ENABLE_CALL_COMMAND: self.pluginCall.setChecked(True)
 		self.pluginCall.stateChanged.connect(self.changedSettingEditor)
 
+		self.enableBrowser = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}browser",self)
+		if config.ENABLE_BROWSER_COMMAND: self.enableBrowser.setChecked(True)
+		self.enableBrowser.stateChanged.connect(self.changedSettingEditorConfig)
+
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
@@ -4769,9 +4769,10 @@ class Dialog(QDialog):
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
+		cmdLayout.addWidget(self.enableBrowser)
 		cmdLayout.addWidget(self.pluginCall)
-		cmdLayout.addWidget(self.enableDelay)
 		cmdLayout.addWidget(self.enableConfig)
+		cmdLayout.addWidget(self.enableDelay)
 		cmdLayout.addWidget(self.enableUser)
 		cmdLayout.addStretch()
 
@@ -6005,6 +6006,7 @@ class Dialog(QDialog):
 		config.ENABLE_ASCIIMOJI_SHORTCODES = self.enableAscii.isChecked()
 		config.USE_IRC_COLORS_IN_INPUT = self.useIRCc.isChecked()
 		config.PLUGIN_UPTIME = self.plugUptime.isChecked()
+		config.ENABLE_BROWSER_COMMAND = self.enableBrowser.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

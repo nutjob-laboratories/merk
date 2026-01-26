@@ -37,6 +37,14 @@
   of indentation occasionally.
 * Bugfix: markdown input can now be escaped with \.
 * Bugfix: markdown input no longer prevents link creation from some URLs.
+* Added a link to the ASCIImoji website to the systray right-click menu, in the
+  "Links" submenu.
+* Added new built-in aliases: $_DLOGS, $_DPLUGINS, $_DSCRIPTS, $_DSETTTINGS,
+  and $_DSTYLES.
+* New command: /folder, which opens one or more paths in the default file
+  manager.
+* Added the option to disable the /browser command to the settings manager and
+  the configuration file.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

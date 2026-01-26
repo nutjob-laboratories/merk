@@ -30,7 +30,6 @@ from .joinchannel import Dialog as JoinChannel
 from .styler import Dialog as Styler
 from .settings import Dialog as Settings
 from .windowsize import Dialog as WindowSize
-from .logsize import Dialog as LogSize
 from .about import Dialog as About
 from .comment import Dialog as Comment
 from .pause import Dialog as Pause
@@ -119,14 +118,6 @@ def AboutDialog():
 	x = About()
 	x.show()
 	return x
-
-def LogSizeDialog(obj):
-	x = LogSize(obj)
-	info = x.get_entry_information(obj)
-	del x
-
-	if not info: return None
-	return info
 
 def SizeDialog(obj):
 	x = WindowSize(obj)

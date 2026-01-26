@@ -395,9 +395,11 @@ USE_MARKDOWN_IN_INPUT = True
 ENABLE_ASCIIMOJI_SHORTCODES = True
 USE_IRC_COLORS_IN_INPUT = True
 PLUGIN_UPTIME = True
+ENABLE_BROWSER_COMMAND = True
 
 def build_settings():
 	settings = {
+		"enable_browser_command": ENABLE_BROWSER_COMMAND,
 		"enable_plugin_uptime_event": PLUGIN_UPTIME,
 		"use_irc_colors_in_input": USE_IRC_COLORS_IN_INPUT,
 		"enable_asciimoji_shortcodes": ENABLE_ASCIIMOJI_SHORTCODES,
@@ -759,6 +761,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_browser_command" in settings:
+		settings["enable_browser_command"] = ENABLE_BROWSER_COMMAND
 	if not "enable_plugin_uptime_event" in settings:
 		settings["enable_plugin_uptime_event"] = PLUGIN_UPTIME
 	if not "use_irc_colors_in_input" in settings:
@@ -1831,6 +1835,7 @@ def load_settings(filename):
 	global ENABLE_ASCIIMOJI_SHORTCODES
 	global USE_IRC_COLORS_IN_INPUT
 	global PLUGIN_UPTIME
+	global ENABLE_BROWSER_COMMAND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1840,6 +1845,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ENABLE_BROWSER_COMMAND = settings["enable_browser_command"]
 		PLUGIN_UPTIME = settings["enable_plugin_uptime_event"]
 		USE_IRC_COLORS_IN_INPUT = settings["use_irc_colors_in_input"]
 		ENABLE_ASCIIMOJI_SHORTCODES = settings["enable_asciimoji_shortcodes"]

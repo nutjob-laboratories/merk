@@ -1371,6 +1371,10 @@ class Merk(QMainWindow):
 			entry.triggered.connect(lambda state,u="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias": self.openLinkInBrowser(u))
 			self.trayLinks.addAction(entry)
 
+			entry = QAction(QIcon(LINK_ICON),"ASCIImoji shortcodes",self)
+			entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
+			self.trayLinks.addAction(entry)
+
 		self.trayMenu.addSeparator()
 
 		entry = QAction(QIcon(ABOUT_ICON),"About "+APPLICATION_NAME,self)
@@ -4181,6 +4185,14 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsInputColor(self):
+		if config.USE_IRC_COLORS_IN_INPUT:
+			config.USE_IRC_COLORS_IN_INPUT = False
+		else:
+			config.USE_IRC_COLORS_IN_INPUT = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
 	def settingsIrcColors(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		if config.DISPLAY_IRC_COLORS:
@@ -4427,13 +4439,6 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
-	def settingsClearIgnore(self):
-		config.IGNORE_LIST = []
-		config.save_settings(config.CONFIG_FILE)
-		self.reRenderAll(True)
-		self.buildSettingsMenu()
-		self.rerenderUserlists()
-
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -4455,6 +4460,13 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Use markdown in input", self)
 		entry.triggered.connect(self.settingsMarkdown)
+		self.settingsMenu.addAction(entry)
+
+		if config.USE_IRC_COLORS_IN_INPUT:
+			entry = QAction(QIcon(self.checked_icon),"Use IRC colors in input", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Use IRC colors in input", self)
+		entry.triggered.connect(self.settingsInputColor)
 		self.settingsMenu.addAction(entry)
 
 		if config.DISPLAY_TIMESTAMP:
@@ -4946,6 +4958,10 @@ class Merk(QMainWindow):
 
 		entry = QAction(QIcon(PYTHON_ICON),"pike 0.2.0",self)
 		entry.triggered.connect(lambda state,u="https://github.com/pyarmory/pike": self.openLinkInBrowser(u))
+		sm.addAction(entry)
+
+		entry = QAction(QIcon(LINK_ICON),"ASCIImoji",self)
+		entry.triggered.connect(lambda state,u="https://asciimoji.com/": self.openLinkInBrowser(u))
 		sm.addAction(entry)
 
 		if is_running_from_pyinstaller():

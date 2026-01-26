@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.400">MERK 0.051.400</a></big></b><br>
-  <b>Current development version: 0.051.416</b><br><br>
+  <b>Current development version: 0.051.420</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Buy me a coffee!</a></b><br>
 </p>
@@ -33,16 +33,18 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.400 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.400)  |
-| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.416 (12.67 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Linux Executable | [Download MERK 0.051.416 (104.37 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.416 (49.60 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.416 (46.71 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.420 (12.67 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Linux Executable | [Download MERK 0.051.420 (104.37 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.420 (49.60 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.420 (46.71 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.416**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** can has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.420**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** can has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
-**MERK** is still in development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.051.400](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.400). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf). The [CHANGELOG](./CHANGELOG) reflects changes in the client in [the current development version](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) which will be present in the next release.
+**MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
+
+**MERK** is still in active development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.051.400](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.400). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf). The [CHANGELOG](./CHANGELOG) reflects changes in the client in [the current development version](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) which will be present in the next release.
 
 Join me on the official **MERK** IRC channel, **#merk** on the Libera Chat network! Connect to  Libera in the client as one of the built-in server suggestions, or at **irc.libera.chat**, port **6667** (you can also connect via SSL on port **6697**). I'm also an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET! I'm usually in **#merk** and **#lobby** at **irc.inthemansion.com** on port **6697**.
 
@@ -112,7 +114,7 @@ There are four libraries that comes bundled with **MERK**:
         - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK** ([Twisted](https://twistedmatrix.com/trac/), [PyQt5](https://pypi.org/project/PyQt5/), [pyspellchecker](https://github.com/barrust/pyspellchecker), [emoji](https://github.com/carpedm20/emoji), and [pike](https://github.com/pyarmory/pike)), as well as [Python's standard library](https://docs.python.org/3/library/index.html)
       - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
       - Plugins can react to most IRC events
-        - Over 30 different IRC and application events
+        - 40 different IRC and application events
         - Individual plugin events can be enabled and disabled in the "Settings" dialog
         - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command
       - Plugins can be created and edited directly in the application
@@ -120,6 +122,7 @@ There are four libraries that comes bundled with **MERK**:
         - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**
         - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples)
       - Plugins can be installed by [drag-and-drop](https://en.wikipedia.org/wiki/Drag_and_drop), with the plugin manager, or from the command-line
+      - Plugins can be uninstalled with the plugin manager, from the command-line, or by simply deleting the plugin's file(s)
     -   Full scripting engine
         - Includes a built in script editor, with command generators and syntax highlighting
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
@@ -161,13 +164,13 @@ There are four libraries that comes bundled with **MERK**:
         - Colors and formatting can be optionally stripped from display
         - If colors and formatting in input are stripped from display, they will still be sent to the server.
     - Markdown support for formatting messages with IRC control codes
-        - Messages can use the *italics*, **bold**, ~~strikethrough~~, and <u>underline</u>
+        - Messages can use the *italics*, **bold**, ~~strikethrough~~, and <u>underline</u> markdown tags
     - Inject [IRC colors](https://www.mirc.com/colors.html) into input with plain text
         - Open a color block with `<NUMBER` to set the foreground color, and `<NUMBER,NUMBER` to set the foreground and background colors, and close the color block with `>`.
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.051.400), and may reflect the current development version (0.051.416). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.400), and may reflect the current development version (0.051.420). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -302,6 +305,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/focus [SERVER] [WINDOW]`              | Sets focus on a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
+| `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
 | `/fullscreen`                           | Toggles full screen mode   |
 | `goto LINE_NUMBER`                         | Moves execution of the script to `LINE_NUMBER`. The only script-only command that can be issued from an `if` command. Cannot be used to move to a line that consists of a script-only command other than `end`. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Halts a script's execution, and displays an error `MESSAGE` with line number and file name. *Can only be called from scripts*       |
@@ -376,7 +380,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |
 | `/xreconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script, reconnecting on disconnection                                                              |
 # Plugins
-**MERK** can load plugins! Plugins are written in Python, the same language that **MERK** is written in, and can react to over 30 different events. Each plugin has access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) that **MERK** uses to communicate with IRC servers, and can interact with both the client and any chat subwindows. The built-in "Plugin Manager" can edit, export, install, and create plugins, using a special version of the script editor just for Python code. The plugin editor features syntax highlighting, auto-indent, optional visible whitespace, and all the features you'd expect out of a basic text editor.
+**MERK** can load plugins! Plugins are written in Python, the same language that **MERK** is written in, and can react to 40 different events. Each plugin has access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) that **MERK** uses to communicate with IRC servers, and can interact with both the client and any chat subwindows. The built-in "Plugin Manager" can edit, export, install, and create plugins, using a special version of the script editor just for Python code. The plugin editor features syntax highlighting, auto-indent, optional visible whitespace, and all the features you'd expect out of a basic text editor.
 
 For more information on how plugins work, and how to write your own, the [MERK User Guide](./MERK_User_Guide.pdf) has all the information you'll need.
 
