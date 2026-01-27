@@ -426,3 +426,62 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 
 		self.setCurrentBlockState(0)
 
+class IRCFullHighlighter(QSyntaxHighlighter):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+		self.irc_colors = {
+			"00": "#FFFFFF", "01": "#000000", "02": "#00007F", "03": "#009300",
+			"04": "#FF0000", "05": "#7F0000", "06": "#9C009C", "07": "#FC7F00",
+			"08": "#FFFF00", "09": "#00FC00", "10": "#009393", "11": "#00FFFF",
+			"12": "#0000FC", "13": "#FF00FF", "14": "#7F7F7F", "15": "#D2D2D2",
+		}
+
+	def highlightBlock(self, text):
+		pattern = r"\x03(\d{1,2})?(?:,(\d{1,2}))?|[\x02\x1d\x1f\x1e\x0f]"
+		color_re = QRegularExpression(pattern)
+		i = color_re.globalMatch(text)
+		
+		current_format = QTextCharFormat()
+		last_pos = 0
+
+		while i.hasNext():
+			match = i.next()
+			start = match.capturedStart()
+			length = match.capturedLength()
+			token = match.captured(0)
+
+			self.setFormat(last_pos, start - last_pos, current_format)
+
+			if token.startswith("\x03"):
+				fg, bg = match.captured(1), match.captured(2)
+				if fg:
+					current_format.setForeground(QColor(self.irc_colors.get(fg.zfill(2), "#000000")))
+				if bg:
+					current_format.setBackground(QColor(self.irc_colors.get(bg.zfill(2), "#FFFFFF")))
+				if not fg and not bg:
+					current_format.setForeground(QColor("#000000"))
+					current_format.setBackground(Qt.transparent)
+
+			elif token == "\x02": # Bold
+				current_format.setFontWeight(QFont.Normal if current_format.fontWeight() == QFont.Bold else QFont.Bold)
+			
+			elif token == "\x1d": # Italics
+				current_format.setFontItalic(not current_format.fontItalic())
+			
+			elif token == "\x1f": # Underline
+				current_format.setFontUnderline(not current_format.fontUnderline())
+			
+			elif token == "\x1e": # Strikethrough
+				current_format.setFontStrikeOut(not current_format.fontStrikeOut())
+			
+			elif token == "\x0f": # Reset
+				current_format = QTextCharFormat()
+
+			hidden = QTextCharFormat()
+			hidden.setFontPointSize(1)
+			hidden.setForeground(Qt.transparent)
+			self.setFormat(start, length, hidden)
+
+			last_pos = start + length
+
+		self.setFormat(last_pos, len(text) - last_pos, current_format)

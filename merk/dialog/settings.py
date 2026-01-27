@@ -6121,14 +6121,6 @@ class Dialog(QDialog):
 		self.parent.setAllFont(font)
 
 		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
-		if self.rerender: self.parent.reRenderAll()
-		if self.rerenderUsers: self.parent.rerenderUserlists()
-		if self.rerenderStyle: self.parent.reApplyStyle()
-
-		if self.rerenderNick:
-			self.parent.rerenderAllNickDisplays()
-			self.parent.toggleNickDisplay()
-			if not self.rerenderUsers: self.parent.rerenderUserlists()
 
 		if config.SHOW_SYSTRAY_ICON:
 			self.parent.tray.setVisible(True)
@@ -6176,6 +6168,15 @@ class Dialog(QDialog):
 			self.parent.showAllTopic()
 		else:
 			self.parent.hideAllTopic()
+
+		if self.rerender: self.parent.reRenderAll()
+		if self.rerenderUsers: self.parent.rerenderUserlists()
+		if self.rerenderStyle: self.parent.reApplyStyle()
+
+		if self.rerenderNick:
+			self.parent.rerenderAllNickDisplays()
+			self.parent.toggleNickDisplay()
+			if not self.rerenderUsers: self.parent.rerenderUserlists()
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			for window in self.parent.getAllEditorWindows():

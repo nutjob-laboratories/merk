@@ -77,11 +77,13 @@ def connectSSL(**kwargs):
 
 def reconnect(**kwargs):
 	kwargs["client_id"] = str(uuid.uuid4())
+	kwargs["reconnected"] = 0
 	bot = IRC_ReConnection_Factory(**kwargs)
 	reactor.connectTCP(kwargs["server"],kwargs["port"],bot)
 
 def reconnectSSL(**kwargs):
 	kwargs["client_id"] = str(uuid.uuid4())
+	kwargs["reconnected"] = 0
 	bot = IRC_ReConnection_Factory(**kwargs)
 	reactor.connectSSL(kwargs["server"],kwargs["port"],bot,ssl.ClientContextFactory())
 
@@ -140,6 +142,7 @@ class IRC_Connection(irc.IRCClient):
 	def __init__(self,**kwargs):
 
 		self.kwargs = kwargs
+		self.reconnected = 0
 
 		objectconfig(self,**kwargs)
 
@@ -496,15 +499,11 @@ class IRC_Connection(irc.IRCClient):
 			except:
 				pass
 
-		global CONNECTIONS
-
 		if hasattr(self,"uptimeTimer"):
 			self.uptimeTimer.stop()
 			self.uptime = 0
 
 		self.registered = False
-
-		del CONNECTIONS[self.client_id]
 
 		self.gui.connectionLost(self)
 
@@ -517,6 +516,7 @@ class IRC_Connection(irc.IRCClient):
 		self.uptimeTimer.start()
 
 		self.registered = True
+		self.reconnected = 0
 
 		self.gui.signedOn(self)
 
@@ -1390,6 +1390,9 @@ def objectconfig(obj,**kwargs):
 
 	for key, value in kwargs.items():
 
+		if key=="reconnected":
+			obj.reconnected = value
+
 		if key=="client_id":
 			obj.client_id = value
 
@@ -1444,6 +1447,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			CONNECTIONS.pop(self.kwargs["client_id"],None)
 			return
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
@@ -1475,6 +1479,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
+			CONNECTIONS.pop(self.kwargs["client_id"],None)
 			return
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
@@ -1507,15 +1512,36 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 		config.load_settings(config.CONFIG_FILE)
 
+		self.kwargs["reconnected"] = CONNECTIONS[self.kwargs["client_id"]].reconnected
+
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
 				del self.kwargs["gui"].reconnecting[self.kwargs["client_id"]]
+			CONNECTIONS.pop(self.kwargs["client_id"],None)
 			return
 
 		self.kwargs["gui"].reconnecting[self.kwargs["client_id"]] = 0
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)
+
+		RECONNECTION_DELAY = config.RECONNECTION_DELAY
+
+		if self.kwargs["reconnected"]>0:
+			msg = f"There seems to be difficulty connecting to <b>{self.kwargs["server"]}:{self.kwargs["port"]}</b>. This may be caused by your Internet connection or your settings. You may wish to check your settings before attempting to reconnect.<br><br>Click <b>Ok</b> to continue trying to reconnect with your current settings, or <b>Cancel</b> to abort."
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText(msg)
+			msgBox.setWindowTitle("Connection lost")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				return
+			else:
+				self.kwargs["reconnected"] = 0
+				RECONNECTION_DELAY = 0
 
 		# If we're trying to exit the app without disconnecting
 		# to servers, the connection will be "lost" at some point.
@@ -1541,15 +1567,16 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			if rval == QMessageBox.Cancel:
 				pass
 			else:
+				self.kwargs["reconnected"] = self.kwargs["reconnected"] + 1
 				if config.DELAY_AUTO_RECONNECTION:
 					if self.kwargs["ssl"]:
 						self.kwargs["client_id"] = str(uuid.uuid4())
 						bot = IRC_ReConnection_Factory(**self.kwargs)
-						reactor.callLater(config.RECONNECTION_DELAY, reactor.connectSSL,self.kwargs["server"],self.kwargs["port"],bot,ssl.ClientContextFactory())
+						reactor.callLater(RECONNECTION_DELAY, reactor.connectSSL,self.kwargs["server"],self.kwargs["port"],bot,ssl.ClientContextFactory())
 					else:
 						self.kwargs["client_id"] = str(uuid.uuid4())
 						bot = IRC_ReConnection_Factory(**self.kwargs)
-						reactor.callLater(config.RECONNECTION_DELAY, reactor.connectTCP,self.kwargs["server"],self.kwargs["port"],bot)
+						reactor.callLater(RECONNECTION_DELAY, reactor.connectTCP,self.kwargs["server"],self.kwargs["port"],bot)
 				else:
 					if self.kwargs["ssl"]:
 						self.kwargs["client_id"] = str(uuid.uuid4())
@@ -1560,15 +1587,16 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 						bot = IRC_ReConnection_Factory(**self.kwargs)
 						reactor.connectTCP(self.kwargs["server"],self.kwargs["port"],bot)
 		else:
+			self.kwargs["reconnected"] = self.kwargs["reconnected"] + 1
 			if config.DELAY_AUTO_RECONNECTION:
 				if self.kwargs["ssl"]:
 					self.kwargs["client_id"] = str(uuid.uuid4())
 					bot = IRC_ReConnection_Factory(**self.kwargs)
-					reactor.callLater(config.RECONNECTION_DELAY, reactor.connectSSL,self.kwargs["server"],self.kwargs["port"],bot,ssl.ClientContextFactory())
+					reactor.callLater(RECONNECTION_DELAY, reactor.connectSSL,self.kwargs["server"],self.kwargs["port"],bot,ssl.ClientContextFactory())
 				else:
 					self.kwargs["client_id"] = str(uuid.uuid4())
 					bot = IRC_ReConnection_Factory(**self.kwargs)
-					reactor.callLater(config.RECONNECTION_DELAY, reactor.connectTCP,self.kwargs["server"],self.kwargs["port"],bot) 
+					reactor.callLater(RECONNECTION_DELAY, reactor.connectTCP,self.kwargs["server"],self.kwargs["port"],bot) 
 			else:
 				if self.kwargs["ssl"]:
 					self.kwargs["client_id"] = str(uuid.uuid4())
@@ -1587,6 +1615,7 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
 				del self.kwargs["gui"].reconnecting[self.kwargs["client_id"]]
+			CONNECTIONS.pop(self.kwargs["client_id"],None)
 			return
 
 		CONNECTIONS.pop(self.kwargs["client_id"],None)

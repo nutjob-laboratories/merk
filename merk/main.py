@@ -896,7 +896,7 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
 						if c.channel_topic!='':
-							button.setToolTip(c.channel_topic)
+							button.setToolTip(strip_color(c.channel_topic))
 						else:
 							button.setToolTip(serv_name)
 					else:
@@ -1034,7 +1034,7 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
 						if c.channel_topic!='':
-							button.setToolTip(c.channel_topic)
+							button.setToolTip(strip_color(c.channel_topic))
 						else:
 							button.setToolTip(c.name + "\n" + serv_name)
 					else:
@@ -1255,52 +1255,53 @@ class Merk(QMainWindow):
 					total = self.getAllSubWindows(entry)
 
 					if len(total)>0:
-						sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
+						if hasattr(sw,"widget"):
+							sm = self.trayMenu.addMenu(QIcon(CONNECT_ICON),name)
 
-						c = sw.widget()
-						if hasattr(c.client,"network"):
-							mynet = c.client.network
-						else:
-							mynet = config.UNKNOWN_NETWORK_NAME
-
-						if config.SHOW_LIST_IN_SYSTRAY_MENU:
-							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
-							entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
-							sm.addAction(entry)
-
-							if not c.client.registered: entry.setEnabled(False)
-
-						if config.SHOW_LOGS_IN_SYSTRAY_MENU:
-							if mynet==config.UNKNOWN_NETWORK_NAME:
-								entry = QAction(QIcon(LOG_ICON),f"Logs",self)
-								entry.triggered.connect(self.menuExportLog)
-								sm.addAction(entry)
+							c = sw.widget()
+							if hasattr(c.client,"network"):
+								mynet = c.client.network
 							else:
-								entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
-								entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+								mynet = config.UNKNOWN_NETWORK_NAME
+
+							if config.SHOW_LIST_IN_SYSTRAY_MENU:
+								entry = QAction(QIcon(LIST_ICON),"Channel list",self)
+								entry.triggered.connect(lambda state,u=sw: self.systrayShowList(u))
 								sm.addAction(entry)
 
-							if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
+								if not c.client.registered: entry.setEnabled(False)
 
-						sm.addSeparator()
+							if config.SHOW_LOGS_IN_SYSTRAY_MENU:
+								if mynet==config.UNKNOWN_NETWORK_NAME:
+									entry = QAction(QIcon(LOG_ICON),f"Logs",self)
+									entry.triggered.connect(self.menuExportLog)
+									sm.addAction(entry)
+								else:
+									entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
+									entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+									sm.addAction(entry)
 
-						entry = QAction(QIcon(CONSOLE_ICON),name,self)
-						entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
-						sm.addAction(entry)
+								if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
 
-						for w in wl:
-							c = w.widget()
+							sm.addSeparator()
 
-							if c.window_type==CHANNEL_WINDOW:
-								icon = CHANNEL_ICON
-							elif c.window_type==SERVER_WINDOW:
-								icon = CONSOLE_ICON
-							elif c.window_type==PRIVATE_WINDOW:
-								icon = PRIVATE_ICON
-
-							entry = QAction(QIcon(icon),c.name,self)
-							entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
+							entry = QAction(QIcon(CONSOLE_ICON),name,self)
+							entry.triggered.connect(lambda state,u=sw: self.systrayShowWindow(u))
 							sm.addAction(entry)
+
+							for w in wl:
+								c = w.widget()
+
+								if c.window_type==CHANNEL_WINDOW:
+									icon = CHANNEL_ICON
+								elif c.window_type==SERVER_WINDOW:
+									icon = CONSOLE_ICON
+								elif c.window_type==PRIVATE_WINDOW:
+									icon = PRIVATE_ICON
+
+								entry = QAction(QIcon(icon),c.name,self)
+								entry.triggered.connect(lambda state,u=w: self.systrayShowWindow(u))
+								sm.addAction(entry)
 
 		self.trayMenu.addSeparator()
 
@@ -2885,6 +2886,8 @@ class Merk(QMainWindow):
 				c.rerenderChatLog()
 			if hasattr(c,"rerenderEditor"):
 				c.rerenderEditor()
+			if hasattr(c,"updateTitle"):
+				c.updateTitle()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 		if show_wait: QApplication.restoreOverrideCursor()
@@ -4193,17 +4196,6 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
-	def settingsIrcColors(self):
-		QApplication.setOverrideCursor(Qt.WaitCursor)
-		if config.DISPLAY_IRC_COLORS:
-			config.DISPLAY_IRC_COLORS = False
-		else:
-			config.DISPLAY_IRC_COLORS = True
-		config.save_settings(config.CONFIG_FILE)
-		self.reRenderAll()
-		QApplication.restoreOverrideCursor()
-		self.buildSettingsMenu()
-
 	def settingsLinks(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		if config.CONVERT_URLS_TO_LINKS:
@@ -4447,13 +4439,6 @@ class Merk(QMainWindow):
 		self.settingsMenu.addAction(entry)
 
 		self.settingsMenu.addSeparator()
-
-		if config.DISPLAY_IRC_COLORS:
-			entry = QAction(QIcon(self.checked_icon),"Show IRC colors", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Show IRC colors", self)
-		entry.triggered.connect(self.settingsIrcColors)
-		self.settingsMenu.addAction(entry)
 
 		if config.USE_MARKDOWN_IN_INPUT:
 			entry = QAction(QIcon(self.checked_icon),"Use markdown in input", self)
@@ -5069,72 +5054,73 @@ class Merk(QMainWindow):
 				total = self.getAllSubWindows(entry)
 
 				if len(total)>0:
-					sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
+					if hasattr(sw,"widget"):
+						sm = self.windowsMenu.addMenu(QIcon(CONNECT_ICON),name)
 
-					c = sw.widget()
-					if hasattr(c.client,"network"):
-						mynet = c.client.network
-					else:
-						mynet = config.UNKNOWN_NETWORK_NAME
+						c = sw.widget()
+						if hasattr(c.client,"network"):
+							mynet = c.client.network
+						else:
+							mynet = config.UNKNOWN_NETWORK_NAME
 
-					if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
-						netlink = get_network_link(mynet)
-						if netlink!=None:
-							desc = f"<a href=\"{netlink}\">Network Website</a>"
+						if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
+							netlink = get_network_link(mynet)
+							if netlink!=None:
+								desc = f"<a href=\"{netlink}\">Network Website</a>"
+							else:
+								desc = "IRC Network"
 						else:
 							desc = "IRC Network"
-					else:
-						desc = "IRC Network"
 
-					entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
-					sm.addAction(entry)
-
-					if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU:
-						ssetting = sm.addMenu(c.server_info_menu)
-						ssetting.setIcon(QIcon(CONNECT_ICON))
-
-					if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
-						entry = QAction(QIcon(LIST_ICON),"Server channel list",self)
-						entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
+						entry = widgets.ExtendedMenuItemNoAction(self,NETWORK_MENU_ICON,mynet,desc,CUSTOM_MENU_ICON_SIZE)
 						sm.addAction(entry)
 
-						if not c.list_button.isEnabled():
-							entry.setEnabled(False)
+						if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU:
+							ssetting = sm.addMenu(c.server_info_menu)
+							ssetting.setIcon(QIcon(CONNECT_ICON))
 
-						entry = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
-						entry.triggered.connect(lambda state,u=sw: self.menuRefreshList(u))
+						if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
+							entry = QAction(QIcon(LIST_ICON),"Server channel list",self)
+							entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
+							sm.addAction(entry)
+
+							if not c.list_button.isEnabled():
+								entry.setEnabled(False)
+
+							entry = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
+							entry.triggered.connect(lambda state,u=sw: self.menuRefreshList(u))
+							sm.addAction(entry)
+
+							if not c.list_button.isEnabled():
+								entry.setEnabled(False)
+
+						if config.SHOW_LOGS_IN_WINDOWS_MENU:
+							entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
+							entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
+							sm.addAction(entry)
+
+							if mynet==config.UNKNOWN_NETWORK_NAME: entry.setVisible(False)
+							if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
+
+						sm.addSeparator()
+
+						entry = QAction(QIcon(CONSOLE_ICON),name,self)
+						entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
 						sm.addAction(entry)
 
-						if not c.list_button.isEnabled():
-							entry.setEnabled(False)
+						for w in wl:
+							c = w.widget()
 
-					if config.SHOW_LOGS_IN_WINDOWS_MENU:
-						entry = QAction(QIcon(LOG_ICON),f"Logs for {mynet}",self)
-						entry.triggered.connect(lambda state,u=mynet: self.menuExportLogTarget(u))
-						sm.addAction(entry)
+							if c.window_type==CHANNEL_WINDOW:
+								icon = CHANNEL_ICON
+							elif c.window_type==SERVER_WINDOW:
+								icon = CONSOLE_ICON
+							elif c.window_type==PRIVATE_WINDOW:
+								icon = PRIVATE_ICON
 
-						if mynet==config.UNKNOWN_NETWORK_NAME: entry.setVisible(False)
-						if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
-
-					sm.addSeparator()
-
-					entry = QAction(QIcon(CONSOLE_ICON),name,self)
-					entry.triggered.connect(lambda state,u=sw: self.showSubWindow(u))
-					sm.addAction(entry)
-
-					for w in wl:
-						c = w.widget()
-
-						if c.window_type==CHANNEL_WINDOW:
-							icon = CHANNEL_ICON
-						elif c.window_type==SERVER_WINDOW:
-							icon = CONSOLE_ICON
-						elif c.window_type==PRIVATE_WINDOW:
-							icon = PRIVATE_ICON
-
-						entry = QAction(QIcon(icon),c.name,self)
-						entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
-						sm.addAction(entry)
+							entry = QAction(QIcon(icon),c.name,self)
+							entry.triggered.connect(lambda state,u=w: self.showSubWindow(u))
+							sm.addAction(entry)
 
 		edwins = self.getAllEditorWindows()
 		if len(edwins)>0:

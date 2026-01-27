@@ -40,11 +40,28 @@
 * Added a link to the ASCIImoji website to the systray right-click menu, in the
   "Links" submenu.
 * Added new built-in aliases: $_DLOGS, $_DPLUGINS, $_DSCRIPTS, $_DSETTTINGS,
-  and $_DSTYLES.
+  and $_DSTYLES. These contain the paths to each of MERK's different config/
+  file directories.
 * New command: /folder, which opens one or more paths in the default file
   manager.
 * Added the option to disable the /browser command to the settings manager and
   the configuration file.
+* Bugfix: when a connection fails or is lost, the client associated with that
+  connection is now completely removed from the internal connection list.
+* Bugfix: sudden disconnection from a server could cause a crash.
+* Bugfix: if a reconnection fails without registration more than once, the user
+  is notified about whether they want to keep attempting reconnects.
+  Previously, this would result in a "spiral", where the client would keep
+  trying to reconnect indefinitely.
+* Bugfix: fixed the "Copy link location" entry in chat and server window
+  context menus.
+* The topic display in channel windows now displays IRC colors. If markdown
+  and/or IRC color input is turned on, that can be used in the channel topic
+  editor
+* If IRC color display is turned off, IRC colors will not be displayed in the
+  channel topic display.
+* Removed the option to toggle IRC colors from the settings menu. The toggle
+  is now only in the settings dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

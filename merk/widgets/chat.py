@@ -298,7 +298,7 @@ class Window(QMainWindow):
 			# Set topic editors color to the same as the
 			# window background
 			col = self.parent.palette().color(QPalette.Background).name()
-			self.topic.setFrame(False)
+			self.topic.setFrameStyle(QFrame.NoFrame)
 			p = self.topic.palette()
 			p.setColor(QPalette.Base, QColor(col))
 			self.topic.setPalette(p)
@@ -953,7 +953,7 @@ class Window(QMainWindow):
 
 	def chatMenu(self,location):
 
-		menu = self.chat.createStandardContextMenu()
+		menu = self.chat.createStandardContextMenu(location)
 
 		if config.SHOW_CHAT_CONTEXT_MENUS:
 
@@ -2771,6 +2771,9 @@ class Window(QMainWindow):
 	def handleTopicInput(self):
 		entered_topic = self.topic.text()
 
+		if config.USE_MARKDOWN_IN_INPUT: entered_topic = markdown_to_irc(entered_topic)
+		if config.USE_IRC_COLORS_IN_INPUT: entered_topic = inject_irc_colors(entered_topic)
+
 		self.client.topic(self.name,entered_topic)
 		self.input.setFocus()
 
@@ -2779,14 +2782,26 @@ class Window(QMainWindow):
 		if not hasattr(self,"topic"): return
 
 		self.channel_topic = topic
+
+		if not config.DISPLAY_IRC_COLORS:
+			if string_has_irc_formatting_codes(topic):
+				topic = strip_color(topic)
+		
 		self.topic.setText(topic)
-		self.topic.setCursorPosition(0)
 
 		w = self.parent.getSubWindow(self.name,self.client)
 		a = self.parent.MDI.activeSubWindow()
 		if w==a:
-			self.parent.merk_subWindowActivated(w)			
+			self.parent.merk_subWindowActivated(w)
 
+	def resetTopic(self):
+		topic = self.channel_topic
+
+		if not config.DISPLAY_IRC_COLORS:
+			if string_has_irc_formatting_codes(topic):
+				topic = strip_color(topic)
+
+		self.topic.setText(topic)
 
 	def handleDoubleClick(self,item):
 		if not config.DOUBLECLICK_TO_OPEN_PRIVATE_CHAT: return
@@ -3142,12 +3157,27 @@ def buildServerSettingsMenu(self,client):
 
 	return optionsMenu
 
-class TopicEdit(QLineEdit):
+class TopicEdit(QPlainTextEdit):
+
+	returnPressed = pyqtSignal()
+
 	def __init__(self, parent=None):
-		super(QLineEdit, self).__init__(parent)
+		super(QPlainTextEdit, self).__init__(parent)
 		self.readyToEdit = True
 		self.parent = parent
 		self.is_enabled = True
+
+		fm = self.fontMetrics()
+		self.setFixedHeight(fm.height()+8)
+		self.setWordWrapMode(QTextOption.NoWrap)
+		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setCursorWidth(config.INPUT_CURSOR_WIDTH)
+		self.filter = StrictViewportFilter(self)
+		self.viewport().installEventFilter(self.filter)
+		self.verticalScrollBar().valueChanged.connect(self.lock_vertical_position)
+
+		self.highlighter = syntax.IRCFullHighlighter(self.document())
 
 		if config.CHANNEL_TOPIC_BOLD:
 			font = QFont()
@@ -3157,18 +3187,6 @@ class TopicEdit(QLineEdit):
 	def refresh(self):
 		self.setText(self.parent.channel_topic)
 		self.update()
-
-	def setText(self,text,elide=True):
-		if elide:
-			metrics = QFontMetrics(self.font())
-			elided  = metrics.elidedText(text, Qt.ElideRight, self.width()-5)
-			QLineEdit.setText(self,elided)
-			if len(elided)!=len(text):
-				self.setToolTip(text)
-			else:
-				self.setToolTip('')
-		else:
-			QLineEdit.setText(self,text)
 
 		# Handle window title
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE:
@@ -3189,22 +3207,50 @@ class TopicEdit(QLineEdit):
 				self.parent.setWindowTitle(' ')
 
 	def mousePressEvent(self, e, Parent=None):
-		super(QLineEdit, self).mousePressEvent(e) #required to deselect on 2e click
+		super(QPlainTextEdit, self).mousePressEvent(e)
 		if not self.is_enabled: return
 		if self.readyToEdit:
-			self.setText(self.parent.channel_topic,False)
+			self.setText(self.parent.channel_topic)
 			self.setReadOnly(False)
 			self.selectAll()
 			self.readyToEdit = False
 
 	def focusOutEvent(self, e):
-		super(QLineEdit, self).focusOutEvent(e) #required to remove cursor on focusOut
+		super().focusOutEvent(e)
 		self.setText(self.parent.channel_topic)
 
-		self.deselect()
 		self.readyToEdit = True
 		self.setReadOnly(True)
-		self.setCursorPosition(0)
+
+	def keyPressEvent(self, event):
+		if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+			self.returnPressed.emit()
+			event.accept()
+		else:
+			super().keyPressEvent(event)
+
+	def lock_vertical_position(self, value):
+		v_bar = self.verticalScrollBar()
+		if value != v_bar.minimum():
+			v_bar.setValue(v_bar.minimum())
+			
+	def ensureCursorVisible(self):
+		super().ensureCursorVisible()
+		self.lock_vertical_position(0)
+
+	def enforce_single_line(self,text_edit):
+		current_text = text_edit.toPlainText()
+		new_text = current_text.replace('\n', '')
+		if new_text != current_text:
+			text_edit.blockSignals(True)
+			text_edit.setPlainText(new_text)
+			text_edit.blockSignals(False)
+
+	def text(self):
+		return self.toPlainText()
+
+	def setText(self,text):
+		self.setPlainText(text)
 
 class SpellTextEdit(QPlainTextEdit):
 
@@ -3648,7 +3694,7 @@ class SpellTextEdit(QPlainTextEdit):
 
 	def contextMenuEvent(self, event):
 
-		popup_menu = self.createStandardContextMenu()
+		popup_menu = self.createStandardContextMenu(event.pos())
 
 
 		# Don't autoselect if the user has selected text
