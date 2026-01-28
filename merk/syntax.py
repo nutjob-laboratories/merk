@@ -37,6 +37,7 @@ except Exception as exception:
 	pass
 
 import re
+import platform
 
 from . import config
 # from . import resources
@@ -478,22 +479,22 @@ class IRCFullHighlighter(QSyntaxHighlighter):
 			elif token == "\x0f": # Reset
 				current_format = QTextCharFormat()
 
-			# hidden = QTextCharFormat()
-			# hidden.setBackground(current_format.background())
-			# hidden.setForeground(Qt.transparent)
-			# hidden.setFontPointSize(0.1) 
-			# hidden.setFontLetterSpacing(0)
-
-			# Fix for windows spacing?
-			hidden = QTextCharFormat()
-			hidden.setForeground(Qt.transparent)
-			hidden.setBackground(Qt.transparent)
-			hidden.setFontPointSize(0.1)
-			hidden.setFontStretch(1)
-			hidden.setProperty(QTextFormat.FontWordSpacing, -20.0) 
-			hidden.setFontLetterSpacingType(QFont.AbsoluteSpacing)
-			hidden.setFontLetterSpacing(-10.0) 
-			hidden.setFontKerning(False)
+			if platform.system() == 'Windows':
+				hidden = QTextCharFormat()
+				hidden.setForeground(Qt.transparent)
+				hidden.setBackground(Qt.transparent)
+				hidden.setFontPointSize(0.1)
+				hidden.setFontStretch(1)
+				hidden.setProperty(QTextFormat.FontWordSpacing, -20.0) 
+				hidden.setFontLetterSpacingType(QFont.AbsoluteSpacing)
+				hidden.setFontLetterSpacing(-10.0) 
+				hidden.setFontKerning(False)
+			else:
+				hidden = QTextCharFormat()
+				hidden.setBackground(current_format.background())
+				hidden.setForeground(Qt.transparent)
+				hidden.setFontPointSize(0.1) 
+				hidden.setFontLetterSpacing(0)
 
 			self.setFormat(start, length, hidden)
 
