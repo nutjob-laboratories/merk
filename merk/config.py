@@ -110,7 +110,6 @@ MENUBAR_DOCKED_AT_TOP = True
 MENUBAR_CAN_FLOAT = False
 USE_MENUBAR = True
 QT_WINDOW_STYLE = 'Windows'
-CHANNEL_TOPIC_BOLD = True
 SHOW_CHANNEL_TOPIC = True
 SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = False
 SHOW_CHANNEL_NAME_AND_MODES = True
@@ -396,9 +395,13 @@ ENABLE_ASCIIMOJI_SHORTCODES = True
 USE_IRC_COLORS_IN_INPUT = True
 PLUGIN_UPTIME = True
 ENABLE_BROWSER_COMMAND = True
+SHOW_TOPIC_IN_EDITOR_TOOLTIP = True
+NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = True
 
 def build_settings():
 	settings = {
+		"notify_on_repeated_failed_reconnections": NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS,
+		"show_channel_topic_in_tooltip": SHOW_TOPIC_IN_EDITOR_TOOLTIP,
 		"enable_browser_command": ENABLE_BROWSER_COMMAND,
 		"enable_plugin_uptime_event": PLUGIN_UPTIME,
 		"use_irc_colors_in_input": USE_IRC_COLORS_IN_INPUT,
@@ -720,7 +723,6 @@ def build_settings():
 		"menubar_can_float": MENUBAR_CAN_FLOAT,
 		"use_menubar": USE_MENUBAR,
 		"qt_window_style": QT_WINDOW_STYLE,
-		"show_channel_topic_bold": CHANNEL_TOPIC_BOLD,
 		"show_channel_topic_bar": SHOW_CHANNEL_TOPIC,
 		"show_channel_topic_in_window_title": SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE,
 		"show_channel_name_and_modes": SHOW_CHANNEL_NAME_AND_MODES,
@@ -761,6 +763,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "notify_on_repeated_failed_reconnections" in settings:
+		settings["notify_on_repeated_failed_reconnections"] = NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS
+	if not "show_channel_topic_in_tooltip" in settings:
+		settings["show_channel_topic_in_tooltip"] = SHOW_TOPIC_IN_EDITOR_TOOLTIP
 	if not "enable_browser_command" in settings:
 		settings["enable_browser_command"] = ENABLE_BROWSER_COMMAND
 	if not "enable_plugin_uptime_event" in settings:
@@ -1323,8 +1329,6 @@ def patch_settings(settings):
 		settings["show_channel_banlist_menu"] = SHOW_BANLIST_MENU
 	if not "show_channel_topic_in_window_title" in settings:
 		settings["show_channel_topic_in_window_title"] = SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
-	if not "show_channel_topic_bold" in settings:
-		settings["show_channel_topic_bold"] = CHANNEL_TOPIC_BOLD
 	if not "show_channel_topic_bar" in settings:
 		settings["show_channel_topic_bar"] = SHOW_CHANNEL_TOPIC
 	if not "qt_window_style" in settings:
@@ -1551,7 +1555,6 @@ def load_settings(filename):
 	global MENUBAR_CAN_FLOAT
 	global USE_MENUBAR
 	global QT_WINDOW_STYLE
-	global CHANNEL_TOPIC_BOLD
 	global SHOW_CHANNEL_TOPIC
 	global SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 	global SHOW_CHANNEL_NAME_AND_MODES
@@ -1836,6 +1839,8 @@ def load_settings(filename):
 	global USE_IRC_COLORS_IN_INPUT
 	global PLUGIN_UPTIME
 	global ENABLE_BROWSER_COMMAND
+	global SHOW_TOPIC_IN_EDITOR_TOOLTIP
+	global NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1845,6 +1850,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = settings["notify_on_repeated_failed_reconnections"]
+		SHOW_TOPIC_IN_EDITOR_TOOLTIP = settings["show_channel_topic_in_tooltip"]
 		ENABLE_BROWSER_COMMAND = settings["enable_browser_command"]
 		PLUGIN_UPTIME = settings["enable_plugin_uptime_event"]
 		USE_IRC_COLORS_IN_INPUT = settings["use_irc_colors_in_input"]
@@ -2128,7 +2135,6 @@ def load_settings(filename):
 		SHOW_CHANNEL_NAME_AND_MODES = settings["show_channel_name_and_modes"]
 		SHOW_BANLIST_MENU = settings["show_channel_banlist_menu"]
 		SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = settings["show_channel_topic_in_window_title"]
-		CHANNEL_TOPIC_BOLD = settings["show_channel_topic_bold"]
 		SHOW_CHANNEL_TOPIC = settings["show_channel_topic_bar"]
 		USE_MENUBAR = settings["use_menubar"]
 		MENUBAR_CAN_FLOAT = settings["menubar_can_float"]

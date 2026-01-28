@@ -2053,6 +2053,11 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 	def topicChanged(self,client,user,channel,newTopic):
+		x = user.split('!')
+		if len(x) >= 2:
+			nick = x[0]
+		else:
+			nick = user
 		w = None
 		for window in self.MDI.subWindowList():
 			c = window.widget()
@@ -2063,7 +2068,11 @@ class Merk(QMainWindow):
 							c.setTopic(newTopic)
 							w = c
 							if user!='':
-								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
+								if nick==client.nickname:
+									mnewTopic = strip_color(newTopic)
+								else:
+									mnewTopic = newTopic
+								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+mnewTopic+"\"")
 								c.writeText(t,config.LOG_CHANNEL_TOPICS)
 		plugins.call(self,"topic",client=client,user=user,channel=channel,topic=newTopic,window=w)
 		self.buildWindowbar()
@@ -3414,16 +3423,6 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"window_type"):
 				if c.window_type==CHANNEL_WINDOW:
-
-					if config.CHANNEL_TOPIC_BOLD:
-						font = QFont()
-						font.setBold(True)
-						c.topic.setFont(font)
-					else:
-						font = QFont()
-						font.setBold(False)
-						c.topic.setFont(font)
-
 					c.setTopic(c.channel_topic)
 					c.topic.refresh()
 		if is_deleted(w)==False:

@@ -304,47 +304,72 @@ def render_message(message,style,client=None,no_padding=False):
 	# Message has been rendered, so return it
 	return output
 
+
 def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 		style_str = f"color:{foreground};"
 	else:
 		style_str = style["hyperlink"]
-		
-	# More robust URL pattern
+
 	url_pattern = re.compile(
-		r"(https?:\/\/[^\s<>\'\"()]+)", re.IGNORECASE
+		r"((?:https?://|www\.)"
+		r"(?:[^\s<>'\"()&]|&(?!gt;|quot;))+" 
+		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
+		re.IGNORECASE
 	)
 
 	def replace_url(match):
-		u = match.group(0)
-		# Remove surrounding punctuation
-		u_stripped = u.rstrip('.,;:!?()[]{}<>\'"')
-		u_stripped = re.sub('<[^<]+?>', '', u_stripped)
-		link = f'<a href="{u_stripped}"><span style="{style_str}">{u_stripped}</span></a>'
-		return link
+		full_match = match.group(0)
+		
+		# 1. Identify the actual URL and the trailing punctuation
+		u_visible = full_match.rstrip('.,;:!?')
+		trailing_punctuation = full_match[len(u_visible):] # Capture what was stripped
+	
+		# 2. Handle the specific edge case for trailing slashes before tags
+		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
+			trailing_punctuation = '/' + trailing_punctuation
+			u_visible = u_visible[:-1]
 
-	# Replace URLs with links
-	txt = re.sub(url_pattern, replace_url, html.unescape(txt))
-	return txt
+		# 3. Format the href
+		href = u_visible
+		if not href.lower().startswith(('http://', 'https://')):
+			href = 'http://' + href
 
-# def inject_www_links(txt,style):
+		# 4. Return the link PLUS the punctuation outside the tag
+		return f'<a href="{href}" style="{style_str}">{u_visible}</a>{trailing_punctuation}'
 
+	return re.sub(url_pattern, replace_url, txt)
+
+# def inject_www_links(txt, style):
 # 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
-# 		background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
-# 		style = f"color:{foreground};"
+# 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+# 		style_str = f"color:{foreground};"
 # 	else:
-# 		style = style["hyperlink"]
+# 		style_str = style["hyperlink"]
 
-# 	search_for_urls = r"(https?:\/\/[a-zA-Z0-9\-\.]+(?:\.[a-zA-Z]{2,6})(?::[0-9]{1,5})?(?:\/([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]*))?(?:#([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\%]+))?)"
-# 	found_urls = re.finditer(search_for_urls, html.unescape(txt))
-# 	urls = [match.group(0).rstrip('.,;:!?()[]{}<>\'"').lstrip('.,;:!?()[]{}<>\'"') for match in found_urls]
+# 	url_pattern = re.compile(
+# 		r"((?:https?://|www\.)"
+# 		r"(?:[^\s<>'\"()&]|&(?!gt;|quot;))+" 
+# 		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
+# 		re.IGNORECASE
+# 	)
 
-# 	for u in urls:
-# 		u = re.sub('<[^<]+?>', '', u)
-# 		link = f"<a href=\"{u}\"><span style=\"{style}\">{u}</span></a>"
-# 		txt = txt.replace(u,link)
-# 	return txt
+# 	def replace_url(match):
+# 		u = match.group(0)
+		
+# 		u_visible = u.rstrip('.,;:!?')
+	
+# 		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
+# 			u_visible = u_visible[:-1]
+
+# 		href = u_visible
+# 		if not href.lower().startswith(('http://', 'https://')):
+# 			href = 'http://' + href
+
+# 		return f'<a href="{href}" style="{style_str}">{u_visible}</a>'
+
+# 	return re.sub(url_pattern, replace_url, txt)
 
 def convert_irc_color_to_html(text, style):
 	background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])

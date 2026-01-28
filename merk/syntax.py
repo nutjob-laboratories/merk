@@ -439,13 +439,13 @@ class IRCFullHighlighter(QSyntaxHighlighter):
 	def highlightBlock(self, text):
 		pattern = r"\x03(\d{1,2})?(?:,(\d{1,2}))?|[\x02\x1d\x1f\x1e\x0f]"
 		color_re = QRegularExpression(pattern)
-		i = color_re.globalMatch(text)
+		match_iterator = color_re.globalMatch(text)
 		
 		current_format = QTextCharFormat()
 		last_pos = 0
 
-		while i.hasNext():
-			match = i.next()
+		while match_iterator.hasNext():
+			match = match_iterator.next()
 			start = match.capturedStart()
 			length = match.capturedLength()
 			token = match.captured(0)
@@ -463,7 +463,8 @@ class IRCFullHighlighter(QSyntaxHighlighter):
 					current_format.setBackground(Qt.transparent)
 
 			elif token == "\x02": # Bold
-				current_format.setFontWeight(QFont.Normal if current_format.fontWeight() == QFont.Bold else QFont.Bold)
+				weight = QFont.Normal if current_format.fontWeight() == QFont.Bold else QFont.Bold
+				current_format.setFontWeight(weight)
 			
 			elif token == "\x1d": # Italics
 				current_format.setFontItalic(not current_format.fontItalic())
@@ -478,10 +479,14 @@ class IRCFullHighlighter(QSyntaxHighlighter):
 				current_format = QTextCharFormat()
 
 			hidden = QTextCharFormat()
-			hidden.setFontPointSize(1)
+			hidden.setBackground(current_format.background())
 			hidden.setForeground(Qt.transparent)
+			hidden.setFontPointSize(0.1) 
+			hidden.setFontLetterSpacing(0)
+			
 			self.setFormat(start, length, hidden)
 
 			last_pos = start + length
 
 		self.setFormat(last_pos, len(text) - last_pos, current_format)
+

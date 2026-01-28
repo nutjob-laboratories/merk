@@ -1366,17 +1366,17 @@ class Dialog(QDialog):
 		self.refreshTopics = True
 
 		if self.topicDisplay.isChecked():
-			self.topicBold.setEnabled(True)
 			self.channelName.setEnabled(True)
 			self.showBanlist.setEnabled(True)
 			self.showChanMenu.setEnabled(True)
 			self.channelCount.setEnabled(True)
+			self.channelTooltip.setEnabled(True)
 		else:
-			self.topicBold.setEnabled(False)
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
 			self.showChanMenu.setEnabled(False)
 			self.channelCount.setEnabled(False)
+			self.channelTooltip.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -3351,10 +3351,6 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
 		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
 
-		self.topicBold = QCheckBox("Show topic in bold",self)
-		if config.CHANNEL_TOPIC_BOLD: self.topicBold.setChecked(True)
-		self.topicBold.stateChanged.connect(self.titleChange)
-
 		self.channelName = QCheckBox("Channel name/modes",self)
 		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
 		self.channelName.stateChanged.connect(self.topicChange)
@@ -3371,12 +3367,16 @@ class Dialog(QDialog):
 		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
 		self.channelCount.stateChanged.connect(self.topicChange)
 
+		self.channelTooltip = QCheckBox("Channel topic in tooltip",self)
+		if config.SHOW_TOPIC_IN_EDITOR_TOOLTIP: self.channelTooltip.setChecked(True)
+		self.channelTooltip.stateChanged.connect(self.topicChange)
+
 		if not config.SHOW_CHANNEL_TOPIC:
-			self.topicBold.setEnabled(False)
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
 			self.showChanMenu.setEnabled(False)
 			self.channelCount.setEnabled(False)
+			self.channelTooltip.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -3461,11 +3461,16 @@ class Dialog(QDialog):
 				self.elideAway.setEnabled(False)
 				self.elideHostmask.setEnabled(False)
 
-		chanButtonLayout = QFormLayout()
-		chanButtonLayout.setSpacing(2)
-		chanButtonLayout.addRow(self.channelName,self.channelCount)
-		chanButtonLayout.addRow(self.showChanMenu,self.showBanlist)
-		chanButtonLayout.addRow(self.topicBold)
+		chanButtonLayout2 = QFormLayout()
+		chanButtonLayout2.setSpacing(2)
+		chanButtonLayout2.addRow(self.channelName,self.channelCount)
+		chanButtonLayout2.addRow(self.showChanMenu,self.showBanlist)
+		chanButtonLayout2.addRow(self.channelTooltip)
+
+		chanButtonLayout = QHBoxLayout()
+		chanButtonLayout.addStretch()
+		chanButtonLayout.addLayout(chanButtonLayout2)
+		chanButtonLayout.addStretch()
 
 		ulistDisplay = QFormLayout()
 		ulistDisplay.setSpacing(2)
@@ -3677,10 +3682,15 @@ class Dialog(QDialog):
 		if config.SAVE_CONNECTION_HISTORY: self.saveHistory.setChecked(True)
 		self.saveHistory.stateChanged.connect(self.changedSetting)
 
+		self.notifyRepeated = QCheckBox("Notify on repeated failed reconnections",self)
+		if config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS: self.notifyRepeated.setChecked(True)
+		self.notifyRepeated.stateChanged.connect(self.changedSetting)
+
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(2)
 		csLayout.addWidget(self.askBeforeDisconnect)
 		csLayout.addWidget(self.notifyOnLostConnection)
+		csLayout.addWidget(self.notifyRepeated)
 		csLayout.addWidget(self.promptFail)
 		csLayout.addWidget(self.saveHistory)
 		csLayout.addWidget(self.showNetLinks)
@@ -5750,7 +5760,6 @@ class Dialog(QDialog):
 		config.QT_WINDOW_STYLE = self.qt_style
 		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
-		config.CHANNEL_TOPIC_BOLD = self.topicBold.isChecked()
 		config.SHOW_CHANNEL_NAME_AND_MODES = self.channelName.isChecked()
 		config.SHOW_BANLIST_MENU = self.showBanlist.isChecked()
 		config.SHOW_USERLIST = self.showUserlists.isChecked()
@@ -6007,6 +6016,8 @@ class Dialog(QDialog):
 		config.USE_IRC_COLORS_IN_INPUT = self.useIRCc.isChecked()
 		config.PLUGIN_UPTIME = self.plugUptime.isChecked()
 		config.ENABLE_BROWSER_COMMAND = self.enableBrowser.isChecked()
+		config.SHOW_TOPIC_IN_EDITOR_TOOLTIP = self.channelTooltip.isChecked()
+		config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = self.notifyRepeated.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

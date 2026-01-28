@@ -1527,21 +1527,24 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 		RECONNECTION_DELAY = config.RECONNECTION_DELAY
 
-		if self.kwargs["reconnected"]>0:
-			msg = f"There seems to be difficulty connecting to <b>{self.kwargs["server"]}:{self.kwargs["port"]}</b>. This may be caused by your Internet connection or your settings. You may wish to check your settings before attempting to reconnect.<br><br>Click <b>Ok</b> to continue trying to reconnect with your current settings, or <b>Cancel</b> to abort."
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText(msg)
-			msgBox.setWindowTitle("Connection lost")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+		if config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS:
+			if self.kwargs["reconnected"]>0:
+				msg = f"There seems to be difficulty connecting to <b>{self.kwargs["server"]}:{self.kwargs["port"]}</b>. This may be caused by your Internet connection or your settings. You may wish to check your settings before attempting to reconnect.<br><br>Click <b>Ok</b> to continue trying to reconnect with your current settings, or <b>Cancel</b> to abort."
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(CONNECT_ICON))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setText(msg)
+				msgBox.setWindowTitle("Connection lost")
+				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
-			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
-				return
-			else:
-				self.kwargs["reconnected"] = 0
-				RECONNECTION_DELAY = 0
+				rval = msgBox.exec()
+				if rval == QMessageBox.Cancel:
+					return
+				else:
+					self.kwargs["reconnected"] = 0
+					RECONNECTION_DELAY = 0
+		else:
+			self.kwargs["reconnected"] = 0
 
 		# If we're trying to exit the app without disconnecting
 		# to servers, the connection will be "lost" at some point.

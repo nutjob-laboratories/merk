@@ -52,7 +52,9 @@
 * Bugfix: if a reconnection fails without registration more than once, the user
   is notified about whether they want to keep attempting reconnects.
   Previously, this would result in a "spiral", where the client would keep
-  trying to reconnect indefinitely.
+  trying to reconnect indefinitely. This behavior can be turned off in
+  settings, if the user wants MERK to continue trying to connect without
+  interruption.
 * Bugfix: fixed the "Copy link location" entry in chat and server window
   context menus.
 * The topic display in channel windows now displays IRC colors. If markdown
@@ -62,6 +64,23 @@
   channel topic display.
 * Removed the option to toggle IRC colors from the settings menu. The toggle
   is now only in the settings dialog.
+* Bugfix: the IRC color/formatting stripping code occasionally stripped commas
+  from text. It no longer does.
+* The channel topic is now shown in the tooltip of the topic editor. This
+  behavior can be toggled in the settings dialog, on the channels page.
+* Changed the behavior of the topic editor: clicking on the topic editor now
+  moves the cursor to the end of the display instead of selecting the entire
+  topic.
+* Removed the option to display the channel topic in bold; channel topics in
+  the topic display will now ONLY show in normal weight.
+* Bugfix: changing the topic in the topic editor, for some reason, made the
+  system message notifying the user of the change in black bold, regardless of
+  the color settins. Colors are now stripped from the topic in this
+  notification, which makes the system message appear normal.
+* Bugfix: the message renderer should detect just about all URLs and turn them
+  into links if that option is enabled. Problems with links starting and ending
+  with certain punctuation marks broke some links, and this should be fixed.
+* Bugfix: IRC color code injection could strip < and > from input text.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

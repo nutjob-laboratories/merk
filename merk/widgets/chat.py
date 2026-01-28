@@ -2930,7 +2930,7 @@ class Window(QMainWindow):
 				self.buildInputOptionsMenu()
 
 			# Move focus back to the input widget
-			self.input.setFocus()
+			# self.input.setFocus()
 
 		return super(Window, self).resizeEvent(event)
 
@@ -3168,7 +3168,7 @@ class TopicEdit(QPlainTextEdit):
 		self.is_enabled = True
 
 		fm = self.fontMetrics()
-		self.setFixedHeight(fm.height()+8)
+		self.setFixedHeight(fm.height()+4)
 		self.setWordWrapMode(QTextOption.NoWrap)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -3178,11 +3178,6 @@ class TopicEdit(QPlainTextEdit):
 		self.verticalScrollBar().valueChanged.connect(self.lock_vertical_position)
 
 		self.highlighter = syntax.IRCFullHighlighter(self.document())
-
-		if config.CHANNEL_TOPIC_BOLD:
-			font = QFont()
-			font.setBold(True)
-			self.setFont(font)
 
 	def refresh(self):
 		self.setText(self.parent.channel_topic)
@@ -3212,13 +3207,13 @@ class TopicEdit(QPlainTextEdit):
 		if self.readyToEdit:
 			self.setText(self.parent.channel_topic)
 			self.setReadOnly(False)
-			self.selectAll()
+			self.moveCursor(QTextCursor.End)
 			self.readyToEdit = False
 
 	def focusOutEvent(self, e):
 		super().focusOutEvent(e)
 		self.setText(self.parent.channel_topic)
-
+		self.moveCursor(QTextCursor.Start)
 		self.readyToEdit = True
 		self.setReadOnly(True)
 
@@ -3251,6 +3246,14 @@ class TopicEdit(QPlainTextEdit):
 
 	def setText(self,text):
 		self.setPlainText(text)
+
+		if string_has_irc_formatting_codes(text):
+			text = strip_color(text)
+
+		if config.SHOW_TOPIC_IN_EDITOR_TOOLTIP:
+			self.setToolTip(strip_color(text))
+		else:
+			self.setToolTip('')
 
 class SpellTextEdit(QPlainTextEdit):
 

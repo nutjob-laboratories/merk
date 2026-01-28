@@ -438,11 +438,14 @@ def string_has_irc_formatting_codes(data):
 		if code in data: return True
 	return False
 
+
 def strip_color(text):
-	text = re.sub(r'[\x00-\x1F\x7F]', '', text)
 	text = re.sub(r'\x03(\d{0,2})(?:,(\d{0,2}))?', '', text)
-	text = re.sub(r'[,\d]+', '', text)
+	text = re.sub(r'[\x02\x1F\x1D\x1E\x0F]', '', text)
 	return text
+
+
+import re
 
 def inject_irc_colors(text, default_reset=True):
 	set_both_pattern = r'<(\d{1,2})\s*,\s*(\d{1,2})'
@@ -451,58 +454,51 @@ def inject_irc_colors(text, default_reset=True):
 
 	inside_color = False
 	color_set = False
-
 	result = []
-
 	last_index = 0
 
-	for match in re.finditer(
-		rf'{set_both_pattern}|{set_fg_pattern}|{reset_pattern}',
-		text
-	):
+	combined = rf'({set_both_pattern})|({set_fg_pattern})|({reset_pattern})'
+
+	for match in re.finditer(combined, text):
 		start, end = match.span()
 		result.append(text[last_index:start])
+		
 		token = match.group()
+		applied = False
 
-		if re.match(set_both_pattern, token):
-			fg_bg_match = re.match(set_both_pattern, token)
-			fg_str, bg_str = fg_bg_match.groups()
-			try:
-				fg_num = int(fg_str)
-				bg_num = int(bg_str)
-				# Validate IRC color range 0-15
-				if 0 <= fg_num <= 15 and 0 <= bg_num <= 15:
-					result.append(f'\x03{fg_num:02},{bg_num:02}')
-					inside_color = True
-					color_set = True
-				else:
-					# Invalid color range; strip the command (do not append anything)
-					pass
-			except ValueError:
-				# Malformed number; strip the command
-				pass
-		elif re.match(set_fg_pattern, token):
-			fg_match = re.match(set_fg_pattern, token)
-			fg_str = fg_match.group(1)
-			try:
-				fg_num = int(fg_str)
-				if 0 <= fg_num <= 15:
-					result.append(f'\x03{fg_num:02}')
-					inside_color = True
-					color_set = True
-				else:
-					# Invalid foreground color; strip
-					pass
-			except ValueError:
-				# Malformed number; strip
-				pass
-		elif re.match(reset_pattern, token):
+		if token.startswith('<'):
+			if '>' in text[end:]:
+				m_both = re.fullmatch(set_both_pattern, token)
+				if m_both:
+					try:
+						fg, bg = int(m_both.group(1)), int(m_both.group(2))
+						if 0 <= fg <= 15 and 0 <= bg <= 15:
+							result.append(f'\x03{fg:02},{bg:02}')
+							inside_color = True
+							color_set = True
+							applied = True
+					except (ValueError, IndexError): pass
+				
+				if not applied:
+					m_fg = re.fullmatch(set_fg_pattern, token)
+					if m_fg:
+						try:
+							fg = int(m_fg.group(1))
+							if 0 <= fg <= 15:
+								result.append(f'\x03{fg:02}')
+								inside_color = True
+								color_set = True
+								applied = True
+						except (ValueError, IndexError): pass
+
+		elif token == '>':
 			if inside_color:
 				result.append('\x0F')
 				inside_color = False
-			else:
-				# Reset command outside color context; remove or keep? Here, remove:
-				pass
+				applied = True
+
+		if not applied:
+			result.append(token)
 
 		last_index = end
 
@@ -511,7 +507,7 @@ def inject_irc_colors(text, default_reset=True):
 	if default_reset and color_set:
 		result.append('\x0F')
 
-	return ''.join(result)
+	return "".join(result)
 
 def markdown_to_irc(text):
 	BOLD = "\x02"
