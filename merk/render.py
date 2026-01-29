@@ -304,7 +304,6 @@ def render_message(message,style,client=None,no_padding=False):
 	# Message has been rendered, so return it
 	return output
 
-
 def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
@@ -322,54 +321,20 @@ def inject_www_links(txt, style):
 	def replace_url(match):
 		full_match = match.group(0)
 		
-		# 1. Identify the actual URL and the trailing punctuation
 		u_visible = full_match.rstrip('.,;:!?')
-		trailing_punctuation = full_match[len(u_visible):] # Capture what was stripped
+		trailing_punctuation = full_match[len(u_visible):]
 	
-		# 2. Handle the specific edge case for trailing slashes before tags
 		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
 			trailing_punctuation = '/' + trailing_punctuation
 			u_visible = u_visible[:-1]
 
-		# 3. Format the href
 		href = u_visible
 		if not href.lower().startswith(('http://', 'https://')):
 			href = 'http://' + href
 
-		# 4. Return the link PLUS the punctuation outside the tag
 		return f'<a href="{href}" style="{style_str}">{u_visible}</a>{trailing_punctuation}'
 
 	return re.sub(url_pattern, replace_url, txt)
-
-# def inject_www_links(txt, style):
-# 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
-# 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
-# 		style_str = f"color:{foreground};"
-# 	else:
-# 		style_str = style["hyperlink"]
-
-# 	url_pattern = re.compile(
-# 		r"((?:https?://|www\.)"
-# 		r"(?:[^\s<>'\"()&]|&(?!gt;|quot;))+" 
-# 		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
-# 		re.IGNORECASE
-# 	)
-
-# 	def replace_url(match):
-# 		u = match.group(0)
-		
-# 		u_visible = u.rstrip('.,;:!?')
-	
-# 		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
-# 			u_visible = u_visible[:-1]
-
-# 		href = u_visible
-# 		if not href.lower().startswith(('http://', 'https://')):
-# 			href = 'http://' + href
-
-# 		return f'<a href="{href}" style="{style_str}">{u_visible}</a>'
-
-# 	return re.sub(url_pattern, replace_url, txt)
 
 def convert_irc_color_to_html(text, style):
 	background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])

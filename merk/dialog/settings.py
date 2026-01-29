@@ -1650,11 +1650,11 @@ class Dialog(QDialog):
 		self.save()
 
 		if is_running_from_pyinstaller():
-			subprocess.Popen([sys.executable,sys.argv[0]])
+			subprocess.Popen([sys.executable] + ["-R"])
 			self.parent.close()
 			self.parent.app.exit()
 		else:
-			os.execl(sys.executable, sys.executable, sys.argv[0])
+			os.execl(sys.executable, sys.executable, sys.argv[0], "-R")
 			sys.exit()
 
 	def playSound(self):

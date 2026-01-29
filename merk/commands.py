@@ -4066,11 +4066,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					pass
 				else:
 					if is_running_from_pyinstaller():
-						subprocess.Popen([sys.executable,sys.argv[0]])
+						subprocess.Popen([sys.executable] + ["-R"])
 						self.parent.close()
 						self.parent.app.exit()
 					else:
-						os.execl(sys.executable, sys.executable, sys.argv[0])
+						os.execl(sys.executable, sys.executable, sys.argv[0], "-R")
 						sys.exit()
 				return True
 

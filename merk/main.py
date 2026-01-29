@@ -4356,11 +4356,11 @@ class Merk(QMainWindow):
 				config.DARK_MODE = True
 			config.save_settings(config.CONFIG_FILE)
 			if is_running_from_pyinstaller():
-				subprocess.Popen([sys.executable, sys.argv[0]])
+				subprocess.Popen([sys.executable] + ["-R"])
 				self.close()
 				app.exit()
 			else:
-				os.execl(sys.executable, sys.executable,sys.argv[0])
+				os.execl(sys.executable, sys.executable,sys.argv[0], "-R")
 
 	def settingsDoNotSave(self):
 		if self.donotsave:

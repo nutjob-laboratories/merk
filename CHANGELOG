@@ -98,12 +98,14 @@
   that MERK uses for IRC color input on editing. If IRC color input is not
   turned on, the topic will be stripped of color before editing.
 * The dark mode text style is now clearly marked in the text style editor.
-* Bugfix: restarting MERK from within the app no longer passes any command-line
-  arguments along to the new process.
+* Bugfix: restarting MERK from within the app no longer passes any user provided
+  command-line arguments along to the new process. The -R,--run command-line
+  argument is passed to the new process.
 * Bugfix: servers are no longer saved to the connection history unless they
-  have been connected to at least once.
-* Bugfix: restarting MERK on Linux could cause a "Connection failed" error,
-  with the name of the MERK executable as the server. This no longer occurs.
+  have been connected to at least once. Occasionally, application arguments
+  could have been saved as potential servers in user history in some edge
+  cases.
+* Bugfix: restarting MERK under PyInstaller on Linux now functions correctly.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
