@@ -100,6 +100,10 @@
 * The dark mode text style is now clearly marked in the text style editor.
 * Bugfix: restarting MERK from within the app no longer passes any command-line
   arguments along to the new process.
+* Bugfix: servers are no longer saved to the connection history unless they
+  have been connected to at least once.
+* Bugfix: restarting MERK on Linux could cause a "Connection failed" error,
+  with the name of the MERK executable as the server. This no longer occurs.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

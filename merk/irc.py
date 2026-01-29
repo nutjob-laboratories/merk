@@ -1330,7 +1330,6 @@ class IRC_Connection(irc.IRCClient):
 			# config file
 			if hasattr(self,'network'):
 				if self.network:
-
 					if not self.gui.donotsave:
 						user_history = list(user.HISTORY)
 
@@ -1475,6 +1474,8 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 
 	def clientConnectionFailed(self, connector, reason):
 
+		if os.path.isfile(self.kwargs["server"]): return
+
 		config.load_settings(config.CONFIG_FILE)
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
@@ -1611,6 +1612,8 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 					reactor.connectTCP(self.kwargs["server"],self.kwargs["port"],bot)
 
 	def clientConnectionFailed(self, connector, reason):
+
+		if os.path.isfile(self.kwargs["server"]): return
 
 		config.load_settings(config.CONFIG_FILE)
 
