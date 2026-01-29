@@ -1474,7 +1474,10 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 
 	def clientConnectionFailed(self, connector, reason):
 
-		if os.path.isfile(self.kwargs["server"]): return
+		if os.path.realpath(self.kwargs["server"]) == os.path.realpath(__file__): return
+
+		if is_running_from_pyinstaller():
+			if self.kwargs["server"] == sys.executable: return
 
 		config.load_settings(config.CONFIG_FILE)
 		
