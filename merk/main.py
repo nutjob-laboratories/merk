@@ -2034,10 +2034,11 @@ class Merk(QMainWindow):
 		w = self.MDI.activeSubWindow()
 		if w:
 			c = w.widget()
-			if c.client == client:
-				t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
-				c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				wid = c.subwindow_id
+			if hasattr(c,"client"):
+				if c.client == client:
+					t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
+					c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					wid = c.subwindow_id
 
 		# Write a notification to the server window,
 		# but *only* if the current window is *not*
@@ -2068,11 +2069,8 @@ class Merk(QMainWindow):
 							c.setTopic(newTopic)
 							w = c
 							if user!='':
-								if nick==client.nickname:
-									mnewTopic = strip_color(newTopic)
-								else:
-									mnewTopic = newTopic
-								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+mnewTopic+"\"")
+								stripped_topic = strip_color(newTopic)
+								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+stripped_topic+"\"")
 								c.writeText(t,config.LOG_CHANNEL_TOPICS)
 		plugins.call(self,"topic",client=client,user=user,channel=channel,topic=newTopic,window=w)
 		self.buildWindowbar()
@@ -2907,7 +2905,10 @@ class Merk(QMainWindow):
 		for window in self.MDI.subWindowList():
 			c = window.widget()
 			if hasattr(c,"default_style"):
-				c.default_style = styles.loadDefault()
+				if self.dark_mode:
+					c.default_style = styles.loadDarkDefault()
+				else:
+					c.default_style = styles.loadDefault()
 			if hasattr(c,"applyStyle"):
 				c.applyStyle()
 		if is_deleted(w)==False:
@@ -4355,11 +4356,11 @@ class Merk(QMainWindow):
 				config.DARK_MODE = True
 			config.save_settings(config.CONFIG_FILE)
 			if is_running_from_pyinstaller():
-				subprocess.Popen([sys.executable,*sys.argv])
+				subprocess.Popen([sys.executable, sys.argv[0]])
 				self.close()
 				app.exit()
 			else:
-				os.execl(sys.executable, sys.executable, *sys.argv)
+				os.execl(sys.executable, sys.executable,sys.argv[0])
 
 	def settingsDoNotSave(self):
 		if self.donotsave:

@@ -74,7 +74,11 @@ class Window(QMainWindow):
 		self.parent = parent
 
 		self.subwindow_id = str(uuid.uuid4())
-		self.default_style = styles.loadDefault()
+
+		if self.parent.dark_mode:
+			self.default_style = styles.loadDarkDefault()
+		else:
+			self.default_style = styles.loadDefault()
 
 		self.uptime = 0
 
@@ -953,7 +957,12 @@ class Window(QMainWindow):
 
 	def chatMenu(self,location):
 
-		menu = self.chat.createStandardContextMenu(location)
+		viewport_pos = self.chat.viewport().mapFrom(self.chat, location)
+		doc_pos = viewport_pos
+		doc_pos.setX(viewport_pos.x() + self.chat.horizontalScrollBar().value())
+		doc_pos.setY(viewport_pos.y() + self.chat.verticalScrollBar().value())
+
+		menu = self.chat.createStandardContextMenu(doc_pos)
 
 		if config.SHOW_CHAT_CONTEXT_MENUS:
 
@@ -963,29 +972,29 @@ class Window(QMainWindow):
 
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
-				entry = QAction(QIcon(CLEAR_ICON),"Clear log",self)
+				entry = QAction(QIcon(CLEAR_ICON),"Clear log",menu)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
-				self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",self)
+				self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",menu)
 				self.contextNick.triggered.connect(self.changeNick)
 				menu.addAction(self.contextNick)
 
-				self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",self)
+				self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",menu)
 				self.contextJoin.triggered.connect(self.joinChannel)
 				menu.addAction(self.contextJoin)
 
 				if config.SCRIPTING_ENGINE_ENABLED:
-					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
+					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
 					self.contextRun.triggered.connect(self.loadScript)
 					menu.addAction(self.contextRun)
 
 					hostid = self.client.server+":"+str(self.client.port)
-					entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+					entry = QAction(QIcon(EDIT_ICON),"Edit connection script",menu)
 					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
 					menu.addAction(entry)
 
@@ -994,18 +1003,18 @@ class Window(QMainWindow):
 						menu.addSeparator()
 
 				if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
-					self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",self)
+					self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",menu)
 					self.contextList.triggered.connect(self.showChannelList)
 					menu.addAction(self.contextList)
 
 				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
-					self.contextRefresh = QAction(QIcon(REFRESH_ICON),"Refresh channel list",self)
+					self.contextRefresh = QAction(QIcon(REFRESH_ICON),"Refresh channel list",menu)
 					self.contextRefresh.triggered.connect(self.refreshChannelList)
 					menu.addAction(self.contextRefresh)
 
 				menu.addSeparator()
 
-				entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",self)
+				entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",menu)
 				entry.triggered.connect(self.disconnect)
 				menu.addAction(entry)
 
@@ -1021,20 +1030,20 @@ class Window(QMainWindow):
 
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
-						entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
+						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
 				if config.SCRIPTING_ENGINE_ENABLED:
-					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",self)
+					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
 					self.contextRun.triggered.connect(self.loadScript)
 					menu.addAction(self.contextRun)
 
-				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
+				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",menu)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
-				entry = QAction(QIcon(LOG_ICON),"Save log",self)
+				entry = QAction(QIcon(LOG_ICON),"Save log",menu)
 				entry.triggered.connect(self.menuSaveLogs)
 				menu.addAction(entry)
 
@@ -1042,7 +1051,7 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
+				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",menu)
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
@@ -1056,10 +1065,9 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				entry = QAction(QIcon(CLOSE_ICON),"Close window",self)
+				entry = QAction(QIcon(CLOSE_ICON),"Close window",menu)
 				entry.triggered.connect(self.close)
 				menu.addAction(entry)
-
 
 		action = menu.exec_(self.chat.mapToGlobal(location))
 
@@ -1945,9 +1953,15 @@ class Window(QMainWindow):
 		if not config.FORCE_DEFAULT_STYLE:
 			if filename == None:
 				if self.window_type==SERVER_WINDOW:
-					self.style = styles.loadStyleServer(self.client)
+					if self.parent.dark_mode:
+						self.style = styles.loadDarkStyleServer(self.client)
+					else:
+						self.style = styles.loadStyleServer(self.client)
 				else:
-					self.style = styles.loadStyle(self.client,self.name)
+					if self.parent.dark_mode:
+						self.style = styles.loadDarkStyle(self.client,self.name)
+					else:
+						self.style = styles.loadStyle(self.client,self.name)
 			else:
 				s = styles.loadStyleFile(filename)
 				if s:
@@ -3205,9 +3219,13 @@ class TopicEdit(QPlainTextEdit):
 		super(QPlainTextEdit, self).mousePressEvent(e)
 		if not self.is_enabled: return
 		if self.readyToEdit:
-			self.setText(self.parent.channel_topic)
+			if config.USE_IRC_COLORS_IN_INPUT:
+				self.setText(decode_irc_colors(self.parent.channel_topic))
+			else:
+				self.setText(self.parent.channel_topic)
 			self.setReadOnly(False)
 			self.moveCursor(QTextCursor.End)
+			self.ensureCursorVisible()
 			self.readyToEdit = False
 
 	def focusOutEvent(self, e):
@@ -3220,6 +3238,7 @@ class TopicEdit(QPlainTextEdit):
 	def keyPressEvent(self, event):
 		if event.key() in (Qt.Key_Return, Qt.Key_Enter):
 			self.returnPressed.emit()
+			self.readyToEdit = True
 			event.accept()
 		else:
 			super().keyPressEvent(event)
@@ -3245,7 +3264,10 @@ class TopicEdit(QPlainTextEdit):
 		return self.toPlainText()
 
 	def setText(self,text):
-		self.setPlainText(text)
+		if config.IRC_COLOR_IN_TOPICS:
+			self.setPlainText(text)
+		else:
+			self.setPlainText(strip_color(text))
 
 		if string_has_irc_formatting_codes(text):
 			text = strip_color(text)

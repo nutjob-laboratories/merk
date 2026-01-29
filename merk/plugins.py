@@ -501,8 +501,14 @@ class Plugin():
 	def markdown(self,text):
 		return markdown_to_irc(text)
 
+	def unmarkdown(self,text):
+		return irc_to_markdown(text)
+
 	def color(self,text):
 		return inject_irc_colors(text)
+
+	def uncolor(self,text):
+		return decode_irc_colors(text)
 
 	def connect(self,server,port,password=None,ssl=False,reconnect=False):
 		commands.connect_to_irc(self._gui,None,server,port,password,ssl,reconnect)
@@ -820,7 +826,7 @@ BUILT_IN = [
 	'move', 'private', 'privates', 'resize', 'restore', 'script',
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
-	'browser', 'folder', 'current',
+	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
 ]
 
 def uninstall(obj):

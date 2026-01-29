@@ -163,3 +163,68 @@ server {
 
 raw {
 }"""
+
+DARK_DEFAULT_STYLE="""
+timestamp {
+	font-weight: bold;
+}
+
+username {
+	color: #73e1ff;
+	font-weight: bold;
+}
+
+private {
+	font-style: italic;
+	font-weight: bold;
+	color: #0000FF;
+}
+
+message {
+}
+
+system {
+	color: #FF8C00;
+	font-weight: bold;
+}
+
+self {
+	color: #ffdf6c;
+	font-weight: bold;
+}
+
+action {
+	color: #00ff00;
+	font-weight: bold;
+	font-style: italic;
+}
+
+notice {
+	color: #ffaaff;
+	font-weight: bold;
+}
+
+hyperlink {
+	color: #ffff06;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+all {
+	color: #ffffff;
+	background-color: #474747;
+}
+
+error {
+	color: #ff6767;
+	font-weight: bold;
+}
+
+server {
+	color: #00aaff;
+	font-weight: bold;
+}
+
+raw {
+}
+"""

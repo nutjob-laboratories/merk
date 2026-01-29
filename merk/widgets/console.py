@@ -59,7 +59,10 @@ class Window(QMainWindow):
 		self.title = title
 		self.force_close = False
 
-		self.style = styles.loadDefault()
+		if self.parent.dark_mode:
+			self.style = styles.loadDarkDefault()
+		else:
+			self.style = styles.loadDefault()
 		self.log = []
 
 		self.window_type = PLUGIN_CONSOLE

@@ -61,7 +61,10 @@ class Dialog(QDialog):
 		self.style['server'] = self.server_style.exportQss()
 
 		if self.default:
-			styles.saveDefault(self.style)
+			if self.parent.dark_mode:
+				styles.saveDarkDefault(self.style)
+			else:
+				styles.saveDefault(self.style)
 			self.parent.reApplyStyle()
 		else:
 			self.saveStyle()
@@ -82,7 +85,10 @@ class Dialog(QDialog):
 		self.style['server'] = self.server_style.exportQss()
 
 		if self.default:
-			styles.saveDefault(self.style)
+			if self.parent.dark_mode:
+				styles.saveDarkDefault(self.style)
+			else:
+				styles.saveDefault(self.style)
 		else:
 			if self.wchat.window_type==SERVER_WINDOW:
 				styles.saveStyle(self.client,self.wchat.name,self.style,True)
@@ -168,7 +174,10 @@ class Dialog(QDialog):
 				self.chat.append(t)
 
 	def loadDefault(self):
-		self.style = styles.read_style_file('',DEFAULT_STYLE)
+		if self.parent.dark_mode:
+			self.style = styles.read_style_file('',DARK_DEFAULT_STYLE)
+		else:
+			self.style = styles.read_style_file('',DEFAULT_STYLE)
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 		self.system_style.setQss(self.style['system'])
@@ -193,7 +202,10 @@ class Dialog(QDialog):
 			self.chat.append(t)
 
 	def loadDefault2(self):
-		self.style = styles.loadDefault()
+		if self.parent.dark_mode:
+			self.style = styles.loadDarkDefault()
+		else:
+			self.style = styles.loadDefault()
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 		self.system_style.setQss(self.style['system'])
@@ -224,8 +236,12 @@ class Dialog(QDialog):
 		show_userlist = True
 
 		if self.selected_window==None:
-			self.style = styles.loadDefault()
-			self.setWindowTitle("Default text style")
+			if self.parent.dark_mode:
+				self.style = styles.loadDarkDefault()
+				self.setWindowTitle("Default dark mode text style")
+			else:
+				self.style = styles.loadDefault()
+				self.setWindowTitle("Default text style")
 			self.default = True
 		else:
 			self.wchat = self.selected_window
@@ -283,8 +299,12 @@ class Dialog(QDialog):
 		self.simple = simple
 
 		if default:
-			self.style = styles.loadDefault()
-			self.setWindowTitle("Default text style")
+			if self.parent.dark_mode:
+				self.style = styles.loadDarkDefault()
+				self.setWindowTitle("Default dark mode text style")
+			else:
+				self.style = styles.loadDefault()
+				self.setWindowTitle("Default text style")
 		else:
 			self.style = self.wchat.style
 			if self.wchat.window_type==SERVER_WINDOW:
@@ -459,7 +479,10 @@ class Dialog(QDialog):
 		self.selectWindow = QComboBox(self)
 		addedDefault = False
 		if self.wchat==None:
-			self.selectWindow.addItem("Default text style",None)
+			if self.parent.dark_mode:
+				self.selectWindow.addItem("Default dark mode text style",None)
+			else:
+				self.selectWindow.addItem("Default text style",None)
 			addedDefault = True
 		else:
 			if self.wchat.window_type==SERVER_WINDOW:
@@ -470,7 +493,11 @@ class Dialog(QDialog):
 				else:
 					name = f"{self.wchat.name} ({self.wchat.client.server}:{self.wchat.client.port})"
 			self.selectWindow.addItem(name,self.wchat)
-		if not addedDefault: self.selectWindow.addItem("Default text style",None)
+		if not addedDefault:
+			if self.parent.dark_mode:
+				self.selectWindow.addItem("Default dark mode text style",None)
+			else:
+				self.selectWindow.addItem("Default text style",None)
 		for e in self.parent.getAllAllConnectedWindows():
 			if e != self.wchat:
 				if e.window_type==SERVER_WINDOW:

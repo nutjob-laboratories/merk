@@ -438,14 +438,37 @@ def string_has_irc_formatting_codes(data):
 		if code in data: return True
 	return False
 
-
 def strip_color(text):
 	text = re.sub(r'\x03(\d{0,2})(?:,(\d{0,2}))?', '', text)
 	text = re.sub(r'[\x02\x1F\x1D\x1E\x0F]', '', text)
 	return text
 
+def decode_irc_colors(text):
+	combined_pattern = re.compile(r'\x03(\d{1,2})(?:,(\d{1,2}))?|\x0F')
+	
+	result = []
+	last_index = 0
 
-import re
+	for match in combined_pattern.finditer(text):
+		start, end = match.span()
+		result.append(text[last_index:start])
+
+		if match.group(0).startswith('\x03'):
+			fg = match.group(1)
+			bg = match.group(2)
+			if bg:
+				result.append(f'<{int(fg)},{int(bg)}')
+			else:
+				result.append(f'<{int(fg)}')
+		elif match.group(0) == '\x0F':
+			if end < len(text):
+				result.append('>')
+
+		last_index = end
+
+	result.append(text[last_index:])
+
+	return ''.join(result)
 
 def inject_irc_colors(text, default_reset=True):
 	set_both_pattern = r'<(\d{1,2})\s*,\s*(\d{1,2})'
@@ -508,6 +531,52 @@ def inject_irc_colors(text, default_reset=True):
 		result.append('\x0F')
 
 	return "".join(result)
+
+def irc_to_markdown(text):
+	BOLD = "\x02"
+	ITALIC = "\x1D"
+	UNDERLINE = "\x1F"
+	STRIKETHROUGH = "\x1E"
+	RESET = "\x0F"
+
+	code_to_marker = {
+		BOLD: "**",
+		ITALIC: "*",
+		STRIKETHROUGH: "~",
+		UNDERLINE: "__"
+	}
+
+	output = []
+	active_stack = []
+	
+	i = 0
+	while i < len(text):
+		char = text[i]
+
+		if char in code_to_marker:
+			marker = code_to_marker[char]
+			if marker in active_stack:
+				while active_stack:
+					popped = active_stack.pop()
+					output.append(popped)
+					if popped == marker:
+						break
+			else:
+				# Open new format
+				output.append(marker)
+				active_stack.append(marker)
+		
+		elif char == RESET:
+			while active_stack:
+				output.append(active_stack.pop())
+		
+		else:
+			if char in ('*', '_', '~'):
+				output.append('\\')
+			output.append(char)
+		i += 1
+
+	return ''.join(output)
 
 def markdown_to_irc(text):
 	BOLD = "\x02"

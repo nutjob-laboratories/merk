@@ -397,9 +397,11 @@ PLUGIN_UPTIME = True
 ENABLE_BROWSER_COMMAND = True
 SHOW_TOPIC_IN_EDITOR_TOOLTIP = True
 NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = True
+IRC_COLOR_IN_TOPICS = True
 
 def build_settings():
 	settings = {
+		"display_irc_colors_in_topics": IRC_COLOR_IN_TOPICS,
 		"notify_on_repeated_failed_reconnections": NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS,
 		"show_channel_topic_in_tooltip": SHOW_TOPIC_IN_EDITOR_TOOLTIP,
 		"enable_browser_command": ENABLE_BROWSER_COMMAND,
@@ -763,6 +765,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "display_irc_colors_in_topics" in settings:
+		settings["display_irc_colors_in_topics"] = IRC_COLOR_IN_TOPICS
 	if not "notify_on_repeated_failed_reconnections" in settings:
 		settings["notify_on_repeated_failed_reconnections"] = NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS
 	if not "show_channel_topic_in_tooltip" in settings:
@@ -1841,6 +1845,7 @@ def load_settings(filename):
 	global ENABLE_BROWSER_COMMAND
 	global SHOW_TOPIC_IN_EDITOR_TOOLTIP
 	global NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS
+	global IRC_COLOR_IN_TOPICS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1850,6 +1855,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		IRC_COLOR_IN_TOPICS = settings["display_irc_colors_in_topics"]
 		NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = settings["notify_on_repeated_failed_reconnections"]
 		SHOW_TOPIC_IN_EDITOR_TOOLTIP = settings["show_channel_topic_in_tooltip"]
 		ENABLE_BROWSER_COMMAND = settings["enable_browser_command"]

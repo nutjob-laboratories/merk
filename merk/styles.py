@@ -34,6 +34,7 @@ from .resources import *
 CONFIG_DIRECTORY = None
 STYLE_DIRECTORY = None
 STYLE_FILE = None
+DARK_STYLE_FILE = None
 
 def loadStyleFile(filename):
 	if os.path.isfile(filename):
@@ -78,8 +79,14 @@ def saveStyle(client,channel,style,is_server_window=False):
 def saveDefault(style):
 	write_style_file(style,STYLE_FILE)
 
+def saveDarkDefault(style):
+	write_style_file(style,DARK_STYLE_FILE)
+
 def loadDefault():
 	return read_style_file(STYLE_FILE)
+
+def loadDarkDefault():
+	return read_style_file(DARK_STYLE_FILE)
 
 def loadStyleServer(client):
 	fname = os.path.join(STYLE_DIRECTORY,encodeStyleNameServer(client.server,client.port))
@@ -88,6 +95,14 @@ def loadStyleServer(client):
 		return read_style_file(fname)
 	else:
 		return read_style_file(STYLE_FILE)
+
+def loadDarkStyleServer(client):
+	fname = os.path.join(STYLE_DIRECTORY,encodeStyleNameServer(client.server,client.port))
+
+	if os.path.isfile(fname):
+		return read_style_file(fname)
+	else:
+		return read_style_file(DARK_STYLE_FILE)
 
 def loadPalette(name):
 	fname = os.path.join(STYLE_DIRECTORY,name+".palette")
@@ -111,6 +126,21 @@ def loadStyle(client,channel):
 		return read_style_file(fname)
 	else:
 		return read_style_file(STYLE_FILE)
+
+def loadDarkStyle(client,channel):
+
+	if hasattr(client,"network"):
+		starter = client.network
+	else:
+		starter = client.server+"-"+str(client.port)
+
+	fname = encodeStyleName(starter,channel)
+	fname = os.path.join(STYLE_DIRECTORY,fname)
+
+	if os.path.isfile(fname):
+		return read_style_file(fname)
+	else:
+		return read_style_file(DARK_STYLE_FILE)
 
 def parseColor(style):
 		text_color = "#000000"
@@ -141,6 +171,7 @@ def initialize(directory,directory_name):
 	global CONFIG_DIRECTORY
 	global STYLE_DIRECTORY
 	global STYLE_FILE
+	global DARK_STYLE_FILE
 
 	# If the passed directory is set to None,
 	# set the storage directory to the user's
@@ -154,13 +185,21 @@ def initialize(directory,directory_name):
 	STYLE_DIRECTORY = os.path.join(CONFIG_DIRECTORY,"styles")
 	if not os.path.isdir(STYLE_DIRECTORY): os.mkdir(STYLE_DIRECTORY)
 
-	STYLE_FILE = os.path.join(STYLE_DIRECTORY, "default.style")
+	STYLE_FILE = os.path.join(STYLE_DIRECTORY, "light.style")
 
 	# Check to see if the default file exists
 	if not os.path.isfile(STYLE_FILE):
 		# The file doesn't exist, so create it
 		style = read_style_file('',DEFAULT_STYLE)
 		write_style_file(style,STYLE_FILE)
+
+	DARK_STYLE_FILE = os.path.join(STYLE_DIRECTORY, "dark.style")
+
+	# Check to see if the default file exists
+	if not os.path.isfile(DARK_STYLE_FILE):
+		# The file doesn't exist, so create it
+		style = read_style_file('',DARK_DEFAULT_STYLE)
+		write_style_file(style,DARK_STYLE_FILE)
 
 	# Check to see if the dark palette exists, and
 	# if not, create it

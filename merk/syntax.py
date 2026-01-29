@@ -71,7 +71,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'.min', '.alias', '.bind', '.unbind', '.macro', '.move', '.emojize',
 					'.resize', '.id', '.console', '.unmacro', '.asciimojize',
 					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
-					'.browser', '.folder', '.current',
+					'.browser', '.folder', '.current', '.uncolor', '.unmarkdown',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 

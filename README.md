@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.400">MERK 0.051.400</a></big></b><br>
-  <b>Current development version: 0.051.432</b><br><br>
+  <b>Current development version: 0.051.436</b><br><br>
   <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Buy me a coffee!</a></b><br>
 </p>
@@ -33,14 +33,14 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.400 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.400)  |
-| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.432 (12.68 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Linux Executable | [Download MERK 0.051.432 (104.37 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.432 (49.61 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.432 (46.71 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.436 (12.69 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Linux Executable | [Download MERK 0.051.436 (104.37 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.436 (49.61 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.436 (46.72 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.432**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** can has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.436**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** can has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
@@ -108,21 +108,6 @@ There are four libraries that comes bundled with **MERK**:
 - Features include...
     - Extensive command-line options
     - Dark mode
-    - Plugins
-      - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf)
-      - Plugins are written in Python, and have access to everything that Python has
-        - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK** ([Twisted](https://twistedmatrix.com/trac/), [PyQt5](https://pypi.org/project/PyQt5/), [pyspellchecker](https://github.com/barrust/pyspellchecker), [emoji](https://github.com/carpedm20/emoji), and [pike](https://github.com/pyarmory/pike)), as well as [Python's standard library](https://docs.python.org/3/library/index.html)
-      - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
-      - Plugins can react to most IRC events
-        - 40 different IRC and application events
-        - Individual plugin events can be enabled and disabled in the "Settings" dialog
-        - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command
-      - Plugins can be created and edited directly in the application
-        - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting, auto-indentation, and code generators for all events
-        - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**
-        - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples)
-      - Plugins can be installed by [drag-and-drop](https://en.wikipedia.org/wiki/Drag_and_drop), with the plugin manager, or from the command-line
-      - Plugins can be uninstalled with the plugin manager, from the command-line, or by simply deleting the plugin's file(s)
     -   Full scripting engine
         - Includes a built in script editor, with command generators and syntax highlighting
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
@@ -150,6 +135,7 @@ There are four libraries that comes bundled with **MERK**:
         - Styles are saved and loaded automatically
         - Easy to use GUI text style editor is built-in
         - Changes to text style are immediate, without having to restart
+        - Default text styles for both dark and normal mode
     -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, German, Portuguese, Italian, Dutch, and Russian)
     -   Autocomplete for commands, nicknames, channels, and more
     -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
@@ -161,16 +147,33 @@ There are four libraries that comes bundled with **MERK**:
         -   Built-in autocomplete for all supported ASCIImojis
         -   A list of supported ASCIImoji shortcodes can be found [here](https://asciimoji.com/)
     -   Full IRC color support
+        - IRC colors are shown in topics in the channel information display
         - Colors and formatting can be optionally stripped from display
         - If colors and formatting in input are stripped from display, they will still be sent to the server.
     - Markdown support for formatting messages with IRC control codes
         - Messages can use the *italics*, **bold**, ~~strikethrough~~, and <u>underline</u> markdown tags
     - Inject [IRC colors](https://www.mirc.com/colors.html) into input with plain text
         - Open a color block with `<NUMBER` to set the foreground color, and `<NUMBER,NUMBER` to set the foreground and background colors, and close the color block with `>`.
+    - Plugins
+      - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf)
+      - Plugins are written in Python, and have access to everything that Python has
+        - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK** ([Twisted](https://twistedmatrix.com/trac/), [PyQt5](https://pypi.org/project/PyQt5/), [pyspellchecker](https://github.com/barrust/pyspellchecker), [emoji](https://github.com/carpedm20/emoji), and [pike](https://github.com/pyarmory/pike)), as well as [Python's standard library](https://docs.python.org/3/library/index.html)
+      - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
+      - Plugins can react to most IRC events
+        - 40 different IRC and application events
+        - Individual plugin events can be enabled and disabled in the "Settings" dialog
+        - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command
+      - Plugins can be created and edited directly in the application
+        - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting, auto-indentation, and code generators for all events
+        - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**
+        - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples)
+      - Plugins can be installed by [drag-and-drop](https://en.wikipedia.org/wiki/Drag_and_drop), with the plugin manager, or from the command-line
+      - Plugins can be uninstalled with the plugin manager, from the command-line, or by simply deleting the plugin's file(s)
+
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.051.400), and may reflect the current development version (0.051.432). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.400), and may reflect the current development version (0.051.436). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
@@ -450,6 +453,8 @@ Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetric
 
  - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for **MERK**. I'm doing my best, here, but I'm a computer programmer, not an artist!
  - **Packaging**. **MERK** now has [PyInstaller](https://www.pyinstaller.org/)-based distributions for both Windows and Linux! I'd love to provide a `pip` package, or a [Flatpak](https://flatpak.org/)-based distribution, but I don't have much or any experience with these. Help would be awesome!
+ - **Proxy server support**. I'd like MERK to support connecting through proxy servers! My wishlist is to support SOCKS4/5 and HTTP, but I'm open to anything!
+ - **SASL support**. I'm having trouble getting this working with Twisted. Can anyone help?
  - **DCC chat and file transfers**. The DCC  functionality in Twisted is undocumented, and I'll be honest, I can't make heads or tails of it. I'd love to be able to add this functionality to **MERK**, but I need help!
  - **Using MERK and giving me feedback**. Let me know what you love about **MERK** and what you hate about **MERK**! Got ideas for ways you'd like to customize the client? Features you'd like? Let me know! I can't guarantee that I'll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using **MERK**!
 

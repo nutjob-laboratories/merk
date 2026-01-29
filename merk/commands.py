@@ -4051,7 +4051,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='restart':
 
-				msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any connected servers, and\nrestart using the same command-line used to start {APPLICATION_NAME}."
+				msg = f"Restart {APPLICATION_NAME}?\n\n{APPLICATION_NAME} will disconnect from any connected servers, and\nrestart without any command-line arguments."
 
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(QUIT_ICON))
@@ -4066,11 +4066,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					pass
 				else:
 					if is_running_from_pyinstaller():
-						subprocess.Popen([sys.executable,*sys.argv])
+						subprocess.Popen([sys.executable,sys.argv[0]])
 						self.parent.close()
 						self.parent.app.exit()
 					else:
-						os.execl(sys.executable, sys.executable, *sys.argv)
+						os.execl(sys.executable, sys.executable, sys.argv[0])
 						sys.exit()
 				return True
 

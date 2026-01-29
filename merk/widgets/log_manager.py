@@ -380,7 +380,10 @@ class Window(QMainWindow):
 		self.private_file = self.private_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
 		self.blank_file = self.blank_file.scaled(icon_size, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
 
-		self.style = styles.loadDefault()
+		if self.parent.dark_mode:
+			self.style = styles.loadDarkDefault()
+		else:
+			self.style = styles.loadDefault()
 
 		self.packlist = QListWidget(self)
 

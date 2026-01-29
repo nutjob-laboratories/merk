@@ -1371,12 +1371,14 @@ class Dialog(QDialog):
 			self.showChanMenu.setEnabled(True)
 			self.channelCount.setEnabled(True)
 			self.channelTooltip.setEnabled(True)
+			self.channelColors.setEnabled(True)
 		else:
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
 			self.showChanMenu.setEnabled(False)
 			self.channelCount.setEnabled(False)
 			self.channelTooltip.setEnabled(False)
+			self.channelColors.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -1648,11 +1650,11 @@ class Dialog(QDialog):
 		self.save()
 
 		if is_running_from_pyinstaller():
-			subprocess.Popen([sys.executable,*sys.argv])
+			subprocess.Popen([sys.executable,sys.argv[0]])
 			self.parent.close()
 			self.parent.app.exit()
 		else:
-			os.execl(sys.executable, sys.executable, *sys.argv)
+			os.execl(sys.executable, sys.executable, sys.argv[0])
 			sys.exit()
 
 	def playSound(self):
@@ -3367,9 +3369,13 @@ class Dialog(QDialog):
 		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
 		self.channelCount.stateChanged.connect(self.topicChange)
 
-		self.channelTooltip = QCheckBox("Channel topic in tooltip",self)
+		self.channelTooltip = QCheckBox("Topic in tooltip",self)
 		if config.SHOW_TOPIC_IN_EDITOR_TOOLTIP: self.channelTooltip.setChecked(True)
 		self.channelTooltip.stateChanged.connect(self.topicChange)
+
+		self.channelColors = QCheckBox("IRC colors in topics",self)
+		if config.IRC_COLOR_IN_TOPICS: self.channelColors.setChecked(True)
+		self.channelColors.stateChanged.connect(self.topicChange)
 
 		if not config.SHOW_CHANNEL_TOPIC:
 			self.channelName.setEnabled(False)
@@ -3377,6 +3383,7 @@ class Dialog(QDialog):
 			self.showChanMenu.setEnabled(False)
 			self.channelCount.setEnabled(False)
 			self.channelTooltip.setEnabled(False)
+			self.channelColors.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -3465,7 +3472,7 @@ class Dialog(QDialog):
 		chanButtonLayout2.setSpacing(2)
 		chanButtonLayout2.addRow(self.channelName,self.channelCount)
 		chanButtonLayout2.addRow(self.showChanMenu,self.showBanlist)
-		chanButtonLayout2.addRow(self.channelTooltip)
+		chanButtonLayout2.addRow(self.channelTooltip,self.channelColors)
 
 		chanButtonLayout = QHBoxLayout()
 		chanButtonLayout.addStretch()
@@ -6018,6 +6025,7 @@ class Dialog(QDialog):
 		config.ENABLE_BROWSER_COMMAND = self.enableBrowser.isChecked()
 		config.SHOW_TOPIC_IN_EDITOR_TOOLTIP = self.channelTooltip.isChecked()
 		config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = self.notifyRepeated.isChecked()
+		config.IRC_COLOR_IN_TOPICS = self.channelColors.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
