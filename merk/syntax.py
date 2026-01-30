@@ -72,6 +72,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'.resize', '.id', '.console', '.unmacro', '.asciimojize',
 					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
 					'.browser', '.folder', '.current', '.uncolor', '.unmarkdown',
+					'.markup','.unmarkup'
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
@@ -280,6 +281,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"_trace",
 			cmdsymbol+"browser",
 			cmdsymbol+"folder",
+			cmdsymbol+"window fullscreen",
 		]
 
 		script_only = [

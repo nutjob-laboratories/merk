@@ -73,8 +73,8 @@
   into links if that option is enabled. Problems with links starting and ending
   with certain punctuation marks broke some links.
 * Bugfix: IRC color code injection could strip < and > from input text.
-* IRC colors in the channel topic editor can now be toggled in the settings
-  dialog.
+* IRC color display in the channel topic editor can now be toggled in the
+  settings dialog.
 * Dark mode now has its own default text style that is separate from the light
   mode default style. When the user is in dark mode, editing that style will
   only change the default dark mode style, not the light mode style, and it
@@ -93,8 +93,8 @@
   could have been saved as potential servers in user history in some edge
   cases.
 * Bugfix: restarting MERK under PyInstaller on Linux now functions correctly.
-* Bugfix: emoji shortcodes, ASCIImoji shortcodes, and aliases are now injected
-  into text entered into the topic editor.
+* Bugfix: emoji shortcodes, ASCIImojis, and aliases are now injected into text
+  entered into the topic editor.
 * Bugfix: messages with IRC color codes in them were rendered in the same text
   style as a raw message; this no longer occurs, and appropriate text styles
   are now applied.
@@ -104,9 +104,15 @@
   format; for example, if iRC colors are enabled in the display, they will be
   converted into the IRC color input format. The same will happen with markdown
   and emoji shortcodes. IRC color and formatting input, and emojis are ALWAYS
-  enabled on topics.
+  enabled on topics. ASCIImojis are not turned into ASCIImoji shortcodes, and
+  are just left in the topic text.
 * Activating a server, channel, or private chat subwindow sets focus on the
   text input widget immediately, instead of being slightly delayed.
+* The /fullscreen command has been removed, and had its functionality added to
+  the /window command.
+* Bugfix: text is now selectable in the topic editor.
+* Bugfix: fixed a crashing bug with selecting log saving intervals.
+* Added MansionNET to the internal network link list.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -136,6 +142,12 @@
 * New inherited method: unmarkdown(), which takes a string and converts any
   IRC text formatting codes in it and converts it into the same flavor of
   markdown used in the markdown input feature.
+* New inherited method: markup(), which takes a string with IRC color and
+  formatting "markup" (like that used with IRC color and formatting input)
+  and converts it into IRC color and formatting codes.
+* New inherited method: unmarkup(), which takes a string with IRC color and
+  formatting codes, and turns it into formatting "markup", like that used with
+  IRC color and markdown input.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.400                                  |

@@ -309,7 +309,6 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/focus [SERVER] [WINDOW]`              | Sets focus on a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
 | `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
-| `/fullscreen`                           | Toggles full screen mode   |
 | `goto LINE_NUMBER`                         | Moves execution of the script to `LINE_NUMBER`. The only script-only command that can be issued from an `if` command. Cannot be used to move to a line that consists of a script-only command other than `end`. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Halts a script's execution, and displays an error `MESSAGE` with line number and file name. *Can only be called from scripts*       |
 | `/help [COMMAND]`                                 | Displays command usage information                  |
@@ -377,7 +376,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `move`, `resize`, `maximize`, `minimize`, `restore`, `readme`, `settings`, `logs`, `hotkey`,  `ignore`, `plugin`, `install`, `uninstall`, `restart`, `cascade`, `tile`, `next`, and `previous`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `logs`, `maximize`, `minimize`, `move`, `next`, `plugin`, `previous`, `readme`, `resize`, `restart`, `restore`, `settings`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |

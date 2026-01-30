@@ -4733,8 +4733,8 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsLoadPriv)
 		sm.addAction(entry)
 
+		interval = str(config.LOG_SAVE_INTERVAL)+" ms"
 		if config.DO_INTERMITTENT_LOG_SAVES:
-			interval = str(config.LOG_SAVE_INTERVAL)+" ms"
 			if config.LOG_SAVE_INTERVAL==900000: interval = "15 minutes"
 			if config.LOG_SAVE_INTERVAL==1800000: interval = "30 minutes"
 			if config.LOG_SAVE_INTERVAL==3600000: interval = "hour"

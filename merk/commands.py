@@ -173,6 +173,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window plugin": config.ISSUE_COMMAND_SYMBOL+"window plugin",
 			config.ISSUE_COMMAND_SYMBOL+"window install": config.ISSUE_COMMAND_SYMBOL+"window install ",
 			config.ISSUE_COMMAND_SYMBOL+"window uninstall": config.ISSUE_COMMAND_SYMBOL+"window uninstall ",
+			config.ISSUE_COMMAND_SYMBOL+"window fullscreen": config.ISSUE_COMMAND_SYMBOL+"window fullscreen",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -241,7 +242,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"close": config.ISSUE_COMMAND_SYMBOL+"close ",
 			config.ISSUE_COMMAND_SYMBOL+"prints": config.ISSUE_COMMAND_SYMBOL+"prints ",
 			config.ISSUE_COMMAND_SYMBOL+"quitall": config.ISSUE_COMMAND_SYMBOL+"quitall",
-			config.ISSUE_COMMAND_SYMBOL+"fullscreen": config.ISSUE_COMMAND_SYMBOL+"fullscreen",
 			config.ISSUE_COMMAND_SYMBOL+"resize": config.ISSUE_COMMAND_SYMBOL+"resize ",
 			config.ISSUE_COMMAND_SYMBOL+"move": config.ISSUE_COMMAND_SYMBOL+"move ",
 			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
@@ -336,7 +336,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		"<b>move</b>","<b>resize</b>","<b>maximize</b>","<b>minimize</b>",
 		"<b>restore</b>","<b>readme</b>","<b>settings</b>","<b>logs</b>",
 		"<b>restart</b>","<b>next</b>","<b>previous</b>","<b>cascade</b>",
-		"<b>tile</b>"
+		"<b>tile</b>","<b>fullscreen</b>"
 	]
 
 	if config.ENABLE_HOTKEYS: W_COMMAND.append("<b>hotkey</b>")
@@ -408,7 +408,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fullscreen</b>", "Toggles full screen mode" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]</b>", "Sets focus on a subwindow" ],
@@ -3276,47 +3275,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |-------------|
-	# | /fullscreen |
-	# |-------------|
-	if len(tokens)>=1:
-		if len(tokens)==1:
-			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fullscreen':
-				if gui.fullscreen:
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Full screen mode is turned on by command-line flag")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
-					t = Message(ERROR_MESSAGE,'',"Full screen mode is turned on by command-line flag")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				if config.SHOW_FULL_SCREEN:
-					config.SHOW_FULL_SCREEN = False
-					if gui.was_maximized:
-						gui.showMaximized()
-					else:
-						gui.showNormal()
-				else:
-					if gui.isMaximized(): gui.was_maximized = True
-					config.SHOW_FULL_SCREEN = True
-					gui.showFullScreen()
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fullscreen':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"fullscreen")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"fullscreen")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
 	# |------|
 	# | /rem |
 	# |------|
@@ -3534,6 +3492,33 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			return True
+
+		# /window fullscreen
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='fullscreen':
+				if gui.fullscreen:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Full screen mode is turned on by command-line flag")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Full screen mode is turned on by command-line flag")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				if config.SHOW_FULL_SCREEN:
+					config.SHOW_FULL_SCREEN = False
+					if gui.was_maximized:
+						gui.showMaximized()
+					else:
+						gui.showNormal()
+				else:
+					if gui.isMaximized(): gui.was_maximized = True
+					config.SHOW_FULL_SCREEN = True
+					gui.showFullScreen()
+				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
+				return True
 
 		# /window install
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:

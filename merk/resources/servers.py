@@ -55,6 +55,7 @@ GeekShed:https://www.geeksh.ed/
 GimpNet:https://www.gimpnet.org/
 Ogame:https://www.ogame.org/
 SlashNET:https://slashnet.org/
+MansionNET:https://inthemansion.com/
 """
 
 NETWORK_LIST = """irc.2600.net:6667:2600net:normal

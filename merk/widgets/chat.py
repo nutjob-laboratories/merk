@@ -2789,6 +2789,7 @@ class Window(QMainWindow):
 		entered_topic = commands.interpolateAliases(entered_topic)
 		commands.TEMPORARY_ALIAS = {}
 
+		entered_topic = emojize(entered_topic)
 		entered_topic = markdown_to_irc(entered_topic)
 		entered_topic = inject_irc_colors(entered_topic)
 		entered_topic = emoji.emojize(entered_topic,language=config.EMOJI_LANGUAGE)
@@ -3221,7 +3222,7 @@ class TopicEdit(QPlainTextEdit):
 				self.parent.setWindowTitle(' ')
 
 	def mousePressEvent(self, e, Parent=None):
-		super(QPlainTextEdit, self).mousePressEvent(e)
+		super().mousePressEvent(e)
 		if not self.is_enabled: return
 		if self.readyToEdit:
 			self.setText(emoji.demojize(decode_irc_formatting(self.parent.channel_topic)))
@@ -3683,7 +3684,8 @@ class SpellTextEdit(QPlainTextEdit):
 			# moved to the location of the pointer.
 			event = QMouseEvent(QEvent.MouseButtonPress, event.pos(),
 				Qt.LeftButton, Qt.LeftButton, Qt.NoModifier)
-		QPlainTextEdit.mousePressEvent(self, event)
+		# QPlainTextEdit.mousePressEvent(self, event)
+		super().mousePressEvent(event)
 
 	def addToDictionary(self,word):
 

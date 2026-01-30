@@ -482,6 +482,14 @@ class Plugin():
 				return Window(self._gui,w)
 		return None
 
+	def markup(self,text):
+		text = markdown_to_irc(text)
+		text = inject_irc_colors(text)
+		return text
+
+	def unmarkup(self,text):
+		return decode_irc_formatting(text)
+
 	def folder(self,path):
 		if self._gui!=None:
 			if os.path.isdir(path):
@@ -827,6 +835,7 @@ BUILT_IN = [
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
+	'markup','unmarkup',
 ]
 
 def uninstall(obj):
