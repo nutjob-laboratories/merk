@@ -2785,8 +2785,13 @@ class Window(QMainWindow):
 	def handleTopicInput(self):
 		entered_topic = self.topic.text()
 
-		if config.USE_MARKDOWN_IN_INPUT: entered_topic = markdown_to_irc(entered_topic)
-		if config.USE_IRC_COLORS_IN_INPUT: entered_topic = inject_irc_colors(entered_topic)
+		commands.buildTemporaryAliases(self.parent,self)
+		entered_topic = commands.interpolateAliases(entered_topic)
+		commands.TEMPORARY_ALIAS = {}
+
+		entered_topic = markdown_to_irc(entered_topic)
+		entered_topic = inject_irc_colors(entered_topic)
+		entered_topic = emoji.emojize(entered_topic,language=config.EMOJI_LANGUAGE)
 
 		self.client.topic(self.name,entered_topic)
 		self.input.setFocus()
@@ -3219,10 +3224,7 @@ class TopicEdit(QPlainTextEdit):
 		super(QPlainTextEdit, self).mousePressEvent(e)
 		if not self.is_enabled: return
 		if self.readyToEdit:
-			if config.USE_IRC_COLORS_IN_INPUT:
-				self.setText(decode_irc_colors(self.parent.channel_topic))
-			else:
-				self.setText(self.parent.channel_topic)
+			self.setText(emoji.demojize(decode_irc_formatting(self.parent.channel_topic)))
 			self.setReadOnly(False)
 			self.moveCursor(QTextCursor.End)
 			self.ensureCursorVisible()

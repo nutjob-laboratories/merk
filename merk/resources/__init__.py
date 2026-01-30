@@ -443,6 +443,96 @@ def strip_color(text):
 	text = re.sub(r'[\x02\x1F\x1D\x1E\x0F]', '', text)
 	return text
 
+def decode_irc_formatting(text):
+	BOLD = "\x02"
+	COLOR = "\x03"
+	ITALIC = "\x1D"
+	STRIKE = "\x1E"
+	UNDERLINE = "\x1F"
+	RESET = "\x0F"
+
+	markers = {
+		BOLD: "**",
+		ITALIC: "*",
+		STRIKE: "~",
+		UNDERLINE: "__"
+	}
+
+	output = []
+	active_stack = []
+	color_active = False
+	
+	i = 0
+	while i < len(text):
+		char = text[i]
+
+		if char == COLOR:
+			if color_active:
+				output.append(">")
+				color_active = False
+			
+			i += 1
+			fg = ""
+			while i < len(text) and text[i].isdigit() and len(fg) < 2:
+				fg += text[i]
+				i += 1
+			
+			if fg:
+				fg_val = int(fg)
+				if 0 <= fg_val <= 15:
+					color_active = True
+					bg = ""
+					if i < len(text) and text[i] == ",":
+						i += 1
+						while i < len(text) and text[i].isdigit() and len(bg) < 2:
+							bg += text[i]
+							i += 1
+						
+						if bg:
+							bg_val = int(bg)
+							if 0 <= bg_val <= 15:
+								output.append(f"<{fg_val},{bg_val}")
+							else:
+								output.append(f"<{fg_val}")
+						else:
+							output.append(f"<{fg_val}")
+					else:
+						output.append(f"<{fg_val}")
+			continue
+
+		elif char in markers:
+			tag = markers[char]
+			if tag in active_stack:
+				while active_stack:
+					popped = active_stack.pop()
+					output.append(popped)
+					if popped == tag:
+						break
+			else:
+				output.append(tag)
+				active_stack.append(tag)
+
+		elif char == RESET:
+			while active_stack:
+				output.append(active_stack.pop())
+			if color_active:
+				output.append(">")
+				color_active = False
+
+		else:
+			if char in ('*', '_', '~'):
+				output.append('\\')
+			output.append(char)
+		
+		i += 1
+
+	while active_stack:
+		output.append(active_stack.pop())
+	if color_active:
+		output.append(">")
+
+	return "".join(output)
+
 def decode_irc_colors(text):
 	combined_pattern = re.compile(r'\x03(\d{1,2})(?:,(\d{1,2}))?|\x0F')
 	

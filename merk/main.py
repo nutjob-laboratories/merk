@@ -2069,8 +2069,7 @@ class Merk(QMainWindow):
 							c.setTopic(newTopic)
 							w = c
 							if user!='':
-								stripped_topic = strip_color(newTopic)
-								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+stripped_topic+"\"")
+								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")
 								c.writeText(t,config.LOG_CHANNEL_TOPICS)
 		plugins.call(self,"topic",client=client,user=user,channel=channel,topic=newTopic,window=w)
 		self.buildWindowbar()
@@ -3572,12 +3571,18 @@ class Merk(QMainWindow):
 			else:
 				window.setOption(QMdiSubWindow.RubberBandMove, False)
 
+	def handle_pre_activation(self, subwindow):
+		if hasattr(subwindow,"widget"):
+			c = subwindow.widget()
+			if hasattr(c,"input"): c.input.setFocus()
+
 	def newChannelWindow(self,name,client):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(CHANNEL_WINDOW_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.aboutToActivate.connect(lambda: self.handle_pre_activation(w))
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
@@ -3600,6 +3605,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(CONSOLE_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.aboutToActivate.connect(lambda: self.handle_pre_activation(w))
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
@@ -3622,6 +3628,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PRIVATE_WINDOW_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.aboutToActivate.connect(lambda: self.handle_pre_activation(w))
 		self.MDI.addSubWindow(w)
 		w.show()
 		self.buildWindowsMenu()
@@ -5029,10 +5036,6 @@ class Merk(QMainWindow):
 				if irc.CONNECTIONS[i].client_id == j: add_to_list = False
 			if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
 
-			# Reset application title, due to there being
-			# no connections
-			self.merk_subWindowActivated(None)
-
 		if len(listOfConnections)==0:
 			self.connected_to_something = False
 			if config.DO_NOT_SHOW_APPLICATION_NAME_IN_TITLE:
@@ -5728,11 +5731,6 @@ class Merk(QMainWindow):
 				plugins.call(self,"activate",window=w)
 
 		self.current_window = w
-
-		# If the window has a text input widget,
-		# give it focus
-		if hasattr(w,"input"):
-			w.input.setFocus()
 
 		# If the window is a channel list search window,
 		# then give the search terms widget focus

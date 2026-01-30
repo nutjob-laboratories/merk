@@ -181,8 +181,16 @@ def render_message(message,style,client=None,no_padding=False):
 
 	# Insert or remove IRC colors
 	if config.DISPLAY_IRC_COLORS:
-		if string_has_irc_formatting_codes(msg_to_display):
-			msg_to_display = convert_irc_color_to_html(msg_to_display,style)
+		if message.type!=WHOIS_MESSAGE:
+			if string_has_irc_formatting_codes(msg_to_display):
+				optional = "all"
+				if message.type==SYSTEM_MESSAGE: optional = "system"
+				if message.type==ERROR_MESSAGE: optional = "error"
+				if message.type==ACTION_MESSAGE: optional = "action"
+				if message.type==SERVER_MESSAGE: optional = "server"
+				msg_to_display = convert_irc_color_to_html(msg_to_display,style,optional)
+		else:
+			msg_to_display = strip_color(msg_to_display)
 	else:
 		if string_has_irc_formatting_codes(msg_to_display):
 			msg_to_display = strip_color(msg_to_display)
@@ -336,8 +344,8 @@ def inject_www_links(txt, style):
 
 	return re.sub(url_pattern, replace_url, txt)
 
-def convert_irc_color_to_html(text, style):
-	background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+def convert_irc_color_to_html(text, style, optional="all"):
+	background, foreground = styles.parseBackgroundAndForegroundColor(style[optional])
 	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F|\x1E)')
 	
 	state = {'bold': False, 'italic': False, 'underline': False, 'strikethrough': False, 'fg': None, 'bg': None}

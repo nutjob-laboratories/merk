@@ -18,8 +18,6 @@
   colors. Close color blocks with >. Just like with the markdown formatting
   injection feature, this can be turned off by the user.
 * Color and markdown formatting input have been added to the documentation.
-* Bugfix: entries in the menubar no longer get stuck on bold (if that option
-  is turned on).
 * Rewrote the "strip IRC color and formatting" algorithm to use some simple
   regexes rather than a bunch of replace() calls.
 * Removed the ability to set/change the "erroneous nickname" setting from the
@@ -57,9 +55,7 @@
   interruption.
 * Bugfix: fixed the "Copy link location" entry in chat and server window
   context menus.
-* The topic display in channel windows now displays IRC colors. If markdown
-  and/or IRC color input is turned on, that can be used in the channel topic
-  editor
+* The topic display in channel windows now displays IRC colors.
 * If IRC color display is turned off, IRC colors will not be displayed in the
   channel topic display.
 * Removed the option to toggle IRC colors from the settings menu. The toggle
@@ -73,16 +69,10 @@
   topic.
 * Removed the option to display the channel topic in bold; channel topics in
   the topic display will now ONLY show in normal weight.
-* Bugfix: changing the topic in the topic editor, for some reason, made the
-  system message notifying the user of the change in black bold, regardless of
-  the color settins. Colors are now stripped from the topic in this
-  notification, which makes the system message appear normal.
 * Bugfix: the message renderer should detect just about all URLs and turn them
   into links if that option is enabled. Problems with links starting and ending
-  with certain punctuation marks broke some links, and this should be fixed.
+  with certain punctuation marks broke some links.
 * Bugfix: IRC color code injection could strip < and > from input text.
-* Bugfix: IRC color is now stripped from system messages for channel topic
-  notifications.
 * IRC colors in the channel topic editor can now be toggled in the settings
   dialog.
 * Dark mode now has its own default text style that is separate from the light
@@ -94,9 +84,6 @@
 * Bugfix: the cursor will always be visible now when using the topic editor.
 * Bugfix: occasionally, the topic editor would not be "enabled" (that is, allow
   the user to edit the topic) without switching to another subwindow.
-* Color codes in the channel topic are now converted into the same markup style
-  that MERK uses for IRC color input on editing. If IRC color input is not
-  turned on, the topic will be stripped of color before editing.
 * The dark mode text style is now clearly marked in the text style editor.
 * Bugfix: restarting MERK from within the app no longer passes any user provided
   command-line arguments along to the new process. The -R,--run command-line
@@ -106,6 +93,20 @@
   could have been saved as potential servers in user history in some edge
   cases.
 * Bugfix: restarting MERK under PyInstaller on Linux now functions correctly.
+* Bugfix: emoji shortcodes, ASCIImoji shortcodes, and aliases are now injected
+  into text entered into the topic editor.
+* Bugfix: messages with IRC color codes in them were rendered in the same text
+  style as a raw message; this no longer occurs, and appropriate text styles
+  are now applied.
+* Bugfix: WHOIS messages now have IRC color and formatting codes stripped from
+  them.
+* The topic editor now converts any topics on editing into a usable input
+  format; for example, if iRC colors are enabled in the display, they will be
+  converted into the IRC color input format. The same will happen with markdown
+  and emoji shortcodes. IRC color and formatting input, and emojis are ALWAYS
+  enabled on topics.
+* Activating a server, channel, or private chat subwindow sets focus on the
+  text input widget immediately, instead of being slightly delayed.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
