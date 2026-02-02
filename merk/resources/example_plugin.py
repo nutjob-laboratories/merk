@@ -52,6 +52,9 @@ class ExamplePlugin(Plugin):
     # | BEGIN PLUGIN EVENTS |
     # |---------------------|
 
+    # All arguments to events are strings unless
+    # otherwise noted.
+
     # |======|
     # | init |
     # |======|
@@ -214,8 +217,8 @@ class ExamplePlugin(Plugin):
     # that MERK is running.
     #
     # Arguments:
-    #   uptime = The number of seconds that MERK has been
-    #            running.
+    #   uptime = Integer. The number of seconds that MERK has
+    #            been running.
     #
     def ctick(self,**args):
         uptime = args["uptime"]
@@ -665,8 +668,8 @@ class ExamplePlugin(Plugin):
     #
     # Arguments:
     #   client = The Twisted IRC object that triggered the event
-    #   uptime = The number of seconds that the Twisted IRC
-    #            client object has been connected to the IRC
+    #   uptime = Integer. The number of seconds that the Twisted
+    #            IRC client object has been connected to the IRC
     #            server
     #
     def tick(self,**args):
@@ -718,6 +721,21 @@ class ExamplePlugin(Plugin):
         target = args["target"]
         mode = args["mode"]
         arguments = args["arguments"]
+
+    # |========|
+    # | uptime |
+    # |========|
+    #
+    # This event is triggered every second that a server,
+    # channel, or private chat window is in existence.
+    #
+    # Arguments:
+    #   window = MERK Window
+    #   uptime = Integer. How many seconds the window has been open
+    #
+    def uptime(self,**args):
+        window = args["window"]
+        uptime = args["uptime"]
 
     # |-------------------|
     # | END PLUGIN EVENTS |

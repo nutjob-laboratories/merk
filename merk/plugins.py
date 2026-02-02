@@ -27,9 +27,9 @@ import sys
 import os
 from pathlib import Path
 import inspect
-import uuid
 import importlib
 import gc
+import hashlib
 
 from pike.manager import PikeManager
 
@@ -483,11 +483,15 @@ class Plugin():
 		return None
 
 	def markup(self,text):
+		text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
+		text = emojize(text)
 		text = markdown_to_irc(text)
 		text = inject_irc_colors(text)
 		return text
 
 	def unmarkup(self,text):
+		text = demojize(text)
+		text = emoji.demojize(text)
 		return decode_irc_formatting(text)
 
 	def folder(self,path):
@@ -548,6 +552,12 @@ class Plugin():
 
 	def asciimojize(self,message):
 		return emojize(message)
+
+	def demojize(self,message):
+		return emoji.demojize(message)
+
+	def deasciimojize(self,message):
+		return demojize(message)
 
 	def unmacro(self,name):
 		if self._gui!=None:
@@ -835,7 +845,7 @@ BUILT_IN = [
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
-	'markup','unmarkup',
+	'markup','unmarkup','demojize','deasciimojize',
 ]
 
 def uninstall(obj):
@@ -1022,16 +1032,13 @@ def get_plugin(path):
 
 def load_plugins(gui):
 	global PLUGINS
-
-	PLUGIN_NAMES = []
-	PLUGIN_IDS = {}
+	
+	PLUGIN_IDS = []
 	ERRORS = []
 
 	if len(PLUGINS)>0:
 		for o in PLUGINS:
-			if os.path.exists(o._filename) or os.path.isfile(o._filename):
-				PLUGIN_NAMES.append(f"{o.NAME} {o.VERSION}")
-			PLUGIN_IDS[o._filename] = str(o._id)
+			PLUGIN_IDS.append(str(o._id))
 
 	# Remove the old plugins from memory
 	if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
@@ -1071,75 +1078,60 @@ def load_plugins(gui):
 				# the "parent" window
 				obj._gui = gui
 
+				# Make sure the plugin has some necessary attributes
 				obj._filename = inspect.getfile(c)
+				obj._basename = os.path.basename(obj._filename)
+				obj._calls = count_callable_methods(obj)
+				obj._module = obj.__class__.__module__
+				obj._class = obj.__class__.__name__
 
-				# Generate an UUID for the plugin, but
-				# make sure it's only generated the first
-				# time the plugin is "loaded", and stays
-				# the same during runtime.
-				if obj._filename in PLUGIN_IDS:
-					obj._id = PLUGIN_IDS[obj._filename]
-					plugin_is_being_reloaded = True
-				else:
-					obj._id = str(uuid.uuid4())
-					plugin_is_being_reloaded = False
-
+				# Find out if the plugin has an icon
 				name_without_extension, extension = os.path.splitext(obj._filename)
 				icon_filename = name_without_extension + ".png"
 				if not os.path.exists(icon_filename):
 					icon_filename = None
-
 				obj._icon = icon_filename
 
-				obj._basename = os.path.basename(obj._filename)
-
-				obj._calls = count_callable_methods(obj)
-
-				obj._module = obj.__class__.__module__
-
+				# Count the number of events
 				obj._events = 0
-				obj._event_list = []
 				for e in EVENTS:
 					if hasattr(obj,e):
 						obj._events = obj._events + 1
-						obj._event_list.append(e)
 
-				# Make sure the plugin inherits from the "Plugin" class
-				if not issubclass(type(obj), Plugin):
-					PLUGIN_LOAD_ERRORS.append(f"{obj._basename} doesn't inherit from \"Plugin\"")
-
+				# Set default necessary attributes if
+				# they do not exist
 				if not hasattr(obj,"NAME"): obj.NAME = "Unknown"
 				if not hasattr(obj,"AUTHOR"): obj.AUTHOR = "Unknown"
 				if not hasattr(obj,"SOURCE"): obj.SOURCE = "Unknown"
 				if not hasattr(obj,"VERSION"): obj.VERSION = "1.0"
 
-				obj._class = obj.__class__.__name__
+				# Build the plugin's ID hash
+				obj._id = hashlib.md5(f"{obj._filename}{obj._module}{obj._class}".encode()).hexdigest()
 
+				# Check to see if we've already loaded this
+				# plugin in this session
+				if obj._id in PLUGIN_IDS:
+					plugin_is_being_reloaded = True
+				else:
+					plugin_is_being_reloaded = False
+
+				# Count the number of methods
 				instance_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
 				obj._methods = len(instance_methods) - obj._events
 				obj._methods = obj._methods - len(BUILT_IN)
 				if obj._methods<0: obj._methods = 0
 
+				# Make sure the plugin has at least one
+				# event or callable methods
 				if obj._events==0 and obj._calls==0:
 					PLUGIN_LOAD_ERRORS.append(f"{obj._basename} doesn't contain any events or callable methods")
-
-				no_error = True
-				for o in PLUGIN_NAMES:
-					if o==f"{obj.NAME} {obj.VERSION}":
-						if plugin_is_being_reloaded:
-							no_error = True
-						else:
-							no_error = False
-
-				if no_error==False:
-					PLUGIN_LOAD_ERRORS.append(f"{obj._basename}'s NAME and VERSION conflicts with a loaded plugin")
-
+						
 				# Add the plugin to the registry if
-				# the plugin had no errors
+				# the plugin had no loading errors
 				if len(PLUGIN_LOAD_ERRORS)==0:
 					PLUGINS.append(obj)
 
-					# Run plugin init
+					# Execute plugin init
 					if config.EXECUTE_INIT_ON_PLUGIN_RELOAD:
 						init(obj)
 					else:
@@ -1148,15 +1140,19 @@ def load_plugins(gui):
 			except Exception as e:
 				PLUGIN_LOAD_ERRORS.append(f"Error loading plugin class \"{c.__name__}\": {e}")
 
+			# Append any loading errors to the main
+			# error list
 			for e in PLUGIN_LOAD_ERRORS:
 				ERRORS.append(e)
+
+	# Call the garbage collector, if needed
+	if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD: gc.collect()
 
 	# Reload the plugin manager, if it's open
 	if gui.plugin_manager!=None:
 		gui.plugin_manager.refresh()
 
-	# Return
-	if config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD: gc.collect()
+	# Return any errors
 	return ERRORS
 
 def list_all_plugins():

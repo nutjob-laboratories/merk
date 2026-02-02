@@ -1,4 +1,54 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.500                                  |
+|------------------------------------------------------------------------------|
+
+What's New:
+ - Plugins no longer need to have unique NAME and VERSION attributes
+ - The plugin manager can now open plugin source files in the host OS's default
+   Python editor
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Bugfix: using "/window restart" under PyInstaller could crash the app.
+* Added the ability to toggle "always on top" mode to the /window command.
+* If "on-top" and "fullscreen" are enabled from the command-line, then they
+  cannot be toggled with the /window command, the settings dialog, or the
+  settings menu.
+* When uninstalling a plugin with the plugin manager, if the plugin is open in
+  the Python editor, the plugin manager will close the Python editor, without
+  asking to save when the file is deleted. This behavior (enabled by default)
+  can be togggled in the Python editor or with the /config command.
+* ASCIImojis are now turned into shortcodes in the topic editor when editing a
+  channel topic.
+* In the plugin manager, if the script editor is disabled, the option to edit a
+  plugin is still available in the right click context menu; the plugin source
+  file will be opened in whatever default program the OS is set to use for
+  Python source code files.
+* Changed how a plugin's identifier is calculated. Now, a plugin' ID is stable
+  across different application executions. Instead of a UUID, the plugin's ID
+  is calculated from a MD5 hash of the plugins filename, module name, and the
+  name of the plugin's class.
+* Re-wrote and streamlined the plugin loading code.
+* Bugfix: URLs surrounded by parenthesis are now detected and turned into links
+  in chat.
+* Bugfix: IRC color and formatting decoding to markup is now more accurate.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Inherited methods markup() and unmarkup() can now insert or remove emoji and 
+  ASCIImoji shortcodes.
+* Bugfix: The uptime() event has been added to the plugin skeleton.
+* Updated the plugin skeleton with better documentation.
+* Added demojize() and deasciimojize() to the inherited plugin methods, which
+  converts emojis and ASCIImojis in strings into shortcodes.
+* Plugins no longer need to have unique NAME and VERSION attributes. Plugins
+  with the same NAME and VERSION can be loaded at the same time.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.450                                  |
 |------------------------------------------------------------------------------|
 
@@ -56,8 +106,6 @@
 * Bugfix: fixed the "Copy link location" entry in chat and server window
   context menus.
 * The topic display in channel windows now displays IRC colors.
-* If IRC color display is turned off, IRC colors will not be displayed in the
-  channel topic display.
 * Removed the option to toggle IRC colors from the settings menu. The toggle
   is now only in the settings dialog.
 * Bugfix: the IRC color/formatting stripping code occasionally stripped commas

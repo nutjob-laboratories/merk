@@ -398,9 +398,11 @@ ENABLE_BROWSER_COMMAND = True
 SHOW_TOPIC_IN_EDITOR_TOOLTIP = True
 NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = True
 IRC_COLOR_IN_TOPICS = True
+CLOSE_EDITOR_ON_UNINSTALL = True
 
 def build_settings():
 	settings = {
+		"close_editor_on_plugin_uninstall": CLOSE_EDITOR_ON_UNINSTALL,
 		"display_irc_colors_in_topics": IRC_COLOR_IN_TOPICS,
 		"notify_on_repeated_failed_reconnections": NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS,
 		"show_channel_topic_in_tooltip": SHOW_TOPIC_IN_EDITOR_TOOLTIP,
@@ -765,6 +767,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "close_editor_on_plugin_uninstall" in settings:
+		settings["close_editor_on_plugin_uninstall"] = CLOSE_EDITOR_ON_UNINSTALL
 	if not "display_irc_colors_in_topics" in settings:
 		settings["display_irc_colors_in_topics"] = IRC_COLOR_IN_TOPICS
 	if not "notify_on_repeated_failed_reconnections" in settings:
@@ -1846,6 +1850,7 @@ def load_settings(filename):
 	global SHOW_TOPIC_IN_EDITOR_TOOLTIP
 	global NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS
 	global IRC_COLOR_IN_TOPICS
+	global CLOSE_EDITOR_ON_UNINSTALL
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1855,6 +1860,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		CLOSE_EDITOR_ON_UNINSTALL = settings["close_editor_on_plugin_uninstall"]
 		IRC_COLOR_IN_TOPICS = settings["display_irc_colors_in_topics"]
 		NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = settings["notify_on_repeated_failed_reconnections"]
 		SHOW_TOPIC_IN_EDITOR_TOOLTIP = settings["show_channel_topic_in_tooltip"]

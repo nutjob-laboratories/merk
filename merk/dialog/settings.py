@@ -1891,6 +1891,8 @@ class Dialog(QDialog):
 		if config.ALWAYS_ON_TOP: self.alwaysOnTop.setChecked(True)
 		self.alwaysOnTop.stateChanged.connect(self.changedSetting)
 
+		if self.parent.ontop: self.alwaysOnTop.setEnabled(False)
+
 		self.askBeforeExit = QCheckBox("Ask before closing app",self)
 		if config.ASK_BEFORE_CLOSE: self.askBeforeExit.setChecked(True)
 		self.askBeforeExit.stateChanged.connect(self.changedSetting)
@@ -1910,6 +1912,8 @@ class Dialog(QDialog):
 		self.fullScreen = QCheckBox("Full screen",self)
 		if config.SHOW_FULL_SCREEN: self.fullScreen.setChecked(True)
 		self.fullScreen.stateChanged.connect(self.changedSetting)
+
+		if self.parent.fullscreen: self.fullScreen.setEnabled(False)
 
 		self.showTopicInTitle = QCheckBox("Show current channel topic in title",self)
 		if config.SHOW_CHANNEL_TOPIC_IN_APPLICATION_TITLE: self.showTopicInTitle.setChecked(True)

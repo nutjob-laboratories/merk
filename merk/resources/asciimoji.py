@@ -28,6 +28,11 @@ def emojize(text):
 		if a in text: text = text.replace(a,ASCIIMOIJI[a])
 	return text
 
+def demojize(text):
+	for a in ASCIIMOIJI:
+		if ASCIIMOIJI[a] in text: text = text.replace(ASCIIMOIJI[a],a)
+	return text
+
 ASCIIMOIJI = {'(--)': '–',
  '(->)': '→',
  '(...)': '…',

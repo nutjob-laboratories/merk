@@ -3225,7 +3225,7 @@ class TopicEdit(QPlainTextEdit):
 		super().mousePressEvent(e)
 		if not self.is_enabled: return
 		if self.readyToEdit:
-			self.setText(emoji.demojize(decode_irc_formatting(self.parent.channel_topic)))
+			self.setText(demojize(emoji.demojize(decode_irc_formatting(self.parent.channel_topic))))
 			self.setReadOnly(False)
 			self.moveCursor(QTextCursor.End)
 			self.ensureCursorVisible()
@@ -3725,7 +3725,6 @@ class SpellTextEdit(QPlainTextEdit):
 
 		popup_menu = self.createStandardContextMenu(event.pos())
 
-
 		# Don't autoselect if the user has selected text
 		# Don't offer spelling corrections if the user has selected text
 		if self.textCursor().hasSelection():
@@ -3783,17 +3782,11 @@ class SpellTextEdit(QPlainTextEdit):
 		popup_menu.exec_(event.globalPos())
 
 	def correctWord(self, word):
-		'''
-		Replaces the selected text with word.
-		'''
 		cursor = self.textCursor()
 		cursor.beginEditBlock()
-
 		cursor.removeSelectedText()
 		cursor.insertText(word)
-
 		cursor.endEditBlock()
-
 
 class Highlighter(QSyntaxHighlighter):
 

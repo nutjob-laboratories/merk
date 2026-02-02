@@ -177,6 +177,15 @@ class Window(QMainWindow):
 			self.ar_menu.setIcon(QIcon(self.parent.checked_icon))
 		config.save_settings(config.CONFIG_FILE)
 
+	def toggleClose(self):
+		if config.CLOSE_EDITOR_ON_UNINSTALL:
+			config.CLOSE_EDITOR_ON_UNINSTALL = False
+			self.ce_menu.setIcon(QIcon(self.parent.unchecked_icon))
+		else:
+			config.CLOSE_EDITOR_ON_UNINSTALL = True
+			self.ce_menu.setIcon(QIcon(self.parent.checked_icon))
+		config.save_settings(config.CONFIG_FILE)
+
 	def toggleIndent(self):
 		if config.PYTHON_AUTOINDENT:
 			config.PYTHON_AUTOINDENT = False
@@ -764,6 +773,13 @@ class Window(QMainWindow):
 				self.ar_menu = QAction(QIcon(self.parent.unchecked_icon),"Auto-reload plugins on close",self)
 			self.ar_menu.triggered.connect(self.toggleReload)
 			self.fileMenu.addAction(self.ar_menu)
+
+			if config.CLOSE_EDITOR_ON_UNINSTALL:
+				self.ce_menu = QAction(QIcon(self.parent.checked_icon),"Close editor on plugin uninstall",self)
+			else:
+				self.ce_menu = QAction(QIcon(self.parent.unchecked_icon),"Close editor on plugin uninstall",self)
+			self.ce_menu.triggered.connect(self.toggleClose)
+			self.fileMenu.addAction(self.ce_menu)
 		
 		self.fileMenu.addSeparator()
 

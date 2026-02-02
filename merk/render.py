@@ -321,25 +321,23 @@ def inject_www_links(txt, style):
 
 	url_pattern = re.compile(
 		r"((?:https?://|www\.)"
-		r"(?:[^\s<>'\"()&]|&(?!gt;|quot;))+" 
+		r"(?:[^\s<>'\"&]|&(?!gt;|quot;))+" 
 		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
 		re.IGNORECASE
 	)
 
 	def replace_url(match):
 		full_match = match.group(0)
-		
 		u_visible = full_match.rstrip('.,;:!?')
+		if u_visible.endswith(')') and u_visible.count('(') < u_visible.count(')'):
+			u_visible = u_visible[:-1]
 		trailing_punctuation = full_match[len(u_visible):]
-	
 		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
 			trailing_punctuation = '/' + trailing_punctuation
 			u_visible = u_visible[:-1]
-
 		href = u_visible
 		if not href.lower().startswith(('http://', 'https://')):
 			href = 'http://' + href
-
 		return f'<a href="{href}" style="{style_str}">{u_visible}</a>{trailing_punctuation}'
 
 	return re.sub(url_pattern, replace_url, txt)

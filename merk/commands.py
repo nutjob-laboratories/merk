@@ -174,6 +174,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window install": config.ISSUE_COMMAND_SYMBOL+"window install ",
 			config.ISSUE_COMMAND_SYMBOL+"window uninstall": config.ISSUE_COMMAND_SYMBOL+"window uninstall ",
 			config.ISSUE_COMMAND_SYMBOL+"window fullscreen": config.ISSUE_COMMAND_SYMBOL+"window fullscreen",
+			config.ISSUE_COMMAND_SYMBOL+"window ontop": config.ISSUE_COMMAND_SYMBOL+"window ontop",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -336,7 +337,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		"<b>move</b>","<b>resize</b>","<b>maximize</b>","<b>minimize</b>",
 		"<b>restore</b>","<b>readme</b>","<b>settings</b>","<b>logs</b>",
 		"<b>restart</b>","<b>next</b>","<b>previous</b>","<b>cascade</b>",
-		"<b>tile</b>","<b>fullscreen</b>"
+		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>"
 	]
 
 	if config.ENABLE_HOTKEYS: W_COMMAND.append("<b>hotkey</b>")
@@ -3493,6 +3494,37 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			return True
 
+		# /window ontop
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='ontop':
+				if gui.ontop:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: On-top mode is turned on by command-line flag")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"On-top mode is turned on by command-line flag")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				if config.ALWAYS_ON_TOP:
+					config.ALWAYS_ON_TOP = False
+					gui.setWindowFlags(gui.windowFlags() & ~Qt.WindowStaysOnTopHint)
+					if gui.hotkey_manager!=None: gui.hotkey_manager.toggleTop()
+					if gui.ignore_manager!=None: gui.ignore_manager.toggleTop()
+					if gui.plugin_manager!=None: gui.plugin_manager.toggleTop()
+					gui.show()
+				else:
+					config.ALWAYS_ON_TOP = True
+					gui.setWindowFlags(gui.windowFlags() | Qt.WindowStaysOnTopHint)
+					if gui.hotkey_manager!=None: gui.hotkey_manager.toggleTop()
+					if gui.ignore_manager!=None: gui.ignore_manager.toggleTop()
+					if gui.plugin_manager!=None: gui.plugin_manager.toggleTop()
+					gui.show()
+				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
+				return True
+
 		# /window fullscreen
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='fullscreen':
@@ -4052,8 +4084,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				else:
 					if is_running_from_pyinstaller():
 						subprocess.Popen([sys.executable] + ["-R"])
-						self.parent.close()
-						self.parent.app.exit()
+						gui.close()
+						gui.app.exit()
 					else:
 						os.execl(sys.executable, sys.executable, sys.argv[0], "-R")
 						sys.exit()

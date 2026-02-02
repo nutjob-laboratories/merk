@@ -251,6 +251,17 @@ class Window(QMainWindow):
 			pass
 		else:
 
+			if config.CLOSE_EDITOR_ON_UNINSTALL:
+				# Close the editor window for the removed
+				# plugin, if it's still open
+				for window in self.parent.getAllEditorWindows():
+					if hasattr(window,"widget"):
+						c = window.widget()
+						if c.python:
+							if c.filename==item.filename:
+								c.force_close = True
+								c.close()
+
 			if os.path.exists(item.filename):
 				try:
 					os.remove(item.filename)
@@ -350,7 +361,6 @@ class Window(QMainWindow):
 			filename = obj._filename
 			basename = obj._basename
 			events = obj._events
-			event_list = obj._event_list
 			methods = obj._methods
 			NAME = obj.NAME
 			VERSION = obj.VERSION
@@ -366,7 +376,6 @@ class Window(QMainWindow):
 			item.filename = obj._filename
 			item.basename = obj._basename
 			item.events = obj._events
-			item.event_list = obj._event_list
 			item.NAME = obj.NAME
 			item.VERSION = obj.VERSION
 			item.AUTHOR = obj.AUTHOR
@@ -496,11 +505,13 @@ class Window(QMainWindow):
 							edit_action.triggered.connect(lambda: self.on_item_double_clicked(item))
 							menu.addAction(edit_action)
 
-						edit_action = QAction(QIcon(SCRIPT_ICON),"Edit plugin", self)
-						edit_action.triggered.connect(lambda: self.parent.openPythonEditor(item.filename))
+						if config.ENABLE_PLUGIN_EDITOR:
+							edit_action = QAction(QIcon(SCRIPT_ICON),"Edit plugin", self)
+							edit_action.triggered.connect(lambda: self.parent.openPythonEditor(item.filename))
+						else:
+							edit_action = QAction(QIcon(EXE_ICON),"Edit plugin", self)
+							edit_action.triggered.connect(lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(item.filename)))
 						menu.addAction(edit_action)
-
-						if not config.ENABLE_PLUGIN_EDITOR: edit_action.setVisible(False)
 
 						export_action = QAction(QIcon(EXPORT_ICON),"Export plugin", self)
 						export_action.triggered.connect(lambda: self.do_export(item))

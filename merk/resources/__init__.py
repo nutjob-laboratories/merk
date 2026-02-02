@@ -443,95 +443,338 @@ def strip_color(text):
 	text = re.sub(r'[\x02\x1F\x1D\x1E\x0F]', '', text)
 	return text
 
-def decode_irc_formatting(text):
-	BOLD = "\x02"
-	COLOR = "\x03"
-	ITALIC = "\x1D"
-	STRIKE = "\x1E"
-	UNDERLINE = "\x1F"
-	RESET = "\x0F"
+def inject_irc_colors(text, default_reset=True):
+	set_both_pattern = r'<(\d{1,2})\s*,\s*(\d{1,2})'
+	set_fg_pattern = r'<(\d{1,2})'
+	reset_pattern = r'>'
+	inside_color, color_set, result, last_index = False, False, [], 0
+	combined = rf'({set_both_pattern})|({set_fg_pattern})|({reset_pattern})'
 
-	markers = {
-		BOLD: "**",
-		ITALIC: "*",
-		STRIKE: "~",
-		UNDERLINE: "__"
-	}
+	for match in re.finditer(combined, text):
+		start, end = match.span()
+		result.append(text[last_index:start])
+		token, applied = match.group(), False
+		if token.startswith('<') and '>' in text[end:]:
+			m_both = re.fullmatch(set_both_pattern, token)
+			if m_both:
+				fg, bg = int(m_both.group(1)), int(m_both.group(2))
+				if 0 <= fg <= 15 and 0 <= bg <= 15:
+					result.append(f'\x03{fg:02},{bg:02}')
+					inside_color = color_set = applied = True
+			if not applied:
+				m_fg = re.fullmatch(set_fg_pattern, token)
+				if m_fg:
+					fg = int(m_fg.group(1))
+					if 0 <= fg <= 15:
+						result.append(f'\x03{fg:02}')
+						inside_color = color_set = applied = True
+		elif token == '>' and inside_color:
+			result.append('\x0F') 
+			inside_color, applied = False, True
+		if not applied: result.append(token)
+		last_index = end
 
-	output = []
-	active_stack = []
-	color_active = False
+	result.append(text[last_index:])
+	if default_reset and color_set and not (result and result[-1] == '\x0F'):
+		result.append('\x0F')
+	return "".join(result)
+
+def markdown_to_irc(text):
+	mapping = {"***": "\x02\x1D", "**": "\x02", "*": "\x1D", "__": "\x1F", "~": "\x1E"}
+	tags = ["***", "**", "__", "*", "~"]
+	output, active_stack, i = [], [], 0
 	
-	i = 0
+	while i < len(text):
+		if text[i] == '\\' and i + 1 < len(text) and text[i+1] in '*_~':
+			output.append(text[i+1]); i += 2; continue
+			
+		found_tag = False
+		for tag in tags:
+			if text.startswith(tag, i):
+				code = mapping[tag]
+				if tag in active_stack:
+					while active_stack:
+						popped = active_stack.pop()
+						output.append("\x0F" if popped == "***" else mapping[popped])
+						if popped == tag: break
+				else:
+					output.append(code)
+					active_stack.append(tag)
+				i += len(tag); found_tag = True; break
+		
+		if not found_tag:
+			output.append(text[i]); i += 1
+			
+	if active_stack: output.append("\x0F")
+	return "".join(output)
+
+def decode_irc_formatting(text):
+	MARKERS = {"\x02": "**", "\x1D": "*", "\x1E": "~", "\x1F": "__"}
+	output, stack, color_active, i = [], [], False, 0
+	
 	while i < len(text):
 		char = text[i]
-
-		if char == COLOR:
-			if color_active:
-				output.append(">")
-				color_active = False
-			
+		if char == "\x03": # Color
+			if color_active: output.append(">"); color_active = False
 			i += 1
-			fg = ""
-			while i < len(text) and text[i].isdigit() and len(fg) < 2:
-				fg += text[i]
-				i += 1
-			
-			if fg:
-				fg_val = int(fg)
-				if 0 <= fg_val <= 15:
-					color_active = True
-					bg = ""
-					if i < len(text) and text[i] == ",":
-						i += 1
-						while i < len(text) and text[i].isdigit() and len(bg) < 2:
-							bg += text[i]
-							i += 1
-						
-						if bg:
-							bg_val = int(bg)
-							if 0 <= bg_val <= 15:
-								output.append(f"<{fg_val},{bg_val}")
-							else:
-								output.append(f"<{fg_val}")
-						else:
-							output.append(f"<{fg_val}")
-					else:
-						output.append(f"<{fg_val}")
+			m = re.match(r'^(\d{1,2})(?:,(\d{1,2}))?', text[i:])
+			if m:
+				output.append(f"<{int(m.group(1))}" + (f",{int(m.group(2))}" if m.group(2) else ""))
+				color_active = True; i += len(m.group(0))
 			continue
-
-		elif char in markers:
-			tag = markers[char]
-			if tag in active_stack:
-				while active_stack:
-					popped = active_stack.pop()
-					output.append(popped)
-					if popped == tag:
-						break
+		elif char == "\x0F": # Reset
+			while stack: output.append(stack.pop())
+			if color_active: output.append(">"); color_active = False
+		elif char in MARKERS:
+			tag = MARKERS[char]
+			if tag in stack:
+				while stack:
+					p = stack.pop(); output.append(p)
+					if p == tag: break
 			else:
-				output.append(tag)
-				active_stack.append(tag)
-
-		elif char == RESET:
-			while active_stack:
-				output.append(active_stack.pop())
-			if color_active:
-				output.append(">")
-				color_active = False
-
+				has_content = False
+				for j in range(i + 1, len(text)):
+					if text[j] == "\x0F": break
+					if text[j] not in MARKERS and text[j] != "\x03":
+						has_content = True; break
+				if has_content:
+					output.append(tag); stack.append(tag)
 		else:
-			if char in ('*', '_', '~'):
-				output.append('\\')
+			if char in '*_~': output.append('\\')
 			output.append(char)
-		
 		i += 1
-
-	while active_stack:
-		output.append(active_stack.pop())
-	if color_active:
-		output.append(">")
-
+	while stack: output.append(stack.pop())
+	if color_active: output.append(">")
 	return "".join(output)
+
+# def decode_irc_formatting(text):
+# 	BOLD = "\x02"
+# 	COLOR = "\x03"
+# 	ITALIC = "\x1D"
+# 	STRIKE = "\x1E"
+# 	UNDERLINE = "\x1F"
+# 	RESET = "\x0F"
+
+# 	markers = {
+# 		BOLD: "**",
+# 		ITALIC: "*",
+# 		STRIKE: "~",
+# 		UNDERLINE: "__"
+# 	}
+
+# 	output = []
+# 	active_stack = []
+# 	color_active = False
+	
+# 	i = 0
+# 	while i < len(text):
+# 		char = text[i]
+
+# 		if char == COLOR:
+# 			if color_active:
+# 				output.append(">")
+# 				color_active = False
+			
+# 			i += 1
+# 			fg = ""
+# 			while i < len(text) and text[i].isdigit() and len(fg) < 2:
+# 				fg += text[i]
+# 				i += 1
+			
+# 			if fg:
+# 				fg_val = int(fg)
+# 				if 0 <= fg_val <= 15:
+# 					color_active = True
+# 					bg = ""
+# 					if i < len(text) and text[i] == ",":
+# 						i += 1
+# 						while i < len(text) and text[i].isdigit() and len(bg) < 2:
+# 							bg += text[i]
+# 							i += 1
+						
+# 						if bg:
+# 							bg_val = int(bg)
+# 							if 0 <= bg_val <= 15:
+# 								output.append(f"<{fg_val},{bg_val}")
+# 							else:
+# 								output.append(f"<{fg_val}")
+# 						else:
+# 							output.append(f"<{fg_val}")
+# 					else:
+# 						output.append(f"<{fg_val}")
+# 			continue
+
+# 		elif char in markers:
+# 			tag = markers[char]
+# 			if tag in active_stack:
+# 				while active_stack:
+# 					popped = active_stack.pop()
+# 					output.append(popped)
+# 					if popped == tag:
+# 						break
+# 			else:
+# 				output.append(tag)
+# 				active_stack.append(tag)
+
+# 		elif char == RESET:
+# 			while active_stack:
+# 				output.append(active_stack.pop())
+# 			if color_active:
+# 				output.append(">")
+# 				color_active = False
+
+# 		else:
+# 			if char in ('*', '_', '~'):
+# 				output.append('\\')
+# 			output.append(char)
+		
+# 		i += 1
+
+# 	while active_stack:
+# 		output.append(active_stack.pop())
+# 	if color_active:
+# 		output.append(">")
+
+# 	return "".join(output)
+
+# def inject_irc_colors(text, default_reset=True):
+# 	set_both_pattern = r'<(\d{1,2})\s*,\s*(\d{1,2})'
+# 	set_fg_pattern = r'<(\d{1,2})'
+# 	reset_pattern = r'>'
+
+# 	inside_color = False
+# 	color_set = False
+# 	result = []
+# 	last_index = 0
+
+# 	combined = rf'({set_both_pattern})|({set_fg_pattern})|({reset_pattern})'
+
+# 	for match in re.finditer(combined, text):
+# 		start, end = match.span()
+# 		result.append(text[last_index:start])
+		
+# 		token = match.group()
+# 		applied = False
+
+# 		if token.startswith('<'):
+# 			if '>' in text[end:]:
+# 				m_both = re.fullmatch(set_both_pattern, token)
+# 				if m_both:
+# 					try:
+# 						fg, bg = int(m_both.group(1)), int(m_both.group(2))
+# 						if 0 <= fg <= 15 and 0 <= bg <= 15:
+# 							result.append(f'\x03{fg:02},{bg:02}')
+# 							inside_color = True
+# 							color_set = True
+# 							applied = True
+# 					except (ValueError, IndexError): pass
+				
+# 				if not applied:
+# 					m_fg = re.fullmatch(set_fg_pattern, token)
+# 					if m_fg:
+# 						try:
+# 							fg = int(m_fg.group(1))
+# 							if 0 <= fg <= 15:
+# 								result.append(f'\x03{fg:02}')
+# 								inside_color = True
+# 								color_set = True
+# 								applied = True
+# 						except (ValueError, IndexError): pass
+
+# 		elif token == '>':
+# 			if inside_color:
+# 				result.append('\x0F')
+# 				inside_color = False
+# 				applied = True
+
+# 		if not applied:
+# 			result.append(token)
+
+# 		last_index = end
+
+# 	result.append(text[last_index:])
+
+# 	if default_reset and color_set:
+# 		result.append('\x0F')
+
+# 	return "".join(result)
+
+# def markdown_to_irc(text):
+# 	BOLD = "\x02"
+# 	ITALIC = "\x1D"
+# 	UNDERLINE = "\x1F"
+# 	STRIKETHROUGH = "\x1E"
+# 	RESET = "\x0F"
+
+# 	output = []
+# 	open_format = None
+# 	i = 0
+# 	length = len(text)
+
+# 	while i < length:
+# 		c = text[i]
+
+# 		if c == '\\':
+# 			if i + 1 < length:
+# 				next_char = text[i + 1]
+# 				if next_char in ('*', '_', '~'):
+# 					output.append(next_char)
+# 					i += 2
+# 					continue
+
+# 		# Handle bold, italic, strikethrough
+# 		if c in ('*', '~'):
+# 			next_char = text[i + 1] if i + 1 < length else ''
+# 			is_double = (next_char == c)
+# 			symbol_length = 2 if is_double else 1
+# 			marker = c * symbol_length
+
+# 			if marker == '**':
+# 				code = BOLD
+# 			elif marker == '*':
+# 				code = ITALIC
+# 			elif marker == '~':
+# 				code = STRIKETHROUGH
+# 			else:
+# 				code = None
+
+# 			# Toggle formatting
+# 			if open_format == code:
+# 				output.append(RESET)
+# 				open_format = None
+# 			else:
+# 				output.append(code)
+# 				open_format = code
+
+# 			i += symbol_length
+# 			continue
+
+# 		# Handle underscores:
+# 		if c == '_':
+# 			next_char = text[i + 1] if i + 1 < length else ''
+# 			if next_char == '_':
+# 				# Double underscore: toggle underline
+# 				if open_format == UNDERLINE:
+# 					output.append(RESET)
+# 					open_format = None
+# 				else:
+# 					output.append(UNDERLINE)
+# 					open_format = UNDERLINE
+# 				i += 2
+# 			else:
+# 				# Single underscore: just output
+# 				output.append(c)
+# 				i += 1
+# 			continue
+
+# 		# Normal characters
+# 		output.append(c)
+# 		i += 1
+
+# 	if open_format:
+# 		output.append(RESET)
+
+# 	return ''.join(output)
 
 def decode_irc_colors(text):
 	combined_pattern = re.compile(r'\x03(\d{1,2})(?:,(\d{1,2}))?|\x0F')
@@ -559,68 +802,6 @@ def decode_irc_colors(text):
 	result.append(text[last_index:])
 
 	return ''.join(result)
-
-def inject_irc_colors(text, default_reset=True):
-	set_both_pattern = r'<(\d{1,2})\s*,\s*(\d{1,2})'
-	set_fg_pattern = r'<(\d{1,2})'
-	reset_pattern = r'>'
-
-	inside_color = False
-	color_set = False
-	result = []
-	last_index = 0
-
-	combined = rf'({set_both_pattern})|({set_fg_pattern})|({reset_pattern})'
-
-	for match in re.finditer(combined, text):
-		start, end = match.span()
-		result.append(text[last_index:start])
-		
-		token = match.group()
-		applied = False
-
-		if token.startswith('<'):
-			if '>' in text[end:]:
-				m_both = re.fullmatch(set_both_pattern, token)
-				if m_both:
-					try:
-						fg, bg = int(m_both.group(1)), int(m_both.group(2))
-						if 0 <= fg <= 15 and 0 <= bg <= 15:
-							result.append(f'\x03{fg:02},{bg:02}')
-							inside_color = True
-							color_set = True
-							applied = True
-					except (ValueError, IndexError): pass
-				
-				if not applied:
-					m_fg = re.fullmatch(set_fg_pattern, token)
-					if m_fg:
-						try:
-							fg = int(m_fg.group(1))
-							if 0 <= fg <= 15:
-								result.append(f'\x03{fg:02}')
-								inside_color = True
-								color_set = True
-								applied = True
-						except (ValueError, IndexError): pass
-
-		elif token == '>':
-			if inside_color:
-				result.append('\x0F')
-				inside_color = False
-				applied = True
-
-		if not applied:
-			result.append(token)
-
-		last_index = end
-
-	result.append(text[last_index:])
-
-	if default_reset and color_set:
-		result.append('\x0F')
-
-	return "".join(result)
 
 def irc_to_markdown(text):
 	BOLD = "\x02"
@@ -665,83 +846,6 @@ def irc_to_markdown(text):
 				output.append('\\')
 			output.append(char)
 		i += 1
-
-	return ''.join(output)
-
-def markdown_to_irc(text):
-	BOLD = "\x02"
-	ITALIC = "\x1D"
-	UNDERLINE = "\x1F"
-	STRIKETHROUGH = "\x1E"
-	RESET = "\x0F"
-
-	output = []
-	open_format = None
-	i = 0
-	length = len(text)
-
-	while i < length:
-		c = text[i]
-
-		if c == '\\':
-			if i + 1 < length:
-				next_char = text[i + 1]
-				if next_char in ('*', '_', '~'):
-					output.append(next_char)
-					i += 2
-					continue
-
-		# Handle bold, italic, strikethrough
-		if c in ('*', '~'):
-			next_char = text[i + 1] if i + 1 < length else ''
-			is_double = (next_char == c)
-			symbol_length = 2 if is_double else 1
-			marker = c * symbol_length
-
-			if marker == '**':
-				code = BOLD
-			elif marker == '*':
-				code = ITALIC
-			elif marker == '~':
-				code = STRIKETHROUGH
-			else:
-				code = None
-
-			# Toggle formatting
-			if open_format == code:
-				output.append(RESET)
-				open_format = None
-			else:
-				output.append(code)
-				open_format = code
-
-			i += symbol_length
-			continue
-
-		# Handle underscores:
-		if c == '_':
-			next_char = text[i + 1] if i + 1 < length else ''
-			if next_char == '_':
-				# Double underscore: toggle underline
-				if open_format == UNDERLINE:
-					output.append(RESET)
-					open_format = None
-				else:
-					output.append(UNDERLINE)
-					open_format = UNDERLINE
-				i += 2
-			else:
-				# Single underscore: just output
-				output.append(c)
-				i += 1
-			continue
-
-		# Normal characters
-		output.append(c)
-		i += 1
-
-	if open_format:
-		output.append(RESET)
 
 	return ''.join(output)
 
