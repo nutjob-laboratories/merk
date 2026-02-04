@@ -1,0 +1,11 @@
+# sudo apt install build-essential python3-dev qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
+#                  qtwayland5 libqt5waylandclient5-dev qtwayland5-dev-tools
+
+# sudo apt install libqt5multimedia5-plugins qtmultimedia5-dev libqt5multimediagsttools5
+
+python -m venv venv
+source venv/bin/activate
+pip install sip
+pip install PyQt5 --force-reinstall --no-binary PyQt5 --no-cache-dir --config-settings --confirm-license= --verbose
+pip install twisted pyopenssl service_identity pyinstaller
+

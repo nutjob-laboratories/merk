@@ -9,6 +9,7 @@ What's New:
  - Plugins can now be "paused" to temporarily prevent them from reacting to
    events, and "unpaused" to resume event reaction. The plugin API now has new
    events that are triggered on "pausing" and "unpausing".
+ - Added support for Wayland to the Linux binary distribution.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -47,6 +48,12 @@ What's New:
   hotkeys to pause and unpause plugins.
 * The hotkey creation/editing dialog now includes macros and plugin /call
   commands as options.
+* Added event code generators for pause() and unpause() to the Python editor.
+* Added support for Wayland to the Linux binary distribution.
+* Changed the size of the icons in the settings dialog page navigation panel,
+  due to the fact that some Qt style themes could render the dialog unusable.
+* Removed the option to select some specific Qt style themes due to the fact
+  that they caused the application to crash.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -6,3 +6,4 @@ merk_setup.iss
 *.exe
 downloads/*
 myenv/*
+venv/*

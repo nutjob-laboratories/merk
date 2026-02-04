@@ -1821,7 +1821,7 @@ class Dialog(QDialog):
 		fwidth = fm.width('X') * 22
 		self.selector.setMaximumWidth(fwidth)
 
-		add_factor = 12
+		add_factor = 8
 		self.selector.setIconSize(QSize(fm.height()+add_factor,fm.height()+add_factor))
 
 		self.selector.itemClicked.connect(self.selectorClick)
@@ -1999,9 +1999,13 @@ class Dialog(QDialog):
 		self.styleDescription.setWordWrap(True)
 		self.styleDescription.setAlignment(Qt.AlignJustify)
 
+		QT_STYLES = QStyleFactory.keys()
+		if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
+		if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
+
 		self.qtStyle = QComboBox(self)
 		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
-		for s in QStyleFactory.keys():
+		for s in QT_STYLES:
 			if s==config.QT_WINDOW_STYLE: continue
 			self.qtStyle.addItem(s)
 		self.qtStyle.currentIndexChanged.connect(self.styleChange)

@@ -1,4 +1,4 @@
-pyinstaller merk_multipleFiles.spec
+pyinstaller merk_wayland.spec
 
 cd dist
 cd merk

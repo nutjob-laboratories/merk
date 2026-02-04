@@ -4748,7 +4748,11 @@ class Merk(QMainWindow):
 
 		sm = self.settingsMenu.addMenu(QIcon(WINDOW_ICON),"Widget style")
 
-		for s in QStyleFactory.keys():
+		QT_STYLES = QStyleFactory.keys()
+		if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
+		if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
+
+		for s in QT_STYLES:
 			if s==config.QT_WINDOW_STYLE:
 				entry = QAction(QIcon(self.round_checked_icon),s, self)
 			else:

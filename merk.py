@@ -37,6 +37,14 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
+# Wayland support
+if "Linux" in platform.system():
+	if getattr(sys, 'frozen', False):
+		os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = sys._MEIPASS
+		QCoreApplication.addLibraryPath(sys._MEIPASS)
+		QCoreApplication.addLibraryPath(os.path.join(sys._MEIPASS, 'qt5_plugins'))
+		os.environ["QT_QPA_PLATFORM"] = "wayland;xcb"
+
 app = QApplication([])
 
 import qt5reactor
@@ -71,6 +79,10 @@ else:
 	else:
 		myprog = "merk"
 
+QT_STYLES = QStyleFactory.keys()
+if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
+if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
+
 parser = argparse.ArgumentParser(
 	prog=myprog,
 	formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -83,7 +95,7 @@ parser = argparse.ArgumentParser(
 https://github.com/nutjob-laboratories/merk
 https://github.com/danhetrick
 
-Available Qt widget styles: {", ".join(QStyleFactory.keys())}
+Available Qt widget styles: {", ".join(QT_STYLES)}
 ''',
 	epilog=f'''
 © {datetime.now().year} Copyright Daniel Hetrick
@@ -339,16 +351,16 @@ if __name__ == '__main__':
 	# If the user passes us a new Qt window style...
 	if args.qtstyle!="":
 		# Check to see if it's a valid style
-		if args.qtstyle in QStyleFactory.keys():
+		if args.qtstyle in QT_STYLES:
 			# Style is valid
 			pass
 		else:
 			# Tell user the style is invalid and exit
 			if not is_running_from_pyinstaller():
 				sys.stdout.write(f"Invalid Qt window style: {args.qtstyle}\n")
-				sys.stdout.write(f"Valid available styles: {', '.join(QStyleFactory.keys())}\n")
+				sys.stdout.write(f"Valid available styles: {', '.join(QT_STYLES)}\n")
 			else:
-				show_message("Invalid Qt window style",f"Valid available styles: {', '.join(QStyleFactory.keys())}")
+				show_message("Invalid Qt window style",f"Valid available styles: {', '.join(QT_STYLES)}")
 			sys.exit(1)
 
 	# If user wants to store config data in the install

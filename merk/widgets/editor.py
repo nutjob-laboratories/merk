@@ -533,6 +533,18 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(f"pass")
 		self.updateApplicationTitle()
 
+	def doInsertPauseMethod(self):
+		self.editor.insertPlainText(f"def pause(self):")
+		self.insert_raw_indent()
+		self.editor.insertPlainText(f"pass")
+		self.updateApplicationTitle()
+
+	def doInsertUnPauseMethod(self):
+		self.editor.insertPlainText(f"def unpause(self):")
+		self.insert_raw_indent()
+		self.editor.insertPlainText(f"pass")
+		self.updateApplicationTitle()
+
 	def insertCallMethod(self):
 		e = dialog.SetMethodDialog(self)
 
@@ -806,6 +818,14 @@ class Window(QMainWindow):
 
 			entry = QAction(QIcon(APPLICATION_ICON),"unload",self)
 			entry.triggered.connect(self.doInsertUnloadMethod)
+			self.menv.addAction(entry)
+
+			entry = QAction(QIcon(APPLICATION_ICON),"pause",self)
+			entry.triggered.connect(self.doInsertPauseMethod)
+			self.menv.addAction(entry)
+
+			entry = QAction(QIcon(APPLICATION_ICON),"unpause",self)
+			entry.triggered.connect(self.doInsertUnPauseMethod)
 			self.menv.addAction(entry)
 			
 			entry = QAction(QIcon(WINDOW_ICON),"activate",self)
