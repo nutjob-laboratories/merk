@@ -96,6 +96,32 @@ class ExamplePlugin(Plugin):
     def unload(self):
         pass
 
+    # |=======|
+    # | pause |
+    # |=======|
+    #
+    # This event is triggered whenever the plugin is
+    # paused.
+    #
+    # Arguments:
+    #   None
+    #
+    def pause(self):
+        pass
+
+    # |=========|
+    # | unpause |
+    # |=========|
+    #
+    # This event is triggered whenever the plugin is
+    # unpaused.
+    #
+    # Arguments:
+    #   None
+    #
+    def unpause(self):
+        pass
+
     # |========|
     # | action |
     # |========|

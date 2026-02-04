@@ -34,6 +34,7 @@ import pathlib
 from ..resources import *
 from .. import commands
 from .. import config
+from .. import plugins
 
 BLOCK_TAB = True
 
@@ -234,14 +235,25 @@ class Dialog(QDialog):
 			cmdlist.append(e)
 		for e in commands.AUTOCOMPLETE_MULTI:
 			cmdlist.append(e)
-		cmdlist = sorted(cmdlist)
 
 		scripts = []
 		for f in commands.list_scripts():
-			scripts.append('/script '+f)
-		scripts = sorted(scripts)
+			scripts.append(f'{config.ISSUE_COMMAND_SYMBOL}script {f}')
 
-		cmdlist = scripts + cmdlist
+		plugs = []
+		for p in plugins.PLUGINS:
+			plugs.append(f"{config.ISSUE_COMMAND_SYMBOL}window pause {p._class}")
+
+		calls = []
+		for p in plugins.list_all_call_methods():
+			calls.append(f"{config.ISSUE_COMMAND_SYMBOL}call {p}")
+
+		macros = []
+		for m in commands.USER_MACROS:
+			macros.append(f"{config.ISSUE_COMMAND_SYMBOL}{commands.USER_MACROS[m].name}")
+
+		cmdlist = scripts + cmdlist + plugs + calls + macros
+		cmdlist = sorted(cmdlist)
 
 		self.command = QComboBox(self)
 		if self.ecommand!=None:

@@ -6,6 +6,9 @@ What's New:
  - Plugins no longer need to have unique NAME and VERSION attributes
  - The plugin manager can now open plugin source files in the host OS's default
    Python editor
+ - Plugins can now be "paused" to temporarily prevent them from reacting to
+   events, and "unpaused" to resume event reaction. The plugin API now has new
+   events that are triggered on "pausing" and "unpausing".
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -34,6 +37,16 @@ What's New:
 * Bugfix: URLs surrounded by parenthesis are now detected and turned into links
   in chat.
 * Bugfix: IRC color and formatting decoding to markup is now more accurate.
+* Individual plugins can now be "paused" to temporarily prevent them from
+  reacting to events or executing methods with /call.
+* Added "play" and "pause" icons to the application for the GUI representation
+  of "pausing" and "unpausing" plugins, respectively.
+* Changed the "play notification sound" icon in the settings dialog to use the
+  new "play" icon.
+* Added a "subcommand" to the /window command, "pause", allowing scripts and
+  hotkeys to pause and unpause plugins.
+* The hotkey creation/editing dialog now includes macros and plugin /call
+  commands as options.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -47,6 +60,11 @@ What's New:
   converts emojis and ASCIImojis in strings into shortcodes.
 * Plugins no longer need to have unique NAME and VERSION attributes. Plugins
   with the same NAME and VERSION can be loaded at the same time.
+* Changed the name of the master() and all_masters() plugin inherited methods
+  to server_window() and all_servers(), respectively.
+* Example plugins have been updated to use the new inherited method names.
+* New plugin events: pause() (which is triggered when a plugin is paused), and
+  unpause() (which is triggered when a plugin is unpaused).
 
 |------------------------------------------------------------------------------|
 |                                   0.051.450                                  |

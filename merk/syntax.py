@@ -80,7 +80,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
 					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd',
 					'def server', 'def subwindow', 'def close', 'def me', 'def error', 'def isupport', 'def uninstall',
-					'def unload', 'def uptime',
+					'def unload', 'def uptime', 'def pause', 'def unpause',
 
 					]
 		for word in keywords:
@@ -283,6 +283,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"folder",
 			cmdsymbol+"window fullscreen",
 			cmdsymbol+"window ontop",
+			cmdsymbol+"window pause",
 		]
 
 		script_only = [

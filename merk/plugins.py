@@ -43,6 +43,7 @@ import emoji
 CONFIG_DIRECTORY = None
 PLUGIN_DIRECTORY = None
 PLUGINS = []
+PAUSED = []
 
 class Window():
 
@@ -688,7 +689,7 @@ class Plugin():
 				self._gui.ignore_manager.refresh()
 			return True
 
-	def all_masters(self):
+	def all_servers(self):
 		if self._gui!=None:
 			output = []
 			for w in self._gui.getTotalWindows():
@@ -762,7 +763,7 @@ class Plugin():
 	def modes(self,client):
 		return client.usermodes
 
-	def master(self,client):
+	def server_window(self,client):
 		if self._gui!=None:
 			w = self._gui.getServerSubWindow(client)
 			if w:
@@ -832,15 +833,15 @@ EVENTS = [
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
 	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall',
-	'unload', 'uptime',
+	'unload', 'uptime', 'pause', 'unpause',
 ]
 
 BUILT_IN = [
-	'alias', 'all_channels', 'all_masters', 'all_privates',
+	'alias', 'all_channels', 'all_servers', 'all_privates',
 	'all_windows', 'bind', 'channel', 'channels', 'clients',
 	'console', 'emojize', 'find', 'home', 'id', 'ignore',
 	'ignores', 'is_away', 'is_ignored', 'list', 'macro',
-	'master', 'max', 'maximized', 'min', 'minimized', 'modes',
+	'server_window', 'max', 'maximized', 'min', 'minimized', 'modes',
 	'move', 'private', 'privates', 'resize', 'restore', 'script',
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
@@ -947,6 +948,7 @@ def call(gui,method,**arguments):
 	if method=='uptime' and not config.PLUGIN_UPTIME: return
 
 	for obj in PLUGINS:
+		if paused(obj): continue
 		if hasattr(obj,method):
 			m = getattr(obj,method)
 
@@ -966,6 +968,7 @@ def command_call(gui,window,method,arguments):
 	if not config.ENABLE_PLUGINS: return
 	window = Window(gui,window)
 	for obj in PLUGINS:
+		if paused(obj): continue
 		if hasattr(obj,method):
 			m = getattr(obj,method)
 
@@ -980,9 +983,51 @@ def command_call(gui,window,method,arguments):
 					else:
 						sys.stdout.write(f"Error executing {obj._filename} event \"{method}\": {e}\n")
 
+def pause_event(obj):
+	if not config.ENABLE_PLUGINS: return
+	if not config.PLUGIN_PAUSE: return
+	if hasattr(obj,"pause"):
+		try:
+			obj.pause()
+		except Exception as e:
+			if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+				QMessageBox.critical(obj._gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"pause\": {e}')
+				sys.stdout.write(f"Error executing {obj._filename} event \"pause\": {e}\n")
+			else:
+				sys.stdout.write(f"Error executing {obj._filename} event \"pause\": {e}\n")
+
+def unpause_event(obj):
+	if not config.ENABLE_PLUGINS: return
+	if not config.PLUGIN_UNPAUSE: return
+	if hasattr(obj,"unpause"):
+		try:
+			obj.unpause()
+		except Exception as e:
+			if config.DISPLAY_MESSAGEBOX_ON_PLUGIN_RUNTIME_ERRORS:
+				QMessageBox.critical(obj._gui, f'{obj.NAME} {obj.VERSION} ({obj._filename})', f'Error executing event \"unpause\": {e}')
+				sys.stdout.write(f"Error executing {obj._filename} event \"unpause\": {e}\n")
+			else:
+				sys.stdout.write(f"Error executing {obj._filename} event \"unpause\": {e}\n")
+
+def pause(obj):
+	if not obj._id in PAUSED:
+		pause_event(obj)
+		PAUSED.append(obj._id)
+
+def unpause(obj):
+	if obj._id in PAUSED:
+		unpause_event(obj)
+		PAUSED.remove(obj._id)
+
+def paused(obj):
+	if obj._id in PAUSED:
+		return True
+	return False
+
 def list_all_call_methods():
 	output = []
 	for obj in PLUGINS:
+		if paused(obj): continue
 		all_methods = inspect.getmembers(obj, predicate=inspect.ismethod)
 		method_names = [name for name, method in all_methods]
 
@@ -1016,6 +1061,7 @@ def is_valid_call_method(method):
 	if method in BUILT_IN: return BUILT_IN_METHOD
 	for obj in PLUGINS:
 		if hasattr(obj,method):
+			if paused(obj): return NO_METHOD
 			mi = getattr(obj,method)
 			specs = inspect.getfullargspec(mi)
 			if len(specs.args)==3:
@@ -1133,7 +1179,8 @@ def load_plugins(gui):
 
 					# Execute plugin init
 					if config.EXECUTE_INIT_ON_PLUGIN_RELOAD:
-						init(obj)
+						if not paused(obj):
+							init(obj)
 					else:
 						if not plugin_is_being_reloaded:
 							init(obj)

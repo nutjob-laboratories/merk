@@ -175,6 +175,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window uninstall": config.ISSUE_COMMAND_SYMBOL+"window uninstall ",
 			config.ISSUE_COMMAND_SYMBOL+"window fullscreen": config.ISSUE_COMMAND_SYMBOL+"window fullscreen",
 			config.ISSUE_COMMAND_SYMBOL+"window ontop": config.ISSUE_COMMAND_SYMBOL+"window ontop",
+			config.ISSUE_COMMAND_SYMBOL+"window pause": config.ISSUE_COMMAND_SYMBOL+"window pause",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -185,6 +186,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window plugin",'')
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window install",'')
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window uninstall",'')
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window pause",'')
 
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
@@ -346,6 +348,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		W_COMMAND.append("<b>plugin</b>")
 		W_COMMAND.append("<b>install</b>")
 		W_COMMAND.append("<b>uninstall</b>")
+		W_COMMAND.append("<b>pause</b>")
 
 	W_COMMAND.sort()
 
@@ -3550,6 +3553,73 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					gui.showFullScreen()
 				config.save_settings(config.CONFIG_FILE)
 				gui.buildSettingsMenu()
+				return True
+
+		# /window pause
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='pause':
+				if not config.ENABLE_PLUGINS:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window pause: Plugins are disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				if len(plugins.PLUGINS)>0:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(plugins.PLUGINS)} plugins")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					for p in plugins.PLUGINS:
+						if plugins.paused(p):
+							t = Message(SYSTEM_MESSAGE,'',f"{p._class} - {p.NAME} {p.VERSION} ({p._basename}) (paused)")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(SYSTEM_MESSAGE,'',f"{p._class} - {p.NAME} {p.VERSION} ({p._basename})")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End plugin list")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"No plugins installed")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
+			if tokens[1].lower()=='pause':
+				if not config.ENABLE_PLUGINS:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window pause: Plugins are disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Plugins are disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				tokens.pop(0)
+				tokens.pop(0)
+				target = tokens.pop(0)
+				for p in plugins.PLUGINS:
+					if target==p._class:
+						if plugins.paused(p):
+							plugins.unpause(p)
+							t = Message(SYSTEM_MESSAGE,'',f"Plugin {target} unpaused")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							plugins.pause(p)
+							t = Message(SYSTEM_MESSAGE,'',f"Plugin {target} paused")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window pause: Plugin \"{target}\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Plugin \"{target}\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
 		# /window install

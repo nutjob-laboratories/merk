@@ -347,11 +347,18 @@ class Window(QMainWindow):
 				name_tag = f"{item.NAME} {item.VERSION}"
 				class_tag = f"<b>{item.classname}</b> in {item.basename}"
 
+				if plugins.paused(item.plugin):
+					name_tag = f"<i>{name_tag}</i>"
+					class_tag = f"<i>{class_tag}</i>"
+					author_tag = f"<i>{author_tag}</i>"
+				else:
+					icon = item.icon
+
 				widget = extendedmenuitem.pluginItem(
 					name_tag,
 					class_tag,
 					author_tag,
-					item.icon,48
+					icon,48
 				)
 				self.plugin_list.setItemWidget(item, widget)
 
@@ -399,6 +406,11 @@ class Window(QMainWindow):
 
 			name_tag = f"{NAME} {VERSION}"
 			class_tag = f"<b>{classname}</b> in {basename}"
+
+			if plugins.paused(item.plugin):
+				name_tag = f"<i>{name_tag}</i>"
+				class_tag = f"<i>{class_tag}</i>"
+				author_tag = f"<i>{author_tag}</i>"
 
 			widget = extendedmenuitem.pluginItem(
 				name_tag,
@@ -496,6 +508,14 @@ class Window(QMainWindow):
 				if hasattr(item,"dummy"):
 					if item.dummy==False:
 
+						if plugins.paused(item.plugin):
+							pause_action = QAction(QIcon(PLAY_ICON),"Unpause plugin", self)
+							pause_action.triggered.connect(lambda: self.do_unpause(item.plugin))
+						else:
+							pause_action = QAction(QIcon(PAUSE_ICON),"Pause plugin", self)
+							pause_action.triggered.connect(lambda: self.do_pause(item.plugin))
+						menu.addAction(pause_action)
+
 						subwindow,widget = self.parent.getConsole(item.plugin)
 						if subwindow!=None:
 							if self.is_console_visible(item):
@@ -524,6 +544,14 @@ class Window(QMainWindow):
 						menu.addAction(delete_action)
 
 						menu.exec_(self.plugin_list.mapToGlobal(position))
+
+	def do_pause(self,plugin):
+		plugins.pause(plugin)
+		self.refresh()
+
+	def do_unpause(self,plugin):
+		plugins.unpause(plugin)
+		self.refresh()
 
 	def toggleTop(self):
 		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):

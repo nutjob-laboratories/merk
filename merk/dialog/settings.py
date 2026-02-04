@@ -568,6 +568,8 @@ class Dialog(QDialog):
 			self.plugUnload.setEnabled(True)
 			self.showConsole.setEnabled(True)
 			self.plugUptime.setEnabled(True)
+			self.plugPause.setEnabled(True)
+			self.plugUnpause.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -626,6 +628,8 @@ class Dialog(QDialog):
 			self.plugUnload.setEnabled(False)
 			self.showConsole.setEnabled(False)
 			self.plugUptime.setEnabled(False)
+			self.plugPause.setEnabled(False)
+			self.plugUnpause.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -3171,7 +3175,7 @@ class Dialog(QDialog):
 		self.playButton = QPushButton(" Play")
 		self.playButton.clicked.connect(self.playSound)
 		self.playButton.setAutoDefault(False)
-		self.playButton.setIcon(QIcon(RUN_ICON))
+		self.playButton.setIcon(QIcon(PLAY_ICON))
 		self.playButton.setToolTip("Play sound")
 
 		self.soundDefaultButton = QPushButton("Set to default")
@@ -5073,10 +5077,22 @@ class Dialog(QDialog):
 		self.plugUptime.stateChanged.connect(self.changedSetting)
 		self.plugUptime.setFont(f)
 
+		self.plugPause = QCheckBox("pause",self)
+		if config.PLUGIN_PAUSE: self.plugPause.setChecked(True)
+		self.plugPause.stateChanged.connect(self.changedSetting)
+		self.plugPause.setFont(f)
+
+		self.plugUnpause = QCheckBox("unpause",self)
+		if config.PLUGIN_UNPAUSE: self.plugUnpause.setChecked(True)
+		self.plugUnpause.stateChanged.connect(self.changedSetting)
+		self.plugUnpause.setFont(f)
+
 		if not config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
 			self.reloadInit.setEnabled(False)
 
 		if not config.ENABLE_PLUGINS:
+			self.plugUnpause.setEnabled(False)
+			self.plugPause.setEnabled(False)
 			self.plugUptime.setEnabled(False)
 			self.showConsole.setEnabled(False)
 			self.plugUnload.setEnabled(False)
@@ -5175,33 +5191,33 @@ class Dialog(QDialog):
 		row10Layout = QHBoxLayout()
 		row10Layout.addWidget(self.plugNotice)
 		row10Layout.addWidget(self.plugPart)
-		row10Layout.addWidget(self.plugPing)
+		row10Layout.addWidget(self.plugPause)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugPing)
 		row11Layout.addWidget(self.plugQuit)
 		row11Layout.addWidget(self.plugRename)
-		row11Layout.addWidget(self.plugServer)
 
 		row12Layout = QHBoxLayout()
+		row12Layout.addWidget(self.plugServer)
 		row12Layout.addWidget(self.plugSubwindow)
 		row12Layout.addWidget(self.plugTick)
-		row12Layout.addWidget(self.plugTopic)
 
 		row13Layout = QHBoxLayout()
+		row13Layout.addWidget(self.plugTopic)
 		row13Layout.addWidget(self.pluginUninstall)
 		row13Layout.addWidget(self.plugUnload)
-		row13Layout.addWidget(self.plugUnmode)
 
 		row14Layout = QHBoxLayout()
+		row14Layout.addWidget(self.plugUnmode)
+		row14Layout.addWidget(self.plugUnpause)
 		row14Layout.addWidget(self.plugUptime)
-		row14Layout.addStretch()
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.pluginDescription = QLabel(f"""
 			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
-			in Python. Plugins can be created, edited, installed, and uninstalled with the plugin manager. For more
-			information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
+			in Python. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
 			</small>
 			""")
 		self.pluginDescription.setWordWrap(True)
@@ -5210,7 +5226,8 @@ class Dialog(QDialog):
 
 		self.eventDescription = QLabel(f"""
 			<small>
-			Uncheck an <b>event</b> to prevent that event from being triggered.
+			Uncheck an <b>event</b> to prevent that event from being triggered. Events that are <b>{APPLICATION_NAME}</b> specific
+			are shown in <b>bold</b>.
 			</small>
 			""")
 		self.eventDescription.setWordWrap(True)
@@ -6030,6 +6047,8 @@ class Dialog(QDialog):
 		config.SHOW_TOPIC_IN_EDITOR_TOOLTIP = self.channelTooltip.isChecked()
 		config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS = self.notifyRepeated.isChecked()
 		config.IRC_COLOR_IN_TOPICS = self.channelColors.isChecked()
+		config.PLUGIN_PAUSE = self.plugPause.isChecked()
+		config.PLUGIN_UNPAUSE = self.plugUnpause.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
