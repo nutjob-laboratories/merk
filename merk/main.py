@@ -2351,6 +2351,8 @@ class Merk(QMainWindow):
 				if client.last_interaction>config.AUTOAWAY_TIME:
 					if not client.is_away:
 						msg = config.DEFAULT_AWAY_MESSAGE
+						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
@@ -3066,14 +3068,14 @@ class Merk(QMainWindow):
 		if config.INTERPOLATE_ALIASES_INTO_INPUT:
 			user_input = commands.interpolateAliases(user_input)
 
-		if config.USE_MARKDOWN_IN_INPUT: user_input = markdown_to_irc(user_input)
-		if config.USE_IRC_COLORS_IN_INPUT: user_input = inject_irc_colors(user_input)
-
 		# Handle chat commands
 		if commands.handleChatCommands(self,window,user_input): return
 
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return
+
+		if config.ENABLE_MARKDOWN_MARKUP: user_input = markdown_to_irc(user_input)
+		if config.ENABLE_IRC_COLOR_MARKUP: user_input = inject_irc_colors(user_input)
 		
 		# Add emojis to the message
 		if config.ENABLE_EMOJI_SHORTCODES: user_input = emoji.emojize(user_input,language=config.EMOJI_LANGUAGE)
@@ -3101,9 +3103,6 @@ class Merk(QMainWindow):
 		# Interpolate aliases into user input
 		if config.INTERPOLATE_ALIASES_INTO_INPUT:
 			user_input = commands.interpolateAliases(user_input)
-
-		if config.USE_MARKDOWN_IN_INPUT: user_input = markdown_to_irc(user_input)
-		if config.USE_IRC_COLORS_IN_INPUT: user_input = inject_irc_colors(user_input)
 		
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return
@@ -3117,6 +3116,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if c.window_type==SERVER_WINDOW:
 					msg = config.DEFAULT_QUIT_MESSAGE
+					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
@@ -4187,19 +4188,30 @@ class Merk(QMainWindow):
 		self.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		self.buildSettingsMenu()
 
-	def settingsMarkdown(self):
-		if config.USE_MARKDOWN_IN_INPUT:
-			config.USE_MARKDOWN_IN_INPUT = False
+	def settingsColor(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+		if config.DISPLAY_IRC_COLORS:
+			config.DISPLAY_IRC_COLORS = False
 		else:
-			config.USE_MARKDOWN_IN_INPUT = True
+			config.DISPLAY_IRC_COLORS = True
+		config.save_settings(config.CONFIG_FILE)
+		self.reRenderAll()
+		QApplication.restoreOverrideCursor()
+		self.buildSettingsMenu()
+
+	def settingsMarkdown(self):
+		if config.ENABLE_MARKDOWN_MARKUP:
+			config.ENABLE_MARKDOWN_MARKUP = False
+		else:
+			config.ENABLE_MARKDOWN_MARKUP = True
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
 	def settingsInputColor(self):
-		if config.USE_IRC_COLORS_IN_INPUT:
-			config.USE_IRC_COLORS_IN_INPUT = False
+		if config.ENABLE_IRC_COLOR_MARKUP:
+			config.ENABLE_IRC_COLOR_MARKUP = False
 		else:
-			config.USE_IRC_COLORS_IN_INPUT = True
+			config.ENABLE_IRC_COLOR_MARKUP = True
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
@@ -4447,17 +4459,24 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.addSeparator()
 
-		if config.USE_MARKDOWN_IN_INPUT:
-			entry = QAction(QIcon(self.checked_icon),"Use markdown in input", self)
+		if config.DISPLAY_IRC_COLORS:
+			entry = QAction(QIcon(self.checked_icon),"Display IRC colors", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Use markdown in input", self)
+			entry = QAction(QIcon(self.unchecked_icon),"Display IRC colors", self)
+		entry.triggered.connect(self.settingsColor)
+		self.settingsMenu.addAction(entry)
+
+		if config.ENABLE_MARKDOWN_MARKUP:
+			entry = QAction(QIcon(self.checked_icon),"Use markdown in messages", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Use markdown in messages", self)
 		entry.triggered.connect(self.settingsMarkdown)
 		self.settingsMenu.addAction(entry)
 
-		if config.USE_IRC_COLORS_IN_INPUT:
-			entry = QAction(QIcon(self.checked_icon),"Use IRC colors in input", self)
+		if config.ENABLE_IRC_COLOR_MARKUP:
+			entry = QAction(QIcon(self.checked_icon),"Use IRC colors in messages", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Use IRC colors in input", self)
+			entry = QAction(QIcon(self.unchecked_icon),"Use IRC colors in messages", self)
 		entry.triggered.connect(self.settingsInputColor)
 		self.settingsMenu.addAction(entry)
 
@@ -5364,9 +5383,13 @@ class Merk(QMainWindow):
 						self.quitting[c.client.client_id] = 0
 						if disco_msg==None:
 							msg = config.DEFAULT_QUIT_MESSAGE
+							if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+							if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 							if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 							if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						else:
+							if config.ENABLE_MARKDOWN_MARKUP: disco_msg = markdown_to_irc(disco_msg)
+							if config.ENABLE_IRC_COLOR_MARKUP: disco_msg = inject_irc_colors(disco_msg)
 							if config.ENABLE_EMOJI_SHORTCODES: disco_msg = emoji.emojize(disco_msg,language=config.EMOJI_LANGUAGE)
 							if config.ENABLE_ASCIIMOJI_SHORTCODES: disco_msg = emojize(disco_msg)
 							msg = disco_msg

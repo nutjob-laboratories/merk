@@ -1053,6 +1053,8 @@ class Window(QMainWindow):
 
 				entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",menu)
 				msg = config.DEFAULT_QUIT_MESSAGE
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
@@ -2414,6 +2416,8 @@ class Window(QMainWindow):
 			else:
 				self.parent.quitting[self.client.client_id] = 0
 				msg = config.DEFAULT_QUIT_MESSAGE
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
@@ -2439,6 +2443,8 @@ class Window(QMainWindow):
 				if msg:
 					self.away_button.setToolTip("Set status to \"back\"")
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
+					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
@@ -2451,6 +2457,8 @@ class Window(QMainWindow):
 				self.away_button.setToolTip("Set status to \"back\"")
 				self.away_button.setIcon(QIcon(GO_BACK_ICON))
 				msg = config.DEFAULT_AWAY_MESSAGE
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
@@ -2528,6 +2536,8 @@ class Window(QMainWindow):
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
 			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
@@ -2802,10 +2812,6 @@ class Window(QMainWindow):
 		if not hasattr(self,"topic"): return
 
 		self.channel_topic = topic
-
-		if not config.DISPLAY_IRC_COLORS:
-			if string_has_irc_formatting_codes(topic):
-				topic = strip_color(topic)
 		
 		self.topic.setText(topic)
 
@@ -2816,10 +2822,6 @@ class Window(QMainWindow):
 
 	def resetTopic(self):
 		topic = self.channel_topic
-
-		if not config.DISPLAY_IRC_COLORS:
-			if string_has_irc_formatting_codes(topic):
-				topic = strip_color(topic)
 
 		self.topic.setText(topic)
 

@@ -10,6 +10,8 @@ What's New:
    events, and "unpaused" to resume event reaction. The plugin API now has new
    events that are triggered on "pausing" and "unpausing".
  - Added support for Wayland to the Linux binary distribution.
+ - Markdown and IRC color "markup" is now enabled for messages (and topics)
+   only, not for ALL input in the text input widget.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -54,6 +56,18 @@ What's New:
   due to the fact that some Qt style themes could render the dialog unusable.
 * Removed the option to select some specific Qt style themes due to the fact
   that they caused the application to crash.
+* Bugfix: the settings dialog now reports what font the app is using more
+  accurately.
+* Markdown and IRC color markup are now no longer limited to text entered into
+  the text input widget; they will be inserted into ANY message sent by MERK if
+  they are turned on.
+* Bugfix: markdown input was breaking using some command arguments. Now that
+  markdown is turned on for messages only, commands should work properly again.
+* Markdown and IRC color "markup" settings were moved to the "Miscellaneous"
+  page of the settings dialog.
+* Bugfix: toggling IRC color display no longer changes IRC colors in channel
+  topics.
+* Restored the IRC color display toggle to the settings menu.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

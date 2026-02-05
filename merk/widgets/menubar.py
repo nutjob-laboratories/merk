@@ -397,6 +397,8 @@ class wMenuButton(QPushButton):
 
 			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
 			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
@@ -562,6 +564,8 @@ class wIconMenuButton(QPushButton):
 
 			entry = QAction(QIcon(CHANNEL_ICON),"Leave channel",self)
 			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:

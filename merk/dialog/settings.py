@@ -1845,7 +1845,7 @@ class Dialog(QDialog):
 		self.stack.addWidget(self.applicationPage)
 		self.stack.setCurrentWidget(self.applicationPage)
 
-		f = self.font()
+		f = self.parent.app.font()
 		fs = f.toString()
 		pfs = fs.split(',')
 		font_name = pfs[0]
@@ -4047,44 +4047,6 @@ class Dialog(QDialog):
 		autoSetCenter.addLayout(asL3)
 		autoSetCenter.addLayout(asL4)
 
-		self.mdDescription = QLabel("""
-			<small>
-			Use markdown to format input in <i>italics</i> (input <b>*</b> before and after text), <b>bold</b> (<b>**</b>), <s>strikethrough</s> (<b>~</b>),
-			or <u>underline</u> (<b>__</b>).
-			Not all clients support the <s>strikethrough</s> display.
-			To escape a markdown character so it's not used for formatting, place a <b>forward slash</b> (<b>\\</b>) before it.
-			<br><br>
-			To use <a href="https://www.mirc.com/colors.html">IRC colors</a> in input, open a color block with <b>&lt;NUMBER</b> to set the foreground color, and
-			<b>&lt;NUMBER,NUMBER</b> to set the foreground and background colors. Close the color block with <b>&gt;</b>.
-			Valid IRC color numbers are <b>0</b> to <b>15</b>.<br><br>
-			If IRC colors are turned off, neither of these will be displayed in the client, but will be sent to the server.
-			The formatting and colors will only be applied to text typed in the text input widget.<br>
-			</small>
-			""")
-		self.mdDescription.setWordWrap(True)
-		self.mdDescription.setAlignment(Qt.AlignJustify)
-		self.mdDescription.setOpenExternalLinks(True)
-
-		self.useMd = QCheckBox("Markdown input",self)
-		if config.USE_MARKDOWN_IN_INPUT: self.useMd.setChecked(True)
-		self.useMd.stateChanged.connect(self.changedSetting)
-
-		self.useIRCc = QCheckBox("IRC color input",self)
-		if config.USE_IRC_COLORS_IN_INPUT: self.useIRCc.setChecked(True)
-		self.useIRCc.stateChanged.connect(self.changedSetting)
-
-		inoptLayout = QHBoxLayout()
-		inoptLayout.addStretch()
-		inoptLayout.addWidget(self.useMd)
-		inoptLayout.addStretch()
-		inoptLayout.addWidget(self.useIRCc)
-		inoptLayout.addStretch()
-
-		inputOptionsLayout = QVBoxLayout()
-		inputOptionsLayout.setSpacing(0)
-		inputOptionsLayout.addWidget(self.mdDescription)
-		inputOptionsLayout.addLayout(inoptLayout)
-
 		inputLayout = QVBoxLayout()
 		inputLayout.setSpacing(2)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
@@ -4096,9 +4058,6 @@ class Dialog(QDialog):
 		inputLayout.addLayout(autoMaster)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSetCenter)
-		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC colors</b>"))
-		inputLayout.addLayout(inputOptionsLayout)
-
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -5398,7 +5357,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.miscPage)
 
-		self.enableEmojis = QCheckBox("Enable emoji shortcodes",self)
+		self.enableEmojis = QCheckBox("Emoji shortcodes",self)
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
 		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
@@ -5417,7 +5376,7 @@ class Dialog(QDialog):
 		self.emojiDescription.setAlignment(Qt.AlignJustify)
 		self.emojiDescription.setOpenExternalLinks(True)
 
-		self.enableAscii = QCheckBox("Enable ASCIImoji shortcodes",self)
+		self.enableAscii = QCheckBox("ASCIImoji shortcodes",self)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: self.enableAscii.setChecked(True)
 		self.enableAscii.stateChanged.connect(self.changedEmoji)
 
@@ -5425,16 +5384,12 @@ class Dialog(QDialog):
 		escLayout1.addStretch()
 		escLayout1.addWidget(self.enableEmojis)
 		escLayout1.addStretch()
-
-		escLayout2 = QHBoxLayout()
-		escLayout2.addStretch()
-		escLayout2.addWidget(self.enableAscii)
-		escLayout2.addStretch()
+		escLayout1.addWidget(self.enableAscii)
+		escLayout1.addStretch()
 
 		escLayout = QVBoxLayout()
 		escLayout.setSpacing(2)
 		escLayout.addLayout(escLayout1)
-		escLayout.addLayout(escLayout2)
 
 		self.searchAllTerms = QCheckBox("Search for all terms in channel list",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.searchAllTerms.setChecked(True)
@@ -5473,10 +5428,49 @@ class Dialog(QDialog):
 		mmLayout.setSpacing(2)
 		mmLayout.addWidget(self.searchInstall)
 
+		self.mdDescription = QLabel("""
+			<small>
+			Use markdown to format messages in <i>italics</i> (input <b>*</b> before and after text), <b>bold</b> (<b>**</b>), <s>strikethrough</s> (<b>~</b>),
+			or <u>underline</u> (<b>__</b>).
+			Not all clients support the <s>strikethrough</s> display.
+			To escape a markdown character so it's not used for formatting, place a <b>forward slash</b> (<b>\\</b>) before it.
+			<br><br>
+			To use <a href="https://www.mirc.com/colors.html">IRC colors</a> in messages, open a color block with <b>&lt;NUMBER</b> to set the foreground color, and
+			<b>&lt;NUMBER,NUMBER</b> to set the foreground and background colors. Close the color block with <b>&gt;</b>.
+			Valid IRC color numbers are <b>0</b> to <b>15</b>.<br><br>
+			If IRC colors are turned off, neither of these will be displayed in the client, but will be sent to the server.<br>
+			</small>
+			""")
+		self.mdDescription.setWordWrap(True)
+		self.mdDescription.setAlignment(Qt.AlignJustify)
+		self.mdDescription.setOpenExternalLinks(True)
+
+		self.useMd = QCheckBox("Enable markdown",self)
+		if config.ENABLE_MARKDOWN_MARKUP: self.useMd.setChecked(True)
+		self.useMd.stateChanged.connect(self.changedSetting)
+
+		self.useIRCc = QCheckBox("Enable IRC color",self)
+		if config.ENABLE_IRC_COLOR_MARKUP: self.useIRCc.setChecked(True)
+		self.useIRCc.stateChanged.connect(self.changedSetting)
+
+		inoptLayout = QHBoxLayout()
+		inoptLayout.addStretch()
+		inoptLayout.addWidget(self.useMd)
+		inoptLayout.addStretch()
+		inoptLayout.addWidget(self.useIRCc)
+		inoptLayout.addStretch()
+
+		inputOptionsLayout = QVBoxLayout()
+		inputOptionsLayout.setSpacing(0)
+		inputOptionsLayout.addWidget(self.mdDescription)
+		inputOptionsLayout.addLayout(inoptLayout)
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC colors</b>"))
+		miscLayout.addLayout(inputOptionsLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addLayout(setLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
@@ -6043,9 +6037,9 @@ class Dialog(QDialog):
 		config.PLUGIN_UNINSTALL = self.pluginUninstall.isChecked()
 		config.PLUGIN_UNLOAD = self.plugUnload.isChecked()
 		config.SHOW_PLUGIN_CONSOLE_ON_CREATION = self.showConsole.isChecked()
-		config.USE_MARKDOWN_IN_INPUT = self.useMd.isChecked()
+		config.ENABLE_MARKDOWN_MARKUP = self.useMd.isChecked()
 		config.ENABLE_ASCIIMOJI_SHORTCODES = self.enableAscii.isChecked()
-		config.USE_IRC_COLORS_IN_INPUT = self.useIRCc.isChecked()
+		config.ENABLE_IRC_COLOR_MARKUP = self.useIRCc.isChecked()
 		config.PLUGIN_UPTIME = self.plugUptime.isChecked()
 		config.ENABLE_BROWSER_COMMAND = self.enableBrowser.isChecked()
 		config.SHOW_TOPIC_IN_EDITOR_TOOLTIP = self.channelTooltip.isChecked()
@@ -6152,6 +6146,7 @@ class Dialog(QDialog):
 
 		if self.newfont!=None:
 			config.APPLICATION_FONT = self.newfont.toString()
+			self.setFont(self.newfont)
 			self.parent.app.setFont(self.newfont)
 			self.parent.setAllFont(self.newfont)
 

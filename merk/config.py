@@ -390,9 +390,9 @@ RELOAD_PLUGINS_AFTER_UNINSTALL = True
 PLUGIN_UNINSTALL = True
 PLUGIN_UNLOAD = True
 SHOW_PLUGIN_CONSOLE_ON_CREATION = False
-USE_MARKDOWN_IN_INPUT = True
+ENABLE_MARKDOWN_MARKUP = True
 ENABLE_ASCIIMOJI_SHORTCODES = True
-USE_IRC_COLORS_IN_INPUT = True
+ENABLE_IRC_COLOR_MARKUP = True
 PLUGIN_UPTIME = True
 ENABLE_BROWSER_COMMAND = True
 SHOW_TOPIC_IN_EDITOR_TOOLTIP = True
@@ -412,9 +412,9 @@ def build_settings():
 		"show_channel_topic_in_tooltip": SHOW_TOPIC_IN_EDITOR_TOOLTIP,
 		"enable_browser_command": ENABLE_BROWSER_COMMAND,
 		"enable_plugin_uptime_event": PLUGIN_UPTIME,
-		"use_irc_colors_in_input": USE_IRC_COLORS_IN_INPUT,
+		"enable_irc_color_markup": ENABLE_IRC_COLOR_MARKUP,
 		"enable_asciimoji_shortcodes": ENABLE_ASCIIMOJI_SHORTCODES,
-		"use_markdown_for_formatting_input": USE_MARKDOWN_IN_INPUT,
+		"enable_markdown_markup": ENABLE_MARKDOWN_MARKUP,
 		"show_plugin_consoles_on_creation": SHOW_PLUGIN_CONSOLE_ON_CREATION,
 		"enable_plugin_unload_event": PLUGIN_UNLOAD,
 		"enable_plugin_uninstall_event": PLUGIN_UNINSTALL,
@@ -787,12 +787,12 @@ def patch_settings(settings):
 		settings["enable_browser_command"] = ENABLE_BROWSER_COMMAND
 	if not "enable_plugin_uptime_event" in settings:
 		settings["enable_plugin_uptime_event"] = PLUGIN_UPTIME
-	if not "use_irc_colors_in_input" in settings:
-		settings["use_irc_colors_in_input"] = USE_IRC_COLORS_IN_INPUT
+	if not "enable_irc_color_markup" in settings:
+		settings["enable_irc_color_markup"] = ENABLE_IRC_COLOR_MARKUP
 	if not "enable_asciimoji_shortcodes" in settings:
 		settings["enable_asciimoji_shortcodes"] = ENABLE_ASCIIMOJI_SHORTCODES
-	if not "use_markdown_for_formatting_input" in settings:
-		settings["use_markdown_for_formatting_input"] = USE_MARKDOWN_IN_INPUT
+	if not "enable_markdown_markup" in settings:
+		settings["enable_markdown_markup"] = ENABLE_MARKDOWN_MARKUP
 	if not "show_plugin_consoles_on_creation" in settings:
 		settings["show_plugin_consoles_on_creation"] = SHOW_PLUGIN_CONSOLE_ON_CREATION
 	if not "enable_plugin_unload_event" in settings:
@@ -1850,9 +1850,9 @@ def load_settings(filename):
 	global PLUGIN_UNINSTALL
 	global PLUGIN_UNLOAD
 	global SHOW_PLUGIN_CONSOLE_ON_CREATION
-	global USE_MARKDOWN_IN_INPUT
+	global ENABLE_MARKDOWN_MARKUP
 	global ENABLE_ASCIIMOJI_SHORTCODES
-	global USE_IRC_COLORS_IN_INPUT
+	global ENABLE_IRC_COLOR_MARKUP
 	global PLUGIN_UPTIME
 	global ENABLE_BROWSER_COMMAND
 	global SHOW_TOPIC_IN_EDITOR_TOOLTIP
@@ -1878,9 +1878,9 @@ def load_settings(filename):
 		SHOW_TOPIC_IN_EDITOR_TOOLTIP = settings["show_channel_topic_in_tooltip"]
 		ENABLE_BROWSER_COMMAND = settings["enable_browser_command"]
 		PLUGIN_UPTIME = settings["enable_plugin_uptime_event"]
-		USE_IRC_COLORS_IN_INPUT = settings["use_irc_colors_in_input"]
+		ENABLE_IRC_COLOR_MARKUP = settings["enable_irc_color_markup"]
 		ENABLE_ASCIIMOJI_SHORTCODES = settings["enable_asciimoji_shortcodes"]
-		USE_MARKDOWN_IN_INPUT = settings["use_markdown_for_formatting_input"]
+		ENABLE_MARKDOWN_MARKUP = settings["enable_markdown_markup"]
 		SHOW_PLUGIN_CONSOLE_ON_CREATION = settings["show_plugin_consoles_on_creation"]
 		PLUGIN_UNLOAD = settings["enable_plugin_unload_event"]
 		PLUGIN_UNINSTALL = settings["enable_plugin_uninstall_event"]
