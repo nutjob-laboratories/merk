@@ -350,7 +350,7 @@ class Window(QMainWindow):
 				if plugins.paused(item.plugin):
 					name_tag = f"<i>{name_tag}</i>"
 					class_tag = f"<i>{class_tag}</i>"
-					author_tag = f"<i>{author_tag}</i>"
+					author_tag = f"<i>{author_tag}</i>&nbsp;&nbsp;Paused"
 				else:
 					icon = item.icon
 
@@ -410,7 +410,7 @@ class Window(QMainWindow):
 			if plugins.paused(item.plugin):
 				name_tag = f"<i>{name_tag}</i>"
 				class_tag = f"<i>{class_tag}</i>"
-				author_tag = f"<i>{author_tag}</i>"
+				author_tag = f"<i>{author_tag}</i>&nbsp;&nbsp;Paused"
 
 			widget = extendedmenuitem.pluginItem(
 				name_tag,

@@ -121,6 +121,13 @@ class Window(QMainWindow):
 		except:
 			pass
 
+	def html(self,message):
+		try:
+			self.chat.append(message)
+			self.moveChatToBottom(True)
+		except:
+			pass
+
 	def moveChatToBottom(self,force=False):
 		if force:
 			sb = self.chat.verticalScrollBar()

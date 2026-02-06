@@ -4781,6 +4781,10 @@ class Merk(QMainWindow):
 
 		self.buildSystrayMenu()
 
+	def openFile(self,filename):
+		QDesktopServices.openUrl(QUrl.fromLocalFile(filename))
+		self.toolsMenu.close()
+
 	def buildToolsMenu(self):
 
 		self.toolsMenu.clear()
@@ -4814,27 +4818,6 @@ class Merk(QMainWindow):
 
 		self.toolsMenu.addSeparator()
 
-		if config.ENABLE_PLUGINS:
-			if len(plugins.PLUGINS)>0:
-				sm = self.toolsMenu.addMenu(QIcon(PLUGIN_ICON),"Plugins")
-				for obj in plugins.PLUGINS:
-					filename = obj._filename
-					basename = obj._basename
-					events = obj._events
-					classname = obj._class
-					NAME = obj.NAME
-					VERSION = obj.VERSION
-					icon = obj._icon
-
-					if icon==None: icon = PYTHON_MENU_ICON
-
-					if config.ENABLE_PLUGIN_EDITOR:
-						l = lambda h=filename: self.openPythonEditor(h)
-					else:
-						l = lambda: None
-					entry = widgets.ExtendedMenuItem(self,icon,f"{NAME} {VERSION}&nbsp;&nbsp;",f"{classname} ({basename}) - {events} events&nbsp;&nbsp;",CUSTOM_MENU_ICON_SIZE,l)
-					sm.addAction(entry)
-
 		if config.SCRIPTING_ENGINE_ENABLED:
 			file_paths = []
 			for root, _, files in os.walk(commands.SCRIPTS_DIRECTORY):
@@ -4855,6 +4838,30 @@ class Merk(QMainWindow):
 				for f in user.COMMANDS:
 					entry = QAction(QIcon(README_ICON),f,self)
 					entry.triggered.connect(lambda state,h=f: self.openEditorConnect(h))
+					sm.addAction(entry)
+
+		if config.ENABLE_PLUGINS:
+			if len(plugins.PLUGINS)>0:
+				sm = self.toolsMenu.addMenu(QIcon(PLUGIN_ICON),"Installed plugins")
+				for obj in plugins.PLUGINS:
+					filename = obj._filename
+					basename = obj._basename
+					events = obj._events
+					classname = obj._class
+					NAME = obj.NAME
+					VERSION = obj.VERSION
+					icon = obj._icon
+
+					if icon==None: icon = PYTHON_ICON
+
+					if plugins.paused(obj):
+						entry = QAction(QIcon(icon),f"{NAME} {VERSION} (Paused)",self)
+					else:
+						entry = QAction(QIcon(icon),f"{NAME} {VERSION}",self)
+					if config.ENABLE_PLUGIN_EDITOR:
+						entry.triggered.connect(lambda state,h=filename: self.openPythonEditor(h))
+					else:
+						entry.triggered.connect(lambda state: self.openFile(filename))
 					sm.addAction(entry)
 
 		sm = self.toolsMenu.addMenu(QIcon(FOLDER_ICON),"Directories")

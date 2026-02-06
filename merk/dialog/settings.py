@@ -2586,13 +2586,6 @@ class Dialog(QDialog):
 			self.windowbarMention.setEnabled(False)
 			self.windowbarChannelTopic.setEnabled(False)
 
-		includesLayout2 = QFormLayout()
-		includesLayout2.setSpacing(0)
-		includesLayout2.addRow(self.windowbarChannels,self.windowbarPrivate)
-		includesLayout2.addRow(self.windowBarServers,self.windowBarEditor)
-		includesLayout2.addRow(self.windowbarLists,self.windowbarManager)
-		includesLayout2.addRow(self.windowbarReadme)
-
 		incLayout1 = QHBoxLayout()
 		incLayout1.addWidget(self.windowbarChannels)
 		incLayout1.addWidget(self.windowbarPrivate)
@@ -4962,7 +4955,7 @@ class Dialog(QDialog):
 		if config.PLUGIN_MOTD: self.plugMotd.setChecked(True)
 		self.plugMotd.stateChanged.connect(self.changedSetting)
 
-		self.plugEditor = QCheckBox("Enable editor",self)
+		self.plugEditor = QCheckBox("Enable Python editor",self)
 		if config.ENABLE_PLUGIN_EDITOR: self.plugEditor.setChecked(True)
 		self.plugEditor.stateChanged.connect(self.changedSetting)
 
@@ -5469,7 +5462,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC colors</b>"))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC color \"markup\"</b>"))
 		miscLayout.addLayout(inputOptionsLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addLayout(setLayout)

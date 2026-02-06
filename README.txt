@@ -182,7 +182,7 @@ There are four libraries that comes bundled with **MERK**:
  
  <p align="center">
  <center><a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://www.dal.net/">DALnet</a>, <a href="https://freenode.net/">Freenode</a>, and <a href="https://libera.chat/">Libera</a> on Linux Mint 20.2 in "dark mode", using the "windows" widget set.</small></i></center>
+  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and <a href="https://inthemansion.com/">MansionNET</a> on Linux Mint 22.3, using the "Oxygen" widget set.</small></i></center>
   </p>
 
   <p align="center">

@@ -68,6 +68,7 @@ What's New:
 * Bugfix: toggling IRC color display no longer changes IRC colors in channel
   topics.
 * Restored the IRC color display toggle to the settings menu.
+* Changed how installed plugins are displayed in the "Tools" menu.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -86,6 +87,7 @@ What's New:
 * Example plugins have been updated to use the new inherited method names.
 * New plugin events: pause() (which is triggered when a plugin is paused), and
   unpause() (which is triggered when a plugin is unpaused).
+* New Console class method: html(), which writes raw HTML to the console.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.450                                  |

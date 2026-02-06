@@ -408,6 +408,9 @@ class Console():
 	def dump(self):
 		return self._console.dump()
 
+	def html(self,message):
+		self._console.html(message)
+
 	def print(self,message):
 		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
 		self._console.writeText(t)
