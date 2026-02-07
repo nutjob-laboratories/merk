@@ -3074,6 +3074,7 @@ class Merk(QMainWindow):
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return
 
+		# Handle MERK markup
 		if config.ENABLE_MARKDOWN_MARKUP: user_input = markdown_to_irc(user_input)
 		if config.ENABLE_IRC_COLOR_MARKUP: user_input = inject_irc_colors(user_input)
 		

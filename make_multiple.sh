@@ -10,6 +10,7 @@ cd ..
 zip -u merk.zip README.html
 zip -u merk.zip LICENSE
 zip -u merk.zip CHANGELOG
+zip -u merk.zip merk.png
 
 cp -f merk.zip /home/wraithnix/Dropbox/Public/merk-linux-latest.zip
 

@@ -3,12 +3,11 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.450">MERK 0.051.450</a></big></b><br>
-  <b>Current development version: 0.051.475</b><br><br>
-  <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
-  <b><a href="https://buymeacoffee.com/danhetrick">Buy me a coffee!</a></b><br>
+  <b>Current development version: 0.051.490</b><br><br>
+  <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
 
-**I am currently unemployed, and having difficulty finding work.** If you'd like to help me and help support **MERK**, please consider [donating](https://gofund.me/ae062139) or [buying me a coffee](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free, and will always be open source. Thanks for your time, and I hope you enjoy **MERK**! Let's keep IRC alive in the 21st century!
+**I am currently unemployed, and having difficulty finding work.** If you'd like to help me and help support **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free, and will always be open source. Thanks for your time, and I hope you enjoy **MERK**! Let's keep IRC alive in the 21st century!
 
  - [Downloads](#Downloads)
  - [Summary](#Summary)
@@ -33,14 +32,14 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.450 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.450)  |
-| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.475 (12.63 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Linux Executable | [Download MERK 0.051.475 (104.54 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.475 (49.56 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.475 (46.67 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.490 (12.66 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Linux Executable | [Download MERK 0.051.490 (104.54 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.490 (49.59 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.490 (46.69 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.475**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** can has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.490**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** can has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
@@ -173,7 +172,7 @@ There are four libraries that comes bundled with **MERK**:
 
 # Screenshots
 
-<p><small><i>Screenshots may not reflect the current release (0.051.450), and may reflect the current development version (0.051.475). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.450), and may reflect the current development version (0.051.490). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <p align="center">
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>

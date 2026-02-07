@@ -41,6 +41,12 @@ class Dialog(QDialog):
 	def closeEvent(self, event):
 		self.closed.emit()
 
+	def doCoffee(self,event):
+		try:
+			QDesktopServices.openUrl(QUrl("https://buymeacoffee.com/danhetrick"))
+		except:
+			pass
+
 	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -88,6 +94,15 @@ class Dialog(QDialog):
 		pixmap = QPixmap(TWISTED_BUTTON_ICON)
 		twisted_logo.setPixmap(pixmap)
 		twisted_logo.setAlignment(Qt.AlignCenter)
+
+		coffee = QLabel()
+		pixmap = QPixmap(COFFEE_LOGO)
+		pixmap = pixmap.scaled(200, 57, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+		coffee.setPixmap(pixmap)
+		coffee.setAlignment(Qt.AlignCenter)
+		coffee.mousePressEvent = lambda event: self.doCoffee(event)
+		coffee.setMouseTracking(True)
+		coffee.setCursor(Qt.PointingHandCursor)
 
 		icons_credit = QLabel(f"<small><b>Icons by <a href=\"https://material.io/resources/icons/\">Google</a>, <a href=\"https://github.com/elementary/icons/\">elementaryOS</a>, and <a href=\"https://github.com/madmaxms/iconpack-obsidian\">Obsidian</a></small></b>")
 		icons_credit.setAlignment(Qt.AlignCenter)
@@ -199,7 +214,7 @@ class Dialog(QDialog):
 		app_repository.setAlignment(Qt.AlignCenter)
 		app_repository.setOpenExternalLinks(True)
 
-		app_donations = QLabel(f"<big><b><a href=\"https://www.gofundme.com/f/keep-dans-opensource-projects-alive\">Donate To {APPLICATION_NAME}</a></b></big>")
+		app_donations = QLabel(f"<big><b><a href=\"https://buymeacoffee.com/danhetrick\">Donate To {APPLICATION_NAME}</a></b></big>")
 		app_donations.setAlignment(Qt.AlignCenter)
 		app_donations.setOpenExternalLinks(True)
 
@@ -252,10 +267,7 @@ class Dialog(QDialog):
 		patron_description = QLabel(f"""
 			<small>These are the wonderful humans that help keep<br>
 			    <b>{APPLICATION_NAME}</b> alive. Thank you for helping me keep IRC<br>
-			    alive in the 21st century! If you want your<br>
-			    name here, <b><a href=\"https://www.gofundme.com/f/keep-dans-opensource-projects-alive\">donate $50 or more today!</a></b></small>
-			    <small>Or you<br>
-			    can just <b><a href="https://buymeacoffee.com/danhetrick">buy me a coffee!</a></b></small><br>
+			    alive in the 21st century! <b><a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a></b>
 			""")
 		patron_description.setAlignment(Qt.AlignJustify)
 		patron_description.setOpenExternalLinks(True)
@@ -270,7 +282,13 @@ class Dialog(QDialog):
 		patListLayout.addWidget(patron_list)
 		patListLayout.addStretch()
 
+		coffeeLayout = QHBoxLayout()
+		coffeeLayout.addStretch()
+		coffeeLayout.addWidget(coffee)
+		coffeeLayout.addStretch()
+
 		patronLayout = QVBoxLayout()
+		patronLayout.addLayout(coffeeLayout)
 		patronLayout.addLayout(patDescLayout)
 		patronLayout.addWidget(widgets.textSeparatorLabel(self,"<b>patrons</b>"))
 		patronLayout.addLayout(patListLayout)

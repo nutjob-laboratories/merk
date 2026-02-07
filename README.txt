@@ -4,11 +4,10 @@
   <i>A multiple-document interface IRC client for Windows and Linux</i><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
   <b>Current development version: !_FULL_VERSION_!</b><br><br>
-  <b><a href="https://gofund.me/ae062139">Help Fund MERK!</a></b><br>
-  <b><a href="https://buymeacoffee.com/danhetrick">Buy me a coffee!</a></b><br>
+  <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
 
-**I am currently unemployed, and having difficulty finding work.** If you'd like to help me and help support **MERK**, please consider [donating](https://gofund.me/ae062139) or [buying me a coffee](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free, and will always be open source. Thanks for your time, and I hope you enjoy **MERK**! Let's keep IRC alive in the 21st century!
+**I am currently unemployed, and having difficulty finding work.** If you'd like to help me and help support **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free, and will always be open source. Thanks for your time, and I hope you enjoy **MERK**! Let's keep IRC alive in the 21st century!
 
  - [Downloads](#Downloads)
  - [Summary](#Summary)

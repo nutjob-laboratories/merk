@@ -69,6 +69,8 @@ What's New:
   topics.
 * Restored the IRC color display toggle to the settings menu.
 * Changed how installed plugins are displayed in the "Tools" menu.
+* Added an icon PNG file to the Linux binary and source distributions.
+* Changed the "patrons" page in the about dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -116,16 +116,7 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 
 						for c in EMOJI_AUTOCOMPLETE:
 
-							# Case sensitive
-							if fnmatch.fnmatchcase(c,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(c)
-								cursor.endEditBlock()
-								self.ensureCursorVisible()
-								return
-
-							# Case insensitive
-							if fnmatch.fnmatch(c,f"{text}*"):
+							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
@@ -146,16 +137,7 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 
 						for c in ASCIIMOIJI:
 
-							# Case sensitive
-							if fnmatch.fnmatchcase(c,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(c)
-								cursor.endEditBlock()
-								self.ensureCursorVisible()
-								return
-
-							# Case insensitive
-							if fnmatch.fnmatch(c,f"{text}*"):
+							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
@@ -247,21 +229,13 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 
 						for c in EMOJI_AUTOCOMPLETE:
 
-							# Case sensitive
-							if fnmatch.fnmatchcase(c,f"{text}*"):
+							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
 								self.ensureCursorVisible()
 								return
 
-							# Case insensitive
-							if fnmatch.fnmatch(c,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(c)
-								cursor.endEditBlock()
-								self.ensureCursorVisible()
-								return
 
 				if config.ENABLE_ASCIIMOJI_SHORTCODES:
 					# Autocomplete emojis
@@ -277,16 +251,7 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 
 						for c in ASCIIMOIJI:
 
-							# Case sensitive
-							if fnmatch.fnmatchcase(c,f"{text}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(c)
-								cursor.endEditBlock()
-								self.ensureCursorVisible()
-								return
-
-							# Case insensitive
-							if fnmatch.fnmatch(c,f"{text}*"):
+							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
