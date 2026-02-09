@@ -366,6 +366,7 @@ class Merk(QMainWindow):
 		self.plugin_manager = None
 		self.app_exiting = False
 		self.unread_mentions = []
+		self.tips = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -461,6 +462,9 @@ class Merk(QMainWindow):
 
 		# Windowbar
 		self.initWindowbar()
+
+		# Tips 'n Tricks
+		if config.SHOW_TIPS_AT_START: self.openTips()
 
 		if connection_info:
 			if isinstance(connection_info, list):
@@ -4415,14 +4419,6 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
-	def settingsDnd(self):
-		if config.DRAG_AND_DROP_MAIN_APPLICATION:
-			config.DRAG_AND_DROP_MAIN_APPLICATION = False
-		else:
-			config.DRAG_AND_DROP_MAIN_APPLICATION = True
-		config.save_settings(config.CONFIG_FILE)
-		self.buildSettingsMenu()
-
 	def settingsAway(self):
 		if config.USE_AUTOAWAY:
 			config.USE_AUTOAWAY = False
@@ -4460,13 +4456,6 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.addSeparator()
 
-		if config.DISPLAY_IRC_COLORS:
-			entry = QAction(QIcon(self.checked_icon),"Display IRC colors", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Display IRC colors", self)
-		entry.triggered.connect(self.settingsColor)
-		self.settingsMenu.addAction(entry)
-
 		if config.ENABLE_MARKDOWN_MARKUP:
 			entry = QAction(QIcon(self.checked_icon),"Use markdown in messages", self)
 		else:
@@ -4479,42 +4468,6 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Use IRC colors in messages", self)
 		entry.triggered.connect(self.settingsInputColor)
-		self.settingsMenu.addAction(entry)
-
-		if config.DISPLAY_TIMESTAMP:
-			entry = QAction(QIcon(self.checked_icon),"Show timestamps", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Show timestamps", self)
-		entry.triggered.connect(self.settingsTimestamps)
-		self.settingsMenu.addAction(entry)
-
-		if config.CONVERT_URLS_TO_LINKS:
-			entry = QAction(QIcon(self.checked_icon),"Convert URLs to hyperlinks", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
-		entry.triggered.connect(self.settingsLinks)
-		self.settingsMenu.addAction(entry)
-
-		away_time = f"{config.AUTOAWAY_TIME} seconds"
-
-		if config.AUTOAWAY_TIME==300:
-			away_time = "5 minutes"
-		if config.AUTOAWAY_TIME==900:
-			away_time = "15 minutes"
-		if config.AUTOAWAY_TIME==1800:
-			away_time = "30 minutes"
-		if config.AUTOAWAY_TIME==3600:
-			away_time = "1 hour"
-		if config.AUTOAWAY_TIME==7200:
-			away_time = "2 hours"
-		if config.AUTOAWAY_TIME==10800:
-			away_time = "3 hours"
-
-		if config.USE_AUTOAWAY:
-			entry = QAction(QIcon(self.checked_icon),"Auto-away after "+away_time, self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Auto-away after "+away_time, self)
-		entry.triggered.connect(self.settingsAway)
 		self.settingsMenu.addAction(entry)
 
 		if config.ALWAYS_ON_TOP:
@@ -4554,18 +4507,33 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsAudio)
 		self.settingsMenu.addAction(entry)
 
+		away_time = f"{config.AUTOAWAY_TIME} seconds"
+
+		if config.AUTOAWAY_TIME==300:
+			away_time = "5 minutes"
+		if config.AUTOAWAY_TIME==900:
+			away_time = "15 minutes"
+		if config.AUTOAWAY_TIME==1800:
+			away_time = "30 minutes"
+		if config.AUTOAWAY_TIME==3600:
+			away_time = "1 hour"
+		if config.AUTOAWAY_TIME==7200:
+			away_time = "2 hours"
+		if config.AUTOAWAY_TIME==10800:
+			away_time = "3 hours"
+
+		if config.USE_AUTOAWAY:
+			entry = QAction(QIcon(self.checked_icon),"Auto-away after "+away_time, self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Auto-away after "+away_time, self)
+		entry.triggered.connect(self.settingsAway)
+		self.settingsMenu.addAction(entry)
+
 		if config.SIMPLIFIED_DIALOGS:
 			entry = QAction(QIcon(self.checked_icon),"Simplified dialogs", self)
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Simplified dialogs", self)
 		entry.triggered.connect(self.settingsSimplified)
-		self.settingsMenu.addAction(entry)
-
-		if config.DRAG_AND_DROP_MAIN_APPLICATION:
-			entry = QAction(QIcon(self.checked_icon),"Enable drag and drop", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable drag and drop", self)
-		entry.triggered.connect(self.settingsDnd)
 		self.settingsMenu.addAction(entry)
 
 		if config.DARK_MODE:
@@ -4574,6 +4542,29 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
 		entry.triggered.connect(self.settingsDarkMode)
 		self.settingsMenu.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Display")
+
+		if config.DISPLAY_IRC_COLORS:
+			entry = QAction(QIcon(self.checked_icon),"Show IRC colors", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Show IRC colors", self)
+		entry.triggered.connect(self.settingsColor)
+		sm.addAction(entry)
+
+		if config.DISPLAY_TIMESTAMP:
+			entry = QAction(QIcon(self.checked_icon),"Show timestamps", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Show timestamps", self)
+		entry.triggered.connect(self.settingsTimestamps)
+		sm.addAction(entry)
+
+		if config.CONVERT_URLS_TO_LINKS:
+			entry = QAction(QIcon(self.checked_icon),"Convert URLs to hyperlinks", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
+		entry.triggered.connect(self.settingsLinks)
+		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
 
@@ -5494,6 +5485,13 @@ class Merk(QMainWindow):
 	def openSettings(self):
 		self.settingsDialog = SettingsDialog(self.app,self)
 		self.settingsDialog.show()
+
+	def openTips(self):
+		if self.tips==None:
+			self.tips = widgets.TipsWindow(self)
+			self.tips.show()
+		else:
+			self.tips.show()
 
 	def openHotkeys(self):
 		if self.hotkey_manager==None:

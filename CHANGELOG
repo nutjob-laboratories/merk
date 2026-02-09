@@ -71,6 +71,9 @@ What's New:
 * Changed how installed plugins are displayed in the "Tools" menu.
 * Added an icon PNG file to the Linux binary and source distributions.
 * Changed the "patrons" page in the about dialog.
+* Tweaked the settings menu.
+* Added a "tip of the day" dialog that displays on startup. This can be
+  disabled in the Settings dialog or with a checkbox on the dialog itself.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

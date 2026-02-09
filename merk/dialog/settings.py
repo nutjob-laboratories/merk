@@ -1905,6 +1905,10 @@ class Dialog(QDialog):
 		self.managerTop.stateChanged.connect(self.changedSetting)
 		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
+		self.showTips = QCheckBox("Show tip of the day at startup",self)
+		if config.SHOW_TIPS_AT_START: self.showTips.setChecked(True)
+		self.showTips.stateChanged.connect(self.changedSetting)
+
 		misLayout = QVBoxLayout()
 		misLayout.setSpacing(2)
 		misLayout.addWidget(self.simpleConnect)
@@ -1912,6 +1916,7 @@ class Dialog(QDialog):
 		misLayout.addWidget(self.noConnectLogo)
 		misLayout.addWidget(self.enableDnD)
 		misLayout.addWidget(self.managerTop)
+		misLayout.addWidget(self.showTips)
 
 		titleLayout = QVBoxLayout()
 		titleLayout.setSpacing(2)
@@ -6005,6 +6010,7 @@ class Dialog(QDialog):
 		config.IRC_COLOR_IN_TOPICS = self.channelColors.isChecked()
 		config.PLUGIN_PAUSE = self.plugPause.isChecked()
 		config.PLUGIN_UNPAUSE = self.plugUnpause.isChecked()
+		config.SHOW_TIPS_AT_START = self.showTips.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

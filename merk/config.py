@@ -401,9 +401,11 @@ IRC_COLOR_IN_TOPICS = True
 CLOSE_EDITOR_ON_UNINSTALL = True
 PLUGIN_PAUSE = True
 PLUGIN_UNPAUSE = True
+SHOW_TIPS_AT_START = True
 
 def build_settings():
 	settings = {
+		"show_tips_at_startup": SHOW_TIPS_AT_START,
 		"enable_plugin_pause_event": PLUGIN_PAUSE,
 		"enable_plugin_unpause_event": PLUGIN_UNPAUSE,
 		"close_editor_on_plugin_uninstall": CLOSE_EDITOR_ON_UNINSTALL,
@@ -771,6 +773,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_tips_at_startup" in settings:
+		settings["show_tips_at_startup"] = SHOW_TIPS_AT_START
 	if not "enable_plugin_pause_event" in settings:
 		settings["enable_plugin_pause_event"] = PLUGIN_PAUSE
 	if not "enable_plugin_unpause_event" in settings:
@@ -1861,6 +1865,7 @@ def load_settings(filename):
 	global CLOSE_EDITOR_ON_UNINSTALL
 	global PLUGIN_PAUSE
 	global PLUGIN_UNPAUSE
+	global SHOW_TIPS_AT_START
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1870,6 +1875,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_TIPS_AT_START = settings["show_tips_at_startup"]
 		PLUGIN_PAUSE = settings["enable_plugin_pause_event"]
 		PLUGIN_UNPAUSE = settings["enable_plugin_unpause_event"]
 		CLOSE_EDITOR_ON_UNINSTALL = settings["close_editor_on_plugin_uninstall"]
