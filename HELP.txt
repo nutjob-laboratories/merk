@@ -435,6 +435,10 @@ Appearance:
 <td>Opens a window's text style editor</td>
 </tr>
 <tr>
+<td><code>/subwindow</code></td>
+<td>Displays size and location information about the current subwindow</td>
+</tr>
+<tr>
 <td><code>/time</code></td>
 <td>Requests server time</td>
 </tr>
@@ -464,7 +468,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>usage NUMBER [MESSAGE...]</code></td>
-<td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. <strong>Can only be called by scripts</strong></td>
+<td>Prevents a script from running unless at least <code>NUMBER</code> arguments are passed to it, and displays <code>MESSAGE</code>. If the script should take one or more arguments, pass <code>+</code> as <code>NUMBER</code>. <strong>Can only be called by scripts</strong></td>
 </tr>
 <tr>
 <td><code>/user [SETTING] [VALUE...]</code></td>

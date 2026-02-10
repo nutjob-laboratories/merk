@@ -247,7 +247,7 @@ LOG_MANAGER_MAXIMUM_LOAD_SIZE = 5000
 DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = True
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = False
 HALT_SCRIPT_EXECUTION_ON_ERROR = True
-REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = False
+REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = True
 ENABLE_INSERT_COMMAND = True
 LOG_CHANNEL_NOTICE = True
 SHOW_DATES_IN_LOGS = True
@@ -402,9 +402,11 @@ CLOSE_EDITOR_ON_UNINSTALL = True
 PLUGIN_PAUSE = True
 PLUGIN_UNPAUSE = True
 SHOW_TIPS_AT_START = True
+MAXIMUM_FONT_SIZE_FOR_SETTINGS = 12
 
 def build_settings():
 	settings = {
+		"maximum_font_size_for_settings_dialog": MAXIMUM_FONT_SIZE_FOR_SETTINGS,
 		"show_tips_at_startup": SHOW_TIPS_AT_START,
 		"enable_plugin_pause_event": PLUGIN_PAUSE,
 		"enable_plugin_unpause_event": PLUGIN_UNPAUSE,
@@ -559,7 +561,7 @@ def build_settings():
 		"display_dates_in_logs": SHOW_DATES_IN_LOGS,
 		"log_channel_notice": LOG_CHANNEL_NOTICE,
 		"enable_insert_command": ENABLE_INSERT_COMMAND,
-		"require_exact_argument_count_for_scripts": REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS,
+		"require_exact_argument_count_for_usage": REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS,
 		"halt_script_execution_on_error": HALT_SCRIPT_EXECUTION_ON_ERROR,
 		"create_window_for_incoming_private_notices": CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES,
 		"do_not_create_private_chat_windows_for_ignored_users": DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS,
@@ -773,6 +775,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "maximum_font_size_for_settings_dialog" in settings:
+		settings["maximum_font_size_for_settings_dialog"] = MAXIMUM_FONT_SIZE_FOR_SETTINGS
 	if not "show_tips_at_startup" in settings:
 		settings["show_tips_at_startup"] = SHOW_TIPS_AT_START
 	if not "enable_plugin_pause_event" in settings:
@@ -1081,8 +1085,8 @@ def patch_settings(settings):
 		settings["log_channel_notice"] = LOG_CHANNEL_NOTICE
 	if not "enable_insert_command" in settings:
 		settings["enable_insert_command"] = ENABLE_INSERT_COMMAND
-	if not "require_exact_argument_count_for_scripts" in settings:
-		settings["require_exact_argument_count_for_scripts"] = REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS
+	if not "require_exact_argument_count_for_usage" in settings:
+		settings["require_exact_argument_count_for_usage"] = REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS
 	if not "halt_script_execution_on_error" in settings:
 		settings["halt_script_execution_on_error"] = HALT_SCRIPT_EXECUTION_ON_ERROR
 	if not "create_window_for_incoming_private_notices" in settings:
@@ -1866,6 +1870,7 @@ def load_settings(filename):
 	global PLUGIN_PAUSE
 	global PLUGIN_UNPAUSE
 	global SHOW_TIPS_AT_START
+	global MAXIMUM_FONT_SIZE_FOR_SETTINGS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1875,6 +1880,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MAXIMUM_FONT_SIZE_FOR_SETTINGS = settings["maximum_font_size_for_settings_dialog"]
 		SHOW_TIPS_AT_START = settings["show_tips_at_startup"]
 		PLUGIN_PAUSE = settings["enable_plugin_pause_event"]
 		PLUGIN_UNPAUSE = settings["enable_plugin_unpause_event"]
@@ -2029,7 +2035,7 @@ def load_settings(filename):
 		SHOW_DATES_IN_LOGS = settings["display_dates_in_logs"]
 		LOG_CHANNEL_NOTICE = settings["log_channel_notice"]
 		ENABLE_INSERT_COMMAND = settings["enable_insert_command"]
-		REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = settings["require_exact_argument_count_for_scripts"]
+		REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS = settings["require_exact_argument_count_for_usage"]
 		HALT_SCRIPT_EXECUTION_ON_ERROR = settings["halt_script_execution_on_error"]
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = settings["create_window_for_incoming_private_notices"]
 		DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = settings["do_not_create_private_chat_windows_for_ignored_users"]

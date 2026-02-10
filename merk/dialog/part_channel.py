@@ -57,8 +57,7 @@ class Dialog(QDialog):
 		self.setWindowIcon(QIcon(CHANNEL_ICON))
 
 		self.nameLabel = QLabel("<b>Channel:</b>")
-		self.name = QNoSpaceLineEdit()	# Spaces can't be typed into this QLineEdit, as
-										# spaces are forbidden in channel names
+		self.name = QChannelEdit()
 	
 		self.keyLabel = QLabel("<b>Message:</b>")
 		self.key = QLineEdit()

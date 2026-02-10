@@ -272,6 +272,20 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 
 class Dialog(QDialog):
 
+	def limit_all_widget_fonts(self, max_size=12):
+		all_widgets = self.findChildren(QWidget)
+		
+		widgets_to_check = all_widgets + [self]
+
+		for widget in widgets_to_check:
+			current_font = widget.font()
+			if current_font.pointSize() > max_size:
+				current_font.setPointSize(max_size)
+				widget.setFont(current_font)
+			elif current_font.pixelSize() > max_size:
+				current_font.setPixelSize(max_size)
+				widget.setFont(current_font)
+
 	def boldApply(self):
 		font = QFont()
 		font.setBold(True)
@@ -280,6 +294,25 @@ class Dialog(QDialog):
 
 	def selectorClick(self,item):
 		self.stack.setCurrentWidget(item.widget)
+
+	def setFontDefault(self):
+		fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
+		for f in OTHER_BUNDLED_FONTS:
+			QFontDatabase.addApplicationFont(f)
+		_fontstr = QFontDatabase.applicationFontFamilies(fid)[0]
+		font = QFont(_fontstr,BUNDLED_FONT_SIZE)
+
+		f = font.toString()
+		pfs = f.split(',')
+		font_name = pfs[0]
+		font_size = pfs[1]
+
+		self.newfont = None
+		self.default_font = True
+		self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
 
 	def menuFont(self):
 		font, ok = QFontDialog.getFont()
@@ -1700,6 +1733,7 @@ class Dialog(QDialog):
 		config.load_settings(config.CONFIG_FILE)
 
 		self.newfont = None
+		self.default_font = False
 		self.subWidth = config.DEFAULT_SUBWINDOW_WIDTH
 		self.subHeight = config.DEFAULT_SUBWINDOW_HEIGHT
 		self.logsize = config.MAXIMUM_LOADED_LOG_SIZE
@@ -1822,6 +1856,10 @@ class Dialog(QDialog):
 		fontButton.clicked.connect(self.menuFont)
 		fontButton.setAutoDefault(False)
 
+		fontDefault = QPushButton("Reset to default")
+		fontDefault.clicked.connect(self.setFontDefault)
+		fontDefault.setAutoDefault(False)
+
 		fm = QFontMetrics(self.font())
 		fheight = fm.height()
 		fontButton.setFixedSize(fheight +10,fheight + 10)
@@ -1831,6 +1869,9 @@ class Dialog(QDialog):
 		fontLayout = QHBoxLayout()
 		fontLayout.addWidget(fontButton)
 		fontLayout.addWidget(self.fontLabel)
+		fontLayout.addStretch()
+		fontLayout.addWidget(fontDefault)
+		fontLayout.addStretch()
 
 		self.sizeLabel = QLabel(f"Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
 
@@ -1903,7 +1944,6 @@ class Dialog(QDialog):
 		self.managerTop = QCheckBox("Hotkey, ignore, and plugin manager windows\nalways on top of application",self)
 		if config.MANAGERS_ALWAYS_ON_TOP: self.managerTop.setChecked(True)
 		self.managerTop.stateChanged.connect(self.changedSetting)
-		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showTips = QCheckBox("Show tip of the day at startup",self)
 		if config.SHOW_TIPS_AT_START: self.showTips.setChecked(True)
@@ -1968,10 +2008,6 @@ class Dialog(QDialog):
 			""")
 		self.styleDescription.setWordWrap(True)
 		self.styleDescription.setAlignment(Qt.AlignJustify)
-
-		QT_STYLES = QStyleFactory.keys()
-		if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
-		if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
 
 		self.qtStyle = QComboBox(self)
 		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
@@ -2497,7 +2533,6 @@ class Dialog(QDialog):
 		self.windowbarItalics = QCheckBox("Show connecting server windows\nin italics",self)
 		if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS: self.windowbarItalics.setChecked(True)
 		self.windowbarItalics.stateChanged.connect(self.menuChange)
-		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.channelHidden = QCheckBox("Channel",self)
 		if config.SHOW_HIDDEN_CHANNEL_WINDOWS_IN_WINDOWBAR: self.channelHidden.setChecked(True)
@@ -2659,7 +2694,6 @@ class Dialog(QDialog):
 		self.showContext = QCheckBox("Context menus on channel, private, and server\ntext displays",self)
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
-		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showStatusServer = QCheckBox("Server windows",self)
 		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
@@ -2680,12 +2714,10 @@ class Dialog(QDialog):
 		self.showServRefresh = QCheckBox("Show channel list refresh button on server window\ntoolbars and menus",self)
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
 		self.showServRefresh.stateChanged.connect(self.changedSetting)
-		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showServList = QCheckBox("Show channel list button on server window\ntoolbars and menus",self)
 		if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS: self.showServList.setChecked(True)
 		self.showServList.stateChanged.connect(self.changedSetting)
-		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showStatusList = QCheckBox("Channel lists",self)
 		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
@@ -2712,7 +2744,6 @@ class Dialog(QDialog):
 		self.hideServer = QCheckBox("Hide server windows when registration is\ncomplete",self)
 		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
 		self.hideServer.stateChanged.connect(self.changedSetting)
-		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.autoMaxSubwindow = QCheckBox("Maximize new subwindows",self)
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: self.autoMaxSubwindow.setChecked(True)
@@ -2814,7 +2845,6 @@ class Dialog(QDialog):
 		self.systrayNotify = QCheckBox("Show system tray notifications when minimized\nto system tray",self)
 		if config.FLASH_SYSTRAY_NOTIFICATION: self.systrayNotify.setChecked(True)
 		self.systrayNotify.stateChanged.connect(self.changedSystrayNotification)
-		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.listSystray = QCheckBox("List notifications in tooltip",self)
 		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
@@ -2851,7 +2881,6 @@ class Dialog(QDialog):
 		self.systrayMinOnClose = QCheckBox("Closing main window with window controls\nminimizes to tray",self)
 		if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY: self.systrayMinOnClose.setChecked(True)
 		self.systrayMinOnClose.stateChanged.connect(self.changedSetting)
-		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showSystray = QCheckBox("Show system tray icon",self)
 		if config.SHOW_SYSTRAY_ICON: self.showSystray.setChecked(True)
@@ -3206,9 +3235,9 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.userPage)
 
-		self.nick = QNoSpaceLineEdit(user.NICKNAME)
-		self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
-		self.username = QNoSpaceLineEdit(user.USERNAME)
+		self.nick = QNickEdit(user.NICKNAME)
+		self.alternative = QNickEdit(user.ALTERNATE)
+		self.username = QNickEdit(user.USERNAME)
 		self.realname = QLineEdit(user.REALNAME)
 		self.userinfo = QLineEdit(user.USERINFO)
 		self.finger = QLineEdit(user.FINGER)
@@ -3716,7 +3745,6 @@ class Dialog(QDialog):
 		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided\nwith the {config.ISSUE_COMMAND_SYMBOL}away command or when pressing the\n\"Set status to away\" button on the server\nwindow toolbar",self)
 		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
 		self.promptAway.stateChanged.connect(self.changedSetting)
-		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.autoAway = QCheckBox("Auto-away after",self)
 		if config.USE_AUTOAWAY: self.autoAway.setChecked(True)
@@ -3767,7 +3795,6 @@ class Dialog(QDialog):
 		self.typeCancelInput = QCheckBox("Interacting with the text input widget cancels\nautoaway",self)
 		if config.TYPING_INPUT_CANCELS_AUTOAWAY: self.typeCancelInput.setChecked(True)
 		self.typeCancelInput.stateChanged.connect(self.changedSetting)
-		self.typeCancelInput.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 	
 		self.windowCancelAway = QCheckBox("Interacting with subwindows cancels autoaway",self)
 		if config.WINDOW_INTERACTION_CANCELS_AUTOAWAY: self.windowCancelAway.setChecked(True)
@@ -3818,7 +3845,6 @@ class Dialog(QDialog):
 		awayBox.setLayout(awayLayout)
 		awayBox.setAlignment(Qt.AlignHCenter)
 		awayBox.setObjectName("myGroupBox")
-		awayBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
 
 		size_policy = awayBox.sizePolicy()
 		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
@@ -4462,12 +4488,10 @@ class Dialog(QDialog):
 		self.createNotice = QCheckBox("Create windows for incoming private notices",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
 		self.createNotice.stateChanged.connect(self.changedSetting)
-		self.createNotice.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.writeMessageOut = QCheckBox("Write outgoing private messages to the current\nwindow",self)
 		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
 		self.writeMessageOut.stateChanged.connect(self.changedSetting)
-		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.showFullMode = QCheckBox("Full user info in mode messages",self)
 		if config.DISPLAY_FULL_USER_INFO_IN_MODE_MESSAGES: self.showFullMode.setChecked(True)
@@ -4561,7 +4585,6 @@ class Dialog(QDialog):
 		quitBox.setAlignment(Qt.AlignHCenter)
 		quitBox.setLayout(qfLayout)
 		quitBox.setObjectName("myGroupBox")
-		quitBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
 
 		size_policy = quitBox.sizePolicy()
 		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
@@ -4597,7 +4620,6 @@ class Dialog(QDialog):
 		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
 		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
 		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
-		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.enableAlias = QCheckBox("Enable aliases",self)
 		if config.ENABLE_ALIASES: self.enableAlias.setChecked(True)
@@ -4658,7 +4680,6 @@ class Dialog(QDialog):
 		self.promptScript = QCheckBox(f"Prompt for file when calling {config.ISSUE_COMMAND_SYMBOL}script with no\narguments",self)
 		if config.PROMPT_FOR_SCRIPT_FILE: self.promptScript.setChecked(True)
 		self.promptScript.stateChanged.connect(self.changedSetting)
-		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.enableDelay = QCheckBox(f"{config.ISSUE_COMMAND_SYMBOL}delay",self)
 		if config.ENABLE_DELAY_COMMAND: self.enableDelay.setChecked(True)
@@ -4671,7 +4692,6 @@ class Dialog(QDialog):
 		self.restrictError = QCheckBox(f"Display errors for violations of only and\nrestrict",self)
 		if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION: self.restrictError.setChecked(True)
 		self.restrictError.stateChanged.connect(self.changedSetting)
-		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.enableBuiltin = QCheckBox("Built-in aliases",self)
 		if config.ENABLE_BUILT_IN_ALIASES: self.enableBuiltin.setChecked(True)
@@ -5489,7 +5509,6 @@ class Dialog(QDialog):
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE: self.writeFile.setChecked(True)
 		self.writeFile.stateChanged.connect(self.changedSettingAdvanced)
 		self.writeFile.setEnabled(False)
-		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.enablePing = QCheckBox("Show server pings in server windows",self)
 		if config.SHOW_PINGS_IN_CONSOLE: self.enablePing.setChecked(True)
@@ -5587,6 +5606,26 @@ class Dialog(QDialog):
 		self.cancelButton.clicked.connect(self.close)
 
 		self.restart.hide()
+
+		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
+
+		quitBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
+		awayBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
+		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.typeCancelInput.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		# Finalize layout
 
@@ -6113,6 +6152,17 @@ class Dialog(QDialog):
 			self.setFont(self.newfont)
 			self.parent.app.setFont(self.newfont)
 			self.parent.setAllFont(self.newfont)
+		else:
+			if self.default_font:
+				config.APPLICATION_FONT = None
+				fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
+				for f in OTHER_BUNDLED_FONTS:
+					QFontDatabase.addApplicationFont(f)
+				_fontstr = QFontDatabase.applicationFontFamilies(fid)[0]
+				font = QFont(_fontstr,BUNDLED_FONT_SIZE)
+				self.setFont(font)
+				self.parent.app.setFont(font)
+				self.parent.setAllFont(font)
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)

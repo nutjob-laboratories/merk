@@ -113,6 +113,10 @@ OTHER_BUNDLED_FONTS = [
 ]
 BUNDLED_FONT_SIZE = 10
 
+QT_STYLES = QStyleFactory.keys()
+if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
+if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
+
 # Constants
 
 CHANNEL_WINDOW = 0
@@ -435,6 +439,18 @@ class WhoWasData:
 		self.realname = 'Unknown'
 
 # Functions
+
+def is_invalid_channel(s):
+	if ',' in s: return True
+	if string_has_irc_formatting_codes(s): return True
+	return False
+
+def is_invalid_nickname(s):
+	if s and s[0].isdigit(): 
+		return True
+	if string_has_irc_formatting_codes(s): return True
+	special_chars = "!@$%&*().,/?<>+="
+	return any(char in special_chars for char in s)
 
 def string_has_irc_formatting_codes(data):
 	for code in ["\x03","\x02","\x1D","\x1F","\x0F","\x1E"]:
@@ -952,13 +968,36 @@ def test_if_foreground_is_light(style):
 # Widgets
 
 class QNoSpaceLineEdit(QLineEdit):
-
 	def __init__(self, *args):
 		QLineEdit.__init__(self, *args)
 
+	# Prevent spaces from being entered
 	def keyPressEvent(self,event):
-
 		if event.key() == Qt.Key_Space:
 			return
 		else:
 			return super().keyPressEvent(event)
+
+class QNickEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		# Block forbidden characters from nicknames,
+		# including nicknames that start with numbers
+		forbidden = r" !\@\$%\&\*\(\)\.,\/\? <>\+ \="
+		pattern = f"^[^\\d{forbidden}][^{forbidden}]*$"
+		
+		self.validator = QRegExpValidator(QRegExp(pattern), self)
+		self.setValidator(self.validator)
+
+class QChannelEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		# Block forbidden characters and control codes
+		# from being entered
+		regex = QRegularExpression(r"^[&#+!][^\p{Cc}\x2c\s]*$")
+		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
+		
+		self.validator = QRegularExpressionValidator(regex)
+		self.setValidator(self.validator)

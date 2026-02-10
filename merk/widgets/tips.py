@@ -35,9 +35,6 @@ import uuid
 import random
 
 TIPS = [
- f'You can make a message bold by surrounding it with double asterisks!',
- f'You can send a message in italics by surrounding it with single asterisks!',
- f'To underline a word in a message, place two underscores before and after it!',
  f'Closing a channel window automatically leaves that channel!',
  f'You can change your nickname by double clicking the nickname display on chat windows!',
  f'To see a list of commands, type <nobr><b>{config.ISSUE_COMMAND_SYMBOL}help</b></nobr> in any chat window!',
@@ -45,16 +42,12 @@ TIPS = [
  f'IRC was created by <b>Jarkko Oikarinen</b> in August 1988 to replace a program called MUT (MultiUser Talk)!',
  f"IRC was used to report on the 1991 Soviet coup d'état attempt throughout a media blackout!",
  f'As of December 2025, the top 5 IRC networks have total participation of around 88,000 users per day!',
- f'You can insert <b>emojis</b> into your messages using shortcodes!',
- f'You can insert <b>ASCIImojis</b> into your messages using shortcodes!',
  f'<b>{APPLICATION_NAME}</b> is open source! Check out the source code at <b><a href=\"{APPLICATION_SOURCE}\">{APPLICATION_SOURCE}</a></b>',
  f'Color in IRC messages was first introduced by <b>mIRC</b> in 1996, with version 4.5!',
  f'IRC has inspired many modern protocols, like <b>Slack</b> and <b>Discord</b>!',
  f'Use the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}list</b></nobr> command to find a channel to join!',
  f'Right click on any user in a channel user list for more options!',
- f'You can <b>{config.ISSUE_COMMAND_SYMBOL}ignore</b> annoying users to stop hearing from them!',
- f'You can create hotkeys to send commands to any server, channel, or private chat window instantly!',
- f'The <b>{APPLICATION_NAME}</b> User Guide has all the information you need to get the most out of <b>{APPLICATION_NAME}</b>!',
+ f'The <b>{APPLICATION_NAME} User Guide</b> has all the information you need to get the most out of <b>{APPLICATION_NAME}</b>!',
  f'To send a message in a command or script, use the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}msg</b></nobr> command!',
  f'You can search your channel and private chat logs with the <b>Log Manager</b>!',
  f"The <b>Style Editor</b> allows you to set each chat window's text styles!",
@@ -64,14 +57,14 @@ TIPS = [
  f'To hide a server, channel, or private chat window, use the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}hide</b></nobr> command!',
  f'Use the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}maximize</b></nobr> command to maximize a chat window!',
  f'Use the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}minimize</b></nobr> command to minimize a chat window!',
- f'Connect to another server with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}connect</b></nobr> command!',
+ f'Use <nobr><b>{config.ISSUE_COMMAND_SYMBOL}connect</b></nobr> to connect to another server!',
  f'<b>{APPLICATION_NAME}</b> can connect to IRC servers via <b>TCP/IP</b> or <b>SSL/TLS</b>!',
  f'Nicknames and channel names are unique on an IRC network!',
  f'The default server port for IRC is <b>6667</b> (<b>6697</b> for SSL/TLS)!',
  f'Unlike <b>Discord</b> or <b>Slack</b>, no single company owns IRC. Anyone can run their own server!',
  f'The first IRC server was <b>tolsun.oulu.fi</b>!',
  f'In early 1991, IRC was used for real-time reporting on the Gulf War!',
- f'A single IRC message is strictly capped at 512 characters, including the line-ending characters!',
+ f'A single IRC message is strictly capped at <b>512 characters</b>, including the line-ending characters!',
  f'Much of early "internet slang" and leetspeak evolved or was popularized in IRC channels!',
  f'<b>{APPLICATION_NAME}</b> supports spellchecking in eight different languages!',
  f'<b>{APPLICATION_NAME}</b> can be configured with the <b>Settings</b> dialog, with over 300 different settings!',
@@ -92,7 +85,7 @@ TIPS = [
  f'Disconnect from all connected servers with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}quitall</b></nobr> command!',
  f'Set your status to "away" with the\u00A0<nobr><b>{config.ISSUE_COMMAND_SYMBOL}away</b></nobr> command!',
  f'Send a notice with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}notice</b></nobr> command!',
- f'Force <b>{APPLICATION_NAME}</b> to be "on top" of all other windows in Settings!',
+ f'Force <b>{APPLICATION_NAME}</b> to be "on top" of all other windows in <b>Settings</b>!',
  f'<b>{APPLICATION_NAME}</b> will always be free, but donations are welcome. <a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a>',
  f'Become a <a href=\"https://buymeacoffee.com/danhetrick\">patron of <b>{APPLICATION_NAME}</b></a> today, and help keep IRC going in the 21st century!',
  f'<b>UnrealIRCd</b> is the most popular and widely deployed IRC server software!',
@@ -120,25 +113,70 @@ TIPS = [
  f'<b>{APPLICATION_NAME}</b> and the source code will always be free, but donations will always be welcome. <a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a>',
  f'Change the displayed names of the menus in the <b>Settings</b> dialog!',
  f'IRC lets people all over the world talk to each other in real-time, completely free!',
- f'<b>{APPLICATION_NAME}</b> can run completely from a USB thumb drive. Check out the <b>README</b> for how!',
+ f'<b>{APPLICATION_NAME}</b> can run completely from a USB thumb drive. Check out the <b>{APPLICATION_NAME} User Guide</b> for how!',
  f'Join us on the official <b>#merk</b> channel, on <a href=\"https://libera.chat/\">Libera.chat</a>!',
- f'IRC nicknames can\'t have !, @, $, %, &, *, (, ), ., ,, /, ?, <, >, +, = characters or spaces in them!',
+ f'IRC nicknames can\'t have the !, @, $, %, &, *, (, ), ., ,, /, ?, <, >, +, = characters or spaces in them!',
  f'IRC nicknames can\'t start with numbers!',
  f'IRC channel names can\'t contain spaces, control characters (like colors), or commas!',
- f'At its peak, IRC had 10,000,000 daily users!',
+ f'At its peak, IRC had <b>10,000,000</b> daily users!',
  f'<b>{APPLICATION_NAME}</b> runs on both <b>Windows</b> and <b>Linux</b> identically!',
  f'There are <b>{APPLICATION_NAME}</b> users all over the world, like Germany, Spain, Serbia, and the United States!',
- f'You can turn off timestamp display in settings, but timestamps are still saved to logs!',
+ f'You can turn off timestamp display in <b>Settings</b>, but timestamps are still saved to logs!',
  f'Logs can be automatically saved every once in awhile, so you don\'t lose anything from a system crash!',
  f'<b>NickServ</b> and <b>ChanServ</b> are IRC service bots that provide persistent management for user nicknames and channels, ensuring ownership and security!',
- f'As of 2021, there were 481 known operational IRC networks, with major networks like Libera supporting thousands of channels and users!',
- f'If you want to know how IRC works, take a look at RFC 1459 and RFC 2812 in the <b>Help</b> menu!',
+ f'As of 2021, there were 481 known operational IRC networks, with major networks like <a href=\"https://libera.chat/\">Libera</a> supporting thousands of channels and users!',
+ f'If you want to know how IRC works, take a look at <b>RFC 1459</b> and <b>RFC 2812</b> in the <b>Help</b> menu!',
  f'There are over 1,400 open source IRC clients. Thank you for choosing <b>{APPLICATION_NAME}</b>!',
- f'Open source refers to software with source code that anyone can inspect, modify, enhance, and redistribute freely!',
- f'Channel user lists can be configured in the Settings dialog!',
+ f'<b>Open source</b> refers to software with source code that anyone can inspect, modify, enhance, and redistribute freely!',
+ f'Channel user lists can be configured in the <b>Settings</b> dialog!',
  f'Almost every aspect of <b>{APPLICATION_NAME}</b>\'s interface can be changed or modified!',
  f'Check the official <b><a href=\"{APPLICATION_SOURCE}\">{APPLICATION_NAME} homepage</a></b>. <b>{APPLICATION_NAME}</b> is updated often!',
+ f'The Linux binary for <b>{APPLICATION_NAME}</b>\'s supports both <b>Wayland</b> and <b>X11</b>!',
+ f'Connections via <b>SSL/TLS</b> are completely encrypted!',
+ f'<nobr><b>{config.ISSUE_COMMAND_SYMBOL}config</b></nobr> can be used to edit the configuration file manually!',
+ f'IRC was created in 1988 to replace the limited store-and-forward chat of <b>BITNET\'s Relay</b>!',
+ f'A <b>netsplit</b> occurs when servers in a network lose connection, temporarily splitting the user base!',
+ f'IRC servers are often linked together to form massive networks, such as <b>EFnet</b>, <b>Libera Chat</b>, or <b>Undernet</b>!',
+ f'IRC is a plaintext protocol, meaning that anyone with access to the network traffic can read the messages!',
+ f'IRC popularized several internet conventions, including using asterisks for emphasis and slashes for simulated italics!',
+ f'IRC was the primary birthplace of the "Age/Sex/Location" (<b>A/S/L</b>) greeting!',
+ f'<b>Twitch Chat</b> is based on IRC, and can be used by IRC clients!',
+ f'The top 5 IRC networks are <a href=\"https://libera.chat/\">Libera Chat</a>, <a href=\"https://www.ircnet.com/\">IRCnet</a>, <a href=\"https://www.efnet.org/\">EFnet</a>, <a href=\"https://www.undernet.org/\">Undernet</a>, and <a href=\"https://www.quakenet.org/\">QuakeNet</a>!',
+ f'While IRC is officially assigned <b>port 194</b> by the <a href=\"https://iana.org/\">IANA</a>, it almost never uses it!',
+ f'IRC\'s technical limitations (no images, text only) forced the massive popularization of <b>ASCII art</b>!',
 ]
+
+if config.ENABLE_IGNORE:
+	i = [
+		f'You can <b>{config.ISSUE_COMMAND_SYMBOL}ignore</b> annoying users to stop hearing from them!',
+	]
+	TIPS = TIPS + i
+
+if config.ENABLE_HOTKEYS:
+	h = [
+		f'You can create <b>hotkeys</b> to send commands to any server, channel, or private chat window instantly!',
+	]
+	TIPS = TIPS + h
+
+if config.ENABLE_ASCIIMOJI_SHORTCODES:
+	a = [
+		f'You can insert <b>ASCIImojis</b> into your messages using shortcodes!',
+	]
+	TIPS = TIPS + a
+
+if config.ENABLE_EMOJI_SHORTCODES:
+	e = [
+		f'You can insert <b>emojis</b> into your messages using shortcodes!',
+	]
+	TIPS = TIPS + e
+
+if config.ENABLE_MARKDOWN_MARKUP:
+	m = [
+		f'You can make a message <b>bold</b> by surrounding it with double asterisks!',
+ 		f'You can send a message in <i>italics</i> by surrounding it with single asterisks!',
+ 		f'To <u>underline</u> a word in a message, place two underscores before and after it!',
+	]
+	TIPS = TIPS + m
 
 if config.ENABLE_PLUGINS:
 	p = [
@@ -146,7 +184,7 @@ if config.ENABLE_PLUGINS:
 		f'You can install, edit, and create plugins with the <b>Plugin Manager</b>!',
 		f'<b>{APPLICATION_NAME}</b> plugins can join channels, send messages, and even execute scripts!',
 		f'<b>{APPLICATION_NAME}</b> plugins can use any library in the Python standard library!',
-		f'<b>{APPLICATION_NAME}</b> features a Python editor for plugins, complete with syntax highlighting!',
+		f'<b>{APPLICATION_NAME}</b> features a <b>Python editor</b> for plugins, complete with syntax highlighting!',
 		f'<b>{APPLICATION_NAME}</b> can directly execute plugin methods with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}call</b> command!',
 	]
 	TIPS = TIPS + p
@@ -154,10 +192,10 @@ if config.ENABLE_PLUGINS:
 if config.SCRIPTING_ENGINE_ENABLED:
 	s = [
 		f'You can write, edit, and execute scripts with the <b>Script Editor</b>!',
-		f'Connection scripts allow you to automatically send commands as soon as you connect!',
+		f'<b>Connection scripts</b> allow you to automatically send commands as soon as you connect!',
 		f'<b>{APPLICATION_NAME}</b> scripts can do almost everything you can do with a keyboard and mouse!',
-		f'Want to automate your server connections? Start writing connections scripts!',
-		f'Scripts can use special script-only commands, allowing them to "pause" or prevent execution in certain windows!',
+		f'Want to automate your server connections? Start writing <b>connections scripts</b>!',
+		f'Scripts can use special <b>script-only commands</b>, allowing them to "pause" or prevent execution in certain windows!',
 		f'Create your own commands with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}macro</b></nobr> command!',
 	]
 	TIPS = TIPS + s

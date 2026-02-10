@@ -37,7 +37,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
-# Wayland support
+# This makes sure that the libraries for Wayland support
+# are loaded for the Linux binary
 if "Linux" in platform.system():
 	if getattr(sys, 'frozen', False):
 		os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = sys._MEIPASS
@@ -78,10 +79,6 @@ else:
 		myprog = "merk.exe"
 	else:
 		myprog = "merk"
-
-QT_STYLES = QStyleFactory.keys()
-if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
-if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
 
 parser = argparse.ArgumentParser(
 	prog=myprog,

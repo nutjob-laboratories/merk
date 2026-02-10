@@ -273,6 +273,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"_trace": config.ISSUE_COMMAND_SYMBOL+"_trace ",
 			config.ISSUE_COMMAND_SYMBOL+"browser": config.ISSUE_COMMAND_SYMBOL+"browser ",
 			config.ISSUE_COMMAND_SYMBOL+"folder": config.ISSUE_COMMAND_SYMBOL+"folder ",
+			config.ISSUE_COMMAND_SYMBOL+"subwindow": config.ISSUE_COMMAND_SYMBOL+"subwindow",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -442,6 +443,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET</b>", f"Executes a trace on a server or user. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>", f"Opens URL in the default browser" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH [PATH...]</b>", f"Opens PATH(s) in the default file manager" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"subwindow</b>", f"Displays size and location information for the current subwindow" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1090,7 +1092,7 @@ def exit_from_command(gui):
 def check_for_sane_values(setting,value):
 
 	if setting=="qt_window_style":
-		if not value in QStyleFactory.keys(): return INVALID_STYLE
+		if not value in QT_STYLES: return INVALID_STYLE
 
 	if setting=="windowbar_justify":
 		if value.lower()!="left" and value.lower()!="right" and value.lower()!="center": return INVALID_JUSTIFY
@@ -1493,6 +1495,36 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |------------|
+	# | /subwindow |
+	# |------------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'subwindow' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			width = w.width()
+			height = w.height()
+			x_val = w.x()
+			y_val = w.y()
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Subwindow information for {window.name}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			t = Message(SYSTEM_MESSAGE,'',f"Name: {window.name}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			t = Message(SYSTEM_MESSAGE,'',f"Connected to: {window.client.server}:{window.client.port}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			t = Message(SYSTEM_MESSAGE,'',f"Size: {width}x{height}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			t = Message(SYSTEM_MESSAGE,'',f"Position {x_val}x{y_val}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End subwindow information")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			return True
 
 	# |---------|
 	# | /folder |
@@ -2491,6 +2523,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_value = ' '.join(tokens)
 
 			if my_value=='*': my_value = ''
+
+			if my_setting.lower()=='nickname' or my_setting.lower()=='alternate' or my_setting.lower()=='username':
+				if is_invalid_nickname(my_value):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{my_value}\" is not a valid value for {my_setting}")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{my_value}\" is not a valid value for {my_setting}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
 
 			if my_setting in settings:
 				if type(settings[my_setting])==list or type(settings[my_setting])==dict:
@@ -5053,7 +5097,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				check = check_for_sane_values(my_setting,my_value)
 				if check!=ALL_VALID_SETTINGS:
 					if check==INVALID_STYLE:
-						qlist = [f"\"{item}\"" for item in QStyleFactory.keys()]
+						qlist = [f"\"{item}\"" for item in QT_STYLES]
 						reason = f"must be {', '.join(qlist[:-1]) + ' or ' + qlist[-1]}"
 					elif check==INVALID_JUSTIFY:
 						reason = "must be \"center\", \"left\", or \"right\""
@@ -6542,6 +6586,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			nick = tokens.pop(0)
 			window.client.sendLine("WHO "+nick)
+			print(nick)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who' and len(tokens)==3:
 			tokens.pop(0)
@@ -6868,6 +6913,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
+			if is_invalid_nickname(newnick):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{newnick}\" is not a valid nickname")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{newnick}\" is not a valid nickname")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			window.client.setNick(newnick)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'nick':
@@ -6930,6 +6986,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			channel = tokens.pop(0)
 
+			if is_invalid_channel(channel):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{channel}\" is not a valid channel name")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{channel}\" is not a valid channel name")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			# Check to see if the user is trying to /join the
 			# channel from the same channel they are in
 			if window.name.lower()==channel.lower():
@@ -6961,6 +7028,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			channel = tokens.pop(0)
 			key = tokens.pop(0)
+
+			if is_invalid_channel(channel):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{channel}\" is not a valid channel name")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{channel}\" is not a valid channel name")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 			# Check to see if the user is trying to /join the
 			# channel from the same channel they are in
@@ -7258,29 +7336,39 @@ class ScriptThread(QThread):
 					arg = tokens.pop(0)
 					buildTemporaryAliases(self.gui,self.window)
 					arg = interpolateAliases(arg)
-					try:
-						arg = int(arg)
-						if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS:
+
+					if arg=='+':
+						if len(self.arguments)==0:
 							if len(tokens)>0:
-								if len(self.arguments)!=arg:
-									self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
-									no_errors = False
+								self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+								no_errors = False
 							else:
-								if len(self.arguments)!=arg:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
-									no_errors = False
-						else:
-							if len(tokens)>0:
-								if len(self.arguments)<arg:
-									self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
-									no_errors = False
+								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
+								no_errors = False
+					else:
+						try:
+							arg = int(arg)
+							if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS:
+								if len(tokens)>0:
+									if len(self.arguments)!=arg:
+										self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+										no_errors = False
+								else:
+									if len(self.arguments)!=arg:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
+										no_errors = False
 							else:
-								if len(self.arguments)<arg:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
-									no_errors = False
-					except:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage must be called with a numerical first argument"])
-						no_errors = False
+								if len(tokens)>0:
+									if len(self.arguments)<arg:
+										self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+										no_errors = False
+								else:
+									if len(self.arguments)<arg:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
+										no_errors = False
+						except:
+							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage must be called with a numerical first argument"])
+							no_errors = False
 
 			# Usage must be called with at least one argument
 			if len(tokens)>=1:

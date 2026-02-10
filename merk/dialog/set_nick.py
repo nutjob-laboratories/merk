@@ -60,7 +60,7 @@ class Dialog(QDialog):
 
 		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>New nickname:</b>")
-		self.name = QNoSpaceLineEdit()
+		self.name = QNickEdit()
 		nameLayout.addWidget(self.nameLabel)
 		nameLayout.addStretch()
 		nameLayout.addWidget(self.name)

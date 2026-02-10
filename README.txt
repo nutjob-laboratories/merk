@@ -57,7 +57,7 @@ If you have previously installed **MERK** and would like to update to a new vers
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
 # Running MERK on Linux
-**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
+**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf). **MERK** supports both [X11](https://www.x.org/wiki/) and [Wayland](https://wayland.freedesktop.org/).
 
 To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1) and unzip to any directory, and double click on `merk` to run the client. 
 
@@ -87,7 +87,7 @@ If you're running Windows, and you're getting errors when trying to run **MERK**
 
     pip install pywin32
 
-To run properly on Linux and macOS, the latest version of all required software is recommended.
+To run properly on Linux and macOS, the latest version of all required software is recommended. For Linux systems using [Wayland](https://wayland.freedesktop.org/), you may need to recompile PyQt5 with Wayland support. The Linux binary supports display on systems with both [X11](https://www.x.org/wiki/) and [Wayland](https://wayland.freedesktop.org/).
 
 There are four libraries that comes bundled with **MERK**:
  - [qt5reactor 0.6.3](https://github.com/twisted/qt5reactor)
@@ -359,6 +359,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                |
 | `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor                                                                                               |
+| `/subwindow`                                | Displays size and location information about the current subwindow                       |
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
@@ -366,7 +367,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/unbind SEQUENCE`                        | Removes a bind for `SEQUENCE`. To remove all binds, pass `*` as the argument                                                        |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
 | `/unmacro NAME`                        | Deletes the macro named `NAME`  |
-| `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. *Can only be called by scripts*                                                        |
+| `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. If the script can take one or more arguments, pass `+` as `NUMBER`. *Can only be called by scripts*                                                        |
 | `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk! |
 | `/userhost NICK(S)...`          | Requests information about users from the server |
 | `/version [SERVER]`                     | Requests server version                                                                                                          |

@@ -2,17 +2,6 @@
 |                                   0.051.500                                  |
 |------------------------------------------------------------------------------|
 
-What's New:
- - Plugins no longer need to have unique NAME and VERSION attributes
- - The plugin manager can now open plugin source files in the host OS's default
-   Python editor
- - Plugins can now be "paused" to temporarily prevent them from reacting to
-   events, and "unpaused" to resume event reaction. The plugin API now has new
-   events that are triggered on "pausing" and "unpausing".
- - Added support for Wayland to the Linux binary distribution.
- - Markdown and IRC color "markup" is now enabled for messages (and topics)
-   only, not for ALL input in the text input widget.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -74,6 +63,26 @@ What's New:
 * Tweaked the settings menu.
 * Added a "tip of the day" dialog that displays on startup. This can be
   disabled in the Settings dialog or with a checkbox on the dialog itself.
+* The "usage" script-only command can now check for one or more arguments,
+  rather than a specific number.
+* The default setting for "require exact number of arguments for usage" has
+  been changed from "false" to "true".
+* The GUI inputs for nicknames now blocks invalid nicknames for IRC. Nicknames
+  can't start with numbers, or contain !, @, $, %, &, *, (, ), ., ,, /, ?, <,
+  >, +, or =. These characters can't actually be entered into the input widget.
+* The /nick command now also checks for nickname validity, and throws an error
+  on invalid nicknames.
+* Bugfix: larger font sizes "messed up" the Settings dialog display, rendering
+  the dialog almost unusable. Font sizes in the Settings dialog are now limited
+  to a maximum of 12pt. This can be changed either by editing the config file,
+  or by using /config on maximum_font_size_for_settings_dialog.
+* Using the /join command with an invalid channel name results in an error
+  message. Channels in IRC cannot have commas or control codes.
+* The channel join dialog now also prevents invalid characters from being used.
+* New command: /subwindow displays size and location information about the
+  current subwindow.
+* Added a button to the Settings dialog to reset the application font back to
+  the default.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

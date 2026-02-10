@@ -1,1 +1,1 @@
-https://github.com/nutjob-laboratories/merk/releases/tag/0.051.450
+https://github.com/nutjob-laboratories/merk/releases/tag/0.051.500
