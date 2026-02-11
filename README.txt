@@ -186,7 +186,7 @@ There are four libraries that comes bundled with **MERK**:
 
  <p align="center">
  <center><a href="./graphics/macos.png"><img src="./graphics/macos_small.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://inthemansion.com/">MansionNET</a> on macOS 26.2, using the "Fusion" widget set.</small></i></center>
+  <center><i><small>MERK connected to <a href="https://inthemansion.com/">MansionNET</a> on macOS 26.2, using the "Fusion" widget set in "dark mode".</small></i></center>
   </p>
 
   <p align="center">
