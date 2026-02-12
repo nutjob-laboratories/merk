@@ -3,7 +3,10 @@
 |------------------------------------------------------------------------------|
 
 What's New
-- 
+- **A new revamped "Settings" dialog**. The "Settings" dialog has been reworked,
+  fixing some problems for users that use large sized fonts.
+- **Error reporting has been revamped**. More server errors are reported to the
+  user, and the way errors are displayed has been changed.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -23,6 +26,22 @@ What's New
 * New /window subcommand: calling /window layout without any arguments will
   generate a MERK script that recreate the current visible window layout. This
   command is disabled if scripting is disabled.
+* Majorly revamped the Settings dialog.
+* Changing the font in the Settings dialog now prompts the user to restart.
+* Bugfix: certain QStyles no longer resize items in the "page selector" widget
+  in the Settings dialog.
+* Bugfix: the "page selector" in the Settings dialog will no longer have a
+  border around it in any QStyle.
+* Bugfix: pasting something into the text input widget now triggers the "come
+  back from autoaway" event if that option is turned on.
+* Bugfix: the text widget to input "realnames" in both the connection and the
+  Settings dialog now block the input of control codes.
+* Bugfix: the /delay command could cause a crashing error; it no longer does.
+* Bugfix: error messages now follow the normal logging settings.
+* More (hopefully all) server error messages are now shown to the user.
+* Added an option to toggle whether server errror messages are displayed to the
+  user in the current window, instead of just the server window. It's turned on
+  by default.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.500                                  |

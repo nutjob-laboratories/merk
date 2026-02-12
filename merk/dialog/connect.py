@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2025  Daniel Hetrick
+# Copyright (C) 2026  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -324,7 +324,7 @@ class Dialog(QDialog):
 		self.nick = QNickEdit(user.NICKNAME)
 		self.alternative = QNickEdit(user.NICKNAME)
 		self.username = QNickEdit(username)
-		self.realname = QLineEdit(realname)
+		self.realname = QRealnameEdit(realname)
 
 		nickl = QLabel("<b>Nickname</b>")
 		altl = QLabel("<b>Alternate</b>")

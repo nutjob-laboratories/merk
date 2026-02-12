@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2025  Daniel Hetrick
+# Copyright (C) 2026  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -997,6 +997,16 @@ class QChannelEdit(QLineEdit):
 		# Block forbidden characters and control codes
 		# from being entered
 		regex = QRegularExpression(r"^[&#+!][^\p{Cc}\x2c\s]*$")
+		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
+		
+		self.validator = QRegularExpressionValidator(regex)
+		self.setValidator(self.validator)
+
+class QRealnameEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		regex = QRegularExpression(r"^[\P{Cc}]*$")
 		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
 		
 		self.validator = QRegularExpressionValidator(regex)

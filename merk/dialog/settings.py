@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2025  Daniel Hetrick
+# Copyright (C) 2026  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -312,6 +312,7 @@ class Dialog(QDialog):
 		self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
 		self.changed.show()
 		self.boldApply()
+		self.restart.show()
 		self.selector.setFocus()
 
 	def menuFont(self):
@@ -328,6 +329,7 @@ class Dialog(QDialog):
 			self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
 			self.changed.show()
 			self.boldApply()
+			self.restart.show()
 		self.selector.setFocus()
 
 	def setWinsize(self):
@@ -1814,6 +1816,7 @@ class Dialog(QDialog):
 		self.selector.viewport().installEventFilter(self)
 		self.selector.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.selector.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.selector.setFrameShape(QFrame.NoFrame)
 
 		f = self.selector.font()
 		f.setBold(True)
@@ -1827,6 +1830,14 @@ class Dialog(QDialog):
 
 		add_factor = 8
 		self.selector.setIconSize(QSize(fm.height()+add_factor,fm.height()+add_factor))
+
+		class CompactDelegate(QStyledItemDelegate):
+			def sizeHint(self, option, index):
+				size = super().sizeHint(option, index)
+				icon_height = option.fontMetrics.height() + add_factor
+				return QSize(size.width(), icon_height) 
+
+		self.selector.setItemDelegate(CompactDelegate(self.selector))
 
 		self.selector.itemClicked.connect(self.selectorClick)
 
@@ -3026,10 +3037,13 @@ class Dialog(QDialog):
 		systrayLayout = QVBoxLayout()
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray settings</b>"))
 		systrayLayout.addLayout(stLayout)
+		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
 		systrayLayout.addLayout(nsLayout)
+		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
 		systrayLayout.addLayout(notiLayout)
+		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray menu includes...</b>"))
 		systrayLayout.addLayout(menuBox)
 		systrayLayout.addStretch()
@@ -3229,8 +3243,10 @@ class Dialog(QDialog):
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>audio notifications</b>"))
 		audioLayout.addWidget(self.notifyDescription)
 		audioLayout.addLayout(audioMaster)
+		audioLayout.addWidget(QLabel(' '))
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
 		audioLayout.addLayout(eventsLayout)
+		audioLayout.addWidget(QLabel(' '))
 		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>sound file</b>"))
 		audioLayout.addLayout(sbLayout)
 		audioLayout.addLayout(sbLayout2)
@@ -3254,7 +3270,7 @@ class Dialog(QDialog):
 		self.nick = QNickEdit(user.NICKNAME)
 		self.alternative = QNickEdit(user.ALTERNATE)
 		self.username = QNickEdit(user.USERNAME)
-		self.realname = QLineEdit(user.REALNAME)
+		self.realname = QRealnameEdit(user.REALNAME)
 		self.userinfo = QLineEdit(user.USERINFO)
 		self.finger = QLineEdit(user.FINGER)
 
@@ -3265,93 +3281,85 @@ class Dialog(QDialog):
 		self.userinfo.textChanged.connect(self.changeUser)
 		self.finger.textChanged.connect(self.changeUser)
 
-		nickLayout = QFormLayout()
-		nickLayout.addRow(self.nick)
-		nickLayout.addRow(QLabel("<center><small>The nickname you wish to use on the server</small></center>"))
-		nickBox = QGroupBox("Nickname")
-		nickBox.setAlignment(Qt.AlignLeft)
-		nickBox.setLayout(nickLayout)
-
-		font = nickBox.font()
+		font = self.font()
 		font.setBold(True)
-		nickBox.setFont(font)
-		
-		alternateLayout = QFormLayout()
-		alternateLayout.addRow(self.alternative)
-		alternateLayout.addRow(QLabel("<center><small>Alternate nickname if your first<br>choice is already taken</small></center>"))
-		alternateBox = QGroupBox("Alternate (optional)")
-		alternateBox.setAlignment(Qt.AlignLeft)
-		alternateBox.setLayout(alternateLayout)
 
-		alternateBox.setFont(font)
-		
-		userLayout = QFormLayout()
-		userLayout.addRow(self.username)
-		userLayout.addRow(QLabel("<center><small>The username you wish to use</small></center>"))
-		userBox = QGroupBox("Username")
-		userBox.setAlignment(Qt.AlignLeft)
-		userBox.setLayout(userLayout)
+		self.nickLabel = QLabel("Nickname:")
+		self.nickLabel.setFont(font)
+		self.alternateLabel = QLabel("Alternate:")
+		self.alternateLabel.setFont(font)
+		self.usernameLabel = QLabel("Username:")
+		self.usernameLabel.setFont(font)
+		self.realnameLabel = QLabel("Realname:")
+		self.realnameLabel.setFont(font)
 
-		userBox.setFont(font)
-		
-		realnameLayout = QFormLayout()
-		realnameLayout.addRow(self.realname)
-		realnameLayout.addRow(QLabel("<center><small>Your real name or other descriptive text</small></center>"))
-		realnameBox = QGroupBox("Real Name")
-		realnameBox.setAlignment(Qt.AlignLeft)
-		realnameBox.setLayout(realnameLayout)
+		udataLayout = QFormLayout()
+		udataLayout.addRow(self.nickLabel,self.nick)
+		udataLayout.addRow(self.alternateLabel,self.alternative)
+		udataLayout.addRow(self.usernameLabel,self.username)
+		udataLayout.addRow(self.realnameLabel,self.realname)
 
-		realnameBox.setFont(font)
+		self.uinfoLabel = QLabel("USERINFO:")
+		self.uinfoLabel.setFont(font)
+		self.finLabel = QLabel("FINGER:")
+		self.finLabel.setFont(font)
 
-		userinfoLayout = QFormLayout()
-		userinfoLayout.addRow(self.userinfo)
-		userinfoBox = QGroupBox("USERINFO Reply (optional)")
-		userinfoBox.setAlignment(Qt.AlignLeft)
-		userinfoBox.setLayout(userinfoLayout)
-
-		userinfoBox.setFont(font)
-
-		fingerLayout = QFormLayout()
-		fingerLayout.addRow(self.finger)
-		fingerBox = QGroupBox("FINGER Reply (optional)")
-		fingerBox.setAlignment(Qt.AlignLeft)
-		fingerBox.setLayout(fingerLayout)
-
-		fingerBox.setFont(font)
+		ctcpLayout = QFormLayout()
+		ctcpLayout.addRow(self.uinfoLabel,self.userinfo)
+		ctcpLayout.addRow(self.finLabel,self.finger)
 
 		self.userDescription = QLabel(f"""
 			<small>
 			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP replies</b>.
 			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
-			current connections. 
+			current connections. <b>Alternate</b> is completely optional; if left blank, <b>{APPLICATION_NAME}</b>
+			will generate a number and attach it to <b>nickname</b> if necessary.
 			</small>
 			""")
 		self.userDescription.setWordWrap(True)
 		self.userDescription.setAlignment(Qt.AlignJustify)
 
-		# Changes to <b>USERINFO Reply</b> and <b>FINGER Reply</b> will be used immediately after changing them.
-
 		self.ctcpDescription = QLabel(f"""
 			<small>
 			Changes to <b>USERINFO</b> and <b>FINGER</b> replies will be used immediately.
+			Both of these values are optional. If not set to a value, <b>{APPLICATION_NAME}</b>
+			will not reply to the CTCP request.
 			</small>
 			""")
 		self.ctcpDescription.setWordWrap(True)
 		self.ctcpDescription.setAlignment(Qt.AlignJustify)
 
+		self.noEnviron = QCheckBox(f"Do not show environment in CTCP VERSION",self)
+		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
+		self.noEnviron.stateChanged.connect(self.changedSetting)
+		
+		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
+		self.noVersion.stateChanged.connect(self.changedSettingVersion)
+
+		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
+			self.noEnviron.setEnabled(False)
+
+		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
+		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
+		self.noSource.stateChanged.connect(self.changedSetting)
+
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(2)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
 		userLayout.addWidget(self.userDescription)
-		userLayout.addWidget(nickBox)
-		userLayout.addWidget(alternateBox)
-		userLayout.addWidget(userBox)
-		userLayout.addWidget(realnameBox)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addLayout(udataLayout)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP replies</b>"))
 		userLayout.addWidget(self.ctcpDescription)
-		userLayout.addWidget(userinfoBox)
-		userLayout.addWidget(fingerBox)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addLayout(ctcpLayout)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
+		userLayout.addWidget(self.noSource)
+		userLayout.addWidget(self.noVersion)
+		userLayout.addWidget(self.noEnviron)
 		userLayout.addStretch()
 
 		self.userPage.setLayout(userLayout)
@@ -3528,6 +3536,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
 		menuLayout.addLayout(infoExist)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
@@ -3618,8 +3627,10 @@ class Dialog(QDialog):
 		timestampLayout = QVBoxLayout()
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
 		timestampLayout.addLayout(tsLayout)
+		timestampLayout.addWidget(QLabel(' '))
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>uptime displays</b>"))
 		timestampLayout.addLayout(upLayout)
+		timestampLayout.addWidget(QLabel(' '))
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		timestampLayout.addWidget(self.showDates)
 		timestampLayout.addStretch()
@@ -3713,6 +3724,10 @@ class Dialog(QDialog):
 		if config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS: self.notifyRepeated.setChecked(True)
 		self.notifyRepeated.stateChanged.connect(self.changedSetting)
 
+		self.ircErrors = QCheckBox("Display server errors in the current window",self)
+		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW: self.ircErrors.setChecked(True)
+		self.ircErrors.stateChanged.connect(self.changedSetting)
+
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(2)
 		csLayout.addWidget(self.askBeforeDisconnect)
@@ -3722,6 +3737,7 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.saveHistory)
 		csLayout.addWidget(self.showNetLinks)
 		csLayout.addWidget(self.motdRaw)
+		csLayout.addWidget(self.ircErrors)
 
 		arLayout = QVBoxLayout()
 		arLayout.setSpacing(2)
@@ -3737,8 +3753,10 @@ class Dialog(QDialog):
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addLayout(csLayout)
+		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatic reconnection</b>"))
 		connectionsLayout.addLayout(arLayout)
+		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatically fetch from server</b>"))
 		connectionsLayout.addLayout(afLayout)
 		connectionsLayout.addStretch()
@@ -3845,27 +3863,23 @@ class Dialog(QDialog):
 		if not config.ENABLE_EMOJI_SHORTCODES:
 			self.autoEmojiAway.setEnabled(False)
 
-		self.autoAliasAway = QCheckBox(f"Interpolate aliases into message",self)
+		self.autoAliasAway = QCheckBox(f"Interpolate aliases",self)
 		if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE: self.autoAliasAway.setChecked(True)
 		self.autoAliasAway.stateChanged.connect(self.changedSetting)
 
 		if not config.ENABLE_ALIASES:
 			self.autoAliasAway.setEnabled(False)
 
-		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(self.awayMsg)
-		awayLayout.addWidget(self.autoEmojiAway)
-		awayLayout.addWidget(self.autoAliasAway)
+		awaymsgLayout = QHBoxLayout()
+		awaymsgLayout.addStretch()
+		awaymsgLayout.addWidget(self.autoEmojiAway)
+		awaymsgLayout.addWidget(self.autoAliasAway)
+		awaymsgLayout.addStretch()
 
-		awayBox = QGroupBox("Default Away Message")
-		awayBox.setLayout(awayLayout)
-		awayBox.setAlignment(Qt.AlignHCenter)
-		awayBox.setObjectName("myGroupBox")
-
-		size_policy = awayBox.sizePolicy()
-		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
-		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
-		awayBox.setSizePolicy(size_policy)
+		amLayout = QVBoxLayout()
+		amLayout.setSpacing(2)
+		amLayout.addWidget(self.awayMsg)
+		amLayout.addLayout(awaymsgLayout)
 
 		asLayout = QVBoxLayout()
 		asLayout.setSpacing(2)
@@ -3881,9 +3895,12 @@ class Dialog(QDialog):
 		aasLayout.addWidget(self.appCancelAway)
 
 		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(awayBox)
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		awayLayout.addLayout(amLayout)
+		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addLayout(asLayout)
+		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autoaway settiings</b>"))
 		awayLayout.addLayout(aasLayout)
 		awayLayout.addStretch()
@@ -4058,9 +4075,11 @@ class Dialog(QDialog):
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyMaster)
 		inputLayout.addLayout(historyLayout)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete</b>"))
 		inputLayout.addWidget(self.autocompleteDescription)
 		inputLayout.addLayout(autoMaster)
+		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSetCenter)
 		inputLayout.addStretch()
@@ -4223,13 +4242,16 @@ class Dialog(QDialog):
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addLayout(spellMaster)
+		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck settings</b>"))
 		spellcheckLayout.addWidget(self.allowSpellcheck)
 		spellcheckLayout.addLayout(distanceLayout)
+		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
 		spellcheckLayout.addLayout(spColorLayout)
 		spellcheckLayout.addLayout(spFormatLayout)
 		spellcheckLayout.addLayout(spFormatLayout2)
+		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
 		spellcheckLayout.addStretch()
@@ -4425,6 +4447,7 @@ class Dialog(QDialog):
 		logLayout = QVBoxLayout()
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
 		logLayout.addLayout(privLayout)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel logs</b>"))
@@ -4432,9 +4455,11 @@ class Dialog(QDialog):
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
 		logLayout.addLayout(contLayout)
 		logLayout.addLayout(cont2Layout)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
 		logLayout.addWidget(self.logDescription)
 		logLayout.addLayout(logsizeLayout)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		logLayout.addWidget(self.markLog)
 		logLayout.addLayout(intervalBox)
@@ -4529,21 +4554,6 @@ class Dialog(QDialog):
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
-		self.noEnviron = QCheckBox(f"Do not show environment in CTCP VERSION",self)
-		if config.NO_ENVIRONMENT_IN_CTCP_REPLIES: self.noEnviron.setChecked(True)
-		self.noEnviron.stateChanged.connect(self.changedSetting)
-		
-		self.noVersion = QCheckBox(f"Do not reply to CTCP VERSION requests",self)
-		if config.DO_NOT_REPLY_TO_CTCP_VERSION: self.noVersion.setChecked(True)
-		self.noVersion.stateChanged.connect(self.changedSettingVersion)
-
-		if config.DO_NOT_REPLY_TO_CTCP_VERSION:
-			self.noEnviron.setEnabled(False)
-
-		self.noSource = QCheckBox(f"Do not reply to CTCP SOURCE requests",self)
-		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
-		self.noSource.stateChanged.connect(self.changedSetting)
-
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -4554,9 +4564,6 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.enableIgnore)
 		msLayout.addWidget(self.showLusers)
 		msLayout.addWidget(self.showIson)
-		msLayout.addWidget(self.noSource)
-		msLayout.addWidget(self.noVersion)
-		msLayout.addWidget(self.noEnviron)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
@@ -4585,36 +4592,35 @@ class Dialog(QDialog):
 		if not config.ENABLE_EMOJI_SHORTCODES:
 			self.autoEmojiQuit.setEnabled(False)
 
-		self.autoAliasQuit = QCheckBox(f"Interpolate aliases into message",self)
+		self.autoAliasQuit = QCheckBox(f"Interpolate aliases",self)
 		if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE: self.autoAliasQuit.setChecked(True)
 		self.autoAliasQuit.stateChanged.connect(self.changedSetting)
 
 		if not config.ENABLE_ALIASES:
 			self.autoAliasQuit.setEnabled(False)
 
-		qfLayout = QVBoxLayout()
-		qfLayout.addWidget(self.partMsg)
-		qfLayout.addWidget(self.autoEmojiQuit)
-		qfLayout.addWidget(self.autoAliasQuit)
+		pmoLayout = QHBoxLayout()
+		pmoLayout.addStretch()
+		pmoLayout.addWidget(self.autoEmojiQuit)
+		pmoLayout.addWidget(self.autoAliasQuit)
+		pmoLayout.addStretch()
 
-		quitBox = QGroupBox("Default Quit/Part Message")
-		quitBox.setAlignment(Qt.AlignHCenter)
-		quitBox.setLayout(qfLayout)
-		quitBox.setObjectName("myGroupBox")
-
-		size_policy = quitBox.sizePolicy()
-		size_policy.setHorizontalPolicy(QSizePolicy.Expanding)
-		size_policy.setVerticalPolicy(QSizePolicy.Fixed)
-		quitBox.setSizePolicy(size_policy)
+		qmLayout = QVBoxLayout()
+		qmLayout.setSpacing(2)
+		qmLayout.addWidget(self.partMsg)
+		qmLayout.addLayout(pmoLayout)
 
 		messageLayout = QVBoxLayout()
-		messageLayout.addWidget(quitBox)
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit message</b>"))
+		messageLayout.addLayout(qmLayout)
+		messageLayout.addWidget(QLabel(' '))
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
+		messageLayout.addLayout(prepLayout)
+		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addLayout(msLayout)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
 		messageLayout.addLayout(pmLayout)
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
-		messageLayout.addLayout(prepLayout)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -4801,6 +4807,7 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
+		scriptingLayout.addWidget(QLabel(' '))
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
 		scriptingLayout.addLayout(aLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error settings</b>"))
@@ -5335,6 +5342,7 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
+		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addLayout(inputMaster)
@@ -5625,8 +5633,6 @@ class Dialog(QDialog):
 
 		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 
-		quitBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
-		awayBox.setStyleSheet("QGroupBox#myGroupBox { font-weight: bold; }")
 		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -6067,6 +6073,7 @@ class Dialog(QDialog):
 		config.PLUGIN_UNPAUSE = self.plugUnpause.isChecked()
 		config.SHOW_TIPS_AT_START = self.showTips.isChecked()
 		config.FLASH_SYSTRAY_CHANNEL = self.systrayChannel.isChecked()
+		config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = self.ircErrors.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -6168,6 +6175,7 @@ class Dialog(QDialog):
 			config.APPLICATION_FONT = self.newfont.toString()
 			self.setFont(self.newfont)
 			self.parent.app.setFont(self.newfont)
+			self.parent.setFont(self.newfont)
 			self.parent.setAllFont(self.newfont)
 		else:
 			if self.default_font:

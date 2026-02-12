@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2025  Daniel Hetrick
+# Copyright (C) 2026  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -1086,18 +1086,6 @@ class IRC_Connection(irc.IRCClient):
 
 		return irc.IRCClient.sendLine(self, line)
 
-	def irc_ERR_NOSUCHNICK(self,prefix,params):
-		self.gui.receivedError(self,params[1]+": "+params[2])
-
-	def irc_ERR_NOSUCHSERVER(self,prefix,params):
-		self.gui.receivedError(self,params[1]+": "+params[2])
-
-	def irc_ERR_NOSUCHCHANNEL(self,prefix,params):
-		self.gui.receivedError(self,params[1]+": "+params[2])
-
-	def irc_ERR_CANNOTSENDTOCHAN(self,prefix,params):
-		self.gui.receivedError(self,params[1]+": "+params[2])
-
 	def irc_RPL_AWAY(self,prefix,params):
 		user = params[1]
 		msg = params[2]
@@ -1184,45 +1172,12 @@ class IRC_Connection(irc.IRCClient):
 		if len(d) >= 2:
 			if d[1].isalpha(): return irc.IRCClient.lineReceived(self, line)
 
-		if "Cannot join channel (+k)" in line2:
-			self.gui.receivedError(self,"Cannot join channel (wrong or missing password)")
-		if "Cannot join channel (+l)" in line2:
-			self.gui.receivedError(self,"Cannot join channel (channel is full)")
-		if "Cannot join channel (+b)" in line2:
-			self.gui.receivedError(self,"Cannot join channel (banned)")
-		if "Cannot join channel (+i)" in line2:
-			self.gui.receivedError(self,"Cannot join channel (channel is invite only)")
-		if "not an IRC operator" in line2:
-			self.gui.receivedError(self,"Permission denied (you're not an IRC operator)")
-		if "not channel operator" in line2:
-			if not self.is_listing_channels:
-				self.gui.receivedError(self,"Permission denied (you're not channel operator)")
-		if "is already on channel" in line2:
-			self.gui.receivedError(self,"Invite failed (user is already in channel)")
-		if "not on that channel" in line2:
-			self.gui.receivedError(self,"Permission denied (you're not in channel)")
-		if "aren't on that channel" in line2:
-			self.gui.receivedError(self,"Permission denied (target user is not in channel)")
-		if "have not registered" in line2:
-			self.gui.receivedError(self,"You're not registered")
-		if "may not reregister" in line2:
-			self.gui.receivedError(self,"You can't reregister")
-		if "enough parameters" in line2:
-			self.gui.receivedError(self,"Not enough parameters supplied to command")
-		if "isn't among the privileged" in line2:
-			self.gui.receivedError(self,"Registration refused (server isn't setup to allow connections from your host)")
-		if "Password incorrect" in line2:
-			self.gui.receivedError(self,"Permission denied (incorrect password)")
-		if "banned from this server" in line2:
-			self.gui.receivedError(self,"You are banned from this server")
-		if "kill a server" in line2:
-			self.gui.receivedError(self,"Permission denied (you can't kill a server)")
-		if "O-lines for your host" in line2:
-			self.gui.receivedError(self,"No O-lines for your host")
-		if "Unknown MODE flag" in line2:
-			self.gui.receivedError(self,"Unknown MODE flag")
-		if "change mode for other users" in line2:
-			self.gui.receivedError(self,"Permission denied (can't change mode for other users)")
+		# Catch errors and display error messages
+		if len(d) > 1:
+			command = d[1] if d[0].startswith(':') else d[0]
+			if command.isdigit() and 400 <= int(command) <= 599:
+				error_msg = " ".join(d[3:])
+				self.gui.receivedError(self,f"{error_msg}")
 
 		return irc.IRCClient.lineReceived(self, line)
 

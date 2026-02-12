@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2025  Daniel Hetrick
+# Copyright (C) 2026  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -34,10 +34,10 @@ TEXT_SEPARATOR = f'''
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
 			</td>
 			<td><center><small>!TEXT!</small></center></td>
-			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td style="background-image: url({HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
 			</td>
 		</tr>
 	</tbody>
@@ -47,10 +47,10 @@ LIGHT_TEXT_SEPARATOR = f'''
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
 	<tbody>
 		<tr>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
 			</td>
 			<td><center><small>!TEXT!</small></center></td>
-			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x;">&nbsp;
+			<td style="background-image: url({LIGHT_HORIZONTAL_RULE_BACKGROUND}); background-repeat: repeat-x; background-size: auto 100%; background-position: top;">&nbsp;
 			</td>
 		</tr>
 	</tbody>

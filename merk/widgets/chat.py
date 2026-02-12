@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2025  Daniel Hetrick
+# Copyright (C) 2026  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -3335,6 +3335,22 @@ class SpellTextEdit(QPlainTextEdit):
 			text_edit.blockSignals(True)
 			text_edit.setPlainText(new_text)
 			text_edit.blockSignals(False)
+
+	def paste(self):
+		if config.USE_AUTOAWAY:
+			if config.TYPING_INPUT_CANCELS_AUTOAWAY:
+				if self.parent.client.autoaway:
+					self.parent.client.back()
+		super().paste()
+
+	def insertFromMimeData(self, source):
+		if source.hasText():
+			if config.USE_AUTOAWAY:
+				if config.TYPING_INPUT_CANCELS_AUTOAWAY:
+					if self.parent.client.autoaway:
+						self.parent.client.back()
+		
+		super().insertFromMimeData(source)
 
 	def keyPressEvent(self,event):
 

@@ -5,7 +5,7 @@
 # ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗
 # ██║ ╚═╝ ██║ █████╔╝██║  ██║██║  ██╗
 # ╚═╝     ╚═╝ ╚════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-# Copyright (C) 2025  Daniel Hetrick
+# Copyright (C) 2026  Daniel Hetrick
 # https://github.com/nutjob-laboratories/merk
 # https://github.com/nutjob-laboratories
 #
@@ -1243,10 +1243,13 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 
 	if is_script:
 		if script_id!=None:
-			if gui.scripts[script_id].filename==None:
-				script_file = 'script'
+			if hasattr(gui.scripts[script_id],"filename"):
+				if gui.scripts[script_id].filename==None:
+					script_file = 'script'
+				else:
+					script_file = os.path.basename(gui.scripts[script_id].filename)
 			else:
-				script_file = os.path.basename(gui.scripts[script_id].filename)
+				script_file = 'command'
 			if is_halting(script_id): return True
 
 	# |--------|
@@ -1467,10 +1470,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 	if is_script:
 		if script_id!=None:
-			if gui.scripts[script_id].filename==None:
-				script_file = 'script'
+			if hasattr(gui.scripts[script_id],"filename"):
+				if gui.scripts[script_id].filename==None:
+					script_file = 'script'
+				else:
+					script_file = os.path.basename(gui.scripts[script_id].filename)
 			else:
-				script_file = os.path.basename(gui.scripts[script_id].filename)
+				script_file = 'command'
 			if is_halting(script_id): return True
 
 	# |---------------|
