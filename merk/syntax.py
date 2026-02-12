@@ -221,7 +221,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"quitall",
 			cmdsymbol+"rem",
 			cmdsymbol+"fullscreen",
-			cmdsymbol+"resize",
+			cmdsymbol+"size",
 			cmdsymbol+"move",
 			cmdsymbol+"focus",
 			cmdsymbol+"reconnect",
@@ -284,7 +284,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window fullscreen",
 			cmdsymbol+"window ontop",
 			cmdsymbol+"window pause",
-			cmdsymbol+"subwindow",
+			cmdsymbol+"window layout",
 		]
 
 		script_only = [

@@ -1113,7 +1113,8 @@ class Merk(QMainWindow):
 				self.notifications = True
 				if config.FLASH_SYSTRAY_LIST:
 					if note!='':
-						self.tray_notifications.append(note)
+						if not note in self.tray_notifications:
+							self.tray_notifications.append(note)
 					if len(self.tray_notifications)>0:
 						self.tray.setToolTip("\n".join(self.tray_notifications))
 				if not self.flash.isActive():
@@ -1758,6 +1759,10 @@ class Merk(QMainWindow):
 						if config.SOUND_NOTIFICATION_NICKNAME:
 							QSound.play(config.SOUND_NOTIFICATION_FILE)
 
+			if not ignored:
+				if config.FLASH_SYSTRAY_CHANNEL:
+					self.show_notifications("New chat in "+target)
+
 			# Channel message
 			w = self.getWindow(target,client)
 			if w:
@@ -1874,6 +1879,10 @@ class Merk(QMainWindow):
 						# Not the current window
 						if client.nickname in msg:
 							self.add_unread_mention(client,w.name)
+
+				if not ignored:
+					if config.FLASH_SYSTRAY_CHANNEL:
+						self.show_notifications("New chat in "+target)
 				return
 
 		# Try to display it as a private message
@@ -1890,6 +1899,7 @@ class Merk(QMainWindow):
 					# Not the current window
 					if client.nickname in msg:
 						self.add_unread_mention(client,w.name)
+			if config.FLASH_SYSTRAY_PRIVATE: self.show_notifications("Received private message from "+nickname)
 			plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
 		else:
 			if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES:
@@ -3764,6 +3774,27 @@ class Merk(QMainWindow):
 	def newEditorWindowFile(self,filename):
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(SCRIPT_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		self.MDI.addSubWindow(w)
+		self.toolsMenu.close()
+		self.buildWindowsMenu()
+		w.show()
+
+		if config.RUBBER_BAND_RESIZE:
+			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		return w
+
+	def newEditorWindowContents(self,contents):
+		w = QMdiSubWindow(self)
+		w.setWidget(widgets.ScriptEditor(None,self,w,False,False,contents))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)

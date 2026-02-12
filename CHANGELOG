@@ -1,4 +1,30 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.550                                  |
+|------------------------------------------------------------------------------|
+
+What's New
+- 
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* The /window command now shows more subwindow information when called without
+  any arguments.
+* Removed the /subwindow command.
+* Changed the /resize command to /size. It works exactly the same way, only if
+  you call it without arguments, it displays the current subwindow's size.
+* Changed the /move command. Call without arguments to see the current sub-
+  window's coordinates.
+* Bugfix: if multiple identical notification are sent to the systray, they are
+  no longer duplicated.
+* New option: trigger systray flash notifications on new channel chat. This
+  option is enabled by default.
+* New /window subcommand: calling /window layout without any arguments will
+  generate a MERK script that recreate the current visible window layout. This
+  command is disabled if scripting is disabled.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.500                                  |
 |------------------------------------------------------------------------------|
 

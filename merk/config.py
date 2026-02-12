@@ -403,9 +403,11 @@ PLUGIN_PAUSE = True
 PLUGIN_UNPAUSE = True
 SHOW_TIPS_AT_START = True
 MAXIMUM_FONT_SIZE_FOR_SETTINGS = 12
+FLASH_SYSTRAY_CHANNEL = True
 
 def build_settings():
 	settings = {
+		"systray_notification_channel": FLASH_SYSTRAY_CHANNEL,
 		"maximum_font_size_for_settings_dialog": MAXIMUM_FONT_SIZE_FOR_SETTINGS,
 		"show_tips_at_startup": SHOW_TIPS_AT_START,
 		"enable_plugin_pause_event": PLUGIN_PAUSE,
@@ -775,6 +777,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "systray_notification_channel" in settings:
+		settings["systray_notification_channel"] = FLASH_SYSTRAY_CHANNEL
 	if not "maximum_font_size_for_settings_dialog" in settings:
 		settings["maximum_font_size_for_settings_dialog"] = MAXIMUM_FONT_SIZE_FOR_SETTINGS
 	if not "show_tips_at_startup" in settings:
@@ -1871,6 +1875,7 @@ def load_settings(filename):
 	global PLUGIN_UNPAUSE
 	global SHOW_TIPS_AT_START
 	global MAXIMUM_FONT_SIZE_FOR_SETTINGS
+	global FLASH_SYSTRAY_CHANNEL
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1880,6 +1885,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		FLASH_SYSTRAY_CHANNEL = settings["systray_notification_channel"]
 		MAXIMUM_FONT_SIZE_FOR_SETTINGS = settings["maximum_font_size_for_settings_dialog"]
 		SHOW_TIPS_AT_START = settings["show_tips_at_startup"]
 		PLUGIN_PAUSE = settings["enable_plugin_pause_event"]

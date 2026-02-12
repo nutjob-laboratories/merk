@@ -576,7 +576,7 @@ class Window(QMainWindow):
 		else:
 			return False
 
-	def __init__(self,filename=None,parent=None,subwindow=None,python=False,blank=False):
+	def __init__(self,filename=None,parent=None,subwindow=None,python=False,blank=False,contents=None):
 		super(Window, self).__init__(parent)
 
 		self.filename = filename
@@ -588,6 +588,7 @@ class Window(QMainWindow):
 		self.python = python
 		self.force_close = False
 		self.blank = blank
+		self.contents = contents
 
 		self.editing_user_script = False
 		self.current_user_script = None
@@ -663,6 +664,11 @@ class Window(QMainWindow):
 				self.editor.setPlainText(source_code)
 				self.changed = False
 				self.updateApplicationTitle()
+
+		if self.contents!=None:
+			self.editor.setPlainText(self.contents)
+			self.changed = True
+			self.updateApplicationTitle()
 
 		self.menubar = self.menuBar()
 

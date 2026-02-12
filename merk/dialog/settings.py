@@ -1121,6 +1121,7 @@ class Dialog(QDialog):
 				self.flashInterval.setEnabled(True)
 				self.doubleclickRestore.setEnabled(True)
 				self.clickToMinimize.setEnabled(True)
+				self.systrayChannel.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
 				self.listSystray.setEnabled(False)
@@ -1136,6 +1137,7 @@ class Dialog(QDialog):
 				self.flashInterval.setEnabled(False)
 				self.doubleclickRestore.setEnabled(False)
 				self.clickToMinimize.setEnabled(False)
+				self.systrayChannel.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
@@ -1159,6 +1161,7 @@ class Dialog(QDialog):
 			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
+			self.systrayChannel.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1186,6 +1189,7 @@ class Dialog(QDialog):
 			self.systrayMode.setEnabled(True)
 			self.setFlashInterval.setEnabled(True)
 			self.flashInterval.setEnabled(True)
+			self.systrayChannel.setEnabled(True)
 		else:
 			self.listSystray.setEnabled(False)
 			self.systrayDisconnect.setEnabled(False)
@@ -1197,6 +1201,7 @@ class Dialog(QDialog):
 			self.systrayMode.setEnabled(False)
 			self.setFlashInterval.setEnabled(False)
 			self.flashInterval.setEnabled(False)
+			self.systrayChannel.setEnabled(False)
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1816,7 +1821,7 @@ class Dialog(QDialog):
 
 		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
 
-		fm = QFontMetrics(self.font())
+		fm = QFontMetrics(self.parent.font())
 		fwidth = fm.width('X') * 22
 		self.selector.setMaximumWidth(fwidth)
 
@@ -2850,7 +2855,7 @@ class Dialog(QDialog):
 		if config.FLASH_SYSTRAY_LIST: self.listSystray.setChecked(True)
 		self.listSystray.stateChanged.connect(self.changedSetting)
 
-		self.systrayDisconnect = QCheckBox("Disconnection from server",self)
+		self.systrayDisconnect = QCheckBox("Server disconnect",self)
 		if config.FLASH_SYSTRAY_DISCONNECT: self.systrayDisconnect.setChecked(True)
 		self.systrayDisconnect.stateChanged.connect(self.changedSetting)
 
@@ -2877,6 +2882,10 @@ class Dialog(QDialog):
 		self.systrayMode = QCheckBox("Mode set on user",self)
 		if config.FLASH_SYSTRAY_MODE: self.systrayMode.setChecked(True)
 		self.systrayMode.stateChanged.connect(self.changedSetting)
+
+		self.systrayChannel = QCheckBox("Channel chat",self)
+		if config.FLASH_SYSTRAY_CHANNEL: self.systrayChannel.setChecked(True)
+		self.systrayChannel.stateChanged.connect(self.changedSetting)
 		
 		self.systrayMinOnClose = QCheckBox("Closing main window with window controls\nminimizes to tray",self)
 		if config.CLOSING_WINDOW_MINIMIZES_TO_TRAY: self.systrayMinOnClose.setChecked(True)
@@ -2898,12 +2907,16 @@ class Dialog(QDialog):
 		noticeMode.addWidget(self.systrayNotice)
 		noticeMode.addWidget(self.systrayMode)
 
+		channelDisco = QHBoxLayout()
+		channelDisco.addWidget(self.systrayDisconnect)
+		channelDisco.addWidget(self.systrayChannel)
+
 		notiLayout = QVBoxLayout()
 		notiLayout.setSpacing(0)
 		notiLayout.addLayout(nickPriv)
 		notiLayout.addLayout(kickInvite)
 		notiLayout.addLayout(noticeMode)
-		notiLayout.addWidget(self.systrayDisconnect)
+		notiLayout.addLayout(channelDisco)
 
 		self.setFlashInterval = QLabel("Flash icon every ")
 
@@ -3041,6 +3054,7 @@ class Dialog(QDialog):
 				self.flashInterval.setEnabled(True)
 				self.doubleclickRestore.setEnabled(True)
 				self.clickToMinimize.setEnabled(True)
+				self.systrayChannel.setEnabled(True)
 			else:
 				self.systrayNotify.setEnabled(False)
 				self.listSystray.setEnabled(False)
@@ -3056,6 +3070,7 @@ class Dialog(QDialog):
 				self.flashInterval.setEnabled(False)
 				self.doubleclickRestore.setEnabled(False)
 				self.clickToMinimize.setEnabled(False)
+				self.systrayChannel.setEnabled(False)
 		else:
 			self.showSystrayMenu.setEnabled(False)
 			self.minSystray.setEnabled(False)
@@ -3079,6 +3094,7 @@ class Dialog(QDialog):
 			self.stmLinks.setEnabled(False)
 			self.stmList.setEnabled(False)
 			self.stmLogs.setEnabled(False)
+			self.systrayChannel.setEnabled(False)
 
 		# Notifications
 
@@ -6050,6 +6066,7 @@ class Dialog(QDialog):
 		config.PLUGIN_PAUSE = self.plugPause.isChecked()
 		config.PLUGIN_UNPAUSE = self.plugUnpause.isChecked()
 		config.SHOW_TIPS_AT_START = self.showTips.isChecked()
+		config.FLASH_SYSTRAY_CHANNEL = self.systrayChannel.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

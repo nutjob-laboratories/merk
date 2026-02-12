@@ -1,4 +1,4 @@
-<h1>MERK 0.051.500</h1>
+<h1>MERK 0.051.505</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -15,7 +15,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.500</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.505</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on the Libera Chat network! Connect to Libera in the client as one of the built-in server suggestions, or at <strong>irc.libera.chat</strong>, port <strong>6667</strong> (you can also connect via SSL on port <strong>6697</strong>). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!</p>
 <h1 id="making-merk-portable-on-windows">Making MERK Portable on Windows</h1>
@@ -324,7 +324,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/move [SERVER] [WINDOW] X Y</code></td>
-<td>Moves a subwindow to <code>X</code> (left and right) and <code>Y</code> (up and down) coordinates. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Moves a subwindow to <code>X</code> (left and right) and <code>Y</code> (up and down) coordinates. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see the current subwindow's coordinates</td>
 </tr>
 <tr>
 <td><code>/msgbox MESSAGE...</code></td>
@@ -407,10 +407,6 @@ Appearance:
 <td>Does nothing. Can be used as a target for <code>goto</code></td>
 </tr>
 <tr>
-<td><code>/resize [SERVER] [WINDOW] WIDTH HEIGHT&nbsp;&nbsp;</code></td>
-<td>Resizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
-</tr>
-<tr>
 <td><code>restrict SERVER|CHANNEL|PRIVATE</code></td>
 <td>Prevents a script from running if it is not being ran in a <code>SERVER</code>, <code>CHANNEL</code>, or <code>PRIVATE</code> window. Up to two windows types can be passed. <strong>Can only be called from scripts</strong></td>
 </tr>
@@ -431,12 +427,12 @@ Appearance:
 <td>Shows a subwindow, if hidden; otherwise, shifts focus to that window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
 </tr>
 <tr>
-<td><code>/style [SERVER] [WINDOW]</code></td>
-<td>Opens a window's text style editor</td>
+<td><code>/size [SERVER] [WINDOW] WIDTH HEIGHT&nbsp;&nbsp;</code></td>
+<td>Resizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's size</td>
 </tr>
 <tr>
-<td><code>/subwindow</code></td>
-<td>Displays size and location information about the current subwindow</td>
+<td><code>/style [SERVER] [WINDOW]</code></td>
+<td>Opens a window's text style editor</td>
 </tr>
 <tr>
 <td><code>/time</code></td>
@@ -504,7 +500,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/window [COMMAND] [X] [Y]</code></td>
-<td>Manipulates the main application window. Valid commands are <strong><code>cascade</code></strong>, <strong><code>fullscreen</code></strong>, <strong><code>hotkey</code></strong>, <strong><code>ignore</code></strong>, <strong><code>install</code></strong>, <strong><code>logs</code></strong>, <strong><code>maximize</code></strong>, <strong><code>minimize</code></strong>, <strong><code>move</code></strong>, <strong><code>next</code></strong>, <strong><code>ontop</code></strong>, <strong><code>pause</code></strong>, <strong><code>plugin</code></strong>, <strong><code>previous</code></strong>, <strong><code>readme</code></strong>, <strong><code>resize</code></strong>, <strong><code>restart</code></strong>, <strong><code>restore</code></strong>, <strong><code>settings</code></strong>, <strong><code>tile</code></strong>, and <strong><code>uninstall</code></strong>. Call with no arguments to see main window information and a list of subwindows</td>
+<td>Manipulates the main application window. Valid commands are <strong><code>cascade</code></strong>, <strong><code>fullscreen</code></strong>, <strong><code>hotkey</code></strong>, <strong><code>ignore</code></strong>, <strong><code>install</code></strong>, <strong><code>layout</code></strong>, <strong><code>logs</code></strong>, <strong><code>maximize</code></strong>, <strong><code>minimize</code></strong>, <strong><code>move</code></strong>, <strong><code>next</code></strong>, <strong><code>ontop</code></strong>, <strong><code>pause</code></strong>, <strong><code>plugin</code></strong>, <strong><code>previous</code></strong>, <strong><code>readme</code></strong>, <strong><code>resize</code></strong>, <strong><code>restart</code></strong>, <strong><code>restore</code></strong>, <strong><code>settings</code></strong>, <strong><code>tile</code></strong>, and <strong><code>uninstall</code></strong>. Call with no arguments to see main window information and a list of subwindows</td>
 </tr>
 <tr>
 <td><code>/xconnect SERVER [PORT] [PASSWORD]</code></td>

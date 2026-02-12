@@ -335,7 +335,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
 | `/minimize [SERVER] [WINDOW]`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
-| `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context                                                                              |
+| `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see the current subwindow's coordinates                          |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
@@ -357,14 +357,13 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/_rehash`                              | Causes the server to reprocess and reload configuration files. May only be issued by IRC operators |
 | `/rem [TEXT...]`                        | Does nothing. Can be used as a target for `goto`                                                                              |
-| `/resize [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                              |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
 | `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                                |
 | `/s FILENAME [ARGUMENTS]`                      | A shortcut for the `/script` command                                                                                            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                |
+| `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size |
 | `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor                                                                                               |
-| `/subwindow`                                | Displays size and location information about the current subwindow                       |
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
@@ -381,7 +380,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `resize`, `restart`, `restore`, `settings`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `layout`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `resize`, `restart`, `restore`, `settings`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |

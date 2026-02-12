@@ -176,6 +176,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window fullscreen": config.ISSUE_COMMAND_SYMBOL+"window fullscreen",
 			config.ISSUE_COMMAND_SYMBOL+"window ontop": config.ISSUE_COMMAND_SYMBOL+"window ontop",
 			config.ISSUE_COMMAND_SYMBOL+"window pause": config.ISSUE_COMMAND_SYMBOL+"window pause",
+			config.ISSUE_COMMAND_SYMBOL+"window layout": config.ISSUE_COMMAND_SYMBOL+"window layout",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -187,6 +188,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window install",'')
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window uninstall",'')
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window pause",'')
+	if not config.SCRIPTING_ENGINE_ENABLED:
+		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window layout",'')
 
 	# Entries for command autocomplete
 	AUTOCOMPLETE = {
@@ -245,7 +248,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"close": config.ISSUE_COMMAND_SYMBOL+"close ",
 			config.ISSUE_COMMAND_SYMBOL+"prints": config.ISSUE_COMMAND_SYMBOL+"prints ",
 			config.ISSUE_COMMAND_SYMBOL+"quitall": config.ISSUE_COMMAND_SYMBOL+"quitall",
-			config.ISSUE_COMMAND_SYMBOL+"resize": config.ISSUE_COMMAND_SYMBOL+"resize ",
+			config.ISSUE_COMMAND_SYMBOL+"size": config.ISSUE_COMMAND_SYMBOL+"size ",
 			config.ISSUE_COMMAND_SYMBOL+"move": config.ISSUE_COMMAND_SYMBOL+"move ",
 			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
 			config.ISSUE_COMMAND_SYMBOL+"reconnect": config.ISSUE_COMMAND_SYMBOL+"reconnect ",
@@ -273,7 +276,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"_trace": config.ISSUE_COMMAND_SYMBOL+"_trace ",
 			config.ISSUE_COMMAND_SYMBOL+"browser": config.ISSUE_COMMAND_SYMBOL+"browser ",
 			config.ISSUE_COMMAND_SYMBOL+"folder": config.ISSUE_COMMAND_SYMBOL+"folder ",
-			config.ISSUE_COMMAND_SYMBOL+"subwindow": config.ISSUE_COMMAND_SYMBOL+"subwindow",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -350,6 +352,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		W_COMMAND.append("<b>install</b>")
 		W_COMMAND.append("<b>uninstall</b>")
 		W_COMMAND.append("<b>pause</b>")
+	if config.SCRIPTING_ENGINE_ENABLED:
+		W_COMMAND.append("<b>layout</b>")
 
 	W_COMMAND.sort()
 
@@ -413,8 +417,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [WINDOW]</b>", "Prints a system message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"size [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow. Call without arguments to see the current subwindow's size" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow. Call without arguments to see the current subwindow's coordinates" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]</b>", "Sets focus on a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL, reconnecting on disconnection" ],
@@ -443,7 +447,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET</b>", f"Executes a trace on a server or user. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>", f"Opens URL in the default browser" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH [PATH...]</b>", f"Opens PATH(s) in the default file manager" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"subwindow</b>", f"Displays size and location information for the current subwindow" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1495,36 +1498,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
-
-	# |------------|
-	# | /subwindow |
-	# |------------|
-	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'subwindow' and len(tokens)==1:
-			w = gui.getSubWindow(window.name,window.client)
-			width = w.width()
-			height = w.height()
-			x_val = w.x()
-			y_val = w.y()
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Subwindow information for {window.name}")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-			t = Message(SYSTEM_MESSAGE,'',f"Name: {window.name}")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-			t = Message(SYSTEM_MESSAGE,'',f"Connected to: {window.client.server}:{window.client.port}")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-			t = Message(SYSTEM_MESSAGE,'',f"Size: {width}x{height}")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-			t = Message(SYSTEM_MESSAGE,'',f"Position {x_val}x{y_val}")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End subwindow information")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-			return True
 
 	# |---------|
 	# | /folder |
@@ -3153,7 +3126,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'move':
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'move' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			x_val = w.x()
+			y_val = w.y()
+			t = Message(SYSTEM_MESSAGE,'',f"{window.name}: X:{x_val} Y:{y_val}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'move' and len(tokens)>4:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
@@ -3164,12 +3145,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |---------|
-	# | /resize |
-	# |---------|
+	# |-------|
+	# | /size |
+	# |-------|
 	if len(tokens)>=1:
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'resize' and len(tokens)==5:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'size' and len(tokens)==5:
 			tokens.pop(0)
 			server = tokens.pop(0)
 			target = tokens.pop(0)
@@ -3181,10 +3162,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid width")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Invalid width")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}size")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			height = is_int(height)
@@ -3192,10 +3173,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid height")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Invalid height")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}size")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -3209,7 +3190,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
 						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
@@ -3224,7 +3205,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
 							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
@@ -3233,14 +3214,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Server \""+server+"\" not found")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Server \""+server+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'resize' and len(tokens)==4:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'size' and len(tokens)==4:
 			tokens.pop(0)
 			target = tokens.pop(0)
 			width = tokens.pop(0)
@@ -3251,10 +3232,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid width")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Invalid width")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}size")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			height = is_int(height)
@@ -3262,10 +3243,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid height")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Invalid height")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}size")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -3276,14 +3257,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'resize' and len(tokens)==3:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'size' and len(tokens)==3:
 			tokens.pop(0)
 			width = tokens.pop(0)
 			height = tokens.pop(0)
@@ -3293,10 +3274,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid width")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Invalid width")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+				t = Message(ERROR_MESSAGE,'',f"Invalid width passed to {config.ISSUE_COMMAND_SYMBOL}size")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			height = is_int(height)
@@ -3304,10 +3285,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Invalid height")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Invalid height")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}resize")
+				t = Message(ERROR_MESSAGE,'',f"Invalid height passed to {config.ISSUE_COMMAND_SYMBOL}size")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -3318,21 +3299,29 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}resize: Window \""+window.name+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+window.name+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',"Window \""+window.name+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'resize':
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'size' and len(tokens)==1:
+			w = gui.getSubWindow(window.name,window.client)
+			width = w.width()
+			height = w.height()
+			t = Message(SYSTEM_MESSAGE,'',f"{window.name}: {width}x{height}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'size' and len(tokens)>4:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"size [SERVER] [WINDOW] WIDTH HEIGHT")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"resize [SERVER] [WINDOW] WIDTH HEIGHT")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"size [SERVER] [WINDOW] WIDTH HEIGHT")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -3520,13 +3509,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					v = "visible"
 				else:
 					v = "hidden"
+				width = w.width()
+				height = w.height()
+				x_val = w.x()
+				y_val = w.y()
 				c = w.widget()
 				if c.window_type==CHANNEL_WINDOW:
-					entry = f"{c.name} - Channel ({c.client.server}:{c.client.port}, {v})"
+					entry = f"{c.name} - Channel ({c.client.server}:{c.client.port}, {v}, {width}x{height}, X:{x_val} Y:{y_val})"
 				elif c.window_type==PRIVATE_WINDOW:
-					entry = f"{c.name} - Private Chat ({c.client.server}:{c.client.port}, {v})"
+					entry = f"{c.name} - Private Chat ({c.client.server}:{c.client.port}, {v}, {width}x{height}, X:{x_val} Y:{y_val})"
 				elif c.window_type==SERVER_WINDOW:
-					entry = f"{c.name} - Server ({c.client.server}:{c.client.port}, {v})"
+					entry = f"{c.name} - Server ({c.client.server}:{c.client.port}, {v}, {width}x{height}, X:{x_val} Y:{y_val})"
 				results.append(entry)
 
 			if len(results)>1:
@@ -3559,6 +3552,44 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			return True
+
+		# /window layout
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='layout':
+
+				if not config.SCRIPTING_ENGINE_ENABLED:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window layout: Scripting is disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				results = []
+				for w in gui.getAllAllConnectedSubWindows():
+					if w.isVisible():
+						width = w.width()
+						height = w.height()
+						x_val = w.x()
+						y_val = w.y()
+						results.append(f"/size {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {width} {height}")
+						results.append(f"/move {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {x_val} {y_val}")
+				if len(results)>0:
+					results.insert(0,f"/rem Subwindow layout for {datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')}")
+					gui.newEditorWindowContents("\n".join(results))
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: No visible windows found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"No visible windows found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 		# /window ontop
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
