@@ -2349,25 +2349,26 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"kicked",client=client,user=kicker,channel=channel,message=message)
 
-	def receivedError(self,client,message):
+	def receivedError(self,client,code,message):
 		plugins.call(self,"error",client=client,message=message)
-		if not client.registered: return
 
-		t = Message(ERROR_MESSAGE,'',message)
-
-		w = self.getServerWindow(client)
-		if w: w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+		server_window = self.getServerWindow(client)
+		if server_window:
+			t = Message(ERROR_MESSAGE,'',f"{code} {message}")
+			server_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW:
 			current = self.MDI.activeSubWindow()
 			if current:
 				widget = current.widget()
+				if widget==server_window: return
 				if widget:
 					if hasattr(widget,"window_type"):
 						if widget.window_type==CHANNEL_WINDOW or widget.window_type==PRIVATE_WINDOW:
-							if widget.client!=client: return
-							widget.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
+							if hasattr(widget,"client"):
+								if widget.client==client:
+									t = Message(ERROR_MESSAGE,'',f"{message}")
+									widget.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def uptime(self,client,uptime):
 

@@ -3223,10 +3223,19 @@ class TopicEdit(QPlainTextEdit):
 			else:
 				self.parent.setWindowTitle(' ')
 
+	def enterEvent(self, event):
+		if not config.ALLOW_TOPIC_EDIT:
+			self.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
+			self.viewport().setCursor(QtCore.Qt.ArrowCursor)
+		else:
+			self.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+			self.viewport().setCursor(QtCore.Qt.IBeamCursor)
+		super().enterEvent(event)
+
 	def mousePressEvent(self, e, Parent=None):
 		super().mousePressEvent(e)
 		if not self.is_enabled: return
-		if self.readyToEdit:
+		if self.readyToEdit and config.ALLOW_TOPIC_EDIT:
 			self.setText(demojize(emoji.demojize(decode_irc_formatting(self.parent.channel_topic))))
 			self.setReadOnly(False)
 			self.moveCursor(QTextCursor.End)
@@ -3349,7 +3358,6 @@ class SpellTextEdit(QPlainTextEdit):
 				if config.TYPING_INPUT_CANCELS_AUTOAWAY:
 					if self.parent.client.autoaway:
 						self.parent.client.back()
-		
 		super().insertFromMimeData(source)
 
 	def keyPressEvent(self,event):

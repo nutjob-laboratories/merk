@@ -42,6 +42,9 @@ What's New
 * Added an option to toggle whether server errror messages are displayed to the
   user in the current window, instead of just the server window. It's turned on
   by default.
+* Added an option to en/disable the topic editor. The topic editor is enabled
+  by default.
+* Errors issued by the server are no longer ignored before registration.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.500                                  |

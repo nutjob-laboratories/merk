@@ -1381,6 +1381,7 @@ class Dialog(QDialog):
 			self.channelCount.setEnabled(True)
 			self.channelTooltip.setEnabled(True)
 			self.channelColors.setEnabled(True)
+			self.topicEditor.setEnabled(True)
 		else:
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
@@ -1388,6 +1389,7 @@ class Dialog(QDialog):
 			self.channelCount.setEnabled(False)
 			self.channelTooltip.setEnabled(False)
 			self.channelColors.setEnabled(False)
+			self.topicEditor.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -3405,6 +3407,10 @@ class Dialog(QDialog):
 		if config.IRC_COLOR_IN_TOPICS: self.channelColors.setChecked(True)
 		self.channelColors.stateChanged.connect(self.topicChange)
 
+		self.topicEditor = QCheckBox("Enable topic editor",self)
+		if config.ALLOW_TOPIC_EDIT: self.topicEditor.setChecked(True)
+		self.topicEditor.stateChanged.connect(self.changedSetting)
+
 		if not config.SHOW_CHANNEL_TOPIC:
 			self.channelName.setEnabled(False)
 			self.showBanlist.setEnabled(False)
@@ -3412,6 +3418,7 @@ class Dialog(QDialog):
 			self.channelCount.setEnabled(False)
 			self.channelTooltip.setEnabled(False)
 			self.channelColors.setEnabled(False)
+			self.topicEditor.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -3501,6 +3508,7 @@ class Dialog(QDialog):
 		chanButtonLayout2.addRow(self.channelName,self.channelCount)
 		chanButtonLayout2.addRow(self.showChanMenu,self.showBanlist)
 		chanButtonLayout2.addRow(self.channelTooltip,self.channelColors)
+		chanButtonLayout2.addRow(self.topicEditor)
 
 		chanButtonLayout = QHBoxLayout()
 		chanButtonLayout.addStretch()
@@ -6074,6 +6082,7 @@ class Dialog(QDialog):
 		config.SHOW_TIPS_AT_START = self.showTips.isChecked()
 		config.FLASH_SYSTRAY_CHANNEL = self.systrayChannel.isChecked()
 		config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = self.ircErrors.isChecked()
+		config.ALLOW_TOPIC_EDIT = self.topicEditor.isChecked()
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

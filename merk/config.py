@@ -405,9 +405,11 @@ SHOW_TIPS_AT_START = True
 MAXIMUM_FONT_SIZE_FOR_SETTINGS = 12
 FLASH_SYSTRAY_CHANNEL = True
 DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = True
+ALLOW_TOPIC_EDIT = True
 
 def build_settings():
 	settings = {
+		"enable_topic_editor": ALLOW_TOPIC_EDIT,
 		"display_server_errors_in_current_window": DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW,
 		"systray_notification_channel": FLASH_SYSTRAY_CHANNEL,
 		"maximum_font_size_for_settings_dialog": MAXIMUM_FONT_SIZE_FOR_SETTINGS,
@@ -779,6 +781,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "enable_topic_editor" in settings:
+		settings["enable_topic_editor"] = ALLOW_TOPIC_EDIT
 	if not "display_server_errors_in_current_window" in settings:
 		settings["display_server_errors_in_current_window"] = DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW
 	if not "systray_notification_channel" in settings:
@@ -1881,6 +1885,7 @@ def load_settings(filename):
 	global MAXIMUM_FONT_SIZE_FOR_SETTINGS
 	global FLASH_SYSTRAY_CHANNEL
 	global DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW
+	global ALLOW_TOPIC_EDIT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1890,6 +1895,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ALLOW_TOPIC_EDIT = settings["enable_topic_editor"]
 		DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = settings["display_server_errors_in_current_window"]
 		FLASH_SYSTRAY_CHANNEL = settings["systray_notification_channel"]
 		MAXIMUM_FONT_SIZE_FOR_SETTINGS = settings["maximum_font_size_for_settings_dialog"]

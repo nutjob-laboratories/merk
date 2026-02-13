@@ -1177,7 +1177,10 @@ class IRC_Connection(irc.IRCClient):
 			command = d[1] if d[0].startswith(':') else d[0]
 			if command.isdigit() and 400 <= int(command) <= 599:
 				error_msg = " ".join(d[3:])
-				self.gui.receivedError(self,f"{error_msg}")
+				if command=="569":
+					self.gui.serverMessage(self,f"{error_msg}")
+				else:
+					self.gui.receivedError(self,command,f"{error_msg}")
 
 		return irc.IRCClient.lineReceived(self, line)
 
