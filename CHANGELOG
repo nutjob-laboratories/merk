@@ -7,6 +7,7 @@ What's New
   fixing some problems for users that use large sized fonts.
 - **Error reporting has been revamped**. More server errors are reported to the
   user, and the way errors are displayed has been changed.
+- **The log manager has been revamped**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -45,6 +46,12 @@ What's New
 * Added an option to en/disable the topic editor. The topic editor is enabled
   by default.
 * Errors issued by the server are no longer ignored before registration.
+* Moved the IRC color and markdown input into their own submenu in the Settings
+  menu.
+* Added a new icon for text input.
+* The Log Manager has been re-written, and the option to "view" logs (that is,
+  rendering the logs like chat) has been removed. The only option now is to
+  export the logs like before.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.500                                  |

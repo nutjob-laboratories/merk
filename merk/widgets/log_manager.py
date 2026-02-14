@@ -208,9 +208,7 @@ class Window(QMainWindow):
 			self.packlist.takeItem(self.packlist.row(item))
 			os.remove(item.file)
 
-		self.chat.clear()
 		self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
-		self.filestats.setText(' ')
 		self.filesize.setText(' ')
 		self.filetype.setText('<b>to export</b>')
 		self.filename.setText('<b>Select a log</b>')
@@ -236,17 +234,6 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
-	def linkClicked(self,url):
-		if url.host():
-			# It's an internet link, so open it
-			# in the default browser
-			sb = self.chat.verticalScrollBar()
-			og_value = sb.value()
-
-			QDesktopServices.openUrl(url)
-			self.chat.setSource(QUrl())
-			sb.setValue(og_value)
-
 	def setNewTarget(self,target):
 		self.target = target
 
@@ -262,16 +249,12 @@ class Window(QMainWindow):
 	def buildList(self):
 
 		self.packlist.clear()
-		self.chat.clear()
-		self.search.clear()
 		self.log = []
 
-		self.status_details.setText(f"<small><b>Select a log to view or export</b></small>")
+		self.status_details.setText(f"<small><b>Select a log to export</b></small>")
 		self.filesize.setText(' ')
-		self.filestats.setText(" ")
 		self.filetype.setText('<b>to export</b>')
 		self.file_icon.setPixmap(self.blank_file)
-		self.log_render_status.setText(' ')
 		self.filename.setText('<b>Select a log</b>')
 
 		self.menubar.setEnabled(False)
@@ -389,13 +372,8 @@ class Window(QMainWindow):
 
 		self.packlist.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.packlist.customContextMenuRequested.connect(self.show_context_menu)
-		self.packlist.itemClicked.connect(self.on_item_selected)
+		self.packlist.itemClicked.connect(self.on_item_clicked)
 		self.packlist.itemDoubleClicked.connect(self.on_item_clicked)
-
-		self.chat = QTextBrowser(self)
-		self.chat.setFocusPolicy(Qt.NoFocus)
-		self.chat.anchorClicked.connect(self.linkClicked)
-		self.chat.setReadOnly(True)
 
 		delimLayout = QFormLayout()
 
@@ -482,14 +460,9 @@ class Window(QMainWindow):
 
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
-		self.status_details = QLabel(f"<small><b>Select a log to view or export</b></small>")
+		self.status_details = QLabel(f"<small><b>Select a log to export</b></small>")
 		self.status.addPermanentWidget(self.status_details,1)
 
-		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
-
-		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
-
-		self.filestats = QLabel(' ')
 		self.filesize = QLabel(' ')
 		self.filetype = QLabel('<b>to export</b>')
 		self.filename = QLabel('<b>Select a log</b>')
@@ -501,9 +474,6 @@ class Window(QMainWindow):
 		buttons.addStretch()
 		buttons.addWidget(self.button_export)
 		buttons.addStretch()
-		
-		mainLayout = QHBoxLayout()
-		mainLayout.addWidget(self.chat)
 
 		sideLayout = QVBoxLayout()
 		sideLayout.addLayout(exportLayout)
@@ -570,12 +540,11 @@ class Window(QMainWindow):
 		if not self.simplified:
 			self.windowDescription = QLabel(f"""
 				<small>
-				Here, you can manage all installed logs. <b>Double click on a log name</b> to open that log for viewing
-				in the log display. <b>Hover the mouse</b> over the log name to see what IRC network that log is
-				from. <b>Right click on a log name</b> to view other options, like opening the log in a text editor,
-				opening the log's location, copying information about the log to the clipboard, or deleting the log.
-				To export a log, <b>click on a log name</b> to select the log, <b>click on the "Export" tab</b>,
-				choose export options, and click the <b>Export</b> button. Click <b>Close</b> to close the manager.
+				<b>Click on a log name</b> to open that log for exporting.
+				<b>Hover the mouse</b> over the log name to see what IRC network that log is
+				from. <b>Right click on a log name</b> to view other options.
+				To export a log, click on a log, choose export options, and click the
+				<b>Save Export</b> button. Click <b>Close</b> to close the manager.
 				</small>
 				""")
 			self.windowDescription.setWordWrap(True)
@@ -583,6 +552,7 @@ class Window(QMainWindow):
 
 		self.tabs = QTabWidget()
 		self.tabs.setStyleSheet("QTabBar::tab { font-weight: bold; }")
+		self.tabs.tabBar().hide()
 
 		self.horizontalSplitter = QSplitter(Qt.Horizontal)
 		self.horizontalSplitter.addWidget(self.packlist)
@@ -596,58 +566,12 @@ class Window(QMainWindow):
 		self.horizontalSplitter.setStretchFactor(0, 0)
 		self.horizontalSplitter.setStretchFactor(1, 1)
 
-		self.log_display = QWidget()
-		log_index = self.tabs.addTab(self.log_display, "View ")
-
-		self.search = QLineEdit()
-		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAA")
-		self.search.setFixedWidth(wwidth)
-		self.search.returnPressed.connect(self.on_search)
-		self.search.setPlaceholderText("Search terms...")
-
-		self.forward = QPushButton("")
-		self.forward.setIcon(QIcon(NEXT_ICON))
-		self.forward.setToolTip("Next result")
-		self.forward.clicked.connect(self.on_search)
-		self.forward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.forward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-
-		self.backward = QPushButton("")
-		self.backward.setIcon(QIcon(BACK_ICON))
-		self.backward.setToolTip("Previous result")
-		self.backward.clicked.connect(self.on_back)
-		self.backward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-		self.backward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-
-		swlayout = QHBoxLayout()
-		swlayout.addWidget(self.search)
-		swlayout.addWidget(self.backward)
-		swlayout.addWidget(self.forward)
-		swlayout.setContentsMargins(0,0,0,0)
-		
-		self.swidget = QWidget()
-		self.swidget.setLayout(swlayout)
-
-		self.tabs.tabBar().setTabButton(log_index, QTabBar.RightSide, self.swidget)
-
 		self.export_options = QWidget()
 		self.tabs.addTab(self.export_options, "Export")
 
-		self.log_display.setLayout(mainLayout)
 		self.export_options.setLayout(bottomLayout)
 
-		self.log_render_status = QLabel(" ")
-
 		self.buildList()
-
-		sbar = QVBoxLayout()
-		sbar.addWidget(self.filestats)
-		sbar.addWidget(self.log_render_status)
-
-		buttonbar = QHBoxLayout()
-		buttonbar.addLayout(sbar)
-		buttonbar.addStretch()
 
 		managerLayout = QHBoxLayout()
 		managerLayout.addWidget(self.horizontalSplitter)
@@ -655,7 +579,6 @@ class Window(QMainWindow):
 		finalLayout = QVBoxLayout()
 		if not self.simplified: finalLayout.addWidget(self.windowDescription)
 		finalLayout.addLayout(managerLayout)
-		finalLayout.addLayout(buttonbar)
 
 		# Set the layout as the central widget
 		self.centralWidget = QWidget()
@@ -667,135 +590,18 @@ class Window(QMainWindow):
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
-	def on_search(self):
-		self.tabs.setCurrentWidget(self.log_display)
-		search_text = self.search.text()
-
-		if search_text:
-			found = self.chat.find(search_text, QTextDocument.FindFlags())
-			if not found:
-				cursor = self.chat.textCursor()
-				cursor.movePosition(QTextCursor.Start)
-				self.chat.setTextCursor(cursor)
-				self.chat.find(search_text, QTextDocument.FindFlags())
-
-	def on_back(self):
-		self.tabs.setCurrentWidget(self.log_display)
-		search_text = self.search.text()
-		flags = QTextDocument.FindFlags() | QTextDocument.FindBackward
-
-		if search_text:
-			found = self.chat.find(search_text, flags)
-			if not found:
-				cursor = self.chat.textCursor()
-				cursor.movePosition(QTextCursor.Start)
-				self.chat.setTextCursor(cursor)
-				self.chat.find(search_text, flags)
-
 	def generateStylesheet(self,obj,fore,back):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
-	def on_item_selected(self, item):
-
-		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
-		self.log = loadLog
-
-		chat_length = 0
-
-		for line in self.log:
-			if line.type!=DATE_MESSAGE: chat_length = chat_length + 1
-
-		if len(self.log)>config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:
-			self.log_render_status.setText(f"<small>Double click to view last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</small>")
-		else:
-			self.log_render_status.setText(f"<small>Double click to view log</small>")
-
-		size_bytes = os.path.getsize(item.file)
-
-		self.status_details.setText(f'<small><b>{item.file}</b></small>')
-		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
-		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines</b></small>")
-
-		self.menubar.setEnabled(True)
-		self.format.setEnabled(True)
-		self.time.setEnabled(True)
-
-		if self.export_format=='json':
-			self.typeLabel.setEnabled(False)
-			self.type.setEnabled(False)
-			self.lineLabel.setEnabled(False)
-			self.line.setEnabled(False)
-		else:
-			self.typeLabel.setEnabled(True)
-			self.type.setEnabled(True)
-			self.lineLabel.setEnabled(True)
-			self.line.setEnabled(True)
-
-		self.button_export.setEnabled(True)
-
-		if item.type==CHANNEL_WINDOW:
-			self.filetype.setText(f"<small><b>Channel log</b></small>")
-			self.file_icon.setPixmap(self.channel_file)
-		elif item.type==PRIVATE_WINDOW:
-			self.filetype.setText(f"<small><b>Private chat log</b></small>")
-			self.file_icon.setPixmap(self.private_file)
-
-		self.filename.setText(f"<b>{item.channel}</b>")
-
-		self.sample.setPlainText('')
-
 	def on_item_clicked(self, item):
 
-		start_time = time.time()
 		QApplication.setOverrideCursor(Qt.WaitCursor)
-
-		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
-		self.log = loadLog
-
-		big_log = False
-
-		if len(self.log)>config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:
-			big_log = True
-			self.log_render_status.setText(f'<small>Rendering last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log for viewing...</small>')
-			self.log = self.log[-config.LOG_MANAGER_MAXIMUM_LOAD_SIZE:]
-		else:
-			self.log_render_status.setText(f'<small>Rendering log for viewing...</small>')
-
-		QApplication.processEvents()
-
-		chat_length = 0
-
-		if config.SHOW_DATES_IN_LOGS:
-			cdate = None
-			marked = []
-			for e in self.log:
-				ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
-				if cdate!=ndate:
-					cdate = ndate
-					m = Message(DATE_MESSAGE,'',cdate)
-					marked.append(m)
-				marked.append(e)
-			self.log = marked
-
-		self.chat.clear()
-		for line in self.log:
-			if line.type!=DATE_MESSAGE: chat_length = chat_length + 1
-			t = render.render_message(line,self.style,None,True)
-			self.chat.append(t)
-
-		end_time = time.time()
-		rendertime = end_time - start_time
 
 		size_bytes = os.path.getsize(item.file)
 
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
-		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
-		self.filestats.setText(f"<small><b>{item.channel} ({item.network})</b> {chat_length} lines, {rendertime:.4f} seconds</small>")
-		if big_log:
-			self.log_render_status.setText(f'<small>Viewing last {config.LOG_MANAGER_MAXIMUM_LOAD_SIZE} lines of log</small>')
-		else:
-			self.log_render_status.setText('<small>Viewing full log</small>')
+		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></i></small>')
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
@@ -823,9 +629,9 @@ class Window(QMainWindow):
 
 		self.filename.setText(f"<b>{item.channel}</b>")
 
-		QApplication.restoreOverrideCursor()
-
 		self.update_sample()
+
+		QApplication.restoreOverrideCursor()
 
 	def toggleSetting(self,setting):
 

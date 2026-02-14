@@ -3923,7 +3923,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Input")
 		entry.widget = self.inputPage
-		entry.setIcon(QIcon(INPUT_ICON))
+		entry.setIcon(QIcon(CURSOR_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.inputPage)

@@ -4499,20 +4499,6 @@ class Merk(QMainWindow):
 
 		self.settingsMenu.addSeparator()
 
-		if config.ENABLE_MARKDOWN_MARKUP:
-			entry = QAction(QIcon(self.checked_icon),"Use markdown in messages", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Use markdown in messages", self)
-		entry.triggered.connect(self.settingsMarkdown)
-		self.settingsMenu.addAction(entry)
-
-		if config.ENABLE_IRC_COLOR_MARKUP:
-			entry = QAction(QIcon(self.checked_icon),"Use IRC colors in messages", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Use IRC colors in messages", self)
-		entry.triggered.connect(self.settingsInputColor)
-		self.settingsMenu.addAction(entry)
-
 		if config.ALWAYS_ON_TOP:
 			entry = QAction(QIcon(self.checked_icon),"Always on top", self)
 		else:
@@ -4585,6 +4571,22 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Dark mode", self)
 		entry.triggered.connect(self.settingsDarkMode)
 		self.settingsMenu.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(CURSOR_ICON),"Input")
+
+		if config.ENABLE_MARKDOWN_MARKUP:
+			entry = QAction(QIcon(self.checked_icon),"Use markdown in messages", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Use markdown in messages", self)
+		entry.triggered.connect(self.settingsMarkdown)
+		sm.addAction(entry)
+
+		if config.ENABLE_IRC_COLOR_MARKUP:
+			entry = QAction(QIcon(self.checked_icon),"Use IRC colors in messages", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Use IRC colors in messages", self)
+		entry.triggered.connect(self.settingsInputColor)
+		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Display")
 

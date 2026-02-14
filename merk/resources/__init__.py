@@ -307,6 +307,7 @@ IMPORT_ICON = ":/icon-import.png"
 EXPORT_ICON = ":/icon-export.png"
 PLAY_ICON = ":/icon-play.png"
 PAUSE_ICON = ":/icon-pause.png"
+CURSOR_ICON = ":/icon-cursor.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"

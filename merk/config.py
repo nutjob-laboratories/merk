@@ -243,7 +243,6 @@ WINDOWBAR_SHOW_UNREAD_MESSAGES = True
 WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = 1000
 WINDOWBAR_ENTRY_MENU = True
 INCLUDE_SCRIPT_COMMAND_SHORTCUT = True
-LOG_MANAGER_MAXIMUM_LOAD_SIZE = 5000
 DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = True
 CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = False
 HALT_SCRIPT_EXECUTION_ON_ERROR = True
@@ -571,7 +570,6 @@ def build_settings():
 		"halt_script_execution_on_error": HALT_SCRIPT_EXECUTION_ON_ERROR,
 		"create_window_for_incoming_private_notices": CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES,
 		"do_not_create_private_chat_windows_for_ignored_users": DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS,
-		"log_manager_maximum_load_size": LOG_MANAGER_MAXIMUM_LOAD_SIZE,
 		"include_script_command_shortcut": INCLUDE_SCRIPT_COMMAND_SHORTCUT,
 		"windowbar_entry_context_menu": WINDOWBAR_ENTRY_MENU,
 		"windowbar_unread_message_animation_length": WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH,
@@ -1105,8 +1103,6 @@ def patch_settings(settings):
 		settings["create_window_for_incoming_private_notices"] = CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES
 	if not "do_not_create_private_chat_windows_for_ignored_users" in settings:
 		settings["do_not_create_private_chat_windows_for_ignored_users"] = DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS
-	if not "log_manager_maximum_load_size" in settings:
-		settings["log_manager_maximum_load_size"] = LOG_MANAGER_MAXIMUM_LOAD_SIZE
 	if not "include_script_command_shortcut" in settings:
 		settings["include_script_command_shortcut"] = INCLUDE_SCRIPT_COMMAND_SHORTCUT
 	if not "windowbar_entry_context_menu" in settings:
@@ -1723,7 +1719,6 @@ def load_settings(filename):
 	global WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH
 	global WINDOWBAR_ENTRY_MENU
 	global INCLUDE_SCRIPT_COMMAND_SHORTCUT
-	global LOG_MANAGER_MAXIMUM_LOAD_SIZE
 	global DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS
 	global CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES
 	global HALT_SCRIPT_EXECUTION_ON_ERROR
@@ -2057,7 +2052,6 @@ def load_settings(filename):
 		HALT_SCRIPT_EXECUTION_ON_ERROR = settings["halt_script_execution_on_error"]
 		CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES = settings["create_window_for_incoming_private_notices"]
 		DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS = settings["do_not_create_private_chat_windows_for_ignored_users"]
-		LOG_MANAGER_MAXIMUM_LOAD_SIZE = settings["log_manager_maximum_load_size"]
 		INCLUDE_SCRIPT_COMMAND_SHORTCUT = settings["include_script_command_shortcut"]
 		WINDOWBAR_ENTRY_MENU = settings["windowbar_entry_context_menu"]
 		WINDOWBAR_UNREAD_MESSAGE_ANIMATION_LENGTH = settings["windowbar_unread_message_animation_length"]
