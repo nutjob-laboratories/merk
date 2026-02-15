@@ -52,6 +52,11 @@ What's New
 * The Log Manager has been re-written, and the option to "view" logs (that is,
   rendering the logs like chat) has been removed. The only option now is to
   export the logs like before.
+* MERK's system tray icon's tooltip has been changed to include the application
+  version.
+* Added 'end' as a potential target to the 'goto' script-only command. This
+  will immediately end a script. This can also be used in conjunction with the
+  'if' script-only command.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.500                                  |

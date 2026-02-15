@@ -86,7 +86,7 @@ INSTALL_DIRECTORY = sys.path[0]
 MERK_MODULE_DIRECTORY = os.path.join(INSTALL_DIRECTORY, "merk")
 
 APPLICATION_NAME = "MERK"
-APPLICATION_SOURCE = "https://github.com/nutjob-laboratories/merk"
+APPLICATION_SOURCE = "https://merk.chat"
 SCRIPT_FILE_EXTENSION = "merk"
 
 EMOJI_AUTOCOMPLETE = EMOJI_AUTOCOMPLETE_DATA.split("\n")

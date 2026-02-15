@@ -311,6 +311,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 
 		script_full = [
 			"goto",
+			"goto end",
 		]
 
 		operators = [

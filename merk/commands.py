@@ -7669,23 +7669,28 @@ class ScriptThread(QThread):
 									if len(stokens)==2:
 										if stokens[0].lower()=='goto':
 											if config.ENABLE_GOTO_COMMAND:
-												try:
-													ln = int(stokens[1])
-												except:
-													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
+												if stokens[1].lower()=='end':
 													loop = False
+													script_only_command = True
 													continue
-												ln = ln - 1
-												try:
-													code = script[ln]
-												except:
-													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
-													loop = False
+												else:
+													try:
+														ln = int(stokens[1])
+													except:
+														self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
+														loop = False
+														continue
+													ln = ln - 1
+													try:
+														code = script[ln]
+													except:
+														self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
+														loop = False
+														continue
+													index = ln
+													self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
+													handled_goto = True
 													continue
-												index = ln
-												self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
-												handled_goto = True
-												continue
 											else:
 												self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 												loop = False
@@ -7838,24 +7843,29 @@ class ScriptThread(QThread):
 									buildTemporaryAliases(self.gui,self.window)
 									target = interpolateAliases(target)
 
-									try:
-										target = int(target)
-									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
+									if target.lower()=='end':
 										loop = False
 										script_only_command = True
 										continue
-									try:
-										code = script[target-1]
-									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
-										loop = False
-										continue
+									else:
+										try:
+											target = int(target)
+										except:
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
+											loop = False
+											script_only_command = True
+											continue
+										try:
+											code = script[target-1]
+										except:
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
+											loop = False
+											continue
 
-									index = target-1
-									self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
-									script_only_command = True
-									continue
+										index = target-1
+										self.execLine.emit([self.gui,self.window,self.id,script[index],index,False])
+										script_only_command = True
+										continue
 								else:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 									script_only_command = True

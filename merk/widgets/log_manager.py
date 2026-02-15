@@ -372,7 +372,7 @@ class Window(QMainWindow):
 
 		self.packlist.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.packlist.customContextMenuRequested.connect(self.show_context_menu)
-		self.packlist.itemClicked.connect(self.on_item_clicked)
+		self.packlist.itemClicked.connect(self.on_item_selected)
 		self.packlist.itemDoubleClicked.connect(self.on_item_clicked)
 
 		delimLayout = QFormLayout()
@@ -410,6 +410,7 @@ class Window(QMainWindow):
 
 		self.button_export=QPushButton("  Save Export  ")
 		self.button_export.clicked.connect(self.do_export)
+		self.button_export.setEnabled(False)
 
 		self.time = QCheckBox("Epoch format for date/time ",self)
 		self.time.stateChanged.connect(self.clickTime)
@@ -543,7 +544,7 @@ class Window(QMainWindow):
 				<b>Click on a log name</b> to open that log for exporting.
 				<b>Hover the mouse</b> over the log name to see what IRC network that log is
 				from. <b>Right click on a log name</b> to view other options.
-				To export a log, click on a log, choose export options, and click the
+				To export a log, double click on a log, choose export options, and click the
 				<b>Save Export</b> button. Click <b>Close</b> to close the manager.
 				</small>
 				""")
@@ -594,6 +595,45 @@ class Window(QMainWindow):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
+	def on_item_selected(self, item):
+
+		loadLog = logs.readLog(item.network,item.channel,logs.LOG_DIRECTORY)
+		self.log = loadLog
+
+		size_bytes = os.path.getsize(item.file)
+
+		self.status_details.setText(f'<small><b>{item.file}</b></small>')
+		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></small>')
+
+		self.menubar.setEnabled(True)
+		self.format.setEnabled(True)
+		self.time.setEnabled(True)
+
+		if self.export_format=='json':
+			self.typeLabel.setEnabled(False)
+			self.type.setEnabled(False)
+			self.lineLabel.setEnabled(False)
+			self.line.setEnabled(False)
+		else:
+			self.typeLabel.setEnabled(True)
+			self.type.setEnabled(True)
+			self.lineLabel.setEnabled(True)
+			self.line.setEnabled(True)
+
+		self.button_export.setEnabled(True)
+
+		if item.type==CHANNEL_WINDOW:
+			self.filetype.setText(f"<small><b>Channel log</b></small>")
+			self.file_icon.setPixmap(self.channel_file)
+		elif item.type==PRIVATE_WINDOW:
+			self.filetype.setText(f"<small><b>Private chat log</b></small>")
+			self.file_icon.setPixmap(self.private_file)
+
+		self.filename.setText(f"<b>{item.channel}</b>")
+
+		self.sample.setPlainText('')
+		self.button_export.setEnabled(False)
+
 	def on_item_clicked(self, item):
 
 		QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -630,6 +670,7 @@ class Window(QMainWindow):
 		self.filename.setText(f"<b>{item.channel}</b>")
 
 		self.update_sample()
+		self.button_export.setEnabled(True)
 
 		QApplication.restoreOverrideCursor()
 

@@ -210,7 +210,7 @@ class Dialog(QDialog):
 		app_description.setAlignment(Qt.AlignCenter)
 		app_version = QLabel("<big><b>Version "+APPLICATION_VERSION+"</b></big>")
 		app_version.setAlignment(Qt.AlignCenter)
-		app_repository = QLabel(f"<big><b><a href=\"http://merk.chat\">Visit merk.chat for source code!</a></b></big>")
+		app_repository = QLabel(f"<big><b><a href=\"https://merk.chat\">https://merk.chat</a></b></big>")
 		app_repository.setAlignment(Qt.AlignCenter)
 		app_repository.setOpenExternalLinks(True)
 
