@@ -437,7 +437,7 @@ class Merk(QMainWindow):
 
 		self.tray = QSystemTrayIcon() 
 		self.tray.setIcon(self.tray_icon)
-		self.tray.setToolTip(APPLICATION_NAME+" "+APPLICATION_VERSION)
+		self.tray.setToolTip(APPLICATION_NAME+" IRC Client")
 		if config.SHOW_SYSTRAY_ICON==False:
 			self.tray.setVisible(False)
 		else:
@@ -2351,6 +2351,9 @@ class Merk(QMainWindow):
 
 	def receivedError(self,client,code,message):
 		plugins.call(self,"error",client=client,message=message)
+
+		if client.registered==False and code=="461":
+			if message=="PASS :Not enough parameters": return
 
 		server_window = self.getServerWindow(client)
 		if server_window:

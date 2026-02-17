@@ -563,9 +563,16 @@ def addTemporaryAlias(name,value):
 	TEMPORARY_ALIAS[name] = value
 	TEMPORARY_ALIAS_AUTOCOMPLETE[name] = ''
 
-def addAlias(name,value):
+def addAlias(name,value,gui):
 	global ALIAS
 	ALIAS[name] = value
+
+	for script_id in gui.scripts:
+		if hasattr(gui.scripts[script_id],"updateAlias"):
+			try:
+				gui.scripts[script_id].updateAlias.emit(name, value)
+			except:
+				pass
 
 def removeAlias(name):
 	global ALIAS
@@ -1048,14 +1055,26 @@ def execute_script_error(data):
 		t = Message(ERROR_MESSAGE,'',line)
 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
+def execute_script_alias(data):
+	alias = data[0]
+	value = data[1]
+	gui = data[2]
+
+	addAlias(alias,value,gui)
+
 def execute_script_end(data):
 	gui = data[0]
 	script_id = data[1]
+	aliases_to_destroy = data[2]
 
 	gui.scripts[script_id].quit()
 	gui.scripts[script_id].wait(config.SCRIPT_THREAD_QUIT_TIMEOUT)
 
 	del gui.scripts[script_id]
+
+	for alias in aliases_to_destroy:
+		removeAlias(alias)
+
 	remove_halt(script_id)
 
 def executeScript(gui,window,text,filename=None,args=[]):
@@ -1065,6 +1084,7 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].execLine.connect(execute_script_line)
 	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
+	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
 	gui.scripts[script_id].start()
 
 def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=False,execute=False):
@@ -5436,9 +5456,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			value = ' '.join(tokens)
 
 			result,error = math(value)
-			if not error: value = str(result)
+			if not error and result!=None: value = str(result)
 
-			addAlias(a,value)
+			addAlias(a,value,gui)
 
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',"Alias "+config.ALIAS_INTERPOLATION_SYMBOL+a+" set to \""+value+"\"")
@@ -5507,8 +5527,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				# else:
-				# 	time.sleep(0.1)
 				return True
 			else:
 				if is_script:
@@ -6485,6 +6503,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.scripts[script_id].execLine.connect(execute_script_line)
 				gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 				gui.scripts[script_id].scriptError.connect(execute_script_error)
+				gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
 				gui.scripts[script_id].start()
 
 			else:
@@ -6520,6 +6539,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						gui.scripts[script_id].execLine.connect(execute_script_line)
 						gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 						gui.scripts[script_id].scriptError.connect(execute_script_error)
+						gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
 						gui.scripts[script_id].start()
 
 					else:
@@ -6535,6 +6555,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							gui.scripts[script_id].execLine.connect(execute_script_line)
 							gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 							gui.scripts[script_id].scriptError.connect(execute_script_error)
+							gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
 							gui.scripts[script_id].start()
 						else:
 							if is_script:
@@ -7175,6 +7196,8 @@ class ScriptThread(QThread):
 	execLine = pyqtSignal(object)
 	scriptEnd = pyqtSignal(object)
 	scriptError = pyqtSignal(object)
+	scriptAlias = pyqtSignal(object)
+	updateAlias = pyqtSignal(str, object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None):
 		super(ScriptThread, self).__init__(parent)
@@ -7184,7 +7207,70 @@ class ScriptThread(QThread):
 		self.window = window
 		self.arguments = arguments
 		self.filename = filename
-		self.ALIAS = {}
+		self.ALIAS = dict(ALIAS)
+		self.TEMPORARY_ALIAS = dict(TEMPORARY_ALIAS)
+		self.CREATED = []
+
+		self.updateAlias.connect(self.handle_update)
+
+	@pyqtSlot(str, object)
+	def handle_update(self, k, v):
+		self.ALIAS[k] = v
+
+	def addTemporaryAlias(self,name,value):
+		self.TEMPORARY_ALIAS[name] = value
+
+	def addAlias(self,name,value):
+		self.ALIAS[name] = value
+		self.scriptAlias.emit([name,value,self.gui])
+
+	def removeAlias(self,name):
+		if len(name)>0:
+			if name[0]=="_": return False
+		if name in self.ALIAS:
+			self.ALIAS.pop(name,'')
+			return True
+		return False
+
+	def interpolateAliases(self,text):
+
+		if not config.ENABLE_ALIASES: return text
+		if not detect_alias(text): return text
+
+		counter = 0
+		while detect_alias(text):
+			for a in ALIAS:
+				text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,ALIAS[a])
+			counter = counter + 1
+			if counter>=99: break
+
+		counter = 0
+		while detect_alias(text):
+			for a in TEMPORARY_ALIAS:
+				if TEMPORARY_ALIAS[a]==None: continue
+				text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,TEMPORARY_ALIAS[a])
+			counter = counter + 1
+			if counter>=99: break
+
+		counter = 0
+		while detect_alias(text):
+			for a in self.ALIAS:
+				text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,self.ALIAS[a])
+			counter = counter + 1
+			if counter>=99: break
+
+		counter = 0
+		while detect_alias(text):
+			for a in self.TEMPORARY_ALIAS:
+				if self.TEMPORARY_ALIAS[a]==None: continue
+				text = text.replace(config.ALIAS_INTERPOLATION_SYMBOL+a,self.TEMPORARY_ALIAS[a])
+			counter = counter + 1
+			if counter>=99: break
+
+		if config.ENABLE_EMOJI_SHORTCODES: text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
+		if config.ENABLE_ASCIIMOJI_SHORTCODES: text = emojize(text)
+
+		return text
 
 	def process_inserts(self):
 		script = []
@@ -7212,7 +7298,7 @@ class ScriptThread(QThread):
 						ftokens = shlex.split(' '.join(tokens), comments=False)
 
 						for f in ftokens:
-							f = interpolateAliases(f)
+							f = self.interpolateAliases(f)
 							file = find_file(f,SCRIPT_FILE_EXTENSION)
 							if file==None: file = find_file(f,None)
 							if file!=None:
@@ -7235,7 +7321,7 @@ class ScriptThread(QThread):
 			if not skip_this_line:
 				script.append(line)
 
-		if len(script)>0: self.script = interpolateAliases("\n".join(script))
+		if len(script)>0: self.script = self.interpolateAliases("\n".join(script))
 		if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: got_error = False
 		return got_error
 
@@ -7259,7 +7345,7 @@ class ScriptThread(QThread):
 					valid = True
 					buildTemporaryAliases(self.gui,self.window)
 					for e in tokens:
-						e = interpolateAliases(e)
+						e = self.interpolateAliases(e)
 						if e.lower()==self.window.name.lower(): valid = False
 
 					if valid==False:
@@ -7281,7 +7367,7 @@ class ScriptThread(QThread):
 					valid = False
 					buildTemporaryAliases(self.gui,self.window)
 					for e in tokens:
-						e = interpolateAliases(e)
+						e = self.interpolateAliases(e)
 						if e.lower()==self.window.name.lower(): valid = True
 
 					if valid==False:
@@ -7301,7 +7387,7 @@ class ScriptThread(QThread):
 					tokens.pop(0)
 					arg = tokens.pop(0)
 					buildTemporaryAliases(self.gui,self.window)
-					arg = interpolateAliases(arg)
+					arg = self.interpolateAliases(arg)
 
 					if arg.lower()=='server':
 						if self.window.window_type!=SERVER_WINDOW:
@@ -7327,8 +7413,8 @@ class ScriptThread(QThread):
 					arg1 = tokens.pop(0)
 					arg2 = tokens.pop(0)
 					buildTemporaryAliases(self.gui,self.window)
-					arg1 = interpolateAliases(arg1)
-					arg2 = interpolateAliases(arg2)
+					arg1 = self.interpolateAliases(arg1)
+					arg2 = self.interpolateAliases(arg2)
 					valid = False
 					if arg1.lower()=='server':
 						if self.window.window_type==SERVER_WINDOW: valid = True
@@ -7372,7 +7458,7 @@ class ScriptThread(QThread):
 					tokens.pop(0)
 					arg = tokens.pop(0)
 					buildTemporaryAliases(self.gui,self.window)
-					arg = interpolateAliases(arg)
+					arg = self.interpolateAliases(arg)
 
 					if arg=='+':
 						if len(self.arguments)==0:
@@ -7464,21 +7550,21 @@ class ScriptThread(QThread):
 
 			counter = 1
 			for a in self.arguments:
-				addTemporaryAlias(f"_{counter}",a)
+				self.addTemporaryAlias(f"_{counter}",a)
 				counter = counter + 1
 
 			if len(self.arguments)>0:
-				addTemporaryAlias(f"_0",' '.join(self.arguments))
+				self.addTemporaryAlias(f"_0",' '.join(self.arguments))
 			else:
-				addTemporaryAlias(f"_0",'none')
+				self.addTemporaryAlias(f"_0",'none')
 				
-			addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
+			self.addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
 
 			if self.filename!=None:
-				addTemporaryAlias(f"_FILE",self.filename)
-				addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
+				self.addTemporaryAlias(f"_FILE",self.filename)
+				self.addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
 
-			self.script = interpolateAliases(self.script)
+			self.script = self.interpolateAliases(self.script)
 			
 			# First passes through the script,
 			# insert any files that are to be
@@ -7518,6 +7604,53 @@ class ScriptThread(QThread):
 						line = script[index]
 
 						tokens = line.split()
+
+						# |========|
+						# | /alias |
+						# |========|
+						# 
+						# Here, we're creating a "shadow" of the alias table,
+						# We make sure that any aliases created in the script
+						# are "destroyed" as soon as the script exits, and
+						# prevent the script from changing the value of any
+						# alias in a different scope.
+						# 
+						if len(tokens)>=1:
+							if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									errors = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													value = ' '.join(tokens)
+													result,error = math(value)
+													if not error and result!=None: value = str(result)
+													self.addAlias(a,value)
+													self.CREATED.append(a)
+												else:
+													errors = f"\"{a}\" is not a valid alias token"
+											else:
+												errors = f"\"{a}\" already exists in another scope"
+										else:
+											errors = f"\"{a}\" is not a valid alias token"
+									if errors!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {errors}"])
+										loop = False
+								continue
 
 						# |======|
 						# | halt |
@@ -7559,15 +7692,15 @@ class ScriptThread(QThread):
 								stokens.pop(0)
 
 								buildTemporaryAliases(self.gui,self.window)
-								examine = interpolateAliases(stokens.pop(0))
-								operator = interpolateAliases(stokens.pop(0))
-								target = interpolateAliases(stokens.pop(0))
+								examine = self.interpolateAliases(stokens.pop(0))
+								operator = self.interpolateAliases(stokens.pop(0))
+								target = self.interpolateAliases(stokens.pop(0))
 
 								r,error = self.math(examine)
-								if not error: examine = r
+								if not error and r!=None: examine = r
 
 								r,error = self.math(target)
-								if not error: target = r
+								if not error and r!=None: target = r
 
 								valid_operator = False
 								do_command = False
@@ -7715,7 +7848,7 @@ class ScriptThread(QThread):
 								target = tokens[1]
 
 								buildTemporaryAliases(self.gui,self.window)
-								target = interpolateAliases(target)
+								target = self.interpolateAliases(target)
 
 								is_valid = False
 								valids = self.gui.getAllConnectedWindows(self.window.client)
@@ -7772,7 +7905,7 @@ class ScriptThread(QThread):
 								count = tokens[1]
 
 								buildTemporaryAliases(self.gui,self.window)
-								count = interpolateAliases(count)
+								count = self.interpolateAliases(count)
 								try:
 									count = float(count)
 								except:
@@ -7841,7 +7974,7 @@ class ScriptThread(QThread):
 									target = tokens[1]
 
 									buildTemporaryAliases(self.gui,self.window)
-									target = interpolateAliases(target)
+									target = self.interpolateAliases(target)
 
 									if target.lower()=='end':
 										loop = False
@@ -7884,7 +8017,7 @@ class ScriptThread(QThread):
 				filename = self.filename
 			self.scriptError.emit([self.gui,self.window,f"Error executing {os.path.basename(filename)}: {e}"])
 									
-		self.scriptEnd.emit([self.gui,self.id])
+		self.scriptEnd.emit([self.gui,self.id,self.CREATED])
 
 def initialize(directory,directory_name,folder):
 	global CONFIG_DIRECTORY

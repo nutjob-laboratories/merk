@@ -359,7 +359,7 @@ class Window(QMainWindow):
 			winpos = None
 			icount = None
 
-		self.findWindow = Find(self,False)
+		self.findWindow = dialog.Find(self,False)
 		if self.filename:
 			self.findWindow.setWindowTitle(self.filename)
 		if ftext: self.findWindow.find.setText(ftext)
@@ -388,7 +388,7 @@ class Window(QMainWindow):
 			winpos = None
 			icount = None
 
-		self.findWindow = Find(self,True)
+		self.findWindow = dialog.Find(self,True)
 		if self.filename:
 			self.findWindow.setWindowTitle(self.filename)
 		if ftext: self.findWindow.find.setText(ftext)

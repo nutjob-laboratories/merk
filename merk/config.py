@@ -217,7 +217,6 @@ WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = False
 WRITE_INPUT_AND_OUTPUT_TO_FILE = False
 AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET = True
 SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = True
-USERLIST_ICON_SIZE = 16
 ENABLE_ALIASES = True
 ENABLE_AUTOCOMPLETE = True
 ENABLE_STYLE_EDITOR = True
@@ -595,7 +594,6 @@ def build_settings():
 		"enable_style_editor": ENABLE_STYLE_EDITOR,
 		"enable_autocomplete": ENABLE_AUTOCOMPLETE,
 		"enable_aliases": ENABLE_ALIASES,
-		"userlist_status_icon_size": USERLIST_ICON_SIZE,
 		"show_status_bar_on_editor_windows": SHOW_STATUS_BAR_ON_EDITOR_WINDOWS,
 		"autocomplete_shortcodes_in_quit_message_widget": AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET,
 		"write_network_input_and_output_to_file": WRITE_INPUT_AND_OUTPUT_TO_FILE,
@@ -1153,8 +1151,6 @@ def patch_settings(settings):
 		settings["enable_autocomplete"] = ENABLE_AUTOCOMPLETE
 	if not "enable_aliases" in settings:
 		settings["enable_aliases"] = ENABLE_ALIASES
-	if not "userlist_status_icon_size" in settings:
-		settings["userlist_status_icon_size"] = USERLIST_ICON_SIZE
 	if not "show_status_bar_on_editor_windows" in settings:
 		settings["show_status_bar_on_editor_windows"] = SHOW_STATUS_BAR_ON_EDITOR_WINDOWS
 	if not "autocomplete_shortcodes_in_quit_message_widget" in settings:
@@ -1693,7 +1689,6 @@ def load_settings(filename):
 	global WRITE_INPUT_AND_OUTPUT_TO_FILE
 	global AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET
 	global SHOW_STATUS_BAR_ON_EDITOR_WINDOWS
-	global USERLIST_ICON_SIZE
 	global ENABLE_ALIASES
 	global ENABLE_AUTOCOMPLETE
 	global ENABLE_STYLE_EDITOR
@@ -2077,7 +2072,6 @@ def load_settings(filename):
 		ENABLE_STYLE_EDITOR = settings["enable_style_editor"]
 		ENABLE_AUTOCOMPLETE = settings["enable_autocomplete"]
 		ENABLE_ALIASES = settings["enable_aliases"]
-		USERLIST_ICON_SIZE = settings["userlist_status_icon_size"]
 		SHOW_STATUS_BAR_ON_EDITOR_WINDOWS = settings["show_status_bar_on_editor_windows"]
 		AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET = settings["autocomplete_shortcodes_in_quit_message_widget"]
 		WRITE_INPUT_AND_OUTPUT_TO_FILE = settings["write_network_input_and_output_to_file"]

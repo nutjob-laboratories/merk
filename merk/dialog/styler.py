@@ -374,7 +374,8 @@ class Dialog(QDialog):
 		f = self.userlist.font()
 		f.setBold(True)
 		self.userlist.setFont(f)
-		self.userlist.setIconSize(QSize(config.USERLIST_ICON_SIZE, config.USERLIST_ICON_SIZE))
+		fm = QFontMetrics(f)
+		self.userlist.setIconSize(QSize((fm.averageCharWidth() + 5), (fm.averageCharWidth() + 5)))
 
 		self.userlist.setFixedHeight(display_height)
 		self.userlist.setFixedWidth(ulwidth)
@@ -426,6 +427,14 @@ class Dialog(QDialog):
 		self.userlist.addItem(ui)
 
 		if config.SHOW_IGNORE_STATUS_IN_USERLISTS:
+			ui = QListWidgetItem()
+			if config.PLAIN_USER_LISTS:
+				ui.setText('  '+'user')
+			else:
+				ui.setIcon(QIcon(NORMAL_USER))
+				ui.setText('user')
+			self.userlist.addItem(ui)
+
 			ui = QListWidgetItem()
 			if config.PLAIN_USER_LISTS:
 				ui.setText('  '+'ignored')

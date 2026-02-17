@@ -312,7 +312,8 @@ class Window(QMainWindow):
 			self.userlist.setFocusPolicy(Qt.NoFocus)
 			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
 			self.userlist.installEventFilter(self)
-			self.userlist.setIconSize(QSize(config.USERLIST_ICON_SIZE, config.USERLIST_ICON_SIZE))
+			fm = QFontMetrics(self.app.font())
+			self.userlist.setIconSize(QSize((fm.averageCharWidth() + 5), (fm.averageCharWidth() + 5)))
 
 			if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR:
 				self.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -721,7 +722,7 @@ class Window(QMainWindow):
 			# Mark end of loaded log
 			if config.MARK_END_OF_LOADED_LOG:
 				t = datetime.timestamp(datetime.now())
-				pretty_timestamp = datetime.fromtimestamp(t).strftime('%m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				pretty_timestamp = datetime.fromtimestamp(t).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
 				self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
 		# Now, rerender all text in the log, so that
 		# the loaded log data is displayed
@@ -2003,7 +2004,7 @@ class Window(QMainWindow):
 			if self.userlist_nick_pad_width!=config.NICKNAME_PAD_LENGTH:
 				self.userlist_nick_pad_width = config.NICKNAME_PAD_LENGTH
 				fm = QFontMetrics(self.app.font())
-				ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
+				ulwidth = (fm.averageCharWidth() + 5) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
 				mwidth = self.width()-ulwidth
 				self.horizontalSplitter.setSizes([mwidth,ulwidth])
 

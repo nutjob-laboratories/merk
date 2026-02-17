@@ -8,6 +8,9 @@ What's New
 - **Error reporting has been revamped**. More server errors are reported to the
   user, and the way errors are displayed has been changed.
 - **The log manager has been revamped**.
+- **Aliases created in scripts are now local in scope**. Aliases created via
+  the text input widget are global in scope.
+- **Channel userlist status icons now properly scale with font size**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -52,11 +55,28 @@ What's New
 * The Log Manager has been re-written, and the option to "view" logs (that is,
   rendering the logs like chat) has been removed. The only option now is to
   export the logs like before.
-* MERK's system tray icon's tooltip has been changed to include the application
-  version.
 * Added 'end' as a potential target to the 'goto' script-only command. This
   will immediately end a script. This can also be used in conjunction with the
   'if' script-only command.
+* Added the day of the week to the "resumed" end-of-log-load message.
+* Bugfix: using the /alias command with short values could result in the alias
+  not being set properly.
+* Bugfix: the "find" and "find and replace" dialogs in the script editor were
+  broken. They function as intended now.
+* Bugfix: scripts now can more reliably access the alias table, with values
+  creating in script being updated more reliably.
+* Bugfix: math expression parsing could return bad values on occasion.
+* Bugfix: the "PASS :Not enough paramaters" error message that pops up during
+  registration is no longer displayed to the user.
+* Bugfix: aliases created in scripts are now "destroyed" as soon as the script
+  exits. This "fixes" a bug where aliases were not being reliably updated in-
+  between script runs.
+* Bugfixes: global aliases can not be "edited" in scripts.
+* Resized the "status" icons in channel userlists. They are slightly smaller,
+  and now actually scale with the app font size. The config file setting that
+  set the "hard size" of icons for userlists has been removed.
+* Added a "normal" user to the userlist display in the style editor. This can
+  fit now that status icons are smaller.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.500                                  |
