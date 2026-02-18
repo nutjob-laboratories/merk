@@ -53,7 +53,7 @@ class EmojiAutocomplete(QPlainTextEdit):
 
 		if event.key() == Qt.Key_Tab:
 
-			if not config.ENABLE_EMOJI_SHORTCODES:
+			if not config.ENABLE_EMOJI_SHORTCODES and not config.ENABLE_ASCIIMOJI_SHORTCODES:
 				pass
 			elif not self.parent.autocomplete.isChecked():
 				pass
@@ -77,18 +77,31 @@ class EmojiAutocomplete(QPlainTextEdit):
 
 						for c in EMOJI_AUTOCOMPLETE:
 
-							# Case sensitive
-							if fnmatch.fnmatchcase(c,f"{text}*"):
+							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
 								return
 
-							# Case insensitive
-							if fnmatch.fnmatch(c,f"{text}*"):
+				if config.ENABLE_ASCIIMOJI_SHORTCODES:
+					# Autocomplete emojis
+					cursor.select(QTextCursor.WordUnderCursor)
+					oldpos = cursor.position()
+					cursor.select(QTextCursor.WordUnderCursor)
+					newpos = cursor.selectionStart() - 1
+					cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+					cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
+
+						for c in ASCIIMOIJI:
+
+							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
 								cursor.endEditBlock()
+								self.ensureCursorVisible()
 								return
 
 				cursor.movePosition(QTextCursor.End)
@@ -165,8 +178,11 @@ class Dialog(QDialog):
 		self.saveaway = QCheckBox("Save away message as default",self)
 		self.saveaway.stateChanged.connect(self.clickSave)
 
-		self.autocomplete = QCheckBox("Autocomplete emoji shortcodes",self)
+		self.autocomplete = QCheckBox("Autocomplete shortcodes",self)
 		self.autocomplete.setChecked(True)
+
+		if not config.ENABLE_EMOJI_SHORTCODES and not config.ENABLE_ASCIIMOJI_SHORTCODES:
+			self.autocomplete.setEnabled(False)
 
 		if not config.ENABLE_EMOJI_SHORTCODES:
 			self.autocomplete.setChecked(False)

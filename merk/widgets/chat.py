@@ -114,7 +114,7 @@ class Window(QMainWindow):
 		self.users_protected = []
 		self.users_normal = []
 
-		self.userlist_nick_pad_width = config.NICKNAME_PAD_LENGTH
+		self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
 
 		self.banlist = []
 		self.away = {}
@@ -494,7 +494,7 @@ class Window(QMainWindow):
 			self.horizontalSplitter.splitterMoved.connect(self.splitterResize)
 
 			# Set the initial splitter ratio
-			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
+			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.USERLIST_WIDTH_IN_CHARACTERS)
 			mwidth = self.width()-ulwidth
 			self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
@@ -2001,10 +2001,10 @@ class Window(QMainWindow):
 
 	def readjustUserlist(self):
 		if hasattr(self,"horizontalSplitter"):
-			if self.userlist_nick_pad_width!=config.NICKNAME_PAD_LENGTH:
-				self.userlist_nick_pad_width = config.NICKNAME_PAD_LENGTH
+			if self.userlist_width_in_characters!=config.USERLIST_WIDTH_IN_CHARACTERS:
+				self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
 				fm = QFontMetrics(self.app.font())
-				ulwidth = (fm.averageCharWidth() + 5) + (fm.averageCharWidth()*config.NICKNAME_PAD_LENGTH)
+				ulwidth = (fm.averageCharWidth() + 5) + (fm.averageCharWidth()*config.USERLIST_WIDTH_IN_CHARACTERS)
 				mwidth = self.width()-ulwidth
 				self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
@@ -2951,9 +2951,6 @@ class Window(QMainWindow):
 				self.userlist.hide()
 				self.userlist_visible = False
 				self.buildInputOptionsMenu()
-
-			# Move focus back to the input widget
-			# self.input.setFocus()
 
 		return super(Window, self).resizeEvent(event)
 

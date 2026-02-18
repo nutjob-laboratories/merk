@@ -404,9 +404,15 @@ MAXIMUM_FONT_SIZE_FOR_SETTINGS = 12
 FLASH_SYSTRAY_CHANNEL = True
 DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = True
 ALLOW_TOPIC_EDIT = True
+USERLIST_WIDTH_IN_CHARACTERS = 15
+SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = True
+SHOW_ALL_SERVER_ERRORS = False
 
 def build_settings():
 	settings = {
+		"display_all_server_errors": SHOW_ALL_SERVER_ERRORS,
+		"show_connection_script_in_windows_menu": SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU,
+		"userlist_width_in_characters": USERLIST_WIDTH_IN_CHARACTERS,
 		"enable_topic_editor": ALLOW_TOPIC_EDIT,
 		"display_server_errors_in_current_window": DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW,
 		"systray_notification_channel": FLASH_SYSTRAY_CHANNEL,
@@ -777,6 +783,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "display_all_server_errors" in settings:
+		settings["display_all_server_errors"] = SHOW_ALL_SERVER_ERRORS
+	if not "show_connection_script_in_windows_menu" in settings:
+		settings["show_connection_script_in_windows_menu"] = SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU
+	if not "userlist_width_in_characters" in settings:
+		settings["userlist_width_in_characters"] = USERLIST_WIDTH_IN_CHARACTERS
 	if not "enable_topic_editor" in settings:
 		settings["enable_topic_editor"] = ALLOW_TOPIC_EDIT
 	if not "display_server_errors_in_current_window" in settings:
@@ -1876,6 +1888,9 @@ def load_settings(filename):
 	global FLASH_SYSTRAY_CHANNEL
 	global DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW
 	global ALLOW_TOPIC_EDIT
+	global USERLIST_WIDTH_IN_CHARACTERS
+	global SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU
+	global SHOW_ALL_SERVER_ERRORS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1885,6 +1900,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_ALL_SERVER_ERRORS = settings["display_all_server_errors"]
+		SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = settings["show_connection_script_in_windows_menu"]
+		USERLIST_WIDTH_IN_CHARACTERS = settings["userlist_width_in_characters"]
 		ALLOW_TOPIC_EDIT = settings["enable_topic_editor"]
 		DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = settings["display_server_errors_in_current_window"]
 		FLASH_SYSTRAY_CHANNEL = settings["systray_notification_channel"]

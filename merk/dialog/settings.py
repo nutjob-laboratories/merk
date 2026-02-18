@@ -355,6 +355,13 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def setUlistWidth(self):
+		self.USERLIST_WIDTH_IN_CHARACTERS = self.ulistWidthBox.value()
+		self.rerenderUsers = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def selEnglish(self):
 		self.spellLang = "en"
 		self.changed.show()
@@ -858,7 +865,6 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
-		self.rerenderUsers = True
 		self.selector.setFocus()
 
 	def changedSettingHostmask(self,state):
@@ -1407,6 +1413,9 @@ class Dialog(QDialog):
 			self.showAwayStatus.setEnabled(True)
 			self.dcPrivate.setEnabled(True)
 			self.ulistContext.setEnabled(True)
+			self.ulistWidthLabel.setEnabled(True)
+			self.ulistWidthBox.setEnabled(True)
+			self.ulistWidthLabel2.setEnabled(True)
 
 			if self.ulistContext.isChecked():
 				self.elideAway.setEnabled(True)
@@ -1425,6 +1434,9 @@ class Dialog(QDialog):
 			self.elideAway.setEnabled(False)
 			self.elideHostmask.setEnabled(False)
 			self.ulistContext.setEnabled(False)
+			self.ulistWidthLabel.setEnabled(False)
+			self.ulistWidthBox.setEnabled(False)
+			self.ulistWidthLabel2.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -1806,6 +1818,7 @@ class Dialog(QDialog):
 		self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
 		self.CURSOR_BLINK_RATE = config.CURSOR_BLINK_RATE
 		self.plugin_changed = False
+		self.USERLIST_WIDTH_IN_CHARACTERS = config.USERLIST_WIDTH_IN_CHARACTERS
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2411,9 +2424,17 @@ class Dialog(QDialog):
 		if config.SHOW_SERVER_INFO_IN_WINDOWS_MENU: self.showServerInfo.setChecked(True)
 		self.showServerInfo.stateChanged.connect(self.changedSetting)
 
+		self.showConnScript = QCheckBox(f"Connection script",self)
+		if config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU: self.showConnScript.setChecked(True)
+		self.showConnScript.stateChanged.connect(self.changedSetting)
+
 		menu3Layout = QHBoxLayout()
 		menu3Layout.addWidget(self.showChannelList)
 		menu3Layout.addWidget(self.showLogsInWindows)
+
+		menu4Layout = QHBoxLayout()
+		menu4Layout.addWidget(self.showServerInfo)
+		menu4Layout.addWidget(self.showConnScript)
 
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(2)
@@ -2433,7 +2454,7 @@ class Dialog(QDialog):
 		menuLayout.addLayout(nameMenuEntries)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,f"<b>\"{config.MAIN_MENU_WINDOWS_NAME}\" menu includes...</b>"))
 		menuLayout.addLayout(menu3Layout)
-		menuLayout.addWidget(self.showServerInfo)
+		menuLayout.addLayout(menu4Layout)
 		menuLayout.addStretch()
 
 		self.menuPage.setLayout(menuLayout)
@@ -3486,7 +3507,23 @@ class Dialog(QDialog):
 		if config.USERLIST_CONTEXT_MENU: self.ulistContext.setChecked(True)
 		self.ulistContext.stateChanged.connect(self.changedSettingContext)
 
+		self.ulistWidthLabel = QLabel("Base userlist width:")
+		self.ulistWidthBox = QSpinBox()
+		self.ulistWidthBox.setRange(1,100)
+		self.ulistWidthBox.setValue(self.USERLIST_WIDTH_IN_CHARACTERS)
+		self.ulistWidthBox.valueChanged.connect(self.setUlistWidth)
+		self.ulistWidthLabel2 = QLabel("characters")
+
+		ulistWidthLayout = QHBoxLayout()
+		ulistWidthLayout.addWidget(self.ulistWidthLabel)
+		ulistWidthLayout.addWidget(self.ulistWidthBox)
+		ulistWidthLayout.addWidget(self.ulistWidthLabel2)
+		ulistWidthLayout.addStretch()
+
 		if not config.SHOW_USERLIST:
+			self.ulistWidthLabel.setEnabled(False)
+			self.ulistWidthBox.setEnabled(False)
+			self.ulistWidthLabel2.setEnabled(False)
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
 			self.hideScroll.setEnabled(False)
@@ -3549,6 +3586,7 @@ class Dialog(QDialog):
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
+		menuLayout.addLayout(ulistWidthLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addLayout(miscDisplay)
 		menuLayout.addStretch()
@@ -3736,6 +3774,10 @@ class Dialog(QDialog):
 		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW: self.ircErrors.setChecked(True)
 		self.ircErrors.stateChanged.connect(self.changedSetting)
 
+		self.ircAllErrors = QCheckBox("Display all server errors, even those handled\nautomatically",self)
+		if config.SHOW_ALL_SERVER_ERRORS: self.ircAllErrors.setChecked(True)
+		self.ircAllErrors.stateChanged.connect(self.changedSetting)
+
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(2)
 		csLayout.addWidget(self.askBeforeDisconnect)
@@ -3746,6 +3788,7 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.showNetLinks)
 		csLayout.addWidget(self.motdRaw)
 		csLayout.addWidget(self.ircErrors)
+		csLayout.addWidget(self.ircAllErrors)
 
 		arLayout = QVBoxLayout()
 		arLayout.setSpacing(2)
@@ -5641,6 +5684,7 @@ class Dialog(QDialog):
 
 		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 
+		self.ircAllErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -6083,6 +6127,11 @@ class Dialog(QDialog):
 		config.FLASH_SYSTRAY_CHANNEL = self.systrayChannel.isChecked()
 		config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW = self.ircErrors.isChecked()
 		config.ALLOW_TOPIC_EDIT = self.topicEditor.isChecked()
+		config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = self.showConnScript.isChecked()
+		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
+
+		if self.USERLIST_WIDTH_IN_CHARACTERS!=config.USERLIST_WIDTH_IN_CHARACTERS:
+			config.USERLIST_WIDTH_IN_CHARACTERS = self.USERLIST_WIDTH_IN_CHARACTERS
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)

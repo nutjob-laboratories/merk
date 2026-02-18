@@ -3,10 +3,14 @@
 |------------------------------------------------------------------------------|
 
 What's New
+- **MERK has a new URL!** You can find the MERK repository at [merk.chat](https://merk.chat),
+  the latest release at [release.merk.chat](https://release.merk.chat), and the latest
+  development builds at [latest.merk.chat](https://latest.merk.chat).
 - **A new revamped "Settings" dialog**. The "Settings" dialog has been reworked,
   fixing some problems for users that use large sized fonts.
 - **Error reporting has been revamped**. More server errors are reported to the
-  user, and the way errors are displayed has been changed.
+  user, and the way errors are displayed has been changed. There are new options
+  for how to display errors.
 - **The log manager has been revamped**.
 - **Aliases created in scripts are now local in scope**. Aliases created via
   the text input widget are global in scope.
@@ -71,12 +75,31 @@ What's New
 * Bugfix: aliases created in scripts are now "destroyed" as soon as the script
   exits. This "fixes" a bug where aliases were not being reliably updated in-
   between script runs.
-* Bugfixes: global aliases can not be "edited" in scripts.
+* Bugfixes: global aliases cannot be "edited" in scripts. Aliases are only
+  global if they are created from the text input widget.
 * Resized the "status" icons in channel userlists. They are slightly smaller,
   and now actually scale with the app font size. The config file setting that
   set the "hard size" of icons for userlists has been removed.
 * Added a "normal" user to the userlist display in the style editor. This can
   fit now that status icons are smaller.
+* Added a new built-in alias: _LATEST, which contains a URL pointing to a
+  directory containing the latest development builds of MERK.
+* The base channel userlist width is no longer tied to the nickname padding
+  length. By default, the width is the average width of 15 characters of the
+  current font. This can be changed in the Settings dialog, the configuration
+  file, or with the /config command.
+* Added an option to open a server's connection script to the Windows menu.
+  This option can be toggled in the Settings dialog or with the /config
+  command.
+* Bugfix: errors from automatically requested WHOIS errors (from the collecting
+  of user hostmasks) are suppressed, and the nick is removed from the "request
+  WHOIS" list in the IRC client.
+* Bugfix: errors from attempting to register with a nickname that's already
+  taken are suppressed, as MERK handles this situation automatically.
+* Added an option to show ALL errors to the user, even those that are handled
+  automatically.
+* Bugfix: the "set away message" dialog now properly supports autocompleting
+  shortcodes.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.500                                  |

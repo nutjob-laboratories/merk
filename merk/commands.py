@@ -659,6 +659,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_DSTYLES',styles.STYLE_DIRECTORY)
 	addTemporaryAlias('_EDATE',myedate)
 	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
+	addTemporaryAlias('_LATEST',f"{APPLICATION_DEVELOPMENT}")
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
 	else:

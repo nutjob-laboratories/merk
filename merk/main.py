@@ -2353,7 +2353,19 @@ class Merk(QMainWindow):
 		plugins.call(self,"error",client=client,message=message)
 
 		if client.registered==False and code=="461":
-			if message=="PASS :Not enough parameters": return
+			if message=="PASS :Not enough parameters":
+				if not config.SHOW_ALL_SERVER_ERRORS: return
+
+		# Suppress the "nickname is already taken" error message
+		# during registration, as the client is handling it
+		if client.registered==False and code=="433":
+			if not config.SHOW_ALL_SERVER_ERRORS: return
+
+		if code=="401":
+			for nick in client.request_whois:
+				if f"{nick}:" in message and 'No such' in message:
+					client.request_whois.remove(nick)
+					if not config.SHOW_ALL_SERVER_ERRORS: return
 
 		server_window = self.getServerWindow(client)
 		if server_window:
@@ -5170,6 +5182,12 @@ class Merk(QMainWindow):
 
 							if mynet==config.UNKNOWN_NETWORK_NAME: entry.setVisible(False)
 							if(len(os.listdir(logs.LOG_DIRECTORY))==0): entry.setVisible(False)
+
+						if config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU:
+							hostid = c.client.server+":"+str(c.client.port)
+							entry = QAction(QIcon(EDIT_ICON),"Edit connection script",self)
+							entry.triggered.connect(lambda state,h=hostid: self.openEditorConnect(h))
+							sm.addAction(entry)
 
 						sm.addSeparator()
 
