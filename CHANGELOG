@@ -123,8 +123,9 @@ What's New
   dialog is "for". It displays the current base filename or host ID of the file
   being edited, or "Unknown" if the file doesn't have either of these.
 * Added an option to set an image as the MDI area background to the Settings
-  dialog. This is the only way to set this setting; it cannot be changed with
-  the config command.
+  dialog.
+* The MDI area background image can now be set via the /config command. The
+  documentation has been updated for more information on how.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

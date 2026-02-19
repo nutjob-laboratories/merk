@@ -3429,7 +3429,6 @@ class SpellTextEdit(QPlainTextEdit):
 									if s=="hotkeys": continue
 									if s=="log_absolutely_all_messages_of_any_type": continue
 									if s=="default_python_indentation": continue
-									if s=="mdi_area_background_image": continue
 									if not type(settings[s]) is list: settings_list.append(s)
 
 								for setting in settings_list:

@@ -107,7 +107,7 @@ class MdiArea(QMdiArea):
 
 	def paintEvent(self, event):
 		super().paintEvent(event)
-		if config.CUSTOM_MDI_BACKGROUND==None and self.pixmap==None:
+		if config.CUSTOM_MDI_BACKGROUND=="" and self.pixmap==None:
 			return
 		self.pixmap = QPixmap(config.CUSTOM_MDI_BACKGROUND)
 		painter = QPainter(self.viewport())

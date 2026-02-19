@@ -1115,6 +1115,13 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="mdi_workspace_background":
+		if value=="": return ALL_VALID_SETTINGS
+		if not os.path.isfile(value): return INVALID_IMAGE
+		pixmap = QPixmap()
+		if not pixmap.load(value): return INVALID_IMAGE
+		if pixmap.isNull(): return INVALID_IMAGE
+
 	if setting=="qt_window_style":
 		if not value in QT_STYLES: return INVALID_STYLE
 
@@ -5001,7 +5008,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if s=="hotkeys": continue
 				if s=="application_font": continue
 				if s=="default_python_indentation": continue
-				if s=="mdi_area_background_image": continue
 				if not type(settings[s]) is list:
 					count = count + 1
 					if type(settings[s]).__name__=='bool':
@@ -5030,7 +5036,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation" or my_setting=="mdi_area_background_image":
+				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation":
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End 0 config search results")
@@ -5052,7 +5058,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				results = []
 				for a in settings:
 					if not type(settings[a]) is list:
-						if a!="log_absolutely_all_messages_of_any_type" and a!="hotkeys" and a!="application_font" and a!="default_python_indentation" and a!="mdi_area_background_image":
+						if a!="log_absolutely_all_messages_of_any_type" and a!="hotkeys" and a!="application_font" and a!="default_python_indentation":
 							if fnmatch.fnmatch(a,f"*{my_setting}*"):
 								results.append(a)
 
@@ -5103,7 +5109,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_value = ' '.join(tokens)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation" or my_setting=="mdi_area_background_image":
+				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation":
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
@@ -5120,6 +5126,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				except:
 					if str(my_value).lower()=='true': my_value = True
 					if str(my_value).lower()=='false': my_value = False
+
+				if my_setting=="mdi_workspace_background" and my_value=="*": my_value=""
 
 				if type(my_value)!= type(settings[my_setting]):
 					if type(settings[my_setting]).__name__=='bool':
@@ -5172,6 +5180,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = "must be a valid WAV file"
 					elif check==INVALID_TIME:
 						reason = "must be a valid strptime format"
+					elif check==INVALID_IMAGE:
+						reason = "must be a supported image format"
 					else:
 						reason = "unknown"
 					if is_script:

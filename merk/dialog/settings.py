@@ -296,7 +296,7 @@ class Dialog(QDialog):
 		self.stack.setCurrentWidget(item.widget)
 
 	def backgroundDefault(self):
-		self.CUSTOM_MDI_BACKGROUND = None
+		self.CUSTOM_MDI_BACKGROUND = ""
 		self.backgroundLabel.setText("<b>No background image</b>")
 
 		self.changed.show()
@@ -1951,7 +1951,7 @@ class Dialog(QDialog):
 
 		self.backgroundLabel = QLabel(f" ",self)
 
-		if config.CUSTOM_MDI_BACKGROUND==None:
+		if config.CUSTOM_MDI_BACKGROUND=="":
 			self.backgroundLabel.setText("<b>No background image</b>")
 		else:
 			lt = elide_text(os.path.basename(config.CUSTOM_MDI_BACKGROUND),20)

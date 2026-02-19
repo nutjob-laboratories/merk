@@ -407,11 +407,11 @@ ALLOW_TOPIC_EDIT = True
 USERLIST_WIDTH_IN_CHARACTERS = 15
 SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = True
 SHOW_ALL_SERVER_ERRORS = False
-CUSTOM_MDI_BACKGROUND = None
+CUSTOM_MDI_BACKGROUND = ""
 
 def build_settings():
 	settings = {
-		"mdi_area_background_image": CUSTOM_MDI_BACKGROUND,
+		"mdi_workspace_background": CUSTOM_MDI_BACKGROUND,
 		"display_all_server_errors": SHOW_ALL_SERVER_ERRORS,
 		"show_connection_script_in_windows_menu": SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU,
 		"userlist_width_in_characters": USERLIST_WIDTH_IN_CHARACTERS,
@@ -785,8 +785,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "mdi_area_background_image" in settings:
-		settings["mdi_area_background_image"] = CUSTOM_MDI_BACKGROUND
+	if not "mdi_workspace_background" in settings:
+		settings["mdi_workspace_background"] = CUSTOM_MDI_BACKGROUND
 	if not "display_all_server_errors" in settings:
 		settings["display_all_server_errors"] = SHOW_ALL_SERVER_ERRORS
 	if not "show_connection_script_in_windows_menu" in settings:
@@ -1905,7 +1905,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		CUSTOM_MDI_BACKGROUND = settings["mdi_area_background_image"]
+		CUSTOM_MDI_BACKGROUND = settings["mdi_workspace_background"]
 		SHOW_ALL_SERVER_ERRORS = settings["display_all_server_errors"]
 		SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = settings["show_connection_script_in_windows_menu"]
 		USERLIST_WIDTH_IN_CHARACTERS = settings["userlist_width_in_characters"]
