@@ -346,59 +346,90 @@ class Window(QMainWindow):
 
 	def doFind(self):
 
-		if self.findWindow != None:
+		cursor = self.editor.textCursor()
+		if cursor.hasSelection():
+			selected_text = cursor.selectedText()
+		else:
+			selected_text = None
+
+		if self.findWindow != None and self.findWindow.is_replace==False:
 			ftext = self.findWindow.find.text()
-			winpos = self.findWindow.pos()
+
+			if ftext!=selected_text:
+				ftext = selected_text
+				icount = None
+				self.findWindow.icount.setText('<small>Ready</small>')
+				self.findWindow.find.setText(ftext)
+
 			if self.findWindow.icount!=' ':
 				icount = self.findWindow.icount.text()
 			else:
 				icount = None
-			self.findWindow.close()
 		else:
-			ftext = None
-			winpos = None
+			if self.findWindow!=None:
+				winpos = self.findWindow.pos()
+				self.findWindow.close()
+			else:
+				winpos = None
+			ftext = selected_text
 			icount = None
 
-		self.findWindow = dialog.Find(self,False)
-		if self.filename:
-			self.findWindow.setWindowTitle(self.filename)
-		if ftext: self.findWindow.find.setText(ftext)
+			self.findWindow = dialog.Find(self,False)
+			if winpos!=None: self.findWindow.move(winpos)
+			if ftext: self.findWindow.find.setText(ftext)
+			if icount: self.findWindow.icount.setText(icount)
 
-		if winpos:
-			self.findWindow.move(winpos)
-
-		if icount:
-			self.findWindow.icount.setText(icount)
+			if self.editing_user_script:
+				self.findWindow.setFilenameLabel(self.current_user_script)
+			elif self.filename:
+				self.findWindow.setFilenameLabel(os.path.basename(self.filename))
+			else:
+				self.findWindow.setFilenameLabel("Untitled")
 
 		self.findWindow.show()
 		return
 
 	def doFindReplace(self):
 
-		if self.findWindow != None:
+		cursor = self.editor.textCursor()
+		if cursor.hasSelection():
+			selected_text = cursor.selectedText()
+		else:
+			selected_text = None
+
+		if self.findWindow != None and self.findWindow.is_replace==True:
 			ftext = self.findWindow.find.text()
-			winpos = self.findWindow.pos()
+
+			if ftext!=selected_text:
+				ftext = selected_text
+				icount = None
+				self.findWindow.icount.setText('<small>Ready</small>')
+				self.findWindow.find.setText(ftext)
+
 			if self.findWindow.icount!=' ':
 				icount = self.findWindow.icount.text()
 			else:
 				icount = None
-			self.findWindow.close()
 		else:
-			ftext = None
-			winpos = None
+			if self.findWindow!=None:
+				winpos = self.findWindow.pos()
+				self.findWindow.close()
+			else:
+				winpos = None
+			ftext = selected_text
 			icount = None
 
-		self.findWindow = dialog.Find(self,True)
-		if self.filename:
-			self.findWindow.setWindowTitle(self.filename)
-		if ftext: self.findWindow.find.setText(ftext)
+			self.findWindow = dialog.Find(self,True)
+			if winpos!=None: self.findWindow.move(winpos)
+			if ftext: self.findWindow.find.setText(ftext)
+			if icount: self.findWindow.icount.setText(icount)
 
-		if winpos:
-			self.findWindow.move(winpos)
-
-		if icount:
-			self.findWindow.icount.setText(icount)
-
+			if self.editing_user_script:
+				self.findWindow.setFilenameLabel(self.current_user_script)
+			elif self.filename:
+				self.findWindow.setFilenameLabel(os.path.basename(self.filename))
+			else:
+				self.findWindow.setFilenameLabel("Untitled")
 
 		self.findWindow.show()
 		return
@@ -1097,7 +1128,7 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertNext)
 			self.winCommands.addAction(entry)
 
-			entry = QAction(QIcon(BACK_ICON),"Previous subwindow",self)
+			entry = QAction(QIcon(PREVIOUS_ICON),"Previous subwindow",self)
 			entry.triggered.connect(self.insertPrevious)
 			self.winCommands.addAction(entry)
 
@@ -2048,6 +2079,8 @@ class Window(QMainWindow):
 			self.name = f"{self.current_user_script}"
 			self.parent.buildWindowsMenu()
 
+			if self.findWindow!=None: self.findWindow.setFilenameLabel(self.current_user_script)
+
 			w = self.parent.getEditorWindow(self.subwindow_id)
 			a = self.parent.MDI.activeSubWindow()
 			if w==a: self.parent.merk_subWindowActivated(w)
@@ -2063,17 +2096,18 @@ class Window(QMainWindow):
 				self.setWindowTitle(base)
 				self.status_file.setText(f"<small><b>{self.filename}</b></small>")
 			self.name = f"{base}"
+			if self.findWindow!=None: self.findWindow.setFilenameLabel(base)
 		else:
 			self.setWindowTitle(f"Untitled")
 			self.name = "Untitled"
-			self.status_file.setText(f"<small><b>{self.name}</b></small>")		
+			self.status_file.setText(f"<small><b>{self.name}</b></small>")
+			if self.findWindow!=None: self.findWindow.setFilenameLabel("Untitled")
 		
 		self.parent.buildWindowsMenu()
 
 		w = self.parent.getEditorWindow(self.subwindow_id)
 		a = self.parent.MDI.activeSubWindow()
 		if w==a: self.parent.merk_subWindowActivated(w)
-
 
 	def doFileSaveAs(self):
 		fname = f"{APPLICATION_NAME} Script"

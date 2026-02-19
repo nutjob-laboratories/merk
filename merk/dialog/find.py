@@ -155,10 +155,14 @@ class Dialog(QMainWindow):
 		
 		self.parent.editor.setTextCursor(text_cursor)
 
+	def setFilenameLabel(self,text):
+		self.filename.setText(f"<center><small><i><b>{text}</b></i></small></center>")
+
 	def __init__(self,parent=None,replace=False):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
+		self.is_replace = replace
 
 		if replace:
 			self.setWindowTitle("Find and replace")
@@ -224,23 +228,20 @@ class Dialog(QMainWindow):
 			doReplaceAll = QPushButton("Replace All")
 			doReplaceAll.clicked.connect(self.doReplaceAll)
 
-		doClose = QPushButton("Close")
-		doClose.clicked.connect(self.close)
-
 		buttonsLayout = QHBoxLayout()
 		buttonsLayout.addWidget(doBack)
 		if replace:
 			buttonsLayout.addWidget(doReplace)
 			buttonsLayout.addWidget(doReplaceAll)
 		buttonsLayout.addWidget(doFind)
+
+		self.filename = QLabel(".")
 		
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(inputBox)
 		finalLayout.addLayout(settingsLayout)
 		finalLayout.addLayout(buttonsLayout)
-		# if replace:
-		# 	finalLayout.addWidget(doReplaceAll)
-		finalLayout.addWidget(doClose)
+		finalLayout.addWidget(self.filename)
 
 		x = QWidget()
 		x.setLayout(finalLayout)
@@ -248,7 +249,8 @@ class Dialog(QMainWindow):
 		self.setWindowFlags(self.windowFlags()
 					^ QtCore.Qt.WindowContextHelpButtonHint)
 
-		#self.setLayout(finalLayout)
+		self.setWindowFlags(self.windowFlags() | Qt.WindowType.Dialog)
+
 		self.setCentralWidget(x)
 
 		self.setFixedSize(finalLayout.sizeHint())

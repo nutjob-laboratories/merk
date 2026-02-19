@@ -5001,6 +5001,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if s=="hotkeys": continue
 				if s=="application_font": continue
 				if s=="default_python_indentation": continue
+				if s=="mdi_area_background_image": continue
 				if not type(settings[s]) is list:
 					count = count + 1
 					if type(settings[s]).__name__=='bool':
@@ -5029,7 +5030,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_setting = tokens.pop(0)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation":
+				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation" or my_setting=="mdi_area_background_image":
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End 0 config search results")
@@ -5051,7 +5052,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				results = []
 				for a in settings:
 					if not type(settings[a]) is list:
-						if a!="log_absolutely_all_messages_of_any_type" and a!="hotkeys" and a!="application_font" and a!="default_python_indentation":
+						if a!="log_absolutely_all_messages_of_any_type" and a!="hotkeys" and a!="application_font" and a!="default_python_indentation" and a!="mdi_area_background_image":
 							if fnmatch.fnmatch(a,f"*{my_setting}*"):
 								results.append(a)
 
@@ -5102,7 +5103,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			my_value = ' '.join(tokens)
 
 			if my_setting in settings:
-				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation":
+				if type(settings[my_setting]) is list or my_setting=="log_absolutely_all_messages_of_any_type" or my_setting=="hotkeys" or my_setting=="application_font" or my_setting=="default_python_indentation" or my_setting=="mdi_area_background_image":
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:

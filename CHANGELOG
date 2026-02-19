@@ -15,6 +15,9 @@ What's New
 - **Aliases created in scripts are now local in scope**. Aliases created via
   the text input widget are global in scope.
 - **Channel userlist status icons now properly scale with font size**.
+- **Set an image as the workspace background**. You can now set any image you'd
+  like as a background in the MERK workspace! Just like the old days :-)
+- **Many, many bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -100,6 +103,36 @@ What's New
   automatically.
 * Bugfix: the "set away message" dialog now properly supports autocompleting
   shortcodes.
+* Bugfix: the "find/find and replace" dialog in the Script and Python editor no
+  longer creates an additional icon in the task bar, and is "always on top".
+* Bugfix: the "find/find and replace" dialog will now use any selected text in
+  the editor as the text to search for when the hotkeys are used.
+* Bugfix: the "find/find and replace" dialog will now allow the user to select
+  a new bit of text to perform a search by pressing the hotkey.
+* Bugfix: the "find/find and replace" dialog no longer "flickers" when
+  selecting a different bit of text to search for.
+* Bugfix: triggering the "find/find and replace" dialog while the dialog is
+  already open will automatically "switch" to the other type (that is, if the
+  "find" dialog is open, and the "find and replace" hotkey is triggered, the
+  "find" dialog will be replaced with the "find and replace" dialog). There is
+  a flicker when this happens, due to how the dialog is built.
+* Removed the "close" button from the "find/find and replace" dialog.
+* The filename no longer appears in the "find/find and replace" dialog title,
+  only the function of the dialog being currently displayed.
+* Added a label to the "find/find and replace" dialog to show which window this
+  dialog is "for". It displays the current base filename or host ID of the file
+  being edited, or "Unknown" if the file doesn't have either of these.
+* Added an option to set an image as the MDI area background to the Settings
+  dialog. This is the only way to set this setting; it cannot be changed with
+  the config command.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Errors that are suppressed from view (due to settings) will no longer be
+  passed to the error() plugin event. If these errors are set to be shown to
+  the user, they will be passed to the error() event.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.500                                  |

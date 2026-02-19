@@ -103,6 +103,24 @@ class MdiArea(QMdiArea):
 		super().__init__(parent)
 		self.parent = parent
 		self.setAcceptDrops(True) # Required to enable drop functionality
+		self.pixmap = None
+
+	def paintEvent(self, event):
+		super().paintEvent(event)
+		if config.CUSTOM_MDI_BACKGROUND==None and self.pixmap==None:
+			return
+		self.pixmap = QPixmap(config.CUSTOM_MDI_BACKGROUND)
+		painter = QPainter(self.viewport())
+		painter.setRenderHint(QPainter.SmoothPixmapTransform)
+		# Centered, no tiling — scale to fit while keeping aspect ratio
+		scaled = self.pixmap.scaled(
+			self.viewport().size(),
+			Qt.IgnoreAspectRatio,
+			Qt.SmoothTransformation
+		)
+		x = (self.viewport().width() - scaled.width()) // 2
+		y = (self.viewport().height() - scaled.height()) // 2
+		painter.drawPixmap(x, y, scaled)
 
 	def dragEnterEvent(self, event):
 		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
@@ -2350,7 +2368,6 @@ class Merk(QMainWindow):
 		plugins.call(self,"kicked",client=client,user=kicker,channel=channel,message=message)
 
 	def receivedError(self,client,code,message):
-		plugins.call(self,"error",client=client,message=message)
 
 		if client.registered==False and code=="461":
 			if message=="PASS :Not enough parameters":
@@ -2366,6 +2383,8 @@ class Merk(QMainWindow):
 				if f"{nick}:" in message and 'No such' in message:
 					client.request_whois.remove(nick)
 					if not config.SHOW_ALL_SERVER_ERRORS: return
+
+		plugins.call(self,"error",client=client,message=message)
 
 		server_window = self.getServerWindow(client)
 		if server_window:

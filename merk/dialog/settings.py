@@ -295,6 +295,35 @@ class Dialog(QDialog):
 	def selectorClick(self,item):
 		self.stack.setCurrentWidget(item.widget)
 
+	def backgroundDefault(self):
+		self.CUSTOM_MDI_BACKGROUND = None
+		self.backgroundLabel.setText("<b>No background image</b>")
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def getBackground(self):
+
+		supported_formats = QImageReader.supportedImageFormats()
+		filters = []
+		for fmt in supported_formats:
+			ext = fmt.data().decode()
+			filters.append(f"{ext.upper()} Files (*.{ext})")
+		filter_str = ";;".join(filters)
+
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Open Image", QDir.homePath(), filter_str, options=options)
+		if fileName:
+			self.CUSTOM_MDI_BACKGROUND = fileName
+			lt = elide_text(os.path.basename(fileName),20)
+			self.backgroundLabel.setText(f"<b>{lt}</b>")
+
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def setFontDefault(self):
 		fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
 		for f in OTHER_BUNDLED_FONTS:
@@ -1819,6 +1848,7 @@ class Dialog(QDialog):
 		self.CURSOR_BLINK_RATE = config.CURSOR_BLINK_RATE
 		self.plugin_changed = False
 		self.USERLIST_WIDTH_IN_CHARACTERS = config.USERLIST_WIDTH_IN_CHARACTERS
+		self.CUSTOM_MDI_BACKGROUND = config.CUSTOM_MDI_BACKGROUND
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -1902,7 +1932,6 @@ class Dialog(QDialog):
 		fontLayout.addWidget(self.fontLabel)
 		fontLayout.addStretch()
 		fontLayout.addWidget(fontDefault)
-		fontLayout.addStretch()
 
 		self.sizeLabel = QLabel(f"Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
 
@@ -1919,6 +1948,34 @@ class Dialog(QDialog):
 		sizeLayout = QHBoxLayout()
 		sizeLayout.addWidget(sizeButton)
 		sizeLayout.addWidget(self.sizeLabel)
+
+		self.backgroundLabel = QLabel(f" ",self)
+
+		if config.CUSTOM_MDI_BACKGROUND==None:
+			self.backgroundLabel.setText("<b>No background image</b>")
+		else:
+			lt = elide_text(os.path.basename(config.CUSTOM_MDI_BACKGROUND),20)
+			self.backgroundLabel.setText(f"<b>{lt}</b>")
+
+		backgroundButton = QPushButton("")
+		backgroundButton.clicked.connect(self.getBackground)
+		backgroundButton.setAutoDefault(False)
+
+		backgroundDefault = QPushButton("Reset to default")
+		backgroundDefault.clicked.connect(self.backgroundDefault)
+		backgroundDefault.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		backgroundButton.setFixedSize(fheight +10,fheight + 10)
+		backgroundButton.setIcon(QIcon(IMAGE_ICON))
+		backgroundButton.setToolTip("Change background")
+
+		backgroundLayout = QHBoxLayout()
+		backgroundLayout.addWidget(backgroundButton)
+		backgroundLayout.addWidget(self.backgroundLabel)
+		backgroundLayout.addStretch()
+		backgroundLayout.addWidget(backgroundDefault)
 
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
@@ -2007,6 +2064,7 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addLayout(backgroundLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window</b>"))
 		applicationLayout.addLayout(mwsLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application title</b>"))
@@ -6129,6 +6187,10 @@ class Dialog(QDialog):
 		config.ALLOW_TOPIC_EDIT = self.topicEditor.isChecked()
 		config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = self.showConnScript.isChecked()
 		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
+
+		if self.CUSTOM_MDI_BACKGROUND!=config.CUSTOM_MDI_BACKGROUND:
+			config.CUSTOM_MDI_BACKGROUND = self.CUSTOM_MDI_BACKGROUND
+			self.parent.MDI.viewport().update()
 
 		if self.USERLIST_WIDTH_IN_CHARACTERS!=config.USERLIST_WIDTH_IN_CHARACTERS:
 			config.USERLIST_WIDTH_IN_CHARACTERS = self.USERLIST_WIDTH_IN_CHARACTERS
