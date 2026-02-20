@@ -1115,6 +1115,21 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="alias_interpolation_symbol":
+		if "*" in value: return INVALID_VALUE
+		if "<" in value: return INVALID_VALUE
+		if ">" in value: return INVALID_VALUE
+		if "\\" in value: return INVALID_VALUE
+		if "~" in value: return INVALID_VALUE
+		if "/" in value: return INVALID_VALUE
+
+	if setting=="issue_command_symbol":
+		if "*" in value: return INVALID_VALUE
+		if "<" in value: return INVALID_VALUE
+		if ">" in value: return INVALID_VALUE
+		if "~" in value: return INVALID_VALUE
+		if "/" in value and value!="/": return INVALID_VALUE
+
 	if setting=="mdi_workspace_background":
 		if value=="": return ALL_VALID_SETTINGS
 		if not os.path.isfile(value): return INVALID_IMAGE
@@ -5182,6 +5197,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = "must be a valid strptime format"
 					elif check==INVALID_IMAGE:
 						reason = "must be a supported image format"
+					elif check==INVALID_VALUE:
+						reason = "invalid value for setting"
 					else:
 						reason = "unknown"
 					if is_script:

@@ -126,6 +126,12 @@ What's New
   dialog.
 * The MDI area background image can now be set via the /config command. The
   documentation has been updated for more information on how.
+* Added a setting to the config file to control whether the MDI area background
+  image gets scaled to the size of the workspace or not. This setting can be
+  changed with the /config command, and is also in the Settings dialog. The
+  default is to scale the image to the workspace size.
+* Added additional sanity checks for the alias interpolation symbol and the
+  "issue command" symbol to the /config command.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

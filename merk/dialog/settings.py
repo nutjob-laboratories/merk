@@ -298,7 +298,13 @@ class Dialog(QDialog):
 	def backgroundDefault(self):
 		self.CUSTOM_MDI_BACKGROUND = ""
 		self.backgroundLabel.setText("<b>No background image</b>")
+		self.rerender_mdi = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
 
+	def changedSettingMDI(self):
+		self.rerender_mdi = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -307,10 +313,28 @@ class Dialog(QDialog):
 
 		supported_formats = QImageReader.supportedImageFormats()
 		filters = []
+		popular = []
 		for fmt in supported_formats:
 			ext = fmt.data().decode()
-			filters.append(f"{ext.upper()} Files (*.{ext})")
-		filter_str = ";;".join(filters)
+			if ext.upper()=='PNG':
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='JPEG' and 'jpg' in supported_formats:
+				popular.append(f"{ext.upper()} Files (*.{ext} *.jpg)")
+			elif ext.upper()=='JPEG' and not 'jpg' in supported_formats:
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='JPG' and 'jpeg' in supported_formats: continue
+			elif ext.upper()=='JPG' and not 'jpeg' in supported_formats:
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='GIF':
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='BMP':
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='CUR': continue
+			elif ext.upper()=='ICO': continue
+			else:
+				filters.append(f"{ext.upper()} Files (*.{ext})")
+		filters.append(f"All Files (*.*)")
+		filter_str = ";;".join(popular + filters)
 
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
@@ -319,9 +343,9 @@ class Dialog(QDialog):
 			self.CUSTOM_MDI_BACKGROUND = fileName
 			lt = elide_text(os.path.basename(fileName),20)
 			self.backgroundLabel.setText(f"<b>{lt}</b>")
-
-		self.changed.show()
-		self.boldApply()
+			self.rerender_mdi = True
+			self.changed.show()
+			self.boldApply()
 		self.selector.setFocus()
 
 	def setFontDefault(self):
@@ -1849,6 +1873,7 @@ class Dialog(QDialog):
 		self.plugin_changed = False
 		self.USERLIST_WIDTH_IN_CHARACTERS = config.USERLIST_WIDTH_IN_CHARACTERS
 		self.CUSTOM_MDI_BACKGROUND = config.CUSTOM_MDI_BACKGROUND
+		self.rerender_mdi = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -1949,34 +1974,6 @@ class Dialog(QDialog):
 		sizeLayout.addWidget(sizeButton)
 		sizeLayout.addWidget(self.sizeLabel)
 
-		self.backgroundLabel = QLabel(f" ",self)
-
-		if config.CUSTOM_MDI_BACKGROUND=="":
-			self.backgroundLabel.setText("<b>No background image</b>")
-		else:
-			lt = elide_text(os.path.basename(config.CUSTOM_MDI_BACKGROUND),20)
-			self.backgroundLabel.setText(f"<b>{lt}</b>")
-
-		backgroundButton = QPushButton("")
-		backgroundButton.clicked.connect(self.getBackground)
-		backgroundButton.setAutoDefault(False)
-
-		backgroundDefault = QPushButton("Reset to default")
-		backgroundDefault.clicked.connect(self.backgroundDefault)
-		backgroundDefault.setAutoDefault(False)
-
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		backgroundButton.setFixedSize(fheight +10,fheight + 10)
-		backgroundButton.setIcon(QIcon(IMAGE_ICON))
-		backgroundButton.setToolTip("Change background")
-
-		backgroundLayout = QHBoxLayout()
-		backgroundLayout.addWidget(backgroundButton)
-		backgroundLayout.addWidget(self.backgroundLabel)
-		backgroundLayout.addStretch()
-		backgroundLayout.addWidget(backgroundDefault)
-
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
@@ -2064,7 +2061,6 @@ class Dialog(QDialog):
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
-		applicationLayout.addLayout(backgroundLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window</b>"))
 		applicationLayout.addLayout(mwsLayout)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application title</b>"))
@@ -2112,9 +2108,7 @@ class Dialog(QDialog):
 
 		self.darkDescription = QLabel("""
 			<small>
-			<b>Dark mode</b> changes the application palette to darker colors, which
-			is supposed to decrease eye strain. Text display colors are unchanged,
-			as those are set and controlled by the text style system.
+			<b>Dark mode</b> changes the application palette to darker colors.
 			<b>If dark mode is enabled or disabled, the application must be restarted to use the
 			new palette.</b>
 			</small>
@@ -2127,7 +2121,7 @@ class Dialog(QDialog):
 		if config.DARK_MODE: self.darkMode.setChecked(True)
 		self.darkMode.stateChanged.connect(self.setDarkMode)
 
-		self.forceDefault = QCheckBox("Chat windows    ",self)
+		self.forceDefault = QCheckBox("Chat windows",self)
 		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
 		self.forceDefault.stateChanged.connect(self.changeSettingStyle)
 
@@ -2157,10 +2151,13 @@ class Dialog(QDialog):
 		app2Layout.addWidget(self.darkMode)
 		app2Layout.addStretch()
 
-		forceLayout = QFormLayout()
+		forceLayout = QHBoxLayout()
 		forceLayout.setSpacing(0)
-		forceLayout.addRow(self.forceDefault,self.notInputWidget)
-		forceLayout.addRow(self.notUserlist)
+		forceLayout.addStretch()
+		forceLayout.addWidget(self.forceDefault)
+		forceLayout.addWidget(self.notInputWidget)
+		forceLayout.addWidget(self.notUserlist)
+		forceLayout.addStretch()
 
 		self.forceMono = QCheckBox("Force monospace rendering of all message text",self)
 		if config.FORCE_MONOSPACE_RENDERING: self.forceMono.setChecked(True)
@@ -2236,6 +2233,38 @@ class Dialog(QDialog):
 		cursLayout.addLayout(blinkLayout)
 		cursLayout.addLayout(cursorLayout)
 
+		self.backgroundLabel = QLabel(f" ",self)
+
+		if config.CUSTOM_MDI_BACKGROUND=="":
+			self.backgroundLabel.setText("<b>No background image</b>")
+		else:
+			lt = elide_text(os.path.basename(config.CUSTOM_MDI_BACKGROUND),20)
+			self.backgroundLabel.setText(f"<b>{lt}</b>")
+
+		backgroundButton = QPushButton("")
+		backgroundButton.clicked.connect(self.getBackground)
+		backgroundButton.setAutoDefault(False)
+
+		backgroundDefault = QPushButton("Reset to default")
+		backgroundDefault.clicked.connect(self.backgroundDefault)
+		backgroundDefault.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		backgroundButton.setFixedSize(fheight +10,fheight + 10)
+		backgroundButton.setIcon(QIcon(IMAGE_ICON))
+		backgroundButton.setToolTip("Change background")
+
+		backgroundLayout = QHBoxLayout()
+		backgroundLayout.addWidget(backgroundButton)
+		backgroundLayout.addWidget(self.backgroundLabel)
+		backgroundLayout.addStretch()
+		backgroundLayout.addWidget(backgroundDefault)
+
+		self.scaleMDI = QCheckBox("Stretch background image to cover workspace",self)
+		if config.SCALE_MDI_BACKGROUND_IMAGE: self.scaleMDI.setChecked(True)
+		self.scaleMDI.stateChanged.connect(self.changedSettingMDI)
+
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
@@ -2249,6 +2278,9 @@ class Dialog(QDialog):
 		appearanceLayout.addLayout(nLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
 		appearanceLayout.addLayout(cursLayout)
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>mdi area background image</b>"))
+		appearanceLayout.addLayout(backgroundLayout)
+		appearanceLayout.addWidget(self.scaleMDI)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addStretch()
@@ -3285,10 +3317,10 @@ class Dialog(QDialog):
 		self.playButton.setIcon(QIcon(PLAY_ICON))
 		self.playButton.setToolTip("Play sound")
 
-		self.soundDefaultButton = QPushButton("Set to default")
+		self.soundDefaultButton = QPushButton("Reset to default")
 		self.soundDefaultButton.clicked.connect(self.soundDefault)
 		self.soundDefaultButton.setAutoDefault(False)
-		self.soundDefaultButton.setToolTip("Set to default")
+		self.soundDefaultButton.setToolTip("Reset to default")
 
 		if not config.SOUND_NOTIFICATIONS:
 			self.notifyDisco.setEnabled(False)
@@ -6187,10 +6219,12 @@ class Dialog(QDialog):
 		config.ALLOW_TOPIC_EDIT = self.topicEditor.isChecked()
 		config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = self.showConnScript.isChecked()
 		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
+		config.SCALE_MDI_BACKGROUND_IMAGE = self.scaleMDI.isChecked()
 
 		if self.CUSTOM_MDI_BACKGROUND!=config.CUSTOM_MDI_BACKGROUND:
 			config.CUSTOM_MDI_BACKGROUND = self.CUSTOM_MDI_BACKGROUND
-			self.parent.MDI.viewport().update()
+
+		if self.rerender_mdi: self.parent.MDI.viewport().update()
 
 		if self.USERLIST_WIDTH_IN_CHARACTERS!=config.USERLIST_WIDTH_IN_CHARACTERS:
 			config.USERLIST_WIDTH_IN_CHARACTERS = self.USERLIST_WIDTH_IN_CHARACTERS

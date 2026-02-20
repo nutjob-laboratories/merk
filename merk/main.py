@@ -102,7 +102,7 @@ class MdiArea(QMdiArea):
 	def __init__(self, parent=None):
 		super().__init__(parent)
 		self.parent = parent
-		self.setAcceptDrops(True) # Required to enable drop functionality
+		self.setAcceptDrops(True)
 		self.pixmap = None
 
 	def paintEvent(self, event):
@@ -112,15 +112,19 @@ class MdiArea(QMdiArea):
 		self.pixmap = QPixmap(config.CUSTOM_MDI_BACKGROUND)
 		painter = QPainter(self.viewport())
 		painter.setRenderHint(QPainter.SmoothPixmapTransform)
-		# Centered, no tiling — scale to fit while keeping aspect ratio
-		scaled = self.pixmap.scaled(
-			self.viewport().size(),
-			Qt.IgnoreAspectRatio,
-			Qt.SmoothTransformation
-		)
-		x = (self.viewport().width() - scaled.width()) // 2
-		y = (self.viewport().height() - scaled.height()) // 2
-		painter.drawPixmap(x, y, scaled)
+		if not config.SCALE_MDI_BACKGROUND_IMAGE:
+			x = (self.viewport().width() - self.pixmap.width()) // 2
+			y = (self.viewport().height() - self.pixmap.height()) // 2
+			painter.drawPixmap(x, y, self.pixmap)
+		else:
+			scaled = self.pixmap.scaled(
+				self.viewport().size(),
+				Qt.IgnoreAspectRatio,
+				Qt.SmoothTransformation
+			)
+			x = (self.viewport().width() - scaled.width()) // 2
+			y = (self.viewport().height() - scaled.height()) // 2
+			painter.drawPixmap(x, y, scaled)
 
 	def dragEnterEvent(self, event):
 		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
@@ -2351,7 +2355,6 @@ class Merk(QMainWindow):
 			if config.SOUND_NOTIFICATION_KICK:
 				QSound.play(config.SOUND_NOTIFICATION_FILE)
 
-
 		w = self.getSubWindow(channel,client)
 		if w:
 			w.close()
@@ -3082,6 +3085,8 @@ class Merk(QMainWindow):
 		else:
 			self.tray.setVisible(False)
 			self.tray.hide()
+
+		self.MDI.viewport().update()
 
 		QApplication.restoreOverrideCursor()
 
