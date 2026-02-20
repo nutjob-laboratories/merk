@@ -112,11 +112,24 @@ class MdiArea(QMdiArea):
 		self.pixmap = QPixmap(config.CUSTOM_MDI_BACKGROUND)
 		painter = QPainter(self.viewport())
 		painter.setRenderHint(QPainter.SmoothPixmapTransform)
-		if not config.SCALE_MDI_BACKGROUND_IMAGE:
+
+		if config.MDI_BACKGROUND_IMAGE_STYLE=="scale":
+			scaled = self.pixmap.scaled(
+				self.viewport().size(),
+				Qt.IgnoreAspectRatio,
+				Qt.SmoothTransformation
+			)
+			x = (self.viewport().width() - scaled.width()) // 2
+			y = (self.viewport().height() - scaled.height()) // 2
+			painter.drawPixmap(x, y, scaled)
+		elif config.MDI_BACKGROUND_IMAGE_STYLE=="center":
 			x = (self.viewport().width() - self.pixmap.width()) // 2
 			y = (self.viewport().height() - self.pixmap.height()) // 2
 			painter.drawPixmap(x, y, self.pixmap)
+		elif config.MDI_BACKGROUND_IMAGE_STYLE=="tile":
+			painter.drawTiledPixmap(self.viewport().rect(), self.pixmap)
 		else:
+			# scaled is the default
 			scaled = self.pixmap.scaled(
 				self.viewport().size(),
 				Qt.IgnoreAspectRatio,

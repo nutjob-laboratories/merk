@@ -172,6 +172,7 @@ INVALID_SOUND = 7
 INVALID_TIME = 8
 INVALID_IMAGE = 9
 INVALID_VALUE = 10
+INVALID_MDI_STYLE = 11
 ALL_VALID_SETTINGS = 0
 
 EVENT_METHOD = 0
@@ -643,15 +644,15 @@ def irc_to_markdown(text):
 
 	return ''.join(output)
 
-def join_with_and(items):
+def join_with_and(items,word="and"):
 	if not items:
 		return ""
 	elif len(items) == 1:
 		return items[0]
 	elif len(items) == 2:
-		return f"{items[0]} and {items[1]}"
+		return f"{items[0]} {word} {items[1]}"
 	else:
-		return f"{', '.join(items[:-1])}, and {items[-1]}"
+		return f"{', '.join(items[:-1])}, {word} {items[-1]}"
 
 class StrictViewportFilter(QObject):
 	def __init__(self, editor_widget, parent=None):

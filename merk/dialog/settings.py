@@ -303,6 +303,10 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+		self.scaleMDI.setEnabled(False)
+		self.centerMDI.setEnabled(False)
+		self.tileMDI.setEnabled(False)
+
 	def changedSettingMDI(self):
 		self.rerender_mdi = True
 		self.changed.show()
@@ -313,7 +317,8 @@ class Dialog(QDialog):
 
 		supported_formats = QImageReader.supportedImageFormats()
 		filters = []
-		popular = []
+		popular = [f"All Files (*.*)"]
+		all_filetypes = []
 		for fmt in supported_formats:
 			ext = fmt.data().decode()
 			if ext.upper()=='PNG':
@@ -333,19 +338,49 @@ class Dialog(QDialog):
 			elif ext.upper()=='ICO': continue
 			else:
 				filters.append(f"{ext.upper()} Files (*.{ext})")
-		filters.append(f"All Files (*.*)")
 		filter_str = ";;".join(popular + filters)
 
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Open Image", QDir.homePath(), filter_str, options=options)
 		if fileName:
+
+			# Make sure the image is a loadable file, and
+			# display an error if it isn't
+			valid_file = True
+			if not os.path.isfile(fileName): valid_file = False
+			pixmap = QPixmap()
+			if not pixmap.load(fileName): valid_file = False
+			if pixmap.isNull(): valid_file = False
+			if not valid_file:
+
+				all_filetypes = []
+				for fmt in supported_formats:
+					ext = fmt.data().decode()
+					if ext.upper()=='CUR': continue
+					if ext.upper()=='ICO': continue
+					all_filetypes.append(f"{ext.upper()}")
+
+				msg = QMessageBox()
+				msg.setIcon(QMessageBox.Critical)
+				msg.setWindowIcon(QIcon(APPLICATION_ICON))
+				msg.setText("<big><b>Invalid file type</b></big>")
+				msg.setInformativeText(f"\"{os.path.basename(fileName)}\" is not a valid image file, and can't be used as a background image. Valid file types are {join_with_and(all_filetypes)}.")
+				msg.setWindowTitle("Error")
+				msg.setStandardButtons(QMessageBox.Ok)
+				msg.exec_()
+				self.selector.setFocus()
+				return
+
 			self.CUSTOM_MDI_BACKGROUND = fileName
 			lt = elide_text(os.path.basename(fileName),20)
 			self.backgroundLabel.setText(f"<b>{lt}</b>")
 			self.rerender_mdi = True
 			self.changed.show()
 			self.boldApply()
+			self.scaleMDI.setEnabled(True)
+			self.centerMDI.setEnabled(True)
+			self.tileMDI.setEnabled(True)
 		self.selector.setFocus()
 
 	def setFontDefault(self):
@@ -1787,6 +1822,27 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def selScale(self):
+		self.MDI_BACKGROUND_IMAGE_STYLE = "scale"
+		self.rerender_mdi = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def selCenter(self):
+		self.MDI_BACKGROUND_IMAGE_STYLE = "center"
+		self.rerender_mdi = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def selTile(self):
+		self.MDI_BACKGROUND_IMAGE_STYLE = "tile"
+		self.rerender_mdi = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def eventFilter(self, source, event):
 		if source == self.selector.viewport() and event.type() == QEvent.Wheel:
 			return True
@@ -1874,6 +1930,7 @@ class Dialog(QDialog):
 		self.USERLIST_WIDTH_IN_CHARACTERS = config.USERLIST_WIDTH_IN_CHARACTERS
 		self.CUSTOM_MDI_BACKGROUND = config.CUSTOM_MDI_BACKGROUND
 		self.rerender_mdi = False
+		self.MDI_BACKGROUND_IMAGE_STYLE = config.MDI_BACKGROUND_IMAGE_STYLE
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2261,9 +2318,30 @@ class Dialog(QDialog):
 		backgroundLayout.addStretch()
 		backgroundLayout.addWidget(backgroundDefault)
 
-		self.scaleMDI = QCheckBox("Stretch background image to cover workspace",self)
-		if config.SCALE_MDI_BACKGROUND_IMAGE: self.scaleMDI.setChecked(True)
-		self.scaleMDI.stateChanged.connect(self.changedSettingMDI)
+		self.scaleMDI = QRadioButton("Scaled")
+		self.scaleMDI.toggled.connect(self.selScale)
+
+		self.centerMDI = QRadioButton("Centered")
+		self.centerMDI.toggled.connect(self.selCenter)
+
+		self.tileMDI = QRadioButton("Tiled")
+		self.tileMDI.toggled.connect(self.selTile)
+
+		if config.MDI_BACKGROUND_IMAGE_STYLE=="scale": self.scaleMDI.setChecked(True)
+		if config.MDI_BACKGROUND_IMAGE_STYLE=="center": self.centerMDI.setChecked(True)
+		if config.MDI_BACKGROUND_IMAGE_STYLE=="tile": self.tileMDI.setChecked(True)
+
+		if config.CUSTOM_MDI_BACKGROUND=='':
+			self.scaleMDI.setEnabled(False)
+			self.centerMDI.setEnabled(False)
+			self.tileMDI.setEnabled(False)
+
+		mdiOpts = QHBoxLayout()
+		mdiOpts.addStretch()
+		mdiOpts.addWidget(self.scaleMDI)
+		mdiOpts.addWidget(self.centerMDI)
+		mdiOpts.addWidget(self.tileMDI)
+		mdiOpts.addStretch()
 
 		appearanceLayout = QVBoxLayout()
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
@@ -2272,15 +2350,15 @@ class Dialog(QDialog):
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>background image</b>"))
+		appearanceLayout.addLayout(backgroundLayout)
+		appearanceLayout.addLayout(mdiOpts)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nicknames</b>"))
 		appearanceLayout.addLayout(nLayout)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
 		appearanceLayout.addLayout(cursLayout)
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>mdi area background image</b>"))
-		appearanceLayout.addLayout(backgroundLayout)
-		appearanceLayout.addWidget(self.scaleMDI)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addStretch()
@@ -6219,7 +6297,7 @@ class Dialog(QDialog):
 		config.ALLOW_TOPIC_EDIT = self.topicEditor.isChecked()
 		config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = self.showConnScript.isChecked()
 		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
-		config.SCALE_MDI_BACKGROUND_IMAGE = self.scaleMDI.isChecked()
+		config.MDI_BACKGROUND_IMAGE_STYLE = self.MDI_BACKGROUND_IMAGE_STYLE
 
 		if self.CUSTOM_MDI_BACKGROUND!=config.CUSTOM_MDI_BACKGROUND:
 			config.CUSTOM_MDI_BACKGROUND = self.CUSTOM_MDI_BACKGROUND

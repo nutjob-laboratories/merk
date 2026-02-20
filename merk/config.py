@@ -408,11 +408,12 @@ USERLIST_WIDTH_IN_CHARACTERS = 15
 SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = True
 SHOW_ALL_SERVER_ERRORS = False
 CUSTOM_MDI_BACKGROUND = ""
-SCALE_MDI_BACKGROUND_IMAGE = True
+# scale, center, tile
+MDI_BACKGROUND_IMAGE_STYLE = "scale"
 
 def build_settings():
 	settings = {
-		"scale_mdi_background_image": SCALE_MDI_BACKGROUND_IMAGE,
+		"mdi_background_image_style": MDI_BACKGROUND_IMAGE_STYLE,
 		"mdi_workspace_background": CUSTOM_MDI_BACKGROUND,
 		"display_all_server_errors": SHOW_ALL_SERVER_ERRORS,
 		"show_connection_script_in_windows_menu": SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU,
@@ -787,8 +788,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "scale_mdi_background_image" in settings:
-		settings["scale_mdi_background_image"] = SCALE_MDI_BACKGROUND_IMAGE
+	if not "mdi_background_image_style" in settings:
+		settings["mdi_background_image_style"] = MDI_BACKGROUND_IMAGE_STYLE
 	if not "mdi_workspace_background" in settings:
 		settings["mdi_workspace_background"] = CUSTOM_MDI_BACKGROUND
 	if not "display_all_server_errors" in settings:
@@ -1900,7 +1901,7 @@ def load_settings(filename):
 	global SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU
 	global SHOW_ALL_SERVER_ERRORS
 	global CUSTOM_MDI_BACKGROUND
-	global SCALE_MDI_BACKGROUND_IMAGE
+	global MDI_BACKGROUND_IMAGE_STYLE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1910,7 +1911,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		SCALE_MDI_BACKGROUND_IMAGE = settings["scale_mdi_background_image"]
+		MDI_BACKGROUND_IMAGE_STYLE = settings["mdi_background_image_style"]
 		CUSTOM_MDI_BACKGROUND = settings["mdi_workspace_background"]
 		SHOW_ALL_SERVER_ERRORS = settings["display_all_server_errors"]
 		SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = settings["show_connection_script_in_windows_menu"]

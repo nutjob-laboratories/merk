@@ -2,23 +2,6 @@
 |                                   0.051.550                                  |
 |------------------------------------------------------------------------------|
 
-What's New
-- **MERK has a new URL!** You can find the MERK repository at [merk.chat](https://merk.chat),
-  the latest release at [release.merk.chat](https://release.merk.chat), and the latest
-  development builds at [latest.merk.chat](https://latest.merk.chat).
-- **A new revamped "Settings" dialog**. The "Settings" dialog has been reworked,
-  fixing some problems for users that use large sized fonts.
-- **Error reporting has been revamped**. More server errors are reported to the
-  user, and the way errors are displayed has been changed. There are new options
-  for how to display errors.
-- **The log manager has been revamped**.
-- **Aliases created in scripts are now local in scope**. Aliases created via
-  the text input widget are global in scope.
-- **Channel userlist status icons now properly scale with font size**.
-- **Set an image as the workspace background**. You can now set any image you'd
-  like as a background in the MERK workspace! Just like the old days :-)
-- **Many, many bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -126,12 +109,15 @@ What's New
   dialog.
 * The MDI area background image can now be set via the /config command. The
   documentation has been updated for more information on how.
-* Added a setting to the config file to control whether the MDI area background
-  image gets scaled to the size of the workspace or not. This setting can be
-  changed with the /config command, and is also in the Settings dialog. The
-  default is to scale the image to the workspace size.
 * Added additional sanity checks for the alias interpolation symbol and the
   "issue command" symbol to the /config command.
+* Added a setting to control how the MDI background image gets displayed: it
+  can either be scaled to the size of the workspace (the default), centered in
+  the workspace, or tiled across the workspace. This new setting has been added
+  to the Settings dialog, and can be changed with the /config command.
+* Error messages for the /config command are now more descriptive; if there are
+  only a set number of valid values for a given setting, they are displayed to
+  the user in the error message.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

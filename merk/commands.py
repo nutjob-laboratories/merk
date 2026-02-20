@@ -1115,6 +1115,9 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="mdi_background_image_style":
+		if value.lower()!="center" and value.lower()!="scale" and value.lower()!="tile": return INVALID_MDI_STYLE
+
 	if setting=="alias_interpolation_symbol":
 		if "*" in value: return INVALID_VALUE
 		if "<" in value: return INVALID_VALUE
@@ -5186,7 +5189,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					elif check==INVALID_COLOR:
 						reason = f"not a recognized color"
 					elif check==INVALID_LANGUAGE:
-						reason = f"not a valid spellchecker language"
+						v = ["en","fr","es","de","pt","it","nl","ru"]
+						reason = f"not a valid spellchecker language: {join_with_and(v,"or")}"
 					elif check==INVALID_TEXT_STYLE:
 						reason = f"not a valid text style"
 					elif check==INVALID_ORDER:
@@ -5194,11 +5198,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					elif check==INVALID_SOUND:
 						reason = "must be a valid WAV file"
 					elif check==INVALID_TIME:
-						reason = "must be a valid strptime format"
+						reason = "must be a valid strptime format: https://linux.die.net/man/3/strptime"
 					elif check==INVALID_IMAGE:
-						reason = "must be a supported image format"
+						supported_formats = QImageReader.supportedImageFormats()
+						all_filetypes = []
+						for fmt in supported_formats:
+							ext = fmt.data().decode()
+							if ext.upper()=='CUR': continue
+							if ext.upper()=='ICO': continue
+							all_filetypes.append(f"{ext.upper()}")
+						reason = f"must be a supported image format: {join_with_and(all_filetypes,"or")}"
 					elif check==INVALID_VALUE:
 						reason = "invalid value for setting"
+					elif check==INVALID_MDI_STYLE:
+						reason = "must be \"scale\", \"center\", or \"tile\""
 					else:
 						reason = "unknown"
 					if is_script:
