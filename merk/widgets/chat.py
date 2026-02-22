@@ -127,6 +127,8 @@ class Window(QMainWindow):
 
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
+		self.opacity = 100
+
 		# Make sure that the client has a network set, even if the server doesn't
 		if not hasattr(self.client,"network"): self.client.network = config.UNKNOWN_NETWORK_NAME
 
@@ -2695,12 +2697,21 @@ class Window(QMainWindow):
 			sb.setValue(og_value)
 		else:
 			# It's a link to a channel, so
-			# join the channel
+			# join the channel, or navigate to it
 			sb = self.chat.verticalScrollBar()
 			og_value = sb.value()
 			
 			chan = url.toString()
-			self.client.join(chan)
+
+			found = False
+			for w in self.parent.getAllSubChannelWindows(self.client):
+				if w.widget().name==chan:
+					found = True
+					if not w.isVisible(): w.show()
+					w.widget().input.setFocus()
+
+			if not found: self.client.join(chan)
+
 			self.chat.setSource(QUrl())
 			sb.setValue(og_value)
 	

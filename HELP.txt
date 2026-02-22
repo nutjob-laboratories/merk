@@ -219,6 +219,10 @@ Appearance:
 <td>Exits the client, with an optional pause of <code>SECONDS</code> before exit</td>
 </tr>
 <tr>
+<td><code>/fade [SERVER] [WINDOW] PERCENTAGE</code></td>
+<td>Sets the transparency of a subwindow by <code>PERCENTAGE</code>. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's transparency</td>
+</tr>
+<tr>
 <td><code>/find [TERMS]</code></td>
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>

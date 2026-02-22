@@ -4773,10 +4773,15 @@ class Dialog(QDialog):
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
+		self.highlightNick = QCheckBox("Highlight nickname in chat",self)
+		if config.HIGHLIGHT_NICK_IN_CHAT: self.highlightNick.setChecked(True)
+		self.highlightNick.stateChanged.connect(self.changedSettingRerender)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
 		msLayout.addWidget(self.showLinks)
+		msLayout.addWidget(self.highlightNick)
 		msLayout.addWidget(self.writeScroll)
 		msLayout.addWidget(self.showFullMode)
 		msLayout.addWidget(self.ignoreChannelNotice)
@@ -6297,7 +6302,10 @@ class Dialog(QDialog):
 		config.ALLOW_TOPIC_EDIT = self.topicEditor.isChecked()
 		config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = self.showConnScript.isChecked()
 		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
-		config.MDI_BACKGROUND_IMAGE_STYLE = self.MDI_BACKGROUND_IMAGE_STYLE
+		config.HIGHLIGHT_NICK_IN_CHAT = self.highlightNick.isChecked()
+
+		if self.MDI_BACKGROUND_IMAGE_STYLE!=config.MDI_BACKGROUND_IMAGE_STYLE:
+			config.MDI_BACKGROUND_IMAGE_STYLE = self.MDI_BACKGROUND_IMAGE_STYLE
 
 		if self.CUSTOM_MDI_BACKGROUND!=config.CUSTOM_MDI_BACKGROUND:
 			config.CUSTOM_MDI_BACKGROUND = self.CUSTOM_MDI_BACKGROUND

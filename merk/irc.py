@@ -187,6 +187,7 @@ class IRC_Connection(irc.IRCClient):
 		self.long_messages = []
 		self.long_notices = []
 		self.joined_channel = []
+		self.channels = []
 
 		self.server_channel_list = []
 		self.channel_list_window = None
@@ -524,10 +525,12 @@ class IRC_Connection(irc.IRCClient):
 		self.sendLine(f"MODE {channel}")
 		self.sendLine(f"MODE {channel} +b")
 
+		self.channels.append(channel)
 		self.gui.joined(self,channel)
 		self.joined_channel.append(channel)
 
 	def left(self, channel):
+		self.channels.pop(channel,None)
 		self.channelmodes.pop(channel,None)
 		self.gui.left(self,channel)
 

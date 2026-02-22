@@ -1,4 +1,38 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.600                                  |
+|------------------------------------------------------------------------------|
+
+What's New:
+  - **Subwindow transparency**. A new command, `/fade`, can set a subwindow's transparency by a percentage.
+  - **Nicknames are highlighted in chat**. The user's nickname is now highlighted in chat when mentioned in a message. This option, on by default, can be turned off in the Settings dialog or with the `/config` command.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* New command: /fade. This sets the transparency of a chat subwindow by
+  percentage, from 1 to 100. Call without any arguments to see the current
+  subwindow's transparency.
+* Modified the "/window layout" command to use /fade in the output.
+* New option: the user's nickname is highlighted in chat using the same color
+  scheme that's used to display the user's nickname as a speaker. This only
+  happens in chat, and only when other's "speak" the user's nickname. Changing
+  the user's nickname re-renders the chat to make sure the proper nick is
+  highlighted. This can be en/disabled in the Settings dialog or with the
+  /config command.
+* Tweaked the connection dialog. "Flattened" the layout, and re-arranged some
+  stuff. Removed a style sheet from the QTabWidget, which hopefull fixes a bug
+  on some machines using dark mode.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* New Window class method: fade(). If called without arguments, it returns the
+  percentage transparency of the subwindow. If called with an intger from 1 to
+  100 as an argument, it sets the transparency of the subwindow.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.550                                  |
 |------------------------------------------------------------------------------|
 

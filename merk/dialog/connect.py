@@ -403,6 +403,7 @@ class Dialog(QDialog):
 		optionLayout.setVerticalSpacing(0)
 
 		serverInfoLayout = QVBoxLayout()
+		serverInfoLayout.addStretch()
 		if self.not_simplified:
 			serverInfoLayout.addWidget(self.serverDescription)
 		serverInfoLayout.addWidget(self.servers)
@@ -429,12 +430,14 @@ class Dialog(QDialog):
 		self.commands.setFixedHeight(height)
 
 		commandsLayout = QVBoxLayout()
+		commandsLayout.addStretch()
 		commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
 		commandsLayout.setContentsMargins(3,3,3,3)
 
 		self.tabs = QTabWidget()
-		self.tabs.setStyleSheet("QTabWidget::tab-bar { alignment: center; }")
+		self.tabs.tabBar().setExpanding(True)
+		self.tabs.tabBar().setDocumentMode(True)
 
 		self.userDescription = QLabel(f"""
 			<small>
@@ -457,6 +460,7 @@ class Dialog(QDialog):
 
 		userPageLayout = QVBoxLayout()
 		if self.not_simplified:
+			userPageLayout.addStretch()
 			userPageLayout.addWidget(self.userDescription)
 		else:
 			userPageLayout.addStretch()
@@ -512,11 +516,15 @@ class Dialog(QDialog):
 				""")
 
 			bannerTabs = QVBoxLayout()
+			bannerTabs.setSpacing(0)
 			bannerTabs.addWidget(discoMessage)
 			bannerTabs.addWidget(self.tabs)
+			bannerTabs.addWidget(self.saveU)
 		else:
 			bannerTabs = QVBoxLayout()
+			bannerTabs.setSpacing(0)
 			bannerTabs.addWidget(self.tabs)
+			bannerTabs.addWidget(self.saveU)
 
 		finalLayout = QVBoxLayout()
 		if self.initial:
@@ -536,7 +544,6 @@ class Dialog(QDialog):
 
 				finalLayout.addLayout(vLayout)
 		finalLayout.addLayout(bannerTabs)
-		finalLayout.addWidget(self.saveU)
 		if self.initial:
 			finalLayout.addLayout(initialLayout)
 		else:

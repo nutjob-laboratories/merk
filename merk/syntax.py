@@ -285,6 +285,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"window ontop",
 			cmdsymbol+"window pause",
 			cmdsymbol+"window layout",
+			cmdsymbol+"fade",
 		]
 
 		script_only = [

@@ -209,6 +209,11 @@ def render_message(message,style,client=None,no_padding=False):
 	if config.FORCE_MONOSPACE_RENDERING:
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 
+	if config.HIGHLIGHT_NICK_IN_CHAT:
+		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE:
+			if client!=None:
+				msg_to_display = highlight_nick(msg_to_display,client.nickname,style)
+
 	# Assign template and style to the message
 	message_templates = {
 		SYSTEM_MESSAGE: SYSTEM_TEMPLATE,
@@ -311,6 +316,23 @@ def render_message(message,style,client=None,no_padding=False):
 
 	# Message has been rendered, so return it
 	return output
+
+def highlight_nick(text, target_word, style):
+
+	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
+		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+		style_str = f"color:{foreground};"
+	else:
+		style_str = style["self"]
+	
+	pattern = rf'\b{re.escape(target_word)}\b'
+	
+	def replacer(match):
+		original_word = match.group(0)
+		return f'<span style="{style_str}">{original_word}</span>'
+
+	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)
+	return result
 
 def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:

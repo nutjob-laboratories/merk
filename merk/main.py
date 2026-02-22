@@ -2102,6 +2102,10 @@ class Merk(QMainWindow):
 				t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
 				w.writeText(t)
 
+		# Rerender chats for nick highlight
+		if config.HIGHLIGHT_NICK_IN_CHAT:
+			self.reRenderClient(client,True)
+
 	def topicChanged(self,client,user,channel,newTopic):
 		x = user.split('!')
 		if len(x) >= 2:
@@ -2976,6 +2980,19 @@ class Merk(QMainWindow):
 			self.MDI.setActiveSubWindow(w)
 		if show_wait: QApplication.restoreOverrideCursor()
 
+	def reRenderClient(self,client,show_wait=False):
+		if show_wait: QApplication.setOverrideCursor(Qt.WaitCursor)
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client==client:
+					if hasattr(c,"rerenderChatLog"):
+						c.rerenderChatLog()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+		if show_wait: QApplication.restoreOverrideCursor()
+
 	def reApplyStyle(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		w = self.MDI.activeSubWindow()
@@ -3474,6 +3491,16 @@ class Merk(QMainWindow):
 					if c.window_type==CHANNEL_WINDOW:
 						retval.append(window)
 					elif c.window_type==PRIVATE_WINDOW:
+						retval.append(window)
+		return retval
+
+	def getAllSubChannelWindows(self,client):
+		retval = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"client"):
+				if c.client.client_id == client.client_id:
+					if c.window_type==CHANNEL_WINDOW:
 						retval.append(window)
 		return retval
 

@@ -410,9 +410,11 @@ SHOW_ALL_SERVER_ERRORS = False
 CUSTOM_MDI_BACKGROUND = ""
 # scale, center, tile
 MDI_BACKGROUND_IMAGE_STYLE = "scale"
+HIGHLIGHT_NICK_IN_CHAT=True
 
 def build_settings():
 	settings = {
+		"highlight_nickname_in_chat": HIGHLIGHT_NICK_IN_CHAT,
 		"mdi_background_image_style": MDI_BACKGROUND_IMAGE_STYLE,
 		"mdi_workspace_background": CUSTOM_MDI_BACKGROUND,
 		"display_all_server_errors": SHOW_ALL_SERVER_ERRORS,
@@ -788,6 +790,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "highlight_nickname_in_chat" in settings:
+		settings["highlight_nickname_in_chat"] = HIGHLIGHT_NICK_IN_CHAT
 	if not "mdi_background_image_style" in settings:
 		settings["mdi_background_image_style"] = MDI_BACKGROUND_IMAGE_STYLE
 	if not "mdi_workspace_background" in settings:
@@ -1902,6 +1906,7 @@ def load_settings(filename):
 	global SHOW_ALL_SERVER_ERRORS
 	global CUSTOM_MDI_BACKGROUND
 	global MDI_BACKGROUND_IMAGE_STYLE
+	global HIGHLIGHT_NICK_IN_CHAT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1911,6 +1916,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIGHLIGHT_NICK_IN_CHAT = settings["highlight_nickname_in_chat"]
 		MDI_BACKGROUND_IMAGE_STYLE = settings["mdi_background_image_style"]
 		CUSTOM_MDI_BACKGROUND = settings["mdi_workspace_background"]
 		SHOW_ALL_SERVER_ERRORS = settings["display_all_server_errors"]

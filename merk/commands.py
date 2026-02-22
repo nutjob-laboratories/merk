@@ -276,6 +276,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"_trace": config.ISSUE_COMMAND_SYMBOL+"_trace ",
 			config.ISSUE_COMMAND_SYMBOL+"browser": config.ISSUE_COMMAND_SYMBOL+"browser ",
 			config.ISSUE_COMMAND_SYMBOL+"folder": config.ISSUE_COMMAND_SYMBOL+"folder ",
+			config.ISSUE_COMMAND_SYMBOL+"fade": config.ISSUE_COMMAND_SYMBOL+"fade ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -447,6 +448,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET</b>", f"Executes a trace on a server or user. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>", f"Opens URL in the default browser" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH [PATH...]</b>", f"Opens PATH(s) in the default file manager" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a window by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
 	]
 
 	if config.INCLUDE_SCRIPT_COMMAND_SHORTCUT:
@@ -1550,6 +1552,190 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'s':
 				tokens[0]=config.ISSUE_COMMAND_SYMBOL+'script'
+
+	# |-------|
+	# | /fade |
+	# |-------|
+	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fade' and len(tokens)==2:
+			tokens.pop(0)
+			amount = tokens.pop(0)
+			try:
+				amount = int(amount)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: \"{amount}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{amount}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			if amount>100 or amount<1:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: \"{amount}\" is not a number from 1 to 100")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{amount}\" is not a number from 1 to 100")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			w = gui.getSubWindow(window.name,window.client)
+			if w:
+				opacity_effect = QGraphicsOpacityEffect()
+				opacity_effect.setOpacity(amount/100) 
+				w.setGraphicsEffect(opacity_effect)
+				w.widget().opacity = amount
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: window not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Window not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fade' and len(tokens)==4:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+			amount = tokens.pop(0)
+
+			try:
+				amount = int(amount)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: \"{amount}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{amount}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			if amount>100 or amount<1:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: \"{amount}\" is not a number from 1 to 100")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{amount}\" is not a number from 1 to 100")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower() in win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						opacity_effect = QGraphicsOpacityEffect()
+						opacity_effect.setOpacity(amount/100) 
+						w.setGraphicsEffect(opacity_effect)
+						w.widget().opacity = amount
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						opacity_effect = QGraphicsOpacityEffect()
+						opacity_effect.setOpacity(amount/100) 
+						w.setGraphicsEffect(opacity_effect)
+						w.widget().opacity = amount
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window \""+target+"\" not found")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Server \""+server+"\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fade' and len(tokens)==3:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			amount = tokens.pop(0)
+
+			try:
+				amount = int(amount)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: \"{amount}\" is not a number")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{amount}\" is not a number")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			if amount>100 or amount<1:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: \"{amount}\" is not a number from 1 to 100")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{amount}\" is not a number from 1 to 100")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				opacity_effect = QGraphicsOpacityEffect()
+				opacity_effect.setOpacity(amount/100) 
+				w.setGraphicsEffect(opacity_effect)
+				w.widget().opacity = amount
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window \""+target+"\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'fade':
+			if hasattr(window,"opacity"):
+				o = window.opacity 
+				t = Message(SYSTEM_MESSAGE,'',f"{window.name}: {o}%")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window transparency not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(ERROR_MESSAGE,'',"Window transparency not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /folder |
@@ -3627,10 +3813,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						height = w.height()
 						x_val = w.x()
 						y_val = w.y()
-						results.append(f"/size {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {width} {height}")
-						results.append(f"/move {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {x_val} {y_val}")
+						opacity = w.widget().opacity
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {width} {height}")
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {x_val} {y_val}")
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server}:{w.widget().client.port} {w.widget().name} {opacity}")
 				if len(results)>0:
-					results.insert(0,f"/rem Subwindow layout for {datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')}")
+					results.insert(0,f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout for {datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')}")
 					gui.newEditorWindowContents("\n".join(results))
 				else:
 					if is_script:

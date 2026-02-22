@@ -76,6 +76,16 @@ class Window():
 			return [width,height]
 		return [0,0]
 
+	def fade(self,perc=None):
+		if perc==None: return self._window.opacity
+		w = self._gui.getSubWindow(self._window.name,self._window.client)
+		if w:
+			if perc<=100 and perc>0:
+				opacity_effect = QGraphicsOpacityEffect()
+				opacity_effect.setOpacity(perc/100) 
+				w.setGraphicsEffect(opacity_effect)
+				w.widget().opacity = perc
+		
 	def position(self):
 		w = self._gui.getSubWindow(self._window.name,self._window.client)
 		if w:
