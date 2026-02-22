@@ -180,25 +180,25 @@ There are four libraries that comes bundled with **MERK**:
 <p><small><i>Screenshots may not reflect the current release (!_RELEASE_!), and may reflect the current development version (!_FULL_VERSION_!). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
- <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br>
+ <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
  
  <center><a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and <a href="https://inthemansion.com/">MansionNET</a> on Linux Mint 22.3, using the "Oxygen" widget set.</small></i></center><br>
+  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and <a href="https://inthemansion.com/">MansionNET</a> on Linux Mint 22.3, using the "Oxygen" widget set.</small></i></center><br><br>
 
  <center><a href="./graphics/macos.png"><img src="./graphics/macos_small.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://inthemansion.com/">MansionNET</a> on macOS 26.2, using the "Fusion" widget set in "dark mode".</small></i></center><br>
+  <center><i><small>MERK connected to <a href="https://inthemansion.com/">MansionNET</a> on macOS 26.2, using the "Fusion" widget set in "dark mode".</small></i></center><br><br>
 
  <center><a href="./graphics/connect_1.png"><img src="./graphics/connect_1_small.png"></a><a href="./graphics/connect_2.png"><img src="./graphics/connect_2_small.png"></a><a href="./graphics/connect_3.png"><img src="./graphics/connect_3_small.png"></a></center></br>
-  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text (describing how the individual settings work) can be removed with the "Simplified dialogs" option in settings.</small></i></center><br>
+  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text (describing how the individual settings work) can be removed with the "Simplified dialogs" option in settings.</small></i></center><br><br>
 
  <center><a href="./graphics/styler.png"><img src="./graphics/styler_small.png"></a></center></br>
-  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center><br>
+  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center><br><br>
 
  <center><a href="./graphics/settings.png"><img src="./graphics/settings_small.png"></a></center></br>
-  <center><i><small>The first "page" of the settings dialog. MERK features over 300 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center><br>
+  <center><i><small>The first "page" of the settings dialog. MERK features over 300 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center><br><br>
 
  <center><a href="./graphics/menu.png"><img src="./graphics/menu.png"></a></center></br>
-  <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center><br>
+  <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center><br><br>
 
  <center><a href="./graphics/channels.png"><img src="./graphics/channels_small.png"></a></center></br>
   <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://www.undernet.org/">Undernet</a> network. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>

@@ -33,10 +33,10 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.550 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.550)  |
-| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.555 (12.69 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.555 (12.67 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
 | Zip Archive|  Linux Executable | [Download MERK 0.051.555 (98.74 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.555 (49.62 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.555 (46.73 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive|  Windows Executable | [Download MERK 0.051.555 (49.60 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.555 (46.71 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
 # Summary
   
@@ -180,25 +180,25 @@ There are four libraries that comes bundled with **MERK**:
 <p><small><i>Screenshots may not reflect the current release (0.051.550), and may reflect the current development version (0.051.555). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
- <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br>
+ <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
  
  <center><a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and <a href="https://inthemansion.com/">MansionNET</a> on Linux Mint 22.3, using the "Oxygen" widget set.</small></i></center><br>
+  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and <a href="https://inthemansion.com/">MansionNET</a> on Linux Mint 22.3, using the "Oxygen" widget set.</small></i></center><br><br>
 
  <center><a href="./graphics/macos.png"><img src="./graphics/macos_small.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://inthemansion.com/">MansionNET</a> on macOS 26.2, using the "Fusion" widget set in "dark mode".</small></i></center><br>
+  <center><i><small>MERK connected to <a href="https://inthemansion.com/">MansionNET</a> on macOS 26.2, using the "Fusion" widget set in "dark mode".</small></i></center><br><br>
 
  <center><a href="./graphics/connect_1.png"><img src="./graphics/connect_1_small.png"></a><a href="./graphics/connect_2.png"><img src="./graphics/connect_2_small.png"></a><a href="./graphics/connect_3.png"><img src="./graphics/connect_3_small.png"></a></center></br>
-  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text (describing how the individual settings work) can be removed with the "Simplified dialogs" option in settings.</small></i></center><br>
+  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text (describing how the individual settings work) can be removed with the "Simplified dialogs" option in settings.</small></i></center><br><br>
 
  <center><a href="./graphics/styler.png"><img src="./graphics/styler_small.png"></a></center></br>
-  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center><br>
+  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center><br><br>
 
  <center><a href="./graphics/settings.png"><img src="./graphics/settings_small.png"></a></center></br>
-  <center><i><small>The first "page" of the settings dialog. MERK features over 300 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center><br>
+  <center><i><small>The first "page" of the settings dialog. MERK features over 300 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center><br><br>
 
  <center><a href="./graphics/menu.png"><img src="./graphics/menu.png"></a></center></br>
-  <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center><br>
+  <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center><br><br>
 
  <center><a href="./graphics/channels.png"><img src="./graphics/channels_small.png"></a></center></br>
   <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://www.undernet.org/">Undernet</a> network. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
