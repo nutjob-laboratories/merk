@@ -1104,6 +1104,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertFocus)
 			self.winCommands.addAction(entry)
 
+			entry = QAction(QIcon(WINDOW_ICON),"Fade window",self)
+			entry.triggered.connect(self.insertFade)
+			self.winCommands.addAction(entry)
+
 			entry = QAction(QIcon(WINDOW_ICON),"Maximize window",self)
 			entry.triggered.connect(self.insertMax)
 			self.winCommands.addAction(entry)
@@ -2018,6 +2022,15 @@ class Window(QMainWindow):
 		if not e: return
 
 		self.editor.insertPlainText("wait "+str(e)+"\n")
+		self.updateApplicationTitle()
+
+	def insertFade(self):
+		x = dialog.Fade(self)
+		e = x.get_fade_information(self)
+
+		if not e: return
+
+		self.editor.insertPlainText("/fade "+str(e)+"\n")
 		self.updateApplicationTitle()
 
 	def insertRestrict(self):

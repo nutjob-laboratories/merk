@@ -109,11 +109,14 @@ There are four libraries that comes bundled with **MERK**:
 - Built-in [documentation](./MERK_User_Guide.pdf)!
 - Features include...
     - Extensive command-line options
+        - Over 30 different command-line flags, allowing for connecting to multiple servers on startup, disabling or enabling options, and more
     - Dark mode
     -   Full scripting engine
         - Includes a built in script editor, with command generators and syntax highlighting
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
-        - Scripts have rudimentary flow control
+        - Scripts have rudimentary flow control, including `if` and `goto`
+        - Over 80 different commands are available for scripts or for use in the client
+        - 11 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -201,7 +204,7 @@ There are four libraries that comes bundled with **MERK**:
   <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center><br><br>
 
  <center><a href="./graphics/channels.png"><img src="./graphics/channels_small.png"></a></center></br>
-  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://www.undernet.org/">Undernet</a> network. The instructional text can be removed with the "Simplified dialogs" option in settings.</small></i></center>
+  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched and filtered by user count. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera.chat</a> network. The instructional text has been removed by toggling the "Simplified dialogs" option in settings.</small></i></center>
   </p>
 
 # Usage

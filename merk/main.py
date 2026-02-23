@@ -2398,6 +2398,18 @@ class Merk(QMainWindow):
 		if client.registered==False and code=="433":
 			if not config.SHOW_ALL_SERVER_ERRORS: return
 
+		# Suppress the "nickname is too long" error message
+		# during registration, as the client is handling it
+		if client.registered==False and code=="432":
+			if not config.SHOW_ALL_SERVER_ERRORS: return
+
+		# This only pops up sometimes, and seemingly with
+		# only specific kinds of servers. It doesn't seem
+		# to effect the client, and I suspect it's a problem
+		# from Twisted. We're just gonna suppress it.
+		if client.registered==False and code=="461":
+			if not config.SHOW_ALL_SERVER_ERRORS: return
+
 		if code=="401":
 			for nick in client.request_whois:
 				if f"{nick}:" in message and 'No such' in message:
@@ -3953,6 +3965,7 @@ class Merk(QMainWindow):
 		self.newEditorWindowConnect(hostid)
 
 	def newListWindow(self,client,parent):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
 		w = QMdiSubWindow(self)
 		w.setWidget(widgets.ChannelList(client,client.server_channel_list,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
@@ -3971,7 +3984,7 @@ class Merk(QMainWindow):
 		self.buildWindowsMenu()
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
-
+		QApplication.restoreOverrideCursor()
 		return w
 
 	def newReadmeWindow(self):
@@ -5225,7 +5238,7 @@ class Merk(QMainWindow):
 							ssetting.setIcon(QIcon(CONNECT_ICON))
 
 						if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
-							entry = QAction(QIcon(LIST_ICON),"Server channel list",self)
+							entry = QAction(QIcon(LIST_ICON),"Channel list",self)
 							entry.triggered.connect(lambda state,u=sw: self.menuChannelList(u))
 							sm.addAction(entry)
 

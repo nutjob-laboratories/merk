@@ -188,7 +188,7 @@ def render_message(message,style,client=None,no_padding=False):
 				if message.type==ERROR_MESSAGE: optional = "error"
 				if message.type==ACTION_MESSAGE: optional = "action"
 				if message.type==SERVER_MESSAGE: optional = "server"
-				msg_to_display = convert_irc_color_to_html(msg_to_display,style,optional)
+				msg_to_display = convert_irc_color_to_html(msg_to_display)
 		else:
 			msg_to_display = strip_color(msg_to_display)
 	else:
@@ -363,57 +363,3 @@ def inject_www_links(txt, style):
 		return f'<a href="{href}" style="{style_str}">{u_visible}</a>{trailing_punctuation}'
 
 	return re.sub(url_pattern, replace_url, txt)
-
-def convert_irc_color_to_html(text, style, optional="all"):
-	background, foreground = styles.parseBackgroundAndForegroundColor(style[optional])
-	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F|\x1E)')
-	
-	state = {'bold': False, 'italic': False, 'underline': False, 'strikethrough': False, 'fg': None, 'bg': None}
-	parts = pattern.split(text)
-	result = []
-
-	def get_style(s):
-		styles = []
-		if s['bold']: styles.append("font-weight: bold;")
-		if s['italic']: styles.append("font-style: italic;")
-		if s['underline']: styles.append("text-decoration: underline;")
-		if s['strikethrough']: styles.append("text-decoration: line-through;")
-		
-		fg_color = IRC_COLORS.get(s['fg'].zfill(2)) if s['fg'] else foreground
-		bg_color = IRC_COLORS.get(s['bg'].zfill(2)) if s['bg'] else background
-		
-		if fg_color:
-			styles.append(f"color: {fg_color};")
-		if bg_color:
-			styles.append(f"background-color: {bg_color};")
-		return " ".join(styles)
-
-	for part in parts:
-		if not part:
-			continue
-		
-		# Handle formatting characters
-		char = part[0]
-		if char == '\x02': 
-			state['bold'] = not state['bold']
-		elif char == '\x1D': 
-			state['italic'] = not state['italic']
-		elif char == '\x1F': 
-			state['underline'] = not state['underline']
-		elif char == '\x1E':  # Strikethrough toggle
-			state['strikethrough'] = not state['strikethrough']
-		elif char == '\x03':
-			if len(part) > 1:
-				colors = part[1:].split(',')
-				state['fg'] = colors[0]
-				if len(colors) > 1:
-					state['bg'] = colors[1]
-			else:  # Reset color
-				state['fg'], state['bg'] = None, None
-		elif char == '\x0F':  # Reset all styles
-			state = {k: False if isinstance(v, bool) else None for k, v in state.items()}
-		else:
-			style = get_style(state)
-			result.append(f'<span style="{style}">{part}</span>' if style else part)
-
-	return "".join(result)

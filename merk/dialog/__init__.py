@@ -60,6 +60,7 @@ from .key import Dialog as SetKey
 from .set_bind import Dialog as SetBind
 from .set_method import Dialog as SetMethod
 from .set_file import Dialog as SetFilename
+from .fade import Dialog as Fade
 
 def SetFilenameDialog(obj):
 	x = SetFilename(obj)

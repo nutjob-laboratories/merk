@@ -5,6 +5,7 @@
 What's New:
   - **Subwindow transparency**. A new command, `/fade`, can set a subwindow's transparency by a percentage.
   - **Nicknames are highlighted in chat**. The user's nickname is now highlighted in chat when mentioned in a message. This option, on by default, can be turned off in the Settings dialog or with the `/config` command.
+  - **Revamped channel list dialog**. The channel list dialog has been completely reworked. IRC color and formatting codes are stripped from channel topics, though the display can be toggled.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -23,6 +24,31 @@ What's New:
 * Tweaked the connection dialog. "Flattened" the layout, and re-arranged some
   stuff. Removed a style sheet from the QTabWidget, which hopefull fixes a bug
   on some machines using dark mode.
+* Bugfix: hitting ctrl+c when the connection dialog now exits properly, and
+  doesn't throw an error.
+* Bugfix: the "host" line entry on the connection dialog is now given focus at
+  the launch of the connection dialog. If the "nickname" still needs to be
+  entered, that widget is given focus.
+* Revamped the channel list window. IRC formatting codes are now stripped from
+  channel topics before display, and the "word wrap" option for channel entries
+  has been removed.
+* Bugfix: the "nickname is too long" error is now suppressed if the "show all
+  server errors" option is not turned on. The client handles this error auto-
+  matically.
+* Bugfix: IRC color rendering no longer sets erroneous background or foreground
+  colors.
+* The function to convert IRC color and formatting codes into HTML is now
+  "universalized", and available to every module in the project.
+* The "working" cursor is now shows when creating/compiling the channel list
+  dialog.
+* Added the /fade command to the script editor's code generators.
+* Bugfix?: delayed the execution of /list's functionality by 10 milliseconds so
+  that the text input widget is cleared before the generation of the channel
+  list dialog. Without this, the application looks "locked up" for a few
+  seconds.
+* Bugfix?: delayed displaying the output of the /config command when it's
+  displaying all config values by 10 milliseconds, just like with the /list
+  command, so the app doesn't appear to be locking up.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -31,6 +57,8 @@ What's New:
 * New Window class method: fade(). If called without arguments, it returns the
   percentage transparency of the subwindow. If called with an intger from 1 to
   100 as an argument, it sets the transparency of the subwindow.
+* The Console method html() now converts IRC color and formatting codes into
+  HTML for display.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.550                                  |

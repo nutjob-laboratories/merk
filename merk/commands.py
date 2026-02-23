@@ -1285,6 +1285,14 @@ def math(statement):
 	except (SyntaxError, TypeError, ValueError) as e:
 		return [e,True]
 
+def dumpAllConfig(window,count,results):
+	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} config settings")
+	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+	for t in results:
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} config search results")
+	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
 	user_input = user_input.strip()
 	tokens = user_input.split()
@@ -5226,12 +5234,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						dtype = "unknown"
 					t = Message(SYSTEM_MESSAGE,'',f"{count}) {s} = \"{settings[s]}\" ({dtype})")
 					results.append(t)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} config settings")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			for t in results:
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} config search results")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			QTimer.singleShot(10, lambda: dumpAllConfig(window,count,results))
 			return True
 
 		# One argument displays the config value
@@ -5566,7 +5569,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 			# No search terms, so open the channel list window
-			window.showChannelList()
+			QTimer.singleShot(10, lambda: window.showChannelList())
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
@@ -5584,7 +5587,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			# Show the channel list window and inject search
-			window.showChannelListSearch(target)
+			QTimer.singleShot(10, lambda: window.showChannelListSearch(target))
 			return True
 
 	# |-------|

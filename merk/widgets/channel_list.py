@@ -75,8 +75,20 @@ class Window(QMainWindow):
 
 		self.table_widget.setAlternatingRowColors(True)
 		self.table_widget.setTextElideMode(Qt.ElideRight)
-
 		self.table_widget.itemDoubleClicked.connect(self.on_double_click)
+
+		if self.parent.dark_mode:
+			self.table_widget.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: darkGray;
+				}}
+			""")
+		else:
+			self.table_widget.setStyleSheet(f"""
+				QListWidget::item:selected {{
+					background: lightGray;
+				}}
+			""")
 
 		self.search_terms = QLineEdit('')
 		self.search_terms.returnPressed.connect(self.doSearch)
@@ -111,10 +123,7 @@ class Window(QMainWindow):
 		self.moreTwenty.toggled.connect(self.doReset)
 		self.moreAny.toggled.connect(self.doReset)
 
-		self.wordwrap = QCheckBox("Word wrap",self)
-		self.wordwrap.stateChanged.connect(self.doWordwrap)
-
-		self.searchTopic = QCheckBox("Topics",self)
+		self.searchTopic = QCheckBox("Search topics",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.searchTopic.setChecked(True)
 		self.searchTopic.stateChanged.connect(self.changedSearchTopic)
 
@@ -125,10 +134,9 @@ class Window(QMainWindow):
 
 		self.search_button.setFlat(True)
 
-		self.allTerms = QCheckBox("All terms",self)
+		self.allTerms = QCheckBox("Search all terms",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.allTerms.setChecked(True)
 		self.allTerms.stateChanged.connect(self.changedAllTerms)
-
 
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
@@ -149,8 +157,6 @@ class Window(QMainWindow):
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
 		self.sLayout.addWidget(self.refresh_button)
-		self.sLayout.addWidget(self.allTerms)
-		self.sLayout.addWidget(self.searchTopic)
 		self.sLayout.setContentsMargins(1,1,1,1)
 
 		self.cLayout = QHBoxLayout()
@@ -161,8 +167,15 @@ class Window(QMainWindow):
 		self.cLayout.addWidget(self.moreTen)
 		self.cLayout.addWidget(self.moreTwenty)
 		self.cLayout.addStretch()
-		self.cLayout.addWidget(self.wordwrap)
 		self.cLayout.addWidget(self.reset_button)
+
+		self.oLayout = QHBoxLayout()
+		self.oLayout.addStretch()
+		self.oLayout.addWidget(self.allTerms)
+		self.oLayout.addStretch()
+		self.oLayout.addWidget(self.searchTopic)
+		self.oLayout.addStretch()
+		
 
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
 			if config.SHOW_CHANNEL_LIST_IN_WINDOWS_MENU:
@@ -197,9 +210,11 @@ class Window(QMainWindow):
 			self.windowDescription.setAlignment(Qt.AlignJustify)
 
 		self.layout = QVBoxLayout()
+		self.layout.setSpacing(2)
 		if not config.SIMPLIFIED_DIALOGS:
 			self.layout.addWidget(self.windowDescription)
 		self.layout.addLayout(self.sLayout)
+		self.layout.addLayout(self.oLayout)
 		self.layout.addLayout(self.cLayout)
 		self.layout.addWidget(self.table_widget)
 
@@ -215,12 +230,6 @@ class Window(QMainWindow):
 			self.status.show()
 		else:
 			self.status.hide()
-
-	def doWordwrap(self,i):
-		if self.wordwrap.isChecked():
-			self.table_widget.setWordWrap(True)
-		else:
-			self.table_widget.setWordWrap(False)
 
 	def changedAllTerms(self,i):
 		if self.allTerms.isChecked():
@@ -292,18 +301,25 @@ class Window(QMainWindow):
 			if self.moreTwenty.isChecked():
 				if icount<20:
 					add_entry = False
-			if len(entry[2])==0:
-				e = f"{entry[0]} {count}"
-			else:
-				e = f"{entry[0]} {count} - {entry[2]}"
 			i = QListWidgetItem()
-			i.setText(e)
-			font = QFont()
-			font.setBold(True)
-			i.setFont(font)
+
+			label = QLabel()
+			if len(entry[2])==0:
+				e = f"<b>{entry[0]} {count}</b>"
+			else:
+				if string_has_irc_formatting_codes(entry[2]):
+					topic = strip_color(entry[2])
+				else:
+					topic = entry[2]
+				e = f"<b>{entry[0]} {count}</b> - {topic}"
+			label.setText(e)
+
+			i.setSizeHint(label.sizeHint())
+			self.table_widget.addItem(i)
+			self.table_widget.setItemWidget(i, label)
+
 			i.channel = entry[0]
 			if add_entry:
-				self.table_widget.addItem(i)
 				data_count = data_count + 1
 				user_count = user_count + icount
 
@@ -313,11 +329,11 @@ class Window(QMainWindow):
 
 		if self.table_widget.count()==0:
 			i = QListWidgetItem()
-			i.setText("No channels found.")
-			font = QFont()
-			font.setItalic(True)
-			i.setFont(font)
+			
+			label = QLabel("<b>No channels found.</b>")
+			i.setSizeHint(label.sizeHint())
 			self.table_widget.addItem(i)
+			self.table_widget.setItemWidget(i, label)
 
 		QApplication.restoreOverrideCursor()
 
@@ -375,18 +391,26 @@ class Window(QMainWindow):
 			if self.moreTwenty.isChecked():
 				if icount<20:
 					add_entry = False
-			if len(entry[2])==0:
-				e = f"{entry[0]} {count}"
-			else:
-				e = f"{entry[0]} {count} - {entry[2]}"
+			
 			i = QListWidgetItem()
-			i.setText(e)
-			font = QFont()
-			font.setBold(True)
-			i.setFont(font)
+
+			label = QLabel()
+			if len(entry[2])==0:
+				e = f"<b>{entry[0]} {count}</b>"
+			else:
+				if string_has_irc_formatting_codes(entry[2]):
+					topic = strip_color(entry[2])
+				else:
+					topic = entry[2]
+				e = f"<b>{entry[0]} {count}</b> - {topic}"
+			label.setText(e)
+			
+			i.setSizeHint(label.sizeHint())
+			self.table_widget.addItem(i)
+			self.table_widget.setItemWidget(i, label)
+
 			i.channel = entry[0]
 			if add_entry:
-				self.table_widget.addItem(i)
 				data_count = data_count + 1
 				user_count = user_count + icount
 
@@ -396,10 +420,10 @@ class Window(QMainWindow):
 
 		if self.table_widget.count()==0:
 			i = QListWidgetItem()
-			i.setText("No channels found.")
-			font = QFont()
-			font.setItalic(True)
-			i.setFont(font)
+			
+			label = QLabel("<b>No channels found.</b>")
+			i.setSizeHint(label.sizeHint())
 			self.table_widget.addItem(i)
+			self.table_widget.setItemWidget(i, label)
 
 	

@@ -445,6 +445,65 @@ class WhoWasData:
 
 # Functions
 
+def convert_irc_color_to_html(text):
+	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F|\x1E)')
+	
+	state = {'bold': False, 'italic': False, 'underline': False, 'strikethrough': False, 'fg': None, 'bg': None}
+	parts = pattern.split(text)
+	result = []
+
+	def get_style(s):
+		styles = []
+		if s['bold']: styles.append("font-weight: bold;")
+		if s['italic']: styles.append("font-style: italic;")
+		if s['underline']: styles.append("text-decoration: underline;")
+		if s['strikethrough']: styles.append("text-decoration: line-through;")
+
+		if s['fg']: 
+			fg_color = IRC_COLORS.get(s['fg'].zfill(2))
+		else:
+			fg_color = None
+		if s['bg']:
+			bg_color = IRC_COLORS.get(s['bg'].zfill(2))
+		else:
+			bg_color = None
+		
+		if fg_color:
+			styles.append(f"color: {fg_color};")
+		if bg_color:
+			styles.append(f"background-color: {bg_color};")
+		return " ".join(styles)
+
+	for part in parts:
+		if not part:
+			continue
+		
+		# Handle formatting characters
+		char = part[0]
+		if char == '\x02': 
+			state['bold'] = not state['bold']
+		elif char == '\x1D': 
+			state['italic'] = not state['italic']
+		elif char == '\x1F': 
+			state['underline'] = not state['underline']
+		elif char == '\x1E':  # Strikethrough toggle
+			state['strikethrough'] = not state['strikethrough']
+		elif char == '\x03':
+			if len(part) > 1:
+				colors = part[1:].split(',')
+				state['fg'] = colors[0]
+				if len(colors) > 1:
+					state['bg'] = colors[1]
+			else:  # Reset color
+				state['fg'], state['bg'] = None, None
+		elif char == '\x0F':  # Reset all styles
+			state = {k: False if isinstance(v, bool) else None for k, v in state.items()}
+		else:
+			style = get_style(state)
+			result.append(f'<span style="{style}">{part}</span>' if style else part)
+
+	return "".join(result)
+
 def is_invalid_channel(s):
 	if ',' in s: return True
 	if string_has_irc_formatting_codes(s): return True

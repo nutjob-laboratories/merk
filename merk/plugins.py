@@ -419,6 +419,7 @@ class Console():
 		return self._console.dump()
 
 	def html(self,message):
+		message = convert_irc_color_to_html(message)
 		self._console.html(message)
 
 	def print(self,message):

@@ -42,6 +42,10 @@ from .. import user
 from .. import syntax
 from .. import connection_script
 
+import signal
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+
 class Dialog(QDialog):
 
 	def doSkip(self):
@@ -486,10 +490,15 @@ class Dialog(QDialog):
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
 
+		# Make sure that the "Connect" button is what triggers
+		# if the enter button is pressed
 		ok_button = buttons.button(QDialogButtonBox.Ok)
 		cancel_button = buttons.button(QDialogButtonBox.Cancel)
 
 		buttons.button(QDialogButtonBox.Ok).setText("Connect")
+
+		ok_button.setDefault(True)
+		ok_button.setAutoDefault(True)
 
 		if self.initial:
 			buttons.button(QDialogButtonBox.Cancel).setText("Exit")
@@ -560,8 +569,12 @@ class Dialog(QDialog):
 
 		if user.NICKNAME=='' or user.USERNAME=='' or user.REALNAME=='':
 			self.tabs.setCurrentWidget(self.user_tab)
+			self.nick.setFocus()
+			QTimer.singleShot(0, lambda: self.nick.setCursorPosition(len(self.nick.text())))
 		else:
 			self.tabs.setCurrentWidget(self.server_tab)
+			self.host.setFocus()
+			QTimer.singleShot(0, lambda: self.host.setCursorPosition(len(self.host.text())))
 
 		self.serverEntered()
 

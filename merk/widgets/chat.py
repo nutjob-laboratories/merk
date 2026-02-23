@@ -2703,6 +2703,26 @@ class Window(QMainWindow):
 			
 			chan = url.toString()
 
+			# If it's a user in the link...
+			if chan[:1]!='#' and chan[:1]!='&' and chan[:1]!='!' and chan[:1]!='+':
+				# Find the private chat window if it
+				# exists, and move focus to it
+				w = self.parent.getSubWindow(chan,self.client)
+				if w:
+					self.parent.showSubWindow(w)
+					self.chat.setSource(QUrl())
+					sb.setValue(og_value)
+					return
+
+				# Create a new private chat window
+				w = self.parent.newPrivateWindow(chan,self.client)
+				self.parent.showSubWindow(w)
+				self.chat.setSource(QUrl())
+				sb.setValue(og_value)
+				return
+
+			# It's not a user, so it's a channel, so let's
+			# try to find that channel window if it's open
 			found = False
 			for w in self.parent.getAllSubChannelWindows(self.client):
 				if w.widget().name==chan:
@@ -2710,6 +2730,8 @@ class Window(QMainWindow):
 					if not w.isVisible(): w.show()
 					w.widget().input.setFocus()
 
+			# We didn't find an open channel window, so
+			# let's join the channel
 			if not found: self.client.join(chan)
 
 			self.chat.setSource(QUrl())

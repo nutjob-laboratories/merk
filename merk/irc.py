@@ -165,6 +165,7 @@ class IRC_Connection(irc.IRCClient):
 		self.whoisdata = {}
 		self.who = {}
 		self.whowas = {}
+		self.all_nicks = {}
 
 		self.maxnicklen = 0
 		self.maxchannels = 0
@@ -530,7 +531,7 @@ class IRC_Connection(irc.IRCClient):
 		self.joined_channel.append(channel)
 
 	def left(self, channel):
-		self.channels.pop(channel,None)
+		self.channels.pop(channel)
 		self.channelmodes.pop(channel,None)
 		self.gui.left(self,channel)
 
@@ -877,6 +878,7 @@ class IRC_Connection(irc.IRCClient):
 		channel = params[1].lower()
 
 		if channel in self.names:
+			self.all_nicks[channel] = list(self.names[channel])
 			self.gui.names(self,channel,self.names[channel])
 			del self.names[channel]
 
