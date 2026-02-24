@@ -783,6 +783,7 @@ class Dialog(QDialog):
 			self.autocompleteCommands.setEnabled(True)
 			self.autocompleteNicks.setEnabled(True)
 			self.autocompleteChans.setEnabled(True)
+			self.autocompleteServers.setEnabled(False)
 			if self.enableEmojis.isChecked() or self.enableAscii.isChecked():
 				self.autocompleteEmojis.setEnabled(True)
 			else:
@@ -810,6 +811,7 @@ class Dialog(QDialog):
 			self.autocompleteUser.setEnabled(False)
 			self.autocompleteMacro.setEnabled(False)
 			self.autocompleteMethods.setEnabled(False)
+			self.autocompleteServers.setEnabled(False)
 
 		self.changed.show()
 		self.boldApply()
@@ -1351,6 +1353,7 @@ class Dialog(QDialog):
 			self.maxChatLabelSpec.setEnabled(True)
 			self.floodProtection.setEnabled(True)
 			self.errorConsole.setEnabled(True)
+			self.searchInstall.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -1364,6 +1367,12 @@ class Dialog(QDialog):
 			self.maxChatLabelSpec.setEnabled(False)
 			self.floodProtection.setEnabled(False)
 			self.errorConsole.setEnabled(False)
+			self.searchInstall.setEnabled(False)
+
+			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
+				self.searchInstall.setChecked(True)
+			else:
+				self.searchInstall.setChecked(False)
 
 			if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
 				self.errorConsole.setChecked(True)
@@ -2222,7 +2231,7 @@ class Dialog(QDialog):
 		
 		self.enableStyle = QCheckBox("Enable text style editor",self)
 		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
-		self.enableStyle.stateChanged.connect(self.changedSettingAdvanced)
+		self.enableStyle.stateChanged.connect(self.changedSetting)
 
 		self.padLengthLabel = QLabel("Nick size/padding:")
 		self.padLengthLabelSpec = QLabel("characters")
@@ -4165,7 +4174,7 @@ class Dialog(QDialog):
 			<small>
 			To use autocomplete, type the first few characters of a <b>command</b>,
 			<b>nickname</b>, <b>channel</b>, <b>ASCIImoji</b> or <b>emoji shortcode</b>, <b>filename</b>, <b>alias</b>,
-			<b>plugin method</b>, <b>setting</b>,
+			<b>plugin method</b>, <b>setting</b>, <b>server</b>,
 			or <b>macro</b> and then hit <b>tab</b> to complete the entry.
 			</small>
 			""")
@@ -4229,6 +4238,10 @@ class Dialog(QDialog):
 		if config.AUTOCOMPLETE_METHODS: self.autocompleteMethods.setChecked(True)
 		self.autocompleteMethods.stateChanged.connect(self.changedSetting)
 
+		self.autocompleteServers = QCheckBox("Servers",self)
+		if config.AUTOCOMPLETE_SERVERS: self.autocompleteServers.setChecked(True)
+		self.autocompleteServers.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_AUTOCOMPLETE:
 			self.autocompleteCommands.setEnabled(False)
 			self.autocompleteNicks.setEnabled(False)
@@ -4240,6 +4253,7 @@ class Dialog(QDialog):
 			self.autocompleteUser.setEnabled(False)
 			self.autocompleteMacro.setEnabled(False)
 			self.autocompleteMethods.setEnabled(False)
+			self.autocompleteServers.setEnabled(False)
 
 		if not config.ENABLE_ALIASES:
 			self.autocompleteAlias.setEnabled(False)
@@ -4264,23 +4278,24 @@ class Dialog(QDialog):
 		historyMaster.addStretch()
 
 		asL1 = QHBoxLayout()
-		asL1.addWidget(self.autocompleteCommands)
-		asL1.addWidget(self.autocompleteNicks)
+		asL1.addWidget(self.autocompleteAlias)
 		asL1.addWidget(self.autocompleteChans)
+		asL1.addWidget(self.autocompleteCommands)
 
 		asL2 = QHBoxLayout()
-		asL2.addWidget(self.autocompleteEmojis)
+		asL2.addWidget(self.autocompleteScripts)
 		asL2.addWidget(self.autocompleteMacro)
-		asL2.addWidget(self.autocompleteAlias)
+		asL2.addWidget(self.autocompleteNicks)
 
 		asL3 = QHBoxLayout()
-		asL3.addWidget(self.autocompleteScripts)
 		asL3.addWidget(self.autocompleteMethods)
+		asL3.addWidget(self.autocompleteServers)
 		asL3.addWidget(self.autocompleteSettings)
 
 		asL4 = QHBoxLayout()
+		asL4.addWidget(self.autocompleteEmojis)
 		asL4.addWidget(self.autocompleteUser)
-		asL4.addStretch()
+		asL4.addWidget(QLabel(' '))
 
 		autoSetCenter = QVBoxLayout()
 		autoSetCenter.addLayout(asL1)
@@ -5630,10 +5645,6 @@ class Dialog(QDialog):
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.examineTopic.setChecked(True)
 		self.examineTopic.stateChanged.connect(self.changedSetting)
 
-		self.searchInstall = QCheckBox(f"Search install directory for files",self)
-		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: self.searchInstall.setChecked(True)
-		self.searchInstall.stateChanged.connect(self.changedSetting)
-
 		self.enableHotkeys = QCheckBox("Enable hotkeys",self)
 		if config.ENABLE_HOTKEYS: self.enableHotkeys.setChecked(True)
 		self.enableHotkeys.stateChanged.connect(self.changedSettingHotkey)
@@ -5654,10 +5665,6 @@ class Dialog(QDialog):
 		hkLayout.setSpacing(2)
 		hkLayout.addWidget(self.enableHotkeys)
 		hkLayout.addWidget(self.hotkeyCmd)
-
-		mmLayout = QFormLayout()
-		mmLayout.setSpacing(2)
-		mmLayout.addWidget(self.searchInstall)
 
 		self.mdDescription = QLabel("""
 			<small>
@@ -5706,8 +5713,6 @@ class Dialog(QDialog):
 		miscLayout.addLayout(setLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
 		miscLayout.addLayout(hkLayout)
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		miscLayout.addLayout(mmLayout)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
 
@@ -5763,6 +5768,11 @@ class Dialog(QDialog):
 		self.enablePing.stateChanged.connect(self.changedSettingAdvanced)
 		self.enablePing.setEnabled(False)
 
+		self.searchInstall = QCheckBox(f"Search install directory for files",self)
+		if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: self.searchInstall.setChecked(True)
+		self.searchInstall.stateChanged.connect(self.changedSettingAdvanced)
+		self.searchInstall.setEnabled(False)
+
 		aoLayout = QHBoxLayout()
 		aoLayout.addStretch()
 		aoLayout.addWidget(self.advancedEnable)
@@ -5816,6 +5826,7 @@ class Dialog(QDialog):
 		asetLayout.setSpacing(2)
 		asetLayout.addRow(self.floodProtection)
 		asetLayout.addRow(self.enablePing)
+		asetLayout.addRow(self.searchInstall)
 		asetLayout.addRow(self.logEverything)
 		asetLayout.addRow(self.writeConsole)
 		asetLayout.addRow(self.errorConsole)
@@ -6303,6 +6314,7 @@ class Dialog(QDialog):
 		config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = self.showConnScript.isChecked()
 		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
 		config.HIGHLIGHT_NICK_IN_CHAT = self.highlightNick.isChecked()
+		config.AUTOCOMPLETE_SERVERS = self.autocompleteServers.isChecked()
 
 		if self.MDI_BACKGROUND_IMAGE_STYLE!=config.MDI_BACKGROUND_IMAGE_STYLE:
 			config.MDI_BACKGROUND_IMAGE_STYLE = self.MDI_BACKGROUND_IMAGE_STYLE

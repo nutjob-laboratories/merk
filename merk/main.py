@@ -3352,6 +3352,17 @@ class Merk(QMainWindow):
 							output.append(c.client)
 		return output
 
+	def getAllHostids(self):
+		output = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					if hasattr(c,"client"):
+						if c.client.registered:
+							output.append(f"{c.client.server}:{c.client.port}")
+		return output
+
 	def getAllServerNames(self):
 		retval = []
 		for window in self.MDI.subWindowList():
@@ -5456,7 +5467,7 @@ class Merk(QMainWindow):
 			f = self.font()
 			fm = QFontMetrics(f)
 			fheight = fm.height()
-			self.menuTool.setFixedHeight(fheight+12)
+			self.menuTool.setFixedHeight(fheight+15)
 			self.menuTool.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
 			menubar.add_toolbar_menu(self.menuTool,config.MAIN_MENU_IRC_NAME,self.mainMenu)

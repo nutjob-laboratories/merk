@@ -1293,6 +1293,23 @@ def dumpAllConfig(window,count,results):
 	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} config search results")
 	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
+def display_find_files(window,target):
+	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.setOverrideCursor(Qt.WaitCursor)
+	found = []
+	for f in list_files():
+		b = os.path.basename(f)
+		if fnmatch.fnmatch(b, f"{target}"): found.append(b)
+
+	count = len(found)
+	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} files")
+	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+	for f in found:
+		t = Message(SYSTEM_MESSAGE,'',f"{f}")
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
+	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.restoreOverrideCursor()
+
 def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
 	user_input = user_input.strip()
 	tokens = user_input.split()
@@ -4374,14 +4391,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		# /window logs
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='logs':
-				gui.menuExportLog()
+				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.menuExportLog())
 				return True
 
 		# /window logs target
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
 			if tokens[1].lower()=='logs':
 				target = tokens[2]
-				gui.menuExportLogTarget(target)
+				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.menuExportLogTarget(target))
 				return True
 
 		# /window settings
@@ -4978,22 +4995,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)>=2:
 			tokens.pop(0)
 			target = ' '.join(tokens)
-
-			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.setOverrideCursor(Qt.WaitCursor)
-			found = []
-			for f in list_files():
-				b = os.path.basename(f)
-				if fnmatch.fnmatch(b, f"{target}"): found.append(b)
-
-			count = len(found)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} files")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			for f in found:
-				t = Message(SYSTEM_MESSAGE,'',f"{f}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.restoreOverrideCursor()
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: display_find_files(window,target))
 			return True
 
 	# |---------|
@@ -5234,7 +5236,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						dtype = "unknown"
 					t = Message(SYSTEM_MESSAGE,'',f"{count}) {s} = \"{settings[s]}\" ({dtype})")
 					results.append(t)
-			QTimer.singleShot(10, lambda: dumpAllConfig(window,count,results))
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: dumpAllConfig(window,count,results))
 			return True
 
 		# One argument displays the config value
@@ -5569,7 +5571,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 			# No search terms, so open the channel list window
-			QTimer.singleShot(10, lambda: window.showChannelList())
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelList())
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
@@ -5587,7 +5589,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			# Show the channel list window and inject search
-			QTimer.singleShot(10, lambda: window.showChannelListSearch(target))
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelListSearch(target))
 			return True
 
 	# |-------|

@@ -3621,6 +3621,22 @@ class SpellTextEdit(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
+				if config.AUTOCOMPLETE_SERVERS:
+					cursor.select(QTextCursor.WordUnderCursor)
+					self.setTextCursor(cursor)
+					if self.textCursor().hasSelection():
+						text = self.textCursor().selectedText()
+
+						# Nicks
+						hostids = self.parent.parent.getAllHostids()
+						for hostid in hostids:
+							if fnmatch.fnmatch(hostid.lower(),f"{text.lower()}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(f"{hostid}")
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
 				if config.AUTOCOMPLETE_CHANNELS:
 					# Auto-complete channel/server
 					cursor.select(QTextCursor.WordUnderCursor)

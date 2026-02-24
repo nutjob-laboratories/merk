@@ -120,6 +120,8 @@ if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
 
 # Constants
 
+ANTIFREEZE_PAUSE = 10
+
 CHANNEL_WINDOW = 0
 SERVER_WINDOW = 1
 PRIVATE_WINDOW = 2

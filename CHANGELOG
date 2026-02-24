@@ -49,6 +49,19 @@ What's New:
 * Bugfix?: delayed displaying the output of the /config command when it's
   displaying all config values by 10 milliseconds, just like with the /list
   command, so the app doesn't appear to be locking up.
+* Bugfix?: delayed the search/output of the /find and /window log commands.
+* Moved the "search install directory" setting to the "Advanced" page in
+  settings.
+* Bugfix: the "en/disable text style editor" setting in the Settings dialog
+  encouraged an unnecessary reboot when toggled.
+* Selecting a server in the dropdown on the connect dialog now moves the cursor
+  and focus to the "host" text input widget as soon as a server is selected.
+* Bugfix: the menubar no longer looks misshappen when selecting a menu while
+  using dark mode.
+* New option: added servers to autocomplete. It only autocompletes servers that
+  are actively connected (and registered). It uses the "hostid", which is
+  accepted as a server name by most commands (the host and port used to connect
+  to the server, separated by a ":").
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

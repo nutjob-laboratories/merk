@@ -411,9 +411,11 @@ CUSTOM_MDI_BACKGROUND = ""
 # scale, center, tile
 MDI_BACKGROUND_IMAGE_STYLE = "scale"
 HIGHLIGHT_NICK_IN_CHAT=True
+AUTOCOMPLETE_SERVERS = True
 
 def build_settings():
 	settings = {
+		"autocomplete_servers": AUTOCOMPLETE_SERVERS,
 		"highlight_nickname_in_chat": HIGHLIGHT_NICK_IN_CHAT,
 		"mdi_background_image_style": MDI_BACKGROUND_IMAGE_STYLE,
 		"mdi_workspace_background": CUSTOM_MDI_BACKGROUND,
@@ -790,6 +792,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "autocomplete_servers" in settings:
+		settings["autocomplete_servers"] = AUTOCOMPLETE_SERVERS
 	if not "highlight_nickname_in_chat" in settings:
 		settings["highlight_nickname_in_chat"] = HIGHLIGHT_NICK_IN_CHAT
 	if not "mdi_background_image_style" in settings:
@@ -1907,6 +1911,7 @@ def load_settings(filename):
 	global CUSTOM_MDI_BACKGROUND
 	global MDI_BACKGROUND_IMAGE_STYLE
 	global HIGHLIGHT_NICK_IN_CHAT
+	global AUTOCOMPLETE_SERVERS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1916,6 +1921,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOCOMPLETE_SERVERS = settings["autocomplete_servers"]
 		HIGHLIGHT_NICK_IN_CHAT = settings["highlight_nickname_in_chat"]
 		MDI_BACKGROUND_IMAGE_STYLE = settings["mdi_background_image_style"]
 		CUSTOM_MDI_BACKGROUND = settings["mdi_workspace_background"]

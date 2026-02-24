@@ -222,6 +222,12 @@ class Dialog(QDialog):
 		else:
 			self.ssl.setCheckState(Qt.Unchecked)
 
+		QTimer.singleShot(0, lambda: self.moveCursor())
+
+	def moveCursor(self):
+		self.host.setFocus()
+		self.host.setCursorPosition(len(self.host.text()))
+
 	def clickSSL(self,state):
 		if state == Qt.Checked:
 			self.CONNECT_VIA_SSL = True
