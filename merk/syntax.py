@@ -405,13 +405,14 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		rules += [(r'%s' % o, 0, STYLES['operator'])
 			for o in operators]
 
-		# Channel names and aliases
+		# Channel names, aliases, and servers
 		rules += [
 			(r'(#+[^#\s]+)', 0, STYLES['channel']),
 			(r'(\&+[^\&\s]+)', 0, STYLES['channel']),
 			(r'(\!+[^\!\s]+)', 0, STYLES['channel']),
 			(r'(\++[^\+\s]+)', 0, STYLES['channel']),
 			(r'(%s\w+)' % aliassymbol, 0, STYLES['alias']),
+			(r"([A-Za-z0-9.-]+:\d+)", 0, STYLES['channel']),
 		]
 
 		# Build a QRegExp for each pattern

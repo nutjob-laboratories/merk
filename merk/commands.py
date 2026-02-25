@@ -2849,8 +2849,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,True,True,False)
+			
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6697
+
+			connect_to_irc(gui,window,host,port,password,True,True,False)
 			return True
 		# /reconnectssl HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnectssl' and len(tokens)==3:
@@ -2914,8 +2926,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,False,True,False)
+
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6667
+
+			connect_to_irc(gui,window,host,port,password,False,True,False)
 			return True
 		# /reconnect HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reconnect' and len(tokens)==3:
@@ -2985,8 +3009,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,True,True,True)
+			
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6667
+
+			connect_to_irc(gui,window,host,port,password,True,True,True)
 			return True
 		# /reconnectssl HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnectssl' and len(tokens)==3:
@@ -3050,8 +3086,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,False,True,True)
+			
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6667
+
+			connect_to_irc(gui,window,host,port,password,False,True,True)
 			return True
 		# /reconnect HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xreconnect' and len(tokens)==3:
@@ -5799,8 +5847,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,True,False,False)
+			
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6697
+
+			connect_to_irc(gui,window,host,port,password,True,False,False)
 			return True
 		# /connectssl HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connectssl' and len(tokens)==3:
@@ -5864,8 +5924,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,False,False,False)
+
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6667
+
+			connect_to_irc(gui,window,host,port,password,False,False,False)
 			return True
 		# /connect HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'connect' and len(tokens)==3:
@@ -5935,8 +6007,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,True,False,True)
+			
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6697
+
+			connect_to_irc(gui,window,host,port,password,True,False,True)
 			return True
 		# /connectssl HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnectssl' and len(tokens)==3:
@@ -6000,8 +6084,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect' and len(tokens)==2:
 			tokens.pop(0)
 			host = tokens.pop(0)
-			port = 6667
-			connect_to_irc(gui,window,host,port,None,False,False,True)
+			
+			password = None
+			h = host.split(':')
+			if len(h)==2 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+			if len(h)>=3 and is_int(h[1])!=None:
+				host = h[0]
+				port = int(h[1])
+				password = ' '.join(h[2:])
+			else:
+				port = 6667
+
+			connect_to_irc(gui,window,host,port,password,False,False,True)
 			return True
 		# /connect HOST PORT
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'xconnect' and len(tokens)==3:

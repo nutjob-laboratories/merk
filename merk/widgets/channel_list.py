@@ -64,7 +64,7 @@ class Window(QMainWindow):
 		if hasattr(self.client,"network"):
 			self.network = self.client.network
 		else:
-			self.network = config.UNKNOWN_NETWORK_NAME+" network"
+			self.network = config.UNKNOWN_NETWORK_NAME.capitalize()+" network"
 
 		self.setWindowTitle(f"Channels on {self.server_name} ({self.network})")
 
@@ -77,29 +77,17 @@ class Window(QMainWindow):
 		self.table_widget.setTextElideMode(Qt.ElideRight)
 		self.table_widget.itemDoubleClicked.connect(self.on_double_click)
 
-		if self.parent.dark_mode:
-			self.table_widget.setStyleSheet(f"""
-				QListWidget::item:selected {{
-					background: darkGray;
-				}}
-			""")
-		else:
-			self.table_widget.setStyleSheet(f"""
-				QListWidget::item:selected {{
-					background: lightGray;
-				}}
-			""")
-
 		self.search_terms = QLineEdit('')
 		self.search_terms.returnPressed.connect(self.doSearch)
+		self.search_terms.setPlaceholderText("Enter search terms here")
+
 		self.search_button = QPushButton('')
 		self.search_button.setIcon(QIcon(LIST_ICON))
 		self.search_button.setToolTip("Search channel list")
-		self.reset_button = QPushButton("Reset")
-
 		self.search_button.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.search_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-
+		self.search_button.clicked.connect(self.doSearch)
+		self.search_button.setFlat(True)
 
 		self.refresh_button = QPushButton('')
 		self.refresh_button.setIcon(QIcon(REFRESH_ICON))
@@ -109,30 +97,24 @@ class Window(QMainWindow):
 		self.refresh_button.clicked.connect(lambda state: self.client.sendLine('LIST'))
 		self.refresh_button.setFlat(True)
 
-		self.moreFive = QRadioButton("5+",self)
-		self.moreTwo = QRadioButton("2+",self)
-		self.moreTen = QRadioButton("10+",self)
+		self.moreFive	= QRadioButton("5+",self)
+		self.moreTen	= QRadioButton("10+",self)
 		self.moreTwenty = QRadioButton("20+",self)
-		self.moreAny = QRadioButton("1+",self)
-
+		self.moreFifty	= QRadioButton("50+",self)
+		self.moreAny	= QRadioButton("1+",self)
 		self.moreAny.setChecked(True)
-
-		self.moreTwo.toggled.connect(self.doReset)
 		self.moreFive.toggled.connect(self.doReset)
 		self.moreTen.toggled.connect(self.doReset)
 		self.moreTwenty.toggled.connect(self.doReset)
 		self.moreAny.toggled.connect(self.doReset)
+		self.moreFifty.toggled.connect(self.doReset)
+
+		self.reset_button = QPushButton("Reset")
+		self.reset_button.clicked.connect(self.doResetButton)
 
 		self.searchTopic = QCheckBox("Search topics",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.searchTopic.setChecked(True)
 		self.searchTopic.stateChanged.connect(self.changedSearchTopic)
-
-		self.search_terms.setPlaceholderText("Enter search terms here")
-
-		self.search_button.clicked.connect(self.doSearch)
-		self.reset_button.clicked.connect(self.doResetButton)
-
-		self.search_button.setFlat(True)
 
 		self.allTerms = QCheckBox("Search all terms",self)
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.allTerms.setChecked(True)
@@ -140,41 +122,38 @@ class Window(QMainWindow):
 
 		self.status = self.statusBar()
 		self.status.setStyleSheet("QStatusBar::item { border: none; }")
-
 		self.status_counts = QLabel(self.format_status_count(client.server_channel_count,client.server_user_count))
-
 		self.status.addPermanentWidget(self.status_counts,0)
-
 		self.status.addPermanentWidget(QLabel(),1)
-
 		self.lastFetch = QLabel("<small>List received at "+self.client.last_list_fetch+"</small>")
 		self.status.addPermanentWidget(self.lastFetch,0)
 
 		if not config.SHOW_STATUS_BAR_ON_LIST_WINDOWS:
 			self.status.hide()
 
+		self.cLayout = QHBoxLayout()
+		
+		self.cLayout.addStretch()
+
 		self.sLayout = QHBoxLayout()
 		self.sLayout.addWidget(self.search_terms)
 		self.sLayout.addWidget(self.search_button)
+		self.sLayout.addWidget(QLabel(' '))
 		self.sLayout.addWidget(self.refresh_button)
+		self.sLayout.addWidget(QLabel(' '))
+		self.sLayout.addWidget(self.reset_button)
 		self.sLayout.setContentsMargins(1,1,1,1)
 
-		self.cLayout = QHBoxLayout()
-		self.cLayout.addWidget(QLabel("<small><b>Filter by user count</b></small> "))
-		self.cLayout.addWidget(self.moreAny)
-		self.cLayout.addWidget(self.moreTwo)
-		self.cLayout.addWidget(self.moreFive)
-		self.cLayout.addWidget(self.moreTen)
-		self.cLayout.addWidget(self.moreTwenty)
-		self.cLayout.addStretch()
-		self.cLayout.addWidget(self.reset_button)
-
 		self.oLayout = QHBoxLayout()
+		self.oLayout.addWidget(QLabel("<b>Users:</b> "))
+		self.oLayout.addWidget(self.moreAny)
+		self.oLayout.addWidget(self.moreFive)
+		self.oLayout.addWidget(self.moreTen)
+		self.oLayout.addWidget(self.moreTwenty)
+		self.oLayout.addWidget(self.moreFifty)
 		self.oLayout.addStretch()
 		self.oLayout.addWidget(self.allTerms)
-		self.oLayout.addStretch()
 		self.oLayout.addWidget(self.searchTopic)
-		self.oLayout.addStretch()
 		
 
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
@@ -215,7 +194,6 @@ class Window(QMainWindow):
 			self.layout.addWidget(self.windowDescription)
 		self.layout.addLayout(self.sLayout)
 		self.layout.addLayout(self.oLayout)
-		self.layout.addLayout(self.cLayout)
 		self.layout.addWidget(self.table_widget)
 
 		# Set the layout as the central widget
@@ -288,10 +266,8 @@ class Window(QMainWindow):
 			except:
 				count = ""
 				icount = 0
+
 			add_entry = True
-			if self.moreTwo.isChecked():
-				if icount<2:
-					add_entry = False
 			if self.moreFive.isChecked():
 				if icount<5:
 					add_entry = False
@@ -301,25 +277,27 @@ class Window(QMainWindow):
 			if self.moreTwenty.isChecked():
 				if icount<20:
 					add_entry = False
-			i = QListWidgetItem()
+			if self.moreFifty.isChecked():
+				if icount<50:
+					add_entry = False
 
-			label = QLabel()
-			if len(entry[2])==0:
-				e = f"<b>{entry[0]} {count}</b>"
-			else:
-				if string_has_irc_formatting_codes(entry[2]):
-					topic = strip_color(entry[2])
-				else:
-					topic = entry[2]
-				e = f"<b>{entry[0]} {count}</b> - {topic}"
-			label.setText(e)
-
-			i.setSizeHint(label.sizeHint())
-			self.table_widget.addItem(i)
-			self.table_widget.setItemWidget(i, label)
-
-			i.channel = entry[0]
 			if add_entry:
+				if len(entry[2])==0:
+					e = f"{entry[0]} {count}"
+				else:
+					if string_has_irc_formatting_codes(entry[2]):
+						topic = strip_color(entry[2])
+					else:
+						topic = entry[2]
+					e = f"{entry[0]} {count} - {topic}"
+				
+				i = QListWidgetItem(e)
+				f = i.font()
+				f.setBold(True)
+				i.setFont(f)
+				self.table_widget.addItem(i)
+
+				i.channel = entry[0]
 				data_count = data_count + 1
 				user_count = user_count + icount
 
@@ -341,9 +319,7 @@ class Window(QMainWindow):
 		self.refresh_list()
 
 	def doResetButton(self):
-		self.moreAny.setChecked(True)
 		self.search_terms.setText('')
-		self.moreAny.setChecked(True)
 		self.refresh_list()
 
 	def refresh_list(self):
@@ -378,10 +354,8 @@ class Window(QMainWindow):
 			except:
 				count = ""
 				icount = 0
+
 			add_entry = True
-			if self.moreTwo.isChecked():
-				if icount<2:
-					add_entry = False
 			if self.moreFive.isChecked():
 				if icount<5:
 					add_entry = False
@@ -391,26 +365,28 @@ class Window(QMainWindow):
 			if self.moreTwenty.isChecked():
 				if icount<20:
 					add_entry = False
-			
-			i = QListWidgetItem()
+			if self.moreFifty.isChecked():
+				if icount<50:
+					add_entry = False
 
-			label = QLabel()
-			if len(entry[2])==0:
-				e = f"<b>{entry[0]} {count}</b>"
-			else:
-				if string_has_irc_formatting_codes(entry[2]):
-					topic = strip_color(entry[2])
-				else:
-					topic = entry[2]
-				e = f"<b>{entry[0]} {count}</b> - {topic}"
-			label.setText(e)
-			
-			i.setSizeHint(label.sizeHint())
-			self.table_widget.addItem(i)
-			self.table_widget.setItemWidget(i, label)
-
-			i.channel = entry[0]
 			if add_entry:
+				if len(entry[2])==0:
+					e = f"{entry[0]} {count}"
+				else:
+					if string_has_irc_formatting_codes(entry[2]):
+						topic = strip_color(entry[2])
+					else:
+						topic = entry[2]
+					e = f"{entry[0]} {count} - {topic}"
+
+				i = QListWidgetItem(e)
+				f = i.font()
+				f.setBold(True)
+				i.setFont(f)
+				self.table_widget.addItem(i)
+
+				i.channel = entry[0]
+
 				data_count = data_count + 1
 				user_count = user_count + icount
 

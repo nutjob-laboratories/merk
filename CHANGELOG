@@ -5,7 +5,7 @@
 What's New:
   - **Subwindow transparency**. A new command, `/fade`, can set a subwindow's transparency by a percentage.
   - **Nicknames are highlighted in chat**. The user's nickname is now highlighted in chat when mentioned in a message. This option, on by default, can be turned off in the Settings dialog or with the `/config` command.
-  - **Revamped channel list dialog**. The channel list dialog has been completely reworked. IRC color and formatting codes are stripped from channel topics, though the display can be toggled.
+  - **Revamped channel list dialog**. The channel list dialog has been completely reworked. IRC color and formatting codes are stripped from channel topics. It will run *much* faster now.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -62,6 +62,15 @@ What's New:
   are actively connected (and registered). It uses the "hostid", which is
   accepted as a server name by most commands (the host and port used to connect
   to the server, separated by a ":").
+* Added "hostids" to the syntax highlighting in the script editor. The
+  "Highlighting" page has been updated; "hostids" use the same highlighting as
+  channels.
+* Bugfix: the /connectssl and /xconnectssl used "6667" for the default port,
+  rather than "6697". This has been fixed.
+* All the /connect commands can now take a single argument consisting of a
+  "hostid", in the format "host:port:password". If port is left out, then
+  the default port is used; if password is left out, a password is not used.
+  The password can contain spaces.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

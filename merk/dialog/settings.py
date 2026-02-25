@@ -5507,7 +5507,7 @@ class Dialog(QDialog):
 
 		self.syntaxcomment = widgets.SyntaxColor('comment', "<b>Comments</b>",self.SYNTAX_COMMENT_COLOR,self.SYNTAX_COMMENT_STYLE,self)
 		self.syntaxcommand = widgets.SyntaxColor('command', "<b>Commands/Keywords</b>",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
-		self.syntaxchannel = widgets.SyntaxColor('channel', "<b>Channels</b>",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
+		self.syntaxchannel = widgets.SyntaxColor('channel', "<b>Channels/Hosts</b>",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
 		self.syntaxalias = widgets.SyntaxColor('alias', "<b>Aliases/Strings</b>",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
 		self.syntaxscript = widgets.SyntaxColor('script', "<b>Script-Only Commands</b>",self.SYNTAX_SCRIPT_COLOR,self.SYNTAX_SCRIPT_STYLE,self)
 		self.syntaxop = widgets.SyntaxColor('operator', "<b>\"if\" Operators</b>",self.SYNTAX_OPERATOR_COLOR,self.SYNTAX_OPERATOR_STYLE,self)
