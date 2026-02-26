@@ -6,7 +6,7 @@ What's New:
   - **Subwindow transparency**. A new command, `/fade`, can set a subwindow's transparency by a percentage.
   - **Nicknames are highlighted in chat**. The user's nickname is now highlighted in chat when mentioned in a message. This option, on by default, can be turned off in the Settings dialog or with the `/config` command.
   - **Revamped channel list**. The channel list window has been completely reworked. IRC color and formatting codes are stripped from channel topics. It will run *much* faster now.
-  - **Major bugfix affecting some server connections**. Some servers, when attempting to connect with a nickname longer than the server's nick limit, rather than emit an error notifying the client of an invalid nickname, simply truncate the nick to an "appropriate" length and attempt to continue registration. If the truncated nickname is already claimed, the client couldn't normally complete registration and chat (I'm looking at *you*, EFnet). This has been fixed, and **MERK** will be able to connect normally to these servers.
+  - **Major bugfix affecting some server connections**. Some servers, when attempting to connect with a nickname longer than the server's nick limit, rather than emit an error notifying the client of an invalid nickname, simply truncate the nick to an "appropriate" length and attempt to continue registration. If the truncated nickname is already claimed, the client couldn't normally complete registration and chat (I'm looking at *you*, [EFnet](https://www.efnet.org/)/[ircd-ratbox](https://www.ratbox.org/)). This has been fixed, and **MERK** will be able to connect normally to these servers.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -96,6 +96,29 @@ What's New:
   and usernames. These follow all the rules set forth in the IRC RFCs. Commands
   that work with nicknames (like /nick and /user) also follow these rules, and
   will not let users try to use "illegal" nicknames.
+* Added an option to toggle "illegal" nickname input. The new option is added
+  to the "Advanced" page in the Settings dialog. This option is turned on by
+  default.
+* Added a setting to the configuration file to control when to start trying to
+  use the "erroneous nickname" fallback. This is set to "3" nick attempts, by
+  default. The only way to change this setting is by manually editing the
+  config file or by using the /config command.
+* Bugfix: fixed a possible nickname collision race condition when using the
+  "erroneous nickname" fallback during registration.
+* Bugfix: the "page selector" widget in the Settings dialog's width is now set
+  to a fixed width (taking the font and icon size into account). This should
+  fix the bug where sometimes the width of he "page selector" would get out of
+  whack with larger font sizes.
+* Search terms are now shown in the subwindow title of the channel list.
+* Added an option to toggle "illegal" channel name input. The new option is
+  added to the "Advanced" page in the Settings dialog. This option is turned on
+  by default.
+* Bugfix: Using the /part command didn't work properly (or, at least, it didn't
+  work how I wanted it to). The /part command has been completely re-written.
+  Now, the "quit" message (if there is one) is passed to the subwindow and then
+  closed directly.
+* The /hide, /show, /maximize, /minimize, /restore, and /focus commands can now
+  take hostIDs as their sole argument.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

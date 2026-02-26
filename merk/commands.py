@@ -1122,7 +1122,7 @@ def check_for_sane_values(setting,value):
 			return INVALID_NICK_LENGTH
 		if value[0].isdigit():
 			return INVALID_NICK_NUMBER
-		if not is_allowed_nickname(value):
+		if not is_allowed_nickname(value) and config.PREVENT_ILLEGAL_NICKNAMES:
 			return INVALID_NICK
 
 	if setting=="mdi_background_image_style":
@@ -1511,37 +1511,46 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 	# the chat window it was issued from
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==1:
-			channel = window.name
-			msg = config.DEFAULT_QUIT_MESSAGE
-			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-				buildTemporaryAliases(gui,window)
-				msg = interpolateAliases(msg)
-			window.client.leave(channel,msg)
+			w = gui.getSubWindow(window.name,window.client)
+			if w:
+				c = w.widget()
+				c.close()
+				gui.buildWindowsMenu()
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"part: Channel \"{window.name}\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Channel \"{window.name}\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=2:
 			tokens.pop(0)
 			if tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+':
 				# It's a channel, so do nothing; this will be handled
 				# by handleCommonCommands()
-				pass
+				return False
 			else:
 				# Channel name hasn't been passed, it must be a message
-				channel = window.name
 				msg = ' '.join(tokens)
-				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES:  msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-					buildTemporaryAliases(gui,window)
-					msg = interpolateAliases(msg)
-				window.client.leave(channel,msg)
-				return True
-
+				w = gui.getSubWindow(window.name,window.client)
+				if w:
+					c = w.widget()
+					c.part_message = msg
+					c.close()
+					gui.buildWindowsMenu()
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"part: Channel \"{window.name}\" not found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"Channel \"{window.name}\" not found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 	return False
 
 def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_id=None):
@@ -2769,7 +2778,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if my_value=='*': my_value = ''
 
 			if my_setting.lower()=='nickname' or my_setting.lower()=='alternate' or my_setting.lower()=='username':
-				if not is_allowed_nickname(my_value):
+				if not is_allowed_nickname(my_value) and config.PREVENT_ILLEGAL_NICKNAMES:
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
@@ -3220,6 +3229,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+
+			w = gui.getSubWindowHostid(target,window.client)
+			if w:
+				w.widget().input.setFocus()
+				return True
+
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.widget().input.setFocus()
@@ -4673,6 +4688,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'show' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+
+			w = gui.getSubWindowHostid(target,window.client)
+			if w:
+				gui.showSubWindow(w)
+				if hasattr(window,"input"): window.input.setFocus()
+				gui.buildWindowbar()
+				return True
+
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				gui.showSubWindow(w)
@@ -4760,6 +4783,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'hide' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+
+			w = gui.getSubWindowHostid(target,window.client)
+			if w:
+				w.hide()
+				gui.buildWindowbar()
+				return True
+			
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.hide()
@@ -6637,6 +6667,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'restore' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+
+			w = gui.getSubWindowHostid(target,window.client)
+			if w:
+				w.showNormal()
+				if hasattr(window,"input"): window.input.setFocus()
+				return True
+			
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.showNormal()
@@ -6711,6 +6748,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'minimize' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+
+			w = gui.getSubWindowHostid(target,window.client)
+			if w:
+				w.showMinimized()
+				return True
+
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.showMinimized()
@@ -6782,6 +6825,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'maximize' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+
+			w = gui.getSubWindowHostid(target,window.client)
+			if w:
+				w.showMaximized()
+				if hasattr(window,"input"): window.input.setFocus()
+				return True
+
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				w.showMaximized()
@@ -7325,7 +7375,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-			if not is_allowed_nickname(newnick):
+			if not is_allowed_nickname(newnick) and config.PREVENT_ILLEGAL_NICKNAMES:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
@@ -7356,28 +7406,40 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)==2:
 			tokens.pop(0)
 			channel = tokens.pop(0)
-			msg = config.DEFAULT_QUIT_MESSAGE
-			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-				buildTemporaryAliases(gui,window)
-				msg = interpolateAliases(msg)
-			window.client.leave(channel,msg)
+			w = gui.getSubWindow(channel,window.client)
+			if w:
+				c = w.widget()
+				c.close()
+				gui.buildWindowsMenu()
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"part: Channel \"{channel}\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Channel \"{channel}\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part' and len(tokens)>=3:
 			tokens.pop(0)
 			channel = tokens.pop(0)
 			msg = ' '.join(tokens)
-			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-				buildTemporaryAliases(gui,window)
-				msg = interpolateAliases(msg)
-			window.client.leave(channel,msg)
+			w = gui.getSubWindow(channel,window.client)
+			if w:
+				c = w.widget()
+				c.part_message = msg
+				c.close()
+				gui.buildWindowsMenu()
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"part: Channel \"{channel}\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Channel \"{channel}\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'part':
 			if is_script:
@@ -7398,16 +7460,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			channel = tokens.pop(0)
 
-			if is_invalid_channel(channel):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{channel}\" is not a valid channel name")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if config.PREVENT_ILLEGAL_CHANNELS:
+				if is_invalid_channel(channel):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{channel}\" is not a valid channel name")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{channel}\" is not a valid channel name")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"\"{channel}\" is not a valid channel name")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
 
 			# Check to see if the user is trying to /join the
 			# channel from the same channel they are in

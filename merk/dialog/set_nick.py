@@ -30,6 +30,7 @@ from PyQt5 import QtCore
 
 from ..resources import *
 from .. import user
+from .. import config
 
 class Dialog(QDialog):
 
@@ -58,9 +59,14 @@ class Dialog(QDialog):
 		self.setWindowTitle("Change nickname")
 		self.setWindowIcon(QIcon(PRIVATE_ICON))
 
+		config.load_settings(config.CONFIG_FILE)
+
 		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>New nickname:</b>")
-		self.name = QNickEdit()
+		if config.PREVENT_ILLEGAL_NICKNAMES:
+			self.name = QNickEdit()
+		else:
+			self.name = QNoSpaceLineEdit()
 		nameLayout.addWidget(self.nameLabel)
 		nameLayout.addStretch()
 		nameLayout.addWidget(self.name)

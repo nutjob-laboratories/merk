@@ -2391,7 +2391,7 @@ class Merk(QMainWindow):
 		if client.registered==False:
 			server_window = self.getServerWindow(client)
 			if server_window:
-				t = Message(SYSTEM_MESSAGE,'',f"Using erroneous nickname fallback ({nick})")
+				t = Message(SYSTEM_MESSAGE,'',f"Attempting to use erroneous nickname fallback ({nick})")
 				server_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def receivedError(self,client,code,message):
@@ -3319,6 +3319,17 @@ class Merk(QMainWindow):
 					if hasattr(c,"client"):
 						if c.client.client_id == client.client_id:
 							return window
+		return None
+
+	def getSubWindowHostid(self,hostid,client):
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"name"):
+				if hasattr(c,"client"):
+					if c.client.client_id == client.client_id:
+						if f"{c.client.server.lower()}:{c.client.port}"==hostid.lower():
+							if c.window_type==SERVER_WINDOW:
+								return window
 		return None
 
 	def getSubWindowCommand(self,channel,client):

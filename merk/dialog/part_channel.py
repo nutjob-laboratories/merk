@@ -29,6 +29,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 from ..resources import *
+from .. import config
 
 class Dialog(QDialog):
 
@@ -53,11 +54,17 @@ class Dialog(QDialog):
 
 		self.parent = parent
 
+		config.load_settings(config.CONFIG_FILE)
+
 		self.setWindowTitle("Join channel")
 		self.setWindowIcon(QIcon(CHANNEL_ICON))
 
 		self.nameLabel = QLabel("<b>Channel:</b>")
-		self.name = QChannelEdit()
+		
+		if config.PREVENT_ILLEGAL_CHANNELS:
+			self.name = QChannelEdit()
+		else:
+			self.name = QNoSpaceLineEdit()
 	
 		self.keyLabel = QLabel("<b>Message:</b>")
 		self.key = QLineEdit()

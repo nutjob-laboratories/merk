@@ -549,9 +549,9 @@ class IRC_Connection(irc.IRCClient):
 		self.joined_channel.append(channel)
 
 	def left(self, channel):
-		self.channels.pop(channel)
 		self.channelmodes.pop(channel,None)
 		self.gui.left(self,channel)
+		if channel in self.channels: self.channels.remove(channel)
 
 	def privmsg(self, user, target, msg):
 		pnick = user.split('!')[0]
@@ -834,10 +834,9 @@ class IRC_Connection(irc.IRCClient):
 		# error, apparently (EFnet, I'm looking at you),
 		# so we're going to pad out the erroneous nickname
 		# fallback to a maximum of 9 characters and try that
-		if self.nick_attempts>=3:
+		if self.nick_attempts>=config.REGISTRATION_NICK_ERROR_LIMIT:
 			padnick = pad_nickname_fallback(self.erroneousNickFallback)
 			self.setNick(padnick)
-			self.nick_attempts = 0
 			self.gui.receivedUsingErroneous(self,padnick)
 			return
 

@@ -412,12 +412,17 @@ CUSTOM_MDI_BACKGROUND = ""
 MDI_BACKGROUND_IMAGE_STYLE = "scale"
 HIGHLIGHT_NICK_IN_CHAT=True
 AUTOCOMPLETE_SERVERS = True
-
 AUTOMATICALLY_REFRESH_CHANNEL_LIST = False
 REFRESH_CHANNEL_LIST = 120
+PREVENT_ILLEGAL_NICKNAMES = True
+REGISTRATION_NICK_ERROR_LIMIT = 3
+PREVENT_ILLEGAL_CHANNELS = True
 
 def build_settings():
 	settings = {
+		"prevent_illegal_channel_input": PREVENT_ILLEGAL_CHANNELS,
+		"nick_attempts_during_registration": REGISTRATION_NICK_ERROR_LIMIT,
+		"prevent_illegal_nickname_input": PREVENT_ILLEGAL_NICKNAMES,
 		"channel_list_staleness_in_minutes": REFRESH_CHANNEL_LIST,
 		"automatically_refresh_channel_list": AUTOMATICALLY_REFRESH_CHANNEL_LIST,
 		"autocomplete_servers": AUTOCOMPLETE_SERVERS,
@@ -797,6 +802,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "prevent_illegal_channel_input" in settings:
+		settings["prevent_illegal_channel_input"] = PREVENT_ILLEGAL_CHANNELS
+	if not "nick_attempts_during_registration" in settings:
+		settings["nick_attempts_during_registration"] = REGISTRATION_NICK_ERROR_LIMIT
+	if not "prevent_illegal_nickname_input" in settings:
+		settings["prevent_illegal_nickname_input"] = PREVENT_ILLEGAL_NICKNAMES
 	if not "automatically_refresh_channel_list" in settings:
 		settings["automatically_refresh_channel_list"] = AUTOMATICALLY_REFRESH_CHANNEL_LIST
 	if not "channel_list_staleness_in_minutes" in settings:
@@ -1923,6 +1934,9 @@ def load_settings(filename):
 	global AUTOCOMPLETE_SERVERS
 	global AUTOMATICALLY_REFRESH_CHANNEL_LIST
 	global REFRESH_CHANNEL_LIST
+	global PREVENT_ILLEGAL_NICKNAMES
+	global REGISTRATION_NICK_ERROR_LIMIT
+	global PREVENT_ILLEGAL_CHANNELS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1932,6 +1946,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		PREVENT_ILLEGAL_CHANNELS = settings["prevent_illegal_channel_input"]
+		REGISTRATION_NICK_ERROR_LIMIT = settings["nick_attempts_during_registration"]
+		PREVENT_ILLEGAL_NICKNAMES = settings["prevent_illegal_nickname_input"]
 		AUTOMATICALLY_REFRESH_CHANNEL_LIST = settings["automatically_refresh_channel_list"]
 		REFRESH_CHANNEL_LIST = settings["channel_list_staleness_in_minutes"]
 		AUTOCOMPLETE_SERVERS = settings["autocomplete_servers"]

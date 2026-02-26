@@ -66,7 +66,9 @@ class Window(QMainWindow):
 		else:
 			self.network = config.UNKNOWN_NETWORK_NAME.capitalize()+" network"
 
-		self.setWindowTitle(f"Channels on {self.server_name} ({self.network})")
+		self.window_title = f"Channels on {self.server_name} ({self.network})"
+
+		self.setWindowTitle(self.window_title)
 
 		self.window_type = LIST_WINDOW
 		self.subwindow_id = str(uuid.uuid4())
@@ -237,6 +239,8 @@ class Window(QMainWindow):
 
 		target = self.search_terms.text()
 
+		self.setWindowTitle(self.window_title+" - "+target)
+
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST:
 			target = "*"+"*".join(target.split())+"*"
 
@@ -306,12 +310,11 @@ class Window(QMainWindow):
 		self.status_counts.setText(self.format_status_count(data_count,user_count))
 
 		if self.table_widget.count()==0:
-			i = QListWidgetItem()
-			
-			label = QLabel("<b>No channels found.</b>")
-			i.setSizeHint(label.sizeHint())
+			i = QListWidgetItem("No channels found.")
+			f = i.font()
+			f.setBold(True)
+			i.setFont(f)
 			self.table_widget.addItem(i)
-			self.table_widget.setItemWidget(i, label)
 
 		QApplication.restoreOverrideCursor()
 
@@ -320,6 +323,7 @@ class Window(QMainWindow):
 
 	def doResetButton(self):
 		self.search_terms.setText('')
+		self.setWindowTitle(self.window_title)
 		self.refresh_list()
 
 	def refresh_list(self):
@@ -395,11 +399,10 @@ class Window(QMainWindow):
 		self.status_counts.setText(self.format_status_count(data_count,user_count))
 
 		if self.table_widget.count()==0:
-			i = QListWidgetItem()
-			
-			label = QLabel("<b>No channels found.</b>")
-			i.setSizeHint(label.sizeHint())
+			i = QListWidgetItem("No channels found.")
+			f = i.font()
+			f.setBold(True)
+			i.setFont(f)
 			self.table_widget.addItem(i)
-			self.table_widget.setItemWidget(i, label)
 
 	

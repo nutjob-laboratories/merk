@@ -125,6 +125,8 @@ class Window(QMainWindow):
 
 		self.connected = False
 
+		self.part_message = None
+
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 
 		self.opacity = 100
@@ -2542,14 +2544,24 @@ class Window(QMainWindow):
 
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
-			msg = config.DEFAULT_QUIT_MESSAGE
-			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-				commands.buildTemporaryAliases(self.parent,self)
-				msg = commands.interpolateAliases(msg)
+			if self.part_message==None:
+				msg = config.DEFAULT_QUIT_MESSAGE
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					commands.buildTemporaryAliases(self.parent,self)
+					msg = commands.interpolateAliases(msg)
+			else:
+				msg = self.part_message
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+					commands.buildTemporaryAliases(self.parent,self)
+					msg = commands.interpolateAliases(msg)
 			self.client.leave(self.name,msg)
 
 		save_logs = True

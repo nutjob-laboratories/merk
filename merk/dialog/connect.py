@@ -331,9 +331,14 @@ class Dialog(QDialog):
 		else:
 			realname = user.REALNAME
 
-		self.nick = QNickEdit(user.NICKNAME)
-		self.alternative = QNickEdit(user.NICKNAME)
-		self.username = QNickEdit(username)
+		if config.PREVENT_ILLEGAL_NICKNAMES:
+			self.nick = QNickEdit(user.NICKNAME)
+			self.alternative = QNickEdit(user.NICKNAME)
+			self.username = QNickEdit(username)
+		else:
+			self.nick = QNoSpaceLineEdit(user.NICKNAME)
+			self.alternative = QNoSpaceLineEdit(user.NICKNAME)
+			self.username = QNoSpaceLineEdit(username)
 		self.realname = QRealnameEdit(realname)
 
 		nickl = QLabel("<b>Nickname</b>")

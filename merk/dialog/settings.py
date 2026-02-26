@@ -1354,6 +1354,8 @@ class Dialog(QDialog):
 			self.floodProtection.setEnabled(True)
 			self.errorConsole.setEnabled(True)
 			self.searchInstall.setEnabled(True)
+			self.prevIllegal.setEnabled(True)
+			self.prevChannel.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -1368,6 +1370,18 @@ class Dialog(QDialog):
 			self.floodProtection.setEnabled(False)
 			self.errorConsole.setEnabled(False)
 			self.searchInstall.setEnabled(False)
+			self.prevIllegal.setEnabled(False)
+			self.prevChannel.setEnabled(False)
+
+			if config.PREVENT_ILLEGAL_CHANNELS:
+				self.prevChannel.setChecked(True)
+			else:
+				self.prevChannel.setChecked(False)
+
+			if config.PREVENT_ILLEGAL_NICKNAMES:
+				self.prevIllegal.setChecked(True)
+			else:
+				self.prevIllegal.setChecked(False)
 
 			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES:
 				self.searchInstall.setChecked(True)
@@ -1978,18 +1992,18 @@ class Dialog(QDialog):
 
 		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
 
-		fm = QFontMetrics(self.parent.font())
-		fwidth = fm.width('X') * 22
-		self.selector.setMaximumWidth(fwidth)
-
 		add_factor = 8
-		self.selector.setIconSize(QSize(fm.height()+add_factor,fm.height()+add_factor))
+
+		font_height = self.selector.fontMetrics().height()
+		new_icon_size = QSize(font_height + add_factor, font_height + add_factor)
+		self.selector.setIconSize(new_icon_size)
 
 		class CompactDelegate(QStyledItemDelegate):
 			def sizeHint(self, option, index):
 				size = super().sizeHint(option, index)
-				icon_height = option.fontMetrics.height() + add_factor
-				return QSize(size.width(), icon_height) 
+				icon_size = self.parent().iconSize()
+				height = max(icon_size.height(), option.fontMetrics.height() + add_factor)
+				return QSize(size.width(), height)
 
 		self.selector.setItemDelegate(CompactDelegate(self.selector))
 
@@ -3485,9 +3499,14 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.userPage)
 
-		self.nick = QNickEdit(user.NICKNAME)
-		self.alternative = QNickEdit(user.ALTERNATE)
-		self.username = QNickEdit(user.USERNAME)
+		if config.PREVENT_ILLEGAL_NICKNAMES:
+			self.nick = QNickEdit(user.NICKNAME)
+			self.alternative = QNickEdit(user.ALTERNATE)
+			self.username = QNickEdit(user.USERNAME)
+		else:
+			self.nick = QNoSpaceLineEdit(user.NICKNAME)
+			self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
+			self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QRealnameEdit(user.REALNAME)
 		self.userinfo = QLineEdit(user.USERINFO)
 		self.finger = QLineEdit(user.FINGER)
@@ -5901,10 +5920,22 @@ class Dialog(QDialog):
 		self.errorConsole.stateChanged.connect(self.changedSettingAdvanced)
 		self.errorConsole.setEnabled(False)
 
+		self.prevIllegal = QCheckBox("Prevent illegal nickname input",self)
+		if config.PREVENT_ILLEGAL_NICKNAMES: self.prevIllegal.setChecked(True)
+		self.prevIllegal.stateChanged.connect(self.changedSettingAdvanced)
+		self.prevIllegal.setEnabled(False)
+
+		self.prevChannel = QCheckBox("Prevent illegal channel input",self)
+		if config.PREVENT_ILLEGAL_CHANNELS: self.prevChannel.setChecked(True)
+		self.prevChannel.stateChanged.connect(self.changedSettingAdvanced)
+		self.prevChannel.setEnabled(False)
+
 		asetLayout = QFormLayout()
 		asetLayout.setSpacing(2)
 		asetLayout.addRow(self.floodProtection)
 		asetLayout.addRow(self.enablePing)
+		asetLayout.addRow(self.prevIllegal)
+		asetLayout.addRow(self.prevChannel)
 		asetLayout.addRow(self.searchInstall)
 		asetLayout.addRow(self.logEverything)
 		asetLayout.addRow(self.writeConsole)
@@ -5963,6 +5994,19 @@ class Dialog(QDialog):
 		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		# Set the max width of the "page" selector
+		font_metrics = QFontMetrics(self.selector.font())
+		max_text_width = 0
+		for i in range(self.selector.count()):
+			item = self.selector.item(i)
+			text_width = font_metrics.width(item.text())
+			if text_width > max_text_width:
+				max_text_width = text_width
+		icon_size = self.selector.iconSize()
+		padding = 15
+		total_width = max_text_width + icon_size.width() + padding
+		self.selector.setFixedWidth(total_width)
 
 		# Finalize layout
 
@@ -6395,6 +6439,8 @@ class Dialog(QDialog):
 		config.HIGHLIGHT_NICK_IN_CHAT = self.highlightNick.isChecked()
 		config.AUTOCOMPLETE_SERVERS = self.autocompleteServers.isChecked()
 		config.AUTOMATICALLY_REFRESH_CHANNEL_LIST = self.automaticList.isChecked()
+		config.PREVENT_ILLEGAL_NICKNAMES = self.prevIllegal.isChecked()
+		config.PREVENT_ILLEGAL_CHANNELS = self.prevChannel.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK
