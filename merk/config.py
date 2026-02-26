@@ -413,8 +413,13 @@ MDI_BACKGROUND_IMAGE_STYLE = "scale"
 HIGHLIGHT_NICK_IN_CHAT=True
 AUTOCOMPLETE_SERVERS = True
 
+AUTOMATICALLY_REFRESH_CHANNEL_LIST = False
+REFRESH_CHANNEL_LIST = 120
+
 def build_settings():
 	settings = {
+		"channel_list_staleness_in_minutes": REFRESH_CHANNEL_LIST,
+		"automatically_refresh_channel_list": AUTOMATICALLY_REFRESH_CHANNEL_LIST,
 		"autocomplete_servers": AUTOCOMPLETE_SERVERS,
 		"highlight_nickname_in_chat": HIGHLIGHT_NICK_IN_CHAT,
 		"mdi_background_image_style": MDI_BACKGROUND_IMAGE_STYLE,
@@ -792,6 +797,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "automatically_refresh_channel_list" in settings:
+		settings["automatically_refresh_channel_list"] = AUTOMATICALLY_REFRESH_CHANNEL_LIST
+	if not "channel_list_staleness_in_minutes" in settings:
+		settings["channel_list_staleness_in_minutes"] = REFRESH_CHANNEL_LIST
 	if not "autocomplete_servers" in settings:
 		settings["autocomplete_servers"] = AUTOCOMPLETE_SERVERS
 	if not "highlight_nickname_in_chat" in settings:
@@ -1912,6 +1921,8 @@ def load_settings(filename):
 	global MDI_BACKGROUND_IMAGE_STYLE
 	global HIGHLIGHT_NICK_IN_CHAT
 	global AUTOCOMPLETE_SERVERS
+	global AUTOMATICALLY_REFRESH_CHANNEL_LIST
+	global REFRESH_CHANNEL_LIST
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1921,6 +1932,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOMATICALLY_REFRESH_CHANNEL_LIST = settings["automatically_refresh_channel_list"]
+		REFRESH_CHANNEL_LIST = settings["channel_list_staleness_in_minutes"]
 		AUTOCOMPLETE_SERVERS = settings["autocomplete_servers"]
 		HIGHLIGHT_NICK_IN_CHAT = settings["highlight_nickname_in_chat"]
 		MDI_BACKGROUND_IMAGE_STYLE = settings["mdi_background_image_style"]

@@ -2387,6 +2387,13 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"kicked",client=client,user=kicker,channel=channel,message=message)
 
+	def receivedUsingErroneous(self,client,nick):
+		if client.registered==False:
+			server_window = self.getServerWindow(client)
+			if server_window:
+				t = Message(SYSTEM_MESSAGE,'',f"Using erroneous nickname fallback ({nick})")
+				server_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
 	def receivedError(self,client,code,message):
 
 		if client.registered==False and code=="461":
@@ -3127,6 +3134,8 @@ class Merk(QMainWindow):
 		else:
 			self.tray.setVisible(False)
 			self.tray.hide()
+
+		irc.new_error_nickname()
 
 		self.MDI.viewport().update()
 

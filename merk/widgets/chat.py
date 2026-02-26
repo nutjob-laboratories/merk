@@ -730,8 +730,12 @@ class Window(QMainWindow):
 		# the loaded log data is displayed
 		self.rerenderChatLog()
 
-	def showChannelList(self):
+	def showChannelList(self,do_fresh=False):
 		if len(self.client.server_channel_list)==0:
+			self.client.need_to_get_list = True
+			self.client.sendLine("LIST")
+			return
+		if do_fresh:
 			self.client.need_to_get_list = True
 			self.client.sendLine("LIST")
 			return

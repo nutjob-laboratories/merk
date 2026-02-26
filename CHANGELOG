@@ -5,7 +5,8 @@
 What's New:
   - **Subwindow transparency**. A new command, `/fade`, can set a subwindow's transparency by a percentage.
   - **Nicknames are highlighted in chat**. The user's nickname is now highlighted in chat when mentioned in a message. This option, on by default, can be turned off in the Settings dialog or with the `/config` command.
-  - **Revamped channel list dialog**. The channel list dialog has been completely reworked. IRC color and formatting codes are stripped from channel topics. It will run *much* faster now.
+  - **Revamped channel list**. The channel list window has been completely reworked. IRC color and formatting codes are stripped from channel topics. It will run *much* faster now.
+  - **Major bugfix affecting some server connections**. Some servers, when attempting to connect with a nickname longer than the server's nick limit, rather than emit an error notifying the client of an invalid nickname, simply truncate the nick to an "appropriate" length and attempt to continue registration. If the truncated nickname is already claimed, the client couldn't normally complete registration and chat (I'm looking at *you*, EFnet). This has been fixed, and **MERK** will be able to connect normally to these servers.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -71,6 +72,30 @@ What's New:
   "hostid", in the format "host:port:password". If port is left out, then
   the default port is used; if password is left out, a password is not used.
   The password can contain spaces.
+* Added an option to automatically "refresh" the server channel list at an
+  interval. By default, this option is turned off, and set to automatically
+  refresh the channel list every 2 hours.
+* Changed the /list command: if automatic channel refresh is turned off, and
+  the channel list is "stale" (older than the automatic refresh time, default
+  2 hours), a "fresh" channel list will be fetched from the server.
+* Bugfix: some networks/servers (EFnet) don't send the "erroneous nickname"
+  error when someone tries to register with a nickname that is longer than 9
+  characters. Apparently, some servers just try to truncate the name down to 9
+  characters, which can cause problems in the truncated nickname is already
+  claimed. MERK now has a workaround for that.
+* Bugfix: if the erroneous nickname setting is longer than 8 characters, it is
+  reset to "Guest". This is noted in the documentation. The erroneous nickname
+  is padded out to 9 characters with random numbers so we avoid nickname
+  collisions.
+* Bugfix: the /user and /nick commands now check for valid nicknames before
+  they are sent to the server.
+* The "erroneous nickname" fallback can now be edited in the Settings dialog.
+* The use of the "erroneous nickname" fallback is now notified to the user
+  in the server window.
+* "Illegal" characters can no longer be put into text inputs for nicknames
+  and usernames. These follow all the rules set forth in the IRC RFCs. Commands
+  that work with nicknames (like /nick and /user) also follow these rules, and
+  will not let users try to use "illegal" nicknames.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

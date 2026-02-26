@@ -36,6 +36,7 @@ from importlib import metadata
 import ast
 import string
 import re
+import random
 
 from .version import *
 from .servers import *
@@ -161,6 +162,8 @@ UNKNOWN_NETWORK = "UNKNOWN"
 
 CUSTOM_MENU_ICON_SIZE = 24
 
+MAX_ERR_NICK_SIZE = 9
+
 CONNECTION_MISSING_INFO_ERROR = 1
 CONNECTION_DIALOG_CANCELED = 2
 
@@ -175,6 +178,9 @@ INVALID_TIME = 8
 INVALID_IMAGE = 9
 INVALID_VALUE = 10
 INVALID_MDI_STYLE = 11
+INVALID_NICK_LENGTH = 12
+INVALID_NICK = 13
+INVALID_NICK_NUMBER = 14
 ALL_VALID_SETTINGS = 0
 
 EVENT_METHOD = 0
@@ -447,6 +453,22 @@ class WhoWasData:
 
 # Functions
 
+def is_allowed_nickname(s):
+	forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘"
+	pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
+	
+	regex = re.compile(pattern)
+	
+	return bool(regex.match(s))
+
+def pad_nickname_fallback(input_str):
+	max_length = 9
+	remaining_length = max_length - len(input_str)
+	if remaining_length <= 0:
+		return input_str[:max_length]
+	random_digits = ''.join(random.choices('0123456789', k=remaining_length))
+	return input_str + random_digits
+
 def convert_irc_color_to_html(text):
 	pattern = re.compile(r'(\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x0F|\x1D|\x1F|\x1E)')
 	
@@ -510,13 +532,6 @@ def is_invalid_channel(s):
 	if ',' in s: return True
 	if string_has_irc_formatting_codes(s): return True
 	return False
-
-def is_invalid_nickname(s):
-	if s and s[0].isdigit(): 
-		return True
-	if string_has_irc_formatting_codes(s): return True
-	special_chars = "!@$%&*().,/?<>+="
-	return any(char in special_chars for char in s)
 
 def string_has_irc_formatting_codes(data):
 	for code in ["\x03","\x02","\x1D","\x1F","\x0F","\x1E"]:
@@ -1050,8 +1065,8 @@ class QNickEdit(QLineEdit):
 
 		# Block forbidden characters from nicknames,
 		# including nicknames that start with numbers
-		forbidden = r" !\@\$%\&\*\(\)\.,\/\? <>\+ \="
-		pattern = f"^[^\\d{forbidden}][^{forbidden}]*$"
+		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘"
+		pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
 		
 		self.validator = QRegExpValidator(QRegExp(pattern), self)
 		self.setValidator(self.validator)
@@ -1076,4 +1091,16 @@ class QRealnameEdit(QLineEdit):
 		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
 		
 		self.validator = QRegularExpressionValidator(regex)
+		self.setValidator(self.validator)
+
+class QErrNickEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+
+		self.setMaxLength(8)
+
+		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘"
+		pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
+		
+		self.validator = QRegExpValidator(QRegExp(pattern), self)
 		self.setValidator(self.validator)

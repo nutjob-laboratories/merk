@@ -1117,6 +1117,14 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="bad_nickname_fallback":
+		if len(value)>=9:
+			return INVALID_NICK_LENGTH
+		if value[0].isdigit():
+			return INVALID_NICK_NUMBER
+		if not is_allowed_nickname(value):
+			return INVALID_NICK
+
 	if setting=="mdi_background_image_style":
 		if value.lower()!="center" and value.lower()!="scale" and value.lower()!="tile": return INVALID_MDI_STYLE
 
@@ -2761,7 +2769,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if my_value=='*': my_value = ''
 
 			if my_setting.lower()=='nickname' or my_setting.lower()=='alternate' or my_setting.lower()=='username':
-				if is_invalid_nickname(my_value):
+				if not is_allowed_nickname(my_value):
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
@@ -5440,6 +5448,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = "must be a valid WAV file"
 					elif check==INVALID_TIME:
 						reason = "must be a valid strptime format: https://linux.die.net/man/3/strptime"
+					elif check==INVALID_NICK_LENGTH:
+						reason = "must be less than 9 characters"
+					elif check==INVALID_NICK:
+						reason = "invalid nickname"
+					elif check==INVALID_NICK_NUMBER:
+						reason = "nicknames can't start with numbers"
 					elif check==INVALID_IMAGE:
 						supported_formats = QImageReader.supportedImageFormats()
 						all_filetypes = []
@@ -5618,8 +5632,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
+			# Check for list "freshness"
+			refresh_list = False
+			if not config.AUTOMATICALLY_REFRESH_CHANNEL_LIST:
+				dt1 = datetime.fromtimestamp(window.client.last_list_timestamp)
+				dt2 = datetime.fromtimestamp(datetime.utcnow().timestamp())
+				time_difference = dt2 - dt1
+				if time_difference.total_seconds() / 60 > config.REFRESH_CHANNEL_LIST:
+					refresh_list = True
+
 			# No search terms, so open the channel list window
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelList())
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelList(refresh_list))
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
@@ -5628,16 +5651,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = ' '.join(tokens)
 
 			# Check for list "freshness"
-			dt1 = datetime.fromtimestamp(window.client.last_list_timestamp)
-			dt2 = datetime.fromtimestamp(datetime.utcnow().timestamp())
-			time_difference = dt2 - dt1
-			if time_difference.total_seconds() / 60 > 60:
-				# list was last fetched an hour or more ago
-				t = Message(SYSTEM_MESSAGE,'',f"List was last fetched a while ago, you may want to use {config.ISSUE_COMMAND_SYMBOL}refresh to fetch a new one")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			refresh_list = False
+			if not config.AUTOMATICALLY_REFRESH_CHANNEL_LIST:
+				dt1 = datetime.fromtimestamp(window.client.last_list_timestamp)
+				dt2 = datetime.fromtimestamp(datetime.utcnow().timestamp())
+				time_difference = dt2 - dt1
+				if time_difference.total_seconds() / 60 > config.REFRESH_CHANNEL_LIST:
+					refresh_list = True
 
 			# Show the channel list window and inject search
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelListSearch(target))
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelListSearch(target,refresh_list))
 			return True
 
 	# |-------|
@@ -7302,7 +7325,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-			if is_invalid_nickname(newnick):
+			if not is_allowed_nickname(newnick):
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:

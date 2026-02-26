@@ -103,11 +103,17 @@ def reset_environment():
 	for c in CONNECTIONS:
 		CONNECTIONS[c].reset_environment()
 
+def new_error_nickname():
+	for c in CONNECTIONS:
+		n = config.BAD_NICKNAME_FALLBACK
+		if len(n)>=MAX_ERR_NICK_SIZE: n = "Guest"
+		CONNECTIONS[c].erroneousNickFallback = n
+
+
 class IRC_Connection(irc.IRCClient):
 	nickname = 'merk'
 	realname = 'merk'
 	username = 'merk'
-	erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
 
 	versionName = APPLICATION_NAME
 	versionNum = APPLICATION_VERSION
@@ -153,10 +159,15 @@ class IRC_Connection(irc.IRCClient):
 		self.erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
 		self.heartbeatInterval = config.TWISTED_CLIENT_HEARTBEAT
 
+		if len(self.erroneousNickFallback)>=MAX_ERR_NICK_SIZE:
+			self.erroneousNickFallback = "Guest"
+
 		self.oldnick = self.nickname
 		self.uptime = 0
 		self.registered = False
 		self.last_tried_nickname = ''
+		self.original_nickname = self.nickname
+		self.nick_attempts = 0
 
 		self.names = {}
 		self.usermodes = ''
@@ -449,6 +460,13 @@ class IRC_Connection(irc.IRCClient):
 		if len(self.long_notices)>0:
 			e = self.long_notices.pop(0)
 			self.notice(e[0],e[1])
+
+		if config.AUTOMATICALLY_REFRESH_CHANNEL_LIST:
+			dt1 = datetime.fromtimestamp(self.last_list_timestamp)
+			dt2 = datetime.fromtimestamp(datetime.utcnow().timestamp())
+			time_difference = dt2 - dt1
+			if time_difference.total_seconds() / 60 > config.REFRESH_CHANNEL_LIST:
+				self.sendLine("LIST")
 
 		if config.USE_AUTOAWAY:
 			if self.last_interaction!=-1:
@@ -779,6 +797,13 @@ class IRC_Connection(irc.IRCClient):
 
 		self.gui.nickChanged(self)
 
+	def irc_ERR_ERRONEUSNICKNAME(self, prefix, params):
+		if self.registered==False:
+			# Pad out the erroneous nickname in config, and use that
+			padnick = pad_nickname_fallback(self.erroneousNickFallback)
+			self.setNick(padnick)
+			self.gui.receivedUsingErroneous(self,padnick)
+
 	def irc_ERR_NICKNAMEINUSE(self, prefix, params):
 
 		if self.registered:
@@ -803,9 +828,21 @@ class IRC_Connection(irc.IRCClient):
 				self.setNick(self.last_tried_nickname)
 				return
 
-		rannum = random.randrange(1,999)
+		self.nick_attempts = self.nick_attempts + 1
 
-		self.last_tried_nickname = self.last_tried_nickname + str(rannum)
+		# Some servers don't throw the erroneous nickname
+		# error, apparently (EFnet, I'm looking at you),
+		# so we're going to pad out the erroneous nickname
+		# fallback to a maximum of 9 characters and try that
+		if self.nick_attempts>=3:
+			padnick = pad_nickname_fallback(self.erroneousNickFallback)
+			self.setNick(padnick)
+			self.nick_attempts = 0
+			self.gui.receivedUsingErroneous(self,padnick)
+			return
+
+		rannum = random.randrange(1,999)
+		self.last_tried_nickname = self.original_nickname + str(rannum)
 		self.setNick(self.last_tried_nickname)
 
 	def userRenamed(self, oldname, newname):

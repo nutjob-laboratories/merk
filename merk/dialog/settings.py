@@ -1852,6 +1852,22 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def intervalList(self,i):
+		newInterval = self.listInterval.itemText(i)
+		if newInterval=="4 hours": self.REFRESH_CHANNEL_LIST = 240
+		if newInterval=="3 hours": self.REFRESH_CHANNEL_LIST = 180
+		if newInterval=="2 hours": self.REFRESH_CHANNEL_LIST = 120
+		if newInterval=="1 hour": self.REFRESH_CHANNEL_LIST = 60
+
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
+	def changedErr(self,state):
+		self.BAD_NICKNAME_FALLBACK = self.errNick.text()
+		self.changed.show()
+		self.boldApply()
+
 	def eventFilter(self, source, event):
 		if source == self.selector.viewport() and event.type() == QEvent.Wheel:
 			return True
@@ -1940,6 +1956,8 @@ class Dialog(QDialog):
 		self.CUSTOM_MDI_BACKGROUND = config.CUSTOM_MDI_BACKGROUND
 		self.rerender_mdi = False
 		self.MDI_BACKGROUND_IMAGE_STYLE = config.MDI_BACKGROUND_IMAGE_STYLE
+		self.REFRESH_CHANNEL_LIST = config.REFRESH_CHANNEL_LIST
+		self.BAD_NICKNAME_FALLBACK = config.BAD_NICKNAME_FALLBACK
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3955,6 +3973,36 @@ class Dialog(QDialog):
 		if config.SHOW_ALL_SERVER_ERRORS: self.ircAllErrors.setChecked(True)
 		self.ircAllErrors.stateChanged.connect(self.changedSetting)
 
+		self.automaticList = QCheckBox("Refresh channel list every",self)
+		if config.AUTOMATICALLY_REFRESH_CHANNEL_LIST: self.automaticList.setChecked(True)
+		self.automaticList.stateChanged.connect(self.changedSetting)
+
+		self.listInterval = QComboBox(self)
+		added = False
+		if config.REFRESH_CHANNEL_LIST==60:
+			self.listInterval.addItem("hour")
+			added = True
+		if config.REFRESH_CHANNEL_LIST==120:
+			self.listInterval.addItem("2 hours")
+			added = True
+		if config.REFRESH_CHANNEL_LIST==180:
+			self.listInterval.addItem("3 hours")
+			added = True
+		if config.REFRESH_CHANNEL_LIST==240:
+			self.listInterval.addItem("4 hours")
+			added = True
+		if added==False: self.listInterval.addItem(f"{config.REFRESH_CHANNEL_LIST} minutes")
+		if config.REFRESH_CHANNEL_LIST!=60: self.listInterval.addItem("1 hour")
+		if config.REFRESH_CHANNEL_LIST!=120: self.listInterval.addItem("2 hours")
+		if config.REFRESH_CHANNEL_LIST!=180: self.listInterval.addItem("3 hours")
+		if config.REFRESH_CHANNEL_LIST!=240: self.listInterval.addItem("4 hours")
+		self.listInterval.currentIndexChanged.connect(self.intervalList)
+
+		refreshLayout = QHBoxLayout()
+		refreshLayout.addWidget(self.automaticList)
+		refreshLayout.addWidget(self.listInterval)
+		refreshLayout.addStretch()
+
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(2)
 		csLayout.addWidget(self.askBeforeDisconnect)
@@ -3962,10 +4010,6 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.notifyRepeated)
 		csLayout.addWidget(self.promptFail)
 		csLayout.addWidget(self.saveHistory)
-		csLayout.addWidget(self.showNetLinks)
-		csLayout.addWidget(self.motdRaw)
-		csLayout.addWidget(self.ircErrors)
-		csLayout.addWidget(self.ircAllErrors)
 
 		arLayout = QVBoxLayout()
 		arLayout.setSpacing(2)
@@ -3975,16 +4019,51 @@ class Dialog(QDialog):
 		afLayout = QVBoxLayout()
 		afLayout.setSpacing(2)
 		afLayout.addWidget(self.requestList)
+		afLayout.addLayout(refreshLayout)
 		afLayout.addWidget(self.autoHostmasks)
 		afLayout.addLayout(freqLayout)
+
+		cdLayout = QVBoxLayout()
+		cdLayout.setSpacing(2)
+		cdLayout.addWidget(self.showNetLinks)
+		cdLayout.addWidget(self.motdRaw)
+		cdLayout.addWidget(self.ircErrors)
+		cdLayout.addWidget(self.ircAllErrors)
+
+		self.erroneousDescription = QLabel(f"""
+			<small>
+			If your nickname "breaks" the rules of a given server, this is the nickname that will
+			be used during the connection process. This is limited to 8 characters maximum, and
+			will be "padded" up to 9 characters with random numbers before being sent. The default
+			erroneous nickname fallback is <b>Guest</b>.
+			</small>
+			""")
+		self.erroneousDescription.setWordWrap(True)
+		self.erroneousDescription.setAlignment(Qt.AlignJustify)
+
+		self.errNick = QErrNickEdit(config.BAD_NICKNAME_FALLBACK)
+
+		self.errNick.textChanged.connect(self.changedErr)
+
+		font = self.font()
+		font.setBold(True)
+
+		self.errNickLabel = QLabel("Erroneous Nickname:")
+		self.errNickLabel.setFont(font)
+
+		eLayout = QFormLayout()
+		eLayout.addRow(self.errNickLabel,self.errNick)
 
 		connectionsLayout = QVBoxLayout()
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addLayout(csLayout)
-		connectionsLayout.addWidget(QLabel(' '))
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>erroneous nickname</b>"))
+		connectionsLayout.addWidget(self.erroneousDescription)
+		connectionsLayout.addLayout(eLayout)
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display</b>"))
+		connectionsLayout.addLayout(cdLayout)
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatic reconnection</b>"))
 		connectionsLayout.addLayout(arLayout)
-		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatically fetch from server</b>"))
 		connectionsLayout.addLayout(afLayout)
 		connectionsLayout.addStretch()
@@ -6315,6 +6394,13 @@ class Dialog(QDialog):
 		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
 		config.HIGHLIGHT_NICK_IN_CHAT = self.highlightNick.isChecked()
 		config.AUTOCOMPLETE_SERVERS = self.autocompleteServers.isChecked()
+		config.AUTOMATICALLY_REFRESH_CHANNEL_LIST = self.automaticList.isChecked()
+
+		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
+			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK
+
+		if self.REFRESH_CHANNEL_LIST!=config.REFRESH_CHANNEL_LIST:
+			config.REFRESH_CHANNEL_LIST = self.REFRESH_CHANNEL_LIST
 
 		if self.MDI_BACKGROUND_IMAGE_STYLE!=config.MDI_BACKGROUND_IMAGE_STYLE:
 			config.MDI_BACKGROUND_IMAGE_STYLE = self.MDI_BACKGROUND_IMAGE_STYLE
@@ -6443,6 +6529,9 @@ class Dialog(QDialog):
 
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
+
+		# Refresh the erroneous nickname
+		irc.new_error_nickname()
 
 		self.parent.buildSettingsMenu()
 		self.parent.buildWindowsMenu()
