@@ -7,6 +7,7 @@ What's New:
   - **Nicknames are highlighted in chat**. The user's nickname is now highlighted in chat when mentioned in a message. This option, on by default, can be turned off in the Settings dialog or with the `/config` command.
   - **Revamped channel list**. The channel list window has been completely reworked. IRC color and formatting codes are stripped from channel topics. It will run *much* faster now.
   - **Major bugfix affecting some server connections**. Some servers, when attempting to connect with a nickname longer than the server's nick limit, rather than emit an error notifying the client of an invalid nickname, simply truncate the nick to an "appropriate" length and attempt to continue registration. If the truncated nickname is already claimed, the client couldn't normally complete registration and chat (I'm looking at *you*, [EFnet](https://www.efnet.org/)/[ircd-ratbox](https://www.ratbox.org/)). This has been fixed, and **MERK** will be able to connect normally to these servers.
+  - **Many, many, bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -119,6 +120,13 @@ What's New:
   closed directly.
 * The /hide, /show, /maximize, /minimize, /restore, and /focus commands can now
   take hostIDs as their sole argument.
+* Bugfix: fixed a bug where occasionally MERK would do a WHOIS on itself.
+* Changes to the /print and /prints commands: they can now take server and
+  window arguments like /hide and /show to target specific windows. If the
+  server or window can't be found, the text is displayed to the current window.
+* Changed the name of the $_HOST built-in alias to $_HOSTNAME.
+* Added a new built-in alias: $_HOSTID, which contains the hostID of the server
+  the window is connected to.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -129,6 +137,11 @@ What's New:
   100 as an argument, it sets the transparency of the subwindow.
 * The Console method html() now converts IRC color and formatting codes into
   HTML for display.
+* If the resize() Plugin inherited method is called without any arguments (or
+  only one), the method will return a list of integers, containing the
+  application window's width and height, in that order.
+* New Plugin inherited method: location(). This returns a list containing the
+  X and Y values of the location of the main application window.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.550                                  |

@@ -105,9 +105,10 @@ def reset_environment():
 
 def new_error_nickname():
 	for c in CONNECTIONS:
-		n = config.BAD_NICKNAME_FALLBACK
-		if len(n)>=MAX_ERR_NICK_SIZE: n = "Guest"
-		CONNECTIONS[c].erroneousNickFallback = n
+		if len(config.BAD_NICKNAME_FALLBACK)>=MAX_ERR_NICK_SIZE:
+			config.BAD_NICKNAME_FALLBACK = "Guest"
+			config.save_settings(config.CONFIG_FILE)
+		CONNECTIONS[c].erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
 
 
 class IRC_Connection(irc.IRCClient):
@@ -161,6 +162,8 @@ class IRC_Connection(irc.IRCClient):
 
 		if len(self.erroneousNickFallback)>=MAX_ERR_NICK_SIZE:
 			self.erroneousNickFallback = "Guest"
+			config.BAD_NICKNAME_FALLBACK = "Guest"
+			config.save_settings(config.CONFIG_FILE)
 
 		self.oldnick = self.nickname
 		self.uptime = 0
@@ -783,10 +786,12 @@ class IRC_Connection(irc.IRCClient):
 		if len(p)==2:
 			if p[0] == self.nickname: return
 			self.gui.updateHostmask(self,p[0],None)
-		else:
-			if user == self.nickname: return
-			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
-				self.do_whois.append(user)
+
+			if p[0] in self.request_whois:
+				self.request_whois.remove(p[0])
+
+			if p[0] in self.do_whois:
+				self.do_whois.remove(p[0])
 
 		self.sendLine("NAMES "+channel)
 
@@ -846,6 +851,14 @@ class IRC_Connection(irc.IRCClient):
 
 	def userRenamed(self, oldname, newname):
 
+		if oldname in self.request_whois:
+			self.request_whois.remove(oldname)
+			self.request_whois.append(newname)
+
+		if oldname in self.do_whois:
+			self.do_whois.remove(oldname)
+			self.do_whois.append(newname)
+
 		self.gui.userRenamed(self,oldname,newname)
 
 	def action(self, user, channel, data):
@@ -901,7 +914,8 @@ class IRC_Connection(irc.IRCClient):
 					u = u.replace('%','')
 					u = u.replace('!','')
 					if not self.gui.doesChannelHaveHostmask(self,channel,u):
-						self.do_whois.append(u)
+						if u!=self.nickname:
+							self.do_whois.append(u)
 
 		if channel in self.names:
 			for nick in nicklist:

@@ -1,4 +1,4 @@
-<h1>MERK 0.051.580</h1>
+<h1>MERK 0.051.585</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -15,7 +15,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.580</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.585</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on the Libera Chat network! Connect to Libera in the client as one of the built-in server suggestions, or at <strong>irc.libera.chat</strong>, port <strong>6667</strong> (you can also connect via SSL on port <strong>6697</strong>). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!</p>
 <h1 id="making-merk-portable-on-windows">Making MERK Portable on Windows</h1>
@@ -156,11 +156,11 @@ Appearance:
 </tr>
 <tr>
 <td><code>/clear [SERVER] [WINDOW]</code></td>
-<td>Clears a window's chat display. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Clears a window's chat display. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to clear the server window</td>
 </tr>
 <tr>
 <td><code>/close [SERVER] [WINDOW]</code></td>
-<td>Closes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Closes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to hide the server window</td>
 </tr>
 <tr>
 <td><code>/config [SETTING] [VALUE...]</code></td>
@@ -220,7 +220,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/fade [SERVER] [WINDOW] PERCENTAGE</code></td>
-<td>Sets the transparency of a subwindow by <code>PERCENTAGE</code>. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's transparency</td>
+<td>Sets the transparency of a subwindow by <code>PERCENTAGE</code>. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's transparency. Pass <code>*</code> as <code>WINDOW</code> to set the transparency of the server window</td>
 </tr>
 <tr>
 <td><code>/find [TERMS]</code></td>
@@ -228,7 +228,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/focus [SERVER] [WINDOW]</code></td>
-<td>Sets focus on a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Sets focus on a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to set focus on the server window</td>
 </tr>
 <tr>
 <td><code>/folder PATH [PATH...]</code></td>
@@ -248,7 +248,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/hide [SERVER] [WINDOW]</code></td>
-<td>Hides a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Hides a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to hide the server window</td>
 </tr>
 <tr>
 <td><code>if VALUE1 OPERATOR VALUE2 COMMAND...</code></td>
@@ -308,7 +308,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/maximize [SERVER] [WINDOW]</code></td>
-<td>Maximizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Maximizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to maximize the server window</td>
 </tr>
 <tr>
 <td><code>/me MESSAGE...</code></td>
@@ -316,7 +316,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/minimize [SERVER] [WINDOW]</code></td>
-<td>Minimizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Minimizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to minimize the server window</td>
 </tr>
 <tr>
 <td><code>/mode TARGET MODE...</code></td>
@@ -328,7 +328,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/move [SERVER] [WINDOW] X Y</code></td>
-<td>Moves a subwindow to <code>X</code> (left and right) and <code>Y</code> (up and down) coordinates. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see the current subwindow's coordinates</td>
+<td>Moves a subwindow to <code>X</code> (left and right) and <code>Y</code> (up and down) coordinates. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see the current subwindow's coordinates. Pass <code>*</code> as <code>WINDOW</code> to move the server window</td>
 </tr>
 <tr>
 <td><code>/msgbox MESSAGE...</code></td>
@@ -363,12 +363,12 @@ Appearance:
 <td>Plays a WAV file</td>
 </tr>
 <tr>
-<td><code>/print [WINDOW] TEXT...</code></td>
-<td>Prints text to a window</td>
+<td><code>/print [SERVER] [WINDOW] TEXT...</code></td>
+<td>Prints text to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
 </tr>
 <tr>
-<td><code>/prints [WINDOW] TEXT...</code></td>
-<td>Prints a system message to a window</td>
+<td><code>/prints [SERVER] [WINDOW] TEXT...</code></td>
+<td>Prints a system message to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
 </tr>
 <tr>
 <td><code>/private NICKNAME [MESSAGE]</code></td>
@@ -416,7 +416,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/restore [SERVER] [WINDOW]</code></td>
-<td>Restores a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Restores a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to restore the server window</td>
 </tr>
 <tr>
 <td><code>/s FILENAME [ARGUMENTS]</code></td>
@@ -428,15 +428,15 @@ Appearance:
 </tr>
 <tr>
 <td><code>/show [SERVER] [WINDOW]</code></td>
-<td>Shows a subwindow, if hidden; otherwise, shifts focus to that window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context</td>
+<td>Shows a subwindow, if hidden; otherwise, shifts focus to that window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to show the server window</td>
 </tr>
 <tr>
 <td><code>/size [SERVER] [WINDOW] WIDTH HEIGHT&nbsp;&nbsp;</code></td>
-<td>Resizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's size</td>
+<td>Resizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see current subwindow's size. Pass <code>*</code> as <code>WINDOW</code> to resize the server window</td>
 </tr>
 <tr>
 <td><code>/style [SERVER] [WINDOW]</code></td>
-<td>Opens a window's text style editor</td>
+<td>Opens a window's text style editor. Pass <code>*</code> as <code>WINDOW</code> to select the server window</td>
 </tr>
 <tr>
 <td><code>/time</code></td>

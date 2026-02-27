@@ -287,8 +287,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/bind SEQUENCE COMMAND...`           | Executes `COMMAND` every time key `SEQUENCE` is pressed. Pass `save` as the only argument to save binds to the configuration file                                                                                                           |
 | `/browser URL`           | Opens `URL` in the default browser  |
 | `/call METHOD [ARGUMENTS...]`         | Executes `METHOD` in any plugin that contains that `METHOD`  |
-| `/clear [SERVER] [WINDOW]`              | Clears a window's chat display. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                    |
-| `/close [SERVER] [WINDOW]`              | Closes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
+| `/clear [SERVER] [WINDOW]`              | Clears a window's chat display. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to clear the server window  |
+| `/close [SERVER] [WINDOW]`              | Closes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to hide the server window                    |
 | `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  **Caution**: use at your own risk! |
 | `/config export [FILENAME]`          | Exports the current configuration file.  **Caution**: use at your own risk! |
 | `/config import [FILENAME]`          | Imports a configuration file into settings.  **Caution**: use at your own risk! |
@@ -303,14 +303,14 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `end`                                  | Immediately ends a script; *can only be called from scripts*                                                                       |
 | `exclude WINDOW...`                       | Prevents a script from executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
-| `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency     |
+| `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
-| `/focus [SERVER] [WINDOW]`              | Sets focus on a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                          |
+| `/focus [SERVER] [WINDOW]`              | Sets focus on a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to set focus on the server window                                       |
 | `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
 | `goto LINE_NUMBER`                         | Moves execution of the script to `LINE_NUMBER`. The only script-only command that can be issued from an `if` command. Cannot be used to move to a line that consists of a script-only command other than `end`. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Halts a script's execution, and displays an error `MESSAGE` with line number and file name. *Can only be called from scripts*       |
 | `/help [COMMAND]`                                 | Displays command usage information                  |
-| `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                              |
+| `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to hide the server window      |
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`). *Can only be called from scripts*    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/info [TARGET]`                          | Requests server information                         |
@@ -325,11 +325,11 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/list [TERMS]`                         | Lists or searches channels on the server; use `*` for multi-character wildcard and `?` for single character wildcard                      |
 | `/lusers [MASK [SERVERS]]`                         | Requests statistics about the server |
 | `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
-| `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
+| `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to maximize the server window         |
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
-| `/minimize [SERVER] [WINDOW]`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                               |
+| `/minimize [SERVER] [WINDOW]`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to minimize the server window                    |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
-| `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see the current subwindow's coordinates                          |
+| `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see the current subwindow's coordinates. Pass `*` as `WINDOW` to move the server window      |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
@@ -339,8 +339,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
 | `/play FILENAME`                        | Plays a WAV file                                                                                                                 |
-| `/print [WINDOW] TEXT...`               | Prints text to a window                                                                                                          |
-| `/prints [WINDOW] TEXT...`               | Prints system message to a window                                                                                                          |
+| `/print [SERVER] [WINDOW] TEXT...`               | Prints text to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window                                                                       |
+| `/prints [SERVER] [WINDOW] TEXT...`               | Prints system message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window              |
 | `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/python [FILENAME]`               | Opens a file in the Python editor                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
@@ -352,12 +352,12 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/_rehash`                              | Causes the server to reprocess and reload configuration files. May only be issued by IRC operators |
 | `/rem [TEXT...]`                        | Does nothing. Can be used as a target for `goto`                                                                              |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
-| `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                                                                                                |
+| `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to restore the server window                                 |
 | `/s FILENAME [ARGUMENTS]`                      | A shortcut for the `/script` command                                                                                            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
-| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context                                |
-| `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size |
-| `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor                                                                                               |
+| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to show the server window  |
+| `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size. Pass `*` as `WINDOW` to resize the server window |
+| `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor. Pass `*` as `WINDOW` to select the server window                                  |
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |

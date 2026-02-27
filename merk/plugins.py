@@ -565,10 +565,15 @@ class Plugin():
 	def id(self):
 		return self._id
 
-	def resize(self,x_val,y_val):
+	def resize(self,x_val=None,y_val=None):
 		if self._gui!=None:
-			if self._gui.isMaximized() or self._gui.isMinimized(): self._gui.showNormal()
-			self._gui.resize(x_val,y_val)
+			if x_val!=None or y_val!=None:
+				if self._gui.isMaximized() or self._gui.isMinimized(): self._gui.showNormal()
+				self._gui.resize(x_val,y_val)
+				return
+			width = self._gui.width()
+			height = self._gui.height()
+			return [width,height]
 
 	def move(self,x_val,y_val):
 		if self._gui!=None:
@@ -577,6 +582,10 @@ class Plugin():
 				self._gui.move(x_val,y_val)
 				return True
 		return False
+
+	def location(self):
+		if self._gui==None: return [0,0]
+		return [self._gui.x(),self._gui.y()]
 
 	def emojize(self,message):
 		return emoji.emojize(message,language=config.EMOJI_LANGUAGE)
@@ -876,7 +885,7 @@ BUILT_IN = [
 	'unbind', 'unignore', 'windows', 'unmacro', 'asciimojize',
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
-	'markup','unmarkup','demojize','deasciimojize',
+	'markup','unmarkup','demojize','deasciimojize', 'location',
 ]
 
 def uninstall(obj):
