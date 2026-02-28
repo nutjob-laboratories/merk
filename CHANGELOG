@@ -127,6 +127,19 @@ What's New:
 * Changed the name of the $_HOST built-in alias to $_HOSTNAME.
 * Added a new built-in alias: $_HOSTID, which contains the hostID of the server
   the window is connected to.
+* Changed the "about" entry in the system tray menu: changed the icon to the
+  application icon, and changed its title to "MERK IRC Client".
+* Removed the "set channel modes" button.
+* Right clicking on the "channel mode" display now displays a description of
+  known channel modes for unprivleged users, or options to set channel modes
+  for privleged users.
+* Removed the "banned users" button from channel windows. The channel ban list
+  is now a submenu of the "channel modes" right click menu.
+* The channel ban list submenu is now "scrollable".
+* Added an option to toggle the channel mode right click menu to the Settings
+  dialog and the config command.
+* New script-only command: random. This generates a random integer in a given
+  range, and stores the integer in an alias.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

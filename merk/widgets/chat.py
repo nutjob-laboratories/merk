@@ -293,6 +293,9 @@ class Window(QMainWindow):
 			self.channel_mode_display = QLabel("<b>"+self.name+"</b>")
 			self.channel_mode_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
 
+			self.channel_mode_display.setContextMenuPolicy(Qt.CustomContextMenu)
+			self.channel_mode_display.customContextMenuRequested.connect(self.buildOperatorMenu)
+
 			# Channel name display
 			self.channel_users_display = QLabel("<b><small>1 user</small></b>")
 			self.channel_users_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
@@ -506,32 +509,7 @@ class Window(QMainWindow):
 			self.userlist.resize(ulwidth,self.height())
 			self.userlist_width = ulwidth
 
-			# BANLIST BUTTON
-			self.banlist_menu = QPushButton("")
-			self.banlist_menu.setIcon(QIcon(BAN_ICON))
-			self.banlist_menu.setMenu(buildBanMenu(self,self.client))
-			self.banlist_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
-			self.banlist_menu.setToolTip("Channel bans")
-			self.banlist_menu.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.banlist_menu.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-			self.banlist_menu.setFlat(True)
-
-			self.banlist_menu.hide()
-
-			self.channel_menu = QPushButton("")
-			self.channel_menu.setIcon(QIcon(OP_USER))
-			self.channel_menu.setMenu(buildBanMenu(self,self.client))
-			self.channel_menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
-			self.channel_menu.setToolTip("Set channel modes")
-			self.channel_menu.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
-			self.channel_menu.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
-			self.channel_menu.setFlat(True)
-
-			self.channel_menu.hide()
-
 			topicLayout = QHBoxLayout()
-			topicLayout.addWidget(self.channel_menu)
-			topicLayout.addWidget(self.banlist_menu)
 			topicLayout.addWidget(self.channel_mode_display)
 			topicLayout.addWidget(self.topic)
 			topicLayout.addWidget(self.channel_users_display)
@@ -541,12 +519,6 @@ class Window(QMainWindow):
 
 			if not config.SHOW_CHANNEL_NAME_AND_MODES:
 				self.channel_mode_display.hide()
-
-			if not config.SHOW_BANLIST_MENU:
-				self.banlist_menu.hide()
-
-			if not config.SHOW_CHANNEL_MENU:
-				self.channel_menu.hide()
 
 			finalLayout = QVBoxLayout()
 			finalLayout.setSpacing(CHAT_WINDOW_WIDGET_SPACING)
@@ -828,17 +800,79 @@ class Window(QMainWindow):
 		if self.owner: return True
 		if self.admin: return True
 
-	def buildOperatorMenu(self):
+	def buildOperatorMenu(self,position):
 
-		opmenu = QMenu("Channel modes")
+		if not config.CHANNEL_MODE_CONTEXT_MENU: return
+
+		opmenu = QMenu()
 
 		try:
 			channel_modes = self.client.channelmodes[self.name]
 		except:
 			channel_modes = ''
+			if not self.is_privileged() and not self.is_operator() and len(self.banlist)==0: return
 
-		e = textSeparator(self,"Channel modes")
-		opmenu.addAction(e)
+		if not self.is_privileged() and not self.is_operator():
+			if self.name in self.client.channelkeys:
+				entry = QAction("Channel is locked",self)
+				opmenu.addAction(entry)
+
+			if 'm' in channel_modes:
+				entry = QAction("Channel is moderated",self)
+				opmenu.addAction(entry)
+
+			if 'R' in channel_modes:
+				entry = QAction("Registered users only",self)
+				opmenu.addAction(entry)
+
+			if 'n' in channel_modes:
+				entry = QAction("No external messages",self)
+				opmenu.addAction(entry)
+
+			if 't' in channel_modes:
+				entry = QAction("Only operators can change topic",self)
+				opmenu.addAction(entry)
+
+			if 'c' in channel_modes:
+				entry = QAction("IRC colors are fobidden",self)
+				opmenu.addAction(entry)
+
+			if 'S' in channel_modes:
+				entry = QAction("IRC colors are stripped",self)
+				opmenu.addAction(entry)
+
+			if 'C' in channel_modes:
+				entry = QAction("CTCP is forbidden",self)
+				opmenu.addAction(entry)
+
+			if 'KNOCK' in self.client.supports:
+				if 'K' in channel_modes:
+					entry = QAction("KNOCK is forbidden",self)
+					opmenu.addAction(entry)
+
+			if 'i' in channel_modes:
+				entry = QAction("Only invited users",self)
+				opmenu.addAction(entry)
+
+			if 'p' in channel_modes:
+				entry = QAction("Channel is private",self)
+				opmenu.addAction(entry)
+
+			if 's' in channel_modes:
+				entry = QAction("Channel is secret",self)
+				opmenu.addAction(entry)
+
+			if 'T' in channel_modes:
+				entry = QAction("Channel notices are forbidden",self)
+				opmenu.addAction(entry)
+
+			if 'V' in channel_modes:
+				entry = QAction("Channel invites are forbidden",self)
+				opmenu.addAction(entry)
+
+			if 'z' in channel_modes:
+				entry = QAction("SSL/TLS users only",self)
+				opmenu.addAction(entry)
 
 		if self.is_privileged():
 
@@ -858,6 +892,24 @@ class Window(QMainWindow):
 			else:
 				entry = QAction(QIcon(PLUS_ICON),"Moderate channel",self)
 				entry.triggered.connect(lambda state,h='m': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'R' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow unregistered users",self)
+				entry.triggered.connect(lambda state,h='R': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Registered users only",self)
+				entry.triggered.connect(lambda state,h='R': self.set_mode(h))
+				opmenu.addAction(entry)
+
+			if 'z' in channel_modes:
+				entry = QAction(QIcon(MINUS_ICON),"Allow non-SSL/TLS users",self)
+				entry.triggered.connect(lambda state,h='z': self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"SSL/TLS users only",self)
+				entry.triggered.connect(lambda state,h='z': self.set_mode(h))
 				opmenu.addAction(entry)
 
 			if 'n' in channel_modes:
@@ -962,7 +1014,17 @@ class Window(QMainWindow):
 				entry.triggered.connect(lambda state,h='V': self.set_mode(h))
 				opmenu.addAction(entry)
 
-		return opmenu
+		if len(self.banlist)>0:
+			opmenu.addSeparator()
+			banMenu = opmenu.addMenu(QIcon(BAN_ICON),"Banned Users")
+
+			banMenu.setStyle(ScrollableMenuStyle())
+
+			for b in self.banlist:
+				e = plainTextAction(self,f"<b>{b[0]}</b>")
+				banMenu.addAction(e)
+
+		action = opmenu.exec_(self.channel_mode_display.mapToGlobal(position))
 
 	def chatMenu(self,location):
 
@@ -1182,22 +1244,11 @@ class Window(QMainWindow):
 		return False
 
 	def hideTopic(self):
-		self.banlist_menu.hide()
-		self.channel_menu.hide()
 		self.channel_mode_display.hide()
 		self.topic.hide()
 		self.channel_users_display.hide()
 
 	def showTopic(self):
-		if config.SHOW_BANLIST_MENU:
-			if len(self.banlist)>0: self.banlist_menu.show()
-		else:
-			self.banlist_menu.hide()
-		if config.SHOW_CHANNEL_MENU:
-			if self.is_privileged():
-				self.channel_menu.show()
-		else:
-			self.channel_menu.hide()
 		self.channel_mode_display.show()
 		if config.SHOW_CHANNEL_NAME_AND_MODES:
 			self.channel_mode_display.show()
@@ -1258,26 +1309,6 @@ class Window(QMainWindow):
 						m = Message(DATE_MESSAGE,'',cdate)
 						d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 						self.chat.append(d2)
-
-	def refreshBanMenu(self):
-		self.banlist_menu.setMenu(buildBanMenu(self,self.client))
-
-		if len(self.banlist)>0:
-			if config.SHOW_BANLIST_MENU: self.banlist_menu.show()
-			if not config.SHOW_CHANNEL_TOPIC: self.banlist_menu.hide()
-		else:
-			self.banlist_menu.hide()
-
-	def refreshChannelMenu(self):
-		if hasattr(self,"channel_menu"):
-			self.channel_menu.setMenu(self.buildOperatorMenu())
-			if config.SHOW_CHANNEL_MENU:
-				if not self.is_privileged():
-					self.channel_menu.hide()
-				else:
-					self.channel_menu.show()
-			else:
-				self.channel_menu.hide()
 
 	def refreshInfoMenu(self):
 		self.server_info_menu = buildServerSettingsMenu(self,self.client)
@@ -1364,7 +1395,6 @@ class Window(QMainWindow):
 				if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
 					self.mode_display.show()
 		self.updateTitle()
-		self.refreshChannelMenu()
 
 		if hasattr(self,"key_icon"):
 			if self.name in self.client.channelkeys:
@@ -2396,10 +2426,6 @@ class Window(QMainWindow):
 				self.name_spacer.show()
 			else:
 				self.name_spacer.hide()
-
-		self.refreshChannelMenu()
-
-		
 
 	def disconnect(self):
 

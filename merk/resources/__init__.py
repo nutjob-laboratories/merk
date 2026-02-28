@@ -1104,3 +1104,9 @@ class QErrNickEdit(QLineEdit):
 		
 		self.validator = QRegExpValidator(QRegExp(pattern), self)
 		self.setValidator(self.validator)
+
+class ScrollableMenuStyle(QProxyStyle):
+	def styleHint(self, hint, option=None, widget=None, returnData=None):
+		if hint == QStyle.SH_Menu_Scrollable:
+			return True
+		return super().styleHint(hint, option, widget, returnData)

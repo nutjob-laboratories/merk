@@ -1493,20 +1493,18 @@ class Dialog(QDialog):
 
 		if self.topicDisplay.isChecked():
 			self.channelName.setEnabled(True)
-			self.showBanlist.setEnabled(True)
-			self.showChanMenu.setEnabled(True)
 			self.channelCount.setEnabled(True)
 			self.channelTooltip.setEnabled(True)
 			self.channelColors.setEnabled(True)
 			self.topicEditor.setEnabled(True)
+			self.chanMode.setEnabled(True)
 		else:
 			self.channelName.setEnabled(False)
-			self.showBanlist.setEnabled(False)
-			self.showChanMenu.setEnabled(False)
 			self.channelCount.setEnabled(False)
 			self.channelTooltip.setEnabled(False)
 			self.channelColors.setEnabled(False)
 			self.topicEditor.setEnabled(False)
+			self.chanMode.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -3622,14 +3620,6 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
 		self.channelName.stateChanged.connect(self.topicChange)
 
-		self.showBanlist = QCheckBox("Banlist button",self)
-		if config.SHOW_BANLIST_MENU: self.showBanlist.setChecked(True)
-		self.showBanlist.stateChanged.connect(self.topicChange)
-
-		self.showChanMenu = QCheckBox("Set modes button",self)
-		if config.SHOW_CHANNEL_MENU: self.showChanMenu.setChecked(True)
-		self.showChanMenu.stateChanged.connect(self.topicChange)
-
 		self.channelCount = QCheckBox("User count",self)
 		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
 		self.channelCount.stateChanged.connect(self.topicChange)
@@ -3646,14 +3636,17 @@ class Dialog(QDialog):
 		if config.ALLOW_TOPIC_EDIT: self.topicEditor.setChecked(True)
 		self.topicEditor.stateChanged.connect(self.changedSetting)
 
+		self.chanMode = QCheckBox("Channel mode right click menu",self)
+		if config.CHANNEL_MODE_CONTEXT_MENU: self.chanMode.setChecked(True)
+		self.chanMode.stateChanged.connect(self.changedSetting)
+
 		if not config.SHOW_CHANNEL_TOPIC:
 			self.channelName.setEnabled(False)
-			self.showBanlist.setEnabled(False)
-			self.showChanMenu.setEnabled(False)
 			self.channelCount.setEnabled(False)
 			self.channelTooltip.setEnabled(False)
 			self.channelColors.setEnabled(False)
 			self.topicEditor.setEnabled(False)
+			self.chanMode.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -3757,9 +3750,8 @@ class Dialog(QDialog):
 		chanButtonLayout2 = QFormLayout()
 		chanButtonLayout2.setSpacing(2)
 		chanButtonLayout2.addRow(self.channelName,self.channelCount)
-		chanButtonLayout2.addRow(self.showChanMenu,self.showBanlist)
-		chanButtonLayout2.addRow(self.channelTooltip,self.channelColors)
-		chanButtonLayout2.addRow(self.topicEditor)
+		chanButtonLayout2.addRow(self.channelTooltip,self.topicEditor)
+		chanButtonLayout2.addRow(self.chanMode)
 
 		chanButtonLayout = QHBoxLayout()
 		chanButtonLayout.addStretch()
@@ -3795,7 +3787,6 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
 		menuLayout.addLayout(infoExist)
-		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
@@ -6170,7 +6161,6 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
 		config.SHOW_CHANNEL_NAME_AND_MODES = self.channelName.isChecked()
-		config.SHOW_BANLIST_MENU = self.showBanlist.isChecked()
 		config.SHOW_USERLIST = self.showUserlists.isChecked()
 		config.SHOW_INPUT_MENU = self.showInputMenu.isChecked()
 		config.SHOW_WINDOWBAR = self.windowBar.isChecked()
@@ -6259,7 +6249,6 @@ class Dialog(QDialog):
 		config.LOG_CHANNEL_NICKNAME_CHANGE = self.nickLog.isChecked()
 		config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE = self.logEverything.isChecked()
 		config.SPELLCHECKER_DISTANCE = self.spellcheck_distance
-		config.SHOW_CHANNEL_MENU = self.showChanMenu.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = self.writeConsole.isChecked()
 		config.WRITE_INPUT_AND_OUTPUT_TO_FILE = self.writeFile.isChecked()
 		config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET = self.autoEmojiQuit.isChecked()
@@ -6441,6 +6430,7 @@ class Dialog(QDialog):
 		config.AUTOMATICALLY_REFRESH_CHANNEL_LIST = self.automaticList.isChecked()
 		config.PREVENT_ILLEGAL_NICKNAMES = self.prevIllegal.isChecked()
 		config.PREVENT_ILLEGAL_CHANNELS = self.prevChannel.isChecked()
+		config.CHANNEL_MODE_CONTEXT_MENU = self.chanMode.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

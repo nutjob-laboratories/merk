@@ -8187,6 +8187,56 @@ class ScriptThread(QThread):
 										loop = False
 								continue
 
+						# |========|
+						# | random |
+						# |========|
+						# 
+						# This command generates a random number, and stores
+						# it in an alias.
+						#
+						if len(tokens)>=1:
+							if tokens[0].lower()=='random' and len(tokens)==4:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+
+									first = is_int(tokens.pop(0))
+									last = is_int(tokens.pop(0))
+
+									if first!=None and last!=None:
+										# If the first character is the interpolation
+										# symbol, strip it from the name
+										if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+											il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+											if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+												a = a[il:]
+
+										# Only add the local alias if it follows all the
+										# "rules" of aliases
+										errors = None
+										if len(a)>=1:
+											if a[0].isalpha():
+												if not a in ALIAS:
+													if is_valid_alias_name(a):
+														r = random.randint(first, last)
+														self.addAlias(a,f"{r}")
+														self.CREATED.append(a)
+													else:
+														errors = f"\"{a}\" is not a valid alias token"
+												else:
+													errors = f"\"{a}\" already exists in another scope"
+											else:
+												errors = f"\"{a}\" is not a valid alias token"
+									else:
+										errors = f"arguments are non-numeric"
+									if errors!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: {errors}"])
+										loop = False
+									else:
+										script_only_command = True
+								continue
+
 						# |======|
 						# | halt |
 						# |======|

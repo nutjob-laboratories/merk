@@ -391,6 +391,10 @@ Appearance:
 <td>Sends unprocessed data to the server</td>
 </tr>
 <tr>
+<td><code>random ALIAS START LAST</code></td>
+<td>Generates a random integer from <code>START</code> to <code>LAST</code>, and stores it in <code>ALIAS</code>. <strong>Can only be called from scripts</strong></td>
+</tr>
+<tr>
 <td><code>/reconnect SERVER [PORT] [PASSWORD]</code></td>
 <td>Connects to an IRC server, reconnecting on disconnection</td>
 </tr>

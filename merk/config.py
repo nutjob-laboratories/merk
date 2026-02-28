@@ -113,7 +113,6 @@ QT_WINDOW_STYLE = 'Windows'
 SHOW_CHANNEL_TOPIC = True
 SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = False
 SHOW_CHANNEL_NAME_AND_MODES = True
-SHOW_BANLIST_MENU = True
 SHOW_USERLIST = True
 SHOW_INPUT_MENU = True
 SHOW_WINDOWBAR = True
@@ -211,7 +210,6 @@ TWISTED_CLIENT_HEARTBEAT = 120
 SPELLCHECKER_DISTANCE = 1
 LOG_CHANNEL_NICKNAME_CHANGE = True
 ENABLE_COMMAND_INPUT_HISTORY = True
-SHOW_CHANNEL_MENU = True
 EMOJI_LANGUAGE = 'alias'
 WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = False
 WRITE_INPUT_AND_OUTPUT_TO_FILE = False
@@ -417,9 +415,11 @@ REFRESH_CHANNEL_LIST = 120
 PREVENT_ILLEGAL_NICKNAMES = True
 REGISTRATION_NICK_ERROR_LIMIT = 3
 PREVENT_ILLEGAL_CHANNELS = True
+CHANNEL_MODE_CONTEXT_MENU = True
 
 def build_settings():
 	settings = {
+		"channel_mode_right_click_menu": CHANNEL_MODE_CONTEXT_MENU,
 		"prevent_illegal_channel_input": PREVENT_ILLEGAL_CHANNELS,
 		"nick_attempts_during_registration": REGISTRATION_NICK_ERROR_LIMIT,
 		"prevent_illegal_nickname_input": PREVENT_ILLEGAL_NICKNAMES,
@@ -624,7 +624,6 @@ def build_settings():
 		"write_network_input_and_output_to_file": WRITE_INPUT_AND_OUTPUT_TO_FILE,
 		"write_network_input_and_output_to_console": WRITE_INPUT_AND_OUTPUT_TO_CONSOLE,
 		"emoji_shortcode_language": EMOJI_LANGUAGE,
-		"show_channel_mode_menu": SHOW_CHANNEL_MENU,
 		"enable_command_history": ENABLE_COMMAND_INPUT_HISTORY,
 		"log_channel_nickname_changes": LOG_CHANNEL_NICKNAME_CHANGE,
 		"spellchecker_distance": SPELLCHECKER_DISTANCE,
@@ -765,7 +764,6 @@ def build_settings():
 		"show_channel_topic_bar": SHOW_CHANNEL_TOPIC,
 		"show_channel_topic_in_window_title": SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE,
 		"show_channel_name_and_modes": SHOW_CHANNEL_NAME_AND_MODES,
-		"show_channel_banlist_menu": SHOW_BANLIST_MENU,
 		"show_userlists": SHOW_USERLIST,
 		"show_input_menu": SHOW_INPUT_MENU,
 		"show_windowbar": SHOW_WINDOWBAR,
@@ -802,6 +800,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "channel_mode_right_click_menu" in settings:
+		settings["channel_mode_right_click_menu"] = CHANNEL_MODE_CONTEXT_MENU
 	if not "prevent_illegal_channel_input" in settings:
 		settings["prevent_illegal_channel_input"] = PREVENT_ILLEGAL_CHANNELS
 	if not "nick_attempts_during_registration" in settings:
@@ -1210,8 +1210,6 @@ def patch_settings(settings):
 		settings["write_network_input_and_output_to_console"] = WRITE_INPUT_AND_OUTPUT_TO_CONSOLE
 	if not "emoji_shortcode_language" in settings:
 		settings["emoji_shortcode_language"] = EMOJI_LANGUAGE
-	if not "show_channel_mode_menu" in settings:
-		settings["show_channel_mode_menu"] = SHOW_CHANNEL_MENU
 	if not "enable_command_history" in settings:
 		settings["enable_command_history"] = ENABLE_COMMAND_INPUT_HISTORY
 	if not "log_channel_nickname_changes" in settings:
@@ -1402,8 +1400,6 @@ def patch_settings(settings):
 		settings["show_userlists"] = SHOW_USERLIST
 	if not "show_channel_name_and_modes" in settings:
 		settings["show_channel_name_and_modes"] = SHOW_CHANNEL_NAME_AND_MODES
-	if not "show_channel_banlist_menu" in settings:
-		settings["show_channel_banlist_menu"] = SHOW_BANLIST_MENU
 	if not "show_channel_topic_in_window_title" in settings:
 		settings["show_channel_topic_in_window_title"] = SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 	if not "show_channel_topic_bar" in settings:
@@ -1635,7 +1631,6 @@ def load_settings(filename):
 	global SHOW_CHANNEL_TOPIC
 	global SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 	global SHOW_CHANNEL_NAME_AND_MODES
-	global SHOW_BANLIST_MENU
 	global SHOW_USERLIST
 	global SHOW_INPUT_MENU
 	global SHOW_WINDOWBAR
@@ -1732,7 +1727,6 @@ def load_settings(filename):
 	global SPELLCHECKER_DISTANCE
 	global LOG_CHANNEL_NICKNAME_CHANGE
 	global ENABLE_COMMAND_INPUT_HISTORY
-	global SHOW_CHANNEL_MENU
 	global EMOJI_LANGUAGE
 	global WRITE_INPUT_AND_OUTPUT_TO_CONSOLE
 	global WRITE_INPUT_AND_OUTPUT_TO_FILE
@@ -1937,6 +1931,7 @@ def load_settings(filename):
 	global PREVENT_ILLEGAL_NICKNAMES
 	global REGISTRATION_NICK_ERROR_LIMIT
 	global PREVENT_ILLEGAL_CHANNELS
+	global CHANNEL_MODE_CONTEXT_MENU
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1946,6 +1941,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		CHANNEL_MODE_CONTEXT_MENU = settings["channel_mode_right_click_menu"]
 		PREVENT_ILLEGAL_CHANNELS = settings["prevent_illegal_channel_input"]
 		REGISTRATION_NICK_ERROR_LIMIT = settings["nick_attempts_during_registration"]
 		PREVENT_ILLEGAL_NICKNAMES = settings["prevent_illegal_nickname_input"]
@@ -2150,7 +2146,6 @@ def load_settings(filename):
 		WRITE_INPUT_AND_OUTPUT_TO_FILE = settings["write_network_input_and_output_to_file"]
 		WRITE_INPUT_AND_OUTPUT_TO_CONSOLE = settings["write_network_input_and_output_to_console"]
 		EMOJI_LANGUAGE = settings["emoji_shortcode_language"]
-		SHOW_CHANNEL_MENU = settings["show_channel_mode_menu"]
 		ENABLE_COMMAND_INPUT_HISTORY = settings["enable_command_history"]
 		LOG_CHANNEL_NICKNAME_CHANGE = settings["log_channel_nickname_changes"]
 		SPELLCHECKER_DISTANCE = settings["spellchecker_distance"]
@@ -2248,7 +2243,6 @@ def load_settings(filename):
 		SHOW_INPUT_MENU = settings["show_input_menu"]
 		SHOW_USERLIST = settings["show_userlists"]
 		SHOW_CHANNEL_NAME_AND_MODES = settings["show_channel_name_and_modes"]
-		SHOW_BANLIST_MENU = settings["show_channel_banlist_menu"]
 		SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = settings["show_channel_topic_in_window_title"]
 		SHOW_CHANNEL_TOPIC = settings["show_channel_topic_bar"]
 		USE_MENUBAR = settings["use_menubar"]

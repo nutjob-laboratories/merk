@@ -1418,7 +1418,7 @@ class Merk(QMainWindow):
 
 		self.trayMenu.addSeparator()
 
-		entry = QAction(QIcon(ABOUT_ICON),"About "+APPLICATION_NAME,self)
+		entry = QAction(QIcon(APPLICATION_ICON),f"{APPLICATION_NAME} IRC Client",self)
 		entry.triggered.connect(self.showAbout)
 		self.trayMenu.addAction(entry)
 
@@ -2045,7 +2045,6 @@ class Merk(QMainWindow):
 		w = self.getWindow(channel,client)
 		if w:
 			w.banlist = banlist.copy()
-			w.refreshBanMenu()
 			return
 
 	def names(self,client,channel,users):
