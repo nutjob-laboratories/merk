@@ -1,0 +1,67 @@
+app-id: net.nutjob.Merk
+runtime: org.kde.Platform
+runtime-version: '5.15-23.08'
+sdk: org.kde.Sdk
+command: merk
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  # Explicitly allow both display systems
+  - --socket=x11
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --socket=pulseaudio
+  - --filesystem=home
+  - --persist=.merk
+
+modules:
+  - name: merk-linux-dist
+    buildsystem: simple
+    build-commands:
+      # 1. Extraction
+      - mkdir -p temp_extract
+      - unzip -o merk-linux-source.zip -d temp_extract || true
+
+      # 2. Installation
+      - mkdir -p /app/share/merk
+      - cp -a temp_extract/. /app/share/merk/
+
+      # 3. Universal Launcher
+      - mkdir -p /app/bin
+      - |
+        cat <<EOF > /app/bin/merk
+        #!/bin/sh
+        export LD_LIBRARY_PATH=/app/share/merk/lib:\$LD_LIBRARY_PATH
+        # Automatically detects the environment: tries Wayland first, falls back to X11 (xcb)
+        export QT_QPA_PLATFORM="wayland;xcb"
+        export DESKTOP_STARTUP_ID="net.nutjob.Merk"
+        exec /app/share/merk/merk "\$@"
+        EOF
+      - chmod +x /app/bin/merk
+      - chmod +x /app/share/merk/merk
+
+      # 4. Desktop Entry (Standardized for all Desktop Environments)
+      - mkdir -p /app/share/applications
+      - |
+        cat <<EOF > /app/share/applications/net.nutjob.Merk.desktop
+        [Desktop Entry]
+        Name=Merk IRC
+        Exec=merk
+        Icon=net.nutjob.Merk
+        Type=Application
+        Categories=Network;Chat;
+        Terminal=false
+        StartupWMClass=merk
+        EOF
+
+      # 5. Icon Setup
+      - mkdir -p /app/share/icons/hicolor/128x128/apps
+      - cp /app/share/merk/merk.png /app/share/icons/hicolor/128x128/apps/net.nutjob.Merk.png || true
+
+    sources:
+      - type: file
+        url: https://github.com/nutjob-laboratories/merk/releases/download/0.051.600/merk-linux-0.051-600.zip
+        sha256: 532bd35018c417968eb55638bbb4ec8486b69941a949aec0f8ad4f32c3c9d93d
+        dest-filename: merk-linux-source.zip
