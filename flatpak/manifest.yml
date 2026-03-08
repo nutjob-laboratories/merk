@@ -47,7 +47,8 @@ modules:
       - |
         cat <<EOF > /app/share/applications/net.nutjob.Merk.desktop
         [Desktop Entry]
-        Name=Merk IRC
+        Name=MERK
+        Comment=Open source IRC client
         Exec=merk
         Icon=net.nutjob.Merk
         Type=Application
@@ -62,6 +63,6 @@ modules:
 
     sources:
       - type: file
-        url: https://github.com/nutjob-laboratories/merk/releases/download/0.051.600/merk-linux-0.051-600.zip
-        sha256: 532bd35018c417968eb55638bbb4ec8486b69941a949aec0f8ad4f32c3c9d93d
+        url: "file:/home/wraithnix/Dropbox/Public/merk-linux-latest.zip"
+        sha256: "__HASH__"
         dest-filename: merk-linux-source.zip
