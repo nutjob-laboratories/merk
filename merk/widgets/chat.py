@@ -3650,8 +3650,21 @@ class SpellTextEdit(QPlainTextEdit):
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
 
-						# Nicks
+						# Nicks in the current channel
 						chan_nicks = self.parent.nicks
+						for nick in chan_nicks:
+							# Skip client's nickname
+							if nick==self.parent.client.nickname:
+								continue
+							if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
+								cursor.beginEditBlock()
+								cursor.insertText(f"{nick}")
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
+						# Nicks in all current channels
+						chan_nicks = self.parent.client.all_visible_nicknames
 						for nick in chan_nicks:
 							# Skip client's nickname
 							if nick==self.parent.client.nickname:
@@ -3968,7 +3981,11 @@ class Highlighter(QSyntaxHighlighter):
 			# Apply syntax style to nicknames
 			nickformat = syntax.format(config.SYNTAX_NICKNAME_COLOR,config.SYNTAX_NICKNAME_STYLE)
 			for word_object in re.finditer(self.WORDS, text):
-				for nick in self.parent.nicks:
+				if config.HIGHLIGHT_ALL_VISIBLE_NICKS:
+					hnicks = self.parent.client.all_visible_nicknames
+				else:
+					hnicks = self.parent.nicks
+				for nick in hnicks:
 					if nick==self.parent.client.nickname: continue
 					if nick==word_object.group():
 						do_not_spellcheck.append(nick)

@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.600">MERK 0.051.600</a></big></b><br>
-  <b>Current development version: 0.051.625</b><br>
+  <b>Current development version: 0.051.630</b><br>
   <b><a href="https://merk.chat">Visit us at https://merk.chat!</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
@@ -34,14 +34,15 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.600 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.600)  |
-| Zip Archive|  Cross-Platform Python  | [Download MERK 0.051.625 (12.87 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive|  Linux Executable | [Download MERK 0.051.625 (98.91 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.625 (49.81 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.625 (46.90 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.630 (12.87 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.051.630 (98.92 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.051.630 (~80 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.630 (49.81 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.630 (46.92 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.625**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.630**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
@@ -64,6 +65,12 @@ A note: all command-line arguments, as documented below, work on the all version
 **MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf). **MERK** supports both [X11](https://www.x.org/wiki/) and [Wayland](https://wayland.freedesktop.org/).
 
 To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1) and unzip to any directory, and double click on `merk` to run the client, or execute  `merk` from a console window.
+
+If you have [Flatpak](https://flatpak.org/) installed, you can install the Flatpak distribution. [Download the Flatpak of **MERK**](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1), and save it. Then, navigate to where ever you saved the file with the console, and enter:
+
+    flatpak install --user merk-latest.flatpak
+
+You may have to restart your window manager for the entry in the application menu(s) to appear. The same instructions work for releases of **MERK**, just replace `merk-latest.flatpak` with the filename of the Flatpak release. To update **MERK** to the latest version, just download the Flatpak of the latest version and install it.
 
 A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
 
@@ -129,6 +136,7 @@ There are four libraries that comes bundled with **MERK**:
 # Features
 -   Runs on Windows, Linux, and macOS
 -   Stand-alone binaries for both Windows and Linux are available
+-   [Flatpak](https://flatpak.org/) distribution for Linux is available
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Connect to IRC via TCP/IP or SSL/TLS
 -   A built-in list of over 80 IRC servers to connect to
@@ -208,7 +216,7 @@ There are four libraries that comes bundled with **MERK**:
 # Screenshots
 
 <p align="center">
-<p><small><i>Screenshots may not reflect the current release (0.051.600), and may reflect the current development version (0.051.625). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.600), and may reflect the current development version (0.051.630). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>

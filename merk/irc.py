@@ -203,6 +203,7 @@ class IRC_Connection(irc.IRCClient):
 		self.long_notices = []
 		self.joined_channel = []
 		self.channels = []
+		self.all_visible_nicknames = []
 
 		self.server_channel_list = []
 		self.channel_list_window = None
@@ -935,6 +936,22 @@ class IRC_Connection(irc.IRCClient):
 		if channel in self.joined_channel:
 			self.joined_channel.remove(channel)
 			self.gui.joinedEvent(self,channel)
+
+		# Remove status symbols from the nick list
+		if channel in self.all_nicks:
+			cleaned = []
+			for n in self.all_nicks[channel]:
+				n = n.replace('@','')
+				n = n.replace('+','')
+				n = n.replace('~','')
+				n = n.replace('&','')
+				n = n.replace('%','')
+				n = n.replace('!','')
+				if n==self.nickname: continue
+				cleaned.append(n)
+			self.all_nicks[channel] = list(cleaned)
+
+		self.all_visible_nicknames = list(set(item for sublist in self.all_nicks.values() for item in sublist))
 
 	def irc_RPL_TOPIC(self, prefix, params):
 		if not params[2].isspace():

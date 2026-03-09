@@ -417,9 +417,11 @@ PREVENT_ILLEGAL_CHANNELS = True
 CHANNEL_MODE_CONTEXT_MENU = True
 SETTINGS_FONT_POINT_SIZE = 10
 ENABLE_READ_COMMAND = True
+HIGHLIGHT_ALL_VISIBLE_NICKS = False
 
 def build_settings():
 	settings = {
+		"highlight_all_nicknames_in_input_widget": HIGHLIGHT_ALL_VISIBLE_NICKS,
 		"enable_read_command": ENABLE_READ_COMMAND,
 		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
 		"channel_mode_right_click_menu": CHANNEL_MODE_CONTEXT_MENU,
@@ -802,6 +804,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "highlight_all_nicknames_in_input_widget" in settings:
+		settings["highlight_all_nicknames_in_input_widget"] = HIGHLIGHT_ALL_VISIBLE_NICKS
 	if not "enable_read_command" in settings:
 		settings["enable_read_command"] = ENABLE_READ_COMMAND
 	if not "settings_dialog_font_size" in settings:
@@ -1937,6 +1941,7 @@ def load_settings(filename):
 	global CHANNEL_MODE_CONTEXT_MENU
 	global SETTINGS_FONT_POINT_SIZE
 	global ENABLE_READ_COMMAND
+	global HIGHLIGHT_ALL_VISIBLE_NICKS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1946,6 +1951,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_nicknames_in_input_widget"]
 		ENABLE_READ_COMMAND = settings["enable_read_command"]
 		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]
 		CHANNEL_MODE_CONTEXT_MENU = settings["channel_mode_right_click_menu"]

@@ -600,6 +600,15 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingHighlight(self,state):
+		if self.toggleSyntaxInput.isChecked():
+			self.highlightAllNicks.setEnabled(True)
+		else:
+			self.highlightAllNicks.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedClear(self,state):
 
 		if self.pluginClear.isChecked():
@@ -5655,7 +5664,8 @@ class Dialog(QDialog):
 			all server and chat windows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
 			current chat and <b>emoji</b> and <b>ASCIImoji shortcodes</b> will be highlighted using the
-			colors and format settings below.
+			colors and format settings below. Optionally, all <b>nicknames</b> in any
+			channel the client is in can be highlighted.
 			</small>
 			""")
 		self.syntaxInput.setWordWrap(True)
@@ -5663,7 +5673,14 @@ class Dialog(QDialog):
 
 		self.toggleSyntaxInput = QCheckBox("Apply syntax highlighting to input",self)
 		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET: self.toggleSyntaxInput.setChecked(True)
-		self.toggleSyntaxInput.stateChanged.connect(self.changedSetting)
+		self.toggleSyntaxInput.stateChanged.connect(self.changedSettingHighlight)
+
+		self.highlightAllNicks = QCheckBox("Highlight all \"visible\" nicknames in input",self)
+		if config.HIGHLIGHT_ALL_VISIBLE_NICKS: self.highlightAllNicks.setChecked(True)
+		self.highlightAllNicks.stateChanged.connect(self.changedSetting)
+
+		if not config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+			self.highlightAllNicks.setEnabled(False)
 
 		tbLay = QFormLayout()
 		tbLay.setSpacing(0)
@@ -5687,6 +5704,16 @@ class Dialog(QDialog):
 		inputMaster.addWidget(self.toggleSyntaxInput)
 		inputMaster.addStretch()
 
+		inputMaster2 = QHBoxLayout()
+		inputMaster2.addStretch()
+		inputMaster2.addWidget(self.highlightAllNicks)
+		inputMaster2.addStretch()
+
+		inputOpts = QVBoxLayout()
+		inputOpts.setSpacing(0)
+		inputOpts.addLayout(inputMaster)
+		inputOpts.addLayout(inputMaster2)
+
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
@@ -5694,7 +5721,7 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
-		syntaxLayout.addLayout(inputMaster)
+		syntaxLayout.addLayout(inputOpts)
 		syntaxLayout.addLayout(sbLay)
 		syntaxLayout.addStretch()
 
@@ -6453,6 +6480,7 @@ class Dialog(QDialog):
 		config.PREVENT_ILLEGAL_CHANNELS = self.prevChannel.isChecked()
 		config.CHANNEL_MODE_CONTEXT_MENU = self.chanMode.isChecked()
 		config.ENABLE_READ_COMMAND = self.enableRead.isChecked()
+		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

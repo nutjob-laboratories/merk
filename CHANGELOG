@@ -2,6 +2,10 @@
 |                                   0.051.650                                  |
 |------------------------------------------------------------------------------|
 
+What's New
+
+  - **MERK has a Flatpak distribution**. It's not up on Flathub yet, but you can download it and install on Linux.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -55,6 +59,12 @@
   longer execute.
 * Added a new plugin example to both the documentation and the repo.
 * Added new tips to the "tips and tricks" dialog.
+* Nickname autocomplete can now autocomplete all nicknames that are "visible"
+  to the client. Nicknames in the current channel are given priority and will
+  be completed first.
+* New option: highlight nicknames from any channel that the client is present
+  in in the text input widget. The option is turned off by default.
+* New Flatpak distribution for Linux!
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

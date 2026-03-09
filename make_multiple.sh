@@ -20,3 +20,7 @@ mv merk.zip "./downloads/merk-linux-$major_version-$minor_version.zip"
 
 rm -rf ./build
 rm -rf ./dist
+
+cd flatpak
+./build_flatpak.sh
+

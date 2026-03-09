@@ -1,4 +1,4 @@
-app-id: net.nutjob.Merk
+app-id: net.nutjob.MERK
 runtime: org.kde.Platform
 runtime-version: '5.15-23.08'
 sdk: org.kde.Sdk
@@ -36,7 +36,7 @@ modules:
         export LD_LIBRARY_PATH=/app/share/merk/lib:\$LD_LIBRARY_PATH
         # Automatically detects the environment: tries Wayland first, falls back to X11 (xcb)
         export QT_QPA_PLATFORM="wayland;xcb"
-        export DESKTOP_STARTUP_ID="net.nutjob.Merk"
+        export DESKTOP_STARTUP_ID="net.nutjob.MERK"
         exec /app/share/merk/merk "\$@"
         EOF
       - chmod +x /app/bin/merk
@@ -45,12 +45,12 @@ modules:
       # 4. Desktop Entry (Standardized for all Desktop Environments)
       - mkdir -p /app/share/applications
       - |
-        cat <<EOF > /app/share/applications/net.nutjob.Merk.desktop
+        cat <<EOF > /app/share/applications/net.nutjob.MERK.desktop
         [Desktop Entry]
         Name=MERK
         Comment=Open source IRC client
         Exec=merk
-        Icon=net.nutjob.Merk
+        Icon=net.nutjob.MERK
         Type=Application
         Categories=Network;Chat;
         Terminal=false
@@ -59,7 +59,7 @@ modules:
 
       # 5. Icon Setup
       - mkdir -p /app/share/icons/hicolor/128x128/apps
-      - cp /app/share/merk/merk.png /app/share/icons/hicolor/128x128/apps/net.nutjob.Merk.png || true
+      - cp /app/share/merk/merk.png /app/share/icons/hicolor/128x128/apps/net.nutjob.MERK.png || true
 
     sources:
       - type: file
