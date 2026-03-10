@@ -40,7 +40,6 @@ import re
 import platform
 
 from . import config
-# from . import resources
 
 class PythonHighlighter(QSyntaxHighlighter):
 	def __init__(self, document):
@@ -125,8 +124,6 @@ class PythonHighlighter(QSyntaxHighlighter):
 		self.setCurrentBlockState(0)
 
 def format(color, style=''):
-	"""Return a QTextCharFormat with the given attributes.
-	"""
 	_color = QColor()
 	_color.setNamedColor(color)
 
@@ -139,7 +136,6 @@ def format(color, style=''):
 	if 'bi' in style:
 		_format.setFontWeight(QFont.Bold)
 		_format.setFontItalic(True)
-
 	return _format
 
 class MerkScriptHighlighter (QSyntaxHighlighter):
@@ -311,8 +307,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"restrict private channel",
 			"halt",
 			"random",
-			"target",
 			"read",
+			"target",
 		]
 
 		script_full = [
@@ -372,7 +368,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"config")
 			merk.remove(cmdsymbol+"config import")
 			merk.remove(cmdsymbol+"config export")
-		if not config.ENABLE_GOTO_COMMAND: script_full = []
+		if not config.ENABLE_GOTO_COMMAND:
+			script_full = []
+			script_only.remove("target")
 		if not config.ENABLE_IF_COMMAND:
 			script_only.remove("if")
 			operators = []
@@ -400,7 +398,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		rules = []
 
 		# Commands
-		rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
+		# rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
+		# 	for o in merk]
+		rules += [(r'%s' % o, 0, STYLES['merk'])
 			for o in merk]
 
 		# Script Only Commands
@@ -416,7 +416,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			for o in operators]
 
 		# Script comments
-		pattern = r'^\s*%srem(.*)' % cmdsymbol
+		# pattern = r'^\s*%srem(.*)' % cmdsymbol
+		pattern = r'%srem(.*)' % cmdsymbol
 		rules += [(pattern, 1, STYLES['comments'])]
 
 		# Channel names, aliases, and servers
@@ -434,10 +435,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			for (pat, index, fmt) in rules]
 
 	def highlightBlock(self, text):
-
-		"""Apply syntax highlighting to the given block of text.
-		"""
-		# Do other syntax formatting
 		for expression, nth, format in self.rules:
 			index = expression.indexIn(text, 0)
 
@@ -446,7 +443,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 				length = len(expression.cap(nth))
 				self.setFormat(index, length, format)
 				index = expression.indexIn(text, index + length)
-
 		self.setCurrentBlockState(0)
 
 class IRCFullHighlighter(QSyntaxHighlighter):

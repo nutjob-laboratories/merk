@@ -65,6 +65,21 @@ What's New
 * New option: highlight nicknames from any channel that the client is present
   in in the text input widget. The option is turned off by default.
 * New Flatpak distribution for Linux!
+* Bugfix: fixed a race condition in the "read" command.
+* Bugfix: Aliases in scripts did not have input values interpolated properly.
+* Bugfix: /alias could throw "not in scope" errors in long running scripts
+  improperly.
+* Bugfix: /alias can now be reliably called from "if" commands without causing
+  "not in scope" errors.
+* Bugfix: calling a script-only command (besides "goto") as the result of a
+  successful "if" call now precents a script from executing and displays an
+  error.
+* Bugfix: if "goto" is disabled, calling "target" will show an error and
+  prevent a script from executing.
+* The syntax highlighter in the script editor now highlights non-script-only
+  commands that appear anywhere on a line, not just at the beginning. Script-
+  only commands are still only highlighted if they appear at the beginning of
+  a line.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -1064,6 +1064,7 @@ def execute_script_end(data):
 
 	del gui.scripts[script_id]
 
+	aliases_to_destroy = list(set(aliases_to_destroy))
 	for alias in aliases_to_destroy:
 		removeAlias(alias)
 
@@ -7920,7 +7921,14 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
-			config.ENABLE_READ_COMMAND
+			# |========|
+			# | target |
+			# |========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='target':
+					if not config.ENABLE_GOTO_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+						no_errors = False
 
 			# |========|
 			# | random |
@@ -8003,6 +8011,25 @@ class ScriptThread(QThread):
 									if not config.ENABLE_GOTO_COMMAND:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 										no_errors = False
+
+								script_only = [
+									"restrict",
+									"insert",
+									"usage",
+									"context",
+									"wait",
+									"end",
+									"only",
+									"exclude",
+									"if",
+									"halt",
+									"random",
+									"read",
+									"target",
+								]
+								if stokens[0].lower() in script_only:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: script-only commands cannot be called from if"])
+									no_errors = False
 						except:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
 							no_errors = False
@@ -8335,7 +8362,6 @@ class ScriptThread(QThread):
 						loop =  False
 					else:
 						line = script[index]
-
 						tokens = line.split()
 
 						# |========|
@@ -8368,22 +8394,25 @@ class ScriptThread(QThread):
 									if len(a)>=1:
 										if a[0].isalpha():
 											if not a in ALIAS:
-												if is_valid_alias_name(a):
-													value = ' '.join(tokens)
-													result,error = math(value)
-													if not error and result!=None: value = str(result)
-													self.addAlias(a,value)
-													self.CREATED.append(a)
-													script_only_command = True
-												else:
+												if not is_valid_alias_name(a):
 													errors = f"\"{a}\" is not a valid alias token"
 											else:
-												errors = f"\"{a}\" already exists in another scope"
+												if not a in self.CREATED:
+													errors = f"\"{a}\" already exists in another scope"
 										else:
 											errors = f"\"{a}\" is not a valid alias token"
 									if errors!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {errors}"])
 										loop = False
+									else:
+										value = ' '.join(tokens)
+										buildTemporaryAliases(self.gui,self.window)
+										value = self.interpolateAliases(value)
+										result,error = math(value)
+										if not error and result!=None: value = str(result)
+										self.addAlias(a,value)
+										self.CREATED.append(a)
+										script_only_command = True
 								continue
 
 						# |======|
@@ -8400,12 +8429,12 @@ class ScriptThread(QThread):
 									tokens.pop(0)
 									a = tokens.pop(0)
 
-									filename = ' '.join(tokens)
+									ifilename = ' '.join(tokens)
 
 									buildTemporaryAliases(self.gui,self.window)
-									filename = self.interpolateAliases(filename)
+									ifilename = self.interpolateAliases(ifilename)
 
-									efilename = find_file(filename,None)
+									efilename = find_file(ifilename,None)
 
 									if efilename!=None:
 										# If the first character is the interpolation
@@ -8431,17 +8460,30 @@ class ScriptThread(QThread):
 																self.CREATED.append(a)
 																script_only_command = True
 															except Exception as e:
-																errors = f"error reading \"{filename}\" ({e})"
+																errors = f"error reading \"{ifilename}\" ({e})"
 														else:
-															errors = f"\"{filename}\" is not a text file"
+															errors = f"\"{ifilename}\" is not a text file"
 													else:
 														errors = f"\"{a}\" is not a valid alias token"
 												else:
-													errors = f"\"{a}\" already exists in another scope"
+													if a in self.CREATED:
+														if is_text_file(efilename):
+															try:
+																f = open(efilename,"r")
+																contents = f.read()
+																f.close()
+																self.addAlias(a,f"{contents}")
+																script_only_command = True
+															except Exception as e:
+																errors = f"error reading \"{ifilename}\" ({e})"
+														else:
+															errors = f"\"{ifilename}\" is not a text file"
+													else:
+														errors = f"\"{a}\" already exists in another scope"
 											else:
 												errors = f"\"{a}\" is not a valid alias token"
 									else:
-										errors = f"\"{filename}\" not found"
+										errors = f"\"{ifilename}\" not found"
 									if errors!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {errors}"])
 										loop = False
@@ -8490,7 +8532,15 @@ class ScriptThread(QThread):
 													else:
 														errors = f"\"{a}\" is not a valid alias token"
 												else:
-													errors = f"\"{a}\" already exists in another scope"
+													if a in self.CREATED:
+														if is_valid_alias_name(a):
+															r = random.randint(first, last)
+															self.addAlias(a,f"{r}")
+															script_only_command = True
+														else:
+															errors = f"\"{a}\" is not a valid alias token"
+													else:
+														errors = f"\"{a}\" already exists in another scope"
 											else:
 												errors = f"\"{a}\" is not a valid alias token"
 									else:
@@ -8667,6 +8717,55 @@ class ScriptThread(QThread):
 									continue
 
 								if do_command:
+									# /alias
+									if len(stokens)>=3:
+										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
+											if config.ENABLE_ALIASES:
+												stokens.pop(0)
+												a = stokens.pop(0)
+
+												# If the first character is the interpolation
+												# symbol, strip it from the name
+												if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+													il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+													if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+														a = a[il:]
+
+												# Only add the local alias if it follows all the
+												# "rules" of aliases
+												errors = None
+												if len(a)>=1:
+													if a[0].isalpha():
+														if not a in ALIAS:
+															if not is_valid_alias_name(a):
+																errors = f"\"{a}\" is not a valid alias token"
+														else:
+															if not a in self.CREATED:
+																errors = f"\"{a}\" already exists in another scope"
+													else:
+														errors = f"\"{a}\" is not a valid alias token"
+												if errors!=None:
+													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {errors}"])
+													loop = False
+												else:
+													value = ' '.join(stokens)
+													buildTemporaryAliases(self.gui,self.window)
+													value = self.interpolateAliases(value)
+													result,error = math(value)
+													if not error and result!=None: value = str(result)
+													self.addAlias(a,value)
+													if not a in self.CREATED: self.CREATED.append(a)
+											else:
+												self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}if: alias is disabled"])
+												loop = False
+											script_only_command = True
+											continue
+									if len(stokens)<3:
+										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
+											loop = False
+											continue
+									#  goto
 									handled_goto = False
 									if len(stokens)==2:
 										if stokens[0].lower()=='goto':
@@ -8930,7 +9029,7 @@ class ScriptThread(QThread):
 			else:
 				filename = self.filename
 			self.scriptError.emit([self.gui,self.window,f"Error executing {os.path.basename(filename)}: {e}"])
-									
+		
 		self.scriptEnd.emit([self.gui,self.id,self.CREATED])
 
 def initialize(directory,directory_name,folder):
