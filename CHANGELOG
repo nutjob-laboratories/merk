@@ -80,6 +80,8 @@ What's New
   commands that appear anywhere on a line, not just at the beginning. Script-
   only commands are still only highlighted if they appear at the beginning of
   a line.
+* New command: /warn works exactly like /print and /prints, and displays an
+  error message in a window.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

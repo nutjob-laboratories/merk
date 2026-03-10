@@ -409,6 +409,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
 | `wait SECONDS`                         | Pauses script execution for `SECONDS`; *can only be called from scripts*                                                           |
 | `/wallops MESSAGE`                         | Sends a message to all operators  |
+| `/warn [SERVER] [WINDOW] TEXT...`               | Prints an error message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window     |
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |

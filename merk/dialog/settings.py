@@ -5038,7 +5038,7 @@ class Dialog(QDialog):
 		seLayout.addWidget(self.enableScripts)
 		seLayout.addStretch()
 
-		self.haltError = QCheckBox("Halt execution on error",self)
+		self.haltError = QCheckBox("Halt script execution on error",self)
 		if config.HALT_SCRIPT_EXECUTION_ON_ERROR: self.haltError.setChecked(True)
 		self.haltError.stateChanged.connect(self.changedSetting)
 

@@ -1193,6 +1193,10 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.insertWriteSystem)
 			self.displayCommands.addAction(entry)
 
+			entry = QAction(QIcon(EDIT_ICON),"Print warning",self)
+			entry.triggered.connect(self.insertWarn)
+			self.displayCommands.addAction(entry)
+			
 			entry = QAction(QIcon(WINDOW_ICON),"Display message box",self)
 			entry.triggered.connect(self.insertBox)
 			self.displayCommands.addAction(entry)
@@ -1982,6 +1986,16 @@ class Window(QMainWindow):
 
 		if len(e)>0:
 			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"print "+e+"\n")
+			self.updateApplicationTitle()
+
+	def insertWarn(self):
+		x = dialog.PrintMsg(self)
+		e = x.get_message_information(self)
+
+		if not e: return
+
+		if len(e)>0:
+			self.editor.insertPlainText(config.ISSUE_COMMAND_SYMBOL+"warn "+e+"\n")
 			self.updateApplicationTitle()
 
 	def insertBox(self):

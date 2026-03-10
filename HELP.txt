@@ -499,6 +499,10 @@ Appearance:
 <td>Sends a message to all operators</td>
 </tr>
 <tr>
+<td><code>/warn [SERVER] [WINDOW] TEXT...</code></td>
+<td>Prints an error message to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
+</tr>
+<tr>
 <td><code>/who NICKNAME [o]</code></td>
 <td>Requests user information from the server</td>
 </tr>
