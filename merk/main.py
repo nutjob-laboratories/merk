@@ -3356,6 +3356,19 @@ class Merk(QMainWindow):
 							output.append(f"{c.client.server}:{c.client.port}")
 		return output
 
+	def getAllInitialPartServerHostIds(self):
+		output = []
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"window_type"):
+				if c.window_type==SERVER_WINDOW:
+					if hasattr(c,"client"):
+						if c.client.registered:
+							if '.' in c.client.server:
+								s = c.client.server.split('.')
+								output.append(f"{s[0]}")
+		return output
+
 	def getAllServerNames(self):
 		retval = []
 		for window in self.MDI.subWindowList():

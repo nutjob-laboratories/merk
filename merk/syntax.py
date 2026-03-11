@@ -417,7 +417,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			for o in operators]
 
 		# Script comments
-		# pattern = r'^\s*%srem(.*)' % cmdsymbol
 		pattern = r'%srem(.*)' % cmdsymbol
 		rules += [(pattern, 1, STYLES['comments'])]
 

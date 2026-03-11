@@ -3926,6 +3926,7 @@ class Highlighter(QSyntaxHighlighter):
 	EMOJIS = r":\w+:"
 	ASCIIMOJIS = r"\(\w+\)"
 	SPECIAL = ['\\','^','$','.','|','?','*','+','(',')','{']
+	HOSTIDS = r"([A-Za-z0-9.-]+:\d+)"
 
 	def __init__(self, *args):
 		QSyntaxHighlighter.__init__(self, *args)
@@ -4020,6 +4021,30 @@ class Highlighter(QSyntaxHighlighter):
 						do_not_spellcheck.append(name)
 						do_not_spellcheck.append(name[1:])
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+
+			# Apply syntax styles to hostids
+			# First, check to make sure that a full hostID is currently
+			# in the text input widget
+			for name in self.parent.parent.getAllHostids():
+				if name in text:
+					# This bit is a bit of a hack. For some reason (thanks Qt) the
+					# first bit of the hostID (everything before the first period)
+					# is not highlighing properly. So, we're grabbing everything
+					# before the first period in all the hostIDs and highlighting
+					# that separately BEFORE we try to highlight the rest of the
+					# hostID.
+					for word_object in re.finditer(self.WORDS, text):
+						for name in self.parent.parent.getAllInitialPartServerHostIds():
+							if name == word_object.group():
+								do_not_spellcheck.append(name)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+					# With that out of the way, now we can highlight the rest of
+					# the hostID. I really hate having to do hacks like this.
+					for word_object in re.finditer(self.HOSTIDS, text):
+						for name in self.parent.parent.getAllHostids():
+							if name == word_object.group():
+								do_not_spellcheck.append(name)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
 
 			if config.ENABLE_ALIASES:
 				# Apply syntax styles to aliases

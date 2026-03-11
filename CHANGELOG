@@ -82,6 +82,7 @@ What's New
   a line.
 * New command: /warn works exactly like /print and /prints, and displays an
   error message in a window.
+* If input syntax highlighting is turned on, hostIDs are now highlighted.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
