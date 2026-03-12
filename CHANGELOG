@@ -83,6 +83,12 @@ What's New
 * New command: /warn works exactly like /print and /prints, and displays an
   error message in a window.
 * If input syntax highlighting is turned on, hostIDs are now highlighted.
+* Bugfix: commands like /print, /warn, etc., could not properly find windows
+  by using the server's reported hostname. I discovered this when trying to
+  print to a window on Freenode (which reports *.freenode.net as the host) and
+  the commands did not find the appropriate window. This has been fixed.
+* New "if" operator: (nin). Statement is true if the first argument is NOT
+  contained in the second argument (basically, the opposite of "(in)").
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

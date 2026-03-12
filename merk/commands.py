@@ -1644,7 +1644,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			displayed = False
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						displayed = True
@@ -1786,7 +1786,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						opacity_effect = QGraphicsOpacityEffect()
@@ -3291,7 +3291,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().input.setFocus()
@@ -3844,7 +3844,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			displayed = False
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						displayed = True
@@ -3924,7 +3924,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.close()
@@ -4860,7 +4860,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						gui.showSubWindow(w)
@@ -4957,7 +4957,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.hide()
@@ -6548,7 +6548,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			displayed = False
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						displayed = True
@@ -6755,7 +6755,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().pressedStyleButton()
@@ -6823,7 +6823,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.widget().clearChat()
@@ -6897,7 +6897,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.showNormal()
@@ -6980,7 +6980,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.showMinimized()
@@ -7059,7 +7059,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			swins = gui.getAllServerWindows()
 			for win in swins:
-				if server.lower() in win.widget().name.lower():
+				if server.lower()==win.widget().name.lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						w.showMaximized()
@@ -8714,6 +8714,8 @@ class ScriptThread(QThread):
 
 								valid_operator = False
 								do_command = False
+
+								# String based operators
 								if operator.lower()=='(is)':
 									examine = str(examine)
 									target = str(target)
@@ -8732,7 +8734,14 @@ class ScriptThread(QThread):
 									valid_operator = True
 									if examine.lower() in target.lower():
 										do_command = True
+								if operator.lower()=='(nin)':
+									examine = str(examine)
+									target = str(target)
+									valid_operator = True
+									if not examine.lower() in target.lower():
+										do_command = True
 
+								# Numeric operators
 								if operator.lower()=='(lt)':
 									valid_operator = True
 									e_is_string = False

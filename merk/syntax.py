@@ -325,6 +325,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(gt\\)",
 			"\\(eq\\)",
 			"\\(ne\\)",
+			"\\(nin\\)",
 		]
 
 		if not config.ENABLE_PLUGIN_EDITOR:
