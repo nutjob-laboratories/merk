@@ -1082,6 +1082,12 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
 	gui.scripts[script_id].start()
 
+def getScriptAliases(gui):
+	aliases = {}
+	for script_id in gui.scripts:
+		aliases.update(gui.scripts[script_id].ALIAS)
+	return aliases
+
 def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=False,execute=False):
 	try:
 		port = int(port)
@@ -6006,6 +6012,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
+			if a in getScriptAliases(gui):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+config.ALIAS_INTERPOLATION_SYMBOL+a+"\" already exists in another scope")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"\""+config.ALIAS_INTERPOLATION_SYMBOL+a+"\" already exists in another scope")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			value = ' '.join(tokens)
 
 			result,error = math(value)
@@ -6439,13 +6456,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			filename = ' '.join(tokens)
 
-			# First, check to see if the argument passed
-			# to the command is a hostid for a connection
-			# script that already exists; if it is, then
-			# open up the appropriate connection script
-			USER.load_user(USER.USER_FILE)
-			if filename in USER.COMMANDS:
-				gui.newEditorWindowConnect(filename)
+			# Check to see if we're trying to edit a connection
+			# script, and if so, either open the script in the
+			# editor if it exists, and if not, open a new
+			# connection script in the editor for the hostID
+			if is_hostid(filename):
+				gui.openEditorConnect(filename)
 				return True
 
 			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)

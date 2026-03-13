@@ -5,6 +5,9 @@
 What's New
 
   - **MERK has a Flatpak distribution**. It's not up on Flathub yet, but you can download it and install on Linux.
+  - **New `if` operator: `(nin)`**. This test if a string is NOT contained in another string.
+  - **Scripting improvements**. Scripts are now more "sandboxed", and harder to alter during runtime.
+  - **Many, many bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -89,6 +92,11 @@ What's New
   the commands did not find the appropriate window. This has been fixed.
 * New "if" operator: (nin). Statement is true if the first argument is NOT
   contained in the second argument (basically, the opposite of "(in)").
+* The /edit command can now create new connection scripts for a given hostID.
+* When editing an alias with the /alias command, MERK now makes sure that the
+  alias exists in the "right" scope before allowing the edit. For example,
+  aliases created in scripts can only be edited in scripts, and aliases edited
+  via the text input widget can only be edited via the text input widget.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

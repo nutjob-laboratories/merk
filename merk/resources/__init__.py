@@ -454,6 +454,10 @@ class WhoWasData:
 
 # Functions
 
+def is_hostid(s):
+	pattern = r'^[a-zA-Z0-9.-]+:\d+$'
+	return re.match(pattern, s) is not None
+
 def is_text_file(filepath, block_size=1024):
 	try:
 		with open(filepath, 'rb') as f:
