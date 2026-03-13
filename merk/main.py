@@ -1782,6 +1782,11 @@ class Merk(QMainWindow):
 
 		self.updateHostmask(client,nickname,hostmask)
 
+		if user==client.nickname:
+			mtype = SELF_MESSAGE
+		else:
+			mtype = CHAT_MESSAGE
+
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 
 			# Notify if the message has the user's nick
@@ -1801,7 +1806,7 @@ class Merk(QMainWindow):
 			# Channel message
 			w = self.getWindow(target,client)
 			if w:
-				t = Message(CHAT_MESSAGE,user,msg)
+				t = Message(mtype,user,msg)
 				w.writeText(t)
 
 				plugins.call(self,"message",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
@@ -1831,7 +1836,7 @@ class Merk(QMainWindow):
 			# to the private message window, if there is one
 			w = self.getWindow(nickname,client)
 			if w:
-				t = Message(CHAT_MESSAGE,user,msg)
+				t = Message(mtype,user,msg)
 				w.writeText(t)
 				displayed_private_message = True
 
@@ -1851,7 +1856,7 @@ class Merk(QMainWindow):
 				# Write the private message to the server window
 				w = self.getServerWindow(client)
 				if w:
-					t = Message(CHAT_MESSAGE,user,msg)
+					t = Message(mtype,user,msg)
 					w.writeText(t)
 
 			if displayed_private_message: return
@@ -1865,7 +1870,7 @@ class Merk(QMainWindow):
 					w = self.newPrivateWindow(nickname,client)
 					if w:
 						c = w.widget()
-						t = Message(CHAT_MESSAGE,user,msg)
+						t = Message(mtype,user,msg)
 						c.writeText(t)
 						plugins.call(self,"message",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=c)
 						return
@@ -3181,15 +3186,12 @@ class Merk(QMainWindow):
 		if len(user_input)>0:
 			# Client has issued a chat message, so send it
 			window.client.msg(window.name, user_input)
-			# Display the message to the user
-			t = Message(SELF_MESSAGE,window.client.nickname,user_input)
-			window.writeText(t)
 
 			if window.window_type==PRIVATE_WINDOW:
 				if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 					w = self.getServerWindow(window.client)
 					if w:
-						t = Message(SELF_MESSAGE,"&rarr;"+window.name,user_input)
+						t = Message(SELF_MESSAGE,window.client.nickname,user_input)
 						w.writeText(t)
 
 	def handleConsoleInput(self,window,user_input):

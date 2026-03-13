@@ -569,6 +569,23 @@ class IRC_Connection(irc.IRCClient):
 
 		super().quit(message)
 
+	def describe(self, channel, action):
+
+		super().describe(channel,action)
+
+		# Write private messages, too
+		w = self.gui.getWindow(channel,self)
+		if w:
+			t = Message(ACTION_MESSAGE,self.nickname,action)
+			w.writeText(t)
+
+		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
+			if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
+				w = self.gui.getServerWindow(self)
+				if w:
+					t = Message(ACTION_MESSAGE,self.nickname,action)
+					w.writeText(t)
+
 	def msg(self, user, message, length=None):
 
 		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
@@ -588,6 +605,27 @@ class IRC_Connection(irc.IRCClient):
 					self.long_messages.append(m)
 				else:
 					super().msg(user, chunk, length)
+
+		# For some reason, Twisted routes CTCP messages
+		# here, too, so we avoid displaying those. They
+		# are already handled.
+		if not message.startswith("\001"):
+			self.gui.privmsg(self,self.nickname,user,message)
+
+			# Write private messages, too
+			w = self.gui.getWindow(user,self)
+			if w:
+				if w.window_type==PRIVATE_WINDOW:
+					t = Message(SELF_MESSAGE,self.nickname,message)
+					w.writeText(t)
+			else:
+				if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
+					if user[:1]!='#' and user[:1]!='&' and user[:1]!='!' and user[:1]!='+':
+						w = self.gui.newPrivateWindow(user,self)
+						if w:
+							c = w.widget()
+							t = Message(SELF_MESSAGE,self.nickname,message)
+							c.writeText(t)
 
 		window = self.gui.getWindow(user,self)
 		if window:
@@ -613,6 +651,17 @@ class IRC_Connection(irc.IRCClient):
 					self.long_notices.append(m)
 				else:
 					super().notice(user, chunk, length)
+
+		w = self.gui.getWindow(user,self)
+		if w:
+			t = Message(NOTICE_MESSAGE,self.nickname,message)
+			w.writeText(t)
+
+		w = self.gui.getServerWindow(self)
+		if w:
+			t = Message(NOTICE_MESSAGE,self.nickname,message)
+			w.writeText(t)
+
 
 	def noticed(self, user, channel, msg):
 		tok = user.split('!')

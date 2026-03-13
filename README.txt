@@ -318,8 +318,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | `/admin [SERVER]`                       | Requests administration information from the server  |
 | `/alias [TOKEN] [TEXT...]`                  | Creates an alias that can be referenced by `$TOKEN`. Call with only `TOKEN` as an argument to see `TOKEN`'s value. If `TEXT` is a mathematical statement, it will be evaluated and the result used as the alias' value. Operations supported are parenthesis, addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`), modulus (`%`), and exponents(`**`). Call without any arguments to see all aliases and their values                                                                              |
-| `/away [MESSAGE]`                       | Sets status as "away"                                                                                                            |
-| `/back`                                 | Sets status as "back"                                                                                                            |
+| `/away [SERVER] [MESSAGE]`                       | Sets status as "away". To specify what server to set the "away" status on, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER`       |
+| `/back [SERVER]`                                 | Sets status as "back". To specify what server to set the "back" status on, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER`       |
 | `/bind SEQUENCE COMMAND...`           | Executes `COMMAND` every time key `SEQUENCE` is pressed. Pass `save` as the only argument to save binds to the configuration file                                                                                                           |
 | `/browser URL`           | Opens `URL` in the default browser  |
 | `/call METHOD [ARGUMENTS...]`         | Executes `METHOD` in any plugin that contains that `METHOD`  |
@@ -381,7 +381,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/python [FILENAME]`               | Opens a file in the Python editor                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
-| `/quote TEXT...`                          | Sends unprocessed data to the server. |
+| `/quote [SERVER] TEXT...`                          | Sends unprocessed data to the current or another server. To specify what server to send the data to, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER` |
 | `random ALIAS START FINISH`              | Generates a random integer from `START` to `FINISH`, and stores it in `ALIAS`. *Can only be called by scripts*            |
 | `read ALIAS FILENAME`              | Reads `FILENAME` as a text file, and stores the contents in `ALIAS`. *Can only be called by scripts*            |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |

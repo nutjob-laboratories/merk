@@ -378,9 +378,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"whowas USER [COUNT] [SERVER]</b>", "Requests information about previously connected users" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quit [MESSAGE]</b>", "Disconnects from the current IRC server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"oper USERNAME PASSWORD</b>", "Logs into an operator account" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"away [MESSAGE]</b>", "Sets status as \"away\"" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"back</b>", "Sets status as \"back\"" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quote TEXT...</b>", "Sends unprocessed data to the server" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"away [SERVER] [MESSAGE]</b>", "Sets status as \"away\"" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"back [SERVER]</b>", "Sets status as \"back\"" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quote [SERVER] TEXT...</b>", "Sends unprocessed data to the current or another server" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"time</b>", "Requests server time" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"version [SERVER]</b>", "Requests server version" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"list [TERMS]</b>", "Lists or searches channels on the server; use <b>*</b> for multi-character wildcard, <b>?</b> for single character" ],
@@ -1083,10 +1083,10 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].start()
 
 def getScriptAliases(gui):
-	aliases = {}
+	aliases = []
 	for script_id in gui.scripts:
-		aliases.update(gui.scripts[script_id].ALIAS)
-	return aliases
+		aliases = aliases + gui.scripts[script_id].CREATED
+	return list(set(aliases))
 
 def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=False,execute=False):
 	try:
@@ -1460,8 +1460,6 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.describe(window.name,msg)
-			t = Message(ACTION_MESSAGE,window.client.nickname,msg)
-			window.writeText(t)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':
 			if is_script:
@@ -5172,31 +5170,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 
-				# If we have the target's window open, write
-				# the message there
-				displayed_message = False
-				w = gui.getWindow(target,window.client)
-				if w:
-					t = Message(ACTION_MESSAGE,window.client.nickname,msg)
-					w.writeText(t)
-					displayed_message = True
-
-				# Write the message to the server window
-				if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
-					if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
-						w = gui.getServerWindow(window.client)
-						if w:
-							t = Message(ACTION_MESSAGE,"&rarr; "+target+": ",window.client.nickname+" "+msg)
-							w.writeText(t)
-
 				if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
 					if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
-						if not displayed_message:
-							w = gui.newPrivateWindow(target,window.client)
-							if w:
-								c = w.widget()
-								t = Message(ACTION_MESSAGE,window.client.nickname,msg)
-								c.writeText(t)
+						w = gui.newPrivateWindow(target,window.client)
 
 				window.client.describe(target,msg)
 				return True
@@ -6649,23 +6625,71 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /quote |
 	# |--------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quote' and len(tokens)>=2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quote' and len(tokens)==2:
 			tokens.pop(0)
-			msg = ' '.join(tokens)
+			msg = tokens.pop(0)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine(msg)
 			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quote' and len(tokens)>=3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			msg = ' '.join(tokens)
+
+			target = '*'
+
+			displayed = False
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower()==win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+						if hasattr(w,"widget"):
+							w.widget().client.sendLine(msg)
+						else:
+							w.client.sendLine(msg)
+
+				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+						if hasattr(w,"widget"):
+							w.widget().client.sendLine(msg)
+						else:
+							w.client.sendLine(msg)
+			if displayed: return True
+
+			msg = f"{server} {msg}"
+
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+			window.client.sendLine(msg)
+
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quote' and len(tokens)==1:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"raw TEXT")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"quote [SERVER] TEXT")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quote TEXT")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"quote [SERVER] TEXT")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -6676,14 +6700,40 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'back' and len(tokens)==1:
 			window.client.back()
 			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'back':
+			
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'back' and len(tokens)==2:
+			tokens.pop(0)
+			server = tokens.pop(0)
+
+			target = '*'
+			
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower()==win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						if hasattr(w,"widget"):
+							w.widget().client.back()
+						else:
+							w.client.back(msg)
+						return True
+
+				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						if hasattr(w,"widget"):
+							w.widget().client.back()
+						else:
+							w.client.back()
+						return True
+
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"back")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"back: server \"{server}\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"back")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+f"back: server \"{server}\" not found")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -6691,16 +6741,161 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /away |
 	# |-------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)>=2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)==2:
 			tokens.pop(0)
-			msg = ' '.join(tokens)
+			server = tokens.pop(0)
+
+			target = '*'
+
+			displayed = False
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower()==win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.PROMPT_FOR_AWAY_MESSAGE:
+							x = Away(gui)
+							msg = x.get_away_information(gui)
+							if msg:
+								if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+								if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+								if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+								if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+								if hasattr(w,"widget"):
+									w.widget().client.away(msg)
+									w.widget().client.away_msg = msg
+								else:
+									w.client.away(msg)
+									w.client.away_msg = msg
+							return True
+						else:
+							msg = config.DEFAULT_AWAY_MESSAGE
+							if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+							if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+							if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+							if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+							if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+								buildTemporaryAliases(gui,window)
+								msg = interpolateAliases(msg)
+							if hasattr(w,"widget"):
+								w.widget().client.away(msg)
+								w.widget().client.away_msg = msg
+							else:
+								w.client.away(msg)
+								w.client.away_msg = msg
+
+				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.PROMPT_FOR_AWAY_MESSAGE:
+							x = Away(gui)
+							msg = x.get_away_information(gui)
+							if msg:
+								if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+								if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+								if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+								if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+								if hasattr(w,"widget"):
+									w.widget().client.away(msg)
+									w.widget().client.away_msg = msg
+								else:
+									w.client.away(msg)
+									w.client.away_msg = msg
+							return True
+						else:
+							msg = config.DEFAULT_AWAY_MESSAGE
+							if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+							if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+							if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+							if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+							if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+								buildTemporaryAliases(gui,window)
+								msg = interpolateAliases(msg)
+							if hasattr(w,"widget"):
+								w.widget().client.away(msg)
+								w.widget().client.away_msg = msg
+							else:
+								w.client.away(msg)
+								w.client.away_msg = msg
+			if displayed: return True
+
+			msg = f"{server}"
+
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+			if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
 			window.client.away(msg)
 			window.client.away_msg = msg
+
 			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)>=3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			msg = ' '.join(tokens)
+
+			target = '*'
+
+			displayed = False
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower()==win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+						if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+							buildTemporaryAliases(gui,window)
+							msg = interpolateAliases(msg)
+						if hasattr(w,"widget"):
+							w.widget().client.away(msg)
+							w.widget().client.away_msg = msg
+						else:
+							w.client.away(msg)
+							w.client.away_msg = msg
+
+				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+						if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+							buildTemporaryAliases(gui,window)
+							msg = interpolateAliases(msg)
+						if hasattr(w,"widget"):
+							w.widget().client.away(msg)
+							w.widget().client.away_msg = msg
+						else:
+							w.client.away(msg)
+							w.client.away_msg = msg
+			if displayed: return True
+
+			msg = f"{server} {msg}"
+
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+			if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
+			window.client.away(msg)
+			window.client.away_msg = msg
+
+			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'away' and len(tokens)==1:
 			if config.PROMPT_FOR_AWAY_MESSAGE:
 				x = Away(gui)
@@ -6712,6 +6907,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					window.client.away(msg)
 					window.client.away_msg = msg
+				return True
 			else:
 				msg = config.DEFAULT_AWAY_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
@@ -7456,17 +7652,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.notice(target,msg)
-
-			if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
-				if config.REJECT_ALL_CHANNEL_NOTICES: return True
-
-			# If we have the target's window open, write
-			# the message there
-			w = gui.getWindow(target,window.client)
-			if w:
-				t = Message(NOTICE_MESSAGE,window.client.nickname,msg)
-				w.writeText(t)
-
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'notice':
 			if is_script:
@@ -7493,45 +7678,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.msg(target,msg)
 
-			# If we have the target's window open, write
-			# the message there
-			displayed_message = False
-			w = gui.getWindow(target,window.client)
-			if w:
-				t = Message(SELF_MESSAGE,window.client.nickname,msg)
-				w.writeText(t)
-				displayed_message = True
-
-			# Write the message to the server window
-			written_to_server_window = False
-			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
-				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
-					w = gui.getServerWindow(window.client)
-					if w:
-						written_to_server_window = True
-						t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
-						w.writeText(t)
-
 			if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
 				if not is_script:
-					if window == gui.getServerWindow(window.client):
-						if not written_to_server_window:
-							t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
-							window.writeText(t)
-					else:
-						if window.name!=target:
-							t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
-							window.writeText(t)
-
-			if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
-				if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
-					if not displayed_message:
-						w = gui.newPrivateWindow(target,window.client)
-						if w:
-							c = w.widget()
-							t = Message(SELF_MESSAGE,window.client.nickname,msg)
-							c.writeText(t)
-
+					if window.name!=target:
+						t = Message(SELF_MESSAGE,"&rarr;"+target,msg)
+						window.writeText(t)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msg':
 			if is_script:

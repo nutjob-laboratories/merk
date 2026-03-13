@@ -7,6 +7,8 @@ What's New
   - **MERK has a Flatpak distribution**. It's not up on Flathub yet, but you can download it and install on Linux.
   - **New `if` operator: `(nin)`**. This test if a string is NOT contained in another string.
   - **Scripting improvements**. Scripts are now more "sandboxed", and harder to alter during runtime.
+  - **`/away` and `/back` can now be used to set away status on specific servers**. Each command now takes an optional `SERVER` argument to specify the server to set the status on.
+  - **`/quote` can now be used to send raw data to specific servers**. `/quote` now takes an optional `SERVER` argument to specify the server to send the data to.
   - **Many, many bugfixes**.
 
 |==============================================================================|
@@ -97,6 +99,20 @@ What's New
   alias exists in the "right" scope before allowing the edit. For example,
   aliases created in scripts can only be edited in scripts, and aliases edited
   via the text input widget can only be edited via the text input widget.
+* The /away and /back commands can now take a server as an optional argument,
+  so that the "away" and "back" status can be set on other servers from windows
+  that don't share the same context.
+* /quote can now also take a server as an optional argument, much like /away
+  and /back.
+* Changed the way that messages are sent to the server. MERK now has overloaded
+  the Twisted IRC client methods msg(), notice(), and describe() so that ANY
+  messages sent via these methods (including from plugins when they use the
+  Twisted client manually) will appear in the client's display without having
+  to do it manually (which is how MERK worked before).
+* Bugfix: outgoing notices are now written to the server window by default.
+* Bugfix: private message are now being written to the server window properly.
+* Bugfix: CTCP ACTION messages, when sent to private chats, are now written to
+  server windows properly.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -107,6 +123,8 @@ What's New
   inherited method, and removed the Window class method resize().
 * Changed the Console class method size() to work exactly like the Plugin
   inherited method, and removed the Console class method resize().
+* The Window class methods message(), action(), and notice() no longer return
+  booleans, as they are no longer needed.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.600                                  |

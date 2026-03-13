@@ -246,12 +246,6 @@ class Window():
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		self._window.client.notice(target,message)
-		w = self._gui.getWindow(target,self._window.client)
-		if w:
-			t = Message(NOTICE_MESSAGE,self._window.client.nickname,message)
-			w.writeText(t)
-			return True
-		return False
 
 	def action(self,target,message):
 		message = commands.fullInterpolate(self._gui,self._window,message)
@@ -260,12 +254,6 @@ class Window():
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		self._window.client.describe(target,message)
-		w = self._gui.getWindow(target,self._window.client)
-		if w:
-			t = Message(ACTION_MESSAGE,self._window.client.nickname,message)
-			w.writeText(t)
-			return True
-		return False
 
 	def message(self,target,message):
 		message = commands.fullInterpolate(self._gui,self._window,message)
@@ -274,12 +262,6 @@ class Window():
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		self._window.client.msg(target,message)
-		w = self._gui.getWindow(target,self._window.client)
-		if w:
-			t = Message(CHAT_MESSAGE,self._window.client.nickname,message)
-			w.writeText(t)
-			return True
-		return False
 
 	def say(self,message):
 		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
@@ -289,8 +271,6 @@ class Window():
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			self._window.client.msg(self._window.name,message)
-			t = Message(CHAT_MESSAGE,self._window.client.nickname,message)
-			self._window.writeText(t)
 			return True
 		return False
 
@@ -302,8 +282,6 @@ class Window():
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			self._window.client.notice(self._window.name,message)
-			t = Message(NOTICE_MESSAGE,self._window.client.nickname,message)
-			self._window.writeText(t)
 			return True
 		return False
 
@@ -315,8 +293,6 @@ class Window():
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			self._window.client.describe(self._window.name,message)
-			t = Message(ACTION_MESSAGE,self._window.client.nickname,message)
-			self._window.writeText(t)
 			return True
 		return False
 

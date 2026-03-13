@@ -1,4 +1,4 @@
-<h1>MERK 0.051.639</h1>
+<h1>MERK 0.051.640</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -15,7 +15,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.639</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.640</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on the Libera Chat network! Connect to Libera in the client as one of the built-in server suggestions, or at <strong>irc.libera.chat</strong>, port <strong>6667</strong> (you can also connect via SSL on port <strong>6697</strong>). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!</p>
 <h1 id="making-merk-portable-on-windows">Making MERK Portable on Windows</h1>
@@ -135,12 +135,12 @@ Appearance:
 <td>Requests administration information from the server</td>
 </tr>
 <tr>
-<td><code>/away [MESSAGE]</code></td>
-<td>Sets status as "away"</td>
+<td><code>/away [SERVER] [MESSAGE]</code></td>
+<td>Sets status as "away". To specify what server to set the "away" status on, pass a hostID (the host and port used to connect to the server, in the format <code>host:port</code>, or the hostname used to connect) as <code>SERVER</code></td>
 </tr>
 <tr>
-<td><code>/back</code></td>
-<td>Sets status as "back"</td>
+<td><code>/back [SERVER]</code></td>
+<td>Sets status as "back". To specify what server to set the "back" status on, pass a hostID (the host and port used to connect to the server, in the format <code>host:port</code>, or the hostname used to connect) as <code>SERVER</code></td>
 </tr>
 <tr>
 <td><code>/bind SEQUENCE COMMAND...</code></td>
@@ -252,7 +252,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>if VALUE1 OPERATOR VALUE2 COMMAND...</code></td>
-<td>Executes <code>COMMAND</code> if <code>VALUE1</code> and <code>VALUE2</code> are true, depending on <code>OPERATOR</code>. Valid <code>OPERATOR</code>s are <code>(is)</code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are equal), <code>(not)</code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are not equal), <code>(in)</code> (result is true if <code>VALUE1</code> is contained in <code>VALUE2</code>), <code>(nin)</code> (result is true if <code>VALUE1</code> is not contained in <code>VALUE2</code>), <code>(gt)</code> (result is true if <code>VALUE1</code> is a greater number than <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), <code>(lt)</code> (result is true if <code>VALUE1</code> is a lesser number than <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), <code>(ne)</code> (result is true if <code>VALUE1</code> is not an equal number to <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), and <code>(eq)</code> (result is true if <code>VALUE1</code> is an equal number to <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value). <strong>Can only be called from scripts</strong></td>
+<td>Executes <code>COMMAND</code> if <code>VALUE1</code> and <code>VALUE2</code> are true, depending on <code>OPERATOR</code>. Valid <code>OPERATOR</code>s are <code><b>(is)</b></code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are equal), <code><b>(not)</b></code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are not equal), <code><b>(in)</b></code> (result is true if <code>VALUE1</code> is contained in <code>VALUE2</code>), <code><b>(nin)</b></code> (result is true if <code>VALUE1</code> is not contained in <code>VALUE2</code>), <code><b>(gt)</b></code> (result is true if <code>VALUE1</code> is a greater number than <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), <code><b>(lt)</b></code> (result is true if <code>VALUE1</code> is a lesser number than <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), <code><b>(ne)</b></code> (result is true if <code>VALUE1</code> is not an equal number to <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), and <code><b>(eq)</b></code> (result is true if <code>VALUE1</code> is an equal number to <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value). <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/ignore USER</code></td>
@@ -387,8 +387,8 @@ Appearance:
 <td>Disconnects from all IRC servers</td>
 </tr>
 <tr>
-<td><code>/quote TEXT...</code></td>
-<td>Sends unprocessed data to the server</td>
+<td><code>/quote [SERVER] TEXT...</code></td>
+<td>Sends unprocessed data to the current or another server. To specify what server to send the data to, pass a hostID (the host and port used to connect to the server, in the format <code>host:port</code>, or the hostname used to connect) as <code>SERVER</code></td>
 </tr>
 <tr>
 <td><code>random ALIAS START LAST</code></td>
