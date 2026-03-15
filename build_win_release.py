@@ -5,11 +5,11 @@ import platform
 
 # Load and increment version numbers
 
-f = open("./merk/data/win_major.txt","r")
+f = open("./merk/data/major.txt","r")
 major = f.read()
 f.close()
 
-f = open("./merk/data/win_minor.txt","r")
+f = open("./merk/data/minor.txt","r")
 minor = f.read()
 f.close()
 

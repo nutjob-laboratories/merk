@@ -117,7 +117,7 @@
   window.
 * Bugfix: messages over 412 characters (by default) are now displayed
   correctly, as they will appear to other users on the server, rather than as
-  a single "chunk", or at least a "closer" approximation.
+  a single "chunk".
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

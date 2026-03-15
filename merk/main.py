@@ -3369,8 +3369,7 @@ class Merk(QMainWindow):
 							output.append(f"{c.client.server}")
 		return output
 
-
-	def getAllInitialPartServerHostIds(self):
+	def getAllPartHostIds(self):
 		output = []
 		for window in self.MDI.subWindowList():
 			c = window.widget()
@@ -3379,37 +3378,9 @@ class Merk(QMainWindow):
 					if hasattr(c,"client"):
 						if c.client.registered:
 							if '.' in c.client.server:
-								s = c.client.server.split('.')
-								output.append(f"{s[0]}")
-		return output
-
-	def getAllMiddlePartServerHostIds(self):
-		output = []
-		for window in self.MDI.subWindowList():
-			c = window.widget()
-			if hasattr(c,"window_type"):
-				if c.window_type==SERVER_WINDOW:
-					if hasattr(c,"client"):
-						if c.client.registered:
-							if '.' in c.client.server:
-								s = c.client.server.split('.')
-								if len(s)>=2:
-									output.append(f"{s[1]}")
-		return output
-
-	def getAllFinalPartServerHostIds(self):
-		output = []
-		for window in self.MDI.subWindowList():
-			c = window.widget()
-			if hasattr(c,"window_type"):
-				if c.window_type==SERVER_WINDOW:
-					if hasattr(c,"client"):
-						if c.client.registered:
-							if '.' in c.client.server:
-								s = c.client.server.split('.')
-								if len(s)>=3:
-									output.append(f"{s[2]}")
-		return output
+								for s in c.client.server.split('.'):
+									output.append(s)
+		return list(set(output))
 
 	def getAllPorts(self):
 		output = []

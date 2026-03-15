@@ -4048,22 +4048,14 @@ class Highlighter(QSyntaxHighlighter):
 			for hhostid, hhost in zip(self.parent.parent.getAllHostids(), self.parent.parent.getAllHosts()):
 				if hhostid in text or hhost in text:
 					# This bit is a bit of a hack. Qt decided that the "." character will ONLY appear
-					# at the end of sentance. This is the hack to work around that. Ugh.
+					# at the end of sentence. This is the hack to work around that. Ugh.
+					# First, we handle ever part of each host
 					for word_object in re.finditer(self.WORDS, text):
-						for name in self.parent.parent.getAllInitialPartServerHostIds():
+						for name in self.parent.parent.getAllPartHostIds():
 							if name == word_object.group():
 								do_not_spellcheck.append(name)
 								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
-					for word_object in re.finditer(self.WORDS, text):
-						for name in self.parent.parent.getAllMiddlePartServerHostIds():
-							if name == word_object.group():
-								do_not_spellcheck.append(name)
-								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
-					for word_object in re.finditer(self.WORDS, text):
-						for name in self.parent.parent.getAllFinalPartServerHostIds():
-							if name == word_object.group():
-								do_not_spellcheck.append(name)
-								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+					# Now, we handle all ports
 					for word_object in re.finditer(self.WORDS, text):
 						for name in self.parent.parent.getAllPorts():
 							if name == word_object.group():

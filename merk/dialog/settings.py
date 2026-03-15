@@ -5682,15 +5682,25 @@ class Dialog(QDialog):
 		if not config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
 			self.highlightAllNicks.setEnabled(False)
 
-		tbLay = QFormLayout()
-		tbLay.setSpacing(0)
-		tbLay.addRow(self.syntaxfore, self.syntaxback)
-		tbLay.addRow(self.syntaxcomment, self.syntaxcommand)
-		tbLay.addRow(self.syntaxchannel, self.syntaxalias)
-		tbLay.addRow(self.syntaxscript,self.syntaxop)
+		tbLay2 = QFormLayout()
+		tbLay2.setSpacing(0)
+		tbLay2.addRow(self.syntaxfore, self.syntaxback)
+		tbLay2.addRow(self.syntaxcomment, self.syntaxcommand)
+		tbLay2.addRow(self.syntaxchannel, self.syntaxalias)
+		tbLay2.addRow(self.syntaxscript,self.syntaxop)
 
-		sbLay = QFormLayout()
-		sbLay.addRow(self.syntaxnick, self.syntaxemoji)
+		tbLay = QHBoxLayout()
+		tbLay.addStretch()
+		tbLay.addLayout(tbLay2)
+		tbLay.addStretch()
+
+		sbLay2 = QFormLayout()
+		sbLay2.addRow(self.syntaxnick, self.syntaxemoji)
+
+		sbLay = QHBoxLayout()
+		sbLay.addStretch()
+		sbLay.addLayout(sbLay2)
+		sbLay.addStretch()
 
 		if not config.ENABLE_ALIASES:
 			self.syntaxalias.setEnabled(False)
