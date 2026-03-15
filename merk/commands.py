@@ -251,7 +251,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"quitall": config.ISSUE_COMMAND_SYMBOL+"quitall",
 			config.ISSUE_COMMAND_SYMBOL+"size": config.ISSUE_COMMAND_SYMBOL+"size ",
 			config.ISSUE_COMMAND_SYMBOL+"move": config.ISSUE_COMMAND_SYMBOL+"move ",
-			config.ISSUE_COMMAND_SYMBOL+"focus": config.ISSUE_COMMAND_SYMBOL+"focus ",
 			config.ISSUE_COMMAND_SYMBOL+"reconnect": config.ISSUE_COMMAND_SYMBOL+"reconnect ",
 			config.ISSUE_COMMAND_SYMBOL+"reconnectssl": config.ISSUE_COMMAND_SYMBOL+"reconnectssl ",
 			config.ISSUE_COMMAND_SYMBOL+"xreconnect": config.ISSUE_COMMAND_SYMBOL+"xreconnect ",
@@ -412,14 +411,13 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow, if hidden; otherwise, shifts focus to that window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow and shifts focus to that window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", f"Manipulates the main application window. Valid commands are {WINDOW_COMMANDS}" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [SERVER] [WINDOW] TEXT...</b>", "Prints a system message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"size [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow. Call without arguments to see the current subwindow's size" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow. Call without arguments to see the current subwindow's coordinates" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]</b>", "Sets focus on a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL, reconnecting on disconnection" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xreconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server & executes connection script, reconnecting on disconnection" ],
@@ -1059,16 +1057,18 @@ def execute_script_alias(data):
 def execute_script_end(data):
 	gui = data[0]
 	script_id = data[1]
-	aliases_to_destroy = data[2]
+	if len(data)==3:
+		aliases_to_destroy = data[2]
 
 	gui.scripts[script_id].quit()
 	gui.scripts[script_id].wait(config.SCRIPT_THREAD_QUIT_TIMEOUT)
 
 	del gui.scripts[script_id]
 
-	aliases_to_destroy = list(set(aliases_to_destroy))
-	for alias in aliases_to_destroy:
-		removeAlias(alias)
+	if len(data)==3:
+		aliases_to_destroy = list(set(aliases_to_destroy))
+		for alias in aliases_to_destroy:
+			removeAlias(alias)
 
 	remove_halt(script_id)
 
@@ -3279,94 +3279,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |--------|
-	# | /focus |
-	# |--------|
-	if len(tokens)>=1:
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==1:
-			window.input.setFocus()
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==3:
-			tokens.pop(0)
-			server = tokens.pop(0)
-			target = tokens.pop(0)
-
-			swins = gui.getAllServerWindows()
-			for win in swins:
-				if server.lower()==win.widget().name.lower():
-					w = gui.getSubWindowCommand(target,win.widget().client)
-					if w:
-						w.widget().input.setFocus()
-					else:
-						if is_script:
-							add_halt(script_id)
-							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus: Window \""+target+"\" not found")
-								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
-					w = gui.getSubWindowCommand(target,win.widget().client)
-					if w:
-						w.widget().input.setFocus()
-					else:
-						if is_script:
-							add_halt(script_id)
-							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus: Window \""+target+"\" not found")
-								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Server \""+server+"\" not found")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			else:
-				t = Message(ERROR_MESSAGE,'',"Server \""+server+"\" not found")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus' and len(tokens)==2:
-			tokens.pop(0)
-			target = tokens.pop(0)
-
-			w = gui.getSubWindowHostid(target,window.client)
-			if w:
-				w.widget().input.setFocus()
-				return True
-
-			w = gui.getSubWindow(target,window.client)
-			if w:
-				w.widget().input.setFocus()
-			else:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}focus: Window \""+target+"\" not found")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				else:
-					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'focus':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"focus [SERVER] [WINDOW]")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
 	# |-------|
 	# | /move |
 	# |-------|
@@ -4097,6 +4009,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout")
 				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ================\n")
 
+				calling_window_is_visible = True
 				for w in gui.getAllAllConnectedSubWindows():
 					width = w.width()
 					height = w.height()
@@ -4114,6 +4027,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						results.append(f"{config.ISSUE_COMMAND_SYMBOL}hide {w.widget().client.server}:{w.widget().client.port} {win_name}")
 					else:
 						results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {w.widget().client.server}:{w.widget().client.port} {win_name}")
+
+					if w.widget().subwindow_id==window.subwindow_id:
+						if not w.isVisible(): calling_window_is_visible = False
+
+				if calling_window_is_visible:
+					results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem ===============")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow focus")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ===============\n")
+
+					if window.window_type==SERVER_WINDOW:
+						win_name = '*'
+					else:
+						win_name = window.name
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {window.client.server}:{window.client.port} {win_name}")
 
 				gui.newEditorWindowContents("\n".join(results))
 				return True
@@ -4868,7 +4795,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						gui.showSubWindow(w)
-						if hasattr(window,"input"): window.input.setFocus()
+						if hasattr(w.widget(),"input"): w.widget().input.setFocus()
 						gui.buildWindowbar()
 					else:
 						if is_script:
@@ -4884,7 +4811,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						gui.showSubWindow(w)
-						if hasattr(window,"input"): window.input.setFocus()
+						if hasattr(w.widget(),"input"): w.widget().input.setFocus()
 						gui.buildWindowbar()
 					else:
 						if is_script:
@@ -4913,14 +4840,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = gui.getSubWindowHostid(target,window.client)
 			if w:
 				gui.showSubWindow(w)
-				if hasattr(window,"input"): window.input.setFocus()
+				if hasattr(w.widget(),"input"): w.widget().input.setFocus()
 				gui.buildWindowbar()
 				return True
 
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				gui.showSubWindow(w)
-				if hasattr(window,"input"): window.input.setFocus()
+				if hasattr(w.widget(),"input"): w.widget().input.setFocus()
 				gui.buildWindowbar()
 			else:
 				if is_script:

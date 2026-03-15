@@ -2,15 +2,6 @@
 |                                   0.051.650                                  |
 |------------------------------------------------------------------------------|
 
-What's New
-
-  - **MERK has a Flatpak distribution**. It's not up on Flathub yet, but you can download it and install on Linux.
-  - **New `if` operator: `(nin)`**. This test if a string is NOT contained in another string.
-  - **Scripting improvements**. Scripts are now more "sandboxed", and harder to alter during runtime.
-  - **`/away` and `/back` can now be used to set away status on specific servers**. Each command now takes an optional `SERVER` argument to specify the server to set the status on.
-  - **`/quote` can now be used to send raw data to specific servers**. `/quote` now takes an optional `SERVER` argument to specify the server to send the data to.
-  - **Many, many bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -113,6 +104,20 @@ What's New
 * Bugfix: private message are now being written to the server window properly.
 * Bugfix: CTCP ACTION messages, when sent to private chats, are now written to
   server windows properly.
+* Removed the /focus command, and moved the functionality to /show.
+* Slightly changed how /window layout works; after all subwindows are set up,
+  the generated script now sets focus on the window that called the command,
+  but only if that window is visible.
+* Bugfix: calling /delay could crash the client in certain circumstances.
+* Bugfix: commands with subcommands (like /window) now have their subcommands
+  highlighted properly if syntax highlighting in the text input widget is
+  turned on.
+* Bugfix: outgoing notices that contain CTCP messages (which are normally
+  unable to be sent manually with MERK) are no longer displayed in the server
+  window.
+* Bugfix: messages over 412 characters (by default) are now displayed
+  correctly, as they will appear to other users on the server, rather than as
+  a single "chunk", or at least a "closer" approximation.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

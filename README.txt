@@ -341,7 +341,6 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
-| `/focus [SERVER] [WINDOW]`              | Sets focus on a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to set focus on the server window                                       |
 | `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
 | `goto TARGET`                         | Moves execution of the script to `TARGET`. The only script-only command that can be issued from an `if` command. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Halts a script's execution, and displays an error `MESSAGE` with line number and file name. *Can only be called from scripts*       |
@@ -392,7 +391,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
 | `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to restore the server window                                 |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
-| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden; otherwise, shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to show the server window  |
+| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden, and shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to show the server window  |
 | `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size. Pass `*` as `WINDOW` to resize the server window |
 | `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor. Pass `*` as `WINDOW` to select the server window                                  |
 | `target LABEL`                                 | Creates a target for the `goto` command. If used as a target for `goto`, script execution will move to the line this appears on. `LABEL` cannot contain spaces. Can only be called from scripts      |

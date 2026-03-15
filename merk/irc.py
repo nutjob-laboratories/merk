@@ -593,39 +593,55 @@ class IRC_Connection(irc.IRCClient):
 		# Send the first part of the message immediately
 		if len(message_chunks)>0:
 			chunk = message_chunks.pop(0)
+			# For some reason, Twisted routes CTCP messages
+			# here, too, so we avoid displaying those. They
+			# are already handled.
+			if not message.startswith("\001"):
+				self.gui.privmsg(self,self.nickname,user,message)
+
+				# Write private messages, too
+				w = self.gui.getWindow(user,self)
+				if w:
+					if w.window_type==PRIVATE_WINDOW:
+						t = Message(SELF_MESSAGE,self.nickname,chunk)
+						w.writeText(t)
+				else:
+					if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
+						if user[:1]!='#' and user[:1]!='&' and user[:1]!='!' and user[:1]!='+':
+							w = self.gui.newPrivateWindow(user,self)
+							if w:
+								c = w.widget()
+								t = Message(SELF_MESSAGE,self.nickname,chunk)
+								c.writeText(t)
 			super().msg(user, chunk, length)
 
 		# If there's anything else, it's because we have a
 		# really long message, so send the message to the
 		# server in chunks
 		if len(message_chunks)>0:
-			for chunk in message_chunks:
+			for chunks in message_chunks:
 				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
-					m = [user,chunk]
+					m = [user,chunks]
 					self.long_messages.append(m)
 				else:
-					super().msg(user, chunk, length)
+					if not message.startswith("\001"):
+						self.gui.privmsg(self,self.nickname,user,message)
 
-		# For some reason, Twisted routes CTCP messages
-		# here, too, so we avoid displaying those. They
-		# are already handled.
-		if not message.startswith("\001"):
-			self.gui.privmsg(self,self.nickname,user,message)
-
-			# Write private messages, too
-			w = self.gui.getWindow(user,self)
-			if w:
-				if w.window_type==PRIVATE_WINDOW:
-					t = Message(SELF_MESSAGE,self.nickname,message)
-					w.writeText(t)
-			else:
-				if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
-					if user[:1]!='#' and user[:1]!='&' and user[:1]!='!' and user[:1]!='+':
-						w = self.gui.newPrivateWindow(user,self)
+						# Write private messages, too
+						w = self.gui.getWindow(user,self)
 						if w:
-							c = w.widget()
-							t = Message(SELF_MESSAGE,self.nickname,message)
-							c.writeText(t)
+							if w.window_type==PRIVATE_WINDOW:
+								t = Message(SELF_MESSAGE,self.nickname,chunks)
+								w.writeText(t)
+						else:
+							if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
+								if user[:1]!='#' and user[:1]!='&' and user[:1]!='!' and user[:1]!='+':
+									w = self.gui.newPrivateWindow(user,self)
+									if w:
+										c = w.widget()
+										t = Message(SELF_MESSAGE,self.nickname,chunks)
+										c.writeText(t)
+					super().msg(user, chunks, length)
 
 		window = self.gui.getWindow(user,self)
 		if window:
@@ -639,6 +655,16 @@ class IRC_Connection(irc.IRCClient):
 		# Send the first part of the message immediately
 		if len(message_chunks)>0:
 			chunk = message_chunks.pop(0)
+			if not message.startswith("\001"):
+				w = self.gui.getWindow(user,self)
+				if w:
+					t = Message(NOTICE_MESSAGE,self.nickname,message)
+					w.writeText(t)
+
+				w = self.gui.getServerWindow(self)
+				if w:
+					t = Message(NOTICE_MESSAGE,self.nickname,message)
+					w.writeText(t)
 			super().notice(user, chunk, length)
 
 		# If there's anything else, it's because we have a
@@ -650,18 +676,17 @@ class IRC_Connection(irc.IRCClient):
 					m = [user,chunk]
 					self.long_notices.append(m)
 				else:
+					if not message.startswith("\001"):
+						w = self.gui.getWindow(user,self)
+						if w:
+							t = Message(NOTICE_MESSAGE,self.nickname,message)
+							w.writeText(t)
+
+						w = self.gui.getServerWindow(self)
+						if w:
+							t = Message(NOTICE_MESSAGE,self.nickname,message)
+							w.writeText(t)
 					super().notice(user, chunk, length)
-
-		w = self.gui.getWindow(user,self)
-		if w:
-			t = Message(NOTICE_MESSAGE,self.nickname,message)
-			w.writeText(t)
-
-		w = self.gui.getServerWindow(self)
-		if w:
-			t = Message(NOTICE_MESSAGE,self.nickname,message)
-			w.writeText(t)
-
 
 	def noticed(self, user, channel, msg):
 		tok = user.split('!')

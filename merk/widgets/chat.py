@@ -3682,6 +3682,15 @@ class SpellTextEdit(QPlainTextEdit):
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
 
+						# Make sure that the current context's
+						# server is the first to attempt to match
+						if fnmatch.fnmatch(f"{self.parent.client.server.lower()}",f"{text.lower()}*"):
+							cursor.beginEditBlock()
+							cursor.insertText(f"{self.parent.client.server}")
+							cursor.endEditBlock()
+							self.ensureCursorVisible()
+							return
+
 						# hosts
 						hosts = self.parent.parent.getAllHosts()
 						for hostid in hosts:
@@ -4038,14 +4047,25 @@ class Highlighter(QSyntaxHighlighter):
 			# currently in the text input widget
 			for hhostid, hhost in zip(self.parent.parent.getAllHostids(), self.parent.parent.getAllHosts()):
 				if hhostid in text or hhost in text:
-					# This bit is a bit of a hack. For some reason (thanks Qt) the
-					# first bit of the hostID and host (everything before the first
-					# period) is not highlighing properly. So, we're grabbing everything
-					# before the first period in all the hostIDs and hosts and
-					# highlighting that separately BEFORE we try to highlight the
-					# rest of the hostID or host.
+					# This bit is a bit of a hack. Qt decided that the "." character will ONLY appear
+					# at the end of sentance. This is the hack to work around that. Ugh.
 					for word_object in re.finditer(self.WORDS, text):
 						for name in self.parent.parent.getAllInitialPartServerHostIds():
+							if name == word_object.group():
+								do_not_spellcheck.append(name)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+					for word_object in re.finditer(self.WORDS, text):
+						for name in self.parent.parent.getAllMiddlePartServerHostIds():
+							if name == word_object.group():
+								do_not_spellcheck.append(name)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+					for word_object in re.finditer(self.WORDS, text):
+						for name in self.parent.parent.getAllFinalPartServerHostIds():
+							if name == word_object.group():
+								do_not_spellcheck.append(name)
+								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
+					for word_object in re.finditer(self.WORDS, text):
+						for name in self.parent.parent.getAllPorts():
 							if name == word_object.group():
 								do_not_spellcheck.append(name)
 								self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
@@ -4095,6 +4115,14 @@ class Highlighter(QSyntaxHighlighter):
 						do_not_spellcheck.append(c)
 						do_not_spellcheck.append(c[1:])
 						self.setFormat(word_object.start(), word_object.end() - word_object.start(), cmdformat)
+
+			# Now, handle commands with subcommands
+			for w in commands.AUTOCOMPLETE_MULTI:
+				if commands.AUTOCOMPLETE_MULTI[w] in text:
+					for word_object in re.finditer(self.WORDS, text):
+						if commands.AUTOCOMPLETE_MULTI[w].split(' ')[1] == word_object.group():
+							do_not_spellcheck.append(commands.AUTOCOMPLETE_MULTI[w].split(' ')[1])
+							self.setFormat(word_object.start(), word_object.end() - word_object.start(), cmdformat)
 
 			# Style macros
 			cmdformat = syntax.format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE)

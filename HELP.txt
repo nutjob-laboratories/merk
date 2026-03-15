@@ -227,10 +227,6 @@ Appearance:
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>
 <tr>
-<td><code>/focus [SERVER] [WINDOW]</code></td>
-<td>Sets focus on a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to set focus on the server window</td>
-</tr>
-<tr>
 <td><code>/folder PATH [PATH...]</code></td>
 <td>Opens <code>PATH</code>(s) in the default file manager</td>
 </tr>
@@ -432,7 +428,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/show [SERVER] [WINDOW]</code></td>
-<td>Shows a subwindow, if hidden; otherwise, shifts focus to that window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to show the server window</td>
+<td>Shows a subwindow, if hidden, and shifts focus to that window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to show the server window</td>
 </tr>
 <tr>
 <td><code>/size [SERVER] [WINDOW] WIDTH HEIGHT&nbsp;&nbsp;</code></td>

@@ -357,6 +357,9 @@ HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 					<td><small>
 					Arguments inside brackets are optional. If called from a channel window,
 					channel windows can be omitted to apply the command to the current channel.
+					Commands that take the optional <b>SERVER</b> argument accept either the
+					name of the host connected to, or the hostname and port of the connection
+					in the format <b>HOST:PORT</b>.
 					%_AUTOCOMPLETE_%
 					</small></td>
 				</tr>
