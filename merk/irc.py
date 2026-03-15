@@ -590,48 +590,39 @@ class IRC_Connection(irc.IRCClient):
 
 		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
 
-		# Send the first part of the message immediately
-		if len(message_chunks)>0:
-			chunk = message_chunks.pop(0)
-			# For some reason, Twisted routes CTCP messages
-			# here, too, so we avoid displaying those. They
-			# are already handled.
-			if not message.startswith("\001"):
-				self.gui.privmsg(self,self.nickname,user,message)
+		for i, chunk in enumerate(message_chunks):
+			if i==0:
+				if not message.startswith("\001"):
+					self.gui.privmsg(self,self.nickname,user,chunk)
 
-				# Write private messages, too
-				w = self.gui.getWindow(user,self)
-				if w:
-					if w.window_type==PRIVATE_WINDOW:
-						t = Message(SELF_MESSAGE,self.nickname,chunk)
-						w.writeText(t)
-				else:
-					if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
-						if user[:1]!='#' and user[:1]!='&' and user[:1]!='!' and user[:1]!='+':
-							w = self.gui.newPrivateWindow(user,self)
-							if w:
-								c = w.widget()
-								t = Message(SELF_MESSAGE,self.nickname,chunk)
-								c.writeText(t)
-			super().msg(user, chunk, length)
-
-		# If there's anything else, it's because we have a
-		# really long message, so send the message to the
-		# server in chunks
-		if len(message_chunks)>0:
-			for chunks in message_chunks:
+					# Write private messages, too
+					w = self.gui.getWindow(user,self)
+					if w:
+						if w.window_type==PRIVATE_WINDOW:
+							t = Message(SELF_MESSAGE,self.nickname,chunk)
+							w.writeText(t)
+					else:
+						if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
+							if user[:1]!='#' and user[:1]!='&' and user[:1]!='!' and user[:1]!='+':
+								w = self.gui.newPrivateWindow(user,self)
+								if w:
+									c = w.widget()
+									t = Message(SELF_MESSAGE,self.nickname,chunk)
+									c.writeText(t)
+				super().msg(user, chunk, length)
+			else:
 				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
-					m = [user,chunks]
+					m = [user,chunk]
 					self.long_messages.append(m)
 				else:
 					if not message.startswith("\001"):
-						self.gui.privmsg(self,self.nickname,user,message)
+						self.gui.privmsg(self,self.nickname,user,chunk)
 
 						# Write private messages, too
 						w = self.gui.getWindow(user,self)
 						if w:
 							if w.window_type==PRIVATE_WINDOW:
-								t = Message(SELF_MESSAGE,self.nickname,chunks)
+								t = Message(SELF_MESSAGE,self.nickname,chunk)
 								w.writeText(t)
 						else:
 							if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
@@ -639,9 +630,10 @@ class IRC_Connection(irc.IRCClient):
 									w = self.gui.newPrivateWindow(user,self)
 									if w:
 										c = w.widget()
-										t = Message(SELF_MESSAGE,self.nickname,chunks)
+										t = Message(SELF_MESSAGE,self.nickname,chunk)
 										c.writeText(t)
-					super().msg(user, chunks, length)
+					super().msg(user, chunk, length)
+
 
 		window = self.gui.getWindow(user,self)
 		if window:
@@ -649,29 +641,25 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			plugins.call(self.gui,"me",target=user,message=message,window=None,client=self)
 
+
 	def notice(self, user, message, length=None):
+
 		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
 
-		# Send the first part of the message immediately
-		if len(message_chunks)>0:
-			chunk = message_chunks.pop(0)
-			if not message.startswith("\001"):
-				w = self.gui.getWindow(user,self)
-				if w:
-					t = Message(NOTICE_MESSAGE,self.nickname,message)
-					w.writeText(t)
+		for i, chunk in enumerate(message_chunks):
+			if i==0:
+				if not message.startswith("\001"):
+					w = self.gui.getWindow(user,self)
+					if w:
+						t = Message(NOTICE_MESSAGE,self.nickname,message)
+						w.writeText(t)
 
-				w = self.gui.getServerWindow(self)
-				if w:
-					t = Message(NOTICE_MESSAGE,self.nickname,message)
-					w.writeText(t)
-			super().notice(user, chunk, length)
-
-		# If there's anything else, it's because we have a
-		# really long message, so send the message to the
-		# server in chunks
-		if len(message_chunks)>0:
-			for chunk in message_chunks:
+					w = self.gui.getServerWindow(self)
+					if w:
+						t = Message(NOTICE_MESSAGE,self.nickname,message)
+						w.writeText(t)
+				super().notice(user, chunk, length)
+			else:
 				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
 					m = [user,chunk]
 					self.long_notices.append(m)
