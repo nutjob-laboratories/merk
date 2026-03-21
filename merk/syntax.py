@@ -384,6 +384,12 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			if 'read' in script_only:
 				script_only.remove('read')
 
+		ctrl_keys = ['Ctrl', 'Control']
+		shift_keys = ['Shift']
+		alt_keys = ['Alt']
+		meta_keys = ['Meta', 'Cmd', 'Command', 'Super', 'Win', 'Windows']
+		function_keys = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'F13', 'F14', 'F15', 'F16', 'F17', 'F18', 'F19', 'F20', 'F21', 'F22', 'F23', 'F24']
+
 		STYLES = {
 			'comments': format(config.SYNTAX_COMMENT_COLOR,config.SYNTAX_COMMENT_STYLE),
 			'merk': format(config.SYNTAX_COMMAND_COLOR,config.SYNTAX_COMMAND_STYLE),
@@ -400,8 +406,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		rules = []
 
 		# Commands
-		# rules += [(r'^\s*%s' % o, 0, STYLES['merk'])
-		# 	for o in merk]
 		rules += [(r'%s' % o, 0, STYLES['merk'])
 			for o in merk]
 
@@ -430,6 +434,16 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			(r'(%s\w+)' % aliassymbol, 0, STYLES['alias']),
 			(r"([A-Za-z0-9.-]+:\d+)", 0, STYLES['channel']),
 		]
+
+		# Hotkey sequences
+		rules += [(r'%s\+[A-Za-z0-9]+' % o, 0, STYLES['alias'])
+					   for o in ctrl_keys]
+		rules += [(r'%s\+[A-Za-z0-9]+' % o, 0, STYLES['alias'])
+					   for o in shift_keys]
+		rules += [(r'%s\+[A-Za-z0-9]+' % o, 0, STYLES['alias'])
+					   for o in alt_keys]
+		rules += [(r'%s\+[A-Za-z0-9]+' % o, 0, STYLES['alias'])
+					   for o in meta_keys]
 
 		# Build a QRegExp for each pattern
 		self.rules = [(QRegExp(pat), index, fmt)

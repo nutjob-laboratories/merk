@@ -565,9 +565,9 @@ def addAlias(name,value,gui):
 	ALIAS[name] = value
 
 	for script_id in gui.scripts:
-		if hasattr(gui.scripts[script_id],"updateAlias"):
+		if hasattr(gui.scripts[script_id],"handle_update"):
 			try:
-				gui.scripts[script_id].updateAlias.emit(name, value)
+				gui.scripts[script_id].handle_update(name, value)
 			except:
 				pass
 
@@ -988,8 +988,13 @@ def execute_script_line(data):
 	line = data[3]
 	line_number = data[4]
 	script_only_command = data[5]
+	aliases = data[6]
 
 	if is_halting(script_id): return
+
+	# Update the alias table
+	for a in aliases:
+		ALIAS[a] = aliases[a]
 
 	if not handleScriptCommands(gui,window,line,line_number,script_id):
 		if len(line.strip())==0: return
@@ -1066,9 +1071,10 @@ def execute_script_end(data):
 	del gui.scripts[script_id]
 
 	if len(data)==3:
-		aliases_to_destroy = list(set(aliases_to_destroy))
-		for alias in aliases_to_destroy:
-			removeAlias(alias)
+		if config.DELETE_SCRIPT_ALIASES_ON_END:
+			aliases_to_destroy = list(set(aliases_to_destroy))
+			for alias in aliases_to_destroy:
+				removeAlias(alias)
 
 	remove_halt(script_id)
 
@@ -7983,7 +7989,6 @@ class ScriptThread(QThread):
 	scriptEnd = pyqtSignal(object)
 	scriptError = pyqtSignal(object)
 	scriptAlias = pyqtSignal(object)
-	updateAlias = pyqtSignal(str, object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None):
 		super(ScriptThread, self).__init__(parent)
@@ -7997,8 +8002,6 @@ class ScriptThread(QThread):
 		self.TEMPORARY_ALIAS = dict(TEMPORARY_ALIAS)
 		self.CREATED = []
 		self.TARGETS = {}
-
-		self.updateAlias.connect(self.handle_update)
 
 	def target(self,label,line_number=None):
 		if line_number==None:
@@ -8017,6 +8020,7 @@ class ScriptThread(QThread):
 
 	def addAlias(self,name,value):
 		self.ALIAS[name] = value
+		if not name in self.CREATED: self.CREATED.append(name)
 		self.scriptAlias.emit([name,value,self.gui])
 
 	def removeAlias(self,name):
@@ -8599,19 +8603,19 @@ class ScriptThread(QThread):
 
 									# Only add the local alias if it follows all the
 									# "rules" of aliases
-									errors = None
+									alias_error = None
 									if len(a)>=1:
 										if a[0].isalpha():
 											if not a in ALIAS:
 												if not is_valid_alias_name(a):
-													errors = f"\"{a}\" is not a valid alias token"
+													alias_error = f"\"{a}\" is not a valid alias token"
 											else:
 												if not a in self.CREATED:
-													errors = f"\"{a}\" already exists in another scope"
+													alias_error = f"\"{a}\" already exists in another scope"
 										else:
-											errors = f"\"{a}\" is not a valid alias token"
-									if errors!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {errors}"])
+											alias_error = f"\"{a}\" is not a valid alias token"
+									if alias_error!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {alias_error}"])
 										loop = False
 									else:
 										value = ' '.join(tokens)
@@ -8620,7 +8624,6 @@ class ScriptThread(QThread):
 										result,error = math(value)
 										if not error and result!=None: value = str(result)
 										self.addAlias(a,value)
-										self.CREATED.append(a)
 										script_only_command = True
 								continue
 
@@ -8655,7 +8658,7 @@ class ScriptThread(QThread):
 
 										# Only add the local alias if it follows all the
 										# "rules" of aliases
-										errors = None
+										alias_error = None
 										if len(a)>=1:
 											if a[0].isalpha():
 												if not a in ALIAS:
@@ -8666,14 +8669,13 @@ class ScriptThread(QThread):
 																contents = f.read()
 																f.close()
 																self.addAlias(a,f"{contents}")
-																self.CREATED.append(a)
 																script_only_command = True
 															except Exception as e:
-																errors = f"error reading \"{ifilename}\" ({e})"
+																alias_error = f"error reading \"{ifilename}\" ({e})"
 														else:
-															errors = f"\"{ifilename}\" is not a text file"
+															alias_error = f"\"{ifilename}\" is not a text file"
 													else:
-														errors = f"\"{a}\" is not a valid alias token"
+														alias_error = f"\"{a}\" is not a valid alias token"
 												else:
 													if a in self.CREATED:
 														if is_text_file(efilename):
@@ -8684,17 +8686,17 @@ class ScriptThread(QThread):
 																self.addAlias(a,f"{contents}")
 																script_only_command = True
 															except Exception as e:
-																errors = f"error reading \"{ifilename}\" ({e})"
+																alias_error = f"error reading \"{ifilename}\" ({e})"
 														else:
-															errors = f"\"{ifilename}\" is not a text file"
+															alias_error = f"\"{ifilename}\" is not a text file"
 													else:
-														errors = f"\"{a}\" already exists in another scope"
+														alias_error = f"\"{a}\" already exists in another scope"
 											else:
-												errors = f"\"{a}\" is not a valid alias token"
+												alias_error = f"\"{a}\" is not a valid alias token"
 									else:
-										errors = f"\"{ifilename}\" not found"
-									if errors!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {errors}"])
+										alias_error = f"\"{ifilename}\" not found"
+									if alias_error!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {alias_error}"])
 										loop = False
 								continue
 
@@ -8729,17 +8731,16 @@ class ScriptThread(QThread):
 
 										# Only add the local alias if it follows all the
 										# "rules" of aliases
-										errors = None
+										alias_error = None
 										if len(a)>=1:
 											if a[0].isalpha():
 												if not a in ALIAS:
 													if is_valid_alias_name(a):
 														r = random.randint(first, last)
 														self.addAlias(a,f"{r}")
-														self.CREATED.append(a)
 														script_only_command = True
 													else:
-														errors = f"\"{a}\" is not a valid alias token"
+														alias_error = f"\"{a}\" is not a valid alias token"
 												else:
 													if a in self.CREATED:
 														if is_valid_alias_name(a):
@@ -8747,15 +8748,15 @@ class ScriptThread(QThread):
 															self.addAlias(a,f"{r}")
 															script_only_command = True
 														else:
-															errors = f"\"{a}\" is not a valid alias token"
+															alias_error = f"\"{a}\" is not a valid alias token"
 													else:
-														errors = f"\"{a}\" already exists in another scope"
+														alias_error = f"\"{a}\" already exists in another scope"
 											else:
-												errors = f"\"{a}\" is not a valid alias token"
+												alias_error = f"\"{a}\" is not a valid alias token"
 									else:
-										errors = f"arguments are non-numeric"
-									if errors!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: {errors}"])
+										alias_error = f"arguments are non-numeric"
+									if alias_error!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: {alias_error}"])
 										loop = False
 								continue
 
@@ -8951,19 +8952,19 @@ class ScriptThread(QThread):
 
 												# Only add the local alias if it follows all the
 												# "rules" of aliases
-												errors = None
+												alias_error = None
 												if len(a)>=1:
 													if a[0].isalpha():
 														if not a in ALIAS:
 															if not is_valid_alias_name(a):
-																errors = f"\"{a}\" is not a valid alias token"
+																alias_error = f"\"{a}\" is not a valid alias token"
 														else:
 															if not a in self.CREATED:
-																errors = f"\"{a}\" already exists in another scope"
+																alias_error = f"\"{a}\" already exists in another scope"
 													else:
-														errors = f"\"{a}\" is not a valid alias token"
-												if errors!=None:
-													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {errors}"])
+														alias_error = f"\"{a}\" is not a valid alias token"
+												if alias_error!=None:
+													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {alias_error}"])
 													loop = False
 												else:
 													value = ' '.join(stokens)
@@ -8972,7 +8973,6 @@ class ScriptThread(QThread):
 													result,error = math(value)
 													if not error and result!=None: value = str(result)
 													self.addAlias(a,value)
-													if not a in self.CREATED: self.CREATED.append(a)
 											else:
 												self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}if: alias is disabled"])
 												loop = False
@@ -9238,7 +9238,7 @@ class ScriptThread(QThread):
 						if not config.HALT_SCRIPT_EXECUTION_ON_ERROR:
 							if not halt_issued: loop = True
 						try:
-							self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command])
+							self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command,self.ALIAS])
 						except Exception as e:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {e}"])
 		except Exception as e:

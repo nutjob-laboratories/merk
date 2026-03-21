@@ -727,6 +727,14 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doNewScript)
 			self.fileMenu.addAction(entry)
 
+			entry = QAction(QIcon(SCRIPT_ICON),"New script editor window",self)
+			entry.triggered.connect(self.parent.newEditorWindow)
+			self.fileMenu.addAction(entry)
+
+			entry = QAction(QIcon(PYTHON_ICON),"New Python editor window",self)
+			entry.triggered.connect((lambda : self.parent.newEditorPluginFileBlank(None)))
+			self.fileMenu.addAction(entry)
+
 			self.fileMenu.addSeparator()
 
 			entry = QAction(QIcon(FOLDER_ICON),"Scripts directory",self)
@@ -752,6 +760,14 @@ class Window(QMainWindow):
 
 			entry = QAction(QIcon(NEWFILE_ICON),"New file",self)
 			entry.triggered.connect(self.doNewFile)
+			self.fileMenu.addAction(entry)
+
+			entry = QAction(QIcon(SCRIPT_ICON),"New script editor window",self)
+			entry.triggered.connect(self.parent.newEditorWindow)
+			self.fileMenu.addAction(entry)
+
+			entry = QAction(QIcon(PYTHON_ICON),"New Python editor window",self)
+			entry.triggered.connect((lambda : self.parent.newEditorPluginFileBlank(None)))
 			self.fileMenu.addAction(entry)
 
 			self.fileMenu.addSeparator()

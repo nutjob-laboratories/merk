@@ -1,4 +1,22 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.700                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Changed the default username (if the user has not entered one) to the
+  application name, as set by the config.
+* The global alias table is now updated in realtime as scripts run.
+* Added an option to the config file and the settings dialog to toggle whether
+  to delete aliases created in scripts at script end.
+* Added a menu option to both the script and Python editor to open a new blank
+  editor window, in whatever mode required.
+* Hotkey key sequences are now styled like aliases in the script editor's
+  syntax highlighting.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.650                                  |
 |------------------------------------------------------------------------------|
 
@@ -40,7 +58,7 @@
 * Scripts that contain "if", "insert", and "goto" will no longer run at all if
   these commands are disabled.
 * Bugfix: several script-only commands did not necessarily interpolate their
-  inputs agains the alias table. These commands have been "fixed": random,
+  inputs against the alias table. These commands have been "fixed": random,
   write, and halt.
 * Bugfix: /print (and /prints) would occasionally repeat the second word in a
   message. This has been fixed.
@@ -68,7 +86,7 @@
 * Bugfix: /alias can now be reliably called from "if" commands without causing
   "not in scope" errors.
 * Bugfix: calling a script-only command (besides "goto") as the result of a
-  successful "if" call now precents a script from executing and displays an
+  successful "if" call now prevents a script from executing and displays an
   error.
 * Bugfix: if "goto" is disabled, calling "target" will show an error and
   prevent a script from executing.
@@ -115,7 +133,7 @@
 * Bugfix: outgoing notices that contain CTCP messages (which are normally
   unable to be sent manually with MERK) are no longer displayed in the server
   window.
-* Bugfix: messages over 412 characters (by default) are now displayed
+* Bugfix: messages over 400 characters (by default) are now displayed
   correctly, as they will appear to other users on the server, rather than as
   a single "chunk".
 

@@ -418,9 +418,11 @@ CHANNEL_MODE_CONTEXT_MENU = True
 SETTINGS_FONT_POINT_SIZE = 10
 ENABLE_READ_COMMAND = True
 HIGHLIGHT_ALL_VISIBLE_NICKS = False
+DELETE_SCRIPT_ALIASES_ON_END = True
 
 def build_settings():
 	settings = {
+		"delete_script_aliases_on_end": DELETE_SCRIPT_ALIASES_ON_END,
 		"highlight_all_nicknames_in_input_widget": HIGHLIGHT_ALL_VISIBLE_NICKS,
 		"enable_read_command": ENABLE_READ_COMMAND,
 		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
@@ -804,6 +806,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "delete_script_aliases_on_end" in settings:
+		settings["delete_script_aliases_on_end"] = DELETE_SCRIPT_ALIASES_ON_END
 	if not "highlight_all_nicknames_in_input_widget" in settings:
 		settings["highlight_all_nicknames_in_input_widget"] = HIGHLIGHT_ALL_VISIBLE_NICKS
 	if not "enable_read_command" in settings:
@@ -1942,6 +1946,7 @@ def load_settings(filename):
 	global SETTINGS_FONT_POINT_SIZE
 	global ENABLE_READ_COMMAND
 	global HIGHLIGHT_ALL_VISIBLE_NICKS
+	global DELETE_SCRIPT_ALIASES_ON_END
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1951,6 +1956,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DELETE_SCRIPT_ALIASES_ON_END = settings["delete_script_aliases_on_end"]
 		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_nicknames_in_input_widget"]
 		ENABLE_READ_COMMAND = settings["enable_read_command"]
 		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]

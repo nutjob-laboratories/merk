@@ -253,14 +253,15 @@ class Dialog(QDialog):
 		self.credits_tab.setLayout(credLayout)
 
 		patron_list = QLabel(f"""
-			<small>Ilmari Lauhakangas, Boris, Michael, Jim Kost,<br>
+			<small><center>
+				   Ilmari Lauhakangas, Boris, Michael, Jim Kost,<br>
 			       Brian, Harry Oxnard, Vincent, Wayne Windsor,<br>
 			       Brian, Nancy Hetrick, Nancy Golumbia, Toni<br>
 			       Dewees, Drew Diller, Allison L Perrine, Dust<br>
 			       Machine, Ray Hatfield, Nick Peters, Michael<br>
 			       Clemens, Tommy Olsen, Necrosand, Harry Oxnard,<br>
 			       dustmachine
-			</small>
+			</small></center>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)
 		patron_list.setOpenExternalLinks(True)

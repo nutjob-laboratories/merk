@@ -183,7 +183,7 @@ if __name__ == '__main__':
 
 		if args.username=='':
 			if len(user.USERNAME.strip())==0:
-				args.username = args.nickname
+				args.username = f"{APPLICATION_NAME}"
 			else:
 				args.username = user.USERNAME
 		else:

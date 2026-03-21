@@ -322,7 +322,7 @@ class Dialog(QDialog):
 			self.setWindowIcon(QIcon(CONNECT_MENU_ICON))
 
 		if user.USERNAME=='':
-			username = "MERK"
+			username = f"{APPLICATION_NAME}"
 		else:
 			username = user.USERNAME
 

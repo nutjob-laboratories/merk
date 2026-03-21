@@ -863,8 +863,10 @@ class Dialog(QDialog):
 			self.enableBuiltin.setEnabled(True)
 			if self.enableScripts.isChecked():
 				self.enableRead.setEnabled(True)
+				self.deleteAliases.setEnabled(True)
 			else:
 				self.enableRead.setEnabled(False)
+				self.deleteAliases.setEnabled(False)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -875,6 +877,7 @@ class Dialog(QDialog):
 			self.autoAliasQuit.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
 			self.enableRead.setEnabled(False)
+			self.deleteAliases.setEnabled(False)
 		self.changed.show()
 		self.syntax_did_change = True
 		self.boldApply()
@@ -895,8 +898,10 @@ class Dialog(QDialog):
 			self.enableWait.setEnabled(True)
 			if self.enableAlias.isChecked():
 				self.enableRead.setEnabled(True)
+				self.deleteAliases.setEnabled(True)
 			else:
 				self.enableRead.setEnabled(False)
+				self.deleteAliases.setEnabled(False)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
@@ -910,6 +915,7 @@ class Dialog(QDialog):
 			self.syntaxscript.setEnabled(False)
 			self.enableWait.setEnabled(False)
 			self.enableRead.setEnabled(False)
+			self.deleteAliases.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -5098,12 +5104,17 @@ class Dialog(QDialog):
 		if config.ENABLE_READ_COMMAND: self.enableRead.setChecked(True)
 		self.enableRead.stateChanged.connect(self.changedSettingEditor)
 
+		self.deleteAliases = QCheckBox(f"Delete aliases on end of script",self)
+		if config.DELETE_SCRIPT_ALIASES_ON_END: self.deleteAliases.setChecked(True)
+		self.deleteAliases.stateChanged.connect(self.changedSetting)
+
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.alias_symbol_label.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
 			self.enableRead.setEnabled(False)
+			self.deleteAliases.setEnabled(False)
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.restrictError.setEnabled(False)
@@ -5116,6 +5127,7 @@ class Dialog(QDialog):
 			self.enableIf.setEnabled(False)
 			self.enableWait.setEnabled(False)
 			self.enableRead.setEnabled(False)
+			self.deleteAliases.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
@@ -5147,6 +5159,7 @@ class Dialog(QDialog):
 		aLayout.setSpacing(2)
 		aLayout.addLayout(aliLayout)
 		aLayout.addWidget(self.interpolateAlias)
+		aLayout.addWidget(self.deleteAliases)
 		aLayout.addLayout(aliasLayout)
 
 		aLayout2 = QVBoxLayout()
@@ -6491,6 +6504,7 @@ class Dialog(QDialog):
 		config.CHANNEL_MODE_CONTEXT_MENU = self.chanMode.isChecked()
 		config.ENABLE_READ_COMMAND = self.enableRead.isChecked()
 		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
+		config.DELETE_SCRIPT_ALIASES_ON_END = self.deleteAliases.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK
