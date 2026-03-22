@@ -8002,18 +8002,25 @@ class ScriptThread(QThread):
 		self.TEMPORARY_ALIAS = dict(TEMPORARY_ALIAS)
 		self.CREATED = []
 		self.TARGETS = {}
+		self.LOOP_TARGET = None
+		self.LOOP_COUNT = None
 
 	def target(self,label,line_number=None):
 		if line_number==None:
 			if label.lower()=='end': return 0
-			if label in self.TARGETS: return self.TARGETS[label]
+			if label.lower() in self.TARGETS: return self.TARGETS[label]
 			return None
 
-		self.TARGETS[label] = line_number
+		self.TARGETS[label.lower()] = line_number
 
 	@pyqtSlot(str, object)
 	def handle_update(self, k, v):
 		self.ALIAS[k] = v
+
+	@pyqtSlot(str, object)
+	def handle_update_script(self, k, v):
+		self.ALIAS[k] = v
+		if not k in self.CREATED: self.CREATED.append(k)
 
 	def addTemporaryAlias(self,name,value):
 		self.TEMPORARY_ALIAS[name] = value
@@ -8128,11 +8135,40 @@ class ScriptThread(QThread):
 		if filename==None: filename = "script"
 		no_errors = True
 		line_number = 0
+		in_loop_block = False
 		for line in script.split("\n"):
 			line_number = line_number + 1
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
+
+			# |======|
+			# | loop |
+			# |======|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='loop':
+					if len(tokens)!=2:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wrong number of arguments to loop"])
+						no_errors = False
+						break
+					else:
+						in_loop_block = True
+
+			# |======|
+			# | pool |
+			# |======|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='pool':
+					if len(tokens)>1:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool takes no arguments"])
+						no_errors = False
+						break
+					elif in_loop_block==False:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool: not currently in a loop block"])
+						no_errors = False
+						break
+					else:
+						in_loop_block = False
 
 			# |========|
 			# | target |
@@ -8142,6 +8178,7 @@ class ScriptThread(QThread):
 					if not config.ENABLE_GOTO_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 						no_errors = False
+						break
 
 			# |========|
 			# | random |
@@ -8151,12 +8188,15 @@ class ScriptThread(QThread):
 					if not config.ENABLE_ALIASES:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: aliases are disabled"])
 						no_errors = False
+						break
 					elif config.ENABLE_ALIASES and len(tokens)<4:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called without enough arguments"])
 						no_errors = False
+						break
 					elif config.ENABLE_ALIASES and len(tokens)>4:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called with too many arguments"])
 						no_errors = False
+						break
 
 			# |======|
 			# | read |
@@ -8166,12 +8206,15 @@ class ScriptThread(QThread):
 					if not config.ENABLE_READ_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read has been disabled"])
 						no_errors = False
+						break
 					elif not config.ENABLE_ALIASES:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
 						no_errors = False
+						break
 					elif config.ENABLE_READ_COMMAND and len(tokens)<3:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
 						no_errors = False
+						break
 
 			# |======|
 			# | goto |
@@ -8181,9 +8224,11 @@ class ScriptThread(QThread):
 					if not config.ENABLE_GOTO_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 						no_errors = False
+						break
 					elif config.ENABLE_GOTO_COMMAND and len(tokens)!=2:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
 						no_errors = False
+						break
 
 			# |========|
 			# | insert |
@@ -8193,9 +8238,11 @@ class ScriptThread(QThread):
 					if not config.ENABLE_INSERT_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert has been disabled"])
 						no_errors = False
+						break
 					elif config.ENABLE_INSERT_COMMAND and len(tokens)==1:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert called without enough arguments"])
 						no_errors = False
+						break
 
 			# |====|
 			# | if |
@@ -8206,12 +8253,14 @@ class ScriptThread(QThread):
 					if config.ENABLE_IF_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if called without enough arguments"])
 						no_errors = False
+						break
 			if len(tokens)>=5:
 				if tokens[0].lower()=='if':
 					if not config.ENABLE_IF_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
 						no_errors = False
 						threw_if_error = True
+						break
 					else:
 						try:
 							stokens = shlex.split(line, comments=False)
@@ -8224,6 +8273,7 @@ class ScriptThread(QThread):
 									if not config.ENABLE_GOTO_COMMAND:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 										no_errors = False
+										break
 
 								script_only = [
 									"restrict",
@@ -8239,18 +8289,23 @@ class ScriptThread(QThread):
 									"random",
 									"read",
 									"target",
+									"loop",
+									"pool",
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: script-only commands cannot be called from if"])
 									no_errors = False
+									break
 						except:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
 							no_errors = False
+							break
 			if len(tokens)>=1 and not threw_if_error:
 				if tokens[0].lower()=='if':
 					if not config.ENABLE_IF_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
 						no_errors = False
+						break
 
 			# |=======|
 			# | alias |
@@ -8260,9 +8315,11 @@ class ScriptThread(QThread):
 					if not config.ENABLE_ALIASES:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
 						no_errors = False
+						break
 					elif config.ENABLE_ALIASES and len(tokens)<3:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
 						no_errors = False
+						break
 
 			# |=========|
 			# | exclude |
@@ -8281,10 +8338,12 @@ class ScriptThread(QThread):
 						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script cannot be ran in {self.window.name}"])
 						no_errors = False
+						break
 
 				if tokens[0].lower()=='exclude' and len(tokens)==1:
 					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: exclude called without an argument"])
 					no_errors = False
+					break
 
 			# |======|
 			# | only |
@@ -8303,10 +8362,12 @@ class ScriptThread(QThread):
 						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script cannot be ran in {self.window.name}"])
 						no_errors = False
+						break
 
 				elif tokens[0].lower()=='only' and len(tokens)==1:
 					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: only called without an argument"])
 					no_errors = False
+					break
 
 			# |==========|
 			# | restrict |
@@ -8323,19 +8384,23 @@ class ScriptThread(QThread):
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
 								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in server windows"])
 							no_errors = False
+							break
 					elif arg.lower()=='channel':
 						if self.window.window_type!=CHANNEL_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
 								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in channel windows"])
 							no_errors = False
+							break
 					elif arg.lower()=='private':
 						if self.window.window_type!=PRIVATE_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
 								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in private chat windows"])
 							no_errors = False
+							break
 					else:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg}\""])
 						no_errors = False
+						break
 
 				elif tokens[0].lower()=='restrict' and len(tokens)==3:
 					tokens.pop(0)
@@ -8361,9 +8426,11 @@ class ScriptThread(QThread):
 					if arg1.lower()!='server' and arg1.lower()!='channel' and arg1.lower()!='private':
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg1}\""])
 						no_errors = False
+						break
 					elif arg2.lower()!='server' and arg2.lower()!='channel' and arg2.lower()!='private':
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg2}\""])
 						no_errors = False
+						break
 					elif not valid:
 						if self.window.window_type==PRIVATE_WINDOW: reason = "private chat"
 						if self.window.window_type==SERVER_WINDOW: reason = "server"
@@ -8371,13 +8438,16 @@ class ScriptThread(QThread):
 						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script is restricted from running in {reason} windows"])
 						no_errors = False
+						break
 
 				elif tokens[0].lower()=='restrict' and len(tokens)==1:
 					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: restrict called without an argument"])
 					no_errors = False
+					break
 				elif tokens[0].lower()=='restrict' and len(tokens)>3:
 					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: restrict called with too many arguments"])
 					no_errors = False
+					break
 
 			# |=======|
 			# | usage |
@@ -8394,9 +8464,11 @@ class ScriptThread(QThread):
 							if len(tokens)>0:
 								self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
 								no_errors = False
+								break
 							else:
 								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
 								no_errors = False
+								break
 					else:
 						try:
 							arg = int(arg)
@@ -8405,34 +8477,41 @@ class ScriptThread(QThread):
 									if len(self.arguments)!=arg:
 										self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
 										no_errors = False
+										break
 								else:
 									if len(self.arguments)!=arg:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
 										no_errors = False
+										break
 							else:
 								if len(tokens)>0:
 									if len(self.arguments)<arg:
 										self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
 										no_errors = False
+										break
 								else:
 									if len(self.arguments)<arg:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
 										no_errors = False
+										break
 						except:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage must be called with a numerical first argument"])
 							no_errors = False
+							break
 
 			# Usage must be called with at least one argument
 			if len(tokens)>=1:
 				if tokens[0].lower()=='usage' and len(tokens)==1:
 					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage called without an argument"])
 					no_errors = False
+					break
 
 			# /end doesn't take any arguments
 			if len(tokens)>=1:
 				if tokens[0].lower()=='end' and len(tokens)>1: 
 					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: end called with too many arguments"])
 					no_errors = False
+					break
 
 			if config.ENABLE_WAIT_COMMAND:
 				# Make sure that wait has only one argument
@@ -8440,14 +8519,18 @@ class ScriptThread(QThread):
 					if tokens[0].lower()=='wait' and len(tokens)>2:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with too many arguments"])
 						no_errors = False
+						break
 					if tokens[0].lower()=='wait' and len(tokens)==1:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait must be called with a numerical argument"])
 						no_errors = False
+						break
 			else:
 				if len(tokens)>=1:
 					if tokens[0].lower()=='wait':
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait has been disabled"])
 						no_errors = False
+						break
+
 		if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: no_errors = True
 		return no_errors
 
@@ -8576,6 +8659,46 @@ class ScriptThread(QThread):
 					else:
 						line = script[index]
 						tokens = line.split()
+
+						# |======|
+						# | loop |
+						# |======|
+						if len(tokens)>=1:
+							if tokens[0].lower()=='loop' and len(tokens)==2:
+								tokens.pop(0)
+								numloops = tokens.pop(0)
+
+								buildTemporaryAliases(self.gui,self.window)
+								numloops = self.interpolateAliases(numloops)
+
+								if is_int(numloops)==None:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
+									loop = False
+								else:
+									if self.LOOP_COUNT==None:
+										self.LOOP_COUNT = is_int(numloops) - 1
+										self.LOOP_TARGET = line_number
+									else:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: nested loops are forbidden"])
+										loop = False
+								continue
+
+						# |======|
+						# | pool |
+						# |======|
+						if len(tokens)>=1:
+							if tokens[0].lower()=='pool' and len(tokens)==1:
+								if self.LOOP_COUNT!=None:
+									if self.LOOP_COUNT==0:
+										self.LOOP_TARGET = None
+										self.LOOP_COUNT = None
+									else:
+										self.LOOP_COUNT = self.LOOP_COUNT - 1
+										index = self.LOOP_TARGET-1
+								else:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool: not currently in a loop"])
+									loop = False
+								continue
 
 						# |========|
 						# | /alias |
@@ -8991,11 +9114,15 @@ class ScriptThread(QThread):
 												if stokens[1].lower()=='end':
 													loop = False
 													script_only_command = True
+													self.LOOP_COUNT = None
+													self.LOOP_TARGET = None
 													continue
-												elif stokens[1] in self.TARGETS:
-													t = self.target(stokens[1])
+												elif stokens[1].lower() in self.TARGETS:
+													t = self.target(stokens[1].lower())
 													index = t-2
 													handled_goto = True
+													self.LOOP_COUNT = None
+													self.LOOP_TARGET = None
 													continue
 												elif ' ' in stokens[1]:
 													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" is not a valid target name"])
@@ -9021,6 +9148,8 @@ class ScriptThread(QThread):
 														continue
 													index = ln - 1
 													handled_goto = True
+													self.LOOP_COUNT = None
+													self.LOOP_TARGET = None
 													continue
 											else:
 												self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
@@ -9191,11 +9320,15 @@ class ScriptThread(QThread):
 								if target.lower()=='end':
 									loop = False
 									script_only_command = True
+									self.LOOP_COUNT = None
+									self.LOOP_TARGET = None
 									continue
-								elif target in self.TARGETS:
-									t = self.target(target)
+								elif target.lower() in self.TARGETS:
+									t = self.target(target.lower())
 									index = t-2
 									script_only_command = True
+									self.LOOP_COUNT = None
+									self.LOOP_TARGET = None
 									continue
 								elif not target in self.TARGETS and is_int(target)==None:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{target}\" does not exist"])
@@ -9219,6 +9352,8 @@ class ScriptThread(QThread):
 
 									index = target-2
 									script_only_command = True
+									self.LOOP_COUNT = None
+									self.LOOP_TARGET = None
 									continue
 
 						if len(tokens)==1:

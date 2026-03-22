@@ -15,6 +15,14 @@
   editor window, in whatever mode required.
 * Hotkey key sequences are now styled like aliases in the script editor's
   syntax highlighting.
+* Updated the README (both the HTML file bundled with the app and the README
+  markdown in the repo).
+* Two new script-only commands: "loop" (which takes a single numerical argument,
+  the number of times to repeat the loop, and starts a looping block), and
+  "pool" (which ends a looping block).
+* In the first "error checking" pass before script execution, the first script-
+  stopping error will be displayed rather than the last one.
+* Targets created with the "target" command are now case-insensitive.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

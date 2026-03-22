@@ -5104,7 +5104,7 @@ class Dialog(QDialog):
 		if config.ENABLE_READ_COMMAND: self.enableRead.setChecked(True)
 		self.enableRead.stateChanged.connect(self.changedSettingEditor)
 
-		self.deleteAliases = QCheckBox(f"Delete aliases on end of script",self)
+		self.deleteAliases = QCheckBox(f"Delete script aliases on exit",self)
 		if config.DELETE_SCRIPT_ALIASES_ON_END: self.deleteAliases.setChecked(True)
 		self.deleteAliases.stateChanged.connect(self.changedSetting)
 

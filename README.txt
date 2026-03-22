@@ -8,7 +8,7 @@
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
 
-**I am currently unemployed, and having difficulty finding work.** If you'd like to help me and help support **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free, and will always be open source. Thanks for your time, and I hope you enjoy **MERK**! Let's keep IRC alive in the 21st century!
+**I finally found a job! But MERK still needs your help.** If you'd like to help me and help support **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free, and will always be open source. Thanks for your time, and I hope you enjoy **MERK**! Let's keep IRC alive in the 21st century!
 
  - [Downloads](#Downloads)
  - [Summary](#Summary)
@@ -150,9 +150,9 @@ There are four libraries that comes bundled with **MERK**:
     - Full scripting engine
         - Includes a built in script editor, with command generators and syntax highlighting
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
-        - Scripts have rudimentary flow control, including `if` and `goto`
+        - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Over 80 different commands are available for scripts or for use in the client
-        - 14 script-only commands
+        - 16 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -358,6 +358,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
 | `/links [REMOTE [MASK]]`                         | Requests a list of servers the server is connected to |
 | `/list [TERMS]`                         | Lists or searches channels on the server; use `*` for multi-character wildcard and `?` for single character wildcard                      |
+| `loop COUNT`                         | Begins a `loop` block, executing any scripting until the script encounters a `pool` command, before moving execution back to the line after the `loop` call. The code in between `loop<` and `pool` will be repeated `COUNT` times. *Can only be called from scripts* |
 | `/lusers [MASK [SERVERS]]`                         | Requests statistics about the server |
 | `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
 | `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to maximize the server window         |
@@ -374,6 +375,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
 | `/play FILENAME`                        | Plays a WAV file                                                                                                                 |
+| `pool`                        | Ends a `loop` block. *Can only be called from scripts*      |
 | `/print [SERVER] [WINDOW] TEXT...`               | Prints text to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window                                                                       |
 | `/prints [SERVER] [WINDOW] TEXT...`               | Prints system message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window              |
 | `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |

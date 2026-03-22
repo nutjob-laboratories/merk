@@ -310,6 +310,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"random",
 			"read",
 			"target",
+			"loop",
+			"pool",
 		]
 
 		script_full = [
