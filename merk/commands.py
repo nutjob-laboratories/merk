@@ -61,6 +61,7 @@ from . import plugins
 from . import logs
 from . import styles
 from .dialog.away import Dialog as Away
+from .dialog.getsasl import Dialog as GetSasl
 
 CONFIG_DIRECTORY = None
 SCRIPTS_DIRECTORY = None
@@ -80,6 +81,14 @@ HALT_SCRIPT = []
 USER_MACROS = {}
 MACRO_HELP = {}
 MACRO_USAGE = {}
+
+def GetSaslDialog(obj):
+	x = GetSasl(obj)
+	info = x.get_sasl_information(obj)
+	del x
+
+	if not info: return None
+	return info
 
 class UserMacro:
 	def __init__(self,name,script):
@@ -178,6 +187,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window pause": config.ISSUE_COMMAND_SYMBOL+"window pause",
 			config.ISSUE_COMMAND_SYMBOL+"window layout": config.ISSUE_COMMAND_SYMBOL+"window layout",
 			config.ISSUE_COMMAND_SYMBOL+"window fade": config.ISSUE_COMMAND_SYMBOL+"window fade ",
+			config.ISSUE_COMMAND_SYMBOL+"user sasl": config.ISSUE_COMMAND_SYMBOL+"user sasl",
+			config.ISSUE_COMMAND_SYMBOL+"user sasl add": config.ISSUE_COMMAND_SYMBOL+"user sasl add ",
+			config.ISSUE_COMMAND_SYMBOL+"user sasl remove": config.ISSUE_COMMAND_SYMBOL+"user sasl remove ",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -2817,6 +2829,40 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
+		# /user sasl
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==2:
+			if tokens[1].lower()=='sasl':
+
+				if len(USER.SASL)==0:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: No SASL accounts found")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"No SASL accounts found")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				if len(USER.SASL)>1:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(USER.SASL)} SASL accounts")
+				else:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(USER.SASL)} SASL account")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+				counter = 0
+				for hostid in USER.SASL:
+					counter = counter + 1
+					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {hostid} - {USER.SASL[hostid][0]}")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+				if len(USER.SASL)>1:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(USER.SASL)} SASL accounts")
+				else:
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(USER.SASL)} SASL account")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		# One argument displays the config value
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==2:
 			settings = USER.build_settings()
@@ -2888,6 +2934,148 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} user search result")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
+
+		# /user sasl add HOSTID USERNAME PASSWORD...
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=6:
+			if tokens[1].lower()=='sasl' and tokens[2].lower()=='add':
+				tokens.pop(0)
+				tokens.pop(0)
+				tokens.pop(0)
+				hostid = tokens.pop(0)
+
+				if not is_hostid(hostid):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" is not a hostID")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" is not a hostID")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				sasl_username = tokens.pop(0)
+				sasl_password = ' '.join(tokens)
+
+				if hostid in USER.SASL:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" already exists in the SASL account list")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" already exists in the SASL account list")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				USER.SASL[hostid] = [sasl_username,sasl_password]
+				USER.save_user(USER.USER_FILE)
+				if not is_script:
+					t = Message(SYSTEM_MESSAGE,'',f"SASL account added for \"{hostid}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		# /user sasl add HOSTID
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==4:
+			if tokens[1].lower()=='sasl' and tokens[2].lower()=='add':
+				tokens.pop(0)
+				tokens.pop(0)
+				tokens.pop(0)
+				hostid = tokens.pop(0)
+
+				if not is_hostid(hostid):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" is not a hostID")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" is not a hostID")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				u = GetSaslDialog(gui)
+				if u:
+					if len(u[0])>0 and len(u[1])>0:
+						sasl_username = u[0]
+						sasl_password = u[1]
+						USER.SASL[hostid] = [sasl_username,sasl_password]
+						USER.save_user(USER.USER_FILE)
+						if not is_script:
+							t = Message(SYSTEM_MESSAGE,'',f"SASL account added for \"{hostid}\"")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					else:
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: No username or password set for \"{hostid}\"")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',f"No username or password set for \"{hostid}\"")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		# /user sasl add
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=3:
+			if tokens[1].lower()=='sasl' and tokens[2].lower()=='add':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"user sasl add HOSTID USERNAME PASSWORD...")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"user sasl add HOSTID USERNAME PASSWORD...")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		# /user sasl remove HOSTID
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==4:
+			if tokens[1].lower()=='sasl' and tokens[2].lower()=='remove':
+				tokens.pop(0)
+				tokens.pop(0)
+				tokens.pop(0)
+				hostid = tokens.pop(0)
+
+				if not is_hostid(hostid):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" is not a hostID")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" is not a hostID")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				
+				if hostid in USER.SASL:
+					USER.SASL.pop(hostid,None)
+					USER.save_user(USER.USER_FILE)
+					if not is_script:
+						t = Message(SYSTEM_MESSAGE,'',f"SASL account for \"{hostid}\" removed")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" is not an existing SASL account")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" is not an existing SASL account")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+		# /user sasl remove
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=3:
+			if tokens[1].lower()=='sasl' and tokens[2].lower()=='remove':
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"user sasl remove HOSTID")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"user sasl remove HOSTID")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 		# Two and more, we're editing user values
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>2:

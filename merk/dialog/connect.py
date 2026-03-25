@@ -497,7 +497,7 @@ class Dialog(QDialog):
 
 		self.clear = QPushButton("Clear SASL")
 		self.clear.clicked.connect(self.clearSASL)
-		self.clear.setToolTip("Remove SASL account from the user configuration")
+		self.clear.setToolTip("Remove this server's SASL account from\nthe user configuration")
 		self.clear.setFixedHeight(self.sasl.sizeHint().height())
 
 		optionLayout.addRow(self.sasl,self.clear)

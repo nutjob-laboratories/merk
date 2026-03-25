@@ -2,6 +2,9 @@
 |                                   0.051.700                                  |
 |------------------------------------------------------------------------------|
 
+What's new:
+- **MERK can now log into services via SASL**. 
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -26,6 +29,14 @@
 * MERK now supports logging into server accounts with SASL. Account information
   is saved directly to the user configuration, and will be used in the future
   if the data is present.
+* Added an option to disconnect on SASL authentication failure (turned on by
+  default). If prompting for a new server on a lost connection is turned on,
+  then the user will be prompted for a new server; if not, a message box is
+  displayed letting the user know of the failure.
+* The /user command now has a subcommand ("sasl") that can add and remove SASL
+  accounts from the user configuration file. Call "/user sasl" to list all SASL
+  accounts. Call "/user sasl add" to add an SASL account, and "/user sasl
+  remove" to remove one.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

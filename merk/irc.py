@@ -41,6 +41,7 @@ import platform
 import base64
 
 from twisted.internet import reactor, protocol
+from twisted.python.failure import Failure
 
 try:
 	from twisted.internet import ssl
@@ -552,14 +553,36 @@ class IRC_Connection(irc.IRCClient):
 
 		w = self.gui.getServerWindow(self)
 		if w:
-			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful')
+			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful!')
 			w.writeText(t)
 
 	def irc_904(self, prefix, params):
 		self.sendLine("CAP END")
 
-		# This occurs when SASL authentication fails.
-		# Maybe show a msgbox? Drop the connection?
+		if config.DISCONNECT_ON_SASL_FAIL:
+
+			w = self.gui.getServerWindow(self)
+			if w:
+				self.gui.quitting[self.client_id] = 0
+				w.force_close = True
+				w.close()
+
+			failure = Failure(Exception("SASL authentication failed!"))
+			self.factory.clientConnectionFailed(self.transport.connector, failure)
+			self.transport.loseConnection()
+
+			if config.PROMPT_ON_FAILED_CONNECTION:
+				self.gui.connectToIrcFail("SASL authentication failed!","SASL authentication failed!")
+			else:
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setText("SASL authentication failed! Check your username and password.")
+				msgBox.setWindowTitle("SASL authentication")
+				msgBox.setStandardButtons(QMessageBox.Ok)
+				msgBox.exec()
+
+			return
 
 		w = self.gui.getServerWindow(self)
 		if w:
@@ -1667,6 +1690,8 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 	def clientConnectionLost(self, connector, reason):
 
 		config.load_settings(config.CONFIG_FILE)
+
+		if not self.kwargs["client_id"] in CONNECTIONS: return
 
 		self.kwargs["reconnected"] = CONNECTIONS[self.kwargs["client_id"]].reconnected
 

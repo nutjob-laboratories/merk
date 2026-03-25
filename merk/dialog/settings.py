@@ -4042,14 +4042,19 @@ class Dialog(QDialog):
 		refreshLayout.addWidget(self.listInterval)
 		refreshLayout.addStretch()
 
+		self.failSasl = QCheckBox("Disconnect on SASL authentication failure",self)
+		if config.DISCONNECT_ON_SASL_FAIL: self.failSasl.setChecked(True)
+		self.failSasl.stateChanged.connect(self.changedSetting)
+
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(2)
 		csLayout.addWidget(self.askBeforeDisconnect)
 		csLayout.addWidget(self.notifyOnLostConnection)
 		csLayout.addWidget(self.notifyRepeated)
 		csLayout.addWidget(self.promptFail)
+		csLayout.addWidget(self.failSasl)
 		csLayout.addWidget(self.saveHistory)
-
+		
 		arLayout = QVBoxLayout()
 		arLayout.setSpacing(2)
 		arLayout.addWidget(self.askBeforeReconnect)
@@ -6505,6 +6510,7 @@ class Dialog(QDialog):
 		config.ENABLE_READ_COMMAND = self.enableRead.isChecked()
 		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 		config.DELETE_SCRIPT_ALIASES_ON_END = self.deleteAliases.isChecked()
+		config.DISCONNECT_ON_SASL_FAIL = self.failSasl.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

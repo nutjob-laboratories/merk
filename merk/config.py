@@ -419,9 +419,11 @@ SETTINGS_FONT_POINT_SIZE = 10
 ENABLE_READ_COMMAND = True
 HIGHLIGHT_ALL_VISIBLE_NICKS = False
 DELETE_SCRIPT_ALIASES_ON_END = True
+DISCONNECT_ON_SASL_FAIL = True
 
 def build_settings():
 	settings = {
+		"disconnect_on_sasl_failure": DISCONNECT_ON_SASL_FAIL,
 		"delete_script_aliases_on_end": DELETE_SCRIPT_ALIASES_ON_END,
 		"highlight_all_nicknames_in_input_widget": HIGHLIGHT_ALL_VISIBLE_NICKS,
 		"enable_read_command": ENABLE_READ_COMMAND,
@@ -806,6 +808,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "disconnect_on_sasl_failure" in settings:
+		settings["disconnect_on_sasl_failure"] = DISCONNECT_ON_SASL_FAIL
 	if not "delete_script_aliases_on_end" in settings:
 		settings["delete_script_aliases_on_end"] = DELETE_SCRIPT_ALIASES_ON_END
 	if not "highlight_all_nicknames_in_input_widget" in settings:
@@ -1947,6 +1951,7 @@ def load_settings(filename):
 	global ENABLE_READ_COMMAND
 	global HIGHLIGHT_ALL_VISIBLE_NICKS
 	global DELETE_SCRIPT_ALIASES_ON_END
+	global DISCONNECT_ON_SASL_FAIL
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1956,6 +1961,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DISCONNECT_ON_SASL_FAIL = settings["disconnect_on_sasl_failure"]
 		DELETE_SCRIPT_ALIASES_ON_END = settings["delete_script_aliases_on_end"]
 		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_nicknames_in_input_widget"]
 		ENABLE_READ_COMMAND = settings["enable_read_command"]

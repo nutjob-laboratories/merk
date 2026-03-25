@@ -285,6 +285,9 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"fade",
 			cmdsymbol+"window fade",
 			cmdsymbol+"warn",
+			cmdsymbol+"user sasl add",
+			cmdsymbol+"user sasl remove",
+			cmdsymbol+"user sasl",
 		]
 
 		script_only = [
