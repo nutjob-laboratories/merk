@@ -46,6 +46,7 @@ HISTORY = []
 COMMANDS = {}
 USERINFO = ''
 FINGER = ''
+SASL = {}
 
 def build_settings():
 	settings = {
@@ -62,11 +63,14 @@ def build_settings():
 		"commands": COMMANDS,
 		"userinfo": USERINFO,
 		"finger": FINGER,
+		"sasl": SASL,
 	}
 
 	return settings
 
 def patch_user(settings):
+	if not "sasl" in settings:
+		settings["sasl"] = SASL
 	if not "finger" in settings:
 		settings["finger"] = FINGER
 	if not "userinfo" in settings:
@@ -110,6 +114,7 @@ def load_user(filename):
 	global COMMANDS
 	global USERINFO
 	global FINGER
+	global SASL
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -133,6 +138,7 @@ def load_user(filename):
 		COMMANDS = settings["commands"]
 		USERINFO = settings["userinfo"]
 		FINGER = settings["finger"]
+		SASL = settings["sasl"]
 
 		if prepatch_length!=postpatch_length:
 			save_user(filename)
@@ -151,6 +157,7 @@ def import_data(entry,value):
 	global LAST_PASSWORD
 	global USERINFO
 	global FINGER
+	global SASL
 
 	settings = build_settings()
 	settings[entry] = value
@@ -167,6 +174,7 @@ def import_data(entry,value):
 	LAST_PASSWORD = settings["last_password"]
 	USERINFO = settings["userinfo"]
 	FINGER = settings["finger"]
+	SASL = settings["sasl"]
 
 def save_user(filename):
 

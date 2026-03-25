@@ -23,6 +23,9 @@
 * In the first "error checking" pass before script execution, the first script-
   stopping error will be displayed rather than the last one.
 * Targets created with the "target" command are now case-insensitive.
+* MERK now supports logging into server accounts with SASL. Account information
+  is saved directly to the user configuration, and will be used in the future
+  if the data is present.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

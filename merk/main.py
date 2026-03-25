@@ -2785,6 +2785,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 				else:
 					irc.reconnect(
@@ -2799,6 +2801,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 			else:
 				if connection.ssl:
@@ -2814,6 +2818,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 				else:
 					irc.connect(
@@ -2828,6 +2834,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 
 	def connectToIrc(self,connection_info=None):
@@ -2860,6 +2868,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 				else:
 					irc.reconnect(
@@ -2874,6 +2884,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 			else:
 				if connection.ssl:
@@ -2889,6 +2901,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 				else:
 					irc.connect(
@@ -2903,6 +2917,8 @@ class Merk(QMainWindow):
 						gui=self,
 						failreconnect=True,
 						execute_script=connection.execute_script,
+						sasl_username=connection.sasl_username,
+						sasl_password=connection.sasl_password,
 					)
 
 	def refreshModeDisplay(self,client):

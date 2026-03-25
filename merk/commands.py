@@ -1102,6 +1102,13 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 		return True
 	USER.load_user(USER.USER_FILE)
+	hostid = f"{host}:{port}"
+	if hostid in USER.SASL:
+		sasl_username = USER.SASL[hostid][0]
+		sasl_password = USER.SASL[hostid][1]
+	else:
+		sasl_username = None
+		sasl_password = None
 	i = ConnectInfo(
 		USER.NICKNAME,
 		USER.ALTERNATE,
@@ -1113,6 +1120,8 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 		reconnect,
 		ssl,
 		execute, # execute script
+		sasl_username,
+		sasl_password,
 	)
 	gui.connectToIrc(i)
 

@@ -38,6 +38,7 @@ from collections import defaultdict
 from datetime import datetime
 import textwrap
 import platform
+import base64
 
 from twisted.internet import reactor, protocol
 
@@ -125,6 +126,9 @@ class IRC_Connection(irc.IRCClient):
 
 	fingerReply = None
 	userinfo = None
+
+	sasl_username = None
+	sasl_password = None
 
 	def reset_environment(self):
 
@@ -507,13 +511,68 @@ class IRC_Connection(irc.IRCClient):
 		self.sendLine("CAP REQ :multi-prefix")
 		self.sendLine("CAP REQ :away-notify")
 		self.sendLine("CAP REQ :account-notify")
-		self.sendLine("CAP END")
+
+		if self.sasl_username!=None and self.sasl_password!=None:
+			self.sendLine("CAP REQ :sasl")
+		else:
+			self.sendLine("CAP END")
 
 		irc.IRCClient.connectionMade(self)
 
 		CONNECTIONS[self.client_id] = self
 
 		self.gui.connectionMade(self)
+
+	def irc_CAP(self, prefix, params):
+		subcommand = params[1]
+		capabilities = params[2] if len(params) > 2 else ""
+
+		if subcommand == "ACK" and "sasl" in capabilities:
+			self.sendLine("AUTHENTICATE PLAIN")
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','Attempting to authenticate with SASL...')
+				w.writeText(t)
+
+		elif subcommand == "NAK":
+			self.sendLine("CAP END")
+
+	def irc_AUTHENTICATE(self, prefix, params):
+		if params[0] == "+":
+			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
+			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
+			self.sendLine(f"AUTHENTICATE {encoded}")
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','SASL username and password sent...')
+				w.writeText(t)
+
+	def irc_903(self, prefix, params):
+		self.sendLine("CAP END")
+
+		w = self.gui.getServerWindow(self)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful')
+			w.writeText(t)
+
+	def irc_904(self, prefix, params):
+		self.sendLine("CAP END")
+
+		# This occurs when SASL authentication fails.
+		# Maybe show a msgbox? Drop the connection?
+
+		w = self.gui.getServerWindow(self)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'','SASL failed')
+			w.writeText(t)
+
+	def irc_905(self, prefix, params):
+		self.sendLine("CAP END")
+
+		w = self.gui.getServerWindow(self)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'','SASL message too long')
+			w.writeText(t)
 
 	def connectionLost(self, reason):
 
@@ -1480,6 +1539,12 @@ class UptimeHeartbeat(QThread):
 def objectconfig(obj,**kwargs):
 
 	for key, value in kwargs.items():
+
+		if key=="sasl_username":
+			obj.sasl_username = value
+
+		if key=="sasl_password":
+			obj.sasl_password = value
 
 		if key=="reconnected":
 			obj.reconnected = value

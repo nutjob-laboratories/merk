@@ -418,7 +418,7 @@ class Message:
 		self.channel_topic = ''
 
 class ConnectInfo:
-	def __init__(self,nick,alt,username,realname,host,port,password,reconnect,ssl,execute_script):
+	def __init__(self,nick,alt,username,realname,host,port,password,reconnect,ssl,execute_script,sasl_username=None,sasl_password=None):
 		self.nickname = nick
 		self.alternate = alt
 		self.username = username
@@ -429,6 +429,8 @@ class ConnectInfo:
 		self.reconnect = reconnect
 		self.ssl = ssl
 		self.execute_script = execute_script
+		self.sasl_username = sasl_username
+		self.sasl_password = sasl_password
 
 class WhoisData:
 	def __init__(self):

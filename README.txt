@@ -95,7 +95,7 @@ You're all set! You can run **MERK** with:
 
     python merk.py
 
-To run **MERK** from a shortcut or script, have to make sure that the virtual environment is initialized *before* you can run `merk.py`. For example, if you installed **MERK** into `/Users/your_name/merk`, you could execute:
+To run **MERK** from a shortcut or script, you have to make sure that the virtual environment is initialized *before* you can run `merk.py`. For example, if you installed **MERK** into `/Users/your_name/merk`, you could execute:
 
     source /Users/your_name/merk/.venv/bin/activate && python /Users/your_name/merk/merk.py
 
@@ -139,6 +139,7 @@ There are four libraries that comes bundled with **MERK**:
 -   [Flatpak](https://flatpak.org/) distribution for Linux is available
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Connect to IRC via TCP/IP or SSL/TLS
+-   SASL support
 -   A built-in list of over 80 IRC servers to connect to
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)

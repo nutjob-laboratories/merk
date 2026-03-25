@@ -41,10 +41,19 @@ from .. import config
 from .. import user
 from .. import syntax
 from .. import connection_script
+from .getsasl import Dialog as GetSasl
 
 import signal
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+def GetSaslDialog(obj):
+	x = GetSasl(obj)
+	info = x.get_sasl_information(obj)
+	del x
+
+	if not info: return None
+	return info
 
 class Dialog(QDialog):
 
@@ -124,6 +133,13 @@ class Dialog(QDialog):
 			user_history = list(user.HISTORY)
 			hostid = self.host.text()+":"+self.port.text()
 
+			sasl_username = None
+			sasl_password = None
+			if self.use_SASL:
+				if self.SASL_Username!=None and self.SASL_Password!=None:
+					sasl_username = self.SASL_Username
+					sasl_password = self.SASL_Password
+
 			if self.SAVE:
 				# Save user settings
 				user.NICKNAME = self.nick.text()
@@ -147,6 +163,10 @@ class Dialog(QDialog):
 					if len(commands.strip())>0:
 						user.COMMANDS[hostid] = self.commands.toPlainText()
 
+				if sasl_username!=None and sasl_password!=None:
+					sentry = [sasl_username,sasl_password]
+					user.SASL[hostid] = sentry
+
 				user.save_user(user.USER_FILE)
 
 				retval = ConnectInfo(
@@ -160,6 +180,8 @@ class Dialog(QDialog):
 					self.RECONNECT_OPTION,
 					self.CONNECT_VIA_SSL,
 					self.EXECUTE,	# execute script
+					sasl_username,
+					sasl_password,
 				)
 
 				if self.parent!=None:
@@ -181,6 +203,8 @@ class Dialog(QDialog):
 					self.RECONNECT_OPTION,
 					self.CONNECT_VIA_SSL,
 					self.EXECUTE,	# execute script
+					sasl_username,
+					sasl_password,
 				)
 
 				if self.parent!=None:
@@ -222,11 +246,62 @@ class Dialog(QDialog):
 		else:
 			self.ssl.setCheckState(Qt.Unchecked)
 
+		self.SASL_Username = None
+		self.SASL_Password = None
+		self.use_SASL = False
+		self.sasl.setCheckState(Qt.Unchecked)
+
+		hostid = f"{host}:{h[1]}"
+		if hostid in user.SASL:
+			u = user.SASL[hostid]
+			self.SASL_Username = u[0]
+			self.SASL_Password = u[1]
+			self.use_SASL = True
+			self.sasl.setCheckState(Qt.Checked)
+		else:
+			self.SASL_Username = None
+			self.SASL_Password = None
+			self.use_SASL = False
+			self.sasl.setCheckState(Qt.Unchecked)
+
 		QTimer.singleShot(0, lambda: self.moveCursor())
 
 	def moveCursor(self):
 		self.host.setFocus()
 		self.host.setCursorPosition(len(self.host.text()))
+
+	def clickSASL(self,state):
+		if state==Qt.Checked:
+			self.use_SASL = True
+			if self.SASL_Username==None and self.SASL_Password==None:
+				u = GetSaslDialog(self)
+				if u:
+					if len(u[0])>0 and len(u[1])>0:
+						self.SASL_Username = u[0]
+						self.SASL_Password = u[1]
+					else:
+						self.SASL_Username = None
+						self.SASL_Password = None
+						self.use_SASL = False
+						self.sasl.setCheckState(Qt.Unchecked)
+				else:
+					self.SASL_Username = None
+					self.SASL_Password = None
+					self.use_SASL = False
+					self.sasl.setCheckState(Qt.Unchecked)
+		else:
+			self.use_SASL = False
+
+	def clearSASL(self):
+		if len(self.host.text())>0 and len(self.port.text())>0:
+			hostid = f"{self.host.text()}:{self.port.text()}"
+			if hostid in user.SASL:
+				user.SASL.pop(hostid,None)
+				user.save_user(user.USER_FILE)
+				self.SASL_Username = None
+				self.SASL_Password = None
+				self.use_SASL = False
+				self.sasl.setCheckState(Qt.Unchecked)
 
 	def clickSSL(self,state):
 		if state == Qt.Checked:
@@ -286,6 +361,10 @@ class Dialog(QDialog):
 
 		self.StoredData = []
 		self.StoredServer = 0
+
+		self.SASL_Username = None
+		self.SASL_Password = None
+		self.use_SASL = False
 
 		# Load the config file
 		config.load_settings(config.CONFIG_FILE)
@@ -413,6 +492,24 @@ class Dialog(QDialog):
 		else:
 			optionLayout.addRow(self.ssl,self.reconnect)
 
+		self.sasl = QCheckBox("Authenticate via SASL",self)
+		self.sasl.stateChanged.connect(self.clickSASL)
+
+		self.clear = QPushButton("Clear SASL")
+		self.clear.clicked.connect(self.clearSASL)
+		self.clear.setToolTip("Remove SASL account from the user configuration")
+		self.clear.setFixedHeight(self.sasl.sizeHint().height())
+
+		optionLayout.addRow(self.sasl,self.clear)
+
+		hostid = f"{user.LAST_HOST}:{user.LAST_PORT}"
+		if hostid in user.SASL:
+			u = user.SASL[hostid]
+			self.SASL_Username = u[0]
+			self.SASL_Password = u[1]
+			self.use_SASL = True
+			self.sasl.toggle()
+
 		if config.SCRIPTING_ENGINE_ENABLED:
 			optionLayout.addRow(self.exe,QLabel(''))
 		optionLayout.setVerticalSpacing(0)
@@ -439,9 +536,11 @@ class Dialog(QDialog):
 
 		height = self.servers.height()+self.reconnect.height()
 		if self.not_simplified:
-			height = height + serverLayout.sizeHint().height() + 125
+			# height = height + serverLayout.sizeHint().height() + 125
+			height = height + serverLayout.sizeHint().height() + 135
 		else:
-			height = height + serverLayout.sizeHint().height() + 80
+			# height = height + serverLayout.sizeHint().height() + 80
+			height = height + serverLayout.sizeHint().height() + 90
 		self.commands.setFixedHeight(height)
 
 		commandsLayout = QVBoxLayout()
