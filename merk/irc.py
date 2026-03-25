@@ -532,7 +532,7 @@ class IRC_Connection(irc.IRCClient):
 			self.sendLine("AUTHENTICATE PLAIN")
 			w = self.gui.getServerWindow(self)
 			if w:
-				t = Message(SYSTEM_MESSAGE,'','Attempting to authenticate with SASL...')
+				t = Message(NOTICE_MESSAGE,'','Attempting to authenticate with SASL...')
 				w.writeText(t)
 
 		elif subcommand == "NAK":
@@ -545,7 +545,7 @@ class IRC_Connection(irc.IRCClient):
 			self.sendLine(f"AUTHENTICATE {encoded}")
 			w = self.gui.getServerWindow(self)
 			if w:
-				t = Message(SYSTEM_MESSAGE,'','SASL username and password sent...')
+				t = Message(NOTICE_MESSAGE,'','SASL username and password sent...')
 				w.writeText(t)
 
 	def irc_903(self, prefix, params):
@@ -553,7 +553,7 @@ class IRC_Connection(irc.IRCClient):
 
 		w = self.gui.getServerWindow(self)
 		if w:
-			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful!')
+			t = Message(NOTICE_MESSAGE,'','SASL authentication successful!')
 			w.writeText(t)
 
 	def irc_904(self, prefix, params):
@@ -567,7 +567,7 @@ class IRC_Connection(irc.IRCClient):
 				w.force_close = True
 				w.close()
 
-			failure = Failure(Exception("SASL authentication failed!"))
+			failure = Failure(Exception("SASL authentication failed"))
 			self.factory.clientConnectionFailed(self.transport.connector, failure)
 			self.transport.loseConnection()
 
@@ -577,24 +577,25 @@ class IRC_Connection(irc.IRCClient):
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				msgBox.setText("SASL authentication failed! Check your username and password.")
-				msgBox.setWindowTitle("SASL authentication")
+				msgBox.setText("SASL authentication failed!")
+				msgBox.setInformativeText("Check your username and password, and try to reconnect again.")
+				msgBox.setWindowTitle("SASL Authentication")
 				msgBox.setStandardButtons(QMessageBox.Ok)
 				msgBox.exec()
+		else:
 
-			return
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(ERROR_MESSAGE,'','SASL authentication failed!')
+				w.writeText(t)
 
-		w = self.gui.getServerWindow(self)
-		if w:
-			t = Message(SYSTEM_MESSAGE,'','SASL failed')
-			w.writeText(t)
 
 	def irc_905(self, prefix, params):
 		self.sendLine("CAP END")
 
 		w = self.gui.getServerWindow(self)
 		if w:
-			t = Message(SYSTEM_MESSAGE,'','SASL message too long')
+			t = Message(ERROR_MESSAGE,'','SASL message too long')
 			w.writeText(t)
 
 	def connectionLost(self, reason):

@@ -2830,6 +2830,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /user sasl
+		# Display all SASL accounts stored in the config
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==2:
 			if tokens[1].lower()=='sasl':
 
@@ -2936,6 +2937,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /user sasl add HOSTID USERNAME PASSWORD...
+		# Adds an SASL account to the config
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=6:
 			if tokens[1].lower()=='sasl' and tokens[2].lower()=='add':
 				tokens.pop(0)
@@ -2976,6 +2978,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 		# /user sasl add HOSTID
+		# Adds an SASL account to the config using a dialog
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==4:
 			if tokens[1].lower()=='sasl' and tokens[2].lower()=='add':
 				tokens.pop(0)
@@ -3016,6 +3019,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 		# /user sasl add
+		# Usage information
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=3:
 			if tokens[1].lower()=='sasl' and tokens[2].lower()=='add':
 				if is_script:
@@ -3029,6 +3033,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 		# /user sasl remove HOSTID
+		# Removes an SASL account from the config
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==4:
 			if tokens[1].lower()=='sasl' and tokens[2].lower()=='remove':
 				tokens.pop(0)
@@ -3065,6 +3070,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 		# /user sasl remove
+		# Usage information
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=3:
 			if tokens[1].lower()=='sasl' and tokens[2].lower()=='remove':
 				if is_script:
