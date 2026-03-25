@@ -441,6 +441,11 @@ class Dialog(QDialog):
 		self.password = QLineEdit(user.LAST_PASSWORD)
 		self.password.setEchoMode(QLineEdit.Password)
 
+		# Make sure that only positive integers
+		# can be input into the port entry
+		validator = QIntValidator(1, 2147483647)
+		self.port.setValidator(validator)
+
 		self.host.textChanged.connect(self.serverEntered)
 		self.port.textChanged.connect(self.serverEntered)
 

@@ -49,6 +49,12 @@ class Dialog(QDialog):
 
 		return retval
 
+	def clickEye(self,state):
+		if self.eye.isChecked():
+			self.key.setEchoMode(QLineEdit.Normal)
+		else:
+			self.key.setEchoMode(QLineEdit.Password)
+
 	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
@@ -70,9 +76,13 @@ class Dialog(QDialog):
 		self.key = QNoSpaceLineEdit()
 		self.key.setEchoMode(QLineEdit.Password)
 
+		self.eye = QCheckBox("View password",self)
+		self.eye.stateChanged.connect(self.clickEye)
+
 		inputLayout = QFormLayout()
 		inputLayout.addRow(self.nameLabel,self.name)
 		inputLayout.addRow(self.keyLabel,self.key)
+		inputLayout.addRow(self.eye)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)

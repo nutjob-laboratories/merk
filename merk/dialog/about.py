@@ -260,7 +260,7 @@ class Dialog(QDialog):
 			       Dewees, Drew Diller, Allison L Perrine, Dust<br>
 			       Machine, Ray Hatfield, Nick Peters, Michael<br>
 			       Clemens, Tommy Olsen, Necrosand, Harry Oxnard,<br>
-			       dustmachine
+			       dustmachine, photoplasia
 			</small></center>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)

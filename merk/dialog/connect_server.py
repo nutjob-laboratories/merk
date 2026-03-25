@@ -78,6 +78,11 @@ class Dialog(QDialog):
 		self.keyLabel = QLabel("<b>Port:</b>")
 		self.key = QNoSpaceLineEdit()
 
+		# Make sure that only positive integers
+		# can be input into the port entry
+		validator = QIntValidator(1, 2147483647)
+		self.key.setValidator(validator)
+
 		self.passLabel = QLabel("<b>Password:</b>")
 		self.password = QNoSpaceLineEdit()
 

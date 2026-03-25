@@ -220,6 +220,7 @@ class IRC_Connection(irc.IRCClient):
 		self.last_list_fetch = ''
 		self.last_list_timestamp = 0
 		self.is_listing_channels = False
+		self.support_hostmasks_in_names = False
 
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
@@ -506,7 +507,6 @@ class IRC_Connection(irc.IRCClient):
 			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs['server']}-{self.kwargs['port']}.txt")
 			self.dump_file = open(dump_filename,"a")
 
-		self.sendLine("CAP REQ :chghost")
 		self.sendLine("CAP REQ :cap-notify")
 		self.sendLine("CAP REQ :userhost-in-names")
 		self.sendLine("CAP REQ :multi-prefix")
@@ -515,6 +515,10 @@ class IRC_Connection(irc.IRCClient):
 
 		if self.sasl_username!=None and self.sasl_password!=None:
 			self.sendLine("CAP REQ :sasl")
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','Requesting SASL authentication...')
+				w.writeText(t)
 		else:
 			self.sendLine("CAP END")
 
@@ -524,16 +528,36 @@ class IRC_Connection(irc.IRCClient):
 
 		self.gui.connectionMade(self)
 
+	def irc_ACCOUNT(self, prefix, params):
+		account = params[0] if params else None
+
+		w = self.gui.getServerWindow(self)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'',f"{prefix}")
+			w.writeText(t)
+		
+			if account == '*':
+				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged out")
+			else:
+				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged into {account}")
+
 	def irc_CAP(self, prefix, params):
 		subcommand = params[1]
 		capabilities = params[2] if len(params) > 2 else ""
 
 		if subcommand == "ACK" and "sasl" in capabilities:
+			# Start SASL login
 			self.sendLine("AUTHENTICATE PLAIN")
 			w = self.gui.getServerWindow(self)
 			if w:
-				t = Message(NOTICE_MESSAGE,'','Attempting to authenticate with SASL...')
+				t = Message(SYSTEM_MESSAGE,'','Initiating SASL authentication...')
 				w.writeText(t)
+
+		elif subcommand == "ACK" and "userhost-in-names" in capabilities:
+			# If hostmasks are sent with names, then we
+			# don't need to whois everyone, if that
+			# option is turned on
+			self.support_hostmasks_in_names = True
 
 		elif subcommand == "NAK":
 			self.sendLine("CAP END")
@@ -545,7 +569,7 @@ class IRC_Connection(irc.IRCClient):
 			self.sendLine(f"AUTHENTICATE {encoded}")
 			w = self.gui.getServerWindow(self)
 			if w:
-				t = Message(NOTICE_MESSAGE,'','SASL username and password sent...')
+				t = Message(SYSTEM_MESSAGE,'','SASL username and password sent...')
 				w.writeText(t)
 
 	def irc_903(self, prefix, params):
@@ -553,11 +577,13 @@ class IRC_Connection(irc.IRCClient):
 
 		w = self.gui.getServerWindow(self)
 		if w:
-			t = Message(NOTICE_MESSAGE,'','SASL authentication successful!')
+			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful!')
 			w.writeText(t)
 
 	def irc_904(self, prefix, params):
 		self.sendLine("CAP END")
+
+		server = f"{self.server}:{self.port}"
 
 		if config.DISCONNECT_ON_SASL_FAIL:
 
@@ -578,7 +604,7 @@ class IRC_Connection(irc.IRCClient):
 				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 				msgBox.setText("SASL authentication failed!")
-				msgBox.setInformativeText("Check your username and password, and try to reconnect again.")
+				msgBox.setInformativeText(f"Disconnected from {server}! Check your username and password, and try to reconnect again.")
 				msgBox.setWindowTitle("SASL Authentication")
 				msgBox.setStandardButtons(QMessageBox.Ok)
 				msgBox.exec()
@@ -586,17 +612,41 @@ class IRC_Connection(irc.IRCClient):
 
 			w = self.gui.getServerWindow(self)
 			if w:
-				t = Message(ERROR_MESSAGE,'','SASL authentication failed!')
+				t = Message(ERROR_MESSAGE,'','SASL authentication failed! Check your username and password.')
 				w.writeText(t)
 
 
 	def irc_905(self, prefix, params):
 		self.sendLine("CAP END")
 
-		w = self.gui.getServerWindow(self)
-		if w:
-			t = Message(ERROR_MESSAGE,'','SASL message too long')
-			w.writeText(t)
+		if config.DISCONNECT_ON_SASL_FAIL:
+
+			w = self.gui.getServerWindow(self)
+			if w:
+				self.gui.quitting[self.client_id] = 0
+				w.force_close = True
+				w.close()
+
+			failure = Failure(Exception("SASL authentication failed"))
+			self.factory.clientConnectionFailed(self.transport.connector, failure)
+			self.transport.loseConnection()
+
+			if config.PROMPT_ON_FAILED_CONNECTION:
+				self.gui.connectToIrcFail("SASL authentication failed! SASL message was too long","SASL authentication failed!")
+			else:
+				msgBox = QMessageBox()
+				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+				msgBox.setText("SASL authentication failed!")
+				msgBox.setInformativeText(f"Disconnected from {server}! SASL message was too long. Check your username and password, and try to reconnect again.")
+				msgBox.setWindowTitle("SASL Authentication")
+				msgBox.setStandardButtons(QMessageBox.Ok)
+				msgBox.exec()
+		else:
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(ERROR_MESSAGE,'','SASL authentication failed! SASL message was too long')
+				w.writeText(t)
 
 	def connectionLost(self, reason):
 
@@ -919,7 +969,7 @@ class IRC_Connection(irc.IRCClient):
 			self.gui.updateHostmask(self,p[0],p[1])
 		else:
 			if user == self.nickname: return
-			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
 				self.do_whois.append(user)
 
 		self.sendLine("NAMES "+channel)
@@ -1049,7 +1099,7 @@ class IRC_Connection(irc.IRCClient):
 		channel = params[2].lower()
 		nicklist = params[3].split(' ')
 
-		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
 			for u in nicklist:
 				p = u.split('!')
 				if len(p)!=2:

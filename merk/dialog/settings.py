@@ -4047,7 +4047,7 @@ class Dialog(QDialog):
 		self.failSasl.stateChanged.connect(self.changedSetting)
 
 		csLayout = QVBoxLayout()
-		csLayout.setSpacing(2)
+		csLayout.setSpacing(0)
 		csLayout.addWidget(self.askBeforeDisconnect)
 		csLayout.addWidget(self.notifyOnLostConnection)
 		csLayout.addWidget(self.notifyRepeated)
@@ -4056,19 +4056,19 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.saveHistory)
 		
 		arLayout = QVBoxLayout()
-		arLayout.setSpacing(2)
+		arLayout.setSpacing(0)
 		arLayout.addWidget(self.askBeforeReconnect)
 		arLayout.addLayout(delayLayout)
 
 		afLayout = QVBoxLayout()
-		afLayout.setSpacing(2)
+		afLayout.setSpacing(0)
 		afLayout.addWidget(self.requestList)
 		afLayout.addLayout(refreshLayout)
 		afLayout.addWidget(self.autoHostmasks)
 		afLayout.addLayout(freqLayout)
 
 		cdLayout = QVBoxLayout()
-		cdLayout.setSpacing(2)
+		cdLayout.setSpacing(0)
 		cdLayout.addWidget(self.showNetLinks)
 		cdLayout.addWidget(self.motdRaw)
 		cdLayout.addWidget(self.ircErrors)
