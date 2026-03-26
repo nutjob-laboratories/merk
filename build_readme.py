@@ -48,7 +48,7 @@ file_size_kb = win_setup_file_size / 1024
 file_size_mb = file_size_kb / 1024
 readme = readme.replace("!_WINSETUP_!",f"{file_size_mb:.2f} MB")
 # !_LINZIP_!
-win_latest_file_size =  os.path.getsize("./downloads/merk-linux-latest.zip")
+win_latest_file_size =  os.path.getsize("D:/Stuff/Dropbox/Public/merk-linux-latest.zip")
 file_size_kb = win_latest_file_size / 1024
 file_size_mb = file_size_kb / 1024
 readme = readme.replace("!_LINZIP_!",f"{file_size_mb:.2f} MB")

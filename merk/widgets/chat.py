@@ -3103,6 +3103,7 @@ def buildServerSettingsMenu(self,client):
 	cmds = client.cmds # list
 	casemapping = client.casemapping
 	maxmodes = client.maxmodes
+	ircv3 = client.ircv3
 
 	optionsMenu = QMenu("Server information")
 
@@ -3249,6 +3250,21 @@ def buildServerSettingsMenu(self,client):
 			if m=="Y": e.setIcon(QIcon(PROTECTED_USER))
 			prefixmenu.addAction(e)
 		optionsMenu.addMenu(prefixmenu)
+
+	if len(ircv3)>0:
+		ircv3menu = QMenu("IRCv3 capabilities",self)
+		for c in ircv3:
+			if '=' in c:
+				po = c.split('=')
+				subm = QMenu(f"{po[0]}",self)
+				for cap in po[1].split(','):
+					e = QAction(F"{cap}", self) 
+					subm.addAction(e)
+				ircv3menu.addMenu(subm)
+			else:
+				e = QAction(F"{c}", self) 
+				ircv3menu.addAction(e)
+		optionsMenu.addMenu(ircv3menu)
 
 	return optionsMenu
 

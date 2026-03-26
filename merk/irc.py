@@ -221,6 +221,7 @@ class IRC_Connection(irc.IRCClient):
 		self.last_list_timestamp = 0
 		self.is_listing_channels = False
 		self.support_hostmasks_in_names = False
+		self.ircv3 = []
 
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
@@ -543,6 +544,8 @@ class IRC_Connection(irc.IRCClient):
 				capabilities = join_with_and(params[2].split())
 				t = Message(SYSTEM_MESSAGE,'',"IRCv3 capabilities: "+capabilities)
 				w.writeText(t)
+
+			self.ircv3 = list(params[2].split())
 
 			self.sendLine("CAP REQ :cap-notify")
 			self.sendLine("CAP REQ :userhost-in-names")

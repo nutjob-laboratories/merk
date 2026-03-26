@@ -169,6 +169,11 @@ class Dialog(QDialog):
 
 				user.save_user(user.USER_FILE)
 
+				if len(self.password.text().strip())==0:
+					server_pass = None
+				else:
+					server_pass = self.password.text()
+
 				retval = ConnectInfo(
 					self.nick.text(),
 					self.alternative.text(),
@@ -176,7 +181,7 @@ class Dialog(QDialog):
 					self.realname.text(),
 					self.host.text(),
 					int(self.port.text()),
-					self.password.text(),
+					server_pass,
 					self.RECONNECT_OPTION,
 					self.CONNECT_VIA_SSL,
 					self.EXECUTE,	# execute script
@@ -192,6 +197,11 @@ class Dialog(QDialog):
 
 				connection_script.add_connection_script(hostid,self.commands.toPlainText())
 
+				if len(self.password.text().strip())==0:
+					server_pass = None
+				else:
+					server_pass = self.password.text()
+
 				retval = ConnectInfo(
 					self.nick.text(),
 					self.alternative.text(),
@@ -199,7 +209,7 @@ class Dialog(QDialog):
 					self.realname.text(),
 					self.host.text(),
 					int(self.port.text()),
-					self.password.text(),
+					server_pass,
 					self.RECONNECT_OPTION,
 					self.CONNECT_VIA_SSL,
 					self.EXECUTE,	# execute script
