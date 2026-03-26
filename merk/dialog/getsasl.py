@@ -34,8 +34,8 @@ from .. import config
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_sasl_information(parent=None):
-		dialog = Dialog(parent)
+	def get_sasl_information(parent=None,username=None,password=None):
+		dialog = Dialog(parent,username,password)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -55,10 +55,12 @@ class Dialog(QDialog):
 		else:
 			self.key.setEchoMode(QLineEdit.Password)
 
-	def __init__(self,parent=None):
+	def __init__(self,parent=None,username=None,password=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
+		self.u = username
+		self.p = password
 
 		config.load_settings(config.CONFIG_FILE)
 
@@ -80,6 +82,10 @@ class Dialog(QDialog):
 		inputLayout.addRow(self.nameLabel,self.name)
 		inputLayout.addRow(self.keyLabel,self.key)
 		inputLayout.addRow(self.eye)
+
+		if self.u!=None and self.p!=None:
+			self.name.setText(self.u)
+			self.key.setText(self.p)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)

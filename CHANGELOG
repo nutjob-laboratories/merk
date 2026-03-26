@@ -3,7 +3,7 @@
 |------------------------------------------------------------------------------|
 
 What's new:
-- **MERK can now log into services via SASL**.
+- **MERK can now log into services via SASL**. Commands have been added to create, edit, and delete SASL accounts stored in the user configuration file.
 - **Scripts now have `loop`s**. Loops can be "broken out" of using `goto`.
 
 |==============================================================================|
@@ -36,8 +36,8 @@ What's new:
   displayed letting the user know of the failure.
 * The /user command now has a subcommand ("sasl") that can add and remove SASL
   accounts from the user configuration file. Call "/user sasl" to list all SASL
-  accounts. Call "/user sasl add" to add an SASL account, and "/user sasl
-  remove" to remove one.
+  accounts. Call "/user sasl add" to add an SASL account, "/user sasl
+  remove" to remove one, and "/user sasl edit" to edit one.
 * Bugfix: dialog text entries for server port numbers now limit input to
   positive integers only.
 * Added the option to toggle password visibility in the "join channel" dialog
@@ -46,6 +46,9 @@ What's new:
   have to do mass whois on channel users. We now check the server capabilities
   to make sure that's what's happening.
 * MERK now handles IRCv3 capabilities better.
+* Added a link explaining "Levenshtein_distance" to the "Spellcheck" section of
+  the "Settings" dialog.
+* Tweaks to the "Settings" dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

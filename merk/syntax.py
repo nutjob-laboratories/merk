@@ -288,6 +288,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"user sasl add",
 			cmdsymbol+"user sasl remove",
 			cmdsymbol+"user sasl",
+			cmdsymbol+"user sasl edit",
 		]
 
 		script_only = [

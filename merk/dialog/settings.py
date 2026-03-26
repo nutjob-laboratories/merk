@@ -3958,8 +3958,8 @@ class Dialog(QDialog):
 		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
 		
-		self.fetchFreqLabel = QLabel("Fetch hostmask every")
-		self.fetchFreqLabelSpec = QLabel("seconds")
+		self.fetchFreqLabel = QLabel("Fetch hostmask every ")
+		self.fetchFreqLabelSpec = QLabel(" seconds")
 		self.fetchFreq = QSpinBox()
 		self.fetchFreq.setRange(1,99)
 		self.fetchFreq.setValue(self.HOSTMASK_FETCH_FREQUENCY)
@@ -4271,7 +4271,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.inputPage)
 
-		self.historySizeLabel = QLabel("Number of lines to save in history:")
+		self.historySizeLabel = QLabel("Number of lines to save in history: ")
 		self.historySizeBox = QSpinBox()
 		self.historySizeBox.setRange(1,100)
 		self.historySizeBox.setValue(self.historysize)
@@ -4504,7 +4504,8 @@ class Dialog(QDialog):
 		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('3')
 		self.spellcheckDistance.currentIndexChanged.connect(self.distanceChange)
 
-		self.distanceLabel = QLabel("Levenshtein distance ")
+		self.distanceLabel = QLabel("<a href=\"https://en.wikipedia.org/wiki/Levenshtein_distance\">Levenshtein distance</a>: ")
+		self.distanceLabel.setOpenExternalLinks(True)
 
 		self.spellcheckColor = widgets.SyntaxTextColor('underline', "<b>Underline Color</b>",self.SPELLCHECK_UNDERLINE_COLOR,self)
 		self.spellcheckColor.syntaxChanged.connect(self.underlineChanged)

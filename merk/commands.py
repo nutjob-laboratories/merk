@@ -82,9 +82,9 @@ USER_MACROS = {}
 MACRO_HELP = {}
 MACRO_USAGE = {}
 
-def GetSaslDialog(obj):
-	x = GetSasl(obj)
-	info = x.get_sasl_information(obj)
+def GetSaslDialog(obj,username=None,password=None):
+	x = GetSasl(obj,username,password)
+	info = x.get_sasl_information(obj,username,password)
 	del x
 
 	if not info: return None
@@ -190,6 +190,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"user sasl": config.ISSUE_COMMAND_SYMBOL+"user sasl",
 			config.ISSUE_COMMAND_SYMBOL+"user sasl add": config.ISSUE_COMMAND_SYMBOL+"user sasl add ",
 			config.ISSUE_COMMAND_SYMBOL+"user sasl remove": config.ISSUE_COMMAND_SYMBOL+"user sasl remove ",
+			config.ISSUE_COMMAND_SYMBOL+"user sasl edit": config.ISSUE_COMMAND_SYMBOL+"user sasl edit ",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -2936,6 +2937,47 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
+		# /user sasl edit HOSTID USERNAME PASSWORD...
+		# Edits an SASL account to the config
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=6:
+			if tokens[1].lower()=='sasl' and tokens[2].lower()=='edit':
+				tokens.pop(0)
+				tokens.pop(0)
+				tokens.pop(0)
+				hostid = tokens.pop(0)
+
+				if not is_hostid(hostid):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" is not a hostID")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" is not a hostID")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				sasl_username = tokens.pop(0)
+				sasl_password = ' '.join(tokens)
+
+				if not hostid in USER.SASL:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" doesn't exist in the SASL account list")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" doesn't exist in the SASL account list")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				USER.SASL[hostid] = [sasl_username,sasl_password]
+				USER.save_user(USER.USER_FILE)
+				if not is_script:
+					t = Message(SYSTEM_MESSAGE,'',f"SASL account edited for \"{hostid}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		# /user sasl add HOSTID USERNAME PASSWORD...
 		# Adds an SASL account to the config
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)>=6:
@@ -2977,6 +3019,64 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
+		# /user sasl edit HOSTID
+		# Edits an SASL account to the config using a dialog
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==4:
+			if tokens[1].lower()=='sasl' and tokens[2].lower()=='edit':
+				tokens.pop(0)
+				tokens.pop(0)
+				tokens.pop(0)
+				hostid = tokens.pop(0)
+
+				if not is_hostid(hostid):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" is not a hostID")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" is not a hostID")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				if hostid in USER.SASL:
+					username = USER.SASL[hostid][0]
+					password = USER.SASL[hostid][1]
+
+					u = GetSaslDialog(gui,username,password)
+					if u:
+						if len(u[0])>0 and len(u[1])>0:
+							sasl_username = u[0]
+							sasl_password = u[1]
+
+							# If there's no change to the username/password, return
+							if sasl_username==USER.SASL[hostid][0] and sasl_password==USER.SASL[hostid][1]: return True
+
+							USER.SASL[hostid] = [sasl_username,sasl_password]
+							USER.save_user(USER.USER_FILE)
+							if not is_script:
+								t = Message(SYSTEM_MESSAGE,'',f"SASL account edited for \"{hostid}\"")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						else:
+							USER.SASL.pop(hostid,None)
+							USER.save_user(USER.USER_FILE)
+							if not is_script:
+								t = Message(SYSTEM_MESSAGE,'',f"SASL account removed for \"{hostid}\"")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+				else:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{hostid}\" is not a stored SASL account")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',f"\"{hostid}\" is not a stored SASL account")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				return True
+
 		# /user sasl add HOSTID
 		# Adds an SASL account to the config using a dialog
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'user' and len(tokens)==4:
@@ -2997,7 +3097,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-				u = GetSaslDialog(gui)
+				if hostid in USER.SASL:
+					username = USER.SASL[hostid][0]
+					password = USER.SASL[hostid][1]
+				else:
+					username = None
+					password = None
+
+				u = GetSaslDialog(gui,username,password)
 				if u:
 					if len(u[0])>0 and len(u[1])>0:
 						sasl_username = u[0]

@@ -507,20 +507,9 @@ class IRC_Connection(irc.IRCClient):
 			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs['server']}-{self.kwargs['port']}.txt")
 			self.dump_file = open(dump_filename,"a")
 
-		self.sendLine("CAP REQ :cap-notify")
-		self.sendLine("CAP REQ :userhost-in-names")
-		self.sendLine("CAP REQ :multi-prefix")
-		self.sendLine("CAP REQ :away-notify")
-		self.sendLine("CAP REQ :account-notify")
-
-		if self.sasl_username!=None and self.sasl_password!=None:
-			self.sendLine("CAP REQ :sasl")
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(SYSTEM_MESSAGE,'','Requesting SASL authentication...')
-				w.writeText(t)
-		else:
-			self.sendLine("CAP END")
+		# Ask the server if they support IRCv3, and what
+		# they support
+		self.sendLine("CAP LS 302")
 
 		irc.IRCClient.connectionMade(self)
 
@@ -545,7 +534,31 @@ class IRC_Connection(irc.IRCClient):
 		subcommand = params[1]
 		capabilities = params[2] if len(params) > 2 else ""
 
-		if subcommand == "ACK" and "sasl" in capabilities:
+		if subcommand == "LS":
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','Server supports IRCv3 3.0.2')
+				w.writeText(t)
+
+				capabilities = join_with_and(params[2].split())
+				t = Message(SYSTEM_MESSAGE,'',"IRCv3 capabilities: "+capabilities)
+				w.writeText(t)
+
+			self.sendLine("CAP REQ :cap-notify")
+			self.sendLine("CAP REQ :userhost-in-names")
+			self.sendLine("CAP REQ :multi-prefix")
+			self.sendLine("CAP REQ :away-notify")
+			self.sendLine("CAP REQ :account-notify")
+
+			if self.sasl_username!=None and self.sasl_password!=None:
+				self.sendLine("CAP REQ :sasl")
+				if w:
+					t = Message(SYSTEM_MESSAGE,'','Requesting SASL authentication...')
+					w.writeText(t)
+			else:
+				self.sendLine("CAP END")
+
+		elif subcommand == "ACK" and "sasl" in capabilities:
 			# Start SASL login
 			self.sendLine("AUTHENTICATE PLAIN")
 			w = self.gui.getServerWindow(self)
@@ -1648,7 +1661,13 @@ def objectconfig(obj,**kwargs):
 			obj.usessl = value
 
 		if key=="password":
-			obj.password = value
+			if value!=None:
+				if len(value.strip())==0:
+					obj.password = None
+				else:
+					obj.password = value
+			else:
+				obj.password = None
 
 		if key=="gui":
 			obj.gui = value
