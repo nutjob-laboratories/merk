@@ -45,7 +45,8 @@ What's new:
   and the SASL account entry dialog.
 * If we can get the server to send hostmasks with NAMES replies, then we don't
   have to do mass whois on channel users. We now check the server capabilities
-  to make sure that's what's happening.
+  to make sure that's what's happening. If the server sends hostmasks in NAME
+  replies, the "request hostmasks on channel join" option is now "ignored".
 * MERK now handles IRCv3 capabilities better.
 * Added a link explaining "Levenshtein_distance" to the "Spellcheck" section of
   the "Settings" dialog.

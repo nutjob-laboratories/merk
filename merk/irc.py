@@ -490,7 +490,7 @@ class IRC_Connection(irc.IRCClient):
 						self.did_delayed_channel_list = True
 						self.sendLine(f"LIST")
 
-		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
 			# Do a whois request every 5 seconds so
 			# we don't get kicked for flooding
 			if self.uptime % config.HOSTMASK_FETCH_FREQUENCY==0:
