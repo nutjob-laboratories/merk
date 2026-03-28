@@ -896,6 +896,7 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(True)
 			self.syntaxscript.setEnabled(True)
 			self.enableWait.setEnabled(True)
+			self.executeGlobal.setEnabled(True)
 			if self.enableAlias.isChecked():
 				self.enableRead.setEnabled(True)
 				self.deleteAliases.setEnabled(True)
@@ -916,6 +917,7 @@ class Dialog(QDialog):
 			self.enableWait.setEnabled(False)
 			self.enableRead.setEnabled(False)
 			self.deleteAliases.setEnabled(False)
+			self.executeGlobal.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -5017,6 +5019,10 @@ class Dialog(QDialog):
 		self.showErrors = QCheckBox("Show error messages when executing scripts",self)
 		if config.DISPLAY_SCRIPT_ERRORS: self.showErrors.setChecked(True)
 		self.showErrors.stateChanged.connect(self.changedSetting)
+
+		self.executeGlobal = QCheckBox(f"Execute {os.path.basename(config.GLOBAL_SCRIPT_FILE)} on first connection",self)
+		if config.EXECUTE_GLOBAL_SCRIPT: self.executeGlobal.setChecked(True)
+		self.executeGlobal.stateChanged.connect(self.changedSetting)
 		
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("AA")
@@ -5045,10 +5051,20 @@ class Dialog(QDialog):
 		self.scriptingDescription.setAlignment(Qt.AlignJustify)
 		self.scriptingDescription.setOpenExternalLinks(True)
 
-		seLayout = QHBoxLayout()
-		seLayout.addStretch()
-		seLayout.addWidget(self.enableScripts)
-		seLayout.addStretch()
+		seLayout1 = QHBoxLayout()
+		seLayout1.addStretch()
+		seLayout1.addWidget(self.enableScripts)
+		seLayout1.addStretch()
+
+		seLayout2 = QHBoxLayout()
+		seLayout2.addStretch()
+		seLayout2.addWidget(self.executeGlobal)
+		seLayout2.addStretch()
+
+		seLayout = QVBoxLayout()
+		seLayout.setSpacing(0)
+		seLayout.addLayout(seLayout1)
+		seLayout.addLayout(seLayout2)
 
 		self.haltError = QCheckBox("Halt script execution on error",self)
 		if config.HALT_SCRIPT_EXECUTION_ON_ERROR: self.haltError.setChecked(True)
@@ -5134,6 +5150,7 @@ class Dialog(QDialog):
 			self.enableWait.setEnabled(False)
 			self.enableRead.setEnabled(False)
 			self.deleteAliases.setEnabled(False)
+			self.executeGlobal.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
@@ -5184,7 +5201,6 @@ class Dialog(QDialog):
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
-		scriptingLayout.addWidget(QLabel(' '))
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
 		scriptingLayout.addLayout(aLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error settings</b>"))
@@ -6512,6 +6528,7 @@ class Dialog(QDialog):
 		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 		config.DELETE_SCRIPT_ALIASES_ON_END = self.deleteAliases.isChecked()
 		config.DISCONNECT_ON_SASL_FAIL = self.failSasl.isChecked()
+		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

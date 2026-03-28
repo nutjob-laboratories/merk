@@ -1101,6 +1101,16 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
 	gui.scripts[script_id].start()
 
+def executeGlobalScript(gui,window,text,filename=None,args=[]):
+
+	script_id = str(uuid.uuid4())
+	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,filename,None,True)
+	gui.scripts[script_id].execLine.connect(execute_script_line)
+	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
+	gui.scripts[script_id].scriptError.connect(execute_script_error)
+	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
+	gui.scripts[script_id].start()
+
 def getScriptAliases(gui):
 	aliases = []
 	for script_id in gui.scripts:
@@ -8300,7 +8310,7 @@ class ScriptThread(QThread):
 	scriptError = pyqtSignal(object)
 	scriptAlias = pyqtSignal(object)
 
-	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None):
+	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None,is_global=False):
 		super(ScriptThread, self).__init__(parent)
 		self.script = script
 		self.id = sid
@@ -8314,6 +8324,7 @@ class ScriptThread(QThread):
 		self.TARGETS = {}
 		self.LOOP_TARGET = None
 		self.LOOP_COUNT = None
+		self.is_global = is_global
 
 	def target(self,label,line_number=None):
 		if line_number==None:
@@ -8337,7 +8348,7 @@ class ScriptThread(QThread):
 
 	def addAlias(self,name,value):
 		self.ALIAS[name] = value
-		if not name in self.CREATED: self.CREATED.append(name)
+		if not name in self.CREATED and not self.is_global: self.CREATED.append(name)
 		self.scriptAlias.emit([name,value,self.gui])
 
 	def removeAlias(self,name):

@@ -402,6 +402,7 @@ class Merk(QMainWindow):
 		self.app_exiting = False
 		self.unread_mentions = []
 		self.tips = None
+		self.executed_global = False
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -1528,6 +1529,21 @@ class Merk(QMainWindow):
 			if config.HIDE_SERVER_WINDOWS_ON_SIGNON:
 				self.hideSubWindow(w.subwindow_id)
 				self.MDI.activateNextSubWindow()
+
+			# Execute global script, if it exists
+			if self.executed_global==False:
+				self.executed_global = True
+				if config.EXECUTE_GLOBAL_SCRIPT and config.SCRIPTING_ENGINE_ENABLED:
+					f = commands.find_file(config.GLOBAL_SCRIPT_FILE,None)
+					if f:
+						try:
+							ff = open(f"{f}","r")
+							global_script = ff.read()
+							ff.close()
+							w.executeGlobal(global_script,config.GLOBAL_SCRIPT_FILE,[f"{w.client.server}",f"{w.client.port}"])
+						except Exception as e:
+							t = Message(ERROR_MESSAGE,'',f"Error reading {os.path.basename(config.GLOBAL_SCRIPT_FILE)}: {e}")
+							w.writeText(t)
 		
 		self.nickChanged(client)
 

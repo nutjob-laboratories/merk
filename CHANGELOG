@@ -6,6 +6,7 @@ What's new:
 - **MERK can now log into services via SASL**. Commands have been added to create, edit, and delete SASL accounts stored in the user configuration file; SASL accounts can also be edited in the "Connect" dialog, or via GUI dialogs.
 - **Scripts now have `loop`s**. Loops can be "broken out" of using `goto`.
 - **Better support for IRCv3**. Capabilites are negotiated better, and with much less "spam".
+- **Global script**. Users can now set up a script to execute the first time that MERK connects to a server in a session.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -53,6 +54,16 @@ What's new:
 * Tweaks to the "Settings" dialog.
 * Added IRCv3 capabilities to the "server information" menu.
 * Bugfix: "blank" passwords are no longer sent during the connection process.
+* Users can now create a "global script" by creating a script named
+  "global.merk" in the "scripts" directory. This script will be executed when
+  MERK connects to the first server in a session, in the context of that
+  connection's server window. All commands (including script-only commands) are
+  available for use in "global.merk", only aliases created in the script are
+  NOT destroyed on the script's completion.
+* Added an option to set the filename of the "global" script to the
+  configuration file. This can be set/changed with the "/config" command.
+* Two arguments are now passed to the "global" script: the host and port of the
+  server being connected to.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

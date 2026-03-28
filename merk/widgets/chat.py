@@ -1977,6 +1977,9 @@ class Window(QMainWindow):
 	def executeScript(self,script,filename=None,args=[]):
 		commands.executeScript(self.parent,self,script,filename,args)
 
+	def executeGlobal(self,script,filename=None,args=[]):
+		commands.executeGlobalScript(self.parent,self,script,filename,args)
+
 	def generateStylesheet(self,obj,fore,back):
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 

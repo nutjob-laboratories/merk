@@ -555,9 +555,6 @@ class IRC_Connection(irc.IRCClient):
 
 			if self.sasl_username!=None and self.sasl_password!=None:
 				self.sendLine("CAP REQ :sasl")
-				if w:
-					t = Message(SYSTEM_MESSAGE,'','Requesting SASL authentication...')
-					w.writeText(t)
 			else:
 				self.sendLine("CAP END")
 
