@@ -7,6 +7,8 @@ What's new:
 - **Scripts now have `loop`s**. Loops can be "broken out" of using `goto`.
 - **Better support for IRCv3**. Capabilites are negotiated better, and with much less "spam".
 - **Global script**. Users can now set up a script to execute the first time that MERK connects to a server in a session.
+- **New script-only command: `input`**. Allows scripts to get input from the user. This command is blocking.
+- **New script-only command: `number`**. Allows scripts to get a number from the user. This command is blocking.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -64,6 +66,15 @@ What's new:
   configuration file. This can be set/changed with the "/config" command.
 * Two arguments are now passed to the "global" script: the host and port of the
   server being connected to.
+* New script-only command: "input". This gets input from the user in a dialog,
+  and stores the input in an alias. If the user doesn't input anything or
+  cancels the dialog, the alias is set to "*". This command is blocking, and
+  will pause execution of the script until the dialog is closed.
+* Bugfix: setting "loop" with a count of 0 (zero) would result in an "eternal"
+  loop. Now, loops with a count of 0 only execute once.
+* New script-only command: "number". This gets a number in a range from the
+  user and stores it in an alias. If the user cancels the dialog, the alias is
+  set to the lower number in the range.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

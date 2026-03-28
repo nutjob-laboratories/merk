@@ -260,6 +260,10 @@ Appearance:
 <td>Requests server information</td>
 </tr>
 <tr>
+<td><code>input ALIAS MESSAGE...</code></td>
+<td>Requests input from the user in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog or doesn’t input anything, <code>ALIAS</code> will be set to <code>*</code>. This command is blocking; <strong>can only be called by scripts</strong></td>
+</tr>
+<tr>
 <td><code>insert FILE [FILE...]</code></td>
 <td>Inserts the contents of <code>FILE</code> where it appears into the script; <strong>can only be called by scripts</strong></td>
 </tr>
@@ -342,6 +346,10 @@ Appearance:
 <tr>
 <td><code>/notice TARGET MESSAGE...</code></td>
 <td>Sends a notice</td>
+</tr>
+<tr>
+<td><code>number ALIAS LOW HIGH MESSAGE...</code></td>
+<td>Requests number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog or doesn’t input anything, <code>ALIAS</code> will be set to <code>LOW</code>. This command is blocking; <strong>can only be called by scripts</strong></td>
 </tr>
 <tr>
 <td><code>only WINDOW...</code></td>

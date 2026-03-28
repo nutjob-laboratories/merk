@@ -153,7 +153,7 @@ There are four libraries that comes bundled with **MERK**:
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Over 80 different commands are available for scripts or for use in the client
-        - 16 script-only commands
+        - 18 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -350,6 +350,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(nin)` (result is true if `VALUE1` is not contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value). *Can only be called from scripts*    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/info [TARGET]`                          | Requests server information                         |
+| `input ALIAS MESSAGE...`               | Requests input from the user in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `*`. This command is blocking. *Can only be called from scripts*                     |
 | `insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script; *Can only be called by scripts*            |
 | `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                   |
 | `/ison NICKNAME(S)...`              | Displays if the specified nicknames are online          |
@@ -371,6 +372,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
+| `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `LOW`. This command is blocking. *Can only be called by scripts*    |
 | `only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |

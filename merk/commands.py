@@ -62,6 +62,8 @@ from . import logs
 from . import styles
 from .dialog.away import Dialog as Away
 from .dialog.getsasl import Dialog as GetSasl
+from .dialog.get_input import Dialog as GetInput
+from .dialog.get_number import Dialog as GetNumber
 
 CONFIG_DIRECTORY = None
 SCRIPTS_DIRECTORY = None
@@ -81,6 +83,22 @@ HALT_SCRIPT = []
 USER_MACROS = {}
 MACRO_HELP = {}
 MACRO_USAGE = {}
+
+def GetNumberDialog(lower,upper,msg,parent=None):
+	x = GetNumber(lower,upper,msg,parent)
+	info = x.get_number_information(lower,upper,msg,parent)
+	del x
+
+	if not info: return None
+	return info
+
+def GetInputDialog(msg,parent=None):
+	x = GetInput(msg,parent)
+	info = x.get_message_information(msg,parent)
+	del x
+
+	if not info: return None
+	return info
 
 def GetSaslDialog(obj,username=None,password=None):
 	x = GetSasl(obj,username,password)
@@ -1091,6 +1109,30 @@ def execute_script_end(data):
 
 	remove_halt(script_id)
 
+def execute_input(data):
+	question = data[0]
+	gui = data[1]
+	script_id = data[2]
+
+	u = GetInputDialog(question)
+	if u:
+		gui.scripts[script_id].set_input(f"{u}")
+	else:
+		gui.scripts[script_id].set_input(None)
+
+def execute_number(data):
+	lower = data[0]
+	upper = data[1]
+	question = data[2]
+	gui = data[3]
+	script_id = data[4]
+
+	u = GetNumberDialog(lower,upper,question)
+	if u:
+		gui.scripts[script_id].set_input(f"{u}")
+	else:
+		gui.scripts[script_id].set_input(None)
+
 def executeScript(gui,window,text,filename=None,args=[]):
 
 	script_id = str(uuid.uuid4())
@@ -1099,6 +1141,8 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
 	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
+	gui.scripts[script_id].request_input.connect(execute_input)
+	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].start()
 
 def executeGlobalScript(gui,window,text,filename=None,args=[]):
@@ -1109,6 +1153,8 @@ def executeGlobalScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 	gui.scripts[script_id].scriptError.connect(execute_script_error)
 	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
+	gui.scripts[script_id].request_input.connect(execute_input)
+	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].start()
 
 def getScriptAliases(gui):
@@ -7648,6 +7694,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 				gui.scripts[script_id].scriptError.connect(execute_script_error)
 				gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
+				gui.scripts[script_id].request_input.connect(execute_input)
+				gui.scripts[script_id].request_number.connect(execute_number)
 				gui.scripts[script_id].start()
 
 			else:
@@ -7684,6 +7732,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 						gui.scripts[script_id].scriptError.connect(execute_script_error)
 						gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
+						gui.scripts[script_id].request_input.connect(execute_input)
+						gui.scripts[script_id].request_number.connect(execute_number)
 						gui.scripts[script_id].start()
 
 					else:
@@ -7700,6 +7750,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							gui.scripts[script_id].scriptEnd.connect(execute_script_end)
 							gui.scripts[script_id].scriptError.connect(execute_script_error)
 							gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
+							gui.scripts[script_id].request_input.connect(execute_input)
+							gui.scripts[script_id].request_number.connect(execute_number)
 							gui.scripts[script_id].start()
 						else:
 							if is_script:
@@ -8309,6 +8361,8 @@ class ScriptThread(QThread):
 	scriptEnd = pyqtSignal(object)
 	scriptError = pyqtSignal(object)
 	scriptAlias = pyqtSignal(object)
+	request_input = pyqtSignal(object)
+	request_number = pyqtSignal(object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None,is_global=False):
 		super(ScriptThread, self).__init__(parent)
@@ -8325,6 +8379,16 @@ class ScriptThread(QThread):
 		self.LOOP_TARGET = None
 		self.LOOP_COUNT = None
 		self.is_global = is_global
+
+		self.mutex = QMutex()
+		self.wait_condition = QWaitCondition()
+		self.user_input = None
+
+	def set_input(self, user_input):
+		self.mutex.lock()
+		self.user_input = user_input
+		self.wait_condition.wakeAll()  # Wake up the waiting thread
+		self.mutex.unlock()
 
 	def target(self,label,line_number=None):
 		if line_number==None:
@@ -8462,6 +8526,34 @@ class ScriptThread(QThread):
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
+
+			# |========|
+			# | number |
+			# |========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='number':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: aliases are disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_ALIASES and len(tokens)<5:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number called without enough arguments"])
+						no_errors = False
+						break
+
+			# |=======|
+			# | input |
+			# |=======|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='input':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input: aliases are disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_ALIASES and len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input called without enough arguments"])
+						no_errors = False
+						break
 
 			# |======|
 			# | loop |
@@ -8612,6 +8704,8 @@ class ScriptThread(QThread):
 									"target",
 									"loop",
 									"pool",
+									"input",
+									"number",
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: script-only commands cannot be called from if"])
@@ -8981,6 +9075,148 @@ class ScriptThread(QThread):
 						line = script[index]
 						tokens = line.split()
 
+						# |========|
+						# | number |
+						# |========|
+						if len(tokens)>=1:
+							if tokens[0].lower()=='number' and len(tokens)>=5:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+
+									lower = self.interpolateAliases(tokens.pop(0))
+									upper = self.interpolateAliases(tokens.pop(0))
+
+									if is_int(lower)==None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: \"{lower}\" is not a number"])
+										loop = False
+										continue
+
+									if is_int(upper)==None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: \"{upper}\" is not a number"])
+										loop = False
+										continue
+
+									question = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									question = self.interpolateAliases(question)
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									alias_error = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													self.request_number.emit([is_int(lower),is_int(upper),question,self.gui,self.id])
+													self.mutex.lock()
+													self.wait_condition.wait(self.mutex)
+													self.mutex.unlock()
+													if self.user_input!=None and len(self.user_input.strip())!=0:
+														self.addAlias(a,f"{self.user_input}")
+													else:
+														self.addAlias(a,f"{lower}")
+													self.user_input = None
+													script_only_command = True
+												else:
+													alias_error = f"\"{a}\" is not a valid alias token"
+											else:
+												if a in self.CREATED:
+													if is_valid_alias_name(a):
+														self.request_number.emit([question,self.gui,self.id])
+														self.mutex.lock()
+														self.wait_condition.wait(self.mutex)
+														self.mutex.unlock()
+														if self.user_input!=None and len(self.user_input.strip())!=0:
+															self.addAlias(a,f"{self.user_input}")
+														else:
+															self.addAlias(a,f"{lower}")
+														self.user_input = None
+														script_only_command = True
+													else:
+														alias_error = f"\"{a}\" is not a valid alias token"
+												else:
+													alias_error = f"\"{a}\" already exists in another scope"
+										else:
+											alias_error = f"\"{a}\" is not a valid alias token"
+									if alias_error!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: {alias_error}"])
+										loop = False
+								continue
+
+						# |=======|
+						# | input |
+						# |=======|
+						if len(tokens)>=1:
+							if tokens[0].lower()=='input' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+									question = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									question = self.interpolateAliases(question)
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									alias_error = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													self.request_input.emit([question,self.gui,self.id])
+													self.mutex.lock()
+													self.wait_condition.wait(self.mutex)
+													self.mutex.unlock()
+													if self.user_input!=None and len(self.user_input.strip())!=0:
+														self.addAlias(a,f"{self.user_input}")
+													else:
+														self.addAlias(a,f"*")
+													self.user_input = None
+													script_only_command = True
+												else:
+													alias_error = f"\"{a}\" is not a valid alias token"
+											else:
+												if a in self.CREATED:
+													if is_valid_alias_name(a):
+														self.request_input.emit([question,self.gui,self.id])
+														self.mutex.lock()
+														self.wait_condition.wait(self.mutex)
+														self.mutex.unlock()
+														if self.user_input!=None and len(self.user_input.strip())!=0:
+															self.addAlias(a,f"{self.user_input}")
+														else:
+															self.addAlias(a,f"*")
+														self.user_input = None
+														script_only_command = True
+													else:
+														alias_error = f"\"{a}\" is not a valid alias token"
+												else:
+													alias_error = f"\"{a}\" already exists in another scope"
+										else:
+											alias_error = f"\"{a}\" is not a valid alias token"
+									if alias_error!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input: {alias_error}"])
+										loop = False
+								continue
+
 						# |======|
 						# | loop |
 						# |======|
@@ -9010,7 +9246,7 @@ class ScriptThread(QThread):
 						if len(tokens)>=1:
 							if tokens[0].lower()=='pool' and len(tokens)==1:
 								if self.LOOP_COUNT!=None:
-									if self.LOOP_COUNT==0:
+									if self.LOOP_COUNT<=0:
 										self.LOOP_TARGET = None
 										self.LOOP_COUNT = None
 									else:
