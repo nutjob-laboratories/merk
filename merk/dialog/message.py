@@ -29,12 +29,13 @@ from PyQt5.QtCore import *
 from PyQt5 import QtCore
 
 from ..resources import *
+from .. import config
 
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_message_information(single_line=True,parent=None):
-		dialog = Dialog(single_line,parent)
+	def get_message_information(msg='',parent=None):
+		dialog = Dialog(msg,parent)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -44,50 +45,36 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		if self.single_line:
-			retval = self.name.text()
-		else:
-			retval = self.name.toPlainText()
+		retval = 1
 
 		return retval
 
-	def __init__(self,single_line=True,parent=None):
+	def __init__(self,msg='',parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
-		self.single_line = single_line
+		self.msg = msg
 
-		if self.single_line:
-			self.setWindowTitle("Comment")
-		else:
-			self.setWindowTitle("Multiline Comment")
-		self.setWindowIcon(QIcon(SCRIPT_ICON))
+		self.setWindowTitle(f"{APPLICATION_NAME}")
+		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
-		if self.single_line:
-			fm = QFontMetrics(self.font())
-			wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
-
-			nameLayout = QHBoxLayout()
-			self.name = QLineEdit()
-			self.name.setPlaceholderText("Type your comment here")
-			nameLayout.addWidget(self.name)
-			self.name.setMinimumWidth(wwidth)
-		else:
-			nameLayout = QHBoxLayout()
-			self.name = QPlainTextEdit(self)
-			nameLayout.addWidget(self.name)
+		nameLayout = QVBoxLayout()
+		question = QLabel(self.msg)
+		nameLayout.addWidget(question)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
-		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+		buttons.setStandardButtons(QDialogButtonBox.Ok)
 		buttons.accepted.connect(self.accept)
-		buttons.rejected.connect(self.reject)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(nameLayout)
 		finalLayout.addWidget(buttons)
 
+		ok_button = buttons.button(QDialogButtonBox.Ok)
+		ok_button.setDefault(True)
+
 		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)

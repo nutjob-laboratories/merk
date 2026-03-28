@@ -31,47 +31,18 @@ from .styler import Dialog as Styler
 from .settings import Dialog as Settings
 from .windowsize import Dialog as WindowSize
 from .about import Dialog as About
-from .comment import Dialog as Comment
-from .pause import Dialog as Pause
-from .send_pm import Dialog as SendPM
-from .print import Dialog as PrintMsg
-from .send_notice import Dialog as SendNotice
-from .part_channel import Dialog as PartChannel
-from .set_window import Dialog as SetWindow
-from .set_quit import Dialog as SetQuit
-from .connect_server import Dialog as ConnectServer
 from .new_connect_script import Dialog as NewConnectScript
-from .set_script import Dialog as SetScript
 from .get_script import Dialog as GetScript
-from .set_alias import Dialog as SetAlias
 from .menu_name import Dialog as SetMenuName
 from .key import Dialog as SetKey
 from .find import Dialog as Find
-from .set_usage import Dialog as SetUsage
-from .restrict import Dialog as SetRestrict
-from .set_delay import Dialog as SetDelay
-from .set_insert import Dialog as SetInsert
-from .set_nick import Dialog as SetNick
-from .set_if import Dialog as SetIf
-from .cmd_window import Dialog as SetCmdWindow
-from .set_macro import Dialog as SetMacro
 from .set_ignore import Dialog as SetIgnore
 from .key import Dialog as SetKey
 from .set_bind import Dialog as SetBind
-from .set_method import Dialog as SetMethod
 from .set_file import Dialog as SetFilename
-from .fade import Dialog as Fade
 
 def SetFilenameDialog(obj):
 	x = SetFilename(obj)
-	info = x.get_window_information(obj)
-	del x
-
-	if not info: return None
-	return info
-
-def SetMethodDialog(obj):
-	x = SetMethod(obj)
 	info = x.get_window_information(obj)
 	del x
 
@@ -83,14 +54,6 @@ def GetIgnore(msg,parent):
 	info = x.get_message_information(msg,parent)
 	del x
 
-	return info
-
-def WindowInfo(obj,xval,yval,measure):
-	x = SetCmdWindow(obj,xval,yval,measure)
-	info = x.get_window_information(obj,xval,yval,measure)
-	del x
-
-	if not info: return None
 	return info
 
 def SetKeyDialog(parent):
@@ -105,14 +68,6 @@ def SetMenuNameDialog(msg,parent):
 	info = x.get_message_information(msg,parent)
 	del x
 
-	return info
-
-def SetWindowDialog(win,obj):
-	x = SetWindow(win,obj)
-	info = x.get_window_information(win,obj)
-	del x
-
-	if not info: return None
 	return info
 
 def AboutDialog():
@@ -147,7 +102,6 @@ def StylerDefaultDialog(obj):
 
 	if not info: return None
 	return info
-
 
 def SimpleStylerDialog(client,chat,obj):
 	x = Styler(client,chat,obj,True)
