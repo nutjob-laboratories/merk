@@ -9,6 +9,7 @@ What's new:
 - **Global script**. Users can now set up a script to execute the first time that MERK connects to a server in a session.
 - **New script-only command: `input`**. Allows scripts to get input from the user. This command is blocking.
 - **New script-only command: `number`**. Allows scripts to get a number from the user. This command is blocking.
+- **New script-only command: `message`**. Shows a messagebox to the user. This command is blocking.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -74,7 +75,12 @@ What's new:
   loop. Now, loops with a count of 0 only execute once.
 * New script-only command: "number". This gets a number in a range from the
   user and stores it in an alias. If the user cancels the dialog, the alias is
-  set to the lower number in the range.
+  set to 0 (zero).
+* New script-only command: "message". This displays a blocking messagebox to
+  the user with a short message.
+* Removed a lot of dialogs from the source code. The script editor no longer
+  has "command generators", as the scripting language is getting complex
+  enough that users should really read the documentation to write scripts.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.650">MERK 0.051.650</a></big></b><br>
-  <b>Current development version: 0.051.680</b><br>
+  <b>Current development version: 0.051.685</b><br>
   <b><a href="https://merk.chat">Visit us at https://merk.chat!</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
@@ -34,15 +34,15 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.650 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.650)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.680 (12.94 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.051.680 (98.99 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.051.680 (72.74 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.680 (49.90 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.680 (47.00 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.685 (12.93 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.051.685 (99.01 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.051.685 (72.84 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.685 (49.87 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.685 (46.96 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.680**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.685**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
@@ -153,7 +153,7 @@ There are four libraries that comes bundled with **MERK**:
         - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Over 80 different commands are available for scripts or for use in the client
-        - 18 script-only commands
+        - 19 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -217,7 +217,7 @@ There are four libraries that comes bundled with **MERK**:
 # Screenshots
 
 <p align="center">
-<p><small><i>Screenshots may not reflect the current release (0.051.650), and may reflect the current development version (0.051.680). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.650), and may reflect the current development version (0.051.685). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
@@ -365,14 +365,15 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
 | `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to maximize the server window         |
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
+| `message MESSAGE...`                    | Displays a messagebox with a short message. This command is blocking. *Can only be called by scripts*                  |
 | `/minimize [SERVER] [WINDOW]`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to minimize the server window                    |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
 | `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see the current subwindow's coordinates. Pass `*` as `WINDOW` to move the server window      |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
-| `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                                                                                                                  |
+| `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                   |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
-| `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `LOW`. This command is blocking. *Can only be called by scripts*    |
+| `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `0` (zero). This command is blocking. *Can only be called by scripts*    |
 | `only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
@@ -508,9 +509,8 @@ Well, if you were to pronounce "IRC" as a word and not an acronym, it would prob
 Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetrick), a software developer that can not do everything that this piece of software needs. There's few things I need help with!
 
  - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for **MERK**. I'm doing my best, here, but I'm a computer programmer, not an artist!
- - **Packaging**. **MERK** now has [PyInstaller](https://www.pyinstaller.org/)-based distributions for both Windows and Linux! I'd love to provide a `pip` package, or a [Flatpak](https://flatpak.org/)-based distribution, but I don't have much or any experience with these. Help would be awesome!
+ - **Packaging**. **MERK** now has [PyInstaller](https://www.pyinstaller.org/)-based distributions for both Windows and Linux, as well as a Linux [Flatpak](https://flatpak.org/)! I'd love to provide a `pip` package, but I don't have much or any experience with this. Help would be awesome!
  - **Proxy server support**. I'd like MERK to support connecting through proxy servers! My wishlist is to support SOCKS4/5 and HTTP, but I'm open to anything!
- - **SASL support**. I'm having trouble getting this working with Twisted. Can anyone help?
  - **DCC chat and file transfers**. The DCC  functionality in Twisted is undocumented, and I'll be honest, I can't make heads or tails of it. I'd love to be able to add this functionality to **MERK**, but I need help!
  - **Using MERK and giving me feedback**. Let me know what you love about **MERK** and what you hate about **MERK**! Got ideas for ways you'd like to customize the client? Features you'd like? Let me know! I can't guarantee that I'll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using **MERK**!
 

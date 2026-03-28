@@ -318,6 +318,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"pool",
 			"input",
 			"number",
+			"message",
 		]
 
 		script_full = [

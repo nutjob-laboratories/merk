@@ -320,6 +320,10 @@ Appearance:
 <td>Sends a CTCP action message to the current chat</td>
 </tr>
 <tr>
+<td><code>message MESSAGE...</code></td>
+<td>Displays a messagebox with a short message. This command is blocking. <strong>Can only be called by scripts</strong></td>
+</tr>
+<tr>
 <td><code>/minimize [SERVER] [WINDOW]</code></td>
 <td>Minimizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to minimize the server window</td>
 </tr>
@@ -349,7 +353,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>number ALIAS LOW HIGH MESSAGE...</code></td>
-<td>Requests number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog or doesn’t input anything, <code>ALIAS</code> will be set to <code>LOW</code>. This command is blocking; <strong>can only be called by scripts</strong></td>
+<td>Requests number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog or doesn’t input anything, <code>ALIAS</code> will be set to <code>0</code> (zero). This command is blocking; <strong>can only be called by scripts</strong></td>
 </tr>
 <tr>
 <td><code>only WINDOW...</code></td>
