@@ -21,6 +21,7 @@
  - [Screenshots](#screenshots)
  - [Usage](#usage)
  - [Commands](#commands)
+ - [MERK "Markdown"](#merk-markdown)
  - [Plugins](#plugins)
  - [Example command-line usage](#example-command-line-usage)
  - [Why does MERK exist?](#why-does-merk-exist)
@@ -142,16 +143,18 @@ There are four libraries that comes bundled with **MERK**:
 -   SASL support
 -   A built-in list of over 80 IRC servers to connect to
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
+-   Built-in [documentation](./MERK_User_Guide.pdf)!
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
-- Built-in [documentation](./MERK_User_Guide.pdf)!
-- Features include...
+    - Unlike mIRC, **MERK** is completely free and open source!
+-   Features include...
     - Extensive command-line options
         - Over 30 different command-line flags, allowing for connecting to multiple servers on startup, disabling or enabling options, and more
     - Dark mode
     - Full scripting engine
-        - Includes a built in script editor, with command generators and syntax highlighting
-        - Automatically execute scripts on connection (to join channels, login in ChanServ, etc.)
+        - Includes a built in script editor, with syntax highlighting
+        - Automatically execute scripts on server connection (to join channels, login in ChanServ, etc.)
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
+        - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
         - Over 80 different commands are available for scripts or for use in the client
         - 19 script-only commands
     - Macros
@@ -162,13 +165,14 @@ There are four libraries that comes bundled with **MERK**:
       - Command is executed in whatever subwindow is active
       - Hotkeys can be set in scripts, from commands, or through the hotkey manager
     -   Automatic logging of channel and private chats
-        - Includes a utility to export logs to JSON, CSV, or your own custom format
+        - Includes a utility to export logs to JSON, CSV, "human readable", or your own custom format
+            - "Human readable" logs look more like "traditional" IRC logs
         - Logs are stored in JSON, so parsing/scraping your own logs in easy
     - Audio notifications
       - Can be triggered by seven different events, with each one able to be turned on and off
       - Uses any WAV file as the notification sound, and can be set in the GUI. **MERK** uses a built-in public domain "bell" sound by default
     - Very configurable, without having to manually edit a configuration file
-        - Control application behavior, logging, features, and more
+        - Control application behavior, logging, features, the GUI, and more
         - Over 300 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function
         - Almost all settings can be changed in the settings dialog without a restart
         - Settings can be changed on-the-fly with scripts and hotkeys using the `/config` command
@@ -193,10 +197,11 @@ There are four libraries that comes bundled with **MERK**:
         - IRC colors are shown in topics in the channel information display
         - Colors and formatting can be optionally stripped from display
         - If colors and formatting in input are stripped from display, they will still be sent to the server.
-    - Markdown support for formatting messages with IRC control codes
+    - [**MERK** "markdown"](#merk-markdown) support, for formatting messages with IRC control codes
         - Messages can use the *italics*, **bold**, ~~strikethrough~~, and <u>underline</u> markdown tags
-    - Inject [IRC colors](https://www.mirc.com/colors.html) into input with plain text
-        - Open a color block with `<NUMBER` to set the foreground color, and `<NUMBER,NUMBER` to set the foreground and background colors, and close the color block with `>`.
+        - Inject [IRC colors](https://www.mirc.com/colors.html) into input with plain text
+            - Open a color block with `<NUMBER` to set the foreground color, and `<NUMBER,NUMBER` to set the foreground and background colors, and close the color block with `>`.
+        - Colors and formatting is displayed in chat (with the option to turn this behavior off) and in channel topics
     - Plugins
       - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf)
       - Plugins are written in Python, and have access to everything that Python has
@@ -423,6 +428,37 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |
 | `/xreconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script, reconnecting on disconnection                                                              |
+
+# MERK "Markdown"
+You can easily "inject" IRC colors and formatting into chat and topics using **MERK** "markdown".
+
+To insert IRC colors, open a chat message with `<NUMBER` (to set the foreground color of the chat), or `<NUMBER,NUMBER` (to set the foreground and background colors of the chat, respectively). `NUMBER` can be any number from 0 to 15, the "traditional" 16 colors of IRC chat. Stop using the color formatting by "closing" the text with `>`. So, to display the words "Hello world!" in white on a red background, you'd use `<0,4Hello world!>`.
+
+| Number | Description | HTML Color |
+|:------:|:-----------:|:----------:|
+| 0      | White       | #FFFFFF    |
+| 1      | Black       | #000000    |
+| 2      | Blue        | #00007F    |
+| 3      | Green       | #009300    |
+| 4      | Light Red   | #FF0000    |
+| 5      | Brown       | #7F0000    |
+| 6      | Purple      | #9C009C    |
+| 7      | Orange      | #FC7F00    |
+| 8      | Yellow      | #FFFF00    |
+| 9      | Light Green | #00FC00    |
+| 10     | Cyan        | #009393    |
+| 11     | Light Cyan  | #00FFFF    |
+| 12     | Light Blue  | #0000FC    |
+| 13     | Pink        | #FF00FF    |
+| 14     | Grey        | #7F7F7F    |
+| 15     | Light Grey  | #D2D2D2    |
+
+You can also use markdown tags! To send text in italics, start (and finish) a message with `*`. For bold, use `**`. To underline text, start and finish with `__`. To send a strikethough, start and finish with `~` (this tag is not supported by all IRC clients, though it will render properly on most modern clients). To send the message "*Hello* **world!**", you'd use `*Hello* **world!**`.
+
+Tags can be nested, so `<5,9***~Hello~ __world!__***>` is a completely valid statement in **MERK** "markdown". The client can be configured to strip colors and formatting from display, but messages sent in "markdown" will still appear with the formatting in clients the message is sent to. In channel windows, topics are automatically changed into "markdown" when the topic is edited via the GUI.
+
+Just like almost everything is **MERK**, "markdown" can be turned off in the settings. More information about "markdown"can be found in the [**MERK** User Guide](./MERK_User_Guide.pdf).
+
 # Plugins
 **MERK** can load plugins! Plugins are written in Python, the same language that **MERK** is written in, and can react to over 40 different events. Each plugin has access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) that **MERK** uses to communicate with IRC servers, and can interact with both the client and any chat subwindows. The built-in "Plugin Manager" can edit, export, install, and create plugins, using a special version of the script editor just for Python code. The plugin editor features syntax highlighting, auto-indent, optional visible whitespace, and all the features you'd expect out of a basic text editor.
 

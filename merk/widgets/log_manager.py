@@ -56,9 +56,15 @@ class Window(QMainWindow):
 		do_json = self.do_json
 		do_epoch = self.epoch
 
+		if self.export_format=='human':
+			self.time.setEnabled(False)
+			return logs.dumpLogHuman(elog)
+
 		if not do_json:
+			self.time.setEnabled(True)
 			return logs.dumpLog(elog,dlog,llog,do_epoch)
 		else:
+			self.time.setEnabled(True)
 			return logs.dumpLogJson(elog,do_epoch)
 
 	def update_sample(self):
@@ -80,6 +86,22 @@ class Window(QMainWindow):
 		llog = self.linedelim
 		do_json = self.do_json
 		do_epoch = self.epoch
+
+		if self.export_format=='human':
+			options = QFileDialog.Options()
+			options |= QFileDialog.DontUseNativeDialog
+			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
+			if fileName:
+				_, file_extension = os.path.splitext(fileName)
+				if file_extension=='':
+					efl = len("txt")+1
+					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+				dump = logs.dumpLogHuman(elog)
+				code = open(fileName,mode="w",encoding="utf-8")
+				code.write(dump)
+				code.close()
+				return
+
 		if not do_json:
 			options = QFileDialog.Options()
 			options |= QFileDialog.DontUseNativeDialog
@@ -339,6 +361,7 @@ class Window(QMainWindow):
 		self.target = target
 
 		self.do_json = True
+		self.do_human = False
 		self.epoch = False
 		self.log = []
 		self.export_format = 'json'
@@ -431,6 +454,10 @@ class Window(QMainWindow):
 		self.menuText = QAction(QIcon(self.parent.round_unchecked_icon),"Text",self)
 		self.menuText.triggered.connect(lambda state,s="text": self.toggleSetting(s))
 		fileMenu.addAction(self.menuText)
+
+		self.menuHuman = QAction(QIcon(self.parent.round_unchecked_icon),"Human Readable",self)
+		self.menuHuman.triggered.connect(lambda state,s="human": self.toggleSetting(s))
+		fileMenu.addAction(self.menuHuman)
 
 		self.format = QLabel("JSON file")
 		self.format.setFont(BOLD_FONT)
@@ -607,18 +634,25 @@ class Window(QMainWindow):
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
-		self.time.setEnabled(True)
 
 		if self.export_format=='json':
 			self.typeLabel.setEnabled(False)
 			self.type.setEnabled(False)
 			self.lineLabel.setEnabled(False)
 			self.line.setEnabled(False)
+			self.time.setEnabled(True)
+		elif self.export_format=='human':
+			self.typeLabel.setEnabled(False)
+			self.type.setEnabled(False)
+			self.lineLabel.setEnabled(False)
+			self.line.setEnabled(False)
+			self.time.setEnabled(False)
 		else:
 			self.typeLabel.setEnabled(True)
 			self.type.setEnabled(True)
 			self.lineLabel.setEnabled(True)
 			self.line.setEnabled(True)
+			self.time.setEnabled(True)
 
 		self.button_export.setEnabled(True)
 
@@ -645,18 +679,25 @@ class Window(QMainWindow):
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
-		self.time.setEnabled(True)
 
 		if self.export_format=='json':
 			self.typeLabel.setEnabled(False)
 			self.type.setEnabled(False)
 			self.lineLabel.setEnabled(False)
 			self.line.setEnabled(False)
+			self.time.setEnabled(True)
+		elif self.export_format=='human':
+			self.typeLabel.setEnabled(False)
+			self.type.setEnabled(False)
+			self.lineLabel.setEnabled(False)
+			self.line.setEnabled(False)
+			self.time.setEnabled(False)
 		else:
 			self.typeLabel.setEnabled(True)
 			self.type.setEnabled(True)
 			self.lineLabel.setEnabled(True)
 			self.line.setEnabled(True)
+			self.time.setEnabled(True)
 
 		self.button_export.setEnabled(True)
 
@@ -681,6 +722,7 @@ class Window(QMainWindow):
 		if setting=='json':
 			self.menuJson.setIcon(QIcon(self.parent.round_checked_icon))
 			self.menuText.setIcon(QIcon(self.parent.round_unchecked_icon))
+			self.menuHuman.setIcon(QIcon(self.parent.round_unchecked_icon))
 			self.do_json = True
 			self.type.setEnabled(False)
 			self.typeLabel.setEnabled(False)
@@ -693,11 +735,25 @@ class Window(QMainWindow):
 		if setting=='text':
 			self.menuJson.setIcon(QIcon(self.parent.round_unchecked_icon))
 			self.menuText.setIcon(QIcon(self.parent.round_checked_icon))
+			self.menuHuman.setIcon(QIcon(self.parent.round_unchecked_icon))
 			self.do_json = False
 			self.type.setEnabled(True)
 			self.typeLabel.setEnabled(True)
 			self.line.setEnabled(True)
 			self.lineLabel.setEnabled(True)
 			self.format.setText("ASCII text file")
+			self.settings_update_sample()
+			return
+
+		if setting=='human':
+			self.menuJson.setIcon(QIcon(self.parent.round_unchecked_icon))
+			self.menuText.setIcon(QIcon(self.parent.round_unchecked_icon))
+			self.menuHuman.setIcon(QIcon(self.parent.round_checked_icon))
+			self.do_json = True
+			self.type.setEnabled(False)
+			self.typeLabel.setEnabled(False)
+			self.line.setEnabled(False)
+			self.lineLabel.setEnabled(False)
+			self.format.setText("Human readable")
 			self.settings_update_sample()
 			return

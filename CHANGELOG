@@ -10,6 +10,7 @@ What's new:
 - **New script-only command: `input`**. Allows scripts to get input from the user. This command is blocking.
 - **New script-only command: `number`**. Allows scripts to get a number from the user. This command is blocking.
 - **New script-only command: `message`**. Shows a messagebox to the user. This command is blocking.
+- **The log manager can now export to a human readable format**. The "human readable" format looks more like traditional IRC logs.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -88,6 +89,10 @@ What's new:
   the script will continue execution.
 * Updated the MERK User Guide with all new features, and some better
   explanations of concepts.
+* The log manager can now export IRC logs to a "human readable" format that is
+  closer to "traditional" IRC logs, with a human readable date/time, followed
+  by the user's nickname, ": ", and the user's chat. IRC colors/formatting are
+  stripped from chat.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

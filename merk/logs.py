@@ -182,6 +182,33 @@ def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 	else:
 		return ''
 
+def dumpLogHuman(filename):
+	if os.path.isfile(filename):
+		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
+			logs = json.load(logentries)
+	if logs:
+		out = []
+		for l in logs:
+			l[2] = l[2].strip()
+			l[3] = l[3].strip()
+			if l[2]=='': l[2] = '***'
+
+			# Strip IRC color/formatting
+			chat = strip_color(l[3])
+
+			u = l[2].split('!')
+			if len(u)==2:
+				u = u[0]
+			else:
+				u = l[2]
+
+			pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+			entry = f"{pretty_timestamp} {u}: {chat}"
+			out.append(entry)
+		return "\n".join(out)
+	else:
+		return ''
+
 # Loads an AoA from disk, converts it to a JSON string
 def dumpLogJson(filename,epoch=True):
 	if os.path.isfile(filename):
