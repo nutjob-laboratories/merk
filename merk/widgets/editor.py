@@ -1069,6 +1069,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u="$_PORT": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
+		entry = QAction("HostID",self)
+		entry.triggered.connect(lambda state,u="$_HOSTID": self.insertIntoEditor(u))
+		sub.addAction(entry)
+
 		entry = QAction("Server uptime",self)
 		entry.triggered.connect(lambda state,u="$_SUPTIME": self.insertIntoEditor(u))
 		sub.addAction(entry)

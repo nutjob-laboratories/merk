@@ -60,7 +60,9 @@ class Dialog(QDialog):
 		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
 		widthLayout = QVBoxLayout()
-		widthLayout.addWidget(QLabel(self.message))
+		question = QLabel(self.message)
+		question.setOpenExternalLinks(True)
+		widthLayout.addWidget(question)
 		self.pauseTime = QSpinBox()
 		self.pauseTime.setRange(self.lower,self.upper)
 		self.pauseTime.setValue(self.lower)

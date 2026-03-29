@@ -81,6 +81,7 @@ What's new:
 * Removed a lot of dialogs from the source code. The script editor no longer
   has "command generators", as the scripting language is getting complex
   enough that users should really read the documentation to write scripts.
+* Added a new example script to the documentation.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

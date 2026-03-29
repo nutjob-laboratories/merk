@@ -60,6 +60,7 @@ class Dialog(QDialog):
 
 		nameLayout = QVBoxLayout()
 		question = QLabel(self.msg)
+		question.setOpenExternalLinks(True)
 		nameLayout.addWidget(question)
 
 		# Buttons
