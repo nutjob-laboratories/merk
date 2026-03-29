@@ -237,7 +237,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>halt [MESSAGE...]</code></td>
-<td>Halts a script's execution, and displays an error <code>MESSAGE</code> with line number and file name. <strong>Can only be called from scripts</strong></td>
+<td>Asks the user if they want to halt the script's execution, and displays an error <code>MESSAGE</code>. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/help [COMMAND]</code></td>

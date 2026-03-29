@@ -85,6 +85,22 @@ USER_MACROS = {}
 MACRO_HELP = {}
 MACRO_USAGE = {}
 
+def ShowHaltDialog(msg=None):
+	msgBox = QMessageBox()
+	msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+	msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+	msgBox.setText("<b>Halt script execution?</b>")
+	if msg!= None:
+		msgBox.setInformativeText(msg)
+	msgBox.setWindowTitle("Halt")
+	msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+	rval = msgBox.exec()
+	if rval == QMessageBox.Cancel:
+		return False
+	else:
+		return True
+
 def ShowMessageDialog(msg,parent=None):
 	x = ShowMessage(msg,parent)
 	info = x.get_message_information(msg,parent)
@@ -1153,6 +1169,17 @@ def execute_number(data):
 	else:
 		gui.scripts[script_id].set_input(None)
 
+def execute_halt(data):
+	msg = data[0]
+	gui = data[1]
+	script_id = data[2]
+
+	u = ShowHaltDialog(msg)
+	if u:
+		gui.scripts[script_id].set_input(True)
+	else:
+		gui.scripts[script_id].set_input(False)
+
 def executeScript(gui,window,text,filename=None,args=[]):
 
 	script_id = str(uuid.uuid4())
@@ -1164,6 +1191,7 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_input.connect(execute_input)
 	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].request_message.connect(execute_message)
+	gui.scripts[script_id].request_halt.connect(execute_halt)	
 	gui.scripts[script_id].start()
 
 def executeGlobalScript(gui,window,text,filename=None,args=[]):
@@ -1177,6 +1205,7 @@ def executeGlobalScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_input.connect(execute_input)
 	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].request_message.connect(execute_message)
+	gui.scripts[script_id].request_halt.connect(execute_halt)
 	gui.scripts[script_id].start()
 
 def getScriptAliases(gui):
@@ -7719,6 +7748,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.scripts[script_id].request_input.connect(execute_input)
 				gui.scripts[script_id].request_number.connect(execute_number)
 				gui.scripts[script_id].request_message.connect(execute_message)
+				gui.scripts[script_id].request_halt.connect(execute_halt)
 				gui.scripts[script_id].start()
 
 			else:
@@ -7758,6 +7788,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						gui.scripts[script_id].request_input.connect(execute_input)
 						gui.scripts[script_id].request_number.connect(execute_number)
 						gui.scripts[script_id].request_message.connect(execute_message)
+						gui.scripts[script_id].request_halt.connect(execute_halt)
 						gui.scripts[script_id].start()
 
 					else:
@@ -7777,6 +7808,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							gui.scripts[script_id].request_input.connect(execute_input)
 							gui.scripts[script_id].request_number.connect(execute_number)
 							gui.scripts[script_id].request_message.connect(execute_message)
+							gui.scripts[script_id].request_halt.connect(execute_halt)
 							gui.scripts[script_id].start()
 						else:
 							if is_script:
@@ -8389,6 +8421,7 @@ class ScriptThread(QThread):
 	request_input = pyqtSignal(object)
 	request_number = pyqtSignal(object)
 	request_message = pyqtSignal(object)
+	request_halt = pyqtSignal(object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None,is_global=False):
 		super(ScriptThread, self).__init__(parent)
@@ -8735,7 +8768,6 @@ class ScriptThread(QThread):
 									"only",
 									"exclude",
 									"if",
-									"halt",
 									"random",
 									"read",
 									"target",
@@ -8744,6 +8776,7 @@ class ScriptThread(QThread):
 									"input",
 									"number",
 									"message",
+									"halt",
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: script-only commands cannot be called from if"])
@@ -9507,16 +9540,30 @@ class ScriptThread(QThread):
 								msg = ' '.join(tokens)
 								buildTemporaryAliases(self.gui,self.window)
 								msg = self.interpolateAliases(msg)
-								self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}: {msg}"])
-								loop = False
-								halt_issued = True
+								self.request_halt.emit([msg,self.gui,self.id])
+								self.mutex.lock()
+								self.wait_condition.wait(self.mutex)
+								self.mutex.unlock()
+								if self.user_input==True:
+									loop = False
+									halt_issued = True
+								else:
+									pass
+								self.user_input = None
 								continue
 
 						if len(tokens)>0 and len(tokens)==1:
 							if tokens[0].lower()=='halt':
-								self.scriptError.emit([self.gui,self.window,f"Halt on line {line_number} in {os.path.basename(filename)}"])
-								loop = False
-								halt_issued = True
+								self.request_halt.emit([None,self.gui,self.id])
+								self.mutex.lock()
+								self.wait_condition.wait(self.mutex)
+								self.mutex.unlock()
+								if self.user_input==True:
+									loop = False
+									halt_issued = True
+								else:
+									pass
+								self.user_input = None
 								continue
 						
 						# |====|
@@ -9784,7 +9831,7 @@ class ScriptThread(QThread):
 											handled_goto = True
 											continue
 									if not handled_goto:
-										self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False])
+										self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False,self.ALIAS])
 									script_only_command = True
 									continue
 

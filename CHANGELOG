@@ -82,6 +82,12 @@ What's new:
   has "command generators", as the scripting language is getting complex
   enough that users should really read the documentation to write scripts.
 * Added a new example script to the documentation.
+* Bugfix: calling "if" could crash the client in some circumstances.
+* Changes to "halt": calling "halt" now brings up a blocking dialog that asks
+  the user if they want to halt script execution. If the user presses "cancel",
+  the script will continue execution.
+* Updated the MERK User Guide with all new features, and some better
+  explanations of concepts.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |
