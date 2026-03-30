@@ -11,6 +11,7 @@ What's new:
 - **New script-only command: `number`**. Allows scripts to get a number from the user. This command is blocking.
 - **New script-only command: `message`**. Shows a messagebox to the user. This command is blocking.
 - **The log manager can now export to a human readable format**. The "human readable" format looks more like traditional IRC logs.
+- **The log manager now offers a log viewer**. Logs can be viewed without timestamps or IRC color/formatting.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -93,6 +94,10 @@ What's new:
   closer to "traditional" IRC logs, with a human readable date/time, followed
   by the user's nickname, ": ", and the user's chat. IRC colors/formatting are
   stripped from chat.
+* The log manager now offers a log viewer. In the viewer, logs are stripped of
+  timestamps, hostmasks, and IRC colors/formatting.
+* Single clicking on a log entry in the list now loads a log in the log
+  manager, now.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

@@ -182,7 +182,7 @@ def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 	else:
 		return ''
 
-def dumpLogHuman(filename):
+def dumpLogHuman(filename,no_timestamps=False):
 	if os.path.isfile(filename):
 		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
 			logs = json.load(logentries)
@@ -202,8 +202,11 @@ def dumpLogHuman(filename):
 			else:
 				u = l[2]
 
-			pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
-			entry = f"{pretty_timestamp} {u}: {chat}"
+			if no_timestamps:
+				entry = f"{u}: {chat}"
+			else:
+				pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+				entry = f"{pretty_timestamp} {u}: {chat}"
 			out.append(entry)
 		return "\n".join(out)
 	else:

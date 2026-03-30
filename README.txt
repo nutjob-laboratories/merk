@@ -457,7 +457,7 @@ You can also use markdown tags! To send text in italics, start (and finish) a me
 
 Tags can be nested, so `<5,9***~Hello~ __world!__***>` is a completely valid statement in **MERK** "markdown". The client can be configured to strip colors and formatting from display, but messages sent in "markdown" will still appear with the formatting in clients the message is sent to. In channel windows, topics are automatically changed into "markdown" when the topic is edited via the GUI.
 
-Just like almost everything is **MERK**, "markdown" can be turned off in the settings. More information about "markdown"can be found in the [**MERK** User Guide](./MERK_User_Guide.pdf).
+Just like almost everything is **MERK**, "markdown" can be turned off in the settings. More information about "markdown" can be found in the [**MERK** User Guide](./MERK_User_Guide.pdf).
 
 # Plugins
 **MERK** can load plugins! Plugins are written in Python, the same language that **MERK** is written in, and can react to over 40 different events. Each plugin has access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) that **MERK** uses to communicate with IRC servers, and can interact with both the client and any chat subwindows. The built-in "Plugin Manager" can edit, export, install, and create plugins, using a special version of the script editor just for Python code. The plugin editor features syntax highlighting, auto-indent, optional visible whitespace, and all the features you'd expect out of a basic text editor.
