@@ -3498,6 +3498,7 @@ class SpellTextEdit(QPlainTextEdit):
 								for s in settings:
 									if s=="history": continue
 									if s=="commands": continue
+									if s=="sasl": continue
 									settings_list.append(s)
 
 								for setting in settings_list:

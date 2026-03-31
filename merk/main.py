@@ -1507,9 +1507,6 @@ class Merk(QMainWindow):
 
 		w = self.getServerWindow(client)
 		if w:
-			t = Message(SYSTEM_MESSAGE,'',"Registered with server!")
-			w.writeText(t)
-
 			if client.hostname:
 				w.name = client.hostname
 				w.updateTitle()

@@ -223,6 +223,7 @@ class IRC_Connection(irc.IRCClient):
 		self.support_hostmasks_in_names = False
 		self.ircv3 = []
 		self.support_sasl_plain = False
+		self.support_account_notify = False
 
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
@@ -510,7 +511,8 @@ class IRC_Connection(irc.IRCClient):
 			self.dump_file = open(dump_filename,"a")
 
 		# Ask the server if they support IRCv3, and what
-		# they support
+		# they support. Right now, we generally support
+		# IRCv3 3.0.2
 		self.sendLine("CAP LS 302")
 
 		irc.IRCClient.connectionMade(self)
@@ -518,19 +520,6 @@ class IRC_Connection(irc.IRCClient):
 		CONNECTIONS[self.client_id] = self
 
 		self.gui.connectionMade(self)
-
-	def irc_ACCOUNT(self, prefix, params):
-		account = params[0] if params else None
-
-		w = self.gui.getServerWindow(self)
-		if w:
-			t = Message(SYSTEM_MESSAGE,'',f"{prefix}")
-			w.writeText(t)
-		
-			if account == '*':
-				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged out")
-			else:
-				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged into {account}")
 
 	def irc_CAP(self, prefix, params):
 		subcommand = params[1]
@@ -566,6 +555,11 @@ class IRC_Connection(irc.IRCClient):
 			else:
 				self.sendLine("CAP END")
 
+		elif subcommand == "ACK" and "account-notify" in capabilities:
+			# Make sure that this flag is set if this extension
+			# is supported by the server
+			self.support_account_notify = True
+
 		elif subcommand == "ACK" and "sasl" in capabilities and self.support_sasl_plain:
 			# Start SASL login process
 			self.sendLine("AUTHENTICATE PLAIN")
@@ -581,9 +575,12 @@ class IRC_Connection(irc.IRCClient):
 			self.support_hostmasks_in_names = True
 
 		elif subcommand == "NAK":
+			# Server doesn't support things that we are looking
+			# for, so tell the server we're done with negotiation
 			self.sendLine("CAP END")
 
 	def irc_AUTHENTICATE(self, prefix, params):
+		# Send the SASL username and password to the server
 		if params[0] == "+":
 			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
 			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
@@ -594,6 +591,7 @@ class IRC_Connection(irc.IRCClient):
 				w.writeText(t)
 
 	def irc_903(self, prefix, params):
+		# SASL authentication was successful!
 		self.sendLine("CAP END")
 
 		w = self.gui.getServerWindow(self)
@@ -602,9 +600,13 @@ class IRC_Connection(irc.IRCClient):
 			w.writeText(t)
 
 	def irc_904(self, prefix, params):
+		# SASL authentication failed, due to a "bad"
+		# username and/or password
 		self.sendLine("CAP END")
 
 		server = f"{self.server}:{self.port}"
+
+		plugins.call(self,"error",client=self,message=f"SASL authentication failed")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
 			w = self.gui.getServerWindow(self)
@@ -618,12 +620,6 @@ class IRC_Connection(irc.IRCClient):
 			self.transport.loseConnection()
 
 			irc.IRCClient.connectionLost(self, "SASL authentication failed")
-
-			if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
-				try:
-					self.dump_file.close()
-				except:
-					pass
 
 			if hasattr(self,"uptimeTimer"):
 				self.uptimeTimer.stop()
@@ -648,7 +644,11 @@ class IRC_Connection(irc.IRCClient):
 
 
 	def irc_905(self, prefix, params):
+		# SASL authentication failed because the SASL authentication
+		# method was "too long"
 		self.sendLine("CAP END")
+
+		plugins.call(self,"error",client=self,message=f"SASL authentication failed (message too long)")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
 			w = self.gui.getServerWindow(self)
@@ -662,12 +662,6 @@ class IRC_Connection(irc.IRCClient):
 			self.transport.loseConnection()
 
 			irc.IRCClient.connectionLost(self, "SASL authentication failed")
-
-			if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
-				try:
-					self.dump_file.close()
-				except:
-					pass
 
 			if hasattr(self,"uptimeTimer"):
 				self.uptimeTimer.stop()
@@ -690,8 +684,20 @@ class IRC_Connection(irc.IRCClient):
 				t = Message(ERROR_MESSAGE,'','SASL authentication failed! SASL message was too long')
 				w.writeText(t)
 
-	def connectionLost(self, reason):
+	def irc_ACCOUNT(self, prefix, params):
+		account = params[0] if params else None
 
+		if not self.support_account_notify: return
+
+		w = self.gui.getServerWindow(self)
+		if w:
+			if account=='*':
+				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged out")
+			else:
+				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged into {account}")
+			w.writeText(t)
+
+	def connectionLost(self, reason):
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
 			try:
 				self.dump_file.close()
@@ -719,6 +725,11 @@ class IRC_Connection(irc.IRCClient):
 
 		self.gui.signedOn(self)
 
+		w = self.gui.getServerWindow(self)
+		if w:
+			t = Message(SYSTEM_MESSAGE,'','Server registration complete!')
+			w.writeText(t)
+
 	def joined(self, channel):
 		self.sendLine(f"MODE {channel}")
 		self.sendLine(f"MODE {channel} +b")
@@ -735,6 +746,11 @@ class IRC_Connection(irc.IRCClient):
 	def privmsg(self, user, target, msg):
 		pnick = user.split('!')[0]
 		phostmask = user.split('!')[1]
+
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
+			if pnick in self.do_whois:
+				self.do_whois.pop(pnick,None)
+				self.gui.updateHostmask(self,pnick,phostmask)
 
 		self.gui.privmsg(self,user,target,msg)
 
@@ -856,6 +872,12 @@ class IRC_Connection(irc.IRCClient):
 		if len(tok) >= 2:
 			pnick = tok[0]
 			phostmask = tok[1]
+
+			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
+				if pnick in self.do_whois:
+					self.do_whois.pop(pnick,None)
+					self.gui.updateHostmask(self,pnick,phostmask)
+
 		else:
 			pnick = user
 			phostmask = user
@@ -1102,6 +1124,11 @@ class IRC_Connection(irc.IRCClient):
 	def action(self, user, channel, data):
 		pnick = user.split('!')[0]
 		phostmask = user.split('!')[1]
+
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
+			if pnick in self.do_whois:
+				self.do_whois.pop(pnick,None)
+				self.gui.updateHostmask(self,pnick,phostmask)
 
 		self.gui.action(self,user,channel,data)
 
