@@ -222,6 +222,7 @@ class IRC_Connection(irc.IRCClient):
 		self.is_listing_channels = False
 		self.support_hostmasks_in_names = False
 		self.ircv3 = []
+		self.support_sasl_plain = False
 
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
@@ -547,19 +548,26 @@ class IRC_Connection(irc.IRCClient):
 
 			self.ircv3 = list(params[2].split())
 
+			for e in self.ircv3:
+				if 'sasl' in e and 'PLAIN' in e:
+					self.support_sasl_plain = True
+
+			# Request various IRCv3 extensions
 			self.sendLine("CAP REQ :cap-notify")
 			self.sendLine("CAP REQ :userhost-in-names")
 			self.sendLine("CAP REQ :multi-prefix")
 			self.sendLine("CAP REQ :away-notify")
 			self.sendLine("CAP REQ :account-notify")
 
-			if self.sasl_username!=None and self.sasl_password!=None:
+			# If the server support SASL and we have SASL
+			# login information, request authentication
+			if self.sasl_username!=None and self.sasl_password!=None and self.support_sasl_plain:
 				self.sendLine("CAP REQ :sasl")
 			else:
 				self.sendLine("CAP END")
 
-		elif subcommand == "ACK" and "sasl" in capabilities:
-			# Start SASL login
+		elif subcommand == "ACK" and "sasl" in capabilities and self.support_sasl_plain:
+			# Start SASL login process
 			self.sendLine("AUTHENTICATE PLAIN")
 			w = self.gui.getServerWindow(self)
 			if w:
@@ -599,7 +607,6 @@ class IRC_Connection(irc.IRCClient):
 		server = f"{self.server}:{self.port}"
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-
 			w = self.gui.getServerWindow(self)
 			if w:
 				self.gui.quitting[self.client_id] = 0
@@ -610,8 +617,20 @@ class IRC_Connection(irc.IRCClient):
 			self.factory.clientConnectionFailed(self.transport.connector, failure)
 			self.transport.loseConnection()
 
+			irc.IRCClient.connectionLost(self, "SASL authentication failed")
+
+			if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+				try:
+					self.dump_file.close()
+				except:
+					pass
+
+			if hasattr(self,"uptimeTimer"):
+				self.uptimeTimer.stop()
+				self.uptime = 0
+
 			if config.PROMPT_ON_FAILED_CONNECTION:
-				self.gui.connectToIrcFail("SASL authentication failed!","SASL authentication failed!")
+				self.gui.connectToIrcFail("SASL authentication failed!","SASL fail")
 			else:
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
@@ -622,7 +641,6 @@ class IRC_Connection(irc.IRCClient):
 				msgBox.setStandardButtons(QMessageBox.Ok)
 				msgBox.exec()
 		else:
-
 			w = self.gui.getServerWindow(self)
 			if w:
 				t = Message(ERROR_MESSAGE,'','SASL authentication failed! Check your username and password.')
@@ -633,7 +651,6 @@ class IRC_Connection(irc.IRCClient):
 		self.sendLine("CAP END")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-
 			w = self.gui.getServerWindow(self)
 			if w:
 				self.gui.quitting[self.client_id] = 0
@@ -644,8 +661,20 @@ class IRC_Connection(irc.IRCClient):
 			self.factory.clientConnectionFailed(self.transport.connector, failure)
 			self.transport.loseConnection()
 
+			irc.IRCClient.connectionLost(self, "SASL authentication failed")
+
+			if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:
+				try:
+					self.dump_file.close()
+				except:
+					pass
+
+			if hasattr(self,"uptimeTimer"):
+				self.uptimeTimer.stop()
+				self.uptime = 0
+
 			if config.PROMPT_ON_FAILED_CONNECTION:
-				self.gui.connectToIrcFail("SASL authentication failed! SASL message was too long","SASL authentication failed!")
+				self.gui.connectToIrcFail("SASL authentication failed! SASL message was too long","SASL fail")
 			else:
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))

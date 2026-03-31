@@ -11,7 +11,7 @@ What's new:
 - **New script-only command: `number`**. Allows scripts to get a number from the user. This command is blocking.
 - **New script-only command: `message`**. Shows a messagebox to the user. This command is blocking.
 - **The log manager can now export to a human readable format**. The "human readable" format looks more like traditional IRC logs.
-- **The log manager now offers a log viewer**. Logs can be viewed without timestamps or IRC color/formatting.
+- **The log manager now offers a log viewer**. Logs can be viewed, and searched, without timestamps or IRC color/formatting.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -98,6 +98,15 @@ What's new:
   timestamps, hostmasks, and IRC colors/formatting.
 * Single clicking on a log entry in the list now loads a log in the log
   manager, now.
+* SASL authentication now makes sure that the server supports the PLAIN
+  mechanism before sending the username/password for login. If the server
+  doesn't support PLAIN, MERK will not try to login.
+* Bugfix: SASL authentication fails would not always close the file used with
+  the "write all input/output to file" option. Now, the file is closed properly
+  and when the "connection lost" trigger is triggered, whether the file is
+  closed properly if checked.
+* Search has be re-added to the log manager, and the log viewer is now the
+  default visible tab.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.650                                  |

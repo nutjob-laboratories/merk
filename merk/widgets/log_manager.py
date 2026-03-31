@@ -605,8 +605,44 @@ class Window(QMainWindow):
 
 		self.export_options = QWidget()
 		self.dump_view = QWidget()
+		log_index = self.tabs.addTab(self.dump_view, "View ")
 		self.tabs.addTab(self.export_options, "Export")
-		self.tabs.addTab(self.dump_view, "View")
+		
+		self.search = QLineEdit()
+		fm = QFontMetrics(self.font())
+		wwidth = fm.horizontalAdvance("AAAAAAAAAAAAAAAAAAAA")
+		self.search.setFixedWidth(wwidth)
+		self.search.returnPressed.connect(self.on_search)
+		self.search.setPlaceholderText("Search terms...")
+
+		self.forward = QPushButton("")
+		self.forward.setIcon(QIcon(NEXT_ICON))
+		self.forward.setToolTip("Next result")
+		self.forward.clicked.connect(self.on_search)
+		self.forward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.forward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.forward.setFlat(True)
+		self.forward.setStyleSheet("QPushButton:focus { border: none; outline: none; }")
+
+		self.backward = QPushButton("")
+		self.backward.setIcon(QIcon(PREVIOUS_ICON))
+		self.backward.setToolTip("Previous result")
+		self.backward.clicked.connect(self.on_back)
+		self.backward.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
+		self.backward.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
+		self.backward.setFlat(True)
+		self.backward.setStyleSheet("QPushButton:focus { border: none; outline: none; }")
+
+		swlayout = QHBoxLayout()
+		swlayout.addWidget(self.search)
+		swlayout.addWidget(self.backward)
+		swlayout.addWidget(self.forward)
+		swlayout.setContentsMargins(0,0,0,0)
+
+		self.swidget = QWidget()
+		self.swidget.setLayout(swlayout)
+
+		self.tabs.tabBar().setTabButton(log_index, QTabBar.RightSide, self.swidget)
 
 		self.export_options.setLayout(bottomLayout)
 		self.dump_view.setLayout(dumpLayout)
@@ -633,6 +669,29 @@ class Window(QMainWindow):
 	def generateStylesheet(self,obj,fore,back):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
+
+	def on_search(self):
+		search_text = self.search.text()
+
+		if search_text:
+			found = self.dump.find(search_text, QTextDocument.FindFlags())
+			if not found:
+				cursor = self.dump.textCursor()
+				cursor.movePosition(QTextCursor.Start)
+				self.dump.setTextCursor(cursor)
+				self.dump.find(search_text, QTextDocument.FindFlags())
+
+	def on_back(self):
+		search_text = self.search.text()
+		flags = QTextDocument.FindFlags() | QTextDocument.FindBackward
+
+		if search_text:
+			found = self.dump.find(search_text, flags)
+			if not found:
+				cursor = self.dump.textCursor()
+				cursor.movePosition(QTextCursor.Start)
+				self.dump.setTextCursor(cursor)
+				self.dump.find(search_text, flags)
 
 	def on_item_clicked(self, item):
 
