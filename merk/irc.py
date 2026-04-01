@@ -524,15 +524,12 @@ class IRC_Connection(irc.IRCClient):
 	def irc_CAP(self, prefix, params):
 		subcommand = params[1]
 		capabilities = params[2] if len(params) > 2 else ""
+		w = self.gui.getServerWindow(self)
 
 		if subcommand == "LS":
-			w = self.gui.getServerWindow(self)
 			if w:
-				t = Message(SYSTEM_MESSAGE,'','Server supports IRCv3 3.0.2')
-				w.writeText(t)
-
 				capabilities = join_with_and(params[2].split())
-				t = Message(SYSTEM_MESSAGE,'',"IRCv3 capabilities: "+capabilities)
+				t = Message(SYSTEM_MESSAGE,'','Server supports IRCv3 3.0.2: '+capabilities)
 				w.writeText(t)
 
 			self.ircv3 = list(params[2].split())
@@ -541,6 +538,9 @@ class IRC_Connection(irc.IRCClient):
 				if 'sasl' in e and 'PLAIN' in e:
 					self.support_sasl_plain = True
 
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','Requesting IRCv3 capabilities...')
+				w.writeText(t)
 			# Request various IRCv3 extensions
 			self.sendLine("CAP REQ :cap-notify")
 			self.sendLine("CAP REQ :userhost-in-names")
@@ -561,12 +561,11 @@ class IRC_Connection(irc.IRCClient):
 			self.support_account_notify = True
 
 		elif subcommand == "ACK" and "sasl" in capabilities and self.support_sasl_plain:
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','Requesting SASL login...')
+				w.writeText(t)
 			# Start SASL login process
 			self.sendLine("AUTHENTICATE PLAIN")
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(SYSTEM_MESSAGE,'','Initiating SASL authentication...')
-				w.writeText(t)
 
 		elif subcommand == "ACK" and "userhost-in-names" in capabilities:
 			# If hostmasks are sent with names, then we
@@ -582,14 +581,14 @@ class IRC_Connection(irc.IRCClient):
 	def irc_AUTHENTICATE(self, prefix, params):
 		# Send the SASL username and password to the server
 		if params[0] == "+":
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','Sending username and password...')
+				w.writeText(t)
 			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
 			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
 			self.sendLine(f"AUTHENTICATE {encoded}")
-			w = self.gui.getServerWindow(self)
-			if w:
-				t = Message(SYSTEM_MESSAGE,'','SASL username and password sent...')
-				w.writeText(t)
-
+			
 	def irc_903(self, prefix, params):
 		# SASL authentication was successful!
 		self.sendLine("CAP END")

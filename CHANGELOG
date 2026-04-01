@@ -110,6 +110,8 @@ What's new:
 * Tweaked how "hostmask harvesting" works: MERK will now more accurately grab
   hostmasks from messages, and try to not send as many WHOIS requests to the
   server.
+* The default option to include server windows in the windowbar has been
+  changed to "true". This will only have an effect on new installations.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
