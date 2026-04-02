@@ -112,6 +112,12 @@ What's new:
   server.
 * The default option to include server windows in the windowbar has been
   changed to "true". This will only have an effect on new installations.
+* Bugfix: empty strings we sometimes added to the script argument list,
+  breaking the "usage" command. "Empty" arguments are now removed from the
+  arguments passed to a script (because it shouldn't be possible, with the way
+  that scripts work).
+* Bugfix: the windowbar now looks "good" (and is usable) when floating.
+* Bugfix: the windowbar now rebuilds itself properly when it is docked.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

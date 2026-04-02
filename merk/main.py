@@ -164,7 +164,7 @@ class MdiArea(QMdiArea):
 		for file_path in files:
 			name_without_extension, extension = os.path.splitext(file_path)
 
-			if extension==".merk":
+			if extension=="."+SCRIPT_FILE_EXTENSION:
 				if not config.SCRIPTING_ENGINE_ENABLED:
 					event.ignore()
 					return
@@ -196,7 +196,7 @@ class MdiArea(QMdiArea):
 								if config.IMPORT_SCRIPTS_IN_PLUGINS:
 									sfile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
 									name_without_extension, extension = os.path.splitext(sfile_path)
-									if extension.lower()=='.merk': extract_file = True
+									if extension.lower()=='.': extract_file = True
 								if extract_file:
 									if os.path.exists(efile_path):
 										overwrite = True
@@ -249,7 +249,7 @@ class MdiArea(QMdiArea):
 
 									extract_file = False
 									name_without_extension, extension = os.path.splitext(efile_path)
-									if extension.lower()=='.merk': extract_file = True
+									if extension.lower()=='.'+SCRIPT_FILE_EXTENSION: extract_file = True
 
 									if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
 
@@ -731,6 +731,11 @@ class Merk(QMainWindow):
 
 		self.windowbar.setMovable(config.WINDOWBAR_CAN_FLOAT)
 
+		# Check to see if the windowbar is floating; if it
+		# is, we won't place the spacers
+		is_floating = False
+		if self.windowbar.isFloating(): is_floating = True
+
 		listOfConnections = {}
 		for i in irc.CONNECTIONS:
 			add_to_list = True
@@ -805,8 +810,9 @@ class Merk(QMainWindow):
 			self.windowbar.show()
 			if len(window_list)==0: return
 
-		if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
-			menubar.add_toolbar_stretch(self.windowbar)
+		if not is_floating:
+			if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
+				menubar.add_toolbar_stretch(self.windowbar)
 
 		# Rearrange the windowlist so that the current
 		# window is always first
@@ -1124,8 +1130,11 @@ class Merk(QMainWindow):
 		else:
 			self.windowbar.hide()
 
-		if config.WINDOWBAR_JUSTIFY.lower()=='center':
-			menubar.add_toolbar_stretch(self.windowbar)
+		if not is_floating:
+			if config.WINDOWBAR_JUSTIFY.lower()=='center':
+				menubar.add_toolbar_stretch(self.windowbar)
+		else:
+			menubar.add_toolbar_spacer(self.windowbar)
 
 		self.windowbar.topLevelChanged.connect(self.windowDocked)
 
@@ -1140,6 +1149,9 @@ class Merk(QMainWindow):
 				# it's at the bottom
 				config.WINDOWBAR_TOP_OF_SCREEN = False
 				config.save_settings(config.CONFIG_FILE)
+
+		# Rebuild the windowbar
+		self.buildWindowbar()
 
 	# SYSTRAY MENU
 

@@ -442,7 +442,7 @@ class Window(QMainWindow):
 	def doImport(self):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getOpenFileName(self,"Import Script", str(Path.home()), f"MERK Script (*.merk);;All Files (*)", options=options)
+		fileName, _ = QFileDialog.getOpenFileName(self,"Import Script", str(Path.home()), f"MERK Script (*.{SCRIPT_FILE_EXTENSION});;All Files (*)", options=options)
 		if fileName:
 			base = os.path.basename(fileName)
 			imported_file = os.path.join(commands.SCRIPTS_DIRECTORY,base)

@@ -303,7 +303,7 @@ if __name__ == '__main__':
 					if config.IMPORT_SCRIPTS_IN_PLUGINS:
 						extract_file = False
 						name_without_extension, extension = os.path.splitext(member.filename)
-						if extension.lower()=='.merk': extract_file = True
+						if extension.lower()=='.'+SCRIPT_FILE_EXTENSION: extract_file = True
 
 						if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
 

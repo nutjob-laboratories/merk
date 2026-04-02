@@ -4857,7 +4857,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 									extract_file = False
 									name_without_extension, extension = os.path.splitext(file_path)
-									if extension.lower()=='.merk': extract_file = True
+									if extension.lower()=='.'+SCRIPT_FILE_EXTENSION: extract_file = True
 
 									if not config.OVERWRITE_PLUGINS_ON_IMPORT:
 										if os.path.isfile(file_path):
@@ -8438,6 +8438,9 @@ class ScriptThread(QThread):
 		self.LOOP_TARGET = None
 		self.LOOP_COUNT = None
 		self.is_global = is_global
+
+		# Clear empty strings from the argument list
+		self.arguments = [s for s in self.arguments if s]
 
 		self.mutex = QMutex()
 		self.wait_condition = QWaitCondition()

@@ -131,7 +131,7 @@ class Window(QMainWindow):
 						if config.IMPORT_SCRIPTS_IN_PLUGINS:
 							sfile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
 							name_without_extension, extension = os.path.splitext(sfile_path)
-							if extension.lower()=='.merk': extract_file = True
+							if extension.lower()=='.'+SCRIPT_FILE_EXTENSION: extract_file = True
 
 
 						if extract_file:
@@ -186,7 +186,7 @@ class Window(QMainWindow):
 
 							extract_file = False
 							name_without_extension, extension = os.path.splitext(file_path)
-							if extension.lower()=='.merk': extract_file = True
+							if extension.lower()=='.'+SCRIPT_FILE_EXTENSION: extract_file = True
 
 							if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
 
