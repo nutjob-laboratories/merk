@@ -403,6 +403,7 @@ class Merk(QMainWindow):
 		self.unread_mentions = []
 		self.tips = None
 		self.executed_global = False
+		self.at_least_one_window_has_spawned = False
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -3798,6 +3799,8 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"subwindow",window=w.widget())
 
+		self.at_least_one_window_has_spawned = True
+
 		return w
 
 	def newServerWindow(self,name,client):
@@ -3821,6 +3824,8 @@ class Merk(QMainWindow):
 
 		plugins.call(self,"subwindow",window=w.widget())
 
+		self.at_least_one_window_has_spawned = True
+
 		return w
 
 	def newPrivateWindow(self,name,client):
@@ -3843,6 +3848,8 @@ class Merk(QMainWindow):
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
 
 		plugins.call(self,"subwindow",window=w.widget())
+
+		self.at_least_one_window_has_spawned = True
 
 		return w
 

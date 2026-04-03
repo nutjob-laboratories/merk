@@ -385,6 +385,11 @@ class Dialog(QDialog):
 		self.initial = initial
 		self.skipping = False
 
+		if test_if_window_background_is_light(self):
+			self.dark_mode = False
+		else:
+			self.dark_mode = True
+
 		self.StoredData = []
 		self.StoredServer = 0
 
@@ -577,20 +582,28 @@ class Dialog(QDialog):
 		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
 		self.commandHost.setWordWrap(True)
 		self.commandHost.setAlignment(Qt.AlignJustify)
-		self.commands = QPlainTextEdit()
 
-		# Add syntax highlighting
-		self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
+		if config.SHOW_LINE_NUMBERS_ON_CONNECT:
+			self.commands = CodeEditor()
 
-		# Set background/foreground
-		self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+			# Add syntax highlighting
+			self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
+
+			# Set background/foreground
+			self.commands.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+		else:
+			self.commands = QPlainTextEdit()
+
+			# Add syntax highlighting
+			self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
+
+			# Set background/foreground
+			self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 
 		height = self.servers.height()+self.reconnect.height()
 		if self.not_simplified:
-			# height = height + serverLayout.sizeHint().height() + 125
 			height = height + serverLayout.sizeHint().height() + 165
 		else:
-			# height = height + serverLayout.sizeHint().height() + 80
 			height = height + serverLayout.sizeHint().height() + 120
 		self.commands.setFixedHeight(height)
 

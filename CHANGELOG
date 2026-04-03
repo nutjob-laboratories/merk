@@ -1,4 +1,33 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.750                                  |
+|------------------------------------------------------------------------------|
+
+What's new:
+- **IRC colors/formatting are now shown in the log manager**.
+- **The script and Python editors now have a line number display**.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Nicknames are in bold, and full IRC color/formatting is viewable in the log
+  viewer.
+* CTCP ACTIONs are now in bold and italics in the log viewer. "Human readable"
+  log exports no longer display CTCP ACTIONs as chat.
+* The log viewer now notifies the user when it takes a little while to load/
+  render a log, in the window status bar.
+* Bugfix: system/server messages are now rendered properly in the log viewer
+  and in "human readable" exports, as are notices and private messages.
+* The log viewer now can toggle UNIX epoch time in "human readable" output.
+* The script and Python editor now feature a line number display.
+* Bugfix: line numbers in the editors now update properly.
+* Bugfix: the script/Python editor now updates the "changed" status properly.
+* Bugfix: the script/Python editor no longer starts up in the "changed" state
+  the first time it is launched in a session.
+* Added an option to add line numbers to the connection script editor in the
+  connection dialog (it's turned off by default).
+
+|------------------------------------------------------------------------------|
 |                                   0.051.700                                  |
 |------------------------------------------------------------------------------|
 

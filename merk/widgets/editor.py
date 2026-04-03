@@ -158,11 +158,11 @@ class Window(QMainWindow):
 
 	def toggleWordwrap(self):
 		if config.EDITOR_WORDWRAP:
-			self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
+			self.editor.setLineWrapMode(QTextEdit.NoWrap)
 			config.EDITOR_WORDWRAP = False
 			self.ww_menu.setIcon(QIcon(self.parent.unchecked_icon))
 		else:
-			self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+			self.editor.setLineWrapMode(QTextEdit.WidgetWidth)
 			config.EDITOR_WORDWRAP = True
 			self.ww_menu.setIcon(QIcon(self.parent.checked_icon))
 		config.save_settings(config.CONFIG_FILE)
@@ -300,14 +300,14 @@ class Window(QMainWindow):
 				self.highlight = syntax.PythonHighlighter(self.editor.document())
 			else:
 				self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
-			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 			if reset:
 				self.changed = False
 				self.updateApplicationTitle()
 		else:
 			script = self.editor.toPlainText()
 			self.highlight = None
-			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit','black','white'))
+			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor','black','white'))
 			self.editor.setPlainText(script)
 			if reset:
 				self.changed = False
@@ -615,7 +615,7 @@ class Window(QMainWindow):
 
 		self.subwindow_id = str(uuid.uuid4())
 
-		self.editor = QPlainTextEdit(self)
+		self.editor = CodeEditor()
 
 		self.editor.cursorPositionChanged.connect(self.update_line_number)
 
@@ -624,7 +624,7 @@ class Window(QMainWindow):
 				self.highlight = syntax.PythonHighlighter(self.editor.document())
 			else:
 				self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
-			self.editor.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
 		else:
 			self.highlight = None
 
@@ -632,9 +632,9 @@ class Window(QMainWindow):
 			self.toggle_whitespace()
 
 		if config.EDITOR_WORDWRAP:
-			self.editor.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+			self.editor.setLineWrapMode(QTextEdit.WidgetWidth)
 		else:
-			self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
+			self.editor.setLineWrapMode(QTextEdit.NoWrap)
 
 		self.editor.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.editor.customContextMenuRequested.connect(self.show_context_menu)
@@ -659,8 +659,6 @@ class Window(QMainWindow):
 
 		if not config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS:
 			self.status.hide()
-
-		self.updateApplicationTitle()
 
 		if self.filename:
 			if self.python:
@@ -1033,6 +1031,7 @@ class Window(QMainWindow):
 			self.doNewPlugin()
 			self.changed = True
 
+		self.updateApplicationTitle()
 		self.editor.setFocus()
 
 	def buildAliasMenu(self,menu):
@@ -1441,9 +1440,13 @@ class Window(QMainWindow):
 			self.name = f"{base}"
 			if self.findWindow!=None: self.findWindow.setFilenameLabel(base)
 		else:
-			self.setWindowTitle(f"Untitled")
+			if self.changed:
+				self.setWindowTitle(f"Untitled*")
+				self.status_file.setText(f"<small><b>{self.name} - Changed</b></small>")
+			else:
+				self.setWindowTitle(f"Untitled")
+				self.status_file.setText(f"<small><b>{self.name}</b></small>")
 			self.name = "Untitled"
-			self.status_file.setText(f"<small><b>{self.name}</b></small>")
 			if self.findWindow!=None: self.findWindow.setFilenameLabel("Untitled")
 		
 		self.parent.buildWindowsMenu()
@@ -1673,6 +1676,9 @@ class Window(QMainWindow):
 			return True
 
 	def docModified(self):
+		if not self.parent.at_least_one_window_has_spawned:
+			self.parent.at_least_one_window_has_spawned = True
+			return
 		if self.changed: return
 		self.changed = True
 		self.updateApplicationTitle()

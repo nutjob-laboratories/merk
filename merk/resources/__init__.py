@@ -1064,6 +1064,72 @@ def test_if_foreground_is_light(style):
 
 # Widgets
 
+class LineNumberArea(QWidget):
+	def __init__(self, editor):
+		super().__init__(editor)
+		self.editor = editor
+	
+	def sizeHint(self):
+		return QSize(self.editor.lineNumberAreaWidth(), 0)
+	
+	def paintEvent(self, event):
+		self.editor.lineNumberAreaPaintEvent(event)
+
+class CodeEditor(QTextEdit):
+	def __init__(self):
+		super().__init__()
+		self.lineNumberArea = LineNumberArea(self)
+
+		self.background = self.palette().color(QPalette.Window).name()
+		self.foreground = self.palette().color(QPalette.WindowText).name()
+
+		self.document().blockCountChanged.connect(self.updateLineNumberAreaWidth)
+		self.verticalScrollBar().valueChanged.connect(self.updateLineNumberArea)
+		self.document().contentsChanged.connect(self.updateLineNumberArea)
+		self.updateLineNumberAreaWidth(0)
+		
+	def lineNumberAreaWidth(self):
+		digits = len(str(self.document().blockCount()))
+		return 3 + self.fontMetrics().horizontalAdvance('9') * digits
+	
+	def updateLineNumberAreaWidth(self, _):
+		self.setViewportMargins(self.lineNumberAreaWidth(), 0, 0, 0)
+	
+	def updateLineNumberArea(self, _=None):
+		self.lineNumberArea.update()
+	
+	def resizeEvent(self, event):
+		super().resizeEvent(event)
+		cr = self.contentsRect()
+		self.lineNumberArea.setGeometry(QRect(cr.left(), cr.top(), self.lineNumberAreaWidth(), cr.height()))
+	
+	def lineNumberAreaPaintEvent(self, event):
+		painter = QPainter(self.lineNumberArea)
+		painter.fillRect(event.rect(), QColor(self.background))
+		
+		doc = self.document()
+		block = doc.firstBlock()
+		blockNumber = 0
+		
+		fontMetrics = self.fontMetrics()
+		
+		while block.isValid():
+			cursor = self.textCursor()
+			cursor.setPosition(block.position())
+			blockRect = self.cursorRect(cursor)
+			
+			top = blockRect.top()
+			height = blockRect.height()
+			
+			if top + height > event.rect().top() and top <= event.rect().bottom():
+				number = str(blockNumber + 1)
+				painter.setPen(QColor(self.foreground))
+				painter.drawText(0, top, self.lineNumberAreaWidth() - 3, height,
+							   Qt.AlignRight, number)
+			
+			block = block.next()
+			blockNumber += 1
+
 class QNoSpaceLineEdit(QLineEdit):
 	def __init__(self, *args):
 		QLineEdit.__init__(self, *args)

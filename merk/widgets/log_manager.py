@@ -40,6 +40,7 @@ import uuid
 from .. import config
 from .. import styles
 from .. import render
+from .. import syntax
 
 from ..resources import *
 
@@ -57,8 +58,8 @@ class Window(QMainWindow):
 		do_epoch = self.epoch
 
 		if self.export_format=='human':
-			self.time.setEnabled(False)
-			return logs.dumpLogHuman(elog)
+			self.time.setEnabled(True)
+			return logs.dumpLogHuman(elog,False,do_epoch)
 
 		if not do_json:
 			self.time.setEnabled(True)
@@ -96,7 +97,7 @@ class Window(QMainWindow):
 				if file_extension=='':
 					efl = len("txt")+1
 					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
-				dump = logs.dumpLogHuman(elog)
+				dump = logs.dumpLogHuman(elog,False,do_epoc)
 				code = open(fileName,mode="w",encoding="utf-8")
 				code.write(dump)
 				code.close()
@@ -246,7 +247,7 @@ class Window(QMainWindow):
 		self.file_icon.setPixmap(self.blank_file)
 
 		self.sample.setPlainText('')
-		self.dump.setPlainText('')
+		self.dump.setText('')
 
 	def closeEvent(self, event):
 
@@ -522,12 +523,15 @@ class Window(QMainWindow):
 		size_policy.setVerticalPolicy(QSizePolicy.Expanding)
 		self.sample.setSizePolicy(size_policy)
 
-		self.dump = QPlainTextEdit(self)
+		self.dump = QTextEdit(self)
 		self.dump.setReadOnly(True)
 
 		size_policy = self.dump.sizePolicy()
 		size_policy.setVerticalPolicy(QSizePolicy.Expanding)
 		self.dump.setSizePolicy(size_policy)
+
+		# Highlight the log viewer display
+		self.highlighter = syntax.IRCFullHighlighter(self.dump.document())
 
 		dumpLayout = QVBoxLayout()
 		dumpLayout.addWidget(self.dump)
@@ -697,6 +701,10 @@ class Window(QMainWindow):
 
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 
+		# Notify the user that we're loading the log
+		self.status_details.setText(f'<small><b>Loading log...</b></small>')
+		self.repaint()
+
 		size_bytes = os.path.getsize(item.file)
 
 		self.status_details.setText(f'<small><b>{item.file}</b></small>')
@@ -716,7 +724,7 @@ class Window(QMainWindow):
 			self.type.setEnabled(False)
 			self.lineLabel.setEnabled(False)
 			self.line.setEnabled(False)
-			self.time.setEnabled(False)
+			self.time.setEnabled(True)
 		else:
 			self.typeLabel.setEnabled(True)
 			self.type.setEnabled(True)
@@ -738,7 +746,7 @@ class Window(QMainWindow):
 		self.update_sample()
 		self.button_export.setEnabled(True)
 
-		self.dump.setPlainText(logs.dumpLogHuman(item.file,True))
+		self.dump.setText(logs.dumpLogHuman(item.file,True))
 
 		QApplication.restoreOverrideCursor()
 

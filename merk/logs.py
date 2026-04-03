@@ -182,7 +182,7 @@ def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 	else:
 		return ''
 
-def dumpLogHuman(filename,no_timestamps=False):
+def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 	if os.path.isfile(filename):
 		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
 			logs = json.load(logentries)
@@ -193,20 +193,51 @@ def dumpLogHuman(filename,no_timestamps=False):
 			l[3] = l[3].strip()
 			if l[2]=='': l[2] = '***'
 
-			# Strip IRC color/formatting
-			chat = strip_color(l[3])
-
 			u = l[2].split('!')
 			if len(u)==2:
 				u = u[0]
 			else:
 				u = l[2]
 
-			if no_timestamps:
-				entry = f"{u}: {chat}"
+			if l[1]==CHAT_MESSAGE or l[1]==SELF_MESSAGE or l[1]==PRIVATE_MESSAGE:
+				# Regular chat
+				if no_timestamps:
+					entry = f"\x02{u}\x0f: {l[3]}"
+				else:
+					if epoch:
+						pretty_timestamp = l[0]
+					else:
+						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+					entry = f"{pretty_timestamp} {u}: {strip_color(l[3])}"
+			elif l[1]==ACTION_MESSAGE:
+				# CTCP Action message
+				if no_timestamps:
+					entry = f"\x02\x1d{u} {l[3]}\x0f"
+				else:
+					if epoch:
+						pretty_timestamp = l[0]
+					else:
+						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+					entry = f"{pretty_timestamp} {u} {strip_color(l[3])}"
+			elif l[1]==NOTICE_MESSAGE:
+				if no_timestamps:
+					entry = f"*\x02{u}\x0f*: {l[3]}"
+				else:
+					if epoch:
+						pretty_timestamp = l[0]
+					else:
+						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+					entry = f"{pretty_timestamp} *{u}*: {strip_color(l[3])}"
 			else:
-				pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
-				entry = f"{pretty_timestamp} {u}: {chat}"
+				if no_timestamps:
+					entry = f"\x02{l[3]}\x0f"
+				else:
+					if epoch:
+						pretty_timestamp = l[0]
+					else:
+						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+					entry = f"{pretty_timestamp} {strip_color(l[3])}"
+
 			out.append(entry)
 		return "\n".join(out)
 	else:
