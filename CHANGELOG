@@ -2,17 +2,6 @@
 |                                   0.051.700                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-- **MERK can now log into services via SASL**. Commands have been added to create, edit, and delete SASL accounts stored in the user configuration file; SASL accounts can also be edited in the "Connect" dialog, or via GUI dialogs.
-- **Better support for IRCv3**. Capabilites are negotiated better, and with much less "spam" sent to the server.
-- **Global script**. Users can now set up a script to execute the first time that MERK connects to a server in a session.
-- **New script-only command: `loop`**. Allows for loops in scripts. Loops can be "broken out" of using `goto`.
-- **New script-only command: `input`**. Allows scripts to get input from the user. This command is blocking.
-- **New script-only command: `number`**. Allows scripts to get a number from the user. This command is blocking.
-- **New script-only command: `message`**. Shows a messagebox to the user. This command is blocking.
-- **The log manager can now export to a human readable format**. The "human readable" format looks more like traditional IRC logs.
-- **The log manager now offers a log viewer**. Logs can be viewed, and searched, without timestamps or IRC color/formatting.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
