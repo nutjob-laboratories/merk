@@ -1156,7 +1156,10 @@ class CodeEditor(QTextEdit):
 		if QColor(fcolor).lightness() > 127:
 			fcolor = QColor(fcolor).darker(105)
 		else:
-			fcolor = QColor(fcolor).lighter(125)
+			if QColor(fcolor).lightness() < 30:
+				fcolor = QColor("#404040")
+			else:
+				fcolor = QColor(fcolor).lighter(125)
 
 		return fcolor
 

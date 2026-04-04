@@ -2164,6 +2164,10 @@ class Dialog(QDialog):
 		if config.SHOW_LINE_NUMBERS_ON_CONNECT: self.showLines.setChecked(True)
 		self.showLines.stateChanged.connect(self.changedSetting)
 
+		self.saveLocation = QCheckBox("Save and restore window location",self)
+		if config.SAVE_MAIN_WINDOW_LOCATION: self.saveLocation.setChecked(True)
+		self.saveLocation.stateChanged.connect(self.changedSetting)
+
 		misLayout = QVBoxLayout()
 		misLayout.setSpacing(2)
 		misLayout.addWidget(self.simpleConnect)
@@ -2184,6 +2188,7 @@ class Dialog(QDialog):
 		mwsLayout = QVBoxLayout()
 		mwsLayout.setSpacing(2)
 		mwsLayout.addWidget(self.maxOnStart)
+		mwsLayout.addWidget(self.saveLocation)
 		mwsLayout.addWidget(self.alwaysOnTop)
 		mwsLayout.addWidget(self.fullScreen)
 		mwsLayout.addWidget(self.askBeforeExit)
@@ -6535,6 +6540,7 @@ class Dialog(QDialog):
 		config.DISCONNECT_ON_SASL_FAIL = self.failSasl.isChecked()
 		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()
 		config.SHOW_LINE_NUMBERS_ON_CONNECT = self.showLines.isChecked()
+		config.SAVE_MAIN_WINDOW_LOCATION = self.saveLocation.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

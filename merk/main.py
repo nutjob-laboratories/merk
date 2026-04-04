@@ -435,6 +435,13 @@ class Merk(QMainWindow):
 			
 		self.setWindowIcon(QIcon(APPLICATION_ICON))
 
+		if config.SAVE_MAIN_WINDOW_LOCATION:
+			if config.MAIN_WINDOW_LOCATION[0]!=None and config.MAIN_WINDOW_LOCATION[1]!=None:
+				try:
+					self.move(config.MAIN_WINDOW_LOCATION[0], config.MAIN_WINDOW_LOCATION[1])
+				except:
+					pass
+
 		if config.MAXIMIZE_ON_STARTUP:
 			self.showMaximized()
 
@@ -5870,6 +5877,11 @@ class Merk(QMainWindow):
 			return
 
 		plugins.call(self,"unload")
+
+		if config.SAVE_MAIN_WINDOW_LOCATION:
+			position = self.pos()
+			config.MAIN_WINDOW_LOCATION = [position.x(),position.y()]
+			config.save_settings(config.CONFIG_FILE)
 
 		if self.hotkey_manager!=None: self.hotkey_manager.close()
 		if self.ignore_manager!=None: self.ignore_manager.close()

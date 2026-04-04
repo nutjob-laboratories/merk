@@ -6,6 +6,7 @@ What's new:
 - **IRC colors/formatting are now shown in the log manager**.
 - **The script and Python editors now have a line number display**.
 - **The current line in the script and Python editors is now highlighted**.
+- **The main window location can be saved on exit, and restored**. This option is turned off by default, but can be turned on in settings.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -32,6 +33,7 @@ What's new:
   if light) or lighter (if the color is dark).
 * Added an option to toggle line highlighting in the editor. This feature is
   turned off by default.
+* Added an option to save (and restore) the main application window location.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

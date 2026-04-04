@@ -424,9 +424,13 @@ EXECUTE_GLOBAL_SCRIPT = True
 GLOBAL_SCRIPT_FILE = "global."+SCRIPT_FILE_EXTENSION
 SHOW_LINE_NUMBERS_ON_CONNECT = False
 HIGHLIGHT_CURRENT_LINE_IN_EDITOR = False
+SAVE_MAIN_WINDOW_LOCATION = False
+MAIN_WINDOW_LOCATION = [None,None]
 
 def build_settings():
 	settings = {
+		"main_window_location": MAIN_WINDOW_LOCATION,
+		"save_main_window_location": SAVE_MAIN_WINDOW_LOCATION,
 		"highlight_current_line_in_editor": HIGHLIGHT_CURRENT_LINE_IN_EDITOR,
 		"show_line_numbers_on_connection_dialog": SHOW_LINE_NUMBERS_ON_CONNECT,
 		"global_script_filename": GLOBAL_SCRIPT_FILE,
@@ -816,6 +820,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "main_window_location" in settings:
+		settings["main_window_location"] = MAIN_WINDOW_LOCATION
+	if not "save_main_window_location" in settings:
+		settings["save_main_window_location"] = SAVE_MAIN_WINDOW_LOCATION
 	if not "highlight_current_line_in_editor" in settings:
 		settings["highlight_current_line_in_editor"] = HIGHLIGHT_CURRENT_LINE_IN_EDITOR
 	if not "show_line_numbers_on_connection_dialog" in settings:
@@ -1972,6 +1980,8 @@ def load_settings(filename):
 	global GLOBAL_SCRIPT_FILE
 	global SHOW_LINE_NUMBERS_ON_CONNECT
 	global HIGHLIGHT_CURRENT_LINE_IN_EDITOR
+	global SAVE_MAIN_WINDOW_LOCATION
+	global MAIN_WINDOW_LOCATION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1981,6 +1991,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MAIN_WINDOW_LOCATION = settings["main_window_location"]
+		SAVE_MAIN_WINDOW_LOCATION = settings["save_main_window_location"]
 		HIGHLIGHT_CURRENT_LINE_IN_EDITOR = settings["highlight_current_line_in_editor"]
 		SHOW_LINE_NUMBERS_ON_CONNECT = settings["show_line_numbers_on_connection_dialog"]
 		GLOBAL_SCRIPT_FILE = settings["global_script_filename"]
