@@ -5,6 +5,7 @@
 What's new:
 - **IRC colors/formatting are now shown in the log manager**.
 - **The script and Python editors now have a line number display**.
+- **The current line in the script and Python editors is now highlighted**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -26,6 +27,11 @@ What's new:
   the first time it is launched in a session.
 * Added an option to add line numbers to the connection script editor in the
   connection dialog (it's turned off by default).
+* The current line is "highlighted" in the script/Python editor. The color of
+  the line highlight is either darker than the background color (if the color
+  if light) or lighter (if the color is dark).
+* Added an option to toggle line highlighting in the editor. This feature is
+  turned off by default.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

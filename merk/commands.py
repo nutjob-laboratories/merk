@@ -9086,23 +9086,24 @@ class ScriptThread(QThread):
 				self.scriptError.emit([self.gui,self.window,f"Scripting has been disabled"])
 				no_errors = False
 
-			counter = 1
-			for a in self.arguments:
-				self.addTemporaryAlias(f"_{counter}",a)
-				counter = counter + 1
+			if no_errors and config.ENABLE_ALIASES:
+				counter = 1
+				for a in self.arguments:
+					self.addTemporaryAlias(f"_{counter}",a)
+					counter = counter + 1
 
-			if len(self.arguments)>0:
-				self.addTemporaryAlias(f"_0",' '.join(self.arguments))
-			else:
-				self.addTemporaryAlias(f"_0",'none')
-				
-			self.addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
+				if len(self.arguments)>0:
+					self.addTemporaryAlias(f"_0",' '.join(self.arguments))
+				else:
+					self.addTemporaryAlias(f"_0",'none')
+					
+				self.addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
 
-			if self.filename!=None:
-				self.addTemporaryAlias(f"_FILE",self.filename)
-				self.addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
+				if self.filename!=None:
+					self.addTemporaryAlias(f"_FILE",self.filename)
+					self.addTemporaryAlias(f"_SCRIPT",os.path.basename(self.filename))
 
-			self.script = self.interpolateAliases(self.script)
+				self.script = self.interpolateAliases(self.script)
 			
 			# First passes through the script,
 			# insert any files that are to be

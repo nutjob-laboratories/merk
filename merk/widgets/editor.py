@@ -156,6 +156,16 @@ class Window(QMainWindow):
 		self.changed = False
 		self.updateApplicationTitle()
 
+	def toggleLine(self):
+		if config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR:
+			config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR = False
+			self.hl_menu.setIcon(QIcon(self.parent.unchecked_icon))
+		else:
+			config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR = True
+			self.hl_menu.setIcon(QIcon(self.parent.checked_icon))
+		self.editor.setHighlightLine(config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR)
+		config.save_settings(config.CONFIG_FILE)
+
 	def toggleWordwrap(self):
 		if config.EDITOR_WORDWRAP:
 			self.editor.setLineWrapMode(QTextEdit.NoWrap)
@@ -301,14 +311,16 @@ class Window(QMainWindow):
 			else:
 				self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
 			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+			self.editor.highlight_current_line(True)
 			if reset:
 				self.changed = False
 				self.updateApplicationTitle()
 		else:
 			script = self.editor.toPlainText()
 			self.highlight = None
-			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor','black','white'))
+			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor','#000000','#FFFFFF'))
 			self.editor.setPlainText(script)
+			self.editor.highlight_current_line(True)
 			if reset:
 				self.changed = False
 				self.updateApplicationTitle()
@@ -617,6 +629,8 @@ class Window(QMainWindow):
 
 		self.editor = CodeEditor()
 
+		self.editor.setHighlightLine(config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR)
+
 		self.editor.cursorPositionChanged.connect(self.update_line_number)
 
 		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:
@@ -625,6 +639,7 @@ class Window(QMainWindow):
 			else:
 				self.highlight = syntax.MerkScriptHighlighter(self.editor.document())
 			self.editor.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+			self.editor.highlight_current_line(True)
 		else:
 			self.highlight = None
 
@@ -779,6 +794,13 @@ class Window(QMainWindow):
 			self.menuSyntax = QAction(QIcon(self.parent.unchecked_icon),menuSyntaxText,self)
 		self.menuSyntax.triggered.connect(self.toggleHighlighting)
 		self.fileMenu.addAction(self.menuSyntax)
+
+		if config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR:
+			self.hl_menu = QAction(QIcon(self.parent.checked_icon),"Highlight current line",self)
+		else:
+			self.hl_menu = QAction(QIcon(self.parent.unchecked_icon),"Highlight current line",self)
+		self.hl_menu.triggered.connect(self.toggleLine)
+		self.fileMenu.addAction(self.hl_menu)
 
 		menuPromptText = "Ask to save changed files"
 		if config.EDITOR_PROMPT_SAVE:

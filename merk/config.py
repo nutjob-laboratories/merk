@@ -423,9 +423,11 @@ DISCONNECT_ON_SASL_FAIL = True
 EXECUTE_GLOBAL_SCRIPT = True
 GLOBAL_SCRIPT_FILE = "global."+SCRIPT_FILE_EXTENSION
 SHOW_LINE_NUMBERS_ON_CONNECT = False
+HIGHLIGHT_CURRENT_LINE_IN_EDITOR = False
 
 def build_settings():
 	settings = {
+		"highlight_current_line_in_editor": HIGHLIGHT_CURRENT_LINE_IN_EDITOR,
 		"show_line_numbers_on_connection_dialog": SHOW_LINE_NUMBERS_ON_CONNECT,
 		"global_script_filename": GLOBAL_SCRIPT_FILE,
 		"execute_global_script": EXECUTE_GLOBAL_SCRIPT,
@@ -814,6 +816,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "highlight_current_line_in_editor" in settings:
+		settings["highlight_current_line_in_editor"] = HIGHLIGHT_CURRENT_LINE_IN_EDITOR
 	if not "show_line_numbers_on_connection_dialog" in settings:
 		settings["show_line_numbers_on_connection_dialog"] = SHOW_LINE_NUMBERS_ON_CONNECT
 	if not "global_script_filename" in settings:
@@ -1967,6 +1971,7 @@ def load_settings(filename):
 	global EXECUTE_GLOBAL_SCRIPT
 	global GLOBAL_SCRIPT_FILE
 	global SHOW_LINE_NUMBERS_ON_CONNECT
+	global HIGHLIGHT_CURRENT_LINE_IN_EDITOR
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1976,6 +1981,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIGHLIGHT_CURRENT_LINE_IN_EDITOR = settings["highlight_current_line_in_editor"]
 		SHOW_LINE_NUMBERS_ON_CONNECT = settings["show_line_numbers_on_connection_dialog"]
 		GLOBAL_SCRIPT_FILE = settings["global_script_filename"]
 		EXECUTE_GLOBAL_SCRIPT = settings["execute_global_script"]

@@ -1076,8 +1076,9 @@ class LineNumberArea(QWidget):
 		self.editor.lineNumberAreaPaintEvent(event)
 
 class CodeEditor(QTextEdit):
-	def __init__(self):
+	def __init__(self,highlight_line=True):
 		super().__init__()
+		self.highlight_line = highlight_line
 		self.lineNumberArea = LineNumberArea(self)
 
 		self.background = self.palette().color(QPalette.Window).name()
@@ -1086,7 +1087,17 @@ class CodeEditor(QTextEdit):
 		self.document().blockCountChanged.connect(self.updateLineNumberAreaWidth)
 		self.verticalScrollBar().valueChanged.connect(self.updateLineNumberArea)
 		self.document().contentsChanged.connect(self.updateLineNumberArea)
+		self.cursorPositionChanged.connect(self.highlight_current_line)
 		self.updateLineNumberAreaWidth(0)
+
+		self.line_highlight_color = self.get_line_highlight_color()
+		if not self.highlight_line: self.line_highlight_color = self.get_background_color()
+
+		self.highlight_current_line()
+
+	def setHighlightLine(self,set_value):
+		self.highlight_line = set_value
+		self.highlight_current_line(True)
 		
 	def lineNumberAreaWidth(self):
 		digits = len(str(self.document().blockCount()))
@@ -1129,6 +1140,51 @@ class CodeEditor(QTextEdit):
 			
 			block = block.next()
 			blockNumber += 1
+
+	def get_line_highlight_color(self):
+		# Get the background color as set by stylesheet
+		stylesheet = self.styleSheet()
+		match = re.search(r'background-color\s*:\s*([^;]+);', stylesheet)
+		if match:
+			fcolor = match.group(1)
+		else:
+			fcolor = self.palette().color(QPalette.Base).name()
+
+		# Determine if the stylesheet background color is
+		# darker or lighter; if lighter, slightly darken the
+		# color, and if darker, lighten the color
+		if QColor(fcolor).lightness() > 127:
+			fcolor = QColor(fcolor).darker(105)
+		else:
+			fcolor = QColor(fcolor).lighter(125)
+
+		return fcolor
+
+	def get_background_color(self):
+		# Get the background color as set by stylesheet
+		stylesheet = self.styleSheet()
+		match = re.search(r'background-color\s*:\s*([^;]+);', stylesheet)
+		if match:
+			fcolor = match.group(1)
+		else:
+			fcolor = self.palette().color(QPalette.Base).name()
+
+		return QColor(fcolor)
+
+	def highlight_current_line(self,refresh=False):
+
+		if refresh: self.line_highlight_color = self.get_line_highlight_color()
+
+		if not self.highlight_line: self.line_highlight_color = self.get_background_color()
+
+		extra_selections = []
+		selection = QTextEdit.ExtraSelection()
+		selection.format.setBackground(self.line_highlight_color)
+		selection.format.setProperty(QTextFormat.FullWidthSelection, True)
+		selection.cursor = self.textCursor()
+		selection.cursor.clearSelection()
+		extra_selections.append(selection)
+		self.setExtraSelections(extra_selections)
 
 class QNoSpaceLineEdit(QLineEdit):
 	def __init__(self, *args):
