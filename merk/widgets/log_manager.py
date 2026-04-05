@@ -609,7 +609,7 @@ class Window(QMainWindow):
 
 		self.export_options = QWidget()
 		self.dump_view = QWidget()
-		log_index = self.tabs.addTab(self.dump_view, "View ")
+		log_index = self.tabs.addTab(self.dump_view, "")
 		self.tabs.addTab(self.export_options, "Export")
 		
 		self.search = QLineEdit()
@@ -618,6 +618,12 @@ class Window(QMainWindow):
 		self.search.setFixedWidth(wwidth)
 		self.search.returnPressed.connect(self.on_search)
 		self.search.setPlaceholderText("Search terms...")
+
+		search_icon = QLabel()
+		pixmap = QPixmap(LIST_ICON)
+		pixmap = pixmap.scaled(config.INTERFACE_BUTTON_SIZE, config.INTERFACE_BUTTON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+		search_icon.setPixmap(pixmap)
+		search_icon.setAlignment(Qt.AlignCenter)
 
 		self.forward = QPushButton("")
 		self.forward.setIcon(QIcon(NEXT_ICON))
@@ -638,6 +644,7 @@ class Window(QMainWindow):
 		self.backward.setStyleSheet("QPushButton:focus { border: none; outline: none; }")
 
 		swlayout = QHBoxLayout()
+		swlayout.addWidget(search_icon)
 		swlayout.addWidget(self.search)
 		swlayout.addWidget(self.backward)
 		swlayout.addWidget(self.forward)

@@ -4145,6 +4145,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+			t.system = False
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4160,6 +4161,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				if hasattr(w,"widget"):
 					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
@@ -4171,6 +4173,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4192,6 +4195,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+						t.system = False
 						if hasattr(w,"widget"):
 							w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
@@ -4206,6 +4210,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+						t.system = False
 						if hasattr(w,"widget"):
 							w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
@@ -4221,6 +4226,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				if hasattr(w,"widget"):
 					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
@@ -4232,6 +4238,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

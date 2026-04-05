@@ -3692,11 +3692,8 @@ class Dialog(QDialog):
 			<small>
 			The <b>channel information display</b> is a bar shown at the top of
 			every channel window that displays the channel <b>name</b>, any <b>modes</b> set
-			on the channel, the channel
-			<b>topic</b>, and the channel <b>banlist</b>. The channel <b>topic</b> can be changed
-			or edited with it (if you have the right permissions) by clicking
-			on the <b>topic</b> and editing it. Here, the
-			<b>channel information display</b> can be customized or turned off.
+			on the channel, the channel <b>topic</b>, and the channel <b>banlist</b>.
+			The channel <b>topic</b> can be changed or edited by clicking on the <b>topic</b>.
 			</small>
 			""")
 		self.channelDescription.setWordWrap(True)
@@ -3788,7 +3785,7 @@ class Dialog(QDialog):
 				self.elideHostmask.setEnabled(False)
 
 		chanButtonLayout2 = QFormLayout()
-		chanButtonLayout2.setSpacing(2)
+		chanButtonLayout2.setSpacing(0)
 		chanButtonLayout2.addRow(self.channelName,self.channelCount)
 		chanButtonLayout2.addRow(self.channelTooltip,self.topicEditor)
 		chanButtonLayout2.addRow(self.chanMode)
@@ -3800,7 +3797,7 @@ class Dialog(QDialog):
 		chanButtonLayout.addStretch()
 
 		ulistDisplay = QFormLayout()
-		ulistDisplay.setSpacing(2)
+		ulistDisplay.setSpacing(0)
 		ulistDisplay.addRow(self.showUserlists,self.showUserlistLeft)
 		ulistDisplay.addRow(self.plainUserLists,self.ulistContext)
 		ulistDisplay.addRow(self.elideAway,self.elideHostmask)
@@ -3818,13 +3815,6 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE: self.nameTitleDisplay.setChecked(True)
 		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
 
-		miscDisplay = QFormLayout()
-		miscDisplay.setSpacing(2)
-		miscDisplay.addRow(self.nameTitleDisplay)
-		miscDisplay.addRow(self.topicTitleDisplay)
-		miscDisplay.addRow(self.autoJoin)
-
-
 		self.showJoin = QCheckBox("Show joins",self)
 		if config.SHOW_CHANNEL_JOIN: self.showJoin.setChecked(True)
 		self.showJoin.stateChanged.connect(self.changedSettingRerender)
@@ -3837,11 +3827,37 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_QUIT: self.showQuit.setChecked(True)
 		self.showQuit.stateChanged.connect(self.changedSettingRerender)
 
-		showCM = QHBoxLayout()
-		showCM.addWidget(self.showJoin)
-		showCM.addWidget(self.showPart)
-		showCM.addWidget(self.showQuit)
-		showCM.addStretch()
+		self.showModes = QCheckBox("Show mode changes",self)
+		if config.SHOW_CHANNEL_MODE_CHANGE: self.showModes.setChecked(True)
+		self.showModes.stateChanged.connect(self.changedSettingRerender)
+
+		self.showNicks = QCheckBox("Show nick changes",self)
+		if config.SHOW_CHANNEL_NICK: self.showNicks.setChecked(True)
+		self.showNicks.stateChanged.connect(self.changedSettingRerender)
+
+		self.showTopic = QCheckBox("Show topic changes",self)
+		if config.SHOW_CHANNEL_TOPIC_MESSAGES: self.showTopic.setChecked(True)
+		self.showTopic.stateChanged.connect(self.changedSettingRerender)
+
+		showCM1 = QHBoxLayout()
+		showCM1.addWidget(self.showJoin)
+		showCM1.addWidget(self.showPart)
+		showCM1.addWidget(self.showQuit)
+		showCM1.addStretch()
+
+		showCM2 = QHBoxLayout()
+		showCM2.addWidget(self.showModes)
+		showCM2.addWidget(self.showNicks)
+		showCM2.addStretch()
+
+		showCM = QVBoxLayout()
+		showCM.setSpacing(0)
+		showCM.addWidget(self.nameTitleDisplay)
+		showCM.addWidget(self.topicTitleDisplay)
+		showCM.addWidget(self.autoJoin)
+		showCM.addLayout(showCM1)
+		showCM.addLayout(showCM2)
+		showCM.addWidget(self.showTopic)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
@@ -3853,7 +3869,7 @@ class Dialog(QDialog):
 		menuLayout.addLayout(ulistDisplay)
 		menuLayout.addLayout(ulistWidthLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		menuLayout.addLayout(miscDisplay)
+		# menuLayout.addLayout(miscDisplay)
 		menuLayout.addLayout(showCM)
 		menuLayout.addStretch()
 
@@ -6564,6 +6580,9 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_JOIN = self.showJoin.isChecked()
 		config.SHOW_CHANNEL_PART = self.showPart.isChecked()
 		config.SHOW_CHANNEL_QUIT = self.showQuit.isChecked()
+		config.SHOW_CHANNEL_MODE_CHANGE = self.showModes.isChecked()
+		config.SHOW_CHANNEL_NICK = self.showNicks.isChecked()
+		config.SHOW_CHANNEL_TOPIC_MESSAGES = self.showTopic.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

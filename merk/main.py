@@ -898,15 +898,17 @@ class Merk(QMainWindow):
 							serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==EDITOR_WINDOW:
 					icon = SCRIPT_ICON
+					sname = f"{APPLICATION_NAME}"
 					if hasattr(c,"python"):
 						if c.python:
 							icon = PYTHON_ICON
+							sname = "Python"
 					if c.editing_user_script:
 						wname = c.current_user_script
 						serv_name = c.current_user_script
 					else:
 						if c.filename==None:
-							wname = "Untitled script"
+							wname = f"Untitled {sname} script"
 							serv_name = "Unsaved"
 						else:
 							wname = os.path.basename(c.filename)
@@ -1038,15 +1040,17 @@ class Merk(QMainWindow):
 						serv_name = serv_name + " ("+c.client.network+")"
 				elif c.window_type==EDITOR_WINDOW:
 					icon = SCRIPT_ICON
+					sname = f"{APPLICATION_NAME}"
 					if hasattr(c,"python"):
 						if c.python:
 							icon = PYTHON_ICON
+							sname = "Python"
 					if c.editing_user_script:
 						wname = c.current_user_script
 						serv_name = c.current_user_script
 					else:
 						if c.filename==None:
-							wname = "Untitled script"
+							wname = f"Untitled {sname} script"
 							serv_name = "Unsaved"
 						else:
 							wname = os.path.basename(c.filename)

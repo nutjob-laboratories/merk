@@ -40,6 +40,7 @@ from .set_ignore import Dialog as SetIgnore
 from .key import Dialog as SetKey
 from .set_bind import Dialog as SetBind
 from .set_file import Dialog as SetFilename
+from .method_name import Dialog as SetMethodName
 
 def SetFilenameDialog(obj):
 	x = SetFilename(obj)
@@ -65,6 +66,13 @@ def SetKeyDialog(parent):
 
 def SetMenuNameDialog(msg,parent):
 	x = SetMenuName(msg,parent)
+	info = x.get_message_information(msg,parent)
+	del x
+
+	return info
+
+def SetMethodNameDialog(msg,parent):
+	x = SetMethodName(msg,parent)
 	info = x.get_message_information(msg,parent)
 	del x
 

@@ -416,6 +416,7 @@ class Message:
 		self.channel = ''
 		self.channel_count = ''
 		self.channel_topic = ''
+		self.system = True
 
 class ConnectInfo:
 	def __init__(self,nick,alt,username,realname,host,port,password,reconnect,ssl,execute_script,sasl_username=None,sasl_password=None):

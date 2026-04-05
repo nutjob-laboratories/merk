@@ -318,6 +318,7 @@ class Window():
 		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		t = Message(SYSTEM_MESSAGE,'',f"{message}")
+		t.system = False
 		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 	def alias(self,text):

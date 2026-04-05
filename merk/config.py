@@ -429,12 +429,18 @@ MAIN_WINDOW_LOCATION = [None,None]
 SHOW_CHANNEL_JOIN = True
 SHOW_CHANNEL_PART = True
 SHOW_CHANNEL_QUIT = True
+SHOW_CHANNEL_MODE_CHANGE = True
+SHOW_CHANNEL_NICK = True
+SHOW_CHANNEL_TOPIC_MESSAGES = True
 
 def build_settings():
 	settings = {
-		"show_channel_quits": SHOW_CHANNEL_QUIT,
-		"show_channel_joins": SHOW_CHANNEL_JOIN,
-		"show_channel_parts": SHOW_CHANNEL_PART,
+		"show_channel_topic_messages": SHOW_CHANNEL_TOPIC_MESSAGES,
+		"show_channel_nick_messages": SHOW_CHANNEL_NICK,
+		"show_channel_mode_change_messages": SHOW_CHANNEL_MODE_CHANGE,
+		"show_channel_quit_messages": SHOW_CHANNEL_QUIT,
+		"show_channel_join_messages": SHOW_CHANNEL_JOIN,
+		"show_channel_part_messages": SHOW_CHANNEL_PART,
 		"main_window_location": MAIN_WINDOW_LOCATION,
 		"save_main_window_location": SAVE_MAIN_WINDOW_LOCATION,
 		"highlight_current_line_in_editor": HIGHLIGHT_CURRENT_LINE_IN_EDITOR,
@@ -826,12 +832,18 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "show_channel_quits" in settings:
-		settings["show_channel_quits"] = SHOW_CHANNEL_QUIT
-	if not "show_channel_joins" in settings:
-		settings["show_channel_joins"] = SHOW_CHANNEL_JOIN
-	if not "show_channel_parts" in settings:
-		settings["show_channel_parts"] = SHOW_CHANNEL_PART
+	if not "show_channel_topic_messages" in settings:
+		settings["show_channel_topic_messages"] = SHOW_CHANNEL_TOPIC_MESSAGES
+	if not "show_channel_nick_messages" in settings:
+		settings["show_channel_nick_messages"] = SHOW_CHANNEL_NICK
+	if not "show_channel_mode_change_messages" in settings:
+		settings["show_channel_mode_change_messages"] = SHOW_CHANNEL_MODE_CHANGE
+	if not "show_channel_quit_messages" in settings:
+		settings["show_channel_quit_messages"] = SHOW_CHANNEL_QUIT
+	if not "show_channel_join_messages" in settings:
+		settings["show_channel_join_messages"] = SHOW_CHANNEL_JOIN
+	if not "show_channel_part_messages" in settings:
+		settings["show_channel_part_messages"] = SHOW_CHANNEL_PART
 	if not "main_window_location" in settings:
 		settings["main_window_location"] = MAIN_WINDOW_LOCATION
 	if not "save_main_window_location" in settings:
@@ -1997,6 +2009,9 @@ def load_settings(filename):
 	global SHOW_CHANNEL_QUIT
 	global SHOW_CHANNEL_JOIN
 	global SHOW_CHANNEL_PART
+	global SHOW_CHANNEL_MODE_CHANGE
+	global SHOW_CHANNEL_NICK
+	global SHOW_CHANNEL_TOPIC_MESSAGES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2006,9 +2021,12 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		SHOW_CHANNEL_QUIT = settings["show_channel_quits"]
-		SHOW_CHANNEL_JOIN = settings["show_channel_joins"]
-		SHOW_CHANNEL_PART = settings["show_channel_parts"]
+		SHOW_CHANNEL_TOPIC_MESSAGES = settings["show_channel_topic_messages"]
+		SHOW_CHANNEL_NICK = settings["show_channel_nick_messages"]
+		SHOW_CHANNEL_MODE_CHANGE = settings["show_channel_mode_change_messages"]
+		SHOW_CHANNEL_QUIT = settings["show_channel_quit_messages"]
+		SHOW_CHANNEL_JOIN = settings["show_channel_join_messages"]
+		SHOW_CHANNEL_PART = settings["show_channel_part_messages"]
 		MAIN_WINDOW_LOCATION = settings["main_window_location"]
 		SAVE_MAIN_WINDOW_LOCATION = settings["save_main_window_location"]
 		HIGHLIGHT_CURRENT_LINE_IN_EDITOR = settings["highlight_current_line_in_editor"]

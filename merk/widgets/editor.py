@@ -587,6 +587,14 @@ class Window(QMainWindow):
 		self.editor.insertPlainText(f"pass")
 		self.updateApplicationTitle()
 
+	def doInsertCallMethod(self):
+		m = dialog.SetMethodNameDialog('',self.parent)
+		if m:
+			self.editor.insertPlainText(f"def {m}(self,window,arguments):")
+			self.insert_raw_indent()
+			self.editor.insertPlainText(f"pass")
+			self.updateApplicationTitle()
+
 	def is_in_plugin_directory(self):
 		if self.filename==None: return False
 
@@ -1036,6 +1044,12 @@ class Window(QMainWindow):
 			entry = QAction(QIcon(CHANNEL_ICON),"topic",self)
 			entry.triggered.connect(lambda state,u="topic",v=["window","channel","client","user","topic"]: self.doInsertEventMethod(u,v))
 			self.chanenv.addAction(entry)
+
+			self.pInsertMenu.addSeparator()
+
+			entry = QAction(QIcon(PYTHON_ICON),"Callable method",self)
+			entry.triggered.connect(self.doInsertCallMethod)
+			self.pInsertMenu.addAction(entry)
 
 		if not self.python:
 			if config.ENABLE_ALIASES:
