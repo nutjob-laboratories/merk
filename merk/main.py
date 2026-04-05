@@ -5882,6 +5882,10 @@ class Merk(QMainWindow):
 			position = self.pos()
 			config.MAIN_WINDOW_LOCATION = [position.x(),position.y()]
 			config.save_settings(config.CONFIG_FILE)
+		else:
+			if config.MAIN_WINDOW_LOCATION[0]!=None and config.MAIN_WINDOW_LOCATION[1]!=None:
+				config.MAIN_WINDOW_LOCATION = [None,None]
+				config.save_settings(config.CONFIG_FILE)
 
 		if self.hotkey_manager!=None: self.hotkey_manager.close()
 		if self.ignore_manager!=None: self.ignore_manager.close()

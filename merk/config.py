@@ -426,9 +426,15 @@ SHOW_LINE_NUMBERS_ON_CONNECT = False
 HIGHLIGHT_CURRENT_LINE_IN_EDITOR = False
 SAVE_MAIN_WINDOW_LOCATION = False
 MAIN_WINDOW_LOCATION = [None,None]
+SHOW_CHANNEL_JOIN = True
+SHOW_CHANNEL_PART = True
+SHOW_CHANNEL_QUIT = True
 
 def build_settings():
 	settings = {
+		"show_channel_quits": SHOW_CHANNEL_QUIT,
+		"show_channel_joins": SHOW_CHANNEL_JOIN,
+		"show_channel_parts": SHOW_CHANNEL_PART,
 		"main_window_location": MAIN_WINDOW_LOCATION,
 		"save_main_window_location": SAVE_MAIN_WINDOW_LOCATION,
 		"highlight_current_line_in_editor": HIGHLIGHT_CURRENT_LINE_IN_EDITOR,
@@ -820,6 +826,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_channel_quits" in settings:
+		settings["show_channel_quits"] = SHOW_CHANNEL_QUIT
+	if not "show_channel_joins" in settings:
+		settings["show_channel_joins"] = SHOW_CHANNEL_JOIN
+	if not "show_channel_parts" in settings:
+		settings["show_channel_parts"] = SHOW_CHANNEL_PART
 	if not "main_window_location" in settings:
 		settings["main_window_location"] = MAIN_WINDOW_LOCATION
 	if not "save_main_window_location" in settings:
@@ -1982,6 +1994,9 @@ def load_settings(filename):
 	global HIGHLIGHT_CURRENT_LINE_IN_EDITOR
 	global SAVE_MAIN_WINDOW_LOCATION
 	global MAIN_WINDOW_LOCATION
+	global SHOW_CHANNEL_QUIT
+	global SHOW_CHANNEL_JOIN
+	global SHOW_CHANNEL_PART
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -1991,6 +2006,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_QUIT = settings["show_channel_quits"]
+		SHOW_CHANNEL_JOIN = settings["show_channel_joins"]
+		SHOW_CHANNEL_PART = settings["show_channel_parts"]
 		MAIN_WINDOW_LOCATION = settings["main_window_location"]
 		SAVE_MAIN_WINDOW_LOCATION = settings["save_main_window_location"]
 		HIGHLIGHT_CURRENT_LINE_IN_EDITOR = settings["highlight_current_line_in_editor"]

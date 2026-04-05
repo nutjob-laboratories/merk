@@ -7,6 +7,7 @@ What's new:
 - **The script and Python editors now have a line number display**.
 - **The current line in the script and Python editors is now highlighted**.
 - **The main window location can be saved on exit, and restored**. This option is turned off by default, but can be turned on in settings.
+- **Join, part, and quit messages can be "hidden" in channel chats**. These messages will still be logged, if that option is turned on.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -34,6 +35,9 @@ What's new:
 * Added an option to toggle line highlighting in the editor. This feature is
   turned off by default.
 * Added an option to save (and restore) the main application window location.
+* Join, part, and quit messages can now be "hidden" in channel chats. They will
+  still be logged (if that option is turned on), and the display of them can be
+  toggled on and off.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

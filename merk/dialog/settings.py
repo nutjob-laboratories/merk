@@ -3824,6 +3824,25 @@ class Dialog(QDialog):
 		miscDisplay.addRow(self.topicTitleDisplay)
 		miscDisplay.addRow(self.autoJoin)
 
+
+		self.showJoin = QCheckBox("Show joins",self)
+		if config.SHOW_CHANNEL_JOIN: self.showJoin.setChecked(True)
+		self.showJoin.stateChanged.connect(self.changedSettingRerender)
+
+		self.showPart = QCheckBox("Show parts",self)
+		if config.SHOW_CHANNEL_PART: self.showPart.setChecked(True)
+		self.showPart.stateChanged.connect(self.changedSettingRerender)
+
+		self.showQuit = QCheckBox("Show quits",self)
+		if config.SHOW_CHANNEL_QUIT: self.showQuit.setChecked(True)
+		self.showQuit.stateChanged.connect(self.changedSettingRerender)
+
+		showCM = QHBoxLayout()
+		showCM.addWidget(self.showJoin)
+		showCM.addWidget(self.showPart)
+		showCM.addWidget(self.showQuit)
+		showCM.addStretch()
+
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
@@ -3835,6 +3854,7 @@ class Dialog(QDialog):
 		menuLayout.addLayout(ulistWidthLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addLayout(miscDisplay)
+		menuLayout.addLayout(showCM)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -6541,6 +6561,9 @@ class Dialog(QDialog):
 		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()
 		config.SHOW_LINE_NUMBERS_ON_CONNECT = self.showLines.isChecked()
 		config.SAVE_MAIN_WINDOW_LOCATION = self.saveLocation.isChecked()
+		config.SHOW_CHANNEL_JOIN = self.showJoin.isChecked()
+		config.SHOW_CHANNEL_PART = self.showPart.isChecked()
+		config.SHOW_CHANNEL_QUIT = self.showQuit.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

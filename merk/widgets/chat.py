@@ -1376,6 +1376,16 @@ class Window(QMainWindow):
 			if not config.SHOW_DATES_IN_LOGS:
 				if line.type==DATE_MESSAGE: do_render = False
 
+			if self.window_type==CHANNEL_WINDOW:
+				if line.type==SYSTEM_MESSAGE and " joined " in line.contents:
+					do_render = config.SHOW_CHANNEL_JOIN
+
+				if line.type==SYSTEM_MESSAGE and " left " in line.contents:
+					do_render = config.SHOW_CHANNEL_PART
+
+				if line.type==SYSTEM_MESSAGE and "has quit IRC" in line.contents:
+					do_render = config.SHOW_CHANNEL_QUIT
+
 			if do_render:
 				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 				self.chat.append(t)
@@ -2554,6 +2564,16 @@ class Window(QMainWindow):
 
 				# Save entered text to the new log for saving
 				if write_to_log: self.new_log.append(message)
+
+				if self.window_type==CHANNEL_WINDOW:
+					if message.type==SYSTEM_MESSAGE and " joined " in message.contents:
+						do_render = config.SHOW_CHANNEL_JOIN
+
+					if message.type==SYSTEM_MESSAGE and " left " in message.contents:
+						do_render = config.SHOW_CHANNEL_PART
+
+					if message.type==SYSTEM_MESSAGE and "has quit IRC" in message.contents:
+						do_render = config.SHOW_CHANNEL_QUIT
 
 				if do_render:
 					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
