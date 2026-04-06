@@ -1145,6 +1145,17 @@ def execute_input(data):
 	else:
 		gui.scripts[script_id].set_input(None)
 
+def execute_read(data):
+	filename = data[0]
+	gui = data[1]
+	script_id = data[2]
+
+	f = open(filename,"r")
+	contents = f.read()
+	f.close()
+
+	gui.scripts[script_id].set_input(f"{contents}")
+
 def execute_message(data):
 	question = data[0]
 	gui = data[1]
@@ -1191,7 +1202,8 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_input.connect(execute_input)
 	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].request_message.connect(execute_message)
-	gui.scripts[script_id].request_halt.connect(execute_halt)	
+	gui.scripts[script_id].request_halt.connect(execute_halt)
+	gui.scripts[script_id].request_read.connect(execute_read)
 	gui.scripts[script_id].start()
 
 def executeGlobalScript(gui,window,text,filename=None,args=[]):
@@ -1206,6 +1218,7 @@ def executeGlobalScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].request_message.connect(execute_message)
 	gui.scripts[script_id].request_halt.connect(execute_halt)
+	gui.scripts[script_id].request_read.connect(execute_read)
 	gui.scripts[script_id].start()
 
 def getScriptAliases(gui):
@@ -7777,6 +7790,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.scripts[script_id].request_number.connect(execute_number)
 				gui.scripts[script_id].request_message.connect(execute_message)
 				gui.scripts[script_id].request_halt.connect(execute_halt)
+				gui.scripts[script_id].request_read.connect(execute_read)
 				gui.scripts[script_id].start()
 
 			else:
@@ -7817,6 +7831,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						gui.scripts[script_id].request_number.connect(execute_number)
 						gui.scripts[script_id].request_message.connect(execute_message)
 						gui.scripts[script_id].request_halt.connect(execute_halt)
+						gui.scripts[script_id].request_read.connect(execute_read)
 						gui.scripts[script_id].start()
 
 					else:
@@ -7837,6 +7852,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							gui.scripts[script_id].request_number.connect(execute_number)
 							gui.scripts[script_id].request_message.connect(execute_message)
 							gui.scripts[script_id].request_halt.connect(execute_halt)
+							gui.scripts[script_id].request_read.connect(execute_read)
 							gui.scripts[script_id].start()
 						else:
 							if is_script:
@@ -8450,6 +8466,7 @@ class ScriptThread(QThread):
 	request_number = pyqtSignal(object)
 	request_message = pyqtSignal(object)
 	request_halt = pyqtSignal(object)
+	request_read = pyqtSignal(object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None,is_global=False):
 		super(ScriptThread, self).__init__(parent)
@@ -9253,7 +9270,7 @@ class ScriptThread(QThread):
 											else:
 												if a in self.CREATED:
 													if is_valid_alias_name(a):
-														self.request_number.emit([question,self.gui,self.id])
+														self.request_number.emit([is_int(lower),is_int(upper),question,self.gui,self.id])
 														self.mutex.lock()
 														self.wait_condition.wait(self.mutex)
 														self.mutex.unlock()
@@ -9466,10 +9483,12 @@ class ScriptThread(QThread):
 													if is_valid_alias_name(a):
 														if is_text_file(efilename):
 															try:
-																f = open(efilename,"r")
-																contents = f.read()
-																f.close()
-																self.addAlias(a,f"{contents}")
+																self.request_read.emit([efilename,self.gui,self.id])
+																self.mutex.lock()
+																self.wait_condition.wait(self.mutex)
+																self.mutex.unlock()
+																self.addAlias(a,f"{self.user_input}")
+																self.user_input = None
 																script_only_command = True
 															except Exception as e:
 																alias_error = f"error reading \"{ifilename}\" ({e})"
@@ -9481,10 +9500,12 @@ class ScriptThread(QThread):
 													if a in self.CREATED:
 														if is_text_file(efilename):
 															try:
-																f = open(efilename,"r")
-																contents = f.read()
-																f.close()
-																self.addAlias(a,f"{contents}")
+																self.request_read.emit([efilename,self.gui,self.id])
+																self.mutex.lock()
+																self.wait_condition.wait(self.mutex)
+																self.mutex.unlock()
+																self.addAlias(a,f"{self.user_input}")
+																self.user_input = None
 																script_only_command = True
 															except Exception as e:
 																alias_error = f"error reading \"{ifilename}\" ({e})"

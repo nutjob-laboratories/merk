@@ -409,7 +409,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>read ALIAS FILENAME</code></td>
-<td>Reads <code>FILENAME</code> as a text file, and stores the contents in <code>ALIAS</code>. <strong>Can only be called from scripts</strong></td>
+<td>Reads <code>FILENAME</code> as a text file, and stores the contents in <code>ALIAS</code>. This command is blocking. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/reconnect SERVER [PORT] [PASSWORD]</code></td>

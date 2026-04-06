@@ -392,7 +392,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/quote [SERVER] TEXT...`                          | Sends unprocessed data to the current or another server. To specify what server to send the data to, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER` |
 | `random ALIAS START FINISH`              | Generates a random integer from `START` to `FINISH`, and stores it in `ALIAS`. *Can only be called by scripts*            |
-| `read ALIAS FILENAME`              | Reads `FILENAME` as a text file, and stores the contents in `ALIAS`. *Can only be called by scripts*            |
+| `read ALIAS FILENAME`              | Reads `FILENAME` as a text file, and stores the contents in `ALIAS`. This command is blocking. *Can only be called by scripts*            |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
