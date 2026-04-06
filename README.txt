@@ -156,7 +156,7 @@ There are four libraries that comes bundled with **MERK**:
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
         - Over 80 different commands are available for scripts or for use in the client
-        - 19 script-only commands
+        - 18 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -348,8 +348,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
-| `goto TARGET`                         | Moves execution of the script to `TARGET`. The only script-only command that can be issued from an `if` command. *Can only be called from scripts*  |
-| `halt [MESSAGE...]`                       | Asks the user if they want to halt the script's execution, and displays an error `MESSAGE`. *Can only be called from scripts*       |
+| `goto TARGET`                         | Moves execution of the script to `TARGET`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*  |
+| `halt [MESSAGE...]`                       | Asks the user if they want to halt the script's execution, and displays an error `MESSAGE`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*       |
 | `/help [COMMAND]`                                 | Displays command usage information                  |
 | `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to hide the server window      |
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(nin)` (result is true if `VALUE1` is not contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value). *Can only be called from scripts*    |
@@ -370,12 +370,11 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
 | `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to maximize the server window         |
 | `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
-| `message MESSAGE...`                    | Displays a messagebox with a short message. This command is blocking. *Can only be called by scripts*                  |
 | `/minimize [SERVER] [WINDOW]`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to minimize the server window                    |
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
 | `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see the current subwindow's coordinates. Pass `*` as `WINDOW` to move the server window      |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
-| `/msgbox MESSAGE...`                    | Displays a messagebox with a short message                   |
+| `/msgbox MESSAGE...`                    | Displays a messagebox with a short message. If called from a script, this command is blocking                   |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
 | `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `0` (zero). This command is blocking. *Can only be called by scripts*    |

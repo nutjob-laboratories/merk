@@ -3816,23 +3816,23 @@ class Dialog(QDialog):
 		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
 
 		self.showJoin = QCheckBox("Show joins",self)
-		if config.SHOW_CHANNEL_JOIN: self.showJoin.setChecked(True)
+		if config.SHOW_CHANNEL_JOIN_MESSAGES: self.showJoin.setChecked(True)
 		self.showJoin.stateChanged.connect(self.changedSettingRerender)
 
 		self.showPart = QCheckBox("Show parts",self)
-		if config.SHOW_CHANNEL_PART: self.showPart.setChecked(True)
+		if config.SHOW_CHANNEL_PART_MESSAGES: self.showPart.setChecked(True)
 		self.showPart.stateChanged.connect(self.changedSettingRerender)
 
 		self.showQuit = QCheckBox("Show quits",self)
-		if config.SHOW_CHANNEL_QUIT: self.showQuit.setChecked(True)
+		if config.SHOW_CHANNEL_QUIT_MESSAGES: self.showQuit.setChecked(True)
 		self.showQuit.stateChanged.connect(self.changedSettingRerender)
 
 		self.showModes = QCheckBox("Show mode changes",self)
-		if config.SHOW_CHANNEL_MODE_CHANGE: self.showModes.setChecked(True)
+		if config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES: self.showModes.setChecked(True)
 		self.showModes.stateChanged.connect(self.changedSettingRerender)
 
 		self.showNicks = QCheckBox("Show nick changes",self)
-		if config.SHOW_CHANNEL_NICK: self.showNicks.setChecked(True)
+		if config.SHOW_CHANNEL_NICK_MESSAGES: self.showNicks.setChecked(True)
 		self.showNicks.stateChanged.connect(self.changedSettingRerender)
 
 		self.showTopic = QCheckBox("Show topic changes",self)
@@ -6577,11 +6577,11 @@ class Dialog(QDialog):
 		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()
 		config.SHOW_LINE_NUMBERS_ON_CONNECT = self.showLines.isChecked()
 		config.SAVE_MAIN_WINDOW_LOCATION = self.saveLocation.isChecked()
-		config.SHOW_CHANNEL_JOIN = self.showJoin.isChecked()
-		config.SHOW_CHANNEL_PART = self.showPart.isChecked()
-		config.SHOW_CHANNEL_QUIT = self.showQuit.isChecked()
-		config.SHOW_CHANNEL_MODE_CHANGE = self.showModes.isChecked()
-		config.SHOW_CHANNEL_NICK = self.showNicks.isChecked()
+		config.SHOW_CHANNEL_JOIN_MESSAGES = self.showJoin.isChecked()
+		config.SHOW_CHANNEL_PART_MESSAGES = self.showPart.isChecked()
+		config.SHOW_CHANNEL_QUIT_MESSAGES = self.showQuit.isChecked()
+		config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES = self.showModes.isChecked()
+		config.SHOW_CHANNEL_NICK_MESSAGES = self.showNicks.isChecked()
 		config.SHOW_CHANNEL_TOPIC_MESSAGES = self.showTopic.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:

@@ -426,21 +426,21 @@ SHOW_LINE_NUMBERS_ON_CONNECT = False
 HIGHLIGHT_CURRENT_LINE_IN_EDITOR = False
 SAVE_MAIN_WINDOW_LOCATION = False
 MAIN_WINDOW_LOCATION = [None,None]
-SHOW_CHANNEL_JOIN = True
-SHOW_CHANNEL_PART = True
-SHOW_CHANNEL_QUIT = True
-SHOW_CHANNEL_MODE_CHANGE = True
-SHOW_CHANNEL_NICK = True
+SHOW_CHANNEL_JOIN_MESSAGES = True
+SHOW_CHANNEL_PART_MESSAGES = True
+SHOW_CHANNEL_QUIT_MESSAGES = True
+SHOW_CHANNEL_MODE_CHANGE_MESSAGES = True
+SHOW_CHANNEL_NICK_MESSAGES = True
 SHOW_CHANNEL_TOPIC_MESSAGES = True
 
 def build_settings():
 	settings = {
 		"show_channel_topic_messages": SHOW_CHANNEL_TOPIC_MESSAGES,
-		"show_channel_nick_messages": SHOW_CHANNEL_NICK,
-		"show_channel_mode_change_messages": SHOW_CHANNEL_MODE_CHANGE,
-		"show_channel_quit_messages": SHOW_CHANNEL_QUIT,
-		"show_channel_join_messages": SHOW_CHANNEL_JOIN,
-		"show_channel_part_messages": SHOW_CHANNEL_PART,
+		"show_channel_nick_messages": SHOW_CHANNEL_NICK_MESSAGES,
+		"show_channel_mode_change_messages": SHOW_CHANNEL_MODE_CHANGE_MESSAGES,
+		"show_channel_quit_messages": SHOW_CHANNEL_QUIT_MESSAGES,
+		"show_channel_join_messages": SHOW_CHANNEL_JOIN_MESSAGES,
+		"show_channel_part_messages": SHOW_CHANNEL_PART_MESSAGES,
 		"main_window_location": MAIN_WINDOW_LOCATION,
 		"save_main_window_location": SAVE_MAIN_WINDOW_LOCATION,
 		"highlight_current_line_in_editor": HIGHLIGHT_CURRENT_LINE_IN_EDITOR,
@@ -835,15 +835,15 @@ def patch_settings(settings):
 	if not "show_channel_topic_messages" in settings:
 		settings["show_channel_topic_messages"] = SHOW_CHANNEL_TOPIC_MESSAGES
 	if not "show_channel_nick_messages" in settings:
-		settings["show_channel_nick_messages"] = SHOW_CHANNEL_NICK
+		settings["show_channel_nick_messages"] = SHOW_CHANNEL_NICK_MESSAGES
 	if not "show_channel_mode_change_messages" in settings:
-		settings["show_channel_mode_change_messages"] = SHOW_CHANNEL_MODE_CHANGE
+		settings["show_channel_mode_change_messages"] = SHOW_CHANNEL_MODE_CHANGE_MESSAGES
 	if not "show_channel_quit_messages" in settings:
-		settings["show_channel_quit_messages"] = SHOW_CHANNEL_QUIT
+		settings["show_channel_quit_messages"] = SHOW_CHANNEL_QUIT_MESSAGES
 	if not "show_channel_join_messages" in settings:
-		settings["show_channel_join_messages"] = SHOW_CHANNEL_JOIN
+		settings["show_channel_join_messages"] = SHOW_CHANNEL_JOIN_MESSAGES
 	if not "show_channel_part_messages" in settings:
-		settings["show_channel_part_messages"] = SHOW_CHANNEL_PART
+		settings["show_channel_part_messages"] = SHOW_CHANNEL_PART_MESSAGES
 	if not "main_window_location" in settings:
 		settings["main_window_location"] = MAIN_WINDOW_LOCATION
 	if not "save_main_window_location" in settings:
@@ -2006,11 +2006,11 @@ def load_settings(filename):
 	global HIGHLIGHT_CURRENT_LINE_IN_EDITOR
 	global SAVE_MAIN_WINDOW_LOCATION
 	global MAIN_WINDOW_LOCATION
-	global SHOW_CHANNEL_QUIT
-	global SHOW_CHANNEL_JOIN
-	global SHOW_CHANNEL_PART
-	global SHOW_CHANNEL_MODE_CHANGE
-	global SHOW_CHANNEL_NICK
+	global SHOW_CHANNEL_QUIT_MESSAGES
+	global SHOW_CHANNEL_JOIN_MESSAGES
+	global SHOW_CHANNEL_PART_MESSAGES
+	global SHOW_CHANNEL_MODE_CHANGE_MESSAGES
+	global SHOW_CHANNEL_NICK_MESSAGES
 	global SHOW_CHANNEL_TOPIC_MESSAGES
 
 	if os.path.isfile(filename):
@@ -2022,11 +2022,11 @@ def load_settings(filename):
 		postpatch_length = len(settings)
 
 		SHOW_CHANNEL_TOPIC_MESSAGES = settings["show_channel_topic_messages"]
-		SHOW_CHANNEL_NICK = settings["show_channel_nick_messages"]
-		SHOW_CHANNEL_MODE_CHANGE = settings["show_channel_mode_change_messages"]
-		SHOW_CHANNEL_QUIT = settings["show_channel_quit_messages"]
-		SHOW_CHANNEL_JOIN = settings["show_channel_join_messages"]
-		SHOW_CHANNEL_PART = settings["show_channel_part_messages"]
+		SHOW_CHANNEL_NICK_MESSAGES = settings["show_channel_nick_messages"]
+		SHOW_CHANNEL_MODE_CHANGE_MESSAGES = settings["show_channel_mode_change_messages"]
+		SHOW_CHANNEL_QUIT_MESSAGES = settings["show_channel_quit_messages"]
+		SHOW_CHANNEL_JOIN_MESSAGES = settings["show_channel_join_messages"]
+		SHOW_CHANNEL_PART_MESSAGES = settings["show_channel_part_messages"]
 		MAIN_WINDOW_LOCATION = settings["main_window_location"]
 		SAVE_MAIN_WINDOW_LOCATION = settings["save_main_window_location"]
 		HIGHLIGHT_CURRENT_LINE_IN_EDITOR = settings["highlight_current_line_in_editor"]

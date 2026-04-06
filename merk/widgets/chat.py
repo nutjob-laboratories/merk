@@ -1378,19 +1378,19 @@ class Window(QMainWindow):
 
 			if self.window_type==CHANNEL_WINDOW:
 				if line.type==SYSTEM_MESSAGE and " joined " in line.contents and line.system==True:
-					do_render = config.SHOW_CHANNEL_JOIN
+					do_render = config.SHOW_CHANNEL_JOIN_MESSAGES
 
 				if line.type==SYSTEM_MESSAGE and " left " in line.contents and line.system==True:
-					do_render = config.SHOW_CHANNEL_PART
+					do_render = config.SHOW_CHANNEL_PART_MESSAGES
 
 				if line.type==SYSTEM_MESSAGE and "has quit IRC" in line.contents and line.system==True:
-					do_render = config.SHOW_CHANNEL_QUIT
+					do_render = config.SHOW_CHANNEL_QUIT_MESSAGES
 
 				if line.type==SYSTEM_MESSAGE and " set mode " in line.contents and line.system==True:
-					do_render = config.SHOW_CHANNEL_MODE_CHANGE
+					do_render = config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES
 
 				if line.type==SYSTEM_MESSAGE and " is now known as " in line.contents and line.system==True:
-					do_render = config.SHOW_CHANNEL_NICK
+					do_render = config.SHOW_CHANNEL_NICK_MESSAGES
 
 				if line.type==SYSTEM_MESSAGE and " has changed the topic " in line.contents and line.system==True:
 					do_render = config.SHOW_CHANNEL_TOPIC_MESSAGES
@@ -2576,19 +2576,19 @@ class Window(QMainWindow):
 
 				if self.window_type==CHANNEL_WINDOW:
 					if message.type==SYSTEM_MESSAGE and " joined " in message.contents and message.system==True:
-						do_render = config.SHOW_CHANNEL_JOIN
+						do_render = config.SHOW_CHANNEL_JOIN_MESSAGES
 
 					if message.type==SYSTEM_MESSAGE and " left " in message.contents and message.system==True:
-						do_render = config.SHOW_CHANNEL_PART
+						do_render = config.SHOW_CHANNEL_PART_MESSAGES
 
 					if message.type==SYSTEM_MESSAGE and "has quit IRC" in message.contents and message.system==True:
-						do_render = config.SHOW_CHANNEL_QUIT
+						do_render = config.SHOW_CHANNEL_QUIT_MESSAGES
 
 					if message.type==SYSTEM_MESSAGE and " set mode " in message.contents and message.system==True:
-						do_render = config.SHOW_CHANNEL_MODE_CHANGE
+						do_render = config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES
 
 					if message.type==SYSTEM_MESSAGE and " is now known as " in message.contents and message.system==True:
-						do_render = config.SHOW_CHANNEL_NICK
+						do_render = config.SHOW_CHANNEL_NICK_MESSAGES
 
 					if message.type==SYSTEM_MESSAGE and " has changed the topic " in message.contents and message.system==True:
 						do_render = config.SHOW_CHANNEL_TOPIC_MESSAGES

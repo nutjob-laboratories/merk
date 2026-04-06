@@ -42,6 +42,15 @@ What's new:
   it with a magnifying glass icon.
 * Added a "callable method" generator to the Python editor.
 * Untitled MERK and Python scripts are now differentiated in the windowbar.
+* Bugfix: Calling /config import or /config export (with no additional
+  arguments) could crash MERK if called from a script.
+* The "message" script-only command has been removed. The /msgbox command is
+  now blocking if called from a script. The /msgbox command can also be called
+  as the result as a successful "if" call, like any other non-script-only
+  command.
+* The "halt" script-only command can now be issued from the "if" command.
+* "Strings" (that is, text contained in single or double quotes) are now
+  highlighted in the script editor.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

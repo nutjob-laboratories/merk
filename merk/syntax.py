@@ -143,6 +143,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 	def __init__(self, document):
 		QSyntaxHighlighter.__init__(self, document)
 
+		self.string_highlighting = []
+
 		# Make sure to escape any special characters in the
 		# command symbol; this also allows for command
 		# symbols that are more than one character
@@ -310,7 +312,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"restrict private",
 			"restrict private server",
 			"restrict private channel",
-			"halt",
 			"random",
 			"read",
 			"target",
@@ -324,6 +325,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		script_full = [
 			"goto",
 			"goto end",
+			"halt",
 		]
 
 		operators = [
@@ -460,15 +462,29 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		self.rules = [(QRegExp(pat), index, fmt)
 			for (pat, index, fmt) in rules]
 
+		self.string_highlighting.append((QRegExp(r'"[^"\\]*(\\.[^"\\]*)*"'), STYLES['string']))
+		self.string_highlighting.append((QRegExp(r"'[^'\\]*(\\.[^'\\]*)*'"), STYLES['string']))
+
 	def highlightBlock(self, text):
+
+		# Highlight commands
 		for expression, nth, format in self.rules:
 			index = expression.indexIn(text, 0)
-
 			while index >= 0:
 				index = expression.pos(nth)
 				length = len(expression.cap(nth))
 				self.setFormat(index, length, format)
 				index = expression.indexIn(text, index + length)
+
+		# Highlight text in quotes
+		for pattern, format in self.string_highlighting:
+			expression = QRegExp(pattern)
+			index = expression.indexIn(text)
+			while index >= 0:
+				length = expression.matchedLength()
+				self.setFormat(index, length, format)
+				index = expression.indexIn(text, index + length)
+
 		self.setCurrentBlockState(0)
 
 class IRCFullHighlighter(QSyntaxHighlighter):

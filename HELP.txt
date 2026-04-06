@@ -233,11 +233,11 @@ Appearance:
 </tr>
 <tr>
 <td><code>goto TARGET</code></td>
-<td>Moves execution of the script to <code>TARGET</code>. The only script-only command that can be issued from an <code>if</code> command. <strong>Can only be called from scripts</strong></td>
+<td>Moves execution of the script to <code>TARGET</code>. One of the only script-only commands that can be issued from an <code>if</code> command. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>halt [MESSAGE...]</code></td>
-<td>Asks the user if they want to halt the script's execution, and displays an error <code>MESSAGE</code>. <strong>Can only be called from scripts</strong></td>
+<td>Asks the user if they want to halt the script's execution, and displays an error <code>MESSAGE</code>. One of the only script-only commands that can be issued from an <code>if</code> command. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/help [COMMAND]</code></td>
@@ -320,10 +320,6 @@ Appearance:
 <td>Sends a CTCP action message to the current chat</td>
 </tr>
 <tr>
-<td><code>message MESSAGE...</code></td>
-<td>Displays a messagebox with a short message. This command is blocking. <strong>Can only be called by scripts</strong></td>
-</tr>
-<tr>
 <td><code>/minimize [SERVER] [WINDOW]</code></td>
 <td>Minimizes a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to minimize the server window</td>
 </tr>
@@ -341,7 +337,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/msgbox MESSAGE...</code></td>
-<td>Displays a messagebox with a short message</td>
+<td>Displays a messagebox with a short message. If called from a script, this command is blocking</td>
 </tr>
 <tr>
 <td><code>/nick NEW_NICKNAME</code></td>

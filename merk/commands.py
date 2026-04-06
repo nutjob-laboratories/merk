@@ -5784,6 +5784,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
 			if tokens[1].lower()=='import':
 
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}config import cannot be called from scripts")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
 				options = QFileDialog.Options()
 				options |= QFileDialog.DontUseNativeDialog
 				fileName, _ = QFileDialog.getOpenFileName(gui,"Import Configuration File", INSTALL_DIRECTORY, f"{APPLICATION_NAME} Configuration File (*.json);;Text Files (*.txt);;All Files (*)", options=options)
@@ -5827,6 +5834,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'config' and len(tokens)==2:
 			if tokens[1].lower()=='export':
+
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}config export cannot be called from scripts")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
 
 				options = QFileDialog.Options()
 				options |= QFileDialog.DontUseNativeDialog
@@ -6859,6 +6873,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+			t.system = False
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -6874,6 +6889,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				if hasattr(w,"widget"):
 					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
@@ -6885,6 +6901,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -6906,6 +6923,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+						t.system = False
 						if hasattr(w,"widget"):
 							w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
@@ -6920,6 +6938,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+						t.system = False
 						if hasattr(w,"widget"):
 							w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
@@ -6935,6 +6954,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				if hasattr(w,"widget"):
 					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
@@ -6946,6 +6966,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+				t.system = False
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -8597,12 +8618,12 @@ class ScriptThread(QThread):
 			tokens = line.split()
 
 			# |=========|
-			# | message |
+			# | /msgbox |
 			# |=========|
 			if len(tokens)>=1:
-				if tokens[0].lower()=='message':
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
 					if len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: message called without enough arguments"])
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8785,8 +8806,6 @@ class ScriptThread(QThread):
 									"pool",
 									"input",
 									"number",
-									"message",
-									"halt",
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: script-only commands cannot be called from if"])
@@ -9158,10 +9177,10 @@ class ScriptThread(QThread):
 						tokens = line.split()
 
 						# |=========|
-						# | message |
+						# | /msgbox |
 						# |=========|
 						if len(tokens)>=1:
-							if tokens[0].lower()=='message' and len(tokens)>=2:
+							if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox' and len(tokens)>=2:
 								tokens.pop(0)
 								message = ' '.join(tokens)
 
@@ -9732,6 +9751,58 @@ class ScriptThread(QThread):
 									continue
 
 								if do_command:
+									# halt
+									if len(stokens)>=2:
+										if stokens[0].lower()=='halt':
+											stokens.pop(0)
+											msg = ' '.join(stokens)
+											buildTemporaryAliases(self.gui,self.window)
+											msg = self.interpolateAliases(msg)
+											self.request_halt.emit([msg,self.gui,self.id])
+											self.mutex.lock()
+											self.wait_condition.wait(self.mutex)
+											self.mutex.unlock()
+											if self.user_input==True:
+												loop = False
+												halt_issued = True
+											else:
+												pass
+											self.user_input = None
+											continue
+									if len(stokens)>0 and len(stokens)==1:
+										if stokens[0].lower()=='halt':
+											self.request_halt.emit([None,self.gui,self.id])
+											self.mutex.lock()
+											self.wait_condition.wait(self.mutex)
+											self.mutex.unlock()
+											if self.user_input==True:
+												loop = False
+												halt_issued = True
+											else:
+												pass
+											self.user_input = None
+											continue
+									# /msgbox
+									if len(stokens)>=2:
+										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
+											stokens.pop(0)
+											message = ' '.join(stokens)
+
+											buildTemporaryAliases(self.gui,self.window)
+											message = self.interpolateAliases(message)
+
+											self.request_message.emit([message,self.gui,self.id])
+											self.mutex.lock()
+											self.wait_condition.wait(self.mutex)
+											self.mutex.unlock()
+											self.user_input = None
+											script_only_command = True
+											continue
+									if len(stokens)==1:
+										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without an argument"])
+											loop = False
+											continue
 									# /alias
 									if len(stokens)>=3:
 										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
