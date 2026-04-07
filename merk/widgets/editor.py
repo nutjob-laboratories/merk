@@ -742,10 +742,6 @@ class Window(QMainWindow):
 
 			self.fileMenu.addSeparator()
 
-			entry = QAction(QIcon(FOLDER_ICON),"Scripts directory",self)
-			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
-			self.fileMenu.addAction(entry)
-
 			entry = QAction(QIcon(IMPORT_ICON),"Import script",self)
 			entry.triggered.connect(self.doImport)
 			self.fileMenu.addAction(entry)
@@ -753,6 +749,12 @@ class Window(QMainWindow):
 			self.zip = QAction(QIcon(EXPORT_ICON),"Write file to ZIP",self)
 			self.zip.triggered.connect(self.doZip)
 			self.fileMenu.addAction(self.zip)
+
+			self.fileMenu.addSeparator()
+
+			entry = QAction(QIcon(FOLDER_ICON),"Scripts directory",self)
+			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
+			self.fileMenu.addAction(entry)
 		else:
 			entry = QAction(QIcon(PLUGIN_ICON),"New plugin",self)
 			entry.triggered.connect(self.doNewPlugin)

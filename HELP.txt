@@ -473,7 +473,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/unalias TOKEN</code></td>
-<td>Deletes the alias referenced by <code>$TOKEN</code></td>
+<td>Deletes the alias referenced by <code>$TOKEN</code>. Does nothing in scripts</td>
 </tr>
 <tr>
 <td><code>/unbind SEQUENCE</code></td>

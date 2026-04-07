@@ -418,7 +418,6 @@ CHANNEL_MODE_CONTEXT_MENU = True
 SETTINGS_FONT_POINT_SIZE = 10
 ENABLE_READ_COMMAND = True
 HIGHLIGHT_ALL_VISIBLE_NICKS = False
-DELETE_SCRIPT_ALIASES_ON_END = True
 DISCONNECT_ON_SASL_FAIL = True
 EXECUTE_GLOBAL_SCRIPT = True
 GLOBAL_SCRIPT_FILE = "global."+SCRIPT_FILE_EXTENSION
@@ -448,7 +447,6 @@ def build_settings():
 		"global_script_filename": GLOBAL_SCRIPT_FILE,
 		"execute_global_script": EXECUTE_GLOBAL_SCRIPT,
 		"disconnect_on_sasl_failure": DISCONNECT_ON_SASL_FAIL,
-		"delete_script_aliases_on_end": DELETE_SCRIPT_ALIASES_ON_END,
 		"highlight_all_nicknames_in_input_widget": HIGHLIGHT_ALL_VISIBLE_NICKS,
 		"enable_read_command": ENABLE_READ_COMMAND,
 		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
@@ -858,8 +856,6 @@ def patch_settings(settings):
 		settings["execute_global_script"] = EXECUTE_GLOBAL_SCRIPT
 	if not "disconnect_on_sasl_failure" in settings:
 		settings["disconnect_on_sasl_failure"] = DISCONNECT_ON_SASL_FAIL
-	if not "delete_script_aliases_on_end" in settings:
-		settings["delete_script_aliases_on_end"] = DELETE_SCRIPT_ALIASES_ON_END
 	if not "highlight_all_nicknames_in_input_widget" in settings:
 		settings["highlight_all_nicknames_in_input_widget"] = HIGHLIGHT_ALL_VISIBLE_NICKS
 	if not "enable_read_command" in settings:
@@ -1998,7 +1994,6 @@ def load_settings(filename):
 	global SETTINGS_FONT_POINT_SIZE
 	global ENABLE_READ_COMMAND
 	global HIGHLIGHT_ALL_VISIBLE_NICKS
-	global DELETE_SCRIPT_ALIASES_ON_END
 	global DISCONNECT_ON_SASL_FAIL
 	global EXECUTE_GLOBAL_SCRIPT
 	global GLOBAL_SCRIPT_FILE
@@ -2034,7 +2029,6 @@ def load_settings(filename):
 		GLOBAL_SCRIPT_FILE = settings["global_script_filename"]
 		EXECUTE_GLOBAL_SCRIPT = settings["execute_global_script"]
 		DISCONNECT_ON_SASL_FAIL = settings["disconnect_on_sasl_failure"]
-		DELETE_SCRIPT_ALIASES_ON_END = settings["delete_script_aliases_on_end"]
 		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_nicknames_in_input_widget"]
 		ENABLE_READ_COMMAND = settings["enable_read_command"]
 		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]

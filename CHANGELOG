@@ -54,6 +54,10 @@ What's new:
 * Bugfix: MERK could crash when random was used with an alias that was
   previously created and used prior.
 * The "read" script-only command is now blocking.
+* Removed the option to control whether script-created aliases are deleted when
+  a script ends. Aliases are now always deleted, no matter what.
+* As all aliases are now deleted on script end, calling /unalias in a script
+  does absolutely nothing.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

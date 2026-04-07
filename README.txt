@@ -408,7 +408,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/time`                                 | Requests server time                                                                                                             |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
-| `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`                                                                                         |
+| `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`. Does nothing in scripts                            |
 | `/unbind SEQUENCE`                        | Removes a bind for `SEQUENCE`. To remove all binds, pass `*` as the argument                                                        |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
 | `/unmacro NAME`                        | Deletes the macro named `NAME`  |

@@ -1127,10 +1127,9 @@ def execute_script_end(data):
 	del gui.scripts[script_id]
 
 	if len(data)==3:
-		if config.DELETE_SCRIPT_ALIASES_ON_END:
-			aliases_to_destroy = list(set(aliases_to_destroy))
-			for alias in aliases_to_destroy:
-				removeAlias(alias)
+		aliases_to_destroy = list(set(aliases_to_destroy))
+		for alias in aliases_to_destroy:
+			removeAlias(alias)
 
 	remove_halt(script_id)
 
@@ -6339,6 +6338,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)>=3:
 
+			# Scripts handle aliases all on their own
+			if is_script: return True
+
 			tokens.pop(0)
 			a = tokens.pop(0)
 
@@ -6351,34 +6353,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			if len(a)>=1:
 				if not a[0].isalpha():
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: Alias tokens must begin with a letter")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
 					t = Message(ERROR_MESSAGE,'',"Alias tokens must begin with a letter")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
 			if not is_valid_alias_name(a):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+a+"\" is not a valid alias name")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
 				t = Message(ERROR_MESSAGE,'',"\""+a+"\" is not a valid alias name")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
 			if a in getScriptAliases(gui):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: \""+config.ALIAS_INTERPOLATION_SYMBOL+a+"\" already exists in another scope")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
 				t = Message(ERROR_MESSAGE,'',"\""+config.ALIAS_INTERPOLATION_SYMBOL+a+"\" already exists in another scope")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
@@ -6397,6 +6381,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias' and len(tokens)==1:
+
+			# Scripts handle aliases all on their own
+			if is_script: return True
 
 			if len(ALIAS)==0 and len(TEMPORARY_ALIAS)==0:
 				t = Message(SYSTEM_MESSAGE,'',"No aliases are currently defined.")
@@ -6421,12 +6408,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"alias TOKEN TEXT...")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
@@ -6438,12 +6419,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if not config.ENABLE_ALIASES:
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)>=1:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias: Aliases have been disabled in settings")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
+				if is_script: return True
 				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
@@ -6452,29 +6428,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
-
+			if is_script: return True
 			if removeAlias(target):
-				if not is_script:
-					t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			else:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias: Alias \"{target}\" not found.")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
 				t = Message(ERROR_MESSAGE,'',f"Alias \"{target}\" not found.")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
 			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
