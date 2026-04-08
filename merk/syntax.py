@@ -200,7 +200,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"config",
 			cmdsymbol+"xconnect",
 			cmdsymbol+"xconnectssl",
-			cmdsymbol+"unalias",
 			cmdsymbol+"ignore",
 			cmdsymbol+"unignore",
 			cmdsymbol+"find",

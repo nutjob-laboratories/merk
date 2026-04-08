@@ -57,7 +57,8 @@ What's new:
 * Removed the option to control whether script-created aliases are deleted when
   a script ends. Aliases are now always deleted, no matter what.
 * As all aliases are now deleted on script end, calling /unalias in a script
-  does absolutely nothing.
+  does absolutely nothing. Calling /unalias will produce an error that prevents
+  a script from executing.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

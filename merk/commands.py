@@ -6419,7 +6419,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if not config.ENABLE_ALIASES:
 		if len(tokens)>=1:
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)>=1:
-				if is_script: return True
 				t = Message(ERROR_MESSAGE,'',"Aliases have been disabled in settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
@@ -6428,7 +6427,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
-			if is_script: return True
 			if removeAlias(target):
 				t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -8597,6 +8595,20 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |==========|
+			# | /unalias |
+			# |==========|
+			if len(tokens)>=1:
+				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
+						no_errors = False
+						break
+
 			# |=========|
 			# | /msgbox |
 			# |=========|
@@ -8789,6 +8801,10 @@ class ScriptThread(QThread):
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: script-only commands cannot be called from if"])
+									no_errors = False
+									break
+								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias':
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
 									no_errors = False
 									break
 						except:
