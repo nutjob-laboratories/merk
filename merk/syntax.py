@@ -366,7 +366,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			merk.remove(cmdsymbol+"window hotkey")
 		if not config.ENABLE_ALIASES:
 			merk.remove(cmdsymbol+"alias")
-			merk.remove(cmdsymbol+"unalias")
 			script_only.remove("read")
 			script_only.remove('random')
 			script_only.remove('input')

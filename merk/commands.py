@@ -8807,6 +8807,14 @@ class ScriptThread(QThread):
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
 									no_errors = False
 									break
+								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias' and not config.ENABLE_ALIASES:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
+									no_errors = False
+									break
+								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}alias' and not config.ENABLE_ALIASES:
+									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
+									no_errors = False
+									break
 						except:
 							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
 							no_errors = False
