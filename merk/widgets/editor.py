@@ -699,6 +699,8 @@ class Window(QMainWindow):
 				self.editor.setPlainText(source_code)
 				self.changed = False
 				self.updateApplicationTitle()
+			else:
+				self.changed = True
 
 		if self.contents!=None:
 			self.editor.setPlainText(self.contents)

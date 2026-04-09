@@ -431,9 +431,11 @@ SHOW_CHANNEL_QUIT_MESSAGES = True
 SHOW_CHANNEL_MODE_CHANGE_MESSAGES = True
 SHOW_CHANNEL_NICK_MESSAGES = True
 SHOW_CHANNEL_TOPIC_MESSAGES = True
+EXECUTE_CHANNEL_SCRIPTS = True
 
 def build_settings():
 	settings = {
+		"execute_channel_scripts": EXECUTE_CHANNEL_SCRIPTS,
 		"show_channel_topic_messages": SHOW_CHANNEL_TOPIC_MESSAGES,
 		"show_channel_nick_messages": SHOW_CHANNEL_NICK_MESSAGES,
 		"show_channel_mode_change_messages": SHOW_CHANNEL_MODE_CHANGE_MESSAGES,
@@ -830,6 +832,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "execute_channel_scripts" in settings:
+		settings["execute_channel_scripts"] = EXECUTE_CHANNEL_SCRIPTS
 	if not "show_channel_topic_messages" in settings:
 		settings["show_channel_topic_messages"] = SHOW_CHANNEL_TOPIC_MESSAGES
 	if not "show_channel_nick_messages" in settings:
@@ -2007,6 +2011,7 @@ def load_settings(filename):
 	global SHOW_CHANNEL_MODE_CHANGE_MESSAGES
 	global SHOW_CHANNEL_NICK_MESSAGES
 	global SHOW_CHANNEL_TOPIC_MESSAGES
+	global EXECUTE_CHANNEL_SCRIPTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2016,6 +2021,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		EXECUTE_CHANNEL_SCRIPTS = settings["execute_channel_scripts"]
 		SHOW_CHANNEL_TOPIC_MESSAGES = settings["show_channel_topic_messages"]
 		SHOW_CHANNEL_NICK_MESSAGES = settings["show_channel_nick_messages"]
 		SHOW_CHANNEL_MODE_CHANGE_MESSAGES = settings["show_channel_mode_change_messages"]

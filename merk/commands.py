@@ -943,6 +943,27 @@ def find_file_plugin(filename,extension):
 
 	return None
 
+def find_script(filename,extension):
+
+	# Check if it's a complete filename
+	if os.path.isfile(filename): return check_readable(filename)
+
+	# Look for the script in the scripts directory
+	if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, filename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, filename))
+
+	if extension!=None:
+		efilename = filename + "." + extension
+
+		# Check if it's a complete filename
+		if os.path.isfile(efilename): return check_readable(filename)
+
+		# Look for the script in the scripts directory
+		if os.path.isfile(os.path.join(SCRIPTS_DIRECTORY, efilename)): return check_readable(os.path.join(SCRIPTS_DIRECTORY, efilename))
+
+		for root, dirs, files in os.walk(SCRIPTS_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return check_readable(os.path.join(root, filename))
+
 def find_file(filename,extension):
 
 	# Check if it's a complete filename
@@ -2695,7 +2716,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			# Make sure that the macro's script file exists,
 			# and is readable
-			efilename = find_file(script,SCRIPT_FILE_EXTENSION)
+			efilename = find_script(script,SCRIPT_FILE_EXTENSION)
 			if not efilename:
 				if is_script:
 					add_halt(script_id)
@@ -2759,7 +2780,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			# Make sure that the macro's script file exists,
 			# and is readable
-			efilename = find_file(script,SCRIPT_FILE_EXTENSION)
+			efilename = find_script(script,SCRIPT_FILE_EXTENSION)
 			if not efilename:
 				if is_script:
 					add_halt(script_id)
@@ -2824,7 +2845,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			# Make sure that the macro's script file exists,
 			# and is readable
-			efilename = find_file(script,SCRIPT_FILE_EXTENSION)
+			efilename = find_script(script,SCRIPT_FILE_EXTENSION)
 			if not efilename:
 				if is_script:
 					add_halt(script_id)
@@ -6785,7 +6806,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.openEditorConnect(filename)
 				return True
 
-			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
+			efilename = find_script(filename,SCRIPT_FILE_EXTENSION)
 			if efilename!=None:
 				gui.openEditor(efilename)
 			else:
@@ -7735,7 +7756,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
 			arguments = list(tokens)
 
-			efilename = find_file(filename,SCRIPT_FILE_EXTENSION)
+			efilename = find_script(filename,SCRIPT_FILE_EXTENSION)
 			if efilename:
 				f=open(efilename, "r",encoding="utf-8",errors="ignore")
 				text = f.read()
@@ -7776,7 +7797,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 					# Check to see if the filename is a filename
 					# in the application's "path"
-					ffile = find_file(script,SCRIPT_FILE_EXTENSION)
+					ffile = find_script(script,SCRIPT_FILE_EXTENSION)
 					if ffile:
 						f=open(ffile, "r",encoding="utf-8",errors="ignore")
 						text = f.read()
@@ -8558,7 +8579,7 @@ class ScriptThread(QThread):
 
 						for f in ftokens:
 							f = self.interpolateAliases(f)
-							file = find_file(f,SCRIPT_FILE_EXTENSION)
+							file = find_script(f,SCRIPT_FILE_EXTENSION)
 							if file==None: file = find_file(f,None)
 							if file!=None:
 								x = open(file,"r")

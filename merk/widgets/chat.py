@@ -64,6 +64,34 @@ class Window(QMainWindow):
 
 				self.client.last_interaction = 0
 
+	def encodeScriptFilename(self):
+		if self.client.network:
+			network = self.client.network.lower()
+		else:
+			network = UNKNOWN_NETWORK.lower()
+
+		name = self.name.lower()
+
+		return os.path.join(commands.SCRIPTS_DIRECTORY,f"{network}-{name}.{SCRIPT_FILE_EXTENSION}")
+
+	def showEvent(self, event):
+		super().showEvent(event)
+
+		if not self.first_shown:
+			self.first_shown = True
+			# Window has completed loading for the
+			# first time, so let's execute any
+			# channel script that exists
+			if self.window_type==CHANNEL_WINDOW:
+				if config.EXECUTE_CHANNEL_SCRIPTS and config.SCRIPTING_ENGINE_ENABLED:
+					cscript = commands.find_script(self.encodeScriptFilename(),None)
+					if cscript!=None:
+						f = open(cscript,"r")
+						script = f.read()
+						f.close()
+						if len(script.strip())>0:
+							self.executeScript(script,cscript)
+
 	def __init__(self,name,client,window_type,app,parent=None):
 		super(Window, self).__init__(parent)
 
@@ -72,6 +100,7 @@ class Window(QMainWindow):
 		self.window_type = window_type
 		self.app = app
 		self.parent = parent
+		self.first_shown = False
 
 		self.subwindow_id = str(uuid.uuid4())
 
@@ -1105,6 +1134,12 @@ class Window(QMainWindow):
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
+				if self.window_type==CHANNEL_WINDOW:
+					if config.EXECUTE_CHANNEL_SCRIPTS and config.SCRIPTING_ENGINE_ENABLED:
+						entry = QAction(QIcon(EDIT_ICON),"Edit channel script",menu)
+						entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
+						menu.addAction(entry)
+
 				if config.SCRIPTING_ENGINE_ENABLED:
 					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
 					self.contextRun.triggered.connect(self.loadScript)
@@ -1155,6 +1190,12 @@ class Window(QMainWindow):
 				self.settingsMenu.addAction(entry)
 
 		if self.window_type!=SERVER_WINDOW:
+
+			if self.window_type==CHANNEL_WINDOW:
+				if config.EXECUTE_CHANNEL_SCRIPTS and config.SCRIPTING_ENGINE_ENABLED:
+					entry = QAction(QIcon(EDIT_ICON),"Edit channel script",self)
+					entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
+					self.settingsMenu.addAction(entry)
 
 			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
 			entry.triggered.connect(self.clearChat)
@@ -2157,7 +2198,7 @@ class Window(QMainWindow):
 
 	def writeUserlist(self,users):
 
-		if not hasattr(self,"userlist"): return	
+		if not hasattr(self,"userlist"): return
 
 		self.users = []
 		self.operator = False

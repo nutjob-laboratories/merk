@@ -894,6 +894,7 @@ class Dialog(QDialog):
 			self.syntaxscript.setEnabled(True)
 			self.enableWait.setEnabled(True)
 			self.executeGlobal.setEnabled(True)
+			self.exeChannel.setEnabled(True)
 			if self.enableAlias.isChecked():
 				self.enableRead.setEnabled(True)
 			else:
@@ -912,6 +913,7 @@ class Dialog(QDialog):
 			self.enableWait.setEnabled(False)
 			self.enableRead.setEnabled(False)
 			self.executeGlobal.setEnabled(False)
+			self.exeChannel.setEnabled(False)
 		self.changed.show()
 		#self.restart.show()
 		self.boldApply()
@@ -5063,6 +5065,10 @@ class Dialog(QDialog):
 		self.executeGlobal = QCheckBox(f"Execute {os.path.basename(config.GLOBAL_SCRIPT_FILE)} on first connection",self)
 		if config.EXECUTE_GLOBAL_SCRIPT: self.executeGlobal.setChecked(True)
 		self.executeGlobal.stateChanged.connect(self.changedSetting)
+
+		self.exeChannel = QCheckBox("Execute channel scripts",self)
+		if config.EXECUTE_CHANNEL_SCRIPTS: self.exeChannel.setChecked(True)
+		self.exeChannel.stateChanged.connect(self.changedSetting)
 		
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("AA")
@@ -5101,10 +5107,16 @@ class Dialog(QDialog):
 		seLayout2.addWidget(self.executeGlobal)
 		seLayout2.addStretch()
 
+		seLayout3 = QHBoxLayout()
+		seLayout3.addStretch()
+		seLayout3.addWidget(self.exeChannel)
+		seLayout3.addStretch()
+
 		seLayout = QVBoxLayout()
 		seLayout.setSpacing(0)
 		seLayout.addLayout(seLayout1)
 		seLayout.addLayout(seLayout2)
+		seLayout.addLayout(seLayout3)
 
 		self.haltError = QCheckBox("Halt script execution on error",self)
 		if config.HALT_SCRIPT_EXECUTION_ON_ERROR: self.haltError.setChecked(True)
@@ -5185,6 +5197,7 @@ class Dialog(QDialog):
 			self.enableWait.setEnabled(False)
 			self.enableRead.setEnabled(False)
 			self.executeGlobal.setEnabled(False)
+			self.exeChannel.setEnabled(False)
 
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
@@ -6569,6 +6582,7 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES = self.showModes.isChecked()
 		config.SHOW_CHANNEL_NICK_MESSAGES = self.showNicks.isChecked()
 		config.SHOW_CHANNEL_TOPIC_MESSAGES = self.showTopic.isChecked()
+		config.EXECUTE_CHANNEL_SCRIPTS = self.exeChannel.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

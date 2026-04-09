@@ -8,6 +8,7 @@ What's new:
 - **The current line in the script and Python editors is now highlighted**.
 - **The main window location can be saved on exit, and restored**. This option is turned off by default, but can be turned on in settings.
 - **Join, part, quit, mode, topic, and nick messages can be "hidden" in channel chats**. These messages will still be logged, if that option is turned on.
+- **MERK now has channel scripts**. A script can be configured to execute every time the client joins a specific channel on a specific network.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -59,6 +60,10 @@ What's new:
 * As all aliases are now deleted on script end, calling /unalias in a script
   does absolutely nothing. Calling /unalias will produce an error that prevents
   a script from executing.
+* Bugfix: MERK searched for script files improperly.
+* Added channel scripts. MERK can be configured to execute a script when the
+  client joins a channel. The script is "bound" to the channel's network, so
+  the script is executed no matter what server the client connects to.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |
