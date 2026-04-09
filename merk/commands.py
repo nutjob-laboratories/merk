@@ -9139,19 +9139,18 @@ class ScriptThread(QThread):
 			# insert any files that are to be
 			# /inserted into the script, up to
 			# the maximum depth
-			if no_errors:
-				if config.ENABLE_INSERT_COMMAND:
-					counter = 0
-					while counter<config.MAXIMUM_INSERT_DEPTH:
-						counter = counter + 1
-						err = self.process_inserts()
-						if err:
-							no_errors = False
-							break
+			if no_errors and config.ENABLE_INSERT_COMMAND:
+				counter = 0
+				while counter<config.MAXIMUM_INSERT_DEPTH:
+					counter = counter + 1
+					err = self.process_inserts()
+					if err:
+						no_errors = False
+						break
 
 			# Second pass through the script,
 			# handle any targets
-			if no_errors:
+			if no_errors and config.ENABLE_GOTO_COMMAND:
 				err = self.process_targets()
 				if err:
 					no_errors = False
@@ -9354,7 +9353,14 @@ class ScriptThread(QThread):
 								numloops = self.interpolateAliases(numloops)
 
 								if is_int(numloops)==None:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
+									if len(numloops)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if numloops[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number (did you forget to set an alias?)"])
+										else:
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
+									else:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
 									loop = False
 								else:
 									if self.LOOP_COUNT==None:
@@ -9996,12 +10002,24 @@ class ScriptThread(QThread):
 								count = tokens[1]
 								buildTemporaryAliases(self.gui,self.window)
 								count = self.interpolateAliases(count)
+
 								try:
 									count = float(count)
 								except:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument"])
-									script_only_command = True
-									loop = False
+									if len(count)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if count[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument (did you forget to set an alias?)"])
+											script_only_command = True
+											loop = False
+										else:
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument"])
+											script_only_command = True
+											loop = False
+									else:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument"])
+										script_only_command = True
+										loop = False
 									continue
 								time.sleep(count)
 								script_only_command = True
