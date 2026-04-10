@@ -1553,17 +1553,17 @@ class Merk(QMainWindow):
 
 			# Execute global script, if it exists
 			if self.executed_global==False:
-				self.executed_global = True
 				if config.EXECUTE_GLOBAL_SCRIPT and config.SCRIPTING_ENGINE_ENABLED:
-					f = commands.find_file(config.GLOBAL_SCRIPT_FILE,None)
+					f = commands.find_script(config.GLOBAL_SCRIPT_FILE,None)
 					if f:
 						try:
 							ff = open(f"{f}","r")
 							global_script = ff.read()
 							ff.close()
-							w.executeGlobal(global_script,config.GLOBAL_SCRIPT_FILE,[f"{w.client.server}",f"{w.client.port}"])
+							w.executeGlobal(global_script,f,[f"{w.client.server}",f"{w.client.port}"])
+							self.executed_global = True
 						except Exception as e:
-							t = Message(ERROR_MESSAGE,'',f"Error reading {os.path.basename(config.GLOBAL_SCRIPT_FILE)}: {e}")
+							t = Message(ERROR_MESSAGE,'',f"Error reading {os.path.basename(f)}: {e}")
 							w.writeText(t)
 		
 		self.nickChanged(client)

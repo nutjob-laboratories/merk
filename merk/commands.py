@@ -714,6 +714,10 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_DSTYLES',styles.STYLE_DIRECTORY)
 	addTemporaryAlias('_EDATE',myedate)
 	addTemporaryAlias('_EPOCH',f"{datetime.timestamp(datetime.now())}")
+	if gui.executed_global:
+		addTemporaryAlias('_GLOBAL',f"1")
+	else:
+		addTemporaryAlias('_GLOBAL',f"0")
 	addTemporaryAlias('_LATEST',f"{APPLICATION_DEVELOPMENT}")
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
@@ -1139,18 +1143,16 @@ def execute_script_alias(data):
 def execute_script_end(data):
 	gui = data[0]
 	script_id = data[1]
-	if len(data)==3:
-		aliases_to_destroy = data[2]
+	aliases_to_destroy = data[2]
 
 	gui.scripts[script_id].quit()
 	gui.scripts[script_id].wait(config.SCRIPT_THREAD_QUIT_TIMEOUT)
 
 	del gui.scripts[script_id]
 
-	if len(data)==3:
-		aliases_to_destroy = list(set(aliases_to_destroy))
-		for alias in aliases_to_destroy:
-			removeAlias(alias)
+	aliases_to_destroy = list(set(aliases_to_destroy))
+	for alias in aliases_to_destroy:
+		removeAlias(alias)
 
 	remove_halt(script_id)
 
@@ -8490,11 +8492,6 @@ class ScriptThread(QThread):
 	@pyqtSlot(str, object)
 	def handle_update(self, k, v):
 		self.ALIAS[k] = v
-
-	@pyqtSlot(str, object)
-	def handle_update_script(self, k, v):
-		self.ALIAS[k] = v
-		if not k in self.CREATED: self.CREATED.append(k)
 
 	def addTemporaryAlias(self,name,value):
 		self.TEMPORARY_ALIAS[name] = value

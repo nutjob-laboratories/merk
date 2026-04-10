@@ -90,7 +90,8 @@ class Window(QMainWindow):
 						script = f.read()
 						f.close()
 						if len(script.strip())>0:
-							self.executeScript(script,cscript)
+							args = [f"{self.name}",f"{self.client.server}:{self.client.port}"]
+							self.executeScript(script,cscript,args)
 
 	def __init__(self,name,client,window_type,app,parent=None):
 		super(Window, self).__init__(parent)

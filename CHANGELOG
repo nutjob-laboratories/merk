@@ -64,6 +64,11 @@ What's new:
 * Added channel scripts. MERK can be configured to execute a script when the
   client joins a channel. The script is "bound" to the channel's network, so
   the script is executed no matter what server the client connects to.
+* Two arguments are now passed to channel scripts: the name of the channel, and
+  the hostID of the server the channel is connected to.
+* Added a built-in alias: $_GLOBAL, which is set to "1" if the global script
+  exists and has been executed, and "0" if the global script doesn't exist or
+  hasn't been executed.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |
