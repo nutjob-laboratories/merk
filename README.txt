@@ -156,7 +156,7 @@ There are four libraries that comes bundled with **MERK**:
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
         - Over 80 different commands are available for scripts or for use in the client
-        - 18 script-only commands
+        - 19 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -352,6 +352,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `halt [MESSAGE...]`                       | Asks the user if they want to halt the script's execution, and displays an error `MESSAGE`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*       |
 | `/help [COMMAND]`                                 | Displays command usage information                  |
 | `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to hide the server window      |
+| `hostmask ALIAS NICKNAME`                       | Retrieves the hostmask of `NICKNAME` and stores it in `ALIAS`. If the hostmask is not known or cannot be found, `ALIAS` is set to `unknown`. *Can only be called from scripts*       |
 | `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(nin)` (result is true if `VALUE1` is not contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value). *Can only be called from scripts*    |
 | `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
 | `/info [TARGET]`                          | Requests server information                         |
@@ -392,7 +393,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
 | `/quote [SERVER] TEXT...`                          | Sends unprocessed data to the current or another server. To specify what server to send the data to, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER` |
 | `random ALIAS START FINISH`              | Generates a random integer from `START` to `FINISH`, and stores it in `ALIAS`. *Can only be called by scripts*            |
-| `read ALIAS FILENAME`              | Reads `FILENAME` as a text file, and stores the contents in `ALIAS`. This command is blocking. *Can only be called by scripts*            |
+| `read ALIAS FILENAME`              | Reads `FILENAME` as a text file, and stores the contents in `ALIAS`. If the file is empty or contains only whitespace, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
 | `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |

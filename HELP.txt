@@ -248,6 +248,10 @@ Appearance:
 <td>Hides a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to hide the server window</td>
 </tr>
 <tr>
+<td><code>hostmask ALIAS NICKNAME</code></td>
+<td>Retrieves the hostmask of <code>NICKNAME</code> and stores it in <code>ALIAS</code>. If the hostmask is not known or cannot be found, <code>ALIAS</code> is set to <code>unknown</code>. <strong>Can only be called from scripts</strong></td>
+</tr>
+<tr>
 <td><code>if VALUE1 OPERATOR VALUE2 COMMAND...</code></td>
 <td>Executes <code>COMMAND</code> if <code>VALUE1</code> and <code>VALUE2</code> are true, depending on <code>OPERATOR</code>. Valid <code>OPERATOR</code>s are <code><b>(is)</b></code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are equal), <code><b>(not)</b></code> (result is true if <code>VALUE1</code> and <code>VALUE2</code> are not equal), <code><b>(in)</b></code> (result is true if <code>VALUE1</code> is contained in <code>VALUE2</code>), <code><b>(nin)</b></code> (result is true if <code>VALUE1</code> is not contained in <code>VALUE2</code>), <code><b>(gt)</b></code> (result is true if <code>VALUE1</code> is a greater number than <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), <code><b>(lt)</b></code> (result is true if <code>VALUE1</code> is a lesser number than <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), <code><b>(ne)</b></code> (result is true if <code>VALUE1</code> is not an equal number to <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value), and <code><b>(eq)</b></code> (result is true if <code>VALUE1</code> is an equal number to <code>VALUE2</code>; if either value is a string, the length of that string will be used as the value). <strong>Can only be called from scripts</strong></td>
 </tr>
@@ -409,7 +413,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>read ALIAS FILENAME</code></td>
-<td>Reads <code>FILENAME</code> as a text file, and stores the contents in <code>ALIAS</code>. This command is blocking. <strong>Can only be called from scripts</strong></td>
+<td>Reads <code>FILENAME</code> as a text file, and stores the contents in <code>ALIAS</code>. If the file is empty or contains only whitespace, <code>ALIAS</code> will be set to <code>*</code>. This command is blocking. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/reconnect SERVER [PORT] [PASSWORD]</code></td>

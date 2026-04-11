@@ -404,6 +404,7 @@ class Merk(QMainWindow):
 		self.tips = None
 		self.executed_global = False
 		self.at_least_one_window_has_spawned = False
+		self.hostmasks = {}
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -2682,7 +2683,22 @@ class Merk(QMainWindow):
 			t = Message(SYSTEM_MESSAGE,'', "You invited "+user+" to "+channel)
 			w.writeText(t)
 
+	def getHostmask(self,client,nick):
+		if client in self.hostmasks:
+			for entry in self.hostmasks[client]:
+				if entry[0].lower()==nick.lower():
+					return entry[1]
+		return None
+
 	def updateHostmask(self,client,nick,hostmask):
+		entry = [nick,hostmask]
+
+		if client in self.hostmasks:
+			self.hostmasks[client].append(entry)
+		else:
+			self.hostmasks[client] = []
+			self.hostmasks[client].append(entry)
+
 		for window in self.getAllSubChatWindows(client):
 			c = window.widget()
 			if hasattr(c,"updateHostmask"):

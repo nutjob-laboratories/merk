@@ -9,6 +9,7 @@ What's new:
 - **The main window location can be saved on exit, and restored**. This option is turned off by default, but can be turned on in settings.
 - **Join, part, quit, mode, topic, and nick messages can be "hidden" in channel chats**. These messages will still be logged, if that option is turned on.
 - **MERK now has channel scripts**. A script can be configured to execute every time the client joins a specific channel on a specific network.
+- **New script-only command: `hostmask`**. Retrieves a hostmask for a nickname and stores it in an alias.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -69,6 +70,12 @@ What's new:
 * Added a built-in alias: $_GLOBAL, which is set to "1" if the global script
   exists and has been executed, and "0" if the global script doesn't exist or
   hasn't been executed.
+* New script-only command: "hostmask". This command retrieves a hostmask for
+  a nickname and stores it in an alias. If the hostmask is not known or is not
+  found, the alias is set to "unknown".
+* Made some scripting error messages a bit clearer.
+* If a file being read by the "read" command is empty or contains only
+  whitespace, the alias will be set to "*".
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

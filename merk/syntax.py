@@ -319,6 +319,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"input",
 			"number",
 			"message",
+			"hostmask",
 		]
 
 		script_full = [
@@ -370,6 +371,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove('random')
 			script_only.remove('input')
 			script_only.remove('number')
+			script_only.remove('hostmask')
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")
