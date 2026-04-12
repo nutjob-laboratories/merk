@@ -645,7 +645,7 @@ class Plugin():
 		
 			w = self._gui.getServerSubWindow(client)
 			if w:
-				commands.executeScript(self._gui,w,script,f,arguments)
+				commands.executeScript(self._gui,w.widget(),script,f,arguments)
 				return True
 		return False
 		

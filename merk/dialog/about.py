@@ -75,6 +75,9 @@ class Dialog(QDialog):
 		self.credits_tab = QWidget()
 		self.tabs.addTab(self.credits_tab, "Credits")
 
+		self.contributors_tab = QWidget()
+		self.tabs.addTab(self.contributors_tab, "Contributors")
+
 		logo = QLabel()
 		pixmap = QPixmap(SPLASH_LOGO)
 		logo.setPixmap(pixmap)
@@ -160,10 +163,6 @@ class Dialog(QDialog):
 		tv = tv.split(',')[1].strip()
 		tv = tv.replace('version ','',1)
 
-		me_credit = QLabel(f"<small><b>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></b></small>")
-		me_credit.setAlignment(Qt.AlignCenter)
-		me_credit.setOpenExternalLinks(True)
-
 		pyCred = QVBoxLayout()
 		pyCred.addWidget(python_logo)
 		pyCred.addWidget(QLabel("<small><b><a href=\"https://python.org\">Python</a> " + platform.python_version().strip() +"</b></small>"))
@@ -247,7 +246,6 @@ class Dialog(QDialog):
 		credLayout.addLayout(logoBar)
 		credLayout.addStretch()
 		credLayout.addWidget(creditsBox)
-		credLayout.addWidget(me_credit)
 		credLayout.addStretch()
 		
 		self.credits_tab.setLayout(credLayout)
@@ -297,6 +295,23 @@ class Dialog(QDialog):
 		patronLayout.addStretch()
 
 		self.patrons_tab.setLayout(patronLayout)
+
+		me_credit = QLabel(f"<b>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></b>")
+		me_credit.setAlignment(Qt.AlignCenter)
+		me_credit.setOpenExternalLinks(True)
+
+		other_credit = QLabel(f"""<b>
+			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br>
+			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a>
+			</b>""")
+		other_credit.setAlignment(Qt.AlignCenter)
+		other_credit.setOpenExternalLinks(True)
+
+		conLayout = QVBoxLayout()
+		conLayout.addWidget(me_credit)
+		conLayout.addWidget(other_credit)
+		conLayout.addStretch()
+		self.contributors_tab.setLayout(conLayout)
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(self.tabs)

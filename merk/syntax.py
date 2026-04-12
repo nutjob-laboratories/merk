@@ -72,7 +72,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
 					'.browser', '.folder', '.current', '.uncolor', '.unmarkdown',
 					'.markup','.unmarkup', '.demojize', '.deasciimojize', '.location',
-					'.fade',
+					'.fade', '.script',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
@@ -320,6 +320,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"number",
 			"message",
 			"hostmask",
+			"escape",
 		]
 
 		script_full = [
@@ -372,6 +373,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove('input')
 			script_only.remove('number')
 			script_only.remove('hostmask')
+			script_only.remove('escape')
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")

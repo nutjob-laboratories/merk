@@ -10,6 +10,8 @@ What's new:
 - **Join, part, quit, mode, topic, and nick messages can be "hidden" in channel chats**. These messages will still be logged, if that option is turned on.
 - **MERK now has channel scripts**. A script can be configured to execute every time the client joins a specific channel on a specific network.
 - **New script-only command: `hostmask`**. Retrieves a hostmask for a nickname and stores it in an alias.
+- **New script-only command: `escape`**. Escapes MERK markdown in text and stores the result in an alias.
+- **Links are clickable in the log manager viewer**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -72,10 +74,26 @@ What's new:
   hasn't been executed.
 * New script-only command: "hostmask". This command retrieves a hostmask for
   a nickname and stores it in an alias. If the hostmask is not known or is not
-  found, the alias is set to "unknown".
+  found, the alias is set to "*".
 * Made some scripting error messages a bit clearer.
 * If a file being read by the "read" command is empty or contains only
   whitespace, the alias will be set to "*".
+* Bugfix: the syntax highlighter in the Python editor now correctly highlights
+  the .script method.
+* Added a new "contributors" tab to the "about" dialog, and added robotmachine
+  and BreadcrumbPattie to it.
+* New script-only command: "escape". This command escapes MERK markdown in text
+  and stores the result in an alias.
+* Links are now clickable in the log manager viewer.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Bugfix: the plugin inherited method "script" could crash the app, mostly due
+  to the fact that the API could occasionally attempt to run the script on the
+  server window's QMDIArea subwindow rather than the server window's widget.
+  This has been fixed.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.700                                  |

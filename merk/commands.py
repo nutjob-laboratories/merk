@@ -8614,6 +8614,20 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |========|
+			# | escape |
+			# |========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='escape':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: escape: aliases are disabled"])
+						no_errors = False
+						break
+					elif len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: escape called without enough arguments"])
+						no_errors = False
+						break
+
 			# |==========|
 			# | hostmask |
 			# |==========|
@@ -8836,6 +8850,7 @@ class ScriptThread(QThread):
 									"input",
 									"number",
 									"hostmask",
+									"escape",
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
@@ -9216,6 +9231,58 @@ class ScriptThread(QThread):
 					else:
 						line = script[index]
 						tokens = line.split()
+
+						# |========|
+						# | escape |
+						# |========|
+						# 
+						# This command reads a file, and stores the
+						# contents in an alias
+						#
+						if len(tokens)>=1:
+							if tokens[0].lower()=='escape' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+
+									message = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									message = self.interpolateAliases(message)
+
+									message = message.replace('*','\\*')
+									message = message.replace('~','\\~')
+									message = message.replace('_','\\_')
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									error_message = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													self.addAlias(a,f"{message}")
+												else:
+													error_message = f"\"{a}\" is not a valid alias token"
+											else:
+												if a in self.CREATED:
+													self.addAlias(a,f"{message}")
+												else:
+													error_message = f"\"{a}\" already exists in another scope"
+										else:
+											error_message = f"\"{a}\" is not a valid alias token"
+									if error_message!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
+										loop = False
+								continue
 
 						# |==========|
 						# | hostmask |

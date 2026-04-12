@@ -523,7 +523,7 @@ class Window(QMainWindow):
 		size_policy.setVerticalPolicy(QSizePolicy.Expanding)
 		self.sample.setSizePolicy(size_policy)
 
-		self.dump = QTextEdit(self)
+		self.dump = LogViewer()
 		self.dump.setReadOnly(True)
 
 		size_policy = self.dump.sizePolicy()

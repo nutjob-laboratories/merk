@@ -156,7 +156,7 @@ There are four libraries that comes bundled with **MERK**:
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
         - Over 80 different commands are available for scripts or for use in the client
-        - 19 script-only commands
+        - 20 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -343,6 +343,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/_die`                  | Instructs the server to shut down. May only be issued by server operators                               |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
 | `end`                                  | Immediately ends a script; *can only be called from scripts*                                                                       |
+| `escape ALIAS TEXT...`       | Escapes MERK markdown in `TEXT`, and stores it in `ALIAS`; *can only be called from scripts*             |
 | `exclude WINDOW...`                       | Prevents a script from executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |

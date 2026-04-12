@@ -1065,6 +1065,61 @@ def test_if_foreground_is_light(style):
 
 # Widgets
 
+class LogViewer(QTextEdit):
+	def __init__(self):
+		super().__init__()
+		self.url_pattern = re.compile(
+			r"((?:https?://|www\.)"
+			r"(?:[^\s<>'\"&]|&(?!gt;|quot;))+" 
+			r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
+			re.IGNORECASE
+		)
+		self.trailing_punct = set('.,:;!?\'")}]')
+		self.setMouseTracking(True)
+	
+	def _clean_url(self, url):
+		while url and url[-1] in self.trailing_punct:
+			url = url[:-1]
+		return url
+	
+	def mouseMoveEvent(self, event):
+		cursor = self.cursorForPosition(event.pos())
+		block = cursor.block()
+		text = block.text()
+		pos_in_block = cursor.positionInBlock()
+		
+		is_over_url = False
+		for match in self.url_pattern.finditer(text):
+			clean_url = self._clean_url(match.group())
+			clean_end = match.start() + len(clean_url)
+			if match.start() <= pos_in_block <= clean_end:
+				is_over_url = True
+				break
+		
+		if is_over_url:
+			self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
+		else:
+			self.viewport().setCursor(QCursor(Qt.ArrowCursor))
+		
+		super().mouseMoveEvent(event)
+	
+	def mousePressEvent(self, event):
+		cursor = self.cursorForPosition(event.pos())
+		text = cursor.block().text()
+		pos_in_block = cursor.positionInBlock()
+		
+		for match in self.url_pattern.finditer(text):
+			clean_url = self._clean_url(match.group())
+			clean_end = match.start() + len(clean_url)
+			if match.start() <= pos_in_block <= clean_end:
+				url = clean_url
+				if not url.startswith('http'):
+					url = 'http://' + url
+				QDesktopServices.openUrl(QUrl(url))
+				return
+		
+		super().mousePressEvent(event)
+
 class LineNumberArea(QWidget):
 	def __init__(self, editor):
 		super().__init__(editor)
