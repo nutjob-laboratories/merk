@@ -507,11 +507,11 @@ class Dialog(QDialog):
 		sasl_row = QWidget()
 		sLayout = QHBoxLayout()
 		sLayout.setSpacing(0)
+		sLayout.setContentsMargins(0, 0, 0, 0)
 		sLayout.addWidget(self.sasl)
 		sLayout.addStretch()
 		sLayout.addWidget(self.edit)
 		sLayout.addWidget(self.clear)
-		sLayout.addStretch()
 		sasl_row.setLayout(sLayout)
 
 		serverLayout.addRow(sasl_row)

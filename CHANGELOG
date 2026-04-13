@@ -85,6 +85,7 @@ What's new:
 * New script-only command: "escape". This command escapes MERK markdown in text
   and stores the result in an alias.
 * Links are now clickable in the log manager viewer.
+* Cleaned up the connection dialog layout.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
