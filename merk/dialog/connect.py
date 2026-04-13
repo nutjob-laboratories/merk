@@ -514,8 +514,6 @@ class Dialog(QDialog):
 		sLayout.addWidget(self.clear)
 		sasl_row.setLayout(sLayout)
 
-		serverLayout.addRow(sasl_row)
-
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
 		self.ssl.stateChanged.connect(self.clickSSL)
 
@@ -553,6 +551,8 @@ class Dialog(QDialog):
 			optionLayout.addRow(self.reconnect)
 		else:
 			optionLayout.addRow(self.ssl,self.reconnect)
+
+		optionLayout.addRow(sasl_row)
 
 		hostid = f"{user.LAST_HOST}:{user.LAST_PORT}"
 		if hostid in user.SASL:
