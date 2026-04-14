@@ -623,6 +623,7 @@ class Window(QMainWindow):
 		self.force_close = False
 		self.blank = blank
 		self.contents = contents
+		self.initial_launch = True
 
 		self.editing_user_script = False
 		self.current_user_script = None
@@ -664,7 +665,7 @@ class Window(QMainWindow):
 
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
-		self.editor.textChanged.connect(self.docModified)
+		self.editor.document().contentsChanged.connect(self.docModified)
 		self.editor.redoAvailable.connect(self.hasRedo)
 		self.editor.undoAvailable.connect(self.hasUndo)
 		self.editor.copyAvailable.connect(self.hasCopy)
@@ -697,15 +698,9 @@ class Window(QMainWindow):
 				source_code = str(x.read())
 				x.close()
 				self.editor.setPlainText(source_code)
-				self.changed = False
-				self.updateApplicationTitle()
-			else:
-				self.changed = True
 
 		if self.contents!=None:
 			self.editor.setPlainText(self.contents)
-			self.changed = True
-			self.updateApplicationTitle()
 
 		self.menubar = self.menuBar()
 
@@ -1069,8 +1064,8 @@ class Window(QMainWindow):
 
 		if self.python and not self.filename and not self.blank:
 			self.doNewPlugin()
-			self.changed = True
 
+		self.changed = False
 		self.updateApplicationTitle()
 		self.editor.setFocus()
 
@@ -1716,6 +1711,11 @@ class Window(QMainWindow):
 			return True
 
 	def docModified(self):
+		if self.initial_launch:
+			if self.changed:
+				self.changed = False
+			self.initial_launch = False
+			return
 		if not self.parent.at_least_one_window_has_spawned:
 			self.parent.at_least_one_window_has_spawned = True
 			return

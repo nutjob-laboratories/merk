@@ -86,6 +86,9 @@ What's new:
   and stores the result in an alias.
 * Links are now clickable in the log manager viewer.
 * Cleaned up the connection dialog layout.
+* Bugfix: if MERK is launched without connecting to anything, and then the
+  script or Python editor is launched, the document was always marked as
+  "changed", even if the user didn't change anything. This no longer happens.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
