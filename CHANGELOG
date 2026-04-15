@@ -2,18 +2,6 @@
 |                                   0.051.750                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-- **IRC colors/formatting are now shown in the log manager**.
-- **Links are clickable in the log manager viewer**.
-- **The script and Python editors now have a line number display**.
-- **The current line in the script and Python editors is now highlighted**.
-- **The script and Python editors now have a "comment/uncomment" hotkey**. Press Ctrl+/ to comment or uncomment selected text.
-- **The main window location can be saved on exit, and restored**. This option is turned off by default, but can be turned on in settings.
-- **Join, part, quit, mode, topic, and nick messages can be "hidden" in channel chats**. These messages will still be logged, if that option is turned on.
-- **MERK now has channel scripts**. A script can be configured to execute every time the client joins a specific channel on a specific network.
-- **New script-only command: `hostmask`**. Retrieves a hostmask for a nickname and stores it in an alias.
-- **New script-only command: `escape`**. Escapes MERK markdown in text and stores the result in an alias.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|

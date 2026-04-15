@@ -5839,8 +5839,8 @@ class Dialog(QDialog):
 			<small>
 			If <b>shortcodes</b> are enabled, you can insert <b>emojis</b> and <b>ASCIImojis</b> into
 			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			A searchable online list of <b>shortcodes</b> supported is <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
-			You can find a complete list of supported <b>ASCIImoji shortcodes</b> <a href="https://asciimoji.com/">here</a>.
+			A searchable online list of <b>emoji shortcodes</b> supported is <b><a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a></b>.
+			You can find a complete list of supported <b>ASCIImoji shortcodes</b> <b><a href="https://asciimoji.com/">here</a></b>.
 			</small>
 			""")
 		self.emojiDescription.setWordWrap(True)

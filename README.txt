@@ -168,6 +168,7 @@ There are four libraries that comes bundled with **MERK**:
         - Includes a utility to export logs to JSON, CSV, "human readable", or your own custom format
             - "Human readable" logs look more like "traditional" IRC logs
         - Logs are stored in JSON, so parsing/scraping your own logs in easy
+        - Full logs can be viewed, preserving IRC colors and formatting, with clickable links for URLs in chat
     - Audio notifications
       - Can be triggered by seven different events, with each one able to be turned on and off
       - Uses any WAV file as the notification sound, and can be set in the GUI. **MERK** uses a built-in public domain "bell" sound by default
