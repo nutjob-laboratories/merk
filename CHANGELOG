@@ -7,6 +7,7 @@ What's new:
 - **Links are clickable in the log manager viewer**.
 - **The script and Python editors now have a line number display**.
 - **The current line in the script and Python editors is now highlighted**.
+- **The script and Python editors now have a "comment/uncomment" hotkey**. Press Ctrl+/ to comment or uncomment selected text.
 - **The main window location can be saved on exit, and restored**. This option is turned off by default, but can be turned on in settings.
 - **Join, part, quit, mode, topic, and nick messages can be "hidden" in channel chats**. These messages will still be logged, if that option is turned on.
 - **MERK now has channel scripts**. A script can be configured to execute every time the client joins a specific channel on a specific network.
@@ -89,6 +90,15 @@ What's new:
 * Bugfix: if MERK is launched without connecting to anything, and then the
   script or Python editor is launched, the document was always marked as
   "changed", even if the user didn't change anything. This no longer happens.
+* Added an option to the editor context menu to "comment" or "uncomment"
+  selected text. This is a toggle, with a new hotkey (Ctrl+/). This works in
+  both script and Python mode.
+* Added an option to insert built-in aliases to the context menu in the script
+  editor.
+* Added an option to find/find and replace to the context menu in the script
+  editor.
+* Bugfix: leading/trailing backticks are now ignored in URLs when rendering
+  URLs as links in chat.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

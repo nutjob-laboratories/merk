@@ -50,11 +50,112 @@ from .extendedmenuitem import MenuLabel,menuHtml
 
 class Window(QMainWindow):
 
+	def comment_selected_text_python(self):
+		cursor = self.editor.textCursor()
+		selected_text = cursor.selectedText()
+		selected_text = selected_text.replace('\u2029', '\n')
+		lines = selected_text.split('\n')
+
+		start_pos = cursor.selectionStart()
+		
+		is_commented = self._is_commented_python(lines)
+		
+		if is_commented:
+			modified_text = self._uncomment_python(lines)
+		else:
+			modified_text = self._comment_python(lines)
+		
+		cursor.insertText(modified_text)
+
+		cursor.setPosition(start_pos)
+		cursor.setPosition(start_pos + len(modified_text), cursor.MoveMode.KeepAnchor)
+		self.editor.setTextCursor(cursor)
+
+	def comment_selected_text(self):
+		cursor = self.editor.textCursor()
+		selected_text = cursor.selectedText()
+		selected_text = selected_text.replace('\u2029', '\n')
+		lines = selected_text.split('\n')
+
+		start_pos = cursor.selectionStart()
+		
+		is_commented = self._is_commented(lines)
+		
+		if is_commented:
+			modified_text = self._uncomment(lines)
+		else:
+			modified_text = self._comment(lines)
+		
+		cursor.insertText(modified_text)
+
+		cursor.setPosition(start_pos)
+		cursor.setPosition(start_pos + len(modified_text), cursor.MoveMode.KeepAnchor)
+		self.editor.setTextCursor(cursor)
+
+	def _is_commented_python(self, lines):
+		for line in lines:
+			if line.strip():
+				return line.strip().startswith('#')
+		return False
+
+	def _is_commented(self, lines):
+		for line in lines:
+			if line.strip():
+				return line.strip().startswith('/rem')
+		return False
+
+	def _comment_python(self, lines):
+		return '\n'.join(f'# {line}' for line in lines)
+
+	def _comment(self, lines):
+		return '\n'.join(f'/rem {line}' for line in lines)
+
+	def _uncomment_python(self, lines):
+		return '\n'.join(
+			line[2:] if line.startswith('# ') else (line[1:] if line.startswith('#') else line)
+			for line in lines
+		)
+
+	def _uncomment(self, lines):
+		return '\n'.join(
+			line[5:] if line.startswith('/rem ') else (line[4:] if line.startswith('/rem') else line)
+			for line in lines
+		)
+
+	def on_context_menu_show(self):
+		self.comment_action.setEnabled(self.editor.textCursor().hasSelection())
+
 	def show_context_menu(self,pos):
 
 		menu = self.editor.createStandardContextMenu()
+		menu.aboutToShow.connect(self.on_context_menu_show)
+
+		self.comment_action = QAction(QIcon(SCRIPT_ICON),"Comment selection",self)
+		if not self.python:
+			self.comment_action.triggered.connect(self.comment_selected_text)
+		else:
+			self.comment_action.triggered.connect(self.comment_selected_text_python)
+		menu.addAction(self.comment_action)
 
 		menu.addSeparator()
+
+		mefind = QAction(QIcon(WHOIS_ICON),"Find",self)
+		mefind.triggered.connect(self.doFind)
+		mefind.setShortcut("Ctrl+F")
+		menu.addAction(mefind)
+
+		mefind = QAction(QIcon(EDIT_ICON),"Find and replace",self)
+		mefind.triggered.connect(self.doFindReplace)
+		mefind.setShortcut("Ctrl+R")
+		menu.addAction(mefind)
+
+		menu.addSeparator()
+
+		if not self.python:
+			if config.ENABLE_ALIASES:
+				aliasMenu = menu.addMenu(QIcon(SCRIPT_ICON),"Insert alias")
+
+				self.buildAliasMenu(aliasMenu)
 
 		smenu = menu.addMenu(QIcon(PRIVATE_ICON),"Insert user info")
 
@@ -62,9 +163,10 @@ class Window(QMainWindow):
 		entry.triggered.connect(lambda state,u=f"{user.NICKNAME}": self.insertIntoEditor(u))
 		smenu.addAction(entry)
 
-		entry = QAction(QIcon(PRIVATE_ICON),"Alternate",self)
-		entry.triggered.connect(lambda state,u=f"{user.ALTERNATE}": self.insertIntoEditor(u))
-		smenu.addAction(entry)
+		if len(user.ALTERNATE)>0:
+			entry = QAction(QIcon(PRIVATE_ICON),"Alternate",self)
+			entry.triggered.connect(lambda state,u=f"{user.ALTERNATE}": self.insertIntoEditor(u))
+			smenu.addAction(entry)
 
 		entry = QAction(QIcon(PRIVATE_ICON),"Username",self)
 		entry.triggered.connect(lambda state,u=f"{user.USERNAME}": self.insertIntoEditor(u))
@@ -291,9 +393,21 @@ class Window(QMainWindow):
 		self.menuZoomOut.setShortcut("Ctrl+-")
 		self.editMenu.addAction(self.menuZoomOut)
 
-		if self.python:
-			self.editMenu.addSeparator()
+		self.editMenu.addSeparator()
 
+		self.comment_action2 = QAction(QIcon(SCRIPT_ICON),"Comment selection",self)
+		if not self.python:
+			self.comment_action2.triggered.connect(self.comment_selected_text)
+		else:
+			self.comment_action2.triggered.connect(self.comment_selected_text_python)
+		self.comment_action2.setShortcut("Ctrl+/")
+		self.editMenu.addAction(self.comment_action2)
+
+		# Initially disable the "comment" option until the
+		# user selects something
+		self.comment_action2.setEnabled(False)
+
+		if self.python:
 			mefind = QAction(QIcon(BAN_ICON),"Strip all comments",self)
 			mefind.triggered.connect(self.doStripPython)
 			self.editMenu.addAction(mefind)
@@ -1728,12 +1842,14 @@ class Window(QMainWindow):
 			self.menuUndo.setEnabled(True)
 		else:
 			self.menuUndo.setEnabled(False)
+		self.comment_action2.setEnabled(self.editor.textCursor().hasSelection())
 
 	def hasRedo(self,avail):
 		if avail:
 			self.menuRedo.setEnabled(True)
 		else:
 			self.menuRedo.setEnabled(False)
+		self.comment_action2.setEnabled(self.editor.textCursor().hasSelection())
 
 	def hasCopy(self,avail):
 		if avail:
@@ -1742,4 +1858,5 @@ class Window(QMainWindow):
 		else:
 			self.menuCopy.setEnabled(False)
 			self.menuCut.setEnabled(False)
+		self.comment_action2.setEnabled(self.editor.textCursor().hasSelection())
 

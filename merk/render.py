@@ -343,14 +343,14 @@ def inject_www_links(txt, style):
 
 	url_pattern = re.compile(
 		r"((?:https?://|www\.)"
-		r"(?:[^\s<>'\"&]|&(?!gt;|quot;))+" 
-		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"']|$))", 
+		r"(?:[^\s<>'\"&`]|&(?!gt;|quot;))+" 
+		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"'`]|$))", 
 		re.IGNORECASE
 	)
 
 	def replace_url(match):
 		full_match = match.group(0)
-		u_visible = full_match.rstrip('.,;:!?')
+		u_visible = full_match.rstrip('.,;:!?`')
 		if u_visible.endswith(')') and u_visible.count('(') < u_visible.count(')'):
 			u_visible = u_visible[:-1]
 		trailing_punctuation = full_match[len(u_visible):]
