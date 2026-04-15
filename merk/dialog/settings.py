@@ -5835,14 +5835,11 @@ class Dialog(QDialog):
 		if config.ENABLE_EMOJI_SHORTCODES: self.enableEmojis.setChecked(True)
 		self.enableEmojis.stateChanged.connect(self.changedEmoji)
 
-		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/emoji_shortcode_list.pdf")).toEncoded()).decode()
-
 		self.emojiDescription = QLabel(f"""
 			<small>
 			If <b>shortcodes</b> are enabled, you can insert <b>emojis</b> and <b>ASCIImojis</b> into
 			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
-			You can find a complete list of supported <b>emoji shortcodes</b> <a href="{url}">
-			here</a>, or a searchable online list <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
+			A searchable online list of <b>shortcodes</b> supported is <a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a>.
 			You can find a complete list of supported <b>ASCIImoji shortcodes</b> <a href="https://asciimoji.com/">here</a>.
 			</small>
 			""")
