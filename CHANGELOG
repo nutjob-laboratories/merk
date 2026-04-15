@@ -99,6 +99,9 @@ What's new:
   editor.
 * Bugfix: leading/trailing backticks are now ignored in URLs when rendering
   URLs as links in chat.
+* Removed the emoji shortcode list PDF from the app, and replaced it with a
+  link to the library's shortcode website.
+* Added a new menu icon to the app resources.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

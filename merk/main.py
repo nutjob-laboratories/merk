@@ -5155,10 +5155,10 @@ class Merk(QMainWindow):
 		entry = widgets.ExtendedMenuItem(self,README_MENU_ICON,"README","Information about "+APPLICATION_NAME,CUSTOM_MENU_ICON_SIZE,self.menuReadMe)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,PDF_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
+		entry = widgets.ExtendedMenuItem(self,LINK_MENU_ICON,"Emoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openShortcodes)
 		self.helpMenu.addAction(entry)
 
-		entry = widgets.ExtendedMenuItem(self,NETWORK_MENU_ICON,"ASCIImoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openASCIImoji)
+		entry = widgets.ExtendedMenuItem(self,LINK_MENU_ICON,"ASCIImoji list","Supported shortcodes",CUSTOM_MENU_ICON_SIZE,self.openASCIImoji)
 		self.helpMenu.addAction(entry)
 
 		self.helpMenu.addSeparator()
@@ -5267,9 +5267,7 @@ class Merk(QMainWindow):
 		self.helpMenu.close()
 
 	def openShortcodes(self):
-		filename = resource_path("./merk/resources/emoji_shortcode_list.pdf")
-		url = QUrl.fromLocalFile(filename)
-		QDesktopServices.openUrl(url)
+		self.openLinkInBrowser("https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias")
 		self.helpMenu.close()
 
 	def open1459(self):

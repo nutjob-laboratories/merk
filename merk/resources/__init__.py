@@ -321,6 +321,7 @@ PLAY_ICON = ":/icon-play.png"
 PAUSE_ICON = ":/icon-pause.png"
 CURSOR_ICON = ":/icon-cursor.png"
 IMAGE_ICON = ":/icon-image.png"
+LINK_MENU_ICON = ":/icon-link_menu.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"
