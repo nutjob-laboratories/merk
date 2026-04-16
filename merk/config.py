@@ -432,9 +432,13 @@ SHOW_CHANNEL_MODE_CHANGE_MESSAGES = True
 SHOW_CHANNEL_NICK_MESSAGES = True
 SHOW_CHANNEL_TOPIC_MESSAGES = True
 EXECUTE_CHANNEL_SCRIPTS = True
+SUBWINDOW_SNAPPING = True
+SUBWINDOW_SNAP_DISTANCE = 20
 
 def build_settings():
 	settings = {
+		"subwindow_snapping": SUBWINDOW_SNAPPING,
+		"subwindow_snap_distance": SUBWINDOW_SNAP_DISTANCE,
 		"execute_channel_scripts": EXECUTE_CHANNEL_SCRIPTS,
 		"show_channel_topic_messages": SHOW_CHANNEL_TOPIC_MESSAGES,
 		"show_channel_nick_messages": SHOW_CHANNEL_NICK_MESSAGES,
@@ -832,6 +836,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "subwindow_snapping" in settings:
+		settings["subwindow_snapping"] = SUBWINDOW_SNAPPING
+	if not "subwindow_snap_distance" in settings:
+		settings["subwindow_snap_distance"] = SUBWINDOW_SNAP_DISTANCE
 	if not "execute_channel_scripts" in settings:
 		settings["execute_channel_scripts"] = EXECUTE_CHANNEL_SCRIPTS
 	if not "show_channel_topic_messages" in settings:
@@ -2012,6 +2020,8 @@ def load_settings(filename):
 	global SHOW_CHANNEL_NICK_MESSAGES
 	global SHOW_CHANNEL_TOPIC_MESSAGES
 	global EXECUTE_CHANNEL_SCRIPTS
+	global SUBWINDOW_SNAPPING
+	global SUBWINDOW_SNAP_DISTANCE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2021,6 +2031,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SUBWINDOW_SNAPPING = settings["subwindow_snapping"]
+		SUBWINDOW_SNAP_DISTANCE = settings["subwindow_snap_distance"]
 		EXECUTE_CHANNEL_SCRIPTS = settings["execute_channel_scripts"]
 		SHOW_CHANNEL_TOPIC_MESSAGES = settings["show_channel_topic_messages"]
 		SHOW_CHANNEL_NICK_MESSAGES = settings["show_channel_nick_messages"]

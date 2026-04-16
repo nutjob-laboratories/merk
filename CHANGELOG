@@ -1,4 +1,35 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.800                                  |
+|------------------------------------------------------------------------------|
+
+What's New
+- **Subwindow snapping**. By default, subwindows within 20px of each other will "snap" together. This can be turned off in the settings dialog, and the "snapping distance" can also be changed.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Hotkey commenting in the script and Python editors now places the comment
+  symbol or command at the beginning of every selected line, no matter how much
+  of the line is selected.
+* Bugfix: the script editor now uses the command issue symbol ('/' by default)
+  and the alias interpolation symbol ('$' by default) set in the configuration
+  file, rather than the raw, default symbols, for comment generation and alias
+  insertion.
+* Added an option to the editors' context menu to insert the name of a
+  currently open private chat.
+* Added options to insert calls to "/script" and "insert" to the context menu
+  of the script editor.
+* Added subwindow snapping; when subwindows get close to each other, they will
+  "snap" together. This behavior can be toggled on and off, and the distance
+  that windows need to be in order to snap (within 20 pixels) can be changed.
+  By default, this behavior is turned on.
+* Added subwindow snapping to the settings dialog.
+* Added a new "Subwindow" submenu to the "Settings" menu.
+* Removed some connection dialog settings from the "Connections" subwindow in
+  the "Settings" menu.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.750                                  |
 |------------------------------------------------------------------------------|
 

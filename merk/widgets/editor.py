@@ -45,18 +45,28 @@ from .. import syntax
 from .. import commands
 from .. import user
 from .. import plugins
-from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import MenuLabel,menuHtml
 
 class Window(QMainWindow):
 
 	def comment_selected_text_python(self):
 		cursor = self.editor.textCursor()
+		start_pos = cursor.selectionStart()
+		end_pos = cursor.selectionEnd()
+		
+		cursor.setPosition(start_pos)
+		cursor.movePosition(cursor.MoveOperation.StartOfLine)
+		line_start = cursor.position()
+		
+		cursor.setPosition(end_pos)
+		cursor.movePosition(cursor.MoveOperation.EndOfLine)
+		line_end = cursor.position()
+		
+		cursor.setPosition(line_start)
+		cursor.setPosition(line_end, cursor.MoveMode.KeepAnchor)
 		selected_text = cursor.selectedText()
 		selected_text = selected_text.replace('\u2029', '\n')
 		lines = selected_text.split('\n')
-
-		start_pos = cursor.selectionStart()
 		
 		is_commented = self._is_commented_python(lines)
 		
@@ -66,19 +76,30 @@ class Window(QMainWindow):
 			modified_text = self._comment_python(lines)
 		
 		cursor.insertText(modified_text)
-
-		cursor.setPosition(start_pos)
-		cursor.setPosition(start_pos + len(modified_text), cursor.MoveMode.KeepAnchor)
+		
+		cursor.setPosition(line_start)
+		cursor.setPosition(line_start + len(modified_text), cursor.MoveMode.KeepAnchor)
 		self.editor.setTextCursor(cursor)
 
 	def comment_selected_text(self):
 		cursor = self.editor.textCursor()
+		start_pos = cursor.selectionStart()
+		end_pos = cursor.selectionEnd()
+		
+		cursor.setPosition(start_pos)
+		cursor.movePosition(cursor.MoveOperation.StartOfLine)
+		line_start = cursor.position()
+		
+		cursor.setPosition(end_pos)
+		cursor.movePosition(cursor.MoveOperation.EndOfLine)
+		line_end = cursor.position()
+		
+		cursor.setPosition(line_start)
+		cursor.setPosition(line_end, cursor.MoveMode.KeepAnchor)
 		selected_text = cursor.selectedText()
 		selected_text = selected_text.replace('\u2029', '\n')
 		lines = selected_text.split('\n')
 
-		start_pos = cursor.selectionStart()
-		
 		is_commented = self._is_commented(lines)
 		
 		if is_commented:
@@ -87,9 +108,9 @@ class Window(QMainWindow):
 			modified_text = self._comment(lines)
 		
 		cursor.insertText(modified_text)
-
-		cursor.setPosition(start_pos)
-		cursor.setPosition(start_pos + len(modified_text), cursor.MoveMode.KeepAnchor)
+		
+		cursor.setPosition(line_start)
+		cursor.setPosition(line_start + len(modified_text), cursor.MoveMode.KeepAnchor)
 		self.editor.setTextCursor(cursor)
 
 	def _is_commented_python(self, lines):
@@ -101,14 +122,14 @@ class Window(QMainWindow):
 	def _is_commented(self, lines):
 		for line in lines:
 			if line.strip():
-				return line.strip().startswith('/rem')
+				return line.strip().startswith(f'{config.ISSUE_COMMAND_SYMBOL}rem')
 		return False
 
 	def _comment_python(self, lines):
 		return '\n'.join(f'# {line}' for line in lines)
 
 	def _comment(self, lines):
-		return '\n'.join(f'/rem {line}' for line in lines)
+		return '\n'.join(f'{config.ISSUE_COMMAND_SYMBOL}rem {line}' for line in lines)
 
 	def _uncomment_python(self, lines):
 		return '\n'.join(
@@ -118,7 +139,7 @@ class Window(QMainWindow):
 
 	def _uncomment(self, lines):
 		return '\n'.join(
-			line[5:] if line.startswith('/rem ') else (line[4:] if line.startswith('/rem') else line)
+			line[5:] if line.startswith(f'{config.ISSUE_COMMAND_SYMBOL}rem ') else (line[4:] if line.startswith(f'{config.ISSUE_COMMAND_SYMBOL}rem') else line)
 			for line in lines
 		)
 
@@ -150,6 +171,22 @@ class Window(QMainWindow):
 		menu.addAction(mefind)
 
 		menu.addSeparator()
+
+		if not self.python:
+			scripts = commands.list_scripts()
+			if len(scripts)>0:
+				smenu = menu.addMenu(QIcon(SCRIPT_ICON),"Insert script call")
+				for s in scripts:
+					entry = QAction(QIcon(SCRIPT_ICON),s,self)
+					entry.triggered.connect(lambda state,u=f"{config.ISSUE_COMMAND_SYMBOL}script {s}": self.insertIntoEditor(u))
+					smenu.addAction(entry)
+
+			if len(scripts)>0:
+				smenu = menu.addMenu(QIcon(SCRIPT_ICON),"Insert insert call")
+				for s in scripts:
+					entry = QAction(QIcon(SCRIPT_ICON),s,self)
+					entry.triggered.connect(lambda state,u=f"insert {s}\n": self.insertIntoEditor(u))
+					smenu.addAction(entry)
 
 		if not self.python:
 			if config.ENABLE_ALIASES:
@@ -202,6 +239,20 @@ class Window(QMainWindow):
 			clist = list(set(clist))
 			for c in clist:
 				entry = QAction(QIcon(CHANNEL_ICON),c,self)
+				entry.triggered.connect(lambda state,u=f"{c}": self.insertIntoEditor(u))
+				smenu.addAction(entry)
+
+		privates = self.parent.getAllPrivateWindows()
+		if len(privates)>0:
+			smenu = menu.addMenu(QIcon(CHANNEL_ICON),"Insert private chat name")
+			clist = []
+			for window in privates:
+				c = window.widget()
+				clist.append(c.name)
+
+			clist = list(set(clist))
+			for c in clist:
+				entry = QAction(QIcon(PRIVATE_ICON),c,self)
 				entry.triggered.connect(lambda state,u=f"{c}": self.insertIntoEditor(u))
 				smenu.addAction(entry)
 
@@ -1190,15 +1241,15 @@ class Window(QMainWindow):
 		sub = menu.addMenu(QIcon(PRIVATE_ICON),"User information")
 
 		entry = QAction("Nickname",self)
-		entry.triggered.connect(lambda state,u="$_NICKNAME": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_NICKNAME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Username",self)
-		entry.triggered.connect(lambda state,u="$_USERNAME": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_USERNAME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Realname",self)
-		entry.triggered.connect(lambda state,u="$_REALNAME": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_REALNAME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Current server submenu
@@ -1206,51 +1257,51 @@ class Window(QMainWindow):
 		sub = menu.addMenu(QIcon(CONNECT_ICON),"Current server")
 
 		entry = QAction("Host",self)
-		entry.triggered.connect(lambda state,u="$_HOST": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_HOST": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Server",self)
-		entry.triggered.connect(lambda state,u="$_SERVER": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_SERVER": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Port",self)
-		entry.triggered.connect(lambda state,u="$_PORT": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_PORT": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("HostID",self)
-		entry.triggered.connect(lambda state,u="$_HOSTID": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_HOSTID": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Server uptime",self)
-		entry.triggered.connect(lambda state,u="$_SUPTIME": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_SUPTIME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("User mode",self)
-		entry.triggered.connect(lambda state,u="$_MODE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_MODE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Connection type",self)
-		entry.triggered.connect(lambda state,u="$_CONNECTION": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_CONNECTION": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Network",self)
-		entry.triggered.connect(lambda state,u="$_NETWORK": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_NETWORK": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Number of channels",self)
-		entry.triggered.connect(lambda state,u="$_SCHANNELS": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_SCHANNELS": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Number of hidden channels",self)
-		entry.triggered.connect(lambda state,u="$_HCHANNELS": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_HCHANNELS": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("User count",self)
-		entry.triggered.connect(lambda state,u="$_SCOUNT": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_SCOUNT": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Server software",self)
-		entry.triggered.connect(lambda state,u="$_SOFTWARE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_SOFTWARE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Current channel submenu
@@ -1258,19 +1309,19 @@ class Window(QMainWindow):
 		sub = menu.addMenu(QIcon(CHANNEL_ICON),"Current channel")
 
 		entry = QAction("User status",self)
-		entry.triggered.connect(lambda state,u="$_STATUS": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_STATUS": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Topic",self)
-		entry.triggered.connect(lambda state,u="$_TOPIC": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_TOPIC": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Present in channel",self)
-		entry.triggered.connect(lambda state,u="$_PRESENT": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_PRESENT": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Uptime",self)
-		entry.triggered.connect(lambda state,u="$_UPTIME": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_UPTIME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Date and time submenu
@@ -1279,39 +1330,39 @@ class Window(QMainWindow):
 
 
 		entry = QAction("Day of the week",self)
-		entry.triggered.connect(lambda state,u="$_MONTH": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_MONTH": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Day of the month",self)
-		entry.triggered.connect(lambda state,u="$_ORDINAL": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_ORDINAL": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Month name",self)
-		entry.triggered.connect(lambda state,u="$_MONTH": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_MONTH": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Year",self)
-		entry.triggered.connect(lambda state,u="$_YEAR": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_YEAR": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Date",self)
-		entry.triggered.connect(lambda state,u="$_DATE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_DATE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("European date",self)
-		entry.triggered.connect(lambda state,u="$_EDATE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_EDATE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Unix epoch",self)
-		entry.triggered.connect(lambda state,u="$_EPOCH": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_EPOCH": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Time (24hr format)",self)
-		entry.triggered.connect(lambda state,u="$_TIME": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_TIME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Timestamp",self)
-		entry.triggered.connect(lambda state,u="$_STAMP": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_STAMP": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Client submenu
@@ -1319,45 +1370,45 @@ class Window(QMainWindow):
 		sub = menu.addMenu(QIcon(APPLICATION_ICON),"Client")
 
 		entry = QAction("Name",self)
-		entry.triggered.connect(lambda state,u="$_CLIENT": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_CLIENT": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Uptime",self)
-		entry.triggered.connect(lambda state,u="$_CUPTIME": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_CUPTIME": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Version",self)
-		entry.triggered.connect(lambda state,u="$_VERSION": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_VERSION": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Source code URL",self)
-		entry.triggered.connect(lambda state,u="$_SOURCE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_SOURCE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Current release URL",self)
-		entry.triggered.connect(lambda state,u="$_RELEASE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_RELEASE": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		entry = QAction("Current release version",self)
-		entry.triggered.connect(lambda state,u="$_RVERSION": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_RVERSION": self.insertIntoEditor(u))
 		sub.addAction(entry)
 
 		# Non-submenu entries
 
 		entry = QAction("Script name",self)
-		entry.triggered.connect(lambda state,u="$_SCRIPT": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_SCRIPT": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
 		entry = QAction("Filename",self)
-		entry.triggered.connect(lambda state,u="$_FILE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_FILE": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
 		entry = QAction("Current window",self)
-		entry.triggered.connect(lambda state,u="$_WINDOW": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_WINDOW": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
 		entry = QAction("Window type",self)
-		entry.triggered.connect(lambda state,u="$_WINDOW_TYPE": self.insertIntoEditor(u))
+		entry.triggered.connect(lambda state,u=f"{config.ALIAS_INTERPOLATION_SYMBOL}_WINDOW_TYPE": self.insertIntoEditor(u))
 		menu.addAction(entry)
 
 	def executeScript(self,window):
@@ -1391,6 +1442,7 @@ class Window(QMainWindow):
 
 	def insertIntoEditor(self,value):
 		self.editor.insertPlainText(f"{value}")
+		self.changed = True
 		self.updateApplicationTitle()
 
 	def buildRunMenu(self):

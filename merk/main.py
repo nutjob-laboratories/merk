@@ -56,262 +56,7 @@ from . import commands
 from . import connection_script
 from .widgets import menubar,textSeparatorLabel,textSeparator
 
-class GlobalActivityFilter(QObject):
-	def eventFilter(self, watched, event):
-		interacted = False
-
-		if isinstance(watched, QMdiSubWindow):
-			if event.type() == QEvent.MouseButtonPress:
-				interacted = True
-			elif event.type() == QEvent.KeyPress:
-				interacted = True
-			elif event.type() == QEvent.Resize:
-				interacted = True
-			elif event.type() == QEvent.Move:
-				interacted = True
-			elif event.type() == QEvent.Close:
-				interacted = True
-
-			if interacted:
-				if hasattr(watched,"widget"):
-					c = watched.widget()
-					if hasattr(c,"window_interacted_with"):
-						c.window_interacted_with()
-
-		interacted = False
-		if isinstance(watched, Merk):
-			if event.type() == QEvent.MouseButtonPress:
-				interacted = True
-			elif event.type() == QEvent.KeyPress:
-				interacted = True
-			elif event.type() == QEvent.WindowActivate:
-				interacted = True
-			elif event.type() == QEvent.MouseMove:
-				interacted = True
-
-			if interacted:
-				watched.window_interacted_with()
-
-		return False
-
-class MdiArea(QMdiArea):
-
-	openPython = pyqtSignal(object)
-	openScript = pyqtSignal(object)
-
-	def __init__(self, parent=None):
-		super().__init__(parent)
-		self.parent = parent
-		self.setAcceptDrops(True)
-		self.pixmap = None
-
-	def paintEvent(self, event):
-		super().paintEvent(event)
-		if config.CUSTOM_MDI_BACKGROUND=="" and self.pixmap==None:
-			return
-		self.pixmap = QPixmap(config.CUSTOM_MDI_BACKGROUND)
-		painter = QPainter(self.viewport())
-		painter.setRenderHint(QPainter.SmoothPixmapTransform)
-
-		if config.MDI_BACKGROUND_IMAGE_STYLE=="scale":
-			scaled = self.pixmap.scaled(
-				self.viewport().size(),
-				Qt.IgnoreAspectRatio,
-				Qt.SmoothTransformation
-			)
-			x = (self.viewport().width() - scaled.width()) // 2
-			y = (self.viewport().height() - scaled.height()) // 2
-			painter.drawPixmap(x, y, scaled)
-		elif config.MDI_BACKGROUND_IMAGE_STYLE=="center":
-			x = (self.viewport().width() - self.pixmap.width()) // 2
-			y = (self.viewport().height() - self.pixmap.height()) // 2
-			painter.drawPixmap(x, y, self.pixmap)
-		elif config.MDI_BACKGROUND_IMAGE_STYLE=="tile":
-			painter.drawTiledPixmap(self.viewport().rect(), self.pixmap)
-		else:
-			# scaled is the default
-			scaled = self.pixmap.scaled(
-				self.viewport().size(),
-				Qt.IgnoreAspectRatio,
-				Qt.SmoothTransformation
-			)
-			x = (self.viewport().width() - scaled.width()) // 2
-			y = (self.viewport().height() - scaled.height()) // 2
-			painter.drawPixmap(x, y, scaled)
-
-	def dragEnterEvent(self, event):
-		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
-			event.ignore()
-			return
-		if event.mimeData().hasUrls():
-			event.accept()
-		else:
-			event.ignore()
-
-	def dragMoveEvent(self, event):
-		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
-			event.ignore()
-			return
-		if event.mimeData().hasUrls():
-			event.accept()
-		else:
-			event.ignore()
-
-	def dropEvent(self, event):
-		if not config.DRAG_AND_DROP_MAIN_APPLICATION: return
-		files = [u.toLocalFile() for u in event.mimeData().urls()]
-		installed = []
-		for file_path in files:
-			name_without_extension, extension = os.path.splitext(file_path)
-
-			if extension=="."+SCRIPT_FILE_EXTENSION:
-				if not config.SCRIPTING_ENGINE_ENABLED:
-					event.ignore()
-					return
-				self.openScript.emit(file_path)
-			elif extension==".py":
-				if not config.ENABLE_PLUGINS:
-					event.ignore()
-					return
-				if not config.ENABLE_PLUGIN_EDITOR:
-					event.ignore()
-					return
-				self.openPython.emit(file_path)
-			elif extension==".zip":
-				if not config.ENABLE_PLUGINS: 
-					event.ignore()
-					return
-				if not config.OVERWRITE_PLUGINS_ON_IMPORT:
-					overwrite = False
-					ofiles = []
-					try:
-						with zipfile.ZipFile(file_path, 'r') as zf:
-							for member in zf.infolist():
-								efile_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
-
-								extract_file = False
-								name_without_extension, extension = os.path.splitext(efile_path)
-								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
-
-								if config.IMPORT_SCRIPTS_IN_PLUGINS:
-									sfile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
-									name_without_extension, extension = os.path.splitext(sfile_path)
-									if extension.lower()=='.': extract_file = True
-								if extract_file:
-									if os.path.exists(efile_path):
-										overwrite = True
-										ofiles.append(efile_path)
-									if os.path.exists(sfile_path):
-										overwrite = True
-										ofiles.append(sfile_path)
-					except zipfile.BadZipFile:
-						QMessageBox.critical(self, 'Error', f"\"{file_path}\" is not a valid zip file")
-						return
-					except FileNotFoundError:
-						QMessageBox.critical(self, 'Error', f"Plugin archive \"{file_path}\" not found.")
-						return
-					except Exception as e:
-						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
-						return
-				else:
-					overwrite = False
-					ofiles = []
-
-				if not config.OVERWRITE_PLUGINS_ON_IMPORT and overwrite==True:
-					msgBox = QMessageBox()
-					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-					msgBox.setText("The following files already exist. Overwrite?")
-					msgBox.setInformativeText("\n".join(ofiles))
-					msgBox.setWindowTitle("Overwrite")
-					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
-					rval = msgBox.exec()
-					if rval == QMessageBox.Cancel:
-						pass
-					else:
-						overwrite = False
-
-				if not overwrite:
-					try:
-						with zipfile.ZipFile(file_path, 'r') as zf:
-							for member in zf.infolist():
-								efile_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
-
-								extract_file = False
-								name_without_extension, extension = os.path.splitext(efile_path)
-								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
-
-								if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
-
-								if config.IMPORT_SCRIPTS_IN_PLUGINS:
-									efile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
-
-									extract_file = False
-									name_without_extension, extension = os.path.splitext(efile_path)
-									if extension.lower()=='.'+SCRIPT_FILE_EXTENSION: extract_file = True
-
-									if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
-
-					except zipfile.BadZipFile:
-						QMessageBox.critical(self, 'Error', f"\"{file_path}\" is not a valid zip file")
-					except FileNotFoundError:
-						QMessageBox.critical(self, 'Error', f"Plugin archive \"{file_path}\" not found.")
-					except Exception as e:
-						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
-
-					plugins.call(self.parent,"unload")
-					errors = plugins.load_plugins(self.parent)
-					if len(errors)>0:
-						msgBox = QMessageBox()
-						msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-						msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-						if len(errors)>1:
-							msgBox.setText("There were errors loading plugins!")
-						else:
-							msgBox.setText("There was an error loading plugins!")
-						msgBox.setInformativeText("\n".join(errors))
-						msgBox.setWindowTitle("Plugin load error")
-						msgBox.setStandardButtons(QMessageBox.Ok)
-						msgBox.exec()
-					else:
-						installed.append(os.path.basename(file_path))
-
-		if len(installed)>0:
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText("The following plugin files were installed:")
-			msgBox.setInformativeText("\n".join(installed))
-			msgBox.setWindowTitle("Plugin Installation")
-			msgBox.setStandardButtons(QMessageBox.Ok)
-			msgBox.exec()
-
 class Merk(QMainWindow):
-
-	def window_interacted_with(self):
-
-		if config.USE_AUTOAWAY:
-			if config.APP_INTERACTION_CANCELS_AUTOAWAY:
-
-				listOfConnections = {}
-				for i in irc.CONNECTIONS:
-					add_to_list = True
-					for j in self.hiding:
-						if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
-					for j in self.quitting:
-						if irc.CONNECTIONS[i].client_id == j: add_to_list = False
-					if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
-
-				if len(listOfConnections)==0: return
-
-				for i in listOfConnections:
-					client = listOfConnections[i]
-
-					if client.autoaway:
-						client.back()
-
-					client.last_interaction = 0
 
 	# ===========
 	# Constructor
@@ -564,6 +309,30 @@ class Merk(QMainWindow):
 			msgBox.setWindowTitle("Hotkey load error")
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
+
+	def window_interacted_with(self):
+
+		if config.USE_AUTOAWAY:
+			if config.APP_INTERACTION_CANCELS_AUTOAWAY:
+
+				listOfConnections = {}
+				for i in irc.CONNECTIONS:
+					add_to_list = True
+					for j in self.hiding:
+						if self.hiding[j] is irc.CONNECTIONS[i]: add_to_list = False
+					for j in self.quitting:
+						if irc.CONNECTIONS[i].client_id == j: add_to_list = False
+					if add_to_list: listOfConnections[i] = irc.CONNECTIONS[i]
+
+				if len(listOfConnections)==0: return
+
+				for i in listOfConnections:
+					client = listOfConnections[i]
+
+					if client.autoaway:
+						client.back()
+
+					client.last_interaction = 0
 
 	def save_shortcuts(self):
 		config.HOTKEYS = {}
@@ -3806,7 +3575,7 @@ class Merk(QMainWindow):
 			if hasattr(c,"input"): c.input.setFocus()
 
 	def newChannelWindow(self,name,client):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.Window(name,client,CHANNEL_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(CHANNEL_WINDOW_ICON))
@@ -3831,7 +3600,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newServerWindow(self,name,client):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.Window(name,client,SERVER_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(CONSOLE_ICON))
@@ -3856,7 +3625,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newPrivateWindow(self,name,client):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.Window(name,client,PRIVATE_WINDOW,self.app,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PRIVATE_WINDOW_ICON))
@@ -3881,7 +3650,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newEditorWindow(self):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
@@ -3902,7 +3671,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newEditorPluginFileBlank(self,filename):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w,True,True))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PYTHON_ICON))
@@ -3923,7 +3692,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newEditorPlugin(self):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w,True))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PYTHON_ICON))
@@ -3944,7 +3713,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newEditorPluginFile(self,filename):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w,True))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PYTHON_ICON))
@@ -3991,7 +3760,7 @@ class Merk(QMainWindow):
 		self.newEditorPluginFileBlank(filename)
 
 	def newEditorWindowFile(self,filename):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(filename,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
@@ -4012,7 +3781,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newEditorWindowContents(self,contents):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w,False,False,contents))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
@@ -4045,7 +3814,7 @@ class Merk(QMainWindow):
 		self.newEditorWindowFile(filename)
 
 	def newEditorWindowConnect(self,hostid):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ScriptEditor(None,self,w))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
@@ -4082,7 +3851,7 @@ class Merk(QMainWindow):
 
 	def newListWindow(self,client,parent):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ChannelList(client,client.server_channel_list,self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(LIST_ICON))
@@ -4104,7 +3873,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newReadmeWindow(self):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ReadMe(self))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(README_ICON))
@@ -4126,7 +3895,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newLogManager(self):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		if config.SIMPLIFIED_DIALOGS:
 			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,True,self.app))
 		else:
@@ -4151,7 +3920,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newLogManagerTarget(self,target):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		if config.SIMPLIFIED_DIALOGS:
 			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,True,self.app,target))
 		else:
@@ -4176,7 +3945,7 @@ class Merk(QMainWindow):
 		return w
 
 	def newLogManagerMax(self):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		if config.SIMPLIFIED_DIALOGS:
 			w.setWidget(widgets.LogManager(logs.LOG_DIRECTORY,self,True,self.app))
 		else:
@@ -4229,7 +3998,7 @@ class Merk(QMainWindow):
 		return [w,c]
 
 	def newPluginConsole(self,plugin):
-		w = QMdiSubWindow(self)
+		w = MerkSubwindow(self)
 		w.setWidget(widgets.ConsoleWindow(self,plugin))
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		icon = PLUGIN_ICON
@@ -4463,6 +4232,32 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def settingsSnap(self):
+		if config.SUBWINDOW_SNAPPING:
+			config.SUBWINDOW_SNAPPING = False
+		else:
+			config.SUBWINDOW_SNAPPING = True
+		config.save_settings(config.CONFIG_FILE)
+		self.buildSettingsMenu()
+
+	def settingsResize(self):
+		if config.RUBBER_BAND_RESIZE:
+			config.RUBBER_BAND_RESIZE = False
+		else:
+			config.RUBBER_BAND_RESIZE = True
+		config.save_settings(config.CONFIG_FILE)
+		self.toggleRubberbanding()
+		self.buildSettingsMenu()
+
+	def settingsMove(self):
+		if config.RUBBER_BAND_MOVE:
+			config.RUBBER_BAND_MOVE = False
+		else:
+			config.RUBBER_BAND_MOVE = True
+		config.save_settings(config.CONFIG_FILE)
+		self.toggleRubberbanding()
+		self.buildSettingsMenu()
+
 	def settingsInputColor(self):
 		if config.ENABLE_IRC_COLOR_MARKUP:
 			config.ENABLE_IRC_COLOR_MARKUP = False
@@ -4636,20 +4431,6 @@ class Merk(QMainWindow):
 				app.exit()
 			else:
 				os.execl(sys.executable, sys.executable,sys.argv[0], "-R")
-
-	def settingsDoNotSave(self):
-		if self.donotsave:
-			self.donotsave = False
-		else:
-			self.donotsave = True
-		self.buildSettingsMenu()
-
-	def settingsDoNoExecute(self):
-		if self.noexecute:
-			self.noexecute = False
-		else:
-			self.noexecute = True
-		self.buildSettingsMenu()
 
 	def settingsTimestamps(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -4949,24 +4730,6 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsNotifyLost)
 		sm.addAction(entry)
 
-		e = textSeparator(self,"Dialog Defaults")
-		sm.addAction(e)
-
-		if self.donotsave:
-			entry = QAction(QIcon(self.checked_icon),"Do not save connection to user file", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Do not save connection to user file", self)
-		entry.triggered.connect(self.settingsDoNotSave)
-		sm.addAction(entry)
-
-		if config.SCRIPTING_ENGINE_ENABLED:
-			if self.noexecute:
-				entry = QAction(QIcon(self.checked_icon),"Do not execute connection script", self)
-			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Do not execute connection script", self)
-			entry.triggered.connect(self.settingsDoNoExecute)
-			sm.addAction(entry)
-
 		sm = self.settingsMenu.addMenu(QIcon(LOG_ICON),"Logs")
 
 		if config.SAVE_CHANNEL_LOGS:
@@ -4997,6 +4760,8 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsLoadPriv)
 		sm.addAction(entry)
 
+		sm.addSeparator()
+
 		interval = str(config.LOG_SAVE_INTERVAL)+" ms"
 		if config.DO_INTERMITTENT_LOG_SAVES:
 			if config.LOG_SAVE_INTERVAL==900000: interval = "15 minutes"
@@ -5008,6 +4773,29 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Save logs every "+interval, self)
 		entry.triggered.connect(self.settingsIntermittent)
+		sm.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(SUBWINDOW_ICON),"Subwindows")
+
+		if config.SUBWINDOW_SNAPPING:
+			entry = QAction(QIcon(self.checked_icon),"Snap subwindows", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Snap subwindows", self)
+		entry.triggered.connect(self.settingsSnap)
+		sm.addAction(entry)
+
+		if config.RUBBER_BAND_RESIZE:
+			entry = QAction(QIcon(self.checked_icon),"Rubberband resize", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Rubberband resize", self)
+		entry.triggered.connect(self.settingsResize)
+		sm.addAction(entry)
+
+		if config.RUBBER_BAND_MOVE:
+			entry = QAction(QIcon(self.checked_icon),"Rubberband move", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Rubberband move", self)
+		entry.triggered.connect(self.settingsMove)
 		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(WINDOW_ICON),"Widget style")
@@ -6183,3 +5971,327 @@ class UptimeHeartbeat(QThread):
 	def stop(self):
 		self.threadactive = False
 		self.wait()
+
+class MerkSubwindow(QMdiSubWindow):
+	
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.snap_timer = QTimer()
+		self.snap_timer.timeout.connect(self._check_snap)
+		self.snap_timer.start(50)
+		self.is_dragging = False
+		
+	def mousePressEvent(self, event):
+		super().mousePressEvent(event)
+		if event.button() == Qt.LeftButton:
+			if event.y() < self.frameGeometry().height() - self.geometry().height():
+				self.is_dragging = True
+	
+	def mouseReleaseEvent(self, event):
+		super().mouseReleaseEvent(event)
+		self.is_dragging = False
+		self._snap_window()
+	
+	def _check_snap(self):
+		if self.is_dragging:
+			self._snap_window()
+	
+	def _snap_window(self):
+		mdi_area = self.mdiArea()
+		if not mdi_area:
+			return
+
+		if not config.SUBWINDOW_SNAPPING: return
+		
+		current_pos = self.pos()
+		current_rect = self.frameGeometry()
+		
+		mdi_rect = mdi_area.rect()
+		
+		new_x = current_pos.x()
+		new_y = current_pos.y()
+		
+		# Snap to left edge
+		if abs(current_pos.x()) < config.SUBWINDOW_SNAP_DISTANCE:
+			new_x = 0
+		
+		# Snap to right edge
+		if abs(mdi_rect.width() - (current_pos.x() + current_rect.width())) < config.SUBWINDOW_SNAP_DISTANCE:
+			new_x = mdi_rect.width() - current_rect.width()
+		
+		# Snap to top edge
+		if abs(current_pos.y()) < config.SUBWINDOW_SNAP_DISTANCE:
+			new_y = 0
+		
+		# Snap to bottom edge
+		if abs(mdi_rect.height() - (current_pos.y() + current_rect.height())) < config.SUBWINDOW_SNAP_DISTANCE:
+			new_y = mdi_rect.height() - current_rect.height()
+		
+		# Snap to other windows
+		for sub_window in mdi_area.subWindowList():
+			if sub_window == self:
+				continue
+			
+			other_rect = sub_window.frameGeometry()
+			
+			# Snap to right side of other window
+			if (config.SUBWINDOW_SNAP_DISTANCE > abs(current_pos.x() - (other_rect.x() + other_rect.width())) 
+				and self._vertical_overlap(current_rect, other_rect)):
+				new_x = other_rect.x() + other_rect.width()
+			
+			# Snap to left side of other window
+			if (config.SUBWINDOW_SNAP_DISTANCE > abs((current_pos.x() + current_rect.width()) - other_rect.x())
+				and self._vertical_overlap(current_rect, other_rect)):
+				new_x = other_rect.x() - current_rect.width()
+			
+			# Snap to bottom of other window
+			if (config.SUBWINDOW_SNAP_DISTANCE > abs(current_pos.y() - (other_rect.y() + other_rect.height()))
+				and self._horizontal_overlap(current_rect, other_rect)):
+				new_y = other_rect.y() + other_rect.height()
+			
+			# Snap to top of other window
+			if (config.SUBWINDOW_SNAP_DISTANCE > abs((current_pos.y() + current_rect.height()) - other_rect.y())
+				and self._horizontal_overlap(current_rect, other_rect)):
+				new_y = other_rect.y() - current_rect.height()
+		
+		if new_x != current_pos.x() or new_y != current_pos.y():
+			self.move(new_x, new_y)
+	
+	@staticmethod
+	def _vertical_overlap(rect1, rect2):
+		return not (rect1.bottom() < rect2.top() or rect1.top() > rect2.bottom())
+	
+	@staticmethod
+	def _horizontal_overlap(rect1, rect2):
+		return not (rect1.right() < rect2.left() or rect1.left() > rect2.right())
+
+class GlobalActivityFilter(QObject):
+	def eventFilter(self, watched, event):
+		interacted = False
+
+		if isinstance(watched, QMdiSubWindow):
+			if event.type() == QEvent.MouseButtonPress:
+				interacted = True
+			elif event.type() == QEvent.KeyPress:
+				interacted = True
+			elif event.type() == QEvent.Resize:
+				interacted = True
+			elif event.type() == QEvent.Move:
+				interacted = True
+			elif event.type() == QEvent.Close:
+				interacted = True
+
+			if interacted:
+				if hasattr(watched,"widget"):
+					c = watched.widget()
+					if hasattr(c,"window_interacted_with"):
+						c.window_interacted_with()
+
+		interacted = False
+		if isinstance(watched, Merk):
+			if event.type() == QEvent.MouseButtonPress:
+				interacted = True
+			elif event.type() == QEvent.KeyPress:
+				interacted = True
+			elif event.type() == QEvent.WindowActivate:
+				interacted = True
+			elif event.type() == QEvent.MouseMove:
+				interacted = True
+
+			if interacted:
+				watched.window_interacted_with()
+
+		return False
+
+class MdiArea(QMdiArea):
+
+	openPython = pyqtSignal(object)
+	openScript = pyqtSignal(object)
+
+	def __init__(self, parent=None):
+		super().__init__(parent)
+		self.parent = parent
+		self.setAcceptDrops(True)
+		self.pixmap = None
+
+	def paintEvent(self, event):
+		super().paintEvent(event)
+		if config.CUSTOM_MDI_BACKGROUND=="" and self.pixmap==None:
+			return
+		self.pixmap = QPixmap(config.CUSTOM_MDI_BACKGROUND)
+		painter = QPainter(self.viewport())
+		painter.setRenderHint(QPainter.SmoothPixmapTransform)
+
+		if config.MDI_BACKGROUND_IMAGE_STYLE=="scale":
+			scaled = self.pixmap.scaled(
+				self.viewport().size(),
+				Qt.IgnoreAspectRatio,
+				Qt.SmoothTransformation
+			)
+			x = (self.viewport().width() - scaled.width()) // 2
+			y = (self.viewport().height() - scaled.height()) // 2
+			painter.drawPixmap(x, y, scaled)
+		elif config.MDI_BACKGROUND_IMAGE_STYLE=="center":
+			x = (self.viewport().width() - self.pixmap.width()) // 2
+			y = (self.viewport().height() - self.pixmap.height()) // 2
+			painter.drawPixmap(x, y, self.pixmap)
+		elif config.MDI_BACKGROUND_IMAGE_STYLE=="tile":
+			painter.drawTiledPixmap(self.viewport().rect(), self.pixmap)
+		else:
+			# scaled is the default
+			scaled = self.pixmap.scaled(
+				self.viewport().size(),
+				Qt.IgnoreAspectRatio,
+				Qt.SmoothTransformation
+			)
+			x = (self.viewport().width() - scaled.width()) // 2
+			y = (self.viewport().height() - scaled.height()) // 2
+			painter.drawPixmap(x, y, scaled)
+
+	def dragEnterEvent(self, event):
+		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
+			event.ignore()
+			return
+		if event.mimeData().hasUrls():
+			event.accept()
+		else:
+			event.ignore()
+
+	def dragMoveEvent(self, event):
+		if not config.DRAG_AND_DROP_MAIN_APPLICATION:
+			event.ignore()
+			return
+		if event.mimeData().hasUrls():
+			event.accept()
+		else:
+			event.ignore()
+
+	def dropEvent(self, event):
+		if not config.DRAG_AND_DROP_MAIN_APPLICATION: return
+		files = [u.toLocalFile() for u in event.mimeData().urls()]
+		installed = []
+		for file_path in files:
+			name_without_extension, extension = os.path.splitext(file_path)
+
+			if extension=="."+SCRIPT_FILE_EXTENSION:
+				if not config.SCRIPTING_ENGINE_ENABLED:
+					event.ignore()
+					return
+				self.openScript.emit(file_path)
+			elif extension==".py":
+				if not config.ENABLE_PLUGINS:
+					event.ignore()
+					return
+				if not config.ENABLE_PLUGIN_EDITOR:
+					event.ignore()
+					return
+				self.openPython.emit(file_path)
+			elif extension==".zip":
+				if not config.ENABLE_PLUGINS: 
+					event.ignore()
+					return
+				if not config.OVERWRITE_PLUGINS_ON_IMPORT:
+					overwrite = False
+					ofiles = []
+					try:
+						with zipfile.ZipFile(file_path, 'r') as zf:
+							for member in zf.infolist():
+								efile_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+								extract_file = False
+								name_without_extension, extension = os.path.splitext(efile_path)
+								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+								if config.IMPORT_SCRIPTS_IN_PLUGINS:
+									sfile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+									name_without_extension, extension = os.path.splitext(sfile_path)
+									if extension.lower()=='.': extract_file = True
+								if extract_file:
+									if os.path.exists(efile_path):
+										overwrite = True
+										ofiles.append(efile_path)
+									if os.path.exists(sfile_path):
+										overwrite = True
+										ofiles.append(sfile_path)
+					except zipfile.BadZipFile:
+						QMessageBox.critical(self, 'Error', f"\"{file_path}\" is not a valid zip file")
+						return
+					except FileNotFoundError:
+						QMessageBox.critical(self, 'Error', f"Plugin archive \"{file_path}\" not found.")
+						return
+					except Exception as e:
+						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+						return
+				else:
+					overwrite = False
+					ofiles = []
+
+				if not config.OVERWRITE_PLUGINS_ON_IMPORT and overwrite==True:
+					msgBox = QMessageBox()
+					msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setText("The following files already exist. Overwrite?")
+					msgBox.setInformativeText("\n".join(ofiles))
+					msgBox.setWindowTitle("Overwrite")
+					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+					rval = msgBox.exec()
+					if rval == QMessageBox.Cancel:
+						pass
+					else:
+						overwrite = False
+
+				if not overwrite:
+					try:
+						with zipfile.ZipFile(file_path, 'r') as zf:
+							for member in zf.infolist():
+								efile_path = os.path.join(plugins.PLUGIN_DIRECTORY, member.filename)
+
+								extract_file = False
+								name_without_extension, extension = os.path.splitext(efile_path)
+								if extension.lower()=='.py' or extension.lower()=='.png': extract_file = True
+
+								if extract_file: zf.extract(member, plugins.PLUGIN_DIRECTORY)
+
+								if config.IMPORT_SCRIPTS_IN_PLUGINS:
+									efile_path = os.path.join(commands.SCRIPTS_DIRECTORY, member.filename)
+
+									extract_file = False
+									name_without_extension, extension = os.path.splitext(efile_path)
+									if extension.lower()=='.'+SCRIPT_FILE_EXTENSION: extract_file = True
+
+									if extract_file: zf.extract(member, commands.SCRIPTS_DIRECTORY)
+
+					except zipfile.BadZipFile:
+						QMessageBox.critical(self, 'Error', f"\"{file_path}\" is not a valid zip file")
+					except FileNotFoundError:
+						QMessageBox.critical(self, 'Error', f"Plugin archive \"{file_path}\" not found.")
+					except Exception as e:
+						QMessageBox.critical(self, 'Error', f'Error importing file: {e}')
+
+					plugins.call(self.parent,"unload")
+					errors = plugins.load_plugins(self.parent)
+					if len(errors)>0:
+						msgBox = QMessageBox()
+						msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+						msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+						if len(errors)>1:
+							msgBox.setText("There were errors loading plugins!")
+						else:
+							msgBox.setText("There was an error loading plugins!")
+						msgBox.setInformativeText("\n".join(errors))
+						msgBox.setWindowTitle("Plugin load error")
+						msgBox.setStandardButtons(QMessageBox.Ok)
+						msgBox.exec()
+					else:
+						installed.append(os.path.basename(file_path))
+
+		if len(installed)>0:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText("The following plugin files were installed:")
+			msgBox.setInformativeText("\n".join(installed))
+			msgBox.setWindowTitle("Plugin Installation")
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()

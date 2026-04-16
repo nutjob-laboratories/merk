@@ -1008,6 +1008,12 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateDistance(self,state):
+		self.SUBWINDOW_SNAP_DISTANCE = self.snapDistance.value()
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def updateBlinkRate(self,state):
 		self.CURSOR_BLINK_RATE = self.blinkRate.value()
 		self.changed.show()
@@ -1996,6 +2002,7 @@ class Dialog(QDialog):
 		self.MDI_BACKGROUND_IMAGE_STYLE = config.MDI_BACKGROUND_IMAGE_STYLE
 		self.REFRESH_CHANNEL_LIST = config.REFRESH_CHANNEL_LIST
 		self.BAD_NICKNAME_FALLBACK = config.BAD_NICKNAME_FALLBACK
+		self.SUBWINDOW_SNAP_DISTANCE = config.SUBWINDOW_SNAP_DISTANCE
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3059,6 +3066,22 @@ class Dialog(QDialog):
 		if config.RUBBER_BAND_MOVE: self.windowRubberMove.setChecked(True)
 		self.windowRubberMove.stateChanged.connect(self.changedSetting)
 
+		self.snapWindows = QCheckBox("Snap subwindows together within",self)
+		if config.SUBWINDOW_SNAPPING: self.snapWindows.setChecked(True)
+		self.snapWindows.stateChanged.connect(self.changedSetting)
+
+		self.snapDistanceSpec = QLabel("pixels")
+		self.snapDistance = QSpinBox()
+		self.snapDistance.setRange(1,9999)
+		self.snapDistance.setValue(self.SUBWINDOW_SNAP_DISTANCE)
+		self.snapDistance.valueChanged.connect(self.updateDistance)
+
+		distanceLayout = QHBoxLayout()
+		distanceLayout.addWidget(self.snapWindows)
+		distanceLayout.addWidget(self.snapDistance)
+		distanceLayout.addWidget(self.snapDistanceSpec)
+		distanceLayout.addStretch()
+
 		rbLayout = QHBoxLayout()
 		rbLayout.addWidget(self.windowRubberSize)
 		rbLayout.addWidget(self.windowRubberMove)
@@ -3077,6 +3100,7 @@ class Dialog(QDialog):
 		swsSettings.addWidget(self.showInputMenu)
 		swsSettings.addWidget(self.showLongMessage)
 		swsSettings.addWidget(self.autoMaxSubwindow)
+		swsSettings.addLayout(distanceLayout)
 		swsSettings.addWidget(self.showInfo)
 		swsSettings.addWidget(self.enableNickClick)
 		swsSettings.addLayout(rbLayout)
@@ -6580,6 +6604,8 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_NICK_MESSAGES = self.showNicks.isChecked()
 		config.SHOW_CHANNEL_TOPIC_MESSAGES = self.showTopic.isChecked()
 		config.EXECUTE_CHANNEL_SCRIPTS = self.exeChannel.isChecked()
+		config.SUBWINDOW_SNAP_DISTANCE = self.SUBWINDOW_SNAP_DISTANCE
+		config.SUBWINDOW_SNAPPING = self.snapWindows.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK
