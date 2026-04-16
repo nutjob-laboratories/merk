@@ -4479,6 +4479,17 @@ class Merk(QMainWindow):
 		config.save_settings(config.CONFIG_FILE)
 		self.buildSettingsMenu()
 
+	def menuSetOrder(self,order):
+		config.SET_SUBWINDOW_ORDER = order
+		config.save_settings(config.CONFIG_FILE)
+		if config.SET_SUBWINDOW_ORDER.lower()=='creation':
+			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
+		elif config.SET_SUBWINDOW_ORDER.lower()=='stacking':
+			self.MDI.setActivationOrder(QMdiArea.StackingOrder)
+		elif config.SET_SUBWINDOW_ORDER.lower()=='activation':
+			self.MDI.setActivationOrder(QMdiArea.ActivationHistoryOrder)
+		self.buildSettingsMenu()
+
 	def buildSettingsMenu(self):
 
 		self.settingsMenu.clear()
@@ -4796,6 +4807,30 @@ class Merk(QMainWindow):
 		else:
 			entry = QAction(QIcon(self.unchecked_icon),"Rubberband move", self)
 		entry.triggered.connect(self.settingsMove)
+		sm.addAction(entry)
+
+		e = textSeparator(self,"Subwindow order")
+		sm.addAction(e)
+
+		if config.SET_SUBWINDOW_ORDER=="creation":
+			entry = QAction(QIcon(self.round_checked_icon),"Creation", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Creation", self)
+			entry.triggered.connect(lambda state,u="creation": self.menuSetOrder(u))
+		sm.addAction(entry)
+
+		if config.SET_SUBWINDOW_ORDER=="stacking":
+			entry = QAction(QIcon(self.round_checked_icon),"Stacking", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Stacking", self)
+			entry.triggered.connect(lambda state,u="stacking": self.menuSetOrder(u))
+		sm.addAction(entry)
+
+		if config.SET_SUBWINDOW_ORDER=="activation":
+			entry = QAction(QIcon(self.round_checked_icon),"Activation", self)
+		else:	
+			entry = QAction(QIcon(self.round_unchecked_icon),"Activation", self)
+			entry.triggered.connect(lambda state,u="activation": self.menuSetOrder(u))
 		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(WINDOW_ICON),"Widget style")

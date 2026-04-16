@@ -9720,7 +9720,7 @@ class ScriptThread(QThread):
 											else:
 												error_message = f"\"{a}\" is not a valid alias token"
 									else:
-										error_message = f"arguments are non-numeric"
+										error_message = f"arguments are not integers"
 									if error_message!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: {error_message}"])
 										loop = False

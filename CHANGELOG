@@ -28,6 +28,10 @@ What's New
 * Added a new "Subwindow" submenu to the "Settings" menu.
 * Removed some connection dialog settings from the "Connections" subwindow in
   the "Settings" menu.
+* Added subwindow order setting to the "Subwindow" submenu in the "Settings"
+  menu.
+* Bugfix: text pasted into a script or Python editor now strips any existing
+  formatting.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |
