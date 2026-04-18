@@ -2163,10 +2163,6 @@ class Dialog(QDialog):
 		if config.SHOW_TIPS_AT_START: self.showTips.setChecked(True)
 		self.showTips.stateChanged.connect(self.changedSetting)
 
-		self.showLines = QCheckBox(f"Line numbers on the connection dialog editor",self)
-		if config.SHOW_LINE_NUMBERS_ON_CONNECT: self.showLines.setChecked(True)
-		self.showLines.stateChanged.connect(self.changedSetting)
-
 		self.saveLocation = QCheckBox("Save and restore window location",self)
 		if config.SAVE_MAIN_WINDOW_LOCATION: self.saveLocation.setChecked(True)
 		self.saveLocation.stateChanged.connect(self.changedSetting)
@@ -2176,7 +2172,6 @@ class Dialog(QDialog):
 		misLayout.addWidget(self.simpleConnect)
 		misLayout.addWidget(self.showConnect)
 		misLayout.addWidget(self.noConnectLogo)
-		misLayout.addWidget(self.showLines)
 		misLayout.addWidget(self.enableDnD)
 		misLayout.addWidget(self.managerTop)
 		misLayout.addWidget(self.showTips)
@@ -6595,7 +6590,6 @@ class Dialog(QDialog):
 		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 		config.DISCONNECT_ON_SASL_FAIL = self.failSasl.isChecked()
 		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()
-		config.SHOW_LINE_NUMBERS_ON_CONNECT = self.showLines.isChecked()
 		config.SAVE_MAIN_WINDOW_LOCATION = self.saveLocation.isChecked()
 		config.SHOW_CHANNEL_JOIN_MESSAGES = self.showJoin.isChecked()
 		config.SHOW_CHANNEL_PART_MESSAGES = self.showPart.isChecked()

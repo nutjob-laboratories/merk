@@ -1172,13 +1172,16 @@ def execute_read(data):
 	gui = data[1]
 	script_id = data[2]
 
-	f = open(filename,"r")
-	contents = f.read()
-	f.close()
+	try:
+		f = open(filename,"r")
+		contents = f.read()
+		f.close()
 
-	if len(contents.strip())==0: contents = '*'
+		if len(contents.strip())==0: contents = '*'
 
-	gui.scripts[script_id].set_input(f"{contents}")
+		gui.scripts[script_id].set_input(f"{contents}")
+	except:
+		gui.scripts[script_id].set_input("*")
 
 def execute_message(data):
 	question = data[0]

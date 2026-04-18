@@ -804,7 +804,6 @@ class Window(QMainWindow):
 		self.editor = CodeEditor()
 
 		self.editor.setHighlightLine(config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR)
-		self.editor.setAcceptRichText(False)
 		self.editor.cursorPositionChanged.connect(self.update_line_number)
 
 		if config.EDITOR_USES_SYNTAX_HIGHLIGHTING:

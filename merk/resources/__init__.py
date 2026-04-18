@@ -1123,6 +1123,7 @@ class CodeEditor(QTextEdit):
 		super().__init__()
 		self.highlight_line = highlight_line
 		self.lineNumberArea = LineNumberArea(self)
+		self.setAcceptRichText(False)
 
 		self.background = self.palette().color(QPalette.Window).name()
 		self.foreground = self.palette().color(QPalette.WindowText).name()

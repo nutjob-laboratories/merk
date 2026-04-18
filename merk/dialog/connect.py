@@ -583,26 +583,17 @@ class Dialog(QDialog):
 		self.commandHost.setWordWrap(True)
 		self.commandHost.setAlignment(Qt.AlignJustify)
 
-		if config.SHOW_LINE_NUMBERS_ON_CONNECT:
-			self.commands = CodeEditor()
+		self.commands = CodeEditor()
 
-			# Add syntax highlighting
-			self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
+		# Add syntax highlighting
+		self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
 
-			# Set whether to highlight the current line
-			self.commands.setHighlightLine(config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR)
+		# Set whether to highlight the current line
+		self.commands.setHighlightLine(config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR)
 
-			# Set background/foreground
-			self.commands.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
-			self.commands.highlight_current_line(True)
-		else:
-			self.commands = QPlainTextEdit()
-
-			# Add syntax highlighting
-			self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
-
-			# Set background/foreground
-			self.commands.setStyleSheet(self.generateStylesheet('QPlainTextEdit',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+		# Set background/foreground
+		self.commands.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))
+		self.commands.highlight_current_line(True)
 
 		height = self.servers.height()+self.reconnect.height()
 		if self.not_simplified:

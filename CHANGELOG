@@ -32,6 +32,12 @@ What's New
   menu.
 * Bugfix: text pasted into a script or Python editor now strips any existing
   formatting.
+* Removed the option to toggle line numbers in the connection dialog. Now, they
+  are always shown.
+* Bugfix: syntax highlighting for comments in the script editor no longer
+  leaves strings, aliases, etc, in their highlighting color when commented.
+* Trying (and failing) to read a file with the script-only "read" command will
+  now behave as if the file is empty, and return "*".
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |
