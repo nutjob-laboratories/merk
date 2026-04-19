@@ -416,7 +416,7 @@ REGISTRATION_NICK_ERROR_LIMIT = 3
 PREVENT_ILLEGAL_CHANNELS = True
 CHANNEL_MODE_CONTEXT_MENU = True
 SETTINGS_FONT_POINT_SIZE = 10
-ENABLE_READ_COMMAND = True
+ENABLE_READ_AND_WRITE_COMMAND = True
 HIGHLIGHT_ALL_VISIBLE_NICKS = False
 DISCONNECT_ON_SASL_FAIL = True
 EXECUTE_GLOBAL_SCRIPT = True
@@ -452,7 +452,7 @@ def build_settings():
 		"execute_global_script": EXECUTE_GLOBAL_SCRIPT,
 		"disconnect_on_sasl_failure": DISCONNECT_ON_SASL_FAIL,
 		"highlight_all_nicknames_in_input_widget": HIGHLIGHT_ALL_VISIBLE_NICKS,
-		"enable_read_command": ENABLE_READ_COMMAND,
+		"enable_read_and_write_command": ENABLE_READ_AND_WRITE_COMMAND,
 		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
 		"channel_mode_right_click_menu": CHANNEL_MODE_CONTEXT_MENU,
 		"prevent_illegal_channel_input": PREVENT_ILLEGAL_CHANNELS,
@@ -866,8 +866,8 @@ def patch_settings(settings):
 		settings["disconnect_on_sasl_failure"] = DISCONNECT_ON_SASL_FAIL
 	if not "highlight_all_nicknames_in_input_widget" in settings:
 		settings["highlight_all_nicknames_in_input_widget"] = HIGHLIGHT_ALL_VISIBLE_NICKS
-	if not "enable_read_command" in settings:
-		settings["enable_read_command"] = ENABLE_READ_COMMAND
+	if not "enable_read_and_write_command" in settings:
+		settings["enable_read_and_write_command"] = ENABLE_READ_AND_WRITE_COMMAND
 	if not "settings_dialog_font_size" in settings:
 		settings["settings_dialog_font_size"] = SETTINGS_FONT_POINT_SIZE
 	if not "channel_mode_right_click_menu" in settings:
@@ -2000,7 +2000,7 @@ def load_settings(filename):
 	global PREVENT_ILLEGAL_CHANNELS
 	global CHANNEL_MODE_CONTEXT_MENU
 	global SETTINGS_FONT_POINT_SIZE
-	global ENABLE_READ_COMMAND
+	global ENABLE_READ_AND_WRITE_COMMAND
 	global HIGHLIGHT_ALL_VISIBLE_NICKS
 	global DISCONNECT_ON_SASL_FAIL
 	global EXECUTE_GLOBAL_SCRIPT
@@ -2042,7 +2042,7 @@ def load_settings(filename):
 		EXECUTE_GLOBAL_SCRIPT = settings["execute_global_script"]
 		DISCONNECT_ON_SASL_FAIL = settings["disconnect_on_sasl_failure"]
 		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_nicknames_in_input_widget"]
-		ENABLE_READ_COMMAND = settings["enable_read_command"]
+		ENABLE_READ_AND_WRITE_COMMAND = settings["enable_read_and_write_command"]
 		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]
 		CHANNEL_MODE_CONTEXT_MENU = settings["channel_mode_right_click_menu"]
 		PREVENT_ILLEGAL_CHANNELS = settings["prevent_illegal_channel_input"]

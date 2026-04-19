@@ -321,6 +321,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"message",
 			"hostmask",
 			"escape",
+			"write",
 		]
 
 		script_full = [
@@ -374,6 +375,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove('number')
 			script_only.remove('hostmask')
 			script_only.remove('escape')
+			script_only.remove("write")
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")
@@ -395,9 +397,11 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove("insert")
 		if not config.ENABLE_USER_COMMAND:
 			merk.remove(cmdsymbol+"user")
-		if not config.ENABLE_READ_COMMAND:
+		if not config.ENABLE_READ_AND_WRITE_COMMAND:
 			if 'read' in script_only:
 				script_only.remove('read')
+			if 'write' in script_only:
+				script_only.remove('write')
 
 		ctrl_keys = ['Ctrl', 'Control']
 		shift_keys = ['Shift']

@@ -862,9 +862,9 @@ class Dialog(QDialog):
 			self.autoAliasQuit.setEnabled(True)
 			self.enableBuiltin.setEnabled(True)
 			if self.enableScripts.isChecked():
-				self.enableRead.setEnabled(True)
+				self.enableReadWrite.setEnabled(True)
 			else:
-				self.enableRead.setEnabled(False)
+				self.enableReadWrite.setEnabled(False)
 		else:
 			self.autocompleteAlias.setEnabled(False)
 			self.interpolateAlias.setEnabled(False)
@@ -874,7 +874,7 @@ class Dialog(QDialog):
 			self.autoAliasAway.setEnabled(False)
 			self.autoAliasQuit.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
-			self.enableRead.setEnabled(False)
+			self.enableReadWrite.setEnabled(False)
 		self.changed.show()
 		self.syntax_did_change = True
 		self.boldApply()
@@ -896,9 +896,9 @@ class Dialog(QDialog):
 			self.executeGlobal.setEnabled(True)
 			self.exeChannel.setEnabled(True)
 			if self.enableAlias.isChecked():
-				self.enableRead.setEnabled(True)
+				self.enableReadWrite.setEnabled(True)
 			else:
-				self.enableRead.setEnabled(False)
+				self.enableReadWrite.setEnabled(False)
 		else:
 			self.showErrors.setEnabled(False)
 			self.restrictError.setEnabled(False)
@@ -911,7 +911,7 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(False)
 			self.syntaxscript.setEnabled(False)
 			self.enableWait.setEnabled(False)
-			self.enableRead.setEnabled(False)
+			self.enableReadWrite.setEnabled(False)
 			self.executeGlobal.setEnabled(False)
 			self.exeChannel.setEnabled(False)
 		self.changed.show()
@@ -5193,16 +5193,16 @@ class Dialog(QDialog):
 		if config.ENABLE_BROWSER_COMMAND: self.enableBrowser.setChecked(True)
 		self.enableBrowser.stateChanged.connect(self.changedSettingEditorConfig)
 
-		self.enableRead = QCheckBox(f"read",self)
-		if config.ENABLE_READ_COMMAND: self.enableRead.setChecked(True)
-		self.enableRead.stateChanged.connect(self.changedSettingEditor)
+		self.enableReadWrite = QCheckBox(f"read/write",self)
+		if config.ENABLE_READ_AND_WRITE_COMMAND: self.enableReadWrite.setChecked(True)
+		self.enableReadWrite.stateChanged.connect(self.changedSettingEditor)
 
 		if not config.ENABLE_ALIASES:
 			self.interpolateAlias.setEnabled(False)
 			self.alias_symbol.setEnabled(False)
 			self.alias_symbol_label.setEnabled(False)
 			self.enableBuiltin.setEnabled(False)
-			self.enableRead.setEnabled(False)
+			self.enableReadWrite.setEnabled(False)
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			self.restrictError.setEnabled(False)
@@ -5214,7 +5214,7 @@ class Dialog(QDialog):
 			self.enableGoto.setEnabled(False)
 			self.enableIf.setEnabled(False)
 			self.enableWait.setEnabled(False)
-			self.enableRead.setEnabled(False)
+			self.enableReadWrite.setEnabled(False)
 			self.executeGlobal.setEnabled(False)
 			self.exeChannel.setEnabled(False)
 
@@ -5233,7 +5233,7 @@ class Dialog(QDialog):
 		cmdLayout2.addWidget(self.enableGoto)
 		cmdLayout2.addWidget(self.enableIf)
 		cmdLayout2.addWidget(self.enableWait)
-		cmdLayout2.addWidget(self.enableRead)
+		cmdLayout2.addWidget(self.enableReadWrite)
 		cmdLayout2.addStretch()
 
 		self.escapeHTML = QCheckBox(f"Escape HTML in {config.ISSUE_COMMAND_SYMBOL}print and {config.ISSUE_COMMAND_SYMBOL}prints",self)
@@ -6586,7 +6586,7 @@ class Dialog(QDialog):
 		config.PREVENT_ILLEGAL_NICKNAMES = self.prevIllegal.isChecked()
 		config.PREVENT_ILLEGAL_CHANNELS = self.prevChannel.isChecked()
 		config.CHANNEL_MODE_CONTEXT_MENU = self.chanMode.isChecked()
-		config.ENABLE_READ_COMMAND = self.enableRead.isChecked()
+		config.ENABLE_READ_AND_WRITE_COMMAND = self.enableReadWrite.isChecked()
 		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 		config.DISCONNECT_ON_SASL_FAIL = self.failSasl.isChecked()
 		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()

@@ -156,7 +156,7 @@ There are four libraries that comes bundled with **MERK**:
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
         - Over 80 different commands are available for scripts or for use in the client
-        - 20 script-only commands
+        - 21 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -426,6 +426,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
 | `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `layout`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `restart`, `restore`, `settings`, `size`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `write FILENAME CONTENTS...`            | Writes `CONTENTS`to `FILENAME`, followed by a newline. *Can only be called by scripts*                                                        |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
 | `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |

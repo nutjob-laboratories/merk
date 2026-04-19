@@ -133,11 +133,6 @@ def GetSaslDialog(obj,username=None,password=None):
 	if not info: return None
 	return info
 
-class UserMacro:
-	def __init__(self,name,script):
-		self.name = name
-		self.script = script
-
 def add_macro(name,script,usage=None,mhelp=None):
 	e = UserMacro(name,script)
 	USER_MACROS[name] = e
@@ -1171,17 +1166,30 @@ def execute_read(data):
 	filename = data[0]
 	gui = data[1]
 	script_id = data[2]
+	do_read = data[3]
 
-	try:
-		f = open(filename,"r")
-		contents = f.read()
-		f.close()
+	if do_read:
+		try:
+			f = open(filename,"r")
+			contents = f.read()
+			f.close()
 
-		if len(contents.strip())==0: contents = '*'
+			if len(contents.strip())==0: contents = '*'
 
-		gui.scripts[script_id].set_input(f"{contents}")
-	except:
-		gui.scripts[script_id].set_input("*")
+			gui.scripts[script_id].set_input(f"{contents}")
+		except:
+			gui.scripts[script_id].set_input("*")
+	else:
+		contents = data[4]
+
+		try:
+			f = open(filename, "a")
+			f.write(f"{contents}\n")
+			f.close()
+
+			gui.scripts[script_id].set_input(True)
+		except:
+			gui.scripts[script_id].set_input(False)
 
 def execute_message(data):
 	question = data[0]
@@ -1230,7 +1238,7 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].request_message.connect(execute_message)
 	gui.scripts[script_id].request_halt.connect(execute_halt)
-	gui.scripts[script_id].request_read.connect(execute_read)
+	gui.scripts[script_id].request_read_write.connect(execute_read)
 	gui.scripts[script_id].start()
 
 def executeGlobalScript(gui,window,text,filename=None,args=[]):
@@ -1245,7 +1253,7 @@ def executeGlobalScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_number.connect(execute_number)
 	gui.scripts[script_id].request_message.connect(execute_message)
 	gui.scripts[script_id].request_halt.connect(execute_halt)
-	gui.scripts[script_id].request_read.connect(execute_read)
+	gui.scripts[script_id].request_read_write.connect(execute_read)
 	gui.scripts[script_id].start()
 
 def getScriptAliases(gui):
@@ -7765,7 +7773,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.scripts[script_id].request_number.connect(execute_number)
 				gui.scripts[script_id].request_message.connect(execute_message)
 				gui.scripts[script_id].request_halt.connect(execute_halt)
-				gui.scripts[script_id].request_read.connect(execute_read)
+				gui.scripts[script_id].request_read_write.connect(execute_read)
 				gui.scripts[script_id].start()
 
 			else:
@@ -7806,7 +7814,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						gui.scripts[script_id].request_number.connect(execute_number)
 						gui.scripts[script_id].request_message.connect(execute_message)
 						gui.scripts[script_id].request_halt.connect(execute_halt)
-						gui.scripts[script_id].request_read.connect(execute_read)
+						gui.scripts[script_id].request_read_write.connect(execute_read)
 						gui.scripts[script_id].start()
 
 					else:
@@ -7827,7 +7835,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							gui.scripts[script_id].request_number.connect(execute_number)
 							gui.scripts[script_id].request_message.connect(execute_message)
 							gui.scripts[script_id].request_halt.connect(execute_halt)
-							gui.scripts[script_id].request_read.connect(execute_read)
+							gui.scripts[script_id].request_read_write.connect(execute_read)
 							gui.scripts[script_id].start()
 						else:
 							if is_script:
@@ -8441,7 +8449,7 @@ class ScriptThread(QThread):
 	request_number = pyqtSignal(object)
 	request_message = pyqtSignal(object)
 	request_halt = pyqtSignal(object)
-	request_read = pyqtSignal(object)
+	request_read_write = pyqtSignal(object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None,is_global=False):
 		super(ScriptThread, self).__init__(parent)
@@ -8604,6 +8612,24 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |=======|
+			# | write |
+			# |=======|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='write':
+					if not config.ENABLE_READ_AND_WRITE_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write has been disabled"])
+						no_errors = False
+						break
+					elif not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: aliases are disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write called without enough arguments"])
+						no_errors = False
+						break
+
 			# |========|
 			# | escape |
 			# |========|
@@ -8627,11 +8653,11 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask: aliases are disabled"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_COMMAND and len(tokens)<3:
+					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called without enough arguments"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_COMMAND and len(tokens)>3:
+					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)>3:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called with too many arguments"])
 						no_errors = False
 						break
@@ -8750,7 +8776,7 @@ class ScriptThread(QThread):
 			# |======|
 			if len(tokens)>=1:
 				if tokens[0].lower()=='read':
-					if not config.ENABLE_READ_COMMAND:
+					if not config.ENABLE_READ_AND_WRITE_COMMAND:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read has been disabled"])
 						no_errors = False
 						break
@@ -8758,7 +8784,7 @@ class ScriptThread(QThread):
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_COMMAND and len(tokens)<3:
+					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
 						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
 						no_errors = False
 						break
@@ -8841,6 +8867,7 @@ class ScriptThread(QThread):
 									"number",
 									"hostmask",
 									"escape",
+									"write",
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
@@ -9602,7 +9629,7 @@ class ScriptThread(QThread):
 						if len(tokens)>=1:
 							if tokens[0].lower()=='read' and len(tokens)>=3:
 
-								if config.ENABLE_ALIASES and config.ENABLE_READ_COMMAND:
+								if config.ENABLE_ALIASES and config.ENABLE_READ_AND_WRITE_COMMAND:
 									tokens.pop(0)
 									a = tokens.pop(0)
 
@@ -9630,7 +9657,7 @@ class ScriptThread(QThread):
 													if is_valid_alias_name(a):
 														if is_text_file(efilename):
 															try:
-																self.request_read.emit([efilename,self.gui,self.id])
+																self.request_read_write.emit([efilename,self.gui,self.id,True])
 																self.mutex.lock()
 																self.wait_condition.wait(self.mutex)
 																self.mutex.unlock()
@@ -9647,7 +9674,7 @@ class ScriptThread(QThread):
 													if a in self.CREATED:
 														if is_text_file(efilename):
 															try:
-																self.request_read.emit([efilename,self.gui,self.id])
+																self.request_read_write.emit([efilename,self.gui,self.id,True])
 																self.mutex.lock()
 																self.wait_condition.wait(self.mutex)
 																self.mutex.unlock()
@@ -9667,6 +9694,52 @@ class ScriptThread(QThread):
 									if error_message!=None:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
 										loop = False
+								continue
+
+						# |=======|
+						# | write |
+						# |=======|
+						# 
+						# This command writes to a file
+						#
+						if len(tokens)>=1:
+							if tokens[0].lower()=='write' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES and config.ENABLE_READ_AND_WRITE_COMMAND:
+									try:
+										stokens = shlex.split(line, comments=False)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing write command. Try using quotation marks"])
+										loop = False
+										continue
+
+									stokens.pop(0)
+									filename = stokens.pop(0)
+									contents = ' '.join(stokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									filename = self.interpolateAliases(filename)
+									contents = self.interpolateAliases(contents)
+
+									try:
+										self.request_read_write.emit([filename,self.gui,self.id,False,contents])
+										self.mutex.lock()
+										self.wait_condition.wait(self.mutex)
+										self.mutex.unlock()
+										if self.user_input:
+											# write succeded
+											pass
+										else:
+											# write failed
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: write to \"{filename}\" failed"])
+											loop = False
+										self.user_input = None
+										script_only_command = True
+										continue
+									except Exception as e:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error calling write: {e}"])
+										loop = False
+										continue
 								continue
 
 						# |========|

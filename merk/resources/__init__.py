@@ -459,6 +459,11 @@ class WhoWasData:
 		self.host = 'Unknown'
 		self.realname = 'Unknown'
 
+class UserMacro:
+	def __init__(self,name,script):
+		self.name = name
+		self.script = script
+		
 # Functions
 
 def is_hostid(s):
