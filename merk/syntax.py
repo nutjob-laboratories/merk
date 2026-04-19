@@ -322,6 +322,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"hostmask",
 			"escape",
 			"write",
+			"getfile",
+			"setfile",
 		]
 
 		script_full = [
@@ -376,6 +378,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove('hostmask')
 			script_only.remove('escape')
 			script_only.remove("write")
+			script_only.remove("getfile")
+			script_only.remove("setfile")
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")

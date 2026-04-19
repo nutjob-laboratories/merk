@@ -236,6 +236,10 @@ Appearance:
 <td>Opens <code>PATH</code>(s) in the default file manager</td>
 </tr>
 <tr>
+<td><code>getfile ALIAS MESSAGE</code></td>
+<td>Shows an "open file" dialog, and stores the result in <code>ALIAS</code>. If no file is set, <code>ALIAS</code> will be set to <code>*</code>. This command is blocking. <strong>Can only be called from scripts</strong></td>
+</tr>
+<tr>
 <td><code>goto TARGET</code></td>
 <td>Moves execution of the script to <code>TARGET</code>. One of the only script-only commands that can be issued from an <code>if</code> command. <strong>Can only be called from scripts</strong></td>
 </tr>
@@ -446,6 +450,10 @@ Appearance:
 <tr>
 <td><code>/restore [SERVER] [WINDOW]</code></td>
 <td>Restores a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to restore the server window</td>
+</tr>
+<tr>
+<td><code>setfile ALIAS MESSAGE</code></td>
+<td>Shows a "save file" dialog, and stores the result in <code>ALIAS</code>. If no file is set, <code>ALIAS</code> will be set to <code>*</code>. This command is blocking. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/script FILENAME [ARGUMENTS]</code></td>

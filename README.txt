@@ -156,7 +156,7 @@ There are four libraries that comes bundled with **MERK**:
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
         - Over 80 different commands are available for scripts or for use in the client
-        - 21 script-only commands
+        - 23 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -350,6 +350,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
 | `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
+| `getfile ALIAS MESSAGE...`           | Shows an "open file" dialog, and stores the result in `ALIAS`. If no file is set, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
 | `goto TARGET`                         | Moves execution of the script to `TARGET`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Asks the user if they want to halt the script's execution, and displays an error `MESSAGE`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*       |
 | `/help [COMMAND]`                                 | Displays command usage information                  |
@@ -403,6 +404,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/rem [TEXT...]`                        | Does nothing. Can be used for comments                                                     |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
 | `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to restore the server window                                 |
+| `setfile ALIAS MESSAGE...`           | Shows a "save file" dialog, and stores the result in `ALIAS`. If no file is set, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
 | `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
 | `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden, and shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to show the server window  |
 | `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size. Pass `*` as `WINDOW` to resize the server window |

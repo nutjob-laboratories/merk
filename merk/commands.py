@@ -85,6 +85,24 @@ USER_MACROS = {}
 MACRO_HELP = {}
 MACRO_USAGE = {}
 
+def ShowFileDialog(self,msg,show_open=True):
+	if show_open:
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,f"{msg}", config.CONFIG_DIRECTORY, "All Files (*)", options=options)
+		if fileName:
+			return fileName
+		else:
+			return None
+	else:
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getSaveFileName(self,f"{msg}",config.CONFIG_DIRECTORY,"All Files (*)", options=options)
+		if fileName:
+			return fileName
+		else:
+			return None
+
 def ShowHaltDialog(msg=None):
 	msgBox = QMessageBox()
 	msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
@@ -103,6 +121,14 @@ def ShowHaltDialog(msg=None):
 
 def ShowMessageDialog(msg,parent=None):
 	x = ShowMessage(msg,parent)
+	info = x.get_message_information(msg,parent)
+	del x
+
+	if not info: return None
+	return info
+
+def GetFileDialog(msg,parent=None):
+	x = GetInput(msg,parent)
 	info = x.get_message_information(msg,parent)
 	del x
 
@@ -1151,6 +1177,18 @@ def execute_script_end(data):
 
 	remove_halt(script_id)
 
+def execute_file(data):
+	question = data[0]
+	gui = data[1]
+	script_id = data[2]
+	is_open = data[3]
+
+	u = ShowFileDialog(gui,question,is_open)
+	if u:
+		gui.scripts[script_id].set_input(f"{u}")
+	else:
+		gui.scripts[script_id].set_input(None)
+
 def execute_input(data):
 	question = data[0]
 	gui = data[1]
@@ -1239,6 +1277,7 @@ def executeScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_message.connect(execute_message)
 	gui.scripts[script_id].request_halt.connect(execute_halt)
 	gui.scripts[script_id].request_read_write.connect(execute_read)
+	gui.scripts[script_id].request_file.connect(execute_file)
 	gui.scripts[script_id].start()
 
 def executeGlobalScript(gui,window,text,filename=None,args=[]):
@@ -1254,6 +1293,7 @@ def executeGlobalScript(gui,window,text,filename=None,args=[]):
 	gui.scripts[script_id].request_message.connect(execute_message)
 	gui.scripts[script_id].request_halt.connect(execute_halt)
 	gui.scripts[script_id].request_read_write.connect(execute_read)
+	gui.scripts[script_id].request_file.connect(execute_file)
 	gui.scripts[script_id].start()
 
 def getScriptAliases(gui):
@@ -7774,6 +7814,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.scripts[script_id].request_message.connect(execute_message)
 				gui.scripts[script_id].request_halt.connect(execute_halt)
 				gui.scripts[script_id].request_read_write.connect(execute_read)
+				gui.scripts[script_id].request_file.connect(execute_file)
 				gui.scripts[script_id].start()
 
 			else:
@@ -7815,6 +7856,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						gui.scripts[script_id].request_message.connect(execute_message)
 						gui.scripts[script_id].request_halt.connect(execute_halt)
 						gui.scripts[script_id].request_read_write.connect(execute_read)
+						gui.scripts[script_id].request_file.connect(execute_file)
 						gui.scripts[script_id].start()
 
 					else:
@@ -7836,6 +7878,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							gui.scripts[script_id].request_message.connect(execute_message)
 							gui.scripts[script_id].request_halt.connect(execute_halt)
 							gui.scripts[script_id].request_read_write.connect(execute_read)
+							gui.scripts[script_id].request_file.connect(execute_file)
 							gui.scripts[script_id].start()
 						else:
 							if is_script:
@@ -8450,6 +8493,7 @@ class ScriptThread(QThread):
 	request_message = pyqtSignal(object)
 	request_halt = pyqtSignal(object)
 	request_read_write = pyqtSignal(object)
+	request_file = pyqtSignal(object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None,is_global=False):
 		super(ScriptThread, self).__init__(parent)
@@ -8611,6 +8655,34 @@ class ScriptThread(QThread):
 			line = line.strip()
 			if len(line)==0: continue
 			tokens = line.split()
+
+			# |=========|
+			# | getfile |
+			# |=========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='getfile':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile: aliases are disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_ALIASES and len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile called without enough arguments"])
+						no_errors = False
+						break
+
+			# |=========|
+			# | setfile |
+			# |=========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='setfile':
+					if not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile: aliases are disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_ALIASES and len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile called without enough arguments"])
+						no_errors = False
+						break
 
 			# |=======|
 			# | write |
@@ -9248,6 +9320,134 @@ class ScriptThread(QThread):
 					else:
 						line = script[index]
 						tokens = line.split()
+
+						# |=========|
+						# | getfile |
+						# |=========|
+						if len(tokens)>=1:
+							if tokens[0].lower()=='getfile' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+									question = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									question = self.interpolateAliases(question)
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									error_message = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													self.request_file.emit([question,self.gui,self.id,True])
+													self.mutex.lock()
+													self.wait_condition.wait(self.mutex)
+													self.mutex.unlock()
+													if self.user_input!=None and len(self.user_input.strip())!=0:
+														self.addAlias(a,f"{self.user_input}")
+													else:
+														self.addAlias(a,f"*")
+													self.user_input = None
+													script_only_command = True
+												else:
+													error_message = f"\"{a}\" is not a valid alias token"
+											else:
+												if a in self.CREATED:
+													if is_valid_alias_name(a):
+														self.request_file.emit([question,self.gui,self.id,True])
+														self.mutex.lock()
+														self.wait_condition.wait(self.mutex)
+														self.mutex.unlock()
+														if self.user_input!=None and len(self.user_input.strip())!=0:
+															self.addAlias(a,f"{self.user_input}")
+														else:
+															self.addAlias(a,f"*")
+														self.user_input = None
+														script_only_command = True
+													else:
+														error_message = f"\"{a}\" is not a valid alias token"
+												else:
+													error_message = f"\"{a}\" already exists in another scope"
+										else:
+											error_message = f"\"{a}\" is not a valid alias token"
+									if error_message!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile: {error_message}"])
+										loop = False
+								continue
+
+						# |=========|
+						# | setfile |
+						# |=========|
+						if len(tokens)>=1:
+							if tokens[0].lower()=='setfile' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+									question = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									question = self.interpolateAliases(question)
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									error_message = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													self.request_file.emit([question,self.gui,self.id,False])
+													self.mutex.lock()
+													self.wait_condition.wait(self.mutex)
+													self.mutex.unlock()
+													if self.user_input!=None and len(self.user_input.strip())!=0:
+														self.addAlias(a,f"{self.user_input}")
+													else:
+														self.addAlias(a,f"*")
+													self.user_input = None
+													script_only_command = True
+												else:
+													error_message = f"\"{a}\" is not a valid alias token"
+											else:
+												if a in self.CREATED:
+													if is_valid_alias_name(a):
+														self.request_file.emit([question,self.gui,self.id,False])
+														self.mutex.lock()
+														self.wait_condition.wait(self.mutex)
+														self.mutex.unlock()
+														if self.user_input!=None and len(self.user_input.strip())!=0:
+															self.addAlias(a,f"{self.user_input}")
+														else:
+															self.addAlias(a,f"*")
+														self.user_input = None
+														script_only_command = True
+													else:
+														error_message = f"\"{a}\" is not a valid alias token"
+												else:
+													error_message = f"\"{a}\" already exists in another scope"
+										else:
+											error_message = f"\"{a}\" is not a valid alias token"
+									if error_message!=None:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile: {error_message}"])
+										loop = False
+								continue
 
 						# |========|
 						# | escape |

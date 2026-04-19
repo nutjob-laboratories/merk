@@ -5,6 +5,7 @@
 What's New
 - **Subwindow snapping**. By default, subwindows within 20px of each other will "snap" together. This can be turned off in the settings dialog, and the "snapping distance" can also be changed.
 - **Scripting now has full file I/O**. Scripts can both read and write to files. Both the `read` and `write` commands can be disabled in settings.
+- **New script-only file dialog commands**. Get a filename from the user with the `getfile` and `setfile` commands.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -41,6 +42,10 @@ What's New
   now behave as if the file is empty, and return "*".
 * New script-only command: "write", which allows scripts to write text to
   files.
+* New script-only command: "getfile", which shows an "open file" dialog, and
+  stores the result in an alias.
+* New script-only command: "setfile", which shows an "save file" dialog, and
+  stores the result in an alias.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |
