@@ -2729,196 +2729,207 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script
-		stokens = shlex.split(user_input, comments=False)
-		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==3:
-			stokens.pop(0)
-			name = stokens.pop(0)
-			script = stokens.pop(0)
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro':
+			try:
+				stokens = shlex.split(user_input, comments=False)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Error tokenizing command. Try quotation marks")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Error tokenizing command. Try quotation marks")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
-			# If the first character is the issue command
-			# symbol, strip that out of the name
-			if len(name)>len(config.ISSUE_COMMAND_SYMBOL):
-				il = len(config.ISSUE_COMMAND_SYMBOL)
-				if name[:il] == config.ISSUE_COMMAND_SYMBOL:
-					name = name[il:]
+			if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==3:
+				stokens.pop(0)
+				name = stokens.pop(0)
+				script = stokens.pop(0)
 
-			# Make sure that macro names start with a letter
-			if len(name)>=1:
-				if not name[0].isalpha():
+				# If the first character is the issue command
+				# symbol, strip that out of the name
+				if len(name)>len(config.ISSUE_COMMAND_SYMBOL):
+					il = len(config.ISSUE_COMMAND_SYMBOL)
+					if name[:il] == config.ISSUE_COMMAND_SYMBOL:
+						name = name[il:]
+
+				# Make sure that macro names start with a letter
+				if len(name)>=1:
+					if not name[0].isalpha():
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+
+				# Make sure the macro name isn't the same as an
+				# existing command
+				if not is_valid_macro_name(name):
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+name+"\" is not a valid macro name")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
+					t = Message(ERROR_MESSAGE,'',"\""+name+"\" is not a valid macro name")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-			# Make sure the macro name isn't the same as an
-			# existing command
-			if not is_valid_macro_name(name):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+name+"\" is not a valid macro name")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"\""+name+"\" is not a valid macro name")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			# Make sure that the macro's script file exists,
-			# and is readable
-			efilename = find_script(script,SCRIPT_FILE_EXTENSION)
-			if not efilename:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+script+"\" doesn't exist or is not readable")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"\""+script+"\" doesn't exist or is not readable")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if does_macro_name_exist(name):
-				t = Message(SYSTEM_MESSAGE,'',f"Replacing macro \"{name}\", executing \"{efilename}\"")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			else:
-				t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			add_macro(name,script)
-			return True
-
-		# /macro name script usage
-		stokens = shlex.split(user_input, comments=False)
-		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==4:
-			stokens.pop(0)
-			name = stokens.pop(0)
-			script = stokens.pop(0)
-			usage = stokens.pop(0)
-
-			# If the first character is the issue command
-			# symbol, strip that out of the name
-			if len(name)>len(config.ISSUE_COMMAND_SYMBOL):
-				il = len(config.ISSUE_COMMAND_SYMBOL)
-				if name[:il] == config.ISSUE_COMMAND_SYMBOL:
-					name = name[il:]
-
-			# Make sure that macro names start with a letter
-			if len(name)>=1:
-				if not name[0].isalpha():
+				# Make sure that the macro's script file exists,
+				# and is readable
+				efilename = find_script(script,SCRIPT_FILE_EXTENSION)
+				if not efilename:
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+script+"\" doesn't exist or is not readable")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
+					t = Message(ERROR_MESSAGE,'',"\""+script+"\" doesn't exist or is not readable")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-			# Make sure the macro name isn't the same as an
-			# existing command
-			if not is_valid_macro_name(name):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+name+"\" is not a valid macro name")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"\""+name+"\" is not a valid macro name")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if does_macro_name_exist(name):
+					t = Message(SYSTEM_MESSAGE,'',f"Replacing macro \"{name}\", executing \"{efilename}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				add_macro(name,script)
 				return True
 
-			# Make sure that the macro's script file exists,
-			# and is readable
-			efilename = find_script(script,SCRIPT_FILE_EXTENSION)
-			if not efilename:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+script+"\" doesn't exist or is not readable")
+			# /macro name script usage
+			if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==4:
+				stokens.pop(0)
+				name = stokens.pop(0)
+				script = stokens.pop(0)
+				usage = stokens.pop(0)
+
+				# If the first character is the issue command
+				# symbol, strip that out of the name
+				if len(name)>len(config.ISSUE_COMMAND_SYMBOL):
+					il = len(config.ISSUE_COMMAND_SYMBOL)
+					if name[:il] == config.ISSUE_COMMAND_SYMBOL:
+						name = name[il:]
+
+				# Make sure that macro names start with a letter
+				if len(name)>=1:
+					if not name[0].isalpha():
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"\""+script+"\" doesn't exist or is not readable")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
+						return True
 
-			if does_macro_name_exist(name):
-				t = Message(SYSTEM_MESSAGE,'',f"Replacing macro \"{name}\", executing \"{efilename}\"")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			else:
-				t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			add_macro(name,script,usage)
-			return True
-
-		# /macro name script usage help
-		stokens = shlex.split(user_input, comments=False)
-		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
-			stokens.pop(0)
-			name = stokens.pop(0)
-			script = stokens.pop(0)
-			usage = stokens.pop(0)
-			mhelp = stokens.pop(0)
-
-			# If the first character is the issue command
-			# symbol, strip that out of the name
-			if len(name)>len(config.ISSUE_COMMAND_SYMBOL):
-				il = len(config.ISSUE_COMMAND_SYMBOL)
-				if name[:il] == config.ISSUE_COMMAND_SYMBOL:
-					name = name[il:]
-
-			# Make sure that macro names start with a letter
-			if len(name)>=1:
-				if not name[0].isalpha():
+				# Make sure the macro name isn't the same as an
+				# existing command
+				if not is_valid_macro_name(name):
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+name+"\" is not a valid macro name")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
+					t = Message(ERROR_MESSAGE,'',"\""+name+"\" is not a valid macro name")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
-			# Make sure the macro name isn't the same as an
-			# existing command
-			if not is_valid_macro_name(name):
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+name+"\" is not a valid macro name")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				# Make sure that the macro's script file exists,
+				# and is readable
+				efilename = find_script(script,SCRIPT_FILE_EXTENSION)
+				if not efilename:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+script+"\" doesn't exist or is not readable")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"\""+script+"\" doesn't exist or is not readable")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"\""+name+"\" is not a valid macro name")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+				if does_macro_name_exist(name):
+					t = Message(SYSTEM_MESSAGE,'',f"Replacing macro \"{name}\", executing \"{efilename}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				add_macro(name,script,usage)
 				return True
 
-			# Make sure that the macro's script file exists,
-			# and is readable
-			efilename = find_script(script,SCRIPT_FILE_EXTENSION)
-			if not efilename:
-				if is_script:
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+script+"\" doesn't exist or is not readable")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				t = Message(ERROR_MESSAGE,'',"\""+script+"\" doesn't exist or is not readable")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
+			# /macro name script usage help
+			if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
+				stokens.pop(0)
+				name = stokens.pop(0)
+				script = stokens.pop(0)
+				usage = stokens.pop(0)
+				mhelp = stokens.pop(0)
 
-			if does_macro_name_exist(name):
-				t = Message(SYSTEM_MESSAGE,'',f"Replacing macro \"{name}\", executing \"{efilename}\"")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			else:
-				t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			add_macro(name,script,usage,mhelp)
-			return True
+				# If the first character is the issue command
+				# symbol, strip that out of the name
+				if len(name)>len(config.ISSUE_COMMAND_SYMBOL):
+					il = len(config.ISSUE_COMMAND_SYMBOL)
+					if name[:il] == config.ISSUE_COMMAND_SYMBOL:
+						name = name[il:]
+
+				# Make sure that macro names start with a letter
+				if len(name)>=1:
+					if not name[0].isalpha():
+						if is_script:
+							add_halt(script_id)
+							if config.DISPLAY_SCRIPT_ERRORS:
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Macro names must begin with a letter")
+								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+							return True
+						t = Message(ERROR_MESSAGE,'',"Macro names must begin with a letter")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+
+				# Make sure the macro name isn't the same as an
+				# existing command
+				if not is_valid_macro_name(name):
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+name+"\" is not a valid macro name")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"\""+name+"\" is not a valid macro name")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				# Make sure that the macro's script file exists,
+				# and is readable
+				efilename = find_script(script,SCRIPT_FILE_EXTENSION)
+				if not efilename:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: \""+script+"\" doesn't exist or is not readable")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"\""+script+"\" doesn't exist or is not readable")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				if does_macro_name_exist(name):
+					t = Message(SYSTEM_MESSAGE,'',f"Replacing macro \"{name}\", executing \"{efilename}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(SYSTEM_MESSAGE,'',f"Adding macro \"{name}\", executing \"{efilename}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				add_macro(name,script,usage,mhelp)
+				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro':
 			if is_script:
@@ -2947,9 +2958,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unmacro' and len(stokens)==2:
-			stokens.pop(0)
-			name = stokens.pop(0)
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unmacro' and len(tokens)==2:
+			tokens.pop(0)
+			name = tokens.pop(0)
 
 			if does_macro_name_exist(name):
 				remove_macro(name)
