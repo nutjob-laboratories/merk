@@ -325,7 +325,8 @@ def highlight_nick(text, target_word, style):
 	else:
 		style_str = style["self"]
 	
-	pattern = rf'\b{re.escape(target_word)}\b'
+	# pattern = rf'\b{re.escape(target_word)}\b'
+	pattern = rf'\b{target_word}\b'
 	
 	def replacer(match):
 		original_word = match.group(0)

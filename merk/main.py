@@ -6030,6 +6030,9 @@ class UptimeHeartbeat(QThread):
 		self.threadactive = False
 		self.wait()
 
+from PyQt5.QtWidgets import QMdiSubWindow, QToolBar
+from PyQt5.QtCore import QTimer, Qt, QRect
+
 class MerkSubwindow(QMdiSubWindow):
 	
 	def __init__(self, *args, **kwargs):
@@ -6059,31 +6062,15 @@ class MerkSubwindow(QMdiSubWindow):
 		if not mdi_area:
 			return
 
-		if not config.SUBWINDOW_SNAPPING: return
+		if not config.SUBWINDOW_SNAPPING: 
+			return
 		
 		current_pos = self.pos()
 		current_rect = self.frameGeometry()
-		
-		mdi_rect = mdi_area.rect()
+		toolbar_rects = self._get_toolbar_rects()
 		
 		new_x = current_pos.x()
 		new_y = current_pos.y()
-		
-		# Snap to left edge
-		if abs(current_pos.x()) < config.SUBWINDOW_SNAP_DISTANCE:
-			new_x = 0
-		
-		# Snap to right edge
-		if abs(mdi_rect.width() - (current_pos.x() + current_rect.width())) < config.SUBWINDOW_SNAP_DISTANCE:
-			new_x = mdi_rect.width() - current_rect.width()
-		
-		# Snap to top edge
-		if abs(current_pos.y()) < config.SUBWINDOW_SNAP_DISTANCE:
-			new_y = 0
-		
-		# Snap to bottom edge
-		if abs(mdi_rect.height() - (current_pos.y() + current_rect.height())) < config.SUBWINDOW_SNAP_DISTANCE:
-			new_y = mdi_rect.height() - current_rect.height()
 		
 		# Snap to other windows
 		for sub_window in mdi_area.subWindowList():
@@ -6091,6 +6078,10 @@ class MerkSubwindow(QMdiSubWindow):
 				continue
 			
 			other_rect = sub_window.frameGeometry()
+			
+			if any(self._vertical_overlap(other_rect, tb_rect) or 
+				   self._horizontal_overlap(other_rect, tb_rect) for tb_rect in toolbar_rects):
+				continue  # Skip snapping to windows near toolbars
 			
 			# Snap to right side of other window
 			if (config.SUBWINDOW_SNAP_DISTANCE > abs(current_pos.x() - (other_rect.x() + other_rect.width())) 
@@ -6114,6 +6105,24 @@ class MerkSubwindow(QMdiSubWindow):
 		
 		if new_x != current_pos.x() or new_y != current_pos.y():
 			self.move(new_x, new_y)
+	
+	def _get_toolbar_rects(self):
+
+		mdi_area = self.mdiArea()
+		if not mdi_area:
+			return []
+		
+		main_window = self.parent()
+		toolbar_rects = []
+		
+		for widget in main_window.findChildren(QToolBar):
+			if widget.isVisible():
+				global_pos = main_window.mapToGlobal(widget.pos())
+				mdi_local_pos = mdi_area.mapFromGlobal(global_pos)
+				toolbar_rect = QRect(mdi_local_pos, widget.size())
+				toolbar_rects.append(toolbar_rect)
+		
+		return toolbar_rects
 	
 	@staticmethod
 	def _vertical_overlap(rect1, rect2):

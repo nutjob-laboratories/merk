@@ -55,6 +55,9 @@ What's New
   user wants to send a chat message that starts with the "issue command"
   symbol, they have to add it twice, which "escapes" the "issue command"
   symbol.
+* Bugfix: fixed a bug with subwindow snapping. Subwindows will no longer
+  attempt to "snap" to the parent window edges, and will explicitly ignore the
+  windowbar and menubar.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |
