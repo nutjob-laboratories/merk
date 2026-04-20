@@ -3022,9 +3022,27 @@ class Merk(QMainWindow):
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: user_input = emojize(user_input)
 
 		if len(user_input)>0:
+
+			if config.COMMAND_ERROR_PROTECTION:
+				if user_input.strip().startswith(config.ISSUE_COMMAND_SYMBOL):
+					# Allow users to "escape" the initial "issue command symbol"
+					# if they want to send a "command-like" message
+					if not user_input.strip().startswith(config.ISSUE_COMMAND_SYMBOL*2):
+						ui = user_input.strip().split(' ').pop(0)
+						t = Message(ERROR_MESSAGE,'',f"\"{ui}\" is not a recognized command")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return
+					else:
+						# "Issue command" symbol has been doubled, so the user intends
+						# to send it as part of the message; strip the first one from
+						# the message before we send it
+						user_input = user_input.replace(config.ISSUE_COMMAND_SYMBOL,'',1)
+
 			# Client has issued a chat message, so send it
 			window.client.msg(window.name, user_input)
 
+			# Write private messages to the server window, if the
+			# user has that option enabled
 			if window.window_type==PRIVATE_WINDOW:
 				if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 					w = self.getServerWindow(window.client)
@@ -3037,7 +3055,12 @@ class Merk(QMainWindow):
 		# Handle common commands
 		if commands.handleCommonCommands(self,window,user_input): return
 
-		t = Message(ERROR_MESSAGE,'',"Unrecognized command: "+user_input)
+		# Unrecognized command, show an error
+		if user_input.strip().startswith(config.ISSUE_COMMAND_SYMBOL):
+			ui = user_input.strip().split(' ').pop(0)
+		else:
+			ui = user_input
+		t = Message(ERROR_MESSAGE,'',f"\"{ui}\" is not a recognized command")
 		window.writeText(t)
 
 	def closeAndRemoveAllWindows(self):

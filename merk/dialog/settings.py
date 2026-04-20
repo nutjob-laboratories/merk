@@ -4489,6 +4489,21 @@ class Dialog(QDialog):
 		autoSetCenter.addLayout(asL3)
 		autoSetCenter.addLayout(asL4)
 
+		self.badCommandDescription = QLabel(f"""
+			<small>
+			If this option is enabled,
+			messages that begins with <b>{config.ISSUE_COMMAND_SYMBOL}</b> that is not followed
+			by a valid command will <i>not</i> be sent to server, and an error will be shown. To send a chat message that
+			starts with <b>{config.ISSUE_COMMAND_SYMBOL}</b>, start the message with <b>{config.ISSUE_COMMAND_SYMBOL*2}</b> instead.<br>
+			</small>
+			""")
+		self.badCommandDescription.setWordWrap(True)
+		self.badCommandDescription.setAlignment(Qt.AlignJustify)
+
+		self.badCommands = QCheckBox("Prevent sending \"bad\" commands as chat",self)
+		if config.COMMAND_ERROR_PROTECTION: self.badCommands.setChecked(True)
+		self.badCommands.stateChanged.connect(self.changedSetting)
+
 		inputLayout = QVBoxLayout()
 		inputLayout.setSpacing(2)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
@@ -4502,6 +4517,10 @@ class Dialog(QDialog):
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autocomplete enabled for...</b>"))
 		inputLayout.addLayout(autoSetCenter)
+		inputLayout.addWidget(QLabel(' '))
+		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>\"bad\" input protection</b>"))
+		inputLayout.addWidget(self.badCommandDescription)
+		inputLayout.addWidget(self.badCommands)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)
@@ -6600,6 +6619,7 @@ class Dialog(QDialog):
 		config.EXECUTE_CHANNEL_SCRIPTS = self.exeChannel.isChecked()
 		config.SUBWINDOW_SNAP_DISTANCE = self.SUBWINDOW_SNAP_DISTANCE
 		config.SUBWINDOW_SNAPPING = self.snapWindows.isChecked()
+		config.COMMAND_ERROR_PROTECTION = self.badCommands.isChecked()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

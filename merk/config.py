@@ -433,9 +433,11 @@ SHOW_CHANNEL_TOPIC_MESSAGES = True
 EXECUTE_CHANNEL_SCRIPTS = True
 SUBWINDOW_SNAPPING = True
 SUBWINDOW_SNAP_DISTANCE = 20
+COMMAND_ERROR_PROTECTION = True
 
 def build_settings():
 	settings = {
+		"prevent_sending_bad_commands_as_chat": COMMAND_ERROR_PROTECTION,
 		"subwindow_snapping": SUBWINDOW_SNAPPING,
 		"subwindow_snap_distance": SUBWINDOW_SNAP_DISTANCE,
 		"execute_channel_scripts": EXECUTE_CHANNEL_SCRIPTS,
@@ -834,6 +836,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "prevent_sending_bad_commands_as_chat" in settings:
+		settings["prevent_sending_bad_commands_as_chat"] = COMMAND_ERROR_PROTECTION
 	if not "subwindow_snapping" in settings:
 		settings["subwindow_snapping"] = SUBWINDOW_SNAPPING
 	if not "subwindow_snap_distance" in settings:
@@ -2017,6 +2021,7 @@ def load_settings(filename):
 	global EXECUTE_CHANNEL_SCRIPTS
 	global SUBWINDOW_SNAPPING
 	global SUBWINDOW_SNAP_DISTANCE
+	global COMMAND_ERROR_PROTECTION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2026,6 +2031,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		COMMAND_ERROR_PROTECTION = settings["prevent_sending_bad_commands_as_chat"]
 		SUBWINDOW_SNAPPING = settings["subwindow_snapping"]
 		SUBWINDOW_SNAP_DISTANCE = settings["subwindow_snap_distance"]
 		EXECUTE_CHANNEL_SCRIPTS = settings["execute_channel_scripts"]
