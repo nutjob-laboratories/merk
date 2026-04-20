@@ -2729,7 +2729,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script
-		stokens = shlex.split(shlex.quote(user_input), comments=False)
+		stokens = shlex.split(user_input, comments=False)
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==3:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -2792,7 +2792,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script usage
-		stokens = shlex.split(shlex.quote(user_input), comments=False)
+		stokens = shlex.split(user_input, comments=False)
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==4:
 			stokens.pop(0)
 			name = stokens.pop(0)
@@ -2856,7 +2856,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		# /macro name script usage help
-		stokens = shlex.split(shlex.quote(user_input), comments=False)
+		stokens = shlex.split(user_input, comments=False)
 		if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'macro' and len(stokens)==5:
 			stokens.pop(0)
 			name = stokens.pop(0)

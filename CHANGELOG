@@ -46,6 +46,7 @@ What's New
   stores the result in an alias.
 * New script-only command: "setfile", which shows an "save file" dialog, and
   stores the result in an alias.
+* Bugfix: macro command was being parsed incorrectly.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |
