@@ -349,7 +349,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
-| `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
+| `/folder PATH`              | Opens `PATH` in the default file manager               |
 | `getfile ALIAS MESSAGE...`           | Shows an "open file" dialog, and stores the result in `ALIAS`. If no file is set, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
 | `goto TARGET`                         | Moves execution of the script to `TARGET`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Asks the user if they want to halt the script's execution, and displays an error `MESSAGE`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*       |

@@ -3,7 +3,7 @@
   <b><big>Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.750">MERK 0.051.750</a></big></b><br>
-  <b>Current development version: 0.051.763</b><br>
+  <b>Current development version: 0.051.764</b><br>
   <b><a href="https://merk.chat">Visit us at https://merk.chat!</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
@@ -35,15 +35,15 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.750 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.750)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.763 (10.71 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.051.763 (96.77 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.051.763 (71.02 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.763 (47.66 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.763 (45.23 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.764 (10.71 MB)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.051.764 (96.77 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.051.764 (71.07 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.764 (47.66 MB)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.764 (45.23 MB)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.763**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.764**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
@@ -223,7 +223,7 @@ There are four libraries that comes bundled with **MERK**:
 # Screenshots
 
 <p align="center">
-<p><small><i>Screenshots may not reflect the current release (0.051.750), and may reflect the current development version (0.051.763). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.750), and may reflect the current development version (0.051.764). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
@@ -349,7 +349,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
 | `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |
 | `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
-| `/folder PATH [PATH...]`              | Opens `PATH`(s) in the default file manager               |
+| `/folder PATH`              | Opens `PATH` in the default file manager               |
 | `getfile ALIAS MESSAGE...`           | Shows an "open file" dialog, and stores the result in `ALIAS`. If no file is set, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
 | `goto TARGET`                         | Moves execution of the script to `TARGET`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*  |
 | `halt [MESSAGE...]`                       | Asks the user if they want to halt the script's execution, and displays an error `MESSAGE`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*       |

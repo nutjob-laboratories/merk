@@ -521,7 +521,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unmacro NAME</b>", f"Removes a macro" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET</b>", f"Executes a trace on a server or user. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>", f"Opens URL in the default browser" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH [PATH...]</b>", f"Opens PATH(s) in the default file manager" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH</b>", f"Opens PATH in the default file manager" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a window by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window" ],
 	]
@@ -2123,19 +2123,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'folder' and len(tokens)>=2:
 			tokens.pop(0)
-			dirs = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
-			for d in dirs:
-				if os.path.isdir(d):
-					gui.open_folder(d)
-				else:
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{d}\" is not a valid path")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
-					t = Message(ERROR_MESSAGE,'',f"\"{d}\" is not a valid path")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			dirs = ' '.join(tokens)
+			if os.path.isdir(dirs):
+				gui.open_folder(dirs)
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: \"{dirs}\" is not a valid path")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{dirs}\" is not a valid path")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'folder':
 			if is_script:

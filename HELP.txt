@@ -232,8 +232,8 @@ Appearance:
 <td>Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards</td>
 </tr>
 <tr>
-<td><code>/folder PATH [PATH...]</code></td>
-<td>Opens <code>PATH</code>(s) in the default file manager</td>
+<td><code>/folder PATH</code></td>
+<td>Opens <code>PATH</code> in the default file manager</td>
 </tr>
 <tr>
 <td><code>getfile ALIAS MESSAGE</code></td>
