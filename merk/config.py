@@ -434,9 +434,11 @@ EXECUTE_CHANNEL_SCRIPTS = True
 SUBWINDOW_SNAPPING = True
 SUBWINDOW_SNAP_DISTANCE = 20
 COMMAND_ERROR_PROTECTION = True
+SUBWINDOW_SNAP_DRAG_TRIGGER = 5
 
 def build_settings():
 	settings = {
+		"subwindow_snap_drag_distance_trigger": SUBWINDOW_SNAP_DRAG_TRIGGER,
 		"prevent_sending_bad_commands_as_chat": COMMAND_ERROR_PROTECTION,
 		"subwindow_snapping": SUBWINDOW_SNAPPING,
 		"subwindow_snap_distance": SUBWINDOW_SNAP_DISTANCE,
@@ -836,6 +838,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "subwindow_snap_drag_distance_trigger" in settings:
+		settings["subwindow_snap_drag_distance_trigger"] = SUBWINDOW_SNAP_DRAG_TRIGGER
 	if not "prevent_sending_bad_commands_as_chat" in settings:
 		settings["prevent_sending_bad_commands_as_chat"] = COMMAND_ERROR_PROTECTION
 	if not "subwindow_snapping" in settings:
@@ -2022,6 +2026,7 @@ def load_settings(filename):
 	global SUBWINDOW_SNAPPING
 	global SUBWINDOW_SNAP_DISTANCE
 	global COMMAND_ERROR_PROTECTION
+	global SUBWINDOW_SNAP_DRAG_TRIGGER
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2031,6 +2036,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SUBWINDOW_SNAP_DRAG_TRIGGER = settings["subwindow_snap_drag_distance_trigger"]
 		COMMAND_ERROR_PROTECTION = settings["prevent_sending_bad_commands_as_chat"]
 		SUBWINDOW_SNAPPING = settings["subwindow_snapping"]
 		SUBWINDOW_SNAP_DISTANCE = settings["subwindow_snap_distance"]

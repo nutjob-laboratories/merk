@@ -6030,107 +6030,77 @@ class UptimeHeartbeat(QThread):
 		self.threadactive = False
 		self.wait()
 
-from PyQt5.QtWidgets import QMdiSubWindow, QToolBar
-from PyQt5.QtCore import QTimer, Qt, QRect
-
 class MerkSubwindow(QMdiSubWindow):
-	
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.snap_timer = QTimer()
-		self.snap_timer.timeout.connect(self._check_snap)
-		self.snap_timer.start(50)
-		self.is_dragging = False
-		
+	def __init__(self, parent=None):
+		super().__init__(parent)
+		self._drag_start_pos = None
+		self._drag_start_win_pos = None
+		self._is_dragging = False 
+
 	def mousePressEvent(self, event):
-		super().mousePressEvent(event)
 		if event.button() == Qt.LeftButton:
-			if event.y() < self.frameGeometry().height() - self.geometry().height():
-				self.is_dragging = True
-	
+			self._drag_start_pos = event.globalPos()
+			self._drag_start_win_pos = self.pos()
+			self._is_dragging = False
+		super().mousePressEvent(event)
+
+	def mouseMoveEvent(self, event):
+		if event.buttons() & Qt.LeftButton and self._drag_start_pos is not None:
+			delta = event.globalPos() - self._drag_start_pos
+
+			if not self._is_dragging:
+				if delta.manhattanLength() < config.SUBWINDOW_SNAP_DRAG_TRIGGER:
+					super().mouseMoveEvent(event)
+					return
+				self._is_dragging = True
+
+			raw_pos = self._drag_start_win_pos + delta
+			snapped_pos = self._snap(raw_pos)
+			self.move(snapped_pos)
+			return
+
+		super().mouseMoveEvent(event)
+
 	def mouseReleaseEvent(self, event):
+		if event.button() == Qt.LeftButton:
+			self._drag_start_pos = None
+			self._drag_start_win_pos = None
+			self._is_dragging = False
 		super().mouseReleaseEvent(event)
-		self.is_dragging = False
-		self._snap_window()
-	
-	def _check_snap(self):
-		if self.is_dragging:
-			self._snap_window()
-	
-	def _snap_window(self):
-		mdi_area = self.mdiArea()
-		if not mdi_area:
-			return
 
-		if not config.SUBWINDOW_SNAPPING: 
-			return
-		
-		current_pos = self.pos()
-		current_rect = self.frameGeometry()
-		toolbar_rects = self._get_toolbar_rects()
-		
-		new_x = current_pos.x()
-		new_y = current_pos.y()
-		
-		# Snap to other windows
-		for sub_window in mdi_area.subWindowList():
-			if sub_window == self:
+	def _snap(self, pos):
+		mdi = self.mdiArea()
+		if mdi is None:
+			return pos
+
+		if not config.SUBWINDOW_SNAPPING: return pos
+
+		x, y = pos.x(), pos.y()
+		w, h = self.width(), self.height()
+
+		for other in mdi.subWindowList():
+			if other is self:
 				continue
-			
-			other_rect = sub_window.frameGeometry()
-			
-			if any(self._vertical_overlap(other_rect, tb_rect) or 
-				   self._horizontal_overlap(other_rect, tb_rect) for tb_rect in toolbar_rects):
-				continue  # Skip snapping to windows near toolbars
-			
-			# Snap to right side of other window
-			if (config.SUBWINDOW_SNAP_DISTANCE > abs(current_pos.x() - (other_rect.x() + other_rect.width())) 
-				and self._vertical_overlap(current_rect, other_rect)):
-				new_x = other_rect.x() + other_rect.width()
-			
-			# Snap to left side of other window
-			if (config.SUBWINDOW_SNAP_DISTANCE > abs((current_pos.x() + current_rect.width()) - other_rect.x())
-				and self._vertical_overlap(current_rect, other_rect)):
-				new_x = other_rect.x() - current_rect.width()
-			
-			# Snap to bottom of other window
-			if (config.SUBWINDOW_SNAP_DISTANCE > abs(current_pos.y() - (other_rect.y() + other_rect.height()))
-				and self._horizontal_overlap(current_rect, other_rect)):
-				new_y = other_rect.y() + other_rect.height()
-			
-			# Snap to top of other window
-			if (config.SUBWINDOW_SNAP_DISTANCE > abs((current_pos.y() + current_rect.height()) - other_rect.y())
-				and self._horizontal_overlap(current_rect, other_rect)):
-				new_y = other_rect.y() - current_rect.height()
-		
-		if new_x != current_pos.x() or new_y != current_pos.y():
-			self.move(new_x, new_y)
-	
-	def _get_toolbar_rects(self):
+			ox, oy = other.x(), other.y()
+			ow, oh = other.width(), other.height()
 
-		mdi_area = self.mdiArea()
-		if not mdi_area:
-			return []
-		
-		main_window = self.parent()
-		toolbar_rects = []
-		
-		for widget in main_window.findChildren(QToolBar):
-			if widget.isVisible():
-				global_pos = main_window.mapToGlobal(widget.pos())
-				mdi_local_pos = mdi_area.mapFromGlobal(global_pos)
-				toolbar_rect = QRect(mdi_local_pos, widget.size())
-				toolbar_rects.append(toolbar_rect)
-		
-		return toolbar_rects
-	
+			# Horizontal snapping
+			x = self._snap_1d(x, ox,          config.SUBWINDOW_SNAP_DISTANCE)
+			x = self._snap_1d(x, ox + ow,     config.SUBWINDOW_SNAP_DISTANCE)
+			x = self._snap_1d(x, ox - w,      config.SUBWINDOW_SNAP_DISTANCE)
+			x = self._snap_1d(x, ox + ow - w, config.SUBWINDOW_SNAP_DISTANCE)
+
+			# Vertical snapping
+			y = self._snap_1d(y, oy,          config.SUBWINDOW_SNAP_DISTANCE)
+			y = self._snap_1d(y, oy + oh,     config.SUBWINDOW_SNAP_DISTANCE)
+			y = self._snap_1d(y, oy - h,      config.SUBWINDOW_SNAP_DISTANCE)
+			y = self._snap_1d(y, oy + oh - h, config.SUBWINDOW_SNAP_DISTANCE)
+
+		return QPoint(x, y)
+
 	@staticmethod
-	def _vertical_overlap(rect1, rect2):
-		return not (rect1.bottom() < rect2.top() or rect1.top() > rect2.bottom())
-	
-	@staticmethod
-	def _horizontal_overlap(rect1, rect2):
-		return not (rect1.right() < rect2.left() or rect1.left() > rect2.right())
+	def _snap_1d(value, target, threshold):
+		return target if abs(value - target) <= threshold else value		
 
 class GlobalActivityFilter(QObject):
 	def eventFilter(self, watched, event):
