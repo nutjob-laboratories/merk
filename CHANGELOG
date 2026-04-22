@@ -58,6 +58,7 @@ What's New
 * Bugfix: fixed a bug with subwindow snapping. Subwindows will no longer
   attempt to "snap" to the parent window edges, and will explicitly ignore the
   windowbar and menubar.
+* Bugfix: subwindows now check whether they're being dragged more efficiently.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

@@ -835,10 +835,7 @@ class Plugin():
 		if len(client.server_channel_list):
 			output = []
 			for entry in client.server_channel_list:
-				e = []
-				e.append(entry[0])
-				e.append(entry[1])
-				e.append(entry[2])
+				e = [entry[0],entry[1],entry[2]]
 				output.append(e)
 			return output
 		else:

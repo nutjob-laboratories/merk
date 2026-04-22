@@ -62,7 +62,7 @@ class Window(QMainWindow):
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(PLUGIN_ICON))
 				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				msgBox.setText("Plugin does not have an icon. Do you want to add one?")
+				msgBox.setText("Plugin does not have an icon. Do you want to add one? Press \"Cancel\" to skip adding an icon.")
 				msgBox.setWindowTitle("Add icon")
 				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
@@ -500,7 +500,7 @@ class Window(QMainWindow):
 		event.accept()
 		self.close()
 
-	def show_context_menu(self, position: QPoint):
+	def show_context_menu(self, position):
 		menu = QMenu(self)
 		item = self.plugin_list.itemAt(position)
 
