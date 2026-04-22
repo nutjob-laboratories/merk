@@ -4,7 +4,7 @@
 
 What's New
 - **Subwindow snapping**. By default, subwindows within 20px of each other will "snap" together. This can be turned off in the settings dialog, and the "snapping distance" can also be changed.
-- **Scripting now has full file I/O**. Scripts can both read and write to files. Both the `read` and `write` commands can be disabled in settings.
+- **Scripting now has full file I/O**. Scripts can both read and write to files. The `read`, `write`, and `append` commands can be disabled in settings.
 - **New script-only file dialog commands**. Get a filename from the user with the `getfile` and `setfile` commands.
 - **New option to prevent sending mistyped commands as chat**.
 
@@ -59,6 +59,8 @@ What's New
   attempt to "snap" to the parent window edges, and will explicitly ignore the
   windowbar and menubar.
 * Bugfix: subwindows now check whether they're being dragged more efficiently.
+* New script-only command: "append", which appends text to a file. "write" no
+  longer appends to a file, but overwrites it.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

@@ -136,6 +136,10 @@ Appearance:
 <td>Requests administration information from the server</td>
 </tr>
 <tr>
+<td><code>append FILENAME CONTENTS...</code></td>
+<td>Appends <code>CONTENTS</code> to <code>FILENAME</code>, followed by a newline; <strong>can only be called from scripts</strong></td>
+</tr>
+<tr>
 <td><code>/away [SERVER] [MESSAGE]</code></td>
 <td>Sets status as "away". To specify what server to set the "away" status on, pass a hostID (the host and port used to connect to the server, in the format <code>host:port</code>, or the hostname used to connect) as <code>SERVER</code></td>
 </tr>

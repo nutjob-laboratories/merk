@@ -324,11 +324,12 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"write",
 			"getfile",
 			"setfile",
+			"append",
 		]
 
 		script_full = [
 			"goto",
-			"goto end",
+			"end",
 			"halt",
 		]
 
@@ -380,6 +381,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove("write")
 			script_only.remove("getfile")
 			script_only.remove("setfile")
+			script_only.remove("append")
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")
@@ -406,6 +408,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 				script_only.remove('read')
 			if 'write' in script_only:
 				script_only.remove('write')
+			if 'append' in script_only:
+				script_only.remove('append')
 
 		ctrl_keys = ['Ctrl', 'Control']
 		shift_keys = ['Shift']

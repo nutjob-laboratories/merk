@@ -5212,7 +5212,7 @@ class Dialog(QDialog):
 		if config.ENABLE_BROWSER_COMMAND: self.enableBrowser.setChecked(True)
 		self.enableBrowser.stateChanged.connect(self.changedSettingEditorConfig)
 
-		self.enableReadWrite = QCheckBox(f"read/write",self)
+		self.enableReadWrite = QCheckBox(f"read/write/append",self)
 		if config.ENABLE_READ_AND_WRITE_COMMAND: self.enableReadWrite.setChecked(True)
 		self.enableReadWrite.stateChanged.connect(self.changedSettingEditor)
 

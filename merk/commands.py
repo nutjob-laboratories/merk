@@ -1204,9 +1204,9 @@ def execute_read(data):
 	filename = data[0]
 	gui = data[1]
 	script_id = data[2]
-	do_read = data[3]
+	operation = data[3]
 
-	if do_read:
+	if operation==READ_OPERATION:
 		try:
 			f = open(filename,"r")
 			contents = f.read()
@@ -1217,7 +1217,7 @@ def execute_read(data):
 			gui.scripts[script_id].set_input(f"{contents}")
 		except:
 			gui.scripts[script_id].set_input("*")
-	else:
+	elif operation==APPEND_OPERATION:
 		contents = data[4]
 
 		try:
@@ -1225,9 +1225,20 @@ def execute_read(data):
 			f.write(f"{contents}\n")
 			f.close()
 
-			gui.scripts[script_id].set_input(True)
-		except:
-			gui.scripts[script_id].set_input(False)
+			gui.scripts[script_id].set_input('!')
+		except Exception as e:
+			gui.scripts[script_id].set_input(f"{e}")
+	elif operation==WRITE_OPERATION:
+		contents = data[4]
+
+		try:
+			f = open(filename, "w")
+			f.write(f"{contents}\n")
+			f.close()
+
+			gui.scripts[script_id].set_input('!')
+		except Exception as e:
+			gui.scripts[script_id].set_input(f"{e}")
 
 def execute_message(data):
 	question = data[0]
@@ -8666,6 +8677,24 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |========|
+			# | append |
+			# |========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='append':
+					if not config.ENABLE_READ_AND_WRITE_COMMAND:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append has been disabled"])
+						no_errors = False
+						break
+					elif not config.ENABLE_ALIASES:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append: aliases are disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
+						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append called without enough arguments"])
+						no_errors = False
+						break
+
 			# |=========|
 			# | getfile |
 			# |=========|
@@ -8950,6 +8979,9 @@ class ScriptThread(QThread):
 									"hostmask",
 									"escape",
 									"write",
+									"getfile",
+									"setfile",
+									"append",
 								]
 								if stokens[0].lower() in script_only:
 									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
@@ -9867,7 +9899,7 @@ class ScriptThread(QThread):
 													if is_valid_alias_name(a):
 														if is_text_file(efilename):
 															try:
-																self.request_read_write.emit([efilename,self.gui,self.id,True])
+																self.request_read_write.emit([efilename,self.gui,self.id,READ_OPERATION])
 																self.mutex.lock()
 																self.wait_condition.wait(self.mutex)
 																self.mutex.unlock()
@@ -9884,7 +9916,7 @@ class ScriptThread(QThread):
 													if a in self.CREATED:
 														if is_text_file(efilename):
 															try:
-																self.request_read_write.emit([efilename,self.gui,self.id,True])
+																self.request_read_write.emit([efilename,self.gui,self.id,READ_OPERATION])
 																self.mutex.lock()
 																self.wait_condition.wait(self.mutex)
 																self.mutex.unlock()
@@ -9932,22 +9964,68 @@ class ScriptThread(QThread):
 									contents = self.interpolateAliases(contents)
 
 									try:
-										self.request_read_write.emit([filename,self.gui,self.id,False,contents])
+										self.request_read_write.emit([filename,self.gui,self.id,WRITE_OPERATION,contents])
 										self.mutex.lock()
 										self.wait_condition.wait(self.mutex)
 										self.mutex.unlock()
-										if self.user_input:
+										if self.user_input=='!':
 											# write succeded
 											pass
 										else:
 											# write failed
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: write to \"{filename}\" failed"])
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: write to \"{filename}\" failed ({self.user_input})"])
 											loop = False
 										self.user_input = None
 										script_only_command = True
 										continue
 									except Exception as e:
 										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error calling write: {e}"])
+										loop = False
+										continue
+								continue
+
+						# |========|
+						# | append |
+						# |========|
+						# 
+						# This command appends to a file
+						#
+						if len(tokens)>=1:
+							if tokens[0].lower()=='append' and len(tokens)>=3:
+
+								if config.ENABLE_ALIASES and config.ENABLE_READ_AND_WRITE_COMMAND:
+									try:
+										stokens = shlex.split(line, comments=False)
+									except:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing append command. Try using quotation marks"])
+										loop = False
+										continue
+
+									stokens.pop(0)
+									filename = stokens.pop(0)
+									contents = ' '.join(stokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									filename = self.interpolateAliases(filename)
+									contents = self.interpolateAliases(contents)
+
+									try:
+										self.request_read_write.emit([filename,self.gui,self.id,APPEND_OPERATION,contents])
+										self.mutex.lock()
+										self.wait_condition.wait(self.mutex)
+										self.mutex.unlock()
+										if self.user_input=='!':
+											# append succeded
+											pass
+										else:
+											# append failed
+											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append: write to \"{filename}\" failed ({self.user_input})"])
+											loop = False
+										self.user_input = None
+										script_only_command = True
+										continue
+									except Exception as e:
+										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error calling append: {e}"])
 										loop = False
 										continue
 								continue
