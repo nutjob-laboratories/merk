@@ -1083,236 +1083,6 @@ def list_all_macros():
 				ret.append(config.ISSUE_COMMAND_SYMBOL+name+f" - Executes script \"{script}\"")
 	return ret
 
-def execute_script_line(data):
-	gui = data[0]
-	window = data[1]
-	script_id = data[2]
-	line = data[3]
-	line_number = data[4]
-	script_only_command = data[5]
-	aliases = data[6]
-
-	if is_halting(script_id): return
-
-	# Update the alias table
-	for a in aliases:
-		ALIAS[a] = aliases[a]
-
-	if not handleScriptCommands(gui,window,line,line_number,script_id):
-		if len(line.strip())==0: return
-
-		if gui.scripts[script_id].filename==None:
-			script_file = 'script'
-		else:
-			script_file = os.path.basename(gui.scripts[script_id].filename)
-
-		tokens = line.split()
-		if len(tokens)>0:
-			if len(tokens)==1:
-				if tokens[0].lower()=='end':
-					add_halt(script_id)
-					return
-			else:
-				if tokens[1].lower()=='end':
-					add_halt(script_id)
-					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: end called with too many arguments")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
-						sys.stdout.write(f"{script_file}, line {line_number}: end called with too many arguments\n")
-					return
-
-		if config.DISPLAY_SCRIPT_ERRORS:
-			# Check to make sure this isn't being thrown by script
-			# only commands
-			if not script_only_command:
-				if line[0]==config.ISSUE_COMMAND_SYMBOL:
-					add_halt(script_id)
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Unrecognized command \"{line}\"")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				else:
-					add_halt(script_id)
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Line \"{line}\" contains no command")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-		if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
-			if not script_only_command:
-				if line[0]==config.ISSUE_COMMAND_SYMBOL:
-					sys.stdout.write(f"{script_file}, line {line_number}: Unrecognized command \"{line}\"\n")
-				else:
-					sys.stdout.write(f"{script_file}, line {line_number}: Line \"{line}\" contains no command\n")
-
-def execute_script_error(data):
-	gui = data[0]
-	window = data[1]
-	line = data[2]
-
-	if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
-		sys.stdout.write(f"{line}\n")
-
-	if config.DISPLAY_SCRIPT_ERRORS:
-		t = Message(ERROR_MESSAGE,'',line)
-		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-def execute_script_alias(data):
-	alias = data[0]
-	value = data[1]
-	gui = data[2]
-
-	addAlias(alias,value,gui)
-
-def execute_script_end(data):
-	gui = data[0]
-	script_id = data[1]
-	aliases_to_destroy = data[2]
-
-	gui.scripts[script_id].quit()
-	gui.scripts[script_id].wait(config.SCRIPT_THREAD_QUIT_TIMEOUT)
-
-	del gui.scripts[script_id]
-
-	aliases_to_destroy = list(set(aliases_to_destroy))
-	for alias in aliases_to_destroy:
-		removeAlias(alias)
-
-	remove_halt(script_id)
-
-def execute_file(data):
-	question = data[0]
-	gui = data[1]
-	script_id = data[2]
-	is_open = data[3]
-
-	u = ShowFileDialog(gui,question,is_open)
-	if u:
-		gui.scripts[script_id].set_input(f"{u}")
-	else:
-		gui.scripts[script_id].set_input(None)
-
-def execute_input(data):
-	question = data[0]
-	gui = data[1]
-	script_id = data[2]
-
-	u = GetInputDialog(question)
-	if u:
-		gui.scripts[script_id].set_input(f"{u}")
-	else:
-		gui.scripts[script_id].set_input(None)
-
-def execute_read(data):
-	filename = data[0]
-	gui = data[1]
-	script_id = data[2]
-	operation = data[3]
-
-	if operation==READ_OPERATION:
-		try:
-			f = open(filename,"r")
-			contents = f.read()
-			f.close()
-
-			if len(contents.strip())==0: contents = '*'
-
-			gui.scripts[script_id].set_input(f"{contents}")
-		except:
-			gui.scripts[script_id].set_input("*")
-	elif operation==APPEND_OPERATION:
-		contents = data[4]
-
-		try:
-			f = open(filename, "a")
-			f.write(f"{contents}\n")
-			f.close()
-
-			gui.scripts[script_id].set_input('!')
-		except Exception as e:
-			gui.scripts[script_id].set_input(f"{e}")
-	elif operation==WRITE_OPERATION:
-		contents = data[4]
-
-		try:
-			f = open(filename, "w")
-			f.write(f"{contents}\n")
-			f.close()
-
-			gui.scripts[script_id].set_input('!')
-		except Exception as e:
-			gui.scripts[script_id].set_input(f"{e}")
-
-def execute_message(data):
-	question = data[0]
-	gui = data[1]
-	script_id = data[2]
-
-	u = ShowMessageDialog(question)
-	if u:
-		gui.scripts[script_id].set_input(f"{u}")
-	else:
-		gui.scripts[script_id].set_input(None)
-
-def execute_number(data):
-	lower = data[0]
-	upper = data[1]
-	question = data[2]
-	gui = data[3]
-	script_id = data[4]
-
-	u = GetNumberDialog(lower,upper,question)
-	if u:
-		gui.scripts[script_id].set_input(f"{u}")
-	else:
-		gui.scripts[script_id].set_input(None)
-
-def execute_halt(data):
-	msg = data[0]
-	gui = data[1]
-	script_id = data[2]
-
-	u = ShowHaltDialog(msg)
-	if u:
-		gui.scripts[script_id].set_input(True)
-	else:
-		gui.scripts[script_id].set_input(False)
-
-def executeScript(gui,window,text,filename=None,args=[]):
-
-	script_id = str(uuid.uuid4())
-	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,filename)
-	gui.scripts[script_id].execLine.connect(execute_script_line)
-	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
-	gui.scripts[script_id].scriptError.connect(execute_script_error)
-	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
-	gui.scripts[script_id].request_input.connect(execute_input)
-	gui.scripts[script_id].request_number.connect(execute_number)
-	gui.scripts[script_id].request_message.connect(execute_message)
-	gui.scripts[script_id].request_halt.connect(execute_halt)
-	gui.scripts[script_id].request_read_write.connect(execute_read)
-	gui.scripts[script_id].request_file.connect(execute_file)
-	gui.scripts[script_id].start()
-
-def executeGlobalScript(gui,window,text,filename=None,args=[]):
-
-	script_id = str(uuid.uuid4())
-	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,filename,None,True)
-	gui.scripts[script_id].execLine.connect(execute_script_line)
-	gui.scripts[script_id].scriptEnd.connect(execute_script_end)
-	gui.scripts[script_id].scriptError.connect(execute_script_error)
-	gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
-	gui.scripts[script_id].request_input.connect(execute_input)
-	gui.scripts[script_id].request_number.connect(execute_number)
-	gui.scripts[script_id].request_message.connect(execute_message)
-	gui.scripts[script_id].request_halt.connect(execute_halt)
-	gui.scripts[script_id].request_read_write.connect(execute_read)
-	gui.scripts[script_id].request_file.connect(execute_file)
-	gui.scripts[script_id].start()
-
-def getScriptAliases(gui):
-	aliases = []
-	for script_id in gui.scripts:
-		aliases = aliases + gui.scripts[script_id].CREATED
-	return list(set(aliases))
-
 def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=False,execute=False):
 	try:
 		port = int(port)
@@ -2565,7 +2335,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if len(tokens)==0:
 				args = []
 			else:
-				args = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
+				pretokens = ' '.join(tokens)
+				if "'" in pretokens: pretokens.replace("'","\\'")
+				args = shlex.split(pretokens, comments=False)
 
 			plugins.command_call(gui,window,method,args)
 			return True
@@ -7815,7 +7587,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			tokens.pop(0)
 			filename = tokens.pop(0)
-			tokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
+			pretoken = ' '.join(tokens)
+			if "'" in pretoken: pretoken = pretoken.replace("'","\\'")
+			tokens = shlex.split(pretoken, comments=False)
 			arguments = list(tokens)
 
 			efilename = find_script(filename,SCRIPT_FILE_EXTENSION)
@@ -7824,20 +7598,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				text = f.read()
 				f.close()
 
-				script_id = str(uuid.uuid4())
-				gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,arguments,efilename)
-				gui.scripts[script_id].execLine.connect(execute_script_line)
-				gui.scripts[script_id].scriptEnd.connect(execute_script_end)
-				gui.scripts[script_id].scriptError.connect(execute_script_error)
-				gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
-				gui.scripts[script_id].request_input.connect(execute_input)
-				gui.scripts[script_id].request_number.connect(execute_number)
-				gui.scripts[script_id].request_message.connect(execute_message)
-				gui.scripts[script_id].request_halt.connect(execute_halt)
-				gui.scripts[script_id].request_read_write.connect(execute_read)
-				gui.scripts[script_id].request_file.connect(execute_file)
-				gui.scripts[script_id].start()
-
+				executeScript(gui,window,text,efilename,arguments)
 			else:
 				if is_script:
 					add_halt(script_id)
@@ -7856,7 +7617,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				e = x.get_script_information(gui)
 				if e:
 					script = e[0]
-					args = shlex.split(shlex.quote(e[1]), comments=False)
+					pretoken = e[1]
+					if "'" in pretoken: pretoken = pretoken.replace("'","\\'")
+					args = shlex.split(pretoken, comments=False)
 
 					# Check to see if the filename is a filename
 					# in the application's "path"
@@ -7866,20 +7629,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						text = f.read()
 						f.close()
 
-						script_id = str(uuid.uuid4())
-						gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,ffile)
-						gui.scripts[script_id].execLine.connect(execute_script_line)
-						gui.scripts[script_id].scriptEnd.connect(execute_script_end)
-						gui.scripts[script_id].scriptError.connect(execute_script_error)
-						gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
-						gui.scripts[script_id].request_input.connect(execute_input)
-						gui.scripts[script_id].request_number.connect(execute_number)
-						gui.scripts[script_id].request_message.connect(execute_message)
-						gui.scripts[script_id].request_halt.connect(execute_halt)
-						gui.scripts[script_id].request_read_write.connect(execute_read)
-						gui.scripts[script_id].request_file.connect(execute_file)
-						gui.scripts[script_id].start()
-
+						executeScript(gui,window,text,ffile,args)
 					else:
 						# If the filename isn't on the "path", we check
 						# to see if the filename actually exists
@@ -7888,19 +7638,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							text = f.read()
 							f.close()
 
-							script_id = str(uuid.uuid4())
-							gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,script)
-							gui.scripts[script_id].execLine.connect(execute_script_line)
-							gui.scripts[script_id].scriptEnd.connect(execute_script_end)
-							gui.scripts[script_id].scriptError.connect(execute_script_error)
-							gui.scripts[script_id].scriptAlias.connect(execute_script_alias)
-							gui.scripts[script_id].request_input.connect(execute_input)
-							gui.scripts[script_id].request_number.connect(execute_number)
-							gui.scripts[script_id].request_message.connect(execute_message)
-							gui.scripts[script_id].request_halt.connect(execute_halt)
-							gui.scripts[script_id].request_read_write.connect(execute_read)
-							gui.scripts[script_id].request_file.connect(execute_file)
-							gui.scripts[script_id].start()
+							executeScript(gui,window,text,script,args)
 						else:
 							if is_script:
 								add_halt(script_id)
@@ -8450,6 +8188,231 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 	return False
 
+# |===========|
+# | SCRIPTING |
+# |===========|
+
+def execute_script_line(data):
+	gui = data[0]
+	window = data[1]
+	script_id = data[2]
+	line = data[3]
+	line_number = data[4]
+	script_only_command = data[5]
+	aliases = data[6]
+
+	if is_halting(script_id): return
+
+	# Update the alias table
+	for a in aliases:
+		ALIAS[a] = aliases[a]
+
+	if not handleScriptCommands(gui,window,line,line_number,script_id):
+		if len(line.strip())==0: return
+
+		if gui.scripts[script_id].filename==None:
+			script_file = 'script'
+		else:
+			script_file = os.path.basename(gui.scripts[script_id].filename)
+
+		tokens = line.split()
+		if len(tokens)>0:
+			if len(tokens)==1:
+				if tokens[0].lower()=='end':
+					add_halt(script_id)
+					return
+			else:
+				if tokens[1].lower()=='end':
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: end called with too many arguments")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
+						sys.stdout.write(f"{script_file}, line {line_number}: end called with too many arguments\n")
+					return
+
+		if config.DISPLAY_SCRIPT_ERRORS:
+			# Check to make sure this isn't being thrown by script
+			# only commands
+			if not script_only_command:
+				if line[0]==config.ISSUE_COMMAND_SYMBOL:
+					add_halt(script_id)
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Unrecognized command \"{line}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					add_halt(script_id)
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Line \"{line}\" contains no command")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+		if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
+			if not script_only_command:
+				if line[0]==config.ISSUE_COMMAND_SYMBOL:
+					sys.stdout.write(f"{script_file}, line {line_number}: Unrecognized command \"{line}\"\n")
+				else:
+					sys.stdout.write(f"{script_file}, line {line_number}: Line \"{line}\" contains no command\n")
+
+def execute_script_error(data):
+	gui = data[0]
+	window = data[1]
+	line = data[2]
+
+	if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
+		sys.stdout.write(f"{line}\n")
+
+	if config.DISPLAY_SCRIPT_ERRORS:
+		t = Message(ERROR_MESSAGE,'',line)
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+def execute_script_alias(data):
+	alias = data[0]
+	value = data[1]
+	gui = data[2]
+
+	addAlias(alias,value,gui)
+
+def execute_script_end(data):
+	gui = data[0]
+	script_id = data[1]
+	aliases_to_destroy = data[2]
+
+	gui.scripts[script_id].quit()
+	gui.scripts[script_id].wait(config.SCRIPT_THREAD_QUIT_TIMEOUT)
+
+	del gui.scripts[script_id]
+
+	aliases_to_destroy = list(set(aliases_to_destroy))
+	for alias in aliases_to_destroy:
+		removeAlias(alias)
+
+	remove_halt(script_id)
+
+def execute_dialog(data):
+	operation = data[0]
+
+	if operation==FILE_DIALOG:
+		question = data[1]
+		gui = data[2]
+		script_id = data[3]
+		is_open = data[4]
+
+		u = ShowFileDialog(gui,question,is_open)
+		if u:
+			gui.scripts[script_id].set_input(f"{u}")
+		else:
+			gui.scripts[script_id].set_input(None)
+	elif operation==INPUT_DIALOG:
+		question = data[1]
+		gui = data[2]
+		script_id = data[3]
+
+		u = GetInputDialog(question)
+		if u:
+			gui.scripts[script_id].set_input(f"{u}")
+		else:
+			gui.scripts[script_id].set_input(None)
+	elif operation==MESSAGE_DIALOG:
+		question = data[1]
+		gui = data[2]
+		script_id = data[3]
+
+		u = ShowMessageDialog(question)
+		if u:
+			gui.scripts[script_id].set_input(None)
+		else:
+			gui.scripts[script_id].set_input(None)
+	elif operation==NUMBER_DIALOG:
+		lower = data[1]
+		upper = data[2]
+		question = data[3]
+		gui = data[4]
+		script_id = data[5]
+
+		u = GetNumberDialog(lower,upper,question)
+		if u:
+			gui.scripts[script_id].set_input(f"{u}")
+		else:
+			gui.scripts[script_id].set_input(None)
+	elif operation==HALT_DIALOG:
+		msg = data[1]
+		gui = data[2]
+		script_id = data[3]
+
+		u = ShowHaltDialog(msg)
+		if u:
+			gui.scripts[script_id].set_input(True)
+		else:
+			gui.scripts[script_id].set_input(False)
+
+def execute_read(data):
+	filename = data[0]
+	gui = data[1]
+	script_id = data[2]
+	operation = data[3]
+
+	if operation==READ_OPERATION:
+		try:
+			f = open(filename,"r")
+			contents = f.read()
+			f.close()
+
+			if len(contents.strip())==0: contents = '*'
+
+			gui.scripts[script_id].set_input(f"{contents}")
+		except:
+			gui.scripts[script_id].set_input("*")
+	elif operation==APPEND_OPERATION:
+		contents = data[4]
+
+		try:
+			f = open(filename, "a")
+			f.write(f"{contents}\n")
+			f.close()
+
+			gui.scripts[script_id].set_input('!')
+		except Exception as e:
+			gui.scripts[script_id].set_input(f"{e}")
+	elif operation==WRITE_OPERATION:
+		contents = data[4]
+
+		try:
+			f = open(filename, "w")
+			f.write(f"{contents}\n")
+			f.close()
+
+			gui.scripts[script_id].set_input('!')
+		except Exception as e:
+			gui.scripts[script_id].set_input(f"{e}")
+
+def executeScript(gui,window,text,filename=None,args=[]):
+
+	script_id = str(uuid.uuid4())
+	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,filename)
+	gui.scripts[script_id].execute_line.connect(execute_script_line)
+	gui.scripts[script_id].handle_script_end.connect(execute_script_end)
+	gui.scripts[script_id].handle_script_error.connect(execute_script_error)
+	gui.scripts[script_id].handle_script_alias.connect(execute_script_alias)
+	gui.scripts[script_id].request_read_write_append.connect(execute_read)
+	gui.scripts[script_id].request_dialog.connect(execute_dialog)
+	gui.scripts[script_id].start()
+
+def executeGlobalScript(gui,window,text,filename=None,args=[]):
+
+	script_id = str(uuid.uuid4())
+	gui.scripts[script_id] = ScriptThread(text,script_id,gui,window,args,filename,None,True)
+	gui.scripts[script_id].execute_line.connect(execute_script_line)
+	gui.scripts[script_id].handle_script_end.connect(execute_script_end)
+	gui.scripts[script_id].handle_script_error.connect(execute_script_error)
+	gui.scripts[script_id].handle_script_alias.connect(execute_script_alias)
+	gui.scripts[script_id].request_read_write_append.connect(execute_read)
+	gui.scripts[script_id].request_dialog.connect(execute_dialog)
+	gui.scripts[script_id].start()
+
+def getScriptAliases(gui):
+	aliases = []
+	for script_id in gui.scripts:
+		aliases = aliases + gui.scripts[script_id].CREATED
+	return list(set(aliases))
+
 def execute_delay(data):
 	gui = data[0]
 	window = data[1]
@@ -8505,16 +8468,12 @@ class ExitThread(QThread):
 
 class ScriptThread(QThread):
 
-	execLine = pyqtSignal(object)
-	scriptEnd = pyqtSignal(object)
-	scriptError = pyqtSignal(object)
-	scriptAlias = pyqtSignal(object)
-	request_input = pyqtSignal(object)
-	request_number = pyqtSignal(object)
-	request_message = pyqtSignal(object)
-	request_halt = pyqtSignal(object)
-	request_read_write = pyqtSignal(object)
-	request_file = pyqtSignal(object)
+	execute_line = pyqtSignal(object)
+	handle_script_end = pyqtSignal(object)
+	handle_script_error = pyqtSignal(object)
+	handle_script_alias = pyqtSignal(object)
+	request_read_write_append = pyqtSignal(object)
+	request_dialog = pyqtSignal(object)
 
 	def __init__(self,script,sid,gui,window,arguments=[],filename=None,parent=None,is_global=False):
 		super(ScriptThread, self).__init__(parent)
@@ -8563,7 +8522,7 @@ class ScriptThread(QThread):
 	def addAlias(self,name,value):
 		self.ALIAS[name] = value
 		if not name in self.CREATED and not self.is_global: self.CREATED.append(name)
-		self.scriptAlias.emit([name,value,self.gui])
+		self.handle_script_alias.emit([name,value,self.gui])
 
 	def removeAlias(self,name):
 		if len(name)>0:
@@ -8636,7 +8595,7 @@ class ScriptThread(QThread):
 
 						# Use shlex to tokenize the input, so that we can
 						# handle filenames with spaces in them
-						ftokens = shlex.split(shlex.quote(' '.join(tokens)), comments=False)
+						ftokens = shlex.split(' '.join(tokens), comments=False)
 
 						for f in ftokens:
 							f = self.interpolateAliases(f)
@@ -8651,11 +8610,11 @@ class ScriptThread(QThread):
 
 								for l in contents.split("\n"): script.append(l)
 							else:
-								self.scriptError.emit([self.gui,self.window,f"Error processing insert: File \"{f}\" cannot be found"])
+								self.handle_script_error.emit([self.gui,self.window,f"Error processing insert: File \"{f}\" cannot be found"])
 								got_error = True
 						skip_this_line = True
 				elif tokens[0].lower()=='insert' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"Error processing insert: insert called without any arguments"])
+					self.handle_script_error.emit([self.gui,self.window,f"Error processing insert: insert called without any arguments"])
 					skip_this_line = True
 					got_error = True
 
@@ -8683,15 +8642,15 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='append':
 					if not config.ENABLE_READ_AND_WRITE_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append has been disabled"])
 						no_errors = False
 						break
 					elif not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8701,11 +8660,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='getfile':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8715,11 +8674,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='setfile':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8729,15 +8688,15 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='write':
 					if not config.ENABLE_READ_AND_WRITE_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write has been disabled"])
 						no_errors = False
 						break
 					elif not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8747,11 +8706,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='escape':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: escape: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: escape: aliases are disabled"])
 						no_errors = False
 						break
 					elif len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: escape called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: escape called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8761,15 +8720,15 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='hostmask':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called without enough arguments"])
 						no_errors = False
 						break
 					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)>3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called with too many arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called with too many arguments"])
 						no_errors = False
 						break
 
@@ -8779,11 +8738,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
 						no_errors = False
 						break
 
@@ -8793,7 +8752,7 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
 					if len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8804,11 +8763,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='number':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES and len(tokens)<5:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8818,11 +8777,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='input':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8832,7 +8791,7 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='loop':
 					if len(tokens)!=2:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wrong number of arguments to loop"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wrong number of arguments to loop"])
 						no_errors = False
 						break
 					else:
@@ -8844,11 +8803,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='pool':
 					if len(tokens)>1:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool takes no arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool takes no arguments"])
 						no_errors = False
 						break
 					elif in_loop_block==False:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool: not currently in a loop block"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool: not currently in a loop block"])
 						no_errors = False
 						break
 					else:
@@ -8860,7 +8819,7 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='target':
 					if not config.ENABLE_GOTO_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 						no_errors = False
 						break
 
@@ -8870,15 +8829,15 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='random':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES and len(tokens)<4:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called without enough arguments"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES and len(tokens)>4:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called with too many arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random called with too many arguments"])
 						no_errors = False
 						break
 
@@ -8888,15 +8847,15 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='read':
 					if not config.ENABLE_READ_AND_WRITE_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read has been disabled"])
 						no_errors = False
 						break
 					elif not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8906,11 +8865,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='goto':
 					if not config.ENABLE_GOTO_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_GOTO_COMMAND and len(tokens)!=2:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
 						no_errors = False
 						break
 
@@ -8920,11 +8879,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()=='insert':
 					if not config.ENABLE_INSERT_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert has been disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_INSERT_COMMAND and len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: insert called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8935,13 +8894,13 @@ class ScriptThread(QThread):
 			if len(tokens)<5:
 				if tokens[0].lower()=='if':
 					if config.ENABLE_IF_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if called without enough arguments"])
 						no_errors = False
 						break
 			if len(tokens)>=5:
 				if tokens[0].lower()=='if':
 					if not config.ENABLE_IF_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
 						no_errors = False
 						threw_if_error = True
 						break
@@ -8955,7 +8914,7 @@ class ScriptThread(QThread):
 							if len(stokens)>1:
 								if stokens[0].lower()=='goto':
 									if not config.ENABLE_GOTO_COMMAND:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 										no_errors = False
 										break
 
@@ -8984,29 +8943,29 @@ class ScriptThread(QThread):
 									"append",
 								]
 								if stokens[0].lower() in script_only:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
 									no_errors = False
 									break
 								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias':
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
 									no_errors = False
 									break
 								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias' and not config.ENABLE_ALIASES:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
 									no_errors = False
 									break
 								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}alias' and not config.ENABLE_ALIASES:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
 									no_errors = False
 									break
 						except:
-							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
+							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using double quotation marks"])
 							no_errors = False
 							break
 			if len(tokens)>=1 and not threw_if_error:
 				if tokens[0].lower()=='if':
 					if not config.ENABLE_IF_COMMAND:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if has been disabled"])
 						no_errors = False
 						break
 
@@ -9016,11 +8975,11 @@ class ScriptThread(QThread):
 			if len(tokens)>=1:
 				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
 					if not config.ENABLE_ALIASES:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
 						no_errors = False
 						break
 					elif config.ENABLE_ALIASES and len(tokens)<3:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
 						no_errors = False
 						break
 
@@ -9039,12 +8998,12 @@ class ScriptThread(QThread):
 
 					if valid==False:
 						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script cannot be ran in {self.window.name}"])
+							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script cannot be ran in {self.window.name}"])
 						no_errors = False
 						break
 
 				if tokens[0].lower()=='exclude' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: exclude called without an argument"])
+					self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: exclude called without an argument"])
 					no_errors = False
 					break
 
@@ -9063,12 +9022,12 @@ class ScriptThread(QThread):
 
 					if valid==False:
 						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script cannot be ran in {self.window.name}"])
+							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script cannot be ran in {self.window.name}"])
 						no_errors = False
 						break
 
 				elif tokens[0].lower()=='only' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: only called without an argument"])
+					self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: only called without an argument"])
 					no_errors = False
 					break
 
@@ -9085,23 +9044,23 @@ class ScriptThread(QThread):
 					if arg.lower()=='server':
 						if self.window.window_type!=SERVER_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in server windows"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in server windows"])
 							no_errors = False
 							break
 					elif arg.lower()=='channel':
 						if self.window.window_type!=CHANNEL_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in channel windows"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in channel windows"])
 							no_errors = False
 							break
 					elif arg.lower()=='private':
 						if self.window.window_type!=PRIVATE_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in private chat windows"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in private chat windows"])
 							no_errors = False
 							break
 					else:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg}\""])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg}\""])
 						no_errors = False
 						break
 
@@ -9127,11 +9086,11 @@ class ScriptThread(QThread):
 						if self.window.window_type==PRIVATE_WINDOW: valid = True
 
 					if arg1.lower()!='server' and arg1.lower()!='channel' and arg1.lower()!='private':
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg1}\""])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg1}\""])
 						no_errors = False
 						break
 					elif arg2.lower()!='server' and arg2.lower()!='channel' and arg2.lower()!='private':
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg2}\""])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Unrecognized restriction: \"{arg2}\""])
 						no_errors = False
 						break
 					elif not valid:
@@ -9139,16 +9098,16 @@ class ScriptThread(QThread):
 						if self.window.window_type==SERVER_WINDOW: reason = "server"
 						if self.window.window_type==CHANNEL_WINDOW: reason = "channel"
 						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script is restricted from running in {reason} windows"])
+							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script is restricted from running in {reason} windows"])
 						no_errors = False
 						break
 
 				elif tokens[0].lower()=='restrict' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: restrict called without an argument"])
+					self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: restrict called without an argument"])
 					no_errors = False
 					break
 				elif tokens[0].lower()=='restrict' and len(tokens)>3:
-					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: restrict called with too many arguments"])
+					self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: restrict called with too many arguments"])
 					no_errors = False
 					break
 
@@ -9165,11 +9124,11 @@ class ScriptThread(QThread):
 					if arg=='+':
 						if len(self.arguments)==0:
 							if len(tokens)>0:
-								self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+								self.handle_script_error.emit([self.gui,self.window,f"{' '.join(tokens)}"])
 								no_errors = False
 								break
 							else:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
 								no_errors = False
 								break
 					else:
@@ -9178,41 +9137,41 @@ class ScriptThread(QThread):
 							if config.REQUIRE_EXACT_ARGCOUNT_FOR_SCRIPTS:
 								if len(tokens)>0:
 									if len(self.arguments)!=arg:
-										self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{' '.join(tokens)}"])
 										no_errors = False
 										break
 								else:
 									if len(self.arguments)!=arg:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
 										no_errors = False
 										break
 							else:
 								if len(tokens)>0:
 									if len(self.arguments)<arg:
-										self.scriptError.emit([self.gui,self.window,f"{' '.join(tokens)}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{' '.join(tokens)}"])
 										no_errors = False
 										break
 								else:
 									if len(self.arguments)<arg:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be called with {arg} arguments"])
 										no_errors = False
 										break
 						except:
-							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage must be called with a numerical first argument"])
+							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage must be called with a numerical first argument"])
 							no_errors = False
 							break
 
 			# Usage must be called with at least one argument
 			if len(tokens)>=1:
 				if tokens[0].lower()=='usage' and len(tokens)==1:
-					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage called without an argument"])
+					self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: usage called without an argument"])
 					no_errors = False
 					break
 
 			# /end doesn't take any arguments
 			if len(tokens)>=1:
 				if tokens[0].lower()=='end' and len(tokens)>1: 
-					self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: end called with too many arguments"])
+					self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: end called with too many arguments"])
 					no_errors = False
 					break
 
@@ -9220,17 +9179,17 @@ class ScriptThread(QThread):
 				# Make sure that wait has only one argument
 				if len(tokens)>=1:
 					if tokens[0].lower()=='wait' and len(tokens)>2:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with too many arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with too many arguments"])
 						no_errors = False
 						break
 					if tokens[0].lower()=='wait' and len(tokens)==1:
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait must be called with a numerical argument"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait must be called with a numerical argument"])
 						no_errors = False
 						break
 			else:
 				if len(tokens)>=1:
 					if tokens[0].lower()=='wait':
-						self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait has been disabled"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait has been disabled"])
 						no_errors = False
 						break
 
@@ -9267,18 +9226,18 @@ class ScriptThread(QThread):
 						tokens.pop(0)
 						label = tokens.pop(0)
 						if self.target(label)!=None:
-							self.scriptError.emit([self.gui,self.window,f"Error processing target: Target \"{label}\" already exists"])
+							self.handle_script_error.emit([self.gui,self.window,f"Error processing target: Target \"{label}\" already exists"])
 							got_error = True
 						else:
 							self.target(label,line_number)
 						continue
 				if len(tokens)>2:
 					if tokens[0].lower()=='target':
-						self.scriptError.emit([self.gui,self.window,f"Error processing target: target called with too many arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"Error processing target: target called with too many arguments"])
 						got_error = True
 				if len(tokens)==1:
 					if tokens[0].lower()=='target':
-						self.scriptError.emit([self.gui,self.window,f"Error processing target: target requires an argument"])
+						self.handle_script_error.emit([self.gui,self.window,f"Error processing target: target requires an argument"])
 						got_error = True
 
 		if not config.HALT_SCRIPT_EXECUTION_ON_ERROR: got_error = False
@@ -9297,7 +9256,7 @@ class ScriptThread(QThread):
 			# This should never happen, but if it does...
 			# Do not execute any scripts if scripting is disabled
 			if not config.SCRIPTING_ENGINE_ENABLED:
-				self.scriptError.emit([self.gui,self.window,f"Scripting has been disabled"])
+				self.handle_script_error.emit([self.gui,self.window,f"Scripting has been disabled"])
 				no_errors = False
 
 			if no_errors and config.ENABLE_ALIASES:
@@ -9391,7 +9350,7 @@ class ScriptThread(QThread):
 										if a[0].isalpha():
 											if not a in ALIAS:
 												if is_valid_alias_name(a):
-													self.request_file.emit([question,self.gui,self.id,True])
+													self.request_dialog.emit([FILE_DIALOG,question,self.gui,self.id,True])
 													self.mutex.lock()
 													self.wait_condition.wait(self.mutex)
 													self.mutex.unlock()
@@ -9406,7 +9365,7 @@ class ScriptThread(QThread):
 											else:
 												if a in self.CREATED:
 													if is_valid_alias_name(a):
-														self.request_file.emit([question,self.gui,self.id,True])
+														self.request_dialog.emit([FILE_DIALOG,question,self.gui,self.id,True])
 														self.mutex.lock()
 														self.wait_condition.wait(self.mutex)
 														self.mutex.unlock()
@@ -9423,7 +9382,7 @@ class ScriptThread(QThread):
 										else:
 											error_message = f"\"{a}\" is not a valid alias token"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: getfile: {error_message}"])
 										loop = False
 								continue
 
@@ -9455,7 +9414,7 @@ class ScriptThread(QThread):
 										if a[0].isalpha():
 											if not a in ALIAS:
 												if is_valid_alias_name(a):
-													self.request_file.emit([question,self.gui,self.id,False])
+													self.request_dialog.emit([FILE_DIALOG,question,self.gui,self.id,False])
 													self.mutex.lock()
 													self.wait_condition.wait(self.mutex)
 													self.mutex.unlock()
@@ -9470,7 +9429,7 @@ class ScriptThread(QThread):
 											else:
 												if a in self.CREATED:
 													if is_valid_alias_name(a):
-														self.request_file.emit([question,self.gui,self.id,False])
+														self.request_dialog.emit([FILE_DIALOG,question,self.gui,self.id,False])
 														self.mutex.lock()
 														self.wait_condition.wait(self.mutex)
 														self.mutex.unlock()
@@ -9487,7 +9446,7 @@ class ScriptThread(QThread):
 										else:
 											error_message = f"\"{a}\" is not a valid alias token"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: setfile: {error_message}"])
 										loop = False
 								continue
 
@@ -9539,7 +9498,7 @@ class ScriptThread(QThread):
 										else:
 											error_message = f"\"{a}\" is not a valid alias token"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
 										loop = False
 								continue
 
@@ -9598,7 +9557,7 @@ class ScriptThread(QThread):
 											error_message = f"\"{a}\" is not a valid alias token"
 
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
 										loop = False
 								continue
 
@@ -9613,7 +9572,7 @@ class ScriptThread(QThread):
 								buildTemporaryAliases(self.gui,self.window)
 								message = self.interpolateAliases(message)
 
-								self.request_message.emit([message,self.gui,self.id])
+								self.request_dialog.emit([MESSAGE_DIALOG,message,self.gui,self.id])
 								self.mutex.lock()
 								self.wait_condition.wait(self.mutex)
 								self.mutex.unlock()
@@ -9636,12 +9595,12 @@ class ScriptThread(QThread):
 									upper = self.interpolateAliases(tokens.pop(0))
 
 									if is_int(lower)==None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: \"{lower}\" is not a number"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: \"{lower}\" is not a number"])
 										loop = False
 										continue
 
 									if is_int(upper)==None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: \"{upper}\" is not a number"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: \"{upper}\" is not a number"])
 										loop = False
 										continue
 
@@ -9664,7 +9623,7 @@ class ScriptThread(QThread):
 										if a[0].isalpha():
 											if not a in ALIAS:
 												if is_valid_alias_name(a):
-													self.request_number.emit([is_int(lower),is_int(upper),question,self.gui,self.id])
+													self.request_dialog.emit([NUMBER_DIALOG,is_int(lower),is_int(upper),question,self.gui,self.id])
 													self.mutex.lock()
 													self.wait_condition.wait(self.mutex)
 													self.mutex.unlock()
@@ -9679,7 +9638,7 @@ class ScriptThread(QThread):
 											else:
 												if a in self.CREATED:
 													if is_valid_alias_name(a):
-														self.request_number.emit([is_int(lower),is_int(upper),question,self.gui,self.id])
+														self.request_dialog.emit([NUMBER_DIALOG,is_int(lower),is_int(upper),question,self.gui,self.id])
 														self.mutex.lock()
 														self.wait_condition.wait(self.mutex)
 														self.mutex.unlock()
@@ -9696,7 +9655,7 @@ class ScriptThread(QThread):
 										else:
 											error_message = f"\"{a}\" is not a valid alias token"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: number: {error_message}"])
 										loop = False
 								continue
 
@@ -9728,7 +9687,7 @@ class ScriptThread(QThread):
 										if a[0].isalpha():
 											if not a in ALIAS:
 												if is_valid_alias_name(a):
-													self.request_input.emit([question,self.gui,self.id])
+													self.request_dialog.emit([INPUT_DIALOG,question,self.gui,self.id])
 													self.mutex.lock()
 													self.wait_condition.wait(self.mutex)
 													self.mutex.unlock()
@@ -9743,7 +9702,7 @@ class ScriptThread(QThread):
 											else:
 												if a in self.CREATED:
 													if is_valid_alias_name(a):
-														self.request_input.emit([question,self.gui,self.id])
+														self.request_dialog.emit([INPUT_DIALOG,question,self.gui,self.id])
 														self.mutex.lock()
 														self.wait_condition.wait(self.mutex)
 														self.mutex.unlock()
@@ -9760,7 +9719,7 @@ class ScriptThread(QThread):
 										else:
 											error_message = f"\"{a}\" is not a valid alias token"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: input: {error_message}"])
 										loop = False
 								continue
 
@@ -9779,18 +9738,18 @@ class ScriptThread(QThread):
 									if len(numloops)>len(config.ALIAS_INTERPOLATION_SYMBOL):
 										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
 										if numloops[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number (did you forget to set an alias?)"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number (did you forget to set an alias?)"])
 										else:
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
 									else:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: \"{numloops}\" is not a number"])
 									loop = False
 								else:
 									if self.LOOP_COUNT==None:
 										self.LOOP_COUNT = is_int(numloops) - 1
 										self.LOOP_TARGET = line_number
 									else:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: nested loops are forbidden"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: loop: nested loops are forbidden"])
 										loop = False
 								continue
 
@@ -9807,7 +9766,7 @@ class ScriptThread(QThread):
 										self.LOOP_COUNT = self.LOOP_COUNT - 1
 										index = self.LOOP_TARGET-1
 								else:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool: not currently in a loop"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: pool: not currently in a loop"])
 									loop = False
 								continue
 
@@ -9849,7 +9808,7 @@ class ScriptThread(QThread):
 										else:
 											error_message = f"\"{a}\" is not a valid alias token"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {error_message}"])
 										loop = False
 									else:
 										value = ' '.join(tokens)
@@ -9899,7 +9858,7 @@ class ScriptThread(QThread):
 													if is_valid_alias_name(a):
 														if is_text_file(efilename):
 															try:
-																self.request_read_write.emit([efilename,self.gui,self.id,READ_OPERATION])
+																self.request_read_write_append.emit([efilename,self.gui,self.id,READ_OPERATION])
 																self.mutex.lock()
 																self.wait_condition.wait(self.mutex)
 																self.mutex.unlock()
@@ -9916,7 +9875,7 @@ class ScriptThread(QThread):
 													if a in self.CREATED:
 														if is_text_file(efilename):
 															try:
-																self.request_read_write.emit([efilename,self.gui,self.id,READ_OPERATION])
+																self.request_read_write_append.emit([efilename,self.gui,self.id,READ_OPERATION])
 																self.mutex.lock()
 																self.wait_condition.wait(self.mutex)
 																self.mutex.unlock()
@@ -9934,7 +9893,7 @@ class ScriptThread(QThread):
 									else:
 										error_message = f"\"{ifilename}\" not found"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: {error_message}"])
 										loop = False
 								continue
 
@@ -9951,7 +9910,7 @@ class ScriptThread(QThread):
 									try:
 										stokens = shlex.split(line, comments=False)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing write command. Try using quotation marks"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing write command. Try using double quotation marks"])
 										loop = False
 										continue
 
@@ -9964,7 +9923,7 @@ class ScriptThread(QThread):
 									contents = self.interpolateAliases(contents)
 
 									try:
-										self.request_read_write.emit([filename,self.gui,self.id,WRITE_OPERATION,contents])
+										self.request_read_write_append.emit([filename,self.gui,self.id,WRITE_OPERATION,contents])
 										self.mutex.lock()
 										self.wait_condition.wait(self.mutex)
 										self.mutex.unlock()
@@ -9973,13 +9932,13 @@ class ScriptThread(QThread):
 											pass
 										else:
 											# write failed
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: write to \"{filename}\" failed ({self.user_input})"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: write to \"{filename}\" failed ({self.user_input})"])
 											loop = False
 										self.user_input = None
 										script_only_command = True
 										continue
 									except Exception as e:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error calling write: {e}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error calling write: {e}"])
 										loop = False
 										continue
 								continue
@@ -9997,7 +9956,7 @@ class ScriptThread(QThread):
 									try:
 										stokens = shlex.split(line, comments=False)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing append command. Try using quotation marks"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing append command. Try using double quotation marks"])
 										loop = False
 										continue
 
@@ -10010,7 +9969,7 @@ class ScriptThread(QThread):
 									contents = self.interpolateAliases(contents)
 
 									try:
-										self.request_read_write.emit([filename,self.gui,self.id,APPEND_OPERATION,contents])
+										self.request_read_write_append.emit([filename,self.gui,self.id,APPEND_OPERATION,contents])
 										self.mutex.lock()
 										self.wait_condition.wait(self.mutex)
 										self.mutex.unlock()
@@ -10019,13 +9978,13 @@ class ScriptThread(QThread):
 											pass
 										else:
 											# append failed
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append: write to \"{filename}\" failed ({self.user_input})"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append: write to \"{filename}\" failed ({self.user_input})"])
 											loop = False
 										self.user_input = None
 										script_only_command = True
 										continue
 									except Exception as e:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error calling append: {e}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error calling append: {e}"])
 										loop = False
 										continue
 								continue
@@ -10086,7 +10045,7 @@ class ScriptThread(QThread):
 									else:
 										error_message = f"arguments are not integers"
 									if error_message!=None:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: {error_message}"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: random: {error_message}"])
 										loop = False
 								continue
 
@@ -10099,7 +10058,7 @@ class ScriptThread(QThread):
 								msg = ' '.join(tokens)
 								buildTemporaryAliases(self.gui,self.window)
 								msg = self.interpolateAliases(msg)
-								self.request_halt.emit([msg,self.gui,self.id])
+								self.request_dialog.emit([HALT_DIALOG,msg,self.gui,self.id])
 								self.mutex.lock()
 								self.wait_condition.wait(self.mutex)
 								self.mutex.unlock()
@@ -10113,7 +10072,7 @@ class ScriptThread(QThread):
 
 						if len(tokens)>0 and len(tokens)==1:
 							if tokens[0].lower()=='halt':
-								self.request_halt.emit([None,self.gui,self.id])
+								self.request_dialog.emit([HALT_DIALOG,None,self.gui,self.id])
 								self.mutex.lock()
 								self.wait_condition.wait(self.mutex)
 								self.mutex.unlock()
@@ -10134,7 +10093,7 @@ class ScriptThread(QThread):
 								try:
 									stokens = shlex.split(line, comments=False)
 								except:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using quotation marks"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Error tokenizing if command. Try using double quotation marks"])
 									loop = False
 									continue
 
@@ -10274,7 +10233,7 @@ class ScriptThread(QThread):
 											do_command = True
 
 								if not valid_operator:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{operator}\" is not a valid \"if\" operator"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{operator}\" is not a valid \"if\" operator"])
 									loop = False
 									do_command = False
 									continue
@@ -10287,7 +10246,7 @@ class ScriptThread(QThread):
 											msg = ' '.join(stokens)
 											buildTemporaryAliases(self.gui,self.window)
 											msg = self.interpolateAliases(msg)
-											self.request_halt.emit([msg,self.gui,self.id])
+											self.request_dialog.emit([HALT_DIALOG,msg,self.gui,self.id])
 											self.mutex.lock()
 											self.wait_condition.wait(self.mutex)
 											self.mutex.unlock()
@@ -10300,7 +10259,7 @@ class ScriptThread(QThread):
 											continue
 									if len(stokens)>0 and len(stokens)==1:
 										if stokens[0].lower()=='halt':
-											self.request_halt.emit([None,self.gui,self.id])
+											self.request_dialog.emit([HALT_DIALOG,None,self.gui,self.id])
 											self.mutex.lock()
 											self.wait_condition.wait(self.mutex)
 											self.mutex.unlock()
@@ -10320,7 +10279,7 @@ class ScriptThread(QThread):
 											buildTemporaryAliases(self.gui,self.window)
 											message = self.interpolateAliases(message)
 
-											self.request_message.emit([message,self.gui,self.id])
+											self.request_dialog.emit([MESSAGE_DIALOG,message,self.gui,self.id])
 											self.mutex.lock()
 											self.wait_condition.wait(self.mutex)
 											self.mutex.unlock()
@@ -10329,7 +10288,7 @@ class ScriptThread(QThread):
 											continue
 									if len(stokens)==1:
 										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without an argument"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without an argument"])
 											loop = False
 											continue
 									# /alias
@@ -10360,7 +10319,7 @@ class ScriptThread(QThread):
 													else:
 														error_message = f"\"{a}\" is not a valid alias token"
 												if error_message!=None:
-													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {error_message}"])
+													self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias: {error_message}"])
 													loop = False
 												else:
 													value = ' '.join(stokens)
@@ -10370,13 +10329,13 @@ class ScriptThread(QThread):
 													if not error and result!=None: value = str(result)
 													self.addAlias(a,value)
 											else:
-												self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}if: alias is disabled"])
+												self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}if: alias is disabled"])
 												loop = False
 											script_only_command = True
 											continue
 									if len(stokens)<3:
 										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
 											loop = False
 											continue
 									#  goto
@@ -10398,25 +10357,25 @@ class ScriptThread(QThread):
 													self.LOOP_TARGET = None
 													continue
 												elif ' ' in stokens[1]:
-													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" is not a valid target name"])
+													self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" is not a valid target name"])
 													loop = False
 													continue
 												elif not stokens[1] in self.TARGETS and is_int(stokens[1])==None:
-													self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" does not exist"])
+													self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{stokens[1]}\" does not exist"])
 													loop = False
 													continue
 												else:
 													try:
 														ln = int(stokens[1])
 													except:
-														self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
+														self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
 														loop = False
 														continue
 													ln = ln - 1
 													try:
 														code = script[ln]
 													except:
-														self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
+														self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[1]}\" is not a valid line number"])
 														loop = False
 														continue
 													index = ln - 1
@@ -10425,30 +10384,30 @@ class ScriptThread(QThread):
 													self.LOOP_TARGET = None
 													continue
 											else:
-												self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
+												self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 												loop = False
 												handled_goto = True
 												continue
 									if len(stokens)==1:
 										if stokens[0].lower()=='goto':
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called without a target or line number"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called without a target or line number"])
 											loop = False
 											handled_goto = True
 											continue
 									if len(stokens)>2:
 										if stokens[0].lower()=='goto':
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
 											loop = False
 											handled_goto = True
 											continue
 									if not handled_goto:
-										self.execLine.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False,self.ALIAS])
+										self.execute_line.emit([self.gui,self.window,self.id,' '.join(stokens),line_number,False,self.ALIAS])
 									script_only_command = True
 									continue
 
 						if len(tokens)>0 and len(tokens)<5:
 							if tokens[0].lower()=='if':
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if called without enough arguments"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if called without enough arguments"])
 								loop = False
 								continue
 
@@ -10493,19 +10452,19 @@ class ScriptThread(QThread):
 								script_only_command = True
 
 								if not is_valid:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find window \"{target}\""])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find window \"{target}\""])
 									loop = False
 								else:
 									continue
 
 						if len(tokens)>=1:
 							if tokens[0].lower()=='context' and len(tokens)==1:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called without an argument"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called without an argument"])
 								script_only_command = True
 								loop = False
 
 							if tokens[0].lower()=='context' and len(tokens)>2:
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called with too many arguments"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called with too many arguments"])
 								script_only_command = True
 								loop = False
 
@@ -10524,15 +10483,15 @@ class ScriptThread(QThread):
 									if len(count)>len(config.ALIAS_INTERPOLATION_SYMBOL):
 										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
 										if count[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument (did you forget to set an alias?)"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument (did you forget to set an alias?)"])
 											script_only_command = True
 											loop = False
 										else:
-											self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument"])
+											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument"])
 											script_only_command = True
 											loop = False
 									else:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: wait called with a non-numerical argument"])
 										script_only_command = True
 										loop = False
 									continue
@@ -10616,7 +10575,7 @@ class ScriptThread(QThread):
 									self.LOOP_TARGET = None
 									continue
 								elif not target in self.TARGETS and is_int(target)==None:
-									self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{target}\" does not exist"])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Target \"{target}\" does not exist"])
 									loop = False
 									script_only_command = True
 									continue
@@ -10624,14 +10583,14 @@ class ScriptThread(QThread):
 									try:
 										target = int(target)
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
 										loop = False
 										script_only_command = True
 										continue
 									try:
 										code = script[target-1]
 									except:
-										self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{target}\" is not a valid line number"])
 										loop = False
 										continue
 
@@ -10643,14 +10602,14 @@ class ScriptThread(QThread):
 
 						if len(tokens)==1:
 							if tokens[0].lower()=='goto':
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called without an argument"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called without an argument"])
 								script_only_command = True
 								loop = False
 								continue
 
 						if len(tokens)>2:
 							if tokens[0].lower()=='goto':
-								self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called with too many arguments"])
 								script_only_command = True
 								loop = False
 								continue
@@ -10658,17 +10617,17 @@ class ScriptThread(QThread):
 						if not config.HALT_SCRIPT_EXECUTION_ON_ERROR:
 							if not halt_issued: loop = True
 						try:
-							self.execLine.emit([self.gui,self.window,self.id,line,line_number,script_only_command,self.ALIAS])
+							self.execute_line.emit([self.gui,self.window,self.id,line,line_number,script_only_command,self.ALIAS])
 						except Exception as e:
-							self.scriptError.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {e}"])
+							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {e}"])
 		except Exception as e:
 			if self.filename==None:
 				filename = "script"
 			else:
 				filename = self.filename
-			self.scriptError.emit([self.gui,self.window,f"Error executing {os.path.basename(filename)}: {e}"])
+			self.handle_script_error.emit([self.gui,self.window,f"Error executing {os.path.basename(filename)}: {e}"])
 		
-		self.scriptEnd.emit([self.gui,self.id,self.CREATED])
+		self.handle_script_end.emit([self.gui,self.id,self.CREATED])
 
 def initialize(directory,directory_name,folder):
 	global CONFIG_DIRECTORY

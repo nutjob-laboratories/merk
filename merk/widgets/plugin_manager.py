@@ -72,7 +72,7 @@ class Window(QMainWindow):
 				else:
 					options = QFileDialog.Options()
 					options |= QFileDialog.DontUseNativeDialog
-					ifileName, _ = QFileDialog.getOpenFileName(self,"Import Icon", str(Path.home()), f"48x48 PNG (*.png);;All Files (*)", options=options)
+					ifileName, _ = QFileDialog.getOpenFileName(self,"Plugin Icon", str(Path.home()), f"48x48 PNG (*.png);;All Files (*)", options=options)
 					if ifileName:
 						efl = len("png")+1
 						if ifileName[-efl:].lower()!=f".png": ifileName = ifileName+f".png"

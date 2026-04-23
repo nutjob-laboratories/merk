@@ -194,6 +194,12 @@ READ_OPERATION = 0
 WRITE_OPERATION = 1
 APPEND_OPERATION = 2
 
+INPUT_DIALOG = 0
+NUMBER_DIALOG = 1
+MESSAGE_DIALOG = 2
+HALT_DIALOG = 3
+FILE_DIALOG = 4
+
 # Icons
 
 # Light mode icons
@@ -396,8 +402,7 @@ Exported on %_DATE_%
 This contains a plugin for the {APPLICATION_NAME} Internet Relay Chat client.
 
 Install this plugin with {APPLICATION_NAME}'s Plugin Manager, or extract this
-ZIP into {APPLICATION_NAME}'s plugin directory, .merk/plugins in your home
-directory.
+ZIP into {APPLICATION_NAME}'s plugin directory.
 """
 
 IRC_COLORS = {

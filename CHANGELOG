@@ -61,6 +61,11 @@ What's New
 * Bugfix: subwindows now check whether they're being dragged more efficiently.
 * New script-only command: "append", which appends text to a file. "write" no
   longer appends to a file, but overwrites it.
+* Re-wrote how blocking scripting commands work; now, almost all dialog events
+  are routed through a single qtsignal rather than 5 (or more) of them.
+* Bugfix: arguments to the /script command were not being properly tokenized.
+* Bugfix: arguments to the "insert" command were not being properly tokenized.
+* Bugfix: arguments to /call were not being properly tokenized.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |
