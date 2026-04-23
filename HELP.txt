@@ -192,8 +192,8 @@ Appearance:
 <td>Connects to an IRC server via SSL</td>
 </tr>
 <tr>
-<td><code>context WINDOW_NAME</code></td>
-<td>Moves execution of the script to <code>WINDOW_NAME</code>; <strong>can only be called from scripts</strong></td>
+<td><code>context [HOSTID] WINDOW_NAME</code></td>
+<td>Moves execution of the script to <code>WINDOW_NAME</code>. To specify what server that <code>WINDOW_NAME</code> is connected to, pass a <code>HOSTID</code> as the first argument. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/ctcp REQUEST USER</code></td>

@@ -7,6 +7,7 @@ What's New
 - **Scripting now has full file I/O**. Scripts can both read and write to files. The `read`, `write`, and `append` commands can be disabled in settings.
 - **New script-only file dialog commands**. Get a filename from the user with the `getfile` and `setfile` commands.
 - **New option to prevent sending mistyped commands as chat**.
+- **`context` can now specify a server**. This allows scripts to switch to contexts on other connections. Pass a hostID as the first argument to select a server.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -66,6 +67,10 @@ What's New
 * Bugfix: arguments to the /script command were not being properly tokenized.
 * Bugfix: arguments to the "insert" command were not being properly tokenized.
 * Bugfix: arguments to /call were not being properly tokenized.
+* The "context" script-only command can now take a hostID as an argument to
+  specify why server a targeted window should be connected to.
+* The pre-command error check on scripts has been expanded to include the
+  context command.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

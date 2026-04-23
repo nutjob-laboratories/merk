@@ -339,7 +339,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/_connect SERVER PORT [REMOTE]`     | Instructs a server to connect to another server. May only be issued by server operators |
 | `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
-| `context WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`; *can only be called from scripts*                                                  |
+| `context [HOSTID] WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`. To specify what server `WINDOW_NAME` is connected to, pass a `HOSTID` as the first argument. *Can only be called from scripts*                                                  |
 | `/ctcp REQUEST USER`                  | Sends a CTCP request to `USER`; valid `REQUEST`s are TIME, VERSION, USERINFO, SOURCE, or FINGER                                                  |
 | `/delay SECONDS COMMAND...`                  | Executes `COMMAND` after `SECONDS` seconds                                                 |
 | `/_die`                  | Instructs the server to shut down. May only be issued by server operators                               |

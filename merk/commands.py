@@ -8636,6 +8636,20 @@ class ScriptThread(QThread):
 			if len(line)==0: continue
 			tokens = line.split()
 
+			# |=========|
+			# | context |
+			# |=========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='context':
+					if len(tokens)==1:
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called without enough arguments"])
+						no_errors = False
+						break
+					if len(tokens)>3:
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called with too many arguments"])
+						no_errors = False
+						break
+
 			# |========|
 			# | append |
 			# |========|
@@ -10457,16 +10471,60 @@ class ScriptThread(QThread):
 								else:
 									continue
 
-						if len(tokens)>=1:
-							if tokens[0].lower()=='context' and len(tokens)==1:
-								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called without an argument"])
-								script_only_command = True
-								loop = False
+						if len(tokens)==3:
+							if tokens[0].lower()=='context':
+								target = tokens[1]
+								other_target = tokens[2]
 
-							if tokens[0].lower()=='context' and len(tokens)>2:
-								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context called with too many arguments"])
+								buildTemporaryAliases(self.gui,self.window)
+								target = self.interpolateAliases(target)
+								other_target = self.interpolateAliases(other_target)
+
+								is_valid = False
+								window_target = None
+
+								if is_valid==False:
+									valids = self.gui.getAllConnectedServerWindows()
+									for w in valids:
+										c = w.widget()
+										if c.name==target:
+											window_target = c
+											is_valid = True
+										elif target==f"{c.client.server}":
+											window_target = c
+											is_valid = True
+										elif target==f"{c.client.server}:{c.client.port}":
+											window_target = c
+											is_valid = True
+
+								if window_target!=None and is_valid==True:
+									valids = self.gui.getAllConnectedWindows(window_target.client)
+									found = False
+									for c in valids:
+										if c.name==other_target:
+											self.window = c
+											is_valid = True
+											found = True
+
+									if is_valid==False:
+										valids = self.gui.getAllAllConnectedWindows()
+										for c in valids:
+											if c.name==other_target:
+												self.window = c
+												is_valid = True
+												found = True
+
+									if not found: is_valid = False
+								else:
+									is_valid = False
+
 								script_only_command = True
-								loop = False
+
+								if not is_valid:
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find window \"{other_target}\" on \"{target}\""])
+									loop = False
+								else:
+									continue
 
 						# |======|
 						# | wait |
