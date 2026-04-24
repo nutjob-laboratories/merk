@@ -6037,14 +6037,30 @@ class MerkSubwindow(QMdiSubWindow):
 		self._drag_start_win_pos = None
 		self._is_dragging = False 
 
+	def _is_near_edge(self, pos):
+		x, y = pos.x(), pos.y()
+		w, h = self.width(), self.height()
+		margin = 5
+		
+		near_left = x < margin
+		near_right = x > w - margin
+		near_top = y < margin
+		near_bottom = y > h - margin
+		
+		return near_left or near_right or near_top or near_bottom
+
 	def mousePressEvent(self, event):
-		if event.button() == Qt.LeftButton:
+		if event.button() == Qt.LeftButton and not self._is_near_edge(event.pos()):
 			self._drag_start_pos = event.globalPos()
 			self._drag_start_win_pos = self.pos()
 			self._is_dragging = False
 		super().mousePressEvent(event)
 
 	def mouseMoveEvent(self, event):
+		if self._is_near_edge(event.pos()):
+			super().mouseMoveEvent(event)
+			return
+		
 		if event.buttons() & Qt.LeftButton and self._drag_start_pos is not None:
 			delta = event.globalPos() - self._drag_start_pos
 
@@ -6100,7 +6116,79 @@ class MerkSubwindow(QMdiSubWindow):
 
 	@staticmethod
 	def _snap_1d(value, target, threshold):
-		return target if abs(value - target) <= threshold else value		
+		return target if abs(value - target) <= threshold else value
+
+# class MerkSubwindow(QMdiSubWindow):
+# 	def __init__(self, parent=None):
+# 		super().__init__(parent)
+# 		self._drag_start_pos = None
+# 		self._drag_start_win_pos = None
+# 		self._is_dragging = False 
+
+# 	def mousePressEvent(self, event):
+# 		if event.button() == Qt.LeftButton:
+# 			self._drag_start_pos = event.globalPos()
+# 			self._drag_start_win_pos = self.pos()
+# 			self._is_dragging = False
+# 		super().mousePressEvent(event)
+
+# 	def mouseMoveEvent(self, event):
+# 		if event.buttons() & Qt.LeftButton and self._drag_start_pos is not None:
+# 			delta = event.globalPos() - self._drag_start_pos
+
+# 			if not self._is_dragging:
+# 				if delta.manhattanLength() < config.SUBWINDOW_SNAP_DRAG_TRIGGER:
+# 					super().mouseMoveEvent(event)
+# 					return
+# 				self._is_dragging = True
+
+# 			raw_pos = self._drag_start_win_pos + delta
+# 			snapped_pos = self._snap(raw_pos)
+# 			self.move(snapped_pos)
+# 			return
+
+# 		super().mouseMoveEvent(event)
+
+# 	def mouseReleaseEvent(self, event):
+# 		if event.button() == Qt.LeftButton:
+# 			self._drag_start_pos = None
+# 			self._drag_start_win_pos = None
+# 			self._is_dragging = False
+# 		super().mouseReleaseEvent(event)
+
+# 	def _snap(self, pos):
+# 		mdi = self.mdiArea()
+# 		if mdi is None:
+# 			return pos
+
+# 		if not config.SUBWINDOW_SNAPPING: return pos
+
+# 		x, y = pos.x(), pos.y()
+# 		w, h = self.width(), self.height()
+
+# 		for other in mdi.subWindowList():
+# 			if other is self:
+# 				continue
+# 			ox, oy = other.x(), other.y()
+# 			ow, oh = other.width(), other.height()
+
+# 			# Horizontal snapping
+# 			x = self._snap_1d(x, ox,          config.SUBWINDOW_SNAP_DISTANCE)
+# 			x = self._snap_1d(x, ox + ow,     config.SUBWINDOW_SNAP_DISTANCE)
+# 			x = self._snap_1d(x, ox - w,      config.SUBWINDOW_SNAP_DISTANCE)
+# 			x = self._snap_1d(x, ox + ow - w, config.SUBWINDOW_SNAP_DISTANCE)
+
+# 			# Vertical snapping
+# 			y = self._snap_1d(y, oy,          config.SUBWINDOW_SNAP_DISTANCE)
+# 			y = self._snap_1d(y, oy + oh,     config.SUBWINDOW_SNAP_DISTANCE)
+# 			y = self._snap_1d(y, oy - h,      config.SUBWINDOW_SNAP_DISTANCE)
+# 			y = self._snap_1d(y, oy + oh - h, config.SUBWINDOW_SNAP_DISTANCE)
+
+# 		return QPoint(x, y)
+
+# 	@staticmethod
+# 	def _snap_1d(value, target, threshold):
+# 		return target if abs(value - target) <= threshold else value		
 
 class GlobalActivityFilter(QObject):
 	def eventFilter(self, watched, event):

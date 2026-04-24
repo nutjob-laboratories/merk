@@ -71,6 +71,8 @@ What's New
   specify why server a targeted window should be connected to.
 * The pre-command error check on scripts has been expanded to include the
   context command.
+* New built-in alias: $_CONNECTED, which contains a list of all of the hostIDs
+  that MERK is connected to, seperated by spaces.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

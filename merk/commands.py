@@ -710,11 +710,17 @@ def buildTemporaryAliases(gui,window):
 	year = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%Y')
 	ordinal = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d')
 
+	all_servers = []
+	for w in gui.getAllConnectedServerWindows():
+		c = w.widget()
+		all_servers.append(f"{c.client.server}:{c.client.port}")
+
 	addTemporaryAlias('_CLIENT',APPLICATION_NAME)
 	if window.client.kwargs["ssl"]:
 		addTemporaryAlias('_CONNECTION',"SSL/TLS")
 	else:
 		addTemporaryAlias('_CONNECTION',"TCP/IP")
+	addTemporaryAlias('_CONNECTED',' '.join(all_servers))
 	if window.window_type==CHANNEL_WINDOW:
 		addTemporaryAlias('_COUNT',f"{len(window.nicks)}")
 	else:
@@ -10428,6 +10434,8 @@ class ScriptThread(QThread):
 						# |=========|
 						# | context |
 						# |=========|
+
+						# One argument
 						if len(tokens)==2:
 							if tokens[0].lower()=='context':
 								target = tokens[1]
@@ -10471,6 +10479,7 @@ class ScriptThread(QThread):
 								else:
 									continue
 
+						# Two arguments
 						if len(tokens)==3:
 							if tokens[0].lower()=='context':
 								target = tokens[1]
@@ -10497,34 +10506,28 @@ class ScriptThread(QThread):
 											window_target = c
 											is_valid = True
 
-								if window_target!=None and is_valid==True:
-									valids = self.gui.getAllConnectedWindows(window_target.client)
-									found = False
-									for c in valids:
-										if c.name==other_target:
-											self.window = c
-											is_valid = True
-											found = True
-
-									if is_valid==False:
-										valids = self.gui.getAllAllConnectedWindows()
+								if not is_valid:
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find connection \"{target}\""])
+									loop = False
+									script_only_command = True
+								else:
+									if window_target!=None and is_valid==True:
+										valids = self.gui.getAllConnectedWindows(window_target.client)
+										found = False
 										for c in valids:
 											if c.name==other_target:
 												self.window = c
 												is_valid = True
 												found = True
 
-									if not found: is_valid = False
-								else:
-									is_valid = False
-
-								script_only_command = True
-
-								if not is_valid:
-									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find window \"{other_target}\" on \"{target}\""])
-									loop = False
-								else:
-									continue
+										if not found: is_valid = False
+									else:
+										is_valid = False
+									script_only_command = True
+									if not is_valid:
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find window \"{other_target}\" on \"{target}\""])
+										loop = False
+								continue
 
 						# |======|
 						# | wait |
