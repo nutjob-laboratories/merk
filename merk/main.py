@@ -6086,31 +6086,37 @@ class MerkSubwindow(QMdiSubWindow):
 
 	def _snap(self, pos):
 		mdi = self.mdiArea()
-		if mdi is None:
-			return pos
-
+		if mdi is None: return pos
 		if not config.SUBWINDOW_SNAPPING: return pos
 
 		x, y = pos.x(), pos.y()
 		w, h = self.width(), self.height()
 
+		# Snap to other windows
 		for other in mdi.subWindowList():
 			if other is self:
 				continue
 			ox, oy = other.x(), other.y()
 			ow, oh = other.width(), other.height()
 
-			# Horizontal snapping
 			x = self._snap_1d(x, ox,          config.SUBWINDOW_SNAP_DISTANCE)
 			x = self._snap_1d(x, ox + ow,     config.SUBWINDOW_SNAP_DISTANCE)
 			x = self._snap_1d(x, ox - w,      config.SUBWINDOW_SNAP_DISTANCE)
 			x = self._snap_1d(x, ox + ow - w, config.SUBWINDOW_SNAP_DISTANCE)
 
-			# Vertical snapping
 			y = self._snap_1d(y, oy,          config.SUBWINDOW_SNAP_DISTANCE)
 			y = self._snap_1d(y, oy + oh,     config.SUBWINDOW_SNAP_DISTANCE)
 			y = self._snap_1d(y, oy - h,      config.SUBWINDOW_SNAP_DISTANCE)
 			y = self._snap_1d(y, oy + oh - h, config.SUBWINDOW_SNAP_DISTANCE)
+
+		mdi_rect = mdi.rect()
+		min_x = 0
+		min_y = 0  # Adjust for toolbars?
+		max_x = mdi_rect.width() - w
+		max_y = mdi_rect.height() - h
+
+		x = max(min_x, min(x, max_x))
+		y = max(min_y, min(y, max_y))
 
 		return QPoint(x, y)
 
