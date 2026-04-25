@@ -6035,17 +6035,16 @@ class MerkSubwindow(QMdiSubWindow):
 		super().__init__(parent)
 		self._drag_start_pos = None
 		self._drag_start_win_pos = None
-		self._is_dragging = False 
+		self._is_dragging = False
 
 	def _is_near_edge(self, pos):
 		x, y = pos.x(), pos.y()
 		w, h = self.width(), self.height()
-		margin = config.SUBWINDOW_RESIZE_EDGE_MARGIN
 		
-		near_left = x < margin
-		near_right = x > w - margin
-		near_top = y < margin
-		near_bottom = y > h - margin
+		near_left = x < config.SUBWINDOW_RESIZE_EDGE_MARGIN
+		near_right = x > w - config.SUBWINDOW_RESIZE_EDGE_MARGIN
+		near_top = y < config.SUBWINDOW_RESIZE_EDGE_MARGIN
+		near_bottom = y > h - config.SUBWINDOW_RESIZE_EDGE_MARGIN
 		
 		return near_left or near_right or near_top or near_bottom
 
