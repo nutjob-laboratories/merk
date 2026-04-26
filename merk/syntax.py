@@ -325,6 +325,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"getfile",
 			"setfile",
 			"append",
+			"decimal",
 		]
 
 		script_full = [
@@ -382,6 +383,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove("getfile")
 			script_only.remove("setfile")
 			script_only.remove("append")
+			script_only.remove("decimal")
 		if not SSL_AVAILABLE:
 			merk.remove(cmdsymbol+"connectssl")
 			merk.remove(cmdsymbol+"xconnectssl")

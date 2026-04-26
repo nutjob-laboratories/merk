@@ -8,6 +8,7 @@ What's New
 - **New script-only file dialog commands**. Get a filename from the user with the `getfile` and `setfile` commands.
 - **New option to prevent sending mistyped commands as chat**.
 - **`context` can now specify a server**. This allows scripts to switch to contexts on other connections. Pass a hostID as the first argument to select a server.
+- **New script-only command: `decimal`**. Requests a decimal number from the user, and stores it in an alias.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -73,6 +74,11 @@ What's New
   context command.
 * New built-in alias: $_CONNECTED, which contains a list of all of the hostIDs
   that MERK is connected to, seperated by spaces.
+* The "input" and "number" script only commands now use the Qt built-in dialog
+  functions instead of custom dialogs.
+* New script-only command: "decimal", which requests a decimal number from the
+  user, much like how "number" works.
+* Bugfix: closing the script/Python editor could occasionally crash the client.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

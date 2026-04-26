@@ -200,6 +200,10 @@ Appearance:
 <td>Sends a CTCP request to <code>USER</code>; valid <code>REQUEST</code>s are TIME, VERSION, USERINFO, SOURCE, or FINGER</td>
 </tr>
 <tr>
+<td><code>decimal ALIAS LOW HIGH MESSAGE...</code></td>
+<td>Requests a decimal number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog or doesn’t input anything, <code>ALIAS</code> will be set to <code>0</code> (zero). This command is blocking; <strong>can only be called by scripts</strong></td>
+</tr>
+<tr>
 <td><code>/delay SECONDS COMMAND...</code></td>
 <td>Executes <code>COMMAND</code> after <code>SECONDS</code> seconds</td>
 </tr>

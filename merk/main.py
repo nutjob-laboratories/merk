@@ -3505,7 +3505,7 @@ class Merk(QMainWindow):
 			# with the current subwindow
 			c = window.widget()
 
-			if hasattr(c,"name"):
+			if hasattr(c,"name") and hasattr(c,"client"):
 				copy = []
 				for e in self.unread_messages:
 					if e[0]==c.client and e[1]==c.name:

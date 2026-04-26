@@ -61,9 +61,7 @@ from . import plugins
 from . import logs
 from . import styles
 from .dialog.away import Dialog as Away
-from .dialog.getsasl import Dialog as GetSasl
-from .dialog.get_input import Dialog as GetInput
-from .dialog.get_number import Dialog as GetNumber
+from .dialog.get_sasl import Dialog as GetSasl
 from .dialog.message import Dialog as ShowMessage
 
 CONFIG_DIRECTORY = None
@@ -121,30 +119,6 @@ def ShowHaltDialog(msg=None):
 
 def ShowMessageDialog(msg,parent=None):
 	x = ShowMessage(msg,parent)
-	info = x.get_message_information(msg,parent)
-	del x
-
-	if not info: return None
-	return info
-
-def GetFileDialog(msg,parent=None):
-	x = GetInput(msg,parent)
-	info = x.get_message_information(msg,parent)
-	del x
-
-	if not info: return None
-	return info
-
-def GetNumberDialog(lower,upper,msg,parent=None):
-	x = GetNumber(lower,upper,msg,parent)
-	info = x.get_number_information(lower,upper,msg,parent)
-	del x
-
-	if not info: return None
-	return info
-
-def GetInputDialog(msg,parent=None):
-	x = GetInput(msg,parent)
 	info = x.get_message_information(msg,parent)
 	del x
 
@@ -8311,9 +8285,10 @@ def execute_dialog(data):
 		gui = data[2]
 		script_id = data[3]
 
-		u = GetInputDialog(question)
-		if u:
-			gui.scripts[script_id].set_input(f"{u}")
+		user_input, completed = QInputDialog.getText(gui, APPLICATION_NAME, question) 
+
+		if completed:
+			gui.scripts[script_id].set_input(f"{user_input}")
 		else:
 			gui.scripts[script_id].set_input(None)
 	elif operation==MESSAGE_DIALOG:
@@ -8333,9 +8308,10 @@ def execute_dialog(data):
 		gui = data[4]
 		script_id = data[5]
 
-		u = GetNumberDialog(lower,upper,question)
-		if u:
-			gui.scripts[script_id].set_input(f"{u}")
+		user_input, completed = QInputDialog.getInt(gui, APPLICATION_NAME, question, 0, lower, upper)
+
+		if completed:
+			gui.scripts[script_id].set_input(f"{user_input}")
 		else:
 			gui.scripts[script_id].set_input(None)
 	elif operation==HALT_DIALOG:
@@ -8348,6 +8324,28 @@ def execute_dialog(data):
 			gui.scripts[script_id].set_input(True)
 		else:
 			gui.scripts[script_id].set_input(False)
+	elif operation==DECIMAL_DIALOG:
+		lower = data[1]
+		upper = data[2]
+		question = data[3]
+		gui = data[4]
+		script_id = data[5]
+
+		dec_count_lower = str(lower)[::-1].find('.')
+		dec_count_upper = str(upper)[::-1].find('.')
+		if dec_count_lower>dec_count_upper:
+			decimal_count = dec_count_lower
+		elif dec_count_lower<dec_count_upper:
+			decimal_count = dec_count_upper
+		else:
+			decimal_count = dec_count_lower
+
+		user_input, completed = QInputDialog.getDouble(gui, APPLICATION_NAME, question, 0.00, lower, upper, decimal_count)
+
+		if completed:
+			gui.scripts[script_id].set_input(f"{user_input}")
+		else:
+			gui.scripts[script_id].set_input(None)
 
 def execute_read(data):
 	filename = data[0]
@@ -8791,6 +8789,20 @@ class ScriptThread(QThread):
 						no_errors = False
 						break
 
+			# |=========|
+			# | decimal |
+			# |=========|
+			if len(tokens)>=1:
+				if tokens[0].lower()=='decimal':
+					if not config.ENABLE_ALIASES:
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: decimal: aliases are disabled"])
+						no_errors = False
+						break
+					elif config.ENABLE_ALIASES and len(tokens)<5:
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: decimal called without enough arguments"])
+						no_errors = False
+						break
+
 			# |=======|
 			# | input |
 			# |=======|
@@ -8961,6 +8973,7 @@ class ScriptThread(QThread):
 									"getfile",
 									"setfile",
 									"append",
+									"decimal",
 								]
 								if stokens[0].lower() in script_only:
 									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
@@ -9598,6 +9611,89 @@ class ScriptThread(QThread):
 								self.mutex.unlock()
 								self.user_input = None
 								script_only_command = True
+								continue
+
+						# |=========|
+						# | decimal |
+						# |=========|
+						if len(tokens)>=1:
+							if tokens[0].lower()=='decimal' and len(tokens)>=5:
+
+								if config.ENABLE_ALIASES:
+									tokens.pop(0)
+									a = tokens.pop(0)
+
+									buildTemporaryAliases(self.gui,self.window)
+									lower = self.interpolateAliases(tokens.pop(0))
+									upper = self.interpolateAliases(tokens.pop(0))
+
+									try:
+										lower = float(lower)
+									except:
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: decimal: \"{lower}\" is not a number"])
+										loop = False
+										continue
+
+									try:
+										upper = float(upper)
+									except:
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: decimal: \"{upper}\" is not a number"])
+										loop = False
+										continue
+
+									question = ' '.join(tokens)
+
+									buildTemporaryAliases(self.gui,self.window)
+									question = self.interpolateAliases(question)
+
+									# If the first character is the interpolation
+									# symbol, strip it from the name
+									if len(a)>len(config.ALIAS_INTERPOLATION_SYMBOL):
+										il = len(config.ALIAS_INTERPOLATION_SYMBOL)
+										if a[:il] == config.ALIAS_INTERPOLATION_SYMBOL:
+											a = a[il:]
+
+									# Only add the local alias if it follows all the
+									# "rules" of aliases
+									error_message = None
+									if len(a)>=1:
+										if a[0].isalpha():
+											if not a in ALIAS:
+												if is_valid_alias_name(a):
+													self.request_dialog.emit([DECIMAL_DIALOG,lower,upper,question,self.gui,self.id])
+													self.mutex.lock()
+													self.wait_condition.wait(self.mutex)
+													self.mutex.unlock()
+													if self.user_input!=None and len(self.user_input.strip())!=0:
+														self.addAlias(a,f"{self.user_input}")
+													else:
+														self.addAlias(a,f"0")
+													self.user_input = None
+													script_only_command = True
+												else:
+													error_message = f"\"{a}\" is not a valid alias token"
+											else:
+												if a in self.CREATED:
+													if is_valid_alias_name(a):
+														self.request_dialog.emit([DECIMAL_DIALOG,lower,upper,question,self.gui,self.id])
+														self.mutex.lock()
+														self.wait_condition.wait(self.mutex)
+														self.mutex.unlock()
+														if self.user_input!=None and len(self.user_input.strip())!=0:
+															self.addAlias(a,f"{self.user_input}")
+														else:
+															self.addAlias(a,f"0")
+														self.user_input = None
+														script_only_command = True
+													else:
+														error_message = f"\"{a}\" is not a valid alias token"
+												else:
+													error_message = f"\"{a}\" already exists in another scope"
+										else:
+											error_message = f"\"{a}\" is not a valid alias token"
+									if error_message!=None:
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: decimal: {error_message}"])
+										loop = False
 								continue
 
 						# |========|

@@ -41,7 +41,7 @@ from .. import config
 from .. import user
 from .. import syntax
 from .. import connection_script
-from .getsasl import Dialog as GetSasl
+from .get_sasl import Dialog as GetSasl
 
 import signal
 
