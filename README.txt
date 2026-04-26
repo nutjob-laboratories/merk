@@ -35,11 +35,11 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK !_RELEASE_! Release](!_RELEASE_URL_!)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK !_FULL_VERSION_! (!_PYSIZE_!)](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1)  |
+| Zip Archive |  Cross-Platform Python  | [Download MERK !_FULL_VERSION_! (!_PYSIZE_!)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
 | Zip Archive |  Linux Executable | [Download MERK !_LIN_VERSION_! (!_LINZIP_!)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
 | Flatpak |  Linux Flatpak | [Download MERK !_LIN_VERSION_! (!_LINFLAT_!)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://www.dropbox.com/scl/fi/4w9ufyknzac24o06710bi/merk-windows-latest.zip?rlkey=zmir67l3klg8mw0omxayzmssc&st=vb69tsdi&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://www.dropbox.com/scl/fi/68orbzsbwa15xlx7268h7/merk-windows-setup.zip?rlkey=jesv3vkc4tgy8ti03jgd3s61d&dl=1)|
+| Zip Archive|  Windows Executable | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Summary
   
@@ -81,7 +81,7 @@ First, install Python 3.13 with [HomeBrew](https://brew.sh/).
 
     brew install python@3.13
 
-Now, [download](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. With that done, we need to build a virtural environment to run **MERK** in. Open a console, and navigate to wherever you extracted **MERK** to, and execute these commands:
+Now, [download](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. With that done, we need to build a virtural environment to run **MERK** in. Open a console, and navigate to wherever you extracted **MERK** to, and execute these commands:
 
     python3.13 -m venv .venv
     source .venv/bin/activate
@@ -104,7 +104,7 @@ A note: all command-line arguments, as documented below, work on the all version
 
 # Running MERK with Python
 
-First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/pf9p7ltb3uufm5akjz7l0/merk-latest.zip?rlkey=3caodopybbcxr4p9grxygxzym&st=01zsuura&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
 
     python merk.py
 
