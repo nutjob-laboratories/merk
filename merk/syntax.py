@@ -206,7 +206,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"ping",
 			cmdsymbol+"ctcp",
 			cmdsymbol+"private",
-			cmdsymbol+"msgbox",
 			cmdsymbol+"next",
 			cmdsymbol+"previous",
 			cmdsymbol+"delay",
@@ -332,6 +331,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"goto",
 			"end",
 			"halt",
+			"msgbox",
 		]
 
 		operators = [

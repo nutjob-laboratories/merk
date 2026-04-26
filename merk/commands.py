@@ -292,7 +292,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"ping": config.ISSUE_COMMAND_SYMBOL+"ping ",
 			config.ISSUE_COMMAND_SYMBOL+"ctcp": config.ISSUE_COMMAND_SYMBOL+"ctcp ",
 			config.ISSUE_COMMAND_SYMBOL+"private": config.ISSUE_COMMAND_SYMBOL+"private ",
-			config.ISSUE_COMMAND_SYMBOL+"msgbox": config.ISSUE_COMMAND_SYMBOL+"msgbox ",
 			config.ISSUE_COMMAND_SYMBOL+"delay": config.ISSUE_COMMAND_SYMBOL+"delay ",
 			config.ISSUE_COMMAND_SYMBOL+"hide": config.ISSUE_COMMAND_SYMBOL+"hide ",
 			config.ISSUE_COMMAND_SYMBOL+"show": config.ISSUE_COMMAND_SYMBOL+"show ",
@@ -459,7 +458,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ping USER [TEXT]</b>", "Sends a CTCP ping to a user" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp REQUEST USER</b>", "Sends a CTCP request; valid requests are TIME, VERSION, USERINFO, SOURCE, or FINGER" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat window for NICKNAME" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...</b>", "Displays a messagebox with a short message" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow and shifts focus to that window" ],
@@ -5307,35 +5305,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |---------|
-	# | /msgbox |
-	# |---------|
-	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox' and len(tokens)>=2:
-			tokens.pop(0)
-			
-			msg = ' '.join(tokens)
-
-			msgBox = QMessageBox()
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText(msg)
-			msgBox.setWindowTitle(APPLICATION_NAME)
-			msgBox.setStandardButtons(QMessageBox.Ok)
-
-			msgBox.exec()
-
-			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"msgbox MESSAGE...")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
-
 	# |----------|
 	# | /private |
 	# |----------|
@@ -8764,13 +8733,13 @@ class ScriptThread(QThread):
 						no_errors = False
 						break
 
-			# |=========|
-			# | /msgbox |
-			# |=========|
+			# |========|
+			# | msgbox |
+			# |========|
 			if len(tokens)>=1:
-				if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
+				if tokens[0].lower()=='msgbox':
 					if len(tokens)==1:
-						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without enough arguments"])
+						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: msgbox called without enough arguments"])
 						no_errors = False
 						break
 
@@ -8943,12 +8912,37 @@ class ScriptThread(QThread):
 							stokens.pop(0)
 							stokens.pop(0)
 							stokens.pop(0)
-							if len(stokens)>1:
+							if len(stokens)>=1:
 								if stokens[0].lower()=='goto':
 									if not config.ENABLE_GOTO_COMMAND:
 										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto has been disabled"])
 										no_errors = False
 										break
+									if len(stokens)==1:
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: goto called without enough arguments"])
+										no_errors = False
+										break
+
+								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias':
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
+									no_errors = False
+									break
+								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias' and not config.ENABLE_ALIASES:
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
+									no_errors = False
+									break
+								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}alias' and not config.ENABLE_ALIASES:
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
+									no_errors = False
+									break
+								if stokens[0].lower()==f'msgbox' and len(stokens)==1:
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: msgbox called without enough arguments"])
+									no_errors = False
+									break
+								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}alias' and len(stokens)<3 and config.ENABLE_ALIASES:
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
+									no_errors = False
+									break
 
 								script_only = [
 									"restrict",
@@ -8977,18 +8971,6 @@ class ScriptThread(QThread):
 								]
 								if stokens[0].lower() in script_only:
 									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: \"{stokens[0]}\" cannot be called from if"])
-									no_errors = False
-									break
-								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias':
-									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
-									no_errors = False
-									break
-								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias' and not config.ENABLE_ALIASES:
-									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
-									no_errors = False
-									break
-								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}alias' and not config.ENABLE_ALIASES:
-									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
 									no_errors = False
 									break
 						except:
@@ -9594,11 +9576,11 @@ class ScriptThread(QThread):
 										loop = False
 								continue
 
-						# |=========|
-						# | /msgbox |
-						# |=========|
+						# |========|
+						# | msgbox |
+						# |========|
 						if len(tokens)>=1:
-							if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox' and len(tokens)>=2:
+							if tokens[0].lower()=='msgbox' and len(tokens)>=2:
 								tokens.pop(0)
 								message = ' '.join(tokens)
 
@@ -9667,7 +9649,7 @@ class ScriptThread(QThread):
 													if self.user_input!=None and len(self.user_input.strip())!=0:
 														self.addAlias(a,f"{self.user_input}")
 													else:
-														self.addAlias(a,f"0")
+														self.addAlias(a,"*")
 													self.user_input = None
 													script_only_command = True
 												else:
@@ -9682,7 +9664,7 @@ class ScriptThread(QThread):
 														if self.user_input!=None and len(self.user_input.strip())!=0:
 															self.addAlias(a,f"{self.user_input}")
 														else:
-															self.addAlias(a,f"0")
+															self.addAlias(a,"*")
 														self.user_input = None
 														script_only_command = True
 													else:
@@ -9746,7 +9728,7 @@ class ScriptThread(QThread):
 													if self.user_input!=None and len(self.user_input.strip())!=0:
 														self.addAlias(a,f"{self.user_input}")
 													else:
-														self.addAlias(a,f"0")
+														self.addAlias(a,"*")
 													self.user_input = None
 													script_only_command = True
 												else:
@@ -9761,7 +9743,7 @@ class ScriptThread(QThread):
 														if self.user_input!=None and len(self.user_input.strip())!=0:
 															self.addAlias(a,f"{self.user_input}")
 														else:
-															self.addAlias(a,f"0")
+															self.addAlias(a,"*")
 														self.user_input = None
 														script_only_command = True
 													else:
@@ -10386,9 +10368,9 @@ class ScriptThread(QThread):
 												pass
 											self.user_input = None
 											continue
-									# /msgbox
+									# msgbox
 									if len(stokens)>=2:
-										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
+										if stokens[0].lower()=='msgbox':
 											stokens.pop(0)
 											message = ' '.join(stokens)
 
@@ -10401,11 +10383,6 @@ class ScriptThread(QThread):
 											self.mutex.unlock()
 											self.user_input = None
 											script_only_command = True
-											continue
-									if len(stokens)==1:
-										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'msgbox':
-											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}msgbox called without an argument"])
-											loop = False
 											continue
 									# /alias
 									if len(stokens)>=3:
@@ -10445,14 +10422,9 @@ class ScriptThread(QThread):
 													if not error and result!=None: value = str(result)
 													self.addAlias(a,value)
 											else:
-												self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}if: alias is disabled"])
+												self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: if: alias is disabled"])
 												loop = False
 											script_only_command = True
-											continue
-									if len(stokens)<3:
-										if stokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'alias':
-											self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias called without enough arguments"])
-											loop = False
 											continue
 									#  goto
 									handled_goto = False

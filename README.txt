@@ -156,7 +156,7 @@ There are four libraries that comes bundled with **MERK**:
         - Scripts have rudimentary flow control, including `if`, `goto`, and `loop`
         - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
         - Over 80 different commands are available for scripts or for use in the client
-        - 25 script-only commands
+        - 26 script-only commands
     - Macros
         - Macros can take arguments, just like "regular" commands
         - Macro functionality is done with scripts, allowing for complex behaviors
@@ -341,7 +341,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
 | `context [HOSTID] WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`. To specify what server `WINDOW_NAME` is connected to, pass a `HOSTID` as the first argument. *Can only be called from scripts*                                                  |
 | `/ctcp REQUEST USER`                  | Sends a CTCP request to `USER`; valid `REQUEST`s are TIME, VERSION, USERINFO, SOURCE, or FINGER                                                  |
-| `decimal ALIAS LOW HIGH MESSAGE...`     | Requests a decimal number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `0` (zero). This command is blocking. *Can only be called by scripts*    |
+| `decimal ALIAS LOW HIGH MESSAGE...`     | Requests a decimal number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*    |
 | `/delay SECONDS COMMAND...`                  | Executes `COMMAND` after `SECONDS` seconds                                                 |
 | `/_die`                  | Instructs the server to shut down. May only be issued by server operators                               |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
@@ -380,10 +380,10 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
 | `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see the current subwindow's coordinates. Pass `*` as `WINDOW` to move the server window      |
 | `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
-| `/msgbox MESSAGE...`                    | Displays a messagebox with a short message. If called from a script, this command is blocking                   |
+| `msgbox MESSAGE...`                    | Displays a messagebox with a short message. This command is blocking. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*             |
 | `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
-| `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `0` (zero). This command is blocking. *Can only be called by scripts*    |
+| `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog, `ALIAS` will be set to `0*`. This command is blocking. *Can only be called by scripts*    |
 | `only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |

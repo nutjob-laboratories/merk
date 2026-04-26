@@ -1,4 +1,4 @@
-<h1>MERK 0.051.783</h1>
+<h1>MERK 0.051.787</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -15,7 +15,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.783</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.787</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on TheMansion network! Connect to TheMansion in the client as one of the built-in server suggestions, or at <strong>irc.inthemansion.chat</strong>, port <strong>6697</strong> (via SSL). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!</p>
 <p>If you'd like to help with <strong>MERK</strong>'s development, but don't write code, <a href="buymeacoffee.com/danhetrick">feel free to donate to <strong>MERK</strong></a>! Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in the "About" dialog.</p>
@@ -201,7 +201,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>decimal ALIAS LOW HIGH MESSAGE...</code></td>
-<td>Requests a decimal number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog or doesn’t input anything, <code>ALIAS</code> will be set to <code>0</code> (zero). This command is blocking; <strong>can only be called by scripts</strong></td>
+<td>Requests a decimal number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog, <code>ALIAS</code> will be set to <code>*</code>. This command is blocking; <strong>can only be called by scripts</strong></td>
 </tr>
 <tr>
 <td><code>/delay SECONDS COMMAND...</code></td>
@@ -356,8 +356,8 @@ Appearance:
 <td>Moves a subwindow to <code>X</code> (left and right) and <code>Y</code> (up and down) coordinates. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Call without arguments to see the current subwindow's coordinates. Pass <code>*</code> as <code>WINDOW</code> to move the server window</td>
 </tr>
 <tr>
-<td><code>/msgbox MESSAGE...</code></td>
-<td>Displays a messagebox with a short message. If called from a script, this command is blocking</td>
+<td><code>msgbox MESSAGE...</code></td>
+<td>Displays a messagebox with a short message. This command is blocking. One of the only script-only commands that can be issued from an <code>if</code> command. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
 <td><code>/nick NEW_NICKNAME</code></td>
@@ -369,7 +369,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>number ALIAS LOW HIGH MESSAGE...</code></td>
-<td>Requests number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog or doesn’t input anything, <code>ALIAS</code> will be set to <code>0</code> (zero). This command is blocking; <strong>can only be called by scripts</strong></td>
+<td>Requests number from the user, between <code>LOW</code> and <code>HIGH</code>, in a dialog (with <code>MESSAGE</code>), and stores the input in <code>ALIAS</code>. If the user cancels the dialog, <code>ALIAS</code> will be set to <code>*</code>. This command is blocking; <strong>can only be called by scripts</strong></td>
 </tr>
 <tr>
 <td><code>only WINDOW...</code></td>
