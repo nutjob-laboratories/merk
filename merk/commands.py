@@ -8927,10 +8927,6 @@ class ScriptThread(QThread):
 									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias does nothing in scripts"])
 									no_errors = False
 									break
-								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}unalias' and not config.ENABLE_ALIASES:
-									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}unalias has been disabled"])
-									no_errors = False
-									break
 								if stokens[0].lower()==f'{config.ISSUE_COMMAND_SYMBOL}alias' and not config.ENABLE_ALIASES:
 									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}alias has been disabled"])
 									no_errors = False

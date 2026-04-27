@@ -85,6 +85,7 @@ What's New
   "msgbox". The command can still be called from the "if" command.
 * Bugfix: the error checking for scripts, specifically with the "if" command,
   is now checking for errors properly.
+* MERK has a new logo!
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

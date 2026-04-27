@@ -709,7 +709,7 @@ class Dialog(QDialog):
 			if not config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG:
 				splash = QLabel()
 				pixmap = QPixmap(SPLASH_LOGO)
-				scaled_pixmap = pixmap.scaled(150, 49, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+				scaled_pixmap = pixmap.scaled(150, 39, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				splash.setPixmap(scaled_pixmap)
 
 				spLayout = QHBoxLayout()
