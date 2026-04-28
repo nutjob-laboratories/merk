@@ -50,6 +50,8 @@ from .asciimoji import *
 # Load in resource file
 globals()["merk.resources.resources"] = __import__("merk.resources.resources")
 
+# Constants
+
 SYSTEM_PREPEND_OPTIONS = [
 	"Nothing",
 	"&diams;",
@@ -119,8 +121,6 @@ BUNDLED_FONT_SIZE = 10
 QT_STYLES = QStyleFactory.keys()
 if "cleanlooks" in QT_STYLES: QT_STYLES.remove("cleanlooks")
 if "gtk2" in QT_STYLES: QT_STYLES.remove("gtk2")
-
-# Constants
 
 ANTIFREEZE_PAUSE = 10
 

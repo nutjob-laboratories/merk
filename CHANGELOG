@@ -3,6 +3,7 @@
 |------------------------------------------------------------------------------|
 
 What's New
+- **MERK has a new logo and icon**.
 - **Subwindow snapping**. By default, subwindows within 20px of each other will "snap" together. This can be turned off in the settings dialog, and the "snapping distance" can also be changed.
 - **Scripting now has full file I/O**. Scripts can both read and write to files. The `read`, `write`, and `append` commands can be disabled in settings.
 - **New script-only file dialog commands**. Get a filename from the user with the `getfile` and `setfile` commands.
@@ -65,9 +66,6 @@ What's New
   longer appends to a file, but overwrites it.
 * Re-wrote how blocking scripting commands work; now, almost all dialog events
   are routed through a single qtsignal rather than 5 (or more) of them.
-* Bugfix: arguments to the /script command were not being properly tokenized.
-* Bugfix: arguments to the "insert" command were not being properly tokenized.
-* Bugfix: arguments to /call were not being properly tokenized.
 * The "context" script-only command can now take a hostID as an argument to
   specify why server a targeted window should be connected to.
 * The pre-command error check on scripts has been expanded to include the
@@ -85,7 +83,15 @@ What's New
   "msgbox". The command can still be called from the "if" command.
 * Bugfix: the error checking for scripts, specifically with the "if" command,
   is now checking for errors properly.
-* MERK has a new logo!
+* MERK has a new logo and icon! Thanks to the folks in #lobby on TheMansion
+  IRC network for all the help.
+* Bugfix: there coule be errors in tokenizing arguments to the "/call" command.
+* Bugfix: there coule be errors in tokenizing arguments to the "/script"
+  command.
+* Bugfix: the script-only command "insert" could improperly tokenize arguments,
+  and didn't handle errors in inserted files properly.
+* Bugfix: the "context" command would error out if "*" was used as a window
+  name (to reference a server window).
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

@@ -2313,9 +2313,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if len(tokens)==0:
 				args = []
 			else:
-				pretokens = ' '.join(tokens)
-				if "'" in pretokens: pretokens.replace("'","\\'")
-				args = shlex.split(pretokens, comments=False)
+				try:
+					args = shlex.split(' '.join(tokens), comments=False)
+				except:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"call: Error tokenizing arguments. Try using double quotation marks")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Error tokenizing arguments. Try using double quotation marks")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
 
 			plugins.command_call(gui,window,method,args)
 			return True
@@ -7536,10 +7545,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			tokens.pop(0)
 			filename = tokens.pop(0)
-			pretoken = ' '.join(tokens)
-			if "'" in pretoken: pretoken = pretoken.replace("'","\\'")
-			tokens = shlex.split(pretoken, comments=False)
-			arguments = list(tokens)
+
+			try:
+				arguments = shlex.split(' '.join(tokens), comments=False)
+			except:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"script: Error tokenizing arguments. Try using double quotation marks")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',"Error tokenizing arguments. Try using double quotation marks")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 			efilename = find_script(filename,SCRIPT_FILE_EXTENSION)
 			if efilename:
@@ -8568,23 +8586,30 @@ class ScriptThread(QThread):
 
 						# Use shlex to tokenize the input, so that we can
 						# handle filenames with spaces in them
-						ftokens = shlex.split(' '.join(tokens), comments=False)
+						try:
+							ftokens = shlex.split(' '.join(tokens), comments=False)
+						except Exception as e:
+							self.handle_script_error.emit([self.gui,self.window,f"Error processing insert: Error tokenizing arguments: {e}"])
+							got_error = True
 
-						for f in ftokens:
-							f = self.interpolateAliases(f)
-							file = find_script(f,SCRIPT_FILE_EXTENSION)
-							if file==None: file = find_file(f,None)
-							if file!=None:
-								x = open(file,"r")
-								contents = x.read()
-								x.close()
+						if got_error==False:
+							for f in ftokens:
+								f = self.interpolateAliases(f)
+								file = find_script(f,SCRIPT_FILE_EXTENSION)
+								if file==None: file = find_file(f,None)
+								if file!=None:
+									x = open(file,"r")
+									contents = x.read()
+									x.close()
 
-								if not self.check_for_errors(contents,file): return True
-
-								for l in contents.split("\n"): script.append(l)
-							else:
-								self.handle_script_error.emit([self.gui,self.window,f"Error processing insert: File \"{f}\" cannot be found"])
-								got_error = True
+									if self.check_for_errors(contents,file):
+										for l in contents.split("\n"): script.append(l)
+									else:
+										self.handle_script_error.emit([self.gui,self.window,f"Error processing insert: File \"{f}\" has errors"])
+										got_error = True
+								else:
+									self.handle_script_error.emit([self.gui,self.window,f"Error processing insert: File \"{f}\" cannot be found or is not readable"])
+									got_error = True
 						skip_this_line = True
 				elif tokens[0].lower()=='insert' and len(tokens)==1:
 					self.handle_script_error.emit([self.gui,self.window,f"Error processing insert: insert called without any arguments"])
@@ -10576,13 +10601,18 @@ class ScriptThread(QThread):
 									script_only_command = True
 								else:
 									if window_target!=None and is_valid==True:
-										valids = self.gui.getAllConnectedWindows(window_target.client)
-										found = False
-										for c in valids:
-											if c.name==other_target:
-												self.window = c
-												is_valid = True
-												found = True
+										if other_target=='*' and window_target.window_type==SERVER_WINDOW:
+											self.window = window_target
+											is_valid = True
+											found = True
+										else:
+											valids = self.gui.getAllConnectedWindows(window_target.client)
+											found = False
+											for c in valids:
+												if c.name==other_target:
+													self.window = c
+													is_valid = True
+													found = True
 
 										if not found: is_valid = False
 									else:
