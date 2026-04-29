@@ -2949,6 +2949,7 @@ class Merk(QMainWindow):
 		self.toggleInputMenu()
 		self.toggleServNickDisplay()
 		self.toggleRefreshButton()
+		self.toggleBackground()
 		self.updateStatusBar()
 		self.toggleServerToolbar()
 		self.toggleRubberbanding()
@@ -3603,6 +3604,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(CHANNEL_WINDOW_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		w.aboutToActivate.connect(lambda: self.handle_pre_activation(w))
 		self.MDI.addSubWindow(w)
 		w.show()
@@ -3628,6 +3630,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(CONSOLE_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		w.aboutToActivate.connect(lambda: self.handle_pre_activation(w))
 		self.MDI.addSubWindow(w)
 		w.show()
@@ -3653,6 +3656,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PRIVATE_WINDOW_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		w.aboutToActivate.connect(lambda: self.handle_pre_activation(w))
 		self.MDI.addSubWindow(w)
 		w.show()
@@ -3678,6 +3682,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
@@ -3699,6 +3704,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PYTHON_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
@@ -3720,6 +3726,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PYTHON_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
@@ -3741,6 +3748,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(PYTHON_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
@@ -3788,6 +3796,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
@@ -3809,6 +3818,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
@@ -3842,6 +3852,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(SCRIPT_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		self.toolsMenu.close()
 		self.buildWindowsMenu()
@@ -3879,6 +3890,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(LIST_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		w.show()
 
@@ -3901,6 +3913,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(README_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		w.show()
 
@@ -3926,6 +3939,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(LOG_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		w.show()
 
@@ -3951,6 +3965,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(LOG_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		w.show()
 
@@ -3976,6 +3991,7 @@ class Merk(QMainWindow):
 		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
 		w.setWindowIcon(QIcon(LOG_ICON))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		w.showMaximized()
 
@@ -4028,6 +4044,7 @@ class Merk(QMainWindow):
 		if plugin._icon!=None: icon = plugin._icon
 		w.setWindowIcon(QIcon(icon))
 		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
 		self.MDI.addSubWindow(w)
 		if config.SHOW_PLUGIN_CONSOLE_ON_CREATION: w.show()
 
@@ -4047,6 +4064,13 @@ class Merk(QMainWindow):
 		u = QUrl()
 		u.setUrl(url)
 		QDesktopServices.openUrl(u)
+
+	def toggleBackground(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			window.setBackground(config.SUBWINDOW_BACKGROUND)
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
 
 	def toggleScrollbar(self):
 		w = self.MDI.activeSubWindow()
@@ -6036,6 +6060,26 @@ class MerkSubwindow(QMdiSubWindow):
 		self._drag_start_pos = None
 		self._drag_start_win_pos = None
 		self._is_dragging = False
+		self._background = ""
+
+	def setBackground(self,image):
+		if image=="":
+			self._background = ""
+		else:
+			self._background = QPixmap(image)
+		self.update()
+
+	def paintEvent(self, event):
+		if self._background!="":
+			painter = QPainter(self)
+			x = 0
+			while x < self.width():
+				y = 0
+				while y < self.height():
+					painter.drawPixmap(x, y, self._background)
+					y += self._background.height()
+				x += self._background.width()
+		super().paintEvent(event)
 
 	def _is_near_edge(self, pos):
 		x, y = pos.x(), pos.y()

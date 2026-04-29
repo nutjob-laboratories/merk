@@ -405,7 +405,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			script_only.remove("insert")
 		if not config.ENABLE_USER_COMMAND:
 			merk.remove(cmdsymbol+"user")
-		if not config.ENABLE_READ_AND_WRITE_COMMAND:
+		if not config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS:
 			if 'read' in script_only:
 				script_only.remove('read')
 			if 'write' in script_only:

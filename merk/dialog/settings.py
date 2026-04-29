@@ -1909,6 +1909,81 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 
+	def subwbackgroundDefault(self):
+		self.SUBWINDOW_BACKGROUND = ""
+		self.subwBackgroundLabel.setText("<b>No background image</b>")
+		self.rerender_subwindows = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+		
+	def getsubwBackground(self):
+
+		supported_formats = QImageReader.supportedImageFormats()
+		filters = []
+		popular = [f"All Files (*.*)"]
+		all_filetypes = []
+		for fmt in supported_formats:
+			ext = fmt.data().decode()
+			if ext.upper()=='PNG':
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='JPEG' and 'jpg' in supported_formats:
+				popular.append(f"{ext.upper()} Files (*.{ext} *.jpg)")
+			elif ext.upper()=='JPEG' and not 'jpg' in supported_formats:
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='JPG' and 'jpeg' in supported_formats: continue
+			elif ext.upper()=='JPG' and not 'jpeg' in supported_formats:
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='GIF':
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='BMP':
+				popular.append(f"{ext.upper()} Files (*.{ext})")
+			elif ext.upper()=='CUR': continue
+			elif ext.upper()=='ICO': continue
+			else:
+				filters.append(f"{ext.upper()} Files (*.{ext})")
+		filter_str = ";;".join(popular + filters)
+
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self,"Open Image", QDir.homePath(), filter_str, options=options)
+		if fileName:
+
+			# Make sure the image is a loadable file, and
+			# display an error if it isn't
+			valid_file = True
+			if not os.path.isfile(fileName): valid_file = False
+			pixmap = QPixmap()
+			if not pixmap.load(fileName): valid_file = False
+			if pixmap.isNull(): valid_file = False
+			if not valid_file:
+
+				all_filetypes = []
+				for fmt in supported_formats:
+					ext = fmt.data().decode()
+					if ext.upper()=='CUR': continue
+					if ext.upper()=='ICO': continue
+					all_filetypes.append(f"{ext.upper()}")
+
+				msg = QMessageBox()
+				msg.setIcon(QMessageBox.Critical)
+				msg.setWindowIcon(QIcon(APPLICATION_ICON))
+				msg.setText("<big><b>Invalid file type</b></big>")
+				msg.setInformativeText(f"\"{os.path.basename(fileName)}\" is not a valid image file, and can't be used as a background image. Valid file types are {join_with_and(all_filetypes)}.")
+				msg.setWindowTitle("Error")
+				msg.setStandardButtons(QMessageBox.Ok)
+				msg.exec_()
+				self.selector.setFocus()
+				return
+
+			self.SUBWINDOW_BACKGROUND = fileName
+			lt = elide_text(os.path.basename(fileName),20)
+			self.subwBackgroundLabel.setText(f"<b>{lt}</b>")
+			self.rerender_subwindows = True
+			self.changed.show()
+			self.boldApply()
+		self.selector.setFocus()
+
 	def eventFilter(self, source, event):
 		if source == self.selector.viewport() and event.type() == QEvent.Wheel:
 			return True
@@ -2003,6 +2078,8 @@ class Dialog(QDialog):
 		self.REFRESH_CHANNEL_LIST = config.REFRESH_CHANNEL_LIST
 		self.BAD_NICKNAME_FALLBACK = config.BAD_NICKNAME_FALLBACK
 		self.SUBWINDOW_SNAP_DISTANCE = config.SUBWINDOW_SNAP_DISTANCE
+		self.SUBWINDOW_BACKGROUND = config.SUBWINDOW_BACKGROUND
+		self.rerender_subwindows = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3109,9 +3186,39 @@ class Dialog(QDialog):
 		ssLayout.addWidget(self.enableDisconnect)
 		ssLayout.addWidget(self.hideServer)
 
+		self.subwBackgroundLabel = QLabel(f" ",self)
+
+		if config.SUBWINDOW_BACKGROUND=="":
+			self.subwBackgroundLabel.setText("<b>No background image</b>")
+		else:
+			lt = elide_text(os.path.basename(config.SUBWINDOW_BACKGROUND),20)
+			self.subwBackgroundLabel.setText(f"<b>{lt}</b>")
+
+		subwbackgroundButton = QPushButton("")
+		subwbackgroundButton.clicked.connect(self.getsubwBackground)
+		subwbackgroundButton.setAutoDefault(False)
+
+		swbackgroundDefault = QPushButton("Reset to default")
+		swbackgroundDefault.clicked.connect(self.subwbackgroundDefault)
+		swbackgroundDefault.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		subwbackgroundButton.setFixedSize(fheight +10,fheight + 10)
+		subwbackgroundButton.setIcon(QIcon(IMAGE_ICON))
+		subwbackgroundButton.setToolTip("Change background")
+
+		subwbackgroundLayout = QHBoxLayout()
+		subwbackgroundLayout.addWidget(subwbackgroundButton)
+		subwbackgroundLayout.addWidget(self.subwBackgroundLabel)
+		subwbackgroundLayout.addStretch()
+		subwbackgroundLayout.addWidget(swbackgroundDefault)
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
 		subwindowLayout.addLayout(swsSettings)
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow background image</b>"))
+		subwindowLayout.addLayout(subwbackgroundLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>order subwindows on...</b>"))
 		subwindowLayout.addLayout(orderLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow status bars</b>"))
@@ -3884,7 +3991,6 @@ class Dialog(QDialog):
 		menuLayout.addLayout(ulistDisplay)
 		menuLayout.addLayout(ulistWidthLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
-		# menuLayout.addLayout(miscDisplay)
 		menuLayout.addLayout(showCM)
 		menuLayout.addStretch()
 
@@ -5213,7 +5319,7 @@ class Dialog(QDialog):
 		self.enableBrowser.stateChanged.connect(self.changedSettingEditorConfig)
 
 		self.enableReadWrite = QCheckBox(f"read/write/append",self)
-		if config.ENABLE_READ_AND_WRITE_COMMAND: self.enableReadWrite.setChecked(True)
+		if config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS: self.enableReadWrite.setChecked(True)
 		self.enableReadWrite.stateChanged.connect(self.changedSettingEditor)
 
 		if not config.ENABLE_ALIASES:
@@ -6605,7 +6711,7 @@ class Dialog(QDialog):
 		config.PREVENT_ILLEGAL_NICKNAMES = self.prevIllegal.isChecked()
 		config.PREVENT_ILLEGAL_CHANNELS = self.prevChannel.isChecked()
 		config.CHANNEL_MODE_CONTEXT_MENU = self.chanMode.isChecked()
-		config.ENABLE_READ_AND_WRITE_COMMAND = self.enableReadWrite.isChecked()
+		config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS = self.enableReadWrite.isChecked()
 		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 		config.DISCONNECT_ON_SASL_FAIL = self.failSasl.isChecked()
 		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()
@@ -6620,6 +6726,10 @@ class Dialog(QDialog):
 		config.SUBWINDOW_SNAP_DISTANCE = self.SUBWINDOW_SNAP_DISTANCE
 		config.SUBWINDOW_SNAPPING = self.snapWindows.isChecked()
 		config.COMMAND_ERROR_PROTECTION = self.badCommands.isChecked()
+		config.SUBWINDOW_BACKGROUND = self.SUBWINDOW_BACKGROUND
+
+		if self.rerender_subwindows:
+			self.parent.toggleBackground()
 
 		if self.BAD_NICKNAME_FALLBACK!=config.BAD_NICKNAME_FALLBACK:
 			config.BAD_NICKNAME_FALLBACK = self.BAD_NICKNAME_FALLBACK

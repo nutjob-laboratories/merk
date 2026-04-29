@@ -10,6 +10,8 @@ What's New
 - **New option to prevent sending mistyped commands as chat**.
 - **`context` can now specify a server**. This allows scripts to switch to contexts on other connections. Pass a hostID as the first argument to select a server.
 - **New script-only command: `decimal`**. Requests a decimal number from the user, and stores it in an alias.
+- **New option: set subwindow background image**. Users can now apply a tiled image to the background of subwindows. The image can be set in settings or with the `/config` command.
+- **Many bugfixes**. Scripting has had a major overhaul, and many commands now work even better.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -91,7 +93,12 @@ What's New
 * Bugfix: the script-only command "insert" could improperly tokenize arguments,
   and didn't handle errors in inserted files properly.
 * Bugfix: the "context" command would error out if "*" was used as a window
-  name (to reference a server window).
+  name (to reference a server window). This argument is not needed (as using
+  "context" with a hostID or the name of the window will switch to the server
+  window), but since that's an option with many other commands, I wanted to
+  make sure that an error wasn't thrown.
+* New option: set an image as the background for subwindows. Just like with the
+  MDI area, only for the "texture" of the subwindow itself.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.750                                  |

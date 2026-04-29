@@ -416,7 +416,7 @@ REGISTRATION_NICK_ERROR_LIMIT = 3
 PREVENT_ILLEGAL_CHANNELS = True
 CHANNEL_MODE_CONTEXT_MENU = True
 SETTINGS_FONT_POINT_SIZE = 10
-ENABLE_READ_AND_WRITE_COMMAND = True
+ENABLE_READ_WRITE_AND_APPEND_COMMANDS = True
 HIGHLIGHT_ALL_VISIBLE_NICKS = False
 DISCONNECT_ON_SASL_FAIL = True
 EXECUTE_GLOBAL_SCRIPT = True
@@ -436,9 +436,11 @@ SUBWINDOW_SNAP_DISTANCE = 20
 COMMAND_ERROR_PROTECTION = True
 SUBWINDOW_SNAP_DRAG_TRIGGER = 5
 SUBWINDOW_RESIZE_EDGE_MARGIN = 5
+SUBWINDOW_BACKGROUND = ""
 
 def build_settings():
 	settings = {
+		"subwindow_background": SUBWINDOW_BACKGROUND,
 		"subwindow_resize_edge_margin": SUBWINDOW_RESIZE_EDGE_MARGIN,
 		"subwindow_snap_drag_distance_trigger": SUBWINDOW_SNAP_DRAG_TRIGGER,
 		"prevent_sending_bad_commands_as_chat": COMMAND_ERROR_PROTECTION,
@@ -458,7 +460,7 @@ def build_settings():
 		"execute_global_script": EXECUTE_GLOBAL_SCRIPT,
 		"disconnect_on_sasl_failure": DISCONNECT_ON_SASL_FAIL,
 		"highlight_all_nicknames_in_input_widget": HIGHLIGHT_ALL_VISIBLE_NICKS,
-		"enable_read_and_write_command": ENABLE_READ_AND_WRITE_COMMAND,
+		"enable_read_and_write_command": ENABLE_READ_WRITE_AND_APPEND_COMMANDS,
 		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
 		"channel_mode_right_click_menu": CHANNEL_MODE_CONTEXT_MENU,
 		"prevent_illegal_channel_input": PREVENT_ILLEGAL_CHANNELS,
@@ -840,6 +842,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "subwindow_background" in settings:
+		settings["subwindow_background"] = SUBWINDOW_BACKGROUND
 	if not "subwindow_resize_edge_margin" in settings:
 		settings["subwindow_resize_edge_margin"] = SUBWINDOW_RESIZE_EDGE_MARGIN
 	if not "subwindow_snap_drag_distance_trigger" in settings:
@@ -879,7 +883,7 @@ def patch_settings(settings):
 	if not "highlight_all_nicknames_in_input_widget" in settings:
 		settings["highlight_all_nicknames_in_input_widget"] = HIGHLIGHT_ALL_VISIBLE_NICKS
 	if not "enable_read_and_write_command" in settings:
-		settings["enable_read_and_write_command"] = ENABLE_READ_AND_WRITE_COMMAND
+		settings["enable_read_and_write_command"] = ENABLE_READ_WRITE_AND_APPEND_COMMANDS
 	if not "settings_dialog_font_size" in settings:
 		settings["settings_dialog_font_size"] = SETTINGS_FONT_POINT_SIZE
 	if not "channel_mode_right_click_menu" in settings:
@@ -2012,7 +2016,7 @@ def load_settings(filename):
 	global PREVENT_ILLEGAL_CHANNELS
 	global CHANNEL_MODE_CONTEXT_MENU
 	global SETTINGS_FONT_POINT_SIZE
-	global ENABLE_READ_AND_WRITE_COMMAND
+	global ENABLE_READ_WRITE_AND_APPEND_COMMANDS
 	global HIGHLIGHT_ALL_VISIBLE_NICKS
 	global DISCONNECT_ON_SASL_FAIL
 	global EXECUTE_GLOBAL_SCRIPT
@@ -2032,6 +2036,7 @@ def load_settings(filename):
 	global COMMAND_ERROR_PROTECTION
 	global SUBWINDOW_SNAP_DRAG_TRIGGER
 	global SUBWINDOW_RESIZE_EDGE_MARGIN
+	global SUBWINDOW_BACKGROUND
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2041,6 +2046,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SUBWINDOW_BACKGROUND = settings["subwindow_background"]
 		SUBWINDOW_RESIZE_EDGE_MARGIN = settings["subwindow_resize_edge_margin"]
 		SUBWINDOW_SNAP_DRAG_TRIGGER = settings["subwindow_snap_drag_distance_trigger"]
 		COMMAND_ERROR_PROTECTION = settings["prevent_sending_bad_commands_as_chat"]
@@ -2060,7 +2066,7 @@ def load_settings(filename):
 		EXECUTE_GLOBAL_SCRIPT = settings["execute_global_script"]
 		DISCONNECT_ON_SASL_FAIL = settings["disconnect_on_sasl_failure"]
 		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_nicknames_in_input_widget"]
-		ENABLE_READ_AND_WRITE_COMMAND = settings["enable_read_and_write_command"]
+		ENABLE_READ_WRITE_AND_APPEND_COMMANDS = settings["enable_read_and_write_command"]
 		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]
 		CHANNEL_MODE_CONTEXT_MENU = settings["channel_mode_right_click_menu"]
 		PREVENT_ILLEGAL_CHANNELS = settings["prevent_illegal_channel_input"]

@@ -1130,6 +1130,13 @@ def check_for_sane_values(setting,value):
 		if not pixmap.load(value): return INVALID_IMAGE
 		if pixmap.isNull(): return INVALID_IMAGE
 
+	if setting=="subwindow_background":
+		if value=="": return ALL_VALID_SETTINGS
+		if not os.path.isfile(value): return INVALID_IMAGE
+		pixmap = QPixmap()
+		if not pixmap.load(value): return INVALID_IMAGE
+		if pixmap.isNull(): return INVALID_IMAGE
+
 	if setting=="qt_window_style":
 		if not value in QT_STYLES: return INVALID_STYLE
 
@@ -5833,6 +5840,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if str(my_value).lower()=='false': my_value = False
 
 				if my_setting=="mdi_workspace_background" and my_value=="*": my_value=""
+				if my_setting=="subwindow_background" and my_value=="*": my_value=""
 
 				if type(my_value)!= type(settings[my_setting]):
 					if type(settings[my_setting]).__name__=='bool':
@@ -8653,7 +8661,7 @@ class ScriptThread(QThread):
 			# |========|
 			if len(tokens)>=1:
 				if tokens[0].lower()=='append':
-					if not config.ENABLE_READ_AND_WRITE_COMMAND:
+					if not config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append has been disabled"])
 						no_errors = False
 						break
@@ -8661,7 +8669,7 @@ class ScriptThread(QThread):
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append: aliases are disabled"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
+					elif config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS and len(tokens)<3:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: append called without enough arguments"])
 						no_errors = False
 						break
@@ -8699,7 +8707,7 @@ class ScriptThread(QThread):
 			# |=======|
 			if len(tokens)>=1:
 				if tokens[0].lower()=='write':
-					if not config.ENABLE_READ_AND_WRITE_COMMAND:
+					if not config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write has been disabled"])
 						no_errors = False
 						break
@@ -8707,7 +8715,7 @@ class ScriptThread(QThread):
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write: aliases are disabled"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
+					elif config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS and len(tokens)<3:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: write called without enough arguments"])
 						no_errors = False
 						break
@@ -8735,11 +8743,11 @@ class ScriptThread(QThread):
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask: aliases are disabled"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
+					elif config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS and len(tokens)<3:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called without enough arguments"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)>3:
+					elif config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS and len(tokens)>3:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: hostmask called with too many arguments"])
 						no_errors = False
 						break
@@ -8872,7 +8880,7 @@ class ScriptThread(QThread):
 			# |======|
 			if len(tokens)>=1:
 				if tokens[0].lower()=='read':
-					if not config.ENABLE_READ_AND_WRITE_COMMAND:
+					if not config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read has been disabled"])
 						no_errors = False
 						break
@@ -8880,7 +8888,7 @@ class ScriptThread(QThread):
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read: aliases are disabled"])
 						no_errors = False
 						break
-					elif config.ENABLE_READ_AND_WRITE_COMMAND and len(tokens)<3:
+					elif config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS and len(tokens)<3:
 						self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: read called without enough arguments"])
 						no_errors = False
 						break
@@ -9949,7 +9957,7 @@ class ScriptThread(QThread):
 						if len(tokens)>=1:
 							if tokens[0].lower()=='read' and len(tokens)>=3:
 
-								if config.ENABLE_ALIASES and config.ENABLE_READ_AND_WRITE_COMMAND:
+								if config.ENABLE_ALIASES and config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS:
 									tokens.pop(0)
 									a = tokens.pop(0)
 
@@ -10025,7 +10033,7 @@ class ScriptThread(QThread):
 						if len(tokens)>=1:
 							if tokens[0].lower()=='write' and len(tokens)>=3:
 
-								if config.ENABLE_ALIASES and config.ENABLE_READ_AND_WRITE_COMMAND:
+								if config.ENABLE_ALIASES and config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS:
 									try:
 										stokens = shlex.split(line, comments=False)
 									except:
@@ -10071,7 +10079,7 @@ class ScriptThread(QThread):
 						if len(tokens)>=1:
 							if tokens[0].lower()=='append' and len(tokens)>=3:
 
-								if config.ENABLE_ALIASES and config.ENABLE_READ_AND_WRITE_COMMAND:
+								if config.ENABLE_ALIASES and config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS:
 									try:
 										stokens = shlex.split(line, comments=False)
 									except:
