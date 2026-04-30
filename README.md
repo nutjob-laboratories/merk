@@ -1,10 +1,10 @@
 <p align="center">
   <img src="./graphics/banner.png"><br>
-  <b><big>Open Source IRC Client</big></b><br>
+  <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
-  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.750">MERK 0.051.750</a></big></b><br>
-  <b>Current development version: 0.051.795</b><br>
-  <b><a href="https://merk.chat">Visit us at https://merk.chat!</a></b><br><br>
+  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.800">MERK 0.051.800</a></big></b><br>
+  <b>Current development version: 0.051.800</b><br>
+  <b><a href="https://latest.merk.chat">Download the latest development versions</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
 
@@ -23,7 +23,6 @@
  - [Commands](#commands)
  - [MERK "Markdown"](#merk-markdown)
  - [Plugins](#plugins)
- - [Example command-line usage](#example-command-line-usage)
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
  - [Does MERK need any help?](#does-merk-need-any-help)
@@ -34,27 +33,27 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
-| Current Release |  All  | [MERK 0.051.750 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.750)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.795 (10.73 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.051.795 (96.79 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.051.795 (71.07 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.795 (47.69 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.795 (45.26 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
+| Current Release |  All  | [MERK 0.051.800 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.800)  |
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.800 (10.74 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.051.800 (6.72 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.051.800 (71.04 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.800 (47.70 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.800 (45.27 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.795**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.800**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
 **MERK** has a new domain! You can visit this repository at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), and download the latest development version from [https://latest.merk.chat](https://latest.merk.chat).
 
-**MERK** is still in active development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.051.750](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.750). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf). The [CHANGELOG](./CHANGELOG) reflects changes in the client in [the current development version](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) which will be present in the next release.
+**MERK** is still in active development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version 0.051.800](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.800). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf). The [CHANGELOG](./CHANGELOG) reflects changes in the client in [the current development version](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) which will be present in the next release.
 
 Join me on the official **MERK** IRC channel, **#merk** on the MansionNET network! Connect to  MansionNET in the client as one of the built-in server suggestions, or at **irc.inthemansion.com**, port **6697** (via SSL). I'm also an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET! I'm usually in **#merk** and **#lobby**.
 
 # Running MERK on Windows
-**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release (0.051.750) here](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.750). For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
+**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release (0.051.800) here](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.800). For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
 
 To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [download the installer](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
 
@@ -223,7 +222,7 @@ There are four libraries that comes bundled with **MERK**:
 # Screenshots
 
 <p align="center">
-<p><small><i>Screenshots may not reflect the current release (0.051.750), and may reflect the current development version (0.051.795). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.800), and may reflect the current development version (0.051.800). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
@@ -485,59 +484,6 @@ class RainbowChat(Plugin):
             chat ='**'+''.join(output)+'**'
             window.say(chat)
 ```
-# Example Command-line Usage
-In the following examples, the first command-line is how you would do the task using **MERK** as a Python script, and second command-line is how you would do it using the **MERK** Windows or Linux executable. Note that the command-lines, other than the initial executable name, are the same!
-
-Let's assume that you want to use the command-line to connect **MERK** to the `2600.net` network and join the `#linux` channel:
-```
-python merk.py --channel "#linux" irc.2600.net 6667
-```
-```
-merk.exe --channel "#linux" irc.2600.net 6667
-```
-Easy, right? Now let's try something a little more complex. Let's say you want to connect the the `Libera` network, which uses SSL/TLS. You want to use a different nickname than you normally use; you want to use the nickname `merker`, but you don't want to save this nickname as your default. When you join the network, you want to join two channels: `#python` and `#merk`:
-```
-python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
-```
-```
-merk --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
-```
-You can do some things with the command-line that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the `C:\Merk_Scripts` folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
-```
-python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
-```
-```
-merk.exe --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
-```
-Now, let's try something that commonly done with other IRC clients: connecting to multiple servers automatically on startup. You want to use your standard settings, but connect to three different IRC servers as soon as you run **MERK**: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:
-```
-python merk.py -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
-```
-```
-merk -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
-```
-This command will start up **MERK** and connect to three of these servers without any extra effort!
-
-You can do a lot of things from the command-line. For a really complicated example, let's try this scenario. Here's what this command-line will do:
-
- - Connect to Libera via SSL/TLS
- - Connect to DALnet via TCP/IP
- - Make sure that we reconnect automatically if we get disconnected from either of these servers
- - Join the `#merk` and `#python` channels on both networks
- - Make sure that we don't execute any connection scripts we have set up
- - Run in "light mode", regardless of what the configuration settings say
- - Run a **MERK** script file named `stuff.merk` on connection, for both connections
-
-Here's the set of arguments that will make all of that happen:
-```
-python merk.py -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
-```
-```
-merk.exe -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
-```
-
-All command-line options are what they say on the tin: _optional_. Just running the script with no command-line options will initially open up the connection dialog, and you can do just about everything completely inside the GUI.
-
 # Why does MERK exist?
 It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
 
@@ -546,12 +492,12 @@ I honestly think that **MERK** may be the most configurable IRC client ever crea
 I mostly wrote **MERK** because I wanted a client that had all the features I wanted, no matter how obscure or "weird".  I wanted a "pretty" client with advanced features; one that was easy to use, but "deep". **MERK** is easy to get started with, and has all the documentation you could want or need, bundled in; it's perfectly functional, even if you never open the "Settings" dialog. But if you want to *really* get into customizing **MERK**, you can. You can change almost everything about the UI, or how **MERK** functions "under the hood", if you wish, and you don't need tutorials and half a dozen websites to do it. Long story short, **MERK** is my "dream IRC client", and I hope it can become yours too!
 
 # What does MERK mean?
-Well, if you were to pronounce "IRC" as a word and not an acronym, it would probably be pronounced _/Ərk/_. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the "M" stands for. Either that, or "multiple-document interface". "MDIIRC" doesn't exactly roll off the tongue, so we combined the "M" with the word-pronunciation of IRC, and came up with __MERK__!
+Well, if you were to pronounce "IRC" as a word and not an acronym, it would probably be pronounced /_Ərk_/. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the "M" stands for. Either that, or "multiple-document interface". "MDIIRC" doesn't exactly roll off the tongue, so we combined the "M" with the word-pronunciation of IRC, and came up with __MERK__!
 
 # Does MERK need any help?
 Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetrick), a software developer that can not do everything that this piece of software needs. There's few things I need help with!
 
- - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for **MERK**. I'm doing my best, here, but I'm a computer programmer, not an artist!
+ - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons. I'm doing my best, here, but I'm a computer programmer, not an artist!
  - **Packaging**. **MERK** now has [PyInstaller](https://www.pyinstaller.org/)-based distributions for both Windows and Linux, as well as a Linux [Flatpak](https://flatpak.org/)! I'd love to provide a `pip` package, but I don't have much or any experience with this. Help would be awesome!
  - **Proxy server support**. I'd like MERK to support connecting through proxy servers! My wishlist is to support SOCKS4/5 and HTTP, but I'm open to anything!
  - **DCC chat and file transfers**. The DCC  functionality in Twisted is undocumented, and I'll be honest, I can't make heads or tails of it. I'd love to be able to add this functionality to **MERK**, but I need help!

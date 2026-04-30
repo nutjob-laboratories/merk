@@ -1077,7 +1077,13 @@ class Window(QMainWindow):
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
 
-				entry = QAction(QIcon(CLEAR_ICON),"Clear log",menu)
+				if config.SCRIPTING_ENGINE_ENABLED:
+					hostid = self.client.server+":"+str(self.client.port)
+					entry = QAction(QIcon(EDIT_ICON),"Edit connection script",menu)
+					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
+					menu.addAction(entry)
+
+				entry = QAction(QIcon(CLEAR_ICON),"Clear log display",menu)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
@@ -1090,14 +1096,14 @@ class Window(QMainWindow):
 				menu.addAction(self.contextJoin)
 
 				if config.SCRIPTING_ENGINE_ENABLED:
+
+					menu.addSeparator()
+
 					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
 					self.contextRun.triggered.connect(self.loadScript)
 					menu.addAction(self.contextRun)
 
-					hostid = self.client.server+":"+str(self.client.port)
-					entry = QAction(QIcon(EDIT_ICON),"Edit connection script",menu)
-					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
-					menu.addAction(entry)
+					menu.addSeparator()
 
 				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
 					if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
@@ -1141,18 +1147,21 @@ class Window(QMainWindow):
 						entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
 						menu.addAction(entry)
 
-				if config.SCRIPTING_ENGINE_ENABLED:
-					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
-					self.contextRun.triggered.connect(self.loadScript)
-					menu.addAction(self.contextRun)
-
-				entry = QAction(QIcon(CLEAR_ICON),"Clear chat",menu)
+				entry = QAction(QIcon(CLEAR_ICON),"Clear chat display",menu)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
 				entry = QAction(QIcon(LOG_ICON),"Save log",menu)
 				entry.triggered.connect(self.menuSaveLogs)
 				menu.addAction(entry)
+
+				if config.SCRIPTING_ENGINE_ENABLED:
+
+					menu.addSeparator()
+
+					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
+					self.contextRun.triggered.connect(self.loadScript)
+					menu.addAction(self.contextRun)
 
 			if self.window_type==CHANNEL_WINDOW:
 
@@ -1180,41 +1189,102 @@ class Window(QMainWindow):
 
 		action = menu.exec_(self.chat.mapToGlobal(location))
 
+	def settingsMarkdown(self):
+		if config.ENABLE_MARKDOWN_MARKUP:
+			config.ENABLE_MARKDOWN_MARKUP = False
+		else:
+			config.ENABLE_MARKDOWN_MARKUP = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.rebuildAllInputMenus()
+
+	def settingsInputColor(self):
+		if config.ENABLE_IRC_COLOR_MARKUP:
+			config.ENABLE_IRC_COLOR_MARKUP = False
+		else:
+			config.ENABLE_IRC_COLOR_MARKUP = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.rebuildAllInputMenus()
+
+	def settingsEmoji(self):
+		if config.ENABLE_EMOJI_SHORTCODES:
+			config.ENABLE_EMOJI_SHORTCODES = False
+		else:
+			config.ENABLE_EMOJI_SHORTCODES = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.rebuildAllInputMenus()
+
+	def settingsAsciimoji(self):
+		if config.ENABLE_ASCIIMOJI_SHORTCODES:
+			config.ENABLE_ASCIIMOJI_SHORTCODES = False
+		else:
+			config.ENABLE_ASCIIMOJI_SHORTCODES = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.rebuildAllInputMenus()
+
+	def settingsHighlight(self):
+		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = False
+		else:
+			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.rebuildAllInputMenus()
+		self.resetInput()
+
+	def settingsAuto(self):
+		if config.ENABLE_AUTOCOMPLETE:
+			config.ENABLE_AUTOCOMPLETE = False
+		else:
+			config.ENABLE_AUTOCOMPLETE = True
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.rebuildAllInputMenus()
+
 	def buildInputOptionsMenu(self):
 
 		self.settingsMenu.clear()
 
-		if config.ENABLE_STYLE_EDITOR:
-			if not config.FORCE_DEFAULT_STYLE:
-				entry = QAction(QIcon(STYLE_ICON),"Edit text style",self)
-				entry.triggered.connect(self.pressedStyleButton)
-				self.settingsMenu.addAction(entry)
+		if config.ENABLE_MARKDOWN_MARKUP:
+			self.mdInput = QAction(QIcon(self.parent.checked_icon),"Markdown", self)
+		else:
+			self.mdInput = QAction(QIcon(self.parent.unchecked_icon),"Markdown", self)
+		self.mdInput.triggered.connect(self.settingsMarkdown)
+		self.settingsMenu.addAction(self.mdInput)
 
-		if self.window_type!=SERVER_WINDOW:
+		if config.ENABLE_IRC_COLOR_MARKUP:
+			self.colorInput = QAction(QIcon(self.parent.checked_icon),"IRC colors", self)
+		else:
+			self.colorInput = QAction(QIcon(self.parent.unchecked_icon),"IRC colors", self)
+		self.colorInput.triggered.connect(self.settingsInputColor)
+		self.settingsMenu.addAction(self.colorInput)
 
-			if self.window_type==CHANNEL_WINDOW:
-				if config.EXECUTE_CHANNEL_SCRIPTS and config.SCRIPTING_ENGINE_ENABLED:
-					entry = QAction(QIcon(EDIT_ICON),"Edit channel script",self)
-					entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
-					self.settingsMenu.addAction(entry)
+		if config.ENABLE_EMOJI_SHORTCODES:
+			self.emojiInput = QAction(QIcon(self.parent.checked_icon),"Emojis", self)
+		else:
+			self.emojiInput = QAction(QIcon(self.parent.unchecked_icon),"Emojis", self)
+		self.emojiInput.triggered.connect(self.settingsEmoji)
+		self.settingsMenu.addAction(self.emojiInput)
 
-			entry = QAction(QIcon(CLEAR_ICON),"Clear chat",self)
-			entry.triggered.connect(self.clearChat)
-			self.settingsMenu.addAction(entry)
+		if config.ENABLE_ASCIIMOJI_SHORTCODES:
+			self.asciimojiInput = QAction(QIcon(self.parent.checked_icon),"ASCIImojis", self)
+		else:
+			self.asciimojiInput = QAction(QIcon(self.parent.unchecked_icon),"ASCIImojis", self)
+		self.asciimojiInput.triggered.connect(self.settingsAsciimoji)
+		self.settingsMenu.addAction(self.asciimojiInput)
 
-			entry = QAction(QIcon(LOG_ICON),"Save log",self)
-			entry.triggered.connect(self.menuSaveLogs)
-			self.settingsMenu.addAction(entry)
+		self.settingsMenu.addSeparator()
 
-		if self.window_type==SERVER_WINDOW:
-			entry = QAction(QIcon(CLEAR_ICON),"Clear log",self)
-			entry.triggered.connect(self.clearChat)
-			self.settingsMenu.addAction(entry)
+		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
+			self.highlightInput = QAction(QIcon(self.parent.checked_icon),"Highlighting", self)
+		else:
+			self.highlightInput = QAction(QIcon(self.parent.unchecked_icon),"Highlighting", self)
+		self.highlightInput.triggered.connect(self.settingsHighlight)
+		self.settingsMenu.addAction(self.highlightInput)
 
-		if config.SCRIPTING_ENGINE_ENABLED:
-			entry = QAction(QIcon(RUN_ICON),"Run script",self)
-			entry.triggered.connect(self.loadScript)
-			self.settingsMenu.addAction(entry)
+		if config.ENABLE_AUTOCOMPLETE:
+			self.autoInput = QAction(QIcon(self.parent.checked_icon),"Autocomplete", self)
+		else:
+			self.autoInput = QAction(QIcon(self.parent.unchecked_icon),"Autocomplete", self)
+		self.autoInput.triggered.connect(self.settingsAuto)
+		self.settingsMenu.addAction(self.autoInput)
 
 		if config.ENABLE_SPELLCHECK:
 			# Spellcheck Button
@@ -1263,6 +1333,13 @@ class Window(QMainWindow):
 			if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
 
 			if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.settingsMenu.addMenu(self.spellcheckMenu)
+
+		self.settingsMenu.addSeparator()
+
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = QAction(QIcon(RUN_ICON),"Run script",self)
+			entry.triggered.connect(self.loadScript)
+			self.settingsMenu.addAction(entry)
 
 	def updateHostmask(self,nick,hostmask):
 		if hostmask!=None:
@@ -2808,6 +2885,7 @@ class Window(QMainWindow):
 			self.languageRussian.setEnabled(False)
 			self.languagePortuguese.setEnabled(False)
 
+		self.parent.rebuildAllInputMenus()
 		self.input.setFocus()
 
 	def linkClicked(self,url):

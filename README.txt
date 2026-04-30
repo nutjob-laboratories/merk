@@ -1,10 +1,10 @@
 <p align="center">
   <img src="./graphics/banner.png"><br>
-  <b><big>Open Source IRC Client</big></b><br>
+  <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
   <b>Current development version: !_FULL_VERSION_!</b><br>
-  <b><a href="https://merk.chat">Visit us at https://merk.chat!</a></b><br><br>
+  <b><a href="https://latest.merk.chat">Download the latest development versions</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
 
@@ -23,7 +23,6 @@
  - [Commands](#commands)
  - [MERK "Markdown"](#merk-markdown)
  - [Plugins](#plugins)
- - [Example command-line usage](#example-command-line-usage)
  - [Why does MERK exist?](#why-does-merk-exist)
  - [What does MERK mean?](#what-does-merk-mean)
  - [Does MERK need any help?](#does-merk-need-any-help)
@@ -485,59 +484,6 @@ class RainbowChat(Plugin):
             chat ='**'+''.join(output)+'**'
             window.say(chat)
 ```
-# Example Command-line Usage
-In the following examples, the first command-line is how you would do the task using **MERK** as a Python script, and second command-line is how you would do it using the **MERK** Windows or Linux executable. Note that the command-lines, other than the initial executable name, are the same!
-
-Let's assume that you want to use the command-line to connect **MERK** to the `2600.net` network and join the `#linux` channel:
-```
-python merk.py --channel "#linux" irc.2600.net 6667
-```
-```
-merk.exe --channel "#linux" irc.2600.net 6667
-```
-Easy, right? Now let's try something a little more complex. Let's say you want to connect the the `Libera` network, which uses SSL/TLS. You want to use a different nickname than you normally use; you want to use the nickname `merker`, but you don't want to save this nickname as your default. When you join the network, you want to join two channels: `#python` and `#merk`:
-```
-python merk.py --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
-```
-```
-merk --donotsave -n merker -c "#python" -c "#merk" --ssl irc.libera.chat 6697
-```
-You can do some things with the command-line that you can't do with the GUI. Let's say that you're using **MERK** on a computer that someone else also uses for **MERK**. You want to store your configuration files in a different folder, just for your use. You always want to use light mode, no matter what the configuration file says, and you've stored some **MERK** scripts in the `C:\Merk_Scripts` folder. You don't want **MERK** to ask you for a server to connect to, you just want it to start up, and you can choose a server from the "IRC" menu:
-```
-python merk.py --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
-```
-```
-merk.exe --light --config-name .mymerk --scripts-directory "C:\Merk_Scripts" --run
-```
-Now, let's try something that commonly done with other IRC clients: connecting to multiple servers automatically on startup. You want to use your standard settings, but connect to three different IRC servers as soon as you run **MERK**: you want to connect to the 2600 network and DALNet, using standard TCP/IP,and Libera, using SSL:
-```
-python merk.py -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
-```
-```
-merk -C irc.2600.net:6667 -S irc.libera.chat:6697 -C us.dal.net:6667
-```
-This command will start up **MERK** and connect to three of these servers without any extra effort!
-
-You can do a lot of things from the command-line. For a really complicated example, let's try this scenario. Here's what this command-line will do:
-
- - Connect to Libera via SSL/TLS
- - Connect to DALnet via TCP/IP
- - Make sure that we reconnect automatically if we get disconnected from either of these servers
- - Join the `#merk` and `#python` channels on both networks
- - Make sure that we don't execute any connection scripts we have set up
- - Run in "light mode", regardless of what the configuration settings say
- - Run a **MERK** script file named `stuff.merk` on connection, for both connections
-
-Here's the set of arguments that will make all of that happen:
-```
-python merk.py -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
-```
-```
-merk.exe -Ltx -s stuff.merk -S irc.libera.chat:6697 -C us.dal.net:6667 -c "#python" -c "#merk"
-```
-
-All command-line options are what they say on the tin: _optional_. Just running the script with no command-line options will initially open up the connection dialog, and you can do just about everything completely inside the GUI.
-
 # Why does MERK exist?
 It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
 
@@ -546,12 +492,12 @@ I honestly think that **MERK** may be the most configurable IRC client ever crea
 I mostly wrote **MERK** because I wanted a client that had all the features I wanted, no matter how obscure or "weird".  I wanted a "pretty" client with advanced features; one that was easy to use, but "deep". **MERK** is easy to get started with, and has all the documentation you could want or need, bundled in; it's perfectly functional, even if you never open the "Settings" dialog. But if you want to *really* get into customizing **MERK**, you can. You can change almost everything about the UI, or how **MERK** functions "under the hood", if you wish, and you don't need tutorials and half a dozen websites to do it. Long story short, **MERK** is my "dream IRC client", and I hope it can become yours too!
 
 # What does MERK mean?
-Well, if you were to pronounce "IRC" as a word and not an acronym, it would probably be pronounced _/Ərk/_. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the "M" stands for. Either that, or "multiple-document interface". "MDIIRC" doesn't exactly roll off the tongue, so we combined the "M" with the word-pronunciation of IRC, and came up with __MERK__!
+Well, if you were to pronounce "IRC" as a word and not an acronym, it would probably be pronounced /_Ərk_/. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the "M" stands for. Either that, or "multiple-document interface". "MDIIRC" doesn't exactly roll off the tongue, so we combined the "M" with the word-pronunciation of IRC, and came up with __MERK__!
 
 # Does MERK need any help?
 Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetrick), a software developer that can not do everything that this piece of software needs. There's few things I need help with!
 
- - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons, and a better logo for **MERK**. I'm doing my best, here, but I'm a computer programmer, not an artist!
+ - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons. I'm doing my best, here, but I'm a computer programmer, not an artist!
  - **Packaging**. **MERK** now has [PyInstaller](https://www.pyinstaller.org/)-based distributions for both Windows and Linux, as well as a Linux [Flatpak](https://flatpak.org/)! I'd love to provide a `pip` package, but I don't have much or any experience with this. Help would be awesome!
  - **Proxy server support**. I'd like MERK to support connecting through proxy servers! My wishlist is to support SOCKS4/5 and HTTP, but I'm open to anything!
  - **DCC chat and file transfers**. The DCC  functionality in Twisted is undocumented, and I'll be honest, I can't make heads or tails of it. I'd love to be able to add this functionality to **MERK**, but I need help!

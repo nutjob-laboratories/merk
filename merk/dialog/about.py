@@ -302,7 +302,8 @@ class Dialog(QDialog):
 
 		other_credit = QLabel(f"""<b>
 			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br>
-			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a>
+			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a><br>
+			<a href=\"https://github.com/GlobeDotters\">Ivan \"Avatar\" Todorov</a>
 			</b>""")
 		other_credit.setAlignment(Qt.AlignCenter)
 		other_credit.setOpenExternalLinks(True)

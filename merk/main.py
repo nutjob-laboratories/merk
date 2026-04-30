@@ -2797,6 +2797,15 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def rebuildAllInputMenus(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"buildInputOptionsMenu"):
+				c.buildInputOptionsMenu()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def toggleNickDisplay(self):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():

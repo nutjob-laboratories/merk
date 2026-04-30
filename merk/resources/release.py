@@ -1,2 +1,2 @@
-APPLICATION_RELEASE = "https://github.com/nutjob-laboratories/merk/releases/tag/0.051.750"
-APPLICATION_RELEASE_VERSION = "0.051.750"
+APPLICATION_RELEASE = "https://github.com/nutjob-laboratories/merk/releases/tag/0.051.800"
+APPLICATION_RELEASE_VERSION = "0.051.800"
