@@ -437,9 +437,11 @@ COMMAND_ERROR_PROTECTION = True
 SUBWINDOW_SNAP_DRAG_TRIGGER = 5
 SUBWINDOW_RESIZE_EDGE_MARGIN = 5
 SUBWINDOW_BACKGROUND = ""
+CHANNEL_FILTERS = {}
 
 def build_settings():
 	settings = {
+		"channel_filters": CHANNEL_FILTERS,
 		"subwindow_background": SUBWINDOW_BACKGROUND,
 		"subwindow_resize_edge_margin": SUBWINDOW_RESIZE_EDGE_MARGIN,
 		"subwindow_snap_drag_distance_trigger": SUBWINDOW_SNAP_DRAG_TRIGGER,
@@ -842,6 +844,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "channel_filters" in settings:
+		settings["channel_filters"] = CHANNEL_FILTERS
 	if not "subwindow_background" in settings:
 		settings["subwindow_background"] = SUBWINDOW_BACKGROUND
 	if not "subwindow_resize_edge_margin" in settings:
@@ -2037,6 +2041,7 @@ def load_settings(filename):
 	global SUBWINDOW_SNAP_DRAG_TRIGGER
 	global SUBWINDOW_RESIZE_EDGE_MARGIN
 	global SUBWINDOW_BACKGROUND
+	global CHANNEL_FILTERS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2046,6 +2051,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		CHANNEL_FILTERS = settings["channel_filters"]
 		SUBWINDOW_BACKGROUND = settings["subwindow_background"]
 		SUBWINDOW_RESIZE_EDGE_MARGIN = settings["subwindow_resize_edge_margin"]
 		SUBWINDOW_SNAP_DRAG_TRIGGER = settings["subwindow_snap_drag_distance_trigger"]

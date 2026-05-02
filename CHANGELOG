@@ -1,4 +1,24 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.850                                  |
+|------------------------------------------------------------------------------|
+
+What's new:
+
+- **Channel specific message filters**. In a channel chat's right click menu, users can now choose to hide/show JOIN, PART, QUIT, NICK, MODE, and TOPIC messages. The messages will still be logged, and the filter is persistent across sessions.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Bugfix: fixed a bug in automatic hostmask fetching.
+* New feature: hide certain system messages from view in channels. Each channel
+  now has an option in the chat's right click menu to hide JOIN, PART, QUIT,
+  NICK, MODE, and TOPIC messages from view. The option is stored in the config
+  file, along with the channel's name and network. The option to hide all these
+  messages from view in ALL channels remains in the settings, but this gives
+  users fine control over specific channels.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.800                                  |
 |------------------------------------------------------------------------------|
 

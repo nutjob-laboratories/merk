@@ -64,6 +64,16 @@ class Window(QMainWindow):
 
 				self.client.last_interaction = 0
 
+	def encodeChannel(self):
+		if self.client.network:
+			network = self.client.network.lower()
+		else:
+			network = UNKNOWN_NETWORK.lower()
+
+		name = self.name.lower()
+
+		return f"{network}-{name}"
+
 	def encodeScriptFilename(self):
 		if self.client.network:
 			network = self.client.network.lower()
@@ -1155,6 +1165,79 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.menuSaveLogs)
 				menu.addAction(entry)
 
+				menu.addSeparator()
+
+				fMenu = menu.addMenu(QIcon(HIDE_ICON),"Hide messages")
+				channel_name = self.encodeChannel()
+				if channel_name in config.CHANNEL_FILTERS:
+
+					if 'j' in config.CHANNEL_FILTERS[channel_name]:
+						entry = QAction(QIcon(self.parent.checked_icon),"JOIN",menu)
+					else:
+						entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
+					entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					if 'p' in config.CHANNEL_FILTERS[channel_name]:
+						entry = QAction(QIcon(self.parent.checked_icon),"PART",menu)
+					else:
+						entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
+					entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					if 'q' in config.CHANNEL_FILTERS[channel_name]:
+						entry = QAction(QIcon(self.parent.checked_icon),"QUIT",menu)
+					else:
+						entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
+					entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					if 'm' in config.CHANNEL_FILTERS[channel_name]:
+						entry = QAction(QIcon(self.parent.checked_icon),"MODE",menu)
+					else:
+						entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
+					entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					if 'n' in config.CHANNEL_FILTERS[channel_name]:
+						entry = QAction(QIcon(self.parent.checked_icon),"NICK",menu)
+					else:
+						entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
+					entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					if 't' in config.CHANNEL_FILTERS[channel_name]:
+						entry = QAction(QIcon(self.parent.checked_icon),"TOPIC",menu)
+					else:
+						entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
+					entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
+					fMenu.addAction(entry)
+				else:
+					entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
+					entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
+					entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
+					entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
+					entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
+					entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
+					fMenu.addAction(entry)
+
+					entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
+					entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
+					fMenu.addAction(entry)
+				menu.addMenu(fMenu)
+
 				if config.SCRIPTING_ENGINE_ENABLED:
 
 					menu.addSeparator()
@@ -1188,6 +1271,24 @@ class Window(QMainWindow):
 				menu.addAction(entry)
 
 		action = menu.exec_(self.chat.mapToGlobal(location))
+
+	def toggleFilter(self,cfilters):
+		channel_name = self.encodeChannel()
+
+		if channel_name in config.CHANNEL_FILTERS:
+			for f in cfilters:
+				if f in config.CHANNEL_FILTERS[channel_name]:
+					config.CHANNEL_FILTERS[channel_name] = config.CHANNEL_FILTERS[channel_name].replace(f,'')
+				else:
+					config.CHANNEL_FILTERS[channel_name] = config.CHANNEL_FILTERS[channel_name] + f
+		else:
+			config.CHANNEL_FILTERS[channel_name] = ''
+			for f in cfilters:
+				config.CHANNEL_FILTERS[channel_name] = config.CHANNEL_FILTERS[channel_name] + f
+
+		config.CHANNEL_FILTERS = {k: v for k, v in config.CHANNEL_FILTERS.items() if v}
+		config.save_settings(config.CONFIG_FILE)
+		self.rerenderChatLog()
 
 	def settingsMarkdown(self):
 		if config.ENABLE_MARKDOWN_MARKUP:
@@ -1496,23 +1597,44 @@ class Window(QMainWindow):
 				if line.type==DATE_MESSAGE: do_render = False
 
 			if self.window_type==CHANNEL_WINDOW:
+
+				channel_name = self.encodeChannel()
+
 				if line.type==SYSTEM_MESSAGE and " joined " in line.contents and line.system==True:
 					do_render = config.SHOW_CHANNEL_JOIN_MESSAGES
+
+					if channel_name in config.CHANNEL_FILTERS:
+						if 'j' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 				if line.type==SYSTEM_MESSAGE and " left " in line.contents and line.system==True:
 					do_render = config.SHOW_CHANNEL_PART_MESSAGES
 
+					if channel_name in config.CHANNEL_FILTERS:
+						if 'p' in config.CHANNEL_FILTERS[channel_name]: do_render = False
+
 				if line.type==SYSTEM_MESSAGE and "has quit IRC" in line.contents and line.system==True:
 					do_render = config.SHOW_CHANNEL_QUIT_MESSAGES
+
+					if channel_name in config.CHANNEL_FILTERS:
+						if 'q' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 				if line.type==SYSTEM_MESSAGE and " set mode " in line.contents and line.system==True:
 					do_render = config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES
 
+					if channel_name in config.CHANNEL_FILTERS:
+						if 'm' in config.CHANNEL_FILTERS[channel_name]: do_render = False
+
 				if line.type==SYSTEM_MESSAGE and " is now known as " in line.contents and line.system==True:
 					do_render = config.SHOW_CHANNEL_NICK_MESSAGES
 
+					if channel_name in config.CHANNEL_FILTERS:
+						if 'n' in config.CHANNEL_FILTERS[channel_name]: do_render = False
+
 				if line.type==SYSTEM_MESSAGE and " has changed the topic " in line.contents and line.system==True:
 					do_render = config.SHOW_CHANNEL_TOPIC_MESSAGES
+
+					if channel_name in config.CHANNEL_FILTERS:
+						if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 			if do_render:
 				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
@@ -2694,23 +2816,44 @@ class Window(QMainWindow):
 				if write_to_log: self.new_log.append(message)
 
 				if self.window_type==CHANNEL_WINDOW:
+
+					channel_name = self.encodeChannel()
+
 					if message.type==SYSTEM_MESSAGE and " joined " in message.contents and message.system==True:
 						do_render = config.SHOW_CHANNEL_JOIN_MESSAGES
+
+						if channel_name in config.CHANNEL_FILTERS:
+							if 'j' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 					if message.type==SYSTEM_MESSAGE and " left " in message.contents and message.system==True:
 						do_render = config.SHOW_CHANNEL_PART_MESSAGES
 
+						if channel_name in config.CHANNEL_FILTERS:
+							if 'p' in config.CHANNEL_FILTERS[channel_name]: do_render = False
+
 					if message.type==SYSTEM_MESSAGE and "has quit IRC" in message.contents and message.system==True:
 						do_render = config.SHOW_CHANNEL_QUIT_MESSAGES
+
+						if channel_name in config.CHANNEL_FILTERS:
+							if 'q' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 					if message.type==SYSTEM_MESSAGE and " set mode " in message.contents and message.system==True:
 						do_render = config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES
 
+						if channel_name in config.CHANNEL_FILTERS:
+							if 'm' in config.CHANNEL_FILTERS[channel_name]: do_render = False
+
 					if message.type==SYSTEM_MESSAGE and " is now known as " in message.contents and message.system==True:
 						do_render = config.SHOW_CHANNEL_NICK_MESSAGES
 
+						if channel_name in config.CHANNEL_FILTERS:
+							if 'n' in config.CHANNEL_FILTERS[channel_name]: do_render = False
+
 					if message.type==SYSTEM_MESSAGE and " has changed the topic " in message.contents and message.system==True:
 						do_render = config.SHOW_CHANNEL_TOPIC_MESSAGES
+
+						if channel_name in config.CHANNEL_FILTERS:
+							if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 				if do_render:
 					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
