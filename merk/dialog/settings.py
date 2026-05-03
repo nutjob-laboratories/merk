@@ -3837,10 +3837,6 @@ class Dialog(QDialog):
 		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
 		self.showUserlists.stateChanged.connect(self.changedUserlistVisibility)
 
-		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
-		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
-		self.autoJoin.stateChanged.connect(self.changedSetting)
-
 		self.hideScroll = QCheckBox("Hide horizontal scrollbars",self)
 		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
 		self.hideScroll.stateChanged.connect(self.changedSetting)
@@ -3963,12 +3959,15 @@ class Dialog(QDialog):
 
 		showCM1 = QHBoxLayout()
 		showCM1.addWidget(self.showJoin)
+		showCM1.addStretch()
 		showCM1.addWidget(self.showPart)
+		showCM1.addStretch()
 		showCM1.addWidget(self.showQuit)
 		showCM1.addStretch()
 
 		showCM2 = QHBoxLayout()
 		showCM2.addWidget(self.showModes)
+		showCM2.addStretch()
 		showCM2.addWidget(self.showNicks)
 		showCM2.addStretch()
 
@@ -3976,10 +3975,12 @@ class Dialog(QDialog):
 		showCM.setSpacing(0)
 		showCM.addWidget(self.nameTitleDisplay)
 		showCM.addWidget(self.topicTitleDisplay)
-		showCM.addWidget(self.autoJoin)
-		showCM.addLayout(showCM1)
-		showCM.addLayout(showCM2)
-		showCM.addWidget(self.showTopic)
+		
+		allFilter = QVBoxLayout()
+		allFilter.setSpacing(0)
+		allFilter.addLayout(showCM1)
+		allFilter.addLayout(showCM2)
+		allFilter.addWidget(self.showTopic)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
@@ -3992,6 +3993,8 @@ class Dialog(QDialog):
 		menuLayout.addLayout(ulistWidthLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addLayout(showCM)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>all channel message filter</b>"))
+		menuLayout.addLayout(allFilter)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -5104,6 +5107,10 @@ class Dialog(QDialog):
 		if config.HIGHLIGHT_NICK_IN_CHAT: self.highlightNick.setChecked(True)
 		self.highlightNick.stateChanged.connect(self.changedSettingRerender)
 
+		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
+		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
+		self.autoJoin.stateChanged.connect(self.changedSetting)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -5115,6 +5122,7 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.enableIgnore)
 		msLayout.addWidget(self.showLusers)
 		msLayout.addWidget(self.showIson)
+		msLayout.addWidget(self.autoJoin)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
@@ -5167,7 +5175,6 @@ class Dialog(QDialog):
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
 		messageLayout.addLayout(prepLayout)
-		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addLayout(msLayout)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
@@ -6167,7 +6174,7 @@ class Dialog(QDialog):
 		self.maxChatLabel = QLabel("Max message length:")
 		self.maxChatLabelSpec = QLabel("characters")
 		self.maxChat = QSpinBox()
-		self.maxChat.setRange(1,512)
+		self.maxChat.setRange(1,450)
 		self.maxChat.setValue(self.IRC_MAX_PAYLOAD_LENGTH)
 		self.maxChat.valueChanged.connect(self.updateMaxChat)
 
@@ -6196,7 +6203,7 @@ class Dialog(QDialog):
 		self.prevIllegal.stateChanged.connect(self.changedSettingAdvanced)
 		self.prevIllegal.setEnabled(False)
 
-		self.prevChannel = QCheckBox("Prevent illegal channel input",self)
+		self.prevChannel = QCheckBox("Prevent illegal channel name input",self)
 		if config.PREVENT_ILLEGAL_CHANNELS: self.prevChannel.setChecked(True)
 		self.prevChannel.stateChanged.connect(self.changedSettingAdvanced)
 		self.prevChannel.setEnabled(False)

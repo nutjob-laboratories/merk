@@ -56,6 +56,9 @@ class Window(QMainWindow):
 	def reload_config(self):
 		config.load_settings(config.CONFIG_FILE)
 
+	def save_config(self):
+		config.save_settings(config.CONFIG_FILE)
+
 	def window_interacted_with(self):
 		if config.USE_AUTOAWAY:
 			if config.WINDOW_INTERACTION_CANCELS_AUTOAWAY:
@@ -64,24 +67,21 @@ class Window(QMainWindow):
 
 				self.client.last_interaction = 0
 
-	def encodeChannel(self):
+	def encodeNetwork(self):
 		if self.client.network:
 			network = self.client.network.lower()
 		else:
 			network = UNKNOWN_NETWORK.lower()
+		return network
 
+	def encodeChannel(self):
+		network = self.encodeNetwork()
 		name = self.name.lower()
-
 		return f"{network}-{name}"
 
 	def encodeScriptFilename(self):
-		if self.client.network:
-			network = self.client.network.lower()
-		else:
-			network = UNKNOWN_NETWORK.lower()
-
+		network = self.encodeNetwork()
 		name = self.name.lower()
-
 		return os.path.join(commands.SCRIPTS_DIRECTORY,f"{network}-{name}.{SCRIPT_FILE_EXTENSION}")
 
 	def showEvent(self, event):
@@ -1287,7 +1287,7 @@ class Window(QMainWindow):
 				config.CHANNEL_FILTERS[channel_name] = config.CHANNEL_FILTERS[channel_name] + f
 
 		config.CHANNEL_FILTERS = {k: v for k, v in config.CHANNEL_FILTERS.items() if v}
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.rerenderChatLog()
 
 	def settingsMarkdown(self):
@@ -1295,7 +1295,7 @@ class Window(QMainWindow):
 			config.ENABLE_MARKDOWN_MARKUP = False
 		else:
 			config.ENABLE_MARKDOWN_MARKUP = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.parent.rebuildAllInputMenus()
 
 	def settingsInputColor(self):
@@ -1303,7 +1303,7 @@ class Window(QMainWindow):
 			config.ENABLE_IRC_COLOR_MARKUP = False
 		else:
 			config.ENABLE_IRC_COLOR_MARKUP = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.parent.rebuildAllInputMenus()
 
 	def settingsEmoji(self):
@@ -1311,7 +1311,7 @@ class Window(QMainWindow):
 			config.ENABLE_EMOJI_SHORTCODES = False
 		else:
 			config.ENABLE_EMOJI_SHORTCODES = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.parent.rebuildAllInputMenus()
 
 	def settingsAsciimoji(self):
@@ -1319,7 +1319,7 @@ class Window(QMainWindow):
 			config.ENABLE_ASCIIMOJI_SHORTCODES = False
 		else:
 			config.ENABLE_ASCIIMOJI_SHORTCODES = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.parent.rebuildAllInputMenus()
 
 	def settingsHighlight(self):
@@ -1327,7 +1327,7 @@ class Window(QMainWindow):
 			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = False
 		else:
 			config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.parent.rebuildAllInputMenus()
 		self.resetInput()
 
@@ -1336,7 +1336,7 @@ class Window(QMainWindow):
 			config.ENABLE_AUTOCOMPLETE = False
 		else:
 			config.ENABLE_AUTOCOMPLETE = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.parent.rebuildAllInputMenus()
 
 	def buildInputOptionsMenu(self):
@@ -2100,7 +2100,7 @@ class Window(QMainWindow):
 									config.IGNORE_LIST.remove(user_hostmask.lower())
 							if user_nick.lower() in config.IGNORE_LIST:
 								config.IGNORE_LIST.remove(user_nick.lower())
-							config.save_settings(config.CONFIG_FILE)
+							self.save_config()
 							self.parent.buildSettingsMenu()
 							self.parent.reRenderAll(True)
 							self.parent.rerenderUserlists()
@@ -2112,7 +2112,7 @@ class Window(QMainWindow):
 								config.IGNORE_LIST.append(user_hostmask.lower())
 							else:
 								config.IGNORE_LIST.append(user_nick.lower())
-							config.save_settings(config.CONFIG_FILE)
+							self.save_config()
 							self.parent.buildSettingsMenu()
 							self.parent.reRenderAll(True)
 							self.parent.rerenderUserlists()
@@ -2865,11 +2865,25 @@ class Window(QMainWindow):
 
 	def closeEvent(self, event):
 
-		# This will be true if the window is closed
-		# with the window bar "X" button or if Alt-F4
-		# is pressed
-		# if event.spontaneous():
-		# 	pass
+		save_logs = True
+
+		if self.window_type==CHANNEL_WINDOW:
+			if config.SAVE_CHANNEL_LOGS:
+				save_logs=True
+			else:
+				save_logs=False
+
+		if self.window_type==PRIVATE_WINDOW:
+			if config.SAVE_PRIVATE_LOGS:
+				save_logs=True
+			else:
+				save_logs=False
+
+		# Save logs
+		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
+			if save_logs:
+				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+				self.parent.buildToolsMenu()
 
 		# If this is a channel window, sent a part command
 		if self.window_type==CHANNEL_WINDOW:
@@ -2892,26 +2906,6 @@ class Window(QMainWindow):
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
 			self.client.leave(self.name,msg)
-
-		save_logs = True
-
-		if self.window_type==CHANNEL_WINDOW:
-			if config.SAVE_CHANNEL_LOGS:
-				save_logs=True
-			else:
-				save_logs=False
-
-		if self.window_type==PRIVATE_WINDOW:
-			if config.SAVE_PRIVATE_LOGS:
-				save_logs=True
-			else:
-				save_logs=False
-
-		# Save logs
-		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
-			if save_logs:
-				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
-				self.parent.buildToolsMenu()
 
 		if self.force_close:
 			# Let the parent know that this subwindow
@@ -2941,7 +2935,6 @@ class Window(QMainWindow):
 				self.parent.hideSubWindow(self.subwindow_id)
 				self.parent.MDI.activateNextSubWindow()
 			return
-
 
 		# Let the parent know that this subwindow
 		# has been closed by the user
@@ -4164,7 +4157,7 @@ class SpellTextEdit(QPlainTextEdit):
 		config.DICTIONARY.append(word)
 
 		# Save new settings to the config file
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 
 		# Re-add the dictionary to the spellchecker
 		self.dict.word_frequency.load_words(config.DICTIONARY)
@@ -4181,7 +4174,7 @@ class SpellTextEdit(QPlainTextEdit):
 		config.DICTIONARY.remove(word)
 
 		# Save new settings to the config file
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 
 		# Re-add the dictionary to the spellchecker
 		self.dict.word_frequency.load_words(config.DICTIONARY)

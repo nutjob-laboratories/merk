@@ -171,6 +171,10 @@ There are four libraries that comes bundled with **MERK**:
     - Audio notifications
       - Can be triggered by seven different events, with each one able to be turned on and off
       - Uses any WAV file as the notification sound, and can be set in the GUI. **MERK** uses a built-in public domain "bell" sound by default
+    - Message filtering
+      - Hide JOIN/PART/QUIT/MODE/NICK/TOPIC messages
+          - Hide these messages either application wide, or in individual channels
+          - Messages are still received and logged, just hidden from view
     - Very configurable, without having to manually edit a configuration file
         - Control application behavior, logging, features, the GUI, and more
         - Over 300 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function
@@ -217,7 +221,6 @@ There are four libraries that comes bundled with **MERK**:
         - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples)
       - Plugins can be installed by [drag-and-drop](https://en.wikipedia.org/wiki/Drag_and_drop), with the plugin manager, or from the command-line
       - Plugins can be uninstalled with the plugin manager, from the command-line, or by simply deleting the plugin's file(s)
-
 
 # Screenshots
 

@@ -258,7 +258,8 @@ class Dialog(QDialog):
 			       Dewees, Drew Diller, Allison L Perrine, Dust<br>
 			       Machine, Ray Hatfield, Nick Peters, Michael<br>
 			       Clemens, Tommy Olsen, Necrosand, Harry Oxnard,<br>
-			       dustmachine, photoplasia, robotmachine
+			       dustmachine, photoplasia, robotmachine, Terrence<br>
+			       de Kat (raphidae@EFnet)
 			</small></center>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)
@@ -266,8 +267,7 @@ class Dialog(QDialog):
 
 		patron_description = QLabel(f"""
 			<small>These are the wonderful humans that help keep<br>
-			    <b>{APPLICATION_NAME}</b> alive. Thank you for helping me keep IRC<br>
-			    alive in the 21st century! <b><a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a></b>
+			    <b>{APPLICATION_NAME}</b> alive. <b><a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a></b>
 			""")
 		patron_description.setAlignment(Qt.AlignJustify)
 		patron_description.setOpenExternalLinks(True)

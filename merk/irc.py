@@ -748,7 +748,7 @@ class IRC_Connection(irc.IRCClient):
 
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
 			if pnick in self.do_whois:
-				self.do_whois.pop(pnick)
+				self.do_whois.remove(pnick)
 				self.gui.updateHostmask(self,pnick,phostmask)
 
 		self.gui.privmsg(self,user,target,msg)
@@ -874,7 +874,7 @@ class IRC_Connection(irc.IRCClient):
 
 			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
 				if pnick in self.do_whois:
-					self.do_whois.pop(pnick)
+					self.do_whois.remove(pnick)
 					self.gui.updateHostmask(self,pnick,phostmask)
 
 		else:
@@ -1126,7 +1126,7 @@ class IRC_Connection(irc.IRCClient):
 
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
 			if pnick in self.do_whois:
-				self.do_whois.pop(pnick)
+				self.do_whois.remove(pnick)
 				self.gui.updateHostmask(self,pnick,phostmask)
 
 		self.gui.action(self,user,channel,data)
