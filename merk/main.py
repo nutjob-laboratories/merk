@@ -1914,7 +1914,7 @@ class Merk(QMainWindow):
 				w.writeText(t)
 
 		# Rerender chats for nick highlight
-		if config.HIGHLIGHT_NICK_IN_CHAT:
+		if config.HIGHLIGHT_NICKS_IN_CHAT:
 			self.reRenderClient(client,True)
 
 	def topicChanged(self,client,user,channel,newTopic):

@@ -407,7 +407,7 @@ SHOW_ALL_SERVER_ERRORS = False
 CUSTOM_MDI_BACKGROUND = ""
 # scale, center, tile
 MDI_BACKGROUND_IMAGE_STYLE = "scale"
-HIGHLIGHT_NICK_IN_CHAT=True
+HIGHLIGHT_NICKS_IN_CHAT=True
 AUTOCOMPLETE_SERVERS = True
 AUTOMATICALLY_REFRESH_CHANNEL_LIST = False
 REFRESH_CHANNEL_LIST = 120
@@ -438,9 +438,11 @@ SUBWINDOW_SNAP_DRAG_TRIGGER = 5
 SUBWINDOW_RESIZE_EDGE_MARGIN = 5
 SUBWINDOW_BACKGROUND = ""
 CHANNEL_FILTERS = {}
+MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = 3
 
 def build_settings():
 	settings = {
+		"minimum_nickname_length_for_highlighting": MINIMUM_NICKNAME_LENGTH_HIGHLIGHT,
 		"channel_filters": CHANNEL_FILTERS,
 		"subwindow_background": SUBWINDOW_BACKGROUND,
 		"subwindow_resize_edge_margin": SUBWINDOW_RESIZE_EDGE_MARGIN,
@@ -471,7 +473,7 @@ def build_settings():
 		"channel_list_staleness_in_minutes": REFRESH_CHANNEL_LIST,
 		"automatically_refresh_channel_list": AUTOMATICALLY_REFRESH_CHANNEL_LIST,
 		"autocomplete_servers": AUTOCOMPLETE_SERVERS,
-		"highlight_nickname_in_chat": HIGHLIGHT_NICK_IN_CHAT,
+		"highlight_nicknames_in_chat": HIGHLIGHT_NICKS_IN_CHAT,
 		"mdi_background_image_style": MDI_BACKGROUND_IMAGE_STYLE,
 		"mdi_workspace_background": CUSTOM_MDI_BACKGROUND,
 		"display_all_server_errors": SHOW_ALL_SERVER_ERRORS,
@@ -844,6 +846,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "minimum_nickname_length_for_highlighting" in settings:
+		settings["minimum_nickname_length_for_highlighting"] = MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
 	if not "channel_filters" in settings:
 		settings["channel_filters"] = CHANNEL_FILTERS
 	if not "subwindow_background" in settings:
@@ -904,8 +908,8 @@ def patch_settings(settings):
 		settings["channel_list_staleness_in_minutes"] = REFRESH_CHANNEL_LIST
 	if not "autocomplete_servers" in settings:
 		settings["autocomplete_servers"] = AUTOCOMPLETE_SERVERS
-	if not "highlight_nickname_in_chat" in settings:
-		settings["highlight_nickname_in_chat"] = HIGHLIGHT_NICK_IN_CHAT
+	if not "highlight_nicknames_in_chat" in settings:
+		settings["highlight_nicknames_in_chat"] = HIGHLIGHT_NICKS_IN_CHAT
 	if not "mdi_background_image_style" in settings:
 		settings["mdi_background_image_style"] = MDI_BACKGROUND_IMAGE_STYLE
 	if not "mdi_workspace_background" in settings:
@@ -2011,7 +2015,7 @@ def load_settings(filename):
 	global SHOW_ALL_SERVER_ERRORS
 	global CUSTOM_MDI_BACKGROUND
 	global MDI_BACKGROUND_IMAGE_STYLE
-	global HIGHLIGHT_NICK_IN_CHAT
+	global HIGHLIGHT_NICKS_IN_CHAT
 	global AUTOCOMPLETE_SERVERS
 	global AUTOMATICALLY_REFRESH_CHANNEL_LIST
 	global REFRESH_CHANNEL_LIST
@@ -2042,6 +2046,7 @@ def load_settings(filename):
 	global SUBWINDOW_RESIZE_EDGE_MARGIN
 	global SUBWINDOW_BACKGROUND
 	global CHANNEL_FILTERS
+	global MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2051,6 +2056,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = settings["minimum_nickname_length_for_highlighting"]
 		CHANNEL_FILTERS = settings["channel_filters"]
 		SUBWINDOW_BACKGROUND = settings["subwindow_background"]
 		SUBWINDOW_RESIZE_EDGE_MARGIN = settings["subwindow_resize_edge_margin"]
@@ -2081,7 +2087,7 @@ def load_settings(filename):
 		AUTOMATICALLY_REFRESH_CHANNEL_LIST = settings["automatically_refresh_channel_list"]
 		REFRESH_CHANNEL_LIST = settings["channel_list_staleness_in_minutes"]
 		AUTOCOMPLETE_SERVERS = settings["autocomplete_servers"]
-		HIGHLIGHT_NICK_IN_CHAT = settings["highlight_nickname_in_chat"]
+		HIGHLIGHT_NICKS_IN_CHAT = settings["highlight_nicknames_in_chat"]
 		MDI_BACKGROUND_IMAGE_STYLE = settings["mdi_background_image_style"]
 		CUSTOM_MDI_BACKGROUND = settings["mdi_workspace_background"]
 		SHOW_ALL_SERVER_ERRORS = settings["display_all_server_errors"]

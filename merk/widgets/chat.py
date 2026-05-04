@@ -1097,6 +1097,8 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
+				menu.addSeparator()
+
 				self.contextNick = QAction(QIcon(PRIVATE_ICON),"Change nickname",menu)
 				self.contextNick.triggered.connect(self.changeNick)
 				menu.addAction(self.contextNick)
@@ -1106,8 +1108,6 @@ class Window(QMainWindow):
 				menu.addAction(self.contextJoin)
 
 				if config.SCRIPTING_ENGINE_ENABLED:
-
-					menu.addSeparator()
 
 					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
 					self.contextRun.triggered.connect(self.loadScript)
@@ -1159,6 +1159,10 @@ class Window(QMainWindow):
 
 				entry = QAction(QIcon(CLEAR_ICON),"Clear chat display",menu)
 				entry.triggered.connect(self.clearChat)
+				menu.addAction(entry)
+
+				entry = QAction(QIcon(RELOAD_ICON),"Reload chat display",menu)
+				entry.triggered.connect(self.rerenderChatLog)
 				menu.addAction(entry)
 
 				entry = QAction(QIcon(LOG_ICON),"Save log",menu)
@@ -1637,7 +1641,7 @@ class Window(QMainWindow):
 						if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 			if do_render:
-				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.nicks)
 				self.chat.append(t)
 
 		self.chat.moveCursor(QTextCursor.End)
@@ -2856,7 +2860,7 @@ class Window(QMainWindow):
 							if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 				if do_render:
-					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
+					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.nicks)
 					self.chat.append(t)
 
 			self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)

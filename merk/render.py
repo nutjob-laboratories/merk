@@ -150,7 +150,7 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-def render_message(message,style,client=None,no_padding=False):
+def render_message(message,style,client=None,no_padding=False,nicks=[]):
 
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 	is_background_light = test_if_background_is_light(style["all"])
@@ -183,11 +183,6 @@ def render_message(message,style,client=None,no_padding=False):
 	if config.DISPLAY_IRC_COLORS:
 		if message.type!=WHOIS_MESSAGE:
 			if string_has_irc_formatting_codes(msg_to_display):
-				optional = "all"
-				if message.type==SYSTEM_MESSAGE: optional = "system"
-				if message.type==ERROR_MESSAGE: optional = "error"
-				if message.type==ACTION_MESSAGE: optional = "action"
-				if message.type==SERVER_MESSAGE: optional = "server"
 				msg_to_display = convert_irc_color_to_html(msg_to_display)
 		else:
 			msg_to_display = strip_color(msg_to_display)
@@ -209,10 +204,18 @@ def render_message(message,style,client=None,no_padding=False):
 	if config.FORCE_MONOSPACE_RENDERING:
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 
-	if config.HIGHLIGHT_NICK_IN_CHAT:
-		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE:
+	if config.HIGHLIGHT_NICKS_IN_CHAT:
+		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE or message.type==SELF_MESSAGE:
 			if client!=None:
-				msg_to_display = highlight_nick(msg_to_display,client.nickname,style)
+				words = []
+				words.append(client.nickname)
+				if len(nicks)>0:
+					limit = config.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
+					if limit<0: limit = 0
+					for n in nicks:
+						if len(n)>=limit:
+							words.append(n)
+				msg_to_display = highlight_nick(msg_to_display,words,style)
 
 	# Assign template and style to the message
 	message_templates = {
@@ -317,23 +320,50 @@ def render_message(message,style,client=None,no_padding=False):
 	# Message has been rendered, so return it
 	return output
 
-def highlight_nick(text, target_word, style):
-
+def highlight_nick(text, target_words, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 		style_str = f"color:{foreground};"
+		username_str = f"color:{foreground};"
 	else:
 		style_str = style["self"]
+		username_str = style["username"]
 	
-	# pattern = rf'\b{re.escape(target_word)}\b'
-	pattern = rf'\b{target_word}\b'
+	# Escape each word and join with | for alternation
+	escaped_words = [re.escape(word) for word in target_words]
+	pattern = rf'\b({"|".join(escaped_words)})\b'
 	
 	def replacer(match):
 		original_word = match.group(0)
-		return f'<span style="{style_str}">{original_word}</span>'
+		matched_word = original_word.lower()
+		
+		# Check if this word is the first in the list
+		if matched_word == target_words[0].lower():
+			style_to_use = style_str
+		else:
+			style_to_use = username_str
+		
+		return f'<span style="{style_to_use}">{original_word}</span>'
 
 	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)
 	return result
+
+# def highlight_nick(text, target_word, style):
+
+# 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
+# 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+# 		style_str = f"color:{foreground};"
+# 	else:
+# 		style_str = style["self"]
+	
+# 	pattern = rf'\b{target_word}\b'
+	
+# 	def replacer(match):
+# 		original_word = match.group(0)
+# 		return f'<span style="{style_str}">{original_word}</span>'
+
+# 	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)
+# 	return result
 
 def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:

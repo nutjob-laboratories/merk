@@ -1097,6 +1097,16 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="minimum_nickname_length_for_highlighting":
+		c = is_int(value)
+		if c!=None:
+			if c<0:
+				return INVALID_NEGATIVE_NUMBER
+			if c==0:
+				return INVALID_ZERO_NUMBER
+			if c>9:
+				return INVALID_BIG_NUMBER
+
 	if setting=="bad_nickname_fallback":
 		if len(value)>=9:
 			return INVALID_NICK_LENGTH
@@ -5911,6 +5921,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = "invalid nickname"
 					elif check==INVALID_NICK_NUMBER:
 						reason = "nicknames can't start with numbers"
+					elif check==INVALID_NEGATIVE_NUMBER:
+						reason = "must be a positive number"
+					elif check==INVALID_ZERO_NUMBER:
+						reason = "must be at least 1"
+					elif check==INVALID_BIG_NUMBER:
+						reason = "must be at less than or equal to 9"
 					elif check==INVALID_IMAGE:
 						supported_formats = QImageReader.supportedImageFormats()
 						all_filetypes = []

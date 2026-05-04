@@ -182,6 +182,9 @@ INVALID_MDI_STYLE = 11
 INVALID_NICK_LENGTH = 12
 INVALID_NICK = 13
 INVALID_NICK_NUMBER = 14
+INVALID_NEGATIVE_NUMBER = 15
+INVALID_ZERO_NUMBER = 16
+INVALID_BIG_NUMBER = 17
 ALL_VALID_SETTINGS = 0
 
 EVENT_METHOD = 0
@@ -333,6 +336,7 @@ PAUSE_ICON = ":/icon-pause.png"
 CURSOR_ICON = ":/icon-cursor.png"
 IMAGE_ICON = ":/icon-image.png"
 LINK_MENU_ICON = ":/icon-link_menu.png"
+RELOAD_ICON = ":/icon-reload.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"

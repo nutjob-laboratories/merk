@@ -5,6 +5,7 @@
 What's new:
 
 - **Channel specific message filters**. In a channel chat's right click menu, users can now choose to hide/show JOIN, PART, QUIT, NICK, MODE, and TOPIC messages. The messages will still be logged, and the filter is persistent across sessions. The option to hide these messages application-wide is still in place.
+- **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname and other channel member nicknames will be in the colors set by the current text style.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -19,6 +20,16 @@ What's new:
   users fine control over specific channels.
 * Bugfix: sometimes, initial messages to the client could cause an error that
   would cause them not to display.
+* The "highlight nick in chat" feature has been expanded to highlight ALL nicks
+  in channel chat, in the appropriate color for the current text style. Nicks
+  other than the user will only be highlighted in new chat.
+* Added an option to the configuration file to set a minimum nickname length
+  for chat highlighting. Users with single character nicks could have their
+  nicks highlighted in certain sentances, and it looked bad. The default is
+  a minimum of 3 characters. This new option can be set in the settings
+  dialog.
+* Added an option to chat right click menus to reload (rerender) the chat
+  display.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

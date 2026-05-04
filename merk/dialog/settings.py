@@ -1008,6 +1008,13 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateNickLength(self,state):
+		self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = self.hNickLength.value()
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
 	def updateDistance(self,state):
 		self.SUBWINDOW_SNAP_DISTANCE = self.snapDistance.value()
 		self.changed.show()
@@ -2080,6 +2087,7 @@ class Dialog(QDialog):
 		self.SUBWINDOW_SNAP_DISTANCE = config.SUBWINDOW_SNAP_DISTANCE
 		self.SUBWINDOW_BACKGROUND = config.SUBWINDOW_BACKGROUND
 		self.rerender_subwindows = False
+		self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = config.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -5103,9 +5111,21 @@ class Dialog(QDialog):
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
-		self.highlightNick = QCheckBox("Highlight nickname in chat",self)
-		if config.HIGHLIGHT_NICK_IN_CHAT: self.highlightNick.setChecked(True)
+		self.highlightNick = QCheckBox("Highlight nicks longer than or equal to",self)
+		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
 		self.highlightNick.stateChanged.connect(self.changedSettingRerender)
+
+		self.highlightNickLengthSpec = QLabel("char.")
+		self.hNickLength = QSpinBox()
+		self.hNickLength.setRange(1,9)
+		self.hNickLength.setValue(self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT)
+		self.hNickLength.valueChanged.connect(self.updateNickLength)
+
+		hNickLayout = QHBoxLayout()
+		hNickLayout.addWidget(self.highlightNick)
+		hNickLayout.addWidget(self.hNickLength)
+		hNickLayout.addWidget(self.highlightNickLengthSpec)
+		hNickLayout.addStretch()
 
 		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
@@ -5115,7 +5135,7 @@ class Dialog(QDialog):
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
 		msLayout.addWidget(self.showLinks)
-		msLayout.addWidget(self.highlightNick)
+		msLayout.addLayout(hNickLayout)
 		msLayout.addWidget(self.writeScroll)
 		msLayout.addWidget(self.showFullMode)
 		msLayout.addWidget(self.ignoreChannelNotice)
@@ -6712,7 +6732,7 @@ class Dialog(QDialog):
 		config.ALLOW_TOPIC_EDIT = self.topicEditor.isChecked()
 		config.SHOW_CONNECTION_SCRIPT_IN_WINDOWS_MENU = self.showConnScript.isChecked()
 		config.SHOW_ALL_SERVER_ERRORS = self.ircAllErrors.isChecked()
-		config.HIGHLIGHT_NICK_IN_CHAT = self.highlightNick.isChecked()
+		config.HIGHLIGHT_NICKS_IN_CHAT = self.highlightNick.isChecked()
 		config.AUTOCOMPLETE_SERVERS = self.autocompleteServers.isChecked()
 		config.AUTOMATICALLY_REFRESH_CHANNEL_LIST = self.automaticList.isChecked()
 		config.PREVENT_ILLEGAL_NICKNAMES = self.prevIllegal.isChecked()
@@ -6734,6 +6754,7 @@ class Dialog(QDialog):
 		config.SUBWINDOW_SNAPPING = self.snapWindows.isChecked()
 		config.COMMAND_ERROR_PROTECTION = self.badCommands.isChecked()
 		config.SUBWINDOW_BACKGROUND = self.SUBWINDOW_BACKGROUND
+		config.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()
