@@ -5,7 +5,7 @@
 What's new:
 
 - **Channel specific message filters**. In a channel chat's right click menu, users can now choose to hide/show JOIN, PART, QUIT, NICK, MODE, and TOPIC messages. The messages will still be logged, and the filter is persistent across sessions. The option to hide these messages application-wide is still in place.
-- **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname and other channel member nicknames will be in the colors set by the current text style.
+- **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname will still be highlighted in the current text style, but other user's nicks can now be colored with custom colors. Colors are stored via the user's hostmask, and will appear in chat and userlists.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -20,16 +20,22 @@ What's new:
   users fine control over specific channels.
 * Bugfix: sometimes, initial messages to the client could cause an error that
   would cause them not to display.
-* The "highlight nick in chat" feature has been expanded to highlight ALL nicks
-  in channel chat, in the appropriate color for the current text style. Nicks
-  other than the user will only be highlighted in new chat.
-* Added an option to the configuration file to set a minimum nickname length
-  for chat highlighting. Users with single character nicks could have their
-  nicks highlighted in certain sentances, and it looked bad. The default is
-  a minimum of 3 characters. This new option can be set in the settings
-  dialog.
-* Added an option to chat right click menus to reload (rerender) the chat
+* The "highlight nick in chat" feature has been changed to allow users to set
+  custom colors for specific users. Colors are stored by network with
+  hostmasks, so the individual nickname is not as important. The MERK user's
+  nickname will be highlighted using the current text style settings.
+* Added an option to the chat right click menus to reload (rerender) the chat
   display.
+* Added a new "color" icon, for the userlist right click menu to set colors.
+* Added a "highlight nicks in chat" toggle to the "Display" submenu in the
+  "Settings" menu.
+* Changed how "away" and "back" statuses are shown in userlists. Users that are
+  "away" and now shown in the selected user color (if they have one); their
+  nick is not in bold, and is shown in italics.
+* New option: show/hide user colors in userlists. If both "show colors in
+  userlists" and "use colors in chat" are turned off, the option to set or
+  remove colors is removed from the userlist context menu. The new settings has
+  been added to the "settings" dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

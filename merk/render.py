@@ -150,7 +150,7 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-def render_message(message,style,client=None,no_padding=False,nicks=[]):
+def render_message(message,style,client=None,no_padding=False,nicks={}):
 
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 	is_background_light = test_if_background_is_light(style["all"])
@@ -164,6 +164,13 @@ def render_message(message,style,client=None,no_padding=False,nicks=[]):
 		nick = p[0]
 	else:
 		nick = message.sender
+
+	# If we have a custom color for the nickname,
+	# save it for later so we can set the new color
+	if nick in nicks:
+		custom_nick = nick
+	else:
+		custom_nick = None
 
 	# Escape all HTML
 	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE:
@@ -210,12 +217,9 @@ def render_message(message,style,client=None,no_padding=False,nicks=[]):
 				words = []
 				words.append(client.nickname)
 				if len(nicks)>0:
-					limit = config.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
-					if limit<0: limit = 0
 					for n in nicks:
-						if len(n)>=limit:
-							words.append(n)
-				msg_to_display = highlight_nick(msg_to_display,words,style)
+						words.append(n)
+				msg_to_display = highlight_nick(msg_to_display,words,nicks,style)
 
 	# Assign template and style to the message
 	message_templates = {
@@ -288,10 +292,16 @@ def render_message(message,style,client=None,no_padding=False,nicks=[]):
 			user_style = style["self"]
 		elif message.type==CHAT_MESSAGE:
 			user_style = style["username"]
+			# Replace the nickname color
+			if custom_nick!=None:
+				user_style = replace_first_style_color(user_style,nicks[custom_nick])
 		elif message.type==NOTICE_MESSAGE:
 			user_style = style["notice"]
 		elif message.type==PRIVATE_MESSAGE:
 			user_style = style["private"]
+			# Replace the nickname color
+			if custom_nick!=None:
+				user_style = replace_first_style_color(user_style,nicks[custom_nick])
 		elif message.type==WHOIS_MESSAGE:
 			user_style = style["username"]
 		else:
@@ -320,14 +330,18 @@ def render_message(message,style,client=None,no_padding=False,nicks=[]):
 	# Message has been rendered, so return it
 	return output
 
-def highlight_nick(text, target_words, style):
+def replace_first_style_color(style, new_color):
+	return re.sub(r'#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}', new_color, style, count=1)
+
+def highlight_nick(text, target_words, user_colors, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 		style_str = f"color:{foreground};"
-		username_str = f"color:{foreground};"
 	else:
 		style_str = style["self"]
-		username_str = style["username"]
+
+	# Build lookup table for the nick/color dict
+	color_lookup = {word.lower(): word for word in user_colors.keys()}
 	
 	# Escape each word and join with | for alternation
 	escaped_words = [re.escape(word) for word in target_words]
@@ -341,8 +355,12 @@ def highlight_nick(text, target_words, style):
 		if matched_word == target_words[0].lower():
 			style_to_use = style_str
 		else:
-			style_to_use = username_str
-		
+			if config.DO_NOT_APPLY_STYLES_TO_TEXT:
+				style_to_use = style_str
+			else:
+				actual_key = color_lookup[matched_word]
+				style_to_use = replace_first_style_color(style_str,user_colors[actual_key])
+
 		return f'<span style="{style_to_use}">{original_word}</span>'
 
 	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)

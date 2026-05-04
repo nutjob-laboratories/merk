@@ -2797,6 +2797,28 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def rerenderUserlistsNetwork(self,client):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if c.client==client:
+				if hasattr(c,"userlist"):
+					c.rerenderUserlist()
+				if hasattr(c,"readjustUserlist"):
+					c.readjustUserlist()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
+	def rerenderChatsNetwork(self,client):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if c.client==client:
+				if c.window_type==CHANNEL_WINDOW:
+					c.rerenderChatLog()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def rebuildAllInputMenus(self):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
@@ -4333,6 +4355,17 @@ class Merk(QMainWindow):
 		QApplication.restoreOverrideCursor()
 		self.buildSettingsMenu()
 
+	def settingsNicks(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+		if config.HIGHLIGHT_NICKS_IN_CHAT:
+			config.HIGHLIGHT_NICKS_IN_CHAT = False
+		else:
+			config.HIGHLIGHT_NICKS_IN_CHAT = True
+		config.save_settings(config.CONFIG_FILE)
+		self.reRenderAll()
+		QApplication.restoreOverrideCursor()
+		self.buildSettingsMenu()
+
 	def settingsAudio(self):
 		if config.SOUND_NOTIFICATIONS:
 			config.SOUND_NOTIFICATIONS = False
@@ -4666,6 +4699,16 @@ class Merk(QMainWindow):
 			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
 		entry.triggered.connect(self.settingsLinks)
 		sm.addAction(entry)
+
+
+
+		if config.HIGHLIGHT_NICKS_IN_CHAT:
+			entry = QAction(QIcon(self.checked_icon),"Highlight nicks in chat", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Highlight nicks in chat", self)
+		entry.triggered.connect(self.settingsNicks)
+		sm.addAction(entry)
+
 
 		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
 

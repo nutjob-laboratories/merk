@@ -464,6 +464,7 @@ class Dialog(QDialog):
 				ui.setText('away')
 			font = QFont()
 			font.setBold(False)
+			font.setItalic(True)
 			ui.setFont(font)
 			self.userlist.addItem(ui)
 

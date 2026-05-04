@@ -438,11 +438,13 @@ SUBWINDOW_SNAP_DRAG_TRIGGER = 5
 SUBWINDOW_RESIZE_EDGE_MARGIN = 5
 SUBWINDOW_BACKGROUND = ""
 CHANNEL_FILTERS = {}
-MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = 3
+USER_COLORS = {}
+SHOW_COLORS_IN_USERLISTS = True
 
 def build_settings():
 	settings = {
-		"minimum_nickname_length_for_highlighting": MINIMUM_NICKNAME_LENGTH_HIGHLIGHT,
+		"show_user_colors_in_userlists": SHOW_COLORS_IN_USERLISTS,
+		"nickname_colors": USER_COLORS,
 		"channel_filters": CHANNEL_FILTERS,
 		"subwindow_background": SUBWINDOW_BACKGROUND,
 		"subwindow_resize_edge_margin": SUBWINDOW_RESIZE_EDGE_MARGIN,
@@ -846,8 +848,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "minimum_nickname_length_for_highlighting" in settings:
-		settings["minimum_nickname_length_for_highlighting"] = MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
+	if not "show_user_colors_in_userlists" in settings:
+		settings["show_user_colors_in_userlists"] = SHOW_COLORS_IN_USERLISTS
+	if not "nickname_colors" in settings:
+		settings["nickname_colors"] = USER_COLORS
 	if not "channel_filters" in settings:
 		settings["channel_filters"] = CHANNEL_FILTERS
 	if not "subwindow_background" in settings:
@@ -2046,7 +2050,8 @@ def load_settings(filename):
 	global SUBWINDOW_RESIZE_EDGE_MARGIN
 	global SUBWINDOW_BACKGROUND
 	global CHANNEL_FILTERS
-	global MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
+	global USER_COLORS
+	global SHOW_COLORS_IN_USERLISTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2056,7 +2061,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = settings["minimum_nickname_length_for_highlighting"]
+		SHOW_COLORS_IN_USERLISTS = settings["show_user_colors_in_userlists"]
+		USER_COLORS = settings["nickname_colors"]
 		CHANNEL_FILTERS = settings["channel_filters"]
 		SUBWINDOW_BACKGROUND = settings["subwindow_background"]
 		SUBWINDOW_RESIZE_EDGE_MARGIN = settings["subwindow_resize_edge_margin"]

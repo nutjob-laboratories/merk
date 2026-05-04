@@ -1008,13 +1008,6 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
-	def updateNickLength(self,state):
-		self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = self.hNickLength.value()
-		self.changed.show()
-		self.boldApply()
-		self.rerender = True
-		self.selector.setFocus()
-
 	def updateDistance(self,state):
 		self.SUBWINDOW_SNAP_DISTANCE = self.snapDistance.value()
 		self.changed.show()
@@ -1561,6 +1554,7 @@ class Dialog(QDialog):
 			self.ulistWidthLabel.setEnabled(True)
 			self.ulistWidthBox.setEnabled(True)
 			self.ulistWidthLabel2.setEnabled(True)
+			self.colorUserlists.setEnabled(True)
 
 			if self.ulistContext.isChecked():
 				self.elideAway.setEnabled(True)
@@ -1582,6 +1576,7 @@ class Dialog(QDialog):
 			self.ulistWidthLabel.setEnabled(False)
 			self.ulistWidthBox.setEnabled(False)
 			self.ulistWidthLabel2.setEnabled(False)
+			self.colorUserlists.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2087,7 +2082,6 @@ class Dialog(QDialog):
 		self.SUBWINDOW_SNAP_DISTANCE = config.SUBWINDOW_SNAP_DISTANCE
 		self.SUBWINDOW_BACKGROUND = config.SUBWINDOW_BACKGROUND
 		self.rerender_subwindows = False
-		self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = config.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3890,6 +3884,10 @@ class Dialog(QDialog):
 		ulistWidthLayout.addWidget(self.ulistWidthLabel2)
 		ulistWidthLayout.addStretch()
 
+		self.colorUserlists = QCheckBox("Show user colors",self)
+		if config.SHOW_COLORS_IN_USERLISTS: self.colorUserlists.setChecked(True)
+		self.colorUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
 			self.ulistWidthLabel.setEnabled(False)
 			self.ulistWidthBox.setEnabled(False)
@@ -3904,6 +3902,7 @@ class Dialog(QDialog):
 			self.elideAway.setEnabled(False)
 			self.elideHostmask.setEnabled(False)
 			self.ulistContext.setEnabled(False)
+			self.colorUserlists.setEnabled(False)
 
 		if not config.USERLIST_CONTEXT_MENU:
 			if config.SHOW_USERLIST:
@@ -3928,7 +3927,7 @@ class Dialog(QDialog):
 		ulistDisplay.addRow(self.plainUserLists,self.ulistContext)
 		ulistDisplay.addRow(self.elideAway,self.elideHostmask)
 		ulistDisplay.addRow(self.ignoreUserlist,self.showAwayStatus)
-		ulistDisplay.addRow(self.noSelectUserlists)
+		ulistDisplay.addRow(self.colorUserlists,self.noSelectUserlists)
 		ulistDisplay.addRow(self.hideScroll)
 		ulistDisplay.addRow(self.dcPrivate)
 
@@ -5111,21 +5110,9 @@ class Dialog(QDialog):
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
-		self.highlightNick = QCheckBox("Highlight nicks longer than or equal to",self)
+		self.highlightNick = QCheckBox("Highlight nicknames in chat",self)
 		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
 		self.highlightNick.stateChanged.connect(self.changedSettingRerender)
-
-		self.highlightNickLengthSpec = QLabel("char.")
-		self.hNickLength = QSpinBox()
-		self.hNickLength.setRange(1,9)
-		self.hNickLength.setValue(self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT)
-		self.hNickLength.valueChanged.connect(self.updateNickLength)
-
-		hNickLayout = QHBoxLayout()
-		hNickLayout.addWidget(self.highlightNick)
-		hNickLayout.addWidget(self.hNickLength)
-		hNickLayout.addWidget(self.highlightNickLengthSpec)
-		hNickLayout.addStretch()
 
 		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
@@ -5135,7 +5122,7 @@ class Dialog(QDialog):
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
 		msLayout.addWidget(self.showLinks)
-		msLayout.addLayout(hNickLayout)
+		msLayout.addWidget(self.highlightNick)
 		msLayout.addWidget(self.writeScroll)
 		msLayout.addWidget(self.showFullMode)
 		msLayout.addWidget(self.ignoreChannelNotice)
@@ -6754,7 +6741,7 @@ class Dialog(QDialog):
 		config.SUBWINDOW_SNAPPING = self.snapWindows.isChecked()
 		config.COMMAND_ERROR_PROTECTION = self.badCommands.isChecked()
 		config.SUBWINDOW_BACKGROUND = self.SUBWINDOW_BACKGROUND
-		config.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT = self.MINIMUM_NICKNAME_LENGTH_HIGHLIGHT
+		config.SHOW_COLORS_IN_USERLISTS = self.colorUserlists.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

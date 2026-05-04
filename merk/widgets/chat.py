@@ -67,6 +67,90 @@ class Window(QMainWindow):
 
 				self.client.last_interaction = 0
 
+	def buildUserColors(self):
+		network = self.encodeNetwork()
+
+		if network in config.USER_COLORS:
+			self.user_colors = {}
+			for hostmask in config.USER_COLORS[network]:
+				for nick in self.hostmasks:
+					if self.hostmasks[nick]==hostmask:
+						color = self.getNicknameColor(nick,hostmask)
+						if color!=None:
+							self.user_colors[nick] = color
+
+	def updateNicknameColor(self,nick,hostmask):
+		network = self.encodeNetwork()
+
+		if network in config.USER_COLORS:
+			if nick in config.USER_COLORS[network]:
+				color = config.USER_COLORS[network][nick]
+				del config.USER_COLORS[network][nick]
+				config.USER_COLORS[network][hostmask] = color
+				self.save_config()
+				self.parent.rerenderUserlistsNetwork(self.client)
+
+	def getNicknameColor(self,nick,hostmask):
+		network = self.encodeNetwork()
+
+		if hostmask==None:
+			userid = nick
+		else:
+			userid = hostmask
+
+		if network in config.USER_COLORS:
+			if userid in config.USER_COLORS[network]:
+				return config.USER_COLORS[network][userid]
+		else:
+			return None
+
+	def clearNicknameColor(self,nick,hostmask):
+		network = self.encodeNetwork()
+
+		if hostmask==None:
+			userid = nick
+		else:
+			userid = hostmask
+
+		if network in config.USER_COLORS:
+			if userid in config.USER_COLORS[network]:
+				config.USER_COLORS[network].pop(userid,None)
+				if len(config.USER_COLORS[network])==0: del config.USER_COLORS[network]
+
+				if nick in self.user_colors:
+					self.user_colors.pop(nick,None)
+				for u in self.hostmasks:
+					if self.hostmasks[u]==hostmask:
+						self.user_colors.pop(u,None)
+
+				self.save_config()
+				self.parent.rerenderUserlistsNetwork(self.client)
+
+	def setNicknameColor(self,nick,hostmask):
+		network = self.encodeNetwork()
+
+		if hostmask==None:
+			userid = nick
+		else:
+			userid = hostmask
+
+		if network in config.USER_COLORS:
+			pass
+		else:
+			config.USER_COLORS[network] = {}
+
+		oldcolor = self.getNicknameColor(nick,hostmask)
+		if oldcolor==None:
+			background,oldcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
+
+		newcolor = QColorDialog.getColor(QColor(oldcolor))
+
+		if newcolor.isValid():
+			ncolor = newcolor.name()
+			config.USER_COLORS[network][userid] = ncolor
+			self.save_config()
+			self.parent.rerenderUserlistsNetwork(self.client)
+
 	def encodeNetwork(self):
 		if self.client.network:
 			network = self.client.network.lower()
@@ -153,6 +237,8 @@ class Window(QMainWindow):
 		self.users_halfop = []
 		self.users_protected = []
 		self.users_normal = []
+
+		self.user_colors = {}
 
 		self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
 
@@ -1450,6 +1536,7 @@ class Window(QMainWindow):
 		if hostmask!=None:
 			if nick in self.nicks:
 				self.hostmasks[nick] = hostmask
+				self.updateNicknameColor(nick,hostmask)
 				self.rerenderUserlist()
 		else:
 			if nick in self.hostmasks:
@@ -1641,7 +1728,7 @@ class Window(QMainWindow):
 						if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 			if do_render:
-				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.nicks)
+				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors)
 				self.chat.append(t)
 
 		self.chat.moveCursor(QTextCursor.End)
@@ -2044,6 +2131,15 @@ class Window(QMainWindow):
 					else:
 						actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
 
+				if user_nick!=self.client.nickname:
+					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
+						c = self.getNicknameColor(user_nick,user_hostmask)
+
+						if c==None:
+							actColor = menu.addAction(QIcon(COLOR_ICON),"Set user color")
+						else:
+							actColor = menu.addAction(QIcon(COLOR_ICON),"Remove user color")
+
 				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
 				ctcpMenu = menu.addMenu(QIcon(WHOIS_ICON),"Send CTCP request")
@@ -2066,6 +2162,15 @@ class Window(QMainWindow):
 				actServer = clipMenu.addAction(QIcon(CONNECT_ICON),"Server information")
 
 				action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
+
+				if user_nick!=self.client.nickname:
+					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
+						if action==actColor:
+							if c==None:
+								self.setNicknameColor(user_nick,user_hostmask)
+							else:
+								self.clearNicknameColor(user_nick,user_hostmask)
+							return True
 
 				if action==actPing:
 					self.client.ping(user_nick)
@@ -2302,6 +2407,7 @@ class Window(QMainWindow):
 		self.rerenderUserlist()
 
 	def rerenderUserlist(self):
+		self.buildUserColors()
 		self.writeUserlist(self.users)
 
 	def readjustUserlist(self):
@@ -2317,23 +2423,14 @@ class Window(QMainWindow):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
 			font = QFont()
 			font.setBold(False)
+			font.setItalic(True)
 			w.setFont(font)
-
-			background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
-			c = QColor(foreground)
-			if test_if_foreground_is_light(self.style["all"]):
-				change = c.darker(150)
-			else:
-				change = c.lighter(150)
-			w.setForeground(QBrush(QColor(change)))
 
 	def change_to_back_display(self,w):
 		font = QFont()
 		font.setBold(True)
+		font.setItalic(False)
 		w.setFont(font)
-
-		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
-		w.setForeground(QBrush(QColor(foreground)))
 
 	def got_away(self,username,message):
 
@@ -2501,6 +2598,16 @@ class Window(QMainWindow):
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+
+			if u in self.hostmasks:
+				h = self.hostmasks[u]
+			else:
+				h = None
+
+			if u!=self.client.nickname:
+				if config.SHOW_COLORS_IN_USERLISTS:
+					c = self.getNicknameColor(u,h)
+					if c!=None: ui.setForeground(QBrush(QColor(c)))
 				
 			self.change_to_back_display(ui)
 
@@ -2526,7 +2633,17 @@ class Window(QMainWindow):
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
-				
+
+			if u in self.hostmasks:
+				h = self.hostmasks[u]
+			else:
+				h = None
+			
+			if u!=self.client.nickname:
+				if config.SHOW_COLORS_IN_USERLISTS:
+					c = self.getNicknameColor(u,h)
+					if c!=None: ui.setForeground(QBrush(QColor(c)))
+
 			self.change_to_back_display(ui)
 
 			if u==self.client.nickname:
@@ -2551,6 +2668,16 @@ class Window(QMainWindow):
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+
+			if u in self.hostmasks:
+				h = self.hostmasks[u]
+			else:
+				h = None
+
+			if u!=self.client.nickname:
+				if config.SHOW_COLORS_IN_USERLISTS:
+					c = self.getNicknameColor(u,h)
+					if c!=None: ui.setForeground(QBrush(QColor(c)))
 				
 			self.change_to_back_display(ui)
 
@@ -2576,6 +2703,16 @@ class Window(QMainWindow):
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+
+			if u in self.hostmasks:
+				h = self.hostmasks[u]
+			else:
+				h = None
+
+			if u!=self.client.nickname:
+				if config.SHOW_COLORS_IN_USERLISTS:
+					c = self.getNicknameColor(u,h)
+					if c!=None: ui.setForeground(QBrush(QColor(c)))
 				
 			self.change_to_back_display(ui)
 
@@ -2601,6 +2738,16 @@ class Window(QMainWindow):
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+
+			if u in self.hostmasks:
+				h = self.hostmasks[u]
+			else:
+				h = None
+
+			if u!=self.client.nickname:
+				if config.SHOW_COLORS_IN_USERLISTS:
+					c = self.getNicknameColor(u,h)
+					if c!=None: ui.setForeground(QBrush(QColor(c)))
 				
 			self.change_to_back_display(ui)
 
@@ -2627,6 +2774,16 @@ class Window(QMainWindow):
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 
+			if u in self.hostmasks:
+				h = self.hostmasks[u]
+			else:
+				h = None
+
+			if u!=self.client.nickname:
+				if config.SHOW_COLORS_IN_USERLISTS:
+					c = self.getNicknameColor(u,h)
+					if c!=None: ui.setForeground(QBrush(QColor(c)))
+
 			self.change_to_back_display(ui)
 
 			if u==self.client.nickname:
@@ -2651,6 +2808,16 @@ class Window(QMainWindow):
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
+
+			if u in self.hostmasks:
+				h = self.hostmasks[u]
+			else:
+				h = None
+
+			if u!=self.client.nickname:
+				if config.SHOW_COLORS_IN_USERLISTS:
+					c = self.getNicknameColor(u,h)
+					if c!=None: ui.setForeground(QBrush(QColor(c)))
 			
 			self.change_to_back_display(ui)
 
@@ -2860,7 +3027,7 @@ class Window(QMainWindow):
 							if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 				if do_render:
-					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.nicks)
+					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors)
 					self.chat.append(t)
 
 			self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)
