@@ -32,6 +32,7 @@ import re
 import uuid
 import fnmatch
 import pathlib
+import random
 
 import emoji
 
@@ -78,6 +79,11 @@ class Window(QMainWindow):
 						color = self.getNicknameColor(nick,hostmask)
 						if color!=None:
 							self.user_colors[nick] = color
+
+		self.non_colored_nicks = []
+		for n in self.nicks:
+			if not n in self.user_colors:
+				self.non_colored_nicks.append(n)
 
 	def updateNicknameColor(self,nick,hostmask):
 		network = self.encodeNetwork()
@@ -233,6 +239,15 @@ class Window(QMainWindow):
 		self.part_message = None
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 		self.opacity = 100
+		self.do_chat_update = random.randint(120, 300)
+		self.rerendered_chat = False
+		self.non_colored_nicks = []
+
+		# If the server supports hostmasks in NAMES
+		# replies, then set the render timer for a
+		# shorter time
+		if self.client.support_hostmasks_in_names:
+			self.do_chat_update = random.randint(60, 120)
 
 		if self.parent.dark_mode:
 			self.default_style = styles.loadDarkDefault()
@@ -1603,6 +1618,13 @@ class Window(QMainWindow):
 						d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 						self.chat.append(d2)
 
+		if self.window_type==CHANNEL_WINDOW:
+			# Rerender the chat after a little bit
+			if not self.rerendered_chat and config.HIGHLIGHT_NICKS_IN_CHAT:
+				if self.uptime>=self.do_chat_update:
+					self.rerendered_chat = True
+					self.rerenderChatLog(True)
+
 	def refreshInfoMenu(self):
 		self.server_info_menu = buildServerSettingsMenu(self,self.client)
 		self.info_button.setMenu(self.server_info_menu)
@@ -1647,9 +1669,9 @@ class Window(QMainWindow):
 			if len(entry)>0: output.append(entry)
 		return output
 
-	def rerenderChatLog(self):
+	def rerenderChatLog(self,no_focus=False):
 
-		QApplication.setOverrideCursor(Qt.WaitCursor)
+		if no_focus==False: QApplication.setOverrideCursor(Qt.WaitCursor)
 
 		self.chat.clear()
 		for line in self.log:
@@ -1710,13 +1732,14 @@ class Window(QMainWindow):
 						if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 			if do_render:
-				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors)
+				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors,self.non_colored_nicks)
 				self.chat.append(t)
 
-		self.chat.moveCursor(QTextCursor.End)
-		self.input.setFocus()
+		if no_focus==False:
+			self.chat.moveCursor(QTextCursor.End)
+			self.input.setFocus()
 
-		QApplication.restoreOverrideCursor()
+		if no_focus==False: QApplication.restoreOverrideCursor()
 
 	def refreshModeDisplay(self):
 		if len(self.client.usermodes)==0:
@@ -2119,9 +2142,9 @@ class Window(QMainWindow):
 						c = self.getNicknameColor(user_nick,user_hostmask)
 
 						if c==None:
-							actColor = menu.addAction(QIcon(COLOR_ICON),"Set user color")
+							actColor = menu.addAction(QIcon(COLOR_ICON),"Set nickname color")
 						else:
-							actColor = menu.addAction(QIcon(COLOR_ICON),"Remove user color")
+							actColor = menu.addAction(QIcon(COLOR_ICON),"Remove nickname color")
 
 				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
@@ -3011,7 +3034,7 @@ class Window(QMainWindow):
 							if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 				if do_render:
-					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors)
+					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors,self.non_colored_nicks)
 					self.chat.append(t)
 
 			self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)

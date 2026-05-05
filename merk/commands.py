@@ -4334,9 +4334,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						win_name = '*'
 					else:
 						win_name = w.widget().name
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server}:{w.widget().client.port} {win_name} {width} {height}")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server}:{w.widget().client.port} {win_name} {x_val} {y_val}")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server}:{w.widget().client.port} {win_name} {opacity}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server} {win_name} {width} {height}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server} {win_name} {x_val} {y_val}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server} {win_name} {opacity}")
 					if not w.isVisible():
 						results.append(f"{config.ISSUE_COMMAND_SYMBOL}hide {w.widget().client.server}:{w.widget().client.port} {win_name}")
 					else:

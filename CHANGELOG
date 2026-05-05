@@ -5,7 +5,7 @@
 What's new:
 
 - **Channel specific message filters**. In a channel chat's right click menu, users can now choose to hide/show JOIN, PART, QUIT, NICK, MODE, and TOPIC messages. The messages will still be logged, and the filter is persistent across sessions. The option to hide these messages application-wide is still in place.
-- **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname will still be highlighted in the current text style, but other user's nicks can now be colored with custom colors. Colors are stored via the user's hostmask, and will appear in chat and userlists.
+- **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname will still be highlighted in the current text style, but other user's nicks can now be colored with custom colors. Colors are stored via the user's hostmask, and will appear in chat and userlists. Nicknames that do not have a color will be colored with the default "nickname" text style color.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -38,6 +38,12 @@ What's new:
   been added to the "settings" dialog.
 * Bugfix: it was possible to "ignore" yourself from the userlist context menu.
   This option has been removed.
+* The "/window layout" command no longer specifies a port in the hostID for
+  each window in the generated script.
+* Bugfix: the hotkey manager would occasionally throw an error and delete an
+  edited hotkey after editing.
+* Nicknames without a color assigned to them are now also highlighted in chat,
+  if that option is turned on.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

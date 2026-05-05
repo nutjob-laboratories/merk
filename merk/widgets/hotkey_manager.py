@@ -48,7 +48,7 @@ class Window(QMainWindow):
 			if is_valid_shortcut_sequence(seq):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
-					self.parent.save_shortcuts()
+					pass
 				elif r==SHORTCUT_IN_USE:
 					QMessageBox.critical(self, 'Error', f'Hotkey \"{seq}\" is already in use.')
 				else:
@@ -56,6 +56,7 @@ class Window(QMainWindow):
 			else:
 				QMessageBox.warning(self, 'Warning', f'Hotkey \"{seq}\" was not added.')
 
+			self.parent.save_shortcuts()
 			self.refresh()
 
 	def remove_key(self):
@@ -118,7 +119,7 @@ class Window(QMainWindow):
 			if is_valid_shortcut_sequence(seq):
 				r = self.parent.add_shortcut(seq,cmd)
 				if r==GOOD_SHORTCUT:
-					self.parent.save_shortcuts()
+					pass
 				elif r==SHORTCUT_IN_USE:
 					QMessageBox.critical(self, 'Error', f'Hotkey \"{seq}\" is already in use.')
 				else:
@@ -126,6 +127,7 @@ class Window(QMainWindow):
 			else:
 				QMessageBox.warning(self, 'Warning', f'Hotkey \"{seq}\" was not added.')
 
+			self.parent.save_shortcuts()
 			self.refresh()
 
 	def toggleTop(self):
