@@ -36,6 +36,8 @@ What's new:
   userlists" and "use colors in chat" are turned off, the option to set or
   remove colors is removed from the userlist context menu. The new settings has
   been added to the "settings" dialog.
+* Bugfix: it was possible to "ignore" yourself from the userlist context menu.
+  This option has been removed.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

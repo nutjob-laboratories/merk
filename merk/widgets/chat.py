@@ -196,30 +196,17 @@ class Window(QMainWindow):
 		self.app = app
 		self.parent = parent
 		self.first_shown = False
-
 		self.subwindow_id = str(uuid.uuid4())
-
-		if self.parent.dark_mode:
-			self.default_style = styles.loadDarkDefault()
-		else:
-			self.default_style = styles.loadDefault()
-
 		self.uptime = 0
-
 		self.channel_topic = ""		# Channel topic
 		self.userlist_width = 0		# Userlist width
-
 		self.user_count = 0
-
 		self.language = config.DEFAULT_SPELLCHECK_LANGUAGE
-
 		self.history_buffer = ['']
 		self.history_buffer_pointer = 0
-
 		self.log = []
 		self.new_log = []
 		self.full_nicks = []
-
 		self.users = []
 		self.nicks = []
 		self.hostmasks = {}
@@ -229,7 +216,6 @@ class Window(QMainWindow):
 		self.admin = False
 		self.halfop = False
 		self.protected = False
-
 		self.users_operator = []
 		self.users_voiced = []
 		self.users_owner = []
@@ -237,25 +223,21 @@ class Window(QMainWindow):
 		self.users_halfop = []
 		self.users_protected = []
 		self.users_normal = []
-
 		self.user_colors = {}
-
 		self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
-
 		self.banlist = []
 		self.away = {}
-
 		self.userlist_visible = True
-
 		self.force_close = False
-
 		self.connected = False
-
 		self.part_message = None
-
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
-
 		self.opacity = 100
+
+		if self.parent.dark_mode:
+			self.default_style = styles.loadDarkDefault()
+		else:
+			self.default_style = styles.loadDefault()
 
 		# Make sure that the client has a network set, even if the server doesn't
 		if not hasattr(self.client,"network"): self.client.network = config.UNKNOWN_NETWORK_NAME
@@ -2126,10 +2108,11 @@ class Window(QMainWindow):
 					actKickBan = opMenu.addAction(QIcon(BAN_ICON),"Kick && Ban "+user_nick)
 
 				if config.ENABLE_IGNORE:
-					if is_hidden:
-						actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
-					else:
-						actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
+					if user_nick!=self.client.nickname:
+						if is_hidden:
+							actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
+						else:
+							actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
 
 				if user_nick!=self.client.nickname:
 					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
@@ -2202,32 +2185,33 @@ class Window(QMainWindow):
 						return True
 
 				if config.ENABLE_IGNORE:
-					if action == actIgnore:
-						if is_hidden:
-							if user_hostmask:
-								if user_hostmask.lower() in config.IGNORE_LIST:
-									config.IGNORE_LIST.remove(user_hostmask.lower())
-							if user_nick.lower() in config.IGNORE_LIST:
-								config.IGNORE_LIST.remove(user_nick.lower())
-							self.save_config()
-							self.parent.buildSettingsMenu()
-							self.parent.reRenderAll(True)
-							self.parent.rerenderUserlists()
-							if self.parent.ignore_manager!=None:
-								self.parent.ignore_manager.refresh()
-							return True
-						else:
-							if user_hostmask:
-								config.IGNORE_LIST.append(user_hostmask.lower())
+					if user_nick!=self.client.nickname:
+						if action == actIgnore:
+							if is_hidden:
+								if user_hostmask:
+									if user_hostmask.lower() in config.IGNORE_LIST:
+										config.IGNORE_LIST.remove(user_hostmask.lower())
+								if user_nick.lower() in config.IGNORE_LIST:
+									config.IGNORE_LIST.remove(user_nick.lower())
+								self.save_config()
+								self.parent.buildSettingsMenu()
+								self.parent.reRenderAll(True)
+								self.parent.rerenderUserlists()
+								if self.parent.ignore_manager!=None:
+									self.parent.ignore_manager.refresh()
+								return True
 							else:
-								config.IGNORE_LIST.append(user_nick.lower())
-							self.save_config()
-							self.parent.buildSettingsMenu()
-							self.parent.reRenderAll(True)
-							self.parent.rerenderUserlists()
-							if self.parent.ignore_manager!=None:
-								self.parent.ignore_manager.refresh()
-							return True
+								if user_hostmask:
+									config.IGNORE_LIST.append(user_hostmask.lower())
+								else:
+									config.IGNORE_LIST.append(user_nick.lower())
+								self.save_config()
+								self.parent.buildSettingsMenu()
+								self.parent.reRenderAll(True)
+								self.parent.rerenderUserlists()
+								if self.parent.ignore_manager!=None:
+									self.parent.ignore_manager.refresh()
+								return True
 
 				if action == actWhois:
 					self.client.sendLine("WHOIS "+user_nick)
