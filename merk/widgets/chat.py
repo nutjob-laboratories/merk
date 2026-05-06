@@ -238,16 +238,36 @@ class Window(QMainWindow):
 		self.connected = False
 		self.part_message = None
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
-		self.opacity = 100
-		self.do_chat_update = random.randint(120, 300)
 		self.rerendered_chat = False
 		self.non_colored_nicks = []
 
-		# If the server supports hostmasks in NAMES
-		# replies, then set the render timer for a
-		# shorter time
-		if self.client.support_hostmasks_in_names:
-			self.do_chat_update = random.randint(60, 120)
+		# The window's opacity starts at 100%
+		self.opacity = 100
+
+		if self.window_type==CHANNEL_WINDOW:
+			# Set the rerender timer to a random
+			# amount of seconds from 2 minutes to
+			# 3 minutes
+			self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_NO_HOSTMASK, MAXIMUM_RERENDER_NO_HOSTMASK)
+
+			# If the server supports hostmasks in NAMES
+			# replies, then set the rerender timer for a
+			# shorter time
+			if self.client.support_hostmasks_in_names:
+				self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_HOSTMASK, MAXIMUM_RERENDER_HOSTMASK)
+
+			# Turn off rerendering if the config file
+			# says to
+			if not config.AUTOMATICALLY_RERENDER_CHAT:
+				self.force_chat_log_rerender = 0
+
+			# If nick highlighting is turned off,
+			# also turn off rerendering
+			if not config.HIGHLIGHT_NICKS_IN_CHAT:
+				self.force_chat_log_rerender = 0
+		else:
+			self.force_chat_log_rerender = 0
+			self.rerendered_chat = True
 
 		if self.parent.dark_mode:
 			self.default_style = styles.loadDarkDefault()
@@ -1620,10 +1640,22 @@ class Window(QMainWindow):
 
 		if self.window_type==CHANNEL_WINDOW:
 			# Rerender the chat after a little bit
-			if not self.rerendered_chat and config.HIGHLIGHT_NICKS_IN_CHAT:
-				if self.uptime>=self.do_chat_update:
+			if not self.rerendered_chat and config.HIGHLIGHT_NICKS_IN_CHAT and self.force_chat_log_rerender!=0:
+				if self.uptime>=self.force_chat_log_rerender:
 					self.rerendered_chat = True
 					self.rerenderChatLog(True)
+
+	def toggleChatRerender(self):
+		if self.window_type==CHANNEL_WINDOW and config.AUTOMATICALLY_RERENDER_CHAT and config.HIGHLIGHT_NICKS_IN_CHAT:
+			if self.force_chat_log_rerender==0:
+				self.rerendered_chat = False
+				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_NO_HOSTMASK, MAXIMUM_RERENDER_NO_HOSTMASK)
+
+				if self.client.support_hostmasks_in_names:
+					self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_HOSTMASK, MAXIMUM_RERENDER_HOSTMASK)
+		else:
+			self.rerendered_chat = True
+			self.force_chat_log_rerender = 0
 
 	def refreshInfoMenu(self):
 		self.server_info_menu = buildServerSettingsMenu(self,self.client)
@@ -1738,8 +1770,7 @@ class Window(QMainWindow):
 		if no_focus==False:
 			self.chat.moveCursor(QTextCursor.End)
 			self.input.setFocus()
-
-		if no_focus==False: QApplication.restoreOverrideCursor()
+			QApplication.restoreOverrideCursor()
 
 	def refreshModeDisplay(self):
 		if len(self.client.usermodes)==0:

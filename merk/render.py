@@ -219,7 +219,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 				if len(nicks)>0:
 					for n in nicks:
 						words.append(n)
-				msg_to_display = highlight_nick(msg_to_display,words,nicks,non_color_nicks,style)
+				if len(non_color_nicks)>0:
+					for n in non_color_nicks:
+						words.append(n)
+				msg_to_display = highlight_nick(msg_to_display,words,nicks,style)
 
 	# Assign template and style to the message
 	message_templates = {
@@ -333,7 +336,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 def replace_first_style_color(style, new_color):
 	return re.sub(r'#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}', new_color, style, count=1)
 
-def highlight_nick(text, target_words, user_colors, non_color, style):
+def highlight_nick(text, target_words, user_colors, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 		style_str = f"color:{foreground};"
@@ -347,7 +350,7 @@ def highlight_nick(text, target_words, user_colors, non_color, style):
 	
 	# Escape each word and join with | for alternation
 	escaped_words = [re.escape(word) for word in target_words]
-	escaped_words = escaped_words + [re.escape(word) for word in non_color]
+	# Build the regex
 	pattern = rf'\b({"|".join(escaped_words)})\b'
 	
 	def replacer(match):
@@ -361,6 +364,9 @@ def highlight_nick(text, target_words, user_colors, non_color, style):
 			if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 				style_to_use = style_str
 			else:
+				# Try to assign a color to the nick, and
+				# if there isn't a color, use the default
+				# "username" text style
 				try:
 					actual_key = color_lookup[matched_word]
 					style_to_use = replace_first_style_color(style_str,user_colors[actual_key])

@@ -2989,6 +2989,7 @@ class Merk(QMainWindow):
 		self.toggleUserinfo()
 		self.setCursorBlink()
 		self.refreshAllTopic()
+		self.toggleRerender()
 
 		if config.SHOW_CHANNEL_TOPIC:
 			self.showAllTopic()
@@ -4146,6 +4147,15 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def toggleRerender(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"toggleChatRerender"):
+				c.toggleChatRerender()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def toggleInputMenu(self):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():
@@ -4700,15 +4710,12 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsLinks)
 		sm.addAction(entry)
 
-
-
 		if config.HIGHLIGHT_NICKS_IN_CHAT:
-			entry = QAction(QIcon(self.checked_icon),"Highlight nicks in chat", self)
+			entry = QAction(QIcon(self.checked_icon),"Highlight nicks in channels", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Highlight nicks in chat", self)
+			entry = QAction(QIcon(self.unchecked_icon),"Highlight nicks in channels", self)
 		entry.triggered.connect(self.settingsNicks)
 		sm.addAction(entry)
-
 
 		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
 

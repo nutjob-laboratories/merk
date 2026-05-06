@@ -3823,10 +3823,6 @@ class Dialog(QDialog):
 		self.channelDescription.setWordWrap(True)
 		self.channelDescription.setAlignment(Qt.AlignJustify)
 
-		self.topicTitleDisplay = QCheckBox("Show channel topic in subwindow title",self)
-		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
-		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
-
 		self.showUserlistLeft = QCheckBox("Display on left",self)
 		if config.SHOW_USERLIST_ON_LEFT: self.showUserlistLeft.setChecked(True)
 		self.showUserlistLeft.stateChanged.connect(self.swapUserlistSetting)
@@ -3936,9 +3932,13 @@ class Dialog(QDialog):
 		infoExist.addWidget(self.topicDisplay)
 		infoExist.addStretch()
 
-		self.nameTitleDisplay = QCheckBox("Show channel name in subwindow title",self)
+		self.nameTitleDisplay = QCheckBox("Show name in title",self)
 		if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE: self.nameTitleDisplay.setChecked(True)
 		self.nameTitleDisplay.stateChanged.connect(self.titleChange)
+
+		self.topicTitleDisplay = QCheckBox("Show topic in title",self)
+		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
+		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
 
 		self.showJoin = QCheckBox("Show joins",self)
 		if config.SHOW_CHANNEL_JOIN_MESSAGES: self.showJoin.setChecked(True)
@@ -3964,6 +3964,10 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC_MESSAGES: self.showTopic.setChecked(True)
 		self.showTopic.stateChanged.connect(self.changedSettingRerender)
 
+		self.highlightNick = QCheckBox("Highlight channel nicknames in chat",self)
+		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
+		self.highlightNick.stateChanged.connect(self.changedSettingRerender)
+
 		showCM1 = QHBoxLayout()
 		showCM1.addWidget(self.showJoin)
 		showCM1.addStretch()
@@ -3978,10 +3982,15 @@ class Dialog(QDialog):
 		showCM2.addWidget(self.showNicks)
 		showCM2.addStretch()
 
+		showCM3 = QHBoxLayout()
+		showCM3.setSpacing(0)
+		showCM3.addWidget(self.nameTitleDisplay)
+		showCM3.addWidget(self.topicTitleDisplay)
+
 		showCM = QVBoxLayout()
 		showCM.setSpacing(0)
-		showCM.addWidget(self.nameTitleDisplay)
-		showCM.addWidget(self.topicTitleDisplay)
+		showCM.addLayout(showCM3)
+		showCM.addWidget(self.highlightNick)
 		
 		allFilter = QVBoxLayout()
 		allFilter.setSpacing(0)
@@ -3998,10 +4007,10 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
 		menuLayout.addLayout(ulistWidthLayout)
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>filter messages in all channels</b>"))
+		menuLayout.addLayout(allFilter)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addLayout(showCM)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>all channel message filter</b>"))
-		menuLayout.addLayout(allFilter)
 		menuLayout.addStretch()
 
 		self.channelInfoPage.setLayout(menuLayout)
@@ -5110,10 +5119,6 @@ class Dialog(QDialog):
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
-		self.highlightNick = QCheckBox("Highlight nicknames in chat",self)
-		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
-		self.highlightNick.stateChanged.connect(self.changedSettingRerender)
-
 		self.autoJoin = QCheckBox("Automatically join channel on invite",self)
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
@@ -5122,7 +5127,6 @@ class Dialog(QDialog):
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
 		msLayout.addWidget(self.showLinks)
-		msLayout.addWidget(self.highlightNick)
 		msLayout.addWidget(self.writeScroll)
 		msLayout.addWidget(self.showFullMode)
 		msLayout.addWidget(self.ignoreChannelNotice)
@@ -6904,46 +6908,32 @@ class Dialog(QDialog):
 		if self.windowbar_change:
 			# Build menubar/menus
 			self.parent.buildMenu()
-
 			# Set the windowbar
 			self.parent.initWindowbar()
 
 		if self.swapUserlists: self.parent.swapAllUserlists()
-
 		if self.toggleUserlist: self.parent.toggleAllUserlists()
-
 		self.parent.toggleSpellcheck()
-
 		self.parent.toggleInputMenu()
-
 		self.parent.toggleServNickDisplay()
-
 		self.parent.toggleRefreshButton()
-
 		self.parent.updateStatusBar()
-
 		self.parent.toggleServerToolbar()
-
 		self.parent.toggleRubberbanding()
-
 		self.parent.toggleScrollbar()
-
 		self.parent.toggleCursorWidth()
-
 		self.parent.toggleUserinfo()
-
 		self.parent.setCursorBlink()
-
 		self.parent.refreshAllTopic()
-		if config.SHOW_CHANNEL_TOPIC:
-			self.parent.showAllTopic()
-		else:
-			self.parent.hideAllTopic()
-
 		if self.rerender: self.parent.reRenderAll()
 		if self.rerenderUsers: self.parent.rerenderUserlists()
 		if self.rerenderStyle: self.parent.reApplyStyle()
 
+		if config.SHOW_CHANNEL_TOPIC:
+			self.parent.showAllTopic()
+		else:
+			self.parent.hideAllTopic()
+			
 		if self.rerenderNick:
 			self.parent.rerenderAllNickDisplays()
 			self.parent.toggleNickDisplay()

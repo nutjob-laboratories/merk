@@ -44,6 +44,10 @@ What's new:
   edited hotkey after editing.
 * Nicknames without a color assigned to them are now also highlighted in chat,
   if that option is turned on.
+* If nickname highlighting in chat is turned on, chatlogs in channel windows
+  will rerender after a short period of time to show previously logged chat
+  with the chosen colors. This can be turned off with a settings in the config
+  file with the /config command or by editing the configuration file.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

@@ -440,9 +440,11 @@ SUBWINDOW_BACKGROUND = ""
 CHANNEL_FILTERS = {}
 USER_COLORS = {}
 SHOW_COLORS_IN_USERLISTS = True
+AUTOMATICALLY_RERENDER_CHAT = True
 
 def build_settings():
 	settings = {
+		"automatically_rerender_chat_for_nick_highlighting": AUTOMATICALLY_RERENDER_CHAT,
 		"show_user_colors_in_userlists": SHOW_COLORS_IN_USERLISTS,
 		"nickname_colors": USER_COLORS,
 		"channel_filters": CHANNEL_FILTERS,
@@ -848,6 +850,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "automatically_rerender_chat_for_nick_highlighting" in settings:
+		settings["automatically_rerender_chat_for_nick_highlighting"] = AUTOMATICALLY_RERENDER_CHAT
 	if not "show_user_colors_in_userlists" in settings:
 		settings["show_user_colors_in_userlists"] = SHOW_COLORS_IN_USERLISTS
 	if not "nickname_colors" in settings:
@@ -2052,6 +2056,7 @@ def load_settings(filename):
 	global CHANNEL_FILTERS
 	global USER_COLORS
 	global SHOW_COLORS_IN_USERLISTS
+	global AUTOMATICALLY_RERENDER_CHAT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2061,6 +2066,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		AUTOMATICALLY_RERENDER_CHAT = settings["automatically_rerender_chat_for_nick_highlighting"]
 		SHOW_COLORS_IN_USERLISTS = settings["show_user_colors_in_userlists"]
 		USER_COLORS = settings["nickname_colors"]
 		CHANNEL_FILTERS = settings["channel_filters"]
