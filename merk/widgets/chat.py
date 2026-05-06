@@ -1264,7 +1264,7 @@ class Window(QMainWindow):
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
 
-				entry = QAction(QIcon(RELOAD_ICON),"Reload chat display",menu)
+				entry = QAction(QIcon(RELOAD_ICON),"Re-render chat display",menu)
 				entry.triggered.connect(self.rerenderChatLog)
 				menu.addAction(entry)
 

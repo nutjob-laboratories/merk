@@ -6,6 +6,7 @@ What's new:
 
 - **Channel specific message filters**. In a channel chat's right click menu, users can now choose to hide/show JOIN, PART, QUIT, NICK, MODE, and TOPIC messages. The messages will still be logged, and the filter is persistent across sessions. The option to hide these messages application-wide is still in place.
 - **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname will still be highlighted in the current text style, but other user's nicks can now be colored with custom colors. Colors are stored via the user's hostmask, and will appear in chat and userlists. Nicknames that do not have a color will be colored with the default "nickname" text style color.
+- **Windowbar sorting**. Entries in the windowbar can now be sorted in order of subwindow creation (the default), reverse creation order, alphabetically, or reverse alphabetically.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -47,7 +48,11 @@ What's new:
 * If nickname highlighting in chat is turned on, chatlogs in channel windows
   will rerender after a short period of time to show previously logged chat
   with the chosen colors. This can be turned off with a settings in the config
-  file with the /config command or by editing the configuration file.
+  file with the /config command or by editing the configuration file, or in the
+  "settings" dialog.
+* Added an option to sort the entries in the windowbar. Entries can be set in
+  order of subwindow creation (the default), reverse subwindow creation order,
+  alphabetically, or reverse alphabetically.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

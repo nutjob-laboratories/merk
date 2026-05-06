@@ -441,9 +441,11 @@ CHANNEL_FILTERS = {}
 USER_COLORS = {}
 SHOW_COLORS_IN_USERLISTS = True
 AUTOMATICALLY_RERENDER_CHAT = True
+WINDOWBAR_SORT = "creation" # creation, alpha, ralpha, reverse
 
 def build_settings():
 	settings = {
+		"windowbar_sorting": WINDOWBAR_SORT,
 		"automatically_rerender_chat_for_nick_highlighting": AUTOMATICALLY_RERENDER_CHAT,
 		"show_user_colors_in_userlists": SHOW_COLORS_IN_USERLISTS,
 		"nickname_colors": USER_COLORS,
@@ -850,6 +852,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "windowbar_sorting" in settings:
+		settings["windowbar_sorting"] = WINDOWBAR_SORT
 	if not "automatically_rerender_chat_for_nick_highlighting" in settings:
 		settings["automatically_rerender_chat_for_nick_highlighting"] = AUTOMATICALLY_RERENDER_CHAT
 	if not "show_user_colors_in_userlists" in settings:
@@ -2057,6 +2061,7 @@ def load_settings(filename):
 	global USER_COLORS
 	global SHOW_COLORS_IN_USERLISTS
 	global AUTOMATICALLY_RERENDER_CHAT
+	global WINDOWBAR_SORT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2066,6 +2071,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		WINDOWBAR_SORT = settings["windowbar_sorting"]
 		AUTOMATICALLY_RERENDER_CHAT = settings["automatically_rerender_chat_for_nick_highlighting"]
 		SHOW_COLORS_IN_USERLISTS = settings["show_user_colors_in_userlists"]
 		USER_COLORS = settings["nickname_colors"]

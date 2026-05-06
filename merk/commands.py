@@ -1097,6 +1097,10 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="windowbar_sorting":
+		v = ["creation","reverse","alpha","ralpha"]
+		if not value.lower() in v: return INVALID_SORTING
+
 	if setting=="bad_nickname_fallback":
 		if len(value)>=9:
 			return INVALID_NICK_LENGTH
@@ -5917,6 +5921,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = "must be at least 1"
 					elif check==INVALID_BIG_NUMBER:
 						reason = "must be at less than or equal to 9"
+					elif check==INVALID_SORTING:
+						reason = "must be \"creation\", \"reverse\", \"alpha\", or \"ralpha\""
 					elif check==INVALID_IMAGE:
 						supported_formats = QImageReader.supportedImageFormats()
 						all_filetypes = []

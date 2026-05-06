@@ -993,6 +993,39 @@ class Windowbar(QToolBar):
 	
 		menu.addMenu(self.justifyMenu)
 
+		self.sortMenu = QMenu("Sorting")
+		self.sortMenu.setIcon(QIcon(self.parent.options_icon))
+
+		if config.WINDOWBAR_SORT=='creation':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Creation",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Creation",self)
+		entry.triggered.connect(lambda state,u="creation": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+
+		if config.WINDOWBAR_SORT=='reverse':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse creation",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse creation",self)
+		entry.triggered.connect(lambda state,u="reverse": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+
+		if config.WINDOWBAR_SORT=='alpha':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Alphabetical",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Alphabetical",self)
+		entry.triggered.connect(lambda state,u="alpha": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+
+		if config.WINDOWBAR_SORT=='ralpha':
+			entry = QAction(QIcon(self.parent.round_checked_icon),"Reverse alphabetical",self)
+		else:
+			entry = QAction(QIcon(self.parent.round_unchecked_icon),"Reverse alphabetical",self)
+		entry.triggered.connect(lambda state,u="ralpha": self.setSorting(u))
+		self.sortMenu.addAction(entry)
+	
+		menu.addMenu(self.sortMenu)
+
 		menu.addSeparator()
 
 		entry3 = QAction(QIcon(NEXT_ICON),"Next window",self)
@@ -1012,6 +1045,15 @@ class Windowbar(QToolBar):
 		menu.addAction(entry2)
 
 		menu.exec_(self.mapToGlobal(event.pos()))
+
+	def setSorting(self,justify):
+		w = self.parent.MDI.activeSubWindow()
+		config.WINDOWBAR_SORT = justify
+		config.save_settings(config.CONFIG_FILE)
+		self.parent.buildMenu()
+		self.parent.initWindowbar()
+		if len(self.parent.MDI.subWindowList())>0:
+			self.parent.MDI.setActiveSubWindow(w)
 
 	def setJustify(self,justify):
 		w = self.parent.MDI.activeSubWindow()

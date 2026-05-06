@@ -609,6 +609,29 @@ class Merk(QMainWindow):
 		full_display = te[0]
 		partial_display = te[1]
 
+		# Sort entries in the windowbar based on the config
+		# If we end up with an invalid sorting type, then
+		# just set it to the default and save
+		if config.WINDOWBAR_SORT.lower()=='reverse':
+			# Reverse creation order
+			full_display = list(reversed(full_display))
+			partial_display = list(reversed(partial_display))
+		elif config.WINDOWBAR_SORT.lower()=='alpha':
+			# Alphabetical order
+			full_display = sorted(full_display, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
+			partial_display = sorted(partial_display, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
+		elif config.WINDOWBAR_SORT.lower()=='ralpha':
+			# Reverse alphabetical order
+			full_display = sorted(full_display, reverse=True, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
+			partial_display = sorted(partial_display, reverse=True, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
+		elif config.WINDOWBAR_SORT.lower()=='creation':
+			# The default, do nothing
+			pass
+		else:
+			# Invalid setting, so set the default and save
+			config.WINDOWBAR_SORT = 'creation'
+			config.save_settings(config.CONFIG_FILE)
+
 		# Make sure the current active window is
 		# in the full display list if it's not first
 		if not config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:

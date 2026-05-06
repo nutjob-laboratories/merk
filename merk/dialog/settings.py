@@ -955,6 +955,16 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def changedSettingRerenderHighlight(self,state):
+		if self.highlightNick.isChecked():
+			self.autoRerender.setEnabled(True)
+		else:
+			self.autoRerender.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.selector.setFocus()
+
 	def changedSettingRerenderUserlists(self,state):
 		self.changed.show()
 		self.boldApply()
@@ -3940,35 +3950,44 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE: self.topicTitleDisplay.setChecked(True)
 		self.topicTitleDisplay.stateChanged.connect(self.titleChange)
 
-		self.showJoin = QCheckBox("Show joins",self)
+		self.showJoin = QCheckBox("JOIN",self)
 		if config.SHOW_CHANNEL_JOIN_MESSAGES: self.showJoin.setChecked(True)
 		self.showJoin.stateChanged.connect(self.changedSettingRerender)
 
-		self.showPart = QCheckBox("Show parts",self)
+		self.showPart = QCheckBox("PART",self)
 		if config.SHOW_CHANNEL_PART_MESSAGES: self.showPart.setChecked(True)
 		self.showPart.stateChanged.connect(self.changedSettingRerender)
 
-		self.showQuit = QCheckBox("Show quits",self)
+		self.showQuit = QCheckBox("QUIT",self)
 		if config.SHOW_CHANNEL_QUIT_MESSAGES: self.showQuit.setChecked(True)
 		self.showQuit.stateChanged.connect(self.changedSettingRerender)
 
-		self.showModes = QCheckBox("Show mode changes",self)
+		self.showModes = QCheckBox("MODE",self)
 		if config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES: self.showModes.setChecked(True)
 		self.showModes.stateChanged.connect(self.changedSettingRerender)
 
-		self.showNicks = QCheckBox("Show nick changes",self)
+		self.showNicks = QCheckBox("NICK",self)
 		if config.SHOW_CHANNEL_NICK_MESSAGES: self.showNicks.setChecked(True)
 		self.showNicks.stateChanged.connect(self.changedSettingRerender)
 
-		self.showTopic = QCheckBox("Show topic changes",self)
+		self.showTopic = QCheckBox("TOPIC",self)
 		if config.SHOW_CHANNEL_TOPIC_MESSAGES: self.showTopic.setChecked(True)
 		self.showTopic.stateChanged.connect(self.changedSettingRerender)
 
 		self.highlightNick = QCheckBox("Highlight channel nicknames in chat",self)
 		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
-		self.highlightNick.stateChanged.connect(self.changedSettingRerender)
+		self.highlightNick.stateChanged.connect(self.changedSettingRerenderHighlight)
+
+		self.autoRerender = QCheckBox("Auto-rerender channel chat to show highlights",self)
+		if config.AUTOMATICALLY_RERENDER_CHAT: self.autoRerender.setChecked(True)
+		self.autoRerender.stateChanged.connect(self.changedSetting)
+
+		if not config.HIGHLIGHT_NICKS_IN_CHAT:
+			self.autoRerender.setEnabled(False)
 
 		showCM1 = QHBoxLayout()
+		showCM1.setSpacing(0)
+		showCM1.addStretch()
 		showCM1.addWidget(self.showJoin)
 		showCM1.addStretch()
 		showCM1.addWidget(self.showPart)
@@ -3977,9 +3996,13 @@ class Dialog(QDialog):
 		showCM1.addStretch()
 
 		showCM2 = QHBoxLayout()
+		showCM2.setSpacing(0)
+		showCM2.addStretch()
 		showCM2.addWidget(self.showModes)
 		showCM2.addStretch()
 		showCM2.addWidget(self.showNicks)
+		showCM2.addStretch()
+		showCM2.addWidget(self.showTopic)
 		showCM2.addStretch()
 
 		showCM3 = QHBoxLayout()
@@ -3991,12 +4014,12 @@ class Dialog(QDialog):
 		showCM.setSpacing(0)
 		showCM.addLayout(showCM3)
 		showCM.addWidget(self.highlightNick)
+		showCM.addWidget(self.autoRerender)
 		
 		allFilter = QVBoxLayout()
 		allFilter.setSpacing(0)
 		allFilter.addLayout(showCM1)
 		allFilter.addLayout(showCM2)
-		allFilter.addWidget(self.showTopic)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
@@ -4007,7 +4030,7 @@ class Dialog(QDialog):
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
 		menuLayout.addLayout(ulistWidthLayout)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>filter messages in all channels</b>"))
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show message types in all channels</b>"))
 		menuLayout.addLayout(allFilter)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addLayout(showCM)
@@ -6746,6 +6769,7 @@ class Dialog(QDialog):
 		config.COMMAND_ERROR_PROTECTION = self.badCommands.isChecked()
 		config.SUBWINDOW_BACKGROUND = self.SUBWINDOW_BACKGROUND
 		config.SHOW_COLORS_IN_USERLISTS = self.colorUserlists.isChecked()
+		config.AUTOMATICALLY_RERENDER_CHAT = self.autoRerender.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()
