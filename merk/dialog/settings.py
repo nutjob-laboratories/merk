@@ -1661,6 +1661,8 @@ class Dialog(QDialog):
 			self.windowBarBold.setEnabled(True)
 			self.windowbarMention.setEnabled(True)
 			self.windowbarChannelTopic.setEnabled(True)
+			self.windowbarSortLabel.setEnabled(True)
+			self.windowbarSort.setEnabled(True)
 		else:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -1689,6 +1691,8 @@ class Dialog(QDialog):
 			self.windowBarBold.setEnabled(False)
 			self.windowbarMention.setEnabled(False)
 			self.windowbarChannelTopic.setEnabled(False)
+			self.windowbarSortLabel.setEnabled(False)
+			self.windowbarSort.setEnabled(False)
 
 		self.windowbar_change = True
 		self.selector.setFocus()
@@ -1705,6 +1709,16 @@ class Dialog(QDialog):
 	def justifyChange(self, i):
 		self.windowbar_justify = self.windowbarJustify.itemText(i)
 
+		self.windowbar_change = True
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
+	def sortChange(self, i):
+		if self.windowbarSort.itemText(i)=="creation": self.WINDOWBAR_SORT = "creation"
+		if self.windowbarSort.itemText(i)=="reverse creation": self.WINDOWBAR_SORT = "reverse"
+		if self.windowbarSort.itemText(i)=="alphabetically": self.WINDOWBAR_SORT = "alpha"
+		if self.windowbarSort.itemText(i)=="reverse alphabetically": self.WINDOWBAR_SORT = "ralpha"
 		self.windowbar_change = True
 		self.selector.setFocus()
 		self.changed.show()
@@ -2092,6 +2106,7 @@ class Dialog(QDialog):
 		self.SUBWINDOW_SNAP_DISTANCE = config.SUBWINDOW_SNAP_DISTANCE
 		self.SUBWINDOW_BACKGROUND = config.SUBWINDOW_BACKGROUND
 		self.rerender_subwindows = False
+		self.WINDOWBAR_SORT = config.WINDOWBAR_SORT
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2829,10 +2844,6 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
 		self.windowBarServers.stateChanged.connect(self.menuChange)
 
-		self.windowBarIcons = QCheckBox("Shows window icons",self)
-		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
-		self.windowBarIcons.stateChanged.connect(self.menuChange)
-
 		self.windowBarFloat = QCheckBox("Movable",self)
 		if config.WINDOWBAR_CAN_FLOAT: self.windowBarFloat.setChecked(True)
 		self.windowBarFloat.stateChanged.connect(self.menuChange)
@@ -2863,7 +2874,7 @@ class Dialog(QDialog):
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST: self.windowBarFirst.setChecked(True)
 		self.windowBarFirst.stateChanged.connect(self.menuChange)
 
-		self.windowbarMenu = QCheckBox("Context menu",self)
+		self.windowbarMenu = QCheckBox("Right click menu",self)
 		if config.WINDOWBAR_MENU: self.windowbarMenu.setChecked(True)
 		self.windowbarMenu.stateChanged.connect(self.menuChange)
 
@@ -2883,10 +2894,6 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_UNDERLINE_ACTIVE_WINDOW: self.windowBarUnderline.setChecked(True)
 		self.windowBarUnderline.stateChanged.connect(self.menuChange)
 
-		self.windowBarHover = QCheckBox("Bold entries on mouse hover",self)
-		if config.WINDOWBAR_HOVER_EFFECT: self.windowBarHover.setChecked(True)
-		self.windowBarHover.stateChanged.connect(self.menuChange)
-
 		self.windowbarManager = QCheckBox("Log manager",self)
 		if config.WINDOWBAR_INCLUDE_MANAGER: self.windowbarManager.setChecked(True)
 		self.windowbarManager.stateChanged.connect(self.menuChange)
@@ -2903,7 +2910,7 @@ class Dialog(QDialog):
 		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR: self.serverHidden.setChecked(True)
 		self.serverHidden.stateChanged.connect(self.menuChange)
 
-		self.windowbarItalics = QCheckBox("Show connecting server windows\nin italics",self)
+		self.windowbarItalics = QCheckBox("Show connecting server windows in italics",self)
 		if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS: self.windowbarItalics.setChecked(True)
 		self.windowbarItalics.stateChanged.connect(self.menuChange)
 
@@ -2935,6 +2942,32 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_TOPIC_IN_TOOLTIP: self.windowbarChannelTopic.setChecked(True)
 		self.windowbarChannelTopic.stateChanged.connect(self.menuChange)
 
+		self.windowBarHover = QCheckBox("Bold on mouse hover ",self)
+		if config.WINDOWBAR_HOVER_EFFECT: self.windowBarHover.setChecked(True)
+		self.windowBarHover.stateChanged.connect(self.menuChange)
+
+		self.windowBarIcons = QCheckBox("Shows window icons",self)
+		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
+		self.windowBarIcons.stateChanged.connect(self.menuChange)
+
+		self.windowbarSort = QComboBox(self)
+		if config.WINDOWBAR_SORT.lower()=="creation": self.windowbarSort.addItem("creation")
+		if config.WINDOWBAR_SORT.lower()=="reverse": self.windowbarSort.addItem("reverse creation")
+		if config.WINDOWBAR_SORT.lower()=="alpha": self.windowbarSort.addItem("alphabetically")
+		if config.WINDOWBAR_SORT.lower()=="ralpha": self.windowbarSort.addItem("reverse alphabetically")
+		if config.WINDOWBAR_SORT!='creation': self.windowbarSort.addItem('creation')
+		if config.WINDOWBAR_SORT!='reverse': self.windowbarSort.addItem('reverse creation')
+		if config.WINDOWBAR_SORT!='alpha': self.windowbarSort.addItem('alphabetically')
+		if config.WINDOWBAR_SORT!='falpha': self.windowbarSort.addItem('reverse alphabetically')
+		self.windowbarSort.currentIndexChanged.connect(self.sortChange)
+
+		self.windowbarSortLabel = QLabel("Sort entries by ")
+
+		sortLayout = QHBoxLayout()
+		sortLayout.addWidget(self.windowbarSortLabel)
+		sortLayout.addWidget(self.windowbarSort)
+		sortLayout.addStretch()
+
 		if not config.SHOW_WINDOWBAR:
 			self.windowBarFloat.setEnabled(False)
 			self.windowBarTop.setEnabled(False)
@@ -2963,6 +2996,8 @@ class Dialog(QDialog):
 			self.windowBarBold.setEnabled(False)
 			self.windowbarMention.setEnabled(False)
 			self.windowbarChannelTopic.setEnabled(False)
+			self.windowbarSortLabel.setEnabled(False)
+			self.windowbarSort.setEnabled(False)
 
 		incLayout1 = QHBoxLayout()
 		incLayout1.addWidget(self.windowbarChannels)
@@ -3008,21 +3043,19 @@ class Dialog(QDialog):
 		wbAppearLayout.addWidget(self.windowBarUnderline)
 		wbAppearLayout.addStretch()
 
-		entLayout = QHBoxLayout()
-		entLayout.addWidget(self.windowbarMenu)
-		entLayout.addStretch()
-		entLayout.addWidget(self.windowbarEntryMenu)
-		entLayout.addStretch()
+		wbstuffOpts = QFormLayout()
+		wbstuffOpts.setSpacing(0)
+		wbstuffOpts.addRow(self.windowBarHover,self.windowBarIcons)
+		wbstuffOpts.addRow(self.windowbarMenu,self.windowbarEntryMenu)
 
 		wbOpts = QVBoxLayout()
 		wbOpts.setSpacing(2)
 		wbOpts.addLayout(windowbar1Layout)
 		wbOpts.addLayout(windowbar2Layout)
-		wbOpts.addLayout(entLayout)
+		wbOpts.addLayout(wbstuffOpts)
 		wbOpts.addLayout(justifyLayout)
+		wbOpts.addLayout(sortLayout)
 		wbOpts.addWidget(self.windowBarFirst)
-		wbOpts.addWidget(self.windowBarHover)
-		wbOpts.addWidget(self.windowBarIcons)
 		wbOpts.addWidget(self.windowbarClick)
 		wbOpts.addWidget(self.windowbarUnread)
 		wbOpts.addWidget(self.windowbarMention)
@@ -6293,7 +6326,6 @@ class Dialog(QDialog):
 		self.ircAllErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.windowbarItalics.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -6770,6 +6802,7 @@ class Dialog(QDialog):
 		config.SUBWINDOW_BACKGROUND = self.SUBWINDOW_BACKGROUND
 		config.SHOW_COLORS_IN_USERLISTS = self.colorUserlists.isChecked()
 		config.AUTOMATICALLY_RERENDER_CHAT = self.autoRerender.isChecked()
+		config.WINDOWBAR_SORT = self.WINDOWBAR_SORT
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

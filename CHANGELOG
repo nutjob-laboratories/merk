@@ -53,6 +53,10 @@ What's new:
 * Added an option to sort the entries in the windowbar. Entries can be set in
   order of subwindow creation (the default), reverse subwindow creation order,
   alphabetically, or reverse alphabetically.
+* Windowbar entry sorting can now be changed via the "settings" dialog, the
+  windowbar's right click menu, or the /config command.
+* Bugfix: removed an unused icon from the resource file.
+* Added a new icon (in both light and dark mode) for windowbar sorting.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

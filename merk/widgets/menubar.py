@@ -994,7 +994,7 @@ class Windowbar(QToolBar):
 		menu.addMenu(self.justifyMenu)
 
 		self.sortMenu = QMenu("Sorting")
-		self.sortMenu.setIcon(QIcon(self.parent.options_icon))
+		self.sortMenu.setIcon(QIcon(self.parent.sort_icon))
 
 		if config.WINDOWBAR_SORT=='creation':
 			entry = QAction(QIcon(self.parent.round_checked_icon),"Creation",self)
