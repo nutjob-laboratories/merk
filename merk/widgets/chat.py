@@ -248,23 +248,25 @@ class Window(QMainWindow):
 			# Set the rerender timer to a random
 			# amount of seconds from 2 minutes to
 			# 3 minutes
-			self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_NO_HOSTMASK, MAXIMUM_RERENDER_NO_HOSTMASK)
+			self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP)
 
 			# If the server supports hostmasks in NAMES
 			# replies, then set the rerender timer for a
 			# shorter time
 			if self.client.support_hostmasks_in_names:
-				self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_HOSTMASK, MAXIMUM_RERENDER_HOSTMASK)
+				self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP)
 
 			# Turn off rerendering if the config file
 			# says to
 			if not config.AUTOMATICALLY_RERENDER_CHAT:
 				self.force_chat_log_rerender = 0
+				self.rerendered_chat = True
 
 			# If nick highlighting is turned off,
 			# also turn off rerendering
 			if not config.HIGHLIGHT_NICKS_IN_CHAT:
 				self.force_chat_log_rerender = 0
+				self.rerendered_chat = True
 		else:
 			self.force_chat_log_rerender = 0
 			self.rerendered_chat = True
@@ -1170,6 +1172,7 @@ class Window(QMainWindow):
 		action = opmenu.exec_(self.channel_mode_display.mapToGlobal(position))
 
 	def rerenderChatLogMenu(self):
+		self.buildUserColors()
 		self.rerenderChatLog()
 		if self.force_chat_log_rerender>self.uptime:
 			self.rerendered_chat = True
@@ -1280,76 +1283,81 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
-				fMenu = menu.addMenu(QIcon(HIDE_ICON),"Hide messages")
-				channel_name = self.encodeChannel()
-				if channel_name in config.CHANNEL_FILTERS:
+				if self.window_type==CHANNEL_WINDOW:
+					fMenu = menu.addMenu(QIcon(HIDE_ICON),"Hide messages")
+					channel_name = self.encodeChannel()
+					if channel_name in config.CHANNEL_FILTERS:
 
-					if 'j' in config.CHANNEL_FILTERS[channel_name]:
-						entry = QAction(QIcon(self.parent.checked_icon),"JOIN",menu)
+						if 'j' in config.CHANNEL_FILTERS[channel_name]:
+							entry = QAction(QIcon(self.parent.checked_icon),"JOIN",menu)
+						else:
+							entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
+						entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
+						fMenu.addAction(entry)
+
+						if 'p' in config.CHANNEL_FILTERS[channel_name]:
+							entry = QAction(QIcon(self.parent.checked_icon),"PART",menu)
+						else:
+							entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
+						entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
+						fMenu.addAction(entry)
+
+						if 'q' in config.CHANNEL_FILTERS[channel_name]:
+							entry = QAction(QIcon(self.parent.checked_icon),"QUIT",menu)
+						else:
+							entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
+						entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
+						fMenu.addAction(entry)
+
+						if 'm' in config.CHANNEL_FILTERS[channel_name]:
+							entry = QAction(QIcon(self.parent.checked_icon),"MODE",menu)
+						else:
+							entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
+						entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
+						fMenu.addAction(entry)
+
+						if 'n' in config.CHANNEL_FILTERS[channel_name]:
+							entry = QAction(QIcon(self.parent.checked_icon),"NICK",menu)
+						else:
+							entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
+						entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
+						fMenu.addAction(entry)
+
+						if 't' in config.CHANNEL_FILTERS[channel_name]:
+							entry = QAction(QIcon(self.parent.checked_icon),"TOPIC",menu)
+						else:
+							entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
+						entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
+						fMenu.addAction(entry)
 					else:
 						entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
-					entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
-					fMenu.addAction(entry)
+						entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
+						fMenu.addAction(entry)
 
-					if 'p' in config.CHANNEL_FILTERS[channel_name]:
-						entry = QAction(QIcon(self.parent.checked_icon),"PART",menu)
-					else:
 						entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
-					entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
-					fMenu.addAction(entry)
+						entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
+						fMenu.addAction(entry)
 
-					if 'q' in config.CHANNEL_FILTERS[channel_name]:
-						entry = QAction(QIcon(self.parent.checked_icon),"QUIT",menu)
-					else:
 						entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
-					entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
-					fMenu.addAction(entry)
+						entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
+						fMenu.addAction(entry)
 
-					if 'm' in config.CHANNEL_FILTERS[channel_name]:
-						entry = QAction(QIcon(self.parent.checked_icon),"MODE",menu)
-					else:
 						entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
-					entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
-					fMenu.addAction(entry)
+						entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
+						fMenu.addAction(entry)
 
-					if 'n' in config.CHANNEL_FILTERS[channel_name]:
-						entry = QAction(QIcon(self.parent.checked_icon),"NICK",menu)
-					else:
 						entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
-					entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
-					fMenu.addAction(entry)
+						entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
+						fMenu.addAction(entry)
 
-					if 't' in config.CHANNEL_FILTERS[channel_name]:
-						entry = QAction(QIcon(self.parent.checked_icon),"TOPIC",menu)
-					else:
 						entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
-					entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
-					fMenu.addAction(entry)
-				else:
-					entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
-					entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
-					fMenu.addAction(entry)
+						entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
+						fMenu.addAction(entry)
+					menu.addMenu(fMenu)
 
-					entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
-					entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
-					fMenu.addAction(entry)
-
-					entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
-					entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
-					fMenu.addAction(entry)
-
-					entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
-					entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
-					fMenu.addAction(entry)
-
-					entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
-					entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
-					fMenu.addAction(entry)
-
-					entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
-					entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
-					fMenu.addAction(entry)
-				menu.addMenu(fMenu)
+				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",menu)
+				entry.triggered.connect(lambda state: self.parent.hideSubWindow(self.subwindow_id))
+				menu.addAction(entry)
 
 				if config.SCRIPTING_ENGINE_ENABLED:
 
@@ -1649,18 +1657,19 @@ class Window(QMainWindow):
 				if config.HIGHLIGHT_NICKS_IN_CHAT and config.AUTOMATICALLY_RERENDER_CHAT:
 					if self.uptime>self.force_chat_log_rerender:
 						if self.rerendered_chat==False:
+							self.buildUserColors()
 							self.rerendered_chat = True
 							self.force_chat_log_rerender = 0
 							self.rerenderChatLog(True)
 
 	def toggleChatRerender(self):
 		if self.window_type==CHANNEL_WINDOW and config.AUTOMATICALLY_RERENDER_CHAT and config.HIGHLIGHT_NICKS_IN_CHAT:
-			if self.force_chat_log_rerender==0:
+			if self.force_chat_log_rerender==0 or self.rerendered_chat==True:
 				self.rerendered_chat = False
-				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_NO_HOSTMASK, MAXIMUM_RERENDER_NO_HOSTMASK)
+				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP)
 
 				if self.client.support_hostmasks_in_names:
-					self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_HOSTMASK, MAXIMUM_RERENDER_HOSTMASK)
+					self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP, MAXIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP)
 		else:
 			self.rerendered_chat = True
 			self.force_chat_log_rerender = 0
@@ -3117,7 +3126,8 @@ class Window(QMainWindow):
 		# Save logs
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 			if save_logs:
-				logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
+				if len(self.new_log)>0:
+					logs.saveLog(self.client.network,self.name,self.new_log,logs.LOG_DIRECTORY)
 				self.parent.buildToolsMenu()
 
 		# If this is a channel window, sent a part command

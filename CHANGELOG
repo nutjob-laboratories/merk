@@ -72,6 +72,13 @@ What's new:
   dialog.
 * Bugfix: automatic rerendering could fail on occasion. This has been fixed.
 * The settings dialog now hides itself while applying settings.
+* Added an option to hide the subwindow to the right click context menu of
+  channels and private message windows.
+* Bugfix: the "message filter" menu was shown in the right click menu of
+  private message windows. It no longer is.
+* Bugfix: logs would be saved on window close whether anything had been added
+  to or not. Now, logs are only saved if there's something new to save.
+* Bugfix: user colors are now properly loaded for chat rerendering.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |
