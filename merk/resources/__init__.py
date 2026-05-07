@@ -207,8 +207,8 @@ DECIMAL_DIALOG = 5
 
 MINIMUM_RERENDER_NO_HOSTMASK = 120
 MAXIMUM_RERENDER_NO_HOSTMASK = 180
-MINIMUM_RERENDER_HOSTMASK = 30
-MAXIMUM_RERENDER_HOSTMASK = 60
+MINIMUM_RERENDER_HOSTMASK = 20
+MAXIMUM_RERENDER_HOSTMASK = 40
 
 # Icons
 
@@ -222,7 +222,6 @@ BOLD_ICON = ":/icon-bold.png"
 ITALIC_ICON = ":/icon-italic.png"
 MDI_BACKGROUND = ":/gui-background.png"
 LENGTH_ICON = ":/icon-length.png"
-SORT_ICON = ":/icon-sort.png"
 
 # Dark mode icons
 DARK_ROUND_UNCHECKED_ICON = ":/icon-dark_runchecked.png"
@@ -233,7 +232,6 @@ DARK_OPTIONS_ICON = ":/icon-dark_options.png"
 DARK_BOLD_ICON = ":/icon-dark_bold.png"
 DARK_ITALIC_ICON = ":/icon-dark_italic.png"
 DARK_MDI_BACKGROUND = ":/gui-dark_background.png"
-DARK_SORT_ICON = ":/icon-dark_sort.png"
 
 # All other icons
 APPLICATION_ICON = ":/icon-app.png"
@@ -346,6 +344,7 @@ IMAGE_ICON = ":/icon-image.png"
 LINK_MENU_ICON = ":/icon-link_menu.png"
 RELOAD_ICON = ":/icon-reload.png"
 COLOR_ICON = ":/icon-color.png"
+SORT_ICON = ":/icon-sort.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"

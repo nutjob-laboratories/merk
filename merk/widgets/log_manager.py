@@ -579,19 +579,6 @@ class Window(QMainWindow):
 		bottomLayout=QHBoxLayout()
 		bottomLayout.addLayout(bottomLayout3)
 
-		if not self.simplified:
-			self.windowDescription = QLabel(f"""
-				<small>
-				<b>Click on a log name</b> to open that log for exporting and viewing.
-				<b>Hover the mouse</b> over the log name to see what IRC network that log is
-				from. <b>Right click on a log name</b> to view other options.
-				To export a log, choose export options, and click the
-				<b>Save Export</b> button. Click <b>Close</b> to close the manager.
-				</small>
-				""")
-			self.windowDescription.setWordWrap(True)
-			self.windowDescription.setAlignment(Qt.AlignJustify)
-
 		self.tabs = QTabWidget()
 		self.tabs.setStyleSheet("QTabBar::tab { font-weight: bold; }")
 
@@ -664,7 +651,6 @@ class Window(QMainWindow):
 		managerLayout.addWidget(self.horizontalSplitter)
 
 		finalLayout = QVBoxLayout()
-		if not self.simplified: finalLayout.addWidget(self.windowDescription)
 		finalLayout.addLayout(managerLayout)
 
 		# Set the layout as the central widget

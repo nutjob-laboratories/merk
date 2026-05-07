@@ -67,6 +67,11 @@ What's new:
   channel chat (so that users with single or double character nicks consisting
   of very common letters don't end up being highlighted constantly). The
   minimum is set to 0 (zero) by default, so ALL nicknames will be highlighted.
+* Bugfix: the "unsimplified" text on the log manager rendered very oddly when
+  the log manager subwindow was maximized. The text has been removed from the
+  dialog.
+* Bugfix: automatic rerendering could fail on occasion. This has been fixed.
+* The settings dialog now hides itself while applying settings.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

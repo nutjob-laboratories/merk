@@ -1169,6 +1169,12 @@ class Window(QMainWindow):
 
 		action = opmenu.exec_(self.channel_mode_display.mapToGlobal(position))
 
+	def rerenderChatLogMenu(self):
+		self.rerenderChatLog()
+		if self.force_chat_log_rerender>self.uptime:
+			self.rerendered_chat = True
+			self.force_chat_log_rerender = 0
+
 	def chatMenu(self,location):
 
 		viewport_pos = self.chat.viewport().mapFrom(self.chat, location)
@@ -1265,7 +1271,7 @@ class Window(QMainWindow):
 				menu.addAction(entry)
 
 				entry = QAction(QIcon(RELOAD_ICON),"Re-render chat display",menu)
-				entry.triggered.connect(self.rerenderChatLog)
+				entry.triggered.connect(self.rerenderChatLogMenu)
 				menu.addAction(entry)
 
 				entry = QAction(QIcon(LOG_ICON),"Save log",menu)
@@ -1638,12 +1644,14 @@ class Window(QMainWindow):
 						d2 = render.render_message(m,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 						self.chat.append(d2)
 
-		if self.window_type==CHANNEL_WINDOW:
-			# Rerender the chat after a little bit
-			if not self.rerendered_chat and config.HIGHLIGHT_NICKS_IN_CHAT and self.force_chat_log_rerender!=0:
-				if self.uptime>=self.force_chat_log_rerender:
-					self.rerendered_chat = True
-					self.rerenderChatLog(True)
+			if self.window_type==CHANNEL_WINDOW:
+				# Rerender the chat after a little bit
+				if config.HIGHLIGHT_NICKS_IN_CHAT and config.AUTOMATICALLY_RERENDER_CHAT:
+					if self.uptime>self.force_chat_log_rerender:
+						if self.rerendered_chat==False:
+							self.rerendered_chat = True
+							self.force_chat_log_rerender = 0
+							self.rerenderChatLog(True)
 
 	def toggleChatRerender(self):
 		if self.window_type==CHANNEL_WINDOW and config.AUTOMATICALLY_RERENDER_CHAT and config.HIGHLIGHT_NICKS_IN_CHAT:
@@ -1652,7 +1660,7 @@ class Window(QMainWindow):
 				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_NO_HOSTMASK, MAXIMUM_RERENDER_NO_HOSTMASK)
 
 				if self.client.support_hostmasks_in_names:
-					self.force_chat_log_rerender = random.randint(MINIMUM_RERENDER_HOSTMASK, MAXIMUM_RERENDER_HOSTMASK)
+					self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_HOSTMASK, MAXIMUM_RERENDER_HOSTMASK)
 		else:
 			self.rerendered_chat = True
 			self.force_chat_log_rerender = 0

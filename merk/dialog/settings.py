@@ -6478,6 +6478,9 @@ class Dialog(QDialog):
 		# apply the settings
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 
+		# Hide the window while we apply settings
+		self.hide()
+
 		# Save the current focused window
 		current_open_window = self.parent.MDI.activeSubWindow()
 
