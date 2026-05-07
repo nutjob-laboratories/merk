@@ -1024,6 +1024,12 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def updateNickHighlightLength(self,state):
+		self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = self.nickLengthHighlight.value()
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def updateBlinkRate(self,state):
 		self.CURSOR_BLINK_RATE = self.blinkRate.value()
 		self.changed.show()
@@ -1565,6 +1571,8 @@ class Dialog(QDialog):
 			self.ulistWidthBox.setEnabled(True)
 			self.ulistWidthLabel2.setEnabled(True)
 			self.colorUserlists.setEnabled(True)
+			self.underlineSelf.setEnabled(True)
+			self.styleSelf.setEnabled(True)
 
 			if self.ulistContext.isChecked():
 				self.elideAway.setEnabled(True)
@@ -1587,6 +1595,8 @@ class Dialog(QDialog):
 			self.ulistWidthBox.setEnabled(False)
 			self.ulistWidthLabel2.setEnabled(False)
 			self.colorUserlists.setEnabled(False)
+			self.underlineSelf.setEnabled(False)
+			self.styleSelf.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2107,6 +2117,7 @@ class Dialog(QDialog):
 		self.SUBWINDOW_BACKGROUND = config.SUBWINDOW_BACKGROUND
 		self.rerender_subwindows = False
 		self.WINDOWBAR_SORT = config.WINDOWBAR_SORT
+		self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2946,7 +2957,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_HOVER_EFFECT: self.windowBarHover.setChecked(True)
 		self.windowBarHover.stateChanged.connect(self.menuChange)
 
-		self.windowBarIcons = QCheckBox("Shows window icons",self)
+		self.windowBarIcons = QCheckBox("Show window icons",self)
 		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
 		self.windowBarIcons.stateChanged.connect(self.menuChange)
 
@@ -3858,9 +3869,8 @@ class Dialog(QDialog):
 		self.channelDescription = QLabel("""
 			<small>
 			The <b>channel information display</b> is a bar shown at the top of
-			every channel window that displays the channel <b>name</b>, any <b>modes</b> set
-			on the channel, the channel <b>topic</b>, and the channel <b>banlist</b>.
-			The channel <b>topic</b> can be changed or edited by clicking on the <b>topic</b>.
+			every channel window that displays the channel <b>name</b>, any <b>modes</b> set,
+			the channel <b>topic</b>, and the <b>user count</b>.
 			</small>
 			""")
 		self.channelDescription.setWordWrap(True)
@@ -3927,6 +3937,14 @@ class Dialog(QDialog):
 		if config.SHOW_COLORS_IN_USERLISTS: self.colorUserlists.setChecked(True)
 		self.colorUserlists.stateChanged.connect(self.changedSettingRerenderUserlists)
 
+		self.underlineSelf = QCheckBox("Underline self",self)
+		if config.UNDERLINE_SELF_IN_USERLISTS: self.underlineSelf.setChecked(True)
+		self.underlineSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
+
+		self.styleSelf = QCheckBox("Use style color for self",self)
+		if config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS: self.styleSelf.setChecked(True)
+		self.styleSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
 			self.ulistWidthLabel.setEnabled(False)
 			self.ulistWidthBox.setEnabled(False)
@@ -3942,6 +3960,8 @@ class Dialog(QDialog):
 			self.elideHostmask.setEnabled(False)
 			self.ulistContext.setEnabled(False)
 			self.colorUserlists.setEnabled(False)
+			self.underlineSelf.setEnabled(False)
+			self.styleSelf.setEnabled(False)
 
 		if not config.USERLIST_CONTEXT_MENU:
 			if config.SHOW_USERLIST:
@@ -3967,6 +3987,7 @@ class Dialog(QDialog):
 		ulistDisplay.addRow(self.elideAway,self.elideHostmask)
 		ulistDisplay.addRow(self.ignoreUserlist,self.showAwayStatus)
 		ulistDisplay.addRow(self.colorUserlists,self.noSelectUserlists)
+		ulistDisplay.addRow(self.underlineSelf,self.styleSelf)
 		ulistDisplay.addRow(self.hideScroll)
 		ulistDisplay.addRow(self.dcPrivate)
 
@@ -4007,9 +4028,21 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC_MESSAGES: self.showTopic.setChecked(True)
 		self.showTopic.stateChanged.connect(self.changedSettingRerender)
 
-		self.highlightNick = QCheckBox("Highlight channel nicknames in chat",self)
+		self.highlightNick = QCheckBox("Highlight nicks longer than",self)
 		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
 		self.highlightNick.stateChanged.connect(self.changedSettingRerenderHighlight)
+
+		self.nickLengthSpec = QLabel(" character(s)")
+		self.nickLengthHighlight = QSpinBox()
+		self.nickLengthHighlight.setRange(0,50)
+		self.nickLengthHighlight.setValue(self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING)
+		self.nickLengthHighlight.valueChanged.connect(self.updateNickHighlightLength)
+
+		nickHighlightLayout = QHBoxLayout()
+		nickHighlightLayout.addWidget(self.highlightNick)
+		nickHighlightLayout.addWidget(self.nickLengthHighlight)
+		nickHighlightLayout.addWidget(self.nickLengthSpec)
+		nickHighlightLayout.addStretch()
 
 		self.autoRerender = QCheckBox("Auto-rerender channel chat to show highlights",self)
 		if config.AUTOMATICALLY_RERENDER_CHAT: self.autoRerender.setChecked(True)
@@ -4046,7 +4079,7 @@ class Dialog(QDialog):
 		showCM = QVBoxLayout()
 		showCM.setSpacing(0)
 		showCM.addLayout(showCM3)
-		showCM.addWidget(self.highlightNick)
+		showCM.addLayout(nickHighlightLayout)
 		showCM.addWidget(self.autoRerender)
 		
 		allFilter = QVBoxLayout()
@@ -6803,6 +6836,9 @@ class Dialog(QDialog):
 		config.SHOW_COLORS_IN_USERLISTS = self.colorUserlists.isChecked()
 		config.AUTOMATICALLY_RERENDER_CHAT = self.autoRerender.isChecked()
 		config.WINDOWBAR_SORT = self.WINDOWBAR_SORT
+		config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS = self.styleSelf.isChecked()
+		config.UNDERLINE_SELF_IN_USERLISTS = self.underlineSelf.isChecked()
+		config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

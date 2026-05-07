@@ -218,10 +218,12 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 				words.append(client.nickname)
 				if len(nicks)>0:
 					for n in nicks:
-						words.append(n)
+						if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
+							words.append(n)
 				if len(non_color_nicks)>0:
 					for n in non_color_nicks:
-						words.append(n)
+						if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
+							words.append(n)
 				msg_to_display = highlight_nick(msg_to_display,words,nicks,style)
 
 	# Assign template and style to the message

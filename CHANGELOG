@@ -32,7 +32,7 @@ What's new:
   "Settings" menu.
 * Changed how "away" and "back" statuses are shown in userlists. Users that are
   "away" and now shown in the selected user color (if they have one); their
-  nick is not in bold, and is shown in italics.
+  nick is shown in normal weight (not bold) and italics.
 * New option: show/hide user colors in userlists. If both "show colors in
   userlists" and "use colors in chat" are turned off, the option to set or
   remove colors is removed from the userlist context menu. The new settings has
@@ -57,6 +57,16 @@ What's new:
   windowbar's right click menu, or the /config command.
 * Bugfix: removed an unused icon from the resource file.
 * Added a new icon (in both light and dark mode) for windowbar sorting.
+* Bugfix: windowbar entry sorting could end up wrong in some rare instances.
+  If the number of window entries was very large, full window entries and icon
+  only window entries were sorted seperately. Now, the full list is sorted
+  properly.
+* New options: show the user's nickname in the set style color or underlined
+  (or both) in userlists. Both of these options are off by default.
+* New option: users can now set a minimum nickname length for highlighting in
+  channel chat (so that users with single or double character nicks consisting
+  of very common letters don't end up being highlighted constantly). The
+  minimum is set to 0 (zero) by default, so ALL nicknames will be highlighted.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

@@ -606,26 +606,18 @@ class Merk(QMainWindow):
 					rearranged.append(w)
 			window_list = rearranged
 
-		te = self.split_up_windowbar(window_list)
-		
-		full_display = te[0]
-		partial_display = te[1]
-
 		# Sort entries in the windowbar based on the config
 		# If we end up with an invalid sorting type, then
 		# just set it to the default and save
 		if config.WINDOWBAR_SORT.lower()=='reverse':
 			# Reverse creation order
-			full_display = list(reversed(full_display))
-			partial_display = list(reversed(partial_display))
+			window_list = list(reversed(window_list))
 		elif config.WINDOWBAR_SORT.lower()=='alpha':
 			# Alphabetical order
-			full_display = sorted(full_display, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
-			partial_display = sorted(partial_display, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
+			window_list = sorted(window_list, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
 		elif config.WINDOWBAR_SORT.lower()=='ralpha':
 			# Reverse alphabetical order
-			full_display = sorted(full_display, reverse=True, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
-			partial_display = sorted(partial_display, reverse=True, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
+			window_list = sorted(window_list, reverse=True, key=lambda obj: re.sub(r"[#\&\!\+]", "", obj.widget().name.lower()))
 		elif config.WINDOWBAR_SORT.lower()=='creation':
 			# The default, do nothing
 			pass
@@ -633,6 +625,11 @@ class Merk(QMainWindow):
 			# Invalid setting, so set the default and save
 			config.WINDOWBAR_SORT = 'creation'
 			config.save_settings(config.CONFIG_FILE)
+
+		te = self.split_up_windowbar(window_list)
+		
+		full_display = te[0]
+		partial_display = te[1]
 
 		# Make sure the current active window is
 		# in the full display list if it's not first

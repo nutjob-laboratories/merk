@@ -442,9 +442,15 @@ USER_COLORS = {}
 SHOW_COLORS_IN_USERLISTS = True
 AUTOMATICALLY_RERENDER_CHAT = True
 WINDOWBAR_SORT = "creation" # creation, alpha, ralpha, reverse
+UNDERLINE_SELF_IN_USERLISTS = False
+USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS = False
+MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = 0
 
 def build_settings():
 	settings = {
+		"minimum_nick_length_for_highlighting": MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING,
+		"underline_self_in_userlists": UNDERLINE_SELF_IN_USERLISTS,
+		"use_style_color_for_self_in_userlists": USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS,
 		"windowbar_sorting": WINDOWBAR_SORT,
 		"automatically_rerender_chat_for_nick_highlighting": AUTOMATICALLY_RERENDER_CHAT,
 		"show_user_colors_in_userlists": SHOW_COLORS_IN_USERLISTS,
@@ -852,6 +858,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "minimum_nick_length_for_highlighting" in settings:
+		settings["minimum_nick_length_for_highlighting"] = MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
+	if not "underline_self_in_userlists" in settings:
+		settings["underline_self_in_userlists"] = UNDERLINE_SELF_IN_USERLISTS
+	if not "use_style_color_for_self_in_userlists" in settings:
+		settings["use_style_color_for_self_in_userlists"] = USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS
 	if not "windowbar_sorting" in settings:
 		settings["windowbar_sorting"] = WINDOWBAR_SORT
 	if not "automatically_rerender_chat_for_nick_highlighting" in settings:
@@ -2062,6 +2074,9 @@ def load_settings(filename):
 	global SHOW_COLORS_IN_USERLISTS
 	global AUTOMATICALLY_RERENDER_CHAT
 	global WINDOWBAR_SORT
+	global UNDERLINE_SELF_IN_USERLISTS
+	global USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS
+	global MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2071,6 +2086,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = settings["minimum_nick_length_for_highlighting"]
+		UNDERLINE_SELF_IN_USERLISTS = settings["underline_self_in_userlists"]
+		USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS = settings["use_style_color_for_self_in_userlists"]
 		WINDOWBAR_SORT = settings["windowbar_sorting"]
 		AUTOMATICALLY_RERENDER_CHAT = settings["automatically_rerender_chat_for_nick_highlighting"]
 		SHOW_COLORS_IN_USERLISTS = settings["show_user_colors_in_userlists"]

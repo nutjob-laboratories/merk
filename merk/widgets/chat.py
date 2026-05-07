@@ -2462,12 +2462,30 @@ class Window(QMainWindow):
 			font = QFont()
 			font.setBold(False)
 			font.setItalic(True)
+
+			if config.UNDERLINE_SELF_IN_USERLISTS:
+				if w.text()==self.client.nickname: font.setUnderline(True)
+
+			if config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS:
+				if w.text()==self.client.nickname:
+					c = styles.parseColor(self.style["self"])
+					w.setForeground(QBrush(QColor(c)))
+
 			w.setFont(font)
 
 	def change_to_back_display(self,w):
 		font = QFont()
 		font.setBold(True)
 		font.setItalic(False)
+
+		if config.UNDERLINE_SELF_IN_USERLISTS:
+			if w.text()==self.client.nickname: font.setUnderline(True)
+
+		if config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS:
+			if w.text()==self.client.nickname:
+				c = styles.parseColor(self.style["self"])
+				w.setForeground(QBrush(QColor(c)))
+
 		w.setFont(font)
 
 	def got_away(self,username,message):
