@@ -94,6 +94,7 @@ class Window(QMainWindow):
 				del config.USER_COLORS[network][nick]
 				config.USER_COLORS[network][hostmask] = color
 				self.save_config()
+				self.buildUserColors()
 				self.parent.rerenderUserlistsNetwork(self.client)
 
 	def getNicknameColor(self,nick,hostmask):
@@ -130,6 +131,7 @@ class Window(QMainWindow):
 						self.user_colors.pop(u,None)
 
 				self.save_config()
+				self.buildUserColors()
 				self.parent.rerenderUserlistsNetwork(self.client)
 
 	def setNicknameColor(self,nick,hostmask):
@@ -155,6 +157,7 @@ class Window(QMainWindow):
 			ncolor = newcolor.name()
 			config.USER_COLORS[network][userid] = ncolor
 			self.save_config()
+			self.buildUserColors()
 			self.parent.rerenderUserlistsNetwork(self.client)
 
 	def encodeNetwork(self):
@@ -2185,15 +2188,6 @@ class Window(QMainWindow):
 						else:
 							actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
 
-				if user_nick!=self.client.nickname:
-					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
-						c = self.getNicknameColor(user_nick,user_hostmask)
-
-						if c==None:
-							actColor = menu.addAction(QIcon(COLOR_ICON),"Set nickname color")
-						else:
-							actColor = menu.addAction(QIcon(COLOR_ICON),"Remove nickname color")
-
 				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
 				ctcpMenu = menu.addMenu(QIcon(WHOIS_ICON),"Send CTCP request")
@@ -2215,6 +2209,16 @@ class Window(QMainWindow):
 				if self.client.hostname: actHostname = clipMenu.addAction(QIcon(CONSOLE_ICON),"Server hostname")
 				actServer = clipMenu.addAction(QIcon(CONNECT_ICON),"Server information")
 
+				if user_nick!=self.client.nickname:
+					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
+						menu.addSeparator()
+						c = self.getNicknameColor(user_nick,user_hostmask)
+						if c==None:
+							actColor = menu.addAction(QIcon(COLOR_ICON),"Set nickname color")
+						else:
+							actChange = menu.addAction(QIcon(COLOR_ICON),"Change nickname color")
+							actColor = menu.addAction(QIcon(HIDE_ICON),"Remove nickname color")
+
 				action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
 
 				if user_nick!=self.client.nickname:
@@ -2225,7 +2229,12 @@ class Window(QMainWindow):
 							else:
 								self.clearNicknameColor(user_nick,user_hostmask)
 							return True
-
+					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
+						if c!=None:
+							if action==actChange:
+								self.setNicknameColor(user_nick,user_hostmask)
+							return True
+		
 				if action==actPing:
 					self.client.ping(user_nick)
 					return True

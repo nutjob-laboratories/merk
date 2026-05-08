@@ -552,6 +552,9 @@ class IRC_Connection(irc.IRCClient):
 			# login information, request authentication
 			if self.sasl_username!=None and self.sasl_password!=None and self.support_sasl_plain:
 				self.sendLine("CAP REQ :sasl")
+				if w:
+					t = Message(SYSTEM_MESSAGE,'','Requesting SASL login...')
+					w.writeText(t)
 			else:
 				self.sendLine("CAP END")
 
@@ -561,11 +564,11 @@ class IRC_Connection(irc.IRCClient):
 			self.support_account_notify = True
 
 		elif subcommand == "ACK" and "sasl" in capabilities and self.support_sasl_plain:
-			if w:
-				t = Message(SYSTEM_MESSAGE,'','Requesting SASL login...')
-				w.writeText(t)
 			# Start SASL login process
 			self.sendLine("AUTHENTICATE PLAIN")
+			if w:
+				t = Message(SYSTEM_MESSAGE,'','Negotiating SASL login...')
+				w.writeText(t)
 
 		elif subcommand == "ACK" and "userhost-in-names" in capabilities:
 			# If hostmasks are sent with names, then we
