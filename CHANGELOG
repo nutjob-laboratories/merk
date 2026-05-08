@@ -79,6 +79,12 @@ What's new:
 * Bugfix: logs would be saved on window close whether anything had been added
   to or not. Now, logs are only saved if there's something new to save.
 * Bugfix: user colors are now properly loaded for chat rerendering.
+* Bugfix: if the "always show active window first" option in the windowbar is
+  turned on, the active window will always be shown first, regardless of how
+  the windowbar is sorted.
+* Removed an unused icon from the resource file.
+* Changed the "console" icon to something that looks a little better, and makes
+  more sense.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

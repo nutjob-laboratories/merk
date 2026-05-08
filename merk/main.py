@@ -592,18 +592,6 @@ class Merk(QMainWindow):
 			if config.WINDOWBAR_JUSTIFY.lower()=='center' or config.WINDOWBAR_JUSTIFY.lower()=='right':
 				menubar.add_toolbar_stretch(self.windowbar)
 
-		# Rearrange the windowlist so that the current
-		# window is always first
-		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
-			x = self.MDI.activeSubWindow()
-			rearranged = []
-			for w in window_list:
-				if w==x:
-					rearranged.insert(0,w)
-				else:
-					rearranged.append(w)
-			window_list = rearranged
-
 		# Sort entries in the windowbar based on the config
 		# If we end up with an invalid sorting type, then
 		# just set it to the default and save
@@ -623,6 +611,18 @@ class Merk(QMainWindow):
 			# Invalid setting, so set the default and save
 			config.WINDOWBAR_SORT = 'creation'
 			config.save_settings(config.CONFIG_FILE)
+
+		# Rearrange the windowlist so that the current
+		# window is always first
+		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST:
+			x = self.MDI.activeSubWindow()
+			rearranged = []
+			for w in window_list:
+				if w==x:
+					rearranged.insert(0,w)
+				else:
+					rearranged.append(w)
+			window_list = rearranged
 
 		te = self.split_up_windowbar(window_list)
 		
@@ -776,7 +776,6 @@ class Merk(QMainWindow):
 							font.setItalic(True)
 							button.setFont(font)
 
-				button.setFixedHeight(18)
 				button_list.append(button)
 
 				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
@@ -910,7 +909,6 @@ class Merk(QMainWindow):
 							font.setItalic(True)
 							button.setFont(font)
 
-				button.setFixedHeight(18)
 				button_list.append(button)
 
 				if config.WINDOWBAR_SHOW_UNREAD_MESSAGES:
