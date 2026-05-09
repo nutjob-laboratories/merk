@@ -85,6 +85,8 @@ What's new:
 * Removed an unused icon from the resource file.
 * Changed the "console" icon to something that looks a little better, and makes
   more sense.
+* Bugfix: fixed a crashing bug with the renderer in the log manager.
+* Added "View" to the log viewer tab title in the log manager.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

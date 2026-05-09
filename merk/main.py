@@ -644,6 +644,7 @@ class Merk(QMainWindow):
 		
 		button_list = []
 
+		# Add all the windows in the "full display"
 		for window in full_display:
 			if hasattr(window,"widget"):
 				c = window.widget()
@@ -784,7 +785,8 @@ class Merk(QMainWindow):
 				if config.WINDOWBAR_SHOW_UNREAD_MENTIONS:
 					if do_mention: button.pulse()
 
-
+		# If we're in a lot of channels, then we
+		# do the windows in the "icon only" display
 		for window in partial_display:
 			if hasattr(window,"widget"):
 				c = window.widget()

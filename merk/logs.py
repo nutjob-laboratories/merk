@@ -168,8 +168,14 @@ def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 	if logs:
 		out = []
 		for l in logs:
-			l[2] = l[2].strip()
-			l[3] = l[3].strip()
+			if l[2]!=None:
+				l[2] = l[2].strip()
+			else:
+				l[2] = ''
+			if l[3]!=None:
+				l[3] = l[3].strip()
+			else:
+				l[3] = ''
 			if l[2]=='': l[2] = '***'
 
 			if not epoch:
@@ -189,8 +195,14 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 	if logs:
 		out = []
 		for l in logs:
-			l[2] = l[2].strip()
-			l[3] = l[3].strip()
+			if l[2]!=None:
+				l[2] = l[2].strip()
+			else:
+				l[2] = ''
+			if l[3]!=None:
+				l[3] = l[3].strip()
+			else:
+				l[3] = ''
 			if l[2]=='': l[2] = '***'
 
 			u = l[2].split('!')
@@ -251,8 +263,14 @@ def dumpLogJson(filename,epoch=True):
 	if logs:
 		out = []
 		for l in logs:
-			l[2] = l[2].strip()
-			l[3] = l[3].strip()
+			if l[2]!=None:
+				l[2] = l[2].strip()
+			else:
+				l[2] = ''
+			if l[3]!=None:
+				l[3] = l[3].strip()
+			else:
+				l[3] = ''
 			if l[2]=='': l[2] = '*'
 			if not epoch:
 				l[0] = datetime.fromtimestamp(l[0]).strftime('%a, %d %b %Y %H:%M:%S')

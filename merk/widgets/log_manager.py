@@ -534,6 +534,7 @@ class Window(QMainWindow):
 		self.highlighter = syntax.IRCFullHighlighter(self.dump.document())
 
 		dumpLayout = QVBoxLayout()
+		dumpLayout.setSpacing(0)
 		dumpLayout.addWidget(self.dump)
 
 		self.update_sample()
@@ -596,7 +597,7 @@ class Window(QMainWindow):
 
 		self.export_options = QWidget()
 		self.dump_view = QWidget()
-		log_index = self.tabs.addTab(self.dump_view, "")
+		log_index = self.tabs.addTab(self.dump_view, "View ")
 		self.tabs.addTab(self.export_options, "Export")
 		
 		self.search = QLineEdit()
