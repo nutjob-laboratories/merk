@@ -229,6 +229,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"user sasl add": config.ISSUE_COMMAND_SYMBOL+"user sasl add ",
 			config.ISSUE_COMMAND_SYMBOL+"user sasl remove": config.ISSUE_COMMAND_SYMBOL+"user sasl remove ",
 			config.ISSUE_COMMAND_SYMBOL+"user sasl edit": config.ISSUE_COMMAND_SYMBOL+"user sasl edit ",
+			config.ISSUE_COMMAND_SYMBOL+"window reload": config.ISSUE_COMMAND_SYMBOL+"window reload",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -328,6 +329,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"folder": config.ISSUE_COMMAND_SYMBOL+"folder ",
 			config.ISSUE_COMMAND_SYMBOL+"fade": config.ISSUE_COMMAND_SYMBOL+"fade ",
 			config.ISSUE_COMMAND_SYMBOL+"warn": config.ISSUE_COMMAND_SYMBOL+"warn ",
+			config.ISSUE_COMMAND_SYMBOL+"reload": config.ISSUE_COMMAND_SYMBOL+"reload ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -391,7 +393,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		"<b>move</b>","<b>size</b>","<b>maximize</b>","<b>minimize</b>",
 		"<b>restore</b>","<b>readme</b>","<b>settings</b>","<b>logs</b>",
 		"<b>restart</b>","<b>next</b>","<b>previous</b>","<b>cascade</b>",
-		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>","<b>fade</b>"
+		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>","<b>fade</b>",
+		"<b>reload</b>"
 	]
 
 	if config.ENABLE_HOTKEYS: W_COMMAND.append("<b>hotkey</b>")
@@ -496,6 +499,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH</b>", f"Opens PATH in the default file manager" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a window by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload [SERVER] [WINDOW]</b>", "Re-renders the chat log of a window" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -1589,6 +1593,74 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					else:
 						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
 						tokens = user_input.split()
+
+	# |---------|
+	# | /reload |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==1:
+			window.rerenderChatLog()
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==2:
+			tokens.pop(0)
+			target = tokens.pop(0)
+
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				if hasattr(w,"widget"):
+					w.widget().rerenderChatLog()
+				else:
+					w.rerenderChatLog()
+				window.input.setFocus()
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"reload: \"{target}\" not found")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{target}\" not found")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==3:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+
+			displayed = False
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower()==win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if hasattr(w,"widget"):
+							w.widget().rerenderChatLog()
+						else:
+							w.rerenderChatLog()
+						window.input.setFocus()
+				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if hasattr(w,"widget"):
+							w.widget().rerenderChatLog()
+						else:
+							w.rerenderChatLog()
+						window.input.setFocus()
+			if displayed: return True
+
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"reload: \"{target}\" not found on \"{server}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',f"\"{target}\" not found on \"{server}\"")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |-------|
 	# | /warn |
@@ -4351,6 +4423,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {window.client.server}:{window.client.port} {win_name}")
 
 				gui.newEditorWindowContents("\n".join(results))
+				return True
+
+		# /window reload
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
+			if tokens[1].lower()=='reload':
+				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.reRenderAll())
 				return True
 
 		# /window ontop

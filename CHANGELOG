@@ -7,6 +7,10 @@ What's new:
 - **Channel specific message filters**. In a channel chat's right click menu, users can now choose to hide/show JOIN, PART, QUIT, NICK, MODE, and TOPIC messages. The messages will still be logged, and the filter is persistent across sessions. The option to hide these messages application-wide is still in place.
 - **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname will still be highlighted in the current text style, but other user's nicks can now be colored with custom colors. Colors are stored via the user's hostmask, and will appear in chat and userlists. Nicknames that do not have a color will be colored with the default "nickname" text style color.
 - **Windowbar sorting**. Entries in the windowbar can now be sorted in order of subwindow creation (the default), reverse creation order, alphabetically, or reverse alphabetically.
+- **IRCv3 extension support for plugins**. Plugins can now request specific IRCv3 extensions from servers, and get notified if the server does or doesn't support them. Along with the `line_in()` and `line_out()` events, this allows plugins to handle IRCv3 extensions that MERK doesn't support natively.
+- **New menu options and commands to reload (and re-render) window text displays**.
+- **"Unsimplified text" has been removed from the log manager**.
+- **Lots of bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -87,6 +91,24 @@ What's new:
   more sense.
 * Bugfix: fixed a crashing bug with the renderer in the log manager.
 * Added "View" to the log viewer tab title in the log manager.
+* Re-arranged the userlist context menu.
+* New command: "/reload", which forces a window to re-render their chat log.
+* New subcommand for "/window": "reload", which forces ALL chat windows to
+  rerender their chat logs.
+* Bugfix: some plugin events related to SASL login could crash the client or
+  not execute if certain errors occured.
+* Removed the IRCv3 capability request (and handling) for account-notify.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* New inherited method: "request". This allows plugins to force MERK to request
+  specific IRCv3 extensions from servers on connection.
+* New event: "nak", which triggers when an IRC server DOESN'T support a
+  request()ed IRCv3 extension.
+* New event: "ack", which triggers when an IRC server DOES support a request()-
+  ed IRCv3 extension.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.800                                  |

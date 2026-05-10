@@ -674,6 +674,8 @@ class Dialog(QDialog):
 			self.plugUptime.setEnabled(True)
 			self.plugPause.setEnabled(True)
 			self.plugUnpause.setEnabled(True)
+			self.plugNak.setEnabled(True)
+			self.plugAck.setEnabled(True)
 			if self.enableAutocomplete.isChecked():
 				self.autocompleteMethods.setEnabled(True)
 			else:
@@ -734,6 +736,8 @@ class Dialog(QDialog):
 			self.plugUptime.setEnabled(False)
 			self.plugPause.setEnabled(False)
 			self.plugUnpause.setEnabled(False)
+			self.plugNak.setEnabled(False)
+			self.plugAck.setEnabled(False)
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -5746,6 +5750,14 @@ class Dialog(QDialog):
 		self.plugUnpause.stateChanged.connect(self.changedSetting)
 		self.plugUnpause.setFont(f)
 
+		self.plugNak = QCheckBox("nak",self)
+		if config.PLUGIN_NAK: self.plugNak.setChecked(True)
+		self.plugNak.stateChanged.connect(self.changedSetting)
+
+		self.plugAck = QCheckBox("ack",self)
+		if config.PLUGIN_ACK: self.plugAck.setChecked(True)
+		self.plugAck.stateChanged.connect(self.changedSetting)
+
 		if not config.CLEAR_PLUGINS_FROM_MEMORY_ON_RELOAD:
 			self.reloadInit.setEnabled(False)
 
@@ -5801,82 +5813,88 @@ class Dialog(QDialog):
 			self.pluginCall.setEnabled(False)
 			self.pluginScripts.setEnabled(False)
 			self.plugSupport.setEnabled(False)
+			self.plugNak.setEnabled(False)
+			self.plugAck.setEnabled(False)
 
 		row1Layout = QHBoxLayout()
+		row1Layout.addWidget(self.plugAck)
 		row1Layout.addWidget(self.plugAction)
 		row1Layout.addWidget(self.plugActivate)
-		row1Layout.addWidget(self.plugAway)
 
 		row2Layout = QHBoxLayout()
+		row2Layout.addWidget(self.plugAway)
 		row2Layout.addWidget(self.plugBack)
 		row2Layout.addWidget(self.plugClose)
-		row2Layout.addWidget(self.plugConnected)
 		
 		row3Layout = QHBoxLayout()
+		row3Layout.addWidget(self.plugConnected)
 		row3Layout.addWidget(self.plugConnecting)
 		row3Layout.addWidget(self.plugCtick)
-		row3Layout.addWidget(self.plugDisconnect)
 
 		row4Layout = QHBoxLayout()
+		row4Layout.addWidget(self.plugDisconnect)
 		row4Layout.addWidget(self.plugError)
 		row4Layout.addWidget(self.plugInit)
-		row4Layout.addWidget(self.plugInvite)
 
 		row5Layout = QHBoxLayout()
+		row5Layout.addWidget(self.plugInvite)
 		row5Layout.addWidget(self.pluginIson)
 		row5Layout.addWidget(self.plugSupport)
-		row5Layout.addWidget(self.plugJoin)
 
 		row6Layout = QHBoxLayout()
+		row6Layout.addWidget(self.plugJoin)
 		row6Layout.addWidget(self.plugJoined)
 		row6Layout.addWidget(self.plugKick)
-		row6Layout.addWidget(self.plugKicked)
 
 		row7Layout = QHBoxLayout()
+		row7Layout.addWidget(self.plugKicked)
 		row7Layout.addWidget(self.plugLeft)
 		row7Layout.addWidget(self.plugIn)
-		row7Layout.addWidget(self.plugOut)
 
 		row8Layout = QHBoxLayout()
+		row8Layout.addWidget(self.plugOut)
 		row8Layout.addWidget(self.plugLost)
 		row8Layout.addWidget(self.plugMe)
-		row8Layout.addWidget(self.plugMessage)
 
 		row9Layout = QHBoxLayout()
+		row9Layout.addWidget(self.plugMessage)
 		row9Layout.addWidget(self.plugMode)
 		row9Layout.addWidget(self.plugMotd)
-		row9Layout.addWidget(self.plugNick)
 
 		row10Layout = QHBoxLayout()
+		row10Layout.addWidget(self.plugNak)
+		row10Layout.addWidget(self.plugNick)
 		row10Layout.addWidget(self.plugNotice)
-		row10Layout.addWidget(self.plugPart)
-		row10Layout.addWidget(self.plugPause)
 
 		row11Layout = QHBoxLayout()
+		row11Layout.addWidget(self.plugPart)
+		row11Layout.addWidget(self.plugPause)
 		row11Layout.addWidget(self.plugPing)
-		row11Layout.addWidget(self.plugQuit)
-		row11Layout.addWidget(self.plugRename)
 
 		row12Layout = QHBoxLayout()
+		row12Layout.addWidget(self.plugQuit)
+		row12Layout.addWidget(self.plugRename)
 		row12Layout.addWidget(self.plugServer)
-		row12Layout.addWidget(self.plugSubwindow)
-		row12Layout.addWidget(self.plugTick)
 
 		row13Layout = QHBoxLayout()
+		row13Layout.addWidget(self.plugSubwindow)
+		row13Layout.addWidget(self.plugTick)
 		row13Layout.addWidget(self.plugTopic)
-		row13Layout.addWidget(self.pluginUninstall)
-		row13Layout.addWidget(self.plugUnload)
 
 		row14Layout = QHBoxLayout()
+		row14Layout.addWidget(self.pluginUninstall)
+		row14Layout.addWidget(self.plugUnload)
 		row14Layout.addWidget(self.plugUnmode)
-		row14Layout.addWidget(self.plugUnpause)
-		row14Layout.addWidget(self.plugUptime)
+
+		row15Layout = QHBoxLayout()
+		row15Layout.addWidget(self.plugUnpause)
+		row15Layout.addWidget(self.plugUptime)
+		row15Layout.addWidget(QLabel(' '))
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.pluginDescription = QLabel(f"""
-			<small><b>Plugins</b> allow users to extend <b>{APPLICATION_NAME}</b> with further features
-			in Python. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
+			<small><center>For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.</center>
 			</small>
 			""")
 		self.pluginDescription.setWordWrap(True)
@@ -5908,6 +5926,7 @@ class Dialog(QDialog):
 		allEvents.addLayout(row12Layout)
 		allEvents.addLayout(row13Layout)
 		allEvents.addLayout(row14Layout)
+		allEvents.addLayout(row15Layout)
 
 		pTop = QVBoxLayout()
 		pTop.setSpacing(0)
@@ -6842,6 +6861,8 @@ class Dialog(QDialog):
 		config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS = self.styleSelf.isChecked()
 		config.UNDERLINE_SELF_IN_USERLISTS = self.underlineSelf.isChecked()
 		config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
+		config.PLUGIN_NAK = self.plugNak.isChecked()
+		config.PLUGIN_ACK = self.plugAck.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

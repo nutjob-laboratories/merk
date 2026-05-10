@@ -3,7 +3,7 @@
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.800">MERK 0.051.800</a></big></b><br>
-  <b>Current development version: 0.051.835</b><br>
+  <b>Current development version: 0.051.845</b><br>
   <b><a href="https://latest.merk.chat">Download the latest development versions</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
@@ -34,15 +34,15 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.800 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.800)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.835 (10.76 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.051.835 (96.83 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.051.835 (71.12 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.835 (47.72 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.835 (45.29 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.845 (10.77 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.051.845 (96.83 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.051.845 (71.06 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.845 (47.73 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.845 (45.30 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.835**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.845**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
@@ -225,7 +225,7 @@ There are four libraries that comes bundled with **MERK**:
 # Screenshots
 
 <p align="center">
-<p><small><i>Screenshots may not reflect the current release (0.051.800), and may reflect the current development version (0.051.835). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.800), and may reflect the current development version (0.051.845). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
@@ -405,6 +405,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
 | `/refresh`                              | Requests a new list of channels from the server                                                                                  |
 | `/_rehash`                              | Causes the server to reprocess and reload configuration files. May only be issued by IRC operators |
+| `/reload [SERVER] [WINDOW]`              | Re-renders the chat log of a window          |
 | `/rem [TEXT...]`                        | Does nothing. Can be used for comments                                                     |
 | `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
 | `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to restore the server window                                 |
@@ -431,7 +432,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `layout`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `restart`, `restore`, `settings`, `size`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
+| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `layout`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `reload`, `restart`, `restore`, `settings`, `size`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
 | `write FILENAME CONTENTS...`            | Writes `CONTENTS`to `FILENAME`, followed by a newline. *Can only be called by scripts*                                                        |
 | `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
 | `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |

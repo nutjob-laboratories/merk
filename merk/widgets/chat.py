@@ -2181,13 +2181,6 @@ class Window(QMainWindow):
 					actBan = opMenu.addAction(QIcon(BAN_ICON),"Ban "+user_nick)
 					actKickBan = opMenu.addAction(QIcon(BAN_ICON),"Kick && Ban "+user_nick)
 
-				if config.ENABLE_IGNORE:
-					if user_nick!=self.client.nickname:
-						if is_hidden:
-							actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
-						else:
-							actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
-
 				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
 
 				ctcpMenu = menu.addMenu(QIcon(WHOIS_ICON),"Send CTCP request")
@@ -2202,6 +2195,17 @@ class Window(QMainWindow):
 				if user_nick!=self.client.nickname:
 					actPriv = menu.addAction(QIcon(PRIVATE_ICON),"Open private chat")
 
+				menu.addSeparator()
+
+				if config.ENABLE_IGNORE:
+					if user_nick!=self.client.nickname:
+						if is_hidden:
+							actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
+						else:
+							actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
+
+						menu.addSeparator()
+
 				clipMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 				actCopyNick = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's nickname")
 				if user_hostmask: actHostmask = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's hostmask")
@@ -2211,7 +2215,6 @@ class Window(QMainWindow):
 
 				if user_nick!=self.client.nickname:
 					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
-						menu.addSeparator()
 						c = self.getNicknameColor(user_nick,user_hostmask)
 						if c==None:
 							actColor = menu.addAction(QIcon(COLOR_ICON),"Set nickname color")

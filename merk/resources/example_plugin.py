@@ -122,6 +122,23 @@ class ExamplePlugin(Plugin):
     def unpause(self):
         pass
 
+    # |=====|
+    # | ack |
+    # |=====|
+    #
+    # This event is triggered when a server notifies MERK that
+    # it does support an IRCv3 extension requested with the
+    # request() inherited method. This will only be triggered
+    # during initial connection to the server.
+    #
+    # Arguments:
+    #   client = The Twisted IRC object that triggered the event
+    #   extension = The name of the extension
+    #
+    def ack(self,**args):
+        client = args["client"]
+        extension = args["extension"]
+
     # |========|
     # | action |
     # |========|
@@ -546,6 +563,23 @@ class ExamplePlugin(Plugin):
     def motd(self,**args):
         client = args["client"]
         text = args["text"]
+
+    # |=====|
+    # | nak |
+    # |=====|
+    #
+    # This event is triggered when a server notifies MERK that
+    # it doesn't support an IRCv3 extension requested with the
+    # request() inherited method. This will only be triggered
+    # during initial connection to the server.
+    #
+    # Arguments:
+    #   client = The Twisted IRC object that triggered the event
+    #   extension = The name of the extension
+    #
+    def nak(self,**args):
+        client = args["client"]
+        extension = args["extension"]
 
     # |======|
     # | nick |

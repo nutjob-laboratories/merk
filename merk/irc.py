@@ -541,12 +541,17 @@ class IRC_Connection(irc.IRCClient):
 			if w:
 				t = Message(SYSTEM_MESSAGE,'','Requesting IRCv3 capabilities...')
 				w.writeText(t)
+
 			# Request various IRCv3 extensions
 			self.sendLine("CAP REQ :cap-notify")
 			self.sendLine("CAP REQ :userhost-in-names")
 			self.sendLine("CAP REQ :multi-prefix")
 			self.sendLine("CAP REQ :away-notify")
-			self.sendLine("CAP REQ :account-notify")
+
+			# Now, load in extensions requested from
+			# plugins
+			for c in plugins.CAPABILITIES:
+				self.sendLine(f"CAP REQ :{c}")
 
 			# If the server support SASL and we have SASL
 			# login information, request authentication
@@ -576,7 +581,18 @@ class IRC_Connection(irc.IRCClient):
 			# option is turned on
 			self.support_hostmasks_in_names = True
 
+		elif subcommand == "ACK":
+
+			for c in plugins.CAPABILITIES:
+				if c in capabilities:
+					plugins.call(self.gui,"ack",client=self,extension=f"{c}")
+
 		elif subcommand == "NAK":
+
+			for c in plugins.CAPABILITIES:
+				if c in capabilities:
+					plugins.call(self.gui,"nak",client=self,extension=f"{c}")
+
 			# Server doesn't support things that we are looking
 			# for, so tell the server we're done with negotiation
 			self.sendLine("CAP END")
@@ -601,6 +617,35 @@ class IRC_Connection(irc.IRCClient):
 			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful!')
 			w.writeText(t)
 
+	def lose_connection(self,message,dialog=''):
+		w = self.gui.getServerWindow(self)
+		if w:
+			self.gui.quitting[self.client_id] = 0
+			w.force_close = True
+			w.close()
+
+		failure = Failure(Exception(message))
+		self.factory.clientConnectionFailed(self.transport.connector, failure)
+		self.transport.loseConnection()
+
+		irc.IRCClient.connectionLost(self, message)
+
+		if hasattr(self,"uptimeTimer"):
+			self.uptimeTimer.stop()
+			self.uptime = 0
+
+		if config.PROMPT_ON_FAILED_CONNECTION:
+			self.gui.connectToIrcFail(message,message)
+		else:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText(message)
+			msgBox.setInformativeText(f"Disconnected from {server}! {dialog}")
+			msgBox.setWindowTitle(message)
+			msgBox.setStandardButtons(QMessageBox.Ok)
+			msgBox.exec()
+
 	def irc_904(self, prefix, params):
 		# SASL authentication failed, due to a "bad"
 		# username and/or password
@@ -608,96 +653,30 @@ class IRC_Connection(irc.IRCClient):
 
 		server = f"{self.server}:{self.port}"
 
-		plugins.call(self,"error",client=self,message=f"SASL authentication failed")
+		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			w = self.gui.getServerWindow(self)
-			if w:
-				self.gui.quitting[self.client_id] = 0
-				w.force_close = True
-				w.close()
-
-			failure = Failure(Exception("SASL authentication failed"))
-			self.factory.clientConnectionFailed(self.transport.connector, failure)
-			self.transport.loseConnection()
-
-			irc.IRCClient.connectionLost(self, "SASL authentication failed")
-
-			if hasattr(self,"uptimeTimer"):
-				self.uptimeTimer.stop()
-				self.uptime = 0
-
-			if config.PROMPT_ON_FAILED_CONNECTION:
-				self.gui.connectToIrcFail("SASL authentication failed!","SASL fail")
-			else:
-				msgBox = QMessageBox()
-				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				msgBox.setText("SASL authentication failed!")
-				msgBox.setInformativeText(f"Disconnected from {server}! Check your username and password, and try to reconnect again.")
-				msgBox.setWindowTitle("SASL Authentication")
-				msgBox.setStandardButtons(QMessageBox.Ok)
-				msgBox.exec()
+			self.lose_connection("SASL authentication failed","Check your username and password, and try to reconnect again.")
 		else:
 			w = self.gui.getServerWindow(self)
 			if w:
 				t = Message(ERROR_MESSAGE,'','SASL authentication failed! Check your username and password.')
 				w.writeText(t)
 
-
 	def irc_905(self, prefix, params):
 		# SASL authentication failed because the SASL authentication
 		# method was "too long"
 		self.sendLine("CAP END")
 
-		plugins.call(self,"error",client=self,message=f"SASL authentication failed (message too long)")
+		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed (message too long)")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			w = self.gui.getServerWindow(self)
-			if w:
-				self.gui.quitting[self.client_id] = 0
-				w.force_close = True
-				w.close()
-
-			failure = Failure(Exception("SASL authentication failed"))
-			self.factory.clientConnectionFailed(self.transport.connector, failure)
-			self.transport.loseConnection()
-
-			irc.IRCClient.connectionLost(self, "SASL authentication failed")
-
-			if hasattr(self,"uptimeTimer"):
-				self.uptimeTimer.stop()
-				self.uptime = 0
-
-			if config.PROMPT_ON_FAILED_CONNECTION:
-				self.gui.connectToIrcFail("SASL authentication failed! SASL message was too long","SASL fail")
-			else:
-				msgBox = QMessageBox()
-				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-				msgBox.setText("SASL authentication failed!")
-				msgBox.setInformativeText(f"Disconnected from {server}! SASL message was too long. Check your username and password, and try to reconnect again.")
-				msgBox.setWindowTitle("SASL Authentication")
-				msgBox.setStandardButtons(QMessageBox.Ok)
-				msgBox.exec()
+			self.lose_connection("SASL authentication failed","SASL message was too long. Check your username and password, and try to reconnect again.")
 		else:
 			w = self.gui.getServerWindow(self)
 			if w:
 				t = Message(ERROR_MESSAGE,'','SASL authentication failed! SASL message was too long')
 				w.writeText(t)
-
-	def irc_ACCOUNT(self, prefix, params):
-		account = params[0] if params else None
-
-		if not self.support_account_notify: return
-
-		w = self.gui.getServerWindow(self)
-		if w:
-			if account=='*':
-				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged out")
-			else:
-				t = Message(SYSTEM_MESSAGE,'',f"{prefix} logged into {account}")
-			w.writeText(t)
 
 	def connectionLost(self, reason):
 		if config.WRITE_INPUT_AND_OUTPUT_TO_FILE:

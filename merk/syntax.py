@@ -72,7 +72,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
 					'.browser', '.folder', '.current', '.uncolor', '.unmarkdown',
 					'.markup','.unmarkup', '.demojize', '.deasciimojize', '.location',
-					'.fade', '.script',
+					'.fade', '.script', '.request',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
@@ -80,7 +80,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'def away', 'def back', 'def activate', 'def invite', 'def rename', 'def topic', 'def connected', 
 					'def connecting', 'def lost', 'def ctick', 'def nick', 'def disconnect', 'def init', 'def ping', 'def motd',
 					'def server', 'def subwindow', 'def close', 'def me', 'def error', 'def isupport', 'def uninstall',
-					'def unload', 'def uptime', 'def pause', 'def unpause',
+					'def unload', 'def uptime', 'def pause', 'def unpause', 'def nak', 'def ack',
 
 					]
 		for word in keywords:
@@ -289,6 +289,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"user sasl remove",
 			cmdsymbol+"user sasl",
 			cmdsymbol+"user sasl edit",
+			cmdsymbol+"reload",
+			cmdsymbol+"window reload",
 		]
 
 		script_only = [

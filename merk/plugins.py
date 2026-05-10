@@ -44,6 +44,7 @@ CONFIG_DIRECTORY = None
 PLUGIN_DIRECTORY = None
 PLUGINS = []
 PAUSED = []
+CAPABILITIES = []
 
 class Window():
 
@@ -477,6 +478,12 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def request(self,capability):
+		global CAPABILITIES
+
+		CAPABILITIES.append(capability)
+		CAPABILITIES = list(set(CAPABILITIES))
+
 	def fade(self,perc=None):
 		if perc==None: return round(self._gui.windowOpacity() * 100)
 		if perc<=100 and perc>0:
@@ -847,7 +854,7 @@ EVENTS = [
 	'away', 'back', 'activate', 'invite', 'rename', 'topic', 'connected', 
 	'connecting', 'lost', 'ctick', 'nick', 'disconnect', 'init','ping','motd',
 	'server', 'subwindow', 'close', 'me', 'error', 'isupport','ison', 'uninstall',
-	'unload', 'uptime', 'pause', 'unpause',
+	'unload', 'uptime', 'pause', 'unpause', 'nak', 'ack',
 ]
 
 BUILT_IN = [
@@ -861,7 +868,7 @@ BUILT_IN = [
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
 	'markup','unmarkup','demojize','deasciimojize', 'location',
-	'fade',
+	'fade', 'request',
 ]
 
 def uninstall(obj):
@@ -961,6 +968,8 @@ def call(gui,method,**arguments):
 	if method=='ison' and not config.PLUGIN_ISON: return
 	if method=='unload' and not config.PLUGIN_UNLOAD: return
 	if method=='uptime' and not config.PLUGIN_UPTIME: return
+	if method=='nak' and not config.PLUGIN_NAK: return
+	if method=='ack' and not config.PLUGIN_ACK: return
 
 	for obj in PLUGINS:
 		if paused(obj): continue
