@@ -447,9 +447,11 @@ USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS = False
 MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = 0
 PLUGIN_NAK = True
 PLUGIN_ACK = True
+NOTIFY_ON_CTCP_REQUESTS = False
 
 def build_settings():
 	settings = {
+		"notify_on_ctcp_requests": NOTIFY_ON_CTCP_REQUESTS,
 		"enable_plugin_ack_event": PLUGIN_ACK,
 		"enable_plugin_nak_event": PLUGIN_NAK,
 		"minimum_nick_length_for_highlighting": MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING,
@@ -862,6 +864,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "notify_on_ctcp_requests" in settings:
+		settings["notify_on_ctcp_requests"] = NOTIFY_ON_CTCP_REQUESTS
 	if not "enable_plugin_ack_event" in settings:
 		settings["enable_plugin_ack_event"] = PLUGIN_ACK
 	if not "enable_plugin_nak_event" in settings:
@@ -2087,6 +2091,7 @@ def load_settings(filename):
 	global MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
 	global PLUGIN_NAK
 	global PLUGIN_ACK
+	global NOTIFY_ON_CTCP_REQUESTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2096,6 +2101,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		NOTIFY_ON_CTCP_REQUESTS = settings["notify_on_ctcp_requests"]
 		PLUGIN_ACK = settings["enable_plugin_ack_event"]
 		PLUGIN_NAK = settings["enable_plugin_nak_event"]
 		MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = settings["minimum_nick_length_for_highlighting"]

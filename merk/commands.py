@@ -1599,7 +1599,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |---------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==1:
-			window.rerenderChatLog()
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.rerenderChatLog())
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==2:
@@ -1609,9 +1609,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				if hasattr(w,"widget"):
-					w.widget().rerenderChatLog()
+					QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.widget().rerenderChatLog())
 				else:
-					w.rerenderChatLog()
+					QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.rerenderChatLog())
 				window.input.setFocus()
 			else:
 				if is_script:
@@ -1637,18 +1637,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if w:
 						displayed = True
 						if hasattr(w,"widget"):
-							w.widget().rerenderChatLog()
+							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.widget().rerenderChatLog())
 						else:
-							w.rerenderChatLog()
+							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.rerenderChatLog())
 						window.input.setFocus()
 				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						displayed = True
 						if hasattr(w,"widget"):
-							w.widget().rerenderChatLog()
+							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.widget().rerenderChatLog())
 						else:
-							w.rerenderChatLog()
+							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.rerenderChatLog())
 						window.input.setFocus()
 			if displayed: return True
 

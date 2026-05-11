@@ -409,6 +409,29 @@ class IRC_Connection(irc.IRCClient):
 
 		return irc.IRCClient.ctcpReply(self, user, channel, messages)
 
+	def ctcpQuery(self, user, channel, messages):
+
+		try:
+			message_type = messages[0][0]
+		except:
+			message_type = 'UNKNOWN'
+
+		if config.NOTIFY_ON_CTCP_REQUESTS:
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'',f"Received CTCP {message_type} from {user}")
+				w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			w = self.gui.MDI.activeSubWindow()
+			if w:
+				c = w.widget()
+				if hasattr(c,"client"):
+					if c.client == self:
+						t = Message(SYSTEM_MESSAGE,"",f"Received CTCP {message_type} from {user}")
+						c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+		return irc.IRCClient.ctcpQuery(self, user, channel, messages)
+
 	def pong(self,user,seconds):
 		self.gui.receivedPong(self,user,seconds)
 
@@ -743,14 +766,14 @@ class IRC_Connection(irc.IRCClient):
 
 	def describe(self, channel, action):
 
-		super().describe(channel,action)
-
-		# Write private messages, too
+		# Write the description to a window if it's open
 		w = self.gui.getWindow(channel,self)
 		if w:
 			t = Message(ACTION_MESSAGE,self.nickname,action)
 			w.writeText(t)
 
+		# Write private ACTIONs to the server window if that
+		# setting is turned on
 		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
 			if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
 				w = self.gui.getServerWindow(self)
@@ -758,16 +781,22 @@ class IRC_Connection(irc.IRCClient):
 					t = Message(ACTION_MESSAGE,self.nickname,action)
 					w.writeText(t)
 
+		super().describe(channel,action)
+
 	def msg(self, user, message, length=None):
 
+		# Split the outgoing message into chunks, so that
+		# messages aren't truncated by the server
 		message_chunks = textwrap.wrap(message, width=config.IRC_MAX_PAYLOAD_LENGTH, break_long_words=True)
 
 		for i, chunk in enumerate(message_chunks):
+			# Send the first chunk immediately
 			if i==0:
+				# We ignore CTCP messages here, that's handled elsewhere
 				if not message.startswith("\001"):
 					self.gui.privmsg(self,self.nickname,user,chunk)
 
-					# Write private messages, too
+					# Write to window, if we can
 					w = self.gui.getWindow(user,self)
 					if w:
 						if w.window_type==PRIVATE_WINDOW:
@@ -783,14 +812,17 @@ class IRC_Connection(irc.IRCClient):
 									c.writeText(t)
 				super().msg(user, chunk, length)
 			else:
+				# If flood protection is turned on, add the message
+				# chunk to the queue, to send over time
 				if config.FLOOD_PROTECTION_FOR_LONG_MESSAGES:
 					m = [user,chunk]
 					self.long_messages.append(m)
 				else:
+					# We ignore CTCP messages here, that's handled elsewhere
 					if not message.startswith("\001"):
 						self.gui.privmsg(self,self.nickname,user,chunk)
 
-						# Write private messages, too
+						# Write to window, if we can
 						w = self.gui.getWindow(user,self)
 						if w:
 							if w.window_type==PRIVATE_WINDOW:
@@ -805,7 +837,6 @@ class IRC_Connection(irc.IRCClient):
 										t = Message(SELF_MESSAGE,self.nickname,chunk)
 										c.writeText(t)
 					super().msg(user, chunk, length)
-
 
 		window = self.gui.getWindow(user,self)
 		if window:
@@ -1403,13 +1434,6 @@ class IRC_Connection(irc.IRCClient):
 
 		return irc.IRCClient.sendLine(self, line)
 
-	def irc_RPL_AWAY(self,prefix,params):
-		user = params[1]
-		msg = params[2]
-
-		# Do nothing, because twisted apparently
-		# doesn't ever trigger this event
-
 	def irc_RPL_AWAY(self,user,message):
 
 		if message=='':
@@ -1447,6 +1471,9 @@ class IRC_Connection(irc.IRCClient):
 	def lineReceived(self, line):
 
 		# Decode the incoming text line
+		# Servers may use multiple encoding types
+		# for lines, and this could cause problems.
+		# So, we try various methods to decode
 		try:
 			line2 = line.decode('utf-8')
 		except UnicodeDecodeError:
@@ -1460,6 +1487,7 @@ class IRC_Connection(irc.IRCClient):
 		# to get a channel list from a server)
 		line = line2.encode('utf-8')
 
+		# Pass the line to plugins
 		plugins.call(self.gui,"line_in",client=self,line=line)
 
 		if config.WRITE_INPUT_AND_OUTPUT_TO_CONSOLE:
@@ -1485,11 +1513,16 @@ class IRC_Connection(irc.IRCClient):
 				nick = s[0][1:]
 				self.irc_RPL_AWAY(nick,'')
 
+		# This makes sure that "named" message type are
+		# passed on. Messages with numerics as a type are
+		# handled next
 		d = line2.split(" ")
 		if len(d) >= 2:
 			if d[1].isalpha(): return irc.IRCClient.lineReceived(self, line)
 
 		# Catch errors and display error messages
+		# This catches errors that Twisted doesn't
+		# "handle" normally
 		if len(d) > 1:
 			command = d[1] if d[0].startswith(':') else d[0]
 			if command.isdigit() and 400 <= int(command) <= 599:

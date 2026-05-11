@@ -310,6 +310,9 @@ class Merk(QMainWindow):
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
 
+	def save_config(self):
+		config.save_settings(config.CONFIG_FILE)
+
 	def window_interacted_with(self):
 
 		if config.USE_AUTOAWAY:
@@ -338,7 +341,7 @@ class Merk(QMainWindow):
 		config.HOTKEYS = {}
 		for e in self.shortcuts:
 			config.HOTKEYS[e[0]]=e[2]
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 
 	def add_shortcut(self,keys,script):
 		if not is_valid_shortcut_sequence(keys): return BAD_SHORTCUT
@@ -610,7 +613,7 @@ class Merk(QMainWindow):
 		else:
 			# Invalid setting, so set the default and save
 			config.WINDOWBAR_SORT = 'creation'
-			config.save_settings(config.CONFIG_FILE)
+			self.save_config()
 
 		# Rearrange the windowlist so that the current
 		# window is always first
@@ -946,11 +949,11 @@ class Merk(QMainWindow):
 			if p == Qt.TopToolBarArea:
 				# it's at the top
 				config.WINDOWBAR_TOP_OF_SCREEN = True
-				config.save_settings(config.CONFIG_FILE)
+				self.save_config()
 			else:
 				# it's at the bottom
 				config.WINDOWBAR_TOP_OF_SCREEN = False
-				config.save_settings(config.CONFIG_FILE)
+				self.save_config()
 
 		# Rebuild the windowbar
 		self.buildWindowbar()
@@ -4247,7 +4250,7 @@ class Merk(QMainWindow):
 			config.ASK_BEFORE_DISCONNECT = False
 		else:
 			config.ASK_BEFORE_DISCONNECT = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsAskRecon(self):
@@ -4255,7 +4258,7 @@ class Merk(QMainWindow):
 			config.ASK_BEFORE_RECONNECT = False
 		else:
 			config.ASK_BEFORE_RECONNECT = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsMinimToTray(self):
@@ -4263,7 +4266,7 @@ class Merk(QMainWindow):
 			config.MINIMIZE_TO_SYSTRAY = False
 		else:
 			config.MINIMIZE_TO_SYSTRAY = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsSpell(self):
@@ -4271,7 +4274,7 @@ class Merk(QMainWindow):
 			config.ENABLE_SPELLCHECK = False
 		else:
 			config.ENABLE_SPELLCHECK = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.toggleSpellcheck()
 		self.buildSettingsMenu()
 
@@ -4280,7 +4283,7 @@ class Merk(QMainWindow):
 			config.SAVE_CHANNEL_LOGS = False
 		else:
 			config.SAVE_CHANNEL_LOGS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsLoadChan(self):
@@ -4288,7 +4291,7 @@ class Merk(QMainWindow):
 			config.LOAD_CHANNEL_LOGS = False
 		else:
 			config.LOAD_CHANNEL_LOGS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsSavePriv(self):
@@ -4296,7 +4299,7 @@ class Merk(QMainWindow):
 			config.SAVE_PRIVATE_LOGS = False
 		else:
 			config.SAVE_PRIVATE_LOGS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsLoadPriv(self):
@@ -4304,7 +4307,7 @@ class Merk(QMainWindow):
 			config.LOAD_PRIVATE_LOGS = False
 		else:
 			config.LOAD_PRIVATE_LOGS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsNotifyLost(self):
@@ -4312,12 +4315,12 @@ class Merk(QMainWindow):
 			config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = False
 		else:
 			config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def menuSetLanguage(self,lang):
 		config.DEFAULT_SPELLCHECK_LANGUAGE = lang
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 		self.buildSettingsMenu()
 
@@ -4327,7 +4330,7 @@ class Merk(QMainWindow):
 			config.DISPLAY_IRC_COLORS = False
 		else:
 			config.DISPLAY_IRC_COLORS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.reRenderAll()
 		QApplication.restoreOverrideCursor()
 		self.buildSettingsMenu()
@@ -4337,7 +4340,7 @@ class Merk(QMainWindow):
 			config.ENABLE_MARKDOWN_MARKUP = False
 		else:
 			config.ENABLE_MARKDOWN_MARKUP = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsSnap(self):
@@ -4345,7 +4348,7 @@ class Merk(QMainWindow):
 			config.SUBWINDOW_SNAPPING = False
 		else:
 			config.SUBWINDOW_SNAPPING = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsResize(self):
@@ -4353,7 +4356,7 @@ class Merk(QMainWindow):
 			config.RUBBER_BAND_RESIZE = False
 		else:
 			config.RUBBER_BAND_RESIZE = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.toggleRubberbanding()
 		self.buildSettingsMenu()
 
@@ -4362,7 +4365,7 @@ class Merk(QMainWindow):
 			config.RUBBER_BAND_MOVE = False
 		else:
 			config.RUBBER_BAND_MOVE = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.toggleRubberbanding()
 		self.buildSettingsMenu()
 
@@ -4371,7 +4374,7 @@ class Merk(QMainWindow):
 			config.ENABLE_IRC_COLOR_MARKUP = False
 		else:
 			config.ENABLE_IRC_COLOR_MARKUP = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsLinks(self):
@@ -4380,7 +4383,7 @@ class Merk(QMainWindow):
 			config.CONVERT_URLS_TO_LINKS = False
 		else:
 			config.CONVERT_URLS_TO_LINKS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.reRenderAll()
 		QApplication.restoreOverrideCursor()
 		self.buildSettingsMenu()
@@ -4391,7 +4394,7 @@ class Merk(QMainWindow):
 			config.HIGHLIGHT_NICKS_IN_CHAT = False
 		else:
 			config.HIGHLIGHT_NICKS_IN_CHAT = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.reRenderAll()
 		QApplication.restoreOverrideCursor()
 		self.buildSettingsMenu()
@@ -4401,7 +4404,7 @@ class Merk(QMainWindow):
 			config.SOUND_NOTIFICATIONS = False
 		else:
 			config.SOUND_NOTIFICATIONS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsPlugins(self):
@@ -4409,7 +4412,7 @@ class Merk(QMainWindow):
 			config.ENABLE_PLUGINS = False
 		else:
 			config.ENABLE_PLUGINS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 		if not config.ENABLE_PLUGINS:
@@ -4428,7 +4431,7 @@ class Merk(QMainWindow):
 			config.SCRIPTING_ENGINE_ENABLED = False
 		else:
 			config.SCRIPTING_ENGINE_ENABLED = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 		if not config.SCRIPTING_ENGINE_ENABLED:
@@ -4452,7 +4455,7 @@ class Merk(QMainWindow):
 			config.ENABLE_STYLE_EDITOR = False
 		else:
 			config.ENABLE_STYLE_EDITOR = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsHotkeys(self):
@@ -4460,7 +4463,7 @@ class Merk(QMainWindow):
 			config.ENABLE_HOTKEYS = False
 		else:
 			config.ENABLE_HOTKEYS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 		if not config.ENABLE_HOTKEYS:
@@ -4478,7 +4481,7 @@ class Merk(QMainWindow):
 			config.ENABLE_IGNORE = False
 		else:
 			config.ENABLE_IGNORE = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 		if not config.ENABLE_IGNORE:
@@ -4504,7 +4507,7 @@ class Merk(QMainWindow):
 			config.SHOW_FULL_SCREEN = True
 			if self.isMaximized(): self.was_maximized = True
 			self.showFullScreen()
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsTop(self):
@@ -4522,7 +4525,7 @@ class Merk(QMainWindow):
 			if self.ignore_manager!=None: self.ignore_manager.toggleTop()
 			if self.plugin_manager!=None: self.plugin_manager.toggleTop()
 			self.show()
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsDarkMode(self):
@@ -4543,7 +4546,7 @@ class Merk(QMainWindow):
 				config.DARK_MODE = False
 			else:
 				config.DARK_MODE = True
-			config.save_settings(config.CONFIG_FILE)
+			self.save_config()
 			if is_running_from_pyinstaller():
 				subprocess.Popen([sys.executable] + ["-R"])
 				self.close()
@@ -4557,7 +4560,7 @@ class Merk(QMainWindow):
 			config.DISPLAY_TIMESTAMP = False
 		else:
 			config.DISPLAY_TIMESTAMP = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.reRenderAll()
 		QApplication.restoreOverrideCursor()
 		self.buildSettingsMenu()
@@ -4567,7 +4570,7 @@ class Merk(QMainWindow):
 			config.SIMPLIFIED_DIALOGS = False
 		else:
 			config.SIMPLIFIED_DIALOGS = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsAway(self):
@@ -4575,7 +4578,7 @@ class Merk(QMainWindow):
 			config.USE_AUTOAWAY = False
 		else:
 			config.USE_AUTOAWAY = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def settingsIntermittent(self):
@@ -4583,7 +4586,7 @@ class Merk(QMainWindow):
 			config.DO_INTERMITTENT_LOG_SAVES = False
 		else:
 			config.DO_INTERMITTENT_LOG_SAVES = True
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def menuSetWidget(self,newstyle):
@@ -4595,12 +4598,12 @@ class Merk(QMainWindow):
 			config.QT_WINDOW_STYLE = newstyle
 		else:
 			config.QT_WINDOW_STYLE = newstyle
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		self.buildSettingsMenu()
 
 	def menuSetOrder(self,order):
 		config.SET_SUBWINDOW_ORDER = order
-		config.save_settings(config.CONFIG_FILE)
+		self.save_config()
 		if config.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.MDI.setActivationOrder(QMdiArea.CreationOrder)
 		elif config.SET_SUBWINDOW_ORDER.lower()=='stacking':
@@ -5470,11 +5473,11 @@ class Merk(QMainWindow):
 			if p == Qt.TopToolBarArea:
 				# it's at the top
 				config.MENUBAR_DOCKED_AT_TOP = True
-				config.save_settings(config.CONFIG_FILE)
+				self.save_config()
 			else:
 				# it's at the bottom
 				config.MENUBAR_DOCKED_AT_TOP = False
-				config.save_settings(config.CONFIG_FILE)
+				self.save_config()
 
 	def buildMenu(self):
 
@@ -5848,11 +5851,11 @@ class Merk(QMainWindow):
 		if config.SAVE_MAIN_WINDOW_LOCATION:
 			position = self.pos()
 			config.MAIN_WINDOW_LOCATION = [position.x(),position.y()]
-			config.save_settings(config.CONFIG_FILE)
+			self.save_config()
 		else:
 			if config.MAIN_WINDOW_LOCATION[0]!=None and config.MAIN_WINDOW_LOCATION[1]!=None:
 				config.MAIN_WINDOW_LOCATION = [None,None]
-				config.save_settings(config.CONFIG_FILE)
+				self.save_config()
 
 		if self.hotkey_manager!=None: self.hotkey_manager.close()
 		if self.ignore_manager!=None: self.ignore_manager.close()

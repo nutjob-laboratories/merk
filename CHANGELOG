@@ -2,16 +2,6 @@
 |                                   0.051.850                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **Channel specific message filters**. In a channel chat's right click menu, users can now choose to hide/show JOIN, PART, QUIT, NICK, MODE, and TOPIC messages. The messages will still be logged, and the filter is persistent across sessions. The option to hide these messages application-wide is still in place.
-- **Highlight nickname in chat has been expanded to all channel nicknames**. The user's nickname will still be highlighted in the current text style, but other user's nicks can now be colored with custom colors. Colors are stored via the user's hostmask, and will appear in chat and userlists. Nicknames that do not have a color will be colored with the default "nickname" text style color.
-- **Windowbar sorting**. Entries in the windowbar can now be sorted in order of subwindow creation (the default), reverse creation order, alphabetically, or reverse alphabetically.
-- **IRCv3 extension support for plugins**. Plugins can now request specific IRCv3 extensions from servers, and get notified if the server does or doesn't support them. Along with the `line_in()` and `line_out()` events, this allows plugins to handle IRCv3 extensions that MERK doesn't support natively.
-- **New menu options and commands to reload (and re-render) window text displays**.
-- **"Unsimplified text" has been removed from the log manager**.
-- **Lots of bugfixes**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -98,6 +88,14 @@ What's new:
 * Bugfix: some plugin events related to SASL login could crash the client or
   not execute if certain errors occured.
 * Removed the IRCv3 capability request (and handling) for account-notify.
+* Added an option to notify the user when a CTCP request is received. This
+  option is turned off by default. It can be turned on in the "settings" dialog
+  on the "messages" page.
+* Bugfix: when initially spawning subwindows, MERK would unneccesarily re-
+  render text multiple times (once when a style was applied, and once when a
+  log was loaded). This slowed the client down a bit. This no longer occurs.
+* Bugfix: adding or removing words from the internal dictionary will no longer
+  crash the client.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

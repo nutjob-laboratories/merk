@@ -792,7 +792,7 @@ class Window(QMainWindow):
 			if not config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.status.hide()
 
 		# Load and apply default style
-		self.applyStyle()
+		self.applyStyle(None,True)
 
 		# Decide whether to load logs or not
 		load_logs = True
@@ -1658,7 +1658,7 @@ class Window(QMainWindow):
 			if self.window_type==CHANNEL_WINDOW:
 				# Rerender the chat after a little bit
 				if config.HIGHLIGHT_NICKS_IN_CHAT and config.AUTOMATICALLY_RERENDER_CHAT:
-					if self.uptime>self.force_chat_log_rerender:
+					if self.uptime>self.force_chat_log_rerender and self.force_chat_log_rerender!=0:
 						if self.rerendered_chat==False:
 							self.buildUserColors()
 							self.rerendered_chat = True
@@ -2429,7 +2429,7 @@ class Window(QMainWindow):
 			self.applyStyle()
 			QApplication.restoreOverrideCursor()
 
-	def applyStyle(self,filename=None):
+	def applyStyle(self,filename=None,initial_application=False):
 		if not config.FORCE_DEFAULT_STYLE:
 			if filename == None:
 				if self.window_type==SERVER_WINDOW:
@@ -2470,6 +2470,7 @@ class Window(QMainWindow):
 				self.userlist.setStyleSheet(self.generateStylesheet('QListWidget',f,b))
 				self.writeUserlist(self.full_nicks)
 
+		if initial_application: return
 		self.rerenderChatLog()
 		self.rerenderUserlist()
 
@@ -4414,7 +4415,7 @@ class SpellTextEdit(QPlainTextEdit):
 		config.DICTIONARY.append(word)
 
 		# Save new settings to the config file
-		self.save_config()
+		self.parent.save_config()
 
 		# Re-add the dictionary to the spellchecker
 		self.dict.word_frequency.load_words(config.DICTIONARY)
@@ -4431,7 +4432,7 @@ class SpellTextEdit(QPlainTextEdit):
 		config.DICTIONARY.remove(word)
 
 		# Save new settings to the config file
-		self.save_config()
+		self.parent.save_config()
 
 		# Re-add the dictionary to the spellchecker
 		self.dict.word_frequency.load_words(config.DICTIONARY)

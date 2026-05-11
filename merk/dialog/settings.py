@@ -5216,6 +5216,10 @@ class Dialog(QDialog):
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
 
+		self.notifyCTCP = QCheckBox("Notify when a CTCP request is received",self)
+		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
+		self.notifyCTCP.stateChanged.connect(self.changedSetting)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -5227,6 +5231,7 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.showLusers)
 		msLayout.addWidget(self.showIson)
 		msLayout.addWidget(self.autoJoin)
+		msLayout.addWidget(self.notifyCTCP)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
@@ -6863,6 +6868,7 @@ class Dialog(QDialog):
 		config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
 		config.PLUGIN_NAK = self.plugNak.isChecked()
 		config.PLUGIN_ACK = self.plugAck.isChecked()
+		config.NOTIFY_ON_CTCP_REQUESTS = self.notifyCTCP.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()
