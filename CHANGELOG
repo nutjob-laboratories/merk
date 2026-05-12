@@ -1,4 +1,20 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.900                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Reworked how the renderer selects (and uses) colors to highlight nicknames,
+  if that option is turned on.
+* Bugfix: the nickname display (showing who is "saying" a line of chat) had its
+  color set to the custom color even if "highlight nicks in chat" option was
+  turned off.
+* Bugfix: the username input widget on the connect dialog was forbidding input
+  that includes the "/" character, which is needed for some bouncers.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.850                                  |
 |------------------------------------------------------------------------------|
 

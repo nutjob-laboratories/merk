@@ -172,6 +172,24 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	else:
 		custom_nick = None
 
+	# Build the list of nicks to highlight
+	nicks_to_highlight = []
+	if config.HIGHLIGHT_NICKS_IN_CHAT:
+		if client!=None:
+			# The user's nickname is always the first entry
+			nicks_to_highlight.append(client.nickname)
+			# Now, we add in nicks that have a color
+			if len(nicks)>0:
+				for n in nicks:
+					if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
+						nicks_to_highlight.append(n)
+			# Now, we add nicks that DON'T have a color
+			if len(non_color_nicks)>0:
+				for n in non_color_nicks:
+					if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
+						if not n in nicks:
+							nicks_to_highlight.append(n)
+
 	# Escape all HTML
 	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE:
 		msg_to_display = html.escape(msg_to_display)
@@ -211,20 +229,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	if config.FORCE_MONOSPACE_RENDERING:
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 
+	# Highlight nicks if that option is turned on
 	if config.HIGHLIGHT_NICKS_IN_CHAT:
 		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE or message.type==SELF_MESSAGE:
-			if client!=None:
-				words = []
-				words.append(client.nickname)
-				if len(nicks)>0:
-					for n in nicks:
-						if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
-							words.append(n)
-				if len(non_color_nicks)>0:
-					for n in non_color_nicks:
-						if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
-							words.append(n)
-				msg_to_display = highlight_nick(msg_to_display,words,nicks,style)
+			if len(nicks_to_highlight)>0: msg_to_display = highlight_nick(msg_to_display,nicks_to_highlight,nicks,style)
 
 	# Assign template and style to the message
 	message_templates = {
@@ -297,15 +305,17 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 			user_style = style["self"]
 		elif message.type==CHAT_MESSAGE:
 			user_style = style["username"]
-			# Replace the nickname color
-			if custom_nick!=None:
+			# If the nickname has a custom color,
+			# use that one instead of the style color
+			if custom_nick!=None and config.HIGHLIGHT_NICKS_IN_CHAT:
 				user_style = replace_first_style_color(user_style,nicks[custom_nick])
 		elif message.type==NOTICE_MESSAGE:
 			user_style = style["notice"]
 		elif message.type==PRIVATE_MESSAGE:
 			user_style = style["private"]
-			# Replace the nickname color
-			if custom_nick!=None:
+			# If the nickname has a custom color,
+			# use that one instead of the style color
+			if custom_nick!=None and config.HIGHLIGHT_NICKS_IN_CHAT:
 				user_style = replace_first_style_color(user_style,nicks[custom_nick])
 		elif message.type==WHOIS_MESSAGE:
 			user_style = style["username"]
@@ -363,39 +373,22 @@ def highlight_nick(text, target_words, user_colors, style):
 		if matched_word == target_words[0].lower():
 			style_to_use = style_str
 		else:
+			# All the other nicknames get colored differently
 			if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 				style_to_use = style_str
 			else:
-				# Try to assign a color to the nick, and
-				# if there isn't a color, use the default
-				# "username" text style
-				try:
+				if matched_word in color_lookup:
+					# The nickname has a custom color
 					actual_key = color_lookup[matched_word]
 					style_to_use = replace_first_style_color(style_str,user_colors[actual_key])
-				except:
+				else:
+					# The nickname does NOT have a custom color
 					style_to_use = nick_str
 
 		return f'<span style="{style_to_use}">{original_word}</span>'
 
 	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)
 	return result
-
-# def highlight_nick(text, target_word, style):
-
-# 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
-# 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
-# 		style_str = f"color:{foreground};"
-# 	else:
-# 		style_str = style["self"]
-	
-# 	pattern = rf'\b{target_word}\b'
-	
-# 	def replacer(match):
-# 		original_word = match.group(0)
-# 		return f'<span style="{style_str}">{original_word}</span>'
-
-# 	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)
-# 	return result
 
 def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:

@@ -444,7 +444,7 @@ class Dialog(QDialog):
 		if config.PREVENT_ILLEGAL_NICKNAMES:
 			self.nick = QNickEdit(user.NICKNAME)
 			self.alternative = QNickEdit(user.NICKNAME)
-			self.username = QNickEdit(username)
+			self.username = QNoSpaceLineEdit(username)
 		else:
 			self.nick = QNoSpaceLineEdit(user.NICKNAME)
 			self.alternative = QNoSpaceLineEdit(user.NICKNAME)
@@ -658,14 +658,12 @@ class Dialog(QDialog):
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
+		ok_button = buttons.button(QDialogButtonBox.Ok)
+		cancel_button = buttons.button(QDialogButtonBox.Cancel)
+		buttons.button(QDialogButtonBox.Ok).setText("Connect")
 
 		# Make sure that the "Connect" button is what triggers
 		# if the enter button is pressed
-		ok_button = buttons.button(QDialogButtonBox.Ok)
-		cancel_button = buttons.button(QDialogButtonBox.Cancel)
-
-		buttons.button(QDialogButtonBox.Ok).setText("Connect")
-
 		ok_button.setDefault(True)
 		ok_button.setAutoDefault(True)
 
