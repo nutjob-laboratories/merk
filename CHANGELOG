@@ -13,6 +13,11 @@
   turned off.
 * Bugfix: the username input widget on the connect dialog was forbidding input
   that includes the "/" character, which is needed for some bouncers.
+* Bugfix: server passwords were being saved "incorrectly" in the connection
+  history.
+* Bugfix: the SASL interface now updates correctly in the connection dialog.
+* The "connect" button on the connection dialog is now disabled if the hostname,
+  port, nickname, username, or realname inputs are empty.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

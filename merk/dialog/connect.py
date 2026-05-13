@@ -353,12 +353,32 @@ class Dialog(QDialog):
 		else:
 			self.RECONNECT_OPTION = False
 
-	def serverEntered(self):
+	def check_info(self):
+		host = self.host.text()
+		port = self.port.text()
+		nick = self.nick.text()
+		uname = self.username.text()
+		rname = self.realname.text()
+
+		if len(host.strip())==0: return False
+		if len(port.strip())==0: return False
+		if len(nick.strip())==0: return False
+		if len(uname.strip())==0: return False
+		if len(rname.strip())==0: return False
+
+		return True
+
+	def infoEntered(self):
 		host = self.host.text()
 		port = self.port.text()
 
-		if len(host.strip())==0:
-			hostid = "Unknown"
+		if self.check_info()==False:
+			self.ok_button.setEnabled(False)
+		else:
+			self.ok_button.setEnabled(True)
+
+		if len(host.strip())==0 or len(port.strip())==0:
+			hostid = "Unknown server"
 		else:
 			hostid = host+":"+port
 		self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
@@ -367,6 +387,22 @@ class Dialog(QDialog):
 			self.commands.setPlainText(user.COMMANDS[hostid])
 		else:
 			self.commands.clear()
+
+		if hostid in user.SASL:
+			u = user.SASL[hostid]
+			self.SASL_Username = u[0]
+			self.SASL_Password = u[1]
+			self.use_SASL = True
+			self.sasl.setCheckState(Qt.Checked)
+			self.clear.setEnabled(True)
+			self.edit.setEnabled(True)
+		else:
+			self.SASL_Username = None
+			self.SASL_Password = None
+			self.use_SASL = False
+			self.sasl.setCheckState(Qt.Unchecked)
+			self.clear.setEnabled(False)
+			self.edit.setEnabled(False)
 
 	def generateStylesheet(self,obj,fore,back):
 
@@ -444,11 +480,11 @@ class Dialog(QDialog):
 		if config.PREVENT_ILLEGAL_NICKNAMES:
 			self.nick = QNickEdit(user.NICKNAME)
 			self.alternative = QNickEdit(user.NICKNAME)
-			self.username = QNoSpaceLineEdit(username)
 		else:
 			self.nick = QNoSpaceLineEdit(user.NICKNAME)
 			self.alternative = QNoSpaceLineEdit(user.NICKNAME)
-			self.username = QNoSpaceLineEdit(username)
+		
+		self.username = QNoSpaceLineEdit(username)
 		self.realname = QRealnameEdit(realname)
 
 		nickl = QLabel("<b>Nickname</b>")
@@ -477,8 +513,12 @@ class Dialog(QDialog):
 		validator = QIntValidator(1, 2147483647)
 		self.port.setValidator(validator)
 
-		self.host.textChanged.connect(self.serverEntered)
-		self.port.textChanged.connect(self.serverEntered)
+		self.host.textChanged.connect(self.infoEntered)
+		self.port.textChanged.connect(self.infoEntered)
+
+		self.nick.textChanged.connect(self.infoEntered)
+		self.username.textChanged.connect(self.infoEntered)
+		self.realname.textChanged.connect(self.infoEntered)
 
 		serverLayout = QFormLayout()
 
@@ -658,14 +698,14 @@ class Dialog(QDialog):
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
 		buttons.accepted.connect(self.accept)
 		buttons.rejected.connect(self.reject)
-		ok_button = buttons.button(QDialogButtonBox.Ok)
-		cancel_button = buttons.button(QDialogButtonBox.Cancel)
+		self.ok_button = buttons.button(QDialogButtonBox.Ok)
+		self.cancel_button = buttons.button(QDialogButtonBox.Cancel)
 		buttons.button(QDialogButtonBox.Ok).setText("Connect")
 
 		# Make sure that the "Connect" button is what triggers
 		# if the enter button is pressed
-		ok_button.setDefault(True)
-		ok_button.setAutoDefault(True)
+		self.ok_button.setDefault(True)
+		self.ok_button.setAutoDefault(True)
 
 		if self.initial:
 			buttons.button(QDialogButtonBox.Cancel).setText("Exit")
@@ -743,7 +783,7 @@ class Dialog(QDialog):
 			self.host.setFocus()
 			QTimer.singleShot(0, lambda: self.host.setCursorPosition(len(self.host.text())))
 
-		self.serverEntered()
+		self.infoEntered()
 
 
 	def buildServerSelector(self):

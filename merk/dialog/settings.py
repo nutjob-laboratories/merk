@@ -3722,11 +3722,10 @@ class Dialog(QDialog):
 		if config.PREVENT_ILLEGAL_NICKNAMES:
 			self.nick = QNickEdit(user.NICKNAME)
 			self.alternative = QNickEdit(user.ALTERNATE)
-			self.username = QNickEdit(user.USERNAME)
 		else:
 			self.nick = QNoSpaceLineEdit(user.NICKNAME)
 			self.alternative = QNoSpaceLineEdit(user.ALTERNATE)
-			self.username = QNoSpaceLineEdit(user.USERNAME)
+		self.username = QNoSpaceLineEdit(user.USERNAME)
 		self.realname = QRealnameEdit(user.REALNAME)
 		self.userinfo = QLineEdit(user.USERINFO)
 		self.finger = QLineEdit(user.FINGER)

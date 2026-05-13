@@ -1652,7 +1652,11 @@ class IRC_Connection(irc.IRCClient):
 								sval = 'ssl'
 							else:
 								sval = 'normal'
-							entry = [ self.server,str(self.port),self.network,sval,self.password ]
+							if self.password==None:
+								p = ""
+							else:
+								p = self.password
+							entry = [ self.server,str(self.port),self.network,sval,p ]
 							user_history.append(entry)
 							user.HISTORY = list(user_history)
 							user.save_user(user.USER_FILE)
@@ -1671,7 +1675,11 @@ class IRC_Connection(irc.IRCClient):
 							sval = 'ssl'
 						else:
 							sval = 'normal'
-						entry = [ self.server,str(self.port),config.UNKNOWN_NETWORK_NAME,sval,self.password ]
+						if self.password==None:
+							p = ""
+						else:
+							p = self.password
+						entry = [ self.server,str(self.port),config.UNKNOWN_NETWORK_NAME,sval,p ]
 						user_history.append(entry)
 						user.HISTORY = list(user_history)
 						user.save_user(user.USER_FILE)
