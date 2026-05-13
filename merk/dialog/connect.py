@@ -374,11 +374,15 @@ class Dialog(QDialog):
 
 		if self.check_info()==False:
 			self.ok_button.setEnabled(False)
+			self.sasl.setEnabled(False)
+			self.commands_tab.setEnabled(False)
 		else:
 			self.ok_button.setEnabled(True)
+			self.sasl.setEnabled(True)
+			self.commands_tab.setEnabled(True)
 
 		if len(host.strip())==0 or len(port.strip())==0:
-			hostid = "Unknown server"
+			hostid = "No server"
 		else:
 			hostid = host+":"+port
 		self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))

@@ -448,9 +448,11 @@ MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = 0
 PLUGIN_NAK = True
 PLUGIN_ACK = True
 NOTIFY_ON_CTCP_REQUESTS = False
+SHOW_CHANNEL_LIST_ON_CONNECT =  False
 
 def build_settings():
 	settings = {
+		"show_channel_list_on_connect": SHOW_CHANNEL_LIST_ON_CONNECT,
 		"notify_on_ctcp_requests": NOTIFY_ON_CTCP_REQUESTS,
 		"enable_plugin_ack_event": PLUGIN_ACK,
 		"enable_plugin_nak_event": PLUGIN_NAK,
@@ -864,6 +866,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_channel_list_on_connect" in settings:
+		settings["show_channel_list_on_connect"] = SHOW_CHANNEL_LIST_ON_CONNECT
 	if not "notify_on_ctcp_requests" in settings:
 		settings["notify_on_ctcp_requests"] = NOTIFY_ON_CTCP_REQUESTS
 	if not "enable_plugin_ack_event" in settings:
@@ -2092,6 +2096,7 @@ def load_settings(filename):
 	global PLUGIN_NAK
 	global PLUGIN_ACK
 	global NOTIFY_ON_CTCP_REQUESTS
+	global SHOW_CHANNEL_LIST_ON_CONNECT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2101,6 +2106,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_LIST_ON_CONNECT = settings["show_channel_list_on_connect"]
 		NOTIFY_ON_CTCP_REQUESTS = settings["notify_on_ctcp_requests"]
 		PLUGIN_ACK = settings["enable_plugin_ack_event"]
 		PLUGIN_NAK = settings["enable_plugin_nak_event"]

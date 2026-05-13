@@ -600,6 +600,15 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingList(self,state):
+		if self.requestList.isChecked():
+			self.showList.setEnabled(True)
+		else:
+			self.showList.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSettingHighlight(self,state):
 		if self.toggleSyntaxInput.isChecked():
 			self.highlightAllNicks.setEnabled(True)
@@ -4226,9 +4235,15 @@ class Dialog(QDialog):
 		if config.PROMPT_ON_FAILED_CONNECTION: self.promptFail.setChecked(True)
 		self.promptFail.stateChanged.connect(self.changedSetting)
 		
+		self.showList = QCheckBox("Show channel list dialog on connection",self)
+		if config.SHOW_CHANNEL_LIST_ON_CONNECT: self.showList.setChecked(True)
+		self.showList.stateChanged.connect(self.changedSetting)
+
+		if not config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.showList.setEnabled(False)
+
 		self.requestList = QCheckBox("Fetch channel list from server on connection",self)
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION: self.requestList.setChecked(True)
-		self.requestList.stateChanged.connect(self.changedSetting)
+		self.requestList.stateChanged.connect(self.changedSettingList)
 		
 		self.autoHostmasks = QCheckBox("Fetch user hostmasks on channel join",self)
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
@@ -4334,6 +4349,7 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.promptFail)
 		csLayout.addWidget(self.failSasl)
 		csLayout.addWidget(self.saveHistory)
+		csLayout.addWidget(self.showList)
 		
 		arLayout = QVBoxLayout()
 		arLayout.setSpacing(0)
@@ -4357,9 +4373,8 @@ class Dialog(QDialog):
 		self.erroneousDescription = QLabel(f"""
 			<small>
 			If your nickname "breaks" the rules of a given server, this is the nickname that will
-			be used during the connection process. This is limited to 8 characters maximum, and
-			will be "padded" up to 9 characters with random numbers before being sent. The default
-			erroneous nickname fallback is <b>Guest</b>.
+			be used during the connection process, limited to 8 characters. The
+			default is <b>Guest</b>.
 			</small>
 			""")
 		self.erroneousDescription.setWordWrap(True)
@@ -6868,6 +6883,7 @@ class Dialog(QDialog):
 		config.PLUGIN_NAK = self.plugNak.isChecked()
 		config.PLUGIN_ACK = self.plugAck.isChecked()
 		config.NOTIFY_ON_CTCP_REQUESTS = self.notifyCTCP.isChecked()
+		config.SHOW_CHANNEL_LIST_ON_CONNECT = self.showList.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

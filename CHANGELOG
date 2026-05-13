@@ -2,6 +2,10 @@
 |                                   0.051.900                                  |
 |------------------------------------------------------------------------------|
 
+What's new:
+
+- **The connection dialog was revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -17,7 +21,15 @@
   history.
 * Bugfix: the SASL interface now updates correctly in the connection dialog.
 * The "connect" button on the connection dialog is now disabled if the hostname,
-  port, nickname, username, or realname inputs are empty.
+  port, nickname, username, or realname inputs are empty. The SASL checkbox and
+  "script" tab is also disabled.
+* The channel mode context menu is a little "prettier", easier to read, and
+  more informative.
+* Bugfix: the "show channel list" context menu option for server windows was
+  enabled before server registration was complete.
+* New option: show the "channel list" dialog window for a server when
+  connection completes. This is turned off by default, and can only be enabled
+  if "fetch server list on connection" is turned on.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

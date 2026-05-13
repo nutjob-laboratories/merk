@@ -243,6 +243,7 @@ class Window(QMainWindow):
 		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 		self.rerendered_chat = False
 		self.non_colored_nicks = []
+		self.spawned_channel_list = False
 
 		# The window's opacity starts at 100%
 		self.opacity = 100
@@ -961,68 +962,135 @@ class Window(QMainWindow):
 			if not self.is_privileged() and not self.is_operator() and len(self.banlist)==0: return
 
 		if not self.is_privileged() and not self.is_operator():
+
+			# To determine if the menu label has been shown
+			show_seperator = False
+
 			if self.name in self.client.channelkeys:
-				entry = QAction("Channel is locked",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Channel is locked")
 				opmenu.addAction(entry)
 
 			if 'm' in channel_modes:
-				entry = QAction("Channel is moderated",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Channel is moderated")
 				opmenu.addAction(entry)
 
 			if 'R' in channel_modes:
-				entry = QAction("Registered users only",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Registered users only")
 				opmenu.addAction(entry)
 
 			if 'n' in channel_modes:
-				entry = QAction("No external messages",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"No external messages")
 				opmenu.addAction(entry)
 
 			if 't' in channel_modes:
-				entry = QAction("Only operators can change topic",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Only operators can change topic")
 				opmenu.addAction(entry)
 
 			if 'c' in channel_modes:
-				entry = QAction("IRC colors are fobidden",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"IRC colors are fobidden")
 				opmenu.addAction(entry)
 
 			if 'S' in channel_modes:
-				entry = QAction("IRC colors are stripped",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"IRC colors are stripped")
 				opmenu.addAction(entry)
 
 			if 'C' in channel_modes:
-				entry = QAction("CTCP is forbidden",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"CTCP is forbidden")
 				opmenu.addAction(entry)
 
 			if 'KNOCK' in self.client.supports:
 				if 'K' in channel_modes:
-					entry = QAction("KNOCK is forbidden",self)
+					if show_seperator==False:
+						show_seperator = True
+						e = textSeparator(self,"Channel Modes")
+						opmenu.addAction(e)
+					entry = plainTextAction(self,"KNOCK is forbidden")
 					opmenu.addAction(entry)
 
 			if 'i' in channel_modes:
-				entry = QAction("Only invited users",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Only invited users")
 				opmenu.addAction(entry)
 
 			if 'p' in channel_modes:
-				entry = QAction("Channel is private",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Channel is private")
 				opmenu.addAction(entry)
 
 			if 's' in channel_modes:
-				entry = QAction("Channel is secret",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Channel is secret")
 				opmenu.addAction(entry)
 
 			if 'T' in channel_modes:
-				entry = QAction("Channel notices are forbidden",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Channel notices are forbidden")
 				opmenu.addAction(entry)
 
 			if 'V' in channel_modes:
-				entry = QAction("Channel invites are forbidden",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"Channel invites are forbidden")
 				opmenu.addAction(entry)
 
 			if 'z' in channel_modes:
-				entry = QAction("SSL/TLS users only",self)
+				if show_seperator==False:
+					show_seperator = True
+					e = textSeparator(self,"Channel Modes")
+					opmenu.addAction(e)
+				entry = plainTextAction(self,"SSL/TLS users only")
 				opmenu.addAction(entry)
 
 		if self.is_privileged():
+
+			e = textSeparator(self,"Set Channel Modes")
+			opmenu.addAction(e)
 
 			if self.name in self.client.channelkeys:
 				entry = QAction(QIcon(MINUS_ICON),"Unlock channel",self)
@@ -1218,15 +1286,21 @@ class Window(QMainWindow):
 				self.contextNick.triggered.connect(self.changeNick)
 				menu.addAction(self.contextNick)
 
+				if not self.client.registered: self.contextNick.setEnabled(False)
+
 				self.contextJoin = QAction(QIcon(CHANNEL_ICON),"Join channel",menu)
 				self.contextJoin.triggered.connect(self.joinChannel)
 				menu.addAction(self.contextJoin)
+
+				if not self.client.registered: self.contextJoin.setEnabled(False)
 
 				if config.SCRIPTING_ENGINE_ENABLED:
 
 					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
 					self.contextRun.triggered.connect(self.loadScript)
 					menu.addAction(self.contextRun)
+
+					if not self.client.registered: self.contextRun.setEnabled(False)
 
 					menu.addSeparator()
 
@@ -1239,22 +1313,20 @@ class Window(QMainWindow):
 					self.contextList.triggered.connect(self.showChannelList)
 					menu.addAction(self.contextList)
 
+					if not self.client.registered: self.contextList.setEnabled(False)
+
 				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
 					self.contextRefresh = QAction(QIcon(REFRESH_ICON),"Refresh channel list",menu)
 					self.contextRefresh.triggered.connect(self.refreshChannelList)
 					menu.addAction(self.contextRefresh)
+
+					if not self.client.registered: self.contextRefresh.setEnabled(False)
 
 				menu.addSeparator()
 
 				entry = QAction(QIcon(CLOSE_ICON),"Disconnect from server",menu)
 				entry.triggered.connect(self.disconnect)
 				menu.addAction(entry)
-
-				if self.client.hostname==None:
-					self.contextNick.setEnabled(False)
-					self.contextJoin.setEnabled(False)
-					if config.SCRIPTING_ENGINE_ENABLED:
-						self.contextRun.setEnabled(False)
 
 			if self.window_type!=SERVER_WINDOW:
 
@@ -1467,6 +1539,9 @@ class Window(QMainWindow):
 
 		self.settingsMenu.clear()
 
+		e = textSeparator(self,"Input Options")
+		self.settingsMenu.addAction(e)
+
 		if config.ENABLE_MARKDOWN_MARKUP:
 			self.mdInput = QAction(QIcon(self.parent.checked_icon),"Markdown", self)
 		else:
@@ -1633,6 +1708,12 @@ class Window(QMainWindow):
 		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS:
 			if hasattr(self,"serverUptime"):
 				if self.serverUptime.isVisible(): self.serverUptime.hide()
+
+		if self.window_type==SERVER_WINDOW:
+			if config.SHOW_CHANNEL_LIST_ON_CONNECT and config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
+				if self.uptime>1 and self.spawned_channel_list==False:
+					self.spawned_channel_list = True
+					self.showChannelList()
 
 		if self.window_type==SERVER_WINDOW:
 			self.uptime = uptime

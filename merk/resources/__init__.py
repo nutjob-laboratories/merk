@@ -1298,6 +1298,7 @@ class QRealnameEdit(QLineEdit):
 	def __init__(self, parent=None):
 		super().__init__(parent)
 
+		# Block control codes from being entered
 		regex = QRegularExpression(r"^[\P{Cc}]*$")
 		regex.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
 		
