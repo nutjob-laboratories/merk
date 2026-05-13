@@ -376,37 +376,36 @@ class Dialog(QDialog):
 			self.ok_button.setEnabled(False)
 			self.sasl.setEnabled(False)
 			self.commands_tab.setEnabled(False)
+			if len(host.strip())==0 or len(port.strip())==0:
+				self.commandHost.setText("<center><small><b>No server selected</b></small></center>")
+				self.commands.clear()
 		else:
 			self.ok_button.setEnabled(True)
 			self.sasl.setEnabled(True)
 			self.commands_tab.setEnabled(True)
-
-		if len(host.strip())==0 or len(port.strip())==0:
-			hostid = "No server"
-		else:
 			hostid = host+":"+port
-		self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
+			self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
 
-		if hostid in user.COMMANDS:
-			self.commands.setPlainText(user.COMMANDS[hostid])
-		else:
-			self.commands.clear()
+			if hostid in user.COMMANDS:
+				self.commands.setPlainText(user.COMMANDS[hostid])
+			else:
+				self.commands.clear()
 
-		if hostid in user.SASL:
-			u = user.SASL[hostid]
-			self.SASL_Username = u[0]
-			self.SASL_Password = u[1]
-			self.use_SASL = True
-			self.sasl.setCheckState(Qt.Checked)
-			self.clear.setEnabled(True)
-			self.edit.setEnabled(True)
-		else:
-			self.SASL_Username = None
-			self.SASL_Password = None
-			self.use_SASL = False
-			self.sasl.setCheckState(Qt.Unchecked)
-			self.clear.setEnabled(False)
-			self.edit.setEnabled(False)
+			if hostid in user.SASL:
+				u = user.SASL[hostid]
+				self.SASL_Username = u[0]
+				self.SASL_Password = u[1]
+				self.use_SASL = True
+				self.sasl.setCheckState(Qt.Checked)
+				self.clear.setEnabled(True)
+				self.edit.setEnabled(True)
+			else:
+				self.SASL_Username = None
+				self.SASL_Password = None
+				self.use_SASL = False
+				self.sasl.setCheckState(Qt.Unchecked)
+				self.clear.setEnabled(False)
+				self.edit.setEnabled(False)
 
 	def generateStylesheet(self,obj,fore,back):
 

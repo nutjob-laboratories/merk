@@ -383,6 +383,38 @@ class Dialog(QDialog):
 			self.tileMDI.setEnabled(True)
 		self.selector.setFocus()
 
+	def deleteHistory(self):
+		self.do_history_delete = True
+		self.save_user = True
+		self.changed.show()
+		self.boldApply()
+		self.restart.show()
+		self.selector.setFocus()
+
+	def deleteSasl(self):
+		self.do_sasl_delete = True
+		self.save_user = True
+		self.changed.show()
+		self.boldApply()
+		self.restart.show()
+		self.selector.setFocus()
+
+	def deleteConnection(self):
+		self.do_script_delete = True
+		self.save_user = True
+		self.changed.show()
+		self.boldApply()
+		self.restart.show()
+		self.selector.setFocus()
+
+	def deleteLast(self):
+		self.do_last_delete = True
+		self.save_user = True
+		self.changed.show()
+		self.boldApply()
+		self.restart.show()
+		self.selector.setFocus()
+
 	def setFontDefault(self):
 		fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
 		for f in OTHER_BUNDLED_FONTS:
@@ -1110,6 +1142,7 @@ class Dialog(QDialog):
 
 	def changeUser(self,state):
 		self.user_changed = True
+		self.save_user = True
 		self.changed.show()
 		self.boldApply()
 
@@ -2131,6 +2164,11 @@ class Dialog(QDialog):
 		self.rerender_subwindows = False
 		self.WINDOWBAR_SORT = config.WINDOWBAR_SORT
 		self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING = config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING
+		self.do_history_delete = False
+		self.save_user = False
+		self.do_sasl_delete = False
+		self.do_script_delete = False
+		self.do_last_delete = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3777,8 +3815,7 @@ class Dialog(QDialog):
 			<small>
 			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP replies</b>.
 			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
-			current connections. <b>Alternate</b> is completely optional; if left blank, <b>{APPLICATION_NAME}</b>
-			will generate a number and attach it to <b>nickname</b> if necessary.
+			current connections. <b>Alternate</b> is completely optional.
 			</small>
 			""")
 		self.userDescription.setWordWrap(True)
@@ -3809,6 +3846,22 @@ class Dialog(QDialog):
 		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
 		self.noSource.stateChanged.connect(self.changedSetting)
 
+		self.resetHistory = QPushButton("Delete connection history")
+		self.resetHistory.clicked.connect(self.deleteHistory)
+		self.resetHistory.setAutoDefault(False)
+
+		self.resetSasl = QPushButton("Delete SASL accounts")
+		self.resetSasl.clicked.connect(self.deleteSasl)
+		self.resetSasl.setAutoDefault(False)
+
+		self.resetConnection = QPushButton("Delete connection scripts")
+		self.resetConnection.clicked.connect(self.deleteConnection)
+		self.resetConnection.setAutoDefault(False)
+
+		self.resetLast = QPushButton("Delete last server connection")
+		self.resetLast.clicked.connect(self.deleteLast)
+		self.resetHistory.setAutoDefault(False)
+
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(2)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
@@ -3818,13 +3871,18 @@ class Dialog(QDialog):
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP replies</b>"))
 		userLayout.addWidget(self.ctcpDescription)
-		userLayout.addWidget(QLabel(' '))
 		userLayout.addLayout(ctcpLayout)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
 		userLayout.addWidget(self.noSource)
 		userLayout.addWidget(self.noVersion)
 		userLayout.addWidget(self.noEnviron)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored user settings</b>"))
+		userLayout.addWidget(self.resetLast)
+		userLayout.addWidget(self.resetHistory)
+		userLayout.addWidget(self.resetSasl)
+		userLayout.addWidget(self.resetConnection)
 		userLayout.addStretch()
 
 		self.userPage.setLayout(userLayout)
@@ -6984,6 +7042,22 @@ class Dialog(QDialog):
 			config.LOG_SAVE_INTERVAL = self.interval
 			self.parent.updateInterval()
 
+		if self.do_history_delete:
+			user.HISTORY = []
+
+		if self.do_sasl_delete:
+			user.SASL = {}
+
+		if self.do_script_delete:
+			user.COMMANDS = {}
+
+		if self.do_last_delete:
+			user.LAST_HOST = ''
+			user.LAST_PORT = '6667'
+			user.LAST_SSL = False
+			user.LAST_RECONNECT = True
+			user.LAST_PASSWORD = ''
+
 		if self.user_changed:
 			user.NICKNAME = self.nick.text()
 			user.ALTERNATE = self.alternative.text()
@@ -6991,7 +7065,8 @@ class Dialog(QDialog):
 			user.REALNAME = self.realname.text()
 			user.USERINFO = self.userinfo.text().strip()
 			user.FINGER = self.finger.text().strip()
-			user.save_user(user.USER_FILE)
+
+		if self.save_user: user.save_user(user.USER_FILE)
 
 		if config.TIMESTAMP_24_HOUR:
 			ts = '%H:%M'

@@ -5,6 +5,8 @@
 What's new:
 
 - **The connection dialog was revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled.
+- **New option: open a server's channel list on connection**. This is disabled by default. However, if turned on (and fetching the server's channel list on connection is turned on), this will show the channel list dialog as soon as the channel list is available.
+- **Added new options to delete user configuration data to the settings dialog**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -30,6 +32,15 @@ What's new:
 * New option: show the "channel list" dialog window for a server when
   connection completes. This is turned off by default, and can only be enabled
   if "fetch server list on connection" is turned on.
+* Bugfix: the channel list could show channels with 0 (zero) users, if the
+  server reported them. This no longer occurs.
+* Added options to delete miscellaneous data from the user configuration file
+  to the "settings" dialog. The new options are on the "user" page.
+* Removed the option to copy things to the clipboard from the userlist right-
+  click menu.
+* Major bugfix: the userlist right-click context menu did not always trigger
+  events correctly on Linux, for reasons that still escape me. This has been
+  fixed.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

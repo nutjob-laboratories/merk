@@ -285,6 +285,8 @@ class Window(QMainWindow):
 				if icount<50:
 					add_entry = False
 
+			if icount==0: add_entry = False
+
 			if add_entry:
 				if len(entry[2])==0:
 					e = f"{entry[0]} {count}"
@@ -372,6 +374,8 @@ class Window(QMainWindow):
 			if self.moreFifty.isChecked():
 				if icount<50:
 					add_entry = False
+
+			if icount==0: add_entry = False
 
 			if add_entry:
 				if len(entry[2])==0:

@@ -1935,6 +1935,64 @@ class Window(QMainWindow):
 			self.setWindowTitle(self.name)
 			self.parent.buildWindowsMenu()
 
+	def menuBanUser(self,nick,hostmask):
+		if hostmask!=None:
+			h = hostmask.split('@')[1]
+			banmask = "*@"+h
+		else:
+			banmask = nick
+		self.client.mode(self.name,True,"b",None,None,banmask)
+
+	def menuKickBackUser(self,nick,hostmask):
+		if hostmask!=None:
+			h = hostmask.split('@')[1]
+			banmask = "*@"+h
+		else:
+			banmask = nick
+		self.client.mode(self.name,True,"b",None,None,banmask)
+		self.client.kick(self.name,nick)
+
+	def menuDoColor(self,user_nick,user_hostmask):
+		c = self.getNicknameColor(user_nick,user_hostmask)
+		if c==None:
+			self.setNicknameColor(user_nick,user_hostmask)
+		else:
+			self.clearNicknameColor(user_nick,user_hostmask)
+
+	def menuDoColorChange(self,user_nick,user_hostmask):
+		self.setNicknameColor(user_nick,user_hostmask)
+	
+	def menuDoIgnore(self,user_nick,user_hostmask,is_hidden):
+		if is_hidden:
+			if user_hostmask!=None:
+				if user_hostmask.lower() in config.IGNORE_LIST:
+					config.IGNORE_LIST.remove(user_hostmask.lower())
+			if user_nick.lower() in config.IGNORE_LIST:
+				config.IGNORE_LIST.remove(user_nick.lower())
+			self.save_config()
+			self.parent.buildSettingsMenu()
+			self.parent.reRenderAll(True)
+			self.parent.rerenderUserlists()
+			if self.parent.ignore_manager!=None:
+				self.parent.ignore_manager.refresh()
+			return True
+		else:
+			if user_hostmask!=None:
+				config.IGNORE_LIST.append(user_hostmask.lower())
+			else:
+				config.IGNORE_LIST.append(user_nick.lower())
+			self.save_config()
+			self.parent.buildSettingsMenu()
+			self.parent.reRenderAll(True)
+			self.parent.rerenderUserlists()
+			if self.parent.ignore_manager!=None:
+				self.parent.ignore_manager.refresh()
+
+	def menuPasteClipboard(self,data):
+		cb = QApplication.clipboard()
+		cb.clear(mode=cb.Clipboard)
+		cb.setText(data, mode=cb.Clipboard)
+
 	def eventFilter(self, source, event):
 
 		# Name click
@@ -2051,9 +2109,9 @@ class Window(QMainWindow):
 				else:
 					this_is_me = False
 
-				menu = QMenu(self)
+				self.userlist_menu = QMenu(self)
 
-				if user_hostmask:
+				if user_hostmask!=None:
 					if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
 						display_hostmask = elide_text(user_hostmask,25)
 					else:
@@ -2084,7 +2142,7 @@ class Window(QMainWindow):
 				statusLayout.addStretch()
 
 				is_hidden = False
-				if user_hostmask:
+				if user_hostmask!=None:
 					if user_hostmask.lower() in config.IGNORE_LIST: is_hidden = True
 				if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
 
@@ -2093,7 +2151,7 @@ class Window(QMainWindow):
 
 				if user_nick==self.client.nickname:
 
-					if user_hostmask:
+					if user_hostmask!=None:
 						if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
 							dstring = elide_text(user_hostmask,25)
 						else:
@@ -2107,7 +2165,7 @@ class Window(QMainWindow):
 					if config.SHOW_AWAY_STATUS_IN_USERLISTS:
 						if self.client.is_away:
 							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
-							menu.addAction(entry)
+							self.userlist_menu.addAction(entry)
 
 							status_text = ''
 							if user_is_op:
@@ -2124,28 +2182,28 @@ class Window(QMainWindow):
 								status_text = "Voiced User"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
-								menu.addAction(entry)
+								self.userlist_menu.addAction(entry)
 
 							if is_hidden:
 								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
-								menu.addAction(e)
+								self.userlist_menu.addAction(e)
 								shown_box = True
 
 							if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 								if user_is_voiced:
 									e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
-									menu.addAction(e)
+									self.userlist_menu.addAction(e)
 									shown_box = True
 
 							if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
 								e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(self.client.away_msg,away_elide_size)}</center></small>")
 							else:
 								e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
-							menu.addAction(e)
+							self.userlist_menu.addAction(e)
 							shown_box = True
 						else:
 							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
-							menu.addAction(entry)
+							self.userlist_menu.addAction(entry)
 
 							status_text = ''
 							if user_is_op:
@@ -2162,37 +2220,37 @@ class Window(QMainWindow):
 								status_text = "Voiced User"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
-								menu.addAction(entry)
+								self.userlist_menu.addAction(entry)
 
 							if is_hidden:
 								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
-								menu.addAction(e)
+								self.userlist_menu.addAction(e)
 								shown_box = True
 
 							if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 								if user_is_voiced:
 									e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
-									menu.addAction(e)
+									self.userlist_menu.addAction(e)
 									shown_box = True
 					else:
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
-						menu.addAction(entry)
+						self.userlist_menu.addAction(entry)
 
 						if is_hidden:
 							e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
-							menu.addAction(e)
+							self.userlist_menu.addAction(e)
 							shown_box = True
 
 						if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 							if user_is_voiced:
 								e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
-								menu.addAction(e)
+								self.userlist_menu.addAction(e)
 								shown_box = True
 
 				else:
-					if user_hostmask:
+					if user_hostmask!=None:
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
-						menu.addAction(entry)
+						self.userlist_menu.addAction(entry)
 
 						status_text = ''
 						if user_is_op:
@@ -2209,25 +2267,25 @@ class Window(QMainWindow):
 							status_text = "Voiced User"
 						if status_text!='':
 							entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
-							menu.addAction(entry)
+							self.userlist_menu.addAction(entry)
 
 						if is_hidden:
 							e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
-							menu.addAction(e)
+							self.userlist_menu.addAction(e)
 							shown_box = True
 					else:
 						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
-						menu.addAction(entry)
+						self.userlist_menu.addAction(entry)
 
 						if is_hidden:
 							e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
-							menu.addAction(e)
+							self.userlist_menu.addAction(e)
 							shown_box = True
 
 					if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
 						if user_is_voiced:
 							e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
-							menu.addAction(e)
+							self.userlist_menu.addAction(e)
 							shown_box = True
 
 				if config.SHOW_AWAY_STATUS_IN_USERLISTS:
@@ -2238,225 +2296,142 @@ class Window(QMainWindow):
 							e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(away_msg,away_elide_size)}</center></small>")
 						else:
 							e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
-						menu.addAction(e)
+						self.userlist_menu.addAction(e)
 						shown_box = True
 
-				if not shown_box: menu.addSeparator()
+				if not shown_box: self.userlist_menu.addSeparator()
 
 				if self.operator:
 
-					opMenu = menu.addMenu(QIcon(OP_USER),"Operator actions")
+					opMenu = self.userlist_menu.addMenu(QIcon(OP_USER),"Operator actions")
 
 					opMenu.addSeparator()
 
-					if user_is_op: actDeop = opMenu.addAction(QIcon(MINUS_ICON),"Take operator status")
-					if not user_is_op: actOp = opMenu.addAction(QIcon(PLUS_ICON),"Give operator status")
+					if user_is_op:
+						act = QAction(QIcon(MINUS_ICON),"Take operator status", self)
+						act.triggered.connect(lambda : self.client.mode(self.name,False,"o",None,user_nick))
+						opMenu.addAction(act)
 
-			
-					if user_is_voiced: actDevoice = opMenu.addAction(QIcon(MINUS_ICON),"Take voiced status")
-					if not user_is_voiced: actVoice = opMenu.addAction(QIcon(PLUS_ICON),"Give voiced status")
+					if not user_is_op:
+						act = QAction(QIcon(MINUS_ICON),"Give operator status", self)
+						act.triggered.connect(lambda : self.client.mode(self.name,True,"o",None,user_nick))
+						opMenu.addAction(act)
+
+					if user_is_voiced:
+						act = QAction(QIcon(MINUS_ICON),"Take voiced status", self)
+						act.triggered.connect(lambda : self.client.mode(self.name,False,"v",None,user_nick))
+						opMenu.addAction(act)
+
+					if not user_is_voiced:
+						act = QAction(QIcon(MINUS_ICON),"Give voiced status", self)
+						act.triggered.connect(lambda : self.client.mode(self.name,True,"v",None,user_nick))
+						opMenu.addAction(act)
 
 					opMenu.addSeparator()
 
-					actKick = opMenu.addAction(QIcon(KICK_ICON),"Kick "+user_nick)
-					actBan = opMenu.addAction(QIcon(BAN_ICON),"Ban "+user_nick)
-					actKickBan = opMenu.addAction(QIcon(BAN_ICON),"Kick && Ban "+user_nick)
+					act = QAction(QIcon(KICK_ICON),"Kick "+user_nick, self)
+					act.triggered.connect(lambda : self.client.kick(self.name,user_nick))
+					opMenu.addAction(act)
 
-				actWhois = menu.addAction(QIcon(WHOIS_ICON),"WHOIS")
+					act = QAction(QIcon(BAN_ICON),"Ban "+user_nick, self)
+					act.triggered.connect(lambda : self.menuBanUser(user_nick,user_hostmask))
+					opMenu.addAction(act)
 
-				ctcpMenu = menu.addMenu(QIcon(WHOIS_ICON),"Send CTCP request")
+					act = QAction(QIcon(BAN_ICON),"Kick && Ban  "+user_nick, self)
+					act.triggered.connect(lambda : self.menuKickBackUser(user_nick,user_hostmask))
+					opMenu.addAction(act)
 
-				actUserinfo = ctcpMenu.addAction(QIcon(PRIVATE_ICON),"USERINFO")
-				actFinger= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"FINGER")
-				actSource= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"SOURCE")
-				actVersion= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"VERSION")
-				actTime= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"TIME")
-				actPing= ctcpMenu.addAction(QIcon(PRIVATE_ICON),"PING")
+				act = QAction(QIcon(WHOIS_ICON),"WHOIS", self)
+				act.triggered.connect(lambda : self.client.sendLine("WHOIS "+user_nick))
+				self.userlist_menu.addAction(act)
+
+				ctcpMenu = self.userlist_menu.addMenu(QIcon(WHOIS_ICON),"Send CTCP request")
+
+				act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
+				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
+				ctcpMenu.addAction(act)
+
+				act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
+				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
+				ctcpMenu.addAction(act)
+
+				act = QAction(QIcon(PRIVATE_ICON),"SOURCE", self)
+				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
+				ctcpMenu.addAction(act)
+
+				act = QAction(QIcon(PRIVATE_ICON),"VERSION", self)
+				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
+				ctcpMenu.addAction(act)
+
+				act = QAction(QIcon(PRIVATE_ICON),"TIME", self)
+				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('TIME', '')]))
+				ctcpMenu.addAction(act)
+
+				act = QAction(QIcon(PRIVATE_ICON),"PING", self)
+				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('PING', '')]))
+				ctcpMenu.addAction(act)
+
+				copyMenu = self.userlist_menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
+
+				act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(user_nick))
+				copyMenu.addAction(act)
+
+				if user_hostmask!=None:
+					act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
+					copyMenu.addAction(act)
+
+				act = QAction(QIcon(CHANNEL_ICON),"Channel name", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.name}"))
+				copyMenu.addAction(act)
+
+				if self.client.hostname:
+					act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
+					copyMenu.addAction(act)
+
+				act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
+				copyMenu.addAction(act)
 
 				if user_nick!=self.client.nickname:
-					actPriv = menu.addAction(QIcon(PRIVATE_ICON),"Open private chat")
+					act = QAction(QIcon(PRIVATE_ICON),"Open private chat", self)
+					act.triggered.connect(lambda : self.parent.openPrivate(self.client,user))
+					self.userlist_menu.addAction(act)
 
-				menu.addSeparator()
+				self.userlist_menu.addSeparator()
 
 				if config.ENABLE_IGNORE:
 					if user_nick!=self.client.nickname:
 						if is_hidden:
-							actIgnore = menu.addAction(QIcon(SHOW_ICON),"Unignore user")
+							act = QAction(QIcon(SHOW_ICON),"Unignore user", self)
+							act.triggered.connect(lambda : self.menuDoIgnore(user_nick,user_hostmask,is_hidden))
+							self.userlist_menu.addAction(act)
 						else:
-							actIgnore = menu.addAction(QIcon(HIDE_ICON),"Ignore user")
+							act = QAction(QIcon(HIDE_ICON),"Ignore user", self)
+							act.triggered.connect(lambda : self.menuDoIgnore(user_nick,user_hostmask,is_hidden))
+							self.userlist_menu.addAction(act)
 
-						menu.addSeparator()
-
-				clipMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
-				actCopyNick = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's nickname")
-				if user_hostmask: actHostmask = clipMenu.addAction(QIcon(PRIVATE_ICON),"User's hostmask")
-				actChannel = clipMenu.addAction(QIcon(CHANNEL_ICON),"Channel name")
-				if self.client.hostname: actHostname = clipMenu.addAction(QIcon(CONSOLE_ICON),"Server hostname")
-				actServer = clipMenu.addAction(QIcon(CONNECT_ICON),"Server information")
+						self.userlist_menu.addSeparator()
 
 				if user_nick!=self.client.nickname:
 					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
 						c = self.getNicknameColor(user_nick,user_hostmask)
 						if c==None:
-							actColor = menu.addAction(QIcon(COLOR_ICON),"Set nickname color")
+							act = QAction(QIcon(COLOR_ICON),"Set nickname color", self)
+							act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
+							self.userlist_menu.addAction(act)
 						else:
-							actChange = menu.addAction(QIcon(COLOR_ICON),"Change nickname color")
-							actColor = menu.addAction(QIcon(HIDE_ICON),"Remove nickname color")
+							act = QAction(QIcon(COLOR_ICON),"Change nickname color", self)
+							act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
+							self.userlist_menu.addAction(act)
 
-				action = menu.exec_(self.userlist.mapToGlobal(event.pos()))
+							act = QAction(QIcon(HIDE_ICON),"Remove nickname color", self)
+							act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
+							self.userlist_menu.addAction(act)
 
-				if user_nick!=self.client.nickname:
-					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
-						if action==actColor:
-							if c==None:
-								self.setNicknameColor(user_nick,user_hostmask)
-							else:
-								self.clearNicknameColor(user_nick,user_hostmask)
-							return True
-					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
-						if c!=None:
-							if action==actChange:
-								self.setNicknameColor(user_nick,user_hostmask)
-							return True
-		
-				if action==actPing:
-					self.client.ping(user_nick)
-					return True
-
-				if action==actTime:
-					self.client.ctcpMakeQuery(user_nick, [('TIME', '')])
-					return True
-
-				if action==actVersion:
-					self.client.ctcpMakeQuery(user_nick, [('VERSION', '')])
-					return True
-
-				if action==actSource:
-					self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')])
-					return True
-
-				if action==actUserinfo:
-					self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')])
-					return True
-
-				if action==actFinger:
-					self.client.ctcpMakeQuery(user_nick, [('FINGER', '')])
-					return True
-
-				if user_nick!=self.client.nickname:
-					if action == actPriv:
-						self.parent.openPrivate(self.client,user)
-						return True
-
-				if config.ENABLE_IGNORE:
-					if user_nick!=self.client.nickname:
-						if action == actIgnore:
-							if is_hidden:
-								if user_hostmask:
-									if user_hostmask.lower() in config.IGNORE_LIST:
-										config.IGNORE_LIST.remove(user_hostmask.lower())
-								if user_nick.lower() in config.IGNORE_LIST:
-									config.IGNORE_LIST.remove(user_nick.lower())
-								self.save_config()
-								self.parent.buildSettingsMenu()
-								self.parent.reRenderAll(True)
-								self.parent.rerenderUserlists()
-								if self.parent.ignore_manager!=None:
-									self.parent.ignore_manager.refresh()
-								return True
-							else:
-								if user_hostmask:
-									config.IGNORE_LIST.append(user_hostmask.lower())
-								else:
-									config.IGNORE_LIST.append(user_nick.lower())
-								self.save_config()
-								self.parent.buildSettingsMenu()
-								self.parent.reRenderAll(True)
-								self.parent.rerenderUserlists()
-								if self.parent.ignore_manager!=None:
-									self.parent.ignore_manager.refresh()
-								return True
-
-				if action == actWhois:
-					self.client.sendLine("WHOIS "+user_nick)
-					return True
-
-				if action == actCopyNick:
-					cb = QApplication.clipboard()
-					cb.clear(mode=cb.Clipboard)
-					cb.setText(f"{user_nick}", mode=cb.Clipboard)
-					return True
-
-				if user_hostmask:
-					if action == actHostmask:
-						cb = QApplication.clipboard()
-						cb.clear(mode=cb.Clipboard)
-						cb.setText(f"{user_hostmask}", mode=cb.Clipboard)
-						return True
-
-				if action==actChannel:
-					cb = QApplication.clipboard()
-					cb.clear(mode=cb.Clipboard)
-					cb.setText(f"{self.name}", mode=cb.Clipboard)
-					return True
-
-				if self.client.hostname:
-					if action == actHostname:
-						cb = QApplication.clipboard()
-						cb.clear(mode=cb.Clipboard)
-						cb.setText(f"{self.client.hostname}", mode=cb.Clipboard)
-						return True
-
-				if action==actServer:
-					cb = QApplication.clipboard()
-					cb.clear(mode=cb.Clipboard)
-					cb.setText(f"{self.client.server}:{self.client.port}", mode=cb.Clipboard)
-					return True
-
-				if self.operator:
-
-					if action == actKick:
-						self.client.kick(self.name,user_nick)
-						return True
-
-					if action == actBan:
-						if user_hostmask:
-							h = user_hostmask.split('@')[1]
-							banmask = "*@"+h
-						else:
-							banmask = user_nick
-						self.client.mode(self.name,True,"b",None,None,banmask)
-						return True
-
-					if action == actKickBan:
-						if user_hostmask:
-							h = user_hostmask.split('@')[1]
-							banmask = "*@"+h
-						else:
-							banmask = user_nick
-						self.client.mode(self.name,True,"b",None,None,banmask)
-						self.client.kick(self.name,user_nick)
-						return True
-
-					if user_is_op:
-						if action == actDeop:
-							self.client.mode(self.name,False,"o",None,user_nick)
-							return True
-
-					if user_is_voiced:
-						if action == actDevoice:
-							self.client.mode(self.name,False,"v",None,user_nick)
-							return True
-
-					if not user_is_op:
-						if action == actOp:
-							self.client.mode(self.name,True,"o",None,user_nick)
-							return True
-
-					if not user_is_voiced:
-						if action == actVoice:
-							self.client.mode(self.name,True,"v",None,user_nick)
-							return True
+				self.userlist_menu.exec_(self.userlist.mapToGlobal(event.pos()))
 
 				return True
 
