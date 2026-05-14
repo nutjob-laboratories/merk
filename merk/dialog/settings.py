@@ -415,6 +415,21 @@ class Dialog(QDialog):
 		self.restart.show()
 		self.selector.setFocus()
 
+	def deleteColors(self):
+		self.do_color_delete = True
+		self.rerenderUsers = True
+		self.rerender = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def deleteFilters(self):
+		self.do_filter_delete = True
+		self.rerender = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def setFontDefault(self):
 		fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
 		for f in OTHER_BUNDLED_FONTS:
@@ -2169,6 +2184,8 @@ class Dialog(QDialog):
 		self.do_sasl_delete = False
 		self.do_script_delete = False
 		self.do_last_delete = False
+		self.do_color_delete = False
+		self.do_filter_delete = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3860,7 +3877,7 @@ class Dialog(QDialog):
 
 		self.resetLast = QPushButton("Delete last server connection")
 		self.resetLast.clicked.connect(self.deleteLast)
-		self.resetHistory.setAutoDefault(False)
+		self.resetLast.setAutoDefault(False)
 
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(2)
@@ -6263,6 +6280,14 @@ class Dialog(QDialog):
 		if config.ENABLE_IRC_COLOR_MARKUP: self.useIRCc.setChecked(True)
 		self.useIRCc.stateChanged.connect(self.changedSetting)
 
+		self.resetColors = QPushButton("Delete stored user colors")
+		self.resetColors.clicked.connect(self.deleteColors)
+		self.resetColors.setAutoDefault(False)
+
+		self.resetFilters = QPushButton("Delete stored channel message filters")
+		self.resetFilters.clicked.connect(self.deleteFilters)
+		self.resetFilters.setAutoDefault(False)
+
 		inoptLayout = QHBoxLayout()
 		inoptLayout.addStretch()
 		inoptLayout.addWidget(self.useMd)
@@ -6285,6 +6310,9 @@ class Dialog(QDialog):
 		miscLayout.addLayout(setLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
 		miscLayout.addLayout(hkLayout)
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored configuration settings</b>"))
+		miscLayout.addWidget(self.resetColors)
+		miscLayout.addWidget(self.resetFilters)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
 
@@ -7050,6 +7078,12 @@ class Dialog(QDialog):
 
 		if self.do_script_delete:
 			user.COMMANDS = {}
+
+		if self.do_color_delete:
+			config.USER_COLORS = {}
+
+		if self.do_filter_delete:
+			config.CHANNEL_FILTERS = {}
 
 		if self.do_last_delete:
 			user.LAST_HOST = ''

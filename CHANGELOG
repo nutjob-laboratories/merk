@@ -6,7 +6,7 @@ What's new:
 
 - **The connection dialog was revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled.
 - **New option: open a server's channel list on connection**. This is disabled by default. However, if turned on (and fetching the server's channel list on connection is turned on), this will show the channel list dialog as soon as the channel list is available.
-- **Added new options to delete user configuration data to the settings dialog**.
+- **Added new options to delete user and application configuration data to the settings dialog**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -41,6 +41,8 @@ What's new:
 * Major bugfix: the userlist right-click context menu did not always trigger
   events correctly on Linux, for reasons that still escape me. This has been
   fixed.
+* Added the option to delete user nickname color and channel message filter
+  settings from the configuration file to the "settings" dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |
