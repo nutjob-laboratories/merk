@@ -2313,7 +2313,7 @@ class Window(QMainWindow):
 						opMenu.addAction(act)
 
 					if not user_is_op:
-						act = QAction(QIcon(MINUS_ICON),"Give operator status", self)
+						act = QAction(QIcon(PLUS_ICON),"Give operator status", self)
 						act.triggered.connect(lambda : self.client.mode(self.name,True,"o",None,user_nick))
 						opMenu.addAction(act)
 
@@ -2323,7 +2323,7 @@ class Window(QMainWindow):
 						opMenu.addAction(act)
 
 					if not user_is_voiced:
-						act = QAction(QIcon(MINUS_ICON),"Give voiced status", self)
+						act = QAction(QIcon(PLUS_ICON),"Give voiced status", self)
 						act.triggered.connect(lambda : self.client.mode(self.name,True,"v",None,user_nick))
 						opMenu.addAction(act)
 
@@ -2390,6 +2390,12 @@ class Window(QMainWindow):
 					act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
 					copyMenu.addAction(act)
+
+				if self.client.network:
+					if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+						act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
+						copyMenu.addAction(act)
 
 				act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
 				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
