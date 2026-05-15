@@ -1080,11 +1080,27 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 	else:
 		sasl_username = None
 		sasl_password = None
+	if hostid in USER.PROFILES and config.ALWAYS_USE_SERVER_PROFILES:
+		nick = USER.PROFILES[hostid][0]
+		alternate = USER.PROFILES[hostid][1]
+		username = USER.PROFILES[hostid][2]
+		realname = USER.PROFILES[hostid][3]
+	else:
+		nick = USER.NICKNAME
+		alternate = USER.ALTERNATE
+		username = USER.USERNAME
+		realname = USER.REALNAME
+
+	if len(nick.strip())==0 or len(username.strip())==0 or len(realname.strip())==0:
+		t = Message(ERROR_MESSAGE,'',f"Missing user information for server connection!")
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+		return True
+
 	i = ConnectInfo(
-		USER.NICKNAME,
-		USER.ALTERNATE,
-		USER.USERNAME,
-		USER.REALNAME,
+		nick,
+		alternate,
+		username,
+		realname,
 		host,
 		port,
 		password,

@@ -168,6 +168,8 @@ if __name__ == '__main__':
 		# Load in user settings
 		user.load_user(user.USER_FILE)
 
+		hostid = f"{host}:{port}"
+
 		user_info_changed = False
 		if args.nickname=='':
 			if len(user.NICKNAME.strip())==0:
@@ -177,6 +179,8 @@ if __name__ == '__main__':
 					show_message("Error",f"No nickname set")
 				sys.exit(1)
 			args.nickname = user.NICKNAME
+			if config.ALWAYS_USE_SERVER_PROFILES:
+				if hostid in user.PROFILES: args.nickname = user.PROFILES[hostid][0]
 		else:
 			user.NICKNAME = args.nickname
 			user_info_changed = True
@@ -186,6 +190,8 @@ if __name__ == '__main__':
 				args.username = f"{APPLICATION_NAME}"
 			else:
 				args.username = user.USERNAME
+				if config.ALWAYS_USE_SERVER_PROFILES:
+					if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][2]
 		else:
 			user.USERNAME = args.username
 			user_info_changed = True
@@ -195,6 +201,8 @@ if __name__ == '__main__':
 				args.alternate = args.nickname + str(random.randint(1,99))
 			else:
 				args.alternate = user.ALTERNATE
+				if config.ALWAYS_USE_SERVER_PROFILES:
+					if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][1]
 		else:
 			user.ALTERNATE = args.alternate
 			user_info_changed = True
@@ -204,6 +212,8 @@ if __name__ == '__main__':
 				args.realname = APPLICATION_NAME +" "+APPLICATION_VERSION
 			else:
 				args.realname = user.REALNAME
+				if config.ALWAYS_USE_SERVER_PROFILES:
+					if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][3]
 		else:
 			user.REALNAME = args.realname
 			user_info_changed = True

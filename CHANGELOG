@@ -7,6 +7,7 @@ What's new:
 - **The connection dialog was revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled.
 - **New option: open a server's channel list on connection**. This is disabled by default. However, if turned on (and fetching the server's channel list on connection is turned on), this will show the channel list dialog as soon as the channel list is available.
 - **Added new options to delete user and application configuration data to the settings dialog**.
+- **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -43,6 +44,14 @@ What's new:
   fixed.
 * Added the option to delete user nickname color and channel message filter
   settings from the configuration file to the "settings" dialog.
+* Bugfix: the nickname, alternate, and username text entry widgets allowed
+  users to enter spaces as values.
+* New feature: server profiles. A specific nickname, alternate nickname,
+  username, and realname can be set for each server. Every time MERK tries to
+  connect to that server, the user information from the profile will be used,
+  no matter how MERK connects to the server (via the connection dialog, via a
+  command, or via the command-line). This behavior can be toggled in settings.
+  Server profiles can be created and edited with the connection dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

@@ -141,11 +141,17 @@ class Dialog(QDialog):
 					sasl_password = self.SASL_Password
 
 			if self.SAVE:
+
+				if self.use_profile:
+					e = [self.nick.text(),self.alternative.text(),self.username.text(),self.realname.text()]
+					user.PROFILES[hostid] = e
+				else:
+					user.NICKNAME = self.nick.text()
+					user.USERNAME = self.username.text()
+					user.REALNAME = self.realname.text()
+					user.ALTERNATE = self.alternative.text()
+
 				# Save user settings
-				user.NICKNAME = self.nick.text()
-				user.ALTERNATE = self.alternative.text()
-				user.USERNAME = self.username.text()
-				user.REALNAME = self.realname.text()
 				user.LAST_HOST = self.host.text()
 				user.LAST_PORT = self.port.text()
 				user.LAST_PASSWORD = self.password.text()
@@ -278,11 +284,65 @@ class Dialog(QDialog):
 			self.clear.setEnabled(False)
 			self.edit.setEnabled(False)
 
-		QTimer.singleShot(0, lambda: self.moveCursor())
+		if hostid in user.PROFILES and config.ALWAYS_USE_SERVER_PROFILES:
+			self.profile.setChecked(True)
+			n = user.PROFILES[hostid][0]
+			a = user.PROFILES[hostid][1]
+			u = user.PROFILES[hostid][2]
+			r = user.PROFILES[hostid][3]
+
+			self.nick.setText(n)
+			self.alternative.setText(a)
+			self.username.setText(u)
+			self.realname.setText(r)
+		else:
+			self.profile.setChecked(False)
+			self.nick.setText(user.NICKNAME)
+			self.alternative.setText(user.ALTERNATE)
+			self.username.setText(user.USERNAME)
+			self.realname.setText(user.REALNAME)
+
+		if hostid in user.PROFILES:
+			self.profile.setText(f"Use server profile")
+		else:
+			self.profile.setText(f"Save as server profile")
+
+		if user.NICKNAME=='' or user.USERNAME=='' or user.REALNAME=='':
+			self.tabs.setCurrentWidget(self.user_tab)
+			self.nick.setFocus()
+			QTimer.singleShot(0, lambda: self.nick.setCursorPosition(len(self.nick.text())))
+		else:
+			QTimer.singleShot(0, lambda: self.moveCursor())
 
 	def moveCursor(self):
 		self.host.setFocus()
 		self.host.setCursorPosition(len(self.host.text()))
+
+	def clickProfile(self):
+		if self.profile.isChecked():
+			self.use_profile = True
+
+			host = self.host.text()
+			port = self.port.text()
+			hostid = host+":"+port
+
+			if hostid in user.PROFILES:
+				n = user.PROFILES[hostid][0]
+				a = user.PROFILES[hostid][1]
+				u = user.PROFILES[hostid][2]
+				r = user.PROFILES[hostid][3]
+
+				self.nick.setText(n)
+				self.alternative.setText(a)
+				self.username.setText(u)
+				self.realname.setText(r)
+		else:
+			self.use_profile = False
+
+			self.nick.setText(user.NICKNAME)
+			self.alternative.setText(user.ALTERNATE)
+			self.username.setText(user.USERNAME)
+			self.realname.setText(user.REALNAME)
 
 	def clickSASL(self,state):
 		if state==Qt.Checked:
@@ -320,7 +380,6 @@ class Dialog(QDialog):
 			self.sasl.setCheckState(Qt.Unchecked)
 			self.clear.setEnabled(False)
 			self.edit.setEnabled(False)
-
 
 	def editSasl(self):
 		if self.SASL_Username!=None and self.SASL_Password!=None:
@@ -368,14 +427,16 @@ class Dialog(QDialog):
 
 		return True
 
-	def infoEntered(self):
+	def userInfoEntered(self):
 		host = self.host.text()
 		port = self.port.text()
+		hostid = host+":"+port
 
 		if self.check_info()==False:
 			self.ok_button.setEnabled(False)
 			self.sasl.setEnabled(False)
 			self.commands_tab.setEnabled(False)
+			self.profile.setEnabled(False)
 			if len(host.strip())==0 or len(port.strip())==0:
 				self.commandHost.setText("<center><small><b>No server selected</b></small></center>")
 				self.commands.clear()
@@ -383,7 +444,61 @@ class Dialog(QDialog):
 			self.ok_button.setEnabled(True)
 			self.sasl.setEnabled(True)
 			self.commands_tab.setEnabled(True)
-			hostid = host+":"+port
+			self.profile.setEnabled(True)
+			self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
+
+			if hostid in user.COMMANDS:
+				self.commands.setPlainText(user.COMMANDS[hostid])
+			else:
+				self.commands.clear()
+
+			if hostid in user.SASL:
+				u = user.SASL[hostid]
+				self.SASL_Username = u[0]
+				self.SASL_Password = u[1]
+				self.use_SASL = True
+				self.sasl.setCheckState(Qt.Checked)
+				self.clear.setEnabled(True)
+				self.edit.setEnabled(True)
+			else:
+				self.SASL_Username = None
+				self.SASL_Password = None
+				self.use_SASL = False
+				self.sasl.setCheckState(Qt.Unchecked)
+				self.clear.setEnabled(False)
+				self.edit.setEnabled(False)
+
+	def infoEntered(self):
+		host = self.host.text()
+		port = self.port.text()
+		hostid = host+":"+port
+
+		if self.use_profile:
+			if hostid in user.PROFILES:
+				n = user.PROFILES[hostid][0]
+				a = user.PROFILES[hostid][1]
+				u = user.PROFILES[hostid][2]
+				r = user.PROFILES[hostid][3]
+
+				self.nick.setText(n)
+				self.alternative.setText(a)
+				self.username.setText(u)
+				self.realname.setText(r)
+				self.profile.setChecked(True)
+
+		if self.check_info()==False:
+			self.ok_button.setEnabled(False)
+			self.sasl.setEnabled(False)
+			self.commands_tab.setEnabled(False)
+			self.profile.setEnabled(False)
+			if len(host.strip())==0 or len(port.strip())==0:
+				self.commandHost.setText("<center><small><b>No server selected</b></small></center>")
+				self.commands.clear()
+		else:
+			self.ok_button.setEnabled(True)
+			self.sasl.setEnabled(True)
+			self.commands_tab.setEnabled(True)
+			self.profile.setEnabled(True)
 			self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
 
 			if hostid in user.COMMANDS:
@@ -423,6 +538,7 @@ class Dialog(QDialog):
 		self.donotsave = donotsave
 		self.initial = initial
 		self.skipping = False
+		self.use_profile = False
 
 		if test_if_window_background_is_light(self):
 			self.dark_mode = False
@@ -495,11 +611,15 @@ class Dialog(QDialog):
 		usrl = QLabel("<b>Username</b>")
 		reall = QLabel("<b>Real name</b>")
 
+		self.profile = QCheckBox("Save as server profile",self)
+		self.profile.stateChanged.connect(self.clickProfile)
+
 		userLayout = QFormLayout()
 		userLayout.addRow(nickl, self.nick)
 		userLayout.addRow(altl, self.alternative)
 		userLayout.addRow(usrl, self.username)
 		userLayout.addRow(reall, self.realname)
+		userLayout.addRow(self.profile)
 
 		self.servers = QComboBox(self)
 		self.servers.activated.connect(self.setServer)
@@ -519,9 +639,9 @@ class Dialog(QDialog):
 		self.host.textChanged.connect(self.infoEntered)
 		self.port.textChanged.connect(self.infoEntered)
 
-		self.nick.textChanged.connect(self.infoEntered)
-		self.username.textChanged.connect(self.infoEntered)
-		self.realname.textChanged.connect(self.infoEntered)
+		self.nick.textChanged.connect(self.userInfoEntered)
+		self.username.textChanged.connect(self.userInfoEntered)
+		self.realname.textChanged.connect(self.userInfoEntered)
 
 		serverLayout = QFormLayout()
 
@@ -710,6 +830,25 @@ class Dialog(QDialog):
 		self.ok_button.setDefault(True)
 		self.ok_button.setAutoDefault(True)
 
+		if hostid in user.PROFILES and config.ALWAYS_USE_SERVER_PROFILES:
+			self.use_profile = True
+			n = user.PROFILES[hostid][0]
+			a = user.PROFILES[hostid][1]
+			u = user.PROFILES[hostid][2]
+			r = user.PROFILES[hostid][3]
+
+			self.nick.setText(n)
+			self.alternative.setText(a)
+			self.username.setText(u)
+			self.realname.setText(r)
+			self.profile.setChecked(True)
+
+			self.profile.setText(f"Use server profile")
+
+		elif hostid in user.PROFILES and config.ALWAYS_USE_SERVER_PROFILES==False:
+
+			self.profile.setText(f"Use server profile")
+
 		if self.initial:
 			buttons.button(QDialogButtonBox.Cancel).setText("Exit")
 		else:
@@ -778,9 +917,14 @@ class Dialog(QDialog):
 		self.setFixedSize(finalLayout.sizeHint())
 
 		if user.NICKNAME=='' or user.USERNAME=='' or user.REALNAME=='':
-			self.tabs.setCurrentWidget(self.user_tab)
-			self.nick.setFocus()
-			QTimer.singleShot(0, lambda: self.nick.setCursorPosition(len(self.nick.text())))
+			if len(self.nick.text().strip())==0 or len(self.username.text().strip())==0 or len(self.realname.text().strip())==0:
+				self.tabs.setCurrentWidget(self.user_tab)
+				self.nick.setFocus()
+				QTimer.singleShot(0, lambda: self.nick.setCursorPosition(len(self.nick.text())))
+			else:
+				self.tabs.setCurrentWidget(self.server_tab)
+				self.host.setFocus()
+				QTimer.singleShot(0, lambda: self.host.setCursorPosition(len(self.host.text())))
 		else:
 			self.tabs.setCurrentWidget(self.server_tab)
 			self.host.setFocus()

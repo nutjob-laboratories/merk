@@ -415,6 +415,14 @@ class Dialog(QDialog):
 		self.restart.show()
 		self.selector.setFocus()
 
+	def deleteProfile(self):
+		self.do_profile_delete = True
+		self.save_user = True
+		self.changed.show()
+		self.boldApply()
+		self.restart.show()
+		self.selector.setFocus()
+
 	def deleteColors(self):
 		self.do_color_delete = True
 		self.rerenderUsers = True
@@ -2186,6 +2194,7 @@ class Dialog(QDialog):
 		self.do_last_delete = False
 		self.do_color_delete = False
 		self.do_filter_delete = False
+		self.do_profile_delete = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3863,21 +3872,60 @@ class Dialog(QDialog):
 		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
 		self.noSource.stateChanged.connect(self.changedSetting)
 
-		self.resetHistory = QPushButton("Delete connection history")
+		self.resetHistory = QPushButton("Connection history")
 		self.resetHistory.clicked.connect(self.deleteHistory)
 		self.resetHistory.setAutoDefault(False)
 
-		self.resetSasl = QPushButton("Delete SASL accounts")
+		self.resetSasl = QPushButton("SASL accounts")
 		self.resetSasl.clicked.connect(self.deleteSasl)
 		self.resetSasl.setAutoDefault(False)
 
-		self.resetConnection = QPushButton("Delete connection scripts")
+		self.resetConnection = QPushButton("Connection scripts")
 		self.resetConnection.clicked.connect(self.deleteConnection)
 		self.resetConnection.setAutoDefault(False)
 
-		self.resetLast = QPushButton("Delete last server connection")
+		self.resetLast = QPushButton("Last server connection")
 		self.resetLast.clicked.connect(self.deleteLast)
 		self.resetLast.setAutoDefault(False)
+
+		self.resetProfiles = QPushButton("Server profiles")
+		self.resetProfiles.clicked.connect(self.deleteProfile)
+		self.resetProfiles.setAutoDefault(False)
+
+		bdLayout1 = QHBoxLayout()
+		bdLayout1.setSpacing(0)
+		bdLayout1.addWidget(self.resetLast)
+		bdLayout1.addWidget(self.resetHistory)
+
+		bdLayout2 = QHBoxLayout()
+		bdLayout2.setSpacing(0)
+		bdLayout2.addWidget(self.resetSasl)
+		bdLayout2.addWidget(self.resetConnection)
+
+		bdLayout = QVBoxLayout()
+		bdLayout.setSpacing(0)
+		bdLayout.addLayout(bdLayout1)
+		bdLayout.addLayout(bdLayout2)
+		bdLayout.addWidget(self.resetProfiles)
+
+		self.profileDescription = QLabel(f"""
+			<small>
+			Server profiles for <b>nicknames</b>, <b>alternates</b>, <b>usernames</b>,
+			and <b>realnames</b> for use with specific servers will always be used, 
+			unless this option is disabled.
+			</small>
+			""")
+		self.profileDescription.setWordWrap(True)
+		self.profileDescription.setAlignment(Qt.AlignJustify)
+
+		self.useProfiles = QCheckBox(f"Always use server profiles for connections",self)
+		if config.ALWAYS_USE_SERVER_PROFILES: self.useProfiles.setChecked(True)
+		self.useProfiles.stateChanged.connect(self.changedSetting)
+
+		profLayout = QHBoxLayout()
+		profLayout.addStretch()
+		profLayout.addWidget(self.useProfiles)
+		profLayout.addStretch()
 
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(2)
@@ -3885,21 +3933,19 @@ class Dialog(QDialog):
 		userLayout.addWidget(self.userDescription)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addLayout(udataLayout)
+		userLayout.addWidget(self.profileDescription)
+		userLayout.addLayout(profLayout)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP replies</b>"))
 		userLayout.addWidget(self.ctcpDescription)
 		userLayout.addLayout(ctcpLayout)
-		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
 		userLayout.addWidget(self.noSource)
 		userLayout.addWidget(self.noVersion)
 		userLayout.addWidget(self.noEnviron)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored user settings</b>"))
-		userLayout.addWidget(self.resetLast)
-		userLayout.addWidget(self.resetHistory)
-		userLayout.addWidget(self.resetSasl)
-		userLayout.addWidget(self.resetConnection)
+		userLayout.addLayout(bdLayout)
 		userLayout.addStretch()
 
 		self.userPage.setLayout(userLayout)
@@ -6970,6 +7016,7 @@ class Dialog(QDialog):
 		config.PLUGIN_ACK = self.plugAck.isChecked()
 		config.NOTIFY_ON_CTCP_REQUESTS = self.notifyCTCP.isChecked()
 		config.SHOW_CHANNEL_LIST_ON_CONNECT = self.showList.isChecked()
+		config.ALWAYS_USE_SERVER_PROFILES = self.useProfiles.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()
@@ -7077,13 +7124,16 @@ class Dialog(QDialog):
 			user.SASL = {}
 
 		if self.do_script_delete:
-			user.COMMANDS = {}
+			user.COMMANDS = {} 
 
 		if self.do_color_delete:
 			config.USER_COLORS = {}
 
 		if self.do_filter_delete:
 			config.CHANNEL_FILTERS = {}
+
+		if self.do_profile_delete:
+			user.PROFILES = {}
 
 		if self.do_last_delete:
 			user.LAST_HOST = ''

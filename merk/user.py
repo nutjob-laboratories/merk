@@ -47,6 +47,7 @@ COMMANDS = {}
 USERINFO = ''
 FINGER = ''
 SASL = {}
+PROFILES = {}
 
 def build_settings():
 	settings = {
@@ -64,11 +65,14 @@ def build_settings():
 		"userinfo": USERINFO,
 		"finger": FINGER,
 		"sasl": SASL,
+		"server_profiles": PROFILES,
 	}
 
 	return settings
 
 def patch_user(settings):
+	if not "server_profiles" in settings:
+		settings["server_profiles"] = PROFILES
 	if not "sasl" in settings:
 		settings["sasl"] = SASL
 	if not "finger" in settings:
@@ -115,6 +119,7 @@ def load_user(filename):
 	global USERINFO
 	global FINGER
 	global SASL
+	global PROFILES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -139,6 +144,7 @@ def load_user(filename):
 		USERINFO = settings["userinfo"]
 		FINGER = settings["finger"]
 		SASL = settings["sasl"]
+		PROFILES = settings["server_profiles"]
 
 		if prepatch_length!=postpatch_length:
 			save_user(filename)
@@ -158,6 +164,7 @@ def import_data(entry,value):
 	global USERINFO
 	global FINGER
 	global SASL
+	global PROFILES
 
 	settings = build_settings()
 	settings[entry] = value
@@ -175,6 +182,7 @@ def import_data(entry,value):
 	USERINFO = settings["userinfo"]
 	FINGER = settings["finger"]
 	SASL = settings["sasl"]
+	PROFILES = settings["server_profiles"]
 
 def save_user(filename):
 

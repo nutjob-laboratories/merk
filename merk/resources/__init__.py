@@ -1276,7 +1276,7 @@ class QNickEdit(QLineEdit):
 
 		# Block forbidden characters from nicknames,
 		# including nicknames that start with numbers
-		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘"
+		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘ "
 		pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
 		
 		self.validator = QRegExpValidator(QRegExp(pattern), self)
@@ -1311,7 +1311,7 @@ class QErrNickEdit(QLineEdit):
 
 		self.setMaxLength(8)
 
-		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘"
+		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘ "
 		pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
 		
 		self.validator = QRegExpValidator(QRegExp(pattern), self)
