@@ -233,7 +233,7 @@ class Window(QMainWindow):
 		self.users_protected = []
 		self.users_normal = []
 		self.user_colors = {}
-		self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
+		# self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
 		self.banlist = []
 		self.away = {}
 		self.userlist_visible = True
@@ -2542,14 +2542,14 @@ class Window(QMainWindow):
 		self.buildUserColors()
 		self.writeUserlist(self.users)
 
-	def readjustUserlist(self):
-		if hasattr(self,"horizontalSplitter"):
-			if self.userlist_width_in_characters!=config.USERLIST_WIDTH_IN_CHARACTERS:
-				self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
-				fm = QFontMetrics(self.app.font())
-				ulwidth = (fm.averageCharWidth() + 5) + (fm.averageCharWidth()*config.USERLIST_WIDTH_IN_CHARACTERS)
-				mwidth = self.width()-ulwidth
-				self.horizontalSplitter.setSizes([mwidth,ulwidth])
+	# def readjustUserlist(self):
+	# 	if hasattr(self,"horizontalSplitter"):
+	# 		if self.userlist_width_in_characters!=config.USERLIST_WIDTH_IN_CHARACTERS:
+	# 			self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
+	# 			fm = QFontMetrics(self.app.font())
+	# 			ulwidth = (fm.averageCharWidth() + 5) + (fm.averageCharWidth()*config.USERLIST_WIDTH_IN_CHARACTERS)
+	# 			mwidth = self.width()-ulwidth
+	# 			self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
 	def change_to_away_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:

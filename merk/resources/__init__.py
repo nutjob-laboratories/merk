@@ -1324,3 +1324,9 @@ class ScrollableMenuStyle(QProxyStyle):
 		if hint == QStyle.SH_Menu_Scrollable:
 			return True
 		return super().styleHint(hint, option, widget, returnData)
+
+class SmallButton(QPushButton):
+	def sizeHint(self):
+		size = super().sizeHint()
+		size.setHeight(size.height() - 5)
+		return size

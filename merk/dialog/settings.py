@@ -3813,13 +3813,13 @@ class Dialog(QDialog):
 		font = self.font()
 		font.setBold(True)
 
-		self.nickLabel = QLabel("Nickname:")
+		self.nickLabel = QLabel("Nickname ")
 		self.nickLabel.setFont(font)
-		self.alternateLabel = QLabel("Alternate:")
+		self.alternateLabel = QLabel("Alternate ")
 		self.alternateLabel.setFont(font)
-		self.usernameLabel = QLabel("Username:")
+		self.usernameLabel = QLabel("Username ")
 		self.usernameLabel.setFont(font)
-		self.realnameLabel = QLabel("Realname:")
+		self.realnameLabel = QLabel("Realname ")
 		self.realnameLabel.setFont(font)
 
 		udataLayout = QFormLayout()
@@ -3828,9 +3828,9 @@ class Dialog(QDialog):
 		udataLayout.addRow(self.usernameLabel,self.username)
 		udataLayout.addRow(self.realnameLabel,self.realname)
 
-		self.uinfoLabel = QLabel("USERINFO:")
+		self.uinfoLabel = QLabel("USERINFO ")
 		self.uinfoLabel.setFont(font)
-		self.finLabel = QLabel("FINGER:")
+		self.finLabel = QLabel("FINGER ")
 		self.finLabel.setFont(font)
 
 		ctcpLayout = QFormLayout()
@@ -3872,23 +3872,23 @@ class Dialog(QDialog):
 		if config.DO_NOT_REPLY_TO_CTCP_SOURCE: self.noSource.setChecked(True)
 		self.noSource.stateChanged.connect(self.changedSetting)
 
-		self.resetHistory = QPushButton("Connection history")
+		self.resetHistory = SmallButton("Connection history")
 		self.resetHistory.clicked.connect(self.deleteHistory)
 		self.resetHistory.setAutoDefault(False)
 
-		self.resetSasl = QPushButton("SASL accounts")
+		self.resetSasl = SmallButton("SASL accounts")
 		self.resetSasl.clicked.connect(self.deleteSasl)
 		self.resetSasl.setAutoDefault(False)
 
-		self.resetConnection = QPushButton("Connection scripts")
+		self.resetConnection = SmallButton("Connection scripts")
 		self.resetConnection.clicked.connect(self.deleteConnection)
 		self.resetConnection.setAutoDefault(False)
 
-		self.resetLast = QPushButton("Last server connection")
+		self.resetLast = SmallButton("Last server connection")
 		self.resetLast.clicked.connect(self.deleteLast)
 		self.resetLast.setAutoDefault(False)
 
-		self.resetProfiles = QPushButton("Server profiles")
+		self.resetProfiles = SmallButton("Server profiles")
 		self.resetProfiles.clicked.connect(self.deleteProfile)
 		self.resetProfiles.setAutoDefault(False)
 
@@ -3909,7 +3909,7 @@ class Dialog(QDialog):
 		bdLayout.addWidget(self.resetProfiles)
 
 		self.profileDescription = QLabel(f"""
-			<small>
+			<small><br>
 			Server profiles for <b>nicknames</b>, <b>alternates</b>, <b>usernames</b>,
 			and <b>realnames</b> for use with specific servers will always be used, 
 			unless this option is disabled.
@@ -3931,7 +3931,6 @@ class Dialog(QDialog):
 		userLayout.setSpacing(2)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
 		userLayout.addWidget(self.userDescription)
-		userLayout.addWidget(QLabel(' '))
 		userLayout.addLayout(udataLayout)
 		userLayout.addWidget(self.profileDescription)
 		userLayout.addLayout(profLayout)
@@ -3939,6 +3938,7 @@ class Dialog(QDialog):
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP replies</b>"))
 		userLayout.addWidget(self.ctcpDescription)
 		userLayout.addLayout(ctcpLayout)
+		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
 		userLayout.addWidget(self.noSource)
 		userLayout.addWidget(self.noVersion)
@@ -6326,11 +6326,11 @@ class Dialog(QDialog):
 		if config.ENABLE_IRC_COLOR_MARKUP: self.useIRCc.setChecked(True)
 		self.useIRCc.stateChanged.connect(self.changedSetting)
 
-		self.resetColors = QPushButton("Delete stored user colors")
+		self.resetColors = SmallButton("User colors")
 		self.resetColors.clicked.connect(self.deleteColors)
 		self.resetColors.setAutoDefault(False)
 
-		self.resetFilters = QPushButton("Delete stored channel message filters")
+		self.resetFilters = SmallButton("Channel message filters")
 		self.resetFilters.clicked.connect(self.deleteFilters)
 		self.resetFilters.setAutoDefault(False)
 
@@ -6346,6 +6346,11 @@ class Dialog(QDialog):
 		inputOptionsLayout.addWidget(self.mdDescription)
 		inputOptionsLayout.addLayout(inoptLayout)
 
+		resButtons = QHBoxLayout()
+		resButtons.setSpacing(0)
+		resButtons.addWidget(self.resetColors)
+		resButtons.addWidget(self.resetFilters)
+
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
@@ -6357,8 +6362,7 @@ class Dialog(QDialog):
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
 		miscLayout.addLayout(hkLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored configuration settings</b>"))
-		miscLayout.addWidget(self.resetColors)
-		miscLayout.addWidget(self.resetFilters)
+		miscLayout.addLayout(resButtons)
 		miscLayout.addStretch()
 		self.miscPage.setLayout(miscLayout)
 

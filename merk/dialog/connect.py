@@ -303,7 +303,7 @@ class Dialog(QDialog):
 			self.realname.setText(user.REALNAME)
 
 		if hostid in user.PROFILES:
-			self.profile.setText(f"Use server profile")
+			self.profile.setText(f"Use {hostid} profile")
 		else:
 			self.profile.setText(f"Save as server profile")
 
@@ -614,6 +614,11 @@ class Dialog(QDialog):
 		self.profile = QCheckBox("Save as server profile",self)
 		self.profile.stateChanged.connect(self.clickProfile)
 
+		# Make the "profile" checkbox slightly smaller
+		current_font = self.profile.font()
+		current_font.setPointSize(current_font.pointSize() - 1)
+		self.profile.setFont(current_font)
+
 		userLayout = QFormLayout()
 		userLayout.addRow(nickl, self.nick)
 		userLayout.addRow(altl, self.alternative)
@@ -781,7 +786,8 @@ class Dialog(QDialog):
 			<b>alternate</b> (optional) is used if your primary choice is taken. If both <b>nickname</b>
 			and <b>alternate</b> are taken, a random number will be attached to <b>nickname</b>, and that
 			will be used as the nickname. All settings are saved when you click <b>Connect</b>,
-			unless you uncheck <b>Save to user settings file</b> below.
+			unless you uncheck <b>Save to user settings file</b> below. Click <b>Save as server profile</b>
+			if you'd like to use this user information every time you connect to this specific server.
 			</small>
 
 			""")
@@ -843,11 +849,11 @@ class Dialog(QDialog):
 			self.realname.setText(r)
 			self.profile.setChecked(True)
 
-			self.profile.setText(f"Use server profile")
+			self.profile.setText(f"Use {hostid} profile")
 
 		elif hostid in user.PROFILES and config.ALWAYS_USE_SERVER_PROFILES==False:
 
-			self.profile.setText(f"Use server profile")
+			self.profile.setText(f"Use {hostid} profile")
 
 		if self.initial:
 			buttons.button(QDialogButtonBox.Cancel).setText("Exit")
