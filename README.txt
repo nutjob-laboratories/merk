@@ -149,6 +149,9 @@ There are four libraries that comes bundled with **MERK**:
     - Extensive command-line options
         - Over 30 different command-line flags, allowing for connecting to multiple servers on startup, disabling or enabling options, and more
     - Dark mode
+    - Server profiles
+        - Set server-specific nicknames, alternate nicknames, usernames, and realnames
+        - Server profiles, once created, are used for all connections made to that server
     - Full scripting engine
         - Includes a built in script editor, with syntax highlighting
         - Automatically execute scripts on server connection (to join channels, login in ChanServ, etc.)

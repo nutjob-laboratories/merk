@@ -210,6 +210,8 @@ MAXIMUM_RERENDER_TIME_WITH_HOSTMASK_LOOKUP = 180
 MINIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP = 20
 MAXIMUM_RERENDER_TIME_WITHOUT_HOSTMASK_LOOKUP = 30
 
+MAXIMUM_USERLIST_PERCENTAGE = 0.95
+
 # Icons
 
 # Light mode icons
@@ -500,7 +502,7 @@ def is_text_file(filepath, block_size=1024):
 		return False
 
 def is_allowed_nickname(s):
-	forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘"
+	forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘ "
 	pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
 	regex = re.compile(pattern)
 	return bool(regex.match(s))

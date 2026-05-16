@@ -244,6 +244,7 @@ class Window(QMainWindow):
 		self.rerendered_chat = False
 		self.non_colored_nicks = []
 		self.spawned_channel_list = False
+		self.initial_userlist_width = 0
 
 		# The window's opacity starts at 100%
 		self.opacity = 100
@@ -657,6 +658,7 @@ class Window(QMainWindow):
 			# Set the starting width of the userlist
 			self.userlist.resize(ulwidth,self.height())
 			self.userlist_width = ulwidth
+			self.initial_userlist_width = ulwidth
 
 			topicLayout = QHBoxLayout()
 			topicLayout.addWidget(self.channel_mode_display)
@@ -3585,9 +3587,36 @@ class Window(QMainWindow):
 				# Make sure the topic displays correctly
 				if hasattr(self,"topic"): self.topic.refresh()
 
+		# Make sure that the userlist is never set to be big enough that you can't
+		# see the chat widget
+		if config.SHOW_USERLIST and hasattr(self,"userlist"):
+			if self.userlist_width!=self.initial_userlist_width:
+				if self.userlist_width>self.width()*MAXIMUM_USERLIST_PERCENTAGE: self.userlist_width = int(self.width()*MAXIMUM_USERLIST_PERCENTAGE)
+				chat_width = self.width() - self.userlist_width - (CHAT_WINDOW_WIDGET_SPACING * 3)
+				self.userlist.resize(self.userlist_width,self.userlist.height())
+				self.chat.resize(chat_width,self.chat.height())
+				self.userlist.move(chat_width + 3,self.userlist.y())
+				if config.SHOW_USERLIST_ON_LEFT:
+					self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
+				else:
+					self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
+
 	def splitterResize(self,position,index):
 		# Save the width of the userlist for the resize event
 		self.userlist_width = self.userlist.width()
+
+		# Make sure that the userlist is never set to be big enough that you can't
+		# see the chat widget
+		if self.userlist_width>self.width()*MAXIMUM_USERLIST_PERCENTAGE:
+			self.userlist_width = int(self.width()*MAXIMUM_USERLIST_PERCENTAGE)
+			chat_width = self.width() - self.userlist_width - (CHAT_WINDOW_WIDGET_SPACING * 3)
+			self.userlist.resize(self.userlist_width,self.userlist.height())
+			self.chat.resize(chat_width,self.chat.height())
+			self.userlist.move(chat_width + 3,self.userlist.y())
+			if config.SHOW_USERLIST_ON_LEFT:
+				self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
+			else:
+				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
 
 	def resizeScroll(self):
 		# Scroll the chat display down to the bottom
@@ -3621,6 +3650,10 @@ class Window(QMainWindow):
 
 			# Calculate the width of the chat display widget
 			chat_width = self.width() - self.userlist_width - (CHAT_WINDOW_WIDGET_SPACING * 3)
+
+			# Make sure that the userlist is never set to be big enough that you can't
+			# see the chat widget
+			if self.userlist_width>self.width()*MAXIMUM_USERLIST_PERCENTAGE: self.userlist_width = int(self.width()*MAXIMUM_USERLIST_PERCENTAGE)
 
 			# Resize the userlist widget with the width value saved in
 			# the splitter resize event

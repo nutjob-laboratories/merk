@@ -52,6 +52,8 @@ What's new:
   no matter how MERK connects to the server (via the connection dialog, via a
   command, or via the command-line). This behavior can be toggled in settings.
   Server profiles can be created and edited with the connection dialog.
+* Bugfix: the userlist can no longer be resized so big that it covers the chat
+  display. The maximum size it can reach if 95% of the chat display.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |
