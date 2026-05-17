@@ -438,6 +438,13 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def deleteWidths(self):
+		self.do_width_delete = True
+		self.restart.show()
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def setFontDefault(self):
 		fid = QFontDatabase.addApplicationFont(BUNDLED_FONT)
 		for f in OTHER_BUNDLED_FONTS:
@@ -1642,6 +1649,7 @@ class Dialog(QDialog):
 			self.colorUserlists.setEnabled(True)
 			self.underlineSelf.setEnabled(True)
 			self.styleSelf.setEnabled(True)
+			self.saveWidth.setEnabled(True)
 
 			if self.ulistContext.isChecked():
 				self.elideAway.setEnabled(True)
@@ -1666,6 +1674,7 @@ class Dialog(QDialog):
 			self.colorUserlists.setEnabled(False)
 			self.underlineSelf.setEnabled(False)
 			self.styleSelf.setEnabled(False)
+			self.saveWidth.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2195,6 +2204,7 @@ class Dialog(QDialog):
 		self.do_color_delete = False
 		self.do_filter_delete = False
 		self.do_profile_delete = False
+		self.do_width_delete = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -4078,6 +4088,10 @@ class Dialog(QDialog):
 		if config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS: self.styleSelf.setChecked(True)
 		self.styleSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
 
+		self.saveWidth = QCheckBox("Save individual channels' userlist width",self)
+		if config.SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
+		self.saveWidth.stateChanged.connect(self.changedSetting)
+
 		if not config.SHOW_USERLIST:
 			self.ulistWidthLabel.setEnabled(False)
 			self.ulistWidthBox.setEnabled(False)
@@ -4095,6 +4109,7 @@ class Dialog(QDialog):
 			self.colorUserlists.setEnabled(False)
 			self.underlineSelf.setEnabled(False)
 			self.styleSelf.setEnabled(False)
+			self.saveWidth.setEnabled(False)
 
 		if not config.USERLIST_CONTEXT_MENU:
 			if config.SHOW_USERLIST:
@@ -4123,6 +4138,7 @@ class Dialog(QDialog):
 		ulistDisplay.addRow(self.underlineSelf,self.styleSelf)
 		ulistDisplay.addRow(self.hideScroll)
 		ulistDisplay.addRow(self.dcPrivate)
+		ulistDisplay.addRow(self.saveWidth)
 
 		infoExist = QHBoxLayout()
 		infoExist.addStretch()
@@ -4184,25 +4200,14 @@ class Dialog(QDialog):
 		if not config.HIGHLIGHT_NICKS_IN_CHAT:
 			self.autoRerender.setEnabled(False)
 
-		showCM1 = QHBoxLayout()
-		showCM1.setSpacing(0)
-		showCM1.addStretch()
-		showCM1.addWidget(self.showJoin)
-		showCM1.addStretch()
-		showCM1.addWidget(self.showPart)
-		showCM1.addStretch()
-		showCM1.addWidget(self.showQuit)
-		showCM1.addStretch()
-
-		showCM2 = QHBoxLayout()
-		showCM2.setSpacing(0)
-		showCM2.addStretch()
-		showCM2.addWidget(self.showModes)
-		showCM2.addStretch()
-		showCM2.addWidget(self.showNicks)
-		showCM2.addStretch()
-		showCM2.addWidget(self.showTopic)
-		showCM2.addStretch()
+		cfLayout = QHBoxLayout()
+		cfLayout.setSpacing(0)
+		cfLayout.addWidget(self.showJoin)
+		cfLayout.addWidget(self.showPart)
+		cfLayout.addWidget(self.showQuit)
+		cfLayout.addWidget(self.showModes)
+		cfLayout.addWidget(self.showNicks)
+		cfLayout.addWidget(self.showTopic)
 
 		showCM3 = QHBoxLayout()
 		showCM3.setSpacing(0)
@@ -4214,11 +4219,6 @@ class Dialog(QDialog):
 		showCM.addLayout(showCM3)
 		showCM.addLayout(nickHighlightLayout)
 		showCM.addWidget(self.autoRerender)
-		
-		allFilter = QVBoxLayout()
-		allFilter.setSpacing(0)
-		allFilter.addLayout(showCM1)
-		allFilter.addLayout(showCM2)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
@@ -4230,7 +4230,7 @@ class Dialog(QDialog):
 		menuLayout.addLayout(ulistDisplay)
 		menuLayout.addLayout(ulistWidthLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show message types in all channels</b>"))
-		menuLayout.addLayout(allFilter)
+		menuLayout.addLayout(cfLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		menuLayout.addLayout(showCM)
 		menuLayout.addStretch()
@@ -6334,6 +6334,10 @@ class Dialog(QDialog):
 		self.resetFilters.clicked.connect(self.deleteFilters)
 		self.resetFilters.setAutoDefault(False)
 
+		self.resetWidths = SmallButton("Channel userlist widths")
+		self.resetWidths.clicked.connect(self.deleteWidths)
+		self.resetWidths.setAutoDefault(False)
+
 		inoptLayout = QHBoxLayout()
 		inoptLayout.addStretch()
 		inoptLayout.addWidget(self.useMd)
@@ -6346,10 +6350,15 @@ class Dialog(QDialog):
 		inputOptionsLayout.addWidget(self.mdDescription)
 		inputOptionsLayout.addLayout(inoptLayout)
 
-		resButtons = QHBoxLayout()
+		resButtons1 = QHBoxLayout()
+		resButtons1.setSpacing(0)
+		resButtons1.addWidget(self.resetColors)
+		resButtons1.addWidget(self.resetFilters)
+
+		resButtons = QVBoxLayout()
 		resButtons.setSpacing(0)
-		resButtons.addWidget(self.resetColors)
-		resButtons.addWidget(self.resetFilters)
+		resButtons.addLayout(resButtons1)
+		resButtons.addWidget(self.resetWidths)
 
 		miscLayout = QVBoxLayout()
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
@@ -7042,6 +7051,14 @@ class Dialog(QDialog):
 		if self.USERLIST_WIDTH_IN_CHARACTERS!=config.USERLIST_WIDTH_IN_CHARACTERS:
 			config.USERLIST_WIDTH_IN_CHARACTERS = self.USERLIST_WIDTH_IN_CHARACTERS
 
+		save_userlists = False
+		if self.saveWidth.isChecked() and config.SAVE_USERLIST_WIDTH==False:
+			save_userlists = True
+
+		config.SAVE_USERLIST_WIDTH = self.saveWidth.isChecked()
+
+		if config.SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
+
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
 		elif self.SET_SUBWINDOW_ORDER.lower()=='stacking':
@@ -7136,6 +7153,9 @@ class Dialog(QDialog):
 		if self.do_filter_delete:
 			config.CHANNEL_FILTERS = {}
 
+		if self.do_width_delete:
+			config.SAVE_USERLIST_WIDTH = {}
+
 		if self.do_profile_delete:
 			user.PROFILES = {}
 
@@ -7229,6 +7249,9 @@ class Dialog(QDialog):
 		if self.rerender: self.parent.reRenderAll()
 		if self.rerenderUsers: self.parent.rerenderUserlists()
 		if self.rerenderStyle: self.parent.reApplyStyle()
+
+
+		if save_userlists: self.parent.saveAllUserlistWidths()
 
 		if config.SHOW_CHANNEL_TOPIC:
 			self.parent.showAllTopic()

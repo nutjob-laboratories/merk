@@ -8,6 +8,7 @@ What's new:
 - **New option: open a server's channel list on connection**. This is disabled by default. However, if turned on (and fetching the server's channel list on connection is turned on), this will show the channel list dialog as soon as the channel list is available.
 - **Added new options to delete user and application configuration data to the settings dialog**.
 - **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings.
+- **Channel userlist widths can now be saved to the config**. This option is turned on by default, and happens automatically.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -54,6 +55,11 @@ What's new:
   Server profiles can be created and edited with the connection dialog.
 * Bugfix: the userlist can no longer be resized so big that it covers the chat
   display. The maximum size it can reach is 95% of the chat display.
+* New feature: MERK can now save channels' userlist widths. The width is saved
+  (and loaded) with the network and channel name. This option is turned on by
+  default, and will always be loaded if the value is in the config file. The
+  option to delete all userlist widths has also been added to the settings
+  dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

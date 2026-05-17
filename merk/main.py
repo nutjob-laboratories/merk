@@ -2820,6 +2820,15 @@ class Merk(QMainWindow):
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
+	def saveAllUserlistWidths(self):
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"userlist"):
+				c.save_userlist_width()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+
 	def rerenderUserlistsNetwork(self,client):
 		w = self.MDI.activeSubWindow()
 		for window in self.MDI.subWindowList():

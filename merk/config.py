@@ -450,9 +450,13 @@ PLUGIN_ACK = True
 NOTIFY_ON_CTCP_REQUESTS = False
 SHOW_CHANNEL_LIST_ON_CONNECT =  False
 ALWAYS_USE_SERVER_PROFILES = True
+CHANNEL_USERLIST_WIDTHS = {}
+SAVE_USERLIST_WIDTH = True
 
 def build_settings():
 	settings = {
+		"save_userlist_widths": SAVE_USERLIST_WIDTH,
+		"channel_userlist_widths": CHANNEL_USERLIST_WIDTHS,
 		"always_use_server_profiles": ALWAYS_USE_SERVER_PROFILES,
 		"show_channel_list_on_connect": SHOW_CHANNEL_LIST_ON_CONNECT,
 		"notify_on_ctcp_requests": NOTIFY_ON_CTCP_REQUESTS,
@@ -868,6 +872,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "save_userlist_widths" in settings:
+		settings["save_userlist_widths"] = SAVE_USERLIST_WIDTH
+	if not "channel_userlist_widths" in settings:
+		settings["channel_userlist_widths"] = CHANNEL_USERLIST_WIDTHS
 	if not "always_use_server_profiles" in settings:
 		settings["always_use_server_profiles"] = ALWAYS_USE_SERVER_PROFILES
 	if not "show_channel_list_on_connect" in settings:
@@ -2102,6 +2110,8 @@ def load_settings(filename):
 	global NOTIFY_ON_CTCP_REQUESTS
 	global SHOW_CHANNEL_LIST_ON_CONNECT
 	global ALWAYS_USE_SERVER_PROFILES
+	global CHANNEL_USERLIST_WIDTHS
+	global SAVE_USERLIST_WIDTH
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2111,6 +2121,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SAVE_USERLIST_WIDTH = settings["save_userlist_widths"]
+		CHANNEL_USERLIST_WIDTHS = settings["channel_userlist_widths"]
 		ALWAYS_USE_SERVER_PROFILES = settings["always_use_server_profiles"]
 		SHOW_CHANNEL_LIST_ON_CONNECT = settings["show_channel_list_on_connect"]
 		NOTIFY_ON_CTCP_REQUESTS = settings["notify_on_ctcp_requests"]

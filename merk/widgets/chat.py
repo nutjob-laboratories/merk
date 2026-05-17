@@ -653,6 +653,12 @@ class Window(QMainWindow):
 			# Set the initial splitter ratio
 			ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*config.USERLIST_WIDTH_IN_CHARACTERS)
 			mwidth = self.width()-ulwidth
+
+			# Load in the userlist width from the config file, if it exists
+			if self.client.network in config.CHANNEL_USERLIST_WIDTHS:
+				if self.name in config.CHANNEL_USERLIST_WIDTHS[self.client.network]:
+					ulwidth = config.CHANNEL_USERLIST_WIDTHS[self.client.network][self.name]
+
 			self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
 			# Set the starting width of the userlist
@@ -3617,6 +3623,29 @@ class Window(QMainWindow):
 				self.horizontalSplitter.setSizes([self.userlist.width(), self.chat.width()])
 			else:
 				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
+
+		# Save the userlist width
+		if self.userlist_width!=self.initial_userlist_width and config.SAVE_USERLIST_WIDTH:
+			self.__save_userlist_width = QTimer()
+			self.__save_userlist_width.timeout.connect(self.save_userlist_width)
+			self.__save_userlist_width.start(1000)
+
+		# Move the chat display to the bottom
+		self.moveChatToBottom(True)
+
+	def save_userlist_width(self):
+		if self.userlist_width!=self.initial_userlist_width:
+			# Save the userlist width to the config file
+			if self.client.network in config.CHANNEL_USERLIST_WIDTHS:
+				config.CHANNEL_USERLIST_WIDTHS[self.client.network][self.name] = self.userlist_width
+			else:
+				config.CHANNEL_USERLIST_WIDTHS[self.client.network] = {}
+				config.CHANNEL_USERLIST_WIDTHS[self.client.network][self.name] = self.userlist_width
+			self.save_config()
+
+		# Delete the timer
+		if hasattr(self,"__save_userlist_width"):
+			del self.__save_userlist_width
 
 	def resizeScroll(self):
 		# Scroll the chat display down to the bottom
