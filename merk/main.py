@@ -3022,6 +3022,7 @@ class Merk(QMainWindow):
 		self.setCursorBlink()
 		self.refreshAllTopic()
 		self.toggleRerender()
+		self.saveAllUserlistWidths()
 
 		if config.SHOW_CHANNEL_TOPIC:
 			self.showAllTopic()

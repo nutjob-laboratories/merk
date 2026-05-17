@@ -3628,12 +3628,15 @@ class Window(QMainWindow):
 		if self.userlist_width!=self.initial_userlist_width and config.SAVE_USERLIST_WIDTH:
 			self.__save_userlist_width = QTimer()
 			self.__save_userlist_width.timeout.connect(self.save_userlist_width)
-			self.__save_userlist_width.start(1000)
+			self.__save_userlist_width.start(USERLIST_SAVE_PAUSE)
 
 		# Move the chat display to the bottom
 		self.moveChatToBottom(True)
 
 	def save_userlist_width(self):
+		if not hasattr(self,"userlist"): return
+		if not config.SAVE_USERLIST_WIDTH: return
+
 		if self.userlist_width!=self.initial_userlist_width:
 			# Save the userlist width to the config file
 			if self.client.network in config.CHANNEL_USERLIST_WIDTHS:
@@ -3645,6 +3648,7 @@ class Window(QMainWindow):
 
 		# Delete the timer
 		if hasattr(self,"__save_userlist_width"):
+			self.__save_userlist_width.stop()
 			del self.__save_userlist_width
 
 	def resizeScroll(self):
