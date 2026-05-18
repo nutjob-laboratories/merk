@@ -473,18 +473,19 @@ class Dialog(QDialog):
 		port = self.port.text()
 		hostid = host+":"+port
 
-		if self.use_profile:
-			if hostid in user.PROFILES:
-				n = user.PROFILES[hostid][0]
-				a = user.PROFILES[hostid][1]
-				u = user.PROFILES[hostid][2]
-				r = user.PROFILES[hostid][3]
+		if len(self.host.text().strip())>0 and len(self.port.text().strip())>0:
+			if self.use_profile:
+				if hostid in user.PROFILES:
+					n = user.PROFILES[hostid][0]
+					a = user.PROFILES[hostid][1]
+					u = user.PROFILES[hostid][2]
+					r = user.PROFILES[hostid][3]
 
-				self.nick.setText(n)
-				self.alternative.setText(a)
-				self.username.setText(u)
-				self.realname.setText(r)
-				self.profile.setChecked(True)
+					self.nick.setText(n)
+					self.alternative.setText(a)
+					self.username.setText(u)
+					self.realname.setText(r)
+					self.profile.setChecked(True)
 
 		if self.check_info()==False:
 			self.ok_button.setEnabled(False)
@@ -522,6 +523,11 @@ class Dialog(QDialog):
 				self.clear.setEnabled(False)
 				self.edit.setEnabled(False)
 
+			if hostid in user.PROFILES:
+				self.profile.setText(f"Use {hostid} profile")
+			else:
+				self.profile.setText(f"Save as server profile")
+
 	def generateStylesheet(self,obj,fore,back):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
@@ -551,6 +557,14 @@ class Dialog(QDialog):
 		self.SASL_Username = None
 		self.SASL_Password = None
 		self.use_SASL = False
+
+		# Make a version of the font that is slightly
+		# smaller than the current font, but never
+		# smaller than 8pt
+		smaller_font = self.font()
+		smaller_point_size = smaller_font.pointSize() - 2
+		if smaller_point_size<8: smaller_point_size = 8
+		smaller_font.setPointSize(smaller_point_size)
 
 		# Load the config file
 		config.load_settings(config.CONFIG_FILE)
@@ -613,11 +627,7 @@ class Dialog(QDialog):
 
 		self.profile = QCheckBox("Save as server profile",self)
 		self.profile.stateChanged.connect(self.clickProfile)
-
-		# Make the "profile" checkbox slightly smaller
-		current_font = self.profile.font()
-		current_font.setPointSize(current_font.pointSize() - 1)
-		self.profile.setFont(current_font)
+		self.profile.setFont(smaller_font)
 
 		userLayout = QFormLayout()
 		userLayout.addRow(nickl, self.nick)
@@ -661,16 +671,19 @@ class Dialog(QDialog):
 
 		self.sasl = QCheckBox("Login via SASL",self)
 		self.sasl.stateChanged.connect(self.clickSASL)
+		self.sasl.setFont(smaller_font)
 
 		self.edit = QPushButton("Edit")
 		self.edit.clicked.connect(self.editSasl)
 		self.edit.setToolTip("Edit the SASL account for this server")
 		self.edit.setFixedHeight(self.sasl.sizeHint().height())
+		self.edit.setFont(smaller_font)
 
 		self.clear = QPushButton("Clear")
 		self.clear.clicked.connect(self.clearSASL)
 		self.clear.setToolTip("Clear SASL account for this server")
 		self.clear.setFixedHeight(self.sasl.sizeHint().height())
+		self.clear.setFont(smaller_font)
 
 		sasl_row = QWidget()
 		sLayout = QHBoxLayout()
@@ -684,6 +697,7 @@ class Dialog(QDialog):
 
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
 		self.ssl.stateChanged.connect(self.clickSSL)
+		self.ssl.setFont(smaller_font)
 
 		if not SSL_AVAILABLE: self.ssl.hide()
 
@@ -691,6 +705,7 @@ class Dialog(QDialog):
 			self.exe = QCheckBox("Execute connection script",self)
 			self.exe.stateChanged.connect(self.clickExe)
 			self.exe.toggle()
+			self.exe.setFont(smaller_font)
 
 		if self.noexecute: self.exe.toggle()
 
@@ -698,6 +713,7 @@ class Dialog(QDialog):
 
 		self.reconnect = QCheckBox("Reconnect",self)
 		self.reconnect.stateChanged.connect(self.clickReconnect)
+		self.reconnect.setFont(smaller_font)
 
 		if user.LAST_RECONNECT: self.reconnect.toggle()
 

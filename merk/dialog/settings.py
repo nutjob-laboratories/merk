@@ -313,6 +313,30 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingServToolbar(self):
+		self.do_serv_toolbar = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingRefreshList(self):
+		self.do_list_refresh = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingStatusBar(self):
+		self.do_status_bars = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def changedSettingRubberband(self):
+		self.do_rubberband = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def getBackground(self):
 
 		supported_formats = QImageReader.supportedImageFormats()
@@ -514,48 +538,56 @@ class Dialog(QDialog):
 
 	def selEnglish(self):
 		self.spellLang = "en"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
 
 	def selFrench(self):
 		self.spellLang = "fr"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
 
 	def selRussian(self):
 		self.spellLang = "ru"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
 
 	def selDutch(self):
 		self.spellLang = "nl"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
 
 	def selItalian(self):
 		self.spellLang = "it"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
 
 	def selPortuguese(self):
 		self.spellLang = "pt"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
 
 	def selGerman(self):
 		self.spellLang = "de"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
 
 	def selSpanish(self):
 		self.spellLang = "es"
+		self.do_spellcheck = True
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -1058,6 +1090,18 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def changedSettingScrollbar(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.do_scrollbar = True
+		self.selector.setFocus()
+
+	def changedSettingInputMenu(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.do_input_menu = True
+		self.selector.setFocus()
+
 	def updatePadLength(self,state):
 		self.nicknamePadLength = self.padLength.value()
 		self.changed.show()
@@ -1173,6 +1217,13 @@ class Dialog(QDialog):
 	def changeUser(self,state):
 		self.user_changed = True
 		self.save_user = True
+		self.changed.show()
+		self.boldApply()
+
+	def changeUserInfor(self,state):
+		self.user_changed = True
+		self.save_user = True
+		self.userinfo_changed = True
 		self.changed.show()
 		self.boldApply()
 
@@ -1392,6 +1443,12 @@ class Dialog(QDialog):
 		else:
 			self.stmList.setEnabled(True)
 			self.stmLogs.setEnabled(True)
+		self.selector.setFocus()
+		self.changed.show()
+		self.boldApply()
+
+	def changedSettingServNicks(self,state):
+		self.do_server_nicks = True
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1719,6 +1776,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
+		self.do_spellcheck = True
 
 	def changedWindowbarSetting(self,i):
 		if self.windowBar.isChecked():
@@ -2205,6 +2263,15 @@ class Dialog(QDialog):
 		self.do_filter_delete = False
 		self.do_profile_delete = False
 		self.do_width_delete = False
+		self.do_rubberband = False
+		self.do_scrollbar = False
+		self.do_input_menu = False
+		self.do_spellcheck = False
+		self.userinfo_changed = False
+		self.do_server_nicks = False
+		self.do_status_bars = False
+		self.do_list_refresh = False
+		self.do_serv_toolbar = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -3193,7 +3260,7 @@ class Dialog(QDialog):
 		
 		self.showInputMenu = QCheckBox("Show input menu button",self)
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
-		self.showInputMenu.stateChanged.connect(self.changedSetting)
+		self.showInputMenu.stateChanged.connect(self.changedSettingInputMenu)
 
 		self.showContext = QCheckBox("Context menus on channel, private, and server\ntext displays",self)
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
@@ -3201,35 +3268,35 @@ class Dialog(QDialog):
 
 		self.showStatusServer = QCheckBox("Server windows",self)
 		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
-		self.showStatusServer.stateChanged.connect(self.changedSetting)
+		self.showStatusServer.stateChanged.connect(self.changedSettingStatusBar)
 
 		self.showStatusChat = QCheckBox("Chat windows",self)
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
-		self.showStatusChat.stateChanged.connect(self.changedSetting)
+		self.showStatusChat.stateChanged.connect(self.changedSettingStatusBar)
 
 		self.displayServNicks = QCheckBox("Show nickname display on server windows",self)
 		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
-		self.displayServNicks.stateChanged.connect(self.changedSetting)
+		self.displayServNicks.stateChanged.connect(self.changedSettingServNicks)
 		
 		self.showServToolbar = QCheckBox("Show toolbar on server windows",self)
 		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
-		self.showServToolbar.stateChanged.connect(self.changedSetting)
+		self.showServToolbar.stateChanged.connect(self.changedSettingServToolbar)
 
 		self.showServRefresh = QCheckBox("Show channel list refresh button on server window\ntoolbars and menus",self)
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
-		self.showServRefresh.stateChanged.connect(self.changedSetting)
+		self.showServRefresh.stateChanged.connect(self.changedSettingRefreshList)
 
 		self.showServList = QCheckBox("Show channel list button on server window\ntoolbars and menus",self)
 		if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS: self.showServList.setChecked(True)
-		self.showServList.stateChanged.connect(self.changedSetting)
+		self.showServList.stateChanged.connect(self.changedSettingRefreshList)
 
 		self.showStatusList = QCheckBox("Channel lists",self)
 		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
-		self.showStatusList.stateChanged.connect(self.changedSetting)
+		self.showStatusList.stateChanged.connect(self.changedSettingStatusBar)
 
 		self.showStatusEditor = QCheckBox("Editor windows",self)
 		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
-		self.showStatusEditor.stateChanged.connect(self.changedSetting)
+		self.showStatusEditor.stateChanged.connect(self.changedSettingStatusBar)
 
 		statusLayout2 = QFormLayout()
 		statusLayout2.setSpacing(1)
@@ -3275,11 +3342,11 @@ class Dialog(QDialog):
 
 		self.windowRubberSize = QCheckBox("Rubber band resize",self)
 		if config.RUBBER_BAND_RESIZE: self.windowRubberSize.setChecked(True)
-		self.windowRubberSize.stateChanged.connect(self.changedSetting)
+		self.windowRubberSize.stateChanged.connect(self.changedSettingRubberband)
 
 		self.windowRubberMove = QCheckBox("Rubber band move",self)
 		if config.RUBBER_BAND_MOVE: self.windowRubberMove.setChecked(True)
-		self.windowRubberMove.stateChanged.connect(self.changedSetting)
+		self.windowRubberMove.stateChanged.connect(self.changedSettingRubberband)
 
 		self.snapWindows = QCheckBox("Snap subwindows together within",self)
 		if config.SUBWINDOW_SNAPPING: self.snapWindows.setChecked(True)
@@ -3817,8 +3884,8 @@ class Dialog(QDialog):
 		self.alternative.textChanged.connect(self.changeUser)
 		self.username.textChanged.connect(self.changeUser)
 		self.realname.textChanged.connect(self.changeUser)
-		self.userinfo.textChanged.connect(self.changeUser)
-		self.finger.textChanged.connect(self.changeUser)
+		self.userinfo.textChanged.connect(self.changeUserInfor)
+		self.finger.textChanged.connect(self.changeUserInfor)
 
 		font = self.font()
 		font.setBold(True)
@@ -4033,7 +4100,7 @@ class Dialog(QDialog):
 
 		self.hideScroll = QCheckBox("Hide horizontal scrollbars",self)
 		if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR: self.hideScroll.setChecked(True)
-		self.hideScroll.stateChanged.connect(self.changedSetting)
+		self.hideScroll.stateChanged.connect(self.changedSettingScrollbar)
 
 		self.noSelectUserlists = QCheckBox("Forbid item selection",self)
 		if config.USERLIST_ITEMS_NON_SELECTABLE: self.noSelectUserlists.setChecked(True)
@@ -6537,8 +6604,6 @@ class Dialog(QDialog):
 
 		self.restart.hide()
 
-		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
-
 		self.ircAllErrors.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.writeFile.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.managerTop.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
@@ -6554,6 +6619,8 @@ class Dialog(QDialog):
 		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+
+		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 
 		# Set the max width of the "page" selector
 		font_metrics = QFontMetrics(self.selector.font())
@@ -6887,7 +6954,6 @@ class Dialog(QDialog):
 		config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW = self.writeMessageOut.isChecked()
 		config.RUBBER_BAND_RESIZE = self.windowRubberSize.isChecked()
 		config.RUBBER_BAND_MOVE = self.windowRubberMove.isChecked()
-		config.INPUT_CURSOR_WIDTH = self.INPUT_CURSOR_WIDTH
 		config.ENABLE_WAIT_COMMAND = self.enableWait.isChecked()
 		config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = self.elideAway.isChecked()
 		config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = self.elideHostmask.isChecked()
@@ -6914,7 +6980,6 @@ class Dialog(QDialog):
 		config.DISPLAY_LONG_MESSAGE_INDICATOR = self.showLongMessage.isChecked()
 		config.CURSOR_BLINK = self.cursorBlink.isChecked()
 		config.REJECT_ALL_CHANNEL_NOTICES = self.ignoreChannelNotice.isChecked()
-		config.CURSOR_BLINK_RATE = self.CURSOR_BLINK_RATE
 		config.EXECUTE_HOTKEY_AS_COMMAND = self.hotkeyCmd.isChecked()
 		config.ENABLE_HOTKEYS = self.enableHotkeys.isChecked()
 		config.ENABLE_IGNORE = self.enableIgnore.isChecked()
@@ -7155,6 +7220,7 @@ class Dialog(QDialog):
 
 		if self.do_width_delete:
 			config.SAVE_USERLIST_WIDTH = {}
+			save_userlists = False
 
 		if self.do_profile_delete:
 			user.PROFILES = {}
@@ -7202,6 +7268,16 @@ class Dialog(QDialog):
 				self.parent.app.setFont(font)
 				self.parent.setAllFont(font)
 
+		update_cursors = False
+		if self.INPUT_CURSOR_WIDTH!=config.INPUT_CURSOR_WIDTH:
+			config.INPUT_CURSOR_WIDTH = self.INPUT_CURSOR_WIDTH
+			update_cursors = True
+
+		update_blink = False
+		if self.CURSOR_BLINK_RATE!=config.CURSOR_BLINK_RATE:
+			config.CURSOR_BLINK_RATE = self.CURSOR_BLINK_RATE
+			update_blink = True
+
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
@@ -7234,23 +7310,21 @@ class Dialog(QDialog):
 
 		if self.swapUserlists: self.parent.swapAllUserlists()
 		if self.toggleUserlist: self.parent.toggleAllUserlists()
-		self.parent.toggleSpellcheck()
-		self.parent.toggleInputMenu()
-		self.parent.toggleServNickDisplay()
-		self.parent.toggleRefreshButton()
-		self.parent.updateStatusBar()
-		self.parent.toggleServerToolbar()
-		self.parent.toggleRubberbanding()
-		self.parent.toggleScrollbar()
-		self.parent.toggleCursorWidth()
-		self.parent.toggleUserinfo()
-		self.parent.setCursorBlink()
-		self.parent.refreshAllTopic()
+		if self.do_spellcheck: self.parent.toggleSpellcheck()
+		if self.do_input_menu: self.parent.toggleInputMenu()
+		if self.do_rubberband: self.parent.toggleRubberbanding()
+		if self.do_scrollbar: self.parent.toggleScrollbar()
+		if update_cursors: self.parent.toggleCursorWidth()
+		if self.userinfo_changed: self.parent.toggleUserinfo()
+		if update_blink: self.parent.setCursorBlink()
+		if self.do_server_nicks: self.parent.toggleServNickDisplay()
+		if self.do_status_bars: self.parent.updateStatusBar()
+		if self.do_list_refresh: self.parent.toggleRefreshButton()
+		if self.do_serv_toolbar: self.parent.toggleServerToolbar()
+		if self.refreshTopics: self.parent.refreshAllTopic()
 		if self.rerender: self.parent.reRenderAll()
 		if self.rerenderUsers: self.parent.rerenderUserlists()
 		if self.rerenderStyle: self.parent.reApplyStyle()
-
-
 		if save_userlists: self.parent.saveAllUserlistWidths()
 
 		if config.SHOW_CHANNEL_TOPIC:

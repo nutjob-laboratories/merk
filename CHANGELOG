@@ -9,6 +9,7 @@ What's new:
 - **Added new options to delete user and application configuration data to the settings dialog**.
 - **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings.
 - **Channel userlist widths can now be saved to the config**. This option is turned on by default, and happens automatically.
+- **The settings dialog has been revamped**. Applying settings is now more efficient, and faster.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -60,6 +61,13 @@ What's new:
   default, and will always be loaded if the value is in the config file. The
   option to delete all userlist widths has also been added to the settings
   dialog.
+* Bugfix: disabling and re-enabling spellcheck via the "settings" dialog could
+  cause MERK to crash in some circumstances.
+* Sped up how the "settings" dialog applies settings to the client. When the
+  "apply" button is clicked, the dialog is now more selective about which
+  things get refreshed/reloaded, rather than forcing a massive reload.
+* Bugfix: some elements in the "settings" dialog did not get their font size
+  set properly.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

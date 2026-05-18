@@ -3312,6 +3312,8 @@ class Window(QMainWindow):
 	def menuSetLanguage(self,language):
 		self.changeSpellcheckLanguage(language)
 
+		if not hasattr(self,"languageEnglish"): self.buildInputOptionsMenu()
+
 		self.languageEnglish.setIcon(QIcon(self.parent.round_unchecked_icon))
 		self.languageFrench.setIcon(QIcon(self.parent.round_unchecked_icon))
 		self.languageSpanish.setIcon(QIcon(self.parent.round_unchecked_icon))
