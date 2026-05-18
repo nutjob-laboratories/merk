@@ -310,9 +310,9 @@ class Dialog(QDialog):
 		if user.NICKNAME=='' or user.USERNAME=='' or user.REALNAME=='':
 			self.tabs.setCurrentWidget(self.user_tab)
 			self.nick.setFocus()
-			QTimer.singleShot(0, lambda: self.nick.setCursorPosition(len(self.nick.text())))
+			QTimer.singleShot(1, lambda: self.nick.setCursorPosition(len(self.nick.text())))
 		else:
-			QTimer.singleShot(0, lambda: self.moveCursor())
+			QTimer.singleShot(1, lambda: self.moveCursor())
 
 	def moveCursor(self):
 		self.host.setFocus()
@@ -427,53 +427,14 @@ class Dialog(QDialog):
 
 		return True
 
-	def userInfoEntered(self):
-		host = self.host.text()
-		port = self.port.text()
-		hostid = host+":"+port
-
-		if self.check_info()==False:
-			self.ok_button.setEnabled(False)
-			self.sasl.setEnabled(False)
-			self.commands_tab.setEnabled(False)
-			self.profile.setEnabled(False)
-			if len(host.strip())==0 or len(port.strip())==0:
-				self.commandHost.setText("<center><small><b>No server selected</b></small></center>")
-				self.commands.clear()
-		else:
-			self.ok_button.setEnabled(True)
-			self.sasl.setEnabled(True)
-			self.commands_tab.setEnabled(True)
-			self.profile.setEnabled(True)
-			self.commandHost.setText(self.exeTemplate.replace('%__SERVER__%',hostid))
-
-			if hostid in user.COMMANDS:
-				self.commands.setPlainText(user.COMMANDS[hostid])
-			else:
-				self.commands.clear()
-
-			if hostid in user.SASL:
-				u = user.SASL[hostid]
-				self.SASL_Username = u[0]
-				self.SASL_Password = u[1]
-				self.use_SASL = True
-				self.sasl.setCheckState(Qt.Checked)
-				self.clear.setEnabled(True)
-				self.edit.setEnabled(True)
-			else:
-				self.SASL_Username = None
-				self.SASL_Password = None
-				self.use_SASL = False
-				self.sasl.setCheckState(Qt.Unchecked)
-				self.clear.setEnabled(False)
-				self.edit.setEnabled(False)
-
 	def infoEntered(self):
+
 		host = self.host.text()
 		port = self.port.text()
-		hostid = host+":"+port
+		hostid = f"{host}:{port}"
 
 		if len(self.host.text().strip())>0 and len(self.port.text().strip())>0:
+			
 			if self.use_profile:
 				if hostid in user.PROFILES:
 					n = user.PROFILES[hostid][0]
@@ -642,21 +603,16 @@ class Dialog(QDialog):
 		self.buildServerSelector()
 
 		self.host = QNoSpaceLineEdit(user.LAST_HOST)
-		self.port = QNoSpaceLineEdit(user.LAST_PORT)
+		self.port = QNumberEdit(user.LAST_PORT)
 		self.password = QLineEdit(user.LAST_PASSWORD)
 		self.password.setEchoMode(QLineEdit.Password)
-
-		# Make sure that only positive integers
-		# can be input into the port entry
-		validator = QIntValidator(1, 2147483647)
-		self.port.setValidator(validator)
 
 		self.host.textChanged.connect(self.infoEntered)
 		self.port.textChanged.connect(self.infoEntered)
 
-		self.nick.textChanged.connect(self.userInfoEntered)
-		self.username.textChanged.connect(self.userInfoEntered)
-		self.realname.textChanged.connect(self.userInfoEntered)
+		self.nick.textChanged.connect(self.infoEntered)
+		self.username.textChanged.connect(self.infoEntered)
+		self.realname.textChanged.connect(self.infoEntered)
 
 		serverLayout = QFormLayout()
 
@@ -871,6 +827,9 @@ class Dialog(QDialog):
 
 			self.profile.setText(f"Use {hostid} profile")
 
+		# For some reason, this prevents a "Floating point exception"
+		self.setServer()
+
 		if self.initial:
 			buttons.button(QDialogButtonBox.Cancel).setText("Exit")
 		else:
@@ -942,15 +901,15 @@ class Dialog(QDialog):
 			if len(self.nick.text().strip())==0 or len(self.username.text().strip())==0 or len(self.realname.text().strip())==0:
 				self.tabs.setCurrentWidget(self.user_tab)
 				self.nick.setFocus()
-				QTimer.singleShot(0, lambda: self.nick.setCursorPosition(len(self.nick.text())))
+				QTimer.singleShot(1, lambda: self.nick.setCursorPosition(len(self.nick.text())))
 			else:
 				self.tabs.setCurrentWidget(self.server_tab)
 				self.host.setFocus()
-				QTimer.singleShot(0, lambda: self.host.setCursorPosition(len(self.host.text())))
+				QTimer.singleShot(1, lambda: self.host.setCursorPosition(len(self.host.text())))
 		else:
 			self.tabs.setCurrentWidget(self.server_tab)
 			self.host.setFocus()
-			QTimer.singleShot(0, lambda: self.host.setCursorPosition(len(self.host.text())))
+			QTimer.singleShot(1, lambda: self.host.setCursorPosition(len(self.host.text())))
 
 		self.infoEntered()
 

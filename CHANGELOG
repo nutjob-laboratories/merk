@@ -68,6 +68,10 @@ What's new:
   things get refreshed/reloaded, rather than forcing a massive reload.
 * Bugfix: some elements in the "settings" dialog did not get their font size
   set properly.
+* Bugfix: occasionally, the connection dialog would crash with a "floating
+  point exception" when editing the host.
+* Bugfix: the "port" entry on the connection dialog now only allows numeric
+  digits to be entered.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

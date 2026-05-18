@@ -1320,6 +1320,13 @@ class QErrNickEdit(QLineEdit):
 		self.validator = QRegExpValidator(QRegExp(pattern), self)
 		self.setValidator(self.validator)
 
+class QNumberEdit(QLineEdit):
+	def __init__(self, parent=None):
+		super().__init__(parent)
+		pattern = r"^[0-9]+$"
+		self.validator = QRegExpValidator(QRegExp(pattern), self)
+		self.setValidator(self.validator)
+
 class ScrollableMenuStyle(QProxyStyle):
 	def styleHint(self, hint, option=None, widget=None, returnData=None):
 		if hint == QStyle.SH_Menu_Scrollable:
