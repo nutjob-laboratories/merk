@@ -85,11 +85,16 @@ parser = argparse.ArgumentParser(
 	formatter_class=argparse.RawDescriptionHelpFormatter,
 	add_help=False,
 	description=f'''
-┏┳┓┏━╸┏━┓╻┏    ╻┏━┓┏━╸   ┏━╸╻  ╻┏━╸┏┓╻╺┳╸
-┃┃┃┣╸ ┣┳┛┣┻┓   ┃┣┳┛┃     ┃  ┃  ┃┣╸ ┃┗┫ ┃ 
-╹ ╹┗━╸╹┗╸╹ ╹   ╹╹┗╸┗━╸   ┗━╸┗━╸╹┗━╸╹ ╹ ╹ 
+▄▄▄      ▄▄▄  ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄   ▄▄▄   ▄▄▄ 
+████▄  ▄████ ███▀▀▀▀▀ ███▀▀███▄ ███ ▄███▀ 
+███▀████▀███ ███▄▄    ███▄▄███▀ ███████   
+███  ▀▀  ███ ███      ███▀▀██▄  ███▀███▄  
+███      ███ ▀███████ ███  ▀███ ███  ▀███ 
 Version {APPLICATION_VERSION}
 
+Graphical IRC client for Windows, Linux, and macOS
+
+https://merk.chat
 https://github.com/nutjob-laboratories/merk
 https://github.com/danhetrick
 
@@ -122,6 +127,8 @@ optiongroup = parser.add_argument_group('Options')
 optiongroup.add_argument('-h', '--help', action='store_true', help='Show help and usage information')
 optiongroup.add_argument("-d","--donotsave",help=f"Do not save new user settings",action="store_true")
 optiongroup.add_argument("-x","--donotexecute",help=f"Do not execute connection script",action="store_true")
+optiongroup.add_argument("-N","--noprofile",help=f"Do not use server profile",action="store_true")
+optiongroup.add_argument("-A","--nosasl",help=f"Do not use SASL login",action="store_true")
 optiongroup.add_argument("-t","--reconnect",help=f"Reconnect to servers on disconnection",action="store_true")
 optiongroup.add_argument("-R","--run",dest="noask",help=f"Don't ask for connection information on start",action="store_true")
 optiongroup.add_argument("-o","--on-top",dest="ontop",help=f"Application window always on top",action="store_true")
@@ -170,7 +177,6 @@ if __name__ == '__main__':
 
 		hostid = f"{host}:{port}"
 
-		user_info_changed = False
 		if args.nickname=='':
 			if len(user.NICKNAME.strip())==0:
 				if not is_running_from_pyinstaller():
@@ -179,44 +185,44 @@ if __name__ == '__main__':
 					show_message("Error",f"No nickname set")
 				sys.exit(1)
 			args.nickname = user.NICKNAME
-			if config.ALWAYS_USE_SERVER_PROFILES:
-				if hostid in user.PROFILES: args.nickname = user.PROFILES[hostid][0]
+			if not args.noprofile:
+				if config.ALWAYS_USE_SERVER_PROFILES:
+					if hostid in user.PROFILES: args.nickname = user.PROFILES[hostid][0]
 		else:
 			user.NICKNAME = args.nickname
-			user_info_changed = True
 
 		if args.username=='':
 			if len(user.USERNAME.strip())==0:
 				args.username = f"{APPLICATION_NAME}"
 			else:
 				args.username = user.USERNAME
-				if config.ALWAYS_USE_SERVER_PROFILES:
-					if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][2]
+				if not args.noprofile:
+					if config.ALWAYS_USE_SERVER_PROFILES:
+						if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][2]
 		else:
 			user.USERNAME = args.username
-			user_info_changed = True
 
 		if args.alternate=='':
 			if len(user.ALTERNATE.strip())==0:
 				args.alternate = args.nickname + str(random.randint(1,99))
 			else:
 				args.alternate = user.ALTERNATE
-				if config.ALWAYS_USE_SERVER_PROFILES:
-					if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][1]
+				if not args.noprofile:
+					if config.ALWAYS_USE_SERVER_PROFILES:
+						if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][1]
 		else:
 			user.ALTERNATE = args.alternate
-			user_info_changed = True
 
 		if args.realname=='':
 			if len(user.REALNAME.strip())==0:
 				args.realname = APPLICATION_NAME +" "+APPLICATION_VERSION
 			else:
 				args.realname = user.REALNAME
-				if config.ALWAYS_USE_SERVER_PROFILES:
-					if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][3]
+				if not args.noprofile:
+					if config.ALWAYS_USE_SERVER_PROFILES:
+						if hostid in user.PROFILES: args.alternate = user.PROFILES[hostid][3]
 		else:
 			user.REALNAME = args.realname
-			user_info_changed = True
 
 		if args.donotexecute==True:
 			EXECUTE_CONNECTION_SCRIPT = False
@@ -240,6 +246,14 @@ if __name__ == '__main__':
 						show_message("Error",f"File \"{args.script}\" does not exist or is not readable")
 					sys.exit(1)
 
+		if hostid in user.SASL and not args.nosasl:
+			u = user.SASL[hostid]
+			SASL_Username = u[0]
+			SASL_Password = u[1]
+		else:
+			SASL_Username = None
+			SASL_Password = None
+
 		if args.donotsave:
 			config.DO_NOT_SAVE = True
 		else:
@@ -256,6 +270,8 @@ if __name__ == '__main__':
 			args.reconnect,
 			ssl,
 			EXECUTE_CONNECTION_SCRIPT, # execute script
+			SASL_Username,
+			SASL_Password,
 			)
 
 		return i

@@ -1661,22 +1661,30 @@ class Dialog(QDialog):
 
 	def titleChange(self, i):
 		self.refreshTitles = True
-
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
 
-	def mainTopicChange(self, i):
-		self.refreshTopics = True
+	def topicChangeNameModes(self,i):
+		if self.channelName.isChecked():
+			self.chanMode.setEnabled(True)
+		else:
+			self.chanMode.setEnabled(False)
 
+	def mainTopicChange(self, i):
 		if self.topicDisplay.isChecked():
+			self.refreshTopics = True
 			self.channelName.setEnabled(True)
 			self.channelCount.setEnabled(True)
 			self.channelTooltip.setEnabled(True)
 			self.channelColors.setEnabled(True)
 			self.topicEditor.setEnabled(True)
-			self.chanMode.setEnabled(True)
+			if self.channelName.isChecked():
+				self.chanMode.setEnabled(True)
+			else:
+				self.chanMode.setEnabled(False)
 		else:
+			self.refreshTopics = False
 			self.channelName.setEnabled(False)
 			self.channelCount.setEnabled(False)
 			self.channelTooltip.setEnabled(False)
@@ -4046,7 +4054,7 @@ class Dialog(QDialog):
 
 		self.channelName = QCheckBox("Channel name/modes",self)
 		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
-		self.channelName.stateChanged.connect(self.topicChange)
+		self.channelName.stateChanged.connect(self.topicChangeNameModes)
 
 		self.channelCount = QCheckBox("User count",self)
 		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
@@ -4074,6 +4082,9 @@ class Dialog(QDialog):
 			self.channelTooltip.setEnabled(False)
 			self.channelColors.setEnabled(False)
 			self.topicEditor.setEnabled(False)
+			self.chanMode.setEnabled(False)
+
+		if not config.SHOW_CHANNEL_NAME_AND_MODES:
 			self.chanMode.setEnabled(False)
 
 		self.channelDescription = QLabel("""
@@ -4155,8 +4166,8 @@ class Dialog(QDialog):
 		if config.USE_STYLE_COLOR_FOR_SELF_IN_USERLISTS: self.styleSelf.setChecked(True)
 		self.styleSelf.stateChanged.connect(self.changedSettingRerenderUserlists)
 
-		self.saveWidth = QCheckBox("Save individual channels' userlist width",self)
-		if config.SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
+		self.saveWidth = QCheckBox("Load and save channel userlist width",self)
+		if config.LOAD_AND_SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
 		self.saveWidth.stateChanged.connect(self.changedSetting)
 
 		if not config.SHOW_USERLIST:
@@ -4195,17 +4206,22 @@ class Dialog(QDialog):
 		chanButtonLayout.addLayout(chanButtonLayout2)
 		chanButtonLayout.addStretch()
 
-		ulistDisplay = QFormLayout()
+		ulistDisplay1 = QFormLayout()
+		ulistDisplay1.setSpacing(0)
+		ulistDisplay1.addRow(self.showUserlists,self.showUserlistLeft)
+		ulistDisplay1.addRow(self.plainUserLists,self.ulistContext)
+		ulistDisplay1.addRow(self.elideAway,self.elideHostmask)
+		ulistDisplay1.addRow(self.ignoreUserlist,self.showAwayStatus)
+		ulistDisplay1.addRow(self.colorUserlists,self.noSelectUserlists)
+		ulistDisplay1.addRow(self.underlineSelf,self.styleSelf)
+		ulistDisplay1.addRow(self.hideScroll)
+		ulistDisplay1.addRow(self.dcPrivate)
+
+		ulistDisplay = QVBoxLayout()
 		ulistDisplay.setSpacing(0)
-		ulistDisplay.addRow(self.showUserlists,self.showUserlistLeft)
-		ulistDisplay.addRow(self.plainUserLists,self.ulistContext)
-		ulistDisplay.addRow(self.elideAway,self.elideHostmask)
-		ulistDisplay.addRow(self.ignoreUserlist,self.showAwayStatus)
-		ulistDisplay.addRow(self.colorUserlists,self.noSelectUserlists)
-		ulistDisplay.addRow(self.underlineSelf,self.styleSelf)
-		ulistDisplay.addRow(self.hideScroll)
-		ulistDisplay.addRow(self.dcPrivate)
-		ulistDisplay.addRow(self.saveWidth)
+		ulistDisplay.addLayout(ulistDisplay1)
+		ulistDisplay.addLayout(ulistWidthLayout)
+		ulistDisplay.addWidget(self.saveWidth)
 
 		infoExist = QHBoxLayout()
 		infoExist.addStretch()
@@ -4295,7 +4311,6 @@ class Dialog(QDialog):
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
-		menuLayout.addLayout(ulistWidthLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show message types in all channels</b>"))
 		menuLayout.addLayout(cfLayout)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
@@ -7117,12 +7132,12 @@ class Dialog(QDialog):
 			config.USERLIST_WIDTH_IN_CHARACTERS = self.USERLIST_WIDTH_IN_CHARACTERS
 
 		save_userlists = False
-		if self.saveWidth.isChecked() and config.SAVE_USERLIST_WIDTH==False:
+		if self.saveWidth.isChecked() and config.LOAD_AND_SAVE_USERLIST_WIDTH==False:
 			save_userlists = True
 
-		config.SAVE_USERLIST_WIDTH = self.saveWidth.isChecked()
+		config.LOAD_AND_SAVE_USERLIST_WIDTH = self.saveWidth.isChecked()
 
-		if config.SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
+		if config.LOAD_AND_SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
 
 		if self.SET_SUBWINDOW_ORDER.lower()=='creation':
 			self.parent.MDI.setActivationOrder(QMdiArea.CreationOrder)
@@ -7219,7 +7234,7 @@ class Dialog(QDialog):
 			config.CHANNEL_FILTERS = {}
 
 		if self.do_width_delete:
-			config.SAVE_USERLIST_WIDTH = {}
+			config.LOAD_AND_SAVE_USERLIST_WIDTH = {}
 			save_userlists = False
 
 		if self.do_profile_delete:

@@ -233,7 +233,6 @@ class Window(QMainWindow):
 		self.users_protected = []
 		self.users_normal = []
 		self.user_colors = {}
-		# self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
 		self.banlist = []
 		self.away = {}
 		self.userlist_visible = True
@@ -655,9 +654,10 @@ class Window(QMainWindow):
 			mwidth = self.width()-ulwidth
 
 			# Load in the userlist width from the config file, if it exists
-			if self.client.network in config.CHANNEL_USERLIST_WIDTHS:
-				if self.name in config.CHANNEL_USERLIST_WIDTHS[self.client.network]:
-					ulwidth = config.CHANNEL_USERLIST_WIDTHS[self.client.network][self.name]
+			if config.LOAD_AND_SAVE_USERLIST_WIDTH:
+				if self.client.network in config.CHANNEL_USERLIST_WIDTHS:
+					if self.name in config.CHANNEL_USERLIST_WIDTHS[self.client.network]:
+						ulwidth = config.CHANNEL_USERLIST_WIDTHS[self.client.network][self.name]
 
 			self.horizontalSplitter.setSizes([mwidth,ulwidth])
 
@@ -2548,15 +2548,6 @@ class Window(QMainWindow):
 		self.buildUserColors()
 		self.writeUserlist(self.users)
 
-	# def readjustUserlist(self):
-	# 	if hasattr(self,"horizontalSplitter"):
-	# 		if self.userlist_width_in_characters!=config.USERLIST_WIDTH_IN_CHARACTERS:
-	# 			self.userlist_width_in_characters = config.USERLIST_WIDTH_IN_CHARACTERS
-	# 			fm = QFontMetrics(self.app.font())
-	# 			ulwidth = (fm.averageCharWidth() + 5) + (fm.averageCharWidth()*config.USERLIST_WIDTH_IN_CHARACTERS)
-	# 			mwidth = self.width()-ulwidth
-	# 			self.horizontalSplitter.setSizes([mwidth,ulwidth])
-
 	def change_to_away_display(self,w):
 		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
 			font = QFont()
@@ -3627,7 +3618,7 @@ class Window(QMainWindow):
 				self.horizontalSplitter.setSizes([self.chat.width(), self.userlist.width()])
 
 		# Save the userlist width
-		if self.userlist_width!=self.initial_userlist_width and config.SAVE_USERLIST_WIDTH:
+		if self.userlist_width!=self.initial_userlist_width and config.LOAD_AND_SAVE_USERLIST_WIDTH:
 			self.__save_userlist_width = QTimer()
 			self.__save_userlist_width.timeout.connect(self.save_userlist_width)
 			self.__save_userlist_width.start(USERLIST_SAVE_PAUSE)
@@ -3637,7 +3628,7 @@ class Window(QMainWindow):
 
 	def save_userlist_width(self):
 		if not hasattr(self,"userlist"): return
-		if not config.SAVE_USERLIST_WIDTH: return
+		if not config.LOAD_AND_SAVE_USERLIST_WIDTH: return
 
 		if self.userlist_width!=self.initial_userlist_width:
 			# Save the userlist width to the config file
@@ -3999,9 +3990,11 @@ class TopicEdit(QPlainTextEdit):
 
 	def enterEvent(self, event):
 		if not config.ALLOW_TOPIC_EDIT:
+			self.readyToEdit = False
 			self.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
 			self.viewport().setCursor(QtCore.Qt.ArrowCursor)
 		else:
+			self.readyToEdit = True
 			self.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
 			self.viewport().setCursor(QtCore.Qt.IBeamCursor)
 		super().enterEvent(event)

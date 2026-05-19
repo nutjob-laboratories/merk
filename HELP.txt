@@ -53,12 +53,12 @@ pip <span class="hljs-keyword">install</span> service_identity
 <p>The PyInstaller version of MERK will not always display progress or error messages when using command-line flags. When using this version, if <strong>MERK</strong> fails to launch when using a command-line flag that would normally launch <strong>MERK</strong>, assume that an error has occurred, re-check the command-line flags you are using, and check the documentation.</p>
 <pre><code>usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
-                      [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
+                      [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] [-N]
                       [-t] [-R] [-o] [-P] [-f] [-s FILENAME][--config-name NAME] 
                       [--config-directory DIRECTORY] [--config-local] [-D] [-L]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME] [-E]
                       [--config-file FILENAME] [--reset] [--reset-user] [-Q NAME]
-                      [--reset-all] [--uninstall [FILE]] [--install FILE]
+                      [--reset-all] [--uninstall [FILE]] [--install FILE] [-A]
                       [SERVER] [PORT]
 
 
@@ -89,6 +89,8 @@ Options:
   -h, --help             Show help and usage information
   -d, --donotsave        Do not save new user settings
   -x, --donotexecute     Do not execute connection script
+  -N, --noprofile        Do not use server profile
+  -A, --nosasl           Do not use SASL login
   -t, --reconnect        Reconnect to servers on disconnection
   -R, --run              Don't ask for connection information on start
   -o, --on-top           Application window always on top

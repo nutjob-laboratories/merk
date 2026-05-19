@@ -74,6 +74,13 @@ What's new:
 * Bugfix: the "port" entry on the connection dialog now only allows numeric
   digits to be entered.
 * Bugfix: the "do not save to user config" option now works as intended.
+* New command-line option: -N/--noprofile, which forces MERK to ignore the
+  server profile and use the default user information for a given connection.
+* Bugfix: command-line connections now use stored SASL logins.
+* New command-line option: -A/--nosasl, which forces MERK to ignore the SASL
+  login for a given connection.
+* Bugfix: the topic editor would not work correctly if the user selected text
+  before trying to type anything or place a cursor.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

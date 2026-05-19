@@ -526,11 +526,15 @@ class Dialog(QDialog):
 
 		# Make a version of the font that is slightly
 		# smaller than the current font, but never
-		# smaller than 8pt
+		# smaller than 8pt. If it's smaller than 8pt,
+		# the user is probably using a font smaller than
+		# 8pt, so we'll just use the regular font size
 		smaller_font = self.font()
 		smaller_point_size = smaller_font.pointSize() - 2
-		if smaller_point_size<8: smaller_point_size = 8
-		smaller_font.setPointSize(smaller_point_size)
+		if smaller_point_size<8:
+			pass
+		else:
+			smaller_font.setPointSize(smaller_point_size)
 
 		# Load the config file
 		config.load_settings(config.CONFIG_FILE)
@@ -722,6 +726,7 @@ class Dialog(QDialog):
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)
+		serverInfoLayout.addStretch()
 		serverInfoLayout.setContentsMargins(3,3,3,3)
 
 		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
@@ -741,6 +746,7 @@ class Dialog(QDialog):
 		self.commands.highlight_current_line(True)
 
 		height = self.servers.height()+self.reconnect.height()
+
 		if self.not_simplified:
 			height = height + serverLayout.sizeHint().height() + 165
 		else:

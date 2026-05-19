@@ -264,7 +264,7 @@ usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [--config-directory DIRECTORY] [--config-local] [-D] [-L]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME] [-E]
                       [--config-file FILENAME] [--reset] [--reset-user] [-Q NAME]
-                      [--reset-all] [--uninstall [FILE]] [--install FILE]
+                      [--reset-all] [--uninstall [FILE]] [--install FILE] [-N] [-A]
                       [SERVER] [PORT]
 
 
@@ -295,6 +295,8 @@ Options:
   -h, --help             Show help and usage information
   -d, --donotsave        Do not save new user settings
   -x, --donotexecute     Do not execute connection script
+  -N, --noprofile        Do not use server profile
+  -A, --nosasl           Do not use SASL login
   -t, --reconnect        Reconnect to servers on disconnection
   -R, --run              Don't ask for connection information on start
   -o, --on-top           Application window always on top
