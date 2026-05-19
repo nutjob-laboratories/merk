@@ -4,12 +4,13 @@
 
 What's new:
 
-- **The connection dialog was revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled.
+- **The connection dialog has been revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled.
 - **New option: open a server's channel list on connection**. This is disabled by default. However, if turned on (and fetching the server's channel list on connection is turned on), this will show the channel list dialog as soon as the channel list is available.
 - **Added new options to delete user and application configuration data to the settings dialog**.
 - **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings.
 - **Channel userlist widths can now be saved to the config**. This option is turned on by default, and happens automatically.
 - **The settings dialog has been revamped**. Applying settings is now more efficient, and faster.
+- **Many bugfixes**. Thanks to the folks on MansionNET for the bug reports!
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |

@@ -2615,6 +2615,9 @@ class Merk(QMainWindow):
 			# User has canceled the dialog, so
 			# we return without connecting to anything
 			if connection.nickname==CONNECTION_DIALOG_CANCELED: return
+
+			# Make sure we save the user's "do not save" choice
+			self.donotsave = bool(config.DO_NOT_SAVE)
 			
 			if connection.reconnect:
 				if connection.ssl:
@@ -2698,6 +2701,9 @@ class Merk(QMainWindow):
 			# User has canceled the dialog, so
 			# we return without connecting to anything
 			if connection.nickname==CONNECTION_DIALOG_CANCELED: return
+
+			# Make sure we save the user's "do not save" choice
+			self.donotsave = bool(config.DO_NOT_SAVE)
 			
 			if connection.reconnect:
 				if connection.ssl:

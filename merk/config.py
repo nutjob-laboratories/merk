@@ -37,6 +37,7 @@ CONFIG_FILE = None
 # not saved to any configuration file
 DO_NOT_SAVE = False
 
+# Settings
 APPLICATION_FONT = None
 DEFAULT_SUBWINDOW_WIDTH = 640
 DEFAULT_SUBWINDOW_HEIGHT = 480
