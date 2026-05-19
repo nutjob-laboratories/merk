@@ -4,11 +4,11 @@
 
 What's new:
 
-- **The connection dialog has been revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled.
 - **New option: open a server's channel list on connection**. This is disabled by default. However, if turned on (and fetching the server's channel list on connection is turned on), this will show the channel list dialog as soon as the channel list is available.
 - **Added new options to delete user and application configuration data to the settings dialog**.
-- **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings.
+- **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings or with command-line options.
 - **Channel userlist widths can now be saved to the config**. This option is turned on by default, and happens automatically.
+- **The connection dialog has been revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled. The GUI layout has been tweaked to look a little better.
 - **The settings dialog has been revamped**. Applying settings is now more efficient, and faster.
 - **Many bugfixes**. Thanks to the folks on MansionNET for the bug reports!
 
@@ -81,6 +81,10 @@ What's new:
   login for a given connection.
 * Bugfix: the topic editor would not work correctly if the user selected text
   before trying to type anything or place a cursor.
+* Bugfix: an icon was missing from the resource file.
+* Added an entry to open the User Guide to the systray menu.
+* Added an option to the channel right click menu to hide or show all
+  "filterable" message types at once.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

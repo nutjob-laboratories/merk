@@ -1372,70 +1372,82 @@ class Window(QMainWindow):
 					if channel_name in config.CHANNEL_FILTERS:
 
 						if 'j' in config.CHANNEL_FILTERS[channel_name]:
-							entry = QAction(QIcon(self.parent.checked_icon),"JOIN",menu)
+							entry = QAction(QIcon(self.parent.checked_icon),"JOIN messages",menu)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN messages",menu)
 						entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
 						if 'p' in config.CHANNEL_FILTERS[channel_name]:
-							entry = QAction(QIcon(self.parent.checked_icon),"PART",menu)
+							entry = QAction(QIcon(self.parent.checked_icon),"PART messages",menu)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"PART messages",menu)
 						entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
 						if 'q' in config.CHANNEL_FILTERS[channel_name]:
-							entry = QAction(QIcon(self.parent.checked_icon),"QUIT",menu)
+							entry = QAction(QIcon(self.parent.checked_icon),"QUIT messages",menu)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT messages",menu)
 						entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
 						if 'm' in config.CHANNEL_FILTERS[channel_name]:
-							entry = QAction(QIcon(self.parent.checked_icon),"MODE",menu)
+							entry = QAction(QIcon(self.parent.checked_icon),"MODE messages",menu)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"MODE messages",menu)
 						entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
 						if 'n' in config.CHANNEL_FILTERS[channel_name]:
-							entry = QAction(QIcon(self.parent.checked_icon),"NICK",menu)
+							entry = QAction(QIcon(self.parent.checked_icon),"NICK messages",menu)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"NICK messages",menu)
 						entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
 						if 't' in config.CHANNEL_FILTERS[channel_name]:
-							entry = QAction(QIcon(self.parent.checked_icon),"TOPIC",menu)
+							entry = QAction(QIcon(self.parent.checked_icon),"TOPIC messages",menu)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC messages",menu)
 						entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
 						fMenu.addAction(entry)
 					else:
-						entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
+						entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN messages",menu)
 						entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
-						entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
+						entry = QAction(QIcon(self.parent.unchecked_icon),"PART messages",menu)
 						entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
-						entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
+						entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT messages",menu)
 						entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
-						entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
+						entry = QAction(QIcon(self.parent.unchecked_icon),"MODE messages",menu)
 						entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
-						entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
+						entry = QAction(QIcon(self.parent.unchecked_icon),"NICK messages",menu)
 						entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
-						entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
+						entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC messages",menu)
 						entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
 						fMenu.addAction(entry)
+
+					fMenu.addSeparator()
+
+					if self.isAllFiltersSet():
+						entry = QAction(QIcon(self.parent.checked_icon),"Hide all types",menu)
+						entry.triggered.connect(self.unsetAllFilters)
+						fMenu.addAction(entry)
+					else:
+						entry = QAction(QIcon(self.parent.unchecked_icon),"Hide all types",menu)
+						entry.triggered.connect(self.setAllFilters)
+						fMenu.addAction(entry)
+
 					menu.addMenu(fMenu)
 
 				entry = QAction(QIcon(HIDE_WINDOW_ICON),"Hide window",menu)
@@ -1493,6 +1505,31 @@ class Window(QMainWindow):
 		config.CHANNEL_FILTERS = {k: v for k, v in config.CHANNEL_FILTERS.items() if v}
 		self.save_config()
 		self.rerenderChatLog()
+
+	def setAllFilters(self):
+		channel_name = self.encodeChannel()
+		config.CHANNEL_FILTERS[channel_name] = "jpqmnt"
+
+		config.CHANNEL_FILTERS = {k: v for k, v in config.CHANNEL_FILTERS.items() if v}
+		self.save_config()
+		self.rerenderChatLog()
+
+	def unsetAllFilters(self):
+		channel_name = self.encodeChannel()
+		config.CHANNEL_FILTERS.pop(channel_name,None)
+
+		config.CHANNEL_FILTERS = {k: v for k, v in config.CHANNEL_FILTERS.items() if v}
+		self.save_config()
+		self.rerenderChatLog()
+
+	def isAllFiltersSet(self):
+		channel_name = self.encodeChannel()
+		if channel_name in config.CHANNEL_FILTERS:
+			for f in ["j","p","q","m","n","t"]:
+				if not f in config.CHANNEL_FILTERS[channel_name]: return False
+				return True
+		else:
+			return False
 
 	def settingsMarkdown(self):
 		if config.ENABLE_MARKDOWN_MARKUP:

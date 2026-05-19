@@ -1022,7 +1022,7 @@ class Dialog(QDialog):
 			self.executeGlobal.setEnabled(False)
 			self.exeChannel.setEnabled(False)
 		self.changed.show()
-		#self.restart.show()
+		self.do_scripting = True
 		self.boldApply()
 		self.selector.setFocus()
 
@@ -1060,6 +1060,13 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
+		self.selector.setFocus()
+
+	def changedSettingRerenderTimestamp(self,state):
+		self.changed.show()
+		self.boldApply()
+		self.rerender = True
+		self.do_timestamp = True
 		self.selector.setFocus()
 
 	def changedSettingRerenderHighlight(self,state):
@@ -1186,6 +1193,7 @@ class Dialog(QDialog):
 		self.changed.show()
 		self.boldApply()
 		self.rerenderNick = True
+		self.do_timestamp = True
 		self.selector.setFocus()
 		
 	def changeEmojiAuto(self,state):
@@ -1435,6 +1443,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
+		self.do_systray = True
 
 	def changedSettingConnections(self,state):
 		if not self.stmConnections.isChecked():
@@ -1481,6 +1490,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
+		self.do_systray = True
 
 	def changedMenubarSetting(self,state):
 		if self.menubar.isChecked():
@@ -1624,7 +1634,7 @@ class Dialog(QDialog):
 
 	def styleChange(self, i):
 		self.qt_style = self.qtStyle.itemText(i)
-
+		self.do_style = True
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -1654,6 +1664,7 @@ class Dialog(QDialog):
 
 	def topicChange(self, i):
 		self.refreshTopics = True
+		self.do_topic = True
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -1670,6 +1681,7 @@ class Dialog(QDialog):
 			self.chanMode.setEnabled(True)
 		else:
 			self.chanMode.setEnabled(False)
+		self.do_topic = True
 
 	def mainTopicChange(self, i):
 		if self.topicDisplay.isChecked():
@@ -1692,6 +1704,7 @@ class Dialog(QDialog):
 			self.topicEditor.setEnabled(False)
 			self.chanMode.setEnabled(False)
 
+		self.do_topic = True
 		self.selector.setFocus()
 		self.changed.show()
 		self.boldApply()
@@ -2280,6 +2293,11 @@ class Dialog(QDialog):
 		self.do_status_bars = False
 		self.do_list_refresh = False
 		self.do_serv_toolbar = False
+		self.do_timestamp = False
+		self.do_style = False
+		self.do_topic = False
+		self.do_scripting = False
+		self.do_systray = False
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -4338,11 +4356,11 @@ class Dialog(QDialog):
 
 		self.timestamp24hour = QCheckBox("Use 24-hour time for timestamps",self)
 		if config.TIMESTAMP_24_HOUR: self.timestamp24hour.setChecked(True)
-		self.timestamp24hour.stateChanged.connect(self.changedSettingRerender)
+		self.timestamp24hour.stateChanged.connect(self.changedSettingRerenderTimestamp)
 
 		self.timestampSeconds = QCheckBox("Show seconds in timestamps",self)
 		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
-		self.timestampSeconds.stateChanged.connect(self.changedSettingRerender)
+		self.timestampSeconds.stateChanged.connect(self.changedSettingRerenderTimestamp)
 
 		if not config.DISPLAY_TIMESTAMP:
 			self.timestamp24hour.setEnabled(False)
@@ -7257,13 +7275,14 @@ class Dialog(QDialog):
 
 		if self.save_user: user.save_user(user.USER_FILE)
 
-		if config.TIMESTAMP_24_HOUR:
-			ts = '%H:%M'
-		else:
-			ts = '%I:%M'
-		if config.TIMESTAMP_SHOW_SECONDS: ts = ts + ':%S'
+		if self.do_timestamp:
+			if config.TIMESTAMP_24_HOUR:
+				ts = '%H:%M'
+			else:
+				ts = '%I:%M'
+			if config.TIMESTAMP_SHOW_SECONDS: ts = ts + ':%S'
 
-		config.TIMESTAMP_FORMAT = ts
+			config.TIMESTAMP_FORMAT = ts
 
 		if self.newfont!=None:
 			config.APPLICATION_FONT = self.newfont.toString()
@@ -7302,25 +7321,21 @@ class Dialog(QDialog):
 		self.parent.buildSettingsMenu()
 		self.parent.buildWindowsMenu()
 
-		self.parent.app.setStyle(self.qt_style)
-		font = self.parent.app.font()
-		self.parent.app.setFont(font)
-		self.parent.setAllFont(font)
+		if self.do_style: self.parent.app.setStyle(self.qt_style)
 
-		self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
+		if self.do_spellcheck: self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 
-		if config.SHOW_SYSTRAY_ICON:
-			self.parent.tray.setVisible(True)
-			self.parent.tray.show()
-			self.parent.buildSystrayMenu()
-		else:
-			self.parent.tray.setVisible(False)
-			self.parent.tray.hide()
+		if self.do_systray:
+			if config.SHOW_SYSTRAY_ICON:
+				self.parent.tray.setVisible(True)
+				self.parent.tray.show()
+				self.parent.buildSystrayMenu()
+			else:
+				self.parent.tray.setVisible(False)
+				self.parent.tray.hide()
 
 		if self.windowbar_change:
-			# Build menubar/menus
 			self.parent.buildMenu()
-			# Set the windowbar
 			self.parent.initWindowbar()
 
 		if self.swapUserlists: self.parent.swapAllUserlists()
@@ -7342,31 +7357,33 @@ class Dialog(QDialog):
 		if self.rerenderStyle: self.parent.reApplyStyle()
 		if save_userlists: self.parent.saveAllUserlistWidths()
 
-		if config.SHOW_CHANNEL_TOPIC:
-			self.parent.showAllTopic()
-		else:
-			self.parent.hideAllTopic()
+		if self.do_topic:
+			if config.SHOW_CHANNEL_TOPIC:
+				self.parent.showAllTopic()
+			else:
+				self.parent.hideAllTopic()
 			
 		if self.rerenderNick:
 			self.parent.rerenderAllNickDisplays()
 			self.parent.toggleNickDisplay()
 			if not self.rerenderUsers: self.parent.rerenderUserlists()
 
-		if not config.SCRIPTING_ENGINE_ENABLED:
-			for window in self.parent.getAllEditorWindows():
-				if hasattr(window,"widget"):
-					c = window.widget()
-					if not c.python:
-						c.force_close = True
-						c.close()
+		if self.do_scripting:
+			if not config.SCRIPTING_ENGINE_ENABLED:
+				for window in self.parent.getAllEditorWindows():
+					if hasattr(window,"widget"):
+						c = window.widget()
+						if not c.python:
+							c.force_close = True
+							c.close()
 
-			for w in self.parent.getAllServerWindows():
-				c = w.widget()
-				c.script_button.hide()
-		else:
-			for w in self.parent.getAllServerWindows():
-				c = w.widget()
-				c.script_button.show()
+				for w in self.parent.getAllServerWindows():
+					c = w.widget()
+					c.script_button.hide()
+			else:
+				for w in self.parent.getAllServerWindows():
+					c = w.widget()
+					c.script_button.show()
 
 		if not config.ENABLE_HOTKEYS:
 			if self.parent.hotkey_manager!=None:
@@ -7401,6 +7418,7 @@ class Dialog(QDialog):
 				self.parent.plugin_manager.menuNew.setVisible(True)
 
 		if reset_built_in: commands.clearTemporaryAliases()
+		
 		commands.build_help_and_autocomplete()
 
 		# Refresh editor windows with any changes to syntax highlighting

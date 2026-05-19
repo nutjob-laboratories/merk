@@ -1236,9 +1236,15 @@ class Merk(QMainWindow):
 
 		self.trayMenu.addSeparator()
 
-		entry = QAction(QIcon(APPLICATION_ICON),f"{APPLICATION_NAME} IRC Client",self)
+		entry = QAction(QIcon(APPLICATION_ICON),f"About {APPLICATION_NAME}",self)
 		entry.triggered.connect(self.showAbout)
 		self.trayMenu.addAction(entry)
+
+		entry = QAction(QIcon(INFO_ICON),f"{APPLICATION_NAME} User Guide",self)
+		entry.triggered.connect(self.openScripting)
+		self.trayMenu.addAction(entry)
+
+		self.trayMenu.addSeparator()
 
 		entry = QAction(QIcon(QUIT_ICON),"Exit",self)
 		entry.triggered.connect(self.close)
