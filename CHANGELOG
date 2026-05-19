@@ -72,6 +72,7 @@ What's new:
   point exception" when editing the host.
 * Bugfix: the "port" entry on the connection dialog now only allows numeric
   digits to be entered.
+* Bugfix: the "do not save to user config" option now works as intended.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

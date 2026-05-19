@@ -240,6 +240,11 @@ if __name__ == '__main__':
 						show_message("Error",f"File \"{args.script}\" does not exist or is not readable")
 					sys.exit(1)
 
+		if args.donotsave:
+			config.DO_NOT_SAVE = True
+		else:
+			config.DO_NOT_SAVE = False
+
 		i = ConnectInfo(
 			args.nickname,
 			args.alternate,

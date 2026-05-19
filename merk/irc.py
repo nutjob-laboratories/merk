@@ -1636,9 +1636,14 @@ class IRC_Connection(irc.IRCClient):
 			# Now, since we have a successful connection, we
 			# write the connection to the history in the user
 			# config file
+
+			DO_NOT_SAVE = False
+			if self.gui.donotsave: DO_NOT_SAVE = True
+			if config.DO_NOT_SAVE: DO_NOT_SAVE = True
+
 			if hasattr(self,'network'):
 				if self.network:
-					if not self.gui.donotsave:
+					if not DO_NOT_SAVE:
 						user_history = list(user.HISTORY)
 
 						already_in_history = False
@@ -1661,7 +1666,7 @@ class IRC_Connection(irc.IRCClient):
 							user.HISTORY = list(user_history)
 							user.save_user(user.USER_FILE)
 			else:
-				if not self.gui.donotsave:
+				if not DO_NOT_SAVE:
 					user_history = list(user.HISTORY)
 
 					already_in_history = False

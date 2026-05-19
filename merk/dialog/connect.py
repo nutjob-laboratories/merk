@@ -197,6 +197,7 @@ class Dialog(QDialog):
 
 				if self.parent!=None:
 					self.parent.donotsave = False
+				config.DO_NOT_SAVE = False
 
 				return retval
 			else:
@@ -225,6 +226,7 @@ class Dialog(QDialog):
 
 				if self.parent!=None:
 					self.parent.donotsave = True
+				config.DO_NOT_SAVE = True
 
 				return retval
 
@@ -297,17 +299,18 @@ class Dialog(QDialog):
 			self.realname.setText(r)
 		else:
 			self.profile.setChecked(False)
-			self.nick.setText(user.NICKNAME)
-			self.alternative.setText(user.ALTERNATE)
-			self.username.setText(user.USERNAME)
-			self.realname.setText(user.REALNAME)
+			if len(user.NICKNAME.strip())>0 and len(user.ALTERNATE.strip())>0 and len(user.USERNAME.strip())>0 and len(user.REALNAME.strip())>0:
+				self.nick.setText(user.NICKNAME)
+				self.alternative.setText(user.ALTERNATE)
+				self.username.setText(user.USERNAME)
+				self.realname.setText(user.REALNAME)
 
 		if hostid in user.PROFILES:
 			self.profile.setText(f"Use {hostid} profile")
 		else:
 			self.profile.setText(f"Save as server profile")
 
-		if user.NICKNAME=='' or user.USERNAME=='' or user.REALNAME=='':
+		if len(self.nick.text().strip())==0 or len(self.username.text().strip())==0 or len(self.realname.text().strip())==0:
 			self.tabs.setCurrentWidget(self.user_tab)
 			self.nick.setFocus()
 			QTimer.singleShot(1, lambda: self.nick.setCursorPosition(len(self.nick.text())))
@@ -506,6 +509,8 @@ class Dialog(QDialog):
 		self.initial = initial
 		self.skipping = False
 		self.use_profile = False
+
+		config.DO_NOT_SAVE = bool(self.donotsave)
 
 		if test_if_window_background_is_light(self):
 			self.dark_mode = False

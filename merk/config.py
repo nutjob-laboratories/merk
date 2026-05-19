@@ -33,6 +33,10 @@ from .resources import *
 CONFIG_DIRECTORY = None
 CONFIG_FILE = None
 
+# This setting is used internally, and is
+# not saved to any configuration file
+DO_NOT_SAVE = False
+
 APPLICATION_FONT = None
 DEFAULT_SUBWINDOW_WIDTH = 640
 DEFAULT_SUBWINDOW_HEIGHT = 480
