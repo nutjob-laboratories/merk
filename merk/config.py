@@ -422,7 +422,6 @@ PREVENT_ILLEGAL_CHANNELS = True
 CHANNEL_MODE_CONTEXT_MENU = True
 SETTINGS_FONT_POINT_SIZE = 10
 ENABLE_READ_WRITE_AND_APPEND_COMMANDS = True
-HIGHLIGHT_ALL_VISIBLE_NICKS = False
 DISCONNECT_ON_SASL_FAIL = True
 EXECUTE_GLOBAL_SCRIPT = True
 GLOBAL_SCRIPT_FILE = "global."+SCRIPT_FILE_EXTENSION
@@ -457,9 +456,11 @@ SHOW_CHANNEL_LIST_ON_CONNECT =  False
 ALWAYS_USE_SERVER_PROFILES = True
 CHANNEL_USERLIST_WIDTHS = {}
 LOAD_AND_SAVE_USERLIST_WIDTH = True
+HIGHLIGHT_ALL_VISIBLE_NICKS = False
 
 def build_settings():
 	settings = {
+		"highlight_all_visible_nicks_in_input": HIGHLIGHT_ALL_VISIBLE_NICKS,
 		"load_and_save_userlist_widths": LOAD_AND_SAVE_USERLIST_WIDTH,
 		"channel_userlist_widths": CHANNEL_USERLIST_WIDTHS,
 		"always_use_server_profiles": ALWAYS_USE_SERVER_PROFILES,
@@ -494,7 +495,6 @@ def build_settings():
 		"global_script_filename": GLOBAL_SCRIPT_FILE,
 		"execute_global_script": EXECUTE_GLOBAL_SCRIPT,
 		"disconnect_on_sasl_failure": DISCONNECT_ON_SASL_FAIL,
-		"highlight_all_nicknames_in_input_widget": HIGHLIGHT_ALL_VISIBLE_NICKS,
 		"enable_read_and_write_command": ENABLE_READ_WRITE_AND_APPEND_COMMANDS,
 		"settings_dialog_font_size": SETTINGS_FONT_POINT_SIZE,
 		"channel_mode_right_click_menu": CHANNEL_MODE_CONTEXT_MENU,
@@ -877,6 +877,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "highlight_all_visible_nicks_in_input" in settings:
+		settings["highlight_all_visible_nicks_in_input"] = HIGHLIGHT_ALL_VISIBLE_NICKS
 	if not "load_and_save_userlist_widths" in settings:
 		settings["load_and_save_userlist_widths"] = LOAD_AND_SAVE_USERLIST_WIDTH
 	if not "channel_userlist_widths" in settings:
@@ -945,8 +947,6 @@ def patch_settings(settings):
 		settings["execute_global_script"] = EXECUTE_GLOBAL_SCRIPT
 	if not "disconnect_on_sasl_failure" in settings:
 		settings["disconnect_on_sasl_failure"] = DISCONNECT_ON_SASL_FAIL
-	if not "highlight_all_nicknames_in_input_widget" in settings:
-		settings["highlight_all_nicknames_in_input_widget"] = HIGHLIGHT_ALL_VISIBLE_NICKS
 	if not "enable_read_and_write_command" in settings:
 		settings["enable_read_and_write_command"] = ENABLE_READ_WRITE_AND_APPEND_COMMANDS
 	if not "settings_dialog_font_size" in settings:
@@ -2082,7 +2082,6 @@ def load_settings(filename):
 	global CHANNEL_MODE_CONTEXT_MENU
 	global SETTINGS_FONT_POINT_SIZE
 	global ENABLE_READ_WRITE_AND_APPEND_COMMANDS
-	global HIGHLIGHT_ALL_VISIBLE_NICKS
 	global DISCONNECT_ON_SASL_FAIL
 	global EXECUTE_GLOBAL_SCRIPT
 	global GLOBAL_SCRIPT_FILE
@@ -2117,6 +2116,7 @@ def load_settings(filename):
 	global ALWAYS_USE_SERVER_PROFILES
 	global CHANNEL_USERLIST_WIDTHS
 	global LOAD_AND_SAVE_USERLIST_WIDTH
+	global HIGHLIGHT_ALL_VISIBLE_NICKS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2126,6 +2126,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_visible_nicks_in_input"]
 		LOAD_AND_SAVE_USERLIST_WIDTH = settings["load_and_save_userlist_widths"]
 		CHANNEL_USERLIST_WIDTHS = settings["channel_userlist_widths"]
 		ALWAYS_USE_SERVER_PROFILES = settings["always_use_server_profiles"]
@@ -2160,7 +2161,6 @@ def load_settings(filename):
 		GLOBAL_SCRIPT_FILE = settings["global_script_filename"]
 		EXECUTE_GLOBAL_SCRIPT = settings["execute_global_script"]
 		DISCONNECT_ON_SASL_FAIL = settings["disconnect_on_sasl_failure"]
-		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_nicknames_in_input_widget"]
 		ENABLE_READ_WRITE_AND_APPEND_COMMANDS = settings["enable_read_and_write_command"]
 		SETTINGS_FONT_POINT_SIZE = settings["settings_dialog_font_size"]
 		CHANNEL_MODE_CONTEXT_MENU = settings["channel_mode_right_click_menu"]

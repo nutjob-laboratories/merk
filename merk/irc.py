@@ -1217,17 +1217,23 @@ class IRC_Connection(irc.IRCClient):
 		if channel in self.all_nicks:
 			cleaned = []
 			for n in self.all_nicks[channel]:
-				n = n.replace('@','')
-				n = n.replace('+','')
-				n = n.replace('~','')
-				n = n.replace('&','')
-				n = n.replace('%','')
-				n = n.replace('!','')
-				if n==self.nickname: continue
-				cleaned.append(n)
+				p = n.split('!')
+				if len(p)==2:
+					nick = p[0]
+				else:
+					nick = n
+				nick = nick.replace('@','')
+				nick = nick.replace('+','')
+				nick = nick.replace('~','')
+				nick = nick.replace('&','')
+				nick = nick.replace('%','')
+				nick = nick.replace('!','')
+				if nick==self.nickname: continue
+				cleaned.append(nick)
 			self.all_nicks[channel] = list(cleaned)
 
-		self.all_visible_nicknames = list(set(item for sublist in self.all_nicks.values() for item in sublist))
+		# Build a list of all visible nicknames
+		self.all_visible_nicknames = [n for lst in self.all_nicks.values() for n in lst]
 
 	def irc_RPL_TOPIC(self, prefix, params):
 		if not params[2].isspace():

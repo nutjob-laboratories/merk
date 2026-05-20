@@ -703,15 +703,6 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
-	def changedSettingHighlight(self,state):
-		if self.toggleSyntaxInput.isChecked():
-			self.highlightAllNicks.setEnabled(True)
-		else:
-			self.highlightAllNicks.setEnabled(False)
-		self.changed.show()
-		self.boldApply()
-		self.selector.setFocus()
-
 	def changedClear(self,state):
 
 		if self.pluginClear.isChecked():
@@ -1614,6 +1605,15 @@ class Dialog(QDialog):
 			else:
 				self.writeFile.setChecked(False)
 
+		self.selector.setFocus()
+
+	def changedSettingHighlight(self,state):
+		if self.toggleSyntaxInput.isChecked():
+			self.highlightAllNicks.setEnabled(True)
+		else:
+			self.highlightAllNicks.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
 		self.selector.setFocus()
 
 	def prependChange(self,i):
@@ -6301,20 +6301,20 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(False)
 			self.syntaxscript.setEnabled(False)
 
-		inputMaster = QHBoxLayout()
-		inputMaster.addStretch()
-		inputMaster.addWidget(self.toggleSyntaxInput)
-		inputMaster.addStretch()
+		inputHigh1 = QHBoxLayout()
+		inputHigh1.addStretch()
+		inputHigh1.addWidget(self.toggleSyntaxInput)
+		inputHigh1.addStretch()
 
-		inputMaster2 = QHBoxLayout()
-		inputMaster2.addStretch()
-		inputMaster2.addWidget(self.highlightAllNicks)
-		inputMaster2.addStretch()
+		inputHigh2 = QHBoxLayout()
+		inputHigh2.addStretch()
+		inputHigh2.addWidget(self.highlightAllNicks)
+		inputHigh2.addStretch()
 
-		inputOpts = QVBoxLayout()
-		inputOpts.setSpacing(0)
-		inputOpts.addLayout(inputMaster)
-		inputOpts.addLayout(inputMaster2)
+		inputMaster = QVBoxLayout()
+		inputMaster.setSpacing(0)
+		inputMaster.addLayout(inputHigh1)
+		inputMaster.addLayout(inputHigh2)
 
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
@@ -6323,7 +6323,7 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
-		syntaxLayout.addLayout(inputOpts)
+		syntaxLayout.addLayout(inputMaster)
 		syntaxLayout.addLayout(sbLay)
 		syntaxLayout.addStretch()
 
@@ -7103,7 +7103,6 @@ class Dialog(QDialog):
 		config.PREVENT_ILLEGAL_CHANNELS = self.prevChannel.isChecked()
 		config.CHANNEL_MODE_CONTEXT_MENU = self.chanMode.isChecked()
 		config.ENABLE_READ_WRITE_AND_APPEND_COMMANDS = self.enableReadWrite.isChecked()
-		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 		config.DISCONNECT_ON_SASL_FAIL = self.failSasl.isChecked()
 		config.EXECUTE_GLOBAL_SCRIPT = self.executeGlobal.isChecked()
 		config.SAVE_MAIN_WINDOW_LOCATION = self.saveLocation.isChecked()
@@ -7129,6 +7128,7 @@ class Dialog(QDialog):
 		config.NOTIFY_ON_CTCP_REQUESTS = self.notifyCTCP.isChecked()
 		config.SHOW_CHANNEL_LIST_ON_CONNECT = self.showList.isChecked()
 		config.ALWAYS_USE_SERVER_PROFILES = self.useProfiles.isChecked()
+		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

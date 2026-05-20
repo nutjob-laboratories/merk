@@ -4204,15 +4204,14 @@ class SpellTextEdit(QPlainTextEdit):
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
 								text = self.textCursor().selectedText()
-
 								settings = user.build_settings()
 								settings_list = []
 								for s in settings:
 									if s=="history": continue
 									if s=="commands": continue
 									if s=="sasl": continue
+									if s=="server_profiles": continue
 									settings_list.append(s)
-
 								for setting in settings_list:
 									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4228,7 +4227,6 @@ class SpellTextEdit(QPlainTextEdit):
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
 								text = self.textCursor().selectedText()
-
 								settings = config.build_settings()
 								settings_list = []
 								for s in settings:
@@ -4236,8 +4234,7 @@ class SpellTextEdit(QPlainTextEdit):
 									if s=="hotkeys": continue
 									if s=="log_absolutely_all_messages_of_any_type": continue
 									if s=="default_python_indentation": continue
-									if not type(settings[s]) is list: settings_list.append(s)
-
+									if not type(settings[s]) is list and not type(settings[s]) is dict: settings_list.append(s)
 								for setting in settings_list:
 									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4254,7 +4251,6 @@ class SpellTextEdit(QPlainTextEdit):
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
 								text = self.textCursor().selectedText()
-
 								for script in commands.list_scripts():
 									if fnmatch.fnmatch(script.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4271,7 +4267,6 @@ class SpellTextEdit(QPlainTextEdit):
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
 								text = self.textCursor().selectedText()
-
 								for script in plugins.list_plugin_files():
 									if fnmatch.fnmatch(script.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4288,7 +4283,6 @@ class SpellTextEdit(QPlainTextEdit):
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
 								text = self.textCursor().selectedText()
-
 								for method in plugins.list_all_call_methods():
 									if fnmatch.fnmatch(method.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4310,7 +4304,6 @@ class SpellTextEdit(QPlainTextEdit):
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
 								text = self.textCursor().selectedText()
-
 								for a in commands.ALIAS:
 									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4318,7 +4311,6 @@ class SpellTextEdit(QPlainTextEdit):
 										cursor.endEditBlock()
 										self.ensureCursorVisible()
 										return
-
 								for a in commands.TEMPORARY_ALIAS_AUTOCOMPLETE:
 									if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4333,26 +4325,20 @@ class SpellTextEdit(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						self.COMMAND_LIST = commands.AUTOCOMPLETE
-
 						for c in self.COMMAND_LIST:
 							cmd = c
 							rep = self.COMMAND_LIST[c]
-
 							if fnmatch.fnmatch(cmd.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(rep)
 								cursor.endEditBlock()
 								self.ensureCursorVisible()
 								return
-
 						self.COMMAND_LIST = commands.AUTOCOMPLETE_MULTI
-
 						for c in self.COMMAND_LIST:
 							cmd = c
 							rep = self.COMMAND_LIST[c]
-
 							if fnmatch.fnmatch(cmd.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(rep)
@@ -4381,7 +4367,6 @@ class SpellTextEdit(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						# Nicks in the current channel
 						chan_nicks = self.parent.nicks
 						for nick in chan_nicks:
@@ -4394,7 +4379,6 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.endEditBlock()
 								self.ensureCursorVisible()
 								return
-
 						# Nicks in all current channels
 						chan_nicks = self.parent.client.all_visible_nicknames
 						for nick in chan_nicks:
@@ -4413,7 +4397,6 @@ class SpellTextEdit(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						# Make sure that the current context's
 						# server is the first to attempt to match
 						if fnmatch.fnmatch(f"{self.parent.client.server.lower()}",f"{text.lower()}*"):
@@ -4422,7 +4405,6 @@ class SpellTextEdit(QPlainTextEdit):
 							cursor.endEditBlock()
 							self.ensureCursorVisible()
 							return
-
 						# hosts
 						hosts = self.parent.parent.getAllHosts()
 						for hostid in hosts:
@@ -4432,7 +4414,6 @@ class SpellTextEdit(QPlainTextEdit):
 								cursor.endEditBlock()
 								self.ensureCursorVisible()
 								return
-
 						# hostIDs
 						hostids = self.parent.parent.getAllHostids()
 						for hostid in hostids:
@@ -4454,7 +4435,6 @@ class SpellTextEdit(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						# Channel/server names
 						for name in self.parent.parent.getAllChatNames():
 							if fnmatch.fnmatch(name.lower(),f"{text.lower()}*"):
@@ -4477,7 +4457,6 @@ class SpellTextEdit(QPlainTextEdit):
 						self.setTextCursor(cursor)
 						if self.textCursor().hasSelection():
 							text = self.textCursor().selectedText()
-
 							# Channel/server names
 							for name in self.parent.parent.getAllChatNames():
 								if fnmatch.fnmatch(name.lower(),f"{text.lower()}*"):
@@ -4499,10 +4478,7 @@ class SpellTextEdit(QPlainTextEdit):
 						self.setTextCursor(cursor)
 						if self.textCursor().hasSelection():
 							text = self.textCursor().selectedText()
-
 							for c in EMOJI_AUTOCOMPLETE:
-
-								# Case sensitive
 								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 									cursor.beginEditBlock()
 									cursor.insertText(c)
@@ -4522,10 +4498,7 @@ class SpellTextEdit(QPlainTextEdit):
 						self.setTextCursor(cursor)
 						if self.textCursor().hasSelection():
 							text = self.textCursor().selectedText()
-
 							for c in ASCIIMOIJI:
-
-								# Case sensitive
 								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 									cursor.beginEditBlock()
 									cursor.insertText(c)
@@ -4563,7 +4536,6 @@ class SpellTextEdit(QPlainTextEdit):
 			# moved to the location of the pointer.
 			event = QMouseEvent(QEvent.MouseButtonPress, event.pos(),
 				Qt.LeftButton, Qt.LeftButton, Qt.NoModifier)
-		# QPlainTextEdit.mousePressEvent(self, event)
 		super().mousePressEvent(event)
 
 	def addToDictionary(self,word):

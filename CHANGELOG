@@ -96,6 +96,11 @@ What's new:
   location and size of the main window.
 * Bugfix: command subcommands are no longer highlighted in the text input
   widget if the initial command is not being used.
+* Bugfix: the "all visible nickname" list is now being built properly; that
+  means that the "highlight all visible nicknames" option works properly, and
+  nick autocomplete will never try to insert a user's hostmask.
+* Autocomplete for the /config and /user commands could attempt to edit
+  settings that those commands can't actually edit.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |
