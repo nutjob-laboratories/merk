@@ -330,6 +330,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"fade": config.ISSUE_COMMAND_SYMBOL+"fade ",
 			config.ISSUE_COMMAND_SYMBOL+"warn": config.ISSUE_COMMAND_SYMBOL+"warn ",
 			config.ISSUE_COMMAND_SYMBOL+"reload": config.ISSUE_COMMAND_SYMBOL+"reload ",
+			config.ISSUE_COMMAND_SYMBOL+"error": config.ISSUE_COMMAND_SYMBOL+"error ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -500,6 +501,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a window by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload [SERVER] [WINDOW]</b>", "Re-renders the chat log of a window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window, and ends a script" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -1609,6 +1611,125 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					else:
 						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
 						tokens = user_input.split()
+
+	# |--------|
+	# | /error |
+	# |--------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'error' and len(tokens)==2:
+			tokens.pop(0)
+			msg = tokens.pop(0)
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+			t = Message(ERROR_MESSAGE,'',f"{msg}")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if is_script: add_halt(script_id)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'error' and len(tokens)==3:
+			tokens.pop(0)
+			target = tokens.pop(0)
+			msg = tokens.pop(0)
+
+			w = gui.getSubWindow(target,window.client)
+			if w:
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				t = Message(ERROR_MESSAGE,'',f"{msg}")
+				if hasattr(w,"widget"):
+					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if is_script: add_halt(script_id)
+			else:
+				msg = f"{target} {msg}"
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				t = Message(ERROR_MESSAGE,'',f"{msg}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if is_script: add_halt(script_id)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'error' and len(tokens)>=4:
+			tokens.pop(0)
+			server = tokens.pop(0)
+			target = tokens.pop(0)
+			msg = ' '.join(tokens)
+
+			displayed = False
+			swins = gui.getAllServerWindows()
+			for win in swins:
+				if server.lower()==win.widget().name.lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+						t = Message(ERROR_MESSAGE,'',f"{msg}")
+						if hasattr(w,"widget"):
+							w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						if is_script: add_halt(script_id)
+				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
+					w = gui.getSubWindowCommand(target,win.widget().client)
+					if w:
+						displayed = True
+						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+						t = Message(ERROR_MESSAGE,'',f"{msg}")
+						if hasattr(w,"widget"):
+							w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						else:
+							w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						if is_script: add_halt(script_id)
+			if displayed: return True
+
+			msg = f"{target} {msg}"
+
+			w = gui.getSubWindow(server,window.client)
+			if w:
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+				if hasattr(w,"widget"):
+					w.widget().writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if is_script: add_halt(script_id)
+			else:
+				msg = f"{server} {msg}"
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				t = Message(ERROR_MESSAGE,'',f"{msg}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				if is_script: add_halt(script_id)
+			return True
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'error' and len(tokens)==1:
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |---------|
 	# | /reload |
@@ -4382,28 +4503,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 
 				results = []
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ==============================")
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Main application window layout")
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ==============================\n")
 
-				if gui.isMaximized():
-					position = gui.pos()
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window restore")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window move {position.x()} {position.y()}")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window maximize")
-				else:
-					size = gui.size()
-					position = gui.pos()
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window restore")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window size {size.width()} {size.height()}")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}window move {position.x()} {position.y()}")
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout script")
 
-				opacity = round(gui.windowOpacity() * 100)
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}window fade {opacity}")
-
-				results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem ================")
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout")
-				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ================\n")
+				current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%H:%M:%S %A %B %d, %Y')
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Generated at {current_date}\n")
 
 				calling_window_is_visible = True
 				for w in gui.getAllAllConnectedSubWindows():
@@ -4420,23 +4524,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server} {win_name} {x_val} {y_val}")
 					results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server} {win_name} {opacity}")
 					if not w.isVisible():
-						results.append(f"{config.ISSUE_COMMAND_SYMBOL}hide {w.widget().client.server}:{w.widget().client.port} {win_name}")
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}hide {w.widget().client.server} {win_name}")
 					else:
-						results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {w.widget().client.server}:{w.widget().client.port} {win_name}")
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {w.widget().client.server} {win_name}")
 
 					if w.widget().subwindow_id==window.subwindow_id:
 						if not w.isVisible(): calling_window_is_visible = False
 
 				if calling_window_is_visible:
-					results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem ===============")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow focus")
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem ===============\n")
-
 					if window.window_type==SERVER_WINDOW:
 						win_name = '*'
 					else:
 						win_name = window.name
-					results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {window.client.server}:{window.client.port} {win_name}")
+					results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem Set focus on the calling subwindow")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {window.client.server} {win_name}")
 
 				gui.newEditorWindowContents("\n".join(results))
 				return True

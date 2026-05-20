@@ -5519,6 +5519,7 @@ class Dialog(QDialog):
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
 		messageLayout.addLayout(prepLayout)
+		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addLayout(msLayout)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))

@@ -85,6 +85,17 @@ What's new:
 * Added an entry to open the User Guide to the systray menu.
 * Added an option to the channel right click menu to hide or show all
   "filterable" message types at once.
+* Bugfix: the "/window layout" command was including server port numbers in
+  calls to several commands.
+* New command: "/error". This command works exactly like "/warn", but it will
+  immediately exit a script if called from a script.
+* Bugfix: long nicknames were being elided even if text styles were not being
+  applied.
+* Changed the output of the "/window layout" command. Now, the command only
+  generates code to set the subwindow layout, and doesn't try to set the
+  location and size of the main window.
+* Bugfix: command subcommands are no longer highlighted in the text input
+  widget if the initial command is not being used.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

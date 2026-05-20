@@ -81,6 +81,8 @@ SYSTEM_PREPEND_OPTIONS = [
 	"@",
 	"&",
 	"$",
+	">",
+	"!",
 ]
 
 LOG_AND_STYLE_FILENAME_DELIMITER = "-"

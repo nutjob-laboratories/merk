@@ -353,6 +353,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/_die`                  | Instructs the server to shut down. May only be issued by server operators                               |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
 | `end`                                  | Immediately ends a script; *can only be called from scripts*                                                                       |
+| `/error [SERVER] [WINDOW] TEXT...`     | Prints an error message to a window, and immediately exits a script if called from a script. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window     |
 | `escape ALIAS TEXT...`       | Escapes MERK markdown in `TEXT`, and stores it in `ALIAS`; *can only be called from scripts*             |
 | `exclude WINDOW...`                       | Prevents a script from executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
 | `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |

@@ -165,6 +165,8 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	else:
 		nick = message.sender
 
+	if config.DO_NOT_APPLY_STYLES_TO_TEXT: nick = f"{nick}:"
+
 	# If we have a custom color for the nickname,
 	# save it for later so we can set the new color
 	if nick in nicks:
@@ -174,7 +176,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 
 	# Build the list of nicks to highlight
 	nicks_to_highlight = []
-	if config.HIGHLIGHT_NICKS_IN_CHAT:
+	if config.HIGHLIGHT_NICKS_IN_CHAT and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if client!=None:
 			# The user's nickname is always the first entry
 			nicks_to_highlight.append(client.nickname)
@@ -216,7 +218,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 			msg_to_display = strip_color(msg_to_display)
 
 	# Elide nicknames if we need to
-	if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY:
+	if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if len(nick)>config.NICKNAME_PAD_LENGTH:
 			nick = elide_text(nick,config.NICKNAME_PAD_LENGTH)
 
@@ -230,7 +232,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 
 	# Highlight nicks if that option is turned on
-	if config.HIGHLIGHT_NICKS_IN_CHAT:
+	if config.HIGHLIGHT_NICKS_IN_CHAT and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE or message.type==SELF_MESSAGE:
 			if len(nicks_to_highlight)>0: msg_to_display = highlight_nick(msg_to_display,nicks_to_highlight,nicks,style)
 

@@ -222,6 +222,10 @@ Appearance:
 <td>Immediately ends a script; <strong>can only be called from scripts</strong></td>
 </tr>
 <tr>
+<td><code>/error [SERVER] [WINDOW] TEXT...</code></td>
+<td>Prints an error message to a window, and immediately exits a script if called from a script. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
+</tr>
+<tr>
 <td><code>escape ALIAS TEXT...</code></td>
 <td>Escapes MERK markdown in <code>TEXT</code>, and stores it in <code>ALIAS</code>. <strong>Can only be called from scripts</strong></td>
 </tr>

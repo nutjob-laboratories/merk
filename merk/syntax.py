@@ -291,6 +291,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"user sasl edit",
 			cmdsymbol+"reload",
 			cmdsymbol+"window reload",
+			cmdsymbol+"error",
 		]
 
 		script_only = [

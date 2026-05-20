@@ -4844,7 +4844,7 @@ class Highlighter(QSyntaxHighlighter):
 			for w in commands.AUTOCOMPLETE_MULTI:
 				if commands.AUTOCOMPLETE_MULTI[w] in text:
 					for word_object in re.finditer(self.WORDS, text):
-						if commands.AUTOCOMPLETE_MULTI[w].split(' ')[1] == word_object.group():
+						if commands.AUTOCOMPLETE_MULTI[w].split(' ')[1] == word_object.group() and commands.AUTOCOMPLETE_MULTI[w].split(' ')[0] in text.split()[0]:
 							do_not_spellcheck.append(commands.AUTOCOMPLETE_MULTI[w].split(' ')[1])
 							self.setFormat(word_object.start(), word_object.end() - word_object.start(), cmdformat)
 
