@@ -179,11 +179,16 @@ if __name__ == '__main__':
 
 		if args.nickname=='':
 			if len(user.NICKNAME.strip())==0:
-				if not is_running_from_pyinstaller():
-					sys.stdout.write("No nickname set\n")
+				if hostid in user.PROFILES and not args.noprofile and config.ALWAYS_USE_SERVER_PROFILES:
+					n = user.PROFILES[hostid][0]
 				else:
-					show_message("Error",f"No nickname set")
-				sys.exit(1)
+					n = ""
+				if len(n.strip())==0:
+					if not is_running_from_pyinstaller():
+						sys.stdout.write("No nickname set!\n")
+					else:
+						show_message("Error",f"No nickname set!")
+					sys.exit(1)
 			args.nickname = user.NICKNAME
 			if not args.noprofile:
 				if config.ALWAYS_USE_SERVER_PROFILES:

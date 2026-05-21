@@ -1011,21 +1011,18 @@ def convert_size(size_bytes):
 	s = round(size_bytes / p, 2)
 	return "%s %s" % (s, size_name[i])
 
-def convertSeconds(seconds):
-	h = seconds//(60*60)
-	m = (seconds-h*60*60)//60
-	s = seconds-(h*60*60)-(m*60)
-	return [h, m, s]
-
 def prettyUptime(uptime):
-	t = convertSeconds(uptime)
-	hours = t[0]
-	if len(str(hours))==1: hours = f"0{hours}"
-	minutes = t[1]
-	if len(str(minutes))==1: minutes = f"0{minutes}"
-	seconds = t[2]
-	if len(str(seconds))==1: seconds = f"0{seconds}"
-	return f"{hours}:{minutes}:{seconds}"
+	days = uptime // 86400
+	rem = uptime % 86400
+	hours = rem // 3600
+	rem = rem % 3600
+	minutes = rem // 60
+	seconds = rem % 60
+
+	if days >= 1:
+		day_str = f"{days:02d}" if days < 100 else str(days)
+		return f"{day_str}:{hours:02d}:{minutes:02d}:{seconds:02d}"
+	return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 def test_if_window_background_is_light(obj):
 	# Determine if window color is dark or light
@@ -1040,7 +1037,6 @@ def test_if_window_background_is_light(obj):
 			return False
 
 def test_if_background_is_light(style):
-
 	bg = None
 	style = style.strip()
 	for e in style.split(';'):
@@ -1049,7 +1045,6 @@ def test_if_background_is_light(style):
 			c = y[0].strip()
 			if c.lower()=='background-color':
 				bg = y[1].strip()
-
 	if bg!=None:
 		c = tuple(int(bg[i:i + 2], 16) / 255. for i in (1, 3, 5))
 		luma = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
@@ -1061,7 +1056,6 @@ def test_if_background_is_light(style):
 			return False
 
 def test_if_foreground_is_light(style):
-
 	bg = None
 	style = style.strip()
 	for e in style.split(';'):
@@ -1070,7 +1064,6 @@ def test_if_foreground_is_light(style):
 			c = y[0].strip()
 			if c.lower()=='color':
 				bg = y[1].strip()
-
 	if bg!=None:
 		c = tuple(int(bg[i:i + 2], 16) / 255. for i in (1, 3, 5))
 		luma = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
@@ -1094,33 +1087,91 @@ class LogViewer(QTextEdit):
 		)
 		self.trailing_punct = set('.,:;!?\'")}]')
 		self.setMouseTracking(True)
+		self._hovered_url_range = None
 	
 	def _clean_url(self, url):
 		while url and url[-1] in self.trailing_punct:
 			url = url[:-1]
 		return url
 	
+	# def mouseMoveEvent(self, event):
+	# 	cursor = self.cursorForPosition(event.pos())
+	# 	block = cursor.block()
+	# 	text = block.text()
+	# 	pos_in_block = cursor.positionInBlock()
+		
+	# 	is_over_url = False
+	# 	for match in self.url_pattern.finditer(text):
+	# 		clean_url = self._clean_url(match.group())
+	# 		clean_end = match.start() + len(clean_url)
+	# 		if match.start() <= pos_in_block <= clean_end:
+	# 			is_over_url = True
+	# 			break
+		
+	# 	if is_over_url:
+	# 		self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
+	# 	else:
+	# 		self.viewport().setCursor(QCursor(Qt.ArrowCursor))
+		
+	# 	super().mouseMoveEvent(event)
+	
 	def mouseMoveEvent(self, event):
 		cursor = self.cursorForPosition(event.pos())
 		block = cursor.block()
 		text = block.text()
 		pos_in_block = cursor.positionInBlock()
-		
-		is_over_url = False
+
+		hovered = None
 		for match in self.url_pattern.finditer(text):
 			clean_url = self._clean_url(match.group())
 			clean_end = match.start() + len(clean_url)
 			if match.start() <= pos_in_block <= clean_end:
-				is_over_url = True
+				hovered = (block.position() + match.start(), len(clean_url))
 				break
-		
-		if is_over_url:
+
+		if hovered == self._hovered_url_range:
+			if hovered:
+				self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
+			else:
+				self.viewport().setCursor(QCursor(Qt.ArrowCursor))
+			super().mouseMoveEvent(event)
+			return
+
+		underline_fmt = QTextCharFormat()
+		underline_fmt.setFontUnderline(True)
+		underline_fmt.setFontWeight(QFont.Bold)
+		underline_fmt.setForeground(self.palette().color(self.foregroundRole()))
+
+		clear_fmt = QTextCharFormat()
+		clear_fmt.setFontUnderline(False)
+		clear_fmt.setForeground(self.palette().color(self.foregroundRole()))
+
+		doc_cursor = self.textCursor()
+		doc_cursor.beginEditBlock()
+		try:
+			if self._hovered_url_range:
+				start, length = self._hovered_url_range
+				doc_cursor.setPosition(start)
+				doc_cursor.setPosition(start + length, QTextCursor.KeepAnchor)
+				doc_cursor.setCharFormat(clear_fmt)
+
+			if hovered:
+				start, length = hovered
+				doc_cursor.setPosition(start)
+				doc_cursor.setPosition(start + length, QTextCursor.KeepAnchor)
+				doc_cursor.setCharFormat(underline_fmt)
+		finally:
+			doc_cursor.endEditBlock()
+
+		self._hovered_url_range = hovered
+
+		if hovered:
 			self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
 		else:
 			self.viewport().setCursor(QCursor(Qt.ArrowCursor))
-		
+
 		super().mouseMoveEvent(event)
-	
+
 	def mousePressEvent(self, event):
 		cursor = self.cursorForPosition(event.pos())
 		text = cursor.block().text()

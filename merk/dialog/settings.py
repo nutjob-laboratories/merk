@@ -4936,9 +4936,9 @@ class Dialog(QDialog):
 		self.badCommandDescription = QLabel(f"""
 			<small>
 			If this option is enabled,
-			messages that begins with <b>{config.ISSUE_COMMAND_SYMBOL}</b> that is not followed
+			messages that begins with \"<b>{config.ISSUE_COMMAND_SYMBOL}</b>\" that are not followed
 			by a valid command will <i>not</i> be sent to server, and an error will be shown. To send a chat message that
-			starts with <b>{config.ISSUE_COMMAND_SYMBOL}</b>, start the message with <b>{config.ISSUE_COMMAND_SYMBOL*2}</b> instead.<br>
+			starts with \"<b>{config.ISSUE_COMMAND_SYMBOL}</b>\", start the message with \"<b>{config.ISSUE_COMMAND_SYMBOL*2}</b>\" instead.<br>
 			</small>
 			""")
 		self.badCommandDescription.setWordWrap(True)
@@ -4947,6 +4947,11 @@ class Dialog(QDialog):
 		self.badCommands = QCheckBox("Prevent sending \"bad\" commands as chat",self)
 		if config.COMMAND_ERROR_PROTECTION: self.badCommands.setChecked(True)
 		self.badCommands.stateChanged.connect(self.changedSetting)
+
+		bcLayout = QHBoxLayout()
+		bcLayout.addStretch()
+		bcLayout.addWidget(self.badCommands)
+		bcLayout.addStretch()
 
 		inputLayout = QVBoxLayout()
 		inputLayout.setSpacing(2)
@@ -4964,7 +4969,7 @@ class Dialog(QDialog):
 		inputLayout.addWidget(QLabel(' '))
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>\"bad\" input protection</b>"))
 		inputLayout.addWidget(self.badCommandDescription)
-		inputLayout.addWidget(self.badCommands)
+		inputLayout.addLayout(bcLayout)
 		inputLayout.addStretch()
 
 		self.inputPage.setLayout(inputLayout)

@@ -271,6 +271,16 @@ class Window(QMainWindow):
 			if not config.HIGHLIGHT_NICKS_IN_CHAT:
 				self.force_chat_log_rerender = 0
 				self.rerendered_chat = True
+
+			# If we're configured to not get hostmasks on
+			# join, the server doesn't support sending
+			# hostmasks in NAMES replies, AND nick
+			# highlighting is turned on, do NOT rerender
+			# the chat display
+			if config.AUTOMATICALLY_RERENDER_CHAT and config.HIGHLIGHT_NICKS_IN_CHAT:
+				if not config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.client.support_hostmasks_in_names:
+					self.force_chat_log_rerender = 0
+					self.rerendered_chat = True
 		else:
 			self.force_chat_log_rerender = 0
 			self.rerendered_chat = True
@@ -1378,12 +1388,20 @@ class Window(QMainWindow):
 						entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
+						if not config.SHOW_CHANNEL_JOIN_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
+
 						if 'p' in config.CHANNEL_FILTERS[channel_name]:
 							entry = QAction(QIcon(self.parent.checked_icon),"PART messages",menu)
 						else:
 							entry = QAction(QIcon(self.parent.unchecked_icon),"PART messages",menu)
 						entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
 						fMenu.addAction(entry)
+
+						if not config.SHOW_CHANNEL_PART_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
 
 						if 'q' in config.CHANNEL_FILTERS[channel_name]:
 							entry = QAction(QIcon(self.parent.checked_icon),"QUIT messages",menu)
@@ -1392,12 +1410,20 @@ class Window(QMainWindow):
 						entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
+						if not config.SHOW_CHANNEL_QUIT_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
+
 						if 'm' in config.CHANNEL_FILTERS[channel_name]:
 							entry = QAction(QIcon(self.parent.checked_icon),"MODE messages",menu)
 						else:
 							entry = QAction(QIcon(self.parent.unchecked_icon),"MODE messages",menu)
 						entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
 						fMenu.addAction(entry)
+
+						if not config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
 
 						if 'n' in config.CHANNEL_FILTERS[channel_name]:
 							entry = QAction(QIcon(self.parent.checked_icon),"NICK messages",menu)
@@ -1406,36 +1432,68 @@ class Window(QMainWindow):
 						entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
+						if not config.SHOW_CHANNEL_NICK_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
+
 						if 't' in config.CHANNEL_FILTERS[channel_name]:
 							entry = QAction(QIcon(self.parent.checked_icon),"TOPIC messages",menu)
 						else:
 							entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC messages",menu)
 						entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
 						fMenu.addAction(entry)
+
+						if not config.SHOW_CHANNEL_TOPIC_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
 					else:
 						entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN messages",menu)
 						entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
+						if not config.SHOW_CHANNEL_JOIN_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
+
 						entry = QAction(QIcon(self.parent.unchecked_icon),"PART messages",menu)
 						entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
 						fMenu.addAction(entry)
+
+						if not config.SHOW_CHANNEL_PART_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
 
 						entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT messages",menu)
 						entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
+						if not config.SHOW_CHANNEL_QUIT_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
+
 						entry = QAction(QIcon(self.parent.unchecked_icon),"MODE messages",menu)
 						entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
 						fMenu.addAction(entry)
+
+						if not config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
 
 						entry = QAction(QIcon(self.parent.unchecked_icon),"NICK messages",menu)
 						entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
 						fMenu.addAction(entry)
 
+						if not config.SHOW_CHANNEL_NICK_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
+
 						entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC messages",menu)
 						entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
 						fMenu.addAction(entry)
+
+						if not config.SHOW_CHANNEL_TOPIC_MESSAGES or self.isAllFiltersSet():
+							entry.setIcon(QIcon(self.parent.checked_icon))
+							entry.setEnabled(False)
 
 					fMenu.addSeparator()
 
@@ -1447,6 +1505,10 @@ class Window(QMainWindow):
 						entry = QAction(QIcon(self.parent.unchecked_icon),"Hide all types",menu)
 						entry.triggered.connect(self.setAllFilters)
 						fMenu.addAction(entry)
+
+					if not config.SHOW_CHANNEL_JOIN_MESSAGES and not config.SHOW_CHANNEL_PART_MESSAGES and not config.SHOW_CHANNEL_QUIT_MESSAGES and not config.SHOW_CHANNEL_MODE_CHANGE_MESSAGES and not config.SHOW_CHANNEL_NICK_MESSAGES and not config.SHOW_CHANNEL_TOPIC_MESSAGES:
+						entry.setIcon(QIcon(self.parent.checked_icon))
+						entry.setEnabled(False)
 
 					menu.addMenu(fMenu)
 

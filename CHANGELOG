@@ -2,17 +2,6 @@
 |                                   0.051.900                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **New option: open a server's channel list on connection**. This is disabled by default. However, if turned on (and fetching the server's channel list on connection is turned on), this will show the channel list dialog as soon as the channel list is available.
-- **Added new options to delete user and application configuration data to the settings dialog**.
-- **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings or with command-line options.
-- **Channel userlist widths can now be saved to the config**. This option is turned on by default, and happens automatically.
-- **Tweaks to nickname autocomplete**. In channel windows, only nicknames in that same channel will autocomplete; in other window types, all "visible" nicknames will autocomplete.
-- **The connection dialog has been revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled. The GUI layout has been tweaked to look a little better.
-- **The settings dialog has been revamped**. Applying settings is now more efficient, and faster.
-- **Many bugfixes**. Thanks to the folks on MansionNET for the bug reports!
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -41,8 +30,6 @@ What's new:
   server reported them. This no longer occurs.
 * Added options to delete miscellaneous data from the user configuration file
   to the "settings" dialog. The new options are on the "user" page.
-* Removed the option to copy things to the clipboard from the userlist right-
-  click menu.
 * Major bugfix: the userlist right-click context menu did not always trigger
   events correctly on Linux, for reasons that still escape me. This has been
   fixed.
@@ -108,6 +95,17 @@ What's new:
 * Bugfix: channel chat that contained a nickname and contained a URL could
   get mangled; the nickname would be highlighted but the URL link would be
   broken.
+* Server and channel uptime displays now display the number of days, alongside
+  hours, minutes, and seconds.
+* Clickable URLs in the log manager viewer now show the URL underlined and in
+  bold when the mouse is hovering over them.
+* The "hide message types" submenu in the channel right click menu now shows if
+  message types are hidden universally, and disables the hidden message types.
+  If the channel has all possible message types hidden, all the hidden types
+  are disabled, and can only be re-enabled by "unhiding" all message types.
+* Bugfix: if no nickname is set, but a server profile exists for a given
+  server, the client will use the nickname set in the profile when connecting
+  to a server from the command-line.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |
