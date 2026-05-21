@@ -1607,15 +1607,6 @@ class Dialog(QDialog):
 
 		self.selector.setFocus()
 
-	def changedSettingHighlight(self,state):
-		if self.toggleSyntaxInput.isChecked():
-			self.highlightAllNicks.setEnabled(True)
-		else:
-			self.highlightAllNicks.setEnabled(False)
-		self.changed.show()
-		self.boldApply()
-		self.selector.setFocus()
-
 	def prependChange(self,i):
 		self.system_prepend = self.sysPrepend.itemText(i)
 
@@ -6256,8 +6247,7 @@ class Dialog(QDialog):
 			all server and chat windows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
 			current chat and <b>emoji</b> and <b>ASCIImoji shortcodes</b> will be highlighted using the
-			colors and format settings below. Optionally, all <b>nicknames</b> in any
-			channel the client is in can be highlighted.
+			colors and format settings below.
 			</small>
 			""")
 		self.syntaxInput.setWordWrap(True)
@@ -6265,14 +6255,7 @@ class Dialog(QDialog):
 
 		self.toggleSyntaxInput = QCheckBox("Apply syntax highlighting to input",self)
 		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET: self.toggleSyntaxInput.setChecked(True)
-		self.toggleSyntaxInput.stateChanged.connect(self.changedSettingHighlight)
-
-		self.highlightAllNicks = QCheckBox("Highlight all \"visible\" nicknames in input",self)
-		if config.HIGHLIGHT_ALL_VISIBLE_NICKS: self.highlightAllNicks.setChecked(True)
-		self.highlightAllNicks.stateChanged.connect(self.changedSetting)
-
-		if not config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
-			self.highlightAllNicks.setEnabled(False)
+		self.toggleSyntaxInput.stateChanged.connect(self.changedSetting)
 
 		tbLay2 = QFormLayout()
 		tbLay2.setSpacing(0)
@@ -6301,20 +6284,10 @@ class Dialog(QDialog):
 			self.syntaxop.setEnabled(False)
 			self.syntaxscript.setEnabled(False)
 
-		inputHigh1 = QHBoxLayout()
-		inputHigh1.addStretch()
-		inputHigh1.addWidget(self.toggleSyntaxInput)
-		inputHigh1.addStretch()
-
-		inputHigh2 = QHBoxLayout()
-		inputHigh2.addStretch()
-		inputHigh2.addWidget(self.highlightAllNicks)
-		inputHigh2.addStretch()
-
-		inputMaster = QVBoxLayout()
-		inputMaster.setSpacing(0)
-		inputMaster.addLayout(inputHigh1)
-		inputMaster.addLayout(inputHigh2)
+		inputHigh = QHBoxLayout()
+		inputHigh.addStretch()
+		inputHigh.addWidget(self.toggleSyntaxInput)
+		inputHigh.addStretch()
 
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
@@ -6323,7 +6296,7 @@ class Dialog(QDialog):
 		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
-		syntaxLayout.addLayout(inputMaster)
+		syntaxLayout.addLayout(inputHigh)
 		syntaxLayout.addLayout(sbLay)
 		syntaxLayout.addStretch()
 
@@ -7128,7 +7101,6 @@ class Dialog(QDialog):
 		config.NOTIFY_ON_CTCP_REQUESTS = self.notifyCTCP.isChecked()
 		config.SHOW_CHANNEL_LIST_ON_CONNECT = self.showList.isChecked()
 		config.ALWAYS_USE_SERVER_PROFILES = self.useProfiles.isChecked()
-		config.HIGHLIGHT_ALL_VISIBLE_NICKS = self.highlightAllNicks.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

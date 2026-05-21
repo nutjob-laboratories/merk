@@ -456,11 +456,9 @@ SHOW_CHANNEL_LIST_ON_CONNECT =  False
 ALWAYS_USE_SERVER_PROFILES = True
 CHANNEL_USERLIST_WIDTHS = {}
 LOAD_AND_SAVE_USERLIST_WIDTH = True
-HIGHLIGHT_ALL_VISIBLE_NICKS = False
 
 def build_settings():
 	settings = {
-		"highlight_all_visible_nicks_in_input": HIGHLIGHT_ALL_VISIBLE_NICKS,
 		"load_and_save_userlist_widths": LOAD_AND_SAVE_USERLIST_WIDTH,
 		"channel_userlist_widths": CHANNEL_USERLIST_WIDTHS,
 		"always_use_server_profiles": ALWAYS_USE_SERVER_PROFILES,
@@ -877,8 +875,6 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "highlight_all_visible_nicks_in_input" in settings:
-		settings["highlight_all_visible_nicks_in_input"] = HIGHLIGHT_ALL_VISIBLE_NICKS
 	if not "load_and_save_userlist_widths" in settings:
 		settings["load_and_save_userlist_widths"] = LOAD_AND_SAVE_USERLIST_WIDTH
 	if not "channel_userlist_widths" in settings:
@@ -2116,7 +2112,6 @@ def load_settings(filename):
 	global ALWAYS_USE_SERVER_PROFILES
 	global CHANNEL_USERLIST_WIDTHS
 	global LOAD_AND_SAVE_USERLIST_WIDTH
-	global HIGHLIGHT_ALL_VISIBLE_NICKS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2126,7 +2121,6 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		HIGHLIGHT_ALL_VISIBLE_NICKS = settings["highlight_all_visible_nicks_in_input"]
 		LOAD_AND_SAVE_USERLIST_WIDTH = settings["load_and_save_userlist_widths"]
 		CHANNEL_USERLIST_WIDTHS = settings["channel_userlist_widths"]
 		ALWAYS_USE_SERVER_PROFILES = settings["always_use_server_profiles"]

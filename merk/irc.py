@@ -1233,7 +1233,7 @@ class IRC_Connection(irc.IRCClient):
 			self.all_nicks[channel] = list(cleaned)
 
 		# Build a list of all visible nicknames
-		self.all_visible_nicknames = [n for lst in self.all_nicks.values() for n in lst]
+		self.all_visible_nicknames = list(set([n for lst in self.all_nicks.values() for n in lst]))
 
 	def irc_RPL_TOPIC(self, prefix, params):
 		if not params[2].isspace():

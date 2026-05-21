@@ -202,9 +202,11 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 			msg_to_display = html.escape(msg_to_display)
 
 	# Convert URLs to links
+	has_link_in_chat = False
 	if config.CONVERT_URLS_TO_LINKS:
 		if has_url(msg_to_display):
-			msg_to_display = inject_www_links(msg_to_display,style)
+			has_link_in_chat = True
+			msg_to_display, placeholders = inject_www_links(msg_to_display,style)
 
 	# Insert or remove IRC colors
 	if config.DISPLAY_IRC_COLORS:
@@ -235,6 +237,9 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	if config.HIGHLIGHT_NICKS_IN_CHAT and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE or message.type==SELF_MESSAGE:
 			if len(nicks_to_highlight)>0: msg_to_display = highlight_nick(msg_to_display,nicks_to_highlight,nicks,style)
+
+	if config.CONVERT_URLS_TO_LINKS and has_link_in_chat:
+		msg_to_display = restore_link_placeholders(msg_to_display,placeholders)
 
 	# Assign template and style to the message
 	message_templates = {
@@ -392,6 +397,36 @@ def highlight_nick(text, target_words, user_colors, style):
 	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)
 	return result
 
+# def inject_www_links(txt, style):
+# 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
+# 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
+# 		style_str = f"color:{foreground};"
+# 	else:
+# 		style_str = style["hyperlink"]
+
+# 	url_pattern = re.compile(
+# 		r"((?:https?://|www\.)"
+# 		r"(?:[^\s<>'\"&`]|&(?!gt;|quot;))+" 
+# 		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"'`]|$))", 
+# 		re.IGNORECASE
+# 	)
+
+# 	def replace_url(match):
+# 		full_match = match.group(0)
+# 		u_visible = full_match.rstrip('.,;:!?`')
+# 		if u_visible.endswith(')') and u_visible.count('(') < u_visible.count(')'):
+# 			u_visible = u_visible[:-1]
+# 		trailing_punctuation = full_match[len(u_visible):]
+# 		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
+# 			trailing_punctuation = '/' + trailing_punctuation
+# 			u_visible = u_visible[:-1]
+# 		href = u_visible
+# 		if not href.lower().startswith(('http://', 'https://')):
+# 			href = 'http://' + href
+# 		return f'<a href="{href}" style="{style_str}">{u_visible}</a>{trailing_punctuation}'
+
+# 	return re.sub(url_pattern, replace_url, txt)
+
 def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
@@ -399,25 +434,37 @@ def inject_www_links(txt, style):
 	else:
 		style_str = style["hyperlink"]
 
-	url_pattern = re.compile(
-		r"((?:https?://|www\.)"
-		r"(?:[^\s<>'\"&`]|&(?!gt;|quot;))+" 
-		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"'`]|$))", 
+	url_re = re.compile(
+		r'((?:https?://|www\.)'
+		r'(?:[^\s<>\'\"&`]|&(?!gt;|quot;))+' 
+		r'(?=[/]?\s|[/]?>|&gt;|&quot;|[\"\'`]|$))',
 		re.IGNORECASE
 	)
 
-	def replace_url(match):
-		full_match = match.group(0)
-		u_visible = full_match.rstrip('.,;:!?`')
-		if u_visible.endswith(')') and u_visible.count('(') < u_visible.count(')'):
-			u_visible = u_visible[:-1]
-		trailing_punctuation = full_match[len(u_visible):]
-		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
-			trailing_punctuation = '/' + trailing_punctuation
-			u_visible = u_visible[:-1]
+	placeholders = []
+	def make_placeholder(a_tag):
+		idx = len(placeholders)
+		placeholders.append(a_tag)
+		return f"__LINK_PLACEHOLDER_{idx}__"
+
+	def build_a_tag(u_visible):
 		href = u_visible
 		if not href.lower().startswith(('http://', 'https://')):
 			href = 'http://' + href
-		return f'<a href="{href}" style="{style_str}">{u_visible}</a>{trailing_punctuation}'
+		return f'<a href="{href}" style="{style_str}">{u_visible}</a>'
 
-	return re.sub(url_pattern, replace_url, txt)
+	def repl(m):
+		full = m.group(1)
+		u_visible = full.rstrip('.,;:!?`')
+		if u_visible.endswith(')') and u_visible.count('(') < u_visible.count(')'):
+			u_visible = u_visible[:-1]
+		trailing = full[len(u_visible):]
+		tag = build_a_tag(u_visible)
+		return make_placeholder(tag) + trailing
+
+	processed = url_re.sub(repl, txt)
+
+	return processed, placeholders
+
+def restore_link_placeholders(text, placeholders):
+	return re.sub(r'__LINK_PLACEHOLDER_(\d+)__', lambda m: placeholders[int(m.group(1))], text)

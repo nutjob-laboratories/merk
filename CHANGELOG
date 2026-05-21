@@ -8,6 +8,7 @@ What's new:
 - **Added new options to delete user and application configuration data to the settings dialog**.
 - **Server profiles for user data**. Users can now set specific nicknames, alternates, usernames, and realnames for servers. Profiles are created (and edited) with the connection dialog. Once created, the user profile for a server will be used every time MERK connects to that server, no matter *how* MERK connects to that server (via the command-line, the connection dialog, or by a command). This behavior can be toggled in settings or with command-line options.
 - **Channel userlist widths can now be saved to the config**. This option is turned on by default, and happens automatically.
+- **Tweaks to nickname autocomplete**. In channel windows, only nicknames in that same channel will autocomplete; in other window types, all "visible" nicknames will autocomplete.
 - **The connection dialog has been revamped**. If there isn't enough information to connect to a server, the "connect" button and other functionality will be disabled. The GUI layout has been tweaked to look a little better.
 - **The settings dialog has been revamped**. Applying settings is now more efficient, and faster.
 - **Many bugfixes**. Thanks to the folks on MansionNET for the bug reports!
@@ -101,6 +102,12 @@ What's new:
   nick autocomplete will never try to insert a user's hostmask.
 * Autocomplete for the /config and /user commands could attempt to edit
   settings that those commands can't actually edit.
+* Nickname autocomplete, in channel windows, will only try to complete nicks in
+  the same channel; in private chat or server windows, it will use a list of
+  all visible nicks.
+* Bugfix: channel chat that contained a nickname and contained a URL could
+  get mangled; the nickname would be highlighted but the URL link would be
+  broken.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.850                                  |

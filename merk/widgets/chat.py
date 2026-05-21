@@ -4207,10 +4207,7 @@ class SpellTextEdit(QPlainTextEdit):
 								settings = user.build_settings()
 								settings_list = []
 								for s in settings:
-									if s=="history": continue
-									if s=="commands": continue
-									if s=="sasl": continue
-									if s=="server_profiles": continue
+									if type(settings[s]) is list or type(settings[s]) is dict: continue
 									settings_list.append(s)
 								for setting in settings_list:
 									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
@@ -4234,7 +4231,8 @@ class SpellTextEdit(QPlainTextEdit):
 									if s=="hotkeys": continue
 									if s=="log_absolutely_all_messages_of_any_type": continue
 									if s=="default_python_indentation": continue
-									if not type(settings[s]) is list and not type(settings[s]) is dict: settings_list.append(s)
+									if type(settings[s]) is list or type(settings[s]) is dict: continue
+									settings_list.append(s)
 								for setting in settings_list:
 									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
@@ -4367,30 +4365,30 @@ class SpellTextEdit(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-						# Nicks in the current channel
-						chan_nicks = self.parent.nicks
-						for nick in chan_nicks:
-							# Skip client's nickname
-							if nick==self.parent.client.nickname:
-								continue
-							if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(f"{nick}")
-								cursor.endEditBlock()
-								self.ensureCursorVisible()
-								return
-						# Nicks in all current channels
-						chan_nicks = self.parent.client.all_visible_nicknames
-						for nick in chan_nicks:
-							# Skip client's nickname
-							if nick==self.parent.client.nickname:
-								continue
-							if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
-								cursor.beginEditBlock()
-								cursor.insertText(f"{nick}")
-								cursor.endEditBlock()
-								self.ensureCursorVisible()
-								return
+						if self.parent.window_type==CHANNEL_WINDOW:
+							# Nicks in the current channel
+							for nick in self.parent.nicks:
+								# Skip client's nickname
+								if nick==self.parent.client.nickname:
+									continue
+								if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(f"{nick}")
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
+						else:
+							# Nicks in all current channels
+							for nick in self.parent.client.all_visible_nicknames:
+								# Skip client's nickname
+								if nick==self.parent.client.nickname:
+									continue
+								if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(f"{nick}")
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
 
 				if config.AUTOCOMPLETE_SERVERS:
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -4706,7 +4704,7 @@ class Highlighter(QSyntaxHighlighter):
 			# Apply syntax style to nicknames
 			nickformat = syntax.format(config.SYNTAX_NICKNAME_COLOR,config.SYNTAX_NICKNAME_STYLE)
 			for word_object in re.finditer(self.WORDS, text):
-				if config.HIGHLIGHT_ALL_VISIBLE_NICKS:
+				if self.parent.window_type!=CHANNEL_WINDOW:
 					hnicks = self.parent.client.all_visible_nicknames
 				else:
 					hnicks = self.parent.nicks
