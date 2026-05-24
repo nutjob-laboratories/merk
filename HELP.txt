@@ -270,6 +270,10 @@ Appearance:
 <td>Hides a subwindow. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to hide the server window</td>
 </tr>
 <tr>
+<td><code>/highlight WORD COLOR</code></td>
+<td>Highlights <code>WORD</code> with <code>COLOR</code> in chat. <code>COLOR</code> must be a valid 6 digit web color.</td>
+</tr>
+<tr>
 <td><code>hostmask ALIAS NICKNAME</code></td>
 <td>Retrieves the hostmask of <code>NICKNAME</code> and stores it in <code>ALIAS</code>. If the hostmask is not known or cannot be found, <code>ALIAS</code> is set to <code>unknown</code>. <strong>Can only be called from scripts</strong></td>
 </tr>
@@ -512,6 +516,10 @@ Appearance:
 <tr>
 <td><code>/unbind SEQUENCE</code></td>
 <td>Removes a bind for <code>SEQUENCE</code>. To remove all binds, use <code>*</code> as the argument</td>
+</tr>
+<tr>
+<td><code>/unhighlight WORD</code></td>
+<td>Removes highlighting for <code>WORD</code>. Call without arguments to see a list of highlighted words</td>
 </tr>
 <tr>
 <td><code>/unignore USER</code></td>

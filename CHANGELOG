@@ -1,4 +1,20 @@
 |------------------------------------------------------------------------------|
+|                                   0.051.950                                  |
+|------------------------------------------------------------------------------|
+
+What's new:
+
+- **Custom word highlighting**. Users can set colors for specific words in chat. Colors must be in the six digit "web color" format (#000000), also known as hex codes.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* New feature: color highlighting for words. Users can set a word/color with
+  the "/highlight" command, and remove the highlight with the "/unhighlight"
+  command.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.900                                  |
 |------------------------------------------------------------------------------|
 

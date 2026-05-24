@@ -150,7 +150,7 @@ LIGHT_DATE_MESSAGE_TEMPLATE = f'''
 	</tbody>
 </table>'''
 
-def render_message(message,style,client=None,no_padding=False,nicks={},non_color_nicks=[]):
+def render_message(message,style,client=None,no_padding=False,nicks={},non_color_nicks=[],highlighted_words={}):
 
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: background,foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 	is_background_light = test_if_background_is_light(style["all"])
@@ -175,22 +175,26 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 		custom_nick = None
 
 	# Build the list of nicks to highlight
-	nicks_to_highlight = []
+	words_to_highlight = []
 	if config.HIGHLIGHT_NICKS_IN_CHAT and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if client!=None:
 			# The user's nickname is always the first entry
-			nicks_to_highlight.append(client.nickname)
+			words_to_highlight.append(client.nickname)
 			# Now, we add in nicks that have a color
 			if len(nicks)>0:
 				for n in nicks:
 					if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
-						nicks_to_highlight.append(n)
+						words_to_highlight.append(n)
 			# Now, we add nicks that DON'T have a color
 			if len(non_color_nicks)>0:
 				for n in non_color_nicks:
 					if len(n)>config.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING:
 						if not n in nicks:
-							nicks_to_highlight.append(n)
+							words_to_highlight.append(n)
+
+	if len(highlighted_words)>0:
+		for w in highlighted_words:
+			words_to_highlight.append(w)
 
 	# Escape all HTML
 	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE:
@@ -236,7 +240,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	# Highlight nicks if that option is turned on
 	if config.HIGHLIGHT_NICKS_IN_CHAT and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE or message.type==SELF_MESSAGE:
-			if len(nicks_to_highlight)>0: msg_to_display = highlight_nick(msg_to_display,nicks_to_highlight,nicks,style)
+			if len(words_to_highlight)>0: msg_to_display = highlight_nick(msg_to_display,words_to_highlight,nicks,highlighted_words,style)
 
 	if config.CONVERT_URLS_TO_LINKS and has_link_in_chat:
 		msg_to_display = restore_link_placeholders(msg_to_display,placeholders)
@@ -355,7 +359,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 def replace_first_style_color(style, new_color):
 	return re.sub(r'#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}', new_color, style, count=1)
 
-def highlight_nick(text, target_words, user_colors, style):
+def highlight_nick(text, target_words, user_colors, highlighted_words, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 		style_str = f"color:{foreground};"
@@ -366,6 +370,7 @@ def highlight_nick(text, target_words, user_colors, style):
 
 	# Build lookup table for the nick/color dict
 	color_lookup = {word.lower(): word for word in user_colors.keys()}
+	hlword_lookup = {word.lower(): word for word in highlighted_words.keys()}
 	
 	# Escape each word and join with | for alternation
 	escaped_words = [re.escape(word) for word in target_words]
@@ -388,6 +393,9 @@ def highlight_nick(text, target_words, user_colors, style):
 					# The nickname has a custom color
 					actual_key = color_lookup[matched_word]
 					style_to_use = replace_first_style_color(style_str,user_colors[actual_key])
+				elif matched_word in hlword_lookup:
+					actual_key = hlword_lookup[matched_word]
+					style_to_use = f"color:{highlighted_words[actual_key]};"
 				else:
 					# The nickname does NOT have a custom color
 					style_to_use = nick_str
@@ -396,36 +404,6 @@ def highlight_nick(text, target_words, user_colors, style):
 
 	result = re.sub(pattern, replacer, text, flags=re.IGNORECASE)
 	return result
-
-# def inject_www_links(txt, style):
-# 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
-# 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
-# 		style_str = f"color:{foreground};"
-# 	else:
-# 		style_str = style["hyperlink"]
-
-# 	url_pattern = re.compile(
-# 		r"((?:https?://|www\.)"
-# 		r"(?:[^\s<>'\"&`]|&(?!gt;|quot;))+" 
-# 		r"(?=[/]?\s|[/]?>|&gt;|&quot;|[\"'`]|$))", 
-# 		re.IGNORECASE
-# 	)
-
-# 	def replace_url(match):
-# 		full_match = match.group(0)
-# 		u_visible = full_match.rstrip('.,;:!?`')
-# 		if u_visible.endswith(')') and u_visible.count('(') < u_visible.count(')'):
-# 			u_visible = u_visible[:-1]
-# 		trailing_punctuation = full_match[len(u_visible):]
-# 		if u_visible.endswith('/') and match.end() < len(txt) and txt[match.end()] == '>':
-# 			trailing_punctuation = '/' + trailing_punctuation
-# 			u_visible = u_visible[:-1]
-# 		href = u_visible
-# 		if not href.lower().startswith(('http://', 'https://')):
-# 			href = 'http://' + href
-# 		return f'<a href="{href}" style="{style_str}">{u_visible}</a>{trailing_punctuation}'
-
-# 	return re.sub(url_pattern, replace_url, txt)
 
 def inject_www_links(txt, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
@@ -445,7 +423,7 @@ def inject_www_links(txt, style):
 	def make_placeholder(a_tag):
 		idx = len(placeholders)
 		placeholders.append(a_tag)
-		return f"__LINK_PLACEHOLDER_{idx}__"
+		return f"__HL_LINK_{idx}__"
 
 	def build_a_tag(u_visible):
 		href = u_visible
@@ -467,4 +445,4 @@ def inject_www_links(txt, style):
 	return processed, placeholders
 
 def restore_link_placeholders(text, placeholders):
-	return re.sub(r'__LINK_PLACEHOLDER_(\d+)__', lambda m: placeholders[int(m.group(1))], text)
+	return re.sub(r'__HL_LINK_(\d+)__', lambda m: placeholders[int(m.group(1))], text)

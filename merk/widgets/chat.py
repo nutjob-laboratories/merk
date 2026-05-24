@@ -244,6 +244,7 @@ class Window(QMainWindow):
 		self.non_colored_nicks = []
 		self.spawned_channel_list = False
 		self.initial_userlist_width = 0
+		self.highlighted_words = config.HIGHLIGHTED_WORDS
 
 		# The window's opacity starts at 100%
 		self.opacity = 100
@@ -1911,6 +1912,8 @@ class Window(QMainWindow):
 
 	def rerenderChatLog(self,no_focus=False):
 
+		self.highlighted_words = config.HIGHLIGHTED_WORDS
+
 		if no_focus==False: QApplication.setOverrideCursor(Qt.WaitCursor)
 
 		self.chat.clear()
@@ -1972,7 +1975,7 @@ class Window(QMainWindow):
 						if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 			if do_render:
-				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors,self.non_colored_nicks)
+				t = render.render_message(line,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors,self.non_colored_nicks,self.highlighted_words)
 				self.chat.append(t)
 
 		if no_focus==False:
@@ -3202,6 +3205,8 @@ class Window(QMainWindow):
 
 	def writeText(self,message,write_to_log=True):
 
+		self.highlighted_words = config.HIGHLIGHTED_WORDS
+
 		if self.client.client_id in self.parent.quitting: return
 
 		if config.PRINT_SCRIPT_ERRORS_TO_STDOUT:
@@ -3273,7 +3278,7 @@ class Window(QMainWindow):
 							if 't' in config.CHANNEL_FILTERS[channel_name]: do_render = False
 
 				if do_render:
-					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors,self.non_colored_nicks)
+					t = render.render_message(message,self.style,self.client,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY,self.user_colors,self.non_colored_nicks,self.highlighted_words)
 					self.chat.append(t)
 
 			self.moveChatToBottom(config.ALWAYS_SCROLL_TO_BOTTOM)

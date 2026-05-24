@@ -292,6 +292,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"reload",
 			cmdsymbol+"window reload",
 			cmdsymbol+"error",
+			cmdsymbol+"highlight",
+			cmdsymbol+"unhighlight",
 		]
 
 		script_only = [

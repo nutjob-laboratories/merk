@@ -33,9 +33,10 @@ from .resources import *
 CONFIG_DIRECTORY = None
 CONFIG_FILE = None
 
-# This setting is used internally, and is
-# not saved to any configuration file
+# These settings are used internally, and
+# are not saved to any configuration file
 DO_NOT_SAVE = False
+FONT_HEIGHT = None
 
 # Settings
 APPLICATION_FONT = None
@@ -456,9 +457,11 @@ SHOW_CHANNEL_LIST_ON_CONNECT =  False
 ALWAYS_USE_SERVER_PROFILES = True
 CHANNEL_USERLIST_WIDTHS = {}
 LOAD_AND_SAVE_USERLIST_WIDTH = True
+HIGHLIGHTED_WORDS = {}
 
 def build_settings():
 	settings = {
+		"highlighted_words": HIGHLIGHTED_WORDS,
 		"load_and_save_userlist_widths": LOAD_AND_SAVE_USERLIST_WIDTH,
 		"channel_userlist_widths": CHANNEL_USERLIST_WIDTHS,
 		"always_use_server_profiles": ALWAYS_USE_SERVER_PROFILES,
@@ -875,6 +878,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "highlighted_words" in settings:
+		settings["highlighted_words"] = HIGHLIGHTED_WORDS
 	if not "load_and_save_userlist_widths" in settings:
 		settings["load_and_save_userlist_widths"] = LOAD_AND_SAVE_USERLIST_WIDTH
 	if not "channel_userlist_widths" in settings:
@@ -2112,6 +2117,7 @@ def load_settings(filename):
 	global ALWAYS_USE_SERVER_PROFILES
 	global CHANNEL_USERLIST_WIDTHS
 	global LOAD_AND_SAVE_USERLIST_WIDTH
+	global HIGHLIGHTED_WORDS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2121,6 +2127,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIGHLIGHTED_WORDS = settings["highlighted_words"]
 		LOAD_AND_SAVE_USERLIST_WIDTH = settings["load_and_save_userlist_widths"]
 		CHANNEL_USERLIST_WIDTHS = settings["channel_userlist_widths"]
 		ALWAYS_USE_SERVER_PROFILES = settings["always_use_server_profiles"]

@@ -95,6 +95,10 @@ class Merk(QMainWindow):
 
 		commands.build_help_and_autocomplete()
 
+		f = self.font()
+		fm = QFontMetrics(f)
+		config.FONT_HEIGHT = fm.height()
+
 		if not test_if_window_background_is_light(self):
 			self.checked_icon = DARK_CHECKED_ICON
 			self.unchecked_icon = DARK_UNCHECKED_ICON

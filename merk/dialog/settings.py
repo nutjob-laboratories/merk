@@ -3008,7 +3008,8 @@ class Dialog(QDialog):
 			The <b>windowbar</b> is a toolbar widget that lists all (or some) of the open
 			subwindows and allows you to switch between them by clicking on
 			the subwindow's name. Individual windows can be hidden, shown, or manipulated
-			by right clicking on their entries.
+			by right clicking on their entries. <b>Auto-hide</b> hides the <b>windowbar</b>
+			when there are no entries to display.
 			</small>
 			""")
 		self.windowbarDescription.setWordWrap(True)
@@ -7279,6 +7280,11 @@ class Dialog(QDialog):
 				self.setFont(font)
 				self.parent.app.setFont(font)
 				self.parent.setAllFont(font)
+
+		# Set the font height for rendering
+		f = self.parent.app.font()
+		fm = QFontMetrics(f)
+		config.FONT_HEIGHT = fm.height()
 
 		update_cursors = False
 		if self.INPUT_CURSOR_WIDTH!=config.INPUT_CURSOR_WIDTH:

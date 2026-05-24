@@ -331,6 +331,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"warn": config.ISSUE_COMMAND_SYMBOL+"warn ",
 			config.ISSUE_COMMAND_SYMBOL+"reload": config.ISSUE_COMMAND_SYMBOL+"reload ",
 			config.ISSUE_COMMAND_SYMBOL+"error": config.ISSUE_COMMAND_SYMBOL+"error ",
+			config.ISSUE_COMMAND_SYMBOL+"highlight": config.ISSUE_COMMAND_SYMBOL+"highlight ",
+			config.ISSUE_COMMAND_SYMBOL+"unhighlight": config.ISSUE_COMMAND_SYMBOL+"unhighlight ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -502,6 +504,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload [SERVER] [WINDOW]</b>", "Re-renders the chat log of a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window, and ends a script" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"highlight WORD COLOR</b>", "Renders WORD in COLOR in chat" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -1611,6 +1615,98 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					else:
 						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
 						tokens = user_input.split()
+
+	# |--------------|
+	# | /unhighlight |
+	# |--------------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unhighlight' and len(tokens)==2:
+			tokens.pop(0)
+			word = tokens.pop(0)
+
+			if not word in config.HIGHLIGHTED_WORDS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"unhighlight: \"{word}\" is not a highlighted word")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{word}\" is not a highlighted word")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			config.HIGHLIGHTED_WORDS.pop(word,'')
+			config.save_settings(config.CONFIG_FILE)
+
+			if not is_script:
+				t = Message(SYSTEM_MESSAGE,'',f"\"{word}\"'s highlighting color has been removed")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unhighlight':
+			count = len(config.HIGHLIGHTED_WORDS)
+			if count<1:
+				t = Message(SYSTEM_MESSAGE,'',f"No words are highlighted")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} highlighted words")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				for word in config.HIGHLIGHTED_WORDS:
+					t = Message(SYSTEM_MESSAGE,'',f"{word} - <span style=\"color:{config.HIGHLIGHTED_WORDS[word]};\">{config.HIGHLIGHTED_WORDS[word]}</span>")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} highlighted words")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |------------|
+	# | /highlight |
+	# |------------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight' and len(tokens)==3:
+			tokens.pop(0)
+			word = tokens.pop(0)
+			color = tokens.pop(0)
+
+			if not is_hex_color(color):
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"highlight: \"{color}\" is not a valid color")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{color}\" is not a valid color")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if not QColor(color).isValid():
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"highlight: \"{color}\" is not a valid color")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"\"{color}\" is not a valid color")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			config.HIGHLIGHTED_WORDS[word] = color
+			config.save_settings(config.CONFIG_FILE)
+
+			if not is_script:
+				t = Message(SYSTEM_MESSAGE,'',f"\"{word}\" is now highlighted with \"{color}\"")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+			return True
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight':
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"highlight WORD COLOR")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"highlight WORD COLOR")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 
 	# |--------|
 	# | /error |

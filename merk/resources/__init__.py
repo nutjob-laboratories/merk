@@ -492,6 +492,15 @@ class UserMacro:
 		
 # Functions
 
+def is_hex_color(s):
+	if not isinstance(s, str) or len(s) != 7 or s[0] != '#':
+		return False
+	try:
+		int(s[1:], 16)
+		return True
+	except ValueError:
+		return False
+
 def is_hostid(s):
 	pattern = r'^[a-zA-Z0-9.-]+:\d+$'
 	return re.match(pattern, s) is not None
