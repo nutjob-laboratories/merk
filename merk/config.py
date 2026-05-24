@@ -459,9 +459,15 @@ CHANNEL_USERLIST_WIDTHS = {}
 LOAD_AND_SAVE_USERLIST_WIDTH = True
 HIGHLIGHTED_WORDS = {}
 HIGHLIGHT_WORDS_IN_CHAT = True
+BOLD_HIGHLIGHTED_WORDS = False
+ITALIC_HIGHLIGHTED_WORDS = False
+UNDERLINE_HIGHLIGHTED_WORDS = False
 
 def build_settings():
 	settings = {
+		"highlight_words_with_underline": UNDERLINE_HIGHLIGHTED_WORDS,
+		"highlight_words_in_italics": ITALIC_HIGHLIGHTED_WORDS,
+		"highlight_words_in_bold": BOLD_HIGHLIGHTED_WORDS,
 		"highlight_words_in_chat": HIGHLIGHT_WORDS_IN_CHAT,
 		"highlighted_words": HIGHLIGHTED_WORDS,
 		"load_and_save_userlist_widths": LOAD_AND_SAVE_USERLIST_WIDTH,
@@ -880,6 +886,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "highlight_words_with_underline" in settings:
+		settings["highlight_words_with_underline"] = UNDERLINE_HIGHLIGHTED_WORDS
+	if not "highlight_words_in_italics" in settings:
+		settings["highlight_words_in_italics"] = ITALIC_HIGHLIGHTED_WORDS
+	if not "highlight_words_in_bold" in settings:
+		settings["highlight_words_in_bold"] = BOLD_HIGHLIGHTED_WORDS
 	if not "highlight_words_in_chat" in settings:
 		settings["highlight_words_in_chat"] = HIGHLIGHT_WORDS_IN_CHAT
 	if not "highlighted_words" in settings:
@@ -2123,6 +2135,9 @@ def load_settings(filename):
 	global LOAD_AND_SAVE_USERLIST_WIDTH
 	global HIGHLIGHTED_WORDS
 	global HIGHLIGHT_WORDS_IN_CHAT
+	global BOLD_HIGHLIGHTED_WORDS
+	global ITALIC_HIGHLIGHTED_WORDS
+	global UNDERLINE_HIGHLIGHTED_WORDS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2132,6 +2147,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		UNDERLINE_HIGHLIGHTED_WORDS = settings["highlight_words_with_underline"]
+		ITALIC_HIGHLIGHTED_WORDS = settings["highlight_words_in_italics"]
+		BOLD_HIGHLIGHTED_WORDS = settings["highlight_words_in_bold"]
 		HIGHLIGHT_WORDS_IN_CHAT = settings["highlight_words_in_chat"]
 		HIGHLIGHTED_WORDS = settings["highlighted_words"]
 		LOAD_AND_SAVE_USERLIST_WIDTH = settings["load_and_save_userlist_widths"]

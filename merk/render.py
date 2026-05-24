@@ -195,7 +195,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	if config.HIGHLIGHT_WORDS_IN_CHAT:
 		if len(highlighted_words)>0:
 			for w in highlighted_words:
-				words_to_highlight.append(w)
+				# Make sure that the word to highlight doesn't
+				# appear in the nick list before we add it
+				if not w in non_color_nicks:
+					words_to_highlight.append(w)
 
 	# Escape all HTML
 	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE:
@@ -397,6 +400,12 @@ def highlight_nick(text, target_words, user_colors, highlighted_words, style):
 				elif matched_word in hlword_lookup:
 					actual_key = hlword_lookup[matched_word]
 					style_to_use = f"color:{highlighted_words[actual_key]};"
+					if config.BOLD_HIGHLIGHTED_WORDS:
+						style_to_use = f"{style_to_use}; font-weight: bold;"
+					if config.ITALIC_HIGHLIGHTED_WORDS:
+						style_to_use = f"{style_to_use}; font-style: italic;"
+					if config.UNDERLINE_HIGHLIGHTED_WORDS:
+						style_to_use = f"{style_to_use}; text-decoration: underline;"
 				else:
 					# The nickname does NOT have a custom color
 					style_to_use = nick_str

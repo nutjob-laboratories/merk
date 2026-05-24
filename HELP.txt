@@ -223,7 +223,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/error [SERVER] [WINDOW] TEXT...</code></td>
-<td>Prints an error message to a window, and immediately exits a script if called from a script. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
+<td>Prints an error message to a window, and immediately exits a script if called from a script. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>SERVER</code> to print to all open windows. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
 </tr>
 <tr>
 <td><code>escape ALIAS TEXT...</code></td>
@@ -271,7 +271,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/highlight WORD [COLOR]</code></td>
-<td>Highlights <code>WORD</code> with <code>COLOR</code> in chat. <code>COLOR</code> must be a valid 6 digit web color. Call without a <code>COLOR</code> argument to select a color with the GUI</td>
+<td>Highlights <code>WORD</code> with <code>COLOR</code> in chat. <code>COLOR</code> must be a valid 6 digit web color. Call without any arguments to see a list of highlighted words. Call without a <code>COLOR</code> argument to select a color with the GUI</td>
 </tr>
 <tr>
 <td><code>hostmask ALIAS NICKNAME</code></td>
@@ -459,7 +459,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/reload [SERVER] [WINDOW]</code></td>
-<td>Re-renders the chat log of a window</td>
+<td>Re-renders the chat log of a window. Pass <code>*</code> as the only argument to re-render all open chat windows</td>
 </tr>
 <tr>
 <td><code>/rem [TEXT...]</code></td>
@@ -519,7 +519,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/unhighlight WORD</code></td>
-<td>Removes highlighting for <code>WORD</code>. Call without arguments to see a list of highlighted words</td>
+<td>Removes highlighting for <code>WORD</code>. Call without arguments to see a list of highlighted words. Pass <code>*</code> as the only argument to remove all word highlights</td>
 </tr>
 <tr>
 <td><code>/unignore USER</code></td>

@@ -1,4 +1,4 @@
-<h1>MERK 0.051.906</h1>
+<h1>MERK 0.051.907</h1>
 
 <p><a href="https://github.com/nutjob-laboratories/merk">Official source code repository</a></p>
 <h1 id="table-of-contents">Table of contents</h1>
@@ -15,7 +15,7 @@
 <li><a href="#does-merk-need-any-help">Does MERK need any help?</a></li>
 </ul>
 <h1 id="summary">Summary</h1>
-<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.906</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
+<p><strong>MERK</strong> is a graphical <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">open source</a> <a href="https://en.wikipedia.org/wiki/Internet_Relay_Chat">Internet relay chat</a> client. The current development version is <strong>0.051.907</strong>. It uses a <a href="https://en.wikipedia.org/wiki/Multiple-document_interface">multiple-document interface</a>, much like the popular Windows IRC client <a href="https://www.mirc.com/">mIRC</a>. <strong>MERK</strong> is written in Python 3, using the <a href="https://pypi.org/project/PyQt5/">PyQt5</a> and <a href="https://twistedmatrix.com/trac/">Twisted</a> libraries, and runs on both Windows and Linux. <strong>MERK</strong> is updated frequently with new features and bugfixes.</p>
 <p><strong>MERK</strong> is still in development, but it works, and can be used for most IRC activities.</p>
 <p>Join me on the official <strong>MERK</strong> IRC channel, <strong>#merk</strong> on TheMansion network! Connect to TheMansion in the client as one of the built-in server suggestions, or at <strong>irc.inthemansion.chat</strong>, port <strong>6697</strong> (via SSL). Honestly, I work a lot, so I'm almost always idle, but I pop in and chat a few times a day!</p>
 <p>If you'd like to help with <strong>MERK</strong>'s development, but don't write code, <a href="buymeacoffee.com/danhetrick">feel free to donate to <strong>MERK</strong></a>! Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in the "About" dialog.</p>
@@ -223,7 +223,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/error [SERVER] [WINDOW] TEXT...</code></td>
-<td>Prints an error message to a window, and immediately exits a script if called from a script. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
+<td>Prints an error message to a window, and immediately exits a script if called from a script. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>SERVER</code> to print to all open windows. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
 </tr>
 <tr>
 <td><code>escape ALIAS TEXT...</code></td>
@@ -271,7 +271,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/highlight WORD [COLOR]</code></td>
-<td>Highlights <code>WORD</code> with <code>COLOR</code> in chat. <code>COLOR</code> must be a valid 6 digit web color. Call without a <code>COLOR</code> argument to select a color with the GUI</td>
+<td>Highlights <code>WORD</code> with <code>COLOR</code> in chat. <code>COLOR</code> must be a valid 6 digit web color. Call without any arguments to see a list of highlighted words. Call without a <code>COLOR</code> argument to select a color with the GUI</td>
 </tr>
 <tr>
 <td><code>hostmask ALIAS NICKNAME</code></td>
@@ -459,7 +459,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/reload [SERVER] [WINDOW]</code></td>
-<td>Re-renders the chat log of a window</td>
+<td>Re-renders the chat log of a window. Pass <code>*</code> as the only argument to re-render all open chat windows</td>
 </tr>
 <tr>
 <td><code>/rem [TEXT...]</code></td>
@@ -519,7 +519,7 @@ Appearance:
 </tr>
 <tr>
 <td><code>/unhighlight WORD</code></td>
-<td>Removes highlighting for <code>WORD</code>. Call without arguments to see a list of highlighted words</td>
+<td>Removes highlighting for <code>WORD</code>. Call without arguments to see a list of highlighted words. Pass <code>*</code> as the only argument to remove all word highlights</td>
 </tr>
 <tr>
 <td><code>/unignore USER</code></td>

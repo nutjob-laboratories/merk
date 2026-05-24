@@ -842,6 +842,23 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingEditorRerender(self,state):
+		if self.highlightWords.isChecked():
+			self.highlightBold.setEnabled(True)
+			self.highStyle.setEnabled(True)
+			self.highlightItalic.setEnabled(True)
+			self.highlightUnderline.setEnabled(True)
+		else:
+			self.highlightBold.setEnabled(False)
+			self.highStyle.setEnabled(False)
+			self.highlightItalic.setEnabled(False)
+			self.highlightUnderline.setEnabled(False)
+		self.syntax_did_change = True
+		self.rerender = True
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedSettingEditorIf(self,state):
 		if self.enableIf.isChecked():
 			self.syntaxop.setEnabled(True)
@@ -4270,29 +4287,6 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC_MESSAGES: self.showTopic.setChecked(True)
 		self.showTopic.stateChanged.connect(self.changedSettingRerender)
 
-		self.highlightNick = QCheckBox("Highlight nicks longer than",self)
-		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
-		self.highlightNick.stateChanged.connect(self.changedSettingRerenderHighlight)
-
-		self.nickLengthSpec = QLabel(" character(s)")
-		self.nickLengthHighlight = QSpinBox()
-		self.nickLengthHighlight.setRange(0,50)
-		self.nickLengthHighlight.setValue(self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING)
-		self.nickLengthHighlight.valueChanged.connect(self.updateNickHighlightLength)
-
-		nickHighlightLayout = QHBoxLayout()
-		nickHighlightLayout.addWidget(self.highlightNick)
-		nickHighlightLayout.addWidget(self.nickLengthHighlight)
-		nickHighlightLayout.addWidget(self.nickLengthSpec)
-		nickHighlightLayout.addStretch()
-
-		self.autoRerender = QCheckBox("Auto-rerender channel chat to show highlights",self)
-		if config.AUTOMATICALLY_RERENDER_CHAT: self.autoRerender.setChecked(True)
-		self.autoRerender.stateChanged.connect(self.changedSetting)
-
-		if not config.HIGHLIGHT_NICKS_IN_CHAT:
-			self.autoRerender.setEnabled(False)
-
 		cfLayout = QHBoxLayout()
 		cfLayout.setSpacing(0)
 		cfLayout.addWidget(self.showJoin)
@@ -4310,8 +4304,6 @@ class Dialog(QDialog):
 		showCM = QVBoxLayout()
 		showCM.setSpacing(0)
 		showCM.addLayout(showCM3)
-		showCM.addLayout(nickHighlightLayout)
-		showCM.addWidget(self.autoRerender)
 
 		menuLayout = QVBoxLayout()
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
@@ -5452,10 +5444,6 @@ class Dialog(QDialog):
 		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
 		self.notifyCTCP.stateChanged.connect(self.changedSetting)
 
-		self.highlightWords = QCheckBox("Highlight words in chat",self)
-		if config.HIGHLIGHT_WORDS_IN_CHAT: self.highlightWords.setChecked(True)
-		self.highlightWords.stateChanged.connect(self.changedSetting)
-
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -5468,7 +5456,6 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.showIson)
 		msLayout.addWidget(self.autoJoin)
 		msLayout.addWidget(self.notifyCTCP)
-		msLayout.addWidget(self.highlightWords)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
@@ -6300,15 +6287,89 @@ class Dialog(QDialog):
 		inputHigh.addWidget(self.toggleSyntaxInput)
 		inputHigh.addStretch()
 
+		self.highlightNick = QCheckBox("Highlight nicks longer than",self)
+		if config.HIGHLIGHT_NICKS_IN_CHAT: self.highlightNick.setChecked(True)
+		self.highlightNick.stateChanged.connect(self.changedSettingRerenderHighlight)
+
+		self.nickLengthSpec = QLabel(" character(s)")
+		self.nickLengthHighlight = QSpinBox()
+		self.nickLengthHighlight.setRange(0,50)
+		self.nickLengthHighlight.setValue(self.MINIMUM_NICK_LENGTH_FOR_HIGHLIGHTING)
+		self.nickLengthHighlight.valueChanged.connect(self.updateNickHighlightLength)
+
+		nickHighlightLayout = QHBoxLayout()
+		nickHighlightLayout.addWidget(self.highlightNick)
+		nickHighlightLayout.addWidget(self.nickLengthHighlight)
+		nickHighlightLayout.addWidget(self.nickLengthSpec)
+		nickHighlightLayout.addStretch()
+
+		self.autoRerender = QCheckBox("Auto-rerender channel chat to show nick highlights",self)
+		if config.AUTOMATICALLY_RERENDER_CHAT: self.autoRerender.setChecked(True)
+		self.autoRerender.stateChanged.connect(self.changedSetting)
+
+		if not config.HIGHLIGHT_NICKS_IN_CHAT:
+			self.autoRerender.setEnabled(False)
+
+		self.highlightWords = QCheckBox("Highlight words with custom colors in chat",self)
+		if config.HIGHLIGHT_WORDS_IN_CHAT: self.highlightWords.setChecked(True)
+		self.highlightWords.stateChanged.connect(self.changedSettingEditorRerender)
+
+		self.highlightBold = QCheckBox("Bold",self)
+		if config.BOLD_HIGHLIGHTED_WORDS: self.highlightBold.setChecked(True)
+		self.highlightBold.stateChanged.connect(self.changedSettingEditorRerender)
+		f = self.highlightBold.font()
+		f.setBold(True)
+		self.highlightBold.setFont(f)
+
+		self.highlightItalic = QCheckBox("Italics",self)
+		if config.ITALIC_HIGHLIGHTED_WORDS: self.highlightItalic.setChecked(True)
+		self.highlightItalic.stateChanged.connect(self.changedSettingEditorRerender)
+		f = self.highlightItalic.font()
+		f.setItalic(True)
+		self.highlightItalic.setFont(f)
+
+		self.highlightUnderline = QCheckBox("Underline",self)
+		if config.UNDERLINE_HIGHLIGHTED_WORDS: self.highlightUnderline.setChecked(True)
+		self.highlightUnderline.stateChanged.connect(self.changedSettingEditorRerender)
+		f = self.highlightUnderline.font()
+		f.setUnderline(True)
+		self.highlightUnderline.setFont(f)
+
+		if not config.HIGHLIGHT_WORDS_IN_CHAT:
+			self.highlightBold.setEnabled(False)
+			self.highStyle.setEnabled(False)
+			self.highlightItalic.setEnabled(False)
+			self.highlightUnderline.setEnabled(False)
+
+		self.highStyle = QLabel("Highlight words in...")
+
+		stHighLayout = QHBoxLayout()
+		stHighLayout.addWidget(self.highStyle)
+		stHighLayout.addStretch()
+		stHighLayout.addWidget(self.highlightBold)
+		stHighLayout.addStretch()
+		stHighLayout.addWidget(self.highlightItalic)
+		stHighLayout.addStretch()
+		stHighLayout.addWidget(self.highlightUnderline)
+		stHighLayout.addStretch()
+
+		chLayout = QVBoxLayout()
+		chLayout.setSpacing(0)
+		chLayout.addLayout(nickHighlightLayout)
+		chLayout.addWidget(self.autoRerender)
+		chLayout.addWidget(self.highlightWords)
+		chLayout.addLayout(stHighLayout)
+
 		syntaxLayout = QVBoxLayout()
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
-		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addLayout(inputHigh)
 		syntaxLayout.addLayout(sbLay)
+		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat highlighting</b>"))
+		syntaxLayout.addLayout(chLayout)
 		syntaxLayout.addStretch()
 
 		self.syntaxPage.setLayout(syntaxLayout)
@@ -7113,6 +7174,9 @@ class Dialog(QDialog):
 		config.SHOW_CHANNEL_LIST_ON_CONNECT = self.showList.isChecked()
 		config.ALWAYS_USE_SERVER_PROFILES = self.useProfiles.isChecked()
 		config.HIGHLIGHT_WORDS_IN_CHAT = self.highlightWords.isChecked()
+		config.BOLD_HIGHLIGHTED_WORDS = self.highlightBold.isChecked()
+		config.ITALIC_HIGHLIGHTED_WORDS = self.highlightItalic.isChecked()
+		config.UNDERLINE_HIGHLIGHTED_WORDS = self.highlightUnderline.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

@@ -342,6 +342,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	if not config.ENABLE_BROWSER_COMMAND:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"browser",'')
 
+	if not config.HIGHLIGHT_WORDS_IN_CHAT:
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"highlight",'')
+		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"unhighlight",'')
+
 	if not config.ENABLE_PLUGIN_EDITOR:
 		AUTOCOMPLETE.pop(config.ISSUE_COMMAND_SYMBOL+"python",'')
 
@@ -504,8 +508,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload [SERVER] [WINDOW]</b>", "Re-renders the chat log of a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window, and ends a script" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"highlight WORD COLOR</b>", "Renders WORD in COLOR in chat" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"highlight WORD [COLOR]</b>", "Renders WORD in COLOR in chat. Call without any arguments to see a list of all highlighted words" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD. Call without any arguments to see a list of all highlighted words. Pass <b>*</b> as the only argument to remove all word highlights" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -525,6 +529,9 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	COPY = []
 	for e in COMMAND_HELP_INFORMATION:
+		if not config.HIGHLIGHT_WORDS_IN_CHAT:
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"highlight WORD [COLOR]</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>": continue
 		if not config.ENABLE_BROWSER_COMMAND:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>": continue
 		if not config.ENABLE_PLUGIN_EDITOR:
@@ -1620,9 +1627,30 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /unhighlight |
 	# |--------------|
 	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unhighlight':
+			if not config.HIGHLIGHT_WORDS_IN_CHAT:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"unhighlight has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+f"unhighlight has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unhighlight' and len(tokens)==2:
 			tokens.pop(0)
 			hword = tokens.pop(0)
+
+			if hword=='*':
+				config.HIGHLIGHTED_WORDS = {}
+				config.save_settings(config.CONFIG_FILE)
+
+				t = Message(SYSTEM_MESSAGE,'',f"All word highlights removed")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 			word = get_key_ignore_case(config.HIGHLIGHTED_WORDS,hword)
 			if word!=None: hword = word
@@ -1644,8 +1672,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"\"{word}\"'s highlighting color has been removed")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
 			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unhighlight':
 			count = len(config.HIGHLIGHTED_WORDS)
 			if count<1:
@@ -1665,6 +1693,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /highlight |
 	# |------------|
 	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight':
+			if not config.HIGHLIGHT_WORDS_IN_CHAT:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"highlight has been disabled in settings")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+f"highlight has been disabled in settings")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight' and len(tokens)==2:
 			tokens.pop(0)
@@ -1686,12 +1726,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{ncolor}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-					if not config.HIGHLIGHT_WORDS_IN_CHAT:
-						t = Message(SYSTEM_MESSAGE,'',f"Warning: word highlighting is disabled")
-						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
-
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight' and len(tokens)==3:
 			tokens.pop(0)
@@ -1729,21 +1764,21 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{color}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
-				if not config.HIGHLIGHT_WORDS_IN_CHAT:
-					t = Message(SYSTEM_MESSAGE,'',f"Warning: word highlighting is disabled")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-
 			return True
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"highlight WORD COLOR")
+			count = len(config.HIGHLIGHTED_WORDS)
+			if count<1:
+				t = Message(SYSTEM_MESSAGE,'',f"No words are highlighted")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			else:
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} highlighted words")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				for word in config.HIGHLIGHTED_WORDS:
+					t = Message(SYSTEM_MESSAGE,'',f"{word} - <span style=\"color:{config.HIGHLIGHTED_WORDS[word]};\">{config.HIGHLIGHTED_WORDS[word]}</span>")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"highlight WORD COLOR")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} highlighted words")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |--------|
@@ -1766,6 +1801,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
+
+			if target=='*':
+				for w in gui.getAllAllConnectedWindows():
+					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+					t = Message(ERROR_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					if is_script: add_halt(script_id)
+				return True
 
 			w = gui.getSubWindow(target,window.client)
 			if w:
@@ -1795,6 +1841,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			server = tokens.pop(0)
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
+
+			if server=='*':
+				msg = f"{target} {msg}"
+				for w in gui.getAllAllConnectedWindows():
+					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+					t = Message(ERROR_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					if is_script: add_halt(script_id)
+				return True
 
 			displayed = False
 			swins = gui.getAllServerWindows()
@@ -1876,6 +1934,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
+
+			if target=="*":
+				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.reRenderAll(True))
+				window.input.setFocus()
+				return True
 
 			w = gui.getSubWindow(target,window.client)
 			if w:

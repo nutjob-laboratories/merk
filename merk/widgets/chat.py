@@ -4270,7 +4270,7 @@ class SpellTextEdit(QPlainTextEdit):
 
 				if config.ENABLE_USER_COMMAND:
 					if config.AUTOCOMPLETE_USER:
-						if config.ISSUE_COMMAND_SYMBOL+'user' in self.text():
+						if self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'user'):
 							cursor.select(QTextCursor.WordUnderCursor)
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
@@ -4283,14 +4283,14 @@ class SpellTextEdit(QPlainTextEdit):
 								for setting in settings_list:
 									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
-										cursor.insertText(f"{setting}")
+										cursor.insertText(f"{setting} ")
 										cursor.endEditBlock()
 										self.ensureCursorVisible()
 										return
 
 				if config.ENABLE_CONFIG_COMMAND:
 					if config.AUTOCOMPLETE_SETTINGS:
-						if config.ISSUE_COMMAND_SYMBOL+'config' in self.text():
+						if self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'config'):
 							cursor.select(QTextCursor.WordUnderCursor)
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
@@ -4307,7 +4307,7 @@ class SpellTextEdit(QPlainTextEdit):
 								for setting in settings_list:
 									if fnmatch.fnmatch(setting.lower(),f"{text.lower()}*"):
 										cursor.beginEditBlock()
-										cursor.insertText(f"{setting}")
+										cursor.insertText(f"{setting} ")
 										cursor.endEditBlock()
 										self.ensureCursorVisible()
 										return
@@ -4315,7 +4315,7 @@ class SpellTextEdit(QPlainTextEdit):
 				if config.SCRIPTING_ENGINE_ENABLED:
 					if config.AUTOCOMPLETE_FILENAMES:
 						# Auto-complete script filenames
-						if config.ISSUE_COMMAND_SYMBOL+'script' in self.text() or config.ISSUE_COMMAND_SYMBOL+'edit' in self.text():
+						if self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'script') or self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'edit'):
 							cursor.select(QTextCursor.WordUnderCursor)
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
@@ -4328,10 +4328,26 @@ class SpellTextEdit(QPlainTextEdit):
 										self.ensureCursorVisible()
 										return
 
+				if config.AUTOCOMPLETE_COMMANDS:
+					if config.HIGHLIGHT_WORDS_IN_CHAT:
+						# Auto-complete highlighted words
+						if self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'highlight') or self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'unhighlight'):
+							cursor.select(QTextCursor.WordUnderCursor)
+							self.setTextCursor(cursor)
+							if self.textCursor().hasSelection():
+								text = self.textCursor().selectedText()
+								for hword in config.HIGHLIGHTED_WORDS:
+									if fnmatch.fnmatch(hword.lower(),f"{text.lower()}*"):
+										cursor.beginEditBlock()
+										cursor.insertText(f"{hword} ")
+										cursor.endEditBlock()
+										self.ensureCursorVisible()
+										return
+
 				if config.ENABLE_PLUGINS:
 					if config.AUTOCOMPLETE_FILENAMES:
 						# Auto-complete plugin filenames
-						if config.ISSUE_COMMAND_SYMBOL+'python' in self.text():
+						if self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'python'):
 							cursor.select(QTextCursor.WordUnderCursor)
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
@@ -4347,7 +4363,7 @@ class SpellTextEdit(QPlainTextEdit):
 				if config.ENABLE_PLUGINS:
 					if config.AUTOCOMPLETE_METHODS:
 						# Auto-complete script filenames
-						if config.ISSUE_COMMAND_SYMBOL+'call' in self.text():
+						if self.text().strip().startswith(config.ISSUE_COMMAND_SYMBOL+'call'):
 							cursor.select(QTextCursor.WordUnderCursor)
 							self.setTextCursor(cursor)
 							if self.textCursor().hasSelection():
@@ -4425,7 +4441,7 @@ class SpellTextEdit(QPlainTextEdit):
 							cmd = config.ISSUE_COMMAND_SYMBOL+commands.USER_MACROS[c].name
 							if fnmatch.fnmatch(cmd.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
-								cursor.insertText(cmd+' ')
+								cursor.insertText(f"{cmd} ")
 								cursor.endEditBlock()
 								self.ensureCursorVisible()
 								return

@@ -4,7 +4,7 @@
 
 What's new:
 
-- **Custom word highlighting**. Users can set colors for specific words in chat. Colors must be in the six digit "web color" format (#000000), also known as hex codes.
+- **Custom word highlighting**. Users can set colors for specific words in chat. Colors must be in the six digit "web color" format (#000000), also known as hex codes. Highlighted words can optionally be styled in italics, bold, or underlined. The new commands `/highlight` (to add a highlighted word and color) and `/unhighlight` (to remove any or all highlighted words) have been added.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -16,6 +16,21 @@ What's new:
 * The "/highlight" command now allows users to select a highlighting color via
   the GUI. Because the renderer highlights words case-insensitively, the
   "/highlight" and "/unhighlight" commands also ignore case.
+* Autocomplete can now complete highlighted words with the "/highlight" and
+  "/unhighlight" commands.
+* Bugfix: autocomplete for various commands (with filenames, methods, etc) now
+  makes sure that the command is at the beginning of the text entry widget
+  rather than just being in the text.
+* The "/highlight" and "/unhighlight" commands are now disabled if highlighting
+  words in chat is disabled.
+* Moved all highlighting options to the "Highlighting" page in the "settings"
+  dialog.
+* Added options to bold, italicize, or underline highlighted words.
+* Added an option to remove all highlighted words from the internal list with
+  "/unhighlight".
+* Added an option to the "/reload" command to force a re-render of all open
+  chat windows.
+* Added an option to "/error" to print the error message to all open windows.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |

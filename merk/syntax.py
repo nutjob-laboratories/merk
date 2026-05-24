@@ -350,6 +350,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			"\\(nin\\)",
 		]
 
+		if not config.HIGHLIGHT_WORDS_IN_CHAT:
+			merk.remove(cmdsymbol+"highlight")
+			merk.remove(cmdsymbol+"unhighlight")
+
 		if not config.ENABLE_PLUGIN_EDITOR:
 			merk.remove(cmdsymbol+"python")
 
