@@ -1622,20 +1622,23 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unhighlight' and len(tokens)==2:
 			tokens.pop(0)
-			word = tokens.pop(0)
+			hword = tokens.pop(0)
+
+			word = get_key_ignore_case(config.HIGHLIGHTED_WORDS,hword)
+			if word!=None: hword = word
 
 			if not word in config.HIGHLIGHTED_WORDS:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"unhighlight: \"{word}\" is not a highlighted word")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"unhighlight: \"{hword}\" is not a highlighted word")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"\"{word}\" is not a highlighted word")
+				t = Message(ERROR_MESSAGE,'',f"\"{hword}\" is not a highlighted word")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-			config.HIGHLIGHTED_WORDS.pop(word,'')
+			config.HIGHLIGHTED_WORDS.pop(hword,'')
 			config.save_settings(config.CONFIG_FILE)
 
 			if not is_script:
@@ -1662,9 +1665,37 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# | /highlight |
 	# |------------|
 	if len(tokens)>=1:
+
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight' and len(tokens)==2:
+			tokens.pop(0)
+			hword = tokens.pop(0)
+
+			word = get_key_ignore_case(config.HIGHLIGHTED_WORDS,hword)
+			if word!=None: hword = word
+
+			if hword in config.HIGHLIGHTED_WORDS:
+				newcolor = QColorDialog.getColor(QColor(config.HIGHLIGHTED_WORDS[hword]))
+			else:
+				newcolor = QColorDialog.getColor(QColor(window.getForegroundColor()))
+
+			if newcolor.isValid():
+				ncolor = newcolor.name()
+				config.HIGHLIGHTED_WORDS[hword] = ncolor
+				config.save_settings(config.CONFIG_FILE)
+
+				if not is_script:
+					t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{ncolor}\"")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+					if not config.HIGHLIGHT_WORDS_IN_CHAT:
+						t = Message(SYSTEM_MESSAGE,'',f"Warning: word highlighting is disabled")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight' and len(tokens)==3:
 			tokens.pop(0)
-			word = tokens.pop(0)
+			hword = tokens.pop(0)
 			color = tokens.pop(0)
 
 			if not is_hex_color(color):
@@ -1689,12 +1720,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-			config.HIGHLIGHTED_WORDS[word] = color
+			word = get_key_ignore_case(config.HIGHLIGHTED_WORDS,hword)
+			if word!=None: hword = word
+
+			config.HIGHLIGHTED_WORDS[hword] = color
 			config.save_settings(config.CONFIG_FILE)
 
 			if not is_script:
-				t = Message(SYSTEM_MESSAGE,'',f"\"{word}\" is now highlighted with \"{color}\"")
+				t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{color}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+				if not config.HIGHLIGHT_WORDS_IN_CHAT:
+					t = Message(SYSTEM_MESSAGE,'',f"Warning: word highlighting is disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'highlight':

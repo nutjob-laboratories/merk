@@ -458,9 +458,11 @@ ALWAYS_USE_SERVER_PROFILES = True
 CHANNEL_USERLIST_WIDTHS = {}
 LOAD_AND_SAVE_USERLIST_WIDTH = True
 HIGHLIGHTED_WORDS = {}
+HIGHLIGHT_WORDS_IN_CHAT = True
 
 def build_settings():
 	settings = {
+		"highlight_words_in_chat": HIGHLIGHT_WORDS_IN_CHAT,
 		"highlighted_words": HIGHLIGHTED_WORDS,
 		"load_and_save_userlist_widths": LOAD_AND_SAVE_USERLIST_WIDTH,
 		"channel_userlist_widths": CHANNEL_USERLIST_WIDTHS,
@@ -878,6 +880,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "highlight_words_in_chat" in settings:
+		settings["highlight_words_in_chat"] = HIGHLIGHT_WORDS_IN_CHAT
 	if not "highlighted_words" in settings:
 		settings["highlighted_words"] = HIGHLIGHTED_WORDS
 	if not "load_and_save_userlist_widths" in settings:
@@ -2118,6 +2122,7 @@ def load_settings(filename):
 	global CHANNEL_USERLIST_WIDTHS
 	global LOAD_AND_SAVE_USERLIST_WIDTH
 	global HIGHLIGHTED_WORDS
+	global HIGHLIGHT_WORDS_IN_CHAT
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2127,6 +2132,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		HIGHLIGHT_WORDS_IN_CHAT = settings["highlight_words_in_chat"]
 		HIGHLIGHTED_WORDS = settings["highlighted_words"]
 		LOAD_AND_SAVE_USERLIST_WIDTH = settings["load_and_save_userlist_widths"]
 		CHANNEL_USERLIST_WIDTHS = settings["channel_userlist_widths"]

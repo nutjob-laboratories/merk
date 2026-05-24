@@ -5452,6 +5452,10 @@ class Dialog(QDialog):
 		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
 		self.notifyCTCP.stateChanged.connect(self.changedSetting)
 
+		self.highlightWords = QCheckBox("Highlight words in chat",self)
+		if config.HIGHLIGHT_WORDS_IN_CHAT: self.highlightWords.setChecked(True)
+		self.highlightWords.stateChanged.connect(self.changedSetting)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -5464,6 +5468,7 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.showIson)
 		msLayout.addWidget(self.autoJoin)
 		msLayout.addWidget(self.notifyCTCP)
+		msLayout.addWidget(self.highlightWords)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
@@ -7107,6 +7112,7 @@ class Dialog(QDialog):
 		config.NOTIFY_ON_CTCP_REQUESTS = self.notifyCTCP.isChecked()
 		config.SHOW_CHANNEL_LIST_ON_CONNECT = self.showList.isChecked()
 		config.ALWAYS_USE_SERVER_PROFILES = self.useProfiles.isChecked()
+		config.HIGHLIGHT_WORDS_IN_CHAT = self.highlightWords.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

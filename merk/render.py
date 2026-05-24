@@ -192,9 +192,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 						if not n in nicks:
 							words_to_highlight.append(n)
 
-	if len(highlighted_words)>0:
-		for w in highlighted_words:
-			words_to_highlight.append(w)
+	if config.HIGHLIGHT_WORDS_IN_CHAT:
+		if len(highlighted_words)>0:
+			for w in highlighted_words:
+				words_to_highlight.append(w)
 
 	# Escape all HTML
 	if message.type!=SYSTEM_MESSAGE and message.type!=ERROR_MESSAGE and message.type!=SERVER_MESSAGE and message.type!=RAW_SYSTEM_MESSAGE and message.type!=WHOIS_MESSAGE:
@@ -238,7 +239,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 		msg_to_display = "<tt>"+msg_to_display+"</tt>"
 
 	# Highlight nicks if that option is turned on
-	if config.HIGHLIGHT_NICKS_IN_CHAT and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
+	if (config.HIGHLIGHT_NICKS_IN_CHAT or config.HIGHLIGHT_WORDS_IN_CHAT) and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE or message.type==SELF_MESSAGE:
 			if len(words_to_highlight)>0: msg_to_display = highlight_nick(msg_to_display,words_to_highlight,nicks,highlighted_words,style)
 

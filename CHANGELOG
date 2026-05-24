@@ -13,6 +13,9 @@ What's new:
 * New feature: color highlighting for words. Users can set a word/color with
   the "/highlight" command, and remove the highlight with the "/unhighlight"
   command.
+* The "/highlight" command now allows users to select a highlighting color via
+  the GUI. Because the renderer highlights words case-insensitively, the
+  "/highlight" and "/unhighlight" commands also ignore case.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |

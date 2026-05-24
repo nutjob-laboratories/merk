@@ -492,6 +492,12 @@ class UserMacro:
 		
 # Functions
 
+def get_key_ignore_case(d, key):
+	for k in d:
+		if k.lower() == key.lower():
+			return k
+	return None
+
 def is_hex_color(s):
 	if not isinstance(s, str) or len(s) != 7 or s[0] != '#':
 		return False

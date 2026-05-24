@@ -160,6 +160,10 @@ class Window(QMainWindow):
 			self.buildUserColors()
 			self.parent.rerenderUserlistsNetwork(self.client)
 
+	def getForegroundColor(self):
+		background,foreground = styles.parseBackgroundAndForegroundColor(self.style["all"])
+		return foreground
+
 	def encodeNetwork(self):
 		if self.client.network:
 			network = self.client.network.lower()
