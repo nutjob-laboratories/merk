@@ -209,6 +209,7 @@ class IRC_Connection(irc.IRCClient):
 		self.joined_channel = []
 		self.channels = []
 		self.all_visible_nicknames = []
+		self.connection_timer = 0
 
 		self.server_channel_list = []
 		self.channel_list_window = None
@@ -544,6 +545,44 @@ class IRC_Connection(irc.IRCClient):
 
 		self.gui.connectionMade(self)
 
+		# Timeout the connection, if that option is
+		# turned on
+		if config.TIMEOUT_CONNECTIONS:
+			self.connectTimer = UptimeHeartbeat()
+			self.connectTimer.beat.connect(self.connect_beat)
+			self.connectTimer.start()
+
+	def connect_beat(self):
+
+		# Don't timeout the connection if we're already
+		# connected to the server
+		if self.registered:
+			if hasattr(self,"connectTimer"):
+				self.connectTimer.stop()
+				self.connection_timer = 0
+			return
+
+		# Increment the timeout timer
+		self.connection_timer = self.connection_timer + 1
+
+		# Display any upcoming timeout disconnection
+		ct = config.CONNECTION_TIMEOUT - self.connection_timer
+		if ct<=5 and self.connection_timer!=config.CONNECTION_TIMEOUT and ct!=0:
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'',f'Disconnection timeout in {ct} seconds...')
+				w.writeText(t)
+		elif ct==0:
+			w = self.gui.getServerWindow(self)
+			if w:
+				t = Message(SYSTEM_MESSAGE,'',f'Disconnecting...')
+				w.writeText(t)
+
+		# If we're past the connection timeout limit,
+		# then disconnect and show the connection dialog
+		if self.connection_timer>config.CONNECTION_TIMEOUT:
+			self.lose_connection("Connection timed out!","Connection timed out!")
+
 	def irc_CAP(self, prefix, params):
 		subcommand = params[1]
 		capabilities = params[2] if len(params) > 2 else ""
@@ -657,6 +696,10 @@ class IRC_Connection(irc.IRCClient):
 			self.uptimeTimer.stop()
 			self.uptime = 0
 
+		if hasattr(self,"connectTimer"):
+			self.connectTimer.stop()
+			self.connection_timer = 0
+
 		if config.PROMPT_ON_FAILED_CONNECTION:
 			self.gui.connectToIrcFail(message,message)
 		else:
@@ -712,6 +755,10 @@ class IRC_Connection(irc.IRCClient):
 			self.uptimeTimer.stop()
 			self.uptime = 0
 
+		if hasattr(self,"connectTimer"):
+			self.connectTimer.stop()
+			self.connection_timer = 0
+
 		self.registered = False
 
 		self.gui.connectionLost(self)
@@ -723,6 +770,10 @@ class IRC_Connection(irc.IRCClient):
 		self.uptimeTimer = UptimeHeartbeat()
 		self.uptimeTimer.beat.connect(self.uptime_beat)
 		self.uptimeTimer.start()
+
+		if hasattr(self,"connectTimer"):
+			self.connectTimer.stop()
+			self.connection_timer = 0
 
 		self.registered = True
 		self.reconnected = 0
@@ -917,7 +968,6 @@ class IRC_Connection(irc.IRCClient):
 		e = [mask,banner,timestamp]
 
 		self.banlists[channel].append(e)
-
 
 	def irc_RPL_ENDOFBANLIST(self,prefix,params):
 		# bans end
@@ -1230,10 +1280,14 @@ class IRC_Connection(irc.IRCClient):
 				nick = nick.replace('!','')
 				if nick==self.nickname: continue
 				cleaned.append(nick)
-			self.all_nicks[channel] = list(cleaned)
+			self.all_nicks[channel] = list(cleaned).sort(key=str.lower)
 
 		# Build a list of all visible nicknames
-		self.all_visible_nicknames = list(set([n for lst in self.all_nicks.values() for n in lst]))
+		try:
+			self.all_visible_nicknames = list(set([n for lst in self.all_nicks.values() for n in lst]))
+			self.all_visible_nicknames.sort(key=str.lower)
+		except:
+			self.all_visible_nicknames = []
 
 	def irc_RPL_TOPIC(self, prefix, params):
 		if not params[2].isspace():

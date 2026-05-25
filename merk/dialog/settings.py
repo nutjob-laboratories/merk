@@ -1164,6 +1164,16 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def updateConnectionTimeout(self,state):
+		self.CONNECTION_TIMEOUT = self.timeoutLength.value()
+		if self.CONNECTION_TIMEOUT>1:
+			self.timeoutLengthSpec.setText(" seconds")
+		else:
+			self.timeoutLengthSpec.setText(" second")
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def updateBlinkRate(self,state):
 		self.CURSOR_BLINK_RATE = self.blinkRate.value()
 		self.changed.show()
@@ -2306,6 +2316,7 @@ class Dialog(QDialog):
 		self.do_topic = False
 		self.do_scripting = False
 		self.do_systray = False
+		self.CONNECTION_TIMEOUT = config.CONNECTION_TIMEOUT
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -4546,20 +4557,36 @@ class Dialog(QDialog):
 		if config.DISCONNECT_ON_SASL_FAIL: self.failSasl.setChecked(True)
 		self.failSasl.stateChanged.connect(self.changedSetting)
 
+		self.doConnectionTimeout = QCheckBox("Timeout connections longer than",self)
+		if config.TIMEOUT_CONNECTIONS: self.doConnectionTimeout.setChecked(True)
+		self.doConnectionTimeout.stateChanged.connect(self.changedSetting)
+
+		self.timeoutLengthSpec = QLabel(" seconds")
+		if self.CONNECTION_TIMEOUT==1:
+			self.timeoutLengthSpec.setText(" second")
+		self.timeoutLength = QSpinBox()
+		self.timeoutLength.setRange(1,999)
+		self.timeoutLength.setValue(self.CONNECTION_TIMEOUT)
+		self.timeoutLength.valueChanged.connect(self.updateConnectionTimeout)
+
+		connTimeoutLayout = QHBoxLayout()
+		connTimeoutLayout.addWidget(self.doConnectionTimeout)
+		connTimeoutLayout.addWidget(self.timeoutLength)
+		connTimeoutLayout.addWidget(self.timeoutLengthSpec)
+		connTimeoutLayout.addStretch()
+
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(0)
 		csLayout.addWidget(self.askBeforeDisconnect)
 		csLayout.addWidget(self.notifyOnLostConnection)
-		csLayout.addWidget(self.notifyRepeated)
+		csLayout.addLayout(connTimeoutLayout)
 		csLayout.addWidget(self.promptFail)
+		csLayout.addWidget(self.askBeforeReconnect)
+		csLayout.addLayout(delayLayout)
+		csLayout.addWidget(self.notifyRepeated)
 		csLayout.addWidget(self.failSasl)
 		csLayout.addWidget(self.saveHistory)
 		csLayout.addWidget(self.showList)
-		
-		arLayout = QVBoxLayout()
-		arLayout.setSpacing(0)
-		arLayout.addWidget(self.askBeforeReconnect)
-		arLayout.addLayout(delayLayout)
 
 		afLayout = QVBoxLayout()
 		afLayout.setSpacing(0)
@@ -4606,8 +4633,6 @@ class Dialog(QDialog):
 		connectionsLayout.addLayout(eLayout)
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display</b>"))
 		connectionsLayout.addLayout(cdLayout)
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatic reconnection</b>"))
-		connectionsLayout.addLayout(arLayout)
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatically fetch from server</b>"))
 		connectionsLayout.addLayout(afLayout)
 		connectionsLayout.addStretch()
@@ -7187,6 +7212,8 @@ class Dialog(QDialog):
 		config.ITALIC_HIGHLIGHTED_WORDS = self.highlightItalic.isChecked()
 		config.UNDERLINE_HIGHLIGHTED_WORDS = self.highlightUnderline.isChecked()
 		config.ALLOW_PRINT_TO_ALL_WINDOWS = self.allowMultiple.isChecked()
+		config.TIMEOUT_CONNECTIONS = self.doConnectionTimeout.isChecked()
+		config.CONNECTION_TIMEOUT = self.CONNECTION_TIMEOUT
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

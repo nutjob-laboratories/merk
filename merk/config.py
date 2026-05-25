@@ -463,9 +463,13 @@ BOLD_HIGHLIGHTED_WORDS = False
 ITALIC_HIGHLIGHTED_WORDS = False
 UNDERLINE_HIGHLIGHTED_WORDS = False
 ALLOW_PRINT_TO_ALL_WINDOWS = True
+CONNECTION_TIMEOUT = 120
+TIMEOUT_CONNECTIONS = True
 
 def build_settings():
 	settings = {
+		"disconnect_after_connection_timeout": TIMEOUT_CONNECTIONS,
+		"connection_timeout": CONNECTION_TIMEOUT,
 		"allow_command_print_to_all_windows": ALLOW_PRINT_TO_ALL_WINDOWS,
 		"highlight_words_with_underline": UNDERLINE_HIGHLIGHTED_WORDS,
 		"highlight_words_in_italics": ITALIC_HIGHLIGHTED_WORDS,
@@ -888,6 +892,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "disconnect_after_connection_timeout" in settings:
+		settings["disconnect_after_connection_timeout"] = TIMEOUT_CONNECTIONS
+	if not "connection_timeout" in settings:
+		settings["connection_timeout"] = CONNECTION_TIMEOUT
 	if not "allow_command_print_to_all_windows" in settings:
 		settings["allow_command_print_to_all_windows"] = ALLOW_PRINT_TO_ALL_WINDOWS
 	if not "highlight_words_with_underline" in settings:
@@ -2143,6 +2151,8 @@ def load_settings(filename):
 	global ITALIC_HIGHLIGHTED_WORDS
 	global UNDERLINE_HIGHLIGHTED_WORDS
 	global ALLOW_PRINT_TO_ALL_WINDOWS
+	global CONNECTION_TIMEOUT
+	global TIMEOUT_CONNECTIONS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2152,6 +2162,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		TIMEOUT_CONNECTIONS = settings["disconnect_after_connection_timeout"]
+		CONNECTION_TIMEOUT = settings["connection_timeout"]
 		ALLOW_PRINT_TO_ALL_WINDOWS = settings["allow_command_print_to_all_windows"]
 		UNDERLINE_HIGHLIGHTED_WORDS = settings["highlight_words_with_underline"]
 		ITALIC_HIGHLIGHTED_WORDS = settings["highlight_words_in_italics"]
