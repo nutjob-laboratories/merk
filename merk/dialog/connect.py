@@ -536,6 +536,13 @@ class Dialog(QDialog):
 		else:
 			smaller_font.setPointSize(smaller_point_size)
 
+		less_smaller_font = self.font()
+		less_smaller_point_size = less_smaller_font.pointSize() - 1
+		if less_smaller_point_size<8:
+			pass
+		else:
+			less_smaller_font.setPointSize(less_smaller_point_size)
+
 		# Load the config file
 		config.load_settings(config.CONFIG_FILE)
 
@@ -636,19 +643,19 @@ class Dialog(QDialog):
 
 		self.sasl = QCheckBox("Login via SASL",self)
 		self.sasl.stateChanged.connect(self.clickSASL)
-		self.sasl.setFont(smaller_font)
+		self.sasl.setFont(less_smaller_font)
 
 		self.edit = QPushButton("Edit")
 		self.edit.clicked.connect(self.editSasl)
 		self.edit.setToolTip("Edit the SASL account for this server")
 		self.edit.setFixedHeight(self.sasl.sizeHint().height())
-		self.edit.setFont(smaller_font)
+		self.edit.setFont(less_smaller_font)
 
 		self.clear = QPushButton("Clear")
 		self.clear.clicked.connect(self.clearSASL)
 		self.clear.setToolTip("Clear SASL account for this server")
 		self.clear.setFixedHeight(self.sasl.sizeHint().height())
-		self.clear.setFont(smaller_font)
+		self.clear.setFont(less_smaller_font)
 
 		sasl_row = QWidget()
 		sLayout = QHBoxLayout()
@@ -662,7 +669,7 @@ class Dialog(QDialog):
 
 		self.ssl = QCheckBox("Connect via SSL/TLS",self)
 		self.ssl.stateChanged.connect(self.clickSSL)
-		self.ssl.setFont(smaller_font)
+		self.ssl.setFont(less_smaller_font)
 
 		if not SSL_AVAILABLE: self.ssl.hide()
 
@@ -670,7 +677,7 @@ class Dialog(QDialog):
 			self.exe = QCheckBox("Execute connection script",self)
 			self.exe.stateChanged.connect(self.clickExe)
 			self.exe.toggle()
-			self.exe.setFont(smaller_font)
+			self.exe.setFont(less_smaller_font)
 
 		if self.noexecute: self.exe.toggle()
 
@@ -678,7 +685,7 @@ class Dialog(QDialog):
 
 		self.reconnect = QCheckBox("Reconnect",self)
 		self.reconnect.stateChanged.connect(self.clickReconnect)
-		self.reconnect.setFont(smaller_font)
+		self.reconnect.setFont(less_smaller_font)
 
 		if user.LAST_RECONNECT: self.reconnect.toggle()
 
@@ -804,7 +811,7 @@ class Dialog(QDialog):
 		if config.SCRIPTING_ENGINE_ENABLED:
 			self.commands_tab = QWidget()
 			self.commands_tab.setLayout(commandsLayout)
-			self.tabs.addTab(self.commands_tab, QIcon(SCRIPT_ICON), "Script")
+			self.tabs.addTab(self.commands_tab, QIcon(COMMAND_ICON), "Script")
 
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)

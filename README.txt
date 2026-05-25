@@ -399,8 +399,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
 | `/play FILENAME`                        | Plays a WAV file                                                                                                                 |
 | `pool`                        | Ends a `loop` block. *Can only be called from scripts*      |
-| `/print [SERVER] [WINDOW] TEXT...`               | Prints text to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window                                                                       |
-| `/prints [SERVER] [WINDOW] TEXT...`               | Prints system message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window              |
+| `/print [SERVER] [WINDOW] TEXT...`               | Prints text to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open windows. Pass `*` as `WINDOW` to print to the server window                                                                       |
+| `/prints [SERVER] [WINDOW] TEXT...`               | Prints system message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open windows. Pass `*` as `WINDOW` to print to the server window              |
 | `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
 | `/python [FILENAME]`               | Opens a file in the Python editor                             |
 | `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
@@ -436,7 +436,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
 | `wait SECONDS`                         | Pauses script execution for `SECONDS`; *can only be called from scripts*                                                           |
 | `/wallops MESSAGE`                         | Sends a message to all operators  |
-| `/warn [SERVER] [WINDOW] TEXT...`               | Prints an error message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to print to the server window     |
+| `/warn [SERVER] [WINDOW] TEXT...`               | Prints an error message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open windows. Pass `*` as `WINDOW` to print to the server window     |
 | `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
 | `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
 | `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |

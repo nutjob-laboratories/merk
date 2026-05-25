@@ -407,11 +407,11 @@ Appearance:
 </tr>
 <tr>
 <td><code>/print [SERVER] [WINDOW] TEXT...</code></td>
-<td>Prints text to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
+<td>Prints text to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>SERVER</code> to print to all open windows. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
 </tr>
 <tr>
 <td><code>/prints [SERVER] [WINDOW] TEXT...</code></td>
-<td>Prints a system message to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
+<td>Prints a system message to a window. <code>SERVER</code> is optional if <code>WINDOW</code> belongs to the same context. Pass <code>*</code> as <code>SERVER</code> to print to all open windows. Pass <code>*</code> as <code>WINDOW</code> to print to the server window</td>
 </tr>
 <tr>
 <td><code>/private NICKNAME [MESSAGE]</code></td>

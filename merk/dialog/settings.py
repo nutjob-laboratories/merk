@@ -2471,7 +2471,7 @@ class Dialog(QDialog):
 		self.saveLocation.stateChanged.connect(self.changedSetting)
 
 		misLayout = QVBoxLayout()
-		misLayout.setSpacing(2)
+		misLayout.setSpacing(0)
 		misLayout.addWidget(self.simpleConnect)
 		misLayout.addWidget(self.showConnect)
 		misLayout.addWidget(self.noConnectLogo)
@@ -2480,14 +2480,14 @@ class Dialog(QDialog):
 		misLayout.addWidget(self.showTips)
 
 		titleLayout = QVBoxLayout()
-		titleLayout.setSpacing(2)
+		titleLayout.setSpacing(0)
 		titleLayout.addWidget(self.noAppNameTitle)
 		titleLayout.addWidget(self.noShowServerTitle)
 		titleLayout.addWidget(self.showTopicInTitle)
 		titleLayout.addWidget(self.showChatInTitle)
 
 		mwsLayout = QVBoxLayout()
-		mwsLayout.setSpacing(2)
+		mwsLayout.setSpacing(0)
 		mwsLayout.addWidget(self.maxOnStart)
 		mwsLayout.addWidget(self.saveLocation)
 		mwsLayout.addWidget(self.alwaysOnTop)
@@ -2539,7 +2539,7 @@ class Dialog(QDialog):
 		self.qtStyle.currentIndexChanged.connect(self.styleChange)
 
 		styleLayout = QHBoxLayout()
-		styleLayout.addWidget(QLabel("Widget Style "))
+		styleLayout.addWidget(QLabel("Widget Style: "))
 		styleLayout.addWidget(self.qtStyle)
 		styleLayout.addStretch()
 
@@ -2604,8 +2604,8 @@ class Dialog(QDialog):
 		if config.ENABLE_STYLE_EDITOR: self.enableStyle.setChecked(True)
 		self.enableStyle.stateChanged.connect(self.changedSetting)
 
-		self.padLengthLabel = QLabel("Nick size/padding:")
-		self.padLengthLabelSpec = QLabel("characters")
+		self.padLengthLabel = QLabel("Nick size/padding: ")
+		self.padLengthLabelSpec = QLabel(" characters")
 		self.padLength = QSpinBox()
 		self.padLength.setRange(1,99)
 		self.padLength.setValue(self.nicknamePadLength)
@@ -2626,19 +2626,19 @@ class Dialog(QDialog):
 		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
 
 		mLayout = QVBoxLayout()
-		mLayout.setSpacing(2)
+		mLayout.setSpacing(0)
 		mLayout.addWidget(self.enableStyle)
 		mLayout.addWidget(self.noStyles)
 		mLayout.addWidget(self.forceMono)
 
 		nLayout = QVBoxLayout()
-		nLayout.setSpacing(2)
+		nLayout.setSpacing(0)
 		nLayout.addWidget(self.elideNick)
 		nLayout.addWidget(self.noPadding)
 		nLayout.addLayout(padLayout)
 
-		self.inputCursorLabel = QLabel("Input widget cursor width:")
-		self.inputCursorLabelSpec = QLabel("pixels")
+		self.inputCursorLabel = QLabel("Input widget cursor width: ")
+		self.inputCursorLabelSpec = QLabel(" pixels")
 		self.inputCursor = QSpinBox()
 		self.inputCursor.setRange(1,99)
 		self.inputCursor.setValue(self.INPUT_CURSOR_WIDTH)
@@ -2654,7 +2654,7 @@ class Dialog(QDialog):
 		if config.CURSOR_BLINK: self.cursorBlink.setChecked(True)
 		self.cursorBlink.stateChanged.connect(self.changedSetting)
 
-		self.blinkRateSpec = QLabel("ms")
+		self.blinkRateSpec = QLabel(" milliseconds")
 		self.blinkRate = QSpinBox()
 		self.blinkRate.setRange(1,5000)
 		self.blinkRate.setValue(self.CURSOR_BLINK_RATE)
@@ -2666,7 +2666,7 @@ class Dialog(QDialog):
 		blinkLayout.addWidget(self.blinkRateSpec)
 
 		cursLayout = QVBoxLayout()
-		cursLayout.setSpacing(2)
+		cursLayout.setSpacing(0)
 		cursLayout.addLayout(blinkLayout)
 		cursLayout.addLayout(cursorLayout)
 
@@ -2789,7 +2789,7 @@ class Dialog(QDialog):
 		if config.MENUBAR_MENU: self.menubarMenu.setChecked(True)
 		self.menubarMenu.stateChanged.connect(self.menuChange)
 
-		self.alignLabel = QLabel("Menubar alignment ")
+		self.alignLabel = QLabel("Menubar alignment: ")
 
 		if not config.USE_MENUBAR:
 			self.menubarFloat.setEnabled(False)
@@ -2985,7 +2985,7 @@ class Dialog(QDialog):
 		menu4Layout.addWidget(self.showConnScript)
 
 		msLayout = QVBoxLayout()
-		msLayout.setSpacing(2)
+		msLayout.setSpacing(0)
 		msLayout.addWidget(self.menubarDescription)
 		msLayout.addLayout(menu1Layout)
 		msLayout.addWidget(self.menubarFloat)
@@ -3055,7 +3055,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_JUSTIFY!='right': self.windowbarJustify.addItem('right')
 		self.windowbarJustify.currentIndexChanged.connect(self.justifyChange)
 
-		self.windowbarLabel = QLabel("Windowbar alignment ")
+		self.windowbarLabel = QLabel("Windowbar alignment: ")
 
 		justifyLayout = QHBoxLayout()
 		justifyLayout.addWidget(self.windowbarLabel)
@@ -3249,7 +3249,7 @@ class Dialog(QDialog):
 		wbstuffOpts.addRow(self.windowbarMenu,self.windowbarEntryMenu)
 
 		wbOpts = QVBoxLayout()
-		wbOpts.setSpacing(2)
+		wbOpts.setSpacing(0)
 		wbOpts.addLayout(windowbar1Layout)
 		wbOpts.addLayout(windowbar2Layout)
 		wbOpts.addLayout(wbstuffOpts)
@@ -3387,7 +3387,7 @@ class Dialog(QDialog):
 		if config.SUBWINDOW_SNAPPING: self.snapWindows.setChecked(True)
 		self.snapWindows.stateChanged.connect(self.changedSetting)
 
-		self.snapDistanceSpec = QLabel("pixels")
+		self.snapDistanceSpec = QLabel(" pixels")
 		self.snapDistance = QSpinBox()
 		self.snapDistance.setRange(1,9999)
 		self.snapDistance.setValue(self.SUBWINDOW_SNAP_DISTANCE)
@@ -3412,7 +3412,7 @@ class Dialog(QDialog):
 		self.enableNickClick.stateChanged.connect(self.changedSetting)
 		
 		swsSettings = QVBoxLayout()
-		swsSettings.setSpacing(2)
+		swsSettings.setSpacing(0)
 		swsSettings.addWidget(self.showContext)
 		swsSettings.addWidget(self.showInputMenu)
 		swsSettings.addWidget(self.showLongMessage)
@@ -3423,7 +3423,7 @@ class Dialog(QDialog):
 		swsSettings.addLayout(rbLayout)
 
 		ssLayout = QVBoxLayout()
-		ssLayout.setSpacing(2)
+		ssLayout.setSpacing(0)
 		ssLayout.addWidget(self.showServToolbar)
 		ssLayout.addWidget(self.showServList)
 		ssLayout.addWidget(self.showServRefresh)
@@ -3657,7 +3657,7 @@ class Dialog(QDialog):
 			self.stmLogs.setEnabled(False)
 
 		stLayout = QVBoxLayout()
-		stLayout.setSpacing(2)
+		stLayout.setSpacing(0)
 		stLayout.addWidget(self.showSystray)
 		stLayout.addWidget(self.showSystrayMenu)
 		stLayout.addWidget(self.minSystray)
@@ -3666,7 +3666,7 @@ class Dialog(QDialog):
 		stLayout.addWidget(self.clickToMinimize)
 
 		nsLayout = QVBoxLayout()
-		nsLayout.setSpacing(2)
+		nsLayout.setSpacing(0)
 		nsLayout.addWidget(self.systrayNotify)
 		nsLayout.addWidget(self.listSystray)
 		nsLayout.addLayout(flashBox)
@@ -3953,7 +3953,7 @@ class Dialog(QDialog):
 			<small>
 			These settings will be used as the defaults in the <b>connection dialog</b> and <b>CTCP replies</b>.
 			Changes to <b>nickname</b>, <b>username</b>, and <b>real name</b> will not be reflected in any
-			current connections. <b>Alternate</b> is completely optional.
+			current connections. <b>Alternate</b> is completely optional.<br>
 			</small>
 			""")
 		self.userDescription.setWordWrap(True)
@@ -3963,7 +3963,7 @@ class Dialog(QDialog):
 			<small>
 			Changes to <b>USERINFO</b> and <b>FINGER</b> replies will be used immediately.
 			Both of these values are optional. If not set to a value, <b>{APPLICATION_NAME}</b>
-			will not reply to the CTCP request.
+			will not reply to the CTCP request.<br>
 			</small>
 			""")
 		self.ctcpDescription.setWordWrap(True)
@@ -4040,7 +4040,7 @@ class Dialog(QDialog):
 		profLayout.addStretch()
 
 		userLayout = QVBoxLayout()
-		userLayout.setSpacing(2)
+		userLayout.setSpacing(0)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
 		userLayout.addWidget(self.userDescription)
 		userLayout.addLayout(udataLayout)
@@ -4168,12 +4168,12 @@ class Dialog(QDialog):
 		if config.USERLIST_CONTEXT_MENU: self.ulistContext.setChecked(True)
 		self.ulistContext.stateChanged.connect(self.changedSettingContext)
 
-		self.ulistWidthLabel = QLabel("Base userlist width:")
+		self.ulistWidthLabel = QLabel("Base userlist width: ")
 		self.ulistWidthBox = QSpinBox()
 		self.ulistWidthBox.setRange(1,100)
 		self.ulistWidthBox.setValue(self.USERLIST_WIDTH_IN_CHARACTERS)
 		self.ulistWidthBox.valueChanged.connect(self.setUlistWidth)
-		self.ulistWidthLabel2 = QLabel("characters")
+		self.ulistWidthLabel2 = QLabel(" characters")
 
 		ulistWidthLayout = QHBoxLayout()
 		ulistWidthLayout.addWidget(self.ulistWidthLabel)
@@ -4386,14 +4386,14 @@ class Dialog(QDialog):
 		self.showDates.stateChanged.connect(self.changedSettingRerender)
 
 		tsLayout = QVBoxLayout()
-		tsLayout.setSpacing(2)
+		tsLayout.setSpacing(0)
 		tsLayout.addWidget(self.timestampDescription)
 		tsLayout.addWidget(self.showTimestamps)
 		tsLayout.addWidget(self.timestamp24hour)
 		tsLayout.addWidget(self.timestampSeconds)
 
 		upLayout = QVBoxLayout()
-		upLayout.setSpacing(2)
+		upLayout.setSpacing(0)
 		upLayout.addWidget(self.uptimeDescription)
 		upLayout.addWidget(self.showUptime)
 		upLayout.addWidget(self.showChanUptime)
@@ -4480,7 +4480,7 @@ class Dialog(QDialog):
 		if config.DELAY_AUTO_RECONNECTION: self.delayReconnect.setChecked(True)
 		self.delayReconnect.stateChanged.connect(self.changedSetting)
 
-		self.delayTimeLabelSpec = QLabel("seconds")
+		self.delayTimeLabelSpec = QLabel(" seconds")
 		self.delayTime = QSpinBox()
 		self.delayTime.setRange(1,99)
 		self.delayTime.setValue(self.RECONNECTION_DELAY)
@@ -4728,18 +4728,18 @@ class Dialog(QDialog):
 		awaymsgLayout.addStretch()
 
 		amLayout = QVBoxLayout()
-		amLayout.setSpacing(2)
+		amLayout.setSpacing(0)
 		amLayout.addWidget(self.awayMsg)
 		amLayout.addLayout(awaymsgLayout)
 
 		asLayout = QVBoxLayout()
-		asLayout.setSpacing(2)
+		asLayout.setSpacing(0)
 		asLayout.addWidget(self.promptAway)
 		asLayout.addWidget(self.showAwayBack)
 		asLayout.addWidget(self.showAwayNick)
 
 		aasLayout = QVBoxLayout()
-		aasLayout.setSpacing(2)
+		aasLayout.setSpacing(0)
 		aasLayout.addLayout(intervalBox)
 		aasLayout.addWidget(self.typeCancelInput)
 		aasLayout.addWidget(self.windowCancelAway)
@@ -4947,7 +4947,7 @@ class Dialog(QDialog):
 		bcLayout.addStretch()
 
 		inputLayout = QVBoxLayout()
-		inputLayout.setSpacing(2)
+		inputLayout.setSpacing(0)
 		inputLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command history</b>"))
 		inputLayout.addWidget(self.historyDescription)
 		inputLayout.addLayout(historyMaster)
@@ -5025,16 +5025,16 @@ class Dialog(QDialog):
 		self.spellcheckDistance.addItem(str(config.SPELLCHECKER_DISTANCE))
 		if config.SPELLCHECKER_DISTANCE!=1: self.spellcheckDistance.addItem('1')
 		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('2')
-		if config.SPELLCHECKER_DISTANCE!=2: self.spellcheckDistance.addItem('3')
+		if config.SPELLCHECKER_DISTANCE!=3: self.spellcheckDistance.addItem('3')
 		self.spellcheckDistance.currentIndexChanged.connect(self.distanceChange)
 
-		self.distanceLabel = QLabel("<a href=\"https://en.wikipedia.org/wiki/Levenshtein_distance\">Levenshtein distance</a>: ")
-		self.distanceLabel.setOpenExternalLinks(True)
+		self.distanceLabel = QLabel("Levenshtein distance: ")
 
 		self.spellcheckColor = widgets.SyntaxTextColor('underline', "<b>Underline Color</b>",self.SPELLCHECK_UNDERLINE_COLOR,self)
 		self.spellcheckColor.syntaxChanged.connect(self.underlineChanged)
 
 		distanceLayout = QHBoxLayout()
+		distanceLayout.addStretch()
 		distanceLayout.addWidget(self.distanceLabel)
 		distanceLayout.addWidget(self.spellcheckDistance)
 		distanceLayout.addStretch()
@@ -5106,28 +5106,36 @@ class Dialog(QDialog):
 			<small>
 			Misspelled words in the input widget are marked with a <b><span style='text-decoration: underline; color: {self.SPELLCHECK_UNDERLINE_COLOR};'>
 			colored underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
-			the word with</b> or to <b>add that word to the built-in dictionary</b>. The <b>Levenshtein distance</b> setting sets
-			how the spellchecker finds suggestions to replace misspelled words; lower numbers are better for
+			the word with</b> or to <b>add that word to the built-in dictionary</b>. The <a href=\"https://en.wikipedia.org/wiki/Levenshtein_distance\">Levenshtein distance</a>
+			setting sets how the spellchecker finds suggestions to replace misspelled words; lower numbers are better for
 			longer words.
 			</small>
 			
 			""")
 		self.spellcheckDescription.setWordWrap(True)
 		self.spellcheckDescription.setAlignment(Qt.AlignJustify)
+		self.spellcheckDescription.setOpenExternalLinks(True)
 
 		spellMaster = QHBoxLayout()
 		spellMaster.addStretch()
 		spellMaster.addWidget(self.enableSpellcheck)
 		spellMaster.addStretch()
 
+		spellMaster2 = QHBoxLayout()
+		spellMaster2.addStretch()
+		spellMaster2.addWidget(self.allowSpellcheck)
+		spellMaster2.addStretch()
+
+		spellSet = QVBoxLayout()
+		spellSet.setSpacing(0)
+		spellSet.addLayout(spellMaster)
+		spellSet.addLayout(spellMaster2)
+		spellSet.addLayout(distanceLayout)
+
 		spellcheckLayout = QVBoxLayout()
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
-		spellcheckLayout.addLayout(spellMaster)
-		spellcheckLayout.addWidget(QLabel(' '))
-		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck settings</b>"))
-		spellcheckLayout.addWidget(self.allowSpellcheck)
-		spellcheckLayout.addLayout(distanceLayout)
+		spellcheckLayout.addLayout(spellSet)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
 		spellcheckLayout.addLayout(spColorLayout)
@@ -5498,7 +5506,7 @@ class Dialog(QDialog):
 		pmoLayout.addStretch()
 
 		qmLayout = QVBoxLayout()
-		qmLayout.setSpacing(2)
+		qmLayout.setSpacing(0)
 		qmLayout.addWidget(self.partMsg)
 		qmLayout.addLayout(pmoLayout)
 
@@ -5525,7 +5533,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Scripting")
 		entry.widget = self.scriptingPage
-		entry.setIcon(QIcon(SCRIPT_ICON))
+		entry.setIcon(QIcon(COMMAND_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.scriptingPage)
@@ -5706,38 +5714,38 @@ class Dialog(QDialog):
 		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
 		self.escapeHTML.stateChanged.connect(self.changedSettingRerender)
 
+		self.allowMultiple = QCheckBox(f"Allow {config.ISSUE_COMMAND_SYMBOL}print, {config.ISSUE_COMMAND_SYMBOL}prints, {config.ISSUE_COMMAND_SYMBOL}warn, and {config.ISSUE_COMMAND_SYMBOL}error\nto print to all windows",self)
+		if config.ALLOW_PRINT_TO_ALL_WINDOWS: self.allowMultiple.setChecked(True)
+		self.allowMultiple.stateChanged.connect(self.changedSetting)
+
 		aliLayout = QHBoxLayout()
 		aliLayout.addWidget(self.enableAlias)
 		aliLayout.addWidget(self.enableBuiltin)
 
 		aLayout = QVBoxLayout()
-		aLayout.setSpacing(2)
+		aLayout.setSpacing(0)
 		aLayout.addLayout(aliLayout)
 		aLayout.addWidget(self.interpolateAlias)
 		aLayout.addLayout(aliasLayout)
 
 		aLayout2 = QVBoxLayout()
-		aLayout2.setSpacing(2)
+		aLayout2.setSpacing(0)
 		aLayout2.addWidget(self.showErrors)
 		aLayout2.addWidget(self.haltError)
 		aLayout2.addWidget(self.restrictError)
-
-		aLayout3 = QVBoxLayout()
-		aLayout3.setSpacing(2)
-		aLayout3.addWidget(self.requireArgs)
-		aLayout3.addWidget(self.promptScript)
-		aLayout3.addWidget(self.escapeHTML)
+		aLayout2.addWidget(self.requireArgs)
+		aLayout2.addWidget(self.promptScript)
+		aLayout2.addWidget(self.escapeHTML)
+		aLayout2.addWidget(self.allowMultiple)
 
 		scriptingLayout = QVBoxLayout()
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting</b>"))
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting and commands</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
 		scriptingLayout.addLayout(aLayout)
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error settings</b>"))
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error and command settings</b>"))
 		scriptingLayout.addLayout(aLayout2)
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>command settings</b>"))
-		scriptingLayout.addLayout(aLayout3)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable commands</b>"))
 		scriptingLayout.addLayout(cmdLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable script-only commands</b>"))
@@ -6415,7 +6423,7 @@ class Dialog(QDialog):
 		escLayout1.addStretch()
 
 		escLayout = QVBoxLayout()
-		escLayout.setSpacing(2)
+		escLayout.setSpacing(0)
 		escLayout.addLayout(escLayout1)
 
 		self.searchAllTerms = QCheckBox("Search for all terms in channel list",self)
@@ -6438,12 +6446,12 @@ class Dialog(QDialog):
 			self.hotkeyCmd.setEnabled(False)
 
 		setLayout = QFormLayout()
-		setLayout.setSpacing(2)
+		setLayout.setSpacing(0)
 		setLayout.addWidget(self.searchAllTerms)
 		setLayout.addWidget(self.examineTopic)
 
 		hkLayout = QFormLayout()
-		hkLayout.setSpacing(2)
+		hkLayout.setSpacing(0)
 		hkLayout.addWidget(self.enableHotkeys)
 		hkLayout.addWidget(self.hotkeyCmd)
 
@@ -6638,7 +6646,7 @@ class Dialog(QDialog):
 		self.prevChannel.setEnabled(False)
 
 		asetLayout = QFormLayout()
-		asetLayout.setSpacing(2)
+		asetLayout.setSpacing(0)
 		asetLayout.addRow(self.floodProtection)
 		asetLayout.addRow(self.enablePing)
 		asetLayout.addRow(self.prevIllegal)
@@ -6698,6 +6706,7 @@ class Dialog(QDialog):
 		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.allowMultiple.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 
@@ -7177,6 +7186,7 @@ class Dialog(QDialog):
 		config.BOLD_HIGHLIGHTED_WORDS = self.highlightBold.isChecked()
 		config.ITALIC_HIGHLIGHTED_WORDS = self.highlightItalic.isChecked()
 		config.UNDERLINE_HIGHLIGHTED_WORDS = self.highlightUnderline.isChecked()
+		config.ALLOW_PRINT_TO_ALL_WINDOWS = self.allowMultiple.isChecked()
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

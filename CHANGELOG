@@ -5,6 +5,7 @@
 What's new:
 
 - **Custom word highlighting**. Users can set colors for specific words in chat. Colors must be in the six digit "web color" format (#000000), also known as hex codes. Highlighted words can optionally be styled in italics, bold, or underlined. The new commands `/highlight` (to add a highlighted word and color) and `/unhighlight` (to remove any or all highlighted words) have been added.
+- **The `/error`, `/print`, `/prints`, and `/warn` commands can now print to all windows simultaneously**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -30,7 +31,16 @@ What's new:
   "/unhighlight".
 * Added an option to the "/reload" command to force a re-render of all open
   chat windows.
-* Added an option to "/error" to print the error message to all open windows.
+* Added an option to "/error", "/warn", "/print", and "/prints" to print text
+  to all open server, channel, and private chat windows.
+* Added an option to toggle if the miscellaneous printing commands can print
+  to all windows or not.
+* Cleaned up the "settings" dialog.
+* Bugfix: setting the Levenshtein distance to "3" in the "settings" dialog
+  could cause errors.
+* Changed the icon for the "Scripting" page in the "settings" dialog, and the
+  "Script" tag in the connection dialog.
+* Added some options and tweaked the "File" menu in the script editor.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |

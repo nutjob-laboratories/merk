@@ -5047,7 +5047,7 @@ class Merk(QMainWindow):
 				sm = self.toolsMenu.addMenu(QIcon(SCRIPT_ICON),"Scripts")
 
 				for f in file_paths:
-					entry = QAction(QIcon(README_ICON),os.path.basename(f),self)
+					entry = QAction(QIcon(COMMAND_ICON),os.path.basename(f),self)
 					entry.triggered.connect(lambda state,h=f: self.openEditor(h))
 					sm.addAction(entry)
 
@@ -5055,7 +5055,7 @@ class Merk(QMainWindow):
 				sm = self.toolsMenu.addMenu(QIcon(CONNECT_ICON),"Connection Scripts")
 
 				for f in user.COMMANDS:
-					entry = QAction(QIcon(README_ICON),f,self)
+					entry = QAction(QIcon(COMMAND_ICON),f,self)
 					entry.triggered.connect(lambda state,h=f: self.openEditorConnect(h))
 					sm.addAction(entry)
 

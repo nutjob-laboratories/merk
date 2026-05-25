@@ -1802,15 +1802,25 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
-			if target=='*':
+			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
-					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					if is_script: add_halt(script_id)
+				return True
+			elif target=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
 			w = gui.getSubWindow(target,window.client)
@@ -1842,16 +1852,26 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
 
-			if server=='*':
+			if server=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				msg = f"{target} {msg}"
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
-					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
 					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					if is_script: add_halt(script_id)
+				return True
+			elif server=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
 			displayed = False
@@ -2016,6 +2036,26 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
+			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				for w in gui.getAllAllConnectedWindows():
+					t = Message(ERROR_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			elif target=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
@@ -2042,6 +2082,27 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			server = tokens.pop(0)
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
+
+			if server=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				msg = f"{target} {msg}"
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				for w in gui.getAllAllConnectedWindows():
+					t = Message(ERROR_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			elif server=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 			displayed = False
 			swins = gui.getAllServerWindows()
@@ -4438,6 +4499,26 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
+			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				for w in gui.getAllAllConnectedWindows():
+					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			elif target=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
@@ -4466,6 +4547,27 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			server = tokens.pop(0)
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
+
+			if server=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				msg = f"{target} {msg}"
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				for w in gui.getAllAllConnectedWindows():
+					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			elif server=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 			displayed = False
 			swins = gui.getAllServerWindows()
@@ -7092,6 +7194,26 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 			msg = tokens.pop(0)
 
+			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				for w in gui.getAllAllConnectedWindows():
+					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			elif target=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
@@ -7120,6 +7242,27 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			server = tokens.pop(0)
 			target = tokens.pop(0)
 			msg = ' '.join(tokens)
+
+			if server=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				msg = f"{target} {msg}"
+				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				for w in gui.getAllAllConnectedWindows():
+					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
+					w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			elif server=='*' and not config.ALLOW_PRINT_TO_ALL_WINDOWS:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
 
 			displayed = False
 			swins = gui.getAllServerWindows()

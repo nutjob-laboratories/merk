@@ -462,9 +462,11 @@ HIGHLIGHT_WORDS_IN_CHAT = True
 BOLD_HIGHLIGHTED_WORDS = False
 ITALIC_HIGHLIGHTED_WORDS = False
 UNDERLINE_HIGHLIGHTED_WORDS = False
+ALLOW_PRINT_TO_ALL_WINDOWS = True
 
 def build_settings():
 	settings = {
+		"allow_command_print_to_all_windows": ALLOW_PRINT_TO_ALL_WINDOWS,
 		"highlight_words_with_underline": UNDERLINE_HIGHLIGHTED_WORDS,
 		"highlight_words_in_italics": ITALIC_HIGHLIGHTED_WORDS,
 		"highlight_words_in_bold": BOLD_HIGHLIGHTED_WORDS,
@@ -886,6 +888,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "allow_command_print_to_all_windows" in settings:
+		settings["allow_command_print_to_all_windows"] = ALLOW_PRINT_TO_ALL_WINDOWS
 	if not "highlight_words_with_underline" in settings:
 		settings["highlight_words_with_underline"] = UNDERLINE_HIGHLIGHTED_WORDS
 	if not "highlight_words_in_italics" in settings:
@@ -2138,6 +2142,7 @@ def load_settings(filename):
 	global BOLD_HIGHLIGHTED_WORDS
 	global ITALIC_HIGHLIGHTED_WORDS
 	global UNDERLINE_HIGHLIGHTED_WORDS
+	global ALLOW_PRINT_TO_ALL_WINDOWS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2147,6 +2152,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ALLOW_PRINT_TO_ALL_WINDOWS = settings["allow_command_print_to_all_windows"]
 		UNDERLINE_HIGHLIGHTED_WORDS = settings["highlight_words_with_underline"]
 		ITALIC_HIGHLIGHTED_WORDS = settings["highlight_words_in_italics"]
 		BOLD_HIGHLIGHTED_WORDS = settings["highlight_words_in_bold"]

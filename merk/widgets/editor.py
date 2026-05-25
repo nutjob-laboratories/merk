@@ -309,6 +309,22 @@ class Window(QMainWindow):
 		self.changed = False
 		self.updateApplicationTitle()
 
+	def readFile(self,contents):
+
+		self.check_for_save()
+
+		x = open(contents,mode="r",encoding="utf-8",errors="ignore")
+		source_code = str(x.read())
+		x.close()
+		self.editor.setPlainText(source_code)
+		self.filename = contents
+		self.changed = False
+		self.menuSave.setShortcut("Ctrl+S")
+		self.menuSaveAs.setShortcut(QKeySequence())
+		self.editing_user_script = False
+		self.current_user_script = None
+		self.updateApplicationTitle()
+
 	def toggleLine(self):
 		if config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR:
 			config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR = False
@@ -876,20 +892,36 @@ class Window(QMainWindow):
 		self.fileMenu.addAction(entry)
 
 		if not self.python:
+
+			file_paths = []
+			for root, _, files in os.walk(commands.SCRIPTS_DIRECTORY):
+				for file in files:
+					file_paths.append(os.path.join(root, file))
+			file_paths = list(set(file_paths))
+			if len(file_paths)>0:
+				self.oscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Scripts")
+
+				for f in file_paths:
+					entry = QAction(QIcon(COMMAND_ICON),os.path.basename(f),self)
+					entry.triggered.connect(lambda state,h=f: self.readFile(h))
+					self.oscript_menu.addAction(entry)
+
 			if len(user.COMMANDS)>0:
 				self.cscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open connection script")
 
 				for host in user.COMMANDS:
-					entry = QAction(QIcon(SCRIPT_ICON),f"{host}",self)
+					entry = QAction(QIcon(COMMAND_ICON),f"{host}",self)
 					entry.triggered.connect(lambda state,x=host,f=user.COMMANDS[host]: self.readConnect(x,f))
 					self.cscript_menu.addAction(entry)
+
+			self.fileMenu.addSeparator()
 
 			entry = QAction(QIcon(NEWFILE_ICON),"New script",self)
 			entry.triggered.connect(self.doNewFile)
 			entry.setShortcut("Ctrl+N")
 			self.fileMenu.addAction(entry)
 
-			entry = QAction(QIcon(SCRIPT_ICON),"New connection script",self)
+			entry = QAction(QIcon(NEWFILE_ICON),"New connection script",self)
 			entry.triggered.connect(self.doNewScript)
 			self.fileMenu.addAction(entry)
 
