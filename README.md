@@ -3,7 +3,7 @@
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.900">MERK 0.051.900</a></big></b><br>
-  <b>Current development version: 0.051.909</b><br>
+  <b>Current development version: 0.051.910</b><br>
   <b><a href="https://latest.merk.chat">Download the latest development versions</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
 </p>
@@ -34,15 +34,15 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.900 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.900)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.909 (10.81 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.051.909 (96.89 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.051.909 (71.09 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.909 (47.79 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.909 (45.35 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.910 (10.81 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.051.910 (96.90 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.051.910 (71.15 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.910 (47.79 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.910 (45.35 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Summary
   
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.909**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **0.051.910**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
 
 **MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
 
@@ -180,7 +180,7 @@ There are four libraries that comes bundled with **MERK**:
           - Messages are still received and logged, just hidden from view
     - Very configurable, without having to manually edit a configuration file
         - Control application behavior, logging, features, the GUI, and more
-        - Over 350 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function
+        - Almost 400 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function
         - Almost all settings can be changed in the settings dialog without a restart
         - Settings can be changed on-the-fly with scripts and hotkeys using the `/config` command
     -   All text colors (and backgrounds) can be customized
@@ -228,7 +228,7 @@ There are four libraries that comes bundled with **MERK**:
 # Screenshots
 
 <p align="center">
-<p><small><i>Screenshots may not reflect the current release (0.051.900), and may reflect the current development version (0.051.909). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+<p><small><i>Screenshots may not reflect the current release (0.051.900), and may reflect the current development version (0.051.910). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
 
 <center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
@@ -246,7 +246,7 @@ There are four libraries that comes bundled with **MERK**:
   <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center><br><br>
 
  <center><a href="./graphics/settings.png"><img src="./graphics/settings_small.png"></a></center></br>
-  <center><i><small>The first "page" of the settings dialog. MERK features over 350 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly.</small></i></center><br><br>
+  <center><i><small>The first "page" of the settings dialog. MERK features nearly 400 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly, and can be changed either in the GUI or in scripting.</small></i></center><br><br>
 
  <center><a href="./graphics/menu.png"><img src="./graphics/menu.png"></a></center></br>
   <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center><br><br>
@@ -499,7 +499,7 @@ class RainbowChat(Plugin):
 # Why does MERK exist?
 It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized. My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
 
-I honestly think that **MERK** may be the most configurable IRC client ever created. With over 350 different settings to work with, you can configure **MERK** to look and operate *exactly* how you want. Want to display all channel userlists on the left, or not display userlists at all? You can do that. Want to turn off all the pretty stuff, and display only raw, (nearly) unaltered text? You can do that. Maybe you want to use text styles only on the chat display, and leave the userlists and text input alone? You can do that. One of the things I hated about [XChat](http://xchat.org/)/[Hexchat](https://hexchat.github.io/) is how un-configurable the UI is, and how most other clients require plugins or scripts to change the client UI. I wanted a client where you could alter or change most aspects of the UI without needed external tools or editing configuration files manually. With **MERK**, you can change all settings in the client and see the effects instantly. There are a few settings that can only be changed by editing the configuration files, but they are for settings most users will probably never change; but you can still change them and **MERK** will compensate, and not break the client!
+I honestly think that **MERK** may be the most configurable IRC client ever created. With almost 400 different settings to work with, you can configure **MERK** to look and operate *exactly* how you want. Want to display all channel userlists on the left, or not display userlists at all? You can do that. Want to turn off all the pretty stuff, and display only raw, (nearly) unaltered text? You can do that. Maybe you want to use text styles only on the chat display, and leave the userlists and text input alone? You can do that. One of the things I hated about [XChat](http://xchat.org/)/[Hexchat](https://hexchat.github.io/) is how un-configurable the UI is, and how most other clients require plugins or scripts to change the client UI. I wanted a client where you could alter or change most aspects of the UI without needed external tools or editing configuration files manually. With **MERK**, you can change all settings in the client and see the effects instantly. There are a few settings that can only be changed by editing the configuration files, but they are for settings most users will probably never change; but you can still change them and **MERK** will compensate, and not break the client!
 
 I mostly wrote **MERK** because I wanted a client that had all the features I wanted, no matter how obscure or "weird".  I wanted a "pretty" client with advanced features; one that was easy to use, but "deep". **MERK** is easy to get started with, and has all the documentation you could want or need, bundled in; it's perfectly functional, even if you never open the "Settings" dialog. But if you want to *really* get into customizing **MERK**, you can. You can change almost everything about the UI, or how **MERK** functions "under the hood", if you wish, and you don't need tutorials and half a dozen websites to do it. Long story short, **MERK** is my "dream IRC client", and I hope it can become yours too!
 

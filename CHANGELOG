@@ -49,6 +49,11 @@ What's new:
   long. This option is turned on, and is set for 120 seconds. The settings that
   control whether this is active or not, as well as the length of the
   connection timeout, have been added to the "settings" dialog.
+* Changed the name of the "Scripting" section in the "settings" dialog to
+  "Commands", as a large chunk of the options also control commands and not
+  just scripting.
+* Cleaned up a lot of the "settings" dialog to make things clearer to the user,
+  and look "prettier".
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |

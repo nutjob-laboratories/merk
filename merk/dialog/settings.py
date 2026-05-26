@@ -1166,10 +1166,6 @@ class Dialog(QDialog):
 
 	def updateConnectionTimeout(self,state):
 		self.CONNECTION_TIMEOUT = self.timeoutLength.value()
-		if self.CONNECTION_TIMEOUT>1:
-			self.timeoutLengthSpec.setText(" seconds")
-		else:
-			self.timeoutLengthSpec.setText(" second")
 		self.changed.show()
 		self.boldApply()
 		self.selector.setFocus()
@@ -2746,11 +2742,11 @@ class Dialog(QDialog):
 		appearanceLayout.addLayout(mdiOpts)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nicknames</b>"))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname display settings</b>"))
 		appearanceLayout.addLayout(nLayout)
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursors</b>"))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursor settings</b>"))
 		appearanceLayout.addLayout(cursLayout)
-		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addStretch()
 
@@ -2950,16 +2946,11 @@ class Dialog(QDialog):
 		self.menuNameDescription.setWordWrap(True)
 		self.menuNameDescription.setAlignment(Qt.AlignJustify)
 
-		menu1Layout = QHBoxLayout()
-		menu1Layout.addStretch()
-		menu1Layout.addWidget(self.menubar)
-		menu1Layout.addStretch()
-
 		self.menubarTop = QCheckBox("Display at top",self)
 		if config.MENUBAR_DOCKED_AT_TOP: self.menubarTop.setChecked(True)
 		self.menubarTop.stateChanged.connect(self.menuChange)
 
-		self.menubarBold = QCheckBox("Bold entries on mouse hover",self)
+		self.menubarBold = QCheckBox("Bold on mouse hover",self)
 		if config.MENUBAR_HOVER_EFFECT: self.menubarBold.setChecked(True)
 		self.menubarBold.stateChanged.connect(self.menuChange)
 
@@ -2995,14 +2986,24 @@ class Dialog(QDialog):
 		menu4Layout.addWidget(self.showServerInfo)
 		menu4Layout.addWidget(self.showConnScript)
 
+		menu1Layout = QHBoxLayout()
+		menu1Layout.addStretch()
+		menu1Layout.addWidget(self.menubar)
+		menu1Layout.addStretch()
+
+		menu2Layout = QHBoxLayout()
+		menu2Layout.addWidget(self.menubarFloat)
+		menu2Layout.addStretch()
+		menu2Layout.addWidget(self.menubarTop)
+		menu2Layout.addStretch()
+		menu2Layout.addWidget(self.menubarBold)
+
 		msLayout = QVBoxLayout()
-		msLayout.setSpacing(0)
+		msLayout.setSpacing(2)
 		msLayout.addWidget(self.menubarDescription)
 		msLayout.addLayout(menu1Layout)
-		msLayout.addWidget(self.menubarFloat)
-		msLayout.addWidget(self.menubarTop)
+		msLayout.addLayout(menu2Layout)
 		msLayout.addLayout(justifyLayout)
-		msLayout.addWidget(self.menubarBold)
 		msLayout.addWidget(self.menubarMenu)
 
 		menuLayout = QVBoxLayout()
@@ -3479,7 +3480,7 @@ class Dialog(QDialog):
 		subwindowLayout.addLayout(orderLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow status bars</b>"))
 		subwindowLayout.addLayout(statusLayout)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server subwindows</b>"))
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server subwindow settings</b>"))
 		subwindowLayout.addLayout(ssLayout)
 		subwindowLayout.addStretch()
 
@@ -3582,7 +3583,7 @@ class Dialog(QDialog):
 		self.flashInterval = QComboBox(self)
 		added = False
 		if config.FLASH_SYSTRAY_SPEED==250:
-			self.flashInterval.addItem("250ms")
+			self.flashInterval.addItem("250 ms")
 			added = True
 		if config.FLASH_SYSTRAY_SPEED==500:
 			self.flashInterval.addItem("500 ms")
@@ -3689,7 +3690,7 @@ class Dialog(QDialog):
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification settings</b>"))
 		systrayLayout.addLayout(nsLayout)
 		systrayLayout.addWidget(QLabel(' '))
-		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notifications</b>"))
+		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification events</b>"))
 		systrayLayout.addLayout(notiLayout)
 		systrayLayout.addWidget(QLabel(' '))
 		systrayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system tray menu includes...</b>"))
@@ -3892,10 +3893,10 @@ class Dialog(QDialog):
 		audioLayout.addWidget(self.notifyDescription)
 		audioLayout.addLayout(audioMaster)
 		audioLayout.addWidget(QLabel(' '))
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>events</b>"))
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification events</b>"))
 		audioLayout.addLayout(eventsLayout)
 		audioLayout.addWidget(QLabel(' '))
-		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>sound file</b>"))
+		audioLayout.addWidget(widgets.textSeparatorLabel(self,"<b>notification sound</b>"))
 		audioLayout.addLayout(sbLayout)
 		audioLayout.addLayout(sbLayout2)
 		audioLayout.addStretch()
@@ -4058,14 +4059,13 @@ class Dialog(QDialog):
 		userLayout.addWidget(self.profileDescription)
 		userLayout.addLayout(profLayout)
 		userLayout.addWidget(QLabel(' '))
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP replies</b>"))
-		userLayout.addWidget(self.ctcpDescription)
-		userLayout.addLayout(ctcpLayout)
-		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
 		userLayout.addWidget(self.noSource)
 		userLayout.addWidget(self.noVersion)
 		userLayout.addWidget(self.noEnviron)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(self.ctcpDescription)
+		userLayout.addLayout(ctcpLayout)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored user settings</b>"))
 		userLayout.addLayout(bdLayout)
@@ -4322,11 +4322,12 @@ class Dialog(QDialog):
 		menuLayout.addLayout(infoExist)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show message types in all channels</b>"))
 		menuLayout.addLayout(cfLayout)
-		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
+		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		menuLayout.addLayout(showCM)
 		menuLayout.addStretch()
 
@@ -4396,18 +4397,28 @@ class Dialog(QDialog):
 		if config.SHOW_DATES_IN_LOGS: self.showDates.setChecked(True)
 		self.showDates.stateChanged.connect(self.changedSettingRerender)
 
+		stsLayout = QHBoxLayout()
+		stsLayout.addStretch()
+		stsLayout.addWidget(self.showTimestamps)
+		stsLayout.addStretch()
+
 		tsLayout = QVBoxLayout()
 		tsLayout.setSpacing(0)
 		tsLayout.addWidget(self.timestampDescription)
-		tsLayout.addWidget(self.showTimestamps)
-		tsLayout.addWidget(self.timestamp24hour)
-		tsLayout.addWidget(self.timestampSeconds)
+		tsLayout.addLayout(stsLayout)
+		
 
 		upLayout = QVBoxLayout()
 		upLayout.setSpacing(0)
 		upLayout.addWidget(self.uptimeDescription)
 		upLayout.addWidget(self.showUptime)
 		upLayout.addWidget(self.showChanUptime)
+
+		tmLayout = QVBoxLayout()
+		tmLayout.setSpacing(0)
+		tmLayout.addWidget(self.timestamp24hour)
+		tmLayout.addWidget(self.timestampSeconds)
+		tmLayout.addWidget(self.showDates)
 
 		timestampLayout = QVBoxLayout()
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
@@ -4417,7 +4428,7 @@ class Dialog(QDialog):
 		timestampLayout.addLayout(upLayout)
 		timestampLayout.addWidget(QLabel(' '))
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
-		timestampLayout.addWidget(self.showDates)
+		timestampLayout.addLayout(tmLayout)
 		timestampLayout.addStretch()
 
 		self.timestampPage.setLayout(timestampLayout)
@@ -4557,36 +4568,41 @@ class Dialog(QDialog):
 		if config.DISCONNECT_ON_SASL_FAIL: self.failSasl.setChecked(True)
 		self.failSasl.stateChanged.connect(self.changedSetting)
 
-		self.doConnectionTimeout = QCheckBox("Timeout connections longer than",self)
+		self.doConnectionTimeout = QCheckBox("Disconnect if registration takes more than",self)
 		if config.TIMEOUT_CONNECTIONS: self.doConnectionTimeout.setChecked(True)
 		self.doConnectionTimeout.stateChanged.connect(self.changedSetting)
 
-		self.timeoutLengthSpec = QLabel(" seconds")
-		if self.CONNECTION_TIMEOUT==1:
-			self.timeoutLengthSpec.setText(" second")
+		self.timeoutLengthSpec = QLabel(" seconds to complete")
 		self.timeoutLength = QSpinBox()
 		self.timeoutLength.setRange(1,999)
 		self.timeoutLength.setValue(self.CONNECTION_TIMEOUT)
 		self.timeoutLength.valueChanged.connect(self.updateConnectionTimeout)
 
-		connTimeoutLayout = QHBoxLayout()
+		lspacer = QLabel()
+		lspacer.setFixedWidth(self.doConnectionTimeout.style().pixelMetric(QStyle.PM_IndicatorWidth) * 2)
+
+		connTimeoutLayout1 = QHBoxLayout()
+		connTimeoutLayout1.addWidget(lspacer)
+		connTimeoutLayout1.addWidget(self.timeoutLength)
+		connTimeoutLayout1.addWidget(self.timeoutLengthSpec)
+		connTimeoutLayout1.addStretch()
+
+		connTimeoutLayout = QVBoxLayout()
 		connTimeoutLayout.addWidget(self.doConnectionTimeout)
-		connTimeoutLayout.addWidget(self.timeoutLength)
-		connTimeoutLayout.addWidget(self.timeoutLengthSpec)
+		connTimeoutLayout.addLayout(connTimeoutLayout1)
 		connTimeoutLayout.addStretch()
 
 		csLayout = QVBoxLayout()
 		csLayout.setSpacing(0)
+		csLayout.addWidget(self.saveHistory)
 		csLayout.addWidget(self.askBeforeDisconnect)
 		csLayout.addWidget(self.notifyOnLostConnection)
-		csLayout.addLayout(connTimeoutLayout)
 		csLayout.addWidget(self.promptFail)
 		csLayout.addWidget(self.askBeforeReconnect)
 		csLayout.addLayout(delayLayout)
 		csLayout.addWidget(self.notifyRepeated)
 		csLayout.addWidget(self.failSasl)
-		csLayout.addWidget(self.saveHistory)
-		csLayout.addWidget(self.showList)
+		csLayout.addLayout(connTimeoutLayout)
 
 		afLayout = QVBoxLayout()
 		afLayout.setSpacing(0)
@@ -4597,6 +4613,7 @@ class Dialog(QDialog):
 
 		cdLayout = QVBoxLayout()
 		cdLayout.setSpacing(0)
+		cdLayout.addWidget(self.showList)
 		cdLayout.addWidget(self.showNetLinks)
 		cdLayout.addWidget(self.motdRaw)
 		cdLayout.addWidget(self.ircErrors)
@@ -4631,7 +4648,7 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>erroneous nickname</b>"))
 		connectionsLayout.addWidget(self.erroneousDescription)
 		connectionsLayout.addLayout(eLayout)
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display</b>"))
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
 		connectionsLayout.addLayout(cdLayout)
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatically fetch from server</b>"))
 		connectionsLayout.addLayout(afLayout)
@@ -4771,14 +4788,14 @@ class Dialog(QDialog):
 		aasLayout.addWidget(self.appCancelAway)
 
 		awayLayout = QVBoxLayout()
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
-		awayLayout.addLayout(amLayout)
-		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addLayout(asLayout)
 		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>autoaway settiings</b>"))
 		awayLayout.addLayout(aasLayout)
+		awayLayout.addWidget(QLabel(' '))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
+		awayLayout.addLayout(amLayout)
 		awayLayout.addStretch()
 
 		self.awayPage.setLayout(awayLayout)
@@ -4812,7 +4829,7 @@ class Dialog(QDialog):
 			<small>
 			If enabled, any text typed into the text input widget is saved to the <b>command history</b>.
 			Use the <b>arrow keys</b> to move backwards (<b>&uarr;</b>) and forwards (<b>&darr;</b>) in the 
-			<b>command history</b> to issue any previously issued commands.
+			<b>command history</b> to issue any previously issued commands.<br>
 			</small>
 			""")
 		self.historyDescription.setWordWrap(True)
@@ -4823,7 +4840,7 @@ class Dialog(QDialog):
 			To use autocomplete, type the first few characters of a <b>command</b>,
 			<b>nickname</b>, <b>channel</b>, <b>ASCIImoji</b> or <b>emoji shortcode</b>, <b>filename</b>, <b>alias</b>,
 			<b>plugin method</b>, <b>setting</b>, <b>server</b>,
-			or <b>macro</b> and then hit <b>tab</b> to complete the entry.
+			or <b>macro</b> and then hit <b>tab</b> to complete the entry.<br>
 			</small>
 			""")
 		self.autocompleteDescription.setWordWrap(True)
@@ -5133,7 +5150,7 @@ class Dialog(QDialog):
 			colored underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
 			the word with</b> or to <b>add that word to the built-in dictionary</b>. The <a href=\"https://en.wikipedia.org/wiki/Levenshtein_distance\">Levenshtein distance</a>
 			setting sets how the spellchecker finds suggestions to replace misspelled words; lower numbers are better for
-			longer words.
+			longer words.<br>
 			</small>
 			
 			""")
@@ -5157,15 +5174,19 @@ class Dialog(QDialog):
 		spellSet.addLayout(spellMaster2)
 		spellSet.addLayout(distanceLayout)
 
+		spellApp = QVBoxLayout()
+		spellApp.setSpacing(0)
+		spellApp.addLayout(spColorLayout)
+		spellApp.addLayout(spFormatLayout)
+		spellApp.addLayout(spFormatLayout2)
+
 		spellcheckLayout = QVBoxLayout()
-		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck</b>"))
+		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck settings</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addLayout(spellSet)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
-		spellcheckLayout.addLayout(spColorLayout)
-		spellcheckLayout.addLayout(spFormatLayout)
-		spellcheckLayout.addLayout(spFormatLayout2)
+		spellcheckLayout.addLayout(spellApp)
 		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
 		spellcheckLayout.addLayout(lanSubLayout)
@@ -5536,16 +5557,17 @@ class Dialog(QDialog):
 		qmLayout.addLayout(pmoLayout)
 
 		messageLayout = QVBoxLayout()
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit message</b>"))
-		messageLayout.addLayout(qmLayout)
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
+		messageLayout.addLayout(msLayout)
+		messageLayout.addWidget(QLabel(' '))
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
+		messageLayout.addLayout(pmLayout)
 		messageLayout.addWidget(QLabel(' '))
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>system message prefix</b>"))
 		messageLayout.addLayout(prepLayout)
 		messageLayout.addWidget(QLabel(' '))
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
-		messageLayout.addLayout(msLayout)
-		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private messages</b>"))
-		messageLayout.addLayout(pmLayout)
+		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default quit message</b>"))
+		messageLayout.addLayout(qmLayout)
 		messageLayout.addStretch()
 
 		self.messagePage.setLayout(messageLayout)
@@ -5556,14 +5578,14 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Scripting")
+		entry.setText("Commands")
 		entry.widget = self.scriptingPage
 		entry.setIcon(QIcon(COMMAND_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.scriptingPage)
 
-		self.interpolateAlias = QCheckBox("Interpolate aliases into input from the text\ninput widget",self)
+		self.interpolateAlias = QCheckBox("Interpolate aliases into input",self)
 		if config.INTERPOLATE_ALIASES_INTO_INPUT: self.interpolateAlias.setChecked(True)
 		self.interpolateAlias.stateChanged.connect(self.changedInterpolate)
 		if not config.INTERPOLATE_ALIASES_INTO_INPUT: self.autocompleteAlias.setEnabled(False)
@@ -5764,7 +5786,7 @@ class Dialog(QDialog):
 		aLayout2.addWidget(self.allowMultiple)
 
 		scriptingLayout = QVBoxLayout()
-		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>scripting and commands</b>"))
+		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>commands and scripting settings</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
@@ -6394,14 +6416,14 @@ class Dialog(QDialog):
 		chLayout.addLayout(stHighLayout)
 
 		syntaxLayout = QVBoxLayout()
-		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting</b>"))
+		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting settings</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
-		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting</b>"))
+		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting settings</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addLayout(inputHigh)
 		syntaxLayout.addLayout(sbLay)
-		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat highlighting</b>"))
+		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat highlighting settings</b>"))
 		syntaxLayout.addLayout(chLayout)
 		syntaxLayout.addStretch()
 
@@ -6547,8 +6569,9 @@ class Dialog(QDialog):
 		miscLayout.addLayout(inputOptionsLayout)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addLayout(setLayout)
-		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkeys</b>"))
+		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkey settings</b>"))
 		miscLayout.addLayout(hkLayout)
+		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored configuration settings</b>"))
 		miscLayout.addLayout(resButtons)
 		miscLayout.addStretch()
@@ -6728,10 +6751,10 @@ class Dialog(QDialog):
 		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.typeCancelInput.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.writeMessageOut.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.interpolateAlias.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.promptScript.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.allowMultiple.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.doConnectionTimeout.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 
