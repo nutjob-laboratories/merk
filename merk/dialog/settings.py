@@ -2343,7 +2343,7 @@ class Dialog(QDialog):
 			def sizeHint(self, option, index):
 				size = super().sizeHint(option, index)
 				icon_size = self.parent().iconSize()
-				height = max(icon_size.height(), option.fontMetrics.height() + add_factor)
+				height = max(icon_size.height(), option.fontMetrics.height() + add_factor) + 2
 				return QSize(size.width(), height)
 
 		self.selector.setItemDelegate(CompactDelegate(self.selector))
@@ -3228,21 +3228,25 @@ class Dialog(QDialog):
 			self.windowbarSort.setEnabled(False)
 
 		incLayout1 = QHBoxLayout()
+		incLayout1.setSpacing(0)
 		incLayout1.addWidget(self.windowbarChannels)
 		incLayout1.addWidget(self.windowbarPrivate)
 		incLayout1.addWidget(self.windowBarServers)
 
 		incLayout2 = QHBoxLayout()
+		incLayout2.setSpacing(0)
 		incLayout2.addWidget(self.windowBarEditor)
 		incLayout2.addWidget(self.windowbarLists)
 		incLayout2.addWidget(self.windowbarManager)
 
 		incLayout3 = QHBoxLayout()
+		incLayout3.setSpacing(0)
 		incLayout3.addWidget(self.windowbarReadme)
 		incLayout3.addStretch()
 
 		includesLayout = QVBoxLayout()
 		includesLayout.setSpacing(0)
+		includesLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
 		includesLayout.addLayout(incLayout1)
 		includesLayout.addLayout(incLayout2)
 		includesLayout.addLayout(incLayout3)
@@ -3261,15 +3265,27 @@ class Dialog(QDialog):
 		windowbar2Layout.addStretch()
 
 		hiddenLayout = QHBoxLayout()
+		hiddenLayout.setSpacing(0)
 		hiddenLayout.addWidget(self.serverHidden)
 		hiddenLayout.addWidget(self.channelHidden)
 		hiddenLayout.addWidget(self.privateHidden)
 
+		hiddenMaster = QVBoxLayout()
+		hiddenMaster.setSpacing(0)
+		hiddenMaster.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden windows</b>"))
+		hiddenMaster.addLayout(hiddenLayout)
+
 		wbAppearLayout = QHBoxLayout()
+		wbAppearLayout.setSpacing(0)
 		wbAppearLayout.addStretch()
 		wbAppearLayout.addWidget(self.windowBarBold)
 		wbAppearLayout.addWidget(self.windowBarUnderline)
 		wbAppearLayout.addStretch()
+
+		wbAppearMaster = QVBoxLayout()
+		wbAppearMaster.setSpacing(0)
+		wbAppearMaster.addWidget(widgets.textSeparatorLabel(self,"<b>show active window in...</b>"))
+		wbAppearMaster.addLayout(wbAppearLayout)
 
 		wbstuffOpts = QFormLayout()
 		wbstuffOpts.setSpacing(0)
@@ -3290,16 +3306,20 @@ class Dialog(QDialog):
 		wbOpts.addWidget(self.windowbarItalics)
 		wbOpts.addWidget(self.windowbarChannelTopic)
 
+		bottomWb = QVBoxLayout()
+		bottomWb.setSpacing(0)
+		bottomWb.addWidget(QLabel(' '))
+		bottomWb.addLayout(wbAppearMaster)
+		bottomWb.addWidget(QLabel(' '))
+		bottomWb.addLayout(includesLayout)
+		bottomWb.addWidget(QLabel(' '))
+		bottomWb.addLayout(hiddenMaster)
+
 		windowbarLayout = QVBoxLayout()
 		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar settings</b>"))
 		windowbarLayout.addWidget(self.windowbarDescription)
 		windowbarLayout.addLayout(wbOpts)
-		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show active window in...</b>"))
-		windowbarLayout.addLayout(wbAppearLayout)
-		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>windowbar includes</b>"))
-		windowbarLayout.addLayout(includesLayout)
-		windowbarLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden windows</b>"))
-		windowbarLayout.addLayout(hiddenLayout)
+		windowbarLayout.addLayout(bottomWb)
 		windowbarLayout.addStretch()
 
 		self.windowbarPage.setLayout(windowbarLayout)
@@ -4048,16 +4068,6 @@ class Dialog(QDialog):
 		bdLayout.addLayout(bdLayout2)
 		bdLayout.addWidget(self.resetProfiles)
 
-		self.profileDescription = QLabel(f"""
-			<small><br>
-			Server profiles for <b>nicknames</b>, <b>alternates</b>, <b>usernames</b>,
-			and <b>realnames</b> for use with specific servers will always be used, 
-			unless this option is disabled.
-			</small>
-			""")
-		self.profileDescription.setWordWrap(True)
-		self.profileDescription.setAlignment(Qt.AlignJustify)
-
 		self.useProfiles = QCheckBox(f"Always use server profiles for connections",self)
 		if config.ALWAYS_USE_SERVER_PROFILES: self.useProfiles.setChecked(True)
 		self.useProfiles.stateChanged.connect(self.changedSetting)
@@ -4067,21 +4077,27 @@ class Dialog(QDialog):
 		profLayout.addWidget(self.useProfiles)
 		profLayout.addStretch()
 
+		self.notifyCTCP = QCheckBox("Notify when a CTCP request is received",self)
+		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
+		self.notifyCTCP.stateChanged.connect(self.changedSetting)
+
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(0)
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user settings</b>"))
 		userLayout.addWidget(self.userDescription)
 		userLayout.addLayout(udataLayout)
-		userLayout.addWidget(self.profileDescription)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server profiles</b>"))
 		userLayout.addLayout(profLayout)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>CTCP settings</b>"))
+		userLayout.addWidget(self.ctcpDescription)
+		userLayout.addLayout(ctcpLayout)
+		userLayout.addWidget(QLabel(' '))
+		userLayout.addWidget(self.notifyCTCP)
 		userLayout.addWidget(self.noSource)
 		userLayout.addWidget(self.noVersion)
 		userLayout.addWidget(self.noEnviron)
-		userLayout.addWidget(QLabel(' '))
-		userLayout.addWidget(self.ctcpDescription)
-		userLayout.addLayout(ctcpLayout)
 		userLayout.addWidget(QLabel(' '))
 		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>delete stored user settings</b>"))
 		userLayout.addLayout(bdLayout)
@@ -4462,7 +4478,7 @@ class Dialog(QDialog):
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 		entry.setText("Connection")
 		entry.widget = self.connectionsPage
-		entry.setIcon(QIcon(NETWORK_ICON))
+		entry.setIcon(QIcon(CONSOLE_ICON))
 		self.selector.addItem(entry)
 
 		self.stack.addWidget(self.connectionsPage)
@@ -4534,10 +4550,6 @@ class Dialog(QDialog):
 		delayLayout.addWidget(self.delayTime)
 		delayLayout.addWidget(self.delayTimeLabelSpec)
 		delayLayout.addStretch()
-
-		self.motdRaw = QCheckBox("Display MOTD as raw text",self)
-		if config.DISPLAY_MOTD_AS_RAW_TEXT: self.motdRaw.setChecked(True)
-		self.motdRaw.stateChanged.connect(self.changedSetting)
 
 		self.saveHistory = QCheckBox("Save connection history",self)
 		if config.SAVE_CONNECTION_HISTORY: self.saveHistory.setChecked(True)
@@ -4627,24 +4639,20 @@ class Dialog(QDialog):
 
 		afLayout = QVBoxLayout()
 		afLayout.setSpacing(0)
+		afLayout.addWidget(self.showNetLinks)
+		afLayout.addWidget(self.ircErrors)
+		afLayout.addWidget(self.ircAllErrors)
 		afLayout.addWidget(self.requestList)
+		afLayout.addWidget(self.showList)
 		afLayout.addLayout(refreshLayout)
 		afLayout.addWidget(self.autoHostmasks)
 		afLayout.addLayout(freqLayout)
-
-		cdLayout = QVBoxLayout()
-		cdLayout.setSpacing(0)
-		cdLayout.addWidget(self.showList)
-		cdLayout.addWidget(self.showNetLinks)
-		cdLayout.addWidget(self.motdRaw)
-		cdLayout.addWidget(self.ircErrors)
-		cdLayout.addWidget(self.ircAllErrors)
 
 		self.erroneousDescription = QLabel(f"""
 			<small>
 			If your nickname "breaks" the rules of a given server, this is the nickname that will
 			be used during the connection process, limited to 8 characters. The
-			default is <b>Guest</b>.
+			default is <b>Guest</b>.<br>
 			</small>
 			""")
 		self.erroneousDescription.setWordWrap(True)
@@ -4657,7 +4665,7 @@ class Dialog(QDialog):
 		font = self.font()
 		font.setBold(True)
 
-		self.errNickLabel = QLabel("Erroneous Nickname:")
+		self.errNickLabel = QLabel("Erroneous Nickname: ")
 		self.errNickLabel.setFont(font)
 
 		eLayout = QFormLayout()
@@ -4672,10 +4680,7 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(self.erroneousDescription)
 		connectionsLayout.addLayout(eLayout)
 		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
-		connectionsLayout.addLayout(cdLayout)
-		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatically fetch from server</b>"))
+		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		connectionsLayout.addLayout(afLayout)
 		connectionsLayout.addStretch()
 
@@ -5523,9 +5528,9 @@ class Dialog(QDialog):
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
 
-		self.notifyCTCP = QCheckBox("Notify when a CTCP request is received",self)
-		if config.NOTIFY_ON_CTCP_REQUESTS: self.notifyCTCP.setChecked(True)
-		self.notifyCTCP.stateChanged.connect(self.changedSetting)
+		self.motdRaw = QCheckBox("Display MOTD as raw text",self)
+		if config.DISPLAY_MOTD_AS_RAW_TEXT: self.motdRaw.setChecked(True)
+		self.motdRaw.stateChanged.connect(self.changedSetting)
 
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
@@ -5538,7 +5543,7 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.showLusers)
 		msLayout.addWidget(self.showIson)
 		msLayout.addWidget(self.autoJoin)
-		msLayout.addWidget(self.notifyCTCP)
+		msLayout.addWidget(self.motdRaw)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
