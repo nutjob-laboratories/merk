@@ -423,6 +423,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor. Pass `*` as `WINDOW` to select the server window                                  |
 | `target LABEL`                                 | Creates a target for the `goto` command. If used as a target for `goto`, script execution will move to the line this appears on. `LABEL` cannot contain spaces. Can only be called from scripts      |
 | `/time`                                 | Requests server time                                                                                                             |
+| `/toggle FEATURE`                                 | Toggles an input feature. Valid `FEATURE`s are `asciimoji`, `color`, `emoji`, `markdown`, and `protection`                                         |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
 | `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`. Does nothing in scripts                            |

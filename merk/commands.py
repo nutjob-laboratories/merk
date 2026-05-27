@@ -230,6 +230,11 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"user sasl remove": config.ISSUE_COMMAND_SYMBOL+"user sasl remove ",
 			config.ISSUE_COMMAND_SYMBOL+"user sasl edit": config.ISSUE_COMMAND_SYMBOL+"user sasl edit ",
 			config.ISSUE_COMMAND_SYMBOL+"window reload": config.ISSUE_COMMAND_SYMBOL+"window reload",
+			config.ISSUE_COMMAND_SYMBOL+"toggle markdown": config.ISSUE_COMMAND_SYMBOL+"toggle markdown",
+			config.ISSUE_COMMAND_SYMBOL+"toggle color": config.ISSUE_COMMAND_SYMBOL+"toggle color",
+			config.ISSUE_COMMAND_SYMBOL+"toggle emoji": config.ISSUE_COMMAND_SYMBOL+"toggle emoji",
+			config.ISSUE_COMMAND_SYMBOL+"toggle asciimoji": config.ISSUE_COMMAND_SYMBOL+"toggle asciimoji",
+			config.ISSUE_COMMAND_SYMBOL+"toggle protection": config.ISSUE_COMMAND_SYMBOL+"toggle protection",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -333,6 +338,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"error": config.ISSUE_COMMAND_SYMBOL+"error ",
 			config.ISSUE_COMMAND_SYMBOL+"highlight": config.ISSUE_COMMAND_SYMBOL+"highlight ",
 			config.ISSUE_COMMAND_SYMBOL+"unhighlight": config.ISSUE_COMMAND_SYMBOL+"unhighlight ",
+			config.ISSUE_COMMAND_SYMBOL+"toggle": config.ISSUE_COMMAND_SYMBOL+"toggle ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -417,6 +423,15 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	W_COMMAND.sort()
 
 	WINDOW_COMMANDS = join_with_and(W_COMMAND)
+
+	T_COMMAND = [
+		"<b>markdown</b>","<b>emoji</b>","<b>color</b>","<b>asciimoji</b>",
+		"<b>protection</b>"
+	]
+
+	T_COMMAND.sort()
+
+	TOGGLE_COMMANDS = join_with_and(T_COMMAND)
 
 	# The command help system
 	COMMAND_HELP_INFORMATION = [
@@ -510,6 +525,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window, and ends a script" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"highlight WORD [COLOR]</b>", "Renders WORD in COLOR in chat. Call without any arguments to see a list of all highlighted words" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD. Call without any arguments to see a list of all highlighted words. Pass <b>*</b> as the only argument to remove all word highlights" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"toggle FEATURE</b>", f"Toggles various input features. Valid features are {TOGGLE_COMMANDS}" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -1622,6 +1638,89 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					else:
 						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
 						tokens = user_input.split()
+
+	# |---------|
+	# | /toggle |
+	# |---------|
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'toggle' and len(tokens)==2:
+			tokens.pop(0)
+			setting = tokens.pop(0)
+
+			if setting.lower()=="protect" or setting.lower()=="protection":
+				if config.COMMAND_ERROR_PROTECTION:
+					config.COMMAND_ERROR_PROTECTION = False
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned off")
+				else:
+					config.COMMAND_ERROR_PROTECTION = True
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned on")
+				config.save_settings(config.CONFIG_FILE)
+				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if setting.lower()=="markdown":
+				if config.ENABLE_MARKDOWN_MARKUP:
+					config.ENABLE_MARKDOWN_MARKUP = False
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned off")
+				else:
+					config.ENABLE_MARKDOWN_MARKUP = True
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned on")
+				config.save_settings(config.CONFIG_FILE)
+				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if setting.lower()=="color" or setting.lower()=="colors" :
+				if config.ENABLE_IRC_COLOR_MARKUP:
+					config.ENABLE_IRC_COLOR_MARKUP = False
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned off")
+				else:
+					config.ENABLE_IRC_COLOR_MARKUP = True
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned on")
+				config.save_settings(config.CONFIG_FILE)
+				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if setting.lower()=="emoji" or setting.lower()=="emojis" :
+				if config.ENABLE_EMOJI_SHORTCODES:
+					config.ENABLE_EMOJI_SHORTCODES = False
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned off")
+				else:
+					config.ENABLE_EMOJI_SHORTCODES = True
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned on")
+				config.save_settings(config.CONFIG_FILE)
+				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if setting.lower()=="asciimoji" or setting.lower()=="asciimojis" :
+				if config.ENABLE_ASCIIMOJI_SHORTCODES:
+					config.ENABLE_ASCIIMOJI_SHORTCODES = False
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned off")
+				else:
+					config.ENABLE_ASCIIMOJI_SHORTCODES = True
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned on")
+				config.save_settings(config.CONFIG_FILE)
+				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"toggle: feature \"{setting}\" not recognized")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',f"Feature \"{setting}\" not recognized")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'toggle':
+		if is_script:
+			add_halt(script_id)
+			if config.DISPLAY_SCRIPT_ERRORS:
+				t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"toggle FEATURE")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+		t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+f"toggle FEATURE")
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+		return True
 
 	# |--------------|
 	# | /unhighlight |

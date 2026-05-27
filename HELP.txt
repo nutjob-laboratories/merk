@@ -502,6 +502,10 @@ Appearance:
 <td>Requests server time</td>
 </tr>
 <tr>
+<td><code>/toggle FEATURE</code></td>
+<td>Toggles an input feature. Valid <code>FEATURE</code>s are <strong><code>asciimoji</code></strong>, <strong><code>color</code></strong>, <strong><code>emoji</code></strong>, <strong><code>markdown</code></strong>, and <strong><code>protection</code></strong></td>
+</tr>
+<tr>
 <td><code>/topic CHANNEL NEW_TOPIC</code></td>
 <td>Sets a channel topic</td>
 </tr>

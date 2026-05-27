@@ -49,7 +49,7 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = [ self.name.text(), self.args.text() ]
+		retval = [ self.script_name, self.args.text() ]
 
 		return retval
 
@@ -58,24 +58,46 @@ class Dialog(QDialog):
 		options |= QFileDialog.DontUseNativeDialog
 		fileName, _ = QFileDialog.getOpenFileName(self,"Select script", commands.SCRIPTS_DIRECTORY, f"{APPLICATION_NAME} Script (*.{SCRIPT_FILE_EXTENSION});;All Files (*)", options=options)
 		if fileName:
-			self.name.setText(fileName)
+			if fileName.startswith(commands.SCRIPTS_DIRECTORY):
+				self.add_and_select(os.path.basename(fileName))
+			else:
+				self.add_and_select(fileName)
+
+	def add_and_select(self,new_item):
+		if self.name.findText(new_item) == -1:
+			self.name.addItem(new_item)
+			index = self.name.count() - 1
+		else:
+			index = self.name.findText(new_item)
+		self.name.setCurrentIndex(index)
+
+	def on_script_changed(self, text):
+		self.script_name = text
 
 	def __init__(self,parent=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
+		self.script_name = ''
 
 		self.setWindowTitle("Execute script")
-		self.setWindowIcon(QIcon(APPLICATION_ICON))
+		self.setWindowIcon(QIcon(COMMAND_ICON))
 
 		nameLayout = QHBoxLayout()
 		self.nameLabel = QLabel("<b>Filename:&nbsp;</b>")
-		
-		self.name = QLineEdit()
+
+		scripts = []
+		for f in commands.list_scripts():
+			scripts.append(f'{f}')
+
+		self.name = QComboBox(self)
+		self.name.currentTextChanged.connect(self.on_script_changed)
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF")
 		self.name.setMinimumWidth(wwidth)
-		
+		self.name.addItem('')
+		for e in scripts:
+			self.name.addItem(e)
 
 		self.file_button = QPushButton("")
 		self.file_button.setIcon(QIcon(EDIT_ICON))
@@ -90,7 +112,7 @@ class Dialog(QDialog):
 		
 		self.args = QLineEdit()
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF")
 		self.args.setMinimumWidth(wwidth)
 
 		argsLayout = QHBoxLayout()
@@ -109,8 +131,10 @@ class Dialog(QDialog):
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
-                    ^ QtCore.Qt.WindowContextHelpButtonHint)
+					^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.setFixedSize(finalLayout.sizeHint())
 
 		self.name.setFocus()

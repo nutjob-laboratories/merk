@@ -294,6 +294,12 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"error",
 			cmdsymbol+"highlight",
 			cmdsymbol+"unhighlight",
+			cmdsymbol+"toggle",
+			cmdsymbol+"toggle markdown",
+			cmdsymbol+"toggle color",
+			cmdsymbol+"toggle emoji",
+			cmdsymbol+"toggle asciimoji",
+			cmdsymbol+"toggle protection",
 		]
 
 		script_only = [

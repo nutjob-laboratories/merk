@@ -57,11 +57,10 @@ class Dialog(QDialog):
 		self.setWindowTitle(f"Filename")
 		self.setWindowIcon(QIcon(SCRIPT_ICON))
 
-		nameLayout = QHBoxLayout()
-		self.nameLabel = QLabel("<b>Filename:</b>")
+		nameLayout = QVBoxLayout()
+		self.nameLabel = QLabel("<small>Enter the filename this will be saved to the zip as.</small>")
 		self.name = QNoSpaceLineEdit()
 		nameLayout.addWidget(self.nameLabel)
-		nameLayout.addStretch()
 		nameLayout.addWidget(self.name)
 
 		# Buttons
@@ -72,7 +71,6 @@ class Dialog(QDialog):
 
 		nickInfoBox = QGroupBox("",self)
 		nickInfoBox.setLayout(nameLayout)
-		nickInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(nickInfoBox)
@@ -82,5 +80,7 @@ class Dialog(QDialog):
                     ^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.setFixedSize(finalLayout.sizeHint())
 
 		self.name.setFocus()

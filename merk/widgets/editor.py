@@ -899,7 +899,7 @@ class Window(QMainWindow):
 					file_paths.append(os.path.join(root, file))
 			file_paths = list(set(file_paths))
 			if len(file_paths)>0:
-				self.oscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Scripts")
+				self.oscript_menu = self.fileMenu.addMenu(QIcon(OPENFILE_ICON),"Open script")
 
 				for f in file_paths:
 					entry = QAction(QIcon(COMMAND_ICON),os.path.basename(f),self)
@@ -939,7 +939,7 @@ class Window(QMainWindow):
 			entry.triggered.connect(self.doImport)
 			self.fileMenu.addAction(entry)
 
-			self.zip = QAction(QIcon(EXPORT_ICON),"Write file to ZIP",self)
+			self.zip = QAction(QIcon(EXPORT_ICON),"Write to ZIP as file",self)
 			self.zip.triggered.connect(self.doZip)
 			self.fileMenu.addAction(self.zip)
 

@@ -95,7 +95,6 @@ class Dialog(QDialog):
 
 		chanInfoBox = QGroupBox("",self)
 		chanInfoBox.setLayout(inputLayout)
-		chanInfoBox.setStyleSheet("QGroupBox { font: bold; } QGroupBox::title { subcontrol-position: top center; }")
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addWidget(chanInfoBox)
@@ -105,5 +104,7 @@ class Dialog(QDialog):
                     ^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.setFixedSize(finalLayout.sizeHint())
 
 		self.name.setFocus()

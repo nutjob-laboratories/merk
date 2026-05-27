@@ -63,7 +63,6 @@ class Dialog(QDialog):
 		self.width.setRange(100,2000)
 		self.width.setValue(config.DEFAULT_SUBWINDOW_WIDTH)
 		widthLayout.addWidget(self.widthLabel)
-		#widthLayout.addStretch()
 		widthLayout.addWidget(self.width)
 		widthLayout.addWidget(QLabel("pixels"))
 
@@ -73,7 +72,6 @@ class Dialog(QDialog):
 		self.height.setRange(100,2000)
 		self.height.setValue(config.DEFAULT_SUBWINDOW_HEIGHT)
 		heightLayout.addWidget(self.heightLabel)
-		#heightLayout.addStretch()
 		heightLayout.addWidget(self.height)
 		heightLayout.addWidget(QLabel("pixels"))
 
@@ -92,3 +90,5 @@ class Dialog(QDialog):
                     ^ QtCore.Qt.WindowContextHelpButtonHint)
 
 		self.setLayout(finalLayout)
+
+		self.setFixedSize(finalLayout.sizeHint())

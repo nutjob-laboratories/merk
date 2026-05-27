@@ -70,6 +70,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(nameLayout)
+		finalLayout.addStretch()
 		finalLayout.addWidget(buttons)
 
 		ok_button = buttons.button(QDialogButtonBox.Ok)

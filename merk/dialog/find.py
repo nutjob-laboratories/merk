@@ -185,9 +185,9 @@ class Dialog(QMainWindow):
 		self.icount.setAlignment(Qt.AlignCenter)
 
 		findRepLayout = QFormLayout()
-		findRepLayout.addRow(QLabel("<b>Find</b>"), self.find)
+		findRepLayout.addRow(QLabel("<b>Find:</b>"), self.find)
 		if replace:
-			self.repLabel = QLabel("<b>Replace</b>")
+			self.repLabel = QLabel("<b>Replace:</b>")
 			findRepLayout.addRow(self.repLabel, self.replace)
 
 		inputLayout = QVBoxLayout()

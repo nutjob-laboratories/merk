@@ -297,7 +297,7 @@ class Dialog(QDialog):
 
 	def backgroundDefault(self):
 		self.CUSTOM_MDI_BACKGROUND = ""
-		self.backgroundLabel.setText("<b>No background image</b>")
+		self.backgroundLabel.setText("&nbsp;<b>No background image</b>")
 		self.rerender_mdi = True
 		self.changed.show()
 		self.boldApply()
@@ -398,7 +398,7 @@ class Dialog(QDialog):
 
 			self.CUSTOM_MDI_BACKGROUND = fileName
 			lt = elide_text(os.path.basename(fileName),20)
-			self.backgroundLabel.setText(f"<b>{lt}</b>")
+			self.backgroundLabel.setText(f"&nbsp;<b>{lt}</b>")
 			self.rerender_mdi = True
 			self.changed.show()
 			self.boldApply()
@@ -483,7 +483,7 @@ class Dialog(QDialog):
 
 		self.newfont = None
 		self.default_font = True
-		self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
+		self.fontLabel.setText(f"&nbsp;Font: <b>{font_name}, {font_size} pt</b>")
 		self.changed.show()
 		self.boldApply()
 		self.restart.show()
@@ -500,7 +500,7 @@ class Dialog(QDialog):
 			font_name = pfs[0]
 			font_size = pfs[1]
 
-			self.fontLabel.setText(f"Font: <b>{font_name}, {font_size} pt</b>")
+			self.fontLabel.setText(f"&nbsp;Font: <b>{font_name}, {font_size} pt</b>")
 			self.changed.show()
 			self.boldApply()
 			self.restart.show()
@@ -512,7 +512,7 @@ class Dialog(QDialog):
 		if x:
 			self.subWidth = x[0]
 			self.subHeight = x[1]
-			self.sizeLabel.setText(f"Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>")
+			self.sizeLabel.setText(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>")
 			self.changed.show()
 			self.boldApply()
 		self.selector.setFocus()
@@ -1936,7 +1936,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_main_menu = info
-		self.mainName.setText("<b>"+str(info)+"</b>")
+		self.mainName.setText("&nbsp;<b>"+str(info)+"</b>")
 
 		self.windowbar_change = True
 
@@ -1950,7 +1950,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_settings_menu = info
-		self.settingsName.setText("<b>"+str(info)+"</b>")
+		self.settingsName.setText("&nbsp;<b>"+str(info)+"</b>")
 
 		self.windowbar_change = True
 
@@ -1964,7 +1964,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_tools_menu = info
-		self.toolsName.setText("<b>"+str(info)+"</b>")
+		self.toolsName.setText("&nbsp;<b>"+str(info)+"</b>")
 
 		self.windowbar_change = True
 
@@ -1978,7 +1978,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_windows_menu = info
-		self.windowsName.setText("<b>"+str(info)+"</b>")
+		self.windowsName.setText("&nbsp;<b>"+str(info)+"</b>")
 
 		self.windowbar_change = True
 
@@ -2006,7 +2006,7 @@ class Dialog(QDialog):
 		if not info: return None
 
 		self.default_help_menu = info
-		self.helpName.setText("<b>"+str(info)+"</b>")
+		self.helpName.setText("&nbsp;<b>"+str(info)+"</b>")
 
 		self.windowbar_change = True
 
@@ -2375,7 +2375,7 @@ class Dialog(QDialog):
 		font_name = pfs[0]
 		font_size = pfs[1]
 
-		self.fontLabel = QLabel(f"Font: <b>{font_name}, {font_size} pt</b>",self)
+		self.fontLabel = QLabel(f"&nbsp;Font: <b>{font_name}, {font_size} pt</b>",self)
 
 		fontButton = QPushButton("")
 		fontButton.clicked.connect(self.menuFont)
@@ -2397,7 +2397,7 @@ class Dialog(QDialog):
 		fontLayout.addStretch()
 		fontLayout.addWidget(fontDefault)
 
-		self.sizeLabel = QLabel(f"Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
+		self.sizeLabel = QLabel(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
 
 		sizeButton = QPushButton("")
 		sizeButton.clicked.connect(self.setWinsize)
@@ -2502,13 +2502,17 @@ class Dialog(QDialog):
 		mwsLayout.addWidget(self.askBeforeExit)
 
 		applicationLayout = QVBoxLayout()
+		applicationLayout.setSpacing(0)
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window</b>"))
 		applicationLayout.addLayout(mwsLayout)
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application title</b>"))
 		applicationLayout.addLayout(titleLayout)
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous</b>"))
 		applicationLayout.addLayout(misLayout)
 		applicationLayout.addStretch()
@@ -2680,10 +2684,10 @@ class Dialog(QDialog):
 		self.backgroundLabel = QLabel(f" ",self)
 
 		if config.CUSTOM_MDI_BACKGROUND=="":
-			self.backgroundLabel.setText("<b>No background image</b>")
+			self.backgroundLabel.setText("&nbsp;<b>No background image</b>")
 		else:
 			lt = elide_text(os.path.basename(config.CUSTOM_MDI_BACKGROUND),20)
-			self.backgroundLabel.setText(f"<b>{lt}</b>")
+			self.backgroundLabel.setText(f"&nbsp;<b>{lt}</b>")
 
 		backgroundButton = QPushButton("")
 		backgroundButton.clicked.connect(self.getBackground)
@@ -2731,21 +2735,28 @@ class Dialog(QDialog):
 		mdiOpts.addStretch()
 
 		appearanceLayout = QVBoxLayout()
+		appearanceLayout.setSpacing(0)
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>dark mode</b>"))
 		appearanceLayout.addWidget(self.darkDescription)
 		appearanceLayout.addLayout(app2Layout)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>widget style</b>"))
 		appearanceLayout.addWidget(self.styleDescription)
 		appearanceLayout.addLayout(app1Layout)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>background image</b>"))
 		appearanceLayout.addLayout(backgroundLayout)
 		appearanceLayout.addLayout(mdiOpts)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>force default text style on...</b>"))
 		appearanceLayout.addLayout(forceLayout)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname display settings</b>"))
 		appearanceLayout.addLayout(nLayout)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>cursor settings</b>"))
 		appearanceLayout.addLayout(cursLayout)
+		appearanceLayout.addWidget(QLabel(' '))
 		appearanceLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		appearanceLayout.addLayout(mLayout)
 		appearanceLayout.addStretch()
@@ -2809,7 +2820,7 @@ class Dialog(QDialog):
 		justifyLayout.addWidget(self.menubarJustify)
 		justifyLayout.addStretch()
 
-		self.mainName = QLabel("<b>"+self.default_main_menu+"</b>")
+		self.mainName = QLabel("&nbsp;<b>"+self.default_main_menu+"</b>")
 
 		self.setMainName = QPushButton("")
 		self.setMainName.clicked.connect(self.setMainMenu)
@@ -2827,7 +2838,7 @@ class Dialog(QDialog):
 		setMainLayout.addWidget(self.mainName)
 		setMainLayout.addStretch()
 
-		self.toolsName = QLabel("<b>"+self.default_tools_menu+"</b>")
+		self.toolsName = QLabel("&nbsp;<b>"+self.default_tools_menu+"</b>")
 
 		self.setToolsName = QPushButton("")
 		self.setToolsName.clicked.connect(self.setToolsMenu)
@@ -2845,7 +2856,7 @@ class Dialog(QDialog):
 		setToolsLayout.addWidget(self.toolsName)
 		setToolsLayout.addStretch()
 
-		self.windowsName = QLabel("<b>"+self.default_windows_menu+"</b>")
+		self.windowsName = QLabel("&nbsp;<b>"+self.default_windows_menu+"</b>")
 
 		self.setWindowsName = QPushButton("")
 		self.setWindowsName.clicked.connect(self.setWindowsMenu)
@@ -2863,7 +2874,7 @@ class Dialog(QDialog):
 		setWindowsLayout.addWidget(self.windowsName)
 		setWindowsLayout.addStretch()
 
-		self.helpName = QLabel("<b>"+self.default_help_menu+"</b>")
+		self.helpName = QLabel("&nbsp;<b>"+self.default_help_menu+"</b>")
 
 		self.setHelpName = QPushButton("")
 		self.setHelpName.clicked.connect(self.setHelpMenu)
@@ -2897,7 +2908,7 @@ class Dialog(QDialog):
 		helpMenuEntry.addWidget(QLabel("<b>Help menu</b>"))
 		helpMenuEntry.addLayout(setHelpLayout)
 
-		self.settingsName = QLabel("<b>"+self.default_settings_menu+"</b>")
+		self.settingsName = QLabel("&nbsp;<b>"+self.default_settings_menu+"</b>")
 
 		self.setSettingsName = QPushButton("")
 		self.setSettingsName.clicked.connect(self.setSettingsMenu)
@@ -2932,7 +2943,9 @@ class Dialog(QDialog):
 
 		nameMenuEntries = QFormLayout()
 		nameMenuEntries.addRow(menuLineOne)
+		nameMenuEntries.addRow(QLabel(' '))
 		nameMenuEntries.addRow(menuLineTwo)
+		nameMenuEntries.addRow(QLabel(' '))
 		nameMenuEntries.addRow(menuLineThree)
 
 		self.menuNameDescription = QLabel("""
@@ -2940,7 +2953,7 @@ class Dialog(QDialog):
 			Here, you can set the names used to display the main application
 			<b>menus</b>. These are purely cosmetic, and don't change functionality at
 			all. These names will be displayed even if the <b>menubar</b> is disabled,
-			and normal menus are used.
+			and normal menus are used.<br>
 			</small>
 			""")
 		self.menuNameDescription.setWordWrap(True)
@@ -3007,11 +3020,14 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.menubarMenu)
 
 		menuLayout = QVBoxLayout()
+		menuLayout.setSpacing(0)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menubar settings</b>"))
 		menuLayout.addLayout(msLayout)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>menu display names</b>"))
 		menuLayout.addWidget(self.menuNameDescription)
 		menuLayout.addLayout(nameMenuEntries)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,f"<b>\"{config.MAIN_MENU_WINDOWS_NAME}\" menu includes...</b>"))
 		menuLayout.addLayout(menu3Layout)
 		menuLayout.addLayout(menu4Layout)
@@ -4053,7 +4069,7 @@ class Dialog(QDialog):
 
 		userLayout = QVBoxLayout()
 		userLayout.setSpacing(0)
-		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user information</b>"))
+		userLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user settings</b>"))
 		userLayout.addWidget(self.userDescription)
 		userLayout.addLayout(udataLayout)
 		userLayout.addWidget(self.profileDescription)
@@ -4317,16 +4333,20 @@ class Dialog(QDialog):
 		showCM.addLayout(showCM3)
 
 		menuLayout = QVBoxLayout()
+		menuLayout.setSpacing(0)
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display</b>"))
 		menuLayout.addWidget(self.channelDescription)
 		menuLayout.addLayout(infoExist)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel information display settings</b>"))
 		menuLayout.addLayout(chanButtonLayout)
 		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>user list settings</b>"))
 		menuLayout.addLayout(ulistDisplay)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show message types in all channels</b>"))
 		menuLayout.addLayout(cfLayout)
+		menuLayout.addWidget(QLabel(' '))
 		menuLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		menuLayout.addLayout(showCM)
 		menuLayout.addStretch()
@@ -4421,6 +4441,7 @@ class Dialog(QDialog):
 		tmLayout.addWidget(self.showDates)
 
 		timestampLayout = QVBoxLayout()
+		timestampLayout.setSpacing(0)
 		timestampLayout.addWidget(widgets.textSeparatorLabel(self,"<b>timestamp settings</b>"))
 		timestampLayout.addLayout(tsLayout)
 		timestampLayout.addWidget(QLabel(' '))
@@ -4643,13 +4664,17 @@ class Dialog(QDialog):
 		eLayout.addRow(self.errNickLabel,self.errNick)
 
 		connectionsLayout = QVBoxLayout()
+		connectionsLayout.setSpacing(0)
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addLayout(csLayout)
+		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>erroneous nickname</b>"))
 		connectionsLayout.addWidget(self.erroneousDescription)
 		connectionsLayout.addLayout(eLayout)
+		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>display settings</b>"))
 		connectionsLayout.addLayout(cdLayout)
+		connectionsLayout.addWidget(QLabel(' '))
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>automatically fetch from server</b>"))
 		connectionsLayout.addLayout(afLayout)
 		connectionsLayout.addStretch()
@@ -4788,6 +4813,7 @@ class Dialog(QDialog):
 		aasLayout.addWidget(self.appCancelAway)
 
 		awayLayout = QVBoxLayout()
+		awayLayout.setSpacing(0)
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>away settings</b>"))
 		awayLayout.addLayout(asLayout)
 		awayLayout.addWidget(QLabel(' '))
@@ -5381,13 +5407,16 @@ class Dialog(QDialog):
 		cont2Layout.addStretch()
 
 		logLayout = QVBoxLayout()
+		logLayout.setSpacing(0)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
 		logLayout.addLayout(privLayout)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel logs</b>"))
 		logLayout.addLayout(chanLayout)
+		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
 		logLayout.addLayout(contLayout)
 		logLayout.addLayout(cont2Layout)
@@ -5557,6 +5586,7 @@ class Dialog(QDialog):
 		qmLayout.addLayout(pmoLayout)
 
 		messageLayout = QVBoxLayout()
+		messageLayout.setSpacing(0)
 		messageLayout.addWidget(widgets.textSeparatorLabel(self,"<b>message settings</b>"))
 		messageLayout.addLayout(msLayout)
 		messageLayout.addWidget(QLabel(' '))
@@ -5629,7 +5659,7 @@ class Dialog(QDialog):
 			<small><b>Scripting</b> allows <b>{APPLICATION_NAME}</b> to automate commands upon connection, as well
 			as for multiple commands to be executed in sequence. Turning off <b>scripting</b> will
 			prevent scripts and connection scripts from being executed or edited in <b>{APPLICATION_NAME}</b>. For
-			more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
+			more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
 			</small>
 			
 			""")
@@ -5786,15 +5816,20 @@ class Dialog(QDialog):
 		aLayout2.addWidget(self.allowMultiple)
 
 		scriptingLayout = QVBoxLayout()
+		scriptingLayout.setSpacing(0)
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>commands and scripting settings</b>"))
 		scriptingLayout.addWidget(self.scriptingDescription)
 		scriptingLayout.addLayout(seLayout)
+		scriptingLayout.addWidget(QLabel(' '))
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>alias settings</b>"))
 		scriptingLayout.addLayout(aLayout)
+		scriptingLayout.addWidget(QLabel(' '))
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>error and command settings</b>"))
 		scriptingLayout.addLayout(aLayout2)
+		scriptingLayout.addWidget(QLabel(' '))
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable commands</b>"))
 		scriptingLayout.addLayout(cmdLayout)
+		scriptingLayout.addWidget(QLabel(' '))
 		scriptingLayout.addWidget(widgets.textSeparatorLabel(self,"<b>enable/disable script-only commands</b>"))
 		scriptingLayout.addLayout(cmdLayout2)
 		scriptingLayout.addStretch()
@@ -6239,8 +6274,10 @@ class Dialog(QDialog):
 		plugLayout.addRow(self.showConsole)
 
 		pluginsLayout = QVBoxLayout()
+		pluginsLayout.setSpacing(0)
 		pluginsLayout.addLayout(pTop)
 		pluginsLayout.addLayout(plugLayout)
+		pluginsLayout.addWidget(QLabel(' '))
 		pluginsLayout.addLayout(pBottom)
 		pluginsLayout.addLayout(allEvents)
 		pluginsLayout.addStretch()
@@ -6416,13 +6453,16 @@ class Dialog(QDialog):
 		chLayout.addLayout(stHighLayout)
 
 		syntaxLayout = QVBoxLayout()
+		syntaxLayout.setSpacing(0)
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>syntax highlighting settings</b>"))
 		syntaxLayout.addWidget(self.syntaxDescription)
 		syntaxLayout.addLayout(tbLay)
+		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>input highlighting settings</b>"))
 		syntaxLayout.addWidget(self.syntaxInput)
 		syntaxLayout.addLayout(inputHigh)
 		syntaxLayout.addLayout(sbLay)
+		syntaxLayout.addWidget(QLabel(' '))
 		syntaxLayout.addWidget(widgets.textSeparatorLabel(self,"<b>chat highlighting settings</b>"))
 		syntaxLayout.addLayout(chLayout)
 		syntaxLayout.addStretch()
@@ -6562,13 +6602,17 @@ class Dialog(QDialog):
 		resButtons.addWidget(self.resetWidths)
 
 		miscLayout = QVBoxLayout()
+		miscLayout.setSpacing(0)
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>asciimoji and emoji shortcodes</b>"))
 		miscLayout.addWidget(self.emojiDescription)
 		miscLayout.addLayout(escLayout)
+		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>markdown and IRC color \"markup\"</b>"))
 		miscLayout.addLayout(inputOptionsLayout)
+		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel list settings</b>"))
 		miscLayout.addLayout(setLayout)
+		miscLayout.addWidget(QLabel(' '))
 		miscLayout.addWidget(widgets.textSeparatorLabel(self,"<b>hotkey settings</b>"))
 		miscLayout.addLayout(hkLayout)
 		miscLayout.addWidget(QLabel(' '))
