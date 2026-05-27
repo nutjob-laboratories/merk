@@ -2603,7 +2603,9 @@ class Dialog(QDialog):
 		forceLayout.setSpacing(0)
 		forceLayout.addStretch()
 		forceLayout.addWidget(self.forceDefault)
+		forceLayout.addStretch()
 		forceLayout.addWidget(self.notInputWidget)
+		forceLayout.addStretch()
 		forceLayout.addWidget(self.notUserlist)
 		forceLayout.addStretch()
 
@@ -3189,7 +3191,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_SORT!='falpha': self.windowbarSort.addItem('reverse alphabetically')
 		self.windowbarSort.currentIndexChanged.connect(self.sortChange)
 
-		self.windowbarSortLabel = QLabel("Sort entries by ")
+		self.windowbarSortLabel = QLabel("Sort entries by: ")
 
 		sortLayout = QHBoxLayout()
 		sortLayout.addWidget(self.windowbarSortLabel)
@@ -3266,9 +3268,13 @@ class Dialog(QDialog):
 
 		hiddenLayout = QHBoxLayout()
 		hiddenLayout.setSpacing(0)
+		hiddenLayout.addStretch()
 		hiddenLayout.addWidget(self.serverHidden)
+		hiddenLayout.addStretch()
 		hiddenLayout.addWidget(self.channelHidden)
+		hiddenLayout.addStretch()
 		hiddenLayout.addWidget(self.privateHidden)
+		hiddenLayout.addStretch()
 
 		hiddenMaster = QVBoxLayout()
 		hiddenMaster.setSpacing(0)
@@ -3279,6 +3285,7 @@ class Dialog(QDialog):
 		wbAppearLayout.setSpacing(0)
 		wbAppearLayout.addStretch()
 		wbAppearLayout.addWidget(self.windowBarBold)
+		wbAppearLayout.addStretch()
 		wbAppearLayout.addWidget(self.windowBarUnderline)
 		wbAppearLayout.addStretch()
 
@@ -3292,13 +3299,17 @@ class Dialog(QDialog):
 		wbstuffOpts.addRow(self.windowBarHover,self.windowBarIcons)
 		wbstuffOpts.addRow(self.windowbarMenu,self.windowbarEntryMenu)
 
+		wbOther = QVBoxLayout()
+		wbOther.setSpacing(4)
+		wbOther.addLayout(justifyLayout)
+		wbOther.addLayout(sortLayout)
+
 		wbOpts = QVBoxLayout()
 		wbOpts.setSpacing(0)
 		wbOpts.addLayout(windowbar1Layout)
 		wbOpts.addLayout(windowbar2Layout)
 		wbOpts.addLayout(wbstuffOpts)
-		wbOpts.addLayout(justifyLayout)
-		wbOpts.addLayout(sortLayout)
+		wbOpts.addLayout(wbOther)
 		wbOpts.addWidget(self.windowBarFirst)
 		wbOpts.addWidget(self.windowbarClick)
 		wbOpts.addWidget(self.windowbarUnread)
@@ -3419,7 +3430,9 @@ class Dialog(QDialog):
 		orderLayout = QHBoxLayout()
 		orderLayout.addStretch()
 		orderLayout.addWidget(self.mdiCreation)
+		orderLayout.addStretch()
 		orderLayout.addWidget(self.mdiStacking)
+		orderLayout.addStretch()
 		orderLayout.addWidget(self.mdiActivation)
 		orderLayout.addStretch()
 
@@ -4341,8 +4354,11 @@ class Dialog(QDialog):
 
 		showCM3 = QHBoxLayout()
 		showCM3.setSpacing(0)
+		showCM3.addStretch()
 		showCM3.addWidget(self.nameTitleDisplay)
+		showCM3.addStretch()
 		showCM3.addWidget(self.topicTitleDisplay)
+		showCM3.addStretch()
 
 		showCM = QVBoxLayout()
 		showCM.setSpacing(0)
@@ -4796,6 +4812,7 @@ class Dialog(QDialog):
 		awaymsgLayout = QHBoxLayout()
 		awaymsgLayout.addStretch()
 		awaymsgLayout.addWidget(self.autoEmojiAway)
+		awaymsgLayout.addStretch()
 		awaymsgLayout.addWidget(self.autoAliasAway)
 		awaymsgLayout.addStretch()
 
@@ -5112,19 +5129,31 @@ class Dialog(QDialog):
 		distanceLayout.addWidget(self.spellcheckDistance)
 		distanceLayout.addStretch()
 
+		b = self.font()
+		b.setBold(True)
+
+		i = self.font()
+		i.setItalic(True)
+
+		s = self.font()
+		s.setStrikeOut(True)
+
 		self.spellcheckBold = QCheckBox("Bold",self)
 		if config.SHOW_MISSPELLED_WORDS_IN_BOLD: self.spellcheckBold.setChecked(True)
 		self.spellcheckBold.stateChanged.connect(self.changedSpellcheck)
+		self.spellcheckBold.setFont(b)
 
 		self.spellcheckItalics = QCheckBox("Italics",self)
 		if config.SHOW_MISSPELLED_WORDS_IN_ITALICS: self.spellcheckItalics.setChecked(True)
 		self.spellcheckItalics.stateChanged.connect(self.changedSpellcheck)
+		self.spellcheckItalics.setFont(i)
 
 		self.spellcheckStrikout = QCheckBox("Strikeout",self)
 		if config.SHOW_MISSPELLED_WORDS_IN_STRIKEOUT: self.spellcheckStrikout.setChecked(True)
 		self.spellcheckStrikout.stateChanged.connect(self.changedSpellcheck)
+		self.spellcheckStrikout.setFont(s)
 
-		self.spellcheckMissColor = QCheckBox("In underline color",self)
+		self.spellcheckMissColor = QCheckBox("Underline color",self)
 		if config.SHOW_MISSPELLED_WORDS_IN_COLOR: self.spellcheckMissColor.setChecked(True)
 		self.spellcheckMissColor.stateChanged.connect(self.changedSpellcheck)
 
@@ -5158,6 +5187,7 @@ class Dialog(QDialog):
 		lanSubLayout.addStretch()
 
 		spColorLayout = QHBoxLayout()
+		spColorLayout.setSpacing(0)
 		spColorLayout.addStretch()
 		spColorLayout.addWidget(self.spellcheckColor)
 		spColorLayout.addStretch()
@@ -5165,15 +5195,13 @@ class Dialog(QDialog):
 		spFormatLayout = QHBoxLayout()
 		spFormatLayout.addStretch()
 		spFormatLayout.addWidget(self.spellcheckBold)
+		spFormatLayout.addStretch()
 		spFormatLayout.addWidget(self.spellcheckItalics)
+		spFormatLayout.addStretch()
 		spFormatLayout.addWidget(self.spellcheckStrikout)
 		spFormatLayout.addStretch()
-
-		spFormatLayout2 = QHBoxLayout()
-		spFormatLayout2.addStretch()
-		spFormatLayout2.addWidget(self.spellcheckMissColor)
-		spFormatLayout2.addStretch()
-
+		spFormatLayout.addWidget(self.spellcheckMissColor)
+		spFormatLayout.addStretch()
 
 		self.spellcheckDescription = QLabel(f"""
 			<small>
@@ -5209,9 +5237,9 @@ class Dialog(QDialog):
 		spellApp.setSpacing(0)
 		spellApp.addLayout(spColorLayout)
 		spellApp.addLayout(spFormatLayout)
-		spellApp.addLayout(spFormatLayout2)
 
 		spellcheckLayout = QVBoxLayout()
+		spellcheckLayout.setSpacing(0)
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck settings</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addLayout(spellSet)
@@ -5311,7 +5339,7 @@ class Dialog(QDialog):
 		self.logDescription.setWordWrap(True)
 		self.logDescription.setAlignment(Qt.AlignJustify)
 
-		self.logSizeLabel = QLabel("lines")
+		self.logSizeLabel = QLabel(" lines")
 		self.logSizeBox = QSpinBox()
 		self.logSizeBox.setRange(1,1000)
 		self.logSizeBox.setValue(self.logsize)
@@ -5400,14 +5428,18 @@ class Dialog(QDialog):
 		contLayout = QHBoxLayout()
 		contLayout.addStretch()
 		contLayout.addWidget(self.topicLog)
+		contLayout.addStretch()
 		contLayout.addWidget(self.joinLog)
+		contLayout.addStretch()
 		contLayout.addWidget(self.partLog)
+		contLayout.addStretch()
 		contLayout.addWidget(self.quitLog)
 		contLayout.addStretch()
 
 		cont2Layout = QHBoxLayout()
 		cont2Layout.addStretch()
 		cont2Layout.addWidget(self.nickLog)
+		cont2Layout.addStretch()
 		cont2Layout.addWidget(self.noticeLog)
 		cont2Layout.addStretch()
 
@@ -5582,6 +5614,7 @@ class Dialog(QDialog):
 		pmoLayout = QHBoxLayout()
 		pmoLayout.addStretch()
 		pmoLayout.addWidget(self.autoEmojiQuit)
+		pmoLayout.addStretch()
 		pmoLayout.addWidget(self.autoAliasQuit)
 		pmoLayout.addStretch()
 
@@ -5777,18 +5810,26 @@ class Dialog(QDialog):
 		cmdLayout = QHBoxLayout()
 		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.enableBrowser)
+		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.pluginCall)
+		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.enableConfig)
+		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.enableDelay)
+		cmdLayout.addStretch()
 		cmdLayout.addWidget(self.enableUser)
 		cmdLayout.addStretch()
 
 		cmdLayout2 = QHBoxLayout()
 		cmdLayout2.addStretch()
 		cmdLayout2.addWidget(self.enableInsert)
+		cmdLayout2.addStretch()
 		cmdLayout2.addWidget(self.enableGoto)
+		cmdLayout2.addStretch()
 		cmdLayout2.addWidget(self.enableIf)
+		cmdLayout2.addStretch()
 		cmdLayout2.addWidget(self.enableWait)
+		cmdLayout2.addStretch()
 		cmdLayout2.addWidget(self.enableReadWrite)
 		cmdLayout2.addStretch()
 
@@ -6438,7 +6479,7 @@ class Dialog(QDialog):
 			self.highlightItalic.setEnabled(False)
 			self.highlightUnderline.setEnabled(False)
 
-		self.highStyle = QLabel("Highlight words in...")
+		self.highStyle = QLabel("Highlight words in: ")
 
 		stHighLayout = QHBoxLayout()
 		stHighLayout.addWidget(self.highStyle)
@@ -6496,7 +6537,7 @@ class Dialog(QDialog):
 			If <b>shortcodes</b> are enabled, you can insert <b>emojis</b> and <b>ASCIImojis</b> into
 			your chat, quit, part, and away messages by using <a href="https://emojibase.dev/docs/shortcodes/"><b>shortcodes</b></a>.
 			A searchable online list of <b>emoji shortcodes</b> supported is <b><a href="https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias">here</a></b>.
-			You can find a complete list of supported <b>ASCIImoji shortcodes</b> <b><a href="https://asciimoji.com/">here</a></b>.
+			You can find a complete list of supported <b>ASCIImoji shortcodes</b> <b><a href="https://asciimoji.com/">here</a></b>.<br>
 			</small>
 			""")
 		self.emojiDescription.setWordWrap(True)
