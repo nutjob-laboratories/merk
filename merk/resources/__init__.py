@@ -493,6 +493,13 @@ class UserMacro:
 		
 # Functions
 
+def preserve_existing_spacing_for_display(s):
+	parts = re.split(r'(<[^>]*>)', s)
+	for i in range(len(parts)):
+		if not parts[i].startswith('<'):
+			parts[i] = parts[i].replace(' ', '&nbsp;&#x200B;')
+	return ''.join(parts)
+
 def get_key_ignore_case(d, key):
 	for k in d:
 		if k.lower() == key.lower():

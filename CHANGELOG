@@ -4,6 +4,7 @@
 
 What's new:
 
+- **ASCII art has be fixed**. Spaces are now preserved in text input, fixing ASCII art displays.
 - **Custom word highlighting**. Users can set colors for specific words in chat. Colors must be in the six digit "web color" format (#000000), also known as hex codes. Highlighted words can optionally be styled in italics, bold, or underlined. The new commands `/highlight` (to add a highlighted word and color) and `/unhighlight` (to remove any or all highlighted words) have been added; if a color is not provided when using the `/highlight` command, the user is prompted with a dialog to select one.
 - **Connection timeouts have been added**. If connection takes too long, MERK can be configured to automatically disconnect and prompt for a new server. By default, this is turned on, and set to trigger if a given connection takes longer than 120 seconds. All the settings controlling this behavior have been added to the "settings" dialog.
 - **The `/error`, `/print`, `/prints`, and `/warn` commands can now print to all windows simultaneously**.
@@ -63,6 +64,9 @@ What's new:
 * Re-arranged the layout of the dialog brought up by the script-only "msgbox"
   command. The dialog is still re-sizeable, but the text is now aligned to the
   top left of the dialog.
+* Bugfix: ASCII art is no longer broken in the chat/server displays. Spaces are
+  now preserved, allowing ASCII art to be displayed properly. Wordwrap in the
+  server/chat display is preserved.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |
