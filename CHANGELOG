@@ -9,7 +9,7 @@ What's new:
 - **Connection timeouts have been added**. If connection takes too long, MERK can be configured to automatically disconnect and prompt for a new server. By default, this is turned on, and set to trigger if a given connection takes longer than 120 seconds. All the settings controlling this behavior have been added to the "settings" dialog.
 - **The `/error`, `/print`, `/prints`, and `/warn` commands can now print to all windows simultaneously**.
 - **Special input features can now be toggled with commands**. With the `/toggle` command, users can turn off/on ASCIImoji and emoji shortcode input, as well as MERK "markdown" and IRC color input, and accidental command input protection. This allows users to bind these features to a hotkey for ease of use.
-- **The string decoding codecs used for incoming data can now be set by users**. By default, MERK uses "utf-8" codec to decode incoming data, "iso-8859-1" as a fallback, and "CP1252" if both of those fail. Which codecs are used can now be set in the configuration file, with the `/config` command, or with the "settings" dialog. All incoming data is re-encoded in UTF-8 for internal use.
+- **The string decoding codecs used for incoming data can now be set by users**. By default, MERK uses "utf-8" codec to decode incoming data, "iso-8859-1" as a fallback, and "CP1252" if both of those fail. Which codecs are used can now be set in the configuration file, with the `/config` command, or with the "settings" dialog. All incoming data is re-encoded into UTF-8 for internal use.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -87,6 +87,8 @@ What's new:
   "settings" dialog, in the "advanced" section.
 * Added the MERK logo and version number to the first section of the "settings"
   dialog.
+* The "settings" dialog now checks for a codec change, and prompts the user to
+  disconnect from all servers after applying the settings.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |

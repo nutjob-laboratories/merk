@@ -7440,6 +7440,12 @@ class Dialog(QDialog):
 		config.TIMEOUT_CONNECTIONS = self.doConnectionTimeout.isChecked()
 		config.CONNECTION_TIMEOUT = self.CONNECTION_TIMEOUT
 		config.PRESERVE_SPACING_FOR_DISPLAY = self.presSpaces.isChecked()
+		
+		if config.DECODING_TYPE!=self.DECODING_TYPE or config.FALLBACK_DECODING_TYPE!=self.FALLBACK_DECODING_TYPE:
+			disconnect_all_servers = True
+		else:
+			disconnect_all_servers = False
+
 		config.DECODING_TYPE = self.DECODING_TYPE
 		config.FALLBACK_DECODING_TYPE = self.FALLBACK_DECODING_TYPE
 
@@ -7757,6 +7763,19 @@ class Dialog(QDialog):
 		self.parent.merk_subWindowActivated(current_open_window)
 
 		QApplication.restoreOverrideCursor()
+
+		if disconnect_all_servers and len(self.parent.getAllServerWindows())>0:
+			msgBox = QMessageBox()
+			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+			msgBox.setText("You have changed decoding codecs, and you should disconnect from all servers. Disconnect from all servers?")
+			msgBox.setWindowTitle("Disconnect")
+			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+			rval = msgBox.exec()
+			if rval == QMessageBox.Cancel:
+				disconnect_all_servers = False
+
+			if disconnect_all_servers: self.parent.disconnectAll()
 
 		# Close the dialog
 		self.close()
