@@ -41,7 +41,8 @@ from .. import plugins
 import emoji
 
 import os,sys,subprocess
-
+import encodings
+import pkgutil
 import fnmatch
 
 class EmojiQuitAutocomplete(QPlainTextEdit):
@@ -966,6 +967,13 @@ class Dialog(QDialog):
 		self.boldApply()
 		self.selector.setFocus()
 
+	def changedSettingAdvancedRerender(self,state):
+		self.rerender = True
+		self.changed.show()
+		self.restart.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def changedAlias(self,state):
 		if self.enableAlias.isChecked():
 			self.autocompleteAlias.setEnabled(True)
@@ -1558,6 +1566,11 @@ class Dialog(QDialog):
 			self.searchInstall.setEnabled(True)
 			self.prevIllegal.setEnabled(True)
 			self.prevChannel.setEnabled(True)
+			self.presSpaces.setEnabled(True)
+			self.decodingTypeLabel.setEnabled(True)
+			self.decType.setEnabled(True)
+			self.fallbackTypeLabel.setEnabled(True)
+			self.fallType.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -1574,6 +1587,24 @@ class Dialog(QDialog):
 			self.searchInstall.setEnabled(False)
 			self.prevIllegal.setEnabled(False)
 			self.prevChannel.setEnabled(False)
+			self.presSpaces.setEnabled(False)
+			self.decodingTypeLabel.setEnabled(False)
+			self.decType.setEnabled(False)
+			self.fallbackTypeLabel.setEnabled(False)
+			self.fallType.setEnabled(False)
+
+			index = self.decType.findText(config.DECODING_TYPE)
+			if index != -1:
+				self.decType.setCurrentIndex(index)
+
+			index = self.fallType.findText(config.FALLBACK_DECODING_TYPE)
+			if index != -1:
+				self.fallType.setCurrentIndex(index)
+
+			if config.PRESERVE_SPACING_FOR_DISPLAY:
+				self.presSpaces.setChecked(True)
+			else:
+				self.presSpaces.setChecked(False)
 
 			if config.PREVENT_ILLEGAL_CHANNELS:
 				self.prevChannel.setChecked(True)
@@ -2191,6 +2222,20 @@ class Dialog(QDialog):
 			self.boldApply()
 		self.selector.setFocus()
 
+	def encodeChanged(self, i):
+		self.DECODING_TYPE = self.decType.itemText(i)
+		self.changed.show()
+		self.restart.show()
+		self.boldApply()
+		self.selector.setFocus()
+
+	def fallbackChanged(self, i):
+		self.FALLBACK_DECODING_TYPE = self.fallType.itemText(i)
+		self.changed.show()
+		self.restart.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def eventFilter(self, source, event):
 		if source == self.selector.viewport() and event.type() == QEvent.Wheel:
 			return True
@@ -2313,6 +2358,8 @@ class Dialog(QDialog):
 		self.do_scripting = False
 		self.do_systray = False
 		self.CONNECTION_TIMEOUT = config.CONNECTION_TIMEOUT
+		self.DECODING_TYPE = config.DECODING_TYPE
+		self.FALLBACK_DECODING_TYPE = config.FALLBACK_DECODING_TYPE
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -2501,8 +2548,30 @@ class Dialog(QDialog):
 		mwsLayout.addWidget(self.fullScreen)
 		mwsLayout.addWidget(self.askBeforeExit)
 
+		logo = QLabel()
+		pixmap = QPixmap(SPLASH_LOGO)
+		pixmap = pixmap.scaled(194, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+		logo.setPixmap(pixmap)
+		logo.setAlignment(Qt.AlignCenter)
+
+		mLink = QLabel(f"&nbsp;<small><b><a href={APPLICATION_WEB}>{APPLICATION_WEB}</a></b></small>")
+		mLink.setOpenExternalLinks(True)
+
+		verLayout = QVBoxLayout()
+		verLayout.addWidget(QLabel("&nbsp;<small><b>Free and Open Source IRC</b></small>"))
+		verLayout.addWidget(mLink)
+		verLayout.addWidget(QLabel(f"&nbsp;<small><b>Version {APPLICATION_VERSION}</b></small>"))
+
+		logLayout = QHBoxLayout()
+		logLayout.addStretch()
+		logLayout.addWidget(logo)
+		logLayout.addLayout(verLayout)
+		logLayout.addStretch()
+
 		applicationLayout = QVBoxLayout()
 		applicationLayout.setSpacing(0)
+		applicationLayout.addLayout(logLayout)
+		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
 		applicationLayout.addLayout(fontLayout)
 		applicationLayout.addLayout(sizeLayout)
@@ -5560,10 +5629,6 @@ class Dialog(QDialog):
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
 
-		self.motdRaw = QCheckBox("Display MOTD as raw text",self)
-		if config.DISPLAY_MOTD_AS_RAW_TEXT: self.motdRaw.setChecked(True)
-		self.motdRaw.stateChanged.connect(self.changedSetting)
-
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -5575,7 +5640,6 @@ class Dialog(QDialog):
 		msLayout.addWidget(self.showLusers)
 		msLayout.addWidget(self.showIson)
 		msLayout.addWidget(self.autoJoin)
-		msLayout.addWidget(self.motdRaw)
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
@@ -6783,12 +6847,59 @@ class Dialog(QDialog):
 		self.prevChannel.stateChanged.connect(self.changedSettingAdvanced)
 		self.prevChannel.setEnabled(False)
 
+		self.presSpaces = QCheckBox("Preserve spaces in displayed text",self)
+		if config.PRESERVE_SPACING_FOR_DISPLAY: self.presSpaces.setChecked(True)
+		self.presSpaces.stateChanged.connect(self.changedSettingAdvancedRerender)
+		self.presSpaces.setEnabled(False)
+
+		encodings_list = sorted({
+			name for _, name, ispkg in pkgutil.iter_modules(encodings.__path__)
+			if not ispkg
+		})
+
+		# Add some common canonical names that aren't separate modules
+		extra = {"utf-8", "utf-16", "utf-16le", "utf-16be", "ascii", "latin-1", "iso-8859-1"}
+		encodings_list = sorted(set(encodings_list) | extra)
+
+		self.decodingTypeLabel = QLabel("Incoming decoding codec:")
+		self.decType = QComboBox(self)
+		self.decType.addItem(config.DECODING_TYPE)
+		for e in encodings_list:
+			if e==config.DECODING_TYPE: continue
+			self.decType.addItem(e)
+		self.decType.currentIndexChanged.connect(self.encodeChanged)
+
+		decLayout = QHBoxLayout()
+		decLayout.addWidget(self.decodingTypeLabel)
+		decLayout.addWidget(self.decType)
+		decLayout.addStretch()
+
+		self.decodingTypeLabel.setEnabled(False)
+		self.decType.setEnabled(False)
+
+		self.fallbackTypeLabel = QLabel("Fallback decoding codec:")
+		self.fallType = QComboBox(self)
+		self.fallType.addItem(config.FALLBACK_DECODING_TYPE)
+		for e in encodings_list:
+			if e==config.FALLBACK_DECODING_TYPE: continue
+			self.fallType.addItem(e)
+		self.fallType.currentIndexChanged.connect(self.fallbackChanged)
+
+		dec2Layout = QHBoxLayout()
+		dec2Layout.addWidget(self.fallbackTypeLabel)
+		dec2Layout.addWidget(self.fallType)
+		dec2Layout.addStretch()
+
+		self.fallbackTypeLabel.setEnabled(False)
+		self.fallType.setEnabled(False)
+
 		asetLayout = QFormLayout()
 		asetLayout.setSpacing(0)
 		asetLayout.addRow(self.floodProtection)
 		asetLayout.addRow(self.enablePing)
 		asetLayout.addRow(self.prevIllegal)
 		asetLayout.addRow(self.prevChannel)
+		asetLayout.addRow(self.presSpaces)
 		asetLayout.addRow(self.searchInstall)
 		asetLayout.addRow(self.logEverything)
 		asetLayout.addRow(self.writeConsole)
@@ -6802,6 +6913,8 @@ class Dialog(QDialog):
 		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
+		advancedLayout.addLayout(decLayout)
+		advancedLayout.addLayout(dec2Layout)
 		advancedLayout.addLayout(asetLayout)
 		advancedLayout.addStretch()
 
@@ -7209,7 +7322,6 @@ class Dialog(QDialog):
 		config.EXECUTE_HOTKEY_AS_COMMAND = self.hotkeyCmd.isChecked()
 		config.ENABLE_HOTKEYS = self.enableHotkeys.isChecked()
 		config.ENABLE_IGNORE = self.enableIgnore.isChecked()
-		config.DISPLAY_MOTD_AS_RAW_TEXT = self.motdRaw.isChecked()
 		config.ENABLE_PLUGINS = self.enablePlugins.isChecked()
 		config.PLUGIN_INIT = self.plugInit.isChecked()
 		config.PLUGIN_MESSAGE = self.plugMessage.isChecked()
@@ -7327,6 +7439,9 @@ class Dialog(QDialog):
 		config.ALLOW_PRINT_TO_ALL_WINDOWS = self.allowMultiple.isChecked()
 		config.TIMEOUT_CONNECTIONS = self.doConnectionTimeout.isChecked()
 		config.CONNECTION_TIMEOUT = self.CONNECTION_TIMEOUT
+		config.PRESERVE_SPACING_FOR_DISPLAY = self.presSpaces.isChecked()
+		config.DECODING_TYPE = self.DECODING_TYPE
+		config.FALLBACK_DECODING_TYPE = self.FALLBACK_DECODING_TYPE
 
 		if self.rerender_subwindows:
 			self.parent.toggleBackground()

@@ -4,11 +4,12 @@
 
 What's new:
 
-- **ASCII art has be fixed**. Spaces are now preserved in text input, fixing ASCII art displays.
+- **ASCII art has been fixed**. Spaces are now preserved in text display, fixing ASCII art displays.
 - **Custom word highlighting**. Users can set colors for specific words in chat. Colors must be in the six digit "web color" format (#000000), also known as hex codes. Highlighted words can optionally be styled in italics, bold, or underlined. The new commands `/highlight` (to add a highlighted word and color) and `/unhighlight` (to remove any or all highlighted words) have been added; if a color is not provided when using the `/highlight` command, the user is prompted with a dialog to select one.
 - **Connection timeouts have been added**. If connection takes too long, MERK can be configured to automatically disconnect and prompt for a new server. By default, this is turned on, and set to trigger if a given connection takes longer than 120 seconds. All the settings controlling this behavior have been added to the "settings" dialog.
 - **The `/error`, `/print`, `/prints`, and `/warn` commands can now print to all windows simultaneously**.
 - **Special input features can now be toggled with commands**. With the `/toggle` command, users can turn off/on ASCIImoji and emoji shortcode input, as well as MERK "markdown" and IRC color input, and accidental command input protection. This allows users to bind these features to a hotkey for ease of use.
+- **The string decoding codecs used for incoming data can now be set by users**. By default, MERK uses "utf-8" codec to decode incoming data, "iso-8859-1" as a fallback, and "CP1252" if both of those fail. Which codecs are used can now be set in the configuration file, with the `/config` command, or with the "settings" dialog. All incoming data is re-encoded in UTF-8 for internal use.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -67,6 +68,25 @@ What's new:
 * Bugfix: ASCII art is no longer broken in the chat/server displays. Spaces are
   now preserved, allowing ASCII art to be displayed properly. Wordwrap in the
   server/chat display is preserved.
+* Remove the "display MOTD as raw text" option as it is no longer needed.
+* Added an option to toggle preserving spaces in text display to the "advanced"
+  section of the "settings" dialog. I'm not sure why someone would want to
+  turn it off, but the option is there.
+* Added an option to the config file to set the string decoding codec for
+  incoming data (by default, ""utf-8"). MERK expects most incoming data to be
+  UTF-8 encoded; this is how users can change this data decoding type to a
+  different one. If this one fails, the fallback string decoding codec will be
+  used.
+* Added an option to the config file to set the fallback string decoding
+  codec for incoming data (by default, "iso-8859-1"). MERK expects most
+  incoming data to be UTF-8 encoded, and this codec will be used if UTF-8
+  decoding fails. All incoming data is encoded into UTF-8 for internal use.
+* Bugfix: clicking the "reset" button on the channel list dialog now resets the
+  "user count" option to 1+ before refreshing the display.
+* Added options to set the default and fallback string decoding codec to the
+  "settings" dialog, in the "advanced" section.
+* Added the MERK logo and version number to the first section of the "settings"
+  dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |

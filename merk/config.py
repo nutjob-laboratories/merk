@@ -319,7 +319,6 @@ HOTKEYS = {}
 EXECUTE_HOTKEY_AS_COMMAND = True
 ENABLE_HOTKEYS = True
 ENABLE_IGNORE = True
-DISPLAY_MOTD_AS_RAW_TEXT = False
 ENABLE_PLUGINS = True
 PLUGIN_INIT = True
 PLUGIN_MESSAGE = True
@@ -465,9 +464,15 @@ UNDERLINE_HIGHLIGHTED_WORDS = False
 ALLOW_PRINT_TO_ALL_WINDOWS = True
 CONNECTION_TIMEOUT = 120
 TIMEOUT_CONNECTIONS = True
+PRESERVE_SPACING_FOR_DISPLAY = True
+FALLBACK_DECODING_TYPE = "iso-8859-1"
+DECODING_TYPE = "utf-8"
 
 def build_settings():
 	settings = {
+		"decoding_type_for_incoming_data": DECODING_TYPE,
+		"fallback_decoding_type_for_incoming_data": FALLBACK_DECODING_TYPE,
+		"preserve_spacing_in_text_display": PRESERVE_SPACING_FOR_DISPLAY,
 		"disconnect_after_connection_timeout": TIMEOUT_CONNECTIONS,
 		"connection_timeout": CONNECTION_TIMEOUT,
 		"allow_command_print_to_all_windows": ALLOW_PRINT_TO_ALL_WINDOWS,
@@ -612,7 +617,6 @@ def build_settings():
 		"enable_plugin_notice_event": PLUGIN_NOTICE,
 		"enable_plugin_action_event": PLUGIN_ACTION,
 		"enable_plugins": ENABLE_PLUGINS,
-		"display_server_motd_as_raw_text": DISPLAY_MOTD_AS_RAW_TEXT,
 		"enable_ignore": ENABLE_IGNORE,
 		"enable_hotkeys": ENABLE_HOTKEYS,
 		"execute_hotkey_as_command": EXECUTE_HOTKEY_AS_COMMAND,
@@ -892,6 +896,12 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "decoding_type_for_incoming_data" in settings:
+		settings["decoding_type_for_incoming_data"] = DECODING_TYPE
+	if not "fallback_decoding_type_for_incoming_data" in settings:
+		settings["fallback_decoding_type_for_incoming_data"] = FALLBACK_DECODING_TYPE
+	if not "preserve_spacing_in_text_display" in settings:
+		settings["preserve_spacing_in_text_display"] = PRESERVE_SPACING_FOR_DISPLAY
 	if not "disconnect_after_connection_timeout" in settings:
 		settings["disconnect_after_connection_timeout"] = TIMEOUT_CONNECTIONS
 	if not "connection_timeout" in settings:
@@ -1180,8 +1190,6 @@ def patch_settings(settings):
 		settings["enable_plugin_action_event"] = PLUGIN_ACTION
 	if not "enable_plugins" in settings:
 		settings["enable_plugins"] = ENABLE_PLUGINS
-	if not "display_server_motd_as_raw_text" in settings:
-		settings["display_server_motd_as_raw_text"] = DISPLAY_MOTD_AS_RAW_TEXT
 	if not "enable_ignore" in settings:
 		settings["enable_ignore"] = ENABLE_IGNORE
 	if not "enable_hotkeys" in settings:
@@ -2008,7 +2016,6 @@ def load_settings(filename):
 	global EXECUTE_HOTKEY_AS_COMMAND
 	global ENABLE_HOTKEYS
 	global ENABLE_IGNORE
-	global DISPLAY_MOTD_AS_RAW_TEXT
 	global ENABLE_PLUGINS
 	global PLUGIN_INIT
 	global PLUGIN_MESSAGE
@@ -2153,6 +2160,9 @@ def load_settings(filename):
 	global ALLOW_PRINT_TO_ALL_WINDOWS
 	global CONNECTION_TIMEOUT
 	global TIMEOUT_CONNECTIONS
+	global PRESERVE_SPACING_FOR_DISPLAY
+	global FALLBACK_DECODING_TYPE
+	global DECODING_TYPE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2162,6 +2172,9 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		DECODING_TYPE = settings["decoding_type_for_incoming_data"]
+		FALLBACK_DECODING_TYPE = settings["fallback_decoding_type_for_incoming_data"]
+		PRESERVE_SPACING_FOR_DISPLAY = settings["preserve_spacing_in_text_display"]
 		TIMEOUT_CONNECTIONS = settings["disconnect_after_connection_timeout"]
 		CONNECTION_TIMEOUT = settings["connection_timeout"]
 		ALLOW_PRINT_TO_ALL_WINDOWS = settings["allow_command_print_to_all_windows"]
@@ -2306,7 +2319,6 @@ def load_settings(filename):
 		PLUGIN_NOTICE = settings["enable_plugin_notice_event"]
 		PLUGIN_ACTION = settings["enable_plugin_action_event"]
 		ENABLE_PLUGINS = settings["enable_plugins"]
-		DISPLAY_MOTD_AS_RAW_TEXT = settings["display_server_motd_as_raw_text"]
 		ENABLE_IGNORE = settings["enable_ignore"]
 		ENABLE_HOTKEYS = settings["enable_hotkeys"]
 		EXECUTE_HOTKEY_AS_COMMAND = settings["execute_hotkey_as_command"]

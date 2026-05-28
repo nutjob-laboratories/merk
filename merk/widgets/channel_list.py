@@ -325,6 +325,7 @@ class Window(QMainWindow):
 
 	def doResetButton(self):
 		self.search_terms.setText('')
+		self.moreAny.setChecked(True)
 		self.setWindowTitle(self.window_title)
 		self.refresh_list()
 

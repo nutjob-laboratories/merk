@@ -249,9 +249,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	if config.CONVERT_URLS_TO_LINKS and has_link_in_chat:
 		msg_to_display = restore_link_placeholders(msg_to_display,placeholders)
 
-	# Preserve spaces by converting all spaces outside HTML
-	# tags into &nbsp; entities without breaking wordwrap
-	msg_to_display = preserve_existing_spacing_for_display(msg_to_display)
+	if config.PRESERVE_SPACING_FOR_DISPLAY:
+		# Preserve spaces by converting all spaces outside HTML
+		# tags into &nbsp; entities without breaking wordwrap
+		msg_to_display = preserve_existing_spacing_for_display(msg_to_display)
 
 	# Assign template and style to the message
 	message_templates = {

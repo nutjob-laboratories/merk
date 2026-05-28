@@ -1146,6 +1146,30 @@ def exit_from_command(gui):
 
 def check_for_sane_values(setting,value):
 
+	if setting=="fallback_decoding_type_for_incoming_data":
+		v = "hello world"
+		try:
+			v1 = v.encode(value)
+		except:
+			return INVALID_CODEC
+		try:
+			v2 = v1.decode(value)
+		except:
+			return INVALID_CODEC
+		if v!=v2: return INVALID_CODEC
+
+	if setting=="decoding_type_for_incoming_data":
+		v = "hello world"
+		try:
+			v1 = v.encode(value)
+		except:
+			return INVALID_CODEC
+		try:
+			v2 = v1.decode(value)
+		except:
+			return INVALID_CODEC
+		if v!=v2: return INVALID_CODEC
+
 	if setting=="windowbar_sorting":
 		v = ["creation","reverse","alpha","ralpha"]
 		if not value.lower() in v: return INVALID_SORTING
@@ -6516,6 +6540,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						reason = "must be at less than or equal to 9"
 					elif check==INVALID_SORTING:
 						reason = "must be \"creation\", \"reverse\", \"alpha\", or \"ralpha\""
+					elif check==INVALID_CODEC:
+						reason = "invalid string encoding codec"
 					elif check==INVALID_IMAGE:
 						supported_formats = QImageReader.supportedImageFormats()
 						all_filetypes = []

@@ -1535,11 +1535,11 @@ class IRC_Connection(irc.IRCClient):
 		# for lines, and this could cause problems.
 		# So, we try various methods to decode
 		try:
-			line2 = line.decode('utf-8')
-		except UnicodeDecodeError:
+			line2 = line.decode(config.DECODING_TYPE)
+		except:
 			try:
-				line2 = line.decode('iso-8859-1')
-			except UnicodeDecodeError:
+				line2 = line.decode(config.FALLBACK_DECODING_TYPE)
+			except:
 				line2 = line.decode("CP1252", 'replace')
 
 		# Re-encode the text line to utf-8 for all other
