@@ -471,7 +471,7 @@ DECODING_TYPE = "utf-8"
 def build_settings():
 	settings = {
 		"decoding_type_for_incoming_data": DECODING_TYPE,
-		"fallback_decoding_type_for_incoming_data": FALLBACK_DECODING_TYPE,
+		"fallback_decoding_type": FALLBACK_DECODING_TYPE,
 		"preserve_spacing_in_text_display": PRESERVE_SPACING_FOR_DISPLAY,
 		"disconnect_after_connection_timeout": TIMEOUT_CONNECTIONS,
 		"connection_timeout": CONNECTION_TIMEOUT,
@@ -898,8 +898,8 @@ def build_settings():
 def patch_settings(settings):
 	if not "decoding_type_for_incoming_data" in settings:
 		settings["decoding_type_for_incoming_data"] = DECODING_TYPE
-	if not "fallback_decoding_type_for_incoming_data" in settings:
-		settings["fallback_decoding_type_for_incoming_data"] = FALLBACK_DECODING_TYPE
+	if not "fallback_decoding_type" in settings:
+		settings["fallback_decoding_type"] = FALLBACK_DECODING_TYPE
 	if not "preserve_spacing_in_text_display" in settings:
 		settings["preserve_spacing_in_text_display"] = PRESERVE_SPACING_FOR_DISPLAY
 	if not "disconnect_after_connection_timeout" in settings:
@@ -2173,7 +2173,7 @@ def load_settings(filename):
 		postpatch_length = len(settings)
 
 		DECODING_TYPE = settings["decoding_type_for_incoming_data"]
-		FALLBACK_DECODING_TYPE = settings["fallback_decoding_type_for_incoming_data"]
+		FALLBACK_DECODING_TYPE = settings["fallback_decoding_type"]
 		PRESERVE_SPACING_FOR_DISPLAY = settings["preserve_spacing_in_text_display"]
 		TIMEOUT_CONNECTIONS = settings["disconnect_after_connection_timeout"]
 		CONNECTION_TIMEOUT = settings["connection_timeout"]

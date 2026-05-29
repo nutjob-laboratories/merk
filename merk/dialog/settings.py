@@ -1571,6 +1571,9 @@ class Dialog(QDialog):
 			self.decType.setEnabled(True)
 			self.fallbackTypeLabel.setEnabled(True)
 			self.fallType.setEnabled(True)
+			self.codecDescription.setEnabled(True)
+			self.decodeSection.setEnabled(True)
+			self.advanceSection.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -1592,6 +1595,9 @@ class Dialog(QDialog):
 			self.decType.setEnabled(False)
 			self.fallbackTypeLabel.setEnabled(False)
 			self.fallType.setEnabled(False)
+			self.codecDescription.setEnabled(False)
+			self.decodeSection.setEnabled(False)
+			self.advanceSection.setEnabled(False)
 
 			index = self.decType.findText(config.DECODING_TYPE)
 			if index != -1:
@@ -2046,7 +2052,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def do_restart(self, link):
-		self.save()
+		self.save(True)
 
 		if is_running_from_pyinstaller():
 			subprocess.Popen([sys.executable] + ["-R"])
@@ -6755,8 +6761,8 @@ class Dialog(QDialog):
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.advancedDescription = QLabel(f"""
-			<center><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
-			break existing scripts, or fill up your hard drive!</b></center><small><br>
+			<small><center><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
+			break existing scripts, or fill up your hard drive!</b></center><br>
 			If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
 			settings to the default, and should fix any fatal problems. For more information about these settings,
@@ -6861,7 +6867,7 @@ class Dialog(QDialog):
 		extra = {"utf-8", "utf-16", "utf-16le", "utf-16be", "ascii", "latin-1", "iso-8859-1"}
 		encodings_list = sorted(set(encodings_list) | extra)
 
-		self.decodingTypeLabel = QLabel("Incoming decoding codec:")
+		self.decodingTypeLabel = QLabel("Incoming decoding codec: ")
 		self.decType = QComboBox(self)
 		self.decType.addItem(config.DECODING_TYPE)
 		for e in encodings_list:
@@ -6877,7 +6883,7 @@ class Dialog(QDialog):
 		self.decodingTypeLabel.setEnabled(False)
 		self.decType.setEnabled(False)
 
-		self.fallbackTypeLabel = QLabel("Fallback decoding codec:")
+		self.fallbackTypeLabel = QLabel("Fallback decoding codec: ")
 		self.fallType = QComboBox(self)
 		self.fallType.addItem(config.FALLBACK_DECODING_TYPE)
 		for e in encodings_list:
@@ -6893,6 +6899,16 @@ class Dialog(QDialog):
 		self.fallbackTypeLabel.setEnabled(False)
 		self.fallType.setEnabled(False)
 
+		self.codecDescription = QLabel(f"""
+			<small>The default incoming decoding codec is <b>utf-8</b>, and the default fallback decoding codec is <b>iso-8859-1</b>.
+			<b><i>Changing either of these settings may make connecting to a server impossible.</i></b>
+			</small>
+			
+			""")
+		self.codecDescription.setWordWrap(True)
+		self.codecDescription.setAlignment(Qt.AlignJustify)
+		self.codecDescription.setEnabled(False)
+
 		asetLayout = QFormLayout()
 		asetLayout.setSpacing(0)
 		asetLayout.addRow(self.floodProtection)
@@ -6906,16 +6922,27 @@ class Dialog(QDialog):
 		asetLayout.addRow(self.errorConsole)
 		asetLayout.addRow(self.writeFile)
 
+		self.decodeSection = widgets.textSeparatorLabel(self,"<b>string decoding codecs</b>")
+		self.decodeSection.setEnabled(False)
+
+		self.advanceSection = widgets.textSeparatorLabel(self,"<b>advanced settings</b>")
+		self.advanceSection.setEnabled(False)
+
+		decFinal = QVBoxLayout()
+		decFinal.setSpacing(0)
+		decFinal.addLayout(decLayout)
+		decFinal.addLayout(dec2Layout)
+
 		advancedLayout = QVBoxLayout()
-		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced</b>"))
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
-		advancedLayout.addWidget(widgets.textSeparatorLabel(self,"<b>advanced settings</b>"))
+		advancedLayout.addWidget(self.advanceSection)
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
-		advancedLayout.addLayout(decLayout)
-		advancedLayout.addLayout(dec2Layout)
 		advancedLayout.addLayout(asetLayout)
+		advancedLayout.addWidget(self.decodeSection)
+		advancedLayout.addWidget(self.codecDescription)
+		advancedLayout.addLayout(decFinal)
 		advancedLayout.addStretch()
 
 		self.advancedPage.setLayout(advancedLayout)
@@ -7007,7 +7034,7 @@ class Dialog(QDialog):
 
 		self.setFixedSize(self.finalLayout.sizeHint())
 
-	def save(self):
+	def save(self,restarting=False):
 
 		got_errors = False
 		errors = []
@@ -7441,7 +7468,17 @@ class Dialog(QDialog):
 		config.CONNECTION_TIMEOUT = self.CONNECTION_TIMEOUT
 		config.PRESERVE_SPACING_FOR_DISPLAY = self.presSpaces.isChecked()
 		
-		if config.DECODING_TYPE!=self.DECODING_TYPE or config.FALLBACK_DECODING_TYPE!=self.FALLBACK_DECODING_TYPE:
+		if config.DECODING_TYPE!=self.DECODING_TYPE:
+			changed_main_codec = True
+		else:
+			changed_main_codec = False
+
+		if config.FALLBACK_DECODING_TYPE!=self.FALLBACK_DECODING_TYPE:
+			changed_fallback_codec = True
+		else:
+			changed_fallback_codec = False
+
+		if changed_main_codec or changed_fallback_codec:
 			disconnect_all_servers = True
 		else:
 			disconnect_all_servers = False
@@ -7640,142 +7677,157 @@ class Dialog(QDialog):
 		# Save new settings to the config file
 		config.save_settings(config.CONFIG_FILE)
 
-		# Refresh the erroneous nickname
-		irc.new_error_nickname()
+		# Only do the app update if we're not restarting
+		if restarting==False:
 
-		self.parent.buildSettingsMenu()
-		self.parent.buildWindowsMenu()
+			# Refresh the erroneous nickname
+			irc.new_error_nickname()
 
-		if self.do_style: self.parent.app.setStyle(self.qt_style)
+			self.parent.buildSettingsMenu()
+			self.parent.buildWindowsMenu()
 
-		if self.do_spellcheck: self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
+			if self.do_style: self.parent.app.setStyle(self.qt_style)
 
-		if self.do_systray:
-			if config.SHOW_SYSTRAY_ICON:
-				self.parent.tray.setVisible(True)
-				self.parent.tray.show()
-				self.parent.buildSystrayMenu()
-			else:
-				self.parent.tray.setVisible(False)
-				self.parent.tray.hide()
+			if self.do_spellcheck: self.parent.setAllLanguage(config.DEFAULT_SPELLCHECK_LANGUAGE)
 
-		if self.windowbar_change:
-			self.parent.buildMenu()
-			self.parent.initWindowbar()
+			if self.do_systray:
+				if config.SHOW_SYSTRAY_ICON:
+					self.parent.tray.setVisible(True)
+					self.parent.tray.show()
+					self.parent.buildSystrayMenu()
+				else:
+					self.parent.tray.setVisible(False)
+					self.parent.tray.hide()
 
-		if self.swapUserlists: self.parent.swapAllUserlists()
-		if self.toggleUserlist: self.parent.toggleAllUserlists()
-		if self.do_spellcheck: self.parent.toggleSpellcheck()
-		if self.do_input_menu: self.parent.toggleInputMenu()
-		if self.do_rubberband: self.parent.toggleRubberbanding()
-		if self.do_scrollbar: self.parent.toggleScrollbar()
-		if update_cursors: self.parent.toggleCursorWidth()
-		if self.userinfo_changed: self.parent.toggleUserinfo()
-		if update_blink: self.parent.setCursorBlink()
-		if self.do_server_nicks: self.parent.toggleServNickDisplay()
-		if self.do_status_bars: self.parent.updateStatusBar()
-		if self.do_list_refresh: self.parent.toggleRefreshButton()
-		if self.do_serv_toolbar: self.parent.toggleServerToolbar()
-		if self.refreshTopics: self.parent.refreshAllTopic()
-		if self.rerender: self.parent.reRenderAll()
-		if self.rerenderUsers: self.parent.rerenderUserlists()
-		if self.rerenderStyle: self.parent.reApplyStyle()
-		if save_userlists: self.parent.saveAllUserlistWidths()
+			if self.windowbar_change:
+				self.parent.buildMenu()
+				self.parent.initWindowbar()
 
-		if self.do_topic:
-			if config.SHOW_CHANNEL_TOPIC:
-				self.parent.showAllTopic()
-			else:
-				self.parent.hideAllTopic()
-			
-		if self.rerenderNick:
-			self.parent.rerenderAllNickDisplays()
-			self.parent.toggleNickDisplay()
-			if not self.rerenderUsers: self.parent.rerenderUserlists()
+			if self.swapUserlists: self.parent.swapAllUserlists()
+			if self.toggleUserlist: self.parent.toggleAllUserlists()
+			if self.do_spellcheck: self.parent.toggleSpellcheck()
+			if self.do_input_menu: self.parent.toggleInputMenu()
+			if self.do_rubberband: self.parent.toggleRubberbanding()
+			if self.do_scrollbar: self.parent.toggleScrollbar()
+			if update_cursors: self.parent.toggleCursorWidth()
+			if self.userinfo_changed: self.parent.toggleUserinfo()
+			if update_blink: self.parent.setCursorBlink()
+			if self.do_server_nicks: self.parent.toggleServNickDisplay()
+			if self.do_status_bars: self.parent.updateStatusBar()
+			if self.do_list_refresh: self.parent.toggleRefreshButton()
+			if self.do_serv_toolbar: self.parent.toggleServerToolbar()
+			if self.refreshTopics: self.parent.refreshAllTopic()
+			if self.rerender: self.parent.reRenderAll()
+			if self.rerenderUsers: self.parent.rerenderUserlists()
+			if self.rerenderStyle: self.parent.reApplyStyle()
+			if save_userlists: self.parent.saveAllUserlistWidths()
 
-		if self.do_scripting:
-			if not config.SCRIPTING_ENGINE_ENABLED:
+			if self.do_topic:
+				if config.SHOW_CHANNEL_TOPIC:
+					self.parent.showAllTopic()
+				else:
+					self.parent.hideAllTopic()
+				
+			if self.rerenderNick:
+				self.parent.rerenderAllNickDisplays()
+				self.parent.toggleNickDisplay()
+				if not self.rerenderUsers: self.parent.rerenderUserlists()
+
+			if self.do_scripting:
+				if not config.SCRIPTING_ENGINE_ENABLED:
+					for window in self.parent.getAllEditorWindows():
+						if hasattr(window,"widget"):
+							c = window.widget()
+							if not c.python:
+								c.force_close = True
+								c.close()
+
+					for w in self.parent.getAllServerWindows():
+						c = w.widget()
+						c.script_button.hide()
+				else:
+					for w in self.parent.getAllServerWindows():
+						c = w.widget()
+						c.script_button.show()
+
+			if not config.ENABLE_HOTKEYS:
+				if self.parent.hotkey_manager!=None:
+					self.parent.hotkey_manager.close()
+
+			if not config.ENABLE_IGNORE:
+				if self.parent.ignore_manager!=None:
+					self.parent.ignore_manager.close()
+
+			if not config.ENABLE_PLUGINS:
+				if self.parent.plugin_manager!=None:
+					self.parent.plugin_manager.close()
+
 				for window in self.parent.getAllEditorWindows():
 					if hasattr(window,"widget"):
 						c = window.widget()
-						if not c.python:
-							c.force_close = True
+						if c.python:
+							c.force_close=True
 							c.close()
 
-				for w in self.parent.getAllServerWindows():
-					c = w.widget()
-					c.script_button.hide()
+			if not config.ENABLE_PLUGIN_EDITOR:
+				for window in self.parent.getAllEditorWindows():
+					if hasattr(window,"widget"):
+						c = window.widget()
+						if c.python:
+							c.force_close=True
+							c.close()
+				if self.parent.plugin_manager!=None:
+					self.parent.plugin_manager.menuNew.setVisible(False)
 			else:
-				for w in self.parent.getAllServerWindows():
-					c = w.widget()
-					c.script_button.show()
+				if self.parent.plugin_manager!=None:
+					self.parent.plugin_manager.menuNew.setVisible(True)
 
-		if not config.ENABLE_HOTKEYS:
-			if self.parent.hotkey_manager!=None:
-				self.parent.hotkey_manager.close()
+			if reset_built_in: commands.clearTemporaryAliases()
+			
+			commands.build_help_and_autocomplete()
 
-		if not config.ENABLE_IGNORE:
-			if self.parent.ignore_manager!=None:
-				self.parent.ignore_manager.close()
+			# Refresh editor windows with any changes to syntax highlighting
+			if self.syntax_did_change:
+				for window in self.parent.getAllEditorWindows():
+					if hasattr(window,"widget"):
+						c = window.widget()
+						if hasattr(c,"refreshHighlighter"):
+							c.refreshHighlighter()
 
-		if not config.ENABLE_PLUGINS:
-			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.close()
+			irc.reset_environment()
 
-			for window in self.parent.getAllEditorWindows():
-				if hasattr(window,"widget"):
-					c = window.widget()
-					if c.python:
-						c.force_close=True
-						c.close()
+			w = self.parent.MDI.activeSubWindow()
+			self.parent.merk_subWindowActivated(w)
 
-		if not config.ENABLE_PLUGIN_EDITOR:
-			for window in self.parent.getAllEditorWindows():
-				if hasattr(window,"widget"):
-					c = window.widget()
-					if c.python:
-						c.force_close=True
-						c.close()
-			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.menuNew.setVisible(False)
-		else:
-			if self.parent.plugin_manager!=None:
-				self.parent.plugin_manager.menuNew.setVisible(True)
+			self.parent.MDI.setActiveSubWindow(current_open_window)
+			self.parent.merk_subWindowActivated(current_open_window)
 
-		if reset_built_in: commands.clearTemporaryAliases()
-		
-		commands.build_help_and_autocomplete()
+			QApplication.restoreOverrideCursor()
 
-		# Refresh editor windows with any changes to syntax highlighting
-		if self.syntax_did_change:
-			for window in self.parent.getAllEditorWindows():
-				if hasattr(window,"widget"):
-					c = window.widget()
-					if hasattr(c,"refreshHighlighter"):
-						c.refreshHighlighter()
+			if disconnect_all_servers and len(self.parent.getAllServerWindows())>0:
+				if changed_main_codec:
+					msg = QMessageBox()
+					msg.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+					msg.setWindowIcon(QIcon(APPLICATION_ICON))
+					msg.setText("You have changed the main decoding codec, and need to disconnect from all servers.")
+					msg.setWindowTitle("Disconnect")
+					msg.setStandardButtons(QMessageBox.Ok)
+					msg.exec_()
+					self.parent.disconnectAll()
+				else:
+					msgBox = QMessageBox()
+					msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
+					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
+					msgBox.setText("You have changed the fallback decoding codec, and should disconnect from all servers. Disconnect from all servers?")
+					msgBox.setWindowTitle("Disconnect")
+					msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+					rval = msgBox.exec()
+					if rval == QMessageBox.Cancel:
+						disconnect_all_servers = False
 
-		irc.reset_environment()
-
-		w = self.parent.MDI.activeSubWindow()
-		self.parent.merk_subWindowActivated(w)
-
-		self.parent.MDI.setActiveSubWindow(current_open_window)
-		self.parent.merk_subWindowActivated(current_open_window)
+					if disconnect_all_servers: self.parent.disconnectAll()
 
 		QApplication.restoreOverrideCursor()
-
-		if disconnect_all_servers and len(self.parent.getAllServerWindows())>0:
-			msgBox = QMessageBox()
-			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
-			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
-			msgBox.setText("You have changed decoding codecs, and you should disconnect from all servers. Disconnect from all servers?")
-			msgBox.setWindowTitle("Disconnect")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
-				disconnect_all_servers = False
-
-			if disconnect_all_servers: self.parent.disconnectAll()
 
 		# Close the dialog
 		self.close()

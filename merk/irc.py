@@ -712,6 +712,8 @@ class IRC_Connection(irc.IRCClient):
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
 
+		CONNECTIONS.pop(self.client_id,None)
+
 	def irc_904(self, prefix, params):
 		# SASL authentication failed, due to a "bad"
 		# username and/or password
