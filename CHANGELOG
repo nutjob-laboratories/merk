@@ -99,6 +99,13 @@ What's new:
 * Bugfix: clients could "timeout" on overly long registrations even if the
   server connection was disconnected.
 * Bugfix: disconnection on SASL login failure could fail.
+* Removed the "reload" subcommand from the "/window" command.
+* Changed the name of the "/reload" command to "/rerender", as that is a much
+  better description of what the command actually does.
+* When editing a single setting with the "/config" command, MERK no longer
+  tries to apply all settings to the running application.
+* Added a new command "/reload", which tries to apply as many settings as
+  possible to the running application.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |

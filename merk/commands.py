@@ -229,7 +229,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"user sasl add": config.ISSUE_COMMAND_SYMBOL+"user sasl add ",
 			config.ISSUE_COMMAND_SYMBOL+"user sasl remove": config.ISSUE_COMMAND_SYMBOL+"user sasl remove ",
 			config.ISSUE_COMMAND_SYMBOL+"user sasl edit": config.ISSUE_COMMAND_SYMBOL+"user sasl edit ",
-			config.ISSUE_COMMAND_SYMBOL+"window reload": config.ISSUE_COMMAND_SYMBOL+"window reload",
 			config.ISSUE_COMMAND_SYMBOL+"toggle markdown": config.ISSUE_COMMAND_SYMBOL+"toggle markdown",
 			config.ISSUE_COMMAND_SYMBOL+"toggle color": config.ISSUE_COMMAND_SYMBOL+"toggle color",
 			config.ISSUE_COMMAND_SYMBOL+"toggle emoji": config.ISSUE_COMMAND_SYMBOL+"toggle emoji",
@@ -334,11 +333,12 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"folder": config.ISSUE_COMMAND_SYMBOL+"folder ",
 			config.ISSUE_COMMAND_SYMBOL+"fade": config.ISSUE_COMMAND_SYMBOL+"fade ",
 			config.ISSUE_COMMAND_SYMBOL+"warn": config.ISSUE_COMMAND_SYMBOL+"warn ",
-			config.ISSUE_COMMAND_SYMBOL+"reload": config.ISSUE_COMMAND_SYMBOL+"reload ",
+			config.ISSUE_COMMAND_SYMBOL+"rerender": config.ISSUE_COMMAND_SYMBOL+"rerender ",
 			config.ISSUE_COMMAND_SYMBOL+"error": config.ISSUE_COMMAND_SYMBOL+"error ",
 			config.ISSUE_COMMAND_SYMBOL+"highlight": config.ISSUE_COMMAND_SYMBOL+"highlight ",
 			config.ISSUE_COMMAND_SYMBOL+"unhighlight": config.ISSUE_COMMAND_SYMBOL+"unhighlight ",
 			config.ISSUE_COMMAND_SYMBOL+"toggle": config.ISSUE_COMMAND_SYMBOL+"toggle ",
+			config.ISSUE_COMMAND_SYMBOL+"reload": config.ISSUE_COMMAND_SYMBOL+"reload",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -406,8 +406,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		"<b>move</b>","<b>size</b>","<b>maximize</b>","<b>minimize</b>",
 		"<b>restore</b>","<b>readme</b>","<b>settings</b>","<b>logs</b>",
 		"<b>restart</b>","<b>next</b>","<b>previous</b>","<b>cascade</b>",
-		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>","<b>fade</b>",
-		"<b>reload</b>"
+		"<b>tile</b>","<b>fullscreen</b>","<b>ontop</b>","<b>fade</b>"
 	]
 
 	if config.ENABLE_HOTKEYS: W_COMMAND.append("<b>hotkey</b>")
@@ -521,11 +520,12 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH</b>", f"Opens PATH in the default file manager" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a window by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload [SERVER] [WINDOW]</b>", "Re-renders the chat log of a window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"rerender [SERVER] [WINDOW]</b>", "Re-renders the chat log of a window" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window, and ends a script" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"highlight WORD [COLOR]</b>", "Renders WORD in COLOR in chat. Call without any arguments to see a list of all highlighted words" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD. Call without any arguments to see a list of all highlighted words. Pass <b>*</b> as the only argument to remove all word highlights" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"toggle FEATURE</b>", f"Toggles various input features. Valid features are {TOGGLE_COMMANDS}" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload</b>", f"Re-loads and attempts to apply settings from configuration" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -1405,6 +1405,16 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				script_file = 'command'
 			if is_halting(script_id): return True
 
+	# |---------|
+	# | /reload |
+	# |---------|
+	if len(tokens)>=1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==1:
+			t = Message(SYSTEM_MESSAGE,'',"Reloading and applying configuration settings...")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.reload_settings())
+			return True
+
 	# |--------|
 	# | /close |
 	# |--------|
@@ -2066,15 +2076,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-	# |---------|
-	# | /reload |
-	# |---------|
+	# |-----------|
+	# | /rerender |
+	# |-----------|
 	if len(tokens)>=1:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==1:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'rerender' and len(tokens)==1:
 			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.rerenderChatLog())
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'rerender' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
 
@@ -2094,14 +2104,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"reload: \"{target}\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"rerender: \"{target}\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				t = Message(ERROR_MESSAGE,'',f"\"{target}\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==3:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'rerender' and len(tokens)==3:
 			tokens.pop(0)
 			server = tokens.pop(0)
 			target = tokens.pop(0)
@@ -2132,7 +2142,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"reload: \"{target}\" not found on \"{server}\"")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"rerender: \"{target}\" not found on \"{server}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			t = Message(ERROR_MESSAGE,'',f"\"{target}\" not found on \"{server}\"")
@@ -4964,12 +4974,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.newEditorWindowContents("\n".join(results))
 				return True
 
-		# /window reload
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
-			if tokens[1].lower()=='reload':
-				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.reRenderAll())
-				return True
-
 		# /window ontop
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='ontop':
@@ -6570,11 +6574,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				settings[my_setting] = my_value
 				config.save_settings(config.CONFIG_FILE,settings)
 
-				gui.reload_settings()
-
 				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(SYSTEM_MESSAGE,'',f"Use {config.ISSUE_COMMAND_SYMBOL}window restart to restart {APPLICATION_NAME}")
+				t = Message(SYSTEM_MESSAGE,'',f"Use \"{config.ISSUE_COMMAND_SYMBOL}window restart\" to restart {APPLICATION_NAME} or \"{config.ISSUE_COMMAND_SYMBOL}reload\" to reload and apply all settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:

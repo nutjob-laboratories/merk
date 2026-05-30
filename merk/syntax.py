@@ -289,8 +289,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"user sasl remove",
 			cmdsymbol+"user sasl",
 			cmdsymbol+"user sasl edit",
-			cmdsymbol+"reload",
-			cmdsymbol+"window reload",
+			cmdsymbol+"rerender",
 			cmdsymbol+"error",
 			cmdsymbol+"highlight",
 			cmdsymbol+"unhighlight",
@@ -300,6 +299,7 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"toggle emoji",
 			cmdsymbol+"toggle asciimoji",
 			cmdsymbol+"toggle protection",
+			cmdsymbol+"reload",
 		]
 
 		script_only = [
