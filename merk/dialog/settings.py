@@ -2450,22 +2450,6 @@ class Dialog(QDialog):
 		fontLayout.addStretch()
 		fontLayout.addWidget(fontDefault)
 
-		self.sizeLabel = QLabel(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
-
-		sizeButton = QPushButton("")
-		sizeButton.clicked.connect(self.setWinsize)
-		sizeButton.setAutoDefault(False)
-
-		fm = QFontMetrics(self.font())
-		fheight = fm.height()
-		sizeButton.setFixedSize(fheight +10,fheight + 10)
-		sizeButton.setIcon(QIcon(EDIT_ICON))
-		sizeButton.setToolTip("Change default window size")
-
-		sizeLayout = QHBoxLayout()
-		sizeLayout.addWidget(sizeButton)
-		sizeLayout.addWidget(self.sizeLabel)
-
 		self.simpleConnect = QCheckBox("Simplified dialogs",self)
 		if config.SIMPLIFIED_DIALOGS: self.simpleConnect.setChecked(True)
 		self.simpleConnect.stateChanged.connect(self.changedSetting)
@@ -2578,9 +2562,8 @@ class Dialog(QDialog):
 		applicationLayout.setSpacing(0)
 		applicationLayout.addLayout(logLayout)
 		applicationLayout.addWidget(QLabel(' '))
-		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application settings</b>"))
+		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>application font</b>"))
 		applicationLayout.addLayout(fontLayout)
-		applicationLayout.addLayout(sizeLayout)
 		applicationLayout.addWidget(QLabel(' '))
 		applicationLayout.addWidget(widgets.textSeparatorLabel(self,"<b>main window</b>"))
 		applicationLayout.addLayout(mwsLayout)
@@ -2633,7 +2616,7 @@ class Dialog(QDialog):
 			<small>
 			<b>Dark mode</b> changes the application palette to darker colors.
 			<b>If dark mode is enabled or disabled, the application must be restarted to use the
-			new palette.</b>
+			new palette.</b><br>
 			</small>
 			
 			""")
@@ -2660,7 +2643,7 @@ class Dialog(QDialog):
 			self.notInputWidget.setEnabled(False)
 			self.notUserlist.setEnabled(False)
 
-		self.noStyles = QCheckBox("Do not apply text styles",self)
+		self.noStyles = QCheckBox("Do not use text styles in chat displays",self)
 		if config.DO_NOT_APPLY_STYLES_TO_TEXT: self.noStyles.setChecked(True)
 		self.noStyles.stateChanged.connect(self.changedSettingRerender)
 	
@@ -2705,11 +2688,11 @@ class Dialog(QDialog):
 		padLayout.addWidget(self.padLengthLabelSpec)
 		padLayout.addStretch()
 
-		self.elideNick = QCheckBox("Elide long nicknames in chat display",self)
+		self.elideNick = QCheckBox("Elide long nicknames",self)
 		if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY: self.elideNick.setChecked(True)
 		self.elideNick.stateChanged.connect(self.changedSettingRerender)
 
-		self.noPadding = QCheckBox("Do not pad nicknames in chat display",self)
+		self.noPadding = QCheckBox("Do not pad nicknames",self)
 		if config.STRIP_NICKNAME_PADDING_FROM_DISPLAY: self.noPadding.setChecked(True)
 		self.noPadding.stateChanged.connect(self.changedSettingRerenderPad)
 
@@ -2719,10 +2702,15 @@ class Dialog(QDialog):
 		mLayout.addWidget(self.noStyles)
 		mLayout.addWidget(self.forceMono)
 
+		nLayout1 = QHBoxLayout()
+		nLayout1.addWidget(self.elideNick)
+		nLayout1.addStretch()
+		nLayout1.addWidget(self.noPadding)
+		nLayout1.addStretch()
+
 		nLayout = QVBoxLayout()
 		nLayout.setSpacing(0)
-		nLayout.addWidget(self.elideNick)
-		nLayout.addWidget(self.noPadding)
+		nLayout.addLayout(nLayout1)
 		nLayout.addLayout(padLayout)
 
 		self.inputCursorLabel = QLabel("Input widget cursor width: ")
@@ -3481,7 +3469,7 @@ class Dialog(QDialog):
 		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
 		self.enableDisconnect.stateChanged.connect(self.changedSetting)
 		
-		self.hideServer = QCheckBox("Hide server windows when registration is\ncomplete",self)
+		self.hideServer = QCheckBox("Hide server windows when registered",self)
 		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
 		self.hideServer.stateChanged.connect(self.changedSetting)
 
@@ -3546,6 +3534,22 @@ class Dialog(QDialog):
 		self.enableNickClick = QCheckBox("Double click nick display to change nickname",self)
 		if config.DOUBLECLICK_NICK_DISPLAY: self.enableNickClick.setChecked(True)
 		self.enableNickClick.stateChanged.connect(self.changedSetting)
+
+		self.sizeLabel = QLabel(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
+
+		sizeButton = QPushButton("")
+		sizeButton.clicked.connect(self.setWinsize)
+		sizeButton.setAutoDefault(False)
+
+		fm = QFontMetrics(self.font())
+		fheight = fm.height()
+		sizeButton.setFixedSize(fheight +10,fheight + 10)
+		sizeButton.setIcon(QIcon(EDIT_ICON))
+		sizeButton.setToolTip("Change default window size")
+
+		sizeLayout = QHBoxLayout()
+		sizeLayout.addWidget(sizeButton)
+		sizeLayout.addWidget(self.sizeLabel)
 		
 		swsSettings = QVBoxLayout()
 		swsSettings.setSpacing(0)
@@ -3595,8 +3599,14 @@ class Dialog(QDialog):
 		subwbackgroundLayout.addStretch()
 		subwbackgroundLayout.addWidget(swbackgroundDefault)
 
+		sizeLayoutCenter = QHBoxLayout()
+		sizeLayoutCenter.addStretch()
+		sizeLayoutCenter.addLayout(sizeLayout)
+		sizeLayoutCenter.addStretch()
+
 		subwindowLayout = QVBoxLayout()
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow settings</b>"))
+		subwindowLayout.addLayout(sizeLayoutCenter)
 		subwindowLayout.addLayout(swsSettings)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>subwindow background image</b>"))
 		subwindowLayout.addLayout(subwbackgroundLayout)
@@ -6453,7 +6463,7 @@ class Dialog(QDialog):
 			all server and chat windows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
 			current chat and <b>emoji</b> and <b>ASCIImoji shortcodes</b> will be highlighted using the
-			colors and format settings below.
+			colors and format settings below.<br>
 			</small>
 			""")
 		self.syntaxInput.setWordWrap(True)
@@ -6668,7 +6678,7 @@ class Dialog(QDialog):
 			To use <a href="https://www.mirc.com/colors.html">IRC colors</a> in messages, open a color block with <b>&lt;NUMBER</b> to set the foreground color, and
 			<b>&lt;NUMBER,NUMBER</b> to set the foreground and background colors. Close the color block with <b>&gt;</b>.
 			Valid IRC color numbers are <b>0</b> to <b>15</b>.<br><br>
-			If IRC colors are turned off, neither of these will be displayed in the client, but will be sent to the server.<br>
+			If IRC color display is turned off, neither of these will be displayed in the client, but will be sent to the server.<br>
 			</small>
 			""")
 		self.mdDescription.setWordWrap(True)
@@ -6761,12 +6771,12 @@ class Dialog(QDialog):
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
 		self.advancedDescription = QLabel(f"""
-			<small><center><b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
-			break existing scripts, or fill up your hard drive!</b></center><br>
-			If changing these settings causes the application to no longer function, please run
-			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag. This will reset all your
-			settings to the default, and should fix any fatal problems. For more information about these settings,
-			please see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
+			<b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
+			break existing scripts, prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br><br>
+			<small>If changing these settings causes the application to no longer function, please run
+			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag, which will reset all
+			settings to the default. For more information,
+			please see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
 			</small>
 			
 			""")
@@ -6901,7 +6911,7 @@ class Dialog(QDialog):
 
 		self.codecDescription = QLabel(f"""
 			<small>The default incoming decoding codec is <b>utf-8</b>, and the default fallback decoding codec is <b>iso-8859-1</b>.
-			<b><i>Changing either of these settings may make connecting to a server impossible.</i></b>
+			<b><i>Changing either of these settings may make connecting to a server impossible.</i></b><br>
 			</small>
 			
 			""")
@@ -6975,7 +6985,6 @@ class Dialog(QDialog):
 		self.showContext.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.showServRefresh.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.showServList.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
-		self.hideServer.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.systrayNotify.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.systrayMinOnClose.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.promptAway.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")

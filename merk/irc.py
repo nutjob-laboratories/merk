@@ -707,12 +707,13 @@ class IRC_Connection(irc.IRCClient):
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(message)
-			msgBox.setInformativeText(f"Disconnected from {server}! {dialog}")
-			msgBox.setWindowTitle(message)
+			msgBox.setInformativeText(f"Disconnected from {self.server}! {dialog}")
+			msgBox.setWindowTitle("Disconnected")
 			msgBox.setStandardButtons(QMessageBox.Ok)
 			msgBox.exec()
 
-		CONNECTIONS.pop(self.client_id,None)
+		d = CONNECTIONS.pop(self.client_id,None)
+		if d!=None: del d
 
 	def irc_904(self, prefix, params):
 		# SASL authentication failed, due to a "bad"
@@ -724,7 +725,7 @@ class IRC_Connection(irc.IRCClient):
 		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			self.lose_connection("SASL authentication failed","Check your username and password, and try to reconnect again.")
+			self.lose_connection("SASL authentication failed<br>Check your username and password.","Check your username and password, and try to reconnect again.")
 		else:
 			w = self.gui.getServerWindow(self)
 			if w:
@@ -739,7 +740,7 @@ class IRC_Connection(irc.IRCClient):
 		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed (message too long)")
 
 		if config.DISCONNECT_ON_SASL_FAIL:
-			self.lose_connection("SASL authentication failed","SASL message was too long. Check your username and password, and try to reconnect again.")
+			self.lose_connection("SASL authentication failed<br>SASL message was too long.","SASL message was too long. Check your username and password, and try to reconnect again.")
 		else:
 			w = self.gui.getServerWindow(self)
 			if w:
