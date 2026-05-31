@@ -133,12 +133,16 @@ class Dialog(QDialog):
 			user_history = list(user.HISTORY)
 			hostid = self.host.text()+":"+self.port.text()
 
-			sasl_username = None
-			sasl_password = None
 			if self.use_SASL:
 				if self.SASL_Username!=None and self.SASL_Password!=None:
 					sasl_username = self.SASL_Username
 					sasl_password = self.SASL_Password
+				else:
+					sasl_username = None
+					sasl_password = None
+			else:
+				sasl_username = None
+				sasl_password = None
 
 			if self.SAVE:
 

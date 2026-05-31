@@ -151,7 +151,7 @@ class Window(QMainWindow):
 		menu = self.editor.createStandardContextMenu()
 		menu.aboutToShow.connect(self.on_context_menu_show)
 
-		self.comment_action = QAction(QIcon(SCRIPT_ICON),"Comment selection",self)
+		self.comment_action = QAction(QIcon(SCRIPT_ICON),"Toggle comments on selection",self)
 		if not self.python:
 			self.comment_action.triggered.connect(self.comment_selected_text)
 		else:
@@ -462,7 +462,7 @@ class Window(QMainWindow):
 
 		self.editMenu.addSeparator()
 
-		self.comment_action2 = QAction(QIcon(SCRIPT_ICON),"Comment selection",self)
+		self.comment_action2 = QAction(QIcon(SCRIPT_ICON),"Toggle comments on selection",self)
 		if not self.python:
 			self.comment_action2.triggered.connect(self.comment_selected_text)
 		else:

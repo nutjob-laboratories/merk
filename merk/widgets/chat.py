@@ -1115,15 +1115,6 @@ class Window(QMainWindow):
 			e = textSeparator(self,"Set Channel Modes")
 			opmenu.addAction(e)
 
-			if self.name in self.client.channelkeys:
-				entry = QAction(QIcon(MINUS_ICON),"Unlock channel",self)
-				entry.triggered.connect(lambda state,h='k '+self.client.channelkeys[self.name]: self.unset_mode(h))
-				opmenu.addAction(entry)
-			else:
-				entry = QAction(QIcon(PLUS_ICON),"Lock channel",self)
-				entry.triggered.connect(self.lock_channel)
-				opmenu.addAction(entry)
-
 			if 'm' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Unmoderate channel",self)
 				entry.triggered.connect(lambda state,h='m': self.unset_mode(h))
@@ -1132,6 +1123,8 @@ class Window(QMainWindow):
 				entry = QAction(QIcon(PLUS_ICON),"Moderate channel",self)
 				entry.triggered.connect(lambda state,h='m': self.set_mode(h))
 				opmenu.addAction(entry)
+
+		if self.is_operator():
 
 			if 'R' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Allow unregistered users",self)
@@ -1169,7 +1162,14 @@ class Window(QMainWindow):
 				entry.triggered.connect(lambda state,h='t': self.set_mode(h))
 				opmenu.addAction(entry)
 
-		if self.is_operator():
+			if self.name in self.client.channelkeys:
+				entry = QAction(QIcon(MINUS_ICON),"Unlock channel",self)
+				entry.triggered.connect(lambda state,h='k '+self.client.channelkeys[self.name]: self.unset_mode(h))
+				opmenu.addAction(entry)
+			else:
+				entry = QAction(QIcon(PLUS_ICON),"Lock channel",self)
+				entry.triggered.connect(self.lock_channel)
+				opmenu.addAction(entry)
 
 			if 'c' in channel_modes:
 				entry = QAction(QIcon(MINUS_ICON),"Allow IRC color",self)
@@ -2536,7 +2536,7 @@ class Window(QMainWindow):
 				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 				copyMenu.addAction(act)
 
-				if self.operator or self.owner or self.admin:
+				if self.operator or self.owner or self.admin or self.halfop:
 
 					self.userlist_menu.addSeparator()
 
@@ -2551,15 +2551,16 @@ class Window(QMainWindow):
 
 					opMenu.addSeparator()
 
-					if user_is_op:
-						act = QAction(QIcon(MINUS_ICON),"Take operator status", self)
-						act.triggered.connect(lambda : self.client.mode(self.name,False,"o",None,user_nick))
-						opMenu.addAction(act)
+					if self.operator or self.owner or self.admin:
+						if user_is_op:
+							act = QAction(QIcon(MINUS_ICON),"Take operator status", self)
+							act.triggered.connect(lambda : self.client.mode(self.name,False,"o",None,user_nick))
+							opMenu.addAction(act)
 
-					if not user_is_op:
-						act = QAction(QIcon(PLUS_ICON),"Give operator status", self)
-						act.triggered.connect(lambda : self.client.mode(self.name,True,"o",None,user_nick))
-						opMenu.addAction(act)
+						if not user_is_op:
+							act = QAction(QIcon(PLUS_ICON),"Give operator status", self)
+							act.triggered.connect(lambda : self.client.mode(self.name,True,"o",None,user_nick))
+							opMenu.addAction(act)
 
 					if user_is_voiced:
 						act = QAction(QIcon(MINUS_ICON),"Take voiced status", self)

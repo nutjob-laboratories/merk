@@ -117,6 +117,12 @@ What's new:
 * Bugfix: userlists now show to highest privledges a user has in both their
   status icon and in the context menu, and no longer simply show if the user
   is a channel operator or voiced.
+* Channel administration options in the userlist context menu are now more
+  limited for half-op users; they can now only attempt to voice/devoice, and
+  kick/ban. Channel admins, owners, and operators can still set op.
+* The "set channel mode" menu now only lets half-ops set the channel as
+  moderated and unmoderated.
+* Bugfix: turning off SASL login in the connection dialog did nothing.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |
