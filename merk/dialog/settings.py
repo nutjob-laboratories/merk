@@ -645,6 +645,7 @@ class Dialog(QDialog):
 			self.quitLog.setEnabled(True)
 			self.nickLog.setEnabled(True)
 			self.noticeLog.setEnabled(True)
+			self.ignoreLog.setEnabled(True)
 		else:
 			self.topicLog.setEnabled(False)
 			self.joinLog.setEnabled(False)
@@ -652,6 +653,7 @@ class Dialog(QDialog):
 			self.quitLog.setEnabled(False)
 			self.nickLog.setEnabled(False)
 			self.noticeLog.setEnabled(False)
+			self.ignoreLog.setEnabled(False)
 
 		if self.savePrivLogs.isChecked() or self.saveChanLogs.isChecked():
 			self.intermittentLog.setEnabled(True)
@@ -5414,12 +5416,13 @@ class Dialog(QDialog):
 			self.intermittentLog.setEnabled(False)
 			self.logInterval.setEnabled(False)
 
-		self.logDescription = QLabel("""
+		self.logDescription = QLabel(f"""
 			<small>
 			Full <b>logs</b> are not loaded for display. The below settings
 			controls how much of the <b>log</b> is loaded into the application
-			for display.
-			</small>
+			for display. Complete logs can be viewed in the log manager,
+			available in the <b>{self.default_tools_menu}</b> menu.
+			</small><br>
 			""")
 		self.logDescription.setWordWrap(True)
 		self.logDescription.setAlignment(Qt.AlignJustify)
@@ -5473,13 +5476,17 @@ class Dialog(QDialog):
 		if config.LOG_CHANNEL_QUIT: self.quitLog.setChecked(True)
 		self.quitLog.stateChanged.connect(self.changedSetting)
 
-		self.nickLog = QCheckBox("Nickname changes",self)
+		self.nickLog = QCheckBox("Nick changes",self)
 		if config.LOG_CHANNEL_NICKNAME_CHANGE: self.nickLog.setChecked(True)
 		self.nickLog.stateChanged.connect(self.changedSetting)
 
 		self.noticeLog = QCheckBox("Channel notices",self)
 		if config.LOG_CHANNEL_NOTICE: self.noticeLog.setChecked(True)
 		self.noticeLog.stateChanged.connect(self.changedSetting)
+
+		self.ignoreLog = QCheckBox("Ignored chat",self)
+		if config.LOG_IGNORED_USERS: self.ignoreLog.setChecked(True)
+		self.ignoreLog.stateChanged.connect(self.changedSetting)
 
 		if config.SAVE_CHANNEL_LOGS:
 			self.topicLog.setEnabled(True)
@@ -5488,6 +5495,7 @@ class Dialog(QDialog):
 			self.quitLog.setEnabled(True)
 			self.nickLog.setEnabled(True)
 			self.noticeLog.setEnabled(True)
+			self.ignoreLog.setEnabled(True)
 		else:
 			self.topicLog.setEnabled(False)
 			self.joinLog.setEnabled(False)
@@ -5495,6 +5503,7 @@ class Dialog(QDialog):
 			self.quitLog.setEnabled(False)
 			self.nickLog.setEnabled(False)
 			self.noticeLog.setEnabled(False)
+			self.ignoreLog.setEnabled(False)
 
 		chanLayout = QHBoxLayout()
 		chanLayout.addStretch()
@@ -5526,6 +5535,8 @@ class Dialog(QDialog):
 		cont2Layout.addWidget(self.nickLog)
 		cont2Layout.addStretch()
 		cont2Layout.addWidget(self.noticeLog)
+		cont2Layout.addStretch()
+		cont2Layout.addWidget(self.ignoreLog)
 		cont2Layout.addStretch()
 
 		logLayout = QVBoxLayout()
@@ -7476,6 +7487,7 @@ class Dialog(QDialog):
 		config.TIMEOUT_CONNECTIONS = self.doConnectionTimeout.isChecked()
 		config.CONNECTION_TIMEOUT = self.CONNECTION_TIMEOUT
 		config.PRESERVE_SPACING_FOR_DISPLAY = self.presSpaces.isChecked()
+		config.LOG_IGNORED_USERS = self.ignoreLog.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

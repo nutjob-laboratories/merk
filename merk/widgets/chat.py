@@ -2496,33 +2496,6 @@ class Window(QMainWindow):
 				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('PING', '')]))
 				ctcpMenu.addAction(act)
 
-				if config.ENABLE_IGNORE:
-					igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore")
-					if user_nick!=self.client.nickname:
-
-
-						if is_hidden:
-							if self.is_hidden_by_nickname(user_nick):
-								act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
-								act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
-								igMenu.addAction(act)
-							else:
-								if user_hostmask!=None:
-									if self.is_hidden_by_hostmask(user_hostmask):
-										act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
-										act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-										igMenu.addAction(act)
-						else:
-							act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
-							act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
-							igMenu.addAction(act)
-
-							act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
-							act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-							igMenu.addAction(act)
-
-							if user_hostmask==None: act.setEnabled(False)
-
 				copyMenu = self.userlist_menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
 
 				act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
@@ -2560,19 +2533,45 @@ class Window(QMainWindow):
 
 				self.userlist_menu.addSeparator()
 
+				if config.ENABLE_IGNORE:
+
+					igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore")
+					if user_nick!=self.client.nickname:
+						if is_hidden:
+							if self.is_hidden_by_nickname(user_nick):
+								act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
+								act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
+								igMenu.addAction(act)
+							else:
+								if user_hostmask!=None:
+									if self.is_hidden_by_hostmask(user_hostmask):
+										act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
+										act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+										igMenu.addAction(act)
+						else:
+							act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
+							act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
+							igMenu.addAction(act)
+
+							act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
+							act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+							igMenu.addAction(act)
+
+							if user_hostmask==None: act.setEnabled(False)
+
 				if user_nick!=self.client.nickname:
 					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
 						c = self.getNicknameColor(user_nick,user_hostmask)
 						if c==None:
-							act = QAction(QIcon(COLOR_ICON),"Set nickname color", self)
+							act = QAction(QIcon(COLOR_ICON),"Set color", self)
 							act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
 							self.userlist_menu.addAction(act)
 						else:
-							act = QAction(QIcon(COLOR_ICON),"Change nickname color", self)
+							act = QAction(QIcon(COLOR_ICON),"Change color", self)
 							act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
 							self.userlist_menu.addAction(act)
 
-							act = QAction(QIcon(HIDE_ICON),"Remove nickname color", self)
+							act = QAction(QIcon(HIDE_ICON),"Remove color", self)
 							act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
 							self.userlist_menu.addAction(act)
 
@@ -3258,7 +3257,9 @@ class Window(QMainWindow):
 						nickname = message.sender.lower()
 						hostmask = None
 				
-					if self.is_ignored(nickname,hostmask): do_render = False
+					if self.is_ignored(nickname,hostmask):
+						if not config.LOG_IGNORED_USERS: write_to_log = False
+						do_render = False
 
 				# Save entered text to the current log
 				self.log.append(message)

@@ -467,9 +467,11 @@ TIMEOUT_CONNECTIONS = True
 PRESERVE_SPACING_FOR_DISPLAY = True
 FALLBACK_DECODING_TYPE = "iso-8859-1"
 DECODING_TYPE = "utf-8"
+LOG_IGNORED_USERS = True
 
 def build_settings():
 	settings = {
+		"save_ignored_user_chat_to_log": LOG_IGNORED_USERS,
 		"decoding_type_for_incoming_data": DECODING_TYPE,
 		"fallback_decoding_type": FALLBACK_DECODING_TYPE,
 		"preserve_spacing_in_text_display": PRESERVE_SPACING_FOR_DISPLAY,
@@ -896,6 +898,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "save_ignored_user_chat_to_log" in settings:
+		settings["save_ignored_user_chat_to_log"] = LOG_IGNORED_USERS
 	if not "decoding_type_for_incoming_data" in settings:
 		settings["decoding_type_for_incoming_data"] = DECODING_TYPE
 	if not "fallback_decoding_type" in settings:
@@ -2163,6 +2167,7 @@ def load_settings(filename):
 	global PRESERVE_SPACING_FOR_DISPLAY
 	global FALLBACK_DECODING_TYPE
 	global DECODING_TYPE
+	global LOG_IGNORED_USERS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2172,6 +2177,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_IGNORED_USERS = settings["save_ignored_user_chat_to_log"]
 		DECODING_TYPE = settings["decoding_type_for_incoming_data"]
 		FALLBACK_DECODING_TYPE = settings["fallback_decoding_type"]
 		PRESERVE_SPACING_FOR_DISPLAY = settings["preserve_spacing_in_text_display"]
