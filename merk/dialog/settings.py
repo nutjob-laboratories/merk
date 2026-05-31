@@ -6911,7 +6911,7 @@ class Dialog(QDialog):
 
 		self.codecDescription = QLabel(f"""
 			<small>The default incoming decoding codec is <b>utf-8</b>, and the default fallback decoding codec is <b>iso-8859-1</b>.
-			<b><i>Changing either of these settings may make connecting to a server impossible.</i></b><br>
+			<b><i>Changing either of these settings may make connecting to a server impossible.</i></b>
 			</small>
 			
 			""")

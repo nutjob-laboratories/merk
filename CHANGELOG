@@ -10,6 +10,7 @@ What's new:
 - **The `/error`, `/print`, `/prints`, and `/warn` commands can now print to all windows simultaneously**.
 - **Special input features can now be toggled with commands**. With the `/toggle` command, users can turn off/on ASCIImoji and emoji shortcode input, as well as MERK "markdown" and IRC color input, and accidental command input protection. This allows users to bind these features to a hotkey for ease of use.
 - **The string decoding codecs used for incoming data can now be set by users**. By default, MERK uses "utf-8" codec to decode incoming data, "iso-8859-1" as a fallback, and "CP1252" if both of those fail. Which codecs are used can now be set in the configuration file, with the `/config` command, or with the "settings" dialog. All incoming data is re-encoded into UTF-8 for internal use.
+- **Added the option to ignore users by nickname OR hostmask to the userlist context menu**. The option defaulted to ignoring by hostmask, if the target's hostmask was available. Users can now choose *how* they want to ignore someone.
 - **The "settings" dialog has been revamped**. The "settings" dialog has been cleaned up, and more settings are described.
 
 |==============================================================================|
@@ -106,6 +107,8 @@ What's new:
   tries to apply all settings to the running application.
 * Added a new command "/reload", which tries to apply as many settings as
   possible to the running application.
+* Added the option to the ignore by either nickname OR hostmask to the userlist
+  context menu.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.900                                  |
