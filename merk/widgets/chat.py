@@ -2243,21 +2243,21 @@ class Window(QMainWindow):
 						display_hostmask = user_hostmask
 
 				statusLayout = QHBoxLayout()
-				if user_is_op:
-					ICON = OP_USER
-					OTHER_TEXT = "Channel operator"
-				elif user_is_voiced:
-					ICON = VOICE_USER
-					OTHER_TEXT = "Voiced user"
+				if user_is_admin:
+					ICON = ADMIN_USER
+					OTHER_TEXT = "Channel admin"
 				elif user_is_owner:
 					ICON = OWNER_USER
 					OTHER_TEXT = "Channel owner"
-				elif user_is_admin:
-					ICON = ADMIN_USER
-					OTHER_TEXT = "Channel admin"
+				elif user_is_op:
+					ICON = OP_USER
+					OTHER_TEXT = "Channel operator"
 				elif user_is_halfop:
 					ICON = HALFOP_USER
 					OTHER_TEXT = "Channel half-operator"
+				elif user_is_voiced:
+					ICON = VOICE_USER
+					OTHER_TEXT = "Voiced user"
 				elif user_is_protected:
 					ICON = PROTECTED_USER
 					OTHER_TEXT = "Protected user"
@@ -2293,18 +2293,20 @@ class Window(QMainWindow):
 							self.userlist_menu.addAction(entry)
 
 							status_text = ''
-							if user_is_op:
-								status_text = "Channel Operator"
+							if user_is_admin:
+								status_text = "Channel Administrator"
 							elif user_is_owner:
 								status_text = "Channel Owner"
-							elif user_is_admin:
-								status_text = "Channel Administrator"
+							elif user_is_op:
+								status_text = "Channel Operator"
 							elif user_is_halfop:
 								status_text = "Channel Half-Operator"
-							elif user_is_protected:
-								status_text = "Protected User"
 							elif user_is_voiced:
 								status_text = "Voiced User"
+							elif user_is_protected:
+								status_text = "Protected User"
+							else:
+								status_text = "Normal user"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 								self.userlist_menu.addAction(entry)
@@ -2331,18 +2333,18 @@ class Window(QMainWindow):
 							self.userlist_menu.addAction(entry)
 
 							status_text = ''
-							if user_is_op:
-								status_text = "Channel Operator"
+							if user_is_admin:
+								status_text = "Channel Administrator"
 							elif user_is_owner:
 								status_text = "Channel Owner"
-							elif user_is_admin:
-								status_text = "Channel Administrator"
+							elif user_is_op:
+								status_text = "Channel Operator"
 							elif user_is_halfop:
 								status_text = "Channel Half-Operator"
-							elif user_is_protected:
-								status_text = "Protected User"
 							elif user_is_voiced:
 								status_text = "Voiced User"
+							elif user_is_protected:
+								status_text = "Protected User"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 								self.userlist_menu.addAction(entry)
@@ -2378,18 +2380,18 @@ class Window(QMainWindow):
 						self.userlist_menu.addAction(entry)
 
 						status_text = ''
-						if user_is_op:
-							status_text = "Channel Operator"
+						if user_is_admin:
+							status_text = "Channel Administrator"
 						elif user_is_owner:
 							status_text = "Channel Owner"
-						elif user_is_admin:
-							status_text = "Channel Administrator"
+						elif user_is_op:
+							status_text = "Channel Operator"
 						elif user_is_halfop:
 							status_text = "Channel Half-Operator"
-						elif user_is_protected:
-							status_text = "Protected User"
 						elif user_is_voiced:
 							status_text = "Voiced User"
+						elif user_is_protected:
+							status_text = "Protected User"
 						if status_text!='':
 							entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 							self.userlist_menu.addAction(entry)
@@ -2426,9 +2428,126 @@ class Window(QMainWindow):
 
 				if not shown_box: self.userlist_menu.addSeparator()
 
-				if self.operator:
+				if user_nick!=self.client.nickname:
 
-					opMenu = self.userlist_menu.addMenu(QIcon(OP_USER),"Operator actions")
+					act = QAction(QIcon(WHOIS_ICON),"Request WHOIS", self)
+					act.triggered.connect(lambda : self.client.sendLine("WHOIS "+user_nick))
+					self.userlist_menu.addAction(act)
+
+					act = QAction(QIcon(PRIVATE_ICON),"Open private chat", self)
+					act.triggered.connect(lambda : self.parent.openPrivate(self.client,user))
+					self.userlist_menu.addAction(act)
+
+				if user_nick!=self.client.nickname:
+
+					ctcpMenu = self.userlist_menu.addMenu(QIcon(CONNECT_ICON),"Send CTCP request")
+
+					act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(CONSOLE_ICON),"SOURCE", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(CONSOLE_ICON),"VERSION", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(TIMESTAMP_ICON),"TIME", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('TIME', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(CONNECT_ICON),"PING", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('PING', '')]))
+					ctcpMenu.addAction(act)
+
+					if config.ENABLE_IGNORE:
+						igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore")
+						if is_hidden:
+							if self.is_hidden_by_nickname(user_nick):
+								act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
+								act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
+								igMenu.addAction(act)
+							else:
+								if user_hostmask!=None:
+									if self.is_hidden_by_hostmask(user_hostmask):
+										act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
+										act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+										igMenu.addAction(act)
+						else:
+							act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
+							act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
+							igMenu.addAction(act)
+
+							act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
+							act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+							igMenu.addAction(act)
+
+							if user_hostmask==None: act.setEnabled(False)
+					
+						if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
+							ucMenu = self.userlist_menu.addMenu(QIcon(COLOR_ICON),"Color")
+							c = self.getNicknameColor(user_nick,user_hostmask)
+							if c==None:
+								act = QAction(QIcon(COLOR_ICON),"Set color", self)
+								act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
+								ucMenu.addAction(act)
+							else:
+								act = QAction(QIcon(REFRESH_ICON),"Change color", self)
+								act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
+								ucMenu.addAction(act)
+
+								act = QAction(QIcon(HIDE_ICON),"Remove color", self)
+								act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
+								ucMenu.addAction(act)
+
+				copyMenu = self.userlist_menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
+
+				act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(user_nick))
+				copyMenu.addAction(act)
+
+				if user_hostmask!=None:
+					act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
+					copyMenu.addAction(act)
+
+				act = QAction(QIcon(CHANNEL_ICON),"Channel name", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.name}"))
+				copyMenu.addAction(act)
+
+				if self.client.hostname:
+					act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
+					copyMenu.addAction(act)
+
+				if self.client.network:
+					if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+						act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
+						copyMenu.addAction(act)
+
+				act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
+				copyMenu.addAction(act)
+
+				if self.operator or self.owner or self.admin:
+
+					self.userlist_menu.addSeparator()
+
+					if self.owner:
+						icon = OWNER_USER
+					elif self.admin:
+						icon = ADMIN_USER
+					else:
+						icon = OP_USER
+
+					opMenu = self.userlist_menu.addMenu(QIcon(icon),"Channel administration")
 
 					opMenu.addSeparator()
 
@@ -2465,115 +2584,6 @@ class Window(QMainWindow):
 					act = QAction(QIcon(BAN_ICON),"Kick && Ban  "+user_nick, self)
 					act.triggered.connect(lambda : self.menuKickBackUser(user_nick,user_hostmask))
 					opMenu.addAction(act)
-
-				act = QAction(QIcon(WHOIS_ICON),"WHOIS", self)
-				act.triggered.connect(lambda : self.client.sendLine("WHOIS "+user_nick))
-				self.userlist_menu.addAction(act)
-
-				ctcpMenu = self.userlist_menu.addMenu(QIcon(WHOIS_ICON),"Send CTCP request")
-
-				act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
-				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
-				ctcpMenu.addAction(act)
-
-				act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
-				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
-				ctcpMenu.addAction(act)
-
-				act = QAction(QIcon(PRIVATE_ICON),"SOURCE", self)
-				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
-				ctcpMenu.addAction(act)
-
-				act = QAction(QIcon(PRIVATE_ICON),"VERSION", self)
-				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
-				ctcpMenu.addAction(act)
-
-				act = QAction(QIcon(PRIVATE_ICON),"TIME", self)
-				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('TIME', '')]))
-				ctcpMenu.addAction(act)
-
-				act = QAction(QIcon(PRIVATE_ICON),"PING", self)
-				act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('PING', '')]))
-				ctcpMenu.addAction(act)
-
-				copyMenu = self.userlist_menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
-
-				act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(user_nick))
-				copyMenu.addAction(act)
-
-				if user_hostmask!=None:
-					act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
-					copyMenu.addAction(act)
-
-				act = QAction(QIcon(CHANNEL_ICON),"Channel name", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.name}"))
-				copyMenu.addAction(act)
-
-				if self.client.hostname:
-					act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
-					copyMenu.addAction(act)
-
-				if self.client.network:
-					if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
-						act = QAction(QIcon(NETWORK_ICON),"Server network", self)
-						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
-						copyMenu.addAction(act)
-
-				act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
-				copyMenu.addAction(act)
-
-				if user_nick!=self.client.nickname:
-					act = QAction(QIcon(PRIVATE_ICON),"Open private chat", self)
-					act.triggered.connect(lambda : self.parent.openPrivate(self.client,user))
-					self.userlist_menu.addAction(act)
-
-				self.userlist_menu.addSeparator()
-
-				if config.ENABLE_IGNORE:
-
-					igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore")
-					if user_nick!=self.client.nickname:
-						if is_hidden:
-							if self.is_hidden_by_nickname(user_nick):
-								act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
-								act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
-								igMenu.addAction(act)
-							else:
-								if user_hostmask!=None:
-									if self.is_hidden_by_hostmask(user_hostmask):
-										act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
-										act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-										igMenu.addAction(act)
-						else:
-							act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
-							act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
-							igMenu.addAction(act)
-
-							act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
-							act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-							igMenu.addAction(act)
-
-							if user_hostmask==None: act.setEnabled(False)
-
-				if user_nick!=self.client.nickname:
-					if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
-						c = self.getNicknameColor(user_nick,user_hostmask)
-						if c==None:
-							act = QAction(QIcon(COLOR_ICON),"Set color", self)
-							act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
-							self.userlist_menu.addAction(act)
-						else:
-							act = QAction(QIcon(COLOR_ICON),"Change color", self)
-							act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
-							self.userlist_menu.addAction(act)
-
-							act = QAction(QIcon(HIDE_ICON),"Remove color", self)
-							act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
-							self.userlist_menu.addAction(act)
 
 				self.userlist_menu.exec_(self.userlist.mapToGlobal(event.pos()))
 
@@ -2818,21 +2828,21 @@ class Window(QMainWindow):
 
 			self.user_count = self.user_count + 1
 
-			if '@' in nickname:
-				ops.append(self.clean_nick(nickname))
-				if self.clean_nick(nickname)==self.client.nickname: self.operator = True
-			elif '+' in nickname:
-				voiced.append(self.clean_nick(nickname))
-				if self.clean_nick(nickname)==self.client.nickname: self.voiced = True
+			if '&' in nickname:
+				admins.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.admin = True
 			elif '~' in nickname:
 				owners.append(self.clean_nick(nickname))
 				if self.clean_nick(nickname)==self.client.nickname: self.owner = True
-			elif '&' in nickname:
-				admins.append(self.clean_nick(nickname))
-				if self.clean_nick(nickname)==self.client.nickname: self.admin = True
+			elif '@' in nickname:
+				ops.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.operator = True
 			elif '%' in nickname:
 				halfops.append(self.clean_nick(nickname))
 				if self.clean_nick(nickname)==self.client.nickname: self.halfop = True
+			elif '+' in nickname:
+				voiced.append(self.clean_nick(nickname))
+				if self.clean_nick(nickname)==self.client.nickname: self.voiced = True
 			elif '!' in nickname:
 				protected.append(self.clean_nick(nickname))
 				if self.clean_nick(nickname)==self.client.nickname: self.protected = True

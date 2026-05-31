@@ -5421,7 +5421,7 @@ class Dialog(QDialog):
 			Full <b>logs</b> are not loaded for display. The below settings
 			controls how much of the <b>log</b> is loaded into the application
 			for display. Complete logs can be viewed in the log manager,
-			available in the <b>{self.default_tools_menu}</b> menu.
+			available in the \"<b>{self.default_tools_menu}</b>\" menu.
 			</small><br>
 			""")
 		self.logDescription.setWordWrap(True)
@@ -5451,10 +5451,9 @@ class Dialog(QDialog):
 		self.logFullDescription = QLabel(f"""
 			<small>
 			<b>Logs</b> are saved in JavaScript Object Notation (<b>JSON</B>), and use a format that can
-			be read and displayed easily by <b>{APPLICATION_NAME}</b>. If you want to use other
-			software to read or parse your IRC <b>logs</b>, a <b>log</b> export tool is built into
-			<b>{APPLICATION_NAME}</b>. The tool is located in the "<b>{self.default_tools_menu}</b>"
-			menu, under "<b>Export Logs</b>".
+			be read and displayed easily by <b>{APPLICATION_NAME}</b>. If you want to export your <b>logs</b> so
+			that they can be used or parsed by other software, or just view them, use the <b>Log Manager</b>,
+			located in the "<b>{self.default_tools_menu}</b>" menu.
 			</small>
 			""")
 		self.logFullDescription.setWordWrap(True)
