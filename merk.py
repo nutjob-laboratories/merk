@@ -251,11 +251,15 @@ if __name__ == '__main__':
 						show_message("Error",f"File \"{args.script}\" does not exist or is not readable")
 					sys.exit(1)
 
-		if hostid in user.SASL and not args.nosasl:
+		if hostid in user.SASL and config.ALWAYS_USE_SASL_LOGINS:
 			u = user.SASL[hostid]
 			SASL_Username = u[0]
 			SASL_Password = u[1]
 		else:
+			SASL_Username = None
+			SASL_Password = None
+
+		if not args.nosasl:
 			SASL_Username = None
 			SASL_Password = None
 

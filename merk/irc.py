@@ -589,11 +589,6 @@ class IRC_Connection(irc.IRCClient):
 		w = self.gui.getServerWindow(self)
 
 		if subcommand == "LS":
-			if w:
-				capabilities = join_with_and(params[2].split())
-				t = Message(SYSTEM_MESSAGE,'','Server supports IRCv3 3.0.2: '+capabilities)
-				w.writeText(t)
-
 			self.ircv3 = list(params[2].split())
 
 			for e in self.ircv3:

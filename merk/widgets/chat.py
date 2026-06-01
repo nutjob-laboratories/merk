@@ -2467,7 +2467,7 @@ class Window(QMainWindow):
 					ctcpMenu.addAction(act)
 
 					if config.ENABLE_IGNORE:
-						igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore")
+						igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore user")
 						if is_hidden:
 							if self.is_hidden_by_nickname(user_nick):
 								act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
@@ -2491,7 +2491,7 @@ class Window(QMainWindow):
 							if user_hostmask==None: act.setEnabled(False)
 					
 						if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
-							ucMenu = self.userlist_menu.addMenu(QIcon(COLOR_ICON),"Color")
+							ucMenu = self.userlist_menu.addMenu(QIcon(COLOR_ICON),"Nickname color")
 							c = self.getNicknameColor(user_nick,user_hostmask)
 							if c==None:
 								act = QAction(QIcon(COLOR_ICON),"Set color", self)
@@ -2553,36 +2553,36 @@ class Window(QMainWindow):
 
 					if self.operator or self.owner or self.admin:
 						if user_is_op:
-							act = QAction(QIcon(MINUS_ICON),"Take operator status", self)
+							act = QAction(QIcon(MINUS_ICON),f"Take operator status", self)
 							act.triggered.connect(lambda : self.client.mode(self.name,False,"o",None,user_nick))
 							opMenu.addAction(act)
 
 						if not user_is_op:
-							act = QAction(QIcon(PLUS_ICON),"Give operator status", self)
+							act = QAction(QIcon(PLUS_ICON),f"Give operator status", self)
 							act.triggered.connect(lambda : self.client.mode(self.name,True,"o",None,user_nick))
 							opMenu.addAction(act)
 
 					if user_is_voiced:
-						act = QAction(QIcon(MINUS_ICON),"Take voiced status", self)
+						act = QAction(QIcon(MINUS_ICON),f"Take voiced status", self)
 						act.triggered.connect(lambda : self.client.mode(self.name,False,"v",None,user_nick))
 						opMenu.addAction(act)
 
 					if not user_is_voiced:
-						act = QAction(QIcon(PLUS_ICON),"Give voiced status", self)
+						act = QAction(QIcon(PLUS_ICON),f"Give voiced status", self)
 						act.triggered.connect(lambda : self.client.mode(self.name,True,"v",None,user_nick))
 						opMenu.addAction(act)
 
 					opMenu.addSeparator()
 
-					act = QAction(QIcon(KICK_ICON),"Kick "+user_nick, self)
+					act = QAction(QIcon(KICK_ICON),f"Kick {user_nick}", self)
 					act.triggered.connect(lambda : self.client.kick(self.name,user_nick))
 					opMenu.addAction(act)
 
-					act = QAction(QIcon(BAN_ICON),"Ban "+user_nick, self)
+					act = QAction(QIcon(BAN_ICON),f"Ban {user_nick}", self)
 					act.triggered.connect(lambda : self.menuBanUser(user_nick,user_hostmask))
 					opMenu.addAction(act)
 
-					act = QAction(QIcon(BAN_ICON),"Kick && Ban  "+user_nick, self)
+					act = QAction(QIcon(BAN_ICON),f"Kick && Ban {user_nick}", self)
 					act.triggered.connect(lambda : self.menuKickBackUser(user_nick,user_hostmask))
 					opMenu.addAction(act)
 

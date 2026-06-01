@@ -4714,6 +4714,10 @@ class Dialog(QDialog):
 		self.timeoutLength.setValue(self.CONNECTION_TIMEOUT)
 		self.timeoutLength.valueChanged.connect(self.updateConnectionTimeout)
 
+		self.useSasl = QCheckBox("Always use SASL logins",self)
+		if config.ALWAYS_USE_SASL_LOGINS: self.useSasl.setChecked(True)
+		self.useSasl.stateChanged.connect(self.changedSetting)
+
 		lspacer = QLabel()
 		lspacer.setFixedWidth(self.doConnectionTimeout.style().pixelMetric(QStyle.PM_IndicatorWidth) * 2)
 
@@ -4737,6 +4741,7 @@ class Dialog(QDialog):
 		csLayout.addWidget(self.askBeforeReconnect)
 		csLayout.addLayout(delayLayout)
 		csLayout.addWidget(self.notifyRepeated)
+		csLayout.addWidget(self.useSasl)
 		csLayout.addWidget(self.failSasl)
 		csLayout.addLayout(connTimeoutLayout)
 
@@ -7487,6 +7492,7 @@ class Dialog(QDialog):
 		config.CONNECTION_TIMEOUT = self.CONNECTION_TIMEOUT
 		config.PRESERVE_SPACING_FOR_DISPLAY = self.presSpaces.isChecked()
 		config.LOG_IGNORED_USERS = self.ignoreLog.isChecked()
+		config.ALWAYS_USE_SASL_LOGINS = self.useSasl.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

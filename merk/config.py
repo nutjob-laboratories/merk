@@ -468,9 +468,11 @@ PRESERVE_SPACING_FOR_DISPLAY = True
 FALLBACK_DECODING_TYPE = "iso-8859-1"
 DECODING_TYPE = "utf-8"
 LOG_IGNORED_USERS = True
+ALWAYS_USE_SASL_LOGINS = True
 
 def build_settings():
 	settings = {
+		"always_use_sasl_logins": ALWAYS_USE_SASL_LOGINS,
 		"save_ignored_user_chat_to_log": LOG_IGNORED_USERS,
 		"decoding_type_for_incoming_data": DECODING_TYPE,
 		"fallback_decoding_type": FALLBACK_DECODING_TYPE,
@@ -898,6 +900,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "always_use_sasl_logins" in settings:
+		settings["always_use_sasl_logins"] = ALWAYS_USE_SASL_LOGINS
 	if not "save_ignored_user_chat_to_log" in settings:
 		settings["save_ignored_user_chat_to_log"] = LOG_IGNORED_USERS
 	if not "decoding_type_for_incoming_data" in settings:
@@ -2168,6 +2172,7 @@ def load_settings(filename):
 	global FALLBACK_DECODING_TYPE
 	global DECODING_TYPE
 	global LOG_IGNORED_USERS
+	global ALWAYS_USE_SASL_LOGINS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2177,6 +2182,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		ALWAYS_USE_SASL_LOGINS = settings["always_use_sasl_logins"]
 		LOG_IGNORED_USERS = settings["save_ignored_user_chat_to_log"]
 		DECODING_TYPE = settings["decoding_type_for_incoming_data"]
 		FALLBACK_DECODING_TYPE = settings["fallback_decoding_type"]

@@ -273,8 +273,9 @@ class Dialog(QDialog):
 		self.use_SASL = False
 		self.sasl.setCheckState(Qt.Unchecked)
 
+
 		hostid = f"{host}:{h[1]}"
-		if hostid in user.SASL:
+		if hostid in user.SASL and config.ALWAYS_USE_SASL_LOGINS:
 			u = user.SASL[hostid]
 			self.SASL_Username = u[0]
 			self.SASL_Password = u[1]
@@ -475,7 +476,7 @@ class Dialog(QDialog):
 			else:
 				self.commands.clear()
 
-			if hostid in user.SASL:
+			if hostid in user.SASL and config.ALWAYS_USE_SASL_LOGINS:
 				u = user.SASL[hostid]
 				self.SASL_Username = u[0]
 				self.SASL_Password = u[1]
@@ -715,7 +716,7 @@ class Dialog(QDialog):
 		optionLayout.addRow(sasl_row)
 
 		hostid = f"{user.LAST_HOST}:{user.LAST_PORT}"
-		if hostid in user.SASL:
+		if hostid in user.SASL and config.ALWAYS_USE_SASL_LOGINS:
 			u = user.SASL[hostid]
 			self.SASL_Username = u[0]
 			self.SASL_Password = u[1]

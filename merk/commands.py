@@ -1103,7 +1103,7 @@ def connect_to_irc(gui,window,host,port=6667,password=None,ssl=False,reconnect=F
 		return True
 	USER.load_user(USER.USER_FILE)
 	hostid = f"{host}:{port}"
-	if hostid in USER.SASL:
+	if hostid in USER.SASL and config.ALWAYS_USE_SASL_LOGINS:
 		sasl_username = USER.SASL[hostid][0]
 		sasl_password = USER.SASL[hostid][1]
 	else:
