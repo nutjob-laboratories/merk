@@ -1775,7 +1775,6 @@ class Window(QMainWindow):
 				self.hostmasks.pop(nick)
 				self.rerenderUserlist()
 		
-
 	def swapHostmask(self,oldnick,newnick):
 		if oldnick in self.hostmasks:
 			hm =  self.hostmasks[oldnick]
@@ -2245,25 +2244,32 @@ class Window(QMainWindow):
 				statusLayout = QHBoxLayout()
 				if user_is_admin:
 					ICON = ADMIN_USER
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_ADMIN_USER
 					OTHER_TEXT = "Channel admin"
 				elif user_is_owner:
 					ICON = OWNER_USER
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OWNER_USER
 					OTHER_TEXT = "Channel owner"
 				elif user_is_op:
 					ICON = OP_USER
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OP_USER
 					OTHER_TEXT = "Channel operator"
 				elif user_is_halfop:
 					ICON = HALFOP_USER
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_HALFOP_USER
 					OTHER_TEXT = "Channel half-operator"
 				elif user_is_voiced:
 					ICON = VOICE_USER
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_VOICE_USER
 					OTHER_TEXT = "Voiced user"
 				elif user_is_protected:
 					ICON = PROTECTED_USER
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_PROTECTED_USER
 					OTHER_TEXT = "Protected user"
 				else:
 					ICON = PRIVATE_MENU_ICON
 					OTHER_TEXT = "Normal user"
+				if user_nick in self.client.bots: OTHER_TEXT = "Bot"
 				statusLayout.addStretch()
 
 				is_hidden = False
@@ -2307,6 +2313,7 @@ class Window(QMainWindow):
 								status_text = "Protected User"
 							else:
 								status_text = "Normal user"
+							if user_nick in self.client.bots: status_text = "Bot"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 								self.userlist_menu.addAction(entry)
@@ -2345,6 +2352,7 @@ class Window(QMainWindow):
 								status_text = "Voiced User"
 							elif user_is_protected:
 								status_text = "Protected User"
+							if user_nick in self.client.bots: status_text = "Bot"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 								self.userlist_menu.addAction(entry)
@@ -2392,6 +2400,7 @@ class Window(QMainWindow):
 							status_text = "Voiced User"
 						elif user_is_protected:
 							status_text = "Protected User"
+						if user_nick in self.client.bots: status_text = "Bot"
 						if status_text!='':
 							entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 							self.userlist_menu.addAction(entry)
@@ -2884,6 +2893,9 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(OWNER_USER))
 				ui.setText(u)
 
+				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
+					ui.setIcon(QIcon(BOT_OWNER_USER))
+
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 
@@ -2918,6 +2930,9 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(ADMIN_USER))
 				ui.setText(u)
+
+				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
+					ui.setIcon(QIcon(BOT_ADMIN_USER))
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -2954,6 +2969,9 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(HALFOP_USER))
 				ui.setText(u)
 
+				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
+					ui.setIcon(QIcon(BOT_HALFOP_USER))
+
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 
@@ -2988,6 +3006,9 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(OP_USER))
 				ui.setText(u)
+
+				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
+					ui.setIcon(QIcon(BOT_OP_USER))
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
@@ -3024,6 +3045,9 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(VOICE_USER))
 				ui.setText(u)
 
+				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
+					ui.setIcon(QIcon(BOT_VOICE_USER))
+
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 
@@ -3059,6 +3083,9 @@ class Window(QMainWindow):
 				ui.setIcon(QIcon(PROTECTED_USER))
 				ui.setText(u)
 
+				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
+					ui.setIcon(QIcon(BOT_PROTECTED_USER))
+
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)
 
@@ -3093,6 +3120,9 @@ class Window(QMainWindow):
 			else:
 				ui.setIcon(QIcon(NORMAL_USER))
 				ui.setText(u)
+
+				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
+					ui.setIcon(QIcon(BOT_NORMAL_USER))
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)

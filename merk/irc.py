@@ -234,6 +234,8 @@ class IRC_Connection(irc.IRCClient):
 		self.last_interaction = 0
 		self.autoaway = False
 
+		self.bots = []
+
 		self.info_data = []
 		self.links_info = []
 
@@ -516,10 +518,10 @@ class IRC_Connection(irc.IRCClient):
 						self.did_delayed_channel_list = True
 						self.sendLine(f"LIST")
 
-		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN or config.GET_BOTS_ON_CHANNEL_JOIN:
 			# Do a whois request every 5 seconds so
 			# we don't get kicked for flooding
-			if self.uptime % config.HOSTMASK_FETCH_FREQUENCY==0:
+			if self.uptime % config.USER_DATA_FETCH_FREQUENCY==0:
 				if len(self.do_whois)>0:
 					nick = self.do_whois.pop(0)
 					if len(nick.strip())>0:
@@ -800,10 +802,7 @@ class IRC_Connection(irc.IRCClient):
 		pnick = user.split('!')[0]
 		phostmask = user.split('!')[1]
 
-		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
-			if pnick in self.do_whois:
-				self.do_whois.remove(pnick)
-				self.gui.updateHostmask(self,pnick,phostmask)
+		self.gui.updateHostmask(self,pnick,phostmask)
 
 		self.gui.privmsg(self,user,target,msg)
 
@@ -934,10 +933,7 @@ class IRC_Connection(irc.IRCClient):
 			pnick = tok[0]
 			phostmask = tok[1]
 
-			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
-				if pnick in self.do_whois:
-					self.do_whois.remove(pnick)
-					self.gui.updateHostmask(self,pnick,phostmask)
+			self.gui.updateHostmask(self,pnick,phostmask)
 
 		else:
 			pnick = user
@@ -1091,10 +1087,15 @@ class IRC_Connection(irc.IRCClient):
 		p = user.split('!')
 		if len(p)==2:
 			self.gui.updateHostmask(self,p[0],p[1])
+			if config.GET_BOTS_ON_CHANNEL_JOIN:
+				self.do_whois.append(p[0])
 		else:
 			if user == self.nickname: return
-			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
+			if config.GET_HOSTMASKS_ON_CHANNEL_JOIN or config.GET_BOTS_ON_CHANNEL_JOIN:
 				self.do_whois.append(user)
+
+		# Clear out duplicates
+		self.do_whois = list(set(self.do_whois))
 
 		self.sendLine("NAMES "+channel)
 
@@ -1179,16 +1180,20 @@ class IRC_Connection(irc.IRCClient):
 			self.do_whois.remove(oldname)
 			self.do_whois.append(newname)
 
+		if oldname in self.bots:
+			self.bots.remove(oldname)
+			self.bots.append(newname)
+
+		# Clear out duplicates
+		self.do_whois = list(set(self.do_whois))
+
 		self.gui.userRenamed(self,oldname,newname)
 
 	def action(self, user, channel, data):
 		pnick = user.split('!')[0]
 		phostmask = user.split('!')[1]
 
-		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
-			if pnick in self.do_whois:
-				self.do_whois.remove(pnick)
-				self.gui.updateHostmask(self,pnick,phostmask)
+		self.gui.updateHostmask(self,pnick,phostmask)
 
 		self.gui.action(self,user,channel,data)
 
@@ -1222,13 +1227,16 @@ class IRC_Connection(irc.IRCClient):
 		else:
 			msg = ""
 
+		if nick in self.bots: self.bots.remove(nick)
+		if nick in self.do_whois: self.do_whois.remove(nick)
+
 		self.gui.irc_QUIT(self,nick,msg)
 
 	def irc_RPL_NAMREPLY(self, prefix, params):
 		channel = params[2].lower()
 		nicklist = params[3].split(' ')
 
-		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN and not self.support_hostmasks_in_names:
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN:
 			for u in nicklist:
 				p = u.split('!')
 				if len(p)!=2:
@@ -1242,6 +1250,33 @@ class IRC_Connection(irc.IRCClient):
 						if u!=self.nickname:
 							self.do_whois.append(u)
 
+		if config.GET_BOTS_ON_CHANNEL_JOIN:
+			for u in nicklist:
+				p = u.split('!')
+				if len(p)==2:
+					nick = p[0]
+					nick = nick.replace('@','')
+					nick = nick.replace('+','')
+					nick = nick.replace('~','')
+					nick = nick.replace('&','')
+					nick = nick.replace('%','')
+					nick = nick.replace('!','')
+					if nick!=self.nickname:
+						self.do_whois.append(nick)
+				else:
+					u = u.replace('@','')
+					u = u.replace('+','')
+					u = u.replace('~','')
+					u = u.replace('&','')
+					u = u.replace('%','')
+					u = u.replace('!','')
+					if u!=self.nickname:
+						self.do_whois.append(u)
+
+		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN or config.GET_BOTS_ON_CHANNEL_JOIN:
+			 # Clear out duplicates
+			self.do_whois = list(set(self.do_whois))
+		 
 		if channel in self.names:
 			for nick in nicklist:
 				self.names[channel].append(nick)
@@ -1383,14 +1418,27 @@ class IRC_Connection(irc.IRCClient):
 			self.whoisdata[nick].nickname = nick
 			self.whoisdata[nick].privs = privs
 
+	def irc_335(self, prefix, params):
+		nick = params[1]
+
+		self.bots.append(nick)
+		self.bots = list(dict.fromkeys(self.bots))
+		self.gui.rerenderUserlistsNetwork(self)
+
+		if nick in self.request_whois: return
+
+		if nick in self.whoisdata:
+			self.whoisdata[nick].bot = True
+		else:
+			self.whoisdata[nick] = WhoisData()
+			self.whoisdata[nick].nickname = nick
+			self.whoisdata[nick].bot = True
+
 	def irc_RPL_ENDOFWHOIS(self, prefix, params):
 		nick = params[1]
 
 		if nick in self.request_whois:
-			try:
-				self.request_whois.remove(nick)
-			except:
-				pass
+			self.request_whois.remove(nick)
 			return
 
 		if nick in self.whoisdata:

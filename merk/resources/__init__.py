@@ -361,6 +361,14 @@ VOICE_USER = ":/gui-voice.png"
 NORMAL_USER = ":/gui-normal.png"
 PROTECTED_USER = ":/gui-protected.png"
 
+BOT_ADMIN_USER = ":/gui-b_admin.png"
+BOT_HALFOP_USER = ":/gui-b_halfop.png"
+BOT_OP_USER = ":/gui-b_op.png"
+BOT_OWNER_USER = ":/gui-b_owner.png"
+BOT_VOICE_USER = ":/gui-b_voice.png"
+BOT_NORMAL_USER = ":/gui-b_normal.png"
+BOT_PROTECTED_USER = ":/gui-b_protected.png"
+
 # GUI elements
 SPLASH_LOGO = ":/gui-splash.png"
 DISCONNECT_DIALOG_IMAGE = ":/gui-disconnect_dialog.png"
@@ -473,6 +481,7 @@ class WhoisData:
 		self.server = 'Unknown'
 		self.channels = 'Unknown'
 		self.privs = 'is a normal user'
+		self.bot = False
 
 class WhoData:
 	def __init__(self):

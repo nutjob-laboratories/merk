@@ -1103,6 +1103,18 @@ class Dialog(QDialog):
 		self.rerenderUsers = True
 		self.selector.setFocus()
 
+	def changedSettingRerenderUserlistsPlain(self,state):
+
+		if self.plainUserLists.isChecked():
+			self.styleBots.setEnabled(False)
+		else:
+			self.styleBots.setEnabled(True)
+
+		self.changed.show()
+		self.boldApply()
+		self.rerenderUsers = True
+		self.selector.setFocus()
+
 	def changedSettingRerenderNick(self,state):
 		self.changed.show()
 		self.boldApply()
@@ -1135,7 +1147,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSettingHostmask(self,state):
-		if self.autoHostmasks.isChecked():
+		if self.autoHostmasks.isChecked() or self.autoBots.isChecked():
 			self.fetchFreqLabel.setEnabled(True)
 			self.fetchFreq.setEnabled(True)
 			self.fetchFreqLabelSpec.setEnabled(True)
@@ -1149,7 +1161,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def updateFreq(self,state):
-		self.HOSTMASK_FETCH_FREQUENCY = self.fetchFreq.value()
+		self.USER_DATA_FETCH_FREQUENCY = self.fetchFreq.value()
 		self.changed.show()
 		self.boldApply()
 		self.rerender = True
@@ -1788,6 +1800,12 @@ class Dialog(QDialog):
 			else:
 				self.elideAway.setEnabled(False)
 				self.elideHostmask.setEnabled(False)
+
+			if self.plainUserLists.isChecked():
+				self.styleBots.setEnabled(False)
+			else:
+				self.styleBots.setEnabled(True)
+
 		else:
 			self.plainUserLists.setEnabled(False)
 			self.showUserlistLeft.setEnabled(False)
@@ -1806,6 +1824,7 @@ class Dialog(QDialog):
 			self.underlineSelf.setEnabled(False)
 			self.styleSelf.setEnabled(False)
 			self.saveWidth.setEnabled(False)
+			self.styleBots.setEnabled(False)
 
 		self.selector.setFocus()
 		self.changed.show()
@@ -2326,7 +2345,7 @@ class Dialog(QDialog):
 		self.heartbeat = config.TWISTED_CLIENT_HEARTBEAT
 		self.SET_SUBWINDOW_ORDER = config.SET_SUBWINDOW_ORDER
 		self.INPUT_CURSOR_WIDTH = config.INPUT_CURSOR_WIDTH
-		self.HOSTMASK_FETCH_FREQUENCY = config.HOSTMASK_FETCH_FREQUENCY
+		self.USER_DATA_FETCH_FREQUENCY = config.USER_DATA_FETCH_FREQUENCY
 		self.RECONNECTION_DELAY = config.RECONNECTION_DELAY
 		self.IRC_MAX_PAYLOAD_LENGTH = config.IRC_MAX_PAYLOAD_LENGTH
 		self.CURSOR_BLINK_RATE = config.CURSOR_BLINK_RATE
@@ -4273,7 +4292,7 @@ class Dialog(QDialog):
 
 		self.plainUserLists = QCheckBox("Plain text only",self)
 		if config.PLAIN_USER_LISTS: self.plainUserLists.setChecked(True)
-		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlists)
+		self.plainUserLists.stateChanged.connect(self.changedSettingRerenderUserlistsPlain)
 
 		self.showUserlists = QCheckBox("Show user lists",self)
 		if config.SHOW_USERLIST: self.showUserlists.setChecked(True)
@@ -4340,6 +4359,10 @@ class Dialog(QDialog):
 		if config.LOAD_AND_SAVE_USERLIST_WIDTH: self.saveWidth.setChecked(True)
 		self.saveWidth.stateChanged.connect(self.changedSetting)
 
+		self.styleBots = QCheckBox("Show bots in userlists",self)
+		if config.SHOW_BOTS_IN_USERLISTS: self.styleBots.setChecked(True)
+		self.styleBots.stateChanged.connect(self.changedSettingRerenderUserlists)
+
 		if not config.SHOW_USERLIST:
 			self.ulistWidthLabel.setEnabled(False)
 			self.ulistWidthBox.setEnabled(False)
@@ -4358,11 +4381,15 @@ class Dialog(QDialog):
 			self.underlineSelf.setEnabled(False)
 			self.styleSelf.setEnabled(False)
 			self.saveWidth.setEnabled(False)
+			self.styleBots.setEnabled(False)
 
 		if not config.USERLIST_CONTEXT_MENU:
 			if config.SHOW_USERLIST:
 				self.elideAway.setEnabled(False)
 				self.elideHostmask.setEnabled(False)
+
+		if config.PLAIN_USER_LISTS:
+			self.styleBots.setEnabled(False)
 
 		chanButtonLayout2 = QFormLayout()
 		chanButtonLayout2.setSpacing(0)
@@ -4384,6 +4411,7 @@ class Dialog(QDialog):
 		ulistDisplay1.addRow(self.ignoreUserlist,self.showAwayStatus)
 		ulistDisplay1.addRow(self.colorUserlists,self.noSelectUserlists)
 		ulistDisplay1.addRow(self.underlineSelf,self.styleSelf)
+		ulistDisplay1.addRow(self.styleBots)
 		ulistDisplay1.addRow(self.hideScroll)
 		ulistDisplay1.addRow(self.dcPrivate)
 
@@ -4616,15 +4644,19 @@ class Dialog(QDialog):
 		if config.GET_HOSTMASKS_ON_CHANNEL_JOIN: self.autoHostmasks.setChecked(True)
 		self.autoHostmasks.stateChanged.connect(self.changedSettingHostmask)
 
+		self.autoBots = QCheckBox("Fetch user bot status on channel join",self)
+		if config.GET_BOTS_ON_CHANNEL_JOIN: self.autoBots.setChecked(True)
+		self.autoBots.stateChanged.connect(self.changedSettingHostmask)
+
 		self.showNetLinks = QCheckBox("Show known links to network homepages",self)
 		if config.SHOW_LINKS_TO_NETWORK_WEBPAGES: self.showNetLinks.setChecked(True)
 		self.showNetLinks.stateChanged.connect(self.changedSetting)
 		
-		self.fetchFreqLabel = QLabel("Fetch hostmask every ")
+		self.fetchFreqLabel = QLabel("Fetch user data every ")
 		self.fetchFreqLabelSpec = QLabel(" seconds")
 		self.fetchFreq = QSpinBox()
 		self.fetchFreq.setRange(1,99)
-		self.fetchFreq.setValue(self.HOSTMASK_FETCH_FREQUENCY)
+		self.fetchFreq.setValue(self.USER_DATA_FETCH_FREQUENCY)
 		self.fetchFreq.valueChanged.connect(self.updateFreq)
 
 		freqLayout = QHBoxLayout()
@@ -4754,6 +4786,7 @@ class Dialog(QDialog):
 		afLayout.addWidget(self.showList)
 		afLayout.addLayout(refreshLayout)
 		afLayout.addWidget(self.autoHostmasks)
+		afLayout.addWidget(self.autoBots)
 		afLayout.addLayout(freqLayout)
 
 		self.erroneousDescription = QLabel(f"""
@@ -4784,7 +4817,6 @@ class Dialog(QDialog):
 		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>connection settings</b>"))
 		connectionsLayout.addLayout(csLayout)
 		connectionsLayout.addWidget(QLabel(' '))
-		connectionsLayout.addWidget(widgets.textSeparatorLabel(self,"<b>erroneous nickname</b>"))
 		connectionsLayout.addWidget(self.erroneousDescription)
 		connectionsLayout.addLayout(eLayout)
 		connectionsLayout.addWidget(QLabel(' '))
@@ -6658,7 +6690,7 @@ class Dialog(QDialog):
 		if config.SEARCH_ALL_TERMS_IN_CHANNEL_LIST: self.searchAllTerms.setChecked(True)
 		self.searchAllTerms.stateChanged.connect(self.changedSetting)
 
-		self.examineTopic = QCheckBox("Examine topics in channel list ",self)
+		self.examineTopic = QCheckBox("Examine topics in channel list search",self)
 		if config.EXAMINE_TOPIC_IN_CHANNEL_LIST_SEARCH: self.examineTopic.setChecked(True)
 		self.examineTopic.stateChanged.connect(self.changedSetting)
 
@@ -7348,7 +7380,7 @@ class Dialog(QDialog):
 		config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = self.elideAway.isChecked()
 		config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = self.elideHostmask.isChecked()
 		config.USERLIST_CONTEXT_MENU = self.ulistContext.isChecked()
-		config.HOSTMASK_FETCH_FREQUENCY = self.HOSTMASK_FETCH_FREQUENCY
+		config.USER_DATA_FETCH_FREQUENCY = self.USER_DATA_FETCH_FREQUENCY
 		config.DO_NOT_SHOW_SERVER_IN_TITLE = self.noShowServerTitle.isChecked()
 		config.SHOW_CONNECTIONS_IN_SYSTRAY_MENU = self.stmConnections.isChecked()
 		config.SHOW_SETTINGS_IN_SYSTRAY_MENU = self.stmSettings.isChecked()
@@ -7493,6 +7525,8 @@ class Dialog(QDialog):
 		config.PRESERVE_SPACING_FOR_DISPLAY = self.presSpaces.isChecked()
 		config.LOG_IGNORED_USERS = self.ignoreLog.isChecked()
 		config.ALWAYS_USE_SASL_LOGINS = self.useSasl.isChecked()
+		config.GET_BOTS_ON_CHANNEL_JOIN = self.autoBots.isChecked()
+		config.SHOW_BOTS_IN_USERLISTS = self.styleBots.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

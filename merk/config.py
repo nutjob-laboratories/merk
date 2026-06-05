@@ -292,7 +292,7 @@ ENABLE_WAIT_COMMAND = True
 ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = True
 ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = True
 USERLIST_CONTEXT_MENU = True
-HOSTMASK_FETCH_FREQUENCY = 5
+USER_DATA_FETCH_FREQUENCY = 5
 DO_NOT_SHOW_SERVER_IN_TITLE = False
 SHOW_CONNECTIONS_IN_SYSTRAY_MENU = True
 SHOW_SETTINGS_IN_SYSTRAY_MENU = True
@@ -469,9 +469,13 @@ FALLBACK_DECODING_TYPE = "iso-8859-1"
 DECODING_TYPE = "utf-8"
 LOG_IGNORED_USERS = True
 ALWAYS_USE_SASL_LOGINS = True
+GET_BOTS_ON_CHANNEL_JOIN = True
+SHOW_BOTS_IN_USERLISTS = True
 
 def build_settings():
 	settings = {
+		"get_bots_on_channel_join": GET_BOTS_ON_CHANNEL_JOIN,
+		"show_bots_in_userlists": SHOW_BOTS_IN_USERLISTS,
 		"always_use_sasl_logins": ALWAYS_USE_SASL_LOGINS,
 		"save_ignored_user_chat_to_log": LOG_IGNORED_USERS,
 		"decoding_type_for_incoming_data": DECODING_TYPE,
@@ -647,7 +651,7 @@ def build_settings():
 		"show_directories_in_systray_menu": SHOW_DIRECTORIES_IN_SYSTRAY_MENU,
 		"show_links_in_systray_menu": SHOW_LINKS_IN_SYSTRAY_MENU,
 		"do_not_show_server_name_in_application_title": DO_NOT_SHOW_SERVER_IN_TITLE,
-		"fetch_hostmask_frequency": HOSTMASK_FETCH_FREQUENCY,
+		"fetch_user_data_frequency": USER_DATA_FETCH_FREQUENCY,
 		"enable_userlist_context_menu": USERLIST_CONTEXT_MENU,
 		"elide_hostmask_in_userlist_context_menu": ELIDE_HOSTMASK_IN_USERLIST_CONTEXT,
 		"elide_away_message_in_userlist_context_menu": ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT,
@@ -900,6 +904,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "get_bots_on_channel_join" in settings:
+		settings["get_bots_on_channel_join"] = GET_BOTS_ON_CHANNEL_JOIN
+	if not "show_bots_in_userlists" in settings:
+		settings["show_bots_in_userlists"] = SHOW_BOTS_IN_USERLISTS
 	if not "always_use_sasl_logins" in settings:
 		settings["always_use_sasl_logins"] = ALWAYS_USE_SASL_LOGINS
 	if not "save_ignored_user_chat_to_log" in settings:
@@ -1250,8 +1258,8 @@ def patch_settings(settings):
 		settings["show_links_in_systray_menu"] = SHOW_LINKS_IN_SYSTRAY_MENU
 	if not "do_not_show_server_name_in_application_title" in settings:
 		settings["do_not_show_server_name_in_application_title"] = DO_NOT_SHOW_SERVER_IN_TITLE
-	if not "fetch_hostmask_frequency" in settings:
-		settings["fetch_hostmask_frequency"] = HOSTMASK_FETCH_FREQUENCY
+	if not "fetch_user_data_frequency" in settings:
+		settings["fetch_user_data_frequency"] = USER_DATA_FETCH_FREQUENCY
 	if not "enable_userlist_context_menu" in settings:
 		settings["enable_userlist_context_menu"] = USERLIST_CONTEXT_MENU
 	if not "elide_hostmask_in_userlist_context_menu" in settings:
@@ -1997,7 +2005,7 @@ def load_settings(filename):
 	global ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT
 	global ELIDE_HOSTMASK_IN_USERLIST_CONTEXT
 	global USERLIST_CONTEXT_MENU
-	global HOSTMASK_FETCH_FREQUENCY
+	global USER_DATA_FETCH_FREQUENCY
 	global DO_NOT_SHOW_SERVER_IN_TITLE
 	global SHOW_CONNECTIONS_IN_SYSTRAY_MENU
 	global SHOW_SETTINGS_IN_SYSTRAY_MENU
@@ -2173,6 +2181,8 @@ def load_settings(filename):
 	global DECODING_TYPE
 	global LOG_IGNORED_USERS
 	global ALWAYS_USE_SASL_LOGINS
+	global GET_BOTS_ON_CHANNEL_JOIN
+	global SHOW_BOTS_IN_USERLISTS
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2182,6 +2192,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		GET_BOTS_ON_CHANNEL_JOIN = settings["get_bots_on_channel_join"]
+		SHOW_BOTS_IN_USERLISTS = settings["show_bots_in_userlists"]
 		ALWAYS_USE_SASL_LOGINS = settings["always_use_sasl_logins"]
 		LOG_IGNORED_USERS = settings["save_ignored_user_chat_to_log"]
 		DECODING_TYPE = settings["decoding_type_for_incoming_data"]
@@ -2357,7 +2369,7 @@ def load_settings(filename):
 		SHOW_DIRECTORIES_IN_SYSTRAY_MENU = settings["show_directories_in_systray_menu"]
 		SHOW_LINKS_IN_SYSTRAY_MENU = settings["show_links_in_systray_menu"]
 		DO_NOT_SHOW_SERVER_IN_TITLE = settings["do_not_show_server_name_in_application_title"]
-		HOSTMASK_FETCH_FREQUENCY = settings["fetch_hostmask_frequency"]
+		USER_DATA_FETCH_FREQUENCY = settings["fetch_user_data_frequency"]
 		USERLIST_CONTEXT_MENU = settings["enable_userlist_context_menu"]
 		ELIDE_HOSTMASK_IN_USERLIST_CONTEXT = settings["elide_hostmask_in_userlist_context_menu"]
 		ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT = settings["elide_away_message_in_userlist_context_menu"]

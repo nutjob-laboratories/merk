@@ -1,4 +1,26 @@
 |------------------------------------------------------------------------------|
+|                                   0.052.000                                  |
+|------------------------------------------------------------------------------|
+
+What's new:
+
+- **User "bot" status can now be displayed to the user**. If the server has the option to mark users as bots (+B) turned on, MERK will display if a user is a bot or not. This can be shown in userlists and in the userlist right click menu.
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Whois responses can now show if a given user is a bot, if that option is
+  turned on in the server.
+* Userlists can now display if a user is a bot or not, if that option is turned
+  on in the server.
+* MERK can now fetch the bot status of any user in a channel MERK is in. The
+  settings (which are "on" by default) work the same way as fetching hostmasks
+  from the server.
+* The "fetch hostmask frequency" setting has been changed to "fetch user data"
+  due to it also being used for bot status.
+
+|------------------------------------------------------------------------------|
 |                                   0.051.950                                  |
 |------------------------------------------------------------------------------|
 

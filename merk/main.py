@@ -2404,6 +2404,11 @@ class Merk(QMainWindow):
 			Message(WHOIS_MESSAGE,displaynick, "\x02"+whoisdata.privs+"\x0F"),
 		]
 
+		if whoisdata.bot:
+			wd.append(Message(WHOIS_MESSAGE,displaynick, "\x02is a bot\x0F"))
+		else:
+			wd.append(Message(WHOIS_MESSAGE,displaynick, "\x02is not a bot\x0F"))
+
 		w = self.MDI.activeSubWindow()
 		if w:
 			c = w.widget()
@@ -2826,8 +2831,6 @@ class Merk(QMainWindow):
 			c = window.widget()
 			if hasattr(c,"userlist"):
 				c.rerenderUserlist()
-			# if hasattr(c,"readjustUserlist"):
-			# 	c.readjustUserlist()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 
