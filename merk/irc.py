@@ -1296,31 +1296,46 @@ class IRC_Connection(irc.IRCClient):
 			self.joined_channel.remove(channel)
 			self.gui.joinedEvent(self,channel)
 
-		# Remove status symbols from the nick list
+		# Build and sort the channel and "all
+		# visibile nickname" lists
+		self.all_visible_nicknames = []
 		if channel in self.all_nicks:
 			cleaned = []
 			for n in self.all_nicks[channel]:
+
+				# See if the nick in the list
+				# contains a hostmask, and if
+				# if does, ignore it; we only
+				# want the nicknames
 				p = n.split('!')
 				if len(p)==2:
 					nick = p[0]
 				else:
 					nick = n
+
+				# Strip status symbols
 				nick = nick.replace('@','')
 				nick = nick.replace('+','')
 				nick = nick.replace('~','')
 				nick = nick.replace('&','')
 				nick = nick.replace('%','')
 				nick = nick.replace('!','')
-				if nick==self.nickname: continue
-				cleaned.append(nick)
-			self.all_nicks[channel] = list(cleaned).sort(key=str.lower)
 
-		# Build a list of all visible nicknames
-		try:
-			self.all_visible_nicknames = list(set([n for lst in self.all_nicks.values() for n in lst]))
-			self.all_visible_nicknames.sort(key=str.lower)
-		except:
-			self.all_visible_nicknames = []
+				# If the nickname is "us" or blank,
+				# don't add it to the list
+				if nick==self.nickname: continue
+				if len(nick)==0: continue
+
+				# Add to both the channel list and
+				# the "all visible" nick list
+				cleaned.append(nick)
+				self.all_visible_nicknames.append(nick)
+
+			# Sort the now "cleaned" per-channel nicklist
+			self.all_nicks[channel] = sorted(cleaned,key=str.lower)
+
+		# Sort the list of all visible nicknames
+		self.all_visible_nicknames = sorted(list(set(self.all_visible_nicknames)),key=str.lower)
 
 	def irc_RPL_TOPIC(self, prefix, params):
 		if not params[2].isspace():

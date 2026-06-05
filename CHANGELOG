@@ -4,7 +4,7 @@
 
 What's new:
 
-- **User "bot" status can now be displayed to the user**. If the server has the option to mark users as bots (+B) turned on, MERK will display if a user is a bot or not. This can be shown in userlists and in the userlist right click menu.
+- **User "bot" status can now be displayed to the user**. If the server has the option to mark users as bots (user mode +B) turned on, MERK will display if a user is a bot or not. This can be shown in userlists and in the userlist right click menu.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -19,6 +19,12 @@ What's new:
   from the server.
 * The "fetch hostmask frequency" setting has been changed to "fetch user data"
   due to it also being used for bot status.
+* Bugfix: the "all visible nickname" list was being improperly built, if at
+  all. This has been fixed and works properly now.
+* Bugfix: the internal "channel nickname list" tracked in the client was also
+  being built improperly.
+* The "channel nickname" and "all visible nickname" lists are now sorted as
+  they were intended to be.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |
