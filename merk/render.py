@@ -244,7 +244,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	# Highlight nicks if that option is turned on
 	if (config.HIGHLIGHT_NICKS_IN_CHAT or config.HIGHLIGHT_WORDS_IN_CHAT) and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		if message.type==CHAT_MESSAGE or message.type==PRIVATE_MESSAGE or message.type==SELF_MESSAGE:
-			if len(words_to_highlight)>0: msg_to_display = highlight_nick(msg_to_display,words_to_highlight,nicks,highlighted_words,style)
+			if len(words_to_highlight)>0: msg_to_display = highlight_words_in_chat(msg_to_display,words_to_highlight,nicks,highlighted_words,style)
 
 	if config.CONVERT_URLS_TO_LINKS and has_link_in_chat:
 		msg_to_display = restore_link_placeholders(msg_to_display,placeholders)
@@ -368,7 +368,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 def replace_first_style_color(style, new_color):
 	return re.sub(r'#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}', new_color, style, count=1)
 
-def highlight_nick(text, target_words, user_colors, highlighted_words, style):
+def highlight_words_in_chat(text, target_words, user_colors, highlighted_words, style):
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT:
 		background, foreground = styles.parseBackgroundAndForegroundColor(style["all"])
 		style_str = f"color:{foreground};"

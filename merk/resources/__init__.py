@@ -503,6 +503,20 @@ class UserMacro:
 		
 # Functions
 
+def is_text_too_long_with_command(text,maxlength):
+	tl = len(text)
+	if text.startswith('/msg') or text.startswith('/notice') or text.startswith('/me'):
+		try:
+			cmd, target = text.split()[:2]
+			tl = tl - len(cmd) - len(target) - 2
+			if tl>=maxlength:
+				return True
+			else:
+				return False
+		except:
+			return None
+	return None
+
 def preserve_existing_spacing_for_display(s):
 	parts = re.split(r'(<[^>]*>)', s)
 	for i in range(len(parts)):
@@ -538,8 +552,7 @@ def is_text_file(filepath, block_size=1024):
 		return False
 
 def is_allowed_nickname(s):
-	forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘ "
-	pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
+	pattern = r"^[a-zA-Z\[\\\]^_\{\|\}][a-zA-Z0-9\[\\\]^_\{\|\}\-]*$"
 	regex = re.compile(pattern)
 	return bool(regex.match(s))
 
@@ -1127,27 +1140,6 @@ class LogViewer(QTextEdit):
 			url = url[:-1]
 		return url
 	
-	# def mouseMoveEvent(self, event):
-	# 	cursor = self.cursorForPosition(event.pos())
-	# 	block = cursor.block()
-	# 	text = block.text()
-	# 	pos_in_block = cursor.positionInBlock()
-		
-	# 	is_over_url = False
-	# 	for match in self.url_pattern.finditer(text):
-	# 		clean_url = self._clean_url(match.group())
-	# 		clean_end = match.start() + len(clean_url)
-	# 		if match.start() <= pos_in_block <= clean_end:
-	# 			is_over_url = True
-	# 			break
-		
-	# 	if is_over_url:
-	# 		self.viewport().setCursor(QCursor(Qt.PointingHandCursor))
-	# 	else:
-	# 		self.viewport().setCursor(QCursor(Qt.ArrowCursor))
-		
-	# 	super().mouseMoveEvent(event)
-	
 	def mouseMoveEvent(self, event):
 		cursor = self.cursorForPosition(event.pos())
 		block = cursor.block()
@@ -1365,8 +1357,7 @@ class QNickEdit(QLineEdit):
 
 		# Block forbidden characters from nicknames,
 		# including nicknames that start with numbers
-		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘ "
-		pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
+		pattern = r"^[a-zA-Z\[\\\]^_\{\|\}][a-zA-Z0-9\[\\\]^_\{\|\}\-]*$"
 		
 		self.validator = QRegExpValidator(QRegExp(pattern), self)
 		self.setValidator(self.validator)
@@ -1398,10 +1389,12 @@ class QErrNickEdit(QLineEdit):
 	def __init__(self, parent=None):
 		super().__init__(parent)
 
+		# Set maximum length of 8 characters
 		self.setMaxLength(8)
 
-		forbidden_chars = r"!@.\:,\/\\\*?\+=\$%<>&“‘ "
-		pattern = rf"^[^0-9\-{forbidden_chars}][^{forbidden_chars}]*$"
+		# Block forbidden characters from nicknames,
+		# including nicknames that start with numbers
+		pattern = r"^[a-zA-Z\[\\\]^_\{\|\}][a-zA-Z0-9\[\\\]^_\{\|\}\-]*$"
 		
 		self.validator = QRegExpValidator(QRegExp(pattern), self)
 		self.setValidator(self.validator)

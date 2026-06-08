@@ -5,6 +5,7 @@
 What's new:
 
 - **User "bot" status can now be displayed to the user**. If the server has the option to mark users as bots (user mode +B) turned on, MERK will display if a user is a bot or not. This can be shown in userlists and in the userlist right click menu.
+- **More servers to connect to**. **MERK** now features more than 200 servers to connect to in the connection dialog.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -25,6 +26,19 @@ What's new:
   being built improperly.
 * The "channel nickname" and "all visible nickname" lists are now sorted as
   they were intended to be.
+* Bugfix: channel names are now detected easier, more efficiently, and more
+  accurately for highlighting in the text input widget.
+* The "too long message" indicator now takes into consideration if commands
+  (and their targets) are in the text input widget, and subtracts the length of
+  the command and target from the payload.
+* Bugfix: nickname autocomplete now works for "weird" names with punctuation in
+  them.
+* Bugfix: the widget for entering nickname now allows nicknames that previously
+  wouldn't be allowed to be entered, but are valid IRC nicks.
+* Bugfix: the nickname "validator" for commands was re-written to use the same
+  rules the nickname entry widget uses.
+* Added over 100 servers to the internal server list for use with the
+  connection dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |

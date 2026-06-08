@@ -474,7 +474,7 @@ SHOW_BOTS_IN_USERLISTS = True
 
 def build_settings():
 	settings = {
-		"get_bots_on_channel_join": GET_BOTS_ON_CHANNEL_JOIN,
+		"get_bot_status_on_channel_join": GET_BOTS_ON_CHANNEL_JOIN,
 		"show_bots_in_userlists": SHOW_BOTS_IN_USERLISTS,
 		"always_use_sasl_logins": ALWAYS_USE_SASL_LOGINS,
 		"save_ignored_user_chat_to_log": LOG_IGNORED_USERS,
@@ -904,8 +904,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
-	if not "get_bots_on_channel_join" in settings:
-		settings["get_bots_on_channel_join"] = GET_BOTS_ON_CHANNEL_JOIN
+	if not "get_bot_status_on_channel_join" in settings:
+		settings["get_bot_status_on_channel_join"] = GET_BOTS_ON_CHANNEL_JOIN
 	if not "show_bots_in_userlists" in settings:
 		settings["show_bots_in_userlists"] = SHOW_BOTS_IN_USERLISTS
 	if not "always_use_sasl_logins" in settings:
@@ -2192,7 +2192,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
-		GET_BOTS_ON_CHANNEL_JOIN = settings["get_bots_on_channel_join"]
+		GET_BOTS_ON_CHANNEL_JOIN = settings["get_bot_status_on_channel_join"]
 		SHOW_BOTS_IN_USERLISTS = settings["show_bots_in_userlists"]
 		ALWAYS_USE_SASL_LOGINS = settings["always_use_sasl_logins"]
 		LOG_IGNORED_USERS = settings["save_ignored_user_chat_to_log"]

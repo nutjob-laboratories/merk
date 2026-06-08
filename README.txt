@@ -140,7 +140,7 @@ There are four libraries that comes bundled with **MERK**:
 -   Supports multiple connections (you can chat on more than one IRC server at a time)
 -   Connect to IRC via TCP/IP or SSL/TLS
 -   SASL support
--   A built-in list of over 80 IRC servers to connect to
+-   A built-in list of over 200 IRC servers to connect to
 -   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
 -   Built-in [documentation](./MERK_User_Guide.pdf)!
 -   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
@@ -209,6 +209,7 @@ There are four libraries that comes bundled with **MERK**:
         - Inject [IRC colors](https://www.mirc.com/colors.html) into input with plain text
             - Open a color block with `<NUMBER` to set the foreground color, and `<NUMBER,NUMBER` to set the foreground and background colors, and close the color block with `>`.
         - Colors and formatting is displayed in chat (with the option to turn this behavior off) and in channel topics
+        - This feature is informally called "MERKdown" by some users.
     - Plugins
       - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf)
       - Plugins are written in Python, and have access to everything that Python has
@@ -450,7 +451,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/xreconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script, reconnecting on disconnection                                                              |
 
 # MERK "Markdown"
-You can easily "inject" IRC colors and formatting into chat and topics using **MERK** "markdown".
+You can easily "inject" IRC colors and formatting into chat and topics using **MERK** "markdown" (also known as "MERKdown").
 
 To insert IRC colors, open a chat message with `<NUMBER` (to set the foreground color of the chat), or `<NUMBER,NUMBER` (to set the foreground and background colors of the chat, respectively). `NUMBER` can be any number from 0 to 15, the "traditional" 16 colors of IRC chat. Stop using the color formatting by "closing" the text with `>`. So, to display the words "Hello world!" in white on a red background, you'd use `<0,4Hello world!>`.
 

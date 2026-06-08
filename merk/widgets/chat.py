@@ -4321,10 +4321,17 @@ class SpellTextEdit(QPlainTextEdit):
 		elif event.key() == Qt.Key_Delete or event.key() == Qt.Key_Backspace:
 			super().keyPressEvent(event)
 			if config.DISPLAY_LONG_MESSAGE_INDICATOR:
-				if len(self.text())>=config.IRC_MAX_PAYLOAD_LENGTH:
-					self.parent.too_long_icon.show()
+				ind = is_text_too_long_with_command(self.text(),config.IRC_MAX_PAYLOAD_LENGTH)
+				if ind==None:
+					if len(self.text())>=config.IRC_MAX_PAYLOAD_LENGTH:
+						self.parent.too_long_icon.show()
+					else:
+						self.parent.too_long_icon.hide()
 				else:
-					self.parent.too_long_icon.hide()
+					if ind:
+						self.parent.too_long_icon.show()
+					else:
+						self.parent.too_long_icon.hide()
 			else:
 				self.parent.too_long_icon.hide()
 			return
@@ -4514,35 +4521,61 @@ class SpellTextEdit(QPlainTextEdit):
 								return
 
 				if config.AUTOCOMPLETE_NICKS:
-					# Auto-complete nicks
 					cursor.select(QTextCursor.WordUnderCursor)
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
-						text = self.textCursor().selectedText()
-						if self.parent.window_type==CHANNEL_WINDOW:
-							# Nicks in the current channel
-							for nick in self.parent.nicks:
-								# Skip client's nickname
-								if nick==self.parent.client.nickname:
-									continue
-								if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(f"{nick}")
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
-						else:
-							# Nicks in all current channels
-							for nick in self.parent.client.all_visible_nicknames:
-								# Skip client's nickname
-								if nick==self.parent.client.nickname:
-									continue
-								if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(f"{nick}")
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
+						cursor = self.textCursor()
+						block = cursor.block()
+						block_text = block.text()
+						start = cursor.selectionStart() - block.position()
+						end = cursor.selectionEnd() - block.position()
+						left = start
+						while left > 0 and re.match(r'[a-zA-Z0-9\[\]{}\|\\^\~\-_]', block_text[left - 1]):
+							left -= 1
+						text = block_text[left:end]
+						nicks = (self.parent.nicks if self.parent.window_type == CHANNEL_WINDOW 
+								 else self.parent.client.all_visible_nicknames)
+						for nick in nicks:
+							if nick == self.parent.client.nickname:
+								continue
+							if fnmatch.fnmatch(nick.lower(), f"{text.lower()}*"):
+								cursor.setPosition(block.position() + left)
+								cursor.setPosition(block.position() + end, QTextCursor.KeepAnchor)
+								cursor.beginEditBlock()
+								cursor.insertText(nick)
+								cursor.endEditBlock()
+								self.ensureCursorVisible()
+								return
+
+					# Auto-complete nicks
+					# cursor.select(QTextCursor.WordUnderCursor)
+					# self.setTextCursor(cursor)
+					# if self.textCursor().hasSelection():
+					# 	text = self.textCursor().selectedText()
+					# 	if self.parent.window_type==CHANNEL_WINDOW:
+					# 		# Nicks in the current channel
+					# 		for nick in self.parent.nicks:
+					# 			# Skip client's nickname
+					# 			if nick==self.parent.client.nickname:
+					# 				continue
+					# 			if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
+					# 				cursor.beginEditBlock()
+					# 				cursor.insertText(f"{nick}")
+					# 				cursor.endEditBlock()
+					# 				self.ensureCursorVisible()
+					# 				return
+					# 	else:
+					# 		# Nicks in all current channels
+					# 		for nick in self.parent.client.all_visible_nicknames:
+					# 			# Skip client's nickname
+					# 			if nick==self.parent.client.nickname:
+					# 				continue
+					# 			if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
+					# 				cursor.beginEditBlock()
+					# 				cursor.insertText(f"{nick}")
+					# 				cursor.endEditBlock()
+					# 				self.ensureCursorVisible()
+					# 				return
 
 				if config.AUTOCOMPLETE_SERVERS:
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -4663,10 +4696,17 @@ class SpellTextEdit(QPlainTextEdit):
 
 		else:
 			if config.DISPLAY_LONG_MESSAGE_INDICATOR:
-				if len(self.text())>=config.IRC_MAX_PAYLOAD_LENGTH:
-					self.parent.too_long_icon.show()
+				ind = is_text_too_long_with_command(self.text(),config.IRC_MAX_PAYLOAD_LENGTH)
+				if ind==None:
+					if len(self.text())>=config.IRC_MAX_PAYLOAD_LENGTH:
+						self.parent.too_long_icon.show()
+					else:
+						self.parent.too_long_icon.hide()
 				else:
-					self.parent.too_long_icon.hide()
+					if ind:
+						self.parent.too_long_icon.show()
+					else:
+						self.parent.too_long_icon.hide()
 			else:
 				self.parent.too_long_icon.hide()
 			return super().keyPressEvent(event)
@@ -4794,15 +4834,14 @@ class SpellTextEdit(QPlainTextEdit):
 class Highlighter(QSyntaxHighlighter):
 
 	WORDS = u'(?iu)[\\w\']+'
-	CHANNELS = r'(#+[^#\s]+)'
-	CHANNELS_2 = r'(\&+[^\&\s]+)'
-	CHANNELS_3 = r'(\!+[^\!\s]+)'
-	CHANNELS_4 = r'(\++[^\+\s]+)'
+	CHANNELS = r'([#&+!]+[a-zA-Z0-9_\-]{1,49})'
 	EMOJIS = r":\w+:"
 	ASCIIMOJIS = r"\(\w+\)"
 	SPECIAL = ['\\','^','$','.','|','?','*','+','(',')','{']
 	HOSTIDS = r"([A-Za-z0-9.-]+:\d+)"
 	HOSTS = r"([A-Za-z0-9.-]+)"
+	NICKS = r'(?iu)\\[a-zA-Z0-9\[\]{}\|^~_-]+|[a-zA-Z0-9\[\]{}\|^~_-]+'
+
 
 	def __init__(self, *args):
 		QSyntaxHighlighter.__init__(self, *args)
@@ -4857,7 +4896,7 @@ class Highlighter(QSyntaxHighlighter):
 
 			# Apply syntax style to nicknames
 			nickformat = syntax.format(config.SYNTAX_NICKNAME_COLOR,config.SYNTAX_NICKNAME_STYLE)
-			for word_object in re.finditer(self.WORDS, text):
+			for word_object in re.finditer(self.NICKS, text):
 				if self.parent.window_type!=CHANNEL_WINDOW:
 					hnicks = self.parent.client.all_visible_nicknames
 				else:
@@ -4871,27 +4910,6 @@ class Highlighter(QSyntaxHighlighter):
 			# Apply syntax styles to channels
 			channelformat = syntax.format(config.SYNTAX_CHANNEL_COLOR,config.SYNTAX_CHANNEL_STYLE)
 			for word_object in re.finditer(self.CHANNELS, text):
-				for name in self.parent.parent.getAllChatNames():
-					if name==word_object.group():
-						do_not_spellcheck.append(name)
-						do_not_spellcheck.append(name[1:])
-						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
-
-			for word_object in re.finditer(self.CHANNELS_2, text):
-				for name in self.parent.parent.getAllChatNames():
-					if name==word_object.group():
-						do_not_spellcheck.append(name)
-						do_not_spellcheck.append(name[1:])
-						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
-
-			for word_object in re.finditer(self.CHANNELS_3, text):
-				for name in self.parent.parent.getAllChatNames():
-					if name==word_object.group():
-						do_not_spellcheck.append(name)
-						do_not_spellcheck.append(name[1:])
-						self.setFormat(word_object.start(), word_object.end() - word_object.start(), channelformat)
-
-			for word_object in re.finditer(self.CHANNELS_4, text):
 				for name in self.parent.parent.getAllChatNames():
 					if name==word_object.group():
 						do_not_spellcheck.append(name)
