@@ -2352,6 +2352,8 @@ class Window(QMainWindow):
 								status_text = "Voiced User"
 							elif user_is_protected:
 								status_text = "Protected User"
+							else:
+								status_text = "Normal User"
 							if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
 							if status_text!='':
 								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
@@ -2400,6 +2402,8 @@ class Window(QMainWindow):
 							status_text = "Voiced User"
 						elif user_is_protected:
 							status_text = "Protected User"
+						else:
+							status_text = "Normal User"
 						if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
 						if status_text!='':
 							entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")

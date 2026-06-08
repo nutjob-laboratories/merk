@@ -405,8 +405,12 @@ class Dialog(QDialog):
 	def clickExe(self,state):
 		if state == Qt.Checked:
 			self.EXECUTE = True
+			if hasattr(self,"commands_tab"):
+				self.commands_tab.setEnabled(True)
 		else:
 			self.EXECUTE = False
+			if hasattr(self,"commands_tab"):
+				self.commands_tab.setEnabled(False)
 
 	def clickSave(self,state):
 		if state == Qt.Checked:
@@ -646,7 +650,7 @@ class Dialog(QDialog):
 		passl = QLabel("<b>Password</b>")
 		serverLayout.addRow(passl, self.password)
 
-		self.sasl = QCheckBox("Login via SASL",self)
+		self.sasl = QCheckBox("Login with SASL",self)
 		self.sasl.stateChanged.connect(self.clickSASL)
 		self.sasl.setFont(less_smaller_font)
 
@@ -697,7 +701,9 @@ class Dialog(QDialog):
 		self.serverDescription = QLabel("""
 			<small>
 			Select a server below, or enter connection information by hand. To automatically
-			reconnect on disconnection, check the <b>Reconnect</b> checkbox. If the <b>Execute connection
+			reconnect on disconnection, check the <b>Reconnect</b> checkbox. To login to channel
+			services via SASL, check the <b>Login with SASL</b> checkbox; you can edit your SASL
+			login with the <b>Edit</b> and <b>Clear</b> buttons. If the <b>Execute connection
 			script</b> option is enabled, the commands entered in the <b>Script</b> tab will be executed
 			when connection to the server is complete.
 			</small>
@@ -893,12 +899,23 @@ class Dialog(QDialog):
 			if not config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG:
 				splash = QLabel()
 				pixmap = QPixmap(SPLASH_LOGO)
-				scaled_pixmap = pixmap.scaled(190, 49, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+				scaled_pixmap = pixmap.scaled(194, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 				splash.setPixmap(scaled_pixmap)
 
+				mlink = QLabel(f"<small><b>&nbsp;&nbsp;<a href=\"{APPLICATION_SOURCE}\">https://merk.chat</a></b></small>")
+				mlink.setOpenExternalLinks(True)
+
+				tlayout = QVBoxLayout()
+				tlayout.setSpacing(0)
+				tlayout.addWidget(QLabel("<small><b>&nbsp;&nbsp;Internet Relay Chat</b></small>"))
+				tlayout.addWidget(QLabel("<small><b>&nbsp;&nbsp;Free and Open Source</b></small>"))
+				tlayout.addWidget(mlink)
+
 				spLayout = QHBoxLayout()
+				spLayout.setSpacing(0)
 				spLayout.addStretch()
 				spLayout.addWidget(splash)
+				spLayout.addLayout(tlayout)
 				spLayout.addStretch()
 
 				vLayout = QVBoxLayout()

@@ -39,6 +39,8 @@ What's new:
   rules the nickname entry widget uses.
 * Added over 100 servers to the internal server list for use with the
   connection dialog.
+* Tweaked the connection dialog due to the added width from the new built-in
+  server list.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |
