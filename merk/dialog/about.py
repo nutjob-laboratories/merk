@@ -300,11 +300,14 @@ class Dialog(QDialog):
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
 
-		other_credit = QLabel(f"""<b>
-			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br>
-			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a><br>
-			<a href=\"https://github.com/GlobeDotters\">Ivan \"Avatar\" Todorov</a>
-			</b>""")
+		other_credit = QLabel(f"""<b><big><br>
+			<a href=\"https://github.com/robotmachine\">Brian Carter</a><br><br>
+			<a href=\"https://github.com/BreadcrumbPattie\">Stefan Petrovic</a><br><br>
+			<a href=\"https://github.com/GlobeDotters\">Ivan \"Avatar\" Todorov</a><br>
+			<small><a href=\"https://inthemansion.com/\">MansionNET</a></small><br><br>
+			<a href=\"https://vulpinelinux.org\">Vulpine Linux</a><br>
+			<small><a href=\"https://forge.dnsrail.org/vulpinelinux/vpm\">Vulpine Package Manager</a></small>
+			</big></b>""")
 		other_credit.setAlignment(Qt.AlignCenter)
 		other_credit.setOpenExternalLinks(True)
 

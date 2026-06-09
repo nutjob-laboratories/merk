@@ -4551,36 +4551,6 @@ class SpellTextEdit(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
-					# Auto-complete nicks
-					# cursor.select(QTextCursor.WordUnderCursor)
-					# self.setTextCursor(cursor)
-					# if self.textCursor().hasSelection():
-					# 	text = self.textCursor().selectedText()
-					# 	if self.parent.window_type==CHANNEL_WINDOW:
-					# 		# Nicks in the current channel
-					# 		for nick in self.parent.nicks:
-					# 			# Skip client's nickname
-					# 			if nick==self.parent.client.nickname:
-					# 				continue
-					# 			if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
-					# 				cursor.beginEditBlock()
-					# 				cursor.insertText(f"{nick}")
-					# 				cursor.endEditBlock()
-					# 				self.ensureCursorVisible()
-					# 				return
-					# 	else:
-					# 		# Nicks in all current channels
-					# 		for nick in self.parent.client.all_visible_nicknames:
-					# 			# Skip client's nickname
-					# 			if nick==self.parent.client.nickname:
-					# 				continue
-					# 			if fnmatch.fnmatch(nick.lower(),f"{text.lower()}*"):
-					# 				cursor.beginEditBlock()
-					# 				cursor.insertText(f"{nick}")
-					# 				cursor.endEditBlock()
-					# 				self.ensureCursorVisible()
-					# 				return
-
 				if config.AUTOCOMPLETE_SERVERS:
 					cursor.select(QTextCursor.WordUnderCursor)
 					self.setTextCursor(cursor)
