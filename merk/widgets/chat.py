@@ -507,7 +507,8 @@ class Window(QMainWindow):
 				self.channel_users_display.hide()
 
 		# Create chat display widget
-		self.chat = QTextBrowser(self)
+		# self.chat = QTextBrowser(self)
+		self.chat = ChatViewer(self)
 		self.chat.setFocusPolicy(Qt.NoFocus)
 		self.chat.anchorClicked.connect(self.linkClicked)
 		self.chat.setReadOnly(True)
@@ -2135,475 +2136,477 @@ class Window(QMainWindow):
 				if item is None: return True
 
 				user = item.text()
-
-				user_nick = ''
-				user_hostmask = None
-				user_is_op = False
-				user_is_voiced = False
-				user_is_admin = False
-				user_is_owner = False
-				user_is_halfop = False
-				user_is_protected = False
-
-				raw_user = None
-
-				for u in self.users:
-					p = u.split('!')
-					if len(p)==2:
-						nick = p[0]
-						hostmask = p[1]
-					else:
-						nick = u
-						hostmask = None
-
-					if '@' in nick:
-						is_op = True
-						nick = nick.replace('@','')
-					else:
-						is_op = False
-					if '+' in nick:
-						is_voiced = True
-						nick = nick.replace('+','')
-					else:
-						is_voiced = False
-					if '~' in nick:
-						is_owner = True
-						nick = nick.replace('~','')
-					else:
-						is_owner = False
-					if '&' in nick:
-						is_admin = True
-						nick = nick.replace('&','')
-					else:
-						is_admin = False
-					if '%' in nick:
-						is_halfop = True
-						nick = nick.replace('%','')
-					else:
-						is_halfop = False
-					if '!' in nick:
-						is_protected = True
-						nick = nick.replace('!','')
-					else:
-						is_protected = False
-					if nick==user:
-						raw_user = u
-						user_nick = nick
-						if hostmask:
-							user_hostmask = hostmask
-						else:
-							if nick in self.hostmasks:
-								user_hostmask = self.hostmasks[nick]
-						user_is_op = is_op
-						user_is_voiced = is_voiced
-						user_is_owner = is_owner
-						user_is_admin = is_admin
-						user_is_halfop = is_halfop
-						user_is_protected = is_protected
-						break
-
-				if len(user_nick.strip())==0:
-					if '@' in user:
-						user_is_op = True
-						user = user.replace('@','')
-					if '+' in user:
-						user_is_voiced = True
-						user = user.replace('+','')
-					if '~' in user:
-						user_is_owner = True
-						user = user.replace('~','')
-					if '&' in user:
-						user_is_admin = True
-						user = user.replace('&','')
-					if '%' in user:
-						user_is_halfop = True
-						user = user.replace('%','')
-					if '!' in user:
-						user_is_protected = True
-						user = user.replace('!','')
-					user_nick = user
-
-					user_nick = self.clean_nick(user_nick)
-
-					if user_nick in self.hostmasks:
-						user_hostmask = self.hostmasks[user_nick]
-
-				if user_nick==self.client.nickname:
-					this_is_me = True
-				else:
-					this_is_me = False
-
-				self.userlist_menu = QMenu(self)
-
-				if user_hostmask!=None:
-					if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
-						display_hostmask = elide_text(user_hostmask,25)
-					else:
-						display_hostmask = user_hostmask
-
-				statusLayout = QHBoxLayout()
-				if user_is_admin:
-					ICON = ADMIN_USER
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_ADMIN_USER
-					OTHER_TEXT = "Channel Administrator"
-				elif user_is_owner:
-					ICON = OWNER_USER
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OWNER_USER
-					OTHER_TEXT = "Channel Owner"
-				elif user_is_op:
-					ICON = OP_USER
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OP_USER
-					OTHER_TEXT = "Channel Operator"
-				elif user_is_halfop:
-					ICON = HALFOP_USER
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_HALFOP_USER
-					OTHER_TEXT = "Channel Half-Operator"
-				elif user_is_voiced:
-					ICON = VOICE_USER
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_VOICE_USER
-					OTHER_TEXT = "Voiced User"
-				elif user_is_protected:
-					ICON = PROTECTED_USER
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_PROTECTED_USER
-					OTHER_TEXT = "Protected User"
-				else:
-					ICON = PRIVATE_MENU_ICON
-					OTHER_TEXT = "Normal User"
-				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: OTHER_TEXT = OTHER_TEXT+" (bot)"
-				statusLayout.addStretch()
-
-				is_hidden = False
-				if user_hostmask!=None:
-					if user_hostmask.lower() in config.IGNORE_LIST: is_hidden = True
-				if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
-
-				shown_box = False
-				away_elide_size = 29
-
-				if user_nick==self.client.nickname:
-
-					if user_hostmask!=None:
-						if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
-							dstring = elide_text(user_hostmask,25)
-						else:
-							dstring = user_hostmask	
-					else:
-						if self.client.is_away:
-							dstring = "You are away"
-						else:
-							dstring = "This is you!"
-					
-					if config.SHOW_AWAY_STATUS_IN_USERLISTS:
-						if self.client.is_away:
-							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
-							self.userlist_menu.addAction(entry)
-
-							status_text = ''
-							if user_is_admin:
-								status_text = "Channel Administrator"
-							elif user_is_owner:
-								status_text = "Channel Owner"
-							elif user_is_op:
-								status_text = "Channel Operator"
-							elif user_is_halfop:
-								status_text = "Channel Half-Operator"
-							elif user_is_voiced:
-								status_text = "Voiced User"
-							elif user_is_protected:
-								status_text = "Protected User"
-							else:
-								status_text = "Normal user"
-							if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
-							if status_text!='':
-								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
-								self.userlist_menu.addAction(entry)
-
-							if is_hidden:
-								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
-								self.userlist_menu.addAction(e)
-								shown_box = True
-
-							if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
-								if user_is_voiced:
-									e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
-									self.userlist_menu.addAction(e)
-									shown_box = True
-
-							if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
-								e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(self.client.away_msg,away_elide_size)}</center></small>")
-							else:
-								e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
-							self.userlist_menu.addAction(e)
-							shown_box = True
-						else:
-							entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
-							self.userlist_menu.addAction(entry)
-
-							status_text = ''
-							if user_is_admin:
-								status_text = "Channel Administrator"
-							elif user_is_owner:
-								status_text = "Channel Owner"
-							elif user_is_op:
-								status_text = "Channel Operator"
-							elif user_is_halfop:
-								status_text = "Channel Half-Operator"
-							elif user_is_voiced:
-								status_text = "Voiced User"
-							elif user_is_protected:
-								status_text = "Protected User"
-							else:
-								status_text = "Normal User"
-							if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
-							if status_text!='':
-								entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
-								self.userlist_menu.addAction(entry)
-
-							if is_hidden:
-								e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
-								self.userlist_menu.addAction(e)
-								shown_box = True
-
-							if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
-								if user_is_voiced:
-									e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
-									self.userlist_menu.addAction(e)
-									shown_box = True
-					else:
-						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
-						self.userlist_menu.addAction(entry)
-
-						if is_hidden:
-							e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
-							self.userlist_menu.addAction(e)
-							shown_box = True
-
-						if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
-							if user_is_voiced:
-								e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
-								self.userlist_menu.addAction(e)
-								shown_box = True
-
-				else:
-					if user_hostmask!=None:
-						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
-						self.userlist_menu.addAction(entry)
-
-						status_text = ''
-						if user_is_admin:
-							status_text = "Channel Administrator"
-						elif user_is_owner:
-							status_text = "Channel Owner"
-						elif user_is_op:
-							status_text = "Channel Operator"
-						elif user_is_halfop:
-							status_text = "Channel Half-Operator"
-						elif user_is_voiced:
-							status_text = "Voiced User"
-						elif user_is_protected:
-							status_text = "Protected User"
-						else:
-							status_text = "Normal User"
-						if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
-						if status_text!='':
-							entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
-							self.userlist_menu.addAction(entry)
-
-						if is_hidden:
-							e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
-							self.userlist_menu.addAction(e)
-							shown_box = True
-					else:
-						entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
-						self.userlist_menu.addAction(entry)
-
-						if is_hidden:
-							e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
-							self.userlist_menu.addAction(e)
-							shown_box = True
-
-					if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
-						if user_is_voiced:
-							e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
-							self.userlist_menu.addAction(e)
-							shown_box = True
-
-				if config.SHOW_AWAY_STATUS_IN_USERLISTS:
-					if user_nick in self.away:
-						away_msg = self.away[user_nick]
-
-						if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
-							e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(away_msg,away_elide_size)}</center></small>")
-						else:
-							e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
-						self.userlist_menu.addAction(e)
-						shown_box = True
-
-				if not shown_box: self.userlist_menu.addSeparator()
-
-				if user_nick!=self.client.nickname:
-
-					act = QAction(QIcon(WHOIS_ICON),"Request WHOIS", self)
-					act.triggered.connect(lambda : self.client.sendLine("WHOIS "+user_nick))
-					self.userlist_menu.addAction(act)
-
-					act = QAction(QIcon(PRIVATE_ICON),"Open private chat", self)
-					act.triggered.connect(lambda : self.parent.openPrivate(self.client,user))
-					self.userlist_menu.addAction(act)
-
-				if user_nick!=self.client.nickname:
-
-					ctcpMenu = self.userlist_menu.addMenu(QIcon(CONNECT_ICON),"Send CTCP request")
-
-					act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
-					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
-					ctcpMenu.addAction(act)
-
-					act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
-					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
-					ctcpMenu.addAction(act)
-
-					act = QAction(QIcon(CONSOLE_ICON),"SOURCE", self)
-					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
-					ctcpMenu.addAction(act)
-
-					act = QAction(QIcon(CONSOLE_ICON),"VERSION", self)
-					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
-					ctcpMenu.addAction(act)
-
-					act = QAction(QIcon(TIMESTAMP_ICON),"TIME", self)
-					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('TIME', '')]))
-					ctcpMenu.addAction(act)
-
-					act = QAction(QIcon(CONNECT_ICON),"PING", self)
-					act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('PING', '')]))
-					ctcpMenu.addAction(act)
-
-					if config.ENABLE_IGNORE:
-						igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore user")
-						if is_hidden:
-							if self.is_hidden_by_nickname(user_nick):
-								act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
-								act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
-								igMenu.addAction(act)
-							else:
-								if user_hostmask!=None:
-									if self.is_hidden_by_hostmask(user_hostmask):
-										act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
-										act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-										igMenu.addAction(act)
-						else:
-							act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
-							act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
-							igMenu.addAction(act)
-
-							act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
-							act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
-							igMenu.addAction(act)
-
-							if user_hostmask==None: act.setEnabled(False)
-					
-						if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
-							ucMenu = self.userlist_menu.addMenu(QIcon(COLOR_ICON),"Nickname color")
-							c = self.getNicknameColor(user_nick,user_hostmask)
-							if c==None:
-								act = QAction(QIcon(COLOR_ICON),"Set color", self)
-								act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
-								ucMenu.addAction(act)
-							else:
-								act = QAction(QIcon(REFRESH_ICON),"Change color", self)
-								act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
-								ucMenu.addAction(act)
-
-								act = QAction(QIcon(HIDE_ICON),"Remove color", self)
-								act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
-								ucMenu.addAction(act)
-
-				copyMenu = self.userlist_menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
-
-				act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(user_nick))
-				copyMenu.addAction(act)
-
-				if user_hostmask!=None:
-					act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
-					copyMenu.addAction(act)
-
-				act = QAction(QIcon(CHANNEL_ICON),"Channel name", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.name}"))
-				copyMenu.addAction(act)
-
-				if self.client.hostname:
-					act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
-					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
-					copyMenu.addAction(act)
-
-				if self.client.network:
-					if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
-						act = QAction(QIcon(NETWORK_ICON),"Server network", self)
-						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
-						copyMenu.addAction(act)
-
-				act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
-				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
-				copyMenu.addAction(act)
-
-				if self.operator or self.owner or self.admin or self.halfop:
-
-					self.userlist_menu.addSeparator()
-
-					if self.owner:
-						icon = OWNER_USER
-					elif self.admin:
-						icon = ADMIN_USER
-					else:
-						icon = OP_USER
-
-					opMenu = self.userlist_menu.addMenu(QIcon(icon),"Channel administration")
-
-					opMenu.addSeparator()
-
-					if self.operator or self.owner or self.admin:
-						if user_is_op:
-							act = QAction(QIcon(MINUS_ICON),f"Take operator status", self)
-							act.triggered.connect(lambda : self.client.mode(self.name,False,"o",None,user_nick))
-							opMenu.addAction(act)
-
-						if not user_is_op:
-							act = QAction(QIcon(PLUS_ICON),f"Give operator status", self)
-							act.triggered.connect(lambda : self.client.mode(self.name,True,"o",None,user_nick))
-							opMenu.addAction(act)
-
-					if user_is_voiced:
-						act = QAction(QIcon(MINUS_ICON),f"Take voiced status", self)
-						act.triggered.connect(lambda : self.client.mode(self.name,False,"v",None,user_nick))
-						opMenu.addAction(act)
-
-					if not user_is_voiced:
-						act = QAction(QIcon(PLUS_ICON),f"Give voiced status", self)
-						act.triggered.connect(lambda : self.client.mode(self.name,True,"v",None,user_nick))
-						opMenu.addAction(act)
-
-					opMenu.addSeparator()
-
-					act = QAction(QIcon(KICK_ICON),f"Kick {user_nick}", self)
-					act.triggered.connect(lambda : self.client.kick(self.name,user_nick))
-					opMenu.addAction(act)
-
-					act = QAction(QIcon(BAN_ICON),f"Ban {user_nick}", self)
-					act.triggered.connect(lambda : self.menuBanUser(user_nick,user_hostmask))
-					opMenu.addAction(act)
-
-					act = QAction(QIcon(BAN_ICON),f"Kick && Ban {user_nick}", self)
-					act.triggered.connect(lambda : self.menuKickBackUser(user_nick,user_hostmask))
-					opMenu.addAction(act)
-
-				self.userlist_menu.exec_(self.userlist.mapToGlobal(event.pos()))
+				self.showUserMenu(user,event.pos())
 
 				return True
 
 		return super(Window, self).eventFilter(source, event)
+
+	def showUserMenu(self,user,position):
+		user_nick = ''
+		user_hostmask = None
+		user_is_op = False
+		user_is_voiced = False
+		user_is_admin = False
+		user_is_owner = False
+		user_is_halfop = False
+		user_is_protected = False
+
+		raw_user = None
+
+		for u in self.users:
+			p = u.split('!')
+			if len(p)==2:
+				nick = p[0]
+				hostmask = p[1]
+			else:
+				nick = u
+				hostmask = None
+
+			if '@' in nick:
+				is_op = True
+				nick = nick.replace('@','')
+			else:
+				is_op = False
+			if '+' in nick:
+				is_voiced = True
+				nick = nick.replace('+','')
+			else:
+				is_voiced = False
+			if '~' in nick:
+				is_owner = True
+				nick = nick.replace('~','')
+			else:
+				is_owner = False
+			if '&' in nick:
+				is_admin = True
+				nick = nick.replace('&','')
+			else:
+				is_admin = False
+			if '%' in nick:
+				is_halfop = True
+				nick = nick.replace('%','')
+			else:
+				is_halfop = False
+			if '!' in nick:
+				is_protected = True
+				nick = nick.replace('!','')
+			else:
+				is_protected = False
+			if nick==user:
+				raw_user = u
+				user_nick = nick
+				if hostmask:
+					user_hostmask = hostmask
+				else:
+					if nick in self.hostmasks:
+						user_hostmask = self.hostmasks[nick]
+				user_is_op = is_op
+				user_is_voiced = is_voiced
+				user_is_owner = is_owner
+				user_is_admin = is_admin
+				user_is_halfop = is_halfop
+				user_is_protected = is_protected
+				break
+
+		if len(user_nick.strip())==0:
+			if '@' in user:
+				user_is_op = True
+				user = user.replace('@','')
+			if '+' in user:
+				user_is_voiced = True
+				user = user.replace('+','')
+			if '~' in user:
+				user_is_owner = True
+				user = user.replace('~','')
+			if '&' in user:
+				user_is_admin = True
+				user = user.replace('&','')
+			if '%' in user:
+				user_is_halfop = True
+				user = user.replace('%','')
+			if '!' in user:
+				user_is_protected = True
+				user = user.replace('!','')
+			user_nick = user
+
+			user_nick = self.clean_nick(user_nick)
+
+			if user_nick in self.hostmasks:
+				user_hostmask = self.hostmasks[user_nick]
+
+		if user_nick==self.client.nickname:
+			this_is_me = True
+		else:
+			this_is_me = False
+
+		self.userlist_menu = QMenu(self)
+
+		if user_hostmask!=None:
+			if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
+				display_hostmask = elide_text(user_hostmask,25)
+			else:
+				display_hostmask = user_hostmask
+
+		statusLayout = QHBoxLayout()
+		if user_is_admin:
+			ICON = ADMIN_USER
+			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_ADMIN_USER
+			OTHER_TEXT = "Channel Administrator"
+		elif user_is_owner:
+			ICON = OWNER_USER
+			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OWNER_USER
+			OTHER_TEXT = "Channel Owner"
+		elif user_is_op:
+			ICON = OP_USER
+			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_OP_USER
+			OTHER_TEXT = "Channel Operator"
+		elif user_is_halfop:
+			ICON = HALFOP_USER
+			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_HALFOP_USER
+			OTHER_TEXT = "Channel Half-Operator"
+		elif user_is_voiced:
+			ICON = VOICE_USER
+			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_VOICE_USER
+			OTHER_TEXT = "Voiced User"
+		elif user_is_protected:
+			ICON = PROTECTED_USER
+			if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: ICON = BOT_PROTECTED_USER
+			OTHER_TEXT = "Protected User"
+		else:
+			ICON = PRIVATE_MENU_ICON
+			OTHER_TEXT = "Normal User"
+		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: OTHER_TEXT = OTHER_TEXT+" (bot)"
+		statusLayout.addStretch()
+
+		is_hidden = False
+		if user_hostmask!=None:
+			if user_hostmask.lower() in config.IGNORE_LIST: is_hidden = True
+		if user_nick.lower() in config.IGNORE_LIST: is_hidden = True
+
+		shown_box = False
+		away_elide_size = 29
+
+		if user_nick==self.client.nickname:
+
+			if user_hostmask!=None:
+				if config.ELIDE_HOSTMASK_IN_USERLIST_CONTEXT:
+					dstring = elide_text(user_hostmask,25)
+				else:
+					dstring = user_hostmask	
+			else:
+				if self.client.is_away:
+					dstring = "You are away"
+				else:
+					dstring = "This is you!"
+			
+			if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+				if self.client.is_away:
+					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
+					self.userlist_menu.addAction(entry)
+
+					status_text = ''
+					if user_is_admin:
+						status_text = "Channel Administrator"
+					elif user_is_owner:
+						status_text = "Channel Owner"
+					elif user_is_op:
+						status_text = "Channel Operator"
+					elif user_is_halfop:
+						status_text = "Channel Half-Operator"
+					elif user_is_voiced:
+						status_text = "Voiced User"
+					elif user_is_protected:
+						status_text = "Protected User"
+					else:
+						status_text = "Normal user"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
+					if status_text!='':
+						entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+						self.userlist_menu.addAction(entry)
+
+					if is_hidden:
+						e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
+						self.userlist_menu.addAction(e)
+						shown_box = True
+
+					if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+						if user_is_voiced:
+							e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
+							self.userlist_menu.addAction(e)
+							shown_box = True
+
+					if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
+						e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(self.client.away_msg,away_elide_size)}</center></small>")
+					else:
+						e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
+					self.userlist_menu.addAction(e)
+					shown_box = True
+				else:
+					entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
+					self.userlist_menu.addAction(entry)
+
+					status_text = ''
+					if user_is_admin:
+						status_text = "Channel Administrator"
+					elif user_is_owner:
+						status_text = "Channel Owner"
+					elif user_is_op:
+						status_text = "Channel Operator"
+					elif user_is_halfop:
+						status_text = "Channel Half-Operator"
+					elif user_is_voiced:
+						status_text = "Voiced User"
+					elif user_is_protected:
+						status_text = "Protected User"
+					else:
+						status_text = "Normal User"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
+					if status_text!='':
+						entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+						self.userlist_menu.addAction(entry)
+
+					if is_hidden:
+						e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
+						self.userlist_menu.addAction(e)
+						shown_box = True
+
+					if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+						if user_is_voiced:
+							e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
+							self.userlist_menu.addAction(e)
+							shown_box = True
+			else:
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,dstring,CUSTOM_MENU_ICON_SIZE)
+				self.userlist_menu.addAction(entry)
+
+				if is_hidden:
+					e = BoxPlainTextAction(self,"",f"<small><b><center>You are ignored</center></b></small>")
+					self.userlist_menu.addAction(e)
+					shown_box = True
+
+				if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+					if user_is_voiced:
+						e = BoxPlainTextAction(self,"","<small><center>You are voiced</center></small>")
+						self.userlist_menu.addAction(e)
+						shown_box = True
+
+		else:
+			if user_hostmask!=None:
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,display_hostmask,CUSTOM_MENU_ICON_SIZE)
+				self.userlist_menu.addAction(entry)
+
+				status_text = ''
+				if user_is_admin:
+					status_text = "Channel Administrator"
+				elif user_is_owner:
+					status_text = "Channel Owner"
+				elif user_is_op:
+					status_text = "Channel Operator"
+				elif user_is_halfop:
+					status_text = "Channel Half-Operator"
+				elif user_is_voiced:
+					status_text = "Voiced User"
+				elif user_is_protected:
+					status_text = "Protected User"
+				else:
+					status_text = "Normal User"
+				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
+				if status_text!='':
+					entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
+					self.userlist_menu.addAction(entry)
+
+				if is_hidden:
+					e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
+					self.userlist_menu.addAction(e)
+					shown_box = True
+			else:
+				entry = ExtendedMenuItemNoAction(self,ICON,user_nick,OTHER_TEXT,CUSTOM_MENU_ICON_SIZE)
+				self.userlist_menu.addAction(entry)
+
+				if is_hidden:
+					e = BoxPlainTextAction(self,"",f"<small><b><center>User is ignored</center></b></small>")
+					self.userlist_menu.addAction(e)
+					shown_box = True
+
+			if user_is_op or user_is_owner or user_is_admin or user_is_halfop or user_is_protected:
+				if user_is_voiced:
+					e = BoxPlainTextAction(self,"","<small><center>User is voiced</center></small>")
+					self.userlist_menu.addAction(e)
+					shown_box = True
+
+		if config.SHOW_AWAY_STATUS_IN_USERLISTS:
+			if user_nick in self.away:
+				away_msg = self.away[user_nick]
+
+				if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
+					e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(away_msg,away_elide_size)}</center></small>")
+				else:
+					e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
+				self.userlist_menu.addAction(e)
+				shown_box = True
+
+		if not shown_box: self.userlist_menu.addSeparator()
+
+		if user_nick!=self.client.nickname:
+
+			act = QAction(QIcon(WHOIS_ICON),"Request WHOIS", self)
+			act.triggered.connect(lambda : self.client.sendLine("WHOIS "+user_nick))
+			self.userlist_menu.addAction(act)
+
+			act = QAction(QIcon(PRIVATE_ICON),"Open private chat", self)
+			act.triggered.connect(lambda : self.parent.openPrivate(self.client,user))
+			self.userlist_menu.addAction(act)
+
+		if user_nick!=self.client.nickname:
+
+			ctcpMenu = self.userlist_menu.addMenu(QIcon(CONNECT_ICON),"Send CTCP request")
+
+			act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('USERINFO', '')]))
+			ctcpMenu.addAction(act)
+
+			act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('FINGER', '')]))
+			ctcpMenu.addAction(act)
+
+			act = QAction(QIcon(CONSOLE_ICON),"SOURCE", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('SOURCE', '')]))
+			ctcpMenu.addAction(act)
+
+			act = QAction(QIcon(CONSOLE_ICON),"VERSION", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('VERSION', '')]))
+			ctcpMenu.addAction(act)
+
+			act = QAction(QIcon(TIMESTAMP_ICON),"TIME", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('TIME', '')]))
+			ctcpMenu.addAction(act)
+
+			act = QAction(QIcon(CONNECT_ICON),"PING", self)
+			act.triggered.connect(lambda : self.client.ctcpMakeQuery(user_nick, [('PING', '')]))
+			ctcpMenu.addAction(act)
+
+			if config.ENABLE_IGNORE:
+				igMenu = self.userlist_menu.addMenu(QIcon(HIDE_ICON),"Ignore user")
+				if is_hidden:
+					if self.is_hidden_by_nickname(user_nick):
+						act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
+						act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
+						igMenu.addAction(act)
+					else:
+						if user_hostmask!=None:
+							if self.is_hidden_by_hostmask(user_hostmask):
+								act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
+								act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+								igMenu.addAction(act)
+				else:
+					act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
+					act.triggered.connect(lambda : self.menuDoIgnore(user_nick,None))
+					igMenu.addAction(act)
+
+					act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
+					act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+					igMenu.addAction(act)
+
+					if user_hostmask==None: act.setEnabled(False)
+			
+				if config.SHOW_COLORS_IN_USERLISTS or config.HIGHLIGHT_NICKS_IN_CHAT:
+					ucMenu = self.userlist_menu.addMenu(QIcon(COLOR_ICON),"Nickname color")
+					c = self.getNicknameColor(user_nick,user_hostmask)
+					if c==None:
+						act = QAction(QIcon(COLOR_ICON),"Set color", self)
+						act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
+						ucMenu.addAction(act)
+					else:
+						act = QAction(QIcon(REFRESH_ICON),"Change color", self)
+						act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
+						ucMenu.addAction(act)
+
+						act = QAction(QIcon(HIDE_ICON),"Remove color", self)
+						act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
+						ucMenu.addAction(act)
+
+		copyMenu = self.userlist_menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
+
+		act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
+		act.triggered.connect(lambda : self.menuPasteClipboard(user_nick))
+		copyMenu.addAction(act)
+
+		if user_hostmask!=None:
+			act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
+			act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
+			copyMenu.addAction(act)
+
+		act = QAction(QIcon(CHANNEL_ICON),"Channel name", self)
+		act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.name}"))
+		copyMenu.addAction(act)
+
+		if self.client.hostname:
+			act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+			act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
+			copyMenu.addAction(act)
+
+		if self.client.network:
+			if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+				act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
+				copyMenu.addAction(act)
+
+		act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+		act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
+		copyMenu.addAction(act)
+
+		if self.operator or self.owner or self.admin or self.halfop:
+
+			self.userlist_menu.addSeparator()
+
+			if self.owner:
+				icon = OWNER_USER
+			elif self.admin:
+				icon = ADMIN_USER
+			else:
+				icon = OP_USER
+
+			opMenu = self.userlist_menu.addMenu(QIcon(icon),"Channel administration")
+
+			opMenu.addSeparator()
+
+			if self.operator or self.owner or self.admin:
+				if user_is_op:
+					act = QAction(QIcon(MINUS_ICON),f"Take operator status", self)
+					act.triggered.connect(lambda : self.client.mode(self.name,False,"o",None,user_nick))
+					opMenu.addAction(act)
+
+				if not user_is_op:
+					act = QAction(QIcon(PLUS_ICON),f"Give operator status", self)
+					act.triggered.connect(lambda : self.client.mode(self.name,True,"o",None,user_nick))
+					opMenu.addAction(act)
+
+			if user_is_voiced:
+				act = QAction(QIcon(MINUS_ICON),f"Take voiced status", self)
+				act.triggered.connect(lambda : self.client.mode(self.name,False,"v",None,user_nick))
+				opMenu.addAction(act)
+
+			if not user_is_voiced:
+				act = QAction(QIcon(PLUS_ICON),f"Give voiced status", self)
+				act.triggered.connect(lambda : self.client.mode(self.name,True,"v",None,user_nick))
+				opMenu.addAction(act)
+
+			opMenu.addSeparator()
+
+			act = QAction(QIcon(KICK_ICON),f"Kick {user_nick}", self)
+			act.triggered.connect(lambda : self.client.kick(self.name,user_nick))
+			opMenu.addAction(act)
+
+			act = QAction(QIcon(BAN_ICON),f"Ban {user_nick}", self)
+			act.triggered.connect(lambda : self.menuBanUser(user_nick,user_hostmask))
+			opMenu.addAction(act)
+
+			act = QAction(QIcon(BAN_ICON),f"Kick && Ban {user_nick}", self)
+			act.triggered.connect(lambda : self.menuKickBackUser(user_nick,user_hostmask))
+			opMenu.addAction(act)
+
+		self.userlist_menu.exec_(self.userlist.mapToGlobal(position))
 
 	def loadScript(self,directly_execute=False):
 		options = QFileDialog.Options()
@@ -5007,3 +5010,72 @@ class SpellAction(QAction):
 
 		self.triggered.connect(lambda x: self.correct.emit(
 			self.text()))
+
+class ChatViewer(QTextBrowser):
+	def __init__(self,parent=None):
+		self.parent = parent
+		super().__init__()
+		self.nick_pattern = re.compile(
+			r'(?iu)\\[a-zA-Z0-9\[\]{}\|^~_-]+|[a-zA-Z0-9\[\]{}\|^~_-]+', 
+			re.IGNORECASE
+		)
+		self.trailing_punct = set('.,:;!?\'")}]')
+		self.setMouseTracking(True)
+	
+	def _clean_nick(self, nick):
+		while nick and nick[-1] in self.trailing_punct:
+			nick = nick[:-1]
+		return nick
+
+	def mouseDoubleClickEvent(self, event):
+
+		if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE==False:
+			return super().mouseDoubleClickEvent(event)
+
+		# Double clicking nicks in channel windows will
+		# only open up a private chat window for nicks
+		# that are in the same channel
+		if self.parent.window_type==CHANNEL_WINDOW:
+			cursor = self.cursorForPosition(event.pos())
+			text = cursor.block().text()
+			pos_in_block = cursor.positionInBlock()
+			
+			for match in self.nick_pattern.finditer(text):
+				clean_nick = self._clean_nick(match.group())
+				clean_end = match.start() + len(clean_nick)
+				if match.start() <= pos_in_block <= clean_end:
+					nick = clean_nick
+					for n in self.parent.nicks:
+						# If the word being double clicked on is in the local
+						# nicklist, and it's not the client's nickname...
+						if n.lower()==nick.lower() and n!=self.parent.client.nickname:
+							# ...open a private chat window
+							self.parent.parent.openPrivate(self.parent.client,n)
+							return
+		else:
+			# Double clicking nicks in server or private chat windows
+			# will open up private chats for all "visible" nicks
+			cursor = self.cursorForPosition(event.pos())
+			text = cursor.block().text()
+			pos_in_block = cursor.positionInBlock()
+			
+			for match in self.nick_pattern.finditer(text):
+				clean_nick = self._clean_nick(match.group())
+				clean_end = match.start() + len(clean_nick)
+				if match.start() <= pos_in_block <= clean_end:
+					nick = clean_nick
+					for n in self.parent.client.all_visible_nicknames:
+						# If the word being double clicked on is in the global
+						# nicklist, and it's not the client's nickname...
+						if n.lower()==nick.lower() and n!=self.parent.client.nickname:
+							if self.parent.window_type==PRIVATE_WINDOW:
+								if n.lower()!=self.parent.name.lower():
+									# ...open a private chat window
+									self.parent.parent.openPrivate(self.parent.client,n)
+									return
+							else:
+								# ...open a private chat window
+								self.parent.parent.openPrivate(self.parent.client,n)
+								return
+
+		super().mouseDoubleClickEvent(event)

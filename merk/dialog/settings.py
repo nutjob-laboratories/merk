@@ -5692,6 +5692,10 @@ class Dialog(QDialog):
 		if config.JOIN_ON_INVITE: self.autoJoin.setChecked(True)
 		self.autoJoin.stateChanged.connect(self.changedSetting)
 
+		self.dblNick = QCheckBox("Double click nicks in chat to private message",self)
+		if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE: self.dblNick.setChecked(True)
+		self.dblNick.stateChanged.connect(self.changedSetting)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
@@ -5706,6 +5710,7 @@ class Dialog(QDialog):
 
 		pmLayout = QVBoxLayout()
 		pmLayout.setSpacing(0)
+		pmLayout.addWidget(self.dblNick)
 		pmLayout.addWidget(self.createWindow)
 		pmLayout.addWidget(self.createNotice)
 		pmLayout.addWidget(self.ignoreCreateWindow)
@@ -7527,6 +7532,7 @@ class Dialog(QDialog):
 		config.ALWAYS_USE_SASL_LOGINS = self.useSasl.isChecked()
 		config.GET_BOTS_ON_CHANNEL_JOIN = self.autoBots.isChecked()
 		config.SHOW_BOTS_IN_USERLISTS = self.styleBots.isChecked()
+		config.CLICK_NICK_IN_CHAT_FOR_PRIVATE = self.dblNick.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

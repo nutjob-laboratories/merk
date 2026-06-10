@@ -5,6 +5,7 @@
 What's new:
 
 - **User "bot" status can now be displayed to the user**. If the server has the option to mark users as bots (user mode +B) turned on, MERK will display if a user is a bot or not. This can be shown in userlists and in the userlist right click menu.
+- **Double click nicknames in chat to open a private message window**. This behavior can be toggled in the "settings" dialog. In channel windows, only nicknames "present" in that channel can be double clicked; in server or private message windows, any "visible" nickname can be double clicked.
 - **More servers to connect to**. **MERK** now features more than 200 servers to connect to in the connection dialog.
 
 |==============================================================================|
@@ -41,6 +42,10 @@ What's new:
   connection dialog.
 * Tweaked the connection dialog due to the added width from the new built-in
   server list.
+* New feature: double click nicknames in chat to open a private message window
+  to that nickname. In channels, this only works for nicknames inside that
+  channel; for server and private chat windows, this works for any "visible"
+  nickname.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |

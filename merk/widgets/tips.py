@@ -74,7 +74,7 @@ TIPS = [
  f'A single IRC message is strictly capped at <b>512 characters</b>, including the line-ending characters!',
  f'Much of early "internet slang" and leetspeak evolved or was popularized in IRC channels!',
  f'<b>{APPLICATION_NAME}</b> supports spellchecking in eight different languages!',
- f'<b>{APPLICATION_NAME}</b> can be configured with the <b>Settings</b> dialog, with over 300 different settings!',
+ f'<b>{APPLICATION_NAME}</b> can be configured with the <b>Settings</b> dialog, with almost 400 different settings!',
  f'<b>{APPLICATION_NAME}</b> converts URLs in chat into clickable links, automatically!',
  f'<b>{APPLICATION_NAME}</b> is licensed under the <b>GNU General Public License 3.0</b>!',
  f"<b>{APPLICATION_NAME}</b> has <b>Windows</b> and <b>Linux</b> executables that don't require a Python installation!",
@@ -84,7 +84,7 @@ TIPS = [
  f'To see a list of connected servers and windows, check out the <b>Windows</b> menu!',
  f'The <b>Tools</b> menu has a list of all the additional utilities you can use in <b>{APPLICATION_NAME}</b>!',
  f'The <b>Libera IRC network</b> is the biggest IRC network in 2026, with over 20,000 channels!',
- f'<b>{APPLICATION_NAME}</b> features over 70 commands, and even more that can be used in scripts!',
+ f'<b>{APPLICATION_NAME}</b> features over 80 commands, and even more that can be used in scripts!',
  f'Join a channel with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}join</b></nobr> command!',
  f'Change your nickname with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}nick</b></nobr> command!',
  f"Send a message describing what you're doing with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}me</b></nobr> command!",
@@ -106,10 +106,10 @@ TIPS = [
  f'Open a private chat to a user by double-clicking their nickname in the user list!',
  f'Logs can be exported to JSON or your own custom format with the <b>Log Manager</b>!',
  f'<b>{APPLICATION_NAME}</b> saves a history of the servers it has connected to automatically!',
- f'<b>{APPLICATION_NAME}</b> features a list of over 80 servers to connect to, built in!',
+ f'<b>{APPLICATION_NAME}</b> features a list of over 200 servers to connect to, built in!',
  f'Right click on entries in the windowbar to see more options!',
  f'<b>{APPLICATION_NAME}</b> features autocomplete for commands, nicknames, channels, and more!',
- f'<b>{APPLICATION_NAME}</b> has been in active development since 2019, all by a single person!',
+ f'<b>{APPLICATION_NAME}</b> has been in active development since 2018, all by a single person!',
  f'<b>{APPLICATION_NAME}</b> logs all channel and private chat by default!',
  f'Set your status to "back" with the\u00A0<nobr><b>{config.ISSUE_COMMAND_SYMBOL}back</b></nobr> command!',
  f'<b>{APPLICATION_NAME}</b> is written in Python, using PyQt5, Twisted, and OpenSSL!',
@@ -126,7 +126,7 @@ TIPS = [
  f'IRC nicknames can\'t start with numbers!',
  f'IRC channel names can\'t contain spaces, control characters (like colors), or commas!',
  f'At its peak, IRC had <b>10,000,000</b> daily users!',
- f'<b>{APPLICATION_NAME}</b> runs on both <b>Windows</b> and <b>Linux</b> identically!',
+ f'<b>{APPLICATION_NAME}</b> runs on both <b>Windows</b>, <b>Linux</b>, and <b>macOS</b> identically!',
  f'There are <b>{APPLICATION_NAME}</b> users all over the world, like Germany, Spain, Serbia, and the United States!',
  f'You can turn off timestamp display in <b>Settings</b>, but timestamps are still saved to logs!',
  f'Logs can be automatically saved every once in awhile, so you don\'t lose anything from a system crash!',
@@ -152,7 +152,52 @@ TIPS = [
  f'IRC\'s technical limitations (no images, text only) forced the massive popularization of <b>ASCII art</b>!',
  f'<b>{APPLICATION_NAME}</b> runs identically on <b>Windows</b>, <b>Linux</b>, and <b>macOS</b>!',
  f'The Windows binary for <b>{APPLICATION_NAME}</b> runs without needing a Python installation!',
+ f'You can set specific nicknames, usernames, and realnames for use with specific servers with server profiles!',
+ f'View your saved logs (with IRC colors and clickable links) in the <b>Log Manager</b>!',
 ]
+
+if config.SHOW_COLORS_IN_USERLISTS or config.USER_COLORS:
+	i = [
+		f'Right click on a user in channel user lists to set a custom color for them!',
+	]
+	TIPS = TIPS + i
+
+if config.SHOW_COLORS_IN_USERLISTS:
+	i = [
+		f'Nicknames can be highlighted in channel user lists with custom colors!',
+	]
+	TIPS = TIPS + i
+
+if config.USER_COLORS:
+	i = [
+		f'Nicknames can be highlighted in chat with custom colors!',
+	]
+	TIPS = TIPS + i
+
+if config.HIGHLIGHTED_WORDS:
+	i = [
+		f'Words can be highlighted in chat with custom colors!',
+	]
+	TIPS = TIPS + i
+
+if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE:
+	i = [
+		f'Double click a nick in chat to open a private message window for that user!',
+	]
+	TIPS = TIPS + i
+
+if config.SHOW_WINDOWBAR:
+	i = [
+		f'You can sort entries in the windowbar by creation or alphabetically!',
+	]
+	TIPS = TIPS + i
+
+if config.SHOW_BOTS_IN_USERLISTS:
+	i = [
+		f'Users with a <b>B</b> in their status icon in userlists are bots!',
+		f'Right click on a nick in the userlist to see if they\'re a bot!',
+	]
+	TIPS = TIPS + i
 
 if SSL_AVAILABLE:
 	i = [
@@ -202,6 +247,7 @@ if config.ENABLE_PLUGINS:
 		f'<b>{APPLICATION_NAME}</b> plugins can use any library in the Python standard library!',
 		f'<b>{APPLICATION_NAME}</b> features a <b>Python editor</b> for plugins, complete with syntax highlighting!',
 		f'<b>{APPLICATION_NAME}</b> can directly execute plugin methods with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}call</b> command!',
+		f'With the <b>ACK</b> and <b>NAK</b> events, and the <b>.request()</b> method, plugins can support IRCv3 extensions!',
 	]
 	TIPS = TIPS + p
 
@@ -213,7 +259,7 @@ if config.SCRIPTING_ENGINE_ENABLED:
 		f'Want to automate your server connections? Start writing <b>connections scripts</b>!',
 		f'Scripts can use special <b>script-only commands</b>, allowing them to "pause" or prevent execution in certain windows!',
 		f'Create your own commands with the <nobr><b>{config.ISSUE_COMMAND_SYMBOL}macro</b></nobr> command!',
-		f'There are 14 commands that can only be used in scripts!',
+		f'There are 26 commands that can only be used in scripts!',
 		f'<b>{APPLICATION_NAME}</b> has over 80 commands!',
 	]
 	TIPS = TIPS + s
