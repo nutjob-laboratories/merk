@@ -1524,6 +1524,71 @@ class Window(QMainWindow):
 				entry.triggered.connect(lambda state: self.parent.hideSubWindow(self.subwindow_id))
 				menu.addAction(entry)
 
+				if self.window_type==PRIVATE_WINDOW:
+
+					menu.addSeparator()
+
+					act = QAction(QIcon(WHOIS_ICON),"Request WHOIS", self)
+					act.triggered.connect(lambda : self.client.sendLine("WHOIS "+self.name))
+					menu.addAction(act)
+
+					ctcpMenu = menu.addMenu(QIcon(CONNECT_ICON),"Send CTCP request")
+
+					act = QAction(QIcon(PRIVATE_ICON),"USERINFO", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('USERINFO', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(PRIVATE_ICON),"FINGER", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('FINGER', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(CONSOLE_ICON),"SOURCE", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('SOURCE', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(CONSOLE_ICON),"VERSION", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('VERSION', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(TIMESTAMP_ICON),"TIME", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('TIME', '')]))
+					ctcpMenu.addAction(act)
+
+					act = QAction(QIcon(CONNECT_ICON),"PING", self)
+					act.triggered.connect(lambda : self.client.ctcpMakeQuery(self.name, [('PING', '')]))
+					ctcpMenu.addAction(act)
+
+					copyMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
+
+					act = QAction(QIcon(PRIVATE_ICON),"User nickname", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(self.name))
+					copyMenu.addAction(act)
+
+					user_hostmask = None
+					for h in self.hostmasks:
+						if h.lower()==self.name.lower():
+							user_hostmask = self.hostmasks[h]
+
+					if user_hostmask!=None:
+						act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
+						act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
+						copyMenu.addAction(act)
+
+					if self.client.hostname:
+						act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
+						copyMenu.addAction(act)
+
+					if self.client.network:
+						if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+							act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+							act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
+							copyMenu.addAction(act)
+
+					act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
+					copyMenu.addAction(act)
+
 				if config.SCRIPTING_ENGINE_ENABLED:
 
 					menu.addSeparator()

@@ -46,6 +46,9 @@ What's new:
   to that nickname. In channels, this only works for nicknames inside that
   channel; for server and private chat windows, this works for any "visible"
   nickname.
+* Added new options to the private window chat context menu: request WHOIS,
+  send CTCP message, and copy miscellaneous information to the clipboard.
+* Re-wrote the repo README, thanks to Ivan!
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |

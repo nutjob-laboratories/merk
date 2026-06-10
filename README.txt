@@ -1,34 +1,33 @@
 <p align="center">
   <img src="./graphics/banner.png"><br>
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
-  <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br>
+  <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
-  <b>Current development version: !_FULL_VERSION_!</b><br>
-  <b><a href="https://latest.merk.chat">Download the latest development versions</a></b><br><br>
-  <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b><br>
+  <b>Current development version: <a href="https://latest.merk.chat">MERK !_FULL_VERSION_!</a></b><br><br>
+  <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b>
 </p>
 
-**I finally found a job! But MERK still needs your help.** If you'd like to help me and help support **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more will get their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free, and will always be open source. Thanks for your time, and I hope you enjoy **MERK**! Let's keep IRC alive in the 21st century!
+**MERK** is a cross-platform graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client written in Python 3 with [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/). It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the classic Windows client [mIRC](https://www.mirc.com/) — but unlike mIRC, **MERK** is completely free and open source. It's designed to be easy and intuitive for new users, while staying powerful and deeply customizable for everyone else. You never have to delve deeper into the interface than you want to.
 
- - [Downloads](#Downloads)
- - [Summary](#Summary)
- - [Running MERK on Windows](#running-merk-on-windows)
- - [Running MERK on Linux](#running-merk-on-linux)
- - [Running MERK on macOS](#running-merk-on-macos)
- - [Running MERK with Python](#running-merk-with-python)
- - [Python Requirements](#python-requirements)
- - [Features](#Features)
- - [Screenshots](#screenshots)
- - [Usage](#usage)
- - [Commands](#commands)
- - [MERK "Markdown"](#merk-markdown)
- - [Plugins](#plugins)
- - [Why does MERK exist?](#why-does-merk-exist)
- - [What does MERK mean?](#what-does-merk-mean)
- - [Does MERK need any help?](#does-merk-need-any-help)
+**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the development version at [https://latest.merk.chat](https://latest.merk.chat).
+
+**Support the project:** if you'd like to help fund **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more gets their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free and open source. Let's keep IRC alive in the 21st century!
+
+| Windows | Linux  | macOS  |
+| :----:    | :----:    | :----:    |
+<a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera and EFnet, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
+
+- [Downloads](#downloads)
+- [Quick Start](#quick-start)
+- [Features](#features)
+- [Documentation](#documentation)
+- [Community & Contact](#community--contact)
+- [Helping Out](#helping-out)
+- [About MERK](#about-merk)
 
 # Downloads
-All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(file_format)), unless otherwise noted. All files available for direct download below are for the current development version of **MERK**. If you have previously installed **MERK** and would like to update to a new version, just [download the installer](https://www.dropbox.com/scl/fi/okp7zrjy25p1v3rox00p1/merk_setup.zip?rlkey=ey9f78jqzzp9ldjbqgwikk8uc&dl=1) and install **MERK** again; your install will be updated to the latest version.
+
+All files are packed in [ZIP archives](https://en.wikipedia.org/wiki/ZIP_(file_format)) unless otherwise noted. Direct downloads below are for the current development version.
 
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
@@ -40,487 +39,96 @@ All files are packed in [ZIP archive files](https://en.wikipedia.org/wiki/ZIP_(f
 | Zip Archive|  Windows Executable | [Download MERK !_WIN_VERSION_! (!_WINZIP_!)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
 | Windows Installer |  Windows Setup | [Download MERK !_WIN_VERSION_! (!_WINSETUP_!)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
-# Summary
-  
-**MERK** is a graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [Internet relay chat](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client. The current development version is **!_FULL_VERSION_!**. It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the popular Windows IRC client [mIRC](https://www.mirc.com/).  **MERK** is written in Python 3, using the [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/) libraries, and runs on Windows, Linux, and macOS. **MERK** has a rich [plugin](https://en.wikipedia.org/wiki/Plug-in_%28computing%29) framework; plugins can be created, written, and exported directly inside the application with no need of outside tools. **MERK** is updated frequently with new features and bugfixes.
+# Quick Start
 
-**MERK** is explicitly designed to be easy and intuitive to use, but powerful. Users never have to delve deeper into the interface than they want to.
+The Windows and Linux builds are made with [PyInstaller](https://www.pyinstaller.org/) and run without installing Python or any libraries. All command-line arguments work the same on every version of **MERK** — run `merk --help` (or `python merk.py --help`) to see all 30+ options, or see the [full reference](./COMMANDS.md#command-line-usage).
 
-**MERK** has a new domain! You can visit this repository at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), and download the latest development version from [https://latest.merk.chat](https://latest.merk.chat).
+### Windows
 
-**MERK** is still in active development, but it works, and can be used for most IRC activities. [The current stable release of **MERK** is version !_RELEASE_!](!_RELEASE_URL_!). **MERK** has a user guide, which can be [viewed here](./MERK_User_Guide.pdf). The [CHANGELOG](./CHANGELOG) reflects changes in the client in [the current development version](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) which will be present in the next release.
+Run the [installer](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1) (unzip and double-click `setup.exe`), or [download the zip](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), unzip anywhere, and double-click `merk.exe`. To update, just install the newer version over the old one (or extract the zip over the old files).
 
-Join me on the official **MERK** IRC channel, **#merk** on the MansionNET network! Connect to  MansionNET in the client as one of the built-in server suggestions, or at **irc.inthemansion.com**, port **6697** (via SSL). I'm also an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET! I'm usually in **#merk** and **#lobby**.
+### Linux
 
-# Running MERK on Windows
-**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. [You can download the current stable release (!_RELEASE_!) here](!_RELEASE_URL_!). For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf).
+[Download the zip](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1), unzip anywhere, and run `merk`. Both [X11](https://www.x.org/wiki/) and [Wayland](https://wayland.freedesktop.org/) are supported.
 
-To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1) and unzip to any directory, and double click on `merk.exe` to run the client. If you [download the installer](https://www.dropbox.com/scl/fi/0u1vcg5xuntzs2b16e01b/merk_setup.zip?rlkey=8avj1gyed3txz1nfj9ev41mmh&st=zlve4c1o&dl=1), unzip and double click on `setup.exe` to install **MERK**. You can install **MERK** any place you'd like.
-
-If you have previously installed **MERK** and would like to update to a new version, just download the installer for the newer version and install **MERK** again; your install will be updated to the newer version. To update the `merk.exe` version, extract the [zip file](https://www.dropbox.com/scl/fi/fnu5uasoo2dzmzwiferhw/merk-windows-latest.zip?rlkey=9fke2qid0gna4n4zt00v0uhhy&dl=1), overwriting the older version of **MERK**.
-
-A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
-
-# Running MERK on Linux
-**MERK** has a version built with [PyInstaller](https://www.pyinstaller.org/) which you can run without having to install Python or any of the requirements. For more information on **MERK** and how it works, [check out the user guide](./MERK_User_Guide.pdf). **MERK** supports both [X11](https://www.x.org/wiki/) and [Wayland](https://wayland.freedesktop.org/).
-
-To run the current development  version of **MERK**, [download this zip file](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1) and unzip to any directory, and double click on `merk` to run the client, or execute  `merk` from a console window.
-
-If you have [Flatpak](https://flatpak.org/) installed, you can install the Flatpak distribution. [Download the Flatpak of **MERK**](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1), and save it. Then, navigate to where ever you saved the file with the console, and enter:
+If you prefer [Flatpak](https://flatpak.org/), [download the Flatpak](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1) and install it with:
 
     flatpak install --user merk-latest.flatpak
 
-You may have to restart your window manager for the entry in the application menu(s) to appear. The same instructions work for releases of **MERK**, just replace `merk-latest.flatpak` with the filename of the Flatpak release. To update **MERK** to the latest version, just download the Flatpak of the latest version and install it.
+You may need to restart your window manager for the menu entry to appear. To update, install the newer Flatpak the same way.
 
-A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
+### macOS
 
-# Running MERK on macOS
-
-First, install Python 3.13 with [HomeBrew](https://brew.sh/).
+Install Python 3.13 with [Homebrew](https://brew.sh/), then download and extract the [cross-platform zip](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1) and set up a virtual environment:
 
     brew install python@3.13
-
-Now, [download](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. With that done, we need to build a virtural environment to run **MERK** in. Open a console, and navigate to wherever you extracted **MERK** to, and execute these commands:
-
+    cd /path/to/merk
     python3.13 -m venv .venv
     source .venv/bin/activate
     pip install --upgrade pip
-    pip install pyqt5 Twisted
+    pip install pyqt5 Twisted pyOpenSSL service_identity
 
-If you'd like to connect to servers via SSL/TLS, run these commands to install the necessary libraries:
-
-    pip install pyOpenSSL service_identity
-
-You're all set! You can run **MERK** with:
+Then run **MERK** with:
 
     python merk.py
 
-To run **MERK** from a shortcut or script, you have to make sure that the virtual environment is initialized *before* you can run `merk.py`. For example, if you installed **MERK** into `/Users/your_name/merk`, you could execute:
+To launch from a shortcut or script, activate the virtual environment first:
 
-    source /Users/your_name/merk/.venv/bin/activate && python /Users/your_name/merk/merk.py
+    source /path/to/merk/.venv/bin/activate && python /path/to/merk/merk.py
 
-A note: all command-line arguments, as documented below, work on the all versions of **MERK**.
+### Running from source (any platform)
 
-# Running MERK with Python
+**MERK** requires Python 3.09+, [PyQt5](https://pypi.org/project/PyQt5/), and [Twisted](https://twistedmatrix.com/trac/). For SSL/TLS connections, `pyOpenSSL` and `service_identity` are also needed:
 
-First, make sure that all the [requirements](#python-requirements) are installed. Next, [download](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1) **MERK**. Extract the zipfile to a directory of your choice using your favorite archive/zip program. Open a command prompt, navigate to the directory you extracted **MERK** to, and type:
+    pip install pyqt5 Twisted pyOpenSSL service_identity
+
+On Windows, you may also need `pywin32` (`pip install pywin32`). Download the [cross-platform zip](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1), extract it, and run:
 
     python merk.py
 
-# Python Requirements
-
-**MERK** requires Python 3.09+, [PyQt5](https://pypi.org/project/PyQt5/), and [Twisted](https://twistedmatrix.com/trac/). PyQt5 and Twisted can be installed by using [**pip**](https://pypi.org/project/pip/):
-
-    pip install pyqt5
-    pip install Twisted
-
-To connect to IRC servers via SSL, two additional libraries may be needed:
-
-    pip install pyOpenSSL
-    pip install service_identity
-
-**MERK** is being developed with Python 3.13 on Windows 11 and Python 3.12 on Linux Mint 22.3. Most development work is being done on Linux.
-
-If you're running Windows, and you're getting errors when trying to run **MERK**, you may have to install another library, [pywin32](https://pypi.org/project/pywin32/). You can also install this with [**pip**](https://pypi.org/project/pip/):
-
-    pip install pywin32
-
-To run properly on Linux and macOS, the latest version of all required software is recommended. For Linux systems using [Wayland](https://wayland.freedesktop.org/), you may need to recompile PyQt5 with Wayland support. The Linux binary supports display on systems with both [X11](https://www.x.org/wiki/) and [Wayland](https://wayland.freedesktop.org/).
-
-There are four libraries that comes bundled with **MERK**:
- - [qt5reactor 0.6.3](https://github.com/twisted/qt5reactor)
- - [pyspellchecker 0.8.3](https://github.com/barrust/pyspellchecker)
- - [emoji 2.15.0](https://github.com/carpedm20/emoji)
- - [pike 0.2.0](https://github.com/pyarmory/pike)
+Four libraries come bundled with **MERK**: [qt5reactor 0.6.3](https://github.com/twisted/qt5reactor), [pyspellchecker 0.8.3](https://github.com/barrust/pyspellchecker), [emoji 2.15.0](https://github.com/carpedm20/emoji), and [pike 0.2.0](https://github.com/pyarmory/pike).
 
 # Features
--   Runs on Windows, Linux, and macOS
--   Stand-alone binaries for both Windows and Linux are available
-- Installer for Windows is available
--   [Flatpak](https://flatpak.org/) distribution for Linux is available
--   Supports multiple connections (you can chat on more than one IRC server at a time)
--   Connect to IRC via TCP/IP or SSL/TLS
--   SASL support for logging into services during connection
--   A built-in list of over 200 IRC servers to connect to
--   Open source ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html))
--   Built-in [documentation](./MERK_User_Guide.pdf)!
--   Uses a [multiple document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like popular Windows IRC client [mIRC](https://www.mirc.com/)
-    - Unlike mIRC, **MERK** is completely free and open source!
--   Features include...
-    - Extensive command-line options
-        - Over 30 different command-line flags, allowing for connecting to multiple servers on startup, disabling or enabling options, and more
-    - Dark mode
-    - Server profiles
-        - Set server-specific nicknames, alternate nicknames, usernames, and realnames
-        - Server profiles, once created, are used for all connections made to that server
-    - Full scripting engine
-        - Includes a built in script editor, with syntax highlighting
-        - Automatically execute scripts on server connection (to join channels, login in ChanServ, etc.)
-        - Scripts can have rudimentary flow control, including `if`, `goto`, and `loop`
-        - Variables (called "aliases" in **MERK** parlance) are [scoped locally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#File_scope) if created in scripts, and [globally](https://en.wikipedia.org/wiki/Scope_%28computer_programming%29#Global_scope) if created in the text input widget.
-        - Over 80 different commands are available for scripts or for use in the client
-        - 26 script-only commands
-    - Macros
-        - Macros can take arguments, just like "regular" commands
-        - Macro functionality is done with scripts, allowing for complex behaviors
-    - Application-wide, user-definable hotkeys
-      - Hotkeys can execute any command, script, or macro
-      - Command is executed in whatever subwindow is active
-      - Hotkeys can be set in scripts, from commands, or through the hotkey manager
-    -   Automatic logging of channel and private chats
-        - Includes a utility to export logs to JSON, CSV, "human readable", or your own custom format
-            - "Human readable" logs look more like "traditional" IRC logs
-        - Logs are stored in JSON, so parsing/scraping your own logs in easy
-        - Full logs can be viewed, preserving IRC colors and formatting, with clickable links for URLs in chat
-    - Audio notifications
-      - Can be triggered by seven different events, with each one able to be turned on and off
-      - Uses any WAV file as the notification sound, and can be set in the GUI. **MERK** uses a built-in public domain "bell" sound by default
-    - Message filtering
-      - Hide JOIN/PART/QUIT/MODE/NICK/TOPIC messages
-          - Hide these messages either application wide, or in individual channels
-          - Messages are still received and logged, just hidden from view
-    - Very configurable, without having to manually edit a configuration file
-        - Control application behavior, logging, features, the GUI, and more
-        - Almost 400 different settings can be changed, allowing you to customize **MERK** to look and function _exactly_ the way you want it to look and function
-        - Almost all settings can be changed in the settings dialog without a restart
-        - Settings can be changed on-the-fly with scripts and hotkeys using the `/config` command
-    -   All text colors (and backgrounds) can be customized
-        - Individual channels can have their own color schemes
-        - User input text can highlight channels, nicknames, commands, and more as you type!
-        - Styles are saved and loaded automatically
-        - Easy to use GUI text style editor is built-in
-        - Changes to text style are immediate, without having to restart
-        - Default text styles for both dark and normal mode
-    -   Built-in [spell checker](https://github.com/barrust/pyspellchecker) (supports English, Spanish, French, German, Portuguese, Italian, Dutch, and Russian)
-    -   Autocomplete for commands, nicknames, channels, and more
-    -   [Emoji](https://en.wikipedia.org/wiki/Emoji) support
-        -   Insert emojis into chat by using shortcodes (such as `:joy:` 😂, `:yum:` 😋, etc.)
-        -   Built-in autocomplete for all supported emojis
-        -   A list of supported emoji short codes can be found [here](https://carpedm20.github.io/emoji/all.html?enableList=enable_list_alias)
-    -   [ASCIImoji](https://asciimoji.com/) support
-        -   Insert ASCIImojis into chat by using shortcodes (such as `(bear)` ʕ·͡ᴥ·ʔ, `(lol)` L(° O °L), etc.)
-        -   Built-in autocomplete for all supported ASCIImojis
-        -   A list of supported ASCIImoji shortcodes can be found [here](https://asciimoji.com/)
-    -   Full IRC color support
-        - IRC colors are shown in topics in the channel information display
-        - Colors and formatting can be optionally stripped from display
-        - If colors and formatting in input are stripped from display, they will still be sent to the server.
-    - [**MERK** "markdown"](#merk-markdown) support, for formatting messages with IRC control codes
-        - Messages can use the *italics*, **bold**, ~~strikethrough~~, and <u>underline</u> markdown tags
-        - Inject [IRC colors](https://www.mirc.com/colors.html) into input with plain text
-            - Open a color block with `<NUMBER` to set the foreground color, and `<NUMBER,NUMBER` to set the foreground and background colors, and close the color block with `>`.
-        - Colors and formatting is displayed in chat (with the option to turn this behavior off) and in channel topics
-        - This feature is informally called "MERKdown" by some users.
-    - Plugins
-      - All the information needed to write, develop, and export plugins can be found in the built-in documentation, the [MERK User Guide](./MERK_User_Guide.pdf)
-      - Plugins are written in Python, and have access to everything that Python has
-        - If running **MERK** with the PyInstaller distribution, plugins will only have access to the libraries included with **MERK** ([Twisted](https://twistedmatrix.com/trac/), [PyQt5](https://pypi.org/project/PyQt5/), [pyspellchecker](https://github.com/barrust/pyspellchecker), [emoji](https://github.com/carpedm20/emoji), and [pike](https://github.com/pyarmory/pike)), as well as [Python's standard library](https://docs.python.org/3/library/index.html)
-      - Plugins have direct access to the [Twisted IRC client objects](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) used by **MERK** to connect to IRC
-      - Plugins can react to most IRC events
-        - Over 40 different IRC and application events
-        - Individual plugin events can be enabled and disabled in the "Settings" dialog
-        - Plugins can contain methods, written in Python, that can be directly executed by users with the `/call` command
-      - Plugins can be created and edited directly in the application
-        - A special version of the script editor, modified for Python, is used to create and edit plugins. Features include syntax highlighting, auto-indentation, and code generators for all events
-        - Plugins can be imported from, and exported to, [ZIP files](https://en.wikipedia.org/wiki/ZIP_%28file_format%29), completely inside **MERK**
-        - Example plugins are in both [the documentation](./MERK_User_Guide.pdf) and [here](./plugin_examples)
-      - Plugins can be installed by [drag-and-drop](https://en.wikipedia.org/wiki/Drag_and_drop), with the plugin manager, or from the command-line
-      - Plugins can be uninstalled with the plugin manager, from the command-line, or by simply deleting the plugin's file(s)
 
-# Screenshots
+- **Runs on Windows, Linux, and macOS**, with stand-alone binaries for Windows and Linux and a Flatpak for Linux
+- **Multiple-document interface**, like the classic mIRC — each server, channel, and private chat gets its own subwindow
+- **Multiple simultaneous connections** — chat on more than one IRC server at a time, via TCP/IP or SSL/TLS, with SASL support and a built-in list of over 200 IRC servers
+- **Nearly 400 settings**, almost all changeable in the GUI and applied instantly, no restart or config-file editing required — **MERK** may be the most configurable IRC client ever created
+- **Full scripting engine** with a built-in syntax-highlighting editor, connection scripts, flow control, aliases, macros, and application-wide hotkeys
+- **Python plugins** that can react to over 40 IRC and application events, with full access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) — written, edited, and exported entirely inside the application
+- **Complete theming** — all text colors and backgrounds can be customized per-channel with a built-in style editor, plus dark mode and default styles for both light and dark
+- **Automatic logging** of channels and private chats, stored as JSON with export to CSV, "human readable", or custom formats. Saved logs can be viewed in the application with support for IRC colors and formatting display, and clickable links
+- **Quality-of-life everywhere**: spell checking in 8 languages, autocomplete for commands/nicknames/channels/emojis, [emoji](https://en.wikipedia.org/wiki/Emoji) and [ASCIImoji](https://asciimoji.com/) shortcodes, message filtering (hide JOIN/PART/QUIT and friends), audio notifications, and full IRC color support
+- **[MERK "markdown"](./COMMANDS.md#merk-markdown)** for injecting IRC colors and *italic*, **bold**, <u>underline</u>, and ~~strikethrough~~ formatting into messages with plain text
+- **Over 80 commands** for use in the client or in scripts — see the [full command reference](./COMMANDS.md)
+- **Open source** ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html)) with built-in documentation
 
-<p align="center">
-<p><small><i>Screenshots may not reflect the current release (!_RELEASE_!), and may reflect the current development version (!_FULL_VERSION_!). More screenshots are in the <a href="./MERK_User_Guide.pdf">MERK User Guide</a>.</i></small></p>
+# Documentation
 
-<center><a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png"></a></center></br>
- <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a> and <a href="http://www.efnet.org/">EFnet</a>, on Windows 11, using the "windows" widget set. </small></i></center><br><br>
- 
- <center><a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://libera.chat/">Libera</a>, <a href="http://www.efnet.org/">EFnet</a>, and <a href="https://inthemansion.com/">MansionNET</a> on Linux Mint 22.3, using the "Oxygen" widget set.</small></i></center><br><br>
+- **[MERK User Guide](./MERK_User_Guide.pdf)** — the complete manual, covering everything from first connection to writing plugins
+- **[Command reference](./COMMANDS.md)** — every client and scripting command, command-line usage, and MERK "markdown"
+- **[Plugin examples](./plugin_examples)** — example plugins to get you started
+- **[CHANGELOG](./CHANGELOG)** — changes in the current development version
 
- <center><a href="./graphics/macos.png"><img src="./graphics/macos_small.png"></a></center></br>
-  <center><i><small>MERK connected to <a href="https://inthemansion.com/">MansionNET</a> on macOS 26.2, using the "Fusion" widget set in "dark mode".</small></i></center><br><br>
+# Community & Contact
 
- <center><a href="./graphics/connect_1.png"><img src="./graphics/connect_1_small.png"></a><a href="./graphics/connect_2.png"><img src="./graphics/connect_2_small.png"></a><a href="./graphics/connect_3.png"><img src="./graphics/connect_3_small.png"></a></center></br>
-  <center><i><small>The MERK connection dialog, the first thing users see when running MERK. All settings are saved automatically, including the connection script. The extra text (describing how the individual settings work) can be removed with the "Simplified dialogs" option in settings.</small></i></center><br><br>
+Join the official **MERK** IRC channel: **#merk** on the MansionNET network. Connect via the built-in server suggestions, or at **irc.inthemansion.com**, port **6697** (SSL). I'm an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET, and I'm usually in **#merk** and **#lobby**. You can also drop me an [email](mailto:dhetrick@gmail.com).
 
- <center><a href="./graphics/styler.png"><img src="./graphics/styler_small.png"></a></center></br>
-  <center><i><small>The text style dialog. The text style can be edited for all windows/channels, or for specific channels. Styles are saved by network, so they are applied no matter what server you're connected to. Changes, once saved, are automatically and instantly applied.</small></i></center><br><br>
+# Helping Out
 
- <center><a href="./graphics/settings.png"><img src="./graphics/settings_small.png"></a></center></br>
-  <center><i><small>The first "page" of the settings dialog. MERK features nearly 400 settings that can be tweaked until MERK looks and works exactly like you want it to. All settings (except for "dark mode") are applied instantly, and can be changed either in the GUI or in scripting.</small></i></center><br><br>
+Yes, **MERK** needs help! It's written by me, [Dan Hetrick](https://github.com/danhetrick), and I can't do everything this software needs:
 
- <center><a href="./graphics/menu.png"><img src="./graphics/menu.png"></a></center></br>
-  <center><i><small>The settings menu also includes many commonly used settings that can be toggled directly, without opening the settings dialog. All settings in this menu are applied instantly.</small></i></center><br><br>
+- **[Donate!](https://buymeacoffee.com/danhetrick)** — If you like **MERK**, like IRC, or just want to help out some open source developer, [donate to **MERK** today!](https://buymeacoffee.com/danhetrick)
+- **Icons and graphics** — I'm a programmer, not an artist, and I think that shows!
+- **Packaging** — I'd love to provide a `pip` package, but I have little experience with it
+- **Proxy support** — SOCKS4/5 and HTTP proxy connections are on the wishlist
+- **DCC chat and file transfers** — the DCC functionality in Twisted is undocumented, and I can't make heads or tails of it
+- **Using MERK and giving feedback** — tell me what you love and what you hate! I can't promise I'll add everything, but I love hearing how people use **MERK**
 
- <center><a href="./graphics/channels.png"><img src="./graphics/channels_small.png"></a></center></br>
-  <center><i><small>The channel list dialog, listing all visible channels on a server. The list can be searched. This screenshot shows the channel list for the <a href="https://libera.chat/">Libera.chat</a> network. The instructional text has been removed by toggling the "Simplified dialogs" option in settings.</small></i></center>
-  </p>
+# About MERK
 
-# Usage
-```
-usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
-                      [-C SERVER:PORT[:PASSWORD]] [-n NICKNAME] [-u USERNAME]
-                      [-S SERVER:PORT[:PASSWORD]] [-r REALNAME] [-h] [-d] [-x] 
-                      [-t] [-R] [-o] [-P] [-f] [-s FILENAME][--config-name NAME] 
-                      [--config-directory DIRECTORY] [--config-local] [-D] [-L]
-                      [--scripts-directory DIRECTORY] [--user-file FILENAME] [-E]
-                      [--config-file FILENAME] [--reset] [--reset-user] [-Q NAME]
-                      [--reset-all] [--uninstall [FILE]] [--install FILE] [-N] [-A]
-                      [SERVER] [PORT]
+**Why does MERK exist?** I've used many, *many* IRC clients, and none of them felt *right* — not customizable enough, missing features, or just plain ancient-looking. I fell out of love with the "single window" interface most clients use, remembered using [mIRC](https://www.mirc.com/) fondly back in the day, and decided to write a modern client with that multiple-document interface style. **MERK** is my "dream IRC client" — easy to get started with, but *deep* — and I hope it can become yours too!
 
-
-Connection:
-  SERVER                Server to connect to
-  PORT                  Server port to connect to (6667)
-  --ssl, --tls          Use SSL/TLS to connect to IRC
-  -p, --password PASSWORD
-                        Use server password to connect
-  -c, --channel CHANNEL[:KEY]
-                        Join channel on connection
-  -C, --connect SERVER:PORT[:PASSWORD]
-                        Connect to server via TCP/IP
-  -S, --connectssl SERVER:PORT[:PASSWORD]
-                        Connect to server via SSL/TLS
-
-User Information:
-  -n, --nickname NICKNAME
-                        Use this nickname to connect
-  -u, --username USERNAME
-                        Use this username to connect
-  -a, --alternate NICKNAME
-                        Use this alternate nickname to connect
-  -r, --realname REALNAME
-                        Use this realname to connect
-
-Options:
-  -h, --help             Show help and usage information
-  -d, --donotsave        Do not save new user settings
-  -x, --donotexecute     Do not execute connection script
-  -N, --noprofile        Do not use server profile
-  -A, --nosasl           Do not use SASL login
-  -t, --reconnect        Reconnect to servers on disconnection
-  -R, --run              Don't ask for connection information on start
-  -o, --on-top           Application window always on top
-  -f, --full-screen      Application window displays full screen
-  -s, --script FILE      Use a file as a connection script
-  -P, --disable-plugins  Disables plugins
-  -E, --enable-plugins   Enables plugins
-
-Files and Directories:
-  --config-name NAME    Name of the configuration file directory (default: .merk)
-  --config-directory DIRECTORY
-                        Location to store configuration files
-  --config-local        Store configuration files in install directory
-  --scripts-directory DIRECTORY
-                        Location to look for script files
-  --user-file FILE      File to use for user data
-  --config-file FILE    File to use for configuration data
-  --reset               Reset configuration file to default values
-  --reset-user          Reset user file to default values
-  --reset-all           Reset all configuration files to default values
-  --uninstall [FILE]    Deletes an installed plugin
-  --install FILE        Install plugin ZIP or Python module
-
-Appearance:
-  -Q, --qtstyle NAME    Set Qt widget style (default: Windows)
-  -D, --dark            Run in dark mode
-  -L, --light           Run in light mode
-```
-# Commands
-All of these commands can be issued in the client or from scripts, unless otherwise noted. Commands that do not start with `/` can only be issued in scripts. Commands that start with `/_` are commands that are usually limited to [IRCops](https://en.wikipedia.org/wiki/IRC_operator), and usually display all output in server windows.
-
-| Commands                                | Description                                                                                                                      |
-|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `/admin [SERVER]`                       | Requests administration information from the server  |
-| `/alias [TOKEN] [TEXT...]`                  | Creates an alias that can be referenced by `$TOKEN`. Call with only `TOKEN` as an argument to see `TOKEN`'s value. If `TEXT` is a mathematical statement, it will be evaluated and the result used as the alias' value. Operations supported are parenthesis, addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`), modulus (`%`), and exponents(`**`). Call without any arguments to see all aliases and their values                                                                              |
-| `append FILENAME CONTENTS...`            | Appends `CONTENTS`to `FILENAME`, followed by a newline. *Can only be called by scripts*                                                        |
-| `/away [SERVER] [MESSAGE]`                       | Sets status as "away". To specify what server to set the "away" status on, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER`       |
-| `/back [SERVER]`                                 | Sets status as "back". To specify what server to set the "back" status on, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER`       |
-| `/bind SEQUENCE COMMAND...`           | Executes `COMMAND` every time key `SEQUENCE` is pressed. Pass `save` as the only argument to save binds to the configuration file                                                                                                           |
-| `/browser URL`           | Opens `URL` in the default browser  |
-| `/call METHOD [ARGUMENTS...]`         | Executes `METHOD` in any plugin that contains that `METHOD`  |
-| `/clear [SERVER] [WINDOW]`              | Clears a window's chat display. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to clear the server window  |
-| `/close [SERVER] [WINDOW]`              | Closes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to hide the server window                    |
-| `/config [SETTING] [VALUE...]`          | Changes a setting, or searches and displays one or all settings in the configuration file.  **Caution**: use at your own risk! |
-| `/config export [FILENAME]`          | Exports the current configuration file.  **Caution**: use at your own risk! |
-| `/config import [FILENAME]`          | Imports a configuration file into settings.  **Caution**: use at your own risk! |
-| `/_connect SERVER PORT [REMOTE]`     | Instructs a server to connect to another server. May only be issued by server operators |
-| `/connect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server                                                                                                        |
-| `/connectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL                                                                                                |
-| `context [HOSTID] WINDOW_NAME`                  | Moves execution of the script to `WINDOW_NAME`. To specify what server `WINDOW_NAME` is connected to, pass a `HOSTID` as the first argument. *Can only be called from scripts*                                                  |
-| `/ctcp REQUEST USER`                  | Sends a CTCP request to `USER`; valid `REQUEST`s are TIME, VERSION, USERINFO, SOURCE, or FINGER                                                  |
-| `decimal ALIAS LOW HIGH MESSAGE...`     | Requests a decimal number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*    |
-| `/delay SECONDS COMMAND...`                  | Executes `COMMAND` after `SECONDS` seconds                                                 |
-| `/_die`                  | Instructs the server to shut down. May only be issued by server operators                               |
-| `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
-| `end`                                  | Immediately ends a script; *can only be called from scripts*                                                                       |
-| `/error [SERVER] [WINDOW] TEXT...`     | Prints an error message to a window, and immediately exits a script if called from a script. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open windows. Pass `*` as `WINDOW` to print to the server window     |
-| `escape ALIAS TEXT...`       | Escapes MERK markdown in `TEXT`, and stores it in `ALIAS`; *can only be called from scripts*             |
-| `exclude WINDOW...`                       | Prevents a script from executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
-| `/exit [SECONDS]`                       | Exits the client, with an optional pause of `SECONDS` before exit                                                                |
-| `/fade [SERVER] [WINDOW] PERCENTAGE`    | Sets transparency of a subwindow by `PERCENTAGE`. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's transparency. Pass `*` as `WINDOW` to set the transparency of the server window     |
-| `/find [TERMS]`                         | Finds filenames that can be found by other commands; use * for multi-character wildcards, and ? for single character wildcards   |
-| `/folder PATH`              | Opens `PATH` in the default file manager               |
-| `getfile ALIAS MESSAGE...`           | Shows an "open file" dialog, and stores the result in `ALIAS`. If no file is set, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
-| `goto TARGET`                         | Moves execution of the script to `TARGET`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*  |
-| `halt [MESSAGE...]`                       | Asks the user if they want to halt the script's execution, and displays an error `MESSAGE`. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*       |
-| `/help [COMMAND]`                                 | Displays command usage information                  |
-| `/hide [SERVER] [WINDOW]`                                 | Hides a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to hide the server window      |
-| `/highlight WORD [COLOR]`                                 | Highlights `WORD` with `COLOR` in chat. `COLOR` must be a valid 6 digit web color. Call without any arguments to see a list of highlighted words. Call without a `COLOR` argument to select a color with the GUI  |
-| `hostmask ALIAS NICKNAME`                       | Retrieves the hostmask of `NICKNAME` and stores it in `ALIAS`. If the hostmask is not known or cannot be found, `ALIAS` is set to `unknown`. *Can only be called from scripts*       |
-| `if VALUE1 OPERATOR VALUE2 COMMAND...`       | Executes `COMMAND` if `VALUE1` and `VALUE2` are true, depending on `OPERATOR`. Valid `OPERATOR`s are `(is)` (result is true if `VALUE1` and `VALUE2` are equal), `(not)` (result is true if `VALUE1` and `VALUE2` are not equal), `(in)` (result is true if `VALUE1` is contained in `VALUE2`), `(nin)` (result is true if `VALUE1` is not contained in `VALUE2`), `(gt)` (result is true if `VALUE1` is a greater number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(lt)` (result is true if `VALUE1` is a lesser number than `VALUE2`; if either value is a string, the length of that string will be used as the value), `(ne)` (result is true if `VALUE1` is not an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value), and `(eq)` (result is true if `VALUE1` is an equal number to `VALUE2`; if either value is a string, the length of that string will be used as the value). *Can only be called from scripts*    |
-| `/ignore USER`                          | Hides a `USER`'s chat; use `*` as multiple character wildcards, and `?` as single character wildcards                                                                                                           |
-| `/info [TARGET]`                          | Requests server information                         |
-| `input ALIAS MESSAGE...`               | Requests input from the user in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog or doesn’t input anything, `ALIAS` will be set to `*`. This command is blocking. *Can only be called from scripts*                     |
-| `insert FILE [FILE...]`              | Inserts the contents of `FILE` where it appears in the script; *Can only be called by scripts*            |
-| `/invite NICKNAME CHANNEL`              | Sends a channel invitation                                   |
-| `/ison NICKNAME(S)...`              | Displays if the specified nicknames are online          |
-| `/join CHANNEL [KEY]`                   | Joins a channel                                                                                                                  |
-| `/kick CHANNEL NICKNAME [MESSAGE]`      | Kicks a user from a channel                                          |
-| `/_kill CLIENT COMMENT...`      | Forcibly removes `CLIENT` from the network. May only be issued by IRC operators                     |
-| `/knock CHANNEL [MESSAGE]`              | Requests an invitation to a channel                                                                                              |
-| `/links [REMOTE [MASK]]`                         | Requests a list of servers the server is connected to |
-| `/list [TERMS]`                         | Lists or searches channels on the server; use `*` for multi-character wildcard and `?` for single character wildcard                      |
-| `loop COUNT`                         | Begins a `loop` block, executing any scripting until the script encounters a `pool` command, before moving execution back to the line after the `loop` call. The code in between `loop<` and `pool` will be repeated `COUNT` times. *Can only be called from scripts* |
-| `/lusers [MASK [SERVERS]]`                         | Requests statistics about the server |
-| `/macro NAME SCRIPT [USAGE] [HELP]`               | Creates a macro, executable with `/NAME`, that executes `SCRIPT`                                            |
-| `/maximize [SERVER] [WINDOW]`             | Maximizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to maximize the server window         |
-| `/me MESSAGE...`                        | Sends a CTCP action message to the current chat                                                                                  |
-| `/minimize [SERVER] [WINDOW]`             | Minimizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to minimize the server window                    |
-| `/mode TARGET MODE...`                  | Sets a mode on a channel or user                                                                                                 |
-| `/move [SERVER] [WINDOW] X Y` | Moves a subwindow to `X` (left and right) and `Y` (up and down) coordinates. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see the current subwindow's coordinates. Pass `*` as `WINDOW` to move the server window      |
-| `/msg TARGET MESSAGE...`                | Sends a message                                                                                                                  |
-| `msgbox MESSAGE...`                    | Displays a messagebox with a short message. This command is blocking. One of the only script-only commands that can be issued from an `if` command. *Can only be called from scripts*             |
-| `/nick NEW_NICKNAME`                    | Changes your nickname                                                                                                            |
-| `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
-| `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog, `ALIAS` will be set to `0*`. This command is blocking. *Can only be called by scripts*    |
-| `only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
-| `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
-| `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
-| `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
-| `/play FILENAME`                        | Plays a WAV file                                                                                                                 |
-| `pool`                        | Ends a `loop` block. *Can only be called from scripts*      |
-| `/print [SERVER] [WINDOW] TEXT...`               | Prints text to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open windows. Pass `*` as `WINDOW` to print to the server window                                                                       |
-| `/prints [SERVER] [WINDOW] TEXT...`               | Prints system message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open windows. Pass `*` as `WINDOW` to print to the server window              |
-| `/private NICKNAME [MESSAGE]`               | Opens a private chat subwindow for `NICKNAME`                             |
-| `/python [FILENAME]`               | Opens a file in the Python editor                             |
-| `/quit [MESSAGE]`                       | Disconnects from the current IRC server                                                                                          |
-| `/quitall [MESSAGE]`                       | Disconnects from all IRC servers                                                                                          |
-| `/quote [SERVER] TEXT...`                          | Sends unprocessed data to the current or another server. To specify what server to send the data to, pass a hostID (the host and port used to connect to the server, in the format `host:port`, or the hostname used to connect) as `SERVER` |
-| `random ALIAS START FINISH`              | Generates a random integer from `START` to `FINISH`, and stores it in `ALIAS`. *Can only be called by scripts*            |
-| `read ALIAS FILENAME`              | Reads `FILENAME` as a text file, and stores the contents in `ALIAS`. If the file is empty or contains only whitespace, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
-| `/reconnect SERVER [PORT] [PASSWORD]`     | Connects to an IRC server, reconnecting on disconnection                                                   |
-| `/reconnectssl SERVER [PORT] [PASSWORD]`  | Connects to an IRC server via SSL, reconnecting on disconnection                                         |
-| `/refresh`                              | Requests a new list of channels from the server                                                                                  |
-| `/_rehash`                              | Causes the server to reprocess and reload configuration files. May only be issued by IRC operators |
-| `/reload`              | Reloads the configuration file, and attempts to apply as many settings as possible      |
-| `/rem [TEXT...]`                        | Does nothing. Can be used for comments                                                     |
-| `/rerender [SERVER] [WINDOW]`              | Re-renders the chat log of a window. Pass `*` as the only argument to re-render all open chat windows          |
-| `restrict SERVER`\|`CHANNEL`\|`PRIVATE`     | Prevents a script from running if it is not being ran in a `SERVER`, `CHANNEL`, or `PRIVATE` window. Up to two window types can be passed. *Can only be called from scripts*                                                                                |
-| `/restore [SERVER] [WINDOW]`              | Restores a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to restore the server window                                 |
-| `setfile ALIAS MESSAGE...`           | Shows a "save file" dialog, and stores the result in `ALIAS`. If no file is set, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*            |
-| `/script FILENAME [ARGUMENTS]`                      | Executes a list of commands in a file                                                                                            |
-| `/show [SERVER] [WINDOW]`               | Shows a subwindow, if hidden, and shifts focus to that subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `WINDOW` to show the server window  |
-| `/size [SERVER] [WINDOW] WIDTH HEIGHT` | Resizes a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Call without arguments to see current subwindow's size. Pass `*` as `WINDOW` to resize the server window |
-| `/style [SERVER] [WINDOW]`                                | Opens a window's text style editor. Pass `*` as `WINDOW` to select the server window                                  |
-| `target LABEL`                                 | Creates a target for the `goto` command. If used as a target for `goto`, script execution will move to the line this appears on. `LABEL` cannot contain spaces. Can only be called from scripts      |
-| `/time`                                 | Requests server time                                                                                                             |
-| `/toggle FEATURE`                                 | Toggles an input feature. Valid `FEATURE`s are `asciimoji`, `color`, `emoji`, `markdown`, and `protection`                                         |
-| `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
-| `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
-| `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`. Does nothing in scripts                            |
-| `/unbind SEQUENCE`                        | Removes a bind for `SEQUENCE`. To remove all binds, pass `*` as the argument                                                        |
-| `/unhighlight WORD`                        | Removes highlighting for `WORD`. Call without arguments to see a list of all highlighted words. Pass `*` as the only argument to remove all word highlights  |
-| `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |
-| `/unmacro NAME`                        | Deletes the macro named `NAME`  |
-| `usage NUMBER [MESSAGE...]`            | Prevents a script from running unless `NUMBER` arguments are passed to it, and displays `MESSAGE`. If the script can take one or more arguments, pass `+` as `NUMBER`. *Can only be called by scripts*                                                        |
-| `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk! |
-| `/userhost NICK(S)...`          | Requests information about users from the server |
-| `/version [SERVER]`                     | Requests server version                                                                                                          |
-| `wait SECONDS`                         | Pauses script execution for `SECONDS`; *can only be called from scripts*                                                           |
-| `/wallops MESSAGE`                         | Sends a message to all operators  |
-| `/warn [SERVER] [WINDOW] TEXT...`               | Prints an error message to a window. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open windows. Pass `*` as `WINDOW` to print to the server window     |
-| `/who NICKNAME [o]`                     | Requests user information from the server                                                                                        |
-| `/whois NICKNAME [SERVER]`              | Requests user information from the server                                                                                        |
-| `/whowas NICKNAME [COUNT] [SERVER]`     | Requests information about previously connected users                                                                            |
-| `/window [COMMAND] [X] [Y]`     | Manipulates the main application window. Valid commands are `cascade`, `fade`, `fullscreen`, `hotkey`,  `ignore`, `install`, `layout`, `logs`, `maximize`, `minimize`, `move`, `next`, `ontop`, `pause`, `plugin`, `previous`, `readme`, `restart`, `restore`, `settings`, `size`, `tile`, and `uninstall`. Call with no arguments to see main window information and a list of subwindows                                                 |
-| `write FILENAME CONTENTS...`            | Writes `CONTENTS`to `FILENAME`, followed by a newline. *Can only be called by scripts*                                                        |
-| `/xconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script                                                                       |
-| `/xconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script                                                               |
-| `/xreconnect SERVER [PORT] [PASSWORD]`    | Connects to an IRC server &amp; executes connection script, reconnecting on disconnection                                                                       |
-| `/xreconnectssl SERVER [PORT] [PASSWORD]` | Connects to an IRC server via SSL &amp; executes connection script, reconnecting on disconnection                                                              |
-
-# MERK "Markdown"
-You can easily "inject" IRC colors and formatting into chat and topics using **MERK** "markdown" (also known as "MERKdown").
-
-To insert IRC colors, open a chat message with `<NUMBER` (to set the foreground color of the chat), or `<NUMBER,NUMBER` (to set the foreground and background colors of the chat, respectively). `NUMBER` can be any number from 0 to 15, the "traditional" 16 colors of IRC chat. Stop using the color formatting by "closing" the text with `>`. So, to display the words "Hello world!" in white on a red background, you'd use `<0,4Hello world!>`.
-
-| Number | Description | HTML Color |
-|:------:|:-----------:|:----------:|
-| 0      | White       | #FFFFFF    |
-| 1      | Black       | #000000    |
-| 2      | Blue        | #00007F    |
-| 3      | Green       | #009300    |
-| 4      | Light Red   | #FF0000    |
-| 5      | Brown       | #7F0000    |
-| 6      | Purple      | #9C009C    |
-| 7      | Orange      | #FC7F00    |
-| 8      | Yellow      | #FFFF00    |
-| 9      | Light Green | #00FC00    |
-| 10     | Cyan        | #009393    |
-| 11     | Light Cyan  | #00FFFF    |
-| 12     | Light Blue  | #0000FC    |
-| 13     | Pink        | #FF00FF    |
-| 14     | Grey        | #7F7F7F    |
-| 15     | Light Grey  | #D2D2D2    |
-
-You can also use markdown tags! To send text in italics, start (and finish) a message with `*`. For bold, use `**`. To underline text, start and finish with `__`. To send a strikethough, start and finish with `~` (this tag is not supported by all IRC clients, though it will render properly on most modern clients). To send the message "*Hello* **world!**", you'd use `*Hello* **world!**`.
-
-Tags can be nested, so `<5,9***~Hello~ __world!__***>` is a completely valid statement in **MERK** "markdown". The client can be configured to strip colors and formatting from display, but messages sent in "markdown" will still appear with the formatting in clients the message is sent to. In channel windows, topics are automatically changed into "markdown" when the topic is edited via the GUI.
-
-Just like almost everything is **MERK**, "markdown" can be turned off in the settings. More information about "markdown" can be found in the [**MERK** User Guide](./MERK_User_Guide.pdf).
-
-# Plugins
-**MERK** can load plugins! Plugins are written in Python, the same language that **MERK** is written in, and can react to over 40 different events. Each plugin has access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) that **MERK** uses to communicate with IRC servers, and can interact with both the client and any chat subwindows. The built-in "Plugin Manager" can edit, export, install, and create plugins, using a special version of the script editor just for Python code. The plugin editor features syntax highlighting, auto-indent, optional visible whitespace, and all the features you'd expect out of a basic text editor.
-
-For more information on how plugins work, and how to write your own, the [MERK User Guide](./MERK_User_Guide.pdf) has all the information you'll need. Here's an example plugin to help get you started. It creates a function that you can call directly with `/call rainbow` that sends a message to the current chat in rainbow colors. So, to send a "hello world" message to the current chat, you'd call `/call rainbow Hello, world!`:
-```
-from merk import Plugin
-import random
-
-class RainbowChat(Plugin):
-    def rainbow(self,window,arguments):
-        output = []
-        colors = [0,9,11,4,13,8,7]
-        msg = ' '.join(arguments)
-        for letter in msg:
-            output.append(f"<{random.choice(colors)},1{letter}>")
-        if len(output)>0:
-            chat ='**'+''.join(output)+'**'
-            window.say(chat)
-```
-# Why does MERK exist?
-It's simple. I don't currently like any of the other IRC clients. I've used many, _many_ other IRC clients for Windows and Linux, and they just didn't feel _right_. They weren't customizable enough, didn't have features that I wanted, or just plain looked ancient. I wanted a GUI IRC client that looked and felt modern, and could be heavily customized.  I also wanted a dynamic UI, one that changes with use; for example, the "channel operator" options in [Hexchat](https://hexchat.github.io/) are always visible, even if the user is not a channel operator. Why not have a client that knows when you're a channel operator, and *then* present you with those options? I wanted a cross-platform client that ran on all the major desktop platforms, identically. And, most importantly, I wanted the client to be free to everyone, in every sense. Free to download, free to use, and free to modify.
-
-My previous IRC client was called [**Ərk**](https://github.com/nutjob-laboratories/erk), and although I liked developing it and working on it, I honestly didn't use it that much. I fell out of love with the "single window" interface that so many other IRC clients use, and decided to try something "new" (and by "new" I mean 30 years old). I remembered using [mIRC](https://www.mirc.com/) back when I was younger, and decided to try and write a new client that used the [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface) style I remember fondly. And thus, __MERK__ was born!
-
-I honestly think that **MERK** may be the most configurable IRC client ever created. With almost 400 different settings to work with, you can configure **MERK** to look and operate *exactly* how you want. Want to display all channel userlists on the left, or not display userlists at all? You can do that. Want to turn off all the pretty stuff, and display only raw, (nearly) unaltered text? You can do that. Maybe you want to use text styles only on the chat display, and leave the userlists and text input alone? You can do that. One of the things I hated about [XChat](http://xchat.org/)/[Hexchat](https://hexchat.github.io/) is how un-configurable the UI is, and how most other clients require plugins or scripts to change the client UI. I wanted a client where you could alter or change most aspects of the UI without needed external tools or editing configuration files manually. With **MERK**, you can change all settings in the client and see the effects instantly. There are a few settings that can only be changed by editing the configuration files, but they are for settings most users will probably never change; but you can still change them and **MERK** will compensate, and not break the client!
-
-I mostly wrote **MERK** because I wanted a client that had all the features I wanted, no matter how obscure or "weird".  I wanted a "pretty" client with advanced features; one that was easy to use, but "deep". **MERK** is easy to get started with, and has all the documentation you could want or need, bundled in; it's perfectly functional, even if you never open the "Settings" dialog. But if you want to *really* get into customizing **MERK**, you can. You can change almost everything about the UI, or how **MERK** functions "under the hood", if you wish, and you don't need tutorials and half a dozen websites to do it. Long story short, **MERK** is my "dream IRC client", and I hope it can become yours too!
-
-# What does MERK mean?
-Well, if you were to pronounce "IRC" as an English word and not an acronym, it would probably be pronounced /_Ərk_/. Since the client allows a user to connect to multiple IRC servers at the same time, well, that might be what the "M" stands for. Either that, or "multiple-document interface". "MDIIRC" doesn't exactly roll off the tongue, so we combined the "M" with the word-pronunciation of IRC, and came up with __MERK__!
-
-# Does MERK need any help?
-Yes! **MERK** is being written by me, [Dan Hetrick](https://github.com/danhetrick), a software developer that can not do everything that this piece of software needs. There's few things I need help with!
-
- - **Icons and other graphics work**. I am not a graphic designer, and I think that that shows in this project, heh. I need help with creating better icons. I'm doing my best, here, but I'm a computer programmer, not an artist!
- - **Packaging**. **MERK** now has [PyInstaller](https://www.pyinstaller.org/)-based distributions for both Windows and Linux, as well as a Linux [Flatpak](https://flatpak.org/) and a [Vulpine Linux](https://vulpinelinux.org/) [VPM](https://forge.dnsrail.org/vulpinelinux/vpm)! I'd love to provide a `pip` package, but I don't have much or any experience with this. Help would be awesome!
- - **Proxy server support**. I'd like MERK to support connecting through proxy servers! My wishlist is to support SOCKS4/5 and HTTP, but I'm open to anything!
- - **DCC chat and file transfers**. The DCC  functionality in Twisted is undocumented, and I'll be honest, I can't make heads or tails of it. I'd love to be able to add this functionality to **MERK**, but I need help!
- - **Using MERK and giving me feedback**. Let me know what you love about **MERK** and what you hate about **MERK**! Got ideas for ways you'd like to customize the client? Features you'd like? Let me know! I can't guarantee that I'll put in everything that you want, but I love hearing new ideas, and I love hearing about how people are using **MERK**!
-
-Contacting me is easy! Drop me an [email](mailto:dhetrick@gmail.com) or say hi in the official **MERK** IRC channel: **#merk** on the MansionNET network (`irc.inthemansion.com`, port 6697 for SSL). I'm also an IRCop on MansionNET; I'm usually in **#merk** and **#lobby**.
+**What does MERK mean?** If you pronounced "IRC" as a word instead of an acronym, it'd probably come out as /*Ərk*/ (which was the name of [my previous client](https://github.com/nutjob-laboratories/erk)). Since this client connects to **m**ultiple servers using a **m**ultiple-document interface — and "MDIIRC" doesn't exactly roll off the tongue — we combined the "M" with the word-pronunciation of IRC, and came up with **MERK**!
 
 [//]: # (End of document)
