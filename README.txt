@@ -7,15 +7,16 @@
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b>
 </p>
 
-**MERK** is a cross-platform graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client written in Python 3 with [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/). It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the classic Windows client [mIRC](https://www.mirc.com/) — but unlike mIRC, **MERK** is completely free and open source. It's designed to be easy and intuitive for new users, while staying powerful and deeply customizable for everyone else. You never have to delve deeper into the interface than you want to.
-
-**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the development version at [https://latest.merk.chat](https://latest.merk.chat).
-
-**Support the project:** if you'd like to help fund **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more gets their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free and open source. Let's keep IRC alive in the 21st century!
+**MERK** is a cross-platform graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client written in Python 3 with [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/). It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the classic Windows client [mIRC](https://www.mirc.com/). Unlike mIRC, **MERK** is completely free and open source, and runs on all major platforms. It's designed to be easy and intuitive for new users, while staying powerful and deeply customizable for everyone else. You never have to delve deeper into the interface than you want to.
 
 | Windows | Linux  | macOS  |
 | :----:    | :----:    | :----:    |
 <a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera and EFnet, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
+
+
+**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the development version at [https://latest.merk.chat](https://latest.merk.chat).
+
+**Support the project:** if you'd like to help fund **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more gets their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free and open source. Let's keep IRC alive in the 21st century!
 
 - [Downloads](#downloads)
 - [Quick Start](#quick-start)
@@ -41,7 +42,7 @@ All files are packed in [ZIP archives](https://en.wikipedia.org/wiki/ZIP_(file_f
 
 # Quick Start
 
-The Windows and Linux builds are made with [PyInstaller](https://www.pyinstaller.org/) and run without installing Python or any libraries. All command-line arguments work the same on every version of **MERK** — run `merk --help` (or `python merk.py --help`) to see all 30+ options, or see the [full reference](./COMMANDS.md#command-line-usage).
+The Windows and Linux builds are made with [PyInstaller](https://www.pyinstaller.org/) and run without installing Python or any libraries. All command-line arguments work the same on every version of **MERK**; see the [full reference](./COMMANDS.md#command-line-usage).
 
 ### Windows
 
@@ -96,11 +97,11 @@ Four libraries come bundled with **MERK**: [qt5reactor 0.6.3](https://github.com
 - **Nearly 400 settings**, almost all changeable in the GUI and applied instantly, no restart or config-file editing required — **MERK** may be the most configurable IRC client ever created
 - **Full scripting engine** with a built-in syntax-highlighting editor, connection scripts, flow control, aliases, macros, and application-wide hotkeys
 - **Python plugins** that can react to over 40 IRC and application events, with full access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) — written, edited, and exported entirely inside the application
-- **Complete theming** — all text colors and backgrounds can be customized per-channel with a built-in style editor, plus dark mode and default styles for both light and dark
+- **Complete theming**:  all text colors and backgrounds can be customized per-channel with a built-in style editor, plus dark mode and default styles for both light and dark mode
 - **Automatic logging** of channels and private chats, stored as JSON with export to CSV, "human readable", or custom formats. Saved logs can be viewed in the application with support for IRC colors and formatting display, and clickable links
 - **Quality-of-life everywhere**: spell checking in 8 languages, autocomplete for commands/nicknames/channels/emojis, [emoji](https://en.wikipedia.org/wiki/Emoji) and [ASCIImoji](https://asciimoji.com/) shortcodes, message filtering (hide JOIN/PART/QUIT and friends), audio notifications, and full IRC color support
 - **[MERK "markdown"](./COMMANDS.md#merk-markdown)** for injecting IRC colors and *italic*, **bold**, <u>underline</u>, and ~~strikethrough~~ formatting into messages with plain text
-- **Over 80 commands** for use in the client or in scripts — see the [full command reference](./COMMANDS.md)
+- **Over 80 commands** for use in the client or in scripts. See the [full command reference](./COMMANDS.md)
 - **Open source** ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html)) with built-in documentation
 
 # Documentation
@@ -112,13 +113,13 @@ Four libraries come bundled with **MERK**: [qt5reactor 0.6.3](https://github.com
 
 # Community & Contact
 
-Join the official **MERK** IRC channel: **#merk** on the MansionNET network. Connect via the built-in server suggestions, or at **irc.inthemansion.com**, port **6697** (SSL). I'm an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET, and I'm usually in **#merk** and **#lobby**. You can also drop me an [email](mailto:dhetrick@gmail.com).
+Join the official **MERK** IRC channel: **#merk** on the MansionNET network. Connect via the built-in server suggestions, or at `irc.inthemansion.com`, port **6697** (SSL). I'm an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET, and I'm usually in **#merk** and **#lobby**. I also run a channel on the Libera network, **#merk** at `irc.libera.chat`, port **6667**. You can also drop me an [email](mailto:dhetrick@gmail.com).
 
 # Helping Out
 
 Yes, **MERK** needs help! It's written by me, [Dan Hetrick](https://github.com/danhetrick), and I can't do everything this software needs:
 
-- **[Donate!](https://buymeacoffee.com/danhetrick)** — If you like **MERK**, like IRC, or just want to help out some open source developer, [donate to **MERK** today!](https://buymeacoffee.com/danhetrick)
+- **[Donate!](https://buymeacoffee.com/danhetrick)** — If you like **MERK**, like IRC, or just want to help out some open source developer, donate to **MERK** today!
 - **Icons and graphics** — I'm a programmer, not an artist, and I think that shows!
 - **Packaging** — I'd love to provide a `pip` package, but I have little experience with it
 - **Proxy support** — SOCKS4/5 and HTTP proxy connections are on the wishlist
@@ -127,8 +128,8 @@ Yes, **MERK** needs help! It's written by me, [Dan Hetrick](https://github.com/d
 
 # About MERK
 
-**Why does MERK exist?** I've used many, *many* IRC clients, and none of them felt *right* — not customizable enough, missing features, or just plain ancient-looking. I fell out of love with the "single window" interface most clients use, remembered using [mIRC](https://www.mirc.com/) fondly back in the day, and decided to write a modern client with that multiple-document interface style. **MERK** is my "dream IRC client" — easy to get started with, but *deep* — and I hope it can become yours too!
+**Why does MERK exist?** I've used many, *many* IRC clients, and none of them felt *right*: not customizable enough, missing features, or just plain ancient-looking. I fell out of love with the "single window" interface most clients use, remembered using [mIRC](https://www.mirc.com/) fondly back in the day, and decided to write a modern client with that multiple-document interface style. **MERK** is my "dream IRC client"; easy to get started with, but *deep*. I hope it can become yours too!
 
-**What does MERK mean?** If you pronounced "IRC" as a word instead of an acronym, it'd probably come out as /*Ərk*/ (which was the name of [my previous client](https://github.com/nutjob-laboratories/erk)). Since this client connects to **m**ultiple servers using a **m**ultiple-document interface — and "MDIIRC" doesn't exactly roll off the tongue — we combined the "M" with the word-pronunciation of IRC, and came up with **MERK**!
+**What does MERK mean?** If you pronounced "IRC" as a word instead of an acronym, it'd probably sound like  /*Ərk*/ (which was the name of [my previous client](https://github.com/nutjob-laboratories/erk)). Since this client connects to **m**ultiple servers using a **m**ultiple-document interface, and "MDIIRC" doesn't exactly roll off the tongue, we combined the "M" with the word-pronunciation of IRC, and came up with **MERK**!
 
 [//]: # (End of document)
