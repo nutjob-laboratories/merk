@@ -505,6 +505,11 @@ class Dialog(QDialog):
 
 		return obj+"{ background-color:"+back+"; color: "+fore +"; }";
 
+	def resizeEvent(self, event):
+		super().resizeEvent(event)
+		layout_height = self.tlayout.sizeHint().height()
+		self.pixmap = self.pixmap.scaledToHeight(layout_height, Qt.SmoothTransformation)
+
 	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False,initial=False):
 		super(Dialog,self).__init__(parent)
 
@@ -577,7 +582,7 @@ class Dialog(QDialog):
 			"""
 
 		if self.initial:
-			self.setWindowTitle(f"{APPLICATION_NAME} IRC Client {APPLICATION_VERSION}")
+			self.setWindowTitle(f"{APPLICATION_NAME} IRC Client")
 			self.setWindowIcon(QIcon(APPLICATION_ICON))
 		else:
 			if self.disconnect_message=='':
@@ -898,24 +903,23 @@ class Dialog(QDialog):
 		if self.initial:
 			if not config.HIDE_LOGO_ON_INITIAL_CONNECT_DIALOG:
 				splash = QLabel()
-				pixmap = QPixmap(SPLASH_LOGO)
-				scaled_pixmap = pixmap.scaled(194, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-				splash.setPixmap(scaled_pixmap)
+				self.pixmap = QPixmap(SPLASH_LOGO)
+				splash.setPixmap(self.pixmap)
 
 				mlink = QLabel(f"<small><b>&nbsp;&nbsp;<a href=\"{APPLICATION_SOURCE}\">https://merk.chat</a></b></small>")
 				mlink.setOpenExternalLinks(True)
 
-				tlayout = QVBoxLayout()
-				tlayout.setSpacing(0)
-				tlayout.addWidget(QLabel("<small><b>&nbsp;&nbsp;Internet Relay Chat</b></small>"))
-				tlayout.addWidget(QLabel("<small><b>&nbsp;&nbsp;Free and Open Source</b></small>"))
-				tlayout.addWidget(mlink)
+				self.tlayout = QVBoxLayout()
+				self.tlayout.setSpacing(0)
+				self.tlayout.addWidget(QLabel("<small><b>&nbsp;&nbsp;Internet Relay Chat</b></small>"))
+				self.tlayout.addWidget(QLabel(f"<small><b>&nbsp;&nbsp;Version {APPLICATION_VERSION}</b></small>"))
+				self.tlayout.addWidget(mlink)
 
 				spLayout = QHBoxLayout()
 				spLayout.setSpacing(0)
 				spLayout.addStretch()
 				spLayout.addWidget(splash)
-				spLayout.addLayout(tlayout)
+				spLayout.addLayout(self.tlayout)
 				spLayout.addStretch()
 
 				vLayout = QVBoxLayout()

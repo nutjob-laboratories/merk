@@ -49,6 +49,10 @@ What's new:
 * Added new options to the private window chat context menu: request WHOIS,
   send CTCP message, and copy miscellaneous information to the clipboard.
 * Re-wrote the repo README, thanks to Ivan!
+* Bugfix: the logo graphic on the connection dialog now scales properly for new
+  font sizes.
+* Changed the example link in the text styler to "https://www.fsf.org/" from
+  "ebay.com". Seems more free-software friendly :-)
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |

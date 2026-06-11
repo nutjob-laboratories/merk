@@ -354,7 +354,7 @@ class Dialog(QDialog):
 			Message(SYSTEM_MESSAGE,'','This is a system message'),
 			Message(ERROR_MESSAGE,'','This is an error message'),
 			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
-			Message(CHAT_MESSAGE,'other_nicks',"Here's a link: http://ebay.com"),
+			Message(CHAT_MESSAGE,'other_nicks',"Here's a link: https://www.fsf.org/"),
 			Message(SELF_MESSAGE,'your_nick',"A message without a link!"),
 			Message(ACTION_MESSAGE,'nickname','sends a CTCP action message'),
 		]
