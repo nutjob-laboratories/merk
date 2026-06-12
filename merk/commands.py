@@ -1691,7 +1691,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
-			if setting.lower()=="markdown":
+			if setting.lower()=="markdown" or setting.lower()=="merkdown":
 				if config.ENABLE_MARKDOWN_MARKUP:
 					config.ENABLE_MARKDOWN_MARKUP = False
 					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned off")

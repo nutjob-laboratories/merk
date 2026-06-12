@@ -507,7 +507,7 @@ class Dialog(QDialog):
 
 	def resizeEvent(self, event):
 		super().resizeEvent(event)
-		if hasattr(self,"tlayout"):
+		if hasattr(self,"tlayout") and hasattr(self,"pixmap"):
 			layout_height = self.tlayout.sizeHint().height()
 			self.pixmap = self.pixmap.scaledToHeight(layout_height, Qt.SmoothTransformation)
 
@@ -707,11 +707,11 @@ class Dialog(QDialog):
 		self.serverDescription = QLabel("""
 			<small>
 			Select a server below, or enter connection information by hand. To automatically
-			reconnect on disconnection, check the <b>Reconnect</b> checkbox. To login to channel
-			services via SASL, check the <b>Login with SASL</b> checkbox; you can edit your SASL
-			login with the <b>Edit</b> and <b>Clear</b> buttons. If the <b>Execute connection
-			script</b> option is enabled, the commands entered in the <b>Script</b> tab will be executed
-			when connection to the server is complete.
+			reconnect on disconnection, check the <b>Reconnect</b> checkbox. To login
+			with SASL, check the <b>Login with SASL</b> checkbox; edit your SASL
+			login with the <b>Edit</b> and <b>Clear</b> buttons. If <b>Execute connection
+			script</b> is enabled, commands entered in the <b>Script</b> tab will be executed
+			when connection to the server is complete. No settings are saved until the <b>Connect</b> button is pushed.
 			</small>
 
 			""")
@@ -744,14 +744,14 @@ class Dialog(QDialog):
 		optionLayout.setVerticalSpacing(0)
 
 		serverInfoLayout = QVBoxLayout()
-		serverInfoLayout.addStretch()
 		if self.not_simplified:
 			serverInfoLayout.addWidget(self.serverDescription)
+		else:
+			serverInfoLayout.addStretch()
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)
 		serverInfoLayout.addStretch()
-		serverInfoLayout.setContentsMargins(3,3,3,3)
 
 		self.commandHost = QLabel(self.exeTemplate.replace('%__SERVER__%','UNKNOWN'))
 		self.commandHost.setWordWrap(True)
@@ -772,16 +772,15 @@ class Dialog(QDialog):
 		height = self.servers.height()+self.reconnect.height()
 
 		if self.not_simplified:
-			height = height + serverLayout.sizeHint().height() + 165
+			height = height + serverLayout.sizeHint().height() + 175
 		else:
 			height = height + serverLayout.sizeHint().height() + 120
 		self.commands.setFixedHeight(height)
 
 		commandsLayout = QVBoxLayout()
-		commandsLayout.addStretch()
+		commandsLayout.setSpacing(0)
 		commandsLayout.addWidget(self.commandHost)
 		commandsLayout.addWidget(self.commands)
-		commandsLayout.setContentsMargins(3,3,3,3)
 
 		self.tabs = QTabWidget()
 		self.tabs.tabBar().setExpanding(True)
@@ -803,19 +802,21 @@ class Dialog(QDialog):
 
 		self.saveU = QCheckBox("Save to user settings file",self)
 		self.saveU.stateChanged.connect(self.clickSave)
-		self.saveU.toggle()
+		self.saveU.setFont(less_smaller_font)
 
-		if self.donotsave: self.saveU.toggle()
+		if self.donotsave:
+			self.saveU.setChecked(False)
+		else:
+			self.saveU.setChecked(True)
 
 		userPageLayout = QVBoxLayout()
 		if self.not_simplified:
-			userPageLayout.addStretch()
 			userPageLayout.addWidget(self.userDescription)
+			userPageLayout.addStretch()
 		else:
 			userPageLayout.addStretch()
 		userPageLayout.addLayout(userLayout)
 		userPageLayout.addStretch()
-		userPageLayout.setContentsMargins(6,6,6,6)
 
 		self.user_tab = QWidget()
 		self.user_tab.setLayout(userPageLayout)
