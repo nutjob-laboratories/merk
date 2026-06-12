@@ -507,8 +507,9 @@ class Dialog(QDialog):
 
 	def resizeEvent(self, event):
 		super().resizeEvent(event)
-		layout_height = self.tlayout.sizeHint().height()
-		self.pixmap = self.pixmap.scaledToHeight(layout_height, Qt.SmoothTransformation)
+		if hasattr(self,"tlayout"):
+			layout_height = self.tlayout.sizeHint().height()
+			self.pixmap = self.pixmap.scaledToHeight(layout_height, Qt.SmoothTransformation)
 
 	def __init__(self,app,parent=None,dismsg='',reason='',logo=True,noexecute=False,donotsave=False,initial=False):
 		super(Dialog,self).__init__(parent)
