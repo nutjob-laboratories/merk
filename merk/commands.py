@@ -234,6 +234,8 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"toggle emoji": config.ISSUE_COMMAND_SYMBOL+"toggle emoji",
 			config.ISSUE_COMMAND_SYMBOL+"toggle asciimoji": config.ISSUE_COMMAND_SYMBOL+"toggle asciimoji",
 			config.ISSUE_COMMAND_SYMBOL+"toggle protection": config.ISSUE_COMMAND_SYMBOL+"toggle protection",
+			config.ISSUE_COMMAND_SYMBOL+"toggle audio": config.ISSUE_COMMAND_SYMBOL+"toggle audio",
+			config.ISSUE_COMMAND_SYMBOL+"toggle systray": config.ISSUE_COMMAND_SYMBOL+"toggle systray",
 	}
 
 	if not config.ENABLE_HOTKEYS:
@@ -425,7 +427,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	T_COMMAND = [
 		"<b>markdown</b>","<b>emoji</b>","<b>color</b>","<b>asciimoji</b>",
-		"<b>protection</b>"
+		"<b>protection</b>","<b>audio</b>","<b>systray</b>"
 	]
 
 	T_COMMAND.sort()
@@ -1688,6 +1690,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					config.COMMAND_ERROR_PROTECTION = True
 					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned on")
 				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
 				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -1699,6 +1702,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					config.ENABLE_MARKDOWN_MARKUP = True
 					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned on")
 				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
 				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -1710,6 +1714,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					config.ENABLE_IRC_COLOR_MARKUP = True
 					if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned on")
 				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
 				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -1721,6 +1726,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					config.ENABLE_EMOJI_SHORTCODES = True
 					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned on")
 				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
 				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -1732,6 +1738,33 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					config.ENABLE_ASCIIMOJI_SHORTCODES = True
 					if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned on")
 				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
+				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if setting.lower()=="audio":
+				if config.SOUND_NOTIFICATIONS:
+					config.SOUND_NOTIFICATIONS = False
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Audio notifications have been turned off")
+				else:
+					config.SOUND_NOTIFICATIONS = True
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Audio notifications have been turned on")
+				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
+				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
+			if setting.lower()=="systray" or setting.lower()=="tray":
+				if config.SHOW_SYSTRAY_ICON:
+					config.SHOW_SYSTRAY_ICON = False
+					gui.tray.setVisible(False)
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon has been hidded")
+				else:
+					config.SHOW_SYSTRAY_ICON = True
+					gui.tray.setVisible(True)
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon is no longer hidden")
+				config.save_settings(config.CONFIG_FILE)
+				gui.buildSettingsMenu()
 				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 

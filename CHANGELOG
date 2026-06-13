@@ -54,6 +54,8 @@ What's new:
 * Changed the example link in the text styler to "https://www.fsf.org/" from
   "ebay.com". Seems more free-software friendly :-)
 * Cleaned up the layout of the connection dialog.
+* Added the ability to toggle audio notifications to the "/toggle" command.
+* Added the ability to toggle the system tray icon to the "/toggle" command.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |

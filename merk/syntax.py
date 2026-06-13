@@ -299,6 +299,8 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"toggle emoji",
 			cmdsymbol+"toggle asciimoji",
 			cmdsymbol+"toggle protection",
+			cmdsymbol+"toggle audio",
+			cmdsymbol+"toggle systray",
 			cmdsymbol+"reload",
 		]
 
