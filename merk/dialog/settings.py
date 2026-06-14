@@ -3444,11 +3444,11 @@ class Dialog(QDialog):
 		if config.SHOW_CHAT_CONTEXT_MENUS: self.showContext.setChecked(True)
 		self.showContext.stateChanged.connect(self.changedSetting)
 
-		self.showStatusServer = QCheckBox("Server windows",self)
+		self.showStatusServer = QCheckBox("Servers",self)
 		if config.SHOW_STATUS_BAR_ON_SERVER_WINDOWS: self.showStatusServer.setChecked(True)
 		self.showStatusServer.stateChanged.connect(self.changedSettingStatusBar)
 
-		self.showStatusChat = QCheckBox("Chat windows",self)
+		self.showStatusChat = QCheckBox("Chats",self)
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
 		self.showStatusChat.stateChanged.connect(self.changedSettingStatusBar)
 
@@ -3472,18 +3472,19 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_LIST_WINDOWS: self.showStatusList.setChecked(True)
 		self.showStatusList.stateChanged.connect(self.changedSettingStatusBar)
 
-		self.showStatusEditor = QCheckBox("Editor windows",self)
+		self.showStatusEditor = QCheckBox("Editors",self)
 		if config.SHOW_STATUS_BAR_ON_EDITOR_WINDOWS: self.showStatusEditor.setChecked(True)
 		self.showStatusEditor.stateChanged.connect(self.changedSettingStatusBar)
 
-		statusLayout2 = QFormLayout()
-		statusLayout2.setSpacing(1)
-		statusLayout2.addRow(self.showStatusServer,self.showStatusChat)
-		statusLayout2.addRow(self.showStatusList,self.showStatusEditor)
-
 		statusLayout = QHBoxLayout()
 		statusLayout.addStretch()
-		statusLayout.addLayout(statusLayout2)
+		statusLayout.addWidget(self.showStatusServer)
+		statusLayout.addStretch()
+		statusLayout.addWidget(self.showStatusChat)
+		statusLayout.addStretch()
+		statusLayout.addWidget(self.showStatusList)
+		statusLayout.addStretch()
+		statusLayout.addWidget(self.showStatusEditor)
 		statusLayout.addStretch()
 
 		self.enableDisconnect = QCheckBox("Closing server window disconnects from server",self)
@@ -3633,7 +3634,7 @@ class Dialog(QDialog):
 		subwindowLayout.addLayout(subwbackgroundLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>order subwindows on...</b>"))
 		subwindowLayout.addLayout(orderLayout)
-		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show status bars on...</b>"))
+		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>show status bars on these subwindow types</b>"))
 		subwindowLayout.addLayout(statusLayout)
 		subwindowLayout.addWidget(widgets.textSeparatorLabel(self,"<b>server subwindow settings</b>"))
 		subwindowLayout.addLayout(ssLayout)
@@ -4280,7 +4281,7 @@ class Dialog(QDialog):
 			<small>
 			The <b>channel information display</b> is a bar shown at the top of
 			every channel window that displays the channel <b>name</b>, any <b>modes</b> set,
-			the channel <b>topic</b>, and the <b>user count</b>.
+			the channel <b>topic</b>, and the <b>user count</b>.<br>
 			</small>
 			""")
 		self.channelDescription.setWordWrap(True)
@@ -4391,17 +4392,20 @@ class Dialog(QDialog):
 		if config.PLAIN_USER_LISTS:
 			self.styleBots.setEnabled(False)
 
-		chanButtonLayout2 = QFormLayout()
-		chanButtonLayout2.setSpacing(0)
-		chanButtonLayout2.addRow(self.channelName,self.channelCount)
-		chanButtonLayout2.addRow(self.channelTooltip,self.topicEditor)
-		chanButtonLayout2.addRow(self.chanMode)
-		chanButtonLayout2.addRow(self.channelColors)
+		cbL1 = QHBoxLayout()
+		cbL1.addWidget(self.channelName)
+		cbL1.addWidget(self.channelCount)
 
-		chanButtonLayout = QHBoxLayout()
-		chanButtonLayout.addStretch()
-		chanButtonLayout.addLayout(chanButtonLayout2)
-		chanButtonLayout.addStretch()
+		cbL2 = QHBoxLayout()
+		cbL2.addWidget(self.channelTooltip)
+		cbL2.addWidget(self.topicEditor)
+
+		chanButtonLayout = QVBoxLayout()
+		chanButtonLayout.setSpacing(0)
+		chanButtonLayout.addLayout(cbL1)
+		chanButtonLayout.addLayout(cbL2)
+		chanButtonLayout.addWidget(self.chanMode)
+		chanButtonLayout.addWidget(self.channelColors)
 
 		ulistDisplay1 = QFormLayout()
 		ulistDisplay1.setSpacing(0)

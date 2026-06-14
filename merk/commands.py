@@ -1758,7 +1758,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if config.SHOW_SYSTRAY_ICON:
 					config.SHOW_SYSTRAY_ICON = False
 					gui.tray.setVisible(False)
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon has been hidded")
+					if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon has been hidden")
 				else:
 					config.SHOW_SYSTRAY_ICON = True
 					gui.tray.setVisible(True)
