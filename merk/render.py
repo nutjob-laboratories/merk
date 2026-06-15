@@ -403,6 +403,7 @@ def highlight_words_in_chat(text, target_words, user_colors, highlighted_words, 
 					actual_key = color_lookup[matched_word]
 					style_to_use = replace_first_style_color(style_str,user_colors[actual_key])
 				elif matched_word in hlword_lookup:
+					# The word has a custom color
 					actual_key = hlword_lookup[matched_word]
 					style_to_use = f"color:{highlighted_words[actual_key]};"
 					if config.BOLD_HIGHLIGHTED_WORDS:

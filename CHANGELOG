@@ -57,6 +57,10 @@ What's new:
 * Added the ability to toggle audio notifications to the "/toggle" command.
 * Added the ability to toggle the system tray icon to the "/toggle" command.
 * Cleaned up the layout of the settings dialog.
+* Prevented some commands from being auto-suggested in the hotkey bind dialog.
+* Bugfix: occasionally, the default QUIT message was not used when quitting
+  with /quit and /quitall.
+* Cleaned up the layout for the about dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |

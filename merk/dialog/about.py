@@ -266,8 +266,7 @@ class Dialog(QDialog):
 		patron_list.setOpenExternalLinks(True)
 
 		patron_description = QLabel(f"""
-			<small>These are the wonderful humans that help keep<br>
-			    <b>{APPLICATION_NAME}</b> alive. <b><a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a></b>
+			    <center><big><b><a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a></b></big></center>
 			""")
 		patron_description.setAlignment(Qt.AlignJustify)
 		patron_description.setOpenExternalLinks(True)
@@ -290,13 +289,12 @@ class Dialog(QDialog):
 		patronLayout = QVBoxLayout()
 		patronLayout.addLayout(coffeeLayout)
 		patronLayout.addLayout(patDescLayout)
-		patronLayout.addWidget(widgets.textSeparatorLabel(self,"<b>patrons</b>"))
 		patronLayout.addLayout(patListLayout)
 		patronLayout.addStretch()
 
 		self.patrons_tab.setLayout(patronLayout)
 
-		me_credit = QLabel(f"<b>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></b>")
+		me_credit = QLabel(f"<br><b>Created and written by <a href=\"https://github.com/danhetrick\">Dan Hetrick</a></b>")
 		me_credit.setAlignment(Qt.AlignCenter)
 		me_credit.setOpenExternalLinks(True)
 

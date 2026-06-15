@@ -397,7 +397,8 @@ HELP_DISPLAY_TEMPLATE=f'''<table style="width: 100%" border="0">
 					channel windows can be omitted to apply the command to the current channel.
 					Commands that take the optional <b>SERVER</b> argument accept either the
 					name of the host connected to, or the hostname and port of the connection
-					in the format <b>HOST:PORT</b>.
+					in the format <b>HOST:PORT</b>. Commands that take the optional <b>WINDOW</b>
+					argument can reference the server window by setting <b>WINDOW</b> to <b>*</b>.
 					%_AUTOCOMPLETE_%
 					</small></td>
 				</tr>
@@ -450,9 +451,6 @@ class Message:
 		self.type = mtype
 		self.sender = sender
 		self.contents = contents
-		self.channel = ''
-		self.channel_count = ''
-		self.channel_topic = ''
 		self.system = True
 
 class ConnectInfo:
@@ -873,7 +871,7 @@ def has_url(text):
 def is_url(text):
 	url_pattern = re.compile(
 		r'^(https?|ftp):\/\/'             # Scheme
-		r'(\S+(:\S*)?@)?'                 # Authentication (?)
+		r'(\S+(:\S*)?@)?'                 # Authentication (optional)
 		r'('
 		r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}' # Domain name
 		r'|'                              # or
@@ -882,7 +880,7 @@ def is_url(text):
 		r'\[?[A-Fa-f0-9:]+\]?'            # IPv6
 		r')'
 		r'(:\d+)?'                        # Port (?)
-		r'(/[^\s]*)?'                     # Path and arguments
+		r'(/[^\s]*)?'                     # Path and arguments (optional)
 		r'$',
 		re.IGNORECASE
 	)

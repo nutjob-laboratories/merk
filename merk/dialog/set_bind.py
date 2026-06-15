@@ -232,6 +232,12 @@ class Dialog(QDialog):
 
 		cmdlist = []
 		for e in commands.AUTOCOMPLETE:
+			if e.lower()==config.ISSUE_COMMAND_SYMBOL+"toggle": continue
+			if e.lower()==config.ISSUE_COMMAND_SYMBOL+"window": continue
+			if e.lower()==config.ISSUE_COMMAND_SYMBOL+"ctcp": continue
+			if e.lower()==config.ISSUE_COMMAND_SYMBOL+"script": continue
+			if e.lower()==config.ISSUE_COMMAND_SYMBOL+"user": continue
+			if e.lower()==config.ISSUE_COMMAND_SYMBOL+"config": continue
 			cmdlist.append(e)
 		for e in commands.AUTOCOMPLETE_MULTI:
 			cmdlist.append(e)

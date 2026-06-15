@@ -4625,7 +4625,17 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |----------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quitall' and len(tokens)==1:
-			gui.disconnectAll()
+
+			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
+
+			gui.disconnectAll(msg)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quitall' and len(tokens)>=2:
 			tokens.pop(0)
@@ -8657,19 +8667,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			if not gui.askDisconnect(window.client): return True
 
-			if len(config.DEFAULT_QUIT_MESSAGE)>0:
-				msg = config.DEFAULT_QUIT_MESSAGE
-				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
-				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
-					buildTemporaryAliases(gui,window)
-					msg = interpolateAliases(msg)
+			msg = config.DEFAULT_QUIT_MESSAGE
+			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
+			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
+				buildTemporaryAliases(gui,window)
+				msg = interpolateAliases(msg)
 
+			if len(msg)>0:
 				window.client.quit(msg)
 			else:
 				window.client.quit()
+
 			gui.quitting[window.client.client_id] = 0
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'quit' and len(tokens)>=2:

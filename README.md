@@ -3,7 +3,7 @@
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.950">MERK 0.051.950</a></big></b><br>
-  <b>Current development version: <a href="https://latest.merk.chat">MERK 0.051.972</a></b><br><br>
+  <b>Current development version: <a href="https://latest.merk.chat">MERK 0.051.975</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b>
 </p>
 
@@ -34,11 +34,11 @@ All files are packed in [ZIP archives](https://en.wikipedia.org/wiki/ZIP_(file_f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.051.950 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.950)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.972 (10.93 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.051.972 (97.02 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.051.972 (71.21 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.972 (47.91 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.972 (45.45 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.975 (10.93 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.051.975 (97.02 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.051.975 (71.27 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.051.975 (47.91 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.051.975 (45.46 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Quick Start
 
@@ -92,15 +92,15 @@ Four libraries come bundled with **MERK**: [qt5reactor 0.6.3](https://github.com
 # Features
 
 - **Runs on Windows, Linux, and macOS**, with stand-alone binaries for Windows and Linux and a Flatpak for Linux
-- **Multiple-document interface**, like the classic mIRC — each server, channel, and private chat gets its own subwindow
-- **Multiple simultaneous connections** — chat on more than one IRC server at a time, via TCP/IP or SSL/TLS, with SASL support and a built-in list of over 200 IRC servers
-- **Nearly 400 settings**, almost all changeable in the GUI and applied instantly, no restart or config-file editing required — **MERK** may be the most configurable IRC client ever created
+- **Multiple-document interface**, like the classic mIRC: each server, channel, and private chat gets its own subwindow
+- **Multiple simultaneous connections**. Chat on more than one IRC server at a time, via TCP/IP or SSL/TLS, with SASL support and a built-in list of over 200 IRC servers
+- **Nearly 400 settings**, almost all changeable in the GUI and applied instantly, no restart or config-file editing required. **MERK** may be the most configurable IRC client ever created
 - **Full scripting engine** with a built-in syntax-highlighting editor, connection scripts, flow control, aliases, macros, and application-wide hotkeys
-- **Python plugins** that can react to over 40 IRC and application events, with full access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html) — written, edited, and exported entirely inside the application
+- **Python plugins** that can react to over 40 IRC and application events, with full access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html): written, edited, and exported entirely inside the application
 - **Complete theming**:  all text colors and backgrounds can be customized per-channel with a built-in style editor, plus dark mode and default styles for both light and dark mode
 - **Automatic logging** of channels and private chats, stored as JSON with export to CSV, "human readable", or custom formats. Saved logs can be viewed in the application with support for IRC colors and formatting display, and clickable links
-- **Quality-of-life everywhere**: spell checking in 8 languages, autocomplete for commands/nicknames/channels/emojis, [emoji](https://en.wikipedia.org/wiki/Emoji) and [ASCIImoji](https://asciimoji.com/) shortcodes, message filtering (hide JOIN/PART/QUIT and friends), audio notifications, and full IRC color support
-- **[MERK "markdown"](./COMMANDS.md#merk-markdown)** for injecting IRC colors and *italic*, **bold**, <u>underline</u>, and ~~strikethrough~~ formatting into messages with plain text
+- **Quality-of-life everywhere**: spell checking in 8 languages, autocomplete, [emoji](https://en.wikipedia.org/wiki/Emoji) and [ASCIImoji](https://asciimoji.com/) shortcodes, message filtering (hide JOIN/PART/QUIT and friends), audio notifications, and full IRC color support
+- **[MERK "markdown"](./COMMANDS.md#merk-markdown)** for injecting IRC colors and *italic*, **bold**, <span style="text-decoration: underline;">underline</span>, and ~~strikethrough~~ formatting into messages with plain text
 - **Over 80 commands** for use in the client or in scripts. See the [full command reference](./COMMANDS.md)
 - **Open source** ([GPL 3](https://www.gnu.org/licenses/gpl-3.0.en.html)) with built-in documentation
 
