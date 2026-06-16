@@ -5491,7 +5491,7 @@ class Dialog(QDialog):
 
 		self.logFullDescription = QLabel(f"""
 			<small>
-			<b>Logs</b> are saved in JavaScript Object Notation (<b>JSON</B>), and use a format that can
+			<b>Logs</b> are saved in JavaScript Object Notation (<b><a href="https://en.wikipedia.org/wiki/JSON">JSON</a></b>), and use a format that can
 			be read and displayed easily by <b>{APPLICATION_NAME}</b>. If you want to export your <b>logs</b> so
 			that they can be used or parsed by other software, or just view them, use the <b>Log Manager</b>,
 			located in the "<b>{self.default_tools_menu}</b>" menu.
@@ -5499,6 +5499,7 @@ class Dialog(QDialog):
 			""")
 		self.logFullDescription.setWordWrap(True)
 		self.logFullDescription.setAlignment(Qt.AlignJustify)
+		self.logFullDescription.setOpenExternalLinks(True)
 
 		self.topicLog = QCheckBox("Topics",self)
 		if config.LOG_CHANNEL_TOPICS: self.topicLog.setChecked(True)
@@ -5594,7 +5595,7 @@ class Dialog(QDialog):
 		logLayout.addLayout(contLayout)
 		logLayout.addLayout(cont2Layout)
 		logLayout.addWidget(QLabel(' '))
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log load size</b>"))
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log display size</b>"))
 		logLayout.addWidget(self.logDescription)
 		logLayout.addLayout(logsizeLayout)
 		logLayout.addWidget(QLabel(' '))

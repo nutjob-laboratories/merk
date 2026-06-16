@@ -64,6 +64,9 @@ What's new:
 * Bugfix: SASL login is now supported on servers that do not necessarily support
   IRCv3 3.0.2. SASL login now functions on MansionNET again. Apparently, MERK's
   support was a bit too version specific.
+* The log display is now "trimmed" during runtime, to help lessen memory usage.
+  This uses the same value as the "length of loaded logs" value in settings.
+* Added an option to chat display context menus to scroll chat to the bottom.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |

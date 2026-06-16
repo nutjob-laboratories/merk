@@ -223,7 +223,6 @@ class IRC_Connection(irc.IRCClient):
 		self.is_listing_channels = False
 		self.support_hostmasks_in_names = False
 		self.ircv3 = []
-		self.support_sasl_plain = False
 
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
@@ -535,8 +534,7 @@ class IRC_Connection(irc.IRCClient):
 			dump_filename = os.path.join(config.CONFIG_DIRECTORY, f"{self.kwargs['server']}-{self.kwargs['port']}.txt")
 			self.dump_file = open(dump_filename,"a")
 
-		# Ask the server if they support IRCv3, and what
-		# they support.
+		# Ask the server if they support IRCv3, and what they support.
 		self.sendLine("CAP LS")
 
 		irc.IRCClient.connectionMade(self)
@@ -560,6 +558,7 @@ class IRC_Connection(irc.IRCClient):
 			if hasattr(self,"connectTimer"):
 				self.connectTimer.stop()
 				self.connection_timer = 0
+				del self.connectTimer
 			return
 
 		# Increment the timeout timer
@@ -590,10 +589,6 @@ class IRC_Connection(irc.IRCClient):
 
 		if subcommand == "LS":
 			self.ircv3 = list(params[2].split())
-
-			for e in self.ircv3:
-				if 'sasl' in e and 'PLAIN' in e:
-					self.support_sasl_plain = True
 
 			if w:
 				t = Message(SYSTEM_MESSAGE,'','IRCv3 extensions: '+join_with_and(self.ircv3))

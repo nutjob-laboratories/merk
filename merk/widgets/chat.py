@@ -1300,6 +1300,12 @@ class Window(QMainWindow):
 					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
 					menu.addAction(entry)
 
+				entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
+				entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
+				menu.addAction(entry)
+				scrollbar = self.chat.verticalScrollBar()
+				if scrollbar.value() == scrollbar.maximum(): entry.setEnabled(False)
+
 				entry = QAction(QIcon(CLEAR_ICON),"Clear log display",menu)
 				entry.triggered.connect(self.clearChat)
 				menu.addAction(entry)
@@ -1367,6 +1373,12 @@ class Window(QMainWindow):
 						entry = QAction(QIcon(EDIT_ICON),"Edit channel script",menu)
 						entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
 						menu.addAction(entry)
+
+				entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
+				entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
+				menu.addAction(entry)
+				scrollbar = self.chat.verticalScrollBar()
+				if scrollbar.value() == scrollbar.maximum(): entry.setEnabled(False)
 
 				entry = QAction(QIcon(CLEAR_ICON),"Clear chat display",menu)
 				entry.triggered.connect(self.clearChat)
@@ -3377,6 +3389,11 @@ class Window(QMainWindow):
 				# Save entered text to the current log
 				self.log.append(message)
 
+				# Trim the log to the maximum display length
+				if len(self.log)>config.MAXIMUM_LOADED_LOG_SIZE:
+					while len(self.log)>config.MAXIMUM_LOADED_LOG_SIZE:
+						self.log.pop(0)
+
 				# Save entered text to the new log for saving
 				if write_to_log: self.new_log.append(message)
 
@@ -4123,21 +4140,21 @@ def buildServerSettingsMenu(self,client):
 	if len(maxmodes)>0:
 		maxmodesmenu = QMenu("Maximum modes",self)
 		for c in maxmodes:
-			e = QAction(F"{c[0]}: {c[1]}", self) 
+			e = plainTextAction(self,f"{c[0]}: {c[1]}")
 			maxmodesmenu.addAction(e)
 		optionsMenu.addMenu(maxmodesmenu)
 
 	if len(cmds)>0:
 		cmdmenu = QMenu("Commands",self)
 		for c in cmds:
-			e = QAction(F"{c}", self) 
+			e = plainTextAction(self,f"{c}")
 			cmdmenu.addAction(e)
 		optionsMenu.addMenu(cmdmenu)
 
 	if len(supports)>0:
 		supportsmenu = QMenu("Supports",self)
 		for c in supports:
-			e = QAction(F"{c}", self) 
+			e = plainTextAction(self,f"{c}")
 			supportsmenu.addAction(e)
 		optionsMenu.addMenu(supportsmenu)
 
@@ -4153,7 +4170,7 @@ def buildServerSettingsMenu(self,client):
 				ctype = "C"
 			elif ct==3:
 				ctype = "D"
-			e = QAction(F"{ctype}: {c}", self) 
+			e = plainTextAction(self,f"{ctype}: {c}")
 			chanmodemenu.addAction(e)
 			ct = ct + 1
 		optionsMenu.addMenu(chanmodemenu)
@@ -4181,11 +4198,11 @@ def buildServerSettingsMenu(self,client):
 				po = c.split('=')
 				subm = QMenu(f"{po[0]}",self)
 				for cap in po[1].split(','):
-					e = QAction(F"{cap}", self) 
+					e = plainTextAction(self,f"{cap}")
 					subm.addAction(e)
 				ircv3menu.addMenu(subm)
 			else:
-				e = QAction(F"{c}", self) 
+				e = plainTextAction(self,f"{c}")
 				ircv3menu.addAction(e)
 		optionsMenu.addMenu(ircv3menu)
 
@@ -5097,19 +5114,17 @@ class ChatViewer(QTextBrowser):
 		if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE==False:
 			return super().mouseDoubleClickEvent(event)
 
-		# Double clicking nicks in channel windows will
-		# only open up a private chat window for nicks
-		# that are in the same channel
-		if self.parent.window_type==CHANNEL_WINDOW:
-			cursor = self.cursorForPosition(event.pos())
-			text = cursor.block().text()
-			pos_in_block = cursor.positionInBlock()
-			
-			for match in self.nick_pattern.finditer(text):
-				clean_nick = self._clean_nick(match.group())
-				clean_end = match.start() + len(clean_nick)
-				if match.start() <= pos_in_block <= clean_end:
-					nick = clean_nick
+		cursor = self.cursorForPosition(event.pos())
+		text = cursor.block().text()
+		pos_in_block = cursor.positionInBlock()
+		
+		for match in self.nick_pattern.finditer(text):
+			clean_nick = self._clean_nick(match.group())
+			clean_end = match.start() + len(clean_nick)
+			if match.start() <= pos_in_block <= clean_end:
+				nick = clean_nick
+
+				if self.parent.window_type==CHANNEL_WINDOW:
 					for n in self.parent.nicks:
 						# If the word being double clicked on is in the local
 						# nicklist, and it's not the client's nickname...
@@ -5117,18 +5132,7 @@ class ChatViewer(QTextBrowser):
 							# ...open a private chat window
 							self.parent.parent.openPrivate(self.parent.client,n)
 							return
-		else:
-			# Double clicking nicks in server or private chat windows
-			# will open up private chats for all "visible" nicks
-			cursor = self.cursorForPosition(event.pos())
-			text = cursor.block().text()
-			pos_in_block = cursor.positionInBlock()
-			
-			for match in self.nick_pattern.finditer(text):
-				clean_nick = self._clean_nick(match.group())
-				clean_end = match.start() + len(clean_nick)
-				if match.start() <= pos_in_block <= clean_end:
-					nick = clean_nick
+				else:
 					for n in self.parent.client.all_visible_nicknames:
 						# If the word being double clicked on is in the global
 						# nicklist, and it's not the client's nickname...
