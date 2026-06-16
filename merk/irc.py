@@ -224,7 +224,6 @@ class IRC_Connection(irc.IRCClient):
 		self.support_hostmasks_in_names = False
 		self.ircv3 = []
 		self.support_sasl_plain = False
-		self.support_account_notify = False
 
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
@@ -537,9 +536,8 @@ class IRC_Connection(irc.IRCClient):
 			self.dump_file = open(dump_filename,"a")
 
 		# Ask the server if they support IRCv3, and what
-		# they support. Right now, we generally support
-		# IRCv3 3.0.2
-		self.sendLine("CAP LS 302")
+		# they support.
+		self.sendLine("CAP LS")
 
 		irc.IRCClient.connectionMade(self)
 
@@ -598,7 +596,7 @@ class IRC_Connection(irc.IRCClient):
 					self.support_sasl_plain = True
 
 			if w:
-				t = Message(SYSTEM_MESSAGE,'','Requesting IRCv3 capabilities...')
+				t = Message(SYSTEM_MESSAGE,'','IRCv3 extensions: '+join_with_and(self.ircv3))
 				w.writeText(t)
 
 			# Request various IRCv3 extensions
@@ -614,7 +612,7 @@ class IRC_Connection(irc.IRCClient):
 
 			# If the server support SASL and we have SASL
 			# login information, request authentication
-			if self.sasl_username!=None and self.sasl_password!=None and self.support_sasl_plain:
+			if self.sasl_username!=None and self.sasl_password!=None:
 				self.sendLine("CAP REQ :sasl")
 				if w:
 					t = Message(SYSTEM_MESSAGE,'','Requesting SASL login...')
@@ -622,12 +620,7 @@ class IRC_Connection(irc.IRCClient):
 			else:
 				self.sendLine("CAP END")
 
-		elif subcommand == "ACK" and "account-notify" in capabilities:
-			# Make sure that this flag is set if this extension
-			# is supported by the server
-			self.support_account_notify = True
-
-		elif subcommand == "ACK" and "sasl" in capabilities and self.support_sasl_plain:
+		elif subcommand == "ACK" and "sasl" in capabilities:
 			# Start SASL login process
 			self.sendLine("AUTHENTICATE PLAIN")
 			if w:

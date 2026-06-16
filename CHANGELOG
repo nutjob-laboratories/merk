@@ -61,6 +61,9 @@ What's new:
 * Bugfix: occasionally, the default QUIT message was not used when quitting
   with /quit and /quitall.
 * Cleaned up the layout for the about dialog.
+* Bugfix: SASL login is now supported on servers that do not necessarily support
+  IRCv3 3.0.2. SASL login now functions on MansionNET again. Apparently, MERK's
+  support was a bit too version specific.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |
