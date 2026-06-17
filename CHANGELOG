@@ -2,12 +2,6 @@
 |                                   0.052.000                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **User "bot" status can now be displayed to the user**. If the server has the option to mark users as bots (user mode +B) turned on, MERK will display if a user is a bot or not. This can be shown in userlists and in the userlist right click menu.
-- **Double click nicknames in chat to open a private message window**. This behavior can be toggled in the "settings" dialog. In channel windows, only nicknames "present" in that channel can be double clicked; in server or private message windows, any "visible" nickname can be double clicked.
-- **More servers to connect to**. **MERK** now features more than 200 servers to connect to in the connection dialog.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -42,11 +36,11 @@ What's new:
   connection dialog.
 * Tweaked the connection dialog due to the added width from the new built-in
   server list.
-* New feature: double click nicknames in chat to open a private message window
-  to that nickname. In channels, this only works for nicknames inside that
-  channel; for server and private chat windows, this works for any "visible"
-  nickname.
-* Added new options to the private window chat context menu: request WHOIS,
+* New feature: double click nicknames in chat to open a private message
+  subwindow to that nickname. In channels, this only works for nicknames
+  inside that channel; for server and private chat subwindows, this works for
+  any "visible" nickname.
+* Added new options to the private subwindow chat context menu: request WHOIS,
   send CTCP message, and copy miscellaneous information to the clipboard.
 * Re-wrote the repo README, thanks to Ivan!
 * Bugfix: the logo graphic on the connection dialog now scales properly for new
@@ -67,6 +61,9 @@ What's new:
 * The log display is now "trimmed" during runtime, to help lessen memory usage.
   This uses the same value as the "length of loaded logs" value in settings.
 * Added an option to chat display context menus to scroll chat to the bottom.
+* Cleaned up README.HTML, that is both embedded in and shipped with the
+  application.
+* Added "ack" and "nak" events to the Python editor's event generator.
 
 |------------------------------------------------------------------------------|
 |                                   0.051.950                                  |
@@ -95,11 +92,11 @@ What's new:
 * Added an option to remove all highlighted words from the internal list with
   "/unhighlight".
 * Added an option to the "/reload" command to force a re-render of all open
-  chat windows.
+  chat subwindows.
 * Added an option to "/error", "/warn", "/print", and "/prints" to print text
-  to all open server, channel, and private chat windows.
+  to all open server, channel, and private chat subwindows.
 * Added an option to toggle if the miscellaneous printing commands can print
-  to all windows or not.
+  to all subwindows or not.
 * Cleaned up the "settings" dialog.
 * Bugfix: setting the Levenshtein distance to "3" in the "settings" dialog
   could cause errors.

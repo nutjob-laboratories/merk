@@ -1140,6 +1140,10 @@ class Window(QMainWindow):
 
 			self.conenv = self.pInsertMenu.addMenu(QIcon(CONNECT_ICON),f"Connection Events")
 
+			entry = QAction(QIcon(CONNECT_ICON),"ack",self)
+			entry.triggered.connect(lambda state,u="ack",v=["client","extension"]: self.doInsertEventMethod(u,v))
+			self.conenv.addAction(entry)
+
 			entry = QAction(QIcon(CONNECT_ICON),"connected",self)
 			entry.triggered.connect(lambda state,u="connected",v=["window","client"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
@@ -1166,6 +1170,10 @@ class Window(QMainWindow):
 
 			entry = QAction(QIcon(CONNECT_ICON),"motd",self)
 			entry.triggered.connect(lambda state,u="motd",v=["client","text"]: self.doInsertEventMethod(u,v))
+			self.conenv.addAction(entry)
+
+			entry = QAction(QIcon(CONNECT_ICON),"nak",self)
+			entry.triggered.connect(lambda state,u="nak",v=["client","extension"]: self.doInsertEventMethod(u,v))
 			self.conenv.addAction(entry)
 
 			entry = QAction(QIcon(CONNECT_ICON),"ping",self)

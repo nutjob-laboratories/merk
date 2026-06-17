@@ -2,8 +2,8 @@
   <img src="./graphics/banner.png"><br>
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
-  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.051.950">MERK 0.051.950</a></big></b><br>
-  <b>Current development version: <a href="https://latest.merk.chat">MERK 0.051.977</a></b><br><br>
+  <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.052.000">MERK 0.052.000</a></big></b><br>
+  <b>Current development version: <a href="https://latest.merk.chat">MERK 0.052.000</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b>
 </p>
 
@@ -12,7 +12,6 @@
 | Windows | Linux  | macOS  |
 | :----:    | :----:    | :----:    |
 <a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera and EFnet, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
-
 
 **MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the development version at [https://latest.merk.chat](https://latest.merk.chat). New builds are done almost every day, with bugfixes and tweaks.
 
@@ -33,12 +32,12 @@ All files are packed in [ZIP archives](https://en.wikipedia.org/wiki/ZIP_(file_f
 | Type| Platform  | Download  |
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
-| Current Release |  All  | [MERK 0.051.950 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.051.950)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.051.977 (10.93 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.051.977 (97.02 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.051.977 (71.24 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.051.977 (47.91 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.051.977 (45.46 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
+| Current Release |  All  | [MERK 0.052.000 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.052.000)  |
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.052.000 (10.93 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.052.000 (97.03 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.052.000 (71.26 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.052.000 (47.91 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.052.000 (45.45 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Quick Start
 
@@ -113,7 +112,7 @@ Four libraries come bundled with **MERK**: [qt5reactor 0.6.3](https://github.com
 
 # Community & Contact
 
-Join the official **MERK** IRC channel: **#merk** on the MansionNET network. Connect via the built-in server suggestions, or at `irc.inthemansion.com`, port **6697** (SSL). I'm an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET, and I'm usually in **#merk** and **#lobby**. I also run a channel on the Libera network, **#merk** at `irc.libera.chat`, port **6667**. You can also drop me an [email](mailto:dhetrick@gmail.com).
+Join the official **MERK** IRC channel: **#merk** on the MansionNET network. Connect via the built-in server suggestions, or at `irc.inthemansion.com`, port **6697** (SSL). I'm an [IRCop](https://en.wikipedia.org/wiki/IRC_operator) on MansionNET, and I'm usually in **#merk** and **#lobby**. You can also drop me an [email](mailto:dhetrick@gmail.com).
 
 # Helping Out
 
