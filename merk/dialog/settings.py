@@ -2648,7 +2648,7 @@ class Dialog(QDialog):
 		if config.DARK_MODE: self.darkMode.setChecked(True)
 		self.darkMode.stateChanged.connect(self.setDarkMode)
 
-		self.forceDefault = QCheckBox("Chat windows",self)
+		self.forceDefault = QCheckBox("Chat displays",self)
 		if config.FORCE_DEFAULT_STYLE: self.forceDefault.setChecked(True)
 		self.forceDefault.stateChanged.connect(self.changeSettingStyle)
 
@@ -3154,7 +3154,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_TOP_OF_SCREEN: self.windowBarTop.setChecked(True)
 		self.windowBarTop.stateChanged.connect(self.menuChange)
 
-		self.windowBarServers = QCheckBox("Server windows",self)
+		self.windowBarServers = QCheckBox("Servers",self)
 		if config.WINDOWBAR_INCLUDE_SERVERS: self.windowBarServers.setChecked(True)
 		self.windowBarServers.stateChanged.connect(self.menuChange)
 
@@ -3184,7 +3184,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_INCLUDE_EDITORS: self.windowBarEditor.setChecked(True)
 		self.windowBarEditor.stateChanged.connect(self.menuChange)
 
-		self.windowBarFirst = QCheckBox("Always show active window first",self)
+		self.windowBarFirst = QCheckBox("Always show active subwindow first",self)
 		if config.ALWAYS_SHOW_CURRENT_WINDOW_FIRST: self.windowBarFirst.setChecked(True)
 		self.windowBarFirst.stateChanged.connect(self.menuChange)
 
@@ -3224,7 +3224,7 @@ class Dialog(QDialog):
 		if config.SHOW_HIDDEN_SERVER_WINDOWS_IN_WINDOWBAR: self.serverHidden.setChecked(True)
 		self.serverHidden.stateChanged.connect(self.menuChange)
 
-		self.windowbarItalics = QCheckBox("Show connecting server windows in italics",self)
+		self.windowbarItalics = QCheckBox("Show connecting server subwindows in italics",self)
 		if config.WINDOWBAR_SHOW_CONNECTING_SERVERS_IN_ITALICS: self.windowbarItalics.setChecked(True)
 		self.windowbarItalics.stateChanged.connect(self.menuChange)
 
@@ -3260,7 +3260,7 @@ class Dialog(QDialog):
 		if config.WINDOWBAR_HOVER_EFFECT: self.windowBarHover.setChecked(True)
 		self.windowBarHover.stateChanged.connect(self.menuChange)
 
-		self.windowBarIcons = QCheckBox("Show window icons",self)
+		self.windowBarIcons = QCheckBox("Show subwindow icons",self)
 		if config.WINDOWBAR_SHOW_ICONS: self.windowBarIcons.setChecked(True)
 		self.windowBarIcons.stateChanged.connect(self.menuChange)
 
@@ -3362,7 +3362,7 @@ class Dialog(QDialog):
 
 		hiddenMaster = QVBoxLayout()
 		hiddenMaster.setSpacing(0)
-		hiddenMaster.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden windows</b>"))
+		hiddenMaster.addWidget(widgets.textSeparatorLabel(self,"<b>show hidden subwindows</b>"))
 		hiddenMaster.addLayout(hiddenLayout)
 
 		wbAppearLayout = QHBoxLayout()
@@ -3375,7 +3375,7 @@ class Dialog(QDialog):
 
 		wbAppearMaster = QVBoxLayout()
 		wbAppearMaster.setSpacing(0)
-		wbAppearMaster.addWidget(widgets.textSeparatorLabel(self,"<b>show active window in...</b>"))
+		wbAppearMaster.addWidget(widgets.textSeparatorLabel(self,"<b>show active subwindow in...</b>"))
 		wbAppearMaster.addLayout(wbAppearLayout)
 
 		wbstuffOpts = QFormLayout()
@@ -3432,7 +3432,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.subwindowPage)
 
-		self.showInfo = QCheckBox("Show nickname display on all chat windows",self)
+		self.showInfo = QCheckBox("Show nickname display on all chat subwindows",self)
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
 		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
 		
@@ -3452,19 +3452,19 @@ class Dialog(QDialog):
 		if config.SHOW_STATUS_BAR_ON_CHAT_WINDOWS: self.showStatusChat.setChecked(True)
 		self.showStatusChat.stateChanged.connect(self.changedSettingStatusBar)
 
-		self.displayServNicks = QCheckBox("Show nickname display on server windows",self)
+		self.displayServNicks = QCheckBox("Show nickname display on server subwindows",self)
 		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
 		self.displayServNicks.stateChanged.connect(self.changedSettingServNicks)
 		
-		self.showServToolbar = QCheckBox("Show toolbar on server windows",self)
+		self.showServToolbar = QCheckBox("Show toolbar on server subwindows",self)
 		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
 		self.showServToolbar.stateChanged.connect(self.changedSettingServToolbar)
 
-		self.showServRefresh = QCheckBox("Show channel list refresh button on server window\ntoolbars and menus",self)
+		self.showServRefresh = QCheckBox("Show channel list refresh button on server\nsubwindow toolbars and menus",self)
 		if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS: self.showServRefresh.setChecked(True)
 		self.showServRefresh.stateChanged.connect(self.changedSettingRefreshList)
 
-		self.showServList = QCheckBox("Show channel list button on server window\ntoolbars and menus",self)
+		self.showServList = QCheckBox("Show channel list button on server\nsubwindow toolbars and menus",self)
 		if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS: self.showServList.setChecked(True)
 		self.showServList.stateChanged.connect(self.changedSettingRefreshList)
 
@@ -3487,11 +3487,11 @@ class Dialog(QDialog):
 		statusLayout.addWidget(self.showStatusEditor)
 		statusLayout.addStretch()
 
-		self.enableDisconnect = QCheckBox("Closing server window disconnects from server",self)
+		self.enableDisconnect = QCheckBox("Closing server subwindow disconnects from server",self)
 		if config.CLOSING_SERVER_WINDOW_DISCONNECTS: self.enableDisconnect.setChecked(True)
 		self.enableDisconnect.stateChanged.connect(self.changedSetting)
 		
-		self.hideServer = QCheckBox("Hide server windows when registered",self)
+		self.hideServer = QCheckBox("Hide server subwindows when registered",self)
 		if config.HIDE_SERVER_WINDOWS_ON_SIGNON: self.hideServer.setChecked(True)
 		self.hideServer.stateChanged.connect(self.changedSetting)
 
@@ -3567,7 +3567,7 @@ class Dialog(QDialog):
 		fheight = fm.height()
 		sizeButton.setFixedSize(fheight +10,fheight + 10)
 		sizeButton.setIcon(QIcon(EDIT_ICON))
-		sizeButton.setToolTip("Change default window size")
+		sizeButton.setToolTip("Change default subwindow size")
 
 		sizeLayout = QHBoxLayout()
 		sizeLayout.addWidget(sizeButton)
@@ -4280,7 +4280,7 @@ class Dialog(QDialog):
 		self.channelDescription = QLabel("""
 			<small>
 			The <b>channel information display</b> is a bar shown at the top of
-			every channel window that displays the channel <b>name</b>, any <b>modes</b> set,
+			every channel subwindow that displays the channel <b>name</b>, any <b>modes</b> set,
 			the channel <b>topic</b>, and the <b>user count</b>.<br>
 			</small>
 			""")
@@ -4556,7 +4556,7 @@ class Dialog(QDialog):
 			<small>
 			<b>Uptimes</b> (that is, the length of time you have been connected to a
 			<b>server</b> or been in a <b>channel</b>) are generally displayed in the subwindow's
-			<b>status bar</b>. For <b>server</b> windows, if the <b>status bar</b>
+			<b>status bar</b>. For <b>server</b> subwindows, if the <b>status bar</b>
 			is turned off, the connection <b>uptime</b> is displayed in the toolbar.
 			</small>
 			<br>
@@ -4698,7 +4698,7 @@ class Dialog(QDialog):
 		if config.NOTIFY_ON_REPEATED_FAILED_RECONNECTIONS: self.notifyRepeated.setChecked(True)
 		self.notifyRepeated.stateChanged.connect(self.changedSetting)
 
-		self.ircErrors = QCheckBox("Display server errors in the current window",self)
+		self.ircErrors = QCheckBox("Display server errors in the current subwindow",self)
 		if config.DISPLAY_IRC_ERRORS_IN_CURRENT_WINDOW: self.ircErrors.setChecked(True)
 		self.ircErrors.stateChanged.connect(self.changedSetting)
 
@@ -4843,7 +4843,7 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.awayPage)
 
-		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided\nwith the {config.ISSUE_COMMAND_SYMBOL}away command or when pressing the\n\"Set status to away\" button on the server\nwindow toolbar",self)
+		self.promptAway = QCheckBox(f"Prompt for away message if one is not provided\nwith the {config.ISSUE_COMMAND_SYMBOL}away command or when pressing the\n\"Set status to away\" button on the server\nsubwindow toolbar",self)
 		if config.PROMPT_FOR_AWAY_MESSAGE: self.promptAway.setChecked(True)
 		self.promptAway.stateChanged.connect(self.changedSetting)
 
@@ -5627,15 +5627,15 @@ class Dialog(QDialog):
 		if config.CONVERT_URLS_TO_LINKS: self.showLinks.setChecked(True)
 		self.showLinks.stateChanged.connect(self.changedSettingRerender)
 
-		self.createWindow = QCheckBox("Create windows for incoming private chat",self)
+		self.createWindow = QCheckBox("Create subwindows for incoming private messages",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_MESSAGES: self.createWindow.setChecked(True)
 		self.createWindow.stateChanged.connect(self.changedSetting)
 		
-		self.createWindowOut = QCheckBox("Create windows for outgoing private chat",self)
+		self.createWindowOut = QCheckBox("Create subwindows for outgoing private messages",self)
 		if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES: self.createWindowOut.setChecked(True)
 		self.createWindowOut.stateChanged.connect(self.changedSetting)
 		
-		self.writePrivate = QCheckBox("Write private messages to server window",self)
+		self.writePrivate = QCheckBox("Write private messages to server subwindow",self)
 		if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW: self.writePrivate.setChecked(True)
 		self.writePrivate.stateChanged.connect(self.changedSetting)
 		
@@ -5661,15 +5661,15 @@ class Dialog(QDialog):
 		prepLayout.addWidget(self.sysPrepend)
 		prepLayout.addStretch()
 	
-		self.ignoreCreateWindow = QCheckBox("Do not create windows for ignored users",self)
+		self.ignoreCreateWindow = QCheckBox("Do not create subwindows for ignored users",self)
 		if config.DO_NOT_CREATE_PRIVATE_CHAT_WINDOWS_FOR_IGNORED_USERS: self.ignoreCreateWindow.setChecked(True)
 		self.ignoreCreateWindow.stateChanged.connect(self.changedSetting)
 		
-		self.createNotice = QCheckBox("Create windows for incoming private notices",self)
+		self.createNotice = QCheckBox("Create subwindows for incoming private notices",self)
 		if config.CREATE_WINDOW_FOR_INCOMING_PRIVATE_NOTICES: self.createNotice.setChecked(True)
 		self.createNotice.stateChanged.connect(self.changedSetting)
 
-		self.writeMessageOut = QCheckBox("Write outgoing private messages to the current\nwindow",self)
+		self.writeMessageOut = QCheckBox("Write outgoing private messages to the current\nsubwindow",self)
 		if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW: self.writeMessageOut.setChecked(True)
 		self.writeMessageOut.stateChanged.connect(self.changedSetting)
 
@@ -5685,11 +5685,11 @@ class Dialog(QDialog):
 		if config.ENABLE_IGNORE: self.enableIgnore.setChecked(True)
 		self.enableIgnore.stateChanged.connect(self.changedSettingIgnore)
 
-		self.showLusers = QCheckBox("Show LUSERS in the current window",self)
+		self.showLusers = QCheckBox("Show LUSERS in the current subwindow",self)
 		if config.SHOW_LUSER_INFO_IN_CURRENT_WINDOW: self.showLusers.setChecked(True)
 		self.showLusers.stateChanged.connect(self.changedSetting)
 
-		self.showIson = QCheckBox("Show ISON in the current window",self)
+		self.showIson = QCheckBox("Show ISON in the current subwindow",self)
 		if config.SHOW_ISON_INFO_IN_CURRENT_WINDOW: self.showIson.setChecked(True)
 		self.showIson.stateChanged.connect(self.changedSetting)
 
@@ -5974,7 +5974,7 @@ class Dialog(QDialog):
 		if config.ESCAPE_HTML_FROM_RAW_SYSTEM_MESSAGE: self.escapeHTML.setChecked(True)
 		self.escapeHTML.stateChanged.connect(self.changedSettingRerender)
 
-		self.allowMultiple = QCheckBox(f"Allow {config.ISSUE_COMMAND_SYMBOL}print, {config.ISSUE_COMMAND_SYMBOL}prints, {config.ISSUE_COMMAND_SYMBOL}warn, and {config.ISSUE_COMMAND_SYMBOL}error\nto print to all windows",self)
+		self.allowMultiple = QCheckBox(f"Allow {config.ISSUE_COMMAND_SYMBOL}print, {config.ISSUE_COMMAND_SYMBOL}prints, {config.ISSUE_COMMAND_SYMBOL}warn, and {config.ISSUE_COMMAND_SYMBOL}error\nto print to all subwindows",self)
 		if config.ALLOW_PRINT_TO_ALL_WINDOWS: self.allowMultiple.setChecked(True)
 		self.allowMultiple.stateChanged.connect(self.changedSetting)
 
@@ -6517,7 +6517,7 @@ class Dialog(QDialog):
 		self.syntaxInput = QLabel("""
 			<small>
 			<b>Syntax highlighting</b> can also be applied to the input widget in
-			all server and chat windows. They will use the same color and
+			all server and chat subwindows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
 			current chat and <b>emoji</b> and <b>ASCIImoji shortcodes</b> will be highlighted using the
 			colors and format settings below.<br>
@@ -6851,7 +6851,7 @@ class Dialog(QDialog):
 		self.writeFile.stateChanged.connect(self.changedSettingAdvanced)
 		self.writeFile.setEnabled(False)
 
-		self.enablePing = QCheckBox("Show server pings in server windows",self)
+		self.enablePing = QCheckBox("Show server pings in server subwindows",self)
 		if config.SHOW_PINGS_IN_CONSOLE: self.enablePing.setChecked(True)
 		self.enablePing.stateChanged.connect(self.changedSettingAdvanced)
 		self.enablePing.setEnabled(False)

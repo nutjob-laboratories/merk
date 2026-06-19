@@ -229,7 +229,7 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 
 	# Elide nicknames if we need to
 	if config.ELIDE_LONG_NICKNAMES_IN_CHAT_DISPLAY and not config.DO_NOT_APPLY_STYLES_TO_TEXT:
-		if len(nick)>config.NICKNAME_PAD_LENGTH:
+		if len(nick)>config.NICKNAME_PAD_LENGTH and message.type!=ACTION_MESSAGE:
 			nick = elide_text(nick,config.NICKNAME_PAD_LENGTH)
 
 	# Add system message prefix if necessary

@@ -375,7 +375,7 @@ class Dialog(QDialog):
 		f.setBold(True)
 		self.userlist.setFont(f)
 		fm = QFontMetrics(f)
-		self.userlist.setIconSize(QSize((fm.averageCharWidth() + 5), (fm.averageCharWidth() + 5)))
+		self.userlist.setIconSize(QSize((fm.averageCharWidth() + USERLIST_ICON_SIZE_ADDON), (fm.averageCharWidth() + USERLIST_ICON_SIZE_ADDON)))
 
 		self.userlist.setFixedHeight(display_height)
 		self.userlist.setFixedWidth(ulwidth)

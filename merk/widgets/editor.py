@@ -949,6 +949,13 @@ class Window(QMainWindow):
 			entry.triggered.connect((lambda : QDesktopServices.openUrl(QUrl("file:"+commands.SCRIPTS_DIRECTORY))))
 			self.fileMenu.addAction(entry)
 		else:
+
+			self.fileMenu.addSeparator()
+
+			entry = QAction(QIcon(NEWFILE_ICON),"New file",self)
+			entry.triggered.connect(self.doNewFile)
+			self.fileMenu.addAction(entry)
+
 			entry = QAction(QIcon(PLUGIN_ICON),"New plugin",self)
 			entry.triggered.connect(self.doNewPlugin)
 			entry.setShortcut("Ctrl+N")
@@ -956,10 +963,6 @@ class Window(QMainWindow):
 
 			entry = QAction(QIcon(PLUGIN_ICON),"New plugin (no comments)",self)
 			entry.triggered.connect(self.doNewPluginComments)
-			self.fileMenu.addAction(entry)
-
-			entry = QAction(QIcon(NEWFILE_ICON),"New file",self)
-			entry.triggered.connect(self.doNewFile)
 			self.fileMenu.addAction(entry)
 
 			entry = QAction(QIcon(SCRIPT_ICON),"New script editor window",self)

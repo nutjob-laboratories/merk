@@ -6044,6 +6044,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if target[:1]!='#' and target[:1]!='&' and target[:1]!='!' and target[:1]!='+':
 						w = gui.newPrivateWindow(target,window.client)
 
+				if config.WRITE_OUTGOING_PRIVATE_MESSAGES_TO_CURRENT_WINDOW:
+					if not is_script:
+						t = Message(ACTION_MESSAGE,"&rarr;"+target+" "+window.client.nickname,msg)
+						window.writeText(t)
+
 				window.client.describe(target,msg)
 				return True
 			if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'me':

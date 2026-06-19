@@ -1,4 +1,23 @@
 |------------------------------------------------------------------------------|
+|                                   0.052.050                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Bugfix: long nicknames were being unneccesarily elided in CTCP action
+  messages.
+* Bugfix: using the /me command in server windows now writes to the current
+  window just like it does for regular private messages.
+* Rearranged the entries in the Python editor's "File" menu to closer match the
+  script editor's "File" menu.
+* The "Settings" dialog now makes reference to "subwindows" rather than
+  "windows" when the setting is for subwindows.
+* The nick display on subwindows for "away" status now matches the display in
+  channel userlists (that is, the nick is displayed in italics).
+
+|------------------------------------------------------------------------------|
 |                                   0.052.000                                  |
 |------------------------------------------------------------------------------|
 

@@ -484,7 +484,7 @@ class Window(QMainWindow):
 			self.userlist.itemDoubleClicked.connect(self.handleDoubleClick)
 			self.userlist.installEventFilter(self)
 			fm = QFontMetrics(self.app.font())
-			self.userlist.setIconSize(QSize((fm.averageCharWidth() + 5), (fm.averageCharWidth() + 5)))
+			self.userlist.setIconSize(QSize((fm.averageCharWidth() + USERLIST_ICON_SIZE_ADDON), (fm.averageCharWidth() + USERLIST_ICON_SIZE_ADDON)))
 
 			if config.HIDE_USERLIST_HORIZONTAL_SCROLLBAR:
 				self.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -3350,7 +3350,7 @@ class Window(QMainWindow):
 	def refreshNickDisplay(self):
 		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
 			if self.client.is_away:
-				self.nick_display.setText(self.client.nickname+" ")
+				self.nick_display.setText("<i>"+self.client.nickname+"&nbsp;</i>")
 			else:
 				self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
 		else:
