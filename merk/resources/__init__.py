@@ -504,6 +504,10 @@ class UserMacro:
 		
 # Functions
 
+def detect_word(word, text):
+	pattern = r'\b' + re.escape(word) + r'\b'
+	return bool(re.search(pattern, text))
+
 def is_text_too_long_with_command(text,maxlength):
 	tl = len(text)
 	if text.startswith('/msg') or text.startswith('/notice') or text.startswith('/me'):

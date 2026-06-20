@@ -158,12 +158,20 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 	# Set message contents
 	msg_to_display = message.contents
 
+	if client!=None and detect_word(client.nickname,msg_to_display) and config.UNDERLINE_MENTION:
+		mention = True
+	else:
+		mention = False
+
 	# Set nickname
 	p = message.sender.split('!')
 	if len(p)==2:
 		nick = p[0]
 	else:
 		nick = message.sender
+
+	if client!=None:
+		if nick==client.nickname: mention = False
 
 	if config.DO_NOT_APPLY_STYLES_TO_TEXT: nick = f"{nick}:"
 
@@ -329,6 +337,8 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 			# use that one instead of the style color
 			if custom_nick!=None and config.HIGHLIGHT_NICKS_IN_CHAT:
 				user_style = replace_first_style_color(user_style,nicks[custom_nick])
+			if mention==True:
+				user_style = user_style + " text-decoration: underline;"
 		elif message.type==NOTICE_MESSAGE:
 			user_style = style["notice"]
 		elif message.type==PRIVATE_MESSAGE:

@@ -5701,10 +5701,15 @@ class Dialog(QDialog):
 		if config.CLICK_NICK_IN_CHAT_FOR_PRIVATE: self.dblNick.setChecked(True)
 		self.dblNick.stateChanged.connect(self.changedSetting)
 
+		self.undMention = QCheckBox("Underline users that mention nick",self)
+		if config.UNDERLINE_MENTION: self.undMention.setChecked(True)
+		self.undMention.stateChanged.connect(self.changedSettingRerender)
+
 		msLayout = QVBoxLayout()
 		msLayout.setSpacing(0)
 		msLayout.addWidget(self.showColors)
 		msLayout.addWidget(self.showLinks)
+		msLayout.addWidget(self.undMention)
 		msLayout.addWidget(self.writeScroll)
 		msLayout.addWidget(self.showFullMode)
 		msLayout.addWidget(self.ignoreChannelNotice)
@@ -7538,6 +7543,7 @@ class Dialog(QDialog):
 		config.GET_BOTS_ON_CHANNEL_JOIN = self.autoBots.isChecked()
 		config.SHOW_BOTS_IN_USERLISTS = self.styleBots.isChecked()
 		config.CLICK_NICK_IN_CHAT_FOR_PRIVATE = self.dblNick.isChecked()
+		config.UNDERLINE_MENTION = self.undMention.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

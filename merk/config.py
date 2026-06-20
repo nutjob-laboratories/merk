@@ -472,9 +472,11 @@ ALWAYS_USE_SASL_LOGINS = True
 GET_BOTS_ON_CHANNEL_JOIN = True
 SHOW_BOTS_IN_USERLISTS = True
 CLICK_NICK_IN_CHAT_FOR_PRIVATE = True
+UNDERLINE_MENTION = True
 
 def build_settings():
 	settings = {
+		"underline_users_that_mention_nick": UNDERLINE_MENTION,
 		"doubleclick_chat_nick_for_private_message": CLICK_NICK_IN_CHAT_FOR_PRIVATE,
 		"get_bot_status_on_channel_join": GET_BOTS_ON_CHANNEL_JOIN,
 		"show_bots_in_userlists": SHOW_BOTS_IN_USERLISTS,
@@ -906,6 +908,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "underline_users_that_mention_nick" in settings:
+		settings["underline_users_that_mention_nick"] = UNDERLINE_MENTION
 	if not "doubleclick_chat_nick_for_private_message" in settings:
 		settings["doubleclick_chat_nick_for_private_message"] = CLICK_NICK_IN_CHAT_FOR_PRIVATE
 	if not "get_bot_status_on_channel_join" in settings:
@@ -2188,6 +2192,7 @@ def load_settings(filename):
 	global GET_BOTS_ON_CHANNEL_JOIN
 	global SHOW_BOTS_IN_USERLISTS
 	global CLICK_NICK_IN_CHAT_FOR_PRIVATE
+	global UNDERLINE_MENTION
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2197,6 +2202,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		UNDERLINE_MENTION = settings["underline_users_that_mention_nick"]
 		CLICK_NICK_IN_CHAT_FOR_PRIVATE = settings["doubleclick_chat_nick_for_private_message"]
 		GET_BOTS_ON_CHANNEL_JOIN = settings["get_bot_status_on_channel_join"]
 		SHOW_BOTS_IN_USERLISTS = settings["show_bots_in_userlists"]

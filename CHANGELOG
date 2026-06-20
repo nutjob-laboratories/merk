@@ -2,6 +2,10 @@
 |                                   0.052.050                                  |
 |------------------------------------------------------------------------------|
 
+What's new:
+
+- **Chat messages that mention your nick now have underlined nicknames**. This option can be disabled in the "settings" dialog or with the `/config` command.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -16,6 +20,8 @@
   "windows" when the setting is for subwindows.
 * The nick display on subwindows for "away" status now matches the display in
   channel userlists (that is, the nick is displayed in italics).
+* Nickname mentions in chat now show the username that mentioned the nick
+  underlined.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |
