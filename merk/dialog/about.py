@@ -106,6 +106,7 @@ class Dialog(QDialog):
 		coffee.mousePressEvent = lambda event: self.doCoffee(event)
 		coffee.setMouseTracking(True)
 		coffee.setCursor(Qt.PointingHandCursor)
+		coffee.setToolTip("Click to become a patron today!")
 
 		icons_credit = QLabel(f"<small><b>Icons by <a href=\"https://material.io/resources/icons/\">Google</a>, <a href=\"https://github.com/elementary/icons/\">elementaryOS</a>, and <a href=\"https://github.com/madmaxms/iconpack-obsidian\">Obsidian</a></small></b>")
 		icons_credit.setAlignment(Qt.AlignCenter)
@@ -258,23 +259,12 @@ class Dialog(QDialog):
 			       Dewees, Drew Diller, Allison L Perrine, Dust<br>
 			       Machine, Ray Hatfield, Nick Peters, Michael<br>
 			       Clemens, Tommy Olsen, Necrosand, Harry Oxnard,<br>
-			       dustmachine, photoplasia, robotmachine, Terrence<br>
-			       de Kat (raphidae@EFnet)
+			       dustmachine, photoplasia, robotmachine,<br>
+			       Terrence de Kat (raphidae@EFnet)
 			</small></center>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)
 		patron_list.setOpenExternalLinks(True)
-
-		patron_description = QLabel(f"""
-			    <center><big><b><a href=\"https://buymeacoffee.com/danhetrick\">Donate today!</a></b></big></center>
-			""")
-		patron_description.setAlignment(Qt.AlignJustify)
-		patron_description.setOpenExternalLinks(True)
-
-		patDescLayout = QHBoxLayout()
-		patDescLayout.addStretch()
-		patDescLayout.addWidget(patron_description)
-		patDescLayout.addStretch()
 
 		patListLayout = QHBoxLayout()
 		patListLayout.addStretch()
@@ -287,8 +277,9 @@ class Dialog(QDialog):
 		coffeeLayout.addStretch()
 
 		patronLayout = QVBoxLayout()
+		patronLayout.addWidget(QLabel(' '))
 		patronLayout.addLayout(coffeeLayout)
-		patronLayout.addLayout(patDescLayout)
+		patronLayout.addWidget(QLabel(' '))
 		patronLayout.addLayout(patListLayout)
 		patronLayout.addStretch()
 

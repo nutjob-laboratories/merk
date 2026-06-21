@@ -1624,9 +1624,8 @@ class Merk(QMainWindow):
 
 		if target[:1]=='#' or target[:1]=='&' or target[:1]=='!' or target[:1]=='+':
 
-			# Notify if the message has the user's nick
-			# in it
-			if client.nickname in msg:
+			# Notify if the message has the user's nick in it
+			if detect_word(client.nickname,msg):
 				if not ignored:
 					if config.FLASH_SYSTRAY_NICKNAME:
 						self.show_notifications("Mentioned by "+nickname+" in "+target)
@@ -1653,7 +1652,7 @@ class Merk(QMainWindow):
 				if not self.isActiveWindow(w):
 					if not ignored:
 						# Not the current window
-						if client.nickname in msg:
+						if detect_word(client.nickname,msg):
 							self.add_unread_mention(client,w.name)
 				return
 
@@ -1684,7 +1683,7 @@ class Merk(QMainWindow):
 				if not self.isActiveWindow(w):
 					if not ignored:
 						# Not the current window
-						if client.nickname in msg:
+						if detect_word(client.nickname,msg):
 							self.add_unread_mention(client,w.name)
 
 			if config.WRITE_PRIVATE_MESSAGES_TO_SERVER_WINDOW:
@@ -1752,7 +1751,7 @@ class Merk(QMainWindow):
 				if not self.isActiveWindow(w):
 					if not ignored:
 						# Not the current window
-						if client.nickname in msg:
+						if detect_word(client.nickname,msg):
 							self.add_unread_mention(client,w.name)
 
 				if not ignored:
@@ -1772,7 +1771,7 @@ class Merk(QMainWindow):
 			if not self.isActiveWindow(w):
 				if not ignored:
 					# Not the current window
-					if client.nickname in msg:
+					if detect_word(client.nickname,msg):
 						self.add_unread_mention(client,w.name)
 			if config.FLASH_SYSTRAY_PRIVATE: self.show_notifications("Received private message from "+nickname)
 			plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=w)
@@ -1842,7 +1841,7 @@ class Merk(QMainWindow):
 				if not self.isActiveWindow(w):
 					if not ignored:
 						# Not the current window
-						if client.nickname in msg:
+						if detect_word(client.nickname,msg):
 							self.add_unread_mention(client,w.name)
 				return
 

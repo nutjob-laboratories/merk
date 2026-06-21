@@ -3,7 +3,7 @@
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
-  <b>Current development version: <a href="https://latest.merk.chat">MERK !_FULL_VERSION_!</a></b><br><br>
+  <b>Current development build: <a href="https://latest.merk.chat">MERK !_FULL_VERSION_!</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b>
 </p>
 
@@ -13,7 +13,7 @@
 | :----:    | :----:    | :----:    |
 <a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera and EFnet, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
 
-**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the development version at [https://latest.merk.chat](https://latest.merk.chat). New builds are done almost every day, with bugfixes and tweaks.
+**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the latest development build at [https://latest.merk.chat](https://latest.merk.chat). New builds are done almost every day, with bugfixes and tweaks.
 
 **Support the project:** if you'd like to help fund **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more gets their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free and open source. Let's keep IRC alive in the 21st century!
 

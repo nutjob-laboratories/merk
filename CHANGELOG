@@ -22,6 +22,10 @@ What's new:
   channel userlists (that is, the nick is displayed in italics).
 * Nickname mentions in chat now show the username that mentioned the nick
   underlined.
+* Bugfix: audio notification triggers aren't as "sensitive", and now only
+  trigger on nickname mentions that are whole words (that is, if your nickname
+  is "stu", an audio notification won't trigger if someone says "stuff").
+* Tweaks to the "about" dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |

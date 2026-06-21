@@ -3,7 +3,7 @@
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.052.000">MERK 0.052.000</a></big></b><br>
-  <b>Current development version: <a href="https://latest.merk.chat">MERK 0.052.008</a></b><br><br>
+  <b>Current development build: <a href="https://latest.merk.chat">MERK 0.052.009</a></b><br><br>
   <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b>
 </p>
 
@@ -13,7 +13,7 @@
 | :----:    | :----:    | :----:    |
 <a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera and EFnet, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
 
-**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the development version at [https://latest.merk.chat](https://latest.merk.chat). New builds are done almost every day, with bugfixes and tweaks.
+**MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the latest development build at [https://latest.merk.chat](https://latest.merk.chat). New builds are done almost every day, with bugfixes and tweaks.
 
 **Support the project:** if you'd like to help fund **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more gets their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free and open source. Let's keep IRC alive in the 21st century!
 
@@ -33,11 +33,11 @@ All files are packed in [ZIP archives](https://en.wikipedia.org/wiki/ZIP_(file_f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.052.000 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.052.000)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.052.008 (10.93 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.052.008 (97.02 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.052.008 (71.26 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.052.008 (47.91 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.052.008 (45.45 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.052.009 (10.93 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.052.009 (97.02 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.052.009 (71.22 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.052.009 (47.91 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.052.009 (45.45 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Quick Start
 

@@ -6834,7 +6834,7 @@ class Dialog(QDialog):
 
 		self.advancedDescription = QLabel(f"""
 			<b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
-			break existing scripts, prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br><br>
+			prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br><br>
 			<small>If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag, which will reset all
 			settings to the default. For more information,
