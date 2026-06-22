@@ -370,6 +370,7 @@ BOT_OP_USER = ":/gui-b_op.png"
 BOT_OWNER_USER = ":/gui-b_owner.png"
 BOT_VOICE_USER = ":/gui-b_voice.png"
 BOT_NORMAL_USER = ":/gui-b_normal.png"
+BOT_NORMAL_USER_DARK = ":/gui-b_normal_dark.png"
 BOT_PROTECTED_USER = ":/gui-b_protected.png"
 
 # GUI elements
@@ -506,7 +507,7 @@ class UserMacro:
 
 def detect_word(word, text):
 	pattern = r'\b' + re.escape(word) + r'\b'
-	return bool(re.search(pattern, text))
+	return bool(re.search(pattern, text, re.IGNORECASE))
 
 def is_text_too_long_with_command(text,maxlength):
 	tl = len(text)
@@ -1124,6 +1125,16 @@ def test_if_foreground_is_light(style):
 			return True
 		else:
 			return False
+
+def test_if_color_is_light(bg):
+	c = tuple(int(bg[i:i + 2], 16) / 255. for i in (1, 3, 5))
+	luma = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+	luma = luma*100
+
+	if luma>=40:
+		return True
+	else:
+		return False
 
 # Widgets
 

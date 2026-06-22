@@ -1332,14 +1332,8 @@ class Window(QMainWindow):
 
 					if not self.client.registered: self.contextRun.setEnabled(False)
 
-					menu.addSeparator()
-
-				if config.SHOW_LIST_REFRESH_BUTTON_ON_SERVER_WINDOWS:
-					if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
-						menu.addSeparator()
-
 				if config.SHOW_CHANNEL_LIST_BUTTON_ON_SERVER_WINDOWS:
-					self.contextList = QAction(QIcon(LIST_ICON),"Server channel list",menu)
+					self.contextList = QAction(QIcon(LIST_ICON),"Show channel list",menu)
 					self.contextList.triggered.connect(self.showChannelList)
 					menu.addAction(self.contextList)
 
@@ -1362,17 +1356,23 @@ class Window(QMainWindow):
 
 				menu.addSeparator()
 
+				mopts = False
+
 				if config.ENABLE_STYLE_EDITOR:
 					if not config.FORCE_DEFAULT_STYLE:
 						entry = QAction(QIcon(STYLE_ICON),"Edit text style",menu)
 						entry.triggered.connect(self.pressedStyleButton)
 						menu.addAction(entry)
+						mopts = True
 
 				if self.window_type==CHANNEL_WINDOW:
 					if config.EXECUTE_CHANNEL_SCRIPTS and config.SCRIPTING_ENGINE_ENABLED:
 						entry = QAction(QIcon(EDIT_ICON),"Edit channel script",menu)
 						entry.triggered.connect(lambda state,h=self.encodeScriptFilename(): self.parent.newEditorWindowFile(h))
 						menu.addAction(entry)
+						mopts = True
+
+				if mopts==True: menu.addSeparator()
 
 				entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
 				entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
@@ -3206,7 +3206,14 @@ class Window(QMainWindow):
 				ui.setText(u)
 
 				if u in self.client.bots and config.SHOW_BOTS_IN_USERLISTS:
-					ui.setIcon(QIcon(BOT_NORMAL_USER))
+					if not config.DO_NOT_APPLY_STYLE_TO_USERLIST:
+						is_light = test_if_background_is_light(self.style["all"])
+					else:
+						is_light = test_if_background_is_light(self.default_style["all"])
+					if is_light:
+						ui.setIcon(QIcon(BOT_NORMAL_USER_DARK))
+					else:
+						ui.setIcon(QIcon(BOT_NORMAL_USER))
 
 			if config.USERLIST_ITEMS_NON_SELECTABLE:
 				ui.setFlags(ui.flags() & ~Qt.ItemIsSelectable)

@@ -26,6 +26,10 @@ What's new:
   trigger on nickname mentions that are whole words (that is, if your nickname
   is "stu", an audio notification won't trigger if someone says "stuff").
 * Tweaks to the "about" dialog.
+* Bugfix: bot status icons in userlists were not showing up in text styles with
+  light backgrounds. I've added an inverted color status icon, and a check to
+  see if the background is dark or light to make sure it shows up.
+* Bugfix: using the /delay command could cause the application to crash.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |

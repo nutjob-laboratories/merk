@@ -8982,16 +8982,18 @@ def execute_script_alias(data):
 def execute_script_end(data):
 	gui = data[0]
 	script_id = data[1]
-	aliases_to_destroy = data[2]
+	if len(data)>2:
+		aliases_to_destroy = data[2]
 
 	gui.scripts[script_id].quit()
 	gui.scripts[script_id].wait(config.SCRIPT_THREAD_QUIT_TIMEOUT)
 
 	del gui.scripts[script_id]
 
-	aliases_to_destroy = list(set(aliases_to_destroy))
-	for alias in aliases_to_destroy:
-		removeAlias(alias)
+	if len(data)>2:
+		aliases_to_destroy = list(set(aliases_to_destroy))
+		for alias in aliases_to_destroy:
+			removeAlias(alias)
 
 	remove_halt(script_id)
 
@@ -9318,9 +9320,9 @@ class ScriptThread(QThread):
 
 			skip_this_line = False
 
-			# |=========|
-			# | /insert |
-			# |=========|
+			# |========|
+			# | insert |
+			# |========|
 			if len(tokens)>=1:
 				if len(tokens)>=2:
 					if tokens[0].lower()=='insert':
