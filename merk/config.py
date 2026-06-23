@@ -473,9 +473,13 @@ GET_BOTS_ON_CHANNEL_JOIN = True
 SHOW_BOTS_IN_USERLISTS = True
 CLICK_NICK_IN_CHAT_FOR_PRIVATE = True
 UNDERLINE_MENTION = True
+SHOW_AWAY_NICKNAME_IN_ITALICS = True
+SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = True
 
 def build_settings():
 	settings = {
+		"show_away_message_in_nick_display_tooltip": SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP,
+		"show_away_nick_display_in_italics": SHOW_AWAY_NICKNAME_IN_ITALICS,
 		"underline_users_that_mention_nick": UNDERLINE_MENTION,
 		"doubleclick_chat_nick_for_private_message": CLICK_NICK_IN_CHAT_FOR_PRIVATE,
 		"get_bot_status_on_channel_join": GET_BOTS_ON_CHANNEL_JOIN,
@@ -908,6 +912,10 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_away_message_in_nick_display_tooltip" in settings:
+		settings["show_away_message_in_nick_display_tooltip"] = SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP
+	if not "show_away_nick_display_in_italics" in settings:
+		settings["show_away_nick_display_in_italics"] = SHOW_AWAY_NICKNAME_IN_ITALICS
 	if not "underline_users_that_mention_nick" in settings:
 		settings["underline_users_that_mention_nick"] = UNDERLINE_MENTION
 	if not "doubleclick_chat_nick_for_private_message" in settings:
@@ -2193,6 +2201,8 @@ def load_settings(filename):
 	global SHOW_BOTS_IN_USERLISTS
 	global CLICK_NICK_IN_CHAT_FOR_PRIVATE
 	global UNDERLINE_MENTION
+	global SHOW_AWAY_NICKNAME_IN_ITALICS
+	global SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2202,6 +2212,8 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = settings["show_away_message_in_nick_display_tooltip"]
+		SHOW_AWAY_NICKNAME_IN_ITALICS = settings["show_away_nick_display_in_italics"]
 		UNDERLINE_MENTION = settings["underline_users_that_mention_nick"]
 		CLICK_NICK_IN_CHAT_FOR_PRIVATE = settings["doubleclick_chat_nick_for_private_message"]
 		GET_BOTS_ON_CHANNEL_JOIN = settings["get_bot_status_on_channel_join"]

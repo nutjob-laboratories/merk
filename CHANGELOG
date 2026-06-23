@@ -19,7 +19,8 @@ What's new:
 * The "Settings" dialog now makes reference to "subwindows" rather than
   "windows" when the setting is for subwindows.
 * The nick display on subwindows for "away" status now matches the display in
-  channel userlists (that is, the nick is displayed in italics).
+  channel userlists (that is, the nick is displayed in italics). An option has
+  been added to toggle this to the "settings" dialog and the config file.
 * Nickname mentions in chat now show the username that mentioned the nick
   underlined.
 * Bugfix: audio notification triggers aren't as "sensitive", and now only
@@ -30,6 +31,12 @@ What's new:
   light backgrounds. I've added an inverted color status icon, and a check to
   see if the background is dark or light to make sure it shows up.
 * Bugfix: using the /delay command could cause the application to crash.
+* Added an option to show the current "away" message as a tooltip in the
+  nickname display, if showing "away" status in the nickname display is turned
+  on. This option is turned on by default, and can be toggled in the "settings"
+  dialog or with the /config command.
+* Turning off the nickname display on chat windows now disables the settings
+  for the "away" status stuff on nickname displays in the "settings" dialog.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |

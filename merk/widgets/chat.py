@@ -3357,11 +3357,20 @@ class Window(QMainWindow):
 	def refreshNickDisplay(self):
 		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
 			if self.client.is_away:
-				self.nick_display.setText("<i>"+self.client.nickname+"&nbsp;</i>")
+				if config.SHOW_AWAY_NICKNAME_IN_ITALICS:
+					self.nick_display.setText("<i>"+self.client.nickname+"&nbsp;</i>")
+				else:
+					self.nick_display.setText(self.client.nickname+" ")
+				if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP:
+					self.nick_display.setToolTip(f"{self.client.away_msg}")
+				else:
+					self.nick_display.setToolTip("")
 			else:
 				self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+				self.nick_display.setToolTip("")
 		else:
 			self.nick_display.setText("<b>"+self.client.nickname+"&nbsp;</b>")
+			self.nick_display.setToolTip("")
 
 	def writeText(self,message,write_to_log=True):
 

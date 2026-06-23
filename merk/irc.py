@@ -112,7 +112,6 @@ def new_error_nickname():
 			config.save_settings(config.CONFIG_FILE)
 		CONNECTIONS[c].erroneousNickFallback = config.BAD_NICKNAME_FALLBACK
 
-
 class IRC_Connection(irc.IRCClient):
 	nickname = 'merk'
 	realname = 'merk'
@@ -176,7 +175,6 @@ class IRC_Connection(irc.IRCClient):
 		self.last_tried_nickname = ''
 		self.original_nickname = self.nickname
 		self.nick_attempts = 0
-
 		self.names = {}
 		self.usermodes = ''
 		self.channelmodes = {}
@@ -185,7 +183,6 @@ class IRC_Connection(irc.IRCClient):
 		self.who = {}
 		self.whowas = {}
 		self.all_nicks = {}
-
 		self.maxnicklen = 0
 		self.maxchannels = 0
 		self.channellen = 0
@@ -210,7 +207,6 @@ class IRC_Connection(irc.IRCClient):
 		self.channels = []
 		self.all_visible_nicknames = []
 		self.connection_timer = 0
-
 		self.server_channel_list = []
 		self.channel_list_window = None
 		self.did_delayed_channel_list = False
@@ -223,20 +219,14 @@ class IRC_Connection(irc.IRCClient):
 		self.is_listing_channels = False
 		self.support_hostmasks_in_names = False
 		self.ircv3 = []
-
 		self.server_op_count = 0
 		self.actual_server_channel_count = 0
-
 		self.server_software = "Unknown"
-
 		self.last_interaction = 0
 		self.autoaway = False
-
 		self.bots = []
-
 		self.info_data = []
 		self.links_info = []
-
 		self.banlists = defaultdict(list)
 
 		if user.USERINFO=='':

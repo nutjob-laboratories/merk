@@ -1121,6 +1121,40 @@ class Dialog(QDialog):
 		self.rerenderNick = True
 		self.selector.setFocus()
 
+	def changedSettingRerenderNickAway(self,state):
+		if self.showAwayNick.isChecked() and self.showInfo.isChecked():
+			self.showNickItalics.setEnabled(True)
+			self.showAwayTooltip.setEnabled(True)
+		else:
+			self.showNickItalics.setEnabled(False)
+			self.showAwayTooltip.setEnabled(False)
+		self.changed.show()
+		self.boldApply()
+		self.rerenderNick = True
+		self.selector.setFocus()
+
+	def changedSettingRerenderNickShow(self,state):
+		if self.showInfo.isChecked():
+			self.showAwayNick.setEnabled(True)
+			self.enableNickClick.setEnabled(True)
+			if self.showAwayNick.isChecked():
+				self.showNickItalics.setEnabled(True)
+				self.showAwayTooltip.setEnabled(True)
+			else:
+				self.showNickItalics.setEnabled(False)
+				self.showAwayTooltip.setEnabled(False)
+			self.nnDisplayDesc.hide()
+		else:
+			self.enableNickClick.setEnabled(False)
+			self.showAwayNick.setEnabled(False)
+			self.showNickItalics.setEnabled(False)
+			self.showAwayTooltip.setEnabled(False)
+			self.nnDisplayDesc.show()
+		self.changed.show()
+		self.boldApply()
+		self.rerenderNick = True
+		self.selector.setFocus()
+
 	def changedSettingRerenderPad(self,state):
 		self.changed.show()
 		self.boldApply()
@@ -3434,7 +3468,7 @@ class Dialog(QDialog):
 
 		self.showInfo = QCheckBox("Show nickname display on all chat subwindows",self)
 		if config.SHOW_USER_INFO_ON_CHAT_WINDOWS: self.showInfo.setChecked(True)
-		self.showInfo.stateChanged.connect(self.changedSettingRerenderNick)
+		self.showInfo.stateChanged.connect(self.changedSettingRerenderNickShow)
 		
 		self.showInputMenu = QCheckBox("Show input menu button",self)
 		if config.SHOW_INPUT_MENU: self.showInputMenu.setChecked(True)
@@ -3556,6 +3590,9 @@ class Dialog(QDialog):
 		self.enableNickClick = QCheckBox("Double click nick display to change nickname",self)
 		if config.DOUBLECLICK_NICK_DISPLAY: self.enableNickClick.setChecked(True)
 		self.enableNickClick.stateChanged.connect(self.changedSetting)
+
+		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+			self.enableNickClick.setEnabled(False)
 
 		self.sizeLabel = QLabel(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
 
@@ -4891,7 +4928,35 @@ class Dialog(QDialog):
 		
 		self.showAwayNick = QCheckBox("Show away status in nickname display",self)
 		if config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY: self.showAwayNick.setChecked(True)
-		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNick)
+		self.showAwayNick.stateChanged.connect(self.changedSettingRerenderNickAway)
+
+		self.showNickItalics = QCheckBox("Show nickname display in italics if away",self)
+		if config.SHOW_AWAY_NICKNAME_IN_ITALICS: self.showNickItalics.setChecked(True)
+		self.showNickItalics.stateChanged.connect(self.changedSettingRerenderNick)
+
+		self.showAwayTooltip = QCheckBox("Show away message in nickname display tooltip",self)
+		if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP: self.showAwayTooltip.setChecked(True)
+		self.showAwayTooltip.stateChanged.connect(self.changedSettingRerenderNick)
+
+		self.nnDisplayDesc = QLabel(f"""
+			<small>
+			The nickname display on chat windows has been disabled. It can be enabled in the <b>Subwindows</b> section.<br>
+			</small>
+			""")
+		self.nnDisplayDesc.setWordWrap(True)
+		self.nnDisplayDesc.setAlignment(Qt.AlignJustify)
+
+		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+			self.showAwayNick.setEnabled(False)
+			self.showNickItalics.setEnabled(False)
+			self.showAwayTooltip.setEnabled(False)
+			self.nnDisplayDesc.show()
+		else:
+			self.nnDisplayDesc.hide()
+
+		if not config.SHOW_AWAY_STATUS_IN_NICK_DISPLAY:
+			self.showNickItalics.setEnabled(False)
+			self.showAwayTooltip.setEnabled(False)
 		
 		self.typeCancelInput = QCheckBox("Interacting with the text input widget cancels\nautoaway",self)
 		if config.TYPING_INPUT_CANCELS_AUTOAWAY: self.typeCancelInput.setChecked(True)
@@ -4953,7 +5018,12 @@ class Dialog(QDialog):
 		asLayout.setSpacing(0)
 		asLayout.addWidget(self.promptAway)
 		asLayout.addWidget(self.showAwayBack)
-		asLayout.addWidget(self.showAwayNick)
+
+		anLayout = QVBoxLayout()
+		anLayout.setSpacing(0)
+		anLayout.addWidget(self.showAwayNick)
+		anLayout.addWidget(self.showNickItalics)
+		anLayout.addWidget(self.showAwayTooltip)
 
 		aasLayout = QVBoxLayout()
 		aasLayout.setSpacing(0)
@@ -4972,6 +5042,10 @@ class Dialog(QDialog):
 		awayLayout.addWidget(QLabel(' '))
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
 		awayLayout.addLayout(amLayout)
+		awayLayout.addWidget(QLabel(' '))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname display settiings</b>"))
+		awayLayout.addWidget(self.nnDisplayDesc)
+		awayLayout.addLayout(anLayout)
 		awayLayout.addStretch()
 
 		self.awayPage.setLayout(awayLayout)
@@ -7544,6 +7618,8 @@ class Dialog(QDialog):
 		config.SHOW_BOTS_IN_USERLISTS = self.styleBots.isChecked()
 		config.CLICK_NICK_IN_CHAT_FOR_PRIVATE = self.dblNick.isChecked()
 		config.UNDERLINE_MENTION = self.undMention.isChecked()
+		config.SHOW_AWAY_NICKNAME_IN_ITALICS = self.showNickItalics.isChecked()
+		config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = self.showAwayTooltip.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True
