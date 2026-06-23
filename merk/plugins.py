@@ -478,6 +478,9 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def darkmode(self):
+		return self._gui.dark_mode
+
 	def request(self,capability):
 		global CAPABILITIES
 
@@ -868,7 +871,7 @@ BUILT_IN = [
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
 	'markup','unmarkup','demojize','deasciimojize', 'location',
-	'fade', 'request',
+	'fade', 'request', 'darkmode',
 ]
 
 def uninstall(obj):

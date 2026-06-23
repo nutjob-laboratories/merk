@@ -35,8 +35,23 @@ What's new:
   nickname display, if showing "away" status in the nickname display is turned
   on. This option is turned on by default, and can be toggled in the "settings"
   dialog or with the /config command.
-* Turning off the nickname display on chat windows now disables the settings
-  for the "away" status stuff on nickname displays in the "settings" dialog.
+* Turning off the nickname display on chat or server windows now disables the
+  settings for the "away" status stuff on nickname displays in the "settings"
+  dialog.
+* Bugfix: fixed a race condition where logs could be saved multiple times at
+  the same time.
+* The banner on the "settings" dialog now matches the banner on the connection
+  dialog.
+* Calling the "/ignore" command with no arguments now opens the ignore manager.
+* Reworked the "rainbow text" example plugin, and updated the documentation
+  with the changes.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* New inherited method: "darkmode()", which returns a True if the application
+  is running in "dark mode", or False if not.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |

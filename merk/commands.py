@@ -6202,21 +6202,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ignore':
-
-			if len(config.IGNORE_LIST)==0:
-				t = Message(SYSTEM_MESSAGE,'',f"Ignore list is empty")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			count = 0
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Begin ignore list")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			for i in config.IGNORE_LIST:
-				count = count + 1
-				t = Message(SYSTEM_MESSAGE,'',f"{count}) {i}")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End ignore list")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			# Open the ignore manager
+			gui.openIgnore()
 			return True
 
 	# |-----------|

@@ -1122,7 +1122,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSettingRerenderNickAway(self,state):
-		if self.showAwayNick.isChecked() and self.showInfo.isChecked():
+		if self.showAwayNick.isChecked() and (self.showInfo.isChecked() or self.displayServNicks.isChecked()):
 			self.showNickItalics.setEnabled(True)
 			self.showAwayTooltip.setEnabled(True)
 		else:
@@ -1134,7 +1134,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def changedSettingRerenderNickShow(self,state):
-		if self.showInfo.isChecked():
+		if self.showInfo.isChecked() or self.displayServNicks.isChecked():
 			self.showAwayNick.setEnabled(True)
 			self.enableNickClick.setEnabled(True)
 			if self.showAwayNick.isChecked():
@@ -2603,9 +2603,9 @@ class Dialog(QDialog):
 		mLink.setOpenExternalLinks(True)
 
 		verLayout = QVBoxLayout()
-		verLayout.addWidget(QLabel("&nbsp;<small><b>Free and Open Source IRC</b></small>"))
-		verLayout.addWidget(mLink)
+		verLayout.addWidget(QLabel("&nbsp;<small><b>Internet Relay Chat</b></small>"))
 		verLayout.addWidget(QLabel(f"&nbsp;<small><b>Version {APPLICATION_VERSION}</b></small>"))
+		verLayout.addWidget(mLink)
 
 		logLayout = QHBoxLayout()
 		logLayout.addStretch()
@@ -3488,7 +3488,7 @@ class Dialog(QDialog):
 
 		self.displayServNicks = QCheckBox("Show nickname display on server subwindows",self)
 		if config.DISPLAY_NICK_ON_SERVER_WINDOWS: self.displayServNicks.setChecked(True)
-		self.displayServNicks.stateChanged.connect(self.changedSettingServNicks)
+		self.displayServNicks.stateChanged.connect(self.changedSettingRerenderNickShow)
 		
 		self.showServToolbar = QCheckBox("Show toolbar on server subwindows",self)
 		if config.SHOW_SERVER_WINDOW_TOOLBAR: self.showServToolbar.setChecked(True)
@@ -3591,7 +3591,7 @@ class Dialog(QDialog):
 		if config.DOUBLECLICK_NICK_DISPLAY: self.enableNickClick.setChecked(True)
 		self.enableNickClick.stateChanged.connect(self.changedSetting)
 
-		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS and not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
 			self.enableNickClick.setEnabled(False)
 
 		self.sizeLabel = QLabel(f"&nbsp;Initial subwindow size: <b>{str(self.subWidth)}x{str(self.subHeight)}</b>",self)
@@ -4946,7 +4946,7 @@ class Dialog(QDialog):
 		self.nnDisplayDesc.setWordWrap(True)
 		self.nnDisplayDesc.setAlignment(Qt.AlignJustify)
 
-		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
+		if not config.SHOW_USER_INFO_ON_CHAT_WINDOWS and not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
 			self.showAwayNick.setEnabled(False)
 			self.showNickItalics.setEnabled(False)
 			self.showAwayTooltip.setEnabled(False)
