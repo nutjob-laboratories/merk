@@ -6695,7 +6695,7 @@ class Dialog(QDialog):
 			self.highlightItalic.setEnabled(False)
 			self.highlightUnderline.setEnabled(False)
 
-		self.highStyle = QLabel("Highlight words in: ")
+		self.highStyle = QLabel("Highlighted words in: ")
 
 		stHighLayout = QHBoxLayout()
 		stHighLayout.addWidget(self.highStyle)

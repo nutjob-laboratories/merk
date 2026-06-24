@@ -4,7 +4,8 @@
 
 What's new:
 
-- **Chat messages that mention your nick now have underlined nicknames**. This option can be disabled in the "settings" dialog or with the `/config` command.
+- **Chat messages that mention your nick now have underlined nicknames**. This option can be disabled in the "settings" dialog or with the `/config` command.\
+- **New plugin API methods**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -45,6 +46,10 @@ What's new:
 * Calling the "/ignore" command with no arguments now opens the ignore manager.
 * Reworked the "rainbow text" example plugin, and updated the documentation
   with the changes.
+* If a script is passed no arguments, $_0 will now be set to '*' instead of
+  'none'.
+* The built-in aliases $_MODE and $_PRESENT are now also set the '*' instead of
+  'none' if the data for either alias is not found or is not present.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -52,6 +57,9 @@ What's new:
 
 * New inherited method: "darkmode()", which returns a True if the application
   is running in "dark mode", or False if not.
+* New Window object method: "is_light()", which returns a True if the chat/text
+  display background is a light color, and False if not. If the window's text
+  style cannot be found or does not exist, this will return None.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |

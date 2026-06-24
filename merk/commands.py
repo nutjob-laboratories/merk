@@ -756,7 +756,7 @@ def buildTemporaryAliases(gui,window):
 	if window.client.usermodes!='':
 		addTemporaryAlias('_MODE',window.client.usermodes)
 	else:
-		addTemporaryAlias('_MODE','none')
+		addTemporaryAlias('_MODE','*')
 	addTemporaryAlias('_MONTH',month)
 	if hasattr(window.client,"network"):
 		if window.client.network:
@@ -771,7 +771,7 @@ def buildTemporaryAliases(gui,window):
 	if window.window_type==CHANNEL_WINDOW:
 		addTemporaryAlias('_PRESENT',",".join(window.nicks))
 	else:
-		addTemporaryAlias('_PRESENT','none')
+		addTemporaryAlias('_PRESENT','*')
 	addTemporaryAlias('_REALNAME',window.client.realname)
 	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
 	addTemporaryAlias('_RVERSION',APPLICATION_RELEASE_VERSION)
@@ -10035,7 +10035,7 @@ class ScriptThread(QThread):
 				if len(self.arguments)>0:
 					self.addTemporaryAlias(f"_0",' '.join(self.arguments))
 				else:
-					self.addTemporaryAlias(f"_0",'none')
+					self.addTemporaryAlias(f"_0",'*')
 					
 				self.addTemporaryAlias(f"_ARGS",str(len(self.arguments)))
 

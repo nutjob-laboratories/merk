@@ -37,6 +37,7 @@ from .resources import *
 from . import config
 from . import commands
 from . import render
+from . import styles
 
 import emoji
 
@@ -59,6 +60,11 @@ class Window():
 			self.wtype = self._window.window_type
 		else:
 			self.wtype = None
+
+	def is_light(self):
+		if not hasattr(self._window,"style"): return None
+		background,foreground = styles.parseBackgroundAndForegroundColor(self._window.style["all"])
+		return test_if_color_is_light(background)
 
 	def chat(self):
 		return self._window.dumpChat()
