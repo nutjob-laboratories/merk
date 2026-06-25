@@ -300,6 +300,7 @@ class Window(QMainWindow):
 				log = os.path.join(self.logdir, x)
 				if os.path.isfile(log):
 					p = os.path.basename(log).replace('.json','')
+					p_size = convert_size(os.path.getsize(log))
 
 					p = p.split(LOG_AND_STYLE_FILENAME_DELIMITER,1)
 					if len(p)==2:
@@ -325,7 +326,8 @@ class Window(QMainWindow):
 							netname = netname.upper()
 
 							item = QListWidgetItem(channel)
-							item.setToolTip(f"{channel} on {netname} network")
+							item.size = p_size
+							item.setToolTip(f"{channel} on {netname} network ({item.size})")
 
 							if channel[:1]!='#' and channel[:1]!='&' and channel[:1]!='!' and channel[:1]!='+':
 								item.setIcon(QIcon(PRIVATE_WINDOW_ICON))
@@ -696,13 +698,17 @@ class Window(QMainWindow):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 
 		# Notify the user that we're loading the log
-		self.status_details.setText(f'<small><b>Loading log...</b></small>')
+		self.status_details.setText(f'<small><b>Loading log for viewing...</b></small>')
 		self.repaint()
 
-		size_bytes = os.path.getsize(item.file)
+		if item.type==PRIVATE_WINDOW:
+			det = f"Private chat with <b>{item.channel}</b> on <b>{item.network}</b>"
+		else:
+			det = f"Channel chat in <b>{item.channel}</b> on <b>{item.network}</b>"
 
-		self.status_details.setText(f'<small><b>{item.file}</b></small>')
-		self.filesize.setText(f'<small><b>{convert_size(size_bytes)}</b></i></small>')
+		self.status_details.setText(f'<small>{det} - <b>{item.file}</b> ({item.size})</small>')
+
+		self.filesize.setText(f'<small><b>{item.file}</b></i></small>')
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)

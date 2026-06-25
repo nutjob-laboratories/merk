@@ -468,7 +468,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME [ARGUMENTS]</b>", "Executes a list of commands in a file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style [SERVER] [WINDOW]</b>", "Opens up a window's text style editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias [TOKEN] [TEXT...]</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>", "Deletes the alias referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN [...]</b>", "Deletes the alias(es) referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens the script editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print [SERVER] [WINDOW] TEXT...</b>", "Prints text to a window" ],
@@ -578,7 +578,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"style</b>": continue
 		if not config.ENABLE_ALIASES:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"alias [TOKEN] [TEXT...]</b>": continue
-			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN</b>": continue
+			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN [...]</b>": continue
 		if not config.SCRIPTING_ENGINE_ENABLED:
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME</b>": continue
 			if e[0]=="<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>": continue
@@ -6922,21 +6922,20 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				return True
 
 	if len(tokens)>0:
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)==2:
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias' and len(tokens)>=2:
 			if is_script: return True
 			tokens.pop(0)
-			target = tokens.pop(0)
-			if removeAlias(target):
-				t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			else:
-				t = Message(ERROR_MESSAGE,'',f"Alias \"{target}\" not found.")
-				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
+			for target in tokens:
+				if removeAlias(target):
+					t = Message(SYSTEM_MESSAGE,'',f"Alias \"{target}\" deleted.")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				else:
+					t = Message(ERROR_MESSAGE,'',f"Alias \"{target}\" not found.")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'unalias':
 			if is_script: return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN")
+			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN [...]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

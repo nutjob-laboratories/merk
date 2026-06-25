@@ -2437,11 +2437,14 @@ class Dialog(QDialog):
 
 		f = self.selector.font()
 		f.setBold(True)
+		ssize = config.MAXIMUM_FONT_SIZE_FOR_SETTINGS-2
+		if ssize<10: ssize = 10
+		f.setPointSize(ssize)
 		self.selector.setFont(f)
 
 		self.changed = QLabel("<b>Settings changed.</b>&nbsp;&nbsp;")
 
-		add_factor = 8
+		add_factor = 11
 
 		font_height = self.selector.fontMetrics().height()
 		new_icon_size = QSize(font_height + add_factor, font_height + add_factor)
@@ -2889,7 +2892,7 @@ class Dialog(QDialog):
 
 		entry = QListWidgetItem()
 		entry.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		entry.setText("Menus & Menubar")
+		entry.setText("Menubar")
 		entry.widget = self.menuPage
 		entry.setIcon(QIcon(MENU_ICON))
 		self.selector.addItem(entry)

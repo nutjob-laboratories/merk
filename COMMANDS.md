@@ -186,7 +186,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/toggle FEATURE`                                 | Toggles a feature. Valid `FEATURE`s are `asciimoji`, `audio`, `color`, `emoji`, `markdown`, `protection`, and `systray`                                         |
 | `/topic CHANNEL NEW_TOPIC`              | Sets a channel topic                                                                                                             |
 | `/_trace TARGET`              | Executes a trace on a server or user. May only be issued by server operators |
-| `/unalias TOKEN`                        | Deletes the alias referenced by `$TOKEN`. Does nothing in scripts                            |
+| `/unalias TOKEN [...]`                        | Deletes the alias(es) referenced by `$TOKEN`. Does nothing in scripts                            |
 | `/unbind SEQUENCE`                        | Removes a bind for `SEQUENCE`. To remove all binds, pass `*` as the argument                                                        |
 | `/unhighlight WORD`                        | Removes highlighting for `WORD`. Call without arguments to see a list of all highlighted words. Pass `*` as the only argument to remove all word highlights  |
 | `/unignore USER`                        | Un-hides a `USER`'s chat. To un-hide all users, use `*` as the argument                                                         |

@@ -159,7 +159,11 @@ class Window():
 		else:
 			self._window.setWindowTitle(title)
 
-	def script(self,script,arguments):
+	def script(self,script,arguments=[]):
+
+		for a in arguments:
+			if type(a)!=type(''):
+				raise ValueError("Non-string argument passed to script()")
 
 		f = commands.find_file(script,SCRIPT_FILE_EXTENSION)
 		if f!=None:
@@ -304,7 +308,12 @@ class Window():
 		return False
 
 	def execute(self,command):
-		self._window.handleHotkeyCommand(command)
+		if hasattr(self._window,"handleHotkeyCommand"):
+			self._window.handleHotkeyCommand(command)
+		else:
+			if hasattr(self._window,"widget"):
+				w = self._window.widget()
+				if hasattr(w,"handleHotkeyCommand"): w.handleHotkeyCommand(command)
 
 	def client(self):
 		return self._window.client

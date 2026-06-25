@@ -377,9 +377,10 @@ class Window(QMainWindow):
 			icon = obj._icon
 			uuid = obj._id
 			calls = obj._calls
+			size = convert_size(os.path.getsize(filename))
 
 			item = QListWidgetItem()
-			item.setToolTip(f"Filename: {basename}\nEvents: {events}\nMethods: {methods}\nCallable methods: {calls}")
+			item.setToolTip(f"Filename: {basename} ({size})\nEvents: {events}\nMethods: {methods}\nCallable methods: {calls}")
 			item.filename = obj._filename
 			item.basename = obj._basename
 			item.events = obj._events

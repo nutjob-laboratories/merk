@@ -50,6 +50,13 @@ What's new:
   'none'.
 * The built-in aliases $_MODE and $_PRESENT are now also set the '*' instead of
   'none' if the data for either alias is not found or is not present.
+* The log manager's status bar now shows what type the current log is, along
+  with the name of the log (channel or private user) and filename.
+* Tooltips in the plugin manager now show the size of a plugin's file on disk.
+* Bugfix: a race condition with the "join" plugin event has been fixed.
+* The "/unalias" command can now delete multiple aliases in one command.
+* The icons in the "Settings" dialog's section selector are now slightly
+  bigger.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -57,9 +64,12 @@ What's new:
 
 * New inherited method: "darkmode()", which returns a True if the application
   is running in "dark mode", or False if not.
-* New Window object method: "is_light()", which returns a True if the chat/text
-  display background is a light color, and False if not. If the window's text
+* New Window object method: "is_light()", which returns a True if the text
+  style background is a light color, and False if not. If the window's text
   style cannot be found or does not exist, this will return None.
+* The Window method "script()"'s "arguments" argument is now optional. The
+  method now checks to make sure that all arguments are strings, and raises a
+  ValueError if they are not.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |
