@@ -1002,6 +1002,27 @@ def find_script(filename,extension):
 			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
 				return check_readable(os.path.join(root, filename))
 
+def find_style(filename,extension):
+
+	# Check if it's a complete filename
+	if os.path.isfile(filename): return check_readable(filename)
+
+	# Look for the script in the scripts directory
+	if os.path.isfile(os.path.join(styles.STYLE_DIRECTORY, filename)): return check_readable(os.path.join(styles.STYLE_DIRECTORY, filename))
+
+	if extension!=None:
+		efilename = filename + "." + extension
+
+		# Check if it's a complete filename
+		if os.path.isfile(efilename): return check_readable(filename)
+
+		# Look for the script in the scripts directory
+		if os.path.isfile(os.path.join(styles.STYLE_DIRECTORY, efilename)): return check_readable(os.path.join(styles.STYLE_DIRECTORY, efilename))
+
+		for root, dirs, files in os.walk(styles.STYLE_DIRECTORY):
+			for filename in fnmatch.filter(files, f"{filename}.{extension}"):
+				return check_readable(os.path.join(root, filename))
+
 def find_file(filename,extension):
 
 	# Check if it's a complete filename

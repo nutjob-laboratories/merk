@@ -61,6 +61,11 @@ class Window():
 		else:
 			self.wtype = None
 
+	def style(self,filename):
+		f = commands.find_style(filename,STYLE_FILE_EXTENSION)
+		if f!=None:
+			self._window.applyStyle(f)
+
 	def is_light(self):
 		if not hasattr(self._window,"style"): return None
 		background,foreground = styles.parseBackgroundAndForegroundColor(self._window.style["all"])
@@ -185,7 +190,14 @@ class Window():
 	def clear(self):
 		self._window.clearChat()
 
-	def move(self,x,y):
+	def move(self,x=None,y=None):
+		if x==None or y==None:
+			w = self._gui.getSubWindow(self._window.name,self._window.client)
+			if w:
+				p = w.pos()
+				return [p.x(),p.y()]
+			else:
+				return [0,0]
 		if self._gui.is_valid_position(self._window,x,y):
 			self._window.move(x,y)
 			return True
