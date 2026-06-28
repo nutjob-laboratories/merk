@@ -318,6 +318,8 @@ class Window(QMainWindow):
 			i.setFont(f)
 			self.table_widget.addItem(i)
 
+		self.table_widget.scrollToItem(self.table_widget.item(0), self.table_widget.PositionAtTop)
+
 		QApplication.restoreOverrideCursor()
 
 	def doReset(self):
@@ -409,5 +411,6 @@ class Window(QMainWindow):
 			f.setBold(True)
 			i.setFont(f)
 			self.table_widget.addItem(i)
+		self.table_widget.scrollToItem(self.table_widget.item(0), self.table_widget.PositionAtTop)
 
 	

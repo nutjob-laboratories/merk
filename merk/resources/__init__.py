@@ -354,6 +354,7 @@ COLOR_ICON = ":/icon-color.png"
 SORT_ICON = ":/icon-sort.png"
 COMMAND_ICON = ":/icon-command.png"
 DOWN_ICON = ":/icon-down.png"
+UP_ICON = ":/icon-up.png"
 
 # User list status icons
 ADMIN_USER = ":/gui-admin.png"

@@ -1301,7 +1301,13 @@ class Window(QMainWindow):
 					entry.triggered.connect(lambda state,h=hostid: self.parent.openEditorConnect(h))
 					menu.addAction(entry)
 
-				entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
+				entry = QAction(QIcon(UP_ICON),"Scroll log to top",menu)
+				entry.triggered.connect(lambda state: self.moveChatToTop())
+				menu.addAction(entry)
+				scrollbar = self.chat.verticalScrollBar()
+				if scrollbar.value() == scrollbar.minimum(): entry.setEnabled(False)
+
+				entry = QAction(QIcon(DOWN_ICON),"Scroll log to bottom",menu)
 				entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
 				menu.addAction(entry)
 				scrollbar = self.chat.verticalScrollBar()
@@ -1577,14 +1583,10 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.menuPasteClipboard(self.name))
 					copyMenu.addAction(act)
 
-					user_hostmask = None
-					for h in self.hostmasks:
-						if h.lower()==self.name.lower():
-							user_hostmask = self.hostmasks[h]
-
+					user_hostmask = self.parent.getHostmask(self.client,self.name)
 					if user_hostmask!=None:
 						act = QAction(QIcon(PRIVATE_ICON),"User hostmask", self)
-						act.triggered.connect(lambda : self.menuPasteClipboard(user_hostmask))
+						act.triggered.connect(lambda : self.menuPasteClipboard(f"{user_hostmask}"))
 						copyMenu.addAction(act)
 
 					if self.client.hostname:
@@ -1602,15 +1604,30 @@ class Window(QMainWindow):
 					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
 					copyMenu.addAction(act)
 
-				if config.SCRIPTING_ENGINE_ENABLED:
-
-					menu.addSeparator()
-
-					self.contextRun = QAction(QIcon(RUN_ICON),"Run script",menu)
-					self.contextRun.triggered.connect(self.loadScript)
-					menu.addAction(self.contextRun)
-
 			if self.window_type==CHANNEL_WINDOW:
+
+				menu.addSeparator()
+
+				copyMenu = menu.addMenu(QIcon(CLIPBOARD_ICON),"Copy to clipboard")
+
+				act = QAction(QIcon(PRIVATE_ICON),"Channel name", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(self.name))
+				copyMenu.addAction(act)
+
+				if self.client.hostname:
+					act = QAction(QIcon(NETWORK_ICON),"Server hostname", self)
+					act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.hostname}"))
+					copyMenu.addAction(act)
+
+				if self.client.network:
+					if self.client.network.lower()!=UNKNOWN_NETWORK.lower():
+						act = QAction(QIcon(NETWORK_ICON),"Server network", self)
+						act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.network}"))
+						copyMenu.addAction(act)
+
+				act = QAction(QIcon(CONSOLE_ICON),"Server information", self)
+				act.triggered.connect(lambda : self.menuPasteClipboard(f"{self.client.server}:{self.client.port}"))
+				copyMenu.addAction(act)
 
 				menu.addSeparator()
 
@@ -2354,7 +2371,8 @@ class Window(QMainWindow):
 		else:
 			ICON = PRIVATE_MENU_ICON
 			OTHER_TEXT = "Normal User"
-		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: OTHER_TEXT = OTHER_TEXT+" (bot)"
+		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT!="": OTHER_TEXT = OTHER_TEXT+" (bot)"
+		if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and OTHER_TEXT=="": OTHER_TEXT = "Bot"
 		statusLayout.addStretch()
 
 		is_hidden = False
@@ -2396,9 +2414,8 @@ class Window(QMainWindow):
 						status_text = "Voiced User"
 					elif user_is_protected:
 						status_text = "Protected User"
-					else:
-						status_text = "Normal user"
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (bot)"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 					if status_text!='':
 						entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 						self.userlist_menu.addAction(entry)
@@ -2437,9 +2454,8 @@ class Window(QMainWindow):
 						status_text = "Voiced User"
 					elif user_is_protected:
 						status_text = "Protected User"
-					else:
-						status_text = "Normal User"
-					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (bot)"
+					if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 					if status_text!='':
 						entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 						self.userlist_menu.addAction(entry)
@@ -2487,9 +2503,8 @@ class Window(QMainWindow):
 					status_text = "Voiced User"
 				elif user_is_protected:
 					status_text = "Protected User"
-				else:
-					status_text = "Normal User"
-				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS: status_text = status_text + " (bot)"
+				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text!='': status_text = status_text + " (bot)"
+				if user_nick in self.client.bots and config.SHOW_BOTS_IN_USERLISTS and status_text=='': status_text = "Bot"
 				if status_text!='':
 					entry = noSpacePlainTextAction(self,f"<small><center>{status_text}</center></small>")
 					self.userlist_menu.addAction(entry)
@@ -2596,7 +2611,7 @@ class Window(QMainWindow):
 						act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
 						ucMenu.addAction(act)
 					else:
-						act = QAction(QIcon(REFRESH_ICON),"Change color", self)
+						act = QAction(QIcon(COLOR_ICON),"Change color", self)
 						act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
 						ucMenu.addAction(act)
 
@@ -3834,6 +3849,12 @@ class Window(QMainWindow):
 				self.history_buffer_pointer = 0
 			self.input.setText(self.history_buffer[self.history_buffer_pointer])
 			self.input.moveCursor(QTextCursor.End)
+
+	def moveChatToTop(self):
+		self.chat.moveCursor(QTextCursor.Start)
+		self.chat.ensureCursorVisible()
+		sb = self.chat.verticalScrollBar()
+		sb.setValue(sb.minimum())
 
 	def moveChatToBottom(self,force=False):
 

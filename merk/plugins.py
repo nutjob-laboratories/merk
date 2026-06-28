@@ -61,10 +61,32 @@ class Window():
 		else:
 			self.wtype = None
 
-	def style(self,filename):
-		f = commands.find_style(filename,STYLE_FILE_EXTENSION)
-		if f!=None:
-			self._window.applyStyle(f)
+	def style(self,filename=None):
+		if filename==None:
+			if self._window.window_type==SERVER_WINDOW:
+				fname = os.path.join(styles.STYLE_DIRECTORY,styles.encodeStyleNameServer(self._window.client.server,self._window.client.port))
+
+				if os.path.isfile(fname):
+					return fname
+				else:
+					return None
+			else:
+				if hasattr(self._window.client,"network"):
+					starter = self._window.client.network
+				else:
+					starter = self._window.client.server+"-"+str(self._window.client.port)
+
+				fname = styles.encodeStyleName(starter,self._window.name)
+				fname = os.path.join(styles.STYLE_DIRECTORY,fname)
+
+				if os.path.isfile(fname):
+					return fname
+				else:
+					return None
+		else:
+			f = commands.find_style(filename,STYLE_FILE_EXTENSION)
+			if f!=None:
+				self._window.applyStyle(f)
 
 	def is_light(self):
 		if not hasattr(self._window,"style"): return None

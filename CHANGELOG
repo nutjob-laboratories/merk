@@ -5,7 +5,8 @@
 What's new:
 
 - **Chat messages that mention your nick now have underlined nicknames**. This option can be disabled in the "settings" dialog or with the `/config` command.
-- **New plugin API methods**. Plugins can now determine if the application is running in "dark mode" or not, or if the background of a window's current text style is "light" or not. The "rainbow text" example plugin has been updated to show the next functionality.
+- **New plugin API methods**. Plugins can now determine if the application is running in "dark mode" or not, or if the background of a window's current text style is "light" or not. The "rainbow text" example plugin has been updated to show the new functionality. Plugins can now also set text styles for subwindows, and query what text style file (if any) a subwindow is using.
+- **Upgrades and bugfixes to channel and private chat subwindow text display context menus**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -58,6 +59,18 @@ What's new:
 * The icons in the "Settings" dialog's section selector are now slightly
   bigger.
 * Removed the "highlight" icon, and replaced it with the "color" icon.
+* Removed the "Normal User" tag from the user info in the userlist right click
+  menu.
+* Added the ability to scroll to the top of the text display for server
+  subwindows.
+* Removed the "run script" option from channel and private chat subwindow
+  text display context menus.
+* Bugfix: the "copy hostmask to clipboard" option in private chat subwindow
+  context menus works now.
+* Added the ability to copy miscellaneous data to the clipboard to channel
+  subwindow text display context menus.
+* The channel list subwindow now auto-scrolls to the top when searching and
+  setting user count filters.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -75,6 +88,8 @@ What's new:
   values the subwindow's location if called with no arguments.
 * New Window method: "style()". Pass the filename of a text style as the only
   argument, and that text style will be immediately applied to the subwindow.
+  Call without an argument to get a subwindow's current text style filename,
+  or "None" if the subwindow is using the default text style.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.000                                  |
