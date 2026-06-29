@@ -1409,9 +1409,9 @@ class Window(QMainWindow):
 						if channel_name in config.CHANNEL_FILTERS:
 
 							if 'j' in config.CHANNEL_FILTERS[channel_name]:
-								entry = QAction(QIcon(self.parent.checked_icon),"JOIN messages",menu)
+								entry = QAction(QIcon(self.parent.checked_icon),"JOIN",menu)
 							else:
-								entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN messages",menu)
+								entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
 							entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1420,9 +1420,9 @@ class Window(QMainWindow):
 								entry.setEnabled(False)
 
 							if 'p' in config.CHANNEL_FILTERS[channel_name]:
-								entry = QAction(QIcon(self.parent.checked_icon),"PART messages",menu)
+								entry = QAction(QIcon(self.parent.checked_icon),"PART",menu)
 							else:
-								entry = QAction(QIcon(self.parent.unchecked_icon),"PART messages",menu)
+								entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
 							entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1431,9 +1431,9 @@ class Window(QMainWindow):
 								entry.setEnabled(False)
 
 							if 'q' in config.CHANNEL_FILTERS[channel_name]:
-								entry = QAction(QIcon(self.parent.checked_icon),"QUIT messages",menu)
+								entry = QAction(QIcon(self.parent.checked_icon),"QUIT",menu)
 							else:
-								entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT messages",menu)
+								entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
 							entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1442,9 +1442,9 @@ class Window(QMainWindow):
 								entry.setEnabled(False)
 
 							if 'm' in config.CHANNEL_FILTERS[channel_name]:
-								entry = QAction(QIcon(self.parent.checked_icon),"MODE messages",menu)
+								entry = QAction(QIcon(self.parent.checked_icon),"MODE",menu)
 							else:
-								entry = QAction(QIcon(self.parent.unchecked_icon),"MODE messages",menu)
+								entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
 							entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1453,9 +1453,9 @@ class Window(QMainWindow):
 								entry.setEnabled(False)
 
 							if 'n' in config.CHANNEL_FILTERS[channel_name]:
-								entry = QAction(QIcon(self.parent.checked_icon),"NICK messages",menu)
+								entry = QAction(QIcon(self.parent.checked_icon),"NICK",menu)
 							else:
-								entry = QAction(QIcon(self.parent.unchecked_icon),"NICK messages",menu)
+								entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
 							entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1464,9 +1464,9 @@ class Window(QMainWindow):
 								entry.setEnabled(False)
 
 							if 't' in config.CHANNEL_FILTERS[channel_name]:
-								entry = QAction(QIcon(self.parent.checked_icon),"TOPIC messages",menu)
+								entry = QAction(QIcon(self.parent.checked_icon),"TOPIC",menu)
 							else:
-								entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC messages",menu)
+								entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
 							entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1474,7 +1474,7 @@ class Window(QMainWindow):
 								entry.setIcon(QIcon(self.parent.checked_icon))
 								entry.setEnabled(False)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN messages",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"JOIN",menu)
 							entry.triggered.connect(lambda state,h='j': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1482,7 +1482,7 @@ class Window(QMainWindow):
 								entry.setIcon(QIcon(self.parent.checked_icon))
 								entry.setEnabled(False)
 
-							entry = QAction(QIcon(self.parent.unchecked_icon),"PART messages",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"PART",menu)
 							entry.triggered.connect(lambda state,h='p': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1490,7 +1490,7 @@ class Window(QMainWindow):
 								entry.setIcon(QIcon(self.parent.checked_icon))
 								entry.setEnabled(False)
 
-							entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT messages",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"QUIT",menu)
 							entry.triggered.connect(lambda state,h='q': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1498,7 +1498,7 @@ class Window(QMainWindow):
 								entry.setIcon(QIcon(self.parent.checked_icon))
 								entry.setEnabled(False)
 
-							entry = QAction(QIcon(self.parent.unchecked_icon),"MODE messages",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"MODE",menu)
 							entry.triggered.connect(lambda state,h='m': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1506,7 +1506,7 @@ class Window(QMainWindow):
 								entry.setIcon(QIcon(self.parent.checked_icon))
 								entry.setEnabled(False)
 
-							entry = QAction(QIcon(self.parent.unchecked_icon),"NICK messages",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"NICK",menu)
 							entry.triggered.connect(lambda state,h='n': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1514,7 +1514,7 @@ class Window(QMainWindow):
 								entry.setIcon(QIcon(self.parent.checked_icon))
 								entry.setEnabled(False)
 
-							entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC messages",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"TOPIC",menu)
 							entry.triggered.connect(lambda state,h='t': self.toggleFilter(h))
 							fMenu.addAction(entry)
 
@@ -1646,6 +1646,35 @@ class Window(QMainWindow):
 			if self.window_type==PRIVATE_WINDOW:
 
 				menu.addSeparator()
+
+				user_hostmask = None
+				if self.name in self.hostmasks:
+					user_hostmask = self.hostmasks[self.name]
+				if user_hostmask==None:
+					user_hostmask = self.parent.getHostmask(self.client,self.name)
+
+				igMenu = menu.addMenu(QIcon(HIDE_ICON),"Ignore user")
+				if not self.is_ignored(self.name,user_hostmask):
+					act = QAction(QIcon(HIDE_ICON),"Ignore by nickname", self)
+					act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
+					igMenu.addAction(act)
+
+					act = QAction(QIcon(HIDE_ICON),"Ignore by hostmask", self)
+					act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+					igMenu.addAction(act)
+
+					if user_hostmask==None: act.setEnabled(False)
+				else:
+					if self.is_hidden_by_nickname(self.name):
+						act = QAction(QIcon(SHOW_ICON),"Unignore nickname", self)
+						act.triggered.connect(lambda : self.menuDoIgnore(self.name,None))
+						igMenu.addAction(act)
+					else:
+						if user_hostmask!=None:
+							if self.is_hidden_by_hostmask(self.parent.getHostmask(self.client,self.name)):
+								act = QAction(QIcon(SHOW_ICON),"Unignore hostmask", self)
+								act.triggered.connect(lambda : self.menuDoIgnore(None,user_hostmask))
+								igMenu.addAction(act)
 
 				entry = QAction(QIcon(CLOSE_ICON),"Close window",menu)
 				entry.triggered.connect(self.close)
@@ -2433,6 +2462,8 @@ class Window(QMainWindow):
 
 					if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
 						e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(self.client.away_msg,away_elide_size)}</center></small>")
+						self.userlist_menu.setToolTipsVisible(True)
+						e.setToolTip(self.client.away_msg)
 					else:
 						e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
 					self.userlist_menu.addAction(e)
@@ -2534,6 +2565,8 @@ class Window(QMainWindow):
 
 				if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
 					e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(away_msg,away_elide_size)}</center></small>")
+					self.userlist_menu.setToolTipsVisible(True)
+					e.setToolTip(away_msg)
 				else:
 					e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
 				self.userlist_menu.addAction(e)
@@ -3378,7 +3411,7 @@ class Window(QMainWindow):
 				else:
 					self.nick_display.setText(self.client.nickname+" ")
 				if config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP:
-					self.nick_display.setToolTip(f"{self.client.away_msg}")
+					self.nick_display.setToolTip(f"Away: {self.client.away_msg}")
 				else:
 					self.nick_display.setToolTip("")
 			else:
@@ -4650,6 +4683,46 @@ class SpellTextEdit(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
+				if config.ENABLE_EMOJI_SHORTCODES:
+					if config.AUTOCOMPLETE_SHORTCODES:
+						# Autocomplete emojis
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - 1
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+							for c in EMOJI_AUTOCOMPLETE:
+								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
+
+				if config.ENABLE_ASCIIMOJI_SHORTCODES:
+					if config.AUTOCOMPLETE_SHORTCODES:
+						# Autocomplete ASCIImojis
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - 1
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+							for c in ASCIIMOIJI:
+								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(c)
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
+
 				if config.AUTOCOMPLETE_NICKS:
 					cursor.select(QTextCursor.WordUnderCursor)
 					self.setTextCursor(cursor)
@@ -4747,46 +4820,6 @@ class SpellTextEdit(QPlainTextEdit):
 								if fnmatch.fnmatch(name.lower(),f"{text.lower()}*"):
 									cursor.beginEditBlock()
 									cursor.insertText(f"{name}")
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
-
-				if config.ENABLE_EMOJI_SHORTCODES:
-					if config.AUTOCOMPLETE_SHORTCODES:
-						# Autocomplete emojis
-						cursor.select(QTextCursor.WordUnderCursor)
-						oldpos = cursor.position()
-						cursor.select(QTextCursor.WordUnderCursor)
-						newpos = cursor.selectionStart() - 1
-						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
-						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
-						self.setTextCursor(cursor)
-						if self.textCursor().hasSelection():
-							text = self.textCursor().selectedText()
-							for c in EMOJI_AUTOCOMPLETE:
-								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(c)
-									cursor.endEditBlock()
-									self.ensureCursorVisible()
-									return
-
-				if config.ENABLE_ASCIIMOJI_SHORTCODES:
-					if config.AUTOCOMPLETE_SHORTCODES:
-						# Autocomplete emojis
-						cursor.select(QTextCursor.WordUnderCursor)
-						oldpos = cursor.position()
-						cursor.select(QTextCursor.WordUnderCursor)
-						newpos = cursor.selectionStart() - 1
-						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
-						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
-						self.setTextCursor(cursor)
-						if self.textCursor().hasSelection():
-							text = self.textCursor().selectedText()
-							for c in ASCIIMOIJI:
-								if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
-									cursor.beginEditBlock()
-									cursor.insertText(c)
 									cursor.endEditBlock()
 									self.ensureCursorVisible()
 									return

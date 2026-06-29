@@ -1,19 +1,22 @@
 <p align="center">
-  <img src="./graphics/banner.png"><br>
+  <img src="./graphics/banner_large.png"><br>
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
   <b><big>Current stable release: <a href="!_RELEASE_URL_!">MERK !_RELEASE_!</a></big></b><br>
-  <b>Current development build: <a href="https://latest.merk.chat">MERK !_FULL_VERSION_!</a></b><br><br>
-  <b><a href="https://buymeacoffee.com/danhetrick">Help Fund MERK!</a></b>
+  <b><big>Current development build: <a href="https://latest.merk.chat">MERK !_FULL_VERSION_!</a></b></big><br><br>
 </p>
 
 **MERK** is a cross-platform graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client written in Python 3 with [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/). It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the classic Windows client [mIRC](https://www.mirc.com/). Unlike mIRC, **MERK** is completely free and open source, and runs on all major platforms. It's designed to be easy and intuitive for new users, while staying powerful and deeply customizable for everyone else. You never have to delve deeper into the interface than you want to.
 
 | Windows | Linux  | macOS  |
 | :----:    | :----:    | :----:    |
-<a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera and EFnet, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
+<a href="./graphics/screenshot_big.png"><img src="./graphics/screenshot1.png" alt="MERK connected to Libera, on Windows 11, using the Windows widget set."></a> | <a href="./graphics/screenshot_linux_big.png"><img src="./graphics/screenshot_linux2.png" alt="MERK connected to Libera, EFnet, and MansionNET on Linux Mint 22.3, using the Oxygen widget set."></a> | <a href="./graphics/macos.png"><img src="./graphics/macos_small.png" alt="MERK connected to MansionNET on macOS 26.2, using the Fusion widget set in dark mode."></a>
 
 **MERK** is in active development and updated frequently. Visit the project at [https://merk.chat](https://merk.chat), get the latest release at [https://download.merk.chat](https://download.merk.chat), or grab the latest development build at [https://latest.merk.chat](https://latest.merk.chat). New builds are done almost every day, with bugfixes and tweaks.
+
+<p align="center">
+  <b><a href="https://buymeacoffee.com/danhetrick"><img src="./graphics/coffee.png" alt="Help fund MERK!"></a></b>
+</p>
 
 **Support the project:** if you'd like to help fund **MERK**, please consider [donating](https://buymeacoffee.com/danhetrick). Anyone who donates $50 or more gets their name immortalized on the "patrons" tab in **MERK**'s "about" dialog. **MERK** will always be free and open source. Let's keep IRC alive in the 21st century!
 
