@@ -4569,6 +4569,10 @@ class Dialog(QDialog):
 		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
 		self.timestampSeconds.stateChanged.connect(self.changedSettingRerenderTimestamp)
 
+		self.timestampUTC = QCheckBox("Show timestamps in chat and logs in UTC",self)
+		if config.SHOW_TIMESTAMPS_IN_UTC: self.timestampUTC.setChecked(True)
+		self.timestampUTC.stateChanged.connect(self.changedSettingRerenderTimestamp)
+
 		if not config.DISPLAY_TIMESTAMP:
 			self.timestamp24hour.setEnabled(False)
 			self.timestampSeconds.setEnabled(False)
@@ -4629,6 +4633,7 @@ class Dialog(QDialog):
 		tmLayout.setSpacing(0)
 		tmLayout.addWidget(self.timestamp24hour)
 		tmLayout.addWidget(self.timestampSeconds)
+		tmLayout.addWidget(self.timestampUTC)
 		tmLayout.addWidget(self.showDates)
 
 		timestampLayout = QVBoxLayout()
@@ -7623,6 +7628,7 @@ class Dialog(QDialog):
 		config.UNDERLINE_MENTION = self.undMention.isChecked()
 		config.SHOW_AWAY_NICKNAME_IN_ITALICS = self.showNickItalics.isChecked()
 		config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = self.showAwayTooltip.isChecked()
+		config.SHOW_TIMESTAMPS_IN_UTC = self.timestampUTC.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

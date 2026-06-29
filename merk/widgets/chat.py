@@ -33,6 +33,8 @@ import uuid
 import fnmatch
 import pathlib
 import random
+import datetime
+from datetime import timezone
 
 import emoji
 
@@ -243,7 +245,10 @@ class Window(QMainWindow):
 		self.force_close = False
 		self.connected = False
 		self.part_message = None
-		self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime('%A %B %d, %Y')
+		else:
+			self.current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 		self.rerendered_chat = False
 		self.non_colored_nicks = []
 		self.spawned_channel_list = False
@@ -862,7 +867,10 @@ class Window(QMainWindow):
 				cdate = None
 				marked = []
 				for e in self.log:
-					ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						ndate = datetime.fromtimestamp(e.timestamp,tz=timezone.utc).strftime('%A %B %d, %Y')
+					else:
+						ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
 					if cdate!=ndate:
 						cdate = ndate
 						m = Message(DATE_MESSAGE,'',cdate)
@@ -872,7 +880,10 @@ class Window(QMainWindow):
 			# Mark end of loaded log
 			if config.MARK_END_OF_LOADED_LOG:
 				t = datetime.timestamp(datetime.now())
-				pretty_timestamp = datetime.fromtimestamp(t).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				if config.SHOW_TIMESTAMPS_IN_UTC:
+					pretty_timestamp = datetime.fromtimestamp(t,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				else:
+					pretty_timestamp = datetime.fromtimestamp(t).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
 				self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
 		# Now, rerender all text in the log, so that
 		# the loaded log data is displayed
@@ -1283,7 +1294,7 @@ class Window(QMainWindow):
 
 		menu = self.chat.createStandardContextMenu(doc_pos)
 
-		if config.SHOW_CHAT_CONTEXT_MENUS:
+		if config.SHOW_CHAT_CONTEXT_MENUS and self.chat.textCursor().hasSelection()==False:
 
 			if self.window_type==SERVER_WINDOW:
 
@@ -1404,7 +1415,7 @@ class Window(QMainWindow):
 				if not self.areAllTypesFiltered():
 
 					if self.window_type==CHANNEL_WINDOW:
-						fMenu = menu.addMenu(QIcon(HIDE_ICON),"Hide messages")
+						fMenu = menu.addMenu(QIcon(HIDE_ICON),"Hide message types")
 						channel_name = self.encodeChannel()
 						if channel_name in config.CHANNEL_FILTERS:
 
@@ -1525,11 +1536,11 @@ class Window(QMainWindow):
 						fMenu.addSeparator()
 
 						if self.isAllFiltersSet():
-							entry = QAction(QIcon(self.parent.checked_icon),"Hide all types",menu)
+							entry = QAction(QIcon(self.parent.checked_icon),"Hide all",menu)
 							entry.triggered.connect(self.unsetAllFilters)
 							fMenu.addAction(entry)
 						else:
-							entry = QAction(QIcon(self.parent.unchecked_icon),"Hide all types",menu)
+							entry = QAction(QIcon(self.parent.unchecked_icon),"Hide all",menu)
 							entry.triggered.connect(self.setAllFilters)
 							fMenu.addAction(entry)
 
@@ -1975,7 +1986,10 @@ class Window(QMainWindow):
 				if config.SHOW_DATES_IN_LOGS:
 					# If the date has changed, add a date message to the chat to reflect that
 					# But only do that on channel and private chat windows
-					cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime('%A %B %d, %Y')
+					else:
+						cdate = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%A %B %d, %Y')
 					if cdate!=self.current_date:
 						self.current_date = cdate
 						# there's a new date; create a new date separator
@@ -2072,6 +2086,22 @@ class Window(QMainWindow):
 
 			if not config.SHOW_DATES_IN_LOGS:
 				if line.type==DATE_MESSAGE: do_render = False
+			else:
+				# Adjust date for UTC if necessary
+				if line.type==DATE_MESSAGE:
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						cdate = datetime.fromtimestamp(line.timestamp,tz=timezone.utc).strftime('%A %B %d, %Y')
+					else:
+						cdate = datetime.fromtimestamp(line.timestamp).strftime('%A %B %d, %Y')
+					line = Message(DATE_MESSAGE,'',cdate,line.timestamp)
+
+			# Adjust resume time for UTC if necessary
+			if line.type==TEXT_HORIZONTAL_RULE_MESSAGE and line.contents.startswith("Resumed on"):
+				if config.SHOW_TIMESTAMPS_IN_UTC:
+					pretty_timestamp = datetime.fromtimestamp(line.timestamp,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				else:
+					pretty_timestamp = datetime.fromtimestamp(line.timestamp).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				line = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp,line.timestamp)
 
 			if self.window_type==CHANNEL_WINDOW:
 
@@ -2461,9 +2491,11 @@ class Window(QMainWindow):
 							shown_box = True
 
 					if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
-						e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(self.client.away_msg,away_elide_size)}</center></small>")
-						self.userlist_menu.setToolTipsVisible(True)
-						e.setToolTip(self.client.away_msg)
+						ea = elide_text(self.client.away_msg,away_elide_size)
+						e = BoxPlainTextAction(self,"Away",f"<small><center>{ea}</center></small>")
+						if len(ea)!=len(self.client.away_msg):
+							self.userlist_menu.setToolTipsVisible(True)
+							e.setToolTip(self.client.away_msg)
 					else:
 						e = BoxPlainTextAction(self,"Away",f"<small><center>{self.client.away_msg}</center></small>")
 					self.userlist_menu.addAction(e)
@@ -2564,9 +2596,11 @@ class Window(QMainWindow):
 				away_msg = self.away[user_nick]
 
 				if config.ELIDE_AWAY_MSG_IN_USERLIST_CONTEXT:
-					e = BoxPlainTextAction(self,"Away",f"<small><center>{elide_text(away_msg,away_elide_size)}</center></small>")
-					self.userlist_menu.setToolTipsVisible(True)
-					e.setToolTip(away_msg)
+					ea = elide_text(away_msg,away_elide_size)
+					e = BoxPlainTextAction(self,"Away",f"<small><center>{ea}</center></small>")
+					if len(ea)!=len(away_msg):
+						self.userlist_menu.setToolTipsVisible(True)
+						e.setToolTip(away_msg)
 				else:
 					e = BoxPlainTextAction(self,"Away",f"<small><center>{away_msg}</center></small>")
 				self.userlist_menu.addAction(e)

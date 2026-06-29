@@ -449,7 +449,7 @@ IRC_COLORS = {
 
 class Message:
 	def __init__(self,mtype,sender,contents,timestamp=None):
-		if timestamp:
+		if timestamp!=None:
 			self.timestamp = timestamp
 		else:
 			self.timestamp = datetime.timestamp(datetime.now())

@@ -27,9 +27,10 @@ import sys
 import os
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime,timezone
 
 from .resources import *
+from . import config
 
 CONFIG_DIRECTORY = None
 LOG_DIRECTORY = None
@@ -145,6 +146,18 @@ def readLog(network,name,logdir=LOG_DIRECTORY):
 	logs = array_to_log(logs)
 	return logs
 
+def pretty_timestamp_m1(ts):
+	if config.SHOW_TIMESTAMPS_IN_UTC:
+		return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%a, %d %b %Y %H:%M:%S UTC')
+	else:
+		return datetime.fromtimestamp(ts).strftime('%a, %d %b %Y %H:%M:%S')
+
+def pretty_timestamp_m2(ts):
+	if config.SHOW_TIMESTAMPS_IN_UTC:
+		return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%m/%d/%Y %H:%M:%S UTC')
+	else:
+		return datetime.fromtimestamp(ts).strftime('%m/%d/%Y %H:%M:%S')
+
 def dumpRawLog(logs):
 	delimiter = "\t"
 	logs = log_to_array(logs)
@@ -155,7 +168,7 @@ def dumpRawLog(logs):
 		l[3] = l[3].strip()
 		if l[2]=='': l[2] = '***'
 
-		pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%a, %d %b %Y %H:%M:%S')
+		pretty_timestamp = pretty_timestamp_m1(l[0])
 		entry = pretty_timestamp+delimiter+l[2]+delimiter+l[3]
 		out.append(entry)
 	return "\n".join(out)
@@ -179,7 +192,7 @@ def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 			if l[2]=='': l[2] = '***'
 
 			if not epoch:
-				pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%a, %d %b %Y %H:%M:%S')
+				pretty_timestamp = pretty_timestamp_m1(l[0])
 				entry = pretty_timestamp+delimiter+l[2]+delimiter+l[3]
 			else:
 				entry = str(l[0])+delimiter+l[2]+delimiter+l[3]
@@ -219,7 +232,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
-						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+						pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"{pretty_timestamp} {u}: {strip_color(l[3])}"
 			elif l[1]==ACTION_MESSAGE:
 				# CTCP Action message
@@ -229,7 +242,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
-						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+						pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"{pretty_timestamp} {u} {strip_color(l[3])}"
 			elif l[1]==NOTICE_MESSAGE:
 				if no_timestamps:
@@ -238,7 +251,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
-						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+						pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"{pretty_timestamp} *{u}*: {strip_color(l[3])}"
 			else:
 				if no_timestamps:
@@ -247,7 +260,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
-						pretty_timestamp = datetime.fromtimestamp(l[0]).strftime('%m/%d/%Y %H:%M:%S')
+						pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"{pretty_timestamp} {strip_color(l[3])}"
 
 			out.append(entry)
@@ -273,7 +286,7 @@ def dumpLogJson(filename,epoch=True):
 				l[3] = ''
 			if l[2]=='': l[2] = '*'
 			if not epoch:
-				l[0] = datetime.fromtimestamp(l[0]).strftime('%a, %d %b %Y %H:%M:%S')
+				l[0] = pretty_timestamp_m1(l[0])
 			entry = [ l[0],l[2],l[3] ]
 			out.append(entry)
 		return json.dumps(out, indent=4, sort_keys=True)

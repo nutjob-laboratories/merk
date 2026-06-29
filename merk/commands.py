@@ -50,6 +50,7 @@ import random
 import ast
 import zipfile
 import shutil
+from datetime import timezone
 
 import emoji
 
@@ -716,6 +717,7 @@ def buildTemporaryAliases(gui,window):
 	month = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%B')
 	year = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%Y')
 	ordinal = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%d')
+	utc_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime("%H:%M:%S UTC")
 
 	all_servers = []
 	for w in gui.getAllConnectedServerWindows():
@@ -831,6 +833,7 @@ def buildTemporaryAliases(gui,window):
 		addTemporaryAlias('_UPTIME',str(window.uptime))
 	else:
 		addTemporaryAlias('_UPTIME',"0")
+	addTemporaryAlias('_UTC',utc_time)
 	addTemporaryAlias('_VERSION',APPLICATION_VERSION)
 	addTemporaryAlias('_USERNAME',window.client.username)
 	addTemporaryAlias('_WINDOW',window.name)

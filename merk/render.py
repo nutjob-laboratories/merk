@@ -26,6 +26,8 @@
 from itertools import combinations
 import re
 import html
+import datetime
+from datetime import timezone
 
 from .resources import *
 from . import config
@@ -316,7 +318,10 @@ def render_message(message,style,client=None,no_padding=False,nicks={},non_color
 		message.type != TEXT_HORIZONTAL_RULE_MESSAGE and
 		message.type != DATE_MESSAGE):
 		if config.DISPLAY_TIMESTAMP:
-			pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(config.TIMESTAMP_FORMAT)
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				pretty_timestamp = datetime.fromtimestamp(message.timestamp,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT)
+			else:
+				pretty_timestamp = datetime.fromtimestamp(message.timestamp).strftime(config.TIMESTAMP_FORMAT)
 			ts = TIMESTAMP_TEMPLATE.replace("!TIMESTAMP_STYLE!", style["timestamp"]).replace("!TIME!", pretty_timestamp)
 			replacements["!TIMESTAMP!"] = ts
 		else:
