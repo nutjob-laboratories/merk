@@ -4569,7 +4569,7 @@ class Dialog(QDialog):
 		if config.TIMESTAMP_SHOW_SECONDS: self.timestampSeconds.setChecked(True)
 		self.timestampSeconds.stateChanged.connect(self.changedSettingRerenderTimestamp)
 
-		self.timestampUTC = QCheckBox("Show timestamps in chat and logs in UTC",self)
+		self.timestampUTC = QCheckBox("Show timestamps in chat and logs in Coordinated\nUniversal Time (UTC)",self)
 		if config.SHOW_TIMESTAMPS_IN_UTC: self.timestampUTC.setChecked(True)
 		self.timestampUTC.stateChanged.connect(self.changedSettingRerenderTimestamp)
 
@@ -4588,13 +4588,16 @@ class Dialog(QDialog):
 		self.timestampDescription = QLabel("""
 			<small>
 			<b>Timestamps</b>, if turned on, are shown as the beginning of all displayed
-			messages in the chat display. They are saved to the log regardless of whether
-			they are visible or not.
+			messages in the chat display. They are saved to the log in <b><a href="https://en.wikipedia.org/wiki/Unix_time">UNIX
+			epoch time</a></b> regardless of whether they are visible or not. <b>Timestamps</b> and other
+			date and time displays in chat can be displayed in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
+			<b>Coordinated Universal Time</b></a> (UTC) rather than in local time.
 			</small>
 			<br>
 			""")
 		self.timestampDescription.setWordWrap(True)
 		self.timestampDescription.setAlignment(Qt.AlignJustify)
+		self.timestampDescription.setOpenExternalLinks(True)
 
 		self.uptimeDescription = QLabel("""
 			<small>
@@ -4608,7 +4611,7 @@ class Dialog(QDialog):
 		self.uptimeDescription.setWordWrap(True)
 		self.uptimeDescription.setAlignment(Qt.AlignJustify)
 
-		self.showDates = QCheckBox("Show dates in logs",self)
+		self.showDates = QCheckBox("Show dates in chat displays",self)
 		if config.SHOW_DATES_IN_LOGS: self.showDates.setChecked(True)
 		self.showDates.stateChanged.connect(self.changedSettingRerender)
 
@@ -4633,8 +4636,8 @@ class Dialog(QDialog):
 		tmLayout.setSpacing(0)
 		tmLayout.addWidget(self.timestamp24hour)
 		tmLayout.addWidget(self.timestampSeconds)
-		tmLayout.addWidget(self.timestampUTC)
 		tmLayout.addWidget(self.showDates)
+		tmLayout.addWidget(self.timestampUTC)
 
 		timestampLayout = QVBoxLayout()
 		timestampLayout.setSpacing(0)
@@ -7138,6 +7141,7 @@ class Dialog(QDialog):
 		self.restrictError.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.allowMultiple.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 		self.doConnectionTimeout.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
+		self.timestampUTC.setStyleSheet("QCheckBox { text-align: left top; } QCheckBox::indicator { subcontrol-origin: padding; subcontrol-position: left top; }")
 
 		self.limit_all_widget_fonts(config.MAXIMUM_FONT_SIZE_FOR_SETTINGS)
 

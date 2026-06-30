@@ -278,10 +278,12 @@ def write_style_file(style,filename):
 \t╔╦╗╔═╗╦═╗╦╔═  ╔═╗╔╦╗╦ ╦╦  ╔═╗  ╔═╗╦╦  ╔═╗
 \t║║║║╣ ╠╦╝╠╩╗  ╚═╗ ║ ╚╦╝║  ║╣   ╠╣ ║║  ║╣ 
 \t╩ ╩╚═╝╩╚═╩ ╩  ╚═╝ ╩  ╩ ╩═╝╚═╝  ╚  ╩╩═╝╚═╝
-\thttps://github.com/nutjob-laboratories/merk
+\t{APPLICATION_WEB}
+\t{APPLICATION_SOURCE}
 
 \tText Style Configuration File
-\t{filename}
+
+\t{os.path.basename(filename)}
 
 \t╔═════════════════════════════╗
 \t║ Please don't edit manually! ║
@@ -307,10 +309,12 @@ def write_palette_file(style,filename):
 \t╔╦╗╔═╗╦═╗╦╔═  ╔═╗╔═╗╦  ╔═╗╔╦╗╔╦╗╔═╗  ╔═╗╦╦  ╔═╗
 \t║║║║╣ ╠╦╝╠╩╗  ╠═╝╠═╣║  ║╣  ║  ║ ║╣   ╠╣ ║║  ║╣ 
 \t╩ ╩╚═╝╩╚═╩ ╩  ╩  ╩ ╩╩═╝╚═╝ ╩  ╩ ╚═╝  ╚  ╩╩═╝╚═╝
-\thttps://github.com/nutjob-laboratories/merk
+\t{APPLICATION_WEB}
+\t{APPLICATION_SOURCE}
 
 \tApplication Palette Configuration File
-\t{filename}
+
+\t{os.path.basename(filename)}
 
 \t╔═════════════════════════════╗
 \t║ Please don't edit manually! ║

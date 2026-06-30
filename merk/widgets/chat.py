@@ -873,7 +873,7 @@ class Window(QMainWindow):
 						ndate = datetime.fromtimestamp(e.timestamp).strftime('%A %B %d, %Y')
 					if cdate!=ndate:
 						cdate = ndate
-						m = Message(DATE_MESSAGE,'',cdate)
+						m = Message(DATE_MESSAGE,'',cdate,e.timestamp)
 						marked.append(m)
 					marked.append(e)
 				self.log = marked

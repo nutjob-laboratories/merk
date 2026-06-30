@@ -207,6 +207,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			logs = json.load(logentries)
 	if logs:
 		out = []
+		cdate = None
 		for l in logs:
 			if l[2]!=None:
 				l[2] = l[2].strip()
@@ -223,6 +224,17 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 				u = u[0]
 			else:
 				u = l[2]
+
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				ndate = datetime.fromtimestamp(l[0],tz=timezone.utc).strftime('%A %B %d, %Y')
+			else:
+				ndate = datetime.fromtimestamp(l[0]).strftime('%A %B %d, %Y')
+			if cdate!=ndate:
+				cdate=ndate
+				if no_timestamps:
+					out.append(f"\x02\x1F{cdate}\x0f")
+				else:
+					out.append(f"*** {cdate}")
 
 			if l[1]==CHAT_MESSAGE or l[1]==SELF_MESSAGE or l[1]==PRIVATE_MESSAGE:
 				# Regular chat
@@ -245,6 +257,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 						pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"{pretty_timestamp} {u} {strip_color(l[3])}"
 			elif l[1]==NOTICE_MESSAGE:
+				# Notice message
 				if no_timestamps:
 					entry = f"*\x02{u}\x0f*: {l[3]}"
 				else:

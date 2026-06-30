@@ -7,6 +7,7 @@ What's new:
 - **Chat messages that mention your nick now have underlined nicknames**. This option can be disabled in the "settings" dialog or with the `/config` command.
 - **New plugin API methods**. Plugins can now determine if the application is running in "dark mode" or not, or if the background of a window's current text style is "light" or not. The "rainbow text" example plugin has been updated to show the new functionality. Plugins can now also set text styles for subwindows, and query what text style file (if any) a subwindow is using.
 - **Timestamps can now be shown in UTC**.
+- **Dates are now inserted into logs in the log manager**. The day that chat occured on is now "inserted" into the log view and the "human readable" output for export.
 - **Upgrades and bugfixes to context menus**. New options have been added to context menus for the userlist and subwindow text displays.
 
 |==============================================================================|
@@ -85,6 +86,9 @@ What's new:
   "select all" options.
 * Added the option to display timestamps in both chat and logs in UTC. This
   option is turned off by default.
+* The style/palette file generator output has been tweaked.
+* Dates are now "injected" into logs in the log manager viewer, and the human
+  readable output.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
