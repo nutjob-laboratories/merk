@@ -154,9 +154,9 @@ def pretty_timestamp_m1(ts):
 
 def pretty_timestamp_m2(ts):
 	if config.SHOW_TIMESTAMPS_IN_UTC:
-		return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%m/%d/%Y %H:%M:%S UTC')
+		return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%H:%M:%S UTC')
 	else:
-		return datetime.fromtimestamp(ts).strftime('%m/%d/%Y %H:%M:%S')
+		return datetime.fromtimestamp(ts).strftime('%H:%M:%S')
 
 def dumpRawLog(logs):
 	delimiter = "\t"
@@ -226,7 +226,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 				u = l[2]
 
 			if config.SHOW_TIMESTAMPS_IN_UTC:
-				ndate = datetime.fromtimestamp(l[0],tz=timezone.utc).strftime('%A %B %d, %Y')
+				ndate = datetime.fromtimestamp(l[0],tz=timezone.utc).strftime('%A %B %d, %Y UTC')
 			else:
 				ndate = datetime.fromtimestamp(l[0]).strftime('%A %B %d, %Y')
 			if cdate!=ndate:
@@ -239,7 +239,8 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			if l[1]==CHAT_MESSAGE or l[1]==SELF_MESSAGE or l[1]==PRIVATE_MESSAGE:
 				# Regular chat
 				if no_timestamps:
-					entry = f"\x02{u}\x0f: {l[3]}"
+					pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"[{pretty_timestamp}] \x02{u}\x0f: {l[3]}"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
@@ -249,7 +250,8 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			elif l[1]==ACTION_MESSAGE:
 				# CTCP Action message
 				if no_timestamps:
-					entry = f"\x02\x1d{u} {l[3]}\x0f"
+					pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"[{pretty_timestamp}] \x02\x1d{u} {l[3]}\x0f"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
@@ -259,7 +261,8 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			elif l[1]==NOTICE_MESSAGE:
 				# Notice message
 				if no_timestamps:
-					entry = f"*\x02{u}\x0f*: {l[3]}"
+					pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"[{pretty_timestamp}] \x02*{u}\x0f*: {l[3]}"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
@@ -268,7 +271,8 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 					entry = f"{pretty_timestamp} *{u}*: {strip_color(l[3])}"
 			else:
 				if no_timestamps:
-					entry = f"\x02{l[3]}\x0f"
+					pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"[{pretty_timestamp}] \x02{l[3]}\x0f"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
