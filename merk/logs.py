@@ -206,9 +206,12 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
 			logs = json.load(logentries)
 
-	if len(logs)>config.MAX_LOG_DISPLAY_SIZE and no_timestamps==True:
-		logs = logs[-config.MAX_LOG_DISPLAY_SIZE:]
-		trimmed = True
+	if config.LIMIT_LOG_VIEW:
+		if len(logs)>config.MAX_LOG_DISPLAY_SIZE and no_timestamps==True:
+			logs = logs[-config.MAX_LOG_DISPLAY_SIZE:]
+			trimmed = True
+		else:
+			trimmed = False
 	else:
 		trimmed = False
 

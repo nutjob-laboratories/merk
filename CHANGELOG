@@ -9,7 +9,9 @@ What's new:
 - **Timestamps can now be shown in UTC**.
 - **Dates and times are now inserted into logs in the log manager**. The day that chat occured on, and the time it was "said", is now "inserted" into the log view and the "human readable" output for export.
 - **Colors have been added to the log manager viewer**. Message senders are now in blue, with messages sent by the client in the same color and underlined. CTCP ACTION messages are in blue with italics.
+- **The log viewer's display size is now limited to 5000 lines**. Overly large logs can cause MERK to lag and/or lock up. The size of the line limit (and whether it's used at all) can be changed in the "settings" dialog.
 - **Upgrades and bugfixes to context menus**. New options have been added to context menus for the userlist and subwindow text displays.
+- **The settings dialog now features over 400 options for users to change and configure**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -101,6 +103,13 @@ What's new:
   large log files. The full log file is still loaded for export, and can be
   viewed in the "export" tab in the log manager. The user is warned that only
   the end of the log is being viewed.
+* Added an option to toggle whether the log viewer is limited to the maximum
+  log size.
+* Added new log viewer options to the "Settings" dialog, on the "Logs" page.
+* If a user has a color set for their nickname, the color is now shown in the
+  userlist context menu, in the submenu for "Nickname Color". Both the color
+  and the color's hex code is shown.
+* Re-arranged the "Logs" section of the "Settings" dialog.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

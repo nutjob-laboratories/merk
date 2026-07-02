@@ -2678,6 +2678,10 @@ class Window(QMainWindow):
 						act.triggered.connect(lambda : self.menuDoColor(user_nick,user_hostmask))
 						ucMenu.addAction(act)
 					else:
+
+						entry = noSpacePlainTextAction(self,f"<center><span style=\"background-color: {c};\">&nbsp;</span> <b>{c}</b></center>")
+						ucMenu.addAction(entry)
+
 						act = QAction(QIcon(COLOR_ICON),"Change color", self)
 						act.triggered.connect(lambda : self.menuDoColorChange(user_nick,user_hostmask))
 						ucMenu.addAction(act)

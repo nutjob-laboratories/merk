@@ -1208,6 +1208,12 @@ class Dialog(QDialog):
 		self.rerender = True
 		self.selector.setFocus()
 
+	def updateLogLimit(self,state):
+		self.MAX_LOG_DISPLAY_SIZE = self.logViewLimit.value()
+		self.changed.show()
+		self.boldApply()
+		self.selector.setFocus()
+
 	def updateDistance(self,state):
 		self.SUBWINDOW_SNAP_DISTANCE = self.snapDistance.value()
 		self.changed.show()
@@ -2421,6 +2427,7 @@ class Dialog(QDialog):
 		self.CONNECTION_TIMEOUT = config.CONNECTION_TIMEOUT
 		self.DECODING_TYPE = config.DECODING_TYPE
 		self.FALLBACK_DECODING_TYPE = config.FALLBACK_DECODING_TYPE
+		self.MAX_LOG_DISPLAY_SIZE = config.MAX_LOG_DISPLAY_SIZE
 
 		self.setWindowTitle(f"Settings")
 		self.setWindowIcon(QIcon(SETTINGS_ICON))
@@ -4590,7 +4597,7 @@ class Dialog(QDialog):
 			<b>Timestamps</b>, if turned on, are shown as the beginning of all displayed
 			messages in the chat display. They are saved to the log in <b><a href="https://en.wikipedia.org/wiki/Unix_time">UNIX
 			epoch time</a></b> regardless of whether they are visible or not. <b>Timestamps</b> and other
-			date and time displays in chat can be displayed in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
+			date and time displays in chat and the log viewer can be displayed in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
 			<b>Coordinated Universal Time</b></a> (UTC) rather than in local time.
 			</small>
 			<br>
@@ -5479,19 +5486,19 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.logPage)
 
-		self.saveChanLogs = QCheckBox("Save logs",self)
+		self.saveChanLogs = QCheckBox("Save channel logs",self)
 		if config.SAVE_CHANNEL_LOGS: self.saveChanLogs.setChecked(True)
 		self.saveChanLogs.stateChanged.connect(self.changedChanLogs)
 
-		self.loadChanLogs = QCheckBox("Load logs",self)
+		self.loadChanLogs = QCheckBox("Load channel logs",self)
 		if config.LOAD_CHANNEL_LOGS: self.loadChanLogs.setChecked(True)
 		self.loadChanLogs.stateChanged.connect(self.changedLoadLogs)
 
-		self.savePrivLogs = QCheckBox("Save logs",self)
+		self.savePrivLogs = QCheckBox("Save private logs",self)
 		if config.SAVE_PRIVATE_LOGS: self.savePrivLogs.setChecked(True)
 		self.savePrivLogs.stateChanged.connect(self.changedPrivLogs)
 
-		self.loadPrivLogs = QCheckBox("Load logs",self)
+		self.loadPrivLogs = QCheckBox("Load private logs",self)
 		if config.LOAD_PRIVATE_LOGS: self.loadPrivLogs.setChecked(True)
 		self.loadPrivLogs.stateChanged.connect(self.changedLoadLogs)
 
@@ -5544,10 +5551,9 @@ class Dialog(QDialog):
 
 		self.logDescription = QLabel(f"""
 			<small>
-			Full <b>logs</b> are not loaded for display. The below settings
-			controls how much of the <b>log</b> is loaded into the application
-			for display. Complete logs can be viewed in the log manager,
-			available in the \"<b>{self.default_tools_menu}</b>\" menu.
+			Full <b>logs</b> are not loaded for display. The below setting
+			controls how much of the <b>log</b> is loaded into subwindows
+			for display.
 			</small><br>
 			""")
 		self.logDescription.setWordWrap(True)
@@ -5631,6 +5637,22 @@ class Dialog(QDialog):
 			self.noticeLog.setEnabled(False)
 			self.ignoreLog.setEnabled(False)
 
+		self.logViewSize = QCheckBox("Log viewer only displays last",self)
+		if config.LIMIT_LOG_VIEW: self.logViewSize.setChecked(True)
+		self.logViewSize.stateChanged.connect(self.changedSetting)
+
+		self.logViewLimitLabelSpec = QLabel(" lines")
+		self.logViewLimit = QSpinBox()
+		self.logViewLimit.setRange(1,99999)
+		self.logViewLimit.setValue(self.MAX_LOG_DISPLAY_SIZE)
+		self.logViewLimit.valueChanged.connect(self.updateLogLimit)
+
+		logViewLayout = QHBoxLayout()
+		logViewLayout.addWidget(self.logViewSize)
+		logViewLayout.addWidget(self.logViewLimit)
+		logViewLayout.addWidget(self.logViewLimitLabelSpec)
+		logViewLayout.addStretch()
+
 		chanLayout = QHBoxLayout()
 		chanLayout.addStretch()
 		chanLayout.addWidget(self.saveChanLogs)
@@ -5670,11 +5692,8 @@ class Dialog(QDialog):
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
 		logLayout.addWidget(self.logFullDescription)
 		logLayout.addWidget(QLabel(' '))
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>private chat logs</b>"))
-		logLayout.addLayout(privLayout)
-		logLayout.addWidget(QLabel(' '))
-		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel logs</b>"))
 		logLayout.addLayout(chanLayout)
+		logLayout.addLayout(privLayout)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
 		logLayout.addLayout(contLayout)
@@ -5683,6 +5702,9 @@ class Dialog(QDialog):
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log display size</b>"))
 		logLayout.addWidget(self.logDescription)
 		logLayout.addLayout(logsizeLayout)
+		logLayout.addWidget(QLabel(' '))
+		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log manager settings</b>"))
+		logLayout.addLayout(logViewLayout)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>miscellaneous settings</b>"))
 		logLayout.addWidget(self.markLog)
@@ -7633,6 +7655,8 @@ class Dialog(QDialog):
 		config.SHOW_AWAY_NICKNAME_IN_ITALICS = self.showNickItalics.isChecked()
 		config.SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = self.showAwayTooltip.isChecked()
 		config.SHOW_TIMESTAMPS_IN_UTC = self.timestampUTC.isChecked()
+		config.LIMIT_LOG_VIEW = self.logViewSize.isChecked()
+		config.MAX_LOG_DISPLAY_SIZE = self.MAX_LOG_DISPLAY_SIZE
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

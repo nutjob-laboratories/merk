@@ -96,7 +96,7 @@ Four libraries come bundled with **MERK**: [qt5reactor 0.6.3](https://github.com
 - **Runs on Windows, Linux, and macOS**, with stand-alone binaries for Windows and Linux and a Flatpak for Linux
 - **Multiple-document interface**, like the classic mIRC: each server, channel, and private chat gets its own subwindow
 - **Multiple simultaneous connections**. Chat on more than one IRC server at a time, via TCP/IP or SSL/TLS, with SASL support and a built-in list of over 200 IRC servers
-- **Nearly 400 settings**, almost all changeable in the GUI and applied instantly, no restart or config-file editing required. **MERK** may be the most configurable IRC client ever created
+- **Over 400 settings**, almost all changeable in the GUI and applied instantly, no restart or config-file editing required. **MERK** may be the most configurable IRC client ever created
 - **Full scripting engine** with a built-in syntax-highlighting editor, connection scripts, flow control, aliases, macros, and application-wide hotkeys
 - **Python plugins** that can react to over 40 IRC and application events, with full access to the [Twisted IRC client](https://docs.twisted.org/en/stable/api/twisted.words.protocols.irc.IRCClient.html): written, edited, and exported entirely inside the application
 - **Complete theming**:  all text colors and backgrounds can be customized per-channel with a built-in style editor, plus dark mode and default styles for both light and dark mode
