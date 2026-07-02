@@ -476,9 +476,11 @@ UNDERLINE_MENTION = True
 SHOW_AWAY_NICKNAME_IN_ITALICS = True
 SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = True
 SHOW_TIMESTAMPS_IN_UTC = False
+MAX_LOG_DISPLAY_SIZE = 5000
 
 def build_settings():
 	settings = {
+		"maximum_log_view_size": MAX_LOG_DISPLAY_SIZE,
 		"timestamps_in_utc": SHOW_TIMESTAMPS_IN_UTC,
 		"show_away_message_in_nick_display_tooltip": SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP,
 		"show_away_nick_display_in_italics": SHOW_AWAY_NICKNAME_IN_ITALICS,
@@ -914,6 +916,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "maximum_log_view_size" in settings:
+		settings["maximum_log_view_size"] = MAX_LOG_DISPLAY_SIZE
 	if not "timestamps_in_utc" in settings:
 		settings["timestamps_in_utc"] = SHOW_TIMESTAMPS_IN_UTC
 	if not "show_away_message_in_nick_display_tooltip" in settings:
@@ -2208,6 +2212,7 @@ def load_settings(filename):
 	global SHOW_AWAY_NICKNAME_IN_ITALICS
 	global SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP
 	global SHOW_TIMESTAMPS_IN_UTC
+	global MAX_LOG_DISPLAY_SIZE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2217,6 +2222,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		MAX_LOG_DISPLAY_SIZE = settings["maximum_log_view_size"]
 		SHOW_TIMESTAMPS_IN_UTC = settings["timestamps_in_utc"]
 		SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = settings["show_away_message_in_nick_display_tooltip"]
 		SHOW_AWAY_NICKNAME_IN_ITALICS = settings["show_away_nick_display_in_italics"]

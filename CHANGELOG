@@ -8,6 +8,7 @@ What's new:
 - **New plugin API methods**. Plugins can now determine if the application is running in "dark mode" or not, or if the background of a window's current text style is "light" or not. The "rainbow text" example plugin has been updated to show the new functionality. Plugins can now also set text styles for subwindows, and query what text style file (if any) a subwindow is using.
 - **Timestamps can now be shown in UTC**.
 - **Dates and times are now inserted into logs in the log manager**. The day that chat occured on, and the time it was "said", is now "inserted" into the log view and the "human readable" output for export.
+- **Colors have been added to the log manager viewer**. Message senders are now in blue, with messages sent by the client in the same color and underlined. CTCP ACTION messages are in blue with italics.
 - **Upgrades and bugfixes to context menus**. New options have been added to context menus for the userlist and subwindow text displays.
 
 |==============================================================================|
@@ -90,6 +91,16 @@ What's new:
 * Dates are now "injected" into logs in the log manager viewer, and the human
   readable output.
 * Times are also now "injected" into logs in the log manager viewer.
+* The log manager viewer now uses color for display. Message senders are now in
+  blue, with the client's nickname underlined. CTCP ACTION messages are also in
+  blue and italics.
+* With especially large logs, the log viewer will only display the last 5000
+  lines, by default; this can be changed by changing the "maximum_log_view_size"
+  setting with the "/config" command or by editing the configuration file. This
+  prevents the log manager from locking up the client when trying to view very
+  large log files. The full log file is still loaded for export, and can be
+  viewed in the "export" tab in the log manager. The user is warned that only
+  the end of the log is being viewed.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

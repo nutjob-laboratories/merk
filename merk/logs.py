@@ -205,6 +205,13 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 	if os.path.isfile(filename):
 		with open(filename, "r",encoding="utf-8",errors="ignore") as logentries:
 			logs = json.load(logentries)
+
+	if len(logs)>config.MAX_LOG_DISPLAY_SIZE and no_timestamps==True:
+		logs = logs[-config.MAX_LOG_DISPLAY_SIZE:]
+		trimmed = True
+	else:
+		trimmed = False
+
 	if logs:
 		out = []
 		cdate = None
@@ -225,6 +232,10 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			else:
 				u = l[2]
 
+			if trimmed==True:
+				out.append(f"\x02\x1d\x0304Viewing only the last {len(logs)} lines of the log, due to size\x0f")
+				trimmed = False
+
 			if config.SHOW_TIMESTAMPS_IN_UTC:
 				ndate = datetime.fromtimestamp(l[0],tz=timezone.utc).strftime('%A %B %d, %Y UTC')
 			else:
@@ -236,49 +247,60 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 				else:
 					out.append(f"*** {cdate}")
 
-			if l[1]==CHAT_MESSAGE or l[1]==SELF_MESSAGE or l[1]==PRIVATE_MESSAGE:
+			if l[1]==CHAT_MESSAGE or l[1]==PRIVATE_MESSAGE:
 				# Regular chat
 				if no_timestamps:
 					pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"[{pretty_timestamp}] \x02{u}\x0f: {l[3]}"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0302{u}\x0f: {l[3]}"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
 						pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"{pretty_timestamp} {u}: {strip_color(l[3])}"
+					entry = f"{pretty_timestamp}\t{u}: {strip_color(l[3])}"
+			elif l[1]==SELF_MESSAGE:
+				# Regular chat
+				if no_timestamps:
+					pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"\x02[{pretty_timestamp}]\x0f \x1F\x02\x0302{u}\x0f: {l[3]}"
+				else:
+					if epoch:
+						pretty_timestamp = l[0]
+					else:
+						pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"{pretty_timestamp}\t{u}: {strip_color(l[3])}"
 			elif l[1]==ACTION_MESSAGE:
 				# CTCP Action message
 				if no_timestamps:
 					pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"[{pretty_timestamp}] \x02\x1d{u} {l[3]}\x0f"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x1d\x0302{u} {l[3]}\x0f"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
 						pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"{pretty_timestamp} {u} {strip_color(l[3])}"
+					entry = f"{pretty_timestamp}\t{u} {strip_color(l[3])}"
 			elif l[1]==NOTICE_MESSAGE:
 				# Notice message
 				if no_timestamps:
 					pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"[{pretty_timestamp}] \x02*{u}\x0f*: {l[3]}"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0302*{u}\x0f*: {l[3]}"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
 						pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"{pretty_timestamp} *{u}*: {strip_color(l[3])}"
+					entry = f"{pretty_timestamp}\t*{u}*: {strip_color(l[3])}"
 			else:
 				if no_timestamps:
 					pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"[{pretty_timestamp}] \x02{l[3]}\x0f"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02{l[3]}\x0f"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]
 					else:
 						pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"{pretty_timestamp} {strip_color(l[3])}"
+					entry = f"{pretty_timestamp}\t{strip_color(l[3])}"
 
 			out.append(entry)
 		return "\n".join(out)
