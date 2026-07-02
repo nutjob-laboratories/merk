@@ -110,6 +110,8 @@ What's new:
   userlist context menu, in the submenu for "Nickname Color". Both the color
   and the color's hex code is shown.
 * Re-arranged the "Logs" section of the "Settings" dialog.
+* Re-worked the "Highlighting" section of the "Settings" dialog.
+* Re-worked the "Style Editor"'s layout.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

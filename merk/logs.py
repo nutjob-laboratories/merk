@@ -236,7 +236,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 				u = l[2]
 
 			if trimmed==True:
-				out.append(f"\x02\x1d\x0304Viewing only the last {len(logs)} lines of the log, due to size\x0f")
+				out.append(f"\x02\x1d\x0304Viewing only the last {len(logs)} lines of the log\x0f")
 				trimmed = False
 
 			if config.SHOW_TIMESTAMPS_IN_UTC:

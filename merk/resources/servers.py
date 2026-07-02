@@ -56,6 +56,11 @@ GimpNet:https://www.gimpnet.org/
 Ogame:https://www.ogame.org/
 SlashNET:https://slashnet.org/
 MansionNET:https://inthemansion.com/
+2600net:https://2600.net/
+Abandoned-IRC:https://abandoned-irc.net/
+AfterNET:http://www.afternet.org/
+AllNightCafe:https://allnightcafe.com/
+AlphaChat:https://www.alphachat.net/
 """
 
 NETWORK_LIST = """irc.2600.net:6667:2600net:normal

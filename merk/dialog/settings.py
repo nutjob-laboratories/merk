@@ -4597,7 +4597,7 @@ class Dialog(QDialog):
 			<b>Timestamps</b>, if turned on, are shown as the beginning of all displayed
 			messages in the chat display. They are saved to the log in <b><a href="https://en.wikipedia.org/wiki/Unix_time">UNIX
 			epoch time</a></b> regardless of whether they are visible or not. <b>Timestamps</b> and other
-			date and time displays in chat and the log viewer can be displayed in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
+			date and time displays in chat and the <b>Log Manager</b> can be displayed in <a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time">
 			<b>Coordinated Universal Time</b></a> (UTC) rather than in local time.
 			</small>
 			<br>
@@ -6592,16 +6592,16 @@ class Dialog(QDialog):
 
 		self.stack.addWidget(self.syntaxPage)
 
-		self.syntaxcomment = widgets.SyntaxColor('comment', "<b>Comments</b>",self.SYNTAX_COMMENT_COLOR,self.SYNTAX_COMMENT_STYLE,self)
-		self.syntaxcommand = widgets.SyntaxColor('command', "<b>Commands/Keywords</b>",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
-		self.syntaxchannel = widgets.SyntaxColor('channel', "<b>Channels/Hosts</b>",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
-		self.syntaxalias = widgets.SyntaxColor('alias', "<b>Aliases/Strings</b>",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
-		self.syntaxscript = widgets.SyntaxColor('script', "<b>Script-Only Commands</b>",self.SYNTAX_SCRIPT_COLOR,self.SYNTAX_SCRIPT_STYLE,self)
-		self.syntaxop = widgets.SyntaxColor('operator', "<b>\"if\" Operators</b>",self.SYNTAX_OPERATOR_COLOR,self.SYNTAX_OPERATOR_STYLE,self)
+		self.syntaxcomment = widgets.SyntaxColor('comment', "<small><b>Comments</b></small>",self.SYNTAX_COMMENT_COLOR,self.SYNTAX_COMMENT_STYLE,self)
+		self.syntaxcommand = widgets.SyntaxColor('command', "<small><b>Commands/Keywords</b></small>",self.SYNTAX_COMMAND_COLOR,self.SYNTAX_COMMAND_STYLE,self)
+		self.syntaxchannel = widgets.SyntaxColor('channel', "<small><b>Channels/Hosts</b></small>",self.SYNTAX_CHANNEL_COLOR,self.SYNTAX_CHANNEL_STYLE,self)
+		self.syntaxalias = widgets.SyntaxColor('alias', "<small><b>Aliases/Strings</b></small>",self.SYNTAX_ALIAS_COLOR,self.SYNTAX_ALIAS_STYLE,self)
+		self.syntaxscript = widgets.SyntaxColor('script', "<small><b>Script-Only Commands</b></small>",self.SYNTAX_SCRIPT_COLOR,self.SYNTAX_SCRIPT_STYLE,self)
+		self.syntaxop = widgets.SyntaxColor('operator', "<small><b>\"if\" Operators</b></small>",self.SYNTAX_OPERATOR_COLOR,self.SYNTAX_OPERATOR_STYLE,self)
 		self.syntaxfore = widgets.SyntaxTextColor('fore', "<b>Text Color</b>",self.SYNTAX_FOREGROUND,self)
 		self.syntaxback = widgets.SyntaxTextColor('back', "<b>Background</b>",self.SYNTAX_BACKGROUND,self)
-		self.syntaxnick = widgets.SyntaxColor('nick', "<b>Nicknames</b>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
-		self.syntaxemoji = widgets.SyntaxColor('emoji', "<b>Shortcodes</b>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
+		self.syntaxnick = widgets.SyntaxColor('nick', "<small><b>Nicknames</b></small>",self.SYNTAX_NICKNAME_COLOR,self.SYNTAX_NICKNAME_STYLE,self)
+		self.syntaxemoji = widgets.SyntaxColor('emoji', "<small><b>Shortcodes</b></small>",self.SYNTAX_EMOJI_COLOR,self.SYNTAX_EMOJI_STYLE,self)
 
 		self.syntaxcomment.syntaxChanged.connect(self.syntaxChanged)
 		self.syntaxcommand.syntaxChanged.connect(self.syntaxChanged)
@@ -6644,6 +6644,7 @@ class Dialog(QDialog):
 
 		tbLay2 = QFormLayout()
 		tbLay2.setSpacing(0)
+		tbLay2.setHorizontalSpacing(15)
 		tbLay2.addRow(self.syntaxfore, self.syntaxback)
 		tbLay2.addRow(self.syntaxcomment, self.syntaxcommand)
 		tbLay2.addRow(self.syntaxchannel, self.syntaxalias)
@@ -6655,6 +6656,8 @@ class Dialog(QDialog):
 		tbLay.addStretch()
 
 		sbLay2 = QFormLayout()
+		sbLay2.setSpacing(0)
+		sbLay2.setHorizontalSpacing(15)
 		sbLay2.addRow(self.syntaxnick, self.syntaxemoji)
 
 		sbLay = QHBoxLayout()

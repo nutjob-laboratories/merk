@@ -144,7 +144,9 @@ class SyntaxColor(QWidget):
 		
 
 		controlsLayout = QHBoxLayout()
+		controlsLayout.setSpacing(0)
 		controlsLayout.addWidget(self.setColor)
+		controlsLayout.addWidget(QLabel(' '))
 		controlsLayout.addWidget(self.setBold)
 		controlsLayout.addWidget(self.setItalic)
 		controlsLayout.setAlignment(Qt.AlignLeft)

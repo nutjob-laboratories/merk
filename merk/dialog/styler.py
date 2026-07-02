@@ -317,14 +317,14 @@ class Dialog(QDialog):
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
-		self.system_style = widgets.MiniStyler('system', "System messages    ",self.style['system'],False,self)
-		self.link_style = widgets.MiniStyler('hyperlink','Hyperlinks         ',self.style['hyperlink'],True,self)
-		self.action_style = widgets.MiniStyler('action', 'CTCP Action message',self.style['action'],False,self)
-		self.error_style = widgets.MiniStyler('error',   'Error message      ',self.style['error'],False,self)
-		self.notice_style = widgets.MiniStyler('notice', 'Notice nicknames   ',self.style['notice'],False,self)
-		self.self_style = widgets.MiniStyler('self',     'Your nickname      ',self.style['self'],False,self)
-		self.user_style = widgets.MiniStyler('username', 'Other nicknames    ',self.style['username'],False,self)
-		self.server_style = widgets.MiniStyler('server', 'Server message     ',self.style['server'],False,self)
+		self.system_style = widgets.MiniStyler('system', '<small><pre><b>System messages&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['system'],False,self)
+		self.link_style = widgets.MiniStyler('hyperlink','<small><pre><b>Hyperlinks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['hyperlink'],True,self)
+		self.action_style = widgets.MiniStyler('action', '<small><pre><b>CTCP Action message</b></pre></small>',self.style['action'],False,self)
+		self.error_style = widgets.MiniStyler('error',   '<small><pre>&nbsp;<b>Error message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['error'],False,self)
+		self.notice_style = widgets.MiniStyler('notice', '<small><pre>&nbsp;<b>Notice nicknames&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['notice'],False,self)
+		self.self_style = widgets.MiniStyler('self',     '<small><pre><b>Your nickname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['self'],False,self)
+		self.user_style = widgets.MiniStyler('username', '<small><pre>&nbsp;<b>Other nicknames&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['username'],False,self)
+		self.server_style = widgets.MiniStyler('server', '<small><pre>&nbsp;<b>Server message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['server'],False,self)
 
 		self.system_style.qssChanged.connect(self.qssChanged)
 		self.link_style.qssChanged.connect(self.qssChanged)
@@ -344,17 +344,20 @@ class Dialog(QDialog):
 		fheight = fm.height()
 
 		app_style = self.parent.app.style().metaObject().className()
-		display_height = (fheight*9)+10
-		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*10)
+		display_height = (fheight*10)+10
+		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*12)
 
 		self.chat.setFixedHeight(display_height)
+
+		self.chat.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.chat.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
 		self.messages = [
 			Message(SERVER_MESSAGE,'','This is a server message'),
 			Message(SYSTEM_MESSAGE,'','This is a system message'),
 			Message(ERROR_MESSAGE,'','This is an error message'),
 			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
-			Message(CHAT_MESSAGE,'other_nicks',"A link: https://www.fsf.org/!"),
+			Message(CHAT_MESSAGE,'other_nicks',"Here's a link: https://www.fsf.org/!"),
 			Message(SELF_MESSAGE,'your_nick',"A message without a link!"),
 			Message(ACTION_MESSAGE,'nickname','sends a CTCP action message'),
 		]
@@ -363,8 +366,8 @@ class Dialog(QDialog):
 			t = render.render_message(line,self.style,None,config.STRIP_NICKNAME_PADDING_FROM_DISPLAY)
 			self.chat.append(t)
 
-		self.fore = widgets.SyntaxTextColor('fore', "Text Color",self.fgcolor,self)
-		self.back = widgets.SyntaxTextColor('back', "Background Color",self.bgcolor,self)
+		self.fore = widgets.SyntaxTextColor('fore', "<b>Text Color</b>",self.fgcolor,self)
+		self.back = widgets.SyntaxTextColor('back', "<b>Background Color</b>",self.bgcolor,self)
 
 		self.fore.syntaxChanged.connect(self.syntaxChanged)
 		self.back.syntaxChanged.connect(self.syntaxChanged)
@@ -379,6 +382,9 @@ class Dialog(QDialog):
 
 		self.userlist.setFixedHeight(display_height)
 		self.userlist.setFixedWidth(ulwidth)
+
+		self.userlist.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.userlist.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
 		if not config.SHOW_USERLIST:
 			self.userlist.hide()
@@ -557,11 +563,39 @@ class Dialog(QDialog):
 		foregroundBackground.addWidget(defaultButton)
 		foregroundBackground.setContentsMargins(1,1,1,1)
 
-		allStyles = QFormLayout()
-		allStyles.addRow(self.system_style,self.error_style)
-		allStyles.addRow(self.link_style,self.server_style)
-		allStyles.addRow(self.self_style,self.user_style)
-		allStyles.addRow(self.action_style,self.notice_style)
+		allStyles = QGridLayout()
+
+		separator = QFrame()
+		separator.setFrameShape(QFrame.VLine)
+		separator.setFrameShadow(QFrame.Sunken)
+
+		allStyles.addWidget(self.system_style, 0, 0)
+		allStyles.addWidget(separator, 0, 1)
+		allStyles.addWidget(self.error_style, 0, 2)
+
+		separator2 = QFrame()
+		separator2.setFrameShape(QFrame.VLine)
+		separator2.setFrameShadow(QFrame.Sunken)
+
+		allStyles.addWidget(self.link_style, 1, 0)
+		allStyles.addWidget(separator2, 1, 1)
+		allStyles.addWidget(self.server_style, 1, 2)
+
+		separator3 = QFrame()
+		separator3.setFrameShape(QFrame.VLine)
+		separator3.setFrameShadow(QFrame.Sunken)
+
+		allStyles.addWidget(self.self_style, 2, 0)
+		allStyles.addWidget(separator3, 2, 1)
+		allStyles.addWidget(self.user_style, 2, 2)
+
+		separator4 = QFrame()
+		separator4.setFrameShape(QFrame.VLine)
+		separator4.setFrameShadow(QFrame.Sunken)
+
+		allStyles.addWidget(self.action_style, 3, 0)
+		allStyles.addWidget(separator4, 3, 1)
+		allStyles.addWidget(self.notice_style, 3, 2)
 
 		editstyleLayout = QVBoxLayout()
 		editstyleLayout.addLayout(foregroundBackground)
