@@ -344,11 +344,11 @@ class Dialog(QDialog):
 		fheight = fm.height()
 
 		app_style = self.parent.app.style().metaObject().className()
-		display_height = (fheight*10)+10
+		display_height = (fheight*9)+10
 		ulwidth = (fm.averageCharWidth() + 2) + (fm.averageCharWidth()*12)
 
 		self.chat.setFixedHeight(display_height)
-
+		self.chat.setLineWrapMode(QTextEdit.NoWrap)
 		self.chat.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.chat.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
@@ -357,9 +357,9 @@ class Dialog(QDialog):
 			Message(SYSTEM_MESSAGE,'','This is a system message'),
 			Message(ERROR_MESSAGE,'','This is an error message'),
 			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
-			Message(CHAT_MESSAGE,'other_nicks',"Here's a link: https://www.fsf.org/!"),
+			Message(CHAT_MESSAGE,'other_nick',"A link: https://www.fsf.org/!"),
 			Message(SELF_MESSAGE,'your_nick',"A message without a link!"),
-			Message(ACTION_MESSAGE,'nickname','sends a CTCP action message'),
+			Message(ACTION_MESSAGE,'nickname','sends a CTCP ACTION message'),
 		]
 
 		for line in self.messages:
