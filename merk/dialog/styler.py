@@ -317,14 +317,14 @@ class Dialog(QDialog):
 
 		self.bgcolor,self.fgcolor = styles.parseBackgroundAndForegroundColor(self.style["all"])
 
-		self.system_style = widgets.MiniStyler('system', '<small><pre><b>System messages&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['system'],False,self)
-		self.link_style = widgets.MiniStyler('hyperlink','<small><pre><b>Hyperlinks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['hyperlink'],True,self)
-		self.action_style = widgets.MiniStyler('action', '<small><pre><b>CTCP Action message</b></pre></small>',self.style['action'],False,self)
-		self.error_style = widgets.MiniStyler('error',   '<small><pre>&nbsp;<b>Error message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['error'],False,self)
-		self.notice_style = widgets.MiniStyler('notice', '<small><pre>&nbsp;<b>Notice nicknames&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['notice'],False,self)
-		self.self_style = widgets.MiniStyler('self',     '<small><pre><b>Your nickname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['self'],False,self)
-		self.user_style = widgets.MiniStyler('username', '<small><pre>&nbsp;<b>Other nicknames&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['username'],False,self)
-		self.server_style = widgets.MiniStyler('server', '<small><pre>&nbsp;<b>Server message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['server'],False,self)
+		self.system_style = widgets.MiniStyler(	'system', '<small><pre><b>System messages&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['system'],False,self)
+		self.link_style = widgets.MiniStyler(	'hyperlink','<small><pre><b>Hyperlinks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['hyperlink'],True,self)
+		self.action_style = widgets.MiniStyler(	'action', '<small><pre><b>CTCP ACTION message</b></pre></small>',self.style['action'],False,self)
+		self.error_style = widgets.MiniStyler(	'error',   '<small><pre>&nbsp;<b>Error message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['error'],False,self)
+		self.notice_style = widgets.MiniStyler(	'notice', '<small><pre>&nbsp;<b>Notice nicknames&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['notice'],False,self)
+		self.self_style = widgets.MiniStyler(	'self',     '<small><pre><b>Your nickname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['self'],False,self)
+		self.user_style = widgets.MiniStyler(	'username', '<small><pre>&nbsp;<b>Other nicknames&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['username'],False,self)
+		self.server_style = widgets.MiniStyler(	'server', '<small><pre>&nbsp;<b>Server message&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></pre></small>',self.style['server'],False,self)
 
 		self.system_style.qssChanged.connect(self.qssChanged)
 		self.link_style.qssChanged.connect(self.qssChanged)
@@ -533,6 +533,9 @@ class Dialog(QDialog):
 		selectLayout.addWidget(self.selectLabel)
 		selectLayout.addWidget(self.selectWindow)
 
+		if len(self.parent.getAllAllConnectedWindows())==0:
+			self.selectLabel.hide()
+			self.selectWindow.hide()
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -569,33 +572,23 @@ class Dialog(QDialog):
 		separator.setFrameShape(QFrame.VLine)
 		separator.setFrameShadow(QFrame.Sunken)
 
-		allStyles.addWidget(self.system_style, 0, 0)
+		leftColumn = QVBoxLayout()
+		leftColumn.setSpacing(0)
+		leftColumn.addWidget(self.system_style)
+		leftColumn.addWidget(self.link_style)
+		leftColumn.addWidget(self.self_style)
+		leftColumn.addWidget(self.action_style)
+
+		rightColumn = QVBoxLayout()
+		rightColumn.setSpacing(0)
+		rightColumn.addWidget(self.error_style)
+		rightColumn.addWidget(self.server_style)
+		rightColumn.addWidget(self.user_style)
+		rightColumn.addWidget(self.notice_style)
+
+		allStyles.addLayout(leftColumn, 0, 0)
 		allStyles.addWidget(separator, 0, 1)
-		allStyles.addWidget(self.error_style, 0, 2)
-
-		separator2 = QFrame()
-		separator2.setFrameShape(QFrame.VLine)
-		separator2.setFrameShadow(QFrame.Sunken)
-
-		allStyles.addWidget(self.link_style, 1, 0)
-		allStyles.addWidget(separator2, 1, 1)
-		allStyles.addWidget(self.server_style, 1, 2)
-
-		separator3 = QFrame()
-		separator3.setFrameShape(QFrame.VLine)
-		separator3.setFrameShadow(QFrame.Sunken)
-
-		allStyles.addWidget(self.self_style, 2, 0)
-		allStyles.addWidget(separator3, 2, 1)
-		allStyles.addWidget(self.user_style, 2, 2)
-
-		separator4 = QFrame()
-		separator4.setFrameShape(QFrame.VLine)
-		separator4.setFrameShadow(QFrame.Sunken)
-
-		allStyles.addWidget(self.action_style, 3, 0)
-		allStyles.addWidget(separator4, 3, 1)
-		allStyles.addWidget(self.notice_style, 3, 2)
+		allStyles.addLayout(rightColumn, 0, 2)
 
 		editstyleLayout = QVBoxLayout()
 		editstyleLayout.addLayout(foregroundBackground)
