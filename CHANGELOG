@@ -2,17 +2,6 @@
 |                                   0.052.050                                  |
 |------------------------------------------------------------------------------|
 
-What's new:
-
-- **Chat messages that mention your nick now have underlined nicknames**. This option can be disabled in the "settings" dialog or with the `/config` command.
-- **New plugin API methods**. Plugins can now determine if the application is running in "dark mode" or not, or if the background of a window's current text style is "light" or not. The "rainbow text" example plugin has been updated to show the new functionality. Plugins can now also set text styles for subwindows, and query what text style file (if any) a subwindow is using.
-- **Timestamps can now be shown in UTC**.
-- **Dates and times are now inserted into logs in the log manager**. The day that chat occured on, and the time it was "said", is now "inserted" into the log view and the "human readable" output for export.
-- **Colors have been added to the log manager viewer**. Message senders are now in blue, with messages sent by the client in the same color and underlined. CTCP ACTION messages are in blue with italics.
-- **The log viewer's display size is now limited to 5000 lines**. Overly large logs can cause MERK to lag and/or lock up. The size of the line limit (and whether it's used at all) can be changed in the "settings" dialog.
-- **Upgrades and bugfixes to context menus**. New options have been added to context menus for the userlist and subwindow text displays.
-- **The settings dialog now features over 400 options for users to change and configure**.
-
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -112,6 +101,7 @@ What's new:
 * Re-arranged the "Logs" section of the "Settings" dialog.
 * Re-worked the "Highlighting" section of the "Settings" dialog.
 * Re-worked the "Style Editor"'s layout.
+* System messages in the log viewer are now displayed in red.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

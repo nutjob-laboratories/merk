@@ -248,7 +248,10 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 				if no_timestamps:
 					out.append(f"\x02\x1F{cdate}\x0f")
 				else:
-					out.append(f"*** {cdate}")
+					if epoch:
+						out.append(f"*** {l[0]}")
+					else:
+						out.append(f"*** {cdate}")
 
 			if l[1]==CHAT_MESSAGE or l[1]==PRIVATE_MESSAGE:
 				# Regular chat
@@ -297,7 +300,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			else:
 				if no_timestamps:
 					pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"\x02[{pretty_timestamp}]\x0f \x02{l[3]}\x0f"
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0304{l[3]}\x0f"
 				else:
 					if epoch:
 						pretty_timestamp = l[0]

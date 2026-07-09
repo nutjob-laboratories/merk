@@ -431,7 +431,6 @@ class Merk(QMainWindow):
 
 	def on_resize_complete(self):
 		self.resize_timer.stop()
-
 		self.buildWindowbar()
 
 	def initWindowbar(self):

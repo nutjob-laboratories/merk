@@ -249,9 +249,14 @@ class Dialog(QDialog):
 			self.style = self.selected_window.style
 			if self.selected_window.window_type==SERVER_WINDOW:
 				name = self.selected_window.client.server+":"+str(self.selected_window.client.port)
+				self.setWindowTitle(f"Text style for {name}")
 			else:
+				if self.selected_window.client.hostname:
+					hostid = f"{self.selected_window.client.hostname}"
+				else:
+					hostid = f"{self.selected_window.client.server}:{self.selected_window.client.port}"
 				name = self.selected_window.name
-			self.setWindowTitle("Text style for "+name)
+				self.setWindowTitle(f"Text style for {name} ({hostid})")
 			self.default = False
 
 			if self.selected_window.window_type==SERVER_WINDOW or self.selected_window.window_type==PRIVATE_WINDOW:
@@ -309,9 +314,14 @@ class Dialog(QDialog):
 			self.style = self.wchat.style
 			if self.wchat.window_type==SERVER_WINDOW:
 				name = self.wchat.client.server+":"+str(self.wchat.client.port)
+				self.setWindowTitle("Text style for "+name)
 			else:
+				if self.wchat.client.hostname:
+					hostid = f"{self.wchat.client.hostname}"
+				else:
+					hostid = f"{self.wchat.client.server}:{self.wchat.client.port}"
 				name = self.wchat.name
-			self.setWindowTitle("Text style for "+name)
+				self.setWindowTitle(f"Text style for {name} ({hostid})")
 
 		self.setWindowIcon(QIcon(STYLE_ICON))
 
@@ -358,7 +368,7 @@ class Dialog(QDialog):
 			Message(ERROR_MESSAGE,'','This is an error message'),
 			Message(NOTICE_MESSAGE,'nickname','This is a notice message'),
 			Message(CHAT_MESSAGE,'other_nick',"A link: https://www.fsf.org/!"),
-			Message(SELF_MESSAGE,'your_nick',"A message without a link!"),
+			Message(SELF_MESSAGE,'your_nick',"A simple chat message!"),
 			Message(ACTION_MESSAGE,'nickname','sends a CTCP ACTION message'),
 		]
 
@@ -505,9 +515,13 @@ class Dialog(QDialog):
 				name = self.wchat.name
 			else:
 				if hasattr(self.wchat.client,"hostname"):
-					name = f"{self.wchat.name} ({self.wchat.client.hostname})"
+					hostid = f"{self.wchat.client.hostname}"
+					hostid = elide_text(hostid,20)
+					name = f"{self.wchat.name} ({hostid})"
 				else:
-					name = f"{self.wchat.name} ({self.wchat.client.server}:{self.wchat.client.port})"
+					hostid = f"{self.wchat.client.server}:{self.wchat.client.port}"
+					hostid = elide_text(hostid,20)
+					name = f"{self.wchat.name} ({hostid})"
 			self.selectWindow.addItem(name,self.wchat)
 		if not addedDefault:
 			if self.parent.dark_mode:
@@ -520,9 +534,13 @@ class Dialog(QDialog):
 					name = e.name
 				else:
 					if hasattr(e.client,"hostname"):
-						name = f"{e.name} ({e.client.hostname})"
+						hostid = f"{e.client.hostname}"
+						hostid = elide_text(hostid,20)
+						name = f"{e.name} ({hostid})"
 					else:
-						name = f"{e.name} ({e.client.server}:{e.client.port})"
+						hostid = f"{e.client.server}:{e.client.port}"
+						hostid = elide_text(hostid,20)
+						name = f"{e.name} ({hostid})"
 				self.selectWindow.addItem(name,e)
 		self.selectWindow.currentIndexChanged.connect(self.windowChange)
 		self.selectWindow.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 
