@@ -1,4 +1,22 @@
 |------------------------------------------------------------------------------|
+|                                   0.052.100                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Bugfix: occasionally, "blank" chat messages would be displayed in chat
+  displays.
+* Added an option to scroll the chat display to the top to chat display context
+  menus.
+* Tweaked the "input options" menu. Removed the text banner at the top of the
+  menu, and changed the spellcheck menu: now, spellchecking can be toggled
+  globally in the menu.
+* Bugfix: "blank" messages are now removed from log displays and exports.
+* Bugfix: "blank" chat messages are now ignored.
+
+|------------------------------------------------------------------------------|
 |                                   0.052.050                                  |
 |------------------------------------------------------------------------------|
 

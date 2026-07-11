@@ -138,7 +138,7 @@ TIPS = [
  f'Channel user lists can be configured in the <b>Settings</b> dialog!',
  f'Almost every aspect of <b>{APPLICATION_NAME}</b>\'s interface can be changed or modified!',
  f'Check the official <b><a href=\"{APPLICATION_SOURCE}\">{APPLICATION_NAME} homepage</a></b>. <b>{APPLICATION_NAME}</b> is updated often!',
- f'The Linux binary for <b>{APPLICATION_NAME}</b>\'s supports both <b>Wayland</b> and <b>X11</b>!',
+ f'The Linux binary for <b>{APPLICATION_NAME}</b> supports both <b>Wayland</b> and <b>X11</b>!',
  f'<nobr><b>{config.ISSUE_COMMAND_SYMBOL}config</b></nobr> can be used to edit the configuration file manually!',
  f'IRC was created in 1988 to replace the limited store-and-forward chat of <b>BITNET\'s Relay</b>!',
  f'A <b>netsplit</b> occurs when servers in a network lose connection, temporarily splitting the user base!',
@@ -154,6 +154,8 @@ TIPS = [
  f'The Windows binary for <b>{APPLICATION_NAME}</b> runs without needing a Python installation!',
  f'You can set specific nicknames, usernames, and realnames for use with specific servers with server profiles!',
  f'View your saved logs (with IRC colors and clickable links) in the <b>Log Manager</b>!',
+ f'The <b>Log Manager</b> can export your saved logs to text, JSON, or your own custom format!',
+ f'Timestamps can optionally be displayed in Coordinated Universal Time (UTC)!',
 ]
 
 if config.SHOW_COLORS_IN_USERLISTS or config.USER_COLORS:

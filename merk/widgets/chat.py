@@ -1392,6 +1392,12 @@ class Window(QMainWindow):
 
 				if mopts==True: menu.addSeparator()
 
+				entry = QAction(QIcon(UP_ICON),"Scroll chat to top",menu)
+				entry.triggered.connect(lambda state: self.moveChatToTop())
+				menu.addAction(entry)
+				scrollbar = self.chat.verticalScrollBar()
+				if scrollbar.value() == scrollbar.minimum(): entry.setEnabled(False)
+
 				entry = QAction(QIcon(DOWN_ICON),"Scroll chat to bottom",menu)
 				entry.triggered.connect(lambda state,u=True: self.moveChatToBottom(u))
 				menu.addAction(entry)
@@ -1794,12 +1800,22 @@ class Window(QMainWindow):
 		self.save_config()
 		self.parent.rebuildAllInputMenus()
 
+	def settingsSpell(self):
+		if config.ENABLE_SPELLCHECK:
+			config.ENABLE_SPELLCHECK = False
+		else:
+			config.ENABLE_SPELLCHECK = True
+		self.save_config()
+		self.parent.toggleSpellcheck()
+		self.parent.buildSettingsMenu()
+		self.parent.rebuildAllInputMenus()
+
 	def buildInputOptionsMenu(self):
 
 		self.settingsMenu.clear()
 
-		e = textSeparator(self,"Input Options")
-		self.settingsMenu.addAction(e)
+		# e = textSeparator(self,"Input Options")
+		# self.settingsMenu.addAction(e)
 
 		if config.ENABLE_MARKDOWN_MARKUP:
 			self.mdInput = QAction(QIcon(self.parent.checked_icon),"Markdown", self)
@@ -1845,53 +1861,69 @@ class Window(QMainWindow):
 		self.autoInput.triggered.connect(self.settingsAuto)
 		self.settingsMenu.addAction(self.autoInput)
 
+		# Spellcheck Button
+		self.spellcheckMenu = QMenu("Spellcheck")
+		self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
+
 		if config.ENABLE_SPELLCHECK:
-			# Spellcheck Button
-			self.spellcheckMenu = QMenu("Spellcheck")
-			self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
+			self.inputSpellCheck = QAction(QIcon(self.parent.checked_icon),"Enabled", self)
+		else:
+			self.inputSpellCheck = QAction(QIcon(self.parent.unchecked_icon),"Enabled", self)
+		self.inputSpellCheck.triggered.connect(self.settingsSpell)
+		self.spellcheckMenu.addAction(self.inputSpellCheck)
 
-			self.languageEnglish = QAction(QIcon(self.parent.round_unchecked_icon),"English",self)
-			self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languageEnglish)
+		self.spellcheckMenu.addSeparator()
 
-			self.languageFrench = QAction(QIcon(self.parent.round_unchecked_icon),"Française",self)
-			self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languageFrench)
+		self.languageEnglish = QAction(QIcon(self.parent.round_unchecked_icon),"English",self)
+		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageEnglish)
+		if not config.ENABLE_SPELLCHECK: self.languageEnglish.setEnabled(False)
 
-			self.languageSpanish = QAction(QIcon(self.parent.round_unchecked_icon),"Español",self)
-			self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languageSpanish)
+		self.languageFrench = QAction(QIcon(self.parent.round_unchecked_icon),"Française",self)
+		self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageFrench)
+		if not config.ENABLE_SPELLCHECK: self.languageFrench.setEnabled(False)
 
-			self.languageGerman = QAction(QIcon(self.parent.round_unchecked_icon),"Deutsche",self)
-			self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languageGerman)
+		self.languageSpanish = QAction(QIcon(self.parent.round_unchecked_icon),"Español",self)
+		self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageSpanish)
+		if not config.ENABLE_SPELLCHECK: self.languageSpanish.setEnabled(False)
 
-			self.languagePortuguese = QAction(QIcon(self.parent.round_unchecked_icon),"Português",self)
-			self.languagePortuguese.triggered.connect(lambda state,u="pt": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languagePortuguese)
+		self.languageGerman = QAction(QIcon(self.parent.round_unchecked_icon),"Deutsche",self)
+		self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageGerman)
+		if not config.ENABLE_SPELLCHECK: self.languageGerman.setEnabled(False)
 
-			self.languageItalian = QAction(QIcon(self.parent.round_unchecked_icon),"Italiano",self)
-			self.languageItalian.triggered.connect(lambda state,u="it": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languageItalian)
+		self.languagePortuguese = QAction(QIcon(self.parent.round_unchecked_icon),"Português",self)
+		self.languagePortuguese.triggered.connect(lambda state,u="pt": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languagePortuguese)
+		if not config.ENABLE_SPELLCHECK: self.languagePortuguese.setEnabled(False)
 
-			self.languageDutch = QAction(QIcon(self.parent.round_unchecked_icon),"Nederlands",self)
-			self.languageDutch.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languageDutch)
+		self.languageItalian = QAction(QIcon(self.parent.round_unchecked_icon),"Italiano",self)
+		self.languageItalian.triggered.connect(lambda state,u="it": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageItalian)
+		if not config.ENABLE_SPELLCHECK: self.languageItalian.setEnabled(False)
 
-			self.languageRussian = QAction(QIcon(self.parent.round_unchecked_icon),"Русский",self)
-			self.languageRussian.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
-			self.spellcheckMenu.addAction(self.languageRussian)
+		self.languageDutch = QAction(QIcon(self.parent.round_unchecked_icon),"Nederlands",self)
+		self.languageDutch.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageDutch)
+		if not config.ENABLE_SPELLCHECK: self.languageDutch.setEnabled(False)
 
-			if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
-			if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
-			if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
-			if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
-			if self.language=="pt": self.languagePortuguese.setIcon(QIcon(self.parent.round_checked_icon))
-			if self.language=="it": self.languageItalian.setIcon(QIcon(self.parent.round_checked_icon))
-			if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
-			if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
+		self.languageRussian = QAction(QIcon(self.parent.round_unchecked_icon),"Русский",self)
+		self.languageRussian.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
+		self.spellcheckMenu.addAction(self.languageRussian)
+		if not config.ENABLE_SPELLCHECK: self.languageRussian.setEnabled(False)
 
-			if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.settingsMenu.addMenu(self.spellcheckMenu)
+		if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="pt": self.languagePortuguese.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="it": self.languageItalian.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
+		if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
+
+		if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.settingsMenu.addMenu(self.spellcheckMenu)
 
 		self.settingsMenu.addSeparator()
 
@@ -2083,6 +2115,11 @@ class Window(QMainWindow):
 					hostmask = None
 
 				if self.is_ignored(nickname,hostmask): do_render = False
+
+			# Bugfix for "blank" messages
+			if line.contents.strip()=="":
+				if line.type==CHAT_MESSAGE or line.type==SELF_MESSAGE or line.type==NOTICE_MESSAGE or line.type==PRIVATE_MESSAGE:
+					do_render = False
 
 			if not config.SHOW_DATES_IN_LOGS:
 				if line.type==DATE_MESSAGE: do_render = False

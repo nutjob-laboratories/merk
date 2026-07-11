@@ -170,7 +170,7 @@ def dumpRawLog(logs):
 
 		pretty_timestamp = pretty_timestamp_m1(l[0])
 		entry = pretty_timestamp+delimiter+l[2]+delimiter+l[3]
-		out.append(entry)
+		if l[3]!="": out.append(entry)
 	return "\n".join(out)
 
 # Loads an AoA from disk, converts it to a string
@@ -196,7 +196,7 @@ def dumpLog(filename,delimiter,linedelim="\n",epoch=True):
 				entry = pretty_timestamp+delimiter+l[2]+delimiter+l[3]
 			else:
 				entry = str(l[0])+delimiter+l[2]+delimiter+l[3]
-			out.append(entry)
+			if l[3]!="": out.append(entry)
 		return linedelim.join(out)
 	else:
 		return ''
@@ -308,7 +308,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 						pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"{pretty_timestamp}\t{strip_color(l[3])}"
 
-			out.append(entry)
+			if l[3]!="": out.append(entry)
 		return "\n".join(out)
 	else:
 		return ''
@@ -333,7 +333,7 @@ def dumpLogJson(filename,epoch=True):
 			if not epoch:
 				l[0] = pretty_timestamp_m1(l[0])
 			entry = [ l[0],l[2],l[3] ]
-			out.append(entry)
+			if l[3]!="": out.append(entry)
 		return json.dumps(out, indent=4, sort_keys=True)
 	else:
 		return ''

@@ -1601,6 +1601,9 @@ class Merk(QMainWindow):
 
 	def privmsg(self,client,user,target,msg):
 
+		# If the message is blank, do nothing
+		if len(msg.strip())==0: return
+
 		p = user.split("!")
 		if len(p)==2:
 			nickname = p[0]
@@ -1720,6 +1723,9 @@ class Merk(QMainWindow):
 
 	def action(self,client,user,target,msg):
 
+		# If the message is blank, do nothing
+		if len(msg.strip())==0: return
+
 		p = user.split("!")
 		if len(p)==2:
 			nickname = p[0]
@@ -1792,6 +1798,9 @@ class Merk(QMainWindow):
 				plugins.call(self,"action",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 	def noticed(self,client,user,target,msg):
+
+		# If the message is blank, do nothing
+		if len(msg.strip())==0: return
 
 		p = user.split("!")
 		if len(p)==2:
