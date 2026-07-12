@@ -345,6 +345,7 @@ class Window(QMainWindow):
 			f = self.info_button.font()
 			f.setBold(True)
 			self.info_button.setFont(f)
+			self.info_button.setFocusPolicy(Qt.NoFocus)
 
 			serverBar = QHBoxLayout()
 			serverBar.addWidget(self.info_button)
@@ -597,7 +598,7 @@ class Window(QMainWindow):
 			self.halfop_icon.setPixmap(pixmap)
 
 			self.key_icon = QLabel(self)
-			pixmap = QPixmap(KEY_ICON)
+			pixmap = QPixmap(VISITED_SECURE_ICON)
 			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.key_icon.setPixmap(pixmap)
 
@@ -732,19 +733,9 @@ class Window(QMainWindow):
 			# SSL/TLS or not) and other information
 			fm = QFontMetrics(self.app.font())
 			if self.client.kwargs["ssl"]:
-				self.secure_icon = QLabel(self)
-				pixmap = QPixmap(VISITED_SECURE_ICON)
-				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-				self.secure_icon.setPixmap(pixmap)
-				self.status.addPermanentWidget(self.secure_icon,0)
 				self.status_server = QLabel(f"<small><b>{self.client.server}:{self.client.port}</b></small>")
 				self.status_server.setOpenExternalLinks(True)
 			else:
-				self.secure_icon = QLabel(self)
-				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
-				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-				self.secure_icon.setPixmap(pixmap)
-				self.status.addPermanentWidget(self.secure_icon,0)
 				self.status_server = QLabel(f"<small><b>{self.client.server}:{self.client.port}</b></small>")
 				self.status_server.setOpenExternalLinks(True)
 			self.status.addPermanentWidget(self.status_server,0)
@@ -771,11 +762,6 @@ class Window(QMainWindow):
 			# SSL/TLS or not) and other information
 			fm = QFontMetrics(self.app.font())
 			if self.client.kwargs["ssl"]:
-				self.secure_icon = QLabel(self)
-				pixmap = QPixmap(VISITED_SECURE_ICON)
-				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-				self.secure_icon.setPixmap(pixmap)
-				self.status.addPermanentWidget(self.secure_icon,0)
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
 					if netlink!=None:
@@ -786,11 +772,6 @@ class Window(QMainWindow):
 					self.status_server = QLabel("<small><b>"+self.client.hostname+"</b> ("+self.client.network+")</small>")
 				self.status_server.setOpenExternalLinks(True)
 			else:
-				self.secure_icon = QLabel(self)
-				pixmap = QPixmap(VISITED_BOOKMARK_ICON)
-				pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-				self.secure_icon.setPixmap(pixmap)
-				self.status.addPermanentWidget(self.secure_icon,0)
 				if config.SHOW_LINKS_TO_NETWORK_WEBPAGES:
 					netlink = get_network_link(self.client.network)
 					if netlink!=None:
@@ -812,6 +793,7 @@ class Window(QMainWindow):
 				self.key_value = QLabel("")
 				self.status.addPermanentWidget(self.key_value,0)
 				self.key_value.hide()
+				self.key_value.installEventFilter(self)
 
 			if self.window_type==CHANNEL_WINDOW:
 				self.key_spacer = QLabel("")
@@ -2007,12 +1989,12 @@ class Window(QMainWindow):
 
 		if self.window_type==SERVER_WINDOW:
 			self.uptime = uptime
-			self.serverUptime.setText("<b>"+prettyUptime(self.uptime)+"</b>")
-			self.statusServerUptime.setText("<small>"+prettyUptime(self.uptime)+"</small>")
+			self.serverUptime.setText(f"<b>{prettyUptime(self.uptime)}</b>")
+			self.statusServerUptime.setText(f"<small>{prettyUptime(self.uptime)}</small>")
 		else:
 			self.uptime = self.uptime + 1
 			if self.window_type==CHANNEL_WINDOW:
-				self.channelUptime.setText("<small>"+prettyUptime(self.uptime)+"</small>")
+				self.channelUptime.setText(f"<small>{prettyUptime(self.uptime)}</small>")
 
 			if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
 				if config.SHOW_DATES_IN_LOGS:
@@ -2203,12 +2185,14 @@ class Window(QMainWindow):
 		if hasattr(self,"key_icon"):
 			if self.name in self.client.channelkeys:
 				self.key_icon.show()
+				self.key_icon.setToolTip(f"{self.name} is locked")
 				if hasattr(self,"key_value"):
-					self.key_value.setText("<small>+k "+self.client.channelkeys[self.name]+"</small>")
+					self.key_value.setText("<small><b>"+self.client.channelkeys[self.name]+"</b></small>")
 					self.key_value.show()
 					self.key_spacer.show()
 			else:
 				self.key_icon.hide()
+				self.key_icon.setToolTip("")
 				if hasattr(self,"key_value"):
 					self.key_value.hide()
 					self.key_spacer.hide()
@@ -2310,6 +2294,15 @@ class Window(QMainWindow):
 		cb.setText(data, mode=cb.Clipboard)
 
 	def eventFilter(self, source, event):
+
+		# Channel key click
+		if (event.type() == QtCore.QEvent.MouseButtonDblClick and source is self.key_value):
+			if self.is_operator():
+				if self.name in self.client.channelkeys:
+					my_key = dialog.SetKeyDialog(self,self.client.channelkeys[self.name])
+					if my_key:
+						self.client.mode(self.name,True,'k '+my_key)
+						return True
 
 		# Name click
 		if (event.type() == QtCore.QEvent.MouseButtonDblClick and source is self.nick_display):
@@ -3526,8 +3519,16 @@ class Window(QMainWindow):
 						if not config.LOG_IGNORED_USERS: write_to_log = False
 						do_render = False
 
+				# Bugfix for "blank" messages
+				do_add_to_log = True
+				if message.contents.strip()=="":
+					if message.type==CHAT_MESSAGE or message.type==SELF_MESSAGE or message.type==NOTICE_MESSAGE or message.type==PRIVATE_MESSAGE:
+						do_render = False
+						do_add_to_log = False
+						write_to_log = False
+
 				# Save entered text to the current log
-				self.log.append(message)
+				if do_add_to_log: self.log.append(message)
 
 				# Trim the log to the maximum display length
 				if len(self.log)>config.MAXIMUM_LOADED_LOG_SIZE:

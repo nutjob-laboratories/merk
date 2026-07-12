@@ -15,6 +15,20 @@
   globally in the menu.
 * Bugfix: "blank" messages are now removed from log displays and exports.
 * Bugfix: "blank" chat messages are now ignored.
+* Bugfix: text that uses IRC colors to color the text white was effectively
+  invisible in the log viewer. The log viewer now changes white IRC colored
+  text to black IRC colored text. As colors are stripped from the "human
+  readable" export option, exports are unchanged, and nothing is stripped or
+  changed in any other export option.
+* Bugfix: some dialogs did not have their focus set properly.
+* Tweaked the channel key display on channel windows.
+* The "key" icon was removed from resources, and the "secure" icon is used in
+  its place.
+* Tweaked the status bar server displays.
+* Double-clicking on a channel's channel key now allows users to "edit" the
+  channel key, if they have the permissions to.
+* The "server information" button on the server window toolbar can no longer
+  have focus set on it.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.050                                  |

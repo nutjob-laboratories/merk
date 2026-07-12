@@ -34,8 +34,8 @@ from .. import config
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_message_information(parent=None):
-		dialog = Dialog(parent)
+	def get_message_information(parent=None,key=None):
+		dialog = Dialog(parent,key)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -49,13 +49,14 @@ class Dialog(QDialog):
 
 		return retval
 
-	def __init__(self,parent=None):
+	def __init__(self,parent=None,key=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
+		self.passed_key = key
 
-		self.setWindowTitle("Channel key")
-		self.setWindowIcon(QIcon(KEY_ICON))
+		self.setWindowTitle("Set channel key")
+		self.setWindowIcon(QIcon(VISITED_SECURE_ICON))
 
 		fm = QFontMetrics(self.font())
 		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLM")
@@ -64,6 +65,10 @@ class Dialog(QDialog):
 		self.name = QNoSpaceLineEdit()
 		nameLayout.addWidget(self.name)
 		self.name.setMinimumWidth(wwidth)
+		if self.passed_key==None:
+			self.name.setPlaceholderText("New channel key")
+		else:
+			self.name.setPlaceholderText(self.passed_key)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -81,3 +86,5 @@ class Dialog(QDialog):
 		self.setLayout(finalLayout)
 
 		self.setFixedSize(finalLayout.sizeHint())
+
+		self.name.setFocus()

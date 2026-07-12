@@ -10244,8 +10244,8 @@ class ScriptThread(QThread):
 						# | escape |
 						# |========|
 						# 
-						# This command reads a file, and stores the
-						# contents in an alias
+						# This command escapes all MERK "markdown" in input
+						# and stores the result in an alias.
 						#
 						if len(tokens)>=1:
 							if tokens[0].lower()=='escape' and len(tokens)>=3:
@@ -10296,8 +10296,8 @@ class ScriptThread(QThread):
 						# | hostmask |
 						# |==========|
 						# 
-						# This command reads a file, and stores the
-						# contents in an alias
+						# This command gets a user's hostmask, and
+						# stores it in an alias.
 						#
 						if len(tokens)>=1:
 							if tokens[0].lower()=='hostmask' and len(tokens)==3:

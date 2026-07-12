@@ -83,3 +83,5 @@ class Dialog(QDialog):
 		self.setLayout(finalLayout)
 
 		self.setFixedSize(finalLayout.sizeHint())
+
+		self.name.setFocus()

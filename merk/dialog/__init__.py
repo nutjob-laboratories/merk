@@ -37,7 +37,6 @@ from .menu_name import Dialog as SetMenuName
 from .key import Dialog as SetKey
 from .find import Dialog as Find
 from .set_ignore import Dialog as SetIgnore
-from .key import Dialog as SetKey
 from .set_bind import Dialog as SetBind
 from .set_file import Dialog as SetFilename
 from .method_name import Dialog as SetMethodName
@@ -57,9 +56,9 @@ def GetIgnore(msg,parent):
 
 	return info
 
-def SetKeyDialog(parent):
-	x = SetKey(parent)
-	info = x.get_message_information(parent)
+def SetKeyDialog(parent,key=None):
+	x = SetKey(parent,key)
+	info = x.get_message_information(parent,key)
 	del x
 
 	return info

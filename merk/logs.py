@@ -256,6 +256,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			if l[1]==CHAT_MESSAGE or l[1]==PRIVATE_MESSAGE:
 				# Regular chat
 				if no_timestamps:
+					l[3] = l[3].replace("\x0300","\x0301")
 					pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0302{u}\x0f: {l[3]}"
 				else:
@@ -267,6 +268,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			elif l[1]==SELF_MESSAGE:
 				# Regular chat
 				if no_timestamps:
+					l[3] = l[3].replace("\x0300","\x0301")
 					pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"\x02[{pretty_timestamp}]\x0f \x1F\x02\x0302{u}\x0f: {l[3]}"
 				else:
@@ -289,6 +291,7 @@ def dumpLogHuman(filename,no_timestamps=False,epoch=False):
 			elif l[1]==NOTICE_MESSAGE:
 				# Notice message
 				if no_timestamps:
+					l[3] = l[3].replace("\x0300","\x0301")
 					pretty_timestamp = pretty_timestamp_m2(l[0])
 					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x0302*{u}\x0f*: {l[3]}"
 				else:
