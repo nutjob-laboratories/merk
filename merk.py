@@ -80,11 +80,10 @@ else:
 	else:
 		myprog = "merk"
 
-parser = argparse.ArgumentParser(
-	prog=myprog,
-	formatter_class=argparse.RawDescriptionHelpFormatter,
-	add_help=False,
-	description=f'''
+if is_running_from_pyinstaller():
+	desc = None
+else:
+	desc = f'''
 ╔╦╗╔═╗╦═╗╦╔═  ╦╦═╗╔═╗  ╔═╗╦  ╦╔═╗╔╗╔╔╦╗
 ║║║║╣ ╠╦╝╠╩╗  ║╠╦╝║    ║  ║  ║║╣ ║║║ ║ 
 ╩ ╩╚═╝╩╚═╩ ╩  ╩╩╚═╚═╝  ╚═╝╩═╝╩╚═╝╝╚╝ ╩ 
@@ -94,14 +93,23 @@ Graphical IRC client for Windows, Linux, and macOS
 
 https://merk.chat
 https://github.com/nutjob-laboratories/merk
-https://github.com/danhetrick
 
-Available Qt widget styles: {", ".join(QT_STYLES)}
-''',
-	epilog=f'''
-© {datetime.now().year} Copyright Daniel Hetrick
-https://www.gnu.org/licenses/gpl-3.0.en.html
-	''',
+Available Qt widget styles: {join_with_and(QT_STYLES)}
+'''
+
+if is_running_from_pyinstaller():
+	epi = None
+else:
+	epi = f'''
+© {datetime.now().year} Daniel Hetrick
+https://www.gnu.org/licenses/gpl-3.0.en.html'''
+
+parser = argparse.ArgumentParser(
+	prog=myprog,
+	formatter_class=argparse.RawDescriptionHelpFormatter,
+	add_help=False,
+	description=desc,
+	epilog=epi,
 )
 
 congroup = parser.add_argument_group('Connection')
@@ -136,7 +144,7 @@ optiongroup.add_argument("-P","--disable-plugins",dest="disable",help=f"Disables
 optiongroup.add_argument("-E","--enable-plugins",dest="enable",help=f"Enables plugins",action="store_true")
 
 configuration_group = parser.add_argument_group('Files and Directories')
-configuration_group.add_argument("--config-name",dest="configname",type=str,help="Name of the configuration file directory (default: .merk)",metavar="NAME",default=".merk")
+configuration_group.add_argument("--config-name",dest="configname",type=str,help=f"Name of the configuration file directory (default: {DEFAULT_CONFIGURATION_DIRECTORY})",metavar="NAME",default=DEFAULT_CONFIGURATION_DIRECTORY)
 configuration_group.add_argument("--config-directory",dest="configdir",type=str,help="Location to store configuration files",metavar="DIRECTORY",default=None)
 configuration_group.add_argument("--config-local",dest="configinstall",help=f"Store configuration files in install directory",action="store_true")
 configuration_group.add_argument("--scripts-directory",dest="scriptdir",type=str,help="Location to look for script files",metavar="DIRECTORY",default=None)
@@ -379,6 +387,7 @@ if __name__ == '__main__':
 
 	if args.help:
 		if is_running_from_pyinstaller():
+			help_text = parser.format_help()
 			show_message("Help",f"Please see the {APPLICATION_NAME} User Guide for command-line options.")
 		else:
 			parser.print_help()

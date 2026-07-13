@@ -1327,8 +1327,8 @@ def check_for_sane_values(setting,value):
 			if e.lower() in v: continue
 			return INVALID_TEXT_STYLE
 
-	v = ["creation","stacking","activation"]
 	if setting=="subwindow_order":
+		v = ["creation","stacking","activation"]
 		if not value.lower() in v: return INVALID_ORDER
 
 	if setting=="sound_notification_file":

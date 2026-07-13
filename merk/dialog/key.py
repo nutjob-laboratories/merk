@@ -45,21 +45,38 @@ class Dialog(QDialog):
 
 	def return_info(self):
 
-		retval = self.name.text()
+		if self.unlock:
+			return ' '
+		else:
+			return self.name.text()
 
-		return retval
+	def showEvent(self, event):
+		super().showEvent(event)
+		self.name.setFocus()
+		self.name.setCursorPosition(len(self.name.text()))
+		QTimer.singleShot(0, self.name.deselect)
+
+	def do_unlock(self,state):
+		if self.unlock_chan.isChecked():
+			self.unlock = True
+			self.name.setText(self.passed_key)
+			self.name.setEnabled(False)
+		else:
+			self.unlock = False
+			self.name.setEnabled(True)
 
 	def __init__(self,parent=None,key=None):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
 		self.passed_key = key
+		self.unlock = False
 
 		self.setWindowTitle("Set channel key")
 		self.setWindowIcon(QIcon(VISITED_SECURE_ICON))
 
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLM")
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 		nameLayout = QHBoxLayout()
 		self.name = QNoSpaceLineEdit()
@@ -68,8 +85,10 @@ class Dialog(QDialog):
 		if self.passed_key==None:
 			self.name.setPlaceholderText("New channel key")
 		else:
-			self.name.setPlaceholderText(self.passed_key)
-
+			self.name.setText(self.passed_key)
+			self.unlock_chan = QCheckBox("Unlock channel",self)
+			self.unlock_chan.stateChanged.connect(self.do_unlock)
+			
 		# Buttons
 		buttons = QDialogButtonBox(self)
 		buttons.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -78,6 +97,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(nameLayout)
+		if self.passed_key!=None: finalLayout.addWidget(self.unlock_chan)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()
@@ -86,5 +106,3 @@ class Dialog(QDialog):
 		self.setLayout(finalLayout)
 
 		self.setFixedSize(finalLayout.sizeHint())
-
-		self.name.setFocus()

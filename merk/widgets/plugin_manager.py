@@ -41,7 +41,7 @@ import operator
 import shutil
 from pathlib import Path
 import zipfile
-from datetime import datetime
+from datetime import datetime,timezone
 
 class Window(QMainWindow):
 
@@ -89,7 +89,10 @@ class Window(QMainWindow):
 			README = README.replace("%_VERSION_%",item.VERSION)
 			README = README.replace("%_AUTHOR_%",item.AUTHOR)
 			README = README.replace("%_URL_%",item.SOURCE)
-			pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime('%m/%d/%Y')
+			else:
+				pretty_timestamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%m/%d/%Y')
 			README = README.replace("%_DATE_%", f"{pretty_timestamp}")
 
 			_, file_extension = os.path.splitext(fileName)

@@ -39,6 +39,7 @@ import fnmatch
 import time
 import random
 import zipfile
+from datetime import datetime, timezone
 
 import emoji
 
@@ -66,7 +67,7 @@ class Merk(QMainWindow):
 			self,
 			app,
 			configuration_location=None,
-			configuration_directory_name=".merk",
+			configuration_directory_name=DEFAULT_CONFIGURATION_DIRECTORY,
 			connection_info=None,
 			application_font=None,
 			channels=[],
@@ -2402,11 +2403,16 @@ class Merk(QMainWindow):
 
 		displaynick = "["+whoisdata.nickname+"]"
 
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon),tz=timezone.utc).strftime('%m/%d/%Y, %H:%M:%S'))
+		else:
+			so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon)).strftime('%m/%d/%Y, %H:%M:%S'))
+
 		wd = [
 			Message(WHOIS_MESSAGE,displaynick, whoisdata.username+"@"+whoisdata.host+": \x02"+whoisdata.realname+"\x0F"),
 			Message(WHOIS_MESSAGE,displaynick, "\x02"+whoisdata.server+"\x0F"),
 			Message(WHOIS_MESSAGE,displaynick, "\x02"+whoisdata.channels+"\x0F"),
-			Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon)).strftime('%m/%d/%Y, %H:%M:%S')),
+			so,
 			Message(WHOIS_MESSAGE,displaynick, "\x02Idle:\x0F "+whoisdata.idle+" seconds"),
 			Message(WHOIS_MESSAGE,displaynick, "\x02"+whoisdata.privs+"\x0F"),
 		]

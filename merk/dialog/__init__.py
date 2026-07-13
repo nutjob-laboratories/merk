@@ -63,9 +63,9 @@ def SetKeyDialog(parent,key=None):
 
 	return info
 
-def SetMenuNameDialog(msg,parent):
-	x = SetMenuName(msg,parent)
-	info = x.get_message_information(msg,parent)
+def SetMenuNameDialog(msg,parent,default):
+	x = SetMenuName(msg,parent,default)
+	info = x.get_message_information(msg,parent,default)
 	del x
 
 	return info

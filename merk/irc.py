@@ -35,7 +35,7 @@ import random
 import time
 import uuid
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 import textwrap
 import platform
 import base64
@@ -465,7 +465,10 @@ class IRC_Connection(irc.IRCClient):
 
 	def irc_RPL_LISTEND(self,prefix,params):
 		self.is_listing_channels = False
-		self.last_list_fetch = datetime.now().strftime("%Y-%m-%d "+config.TIMESTAMP_FORMAT)
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			self.last_list_fetch = datetime.utcnow().strftime("%Y-%m-%d " + config.TIMESTAMP_FORMAT + " UTC")
+		else:
+			self.last_list_fetch = datetime.now().strftime("%Y-%m-%d "+config.TIMESTAMP_FORMAT)
 		self.last_list_timestamp = datetime.utcnow().timestamp()
 		self.gui.gotRefreshEnd(self)
 
@@ -580,11 +583,10 @@ class IRC_Connection(irc.IRCClient):
 		if subcommand == "LS":
 			self.ircv3 = list(params[2].split())
 
-			if w:
-				t = Message(SYSTEM_MESSAGE,'','IRCv3 extensions: '+join_with_and(self.ircv3))
-				w.writeText(t)
-
 			# Request various IRCv3 extensions
+			if w:
+				t = Message(SYSTEM_MESSAGE,'',"Requesting IRCv3 extensions...")
+				w.writeText(t)
 			self.sendLine("CAP REQ :cap-notify")
 			self.sendLine("CAP REQ :userhost-in-names")
 			self.sendLine("CAP REQ :multi-prefix")
@@ -592,8 +594,12 @@ class IRC_Connection(irc.IRCClient):
 
 			# Now, load in extensions requested from
 			# plugins
-			for c in plugins.CAPABILITIES:
-				self.sendLine(f"CAP REQ :{c}")
+			if len(plugins.CAPABILITIES)>0:
+				if w:
+					t = Message(SYSTEM_MESSAGE,'',"Requesting IRCv3 extensions for plugins...")
+					w.writeText(t)
+				for c in plugins.CAPABILITIES:
+					self.sendLine(f"CAP REQ :{c}")
 
 			# If the server support SASL and we have SASL
 			# login information, request authentication
@@ -637,12 +643,12 @@ class IRC_Connection(irc.IRCClient):
 	def irc_AUTHENTICATE(self, prefix, params):
 		# Send the SASL username and password to the server
 		if params[0] == "+":
+			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
+			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
 			w = self.gui.getServerWindow(self)
 			if w:
 				t = Message(SYSTEM_MESSAGE,'','Sending username and password...')
 				w.writeText(t)
-			payload = f"\0{self.sasl_username}\0{self.sasl_password}"
-			encoded = base64.b64encode(payload.encode("utf-8")).decode("utf-8")
 			self.sendLine(f"AUTHENTICATE {encoded}")
 			
 	def irc_903(self, prefix, params):
@@ -953,9 +959,9 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.gotBanlist(self,channel,banlist)
 
 	def modeChanged(self, user, channel, mset, modes, args):
-		if "b" in modes: self.sendLine(f"MODE {channel} +b")
-		if "o" in modes: self.sendLine("NAMES "+channel)
-		if "v" in modes: self.sendLine("NAMES "+channel)
+		if channel!=self.nickname:
+			if "b" in modes: self.sendLine(f"MODE {channel} +b")
+			if "o" in modes or "v" in modes: self.sendLine("NAMES "+channel)
 
 		largs = list(args)
 		cleaned = []
@@ -1075,6 +1081,7 @@ class IRC_Connection(irc.IRCClient):
 		# Clear out duplicates
 		self.do_whois = list(set(self.do_whois))
 
+		# Request a channel userlist from the server
 		self.sendLine("NAMES "+channel)
 
 		self.gui.userJoined(self,user,channel)
@@ -1092,6 +1099,7 @@ class IRC_Connection(irc.IRCClient):
 			if p[0] in self.do_whois:
 				self.do_whois.remove(p[0])
 
+		# Request a channel userlist from the server
 		self.sendLine("NAMES "+channel)
 
 		self.gui.userLeft(self,user,channel)
@@ -1176,7 +1184,9 @@ class IRC_Connection(irc.IRCClient):
 		self.gui.action(self,user,channel,data)
 
 	def userKicked(self, kickee, channel, kicker, message):
-		if kickee!=self.nickname: self.sendLine("NAMES "+channel)
+		if kickee!=self.nickname:
+			# Request a channel userlist from the server
+			self.sendLine("NAMES "+channel)
 
 		self.gui.userKicked(self,kickee,channel,kicker,message)
 
@@ -1207,6 +1217,7 @@ class IRC_Connection(irc.IRCClient):
 
 		if nick in self.bots: self.bots.remove(nick)
 		if nick in self.do_whois: self.do_whois.remove(nick)
+		if nick in self.request_whois: self.request_whois.remove(nick)
 
 		self.gui.irc_QUIT(self,nick,msg)
 

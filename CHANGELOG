@@ -26,9 +26,21 @@
   its place.
 * Tweaked the status bar server displays.
 * Double-clicking on a channel's channel key now allows users to "edit" the
-  channel key, if they have the permissions to.
+  channel key, if they have the permissions to. The dialog can also unlock the
+  channel (that is, remove the channel's key).
 * The "server information" button on the server window toolbar can no longer
   have focus set on it.
+* Added an option to reset menu names to the default to the "set menu name"
+  dialog called from the "Settings" dialog.
+* Bugfix: channel list time displays are now shown in UTC if that option is
+  enabled.
+* Bugfix: "signed on" times in WHOIS responses are now shown in UTC if that
+  option is enabled.
+* Bugfix: when a channel mode change is set, multiple "NAMES" requests could
+  be sent at once.
+* The list of IRCv3 extensions that a server supports is no longer displayed
+  during the connection process. The extension list is still available in the
+  server information menu.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.050                                  |

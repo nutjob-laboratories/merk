@@ -34,8 +34,8 @@ from .. import config
 class Dialog(QDialog):
 
 	@staticmethod
-	def get_message_information(msg='',parent=None):
-		dialog = Dialog(msg,parent)
+	def get_message_information(msg='',parent=None, default=''):
+		dialog = Dialog(msg,parent,default)
 		r = dialog.exec_()
 		if r:
 			return dialog.return_info()
@@ -49,23 +49,42 @@ class Dialog(QDialog):
 
 		return retval
 
-	def __init__(self,msg='',parent=None):
+	def showEvent(self, event):
+		super().showEvent(event)
+		self.name.setFocus()
+		self.name.setCursorPosition(len(self.name.text()))
+		QTimer.singleShot(0, self.name.deselect)
+
+	def do_default(self,state):
+		if self.set_default.isChecked():
+			self.name.setText(self.default)
+			self.name.setEnabled(False)
+		else:
+			self.name.setText(self.msg)
+			self.name.setEnabled(True)
+
+	def __init__(self,msg='',parent=None, default=''):
 		super(Dialog,self).__init__(parent)
 
 		self.parent = parent
 		self.msg = msg
+		self.default = default
 
 		self.setWindowTitle("Set menu name")
 		self.setWindowIcon(QIcon(EDIT_ICON))
 
 		fm = QFontMetrics(self.font())
-		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDABCDEFGHIJ")
+		wwidth = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQR")
 
 		nameLayout = QHBoxLayout()
 		self.name = QLineEdit(self.msg)
 		self.name.setPlaceholderText(self.msg)
 		nameLayout.addWidget(self.name)
 		self.name.setMinimumWidth(wwidth)
+
+		if self.default!='':
+			self.set_default = QCheckBox("Reset to default",self)
+			self.set_default.stateChanged.connect(self.do_default)
 
 		# Buttons
 		buttons = QDialogButtonBox(self)
@@ -75,6 +94,7 @@ class Dialog(QDialog):
 
 		finalLayout = QVBoxLayout()
 		finalLayout.addLayout(nameLayout)
+		if self.default!='': finalLayout.addWidget(self.set_default)
 		finalLayout.addWidget(buttons)
 
 		self.setWindowFlags(self.windowFlags()

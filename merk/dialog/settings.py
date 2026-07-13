@@ -2029,7 +2029,7 @@ class Dialog(QDialog):
 		self.boldApply()
 
 	def setMainMenu(self):
-		info = dialog.SetMenuNameDialog(self.default_main_menu,self)
+		info = dialog.SetMenuNameDialog(self.default_main_menu,self,"IRC")
 
 		if not info: return None
 
@@ -2043,7 +2043,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def setSettingsMenu(self):
-		info = dialog.SetMenuNameDialog(self.default_settings_menu,self)
+		info = dialog.SetMenuNameDialog(self.default_settings_menu,self,"Settings")
 
 		if not info: return None
 
@@ -2057,7 +2057,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def setToolsMenu(self):
-		info = dialog.SetMenuNameDialog(self.default_tools_menu,self)
+		info = dialog.SetMenuNameDialog(self.default_tools_menu,self,"Tools")
 
 		if not info: return None
 
@@ -2071,7 +2071,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def setWindowsMenu(self):
-		info = dialog.SetMenuNameDialog(self.default_windows_menu,self)
+		info = dialog.SetMenuNameDialog(self.default_windows_menu,self,"Windows")
 
 		if not info: return None
 
@@ -2099,7 +2099,7 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def setHelpMenu(self):
-		info = dialog.SetMenuNameDialog(self.default_help_menu,self)
+		info = dialog.SetMenuNameDialog(self.default_help_menu,self,"Help")
 
 		if not info: return None
 

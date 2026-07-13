@@ -33,8 +33,7 @@ import uuid
 import fnmatch
 import pathlib
 import random
-import datetime
-from datetime import timezone
+from datetime import datetime, timezone
 
 import emoji
 
@@ -2301,7 +2300,10 @@ class Window(QMainWindow):
 				if self.name in self.client.channelkeys:
 					my_key = dialog.SetKeyDialog(self,self.client.channelkeys[self.name])
 					if my_key:
-						self.client.mode(self.name,True,'k '+my_key)
+						if my_key==" ":
+							self.client.mode(self.name,False,'k '+self.client.channelkeys[self.name])
+						else:
+							self.client.mode(self.name,True,'k '+my_key)
 						return True
 
 		# Name click
