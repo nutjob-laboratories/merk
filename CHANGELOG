@@ -41,6 +41,20 @@
 * The list of IRCv3 extensions that a server supports is no longer displayed
   during the connection process. The extension list is still available in the
   server information menu.
+* Bugfix: Setting or changing a user's color now will trigger the chat
+  re-renderer if that option is turned on, and there isn't any upcoming
+  re-render.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* Added an optional argument to the Window class "style()" method, allowing
+  users to save a loaded text style as the default text style for that
+  subwindow. By default, the loaded text style is NOT saved.
+* Added two built-in methods for the Plugin class: "styles()" (which returns a
+  list of all the text style files in the "styles" directory) and "scripts()"
+  (which returns a list of all the scripts in the "scripts" directory).
 
 |------------------------------------------------------------------------------|
 |                                   0.052.050                                  |

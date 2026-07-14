@@ -59,11 +59,13 @@ class Dialog(QDialog):
 	def do_unlock(self,state):
 		if self.unlock_chan.isChecked():
 			self.unlock = True
+			self.stored = self.name.text()
 			self.name.setText(self.passed_key)
 			self.name.setEnabled(False)
 		else:
 			self.unlock = False
 			self.name.setEnabled(True)
+			self.name.setText(self.stored)
 
 	def __init__(self,parent=None,key=None):
 		super(Dialog,self).__init__(parent)

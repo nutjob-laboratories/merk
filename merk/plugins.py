@@ -61,7 +61,7 @@ class Window():
 		else:
 			self.wtype = None
 
-	def style(self,filename=None):
+	def style(self,filename=None,save=False):
 		if filename==None:
 			if self._window.window_type==SERVER_WINDOW:
 				fname = os.path.join(styles.STYLE_DIRECTORY,styles.encodeStyleNameServer(self._window.client.server,self._window.client.port))
@@ -87,6 +87,14 @@ class Window():
 			f = commands.find_style(filename,STYLE_FILE_EXTENSION)
 			if f!=None:
 				self._window.applyStyle(f)
+				if save:
+					s = styles.loadStyleFile(f)
+					if self._window.window_type==SERVER_WINDOW:
+						styles.saveStyle(self._window.client,self._window.name,s,True)
+					else:
+						styles.saveStyle(self._window.client,self._window.name,s,False)
+				else:
+					return
 
 	def is_light(self):
 		if not hasattr(self._window,"style"): return None
@@ -527,6 +535,12 @@ class Plugin():
 	VERSION = "1.0"
 	SOURCE = "Unknown"
 
+	def styles(self):
+		return [file for file in os.listdir(styles.STYLE_DIRECTORY) if file.endswith('.style')]
+
+	def scripts(self):
+		return [file for file in os.listdir(commands.SCRIPTS_DIRECTORY) if file.endswith(f'.{SCRIPT_FILE_EXTENSION}')]
+
 	def darkmode(self):
 		return self._gui.dark_mode
 
@@ -920,7 +934,7 @@ BUILT_IN = [
 	'connect', 'xconnect', 'markdown','color', 'strip', 'colored',
 	'browser', 'folder', 'current', 'uncolor', 'unmarkdown',
 	'markup','unmarkup','demojize','deasciimojize', 'location',
-	'fade', 'request', 'darkmode',
+	'fade', 'request', 'darkmode', 'scripts', 'styles',
 ]
 
 def uninstall(obj):

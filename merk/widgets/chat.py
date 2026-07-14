@@ -2258,8 +2258,18 @@ class Window(QMainWindow):
 		else:
 			self.clearNicknameColor(user_nick,user_hostmask)
 
+		if config.AUTOMATICALLY_RERENDER_CHAT:
+			if self.rerendered_chat!=False:
+				self.rerendered_chat = False
+				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+
 	def menuDoColorChange(self,user_nick,user_hostmask):
 		self.setNicknameColor(user_nick,user_hostmask)
+
+		if config.AUTOMATICALLY_RERENDER_CHAT:
+			if self.rerendered_chat!=False:
+				self.rerendered_chat = False
+				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
 
 	def is_hidden_by_nickname(self,user_nick):
 		if user_nick.lower() in config.IGNORE_LIST: return True
@@ -2285,7 +2295,7 @@ class Window(QMainWindow):
 		self.parent.reRenderAll(True)
 		self.parent.rerenderUserlists()
 		if self.parent.ignore_manager!=None:
-			self.parent.ignore_manager.refresh()		
+			self.parent.ignore_manager.refresh()
 
 	def menuPasteClipboard(self,data):
 		cb = QApplication.clipboard()
@@ -2304,7 +2314,7 @@ class Window(QMainWindow):
 							self.client.mode(self.name,False,'k '+self.client.channelkeys[self.name])
 						else:
 							self.client.mode(self.name,True,'k '+my_key)
-						return True
+					return True
 
 		# Name click
 		if (event.type() == QtCore.QEvent.MouseButtonDblClick and source is self.nick_display):
@@ -2312,7 +2322,7 @@ class Window(QMainWindow):
 				info = dialog.NewNickDialog(self.client.nickname,self)
 				if info!=None:
 					self.client.setNick(info)
-					return True
+				return True
 
 		if config.USERLIST_CONTEXT_MENU:
 			# User List Menu

@@ -72,7 +72,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 					'.connect','.xconnect', '.markdown', '.color', '.strip', '.colored',
 					'.browser', '.folder', '.current', '.uncolor', '.unmarkdown',
 					'.markup','.unmarkup', '.demojize', '.deasciimojize', '.location',
-					'.fade', '.script', '.request', '.darkmode',
+					'.fade', '.script', '.request', '.darkmode', '.scripts', '.styles',
 
 					# Plugin events
 					'def message', 'def notice', 'def action', 'def left', 'def joined', 'def part', 'def join', 
