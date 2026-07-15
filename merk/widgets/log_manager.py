@@ -46,37 +46,6 @@ from ..resources import *
 
 class Window(QMainWindow):
 
-	def view_export(self):
-		item = self.packlist.currentItem()
-		if item==None: return ''
-
-		elog = item.file
-		channel = item.channel
-		dlog = self.delimiter
-		llog = self.linedelim
-		do_json = self.do_json
-		do_epoch = self.epoch
-
-		if self.export_format=='human':
-			self.time.setEnabled(True)
-			return logs.dumpLogHuman(elog,False,do_epoch)
-
-		if not do_json:
-			self.time.setEnabled(True)
-			return logs.dumpLog(elog,dlog,llog,do_epoch)
-		else:
-			self.time.setEnabled(True)
-			return logs.dumpLogJson(elog,do_epoch)
-
-	def update_sample(self):
-		if not hasattr(self,"sample"): return
-		self.sample.setPlainText(self.view_export())
-
-	def settings_update_sample(self):
-		if not hasattr(self,"sample"): return
-		if self.sample.toPlainText()!='':
-			self.sample.setPlainText(self.view_export())
-
 	def do_export(self):
 
 		item = self.packlist.currentItem()
@@ -97,7 +66,7 @@ class Window(QMainWindow):
 				if file_extension=='':
 					efl = len("txt")+1
 					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
-				dump = logs.dumpLogHuman(elog,False,do_epoc)
+				dump = logs.dumpLogHuman(elog,False,do_epoch)
 				code = open(fileName,mode="w",encoding="utf-8")
 				code.write(dump)
 				code.close()
@@ -133,10 +102,8 @@ class Window(QMainWindow):
 	def clickTime(self,state):
 		if state == Qt.Checked:
 			self.epoch = True
-			self.settings_update_sample()
 		else:
 			self.epoch = False
-			self.settings_update_sample()
 
 	def setLine(self):
 
@@ -146,8 +113,6 @@ class Window(QMainWindow):
 		if dtype=='Tab': self.linedelim = "\t"
 		if dtype=='Comma': self.linedelim = ","
 		if dtype=='Pipe': self.linedelim = "|"
-
-		self.settings_update_sample()
 
 	def setType(self):
 
@@ -160,8 +125,6 @@ class Window(QMainWindow):
 		if dtype=='Double Colon': self.delimiter = '::'
 		if dtype=='Pipe': self.delimiter = '|'
 		if dtype=='Double Pipe': self.delimiter = '||'
-
-		self.settings_update_sample()
 
 	def closeEvent(self, event):
 
@@ -246,7 +209,6 @@ class Window(QMainWindow):
 		self.button_export.setEnabled(False)
 		self.file_icon.setPixmap(self.blank_file)
 
-		self.sample.setPlainText('')
 		self.dump.setText('')
 
 	def closeEvent(self, event):
@@ -289,8 +251,6 @@ class Window(QMainWindow):
 		self.line.setEnabled(False)
 		self.time.setEnabled(False)
 		self.button_export.setEnabled(False)
-
-		self.sample.setPlainText('')
 
 		servers = []
 		others = []
@@ -518,13 +478,6 @@ class Window(QMainWindow):
 		iconLayout = QVBoxLayout()
 		iconLayout.addWidget(self.file_icon)
 
-		self.sample = QPlainTextEdit(self)
-		self.sample.setReadOnly(True)
-
-		size_policy = self.sample.sizePolicy()
-		size_policy.setVerticalPolicy(QSizePolicy.Expanding)
-		self.sample.setSizePolicy(size_policy)
-
 		self.dump = LogViewer()
 		self.dump.setReadOnly(True)
 
@@ -538,8 +491,6 @@ class Window(QMainWindow):
 		dumpLayout = QVBoxLayout()
 		dumpLayout.setSpacing(0)
 		dumpLayout.addWidget(self.dump)
-
-		self.update_sample()
 
 		fileinfoLayout = QHBoxLayout()
 		fileinfoLayout.addLayout(iconLayout)
@@ -556,28 +507,13 @@ class Window(QMainWindow):
 
 		file_info = QWidget()
 		file_info.setLayout(bottomLayout2)
-		
-		bottomLayout4 = QVBoxLayout()
-		bottomLayout4.addWidget(self.sample)
-
-		file_display = QWidget()
-		file_display.setLayout(bottomLayout4)
-
-		self.verticalSplitter = QSplitter(Qt.Vertical)
-		self.verticalSplitter.addWidget(file_info)
-		self.verticalSplitter.addWidget(file_display)
-		self.verticalSplitter.setStretchFactor(0, 0)
-		self.verticalSplitter.setStretchFactor(1, 1)
-		self.verticalSplitter.setHandleWidth(2)
-
-		if self.parent.dark_mode:
-			self.verticalSplitter.setStyleSheet("QSplitter::handle{background-color: lightGray;}")
-		else:
-			self.verticalSplitter.setStyleSheet("QSplitter::handle{background-color: darkGray;}")
 
 		bottomLayout3 = QVBoxLayout()
-		bottomLayout3.addWidget(self.verticalSplitter)
+		bottomLayout3.addStretch()
+		bottomLayout3.addWidget(file_info)
+		bottomLayout3.addStretch()
 		bottomLayout3.addLayout(buttons)
+		bottomLayout3.addStretch()
 
 		bottomLayout=QHBoxLayout()
 		bottomLayout.addLayout(bottomLayout3)
@@ -708,7 +644,7 @@ class Window(QMainWindow):
 
 		self.status_details.setText(f'<small>{det} - <b>{item.file}</b> ({item.size})</small>')
 
-		self.filesize.setText(f'<small><b>{item.file}</b></i></small>')
+		self.filesize.setText(f'<small><b>{os.path.basename(item.file)}</b></i></small>')
 
 		self.menubar.setEnabled(True)
 		self.format.setEnabled(True)
@@ -743,7 +679,6 @@ class Window(QMainWindow):
 
 		self.filename.setText(f"<b>{item.channel}</b>")
 
-		self.update_sample()
 		self.button_export.setEnabled(True)
 
 		self.dump.setText(logs.dumpLogHuman(item.file,True))
@@ -764,7 +699,6 @@ class Window(QMainWindow):
 			self.line.setEnabled(False)
 			self.lineLabel.setEnabled(False)
 			self.format.setText("JSON file")
-			self.settings_update_sample()
 			return
 
 		if setting=='text':
@@ -777,7 +711,6 @@ class Window(QMainWindow):
 			self.line.setEnabled(True)
 			self.lineLabel.setEnabled(True)
 			self.format.setText("ASCII text file")
-			self.settings_update_sample()
 			return
 
 		if setting=='human':
@@ -790,5 +723,4 @@ class Window(QMainWindow):
 			self.line.setEnabled(False)
 			self.lineLabel.setEnabled(False)
 			self.format.setText("Human readable")
-			self.settings_update_sample()
 			return

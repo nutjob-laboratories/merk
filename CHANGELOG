@@ -2,6 +2,10 @@
 |                                   0.052.100                                  |
 |------------------------------------------------------------------------------|
 
+What's new:
+
+- **The log manager loads faster**. The log manager no longer offers a full file preview of data to export. This speeds up the log manager *a lot*.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -44,8 +48,10 @@
 * Bugfix: setting or changing a user's color now will trigger the chat
   re-renderer if that option is turned on, and there isn't any upcoming
   re-render. All chats that that user is in will be re-rendered.
-* Bugfix: setting or changing a word's highlighted color will not trigger a
-  chat re-render, just like with user colors.
+* Bugfix: setting or changing a word's highlighted color will trigger a chat
+  re-render, just like with user colors.
+* The log manager no longer displays a "preview" of the exported data.
+* Tweaked the layout of the log manager's export tab.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
