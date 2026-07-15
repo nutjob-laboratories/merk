@@ -41,9 +41,11 @@
 * The list of IRCv3 extensions that a server supports is no longer displayed
   during the connection process. The extension list is still available in the
   server information menu.
-* Bugfix: Setting or changing a user's color now will trigger the chat
+* Bugfix: setting or changing a user's color now will trigger the chat
   re-renderer if that option is turned on, and there isn't any upcoming
-  re-render.
+  re-render. All chats that that user is in will be re-rendered.
+* Bugfix: setting or changing a word's highlighted color will not trigger a
+  chat re-render, just like with user colors.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

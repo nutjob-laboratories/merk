@@ -2259,17 +2259,35 @@ class Window(QMainWindow):
 			self.clearNicknameColor(user_nick,user_hostmask)
 
 		if config.AUTOMATICALLY_RERENDER_CHAT:
-			if self.rerendered_chat!=False:
-				self.rerendered_chat = False
-				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+			# Step through all chat windows the nick/hostmask is
+			# in and re-render the chat display
+			wins = self.parent.getAllConnectedChatWindows(self.client)
+			for w in wins:
+				c = w.widget()
+				do_rerender = False
+				if user_nick!=None and user_nick in c.nicks: do_rerender = True
+				if user_hostmask!=None and user_hostmask in c.hostmasks: do_rerender = True
+				if do_rerender:
+					if c.rerendered_chat!=False:
+						c.rerendered_chat = False
+						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
 
 	def menuDoColorChange(self,user_nick,user_hostmask):
 		self.setNicknameColor(user_nick,user_hostmask)
 
 		if config.AUTOMATICALLY_RERENDER_CHAT:
-			if self.rerendered_chat!=False:
-				self.rerendered_chat = False
-				self.force_chat_log_rerender = self.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+			# Step through all chat windows the nick/hostmask is
+			# in and re-render the chat display
+			wins = self.parent.getAllConnectedChatWindows(self.client)
+			for w in wins:
+				c = w.widget()
+				do_rerender = False
+				if user_nick!=None and user_nick in c.nicks: do_rerender = True
+				if user_hostmask!=None and user_hostmask in c.hostmasks: do_rerender = True
+				if do_rerender:
+					if c.rerendered_chat!=False:
+						c.rerendered_chat = False
+						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
 
 	def is_hidden_by_nickname(self,user_nick):
 		if user_nick.lower() in config.IGNORE_LIST: return True

@@ -1838,6 +1838,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				config.HIGHLIGHTED_WORDS = {}
 				config.save_settings(config.CONFIG_FILE)
 
+				if config.AUTOMATICALLY_RERENDER_CHAT:
+					wins = window.parent.getAllConnectedChatWindows(window.client)
+					for w in wins:
+						c = w.widget()
+						if c.rerendered_chat!=False:
+							c.rerendered_chat = False
+							c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+
 				t = Message(SYSTEM_MESSAGE,'',f"All word highlights removed")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
@@ -1858,6 +1866,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			config.HIGHLIGHTED_WORDS.pop(hword,'')
 			config.save_settings(config.CONFIG_FILE)
+
+			if config.AUTOMATICALLY_RERENDER_CHAT:
+				wins = window.parent.getAllConnectedChatWindows(window.client)
+				for w in wins:
+					c = w.widget()
+					if c.rerendered_chat!=False:
+						c.rerendered_chat = False
+						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
 
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"\"{word}\"'s highlighting color has been removed")
@@ -1913,6 +1929,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				config.HIGHLIGHTED_WORDS[hword] = ncolor
 				config.save_settings(config.CONFIG_FILE)
 
+				if config.AUTOMATICALLY_RERENDER_CHAT:
+					wins = window.parent.getAllConnectedChatWindows(window.client)
+					for w in wins:
+						c = w.widget()
+						if c.rerendered_chat!=False:
+							c.rerendered_chat = False
+							c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
+
 				if not is_script:
 					t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{ncolor}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -1950,6 +1974,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			config.HIGHLIGHTED_WORDS[hword] = color
 			config.save_settings(config.CONFIG_FILE)
+
+			if config.AUTOMATICALLY_RERENDER_CHAT:
+				wins = window.parent.getAllConnectedChatWindows(window.client)
+				for w in wins:
+					c = w.widget()
+					if c.rerendered_chat!=False:
+						c.rerendered_chat = False
+						c.force_chat_log_rerender = c.uptime + random.randint(MINIMUM_RERENDER_TIME_FOR_COLOR_CHANGE,MAXIMUM_RERENDER_TIME_FOR_COLOR_CHANGE)
 
 			if not is_script:
 				t = Message(SYSTEM_MESSAGE,'',f"\"{hword}\" is now highlighted with \"{color}\"")
