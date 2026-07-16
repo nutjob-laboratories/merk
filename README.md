@@ -3,7 +3,7 @@
   <b><big>Cross-Platform Open Source IRC Client</big></b><br>
   <i>A multiple-document interface IRC client for Windows, Linux, and macOS</i><br><br>
   <b><big>Current stable release: <a href="https://github.com/nutjob-laboratories/merk/releases/tag/0.052.050">MERK 0.052.050</a></big></b><br>
-  <b><big>Current development build: <a href="https://latest.merk.chat">MERK 0.052.066</a></b></big><br><br>
+  <b><big>Current development build: <a href="https://latest.merk.chat">MERK 0.052.067</a></b></big><br><br>
 </p>
 
 **MERK** is a cross-platform graphical [open source](https://www.gnu.org/licenses/gpl-3.0.en.html) [IRC](https://en.wikipedia.org/wiki/Internet_Relay_Chat) client written in Python 3 with [PyQt5](https://pypi.org/project/PyQt5/) and [Twisted](https://twistedmatrix.com/trac/). It uses a [multiple-document interface](https://en.wikipedia.org/wiki/Multiple-document_interface), much like the classic Windows client [mIRC](https://www.mirc.com/). Unlike mIRC, **MERK** is completely free and open source, and runs on all major platforms. It's designed to be easy and intuitive for new users, while staying powerful and deeply customizable for everyone else. You never have to delve deeper into the interface than you want to.
@@ -36,11 +36,11 @@ All files are packed in [ZIP archives](https://en.wikipedia.org/wiki/ZIP_(file_f
 | :----:    | :----:    | :----:    |
 | User Guide |  PDF  | [MERK User Guide](./MERK_User_Guide.pdf)  |
 | Current Release |  All  | [MERK 0.052.050 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.052.050)  |
-| Zip Archive |  Cross-Platform Python  | [Download MERK 0.052.066 (11.04 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
-| Zip Archive |  Linux Executable | [Download MERK 0.052.066 (97.14 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.052.066 (71.38 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
-| Zip Archive|  Windows Executable | [Download MERK 0.052.066 (48.03 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
-| Windows Installer |  Windows Setup | [Download MERK 0.052.066 (45.56 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
+| Zip Archive |  Cross-Platform Python  | [Download MERK 0.052.067 (11.04 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
+| Zip Archive |  Linux Executable | [Download MERK 0.052.067 (97.14 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.052.067 (71.38 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Zip Archive|  Windows Executable | [Download MERK 0.052.067 (48.03 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
+| Windows Installer |  Windows Setup | [Download MERK 0.052.067 (45.56 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
 # Quick Start
 

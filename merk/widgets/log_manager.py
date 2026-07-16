@@ -414,7 +414,7 @@ class Window(QMainWindow):
 		self.menuJson.triggered.connect(lambda state,s="json": self.toggleSetting(s))
 		fileMenu.addAction(self.menuJson)
 
-		self.menuText = QAction(QIcon(self.parent.round_unchecked_icon),"Text",self)
+		self.menuText = QAction(QIcon(self.parent.round_unchecked_icon),"ASCII Text",self)
 		self.menuText.triggered.connect(lambda state,s="text": self.toggleSetting(s))
 		fileMenu.addAction(self.menuText)
 

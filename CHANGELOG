@@ -52,6 +52,9 @@ What's new:
   re-render, just like with user colors.
 * The log manager no longer displays a "preview" of the exported data.
 * Tweaked the layout of the log manager's export tab.
+* Tweaked the "human readable" log export. Logs now display complete nick plus
+  hostmask for all "speakers" (except for messages by the client), and the
+  individual messages are tab delimited.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
