@@ -46,7 +46,7 @@ class Window(QMainWindow):
 			config.save_settings(config.CONFIG_FILE)
 			self.force_ignore_update = True
 			if self.update:
-				self.parent.reRenderAll(True)
+				self.parent.reRenderAllChats(True)
 				self.parent.rerenderUserlists()
 
 			self.refresh()
@@ -63,14 +63,14 @@ class Window(QMainWindow):
 			config.save_settings(config.CONFIG_FILE)
 			self.force_ignore_update = True
 			if self.update:
-				self.parent.reRenderAll(True)
+				self.parent.reRenderAllChats(True)
 				self.parent.rerenderUserlists()
 
 			self.refresh()
 
 	def refresh_key(self):
 		if self.force_ignore_update:
-			self.parent.reRenderAll(True)
+			self.parent.reRenderAllChats(True)
 			self.parent.rerenderUserlists()
 			self.force_ignore_update = False
 
@@ -113,7 +113,7 @@ class Window(QMainWindow):
 			self.force_ignore_update = True
 			if self.update:
 				self.parent.buildSettingsMenu()
-				self.parent.reRenderAll(True)
+				self.parent.reRenderAllChats(True)
 				self.parent.rerenderUserlists()
 
 			self.keys.clear()
@@ -133,8 +133,10 @@ class Window(QMainWindow):
 	def clickUpdate(self,state):
 		if self.doUpdate.isChecked():
 			self.update = True
+			self.brefresh.setEnabled(False)
 		else:
 			self.update = False
+			self.brefresh.setEnabled(True)
 
 	def toggleTop(self):
 		if bool(self.parent.windowFlags() & Qt.WindowStaysOnTopHint):
@@ -202,6 +204,7 @@ class Window(QMainWindow):
 		self.brefresh.setFixedSize(QSize(config.INTERFACE_BUTTON_SIZE,config.INTERFACE_BUTTON_SIZE))
 		self.brefresh.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 		self.brefresh.setFlat(True)
+		self.brefresh.setEnabled(False)
 
 		self.doUpdate = QCheckBox("Automatically update chats",self)
 		self.doUpdate.stateChanged.connect(self.clickUpdate)

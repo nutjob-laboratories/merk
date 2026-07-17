@@ -513,12 +513,8 @@ class Window(QMainWindow):
 				self.channel_users_display.hide()
 
 		# Create chat display widget
-		# self.chat = QTextBrowser(self)
 		self.chat = ChatViewer(self)
-		self.chat.setFocusPolicy(Qt.NoFocus)
 		self.chat.anchorClicked.connect(self.linkClicked)
-		self.chat.setReadOnly(True)
-
 		self.chat.setContextMenuPolicy(Qt.CustomContextMenu)
 		self.chat.customContextMenuRequested.connect(self.chatMenu)
 
@@ -571,39 +567,41 @@ class Window(QMainWindow):
 
 			fm = QFontMetrics(self.app.font())
 
+			icon_dimensions = int(fm.height()*0.75)
+
 			self.op_icon = QLabel(self)
 			pixmap = QPixmap(OP_USER)
-			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.op_icon.setPixmap(pixmap)
 
 			self.voice_icon = QLabel(self)
 			pixmap = QPixmap(VOICE_USER)
-			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.voice_icon.setPixmap(pixmap)
 
 			self.owner_icon = QLabel(self)
 			pixmap = QPixmap(OWNER_USER)
-			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.owner_icon.setPixmap(pixmap)
 
 			self.admin_icon = QLabel(self)
 			pixmap = QPixmap(ADMIN_USER)
-			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.admin_icon.setPixmap(pixmap)
 
 			self.halfop_icon = QLabel(self)
 			pixmap = QPixmap(HALFOP_USER)
-			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.halfop_icon.setPixmap(pixmap)
 
 			self.key_icon = QLabel(self)
 			pixmap = QPixmap(VISITED_SECURE_ICON)
-			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.key_icon.setPixmap(pixmap)
 
 			self.protected_icon = QLabel(self)
 			pixmap = QPixmap(PROTECTED_USER)
-			pixmap = pixmap.scaled(fm.height(), fm.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+			pixmap = pixmap.scaled(icon_dimensions, icon_dimensions, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 			self.protected_icon.setPixmap(pixmap)
 
 			self.op_icon.setFocusPolicy(Qt.NoFocus)
@@ -626,6 +624,7 @@ class Window(QMainWindow):
 			self.name_spacer.setFocusPolicy(Qt.NoFocus)
 
 		nickLayout = QHBoxLayout()
+		nickLayout.setSpacing(0)
 		if self.window_type!=SERVER_WINDOW:
 			nickLayout.addWidget(self.op_icon)
 			nickLayout.addWidget(self.voice_icon)
@@ -5283,6 +5282,8 @@ class ChatViewer(QTextBrowser):
 		)
 		self.trailing_punct = set('.,:;!?\'")}]')
 		self.setMouseTracking(True)
+		self.setFocusPolicy(Qt.NoFocus)
+		self.setReadOnly(True)
 	
 	def _clean_nick(self, nick):
 		while nick and nick[-1] in self.trailing_punct:

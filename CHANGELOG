@@ -55,6 +55,12 @@ What's new:
 * Tweaked the "human readable" log export. Logs now display complete nick plus
   hostmask for all "speakers" (except for messages by the client), and the
   individual messages are tab delimited.
+* The /ignore and /unignore commands, as well as the ignore manager, now
+  refreshes chats *only*.
+* Tweaked the nickname display on chat windows. The channel status icon is now
+  a little smaller, and the whole display is more compact.
+* Bugfix: "live" toggling of the "show nick display on server windows" option
+  was broken.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

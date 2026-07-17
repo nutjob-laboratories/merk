@@ -6251,7 +6251,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			config.IGNORE_LIST.append(target)
 			config.save_settings(config.CONFIG_FILE)
-			gui.reRenderAll(True)
+			gui.reRenderAllChats(True)
 			gui.rerenderUserlists()
 			if gui.ignore_manager!=None:
 				gui.ignore_manager.refresh()
@@ -6288,7 +6288,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(SYSTEM_MESSAGE,'',f"Unignoring all users")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				config.save_settings(config.CONFIG_FILE)
-				gui.reRenderAll(True)
+				gui.reRenderAllChats(True)
 				gui.rerenderUserlists()
 				if gui.ignore_manager!=None:
 					gui.ignore_manager.refresh()
@@ -6309,7 +6309,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			t = Message(SYSTEM_MESSAGE,'',f"Unignoring user \"{target}\"")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			config.save_settings(config.CONFIG_FILE)
-			gui.reRenderAll(True)
+			gui.reRenderAllChats(True)
 			gui.rerenderUserlists()
 			if gui.ignore_manager!=None:
 				gui.ignore_manager.refresh()

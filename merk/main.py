@@ -1913,6 +1913,8 @@ class Merk(QMainWindow):
 			if hasattr(c,"client"):
 				if hasattr(c,"refreshNickDisplay"):
 					c.refreshNickDisplay()
+				if hasattr(c,"toggleServNicks"):
+					c.toggleServNicks()
 
 	def nickChanged(self,client):
 		plugins.call(self,"nick",client=client,nickname=client.nickname)
@@ -2923,6 +2925,17 @@ class Merk(QMainWindow):
 				c.rerenderEditor()
 			if hasattr(c,"updateTitle"):
 				c.updateTitle()
+		if is_deleted(w)==False:
+			self.MDI.setActiveSubWindow(w)
+		if show_wait: QApplication.restoreOverrideCursor()
+
+	def reRenderAllChats(self,show_wait=False):
+		if show_wait: QApplication.setOverrideCursor(Qt.WaitCursor)
+		w = self.MDI.activeSubWindow()
+		for window in self.MDI.subWindowList():
+			c = window.widget()
+			if hasattr(c,"rerenderChatLog"):
+				c.rerenderChatLog()
 		if is_deleted(w)==False:
 			self.MDI.setActiveSubWindow(w)
 		if show_wait: QApplication.restoreOverrideCursor()
