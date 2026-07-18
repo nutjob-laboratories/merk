@@ -543,7 +543,7 @@ class Window(QMainWindow):
 		if self.window_type==SERVER_WINDOW:
 			if not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
 				self.nick_display.hide()
-		if self.window_type==SERVER_WINDOW: self.mode_display.hide()
+				self.mode_display.hide()
 
 		self.settingsMenu = QMenu("")
 
@@ -940,8 +940,13 @@ class Window(QMainWindow):
 		if self.window_type==SERVER_WINDOW:
 			if not config.DISPLAY_NICK_ON_SERVER_WINDOWS:
 				self.nick_display.hide()
+				self.mode_display.hide()
 			else:
 				self.nick_display.show()
+				if len(self.client.usermodes)>0:
+					self.mode_display.show()
+				else:
+					self.mode_display.hide()
 
 	def unset_mode(self,mode):
 		self.client.mode(self.name,False,mode)
@@ -2175,9 +2180,10 @@ class Window(QMainWindow):
 			self.mode_display.hide()
 		else:
 			self.mode_display.setText("<small>+"+self.client.usermodes+"&nbsp;</small>")
-			if self.window_type!=SERVER_WINDOW:
-				if config.SHOW_USER_INFO_ON_CHAT_WINDOWS:
-					self.mode_display.show()
+			if config.SHOW_USER_INFO_ON_CHAT_WINDOWS and self.window_type!=SERVER_WINDOW:
+				self.mode_display.show()
+			if config.DISPLAY_NICK_ON_SERVER_WINDOWS and self.window_type==SERVER_WINDOW:
+				self.mode_display.show() 
 		self.updateTitle()
 
 		if hasattr(self,"key_icon"):

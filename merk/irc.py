@@ -413,13 +413,12 @@ class IRC_Connection(irc.IRCClient):
 				t = Message(SYSTEM_MESSAGE,'',f"Received CTCP {message_type} from {user}")
 				w.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-			w = self.gui.MDI.activeSubWindow()
-			if w:
-				c = w.widget()
-				if hasattr(c,"client"):
-					if c.client == self:
-						t = Message(SYSTEM_MESSAGE,"",f"Received CTCP {message_type} from {user}")
-						c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			if self.gui.current_window!=None:
+				if hasattr(self.gui.current_window,"client"):
+					if self.gui.current_window.client == self:
+						if self.gui.current_window.window_type==CHANNEL_WINDOW or self.gui.current_window.window_type==PRIVATE_WINDOW:
+							t = Message(SYSTEM_MESSAGE,"",f"Received CTCP {message_type} from {user}")
+							self.gui.current_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 		return irc.IRCClient.ctcpQuery(self, user, channel, messages)
 
@@ -503,7 +502,7 @@ class IRC_Connection(irc.IRCClient):
 				self.last_interaction = self.last_interaction + 1
 
 		if config.REQUEST_CHANNEL_LIST_ON_CONNECTION:
-			if self.uptime>=60:
+			if self.uptime>=PAUSE_FOR_DELAYED_CHANNEL_LIST:
 				if len(self.server_channel_list)==0:
 					if not self.did_delayed_channel_list:
 						self.did_delayed_channel_list = True

@@ -5,6 +5,7 @@
 What's new:
 
 - **The log manager loads faster**. The log manager no longer offers a full file preview of data to export. This speeds up the log manager *a lot*.
+- **Many, *many* bugfixes**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -61,6 +62,13 @@ What's new:
   a little smaller, and the whole display is more compact.
 * Bugfix: "live" toggling of the "show nick display on server windows" option
   was broken.
+* Added a usermode display to the server window nickname display.
+* Bugfix: CTCP notifications would not work properly if the window did not have
+  active focus.
+* Bugfix: private messages, if otherwise unseen, would not write to the active
+  window if the application did not have focus. Now, they will be written to
+  all chat windows associated with the client that received the private
+  message.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

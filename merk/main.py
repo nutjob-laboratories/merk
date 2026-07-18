@@ -1715,12 +1715,11 @@ class Merk(QMainWindow):
 				plugins.call(self,"message",client=client,nickname=nickname,hostmask=hostmask,user=user,channel=target,message=msg,window=None)
 
 			# Client has received a private message, and will
-			# NOT see it, so write it to the current window
-			w = self.MDI.activeSubWindow()
-			if w:
-				c = w.widget()
+			# NOT see it, so write it to all chat windows
+			# associated with this client
+			for w in self.getAllSubChatWindows(client):
 				t = Message(PRIVATE_MESSAGE,user,msg)
-				c.writeText(t)
+				w.widget().writeText(t)
 
 	def action(self,client,user,target,msg):
 
@@ -1929,14 +1928,13 @@ class Merk(QMainWindow):
 		# Write a notification to the current window
 		write_to_server_window = True
 		wid = None
-		w = self.MDI.activeSubWindow()
-		if w:
-			c = w.widget()
+
+		if self.current_window!=None:
 			if hasattr(c,"client"):
-				if c.client == client:
+				if self.current_window.client == client:
 					t = Message(SYSTEM_MESSAGE,"","You are now known as \""+client.nickname+"\"")
-					c.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					wid = c.subwindow_id
+					self.current_window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					wid = self.current_window.subwindow_id
 
 		# Write a notification to the server window,
 		# but *only* if the current window is *not*
