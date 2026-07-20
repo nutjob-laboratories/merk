@@ -57,7 +57,7 @@ What's new:
   hostmask for all "speakers" (except for messages by the client), and the
   individual messages are tab delimited.
 * The /ignore and /unignore commands, as well as the ignore manager, now
-  refreshes chats *only*.
+  refreshes chats and userlists *only*.
 * Tweaked the nickname display on chat windows. The channel status icon is now
   a little smaller, and the whole display is more compact.
 * Bugfix: "live" toggling of the "show nick display on server windows" option
@@ -69,6 +69,13 @@ What's new:
   window if the application did not have focus. Now, they will be written to
   all chat windows associated with the client that received the private
   message.
+* Removed the option to open the ignore manager from the /window command.
+* Bugfix: an error message for the /macro command was worded poorly. It has
+  been changed to match the wording of similar error messages.
+* Tweaked some of the "list" displays for various commands to be more
+  consistant.
+* Changed "window" to "subwindow" in error messages and help text for all
+  commands (at least, the ones dealing with subwindows).
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

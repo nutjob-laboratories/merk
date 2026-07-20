@@ -217,7 +217,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"window next": config.ISSUE_COMMAND_SYMBOL+"window next",
 			config.ISSUE_COMMAND_SYMBOL+"window previous": config.ISSUE_COMMAND_SYMBOL+"window previous",
 			config.ISSUE_COMMAND_SYMBOL+"window hotkey": config.ISSUE_COMMAND_SYMBOL+"window hotkey",
-			config.ISSUE_COMMAND_SYMBOL+"window ignore": config.ISSUE_COMMAND_SYMBOL+"window ignore",
 			config.ISSUE_COMMAND_SYMBOL+"window plugin": config.ISSUE_COMMAND_SYMBOL+"window plugin",
 			config.ISSUE_COMMAND_SYMBOL+"window install": config.ISSUE_COMMAND_SYMBOL+"window install ",
 			config.ISSUE_COMMAND_SYMBOL+"window uninstall": config.ISSUE_COMMAND_SYMBOL+"window uninstall ",
@@ -241,8 +240,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 
 	if not config.ENABLE_HOTKEYS:
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window hotkey",'')
-	if not config.ENABLE_IGNORE:
-		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window ignore",'')
 	if not config.ENABLE_PLUGINS:
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window plugin",'')
 		AUTOCOMPLETE_MULTI.pop(config.ISSUE_COMMAND_SYMBOL+"window install",'')
@@ -413,7 +410,6 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	]
 
 	if config.ENABLE_HOTKEYS: W_COMMAND.append("<b>hotkey</b>")
-	if config.ENABLE_IGNORE: W_COMMAND.append("<b>ignore</b>")
 	if config.ENABLE_PLUGINS:
 		W_COMMAND.append("<b>plugin</b>")
 		W_COMMAND.append("<b>install</b>")
@@ -439,7 +435,7 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 	COMMAND_HELP_INFORMATION = [
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"help [COMMAND]</b>", "Displays command usage information" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me MESSAGE...</b>", "Sends a CTCP action message to the current chat" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me TARGET MESSAGE...</b>", "Sends a CTCP action message to a chat, only callable from server windows" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"me TARGET MESSAGE...</b>", "Sends a CTCP action message to a chat, only callable from server subwindows" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"msg TARGET MESSAGE...</b>", "Sends a message" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"notice TARGET MESSAGE...</b>", "Sends a notice" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"join CHANNEL [KEY]</b>", "Joins a channel" ],
@@ -467,16 +463,16 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnect SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server & executes connection script" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"xconnectssl SERVER [PORT] [PASSWORD]</b>", "Connects to an IRC server via SSL & executes connection script" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"script FILENAME [ARGUMENTS]</b>", "Executes a list of commands in a file" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style [SERVER] [WINDOW]</b>", "Opens up a window's text style editor" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"style [SERVER] [WINDOW]</b>", "Opens up a subwindow's text style editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"alias [TOKEN] [TEXT...]</b>", "Creates an alias that can be referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unalias TOKEN [...]</b>", "Deletes the alias(es) referenced by "+config.ALIAS_INTERPOLATION_SYMBOL+"TOKEN" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"edit [FILENAME]</b>", "Opens the script editor" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"play FILENAME</b>", "Plays a WAV file" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print [SERVER] [WINDOW] TEXT...</b>", "Prints text to a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] [WINDOW]</b>", "Maximizes a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] [WINDOW]</b>", "Minimizes a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] [WINDOW]</b>", "Restores a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [SERVER] [WINDOW]</b>", "Clears a window's chat display" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"print [SERVER] [WINDOW] TEXT...</b>", "Prints text to a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"maximize [SERVER] [WINDOW]</b>", "Maximizes a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"minimize [SERVER] [WINDOW]</b>", "Minimizes a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"restore [SERVER] [WINDOW]</b>", "Restores a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"clear [SERVER] [WINDOW]</b>", "Clears a subwindow's chat display" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"exit [SECONDS]</b>", "Exits the client, with an optional pause of SECONDS before exit" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"config [SETTING] [VALUE...]</b>", "Changes a setting, or displays one or all settings in the configuration file. <i><b>Caution</b>: use at your own risk</i>" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ignore USER</b>", "Hides a user's chat. USER can be a nickname or hostmask" ],
@@ -484,13 +480,13 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"find [TERMS]</b>", "Finds filenames that can be found by other commands; use <b>*</b> for multi-character wildcards, and <b>?</b> for single character wildcards" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ping USER [TEXT]</b>", "Sends a CTCP ping to a user" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"ctcp REQUEST USER</b>", "Sends a CTCP request; valid requests are TIME, VERSION, USERINFO, SOURCE, or FINGER" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat window for NICKNAME" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"private NICKNAME [MESSAGE]</b>", "Opens a private chat subwindow for NICKNAME" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"delay SECONDS COMMAND...</b>", "Executes COMMAND after SECONDS seconds" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"hide [SERVER] [WINDOW]</b>", "Hides a subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow and shifts focus to that window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"show [SERVER] [WINDOW]</b>", "Shows a subwindow and shifts focus to that subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"window [COMMAND] [X] [Y]</b>", f"Manipulates the main application window. Valid commands are {WINDOW_COMMANDS}" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"close [SERVER] [WINDOW]</b>", "Closes a subwindow" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [SERVER] [WINDOW] TEXT...</b>", "Prints a system message to a window" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"prints [SERVER] [WINDOW] TEXT...</b>", "Prints a system message to a subwindow" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"quitall [MESSAGE]</b>", "Disconnects from all IRC servers" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"size [SERVER] [WINDOW] WIDTH HEIGHT</b>", "Resizes a subwindow. Call without arguments to see the current subwindow's size" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"move [SERVER] [WINDOW] X Y</b>", "Moves a subwindow. Call without arguments to see the current subwindow's coordinates" ],
@@ -521,10 +517,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"_trace TARGET</b>", f"Executes a trace on a server or user. May only be issued by server operators" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"browser URL</b>", f"Opens URL in the default browser" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"folder PATH</b>", f"Opens PATH in the default file manager" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a window by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"rerender [SERVER] [WINDOW]</b>", "Re-renders the chat log of a window" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a window, and ends a script" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"fade [SERVER] [WINDOW] PERCENTAGE</b>", f"Sets the transparency of a subwindow by PERCENTAGE. Call without arguments to see the current subwindow's transparency" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"warn [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"rerender [SERVER] [WINDOW]</b>", "Re-renders the chat log of a subwindow" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"error [SERVER] [WINDOW] TEXT...</b>", "Prints an error message to a subwindow, and ends a script" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"highlight WORD [COLOR]</b>", "Renders WORD in COLOR in chat. Call without any arguments to see a list of all highlighted words" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD. Call without any arguments to see a list of all highlighted words. Pass <b>*</b> as the only argument to remove all word highlights" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"toggle FEATURE</b>", f"Toggles various input features. Valid features are {TOGGLE_COMMANDS}" ],
@@ -1388,7 +1384,7 @@ def dumpAllConfig(window,count,results):
 	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 	for t in results:
 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} config search results")
+	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End config search results")
 	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 def display_find_files(window,target):
@@ -1404,7 +1400,7 @@ def display_find_files(window,target):
 	for f in found:
 		t = Message(SYSTEM_MESSAGE,'',f"{f}")
 		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
+	t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End file search results")
 	window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 	if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.restoreOverrideCursor()
 
@@ -1891,7 +1887,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				for word in config.HIGHLIGHTED_WORDS:
 					t = Message(SYSTEM_MESSAGE,'',f"{word} - <span style=\"color:{config.HIGHLIGHTED_WORDS[word]};\">{config.HIGHLIGHTED_WORDS[word]}</span>")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} highlighted words")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End highlighted words")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -1999,7 +1995,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				for word in config.HIGHLIGHTED_WORDS:
 					t = Message(SYSTEM_MESSAGE,'',f"{word} - <span style=\"color:{config.HIGHLIGHTED_WORDS[word]};\">{config.HIGHLIGHTED_WORDS[word]}</span>")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} highlighted words")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End highlighted words")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2038,10 +2034,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"error cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"error cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -2089,10 +2085,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"error cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"error cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"error cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -2271,10 +2267,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -2319,10 +2315,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"warn cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -2432,10 +2428,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: window not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: subwindow not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',f"Window not found")
+				t = Message(ERROR_MESSAGE,'',f"Subwindow not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 			return True
@@ -2482,10 +2478,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -2499,10 +2495,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -2553,10 +2549,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
-					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+					t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -2569,10 +2565,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Window transparency not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}fade: Subwindow transparency not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
-					t = Message(ERROR_MESSAGE,'',"Window transparency not found")
+					t = Message(ERROR_MESSAGE,'',"Subwindow transparency not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -3115,7 +3111,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				for i in r:
 					t = Message(SYSTEM_MESSAGE,'',f"{i}")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(r)} binds")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End binds")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				t = Message(SYSTEM_MESSAGE,'',f"No binds found")
@@ -3154,16 +3150,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if gui.hotkey_manager!=None:
 					gui.hotkey_manager.refresh()
 			return True
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'bind':
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',"Usage: "+config.ISSUE_COMMAND_SYMBOL+"bind SEQUENCE COMMAND...")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			return True
 
 	# |--------|
 	# | /macro |
@@ -3190,7 +3176,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				for i in r:
 					t = Message(SYSTEM_MESSAGE,'',f"{i}")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(r)} macros")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End macros")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				t = Message(SYSTEM_MESSAGE,'',f"No macros found")
@@ -3205,10 +3191,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Error tokenizing command. Try quotation marks")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}macro: Error tokenizing arguments. Try using double quotation marks")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Error tokenizing command. Try quotation marks")
+				t = Message(ERROR_MESSAGE,'',"Error tokenizing arguments. Try using double quotation marks")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -3494,13 +3480,13 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					dtype = "string"
 				else:
 					dtype = "unknown"
-				t = Message(SYSTEM_MESSAGE,'',f"{count}) {s} = \"{settings[s]}\" ({dtype})")
+				t = Message(SYSTEM_MESSAGE,'',f"{s} = \"{settings[s]}\" ({dtype})")
 				results.append(t)
 			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {count} user settings")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			for t in results:
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} user search results")
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End user search results")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -3526,16 +3512,11 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(USER.SASL)} SASL account")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-				counter = 0
 				for hostid in USER.SASL:
-					counter = counter + 1
-					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {hostid} - {USER.SASL[hostid][0]}")
+					t = Message(SYSTEM_MESSAGE,'',f"{hostid} - {USER.SASL[hostid][0]}")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-				if len(USER.SASL)>1:
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(USER.SASL)} SASL accounts")
-				else:
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(USER.SASL)} SASL account")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End SASL accounts")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -3550,7 +3531,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if type(settings[my_setting]) is list or type(settings[my_setting]) is dict:
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 user settings containing \"{my_setting}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End 0 user search results")
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End user search results")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
@@ -3590,9 +3571,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} user setting containing \"{my_setting}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-				counter = 0
 				for r in results:
-					counter = counter + 1
 					if type(settings[r]).__name__=='bool':
 						dtype = "boolean"
 					elif type(settings[r]).__name__=='int':
@@ -3601,13 +3580,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						dtype = "string"
 					else:
 						dtype = "unknown"
-					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {r} = \"{settings[r]}\" ({dtype})")
+					t = Message(SYSTEM_MESSAGE,'',f"{r} = \"{settings[r]}\" ({dtype})")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-				if len(results)>1:
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} user search results")
-				else:
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} user search result")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End user search results")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4315,19 +4291,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if is_script:
 								add_halt(script_id)
 								if config.DISPLAY_SCRIPT_ERRORS:
-									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
+									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid subwindow position")
 									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 								return True
-							t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+							t = Message(ERROR_MESSAGE,'',"Not a valid subwindow position")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					else:
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -4339,19 +4315,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if is_script:
 								add_halt(script_id)
 								if config.DISPLAY_SCRIPT_ERRORS:
-									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
+									t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid subwindow position")
 									window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 								return True
-							t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+							t = Message(ERROR_MESSAGE,'',"Not a valid subwindow position")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					else:
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -4401,19 +4377,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid subwindow position")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+					t = Message(ERROR_MESSAGE,'',"Not a valid subwindow position")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4453,19 +4429,19 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid window position")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: Usage: "+config.ISSUE_COMMAND_SYMBOL+"move: Not a valid subwindow position")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+					t = Message(ERROR_MESSAGE,'',"Not a valid subwindow position")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Window \""+window.name+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}move: Subwindow \""+window.name+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+window.name+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+window.name+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4533,10 +4509,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 							return True
-						t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
@@ -4548,10 +4524,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -4600,10 +4576,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4642,10 +4618,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Window \""+window.name+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}size: Subwindow \""+window.name+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+window.name+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+window.name+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4744,10 +4720,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -4794,10 +4770,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"prints cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -4897,10 +4873,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}close: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}close: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
@@ -4913,10 +4889,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}close: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}close: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -4940,10 +4916,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}close: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}close: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
-					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+					t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -4983,9 +4959,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				results.append(entry)
 
 			if len(results)>1:
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} windows")
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} subwindows")
 			else:
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} window")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} subwindow")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			mdi_viewport = gui.MDI.viewport()
@@ -5010,10 +4986,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(SYSTEM_MESSAGE,'',f"{counter}) {r}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-			if len(results)>1:
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} windows")
-			else:
-				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} window")
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End subwindow list")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			return True
@@ -5226,14 +5199,12 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					return True
 				p = plugins.list_all_plugins()
 				if len(p)>0:
-					count = 0
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(p)} plugins")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					for plug in p:
-						count = count + 1
-						t = Message(SYSTEM_MESSAGE,'',f"{count}) {plug} ({p[plug]})")
+						t = Message(SYSTEM_MESSAGE,'',f"{plug} ({p[plug]})")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(p)} plugins")
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End plugin list")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
 					t = Message(SYSTEM_MESSAGE,'',f"No plugins installed")
@@ -5565,22 +5536,6 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.openHotkeys()
 				return True
 
-		# /window ignore
-		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
-			if tokens[1].lower()=='ignore':
-				if not config.ENABLE_IGNORE:
-					if is_script:
-						add_halt(script_id)
-						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window ignore: Ignore is disabled")
-							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-						return True
-					t = Message(ERROR_MESSAGE,'',f"Ignore is disabled")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					return True
-				gui.openIgnore()
-				return True
-
 		# /window fade NUMBER
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
 			if tokens[1].lower()=='fade':
@@ -5698,10 +5653,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if is_script:
 						add_halt(script_id)
 						if config.DISPLAY_SCRIPT_ERRORS:
-							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window move: Not a valid window position")
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window move: Not a valid subwindow position")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						return True
-					t = Message(ERROR_MESSAGE,'',"Not a valid window position")
+					t = Message(ERROR_MESSAGE,'',"Not a valid subwindow position")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -5829,10 +5784,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}show: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}show: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -5845,10 +5800,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}show: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}show: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -5881,10 +5836,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}show: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}show: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
-					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+					t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -5925,10 +5880,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}hide: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}hide: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -5940,10 +5895,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}hide: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}hide: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -5974,10 +5929,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}hide: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}hide: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
-					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+					t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -6203,7 +6158,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			for f in flist:
 				t = Message(SYSTEM_MESSAGE,'',f"{f}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} file results")
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End file results")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			if config.SEARCH_INSTALL_DIRECTORY_FOR_FILES: QApplication.restoreOverrideCursor()
 			return True
@@ -6452,7 +6407,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					dtype = "string"
 				else:
 					dtype = "unknown"
-				t = Message(SYSTEM_MESSAGE,'',f"{count}) {s} = \"{settings[s]}\" ({dtype})")
+				t = Message(SYSTEM_MESSAGE,'',f"{s} = \"{settings[s]}\" ({dtype})")
 				results.append(t)
 			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: dumpAllConfig(window,count,results))
 			return True
@@ -6473,7 +6428,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				my_setting=="default_python_indentation":
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found 0 config settings containing \"{my_setting}\"")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End 0 config search results")
+					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"End config search results")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
@@ -6513,9 +6468,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config setting containing \"{my_setting}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-				counter = 0
 				for r in results:
-					counter = counter + 1
 					if type(settings[r]).__name__=='bool':
 						dtype = "boolean"
 					elif type(settings[r]).__name__=='int':
@@ -6524,13 +6477,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						dtype = "string"
 					else:
 						dtype = "unknown"
-					t = Message(SYSTEM_MESSAGE,'',f"&nbsp;&nbsp;{counter}) {r} = \"{settings[r]}\" ({dtype})")
+					t = Message(SYSTEM_MESSAGE,'',f"{r} = \"{settings[r]}\" ({dtype})")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-				if len(results)>1:
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} config search results")
-				else:
-					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {len(results)} config search result")
+				t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End config search results")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -6667,7 +6617,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 				t = Message(SYSTEM_MESSAGE,'',f"Setting \"{my_setting}\" to \"{my_value}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				t = Message(SYSTEM_MESSAGE,'',f"Use \"{config.ISSUE_COMMAND_SYMBOL}window restart\" to restart {APPLICATION_NAME} or \"{config.ISSUE_COMMAND_SYMBOL}reload\" to reload and apply all settings")
+				t = Message(SYSTEM_MESSAGE,'',f"Use \"{config.ISSUE_COMMAND_SYMBOL}window restart\" to restart {APPLICATION_NAME} or \"{config.ISSUE_COMMAND_SYMBOL}reload\" to reload and apply settings")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
 				if is_script:
@@ -6954,7 +6904,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			for a in ALIAS:
 				t = Message(SYSTEM_MESSAGE,'',config.ALIAS_INTERPOLATION_SYMBOL+a+" = \""+ALIAS[a]+"\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End {count} aliases")
+			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End aliases")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -7424,10 +7374,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"print cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"print cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -7474,10 +7424,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+"print cannot print to all subwindows")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"print cannot print to all windows")
+				t = Message(ERROR_MESSAGE,'',config.ISSUE_COMMAND_SYMBOL+"print cannot print to all subwindows")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
 
@@ -7923,10 +7873,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -7937,10 +7887,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -7962,10 +7912,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}style: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				else:
-					t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+					t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -7992,10 +7942,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -8007,10 +7957,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -8034,10 +7984,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}clear: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -8067,10 +8017,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restore: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restore: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -8083,10 +8033,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restore: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restore: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -8117,10 +8067,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restore: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}restore: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -8149,10 +8099,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}minimize: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}minimize: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -8164,10 +8114,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}minimize: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}minimize: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -8196,10 +8146,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}minimize: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}minimize: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -8227,10 +8177,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}maximize: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}maximize: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 				if server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
@@ -8241,10 +8191,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						if is_script:
 							add_halt(script_id)
 							if config.DISPLAY_SCRIPT_ERRORS:
-								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}maximize: Window \""+target+"\" not found")
+								t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}maximize: Subwindow \""+target+"\" not found")
 								window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 						else:
-							t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+							t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 			if is_script:
@@ -8275,10 +8225,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if is_script:
 					add_halt(script_id)
 					if config.DISPLAY_SCRIPT_ERRORS:
-						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}maximize: Window \""+target+"\" not found")
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}maximize: Subwindow \""+target+"\" not found")
 						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
-				t = Message(ERROR_MESSAGE,'',"Window \""+target+"\" not found")
+				t = Message(ERROR_MESSAGE,'',"Subwindow \""+target+"\" not found")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
@@ -9866,19 +9816,19 @@ class ScriptThread(QThread):
 					if arg.lower()=='server':
 						if self.window.window_type!=SERVER_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in server windows"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in server subwindows"])
 							no_errors = False
 							break
 					elif arg.lower()=='channel':
 						if self.window.window_type!=CHANNEL_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in channel windows"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in channel subwindows"])
 							no_errors = False
 							break
 					elif arg.lower()=='private':
 						if self.window.window_type!=PRIVATE_WINDOW:
 							if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in private chat windows"])
+								self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script must be ran in private chat subwindows"])
 							no_errors = False
 							break
 					else:
@@ -9920,7 +9870,7 @@ class ScriptThread(QThread):
 						if self.window.window_type==SERVER_WINDOW: reason = "server"
 						if self.window.window_type==CHANNEL_WINDOW: reason = "channel"
 						if config.DISPLAY_ERROR_FOR_RESTRICT_AND_ONLY_VIOLATION:
-							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script is restricted from running in {reason} windows"])
+							self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: Script is restricted from running in {reason} subwindows"])
 						no_errors = False
 						break
 
@@ -11349,7 +11299,7 @@ class ScriptThread(QThread):
 								script_only_command = True
 
 								if not is_valid:
-									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find window \"{target}\""])
+									self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find subwindow \"{target}\""])
 									loop = False
 								else:
 									continue
@@ -11405,7 +11355,7 @@ class ScriptThread(QThread):
 										is_valid = False
 									script_only_command = True
 									if not is_valid:
-										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find window \"{other_target}\" on \"{target}\""])
+										self.handle_script_error.emit([self.gui,self.window,f"{os.path.basename(filename)}, line {line_number}: context cannot find subwindow \"{other_target}\" on \"{target}\""])
 										loop = False
 								continue
 

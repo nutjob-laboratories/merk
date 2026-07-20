@@ -256,7 +256,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"unbind",
 			cmdsymbol+"window hotkey",
 			cmdsymbol+"window restart",
-			cmdsymbol+"window ignore",
 			cmdsymbol+"style",
 			cmdsymbol+"window plugin",
 			cmdsymbol+"call",
@@ -389,7 +388,6 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 		if not config.ENABLE_IGNORE:
 			merk.remove(cmdsymbol+"ignore")
 			merk.remove(cmdsymbol+"unignore")
-			merk.remove(cmdsymbol+"window ignore")
 		if not config.ENABLE_HOTKEYS:
 			merk.remove(cmdsymbol+"bind")
 			merk.remove(cmdsymbol+"unbind")
