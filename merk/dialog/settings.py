@@ -7909,7 +7909,7 @@ class Dialog(QDialog):
 			if self.do_status_bars: self.parent.updateStatusBar()
 			if self.do_list_refresh: self.parent.toggleRefreshButton()
 			if self.do_serv_toolbar: self.parent.toggleServerToolbar()
-			if self.refreshTopics: self.parent.refreshAllTopic()
+			if self.refreshTopics or self.refreshTitles: self.parent.refreshAllTopic()
 			if self.rerender: self.parent.reRenderAll()
 			if self.rerenderUsers: self.parent.rerenderUserlists()
 			if self.rerenderStyle: self.parent.reApplyStyle()

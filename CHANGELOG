@@ -76,6 +76,19 @@ What's new:
   consistant.
 * Changed "window" to "subwindow" in error messages and help text for all
   commands (at least, the ones dealing with subwindows).
+* Added a "spacer" in between the topic editor and the user count widget (on
+  channel subwindows).
+* Removed the "users" text in the channel user count display; the display now
+  only shows how many users there are in a channel.
+* Bugfix: server profiles could not be edited (in the connection dialog) once
+  created.
+* The channel user count display is now hidden if there is only one person in
+  the channel.
+* Bugfix: enabling topic display in subwindow title bars would crash the
+  client.
+* Bugfix: toggling the "channel information display" wouldn't always completely
+  hide the channel information display (the user count, if enabled, would still
+  be visible).
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

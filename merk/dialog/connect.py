@@ -445,21 +445,6 @@ class Dialog(QDialog):
 		port = self.port.text()
 		hostid = f"{host}:{port}"
 
-		if len(self.host.text().strip())>0 and len(self.port.text().strip())>0:
-			
-			if self.use_profile:
-				if hostid in user.PROFILES:
-					n = user.PROFILES[hostid][0]
-					a = user.PROFILES[hostid][1]
-					u = user.PROFILES[hostid][2]
-					r = user.PROFILES[hostid][3]
-
-					self.nick.setText(n)
-					self.alternative.setText(a)
-					self.username.setText(u)
-					self.realname.setText(r)
-					self.profile.setChecked(True)
-
 		if self.check_info()==False:
 			self.ok_button.setEnabled(False)
 			self.sasl.setEnabled(False)

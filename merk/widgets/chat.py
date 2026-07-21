@@ -460,14 +460,14 @@ class Window(QMainWindow):
 				border_color = "black"
 
 			# Channel name display
-			self.channel_mode_display = QLabel("<b>"+self.name+"</b>")
+			self.channel_mode_display = QLabel("<small><b>"+self.name+"</b></small>")
 			self.channel_mode_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
 
 			self.channel_mode_display.setContextMenuPolicy(Qt.CustomContextMenu)
 			self.channel_mode_display.customContextMenuRequested.connect(self.buildOperatorMenu)
 
 			# Channel name display
-			self.channel_users_display = QLabel("<b><small>1 user</small></b>")
+			self.channel_users_display = QLabel("<b><small>1</small></b>")
 			self.channel_users_display.setStyleSheet(f"border: 1px solid {border_color}; padding: 0px;")
 			self.channel_users_display.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
 			
@@ -483,6 +483,8 @@ class Window(QMainWindow):
 			p = self.topic.palette()
 			p.setColor(QPalette.Base, QColor(col))
 			self.topic.setPalette(p)
+
+			self.topic_spacer = QLabel(' ')
 
 			# Create the userlist
 			self.userlist = QListWidget(self)
@@ -690,6 +692,7 @@ class Window(QMainWindow):
 			topicLayout = QHBoxLayout()
 			topicLayout.addWidget(self.channel_mode_display)
 			topicLayout.addWidget(self.topic)
+			topicLayout.addWidget(self.topic_spacer)
 			topicLayout.addWidget(self.channel_users_display)
 
 			if not config.SHOW_CHANNEL_TOPIC:
@@ -1110,7 +1113,7 @@ class Window(QMainWindow):
 
 		if self.is_privileged():
 
-			e = textSeparator(self,"Set Channel Modes")
+			e = textSeparator(self,"Change Channel Modes")
 			opmenu.addAction(e)
 
 			if 'm' in channel_modes:
@@ -1942,6 +1945,7 @@ class Window(QMainWindow):
 		self.channel_mode_display.hide()
 		self.topic.hide()
 		self.channel_users_display.hide()
+		self.topic_spacer.hide()
 
 	def showTopic(self):
 		self.channel_mode_display.show()
@@ -1952,8 +1956,10 @@ class Window(QMainWindow):
 		self.topic.show()
 		if config.SHOW_USER_COUNT_DISPLAY:
 			self.channel_users_display.show()
+			self.topic_spacer.show()
 		else:
 			self.channel_users_display.hide()
+			self.topic_spacer.hide()
 
 	def tickUptime(self,uptime):
 
@@ -2230,10 +2236,10 @@ class Window(QMainWindow):
 				modes = ''
 
 			if len(modes)>0:
-				self.channel_mode_display.setText("<b>"+self.name+"</b> <small>"+modes+"</small>")
+				self.channel_mode_display.setText("<small><b>"+self.name+"</b> "+modes+"</small>")
 				self.setTopic(self.channel_topic)
 			else:
-				self.channel_mode_display.setText("<b>"+self.name+"</b>")
+				self.channel_mode_display.setText("<small><b>"+self.name+"</b></small>")
 				self.setTopic(self.channel_topic)
 		else:
 			self.setWindowTitle(self.name)
@@ -3095,10 +3101,20 @@ class Window(QMainWindow):
 			else:
 				normal.append(nickname)
 
-		if self.user_count==1:
-			self.channel_users_display.setText("<b><small>1 user</small></b>")
+		# Update the user count display
+		# Hide the user count display if there is only
+		# one person in the channel (which should be the user)
+		self.channel_users_display.setText(f"<b><small>{self.user_count}</small></b>")
+		if self.user_count>1:
+			if config.SHOW_USER_COUNT_DISPLAY and config.SHOW_CHANNEL_TOPIC:
+				self.channel_users_display.show()
+				self.topic_spacer.show()
+			else:
+				self.channel_users_display.hide()
+				self.topic_spacer.hide()
 		else:
-			self.channel_users_display.setText(f"<b><small>{self.user_count} users</small></b>")
+			self.channel_users_display.hide()
+			self.topic_spacer.hide()
 
 		# Store a list of the nicks in this channel
 		self.nicks = owners + admins + halfops + ops + voiced + normal
@@ -4421,6 +4437,7 @@ class TopicEdit(QPlainTextEdit):
 
 		# Handle window title
 		if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE:
+			text = strip_color(self.parent.channel_topic)
 			if len(text)>0:
 				if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
 					self.parent.setWindowTitle(self.parent.name+" - "+text)
