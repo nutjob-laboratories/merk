@@ -254,6 +254,8 @@ class Window(QMainWindow):
 		self.initial_userlist_width = 0
 		self.highlighted_words = config.HIGHLIGHTED_WORDS
 		self.doing_automated_save = False
+		self.plugin_loaded_style = None
+		self.plugin_title = None
 
 		# The window's opacity starts at 100%
 		self.opacity = 100
@@ -2244,6 +2246,8 @@ class Window(QMainWindow):
 		else:
 			self.setWindowTitle(self.name)
 			self.parent.buildWindowsMenu()
+
+		if self.plugin_title!=None: self.setWindowTitle(self.plugin_title)
 
 	def menuBanUser(self,nick,hostmask):
 		if hostmask!=None:
@@ -4453,6 +4457,8 @@ class TopicEdit(QPlainTextEdit):
 				self.parent.setWindowTitle(self.parent.name)
 			else:
 				self.parent.setWindowTitle(' ')
+
+		if self.parent.plugin_title!=None: self.parent.setWindowTitle(self.parent.plugin_title)
 
 	def enterEvent(self, event):
 		if not config.ALLOW_TOPIC_EDIT:

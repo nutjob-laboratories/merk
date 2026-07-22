@@ -63,6 +63,9 @@ class Window():
 
 	def style(self,filename=None,save=False):
 		if filename==None:
+
+			if self._window.plugin_loaded_style!=None: return self._window.plugin_loaded_style
+
 			if self._window.window_type==SERVER_WINDOW:
 				fname = os.path.join(styles.STYLE_DIRECTORY,styles.encodeStyleNameServer(self._window.client.server,self._window.client.port))
 
@@ -87,12 +90,14 @@ class Window():
 			f = commands.find_style(filename,STYLE_FILE_EXTENSION)
 			if f!=None:
 				self._window.applyStyle(f)
+				self._window.plugin_loaded_style = f
 				if save:
 					s = styles.loadStyleFile(f)
 					if self._window.window_type==SERVER_WINDOW:
 						styles.saveStyle(self._window.client,self._window.name,s,True)
 					else:
 						styles.saveStyle(self._window.client,self._window.name,s,False)
+					self._window.plugin_loaded_style = None
 				else:
 					return
 
@@ -192,6 +197,32 @@ class Window():
 		if title==None:
 			return self._window.windowTitle()
 		else:
+			if title.strip()=='':
+				self._window.plugin_title = None
+				if self._window.window_type==CHANNEL_WINDOW:
+					
+					if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE:
+						text = strip_color(self._window.channel_topic)
+						if len(text)>0:
+							if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
+								self._window.setWindowTitle(self._window.name+" - "+text)
+							else:
+								self._window.setWindowTitle(text)
+						else:
+							if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
+								self._window.setWindowTitle(self._window.name)
+							else:
+								self._window.setWindowTitle(' ')
+					else:
+						if config.SHOW_CHANNEL_NAME_IN_SUBWINDOW_TITLE:
+							self._window.setWindowTitle(self._window.name)
+						else:
+							self._window.setWindowTitle(' ')
+
+				else:
+					self._window.setWindowTitle(self._window.name)
+				return
+			self._window.plugin_title = title
 			self._window.setWindowTitle(title)
 
 	def script(self,script,arguments=[]):
@@ -350,12 +381,10 @@ class Window():
 		return False
 
 	def execute(self,command):
-		if hasattr(self._window,"handleHotkeyCommand"):
-			self._window.handleHotkeyCommand(command)
-		else:
-			if hasattr(self._window,"widget"):
-				w = self._window.widget()
-				if hasattr(w,"handleHotkeyCommand"): w.handleHotkeyCommand(command)
+		self._window.handleHotkeyCommand(command)
+
+	def input(self,input_string):
+		self._window.injectInput(input_string)
 
 	def client(self):
 		return self._window.client
