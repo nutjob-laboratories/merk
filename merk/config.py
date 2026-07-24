@@ -478,9 +478,11 @@ SHOW_AWAY_MESSAGE_IN_NICK_DISPLAY_TOOLTIP = True
 SHOW_TIMESTAMPS_IN_UTC = False
 MAX_LOG_DISPLAY_SIZE = 5000
 LIMIT_LOG_VIEW = True
+LOG_WARNING_SIZE = 30
 
 def build_settings():
 	settings = {
+		"log_warning_size": LOG_WARNING_SIZE,
 		"use_maximum_log_view_size": LIMIT_LOG_VIEW,
 		"maximum_log_view_size": MAX_LOG_DISPLAY_SIZE,
 		"timestamps_in_utc": SHOW_TIMESTAMPS_IN_UTC,
@@ -918,6 +920,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "log_warning_size" in settings:
+		settings["log_warning_size"] = LOG_WARNING_SIZE
 	if not "use_maximum_log_view_size" in settings:
 		settings["use_maximum_log_view_size"] = LIMIT_LOG_VIEW
 	if not "maximum_log_view_size" in settings:
@@ -2218,6 +2222,7 @@ def load_settings(filename):
 	global SHOW_TIMESTAMPS_IN_UTC
 	global MAX_LOG_DISPLAY_SIZE
 	global LIMIT_LOG_VIEW
+	global LOG_WARNING_SIZE
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2227,6 +2232,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		LOG_WARNING_SIZE = settings["log_warning_size"]
 		LIMIT_LOG_VIEW = settings["use_maximum_log_view_size"]
 		MAX_LOG_DISPLAY_SIZE = settings["maximum_log_view_size"]
 		SHOW_TIMESTAMPS_IN_UTC = settings["timestamps_in_utc"]

@@ -5,7 +5,8 @@
 What's new:
 
 - **The log manager loads faster**. The log manager no longer offers a full file preview of data to export. This speeds up the log manager *a lot*.
-- **New Window class method: `input()`**. This allows plugins to send a string to a subwindow, and treat it exactly as if that string was typed into the subwindow's text input widget and the return key was pressed.
+- **New Window class method: `input()`**. This allows plugins to send a string to a subwindow, and treat it exactly as if that string was typed into the subwindow's text input widget and the return key was pressed. Optionally, this method can be used to set the value in the text input widget *without* "executing" it.
+- **MERK automatically offers to backup large log files**. Since very large log files can cause **MERK** to run slowly and consume an excessive amount of resources, large log files are now searched for on startup, and if any are found, an option to backup the large log files is offered. Complete logs will be exported to a human readable format; the in-application log will be trimmed.
 - **Many, many, *many* bugfixes**. There are bugfixes for the application, plugin API, and the core IRC client networking code.
 
 |==============================================================================|
@@ -90,6 +91,18 @@ What's new:
 * Bugfix: toggling the "channel information display" wouldn't always completely
   hide the channel information display (the user count, if enabled, would still
   be visible).
+* The text input option menu's options have been re-written to make what each
+  option does more clear.
+* Bugfix: toggling options in the text input menu would not update the settings
+  menu, and vice-versa.
+* Added toggles for emoji and ASCIImoji shortcodes to the settings menu's
+  input submenu.
+* Made some menu entries in the settings menu clearer.
+* Since large logs can cause MERK to run slowly and consume more resources,
+  MERK now looks for large logs on startup and offers to back them up. By
+  default, "large" is considered to be 30MB or larger, but this can be changed
+  in the configuration file or with the /config command (by changing the
+  "log_warning_size" setting).
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -107,7 +120,9 @@ What's new:
 * New Window class method: "input()", which sends a string to the window, and
   treats it EXACTLY as if it was entered into the window's text input widget
   and the return key was pressed. This will both send chat to the window (if it
-  is a channel or private chat window) and execute commands.
+  is a channel or private chat window) and execute commands. An optional
+  boolean argument can be passed to the method that will only set the string in
+  the text input widget and NOT execute it.
 * Bugfix: if a plugin set a subwindow title, the subwindow title could be
   "overwritten" by the application and changed back to the default. Subwindow
   titles set by plugins are now persistent, and can "reset" subwindow titles to

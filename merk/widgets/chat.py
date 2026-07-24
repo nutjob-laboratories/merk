@@ -1748,6 +1748,7 @@ class Window(QMainWindow):
 			config.ENABLE_MARKDOWN_MARKUP = True
 		self.save_config()
 		self.parent.rebuildAllInputMenus()
+		self.parent.buildSettingsMenu()
 
 	def settingsInputColor(self):
 		if config.ENABLE_IRC_COLOR_MARKUP:
@@ -1756,6 +1757,7 @@ class Window(QMainWindow):
 			config.ENABLE_IRC_COLOR_MARKUP = True
 		self.save_config()
 		self.parent.rebuildAllInputMenus()
+		self.parent.buildSettingsMenu()
 
 	def settingsEmoji(self):
 		if config.ENABLE_EMOJI_SHORTCODES:
@@ -1764,6 +1766,7 @@ class Window(QMainWindow):
 			config.ENABLE_EMOJI_SHORTCODES = True
 		self.save_config()
 		self.parent.rebuildAllInputMenus()
+		self.parent.buildSettingsMenu()
 
 	def settingsAsciimoji(self):
 		if config.ENABLE_ASCIIMOJI_SHORTCODES:
@@ -1772,6 +1775,7 @@ class Window(QMainWindow):
 			config.ENABLE_ASCIIMOJI_SHORTCODES = True
 		self.save_config()
 		self.parent.rebuildAllInputMenus()
+		self.parent.buildSettingsMenu()
 
 	def settingsHighlight(self):
 		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
@@ -1781,6 +1785,7 @@ class Window(QMainWindow):
 		self.save_config()
 		self.parent.rebuildAllInputMenus()
 		self.resetInput()
+		self.parent.buildSettingsMenu()
 
 	def settingsAuto(self):
 		if config.ENABLE_AUTOCOMPLETE:
@@ -1789,6 +1794,7 @@ class Window(QMainWindow):
 			config.ENABLE_AUTOCOMPLETE = True
 		self.save_config()
 		self.parent.rebuildAllInputMenus()
+		self.parent.buildSettingsMenu()
 
 	def settingsSpell(self):
 		if config.ENABLE_SPELLCHECK:
@@ -1804,50 +1810,47 @@ class Window(QMainWindow):
 
 		self.settingsMenu.clear()
 
-		# e = textSeparator(self,"Input Options")
-		# self.settingsMenu.addAction(e)
-
 		if config.ENABLE_MARKDOWN_MARKUP:
-			self.mdInput = QAction(QIcon(self.parent.checked_icon),"Markdown", self)
+			self.mdInput = QAction(QIcon(self.parent.checked_icon),"Use markdown input", self)
 		else:
-			self.mdInput = QAction(QIcon(self.parent.unchecked_icon),"Markdown", self)
+			self.mdInput = QAction(QIcon(self.parent.unchecked_icon),"Use markdown input", self)
 		self.mdInput.triggered.connect(self.settingsMarkdown)
 		self.settingsMenu.addAction(self.mdInput)
 
 		if config.ENABLE_IRC_COLOR_MARKUP:
-			self.colorInput = QAction(QIcon(self.parent.checked_icon),"IRC colors", self)
+			self.colorInput = QAction(QIcon(self.parent.checked_icon),"Use IRC color input", self)
 		else:
-			self.colorInput = QAction(QIcon(self.parent.unchecked_icon),"IRC colors", self)
+			self.colorInput = QAction(QIcon(self.parent.unchecked_icon),"Use IRC color input", self)
 		self.colorInput.triggered.connect(self.settingsInputColor)
 		self.settingsMenu.addAction(self.colorInput)
 
 		if config.ENABLE_EMOJI_SHORTCODES:
-			self.emojiInput = QAction(QIcon(self.parent.checked_icon),"Emojis", self)
+			self.emojiInput = QAction(QIcon(self.parent.checked_icon),"Use emoji shortcodes", self)
 		else:
-			self.emojiInput = QAction(QIcon(self.parent.unchecked_icon),"Emojis", self)
+			self.emojiInput = QAction(QIcon(self.parent.unchecked_icon),"Use emoji shortcodes", self)
 		self.emojiInput.triggered.connect(self.settingsEmoji)
 		self.settingsMenu.addAction(self.emojiInput)
 
 		if config.ENABLE_ASCIIMOJI_SHORTCODES:
-			self.asciimojiInput = QAction(QIcon(self.parent.checked_icon),"ASCIImojis", self)
+			self.asciimojiInput = QAction(QIcon(self.parent.checked_icon),"Use ASCIImoji shortcodes", self)
 		else:
-			self.asciimojiInput = QAction(QIcon(self.parent.unchecked_icon),"ASCIImojis", self)
+			self.asciimojiInput = QAction(QIcon(self.parent.unchecked_icon),"Use ASCIImoji shortcodes", self)
 		self.asciimojiInput.triggered.connect(self.settingsAsciimoji)
 		self.settingsMenu.addAction(self.asciimojiInput)
 
 		self.settingsMenu.addSeparator()
 
 		if config.APPLY_SYNTAX_STYLES_TO_INPUT_WIDGET:
-			self.highlightInput = QAction(QIcon(self.parent.checked_icon),"Highlighting", self)
+			self.highlightInput = QAction(QIcon(self.parent.checked_icon),"Highlight input", self)
 		else:
-			self.highlightInput = QAction(QIcon(self.parent.unchecked_icon),"Highlighting", self)
+			self.highlightInput = QAction(QIcon(self.parent.unchecked_icon),"Highlight input", self)
 		self.highlightInput.triggered.connect(self.settingsHighlight)
 		self.settingsMenu.addAction(self.highlightInput)
 
 		if config.ENABLE_AUTOCOMPLETE:
-			self.autoInput = QAction(QIcon(self.parent.checked_icon),"Autocomplete", self)
+			self.autoInput = QAction(QIcon(self.parent.checked_icon),"Use autocomplete", self)
 		else:
-			self.autoInput = QAction(QIcon(self.parent.unchecked_icon),"Autocomplete", self)
+			self.autoInput = QAction(QIcon(self.parent.unchecked_icon),"Use autocomplete", self)
 		self.autoInput.triggered.connect(self.settingsAuto)
 		self.settingsMenu.addAction(self.autoInput)
 
@@ -1856,9 +1859,9 @@ class Window(QMainWindow):
 		self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
 
 		if config.ENABLE_SPELLCHECK:
-			self.inputSpellCheck = QAction(QIcon(self.parent.checked_icon),"Enabled", self)
+			self.inputSpellCheck = QAction(QIcon(self.parent.checked_icon),"Use spellcheck", self)
 		else:
-			self.inputSpellCheck = QAction(QIcon(self.parent.unchecked_icon),"Enabled", self)
+			self.inputSpellCheck = QAction(QIcon(self.parent.unchecked_icon),"Use spellcheck", self)
 		self.inputSpellCheck.triggered.connect(self.settingsSpell)
 		self.spellcheckMenu.addAction(self.inputSpellCheck)
 

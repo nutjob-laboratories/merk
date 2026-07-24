@@ -73,6 +73,41 @@ def initialize(directory,directory_name):
 
 # Functions
 
+def backup_filename(logfile):
+	if config.SHOW_TIMESTAMPS_IN_UTC:
+		ts = datetime.fromtimestamp(datetime.timestamp(datetime.now()),tz=timezone.utc).strftime('_%d_%m_%Y')
+	else:
+		ts = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('_%d_%m_%Y')
+
+	backup_name, _ = os.path.splitext(os.path.basename(logfile))
+	backup_name = backup_name + ts + ".txt"
+	return backup_name
+
+def backup_log(logfile,directory):
+	if os.path.isfile(logfile):
+		with open(logfile, "r",encoding="utf-8",errors="ignore") as logentries:
+			data = json.load(logentries)
+		data = array_to_log(data)
+		store_log = trimLog(data,config.MAXIMUM_LOADED_LOG_SIZE)
+		store_log = log_to_array(store_log)
+
+		backup_name = backup_filename(logfile)
+		dump = dumpLogHuman(logfile,False,False)
+		code = open(os.path.join(directory,backup_name),mode="w",encoding="utf-8")
+		code.write(dump)
+
+		with open(logfile, "w",encoding="utf-8",errors="ignore") as writelog:
+			json.dump(store_log, writelog, indent=4, sort_keys=True)
+
+def find_large_logs():
+	log_list = []
+	for root, dirs, files in os.walk(LOG_DIRECTORY):
+		for file in files:
+			file_path = os.path.join(root, file)
+			if os.path.getsize(file_path) >= config.LOG_WARNING_SIZE * 1024 * 1024:
+				log_list.append(file_path)
+	return log_list
+
 # Converts an array of Message() objects to an array of arrays
 def log_to_array(log):
 	out = []

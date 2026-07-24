@@ -4388,6 +4388,7 @@ class Merk(QMainWindow):
 			config.ENABLE_MARKDOWN_MARKUP = True
 		self.save_config()
 		self.buildSettingsMenu()
+		self.rebuildAllInputMenus()
 
 	def settingsSnap(self):
 		if config.SUBWINDOW_SNAPPING:
@@ -4422,6 +4423,25 @@ class Merk(QMainWindow):
 			config.ENABLE_IRC_COLOR_MARKUP = True
 		self.save_config()
 		self.buildSettingsMenu()
+		self.rebuildAllInputMenus()
+
+	def settingsUseEmojis(self):
+		if config.ENABLE_EMOJI_SHORTCODES:
+			config.ENABLE_EMOJI_SHORTCODES = False
+		else:
+			config.ENABLE_EMOJI_SHORTCODES = True
+		self.save_config()
+		self.buildSettingsMenu()
+		self.rebuildAllInputMenus()
+
+	def settingsUseAsciimoji(self):
+		if config.ENABLE_ASCIIMOJI_SHORTCODES:
+			config.ENABLE_ASCIIMOJI_SHORTCODES = False
+		else:
+			config.ENABLE_ASCIIMOJI_SHORTCODES = True
+		self.save_config()
+		self.buildSettingsMenu()
+		self.rebuildAllInputMenus()
 
 	def settingsLinks(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -4743,17 +4763,31 @@ class Merk(QMainWindow):
 		sm = self.settingsMenu.addMenu(QIcon(CURSOR_ICON),"Input")
 
 		if config.ENABLE_MARKDOWN_MARKUP:
-			entry = QAction(QIcon(self.checked_icon),"Use markdown in messages", self)
+			entry = QAction(QIcon(self.checked_icon),"Enable markdown input", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Use markdown in messages", self)
+			entry = QAction(QIcon(self.unchecked_icon),"Enable markdown input", self)
 		entry.triggered.connect(self.settingsMarkdown)
 		sm.addAction(entry)
 
 		if config.ENABLE_IRC_COLOR_MARKUP:
-			entry = QAction(QIcon(self.checked_icon),"Use IRC colors in messages", self)
+			entry = QAction(QIcon(self.checked_icon),"Enable IRC color input", self)
 		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Use IRC colors in messages", self)
+			entry = QAction(QIcon(self.unchecked_icon),"Enable IRC color input", self)
 		entry.triggered.connect(self.settingsInputColor)
+		sm.addAction(entry)
+
+		if config.ENABLE_EMOJI_SHORTCODES:
+			entry = QAction(QIcon(self.checked_icon),"Enable emoji shortcodes", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable emoji shortcodes", self)
+		entry.triggered.connect(self.settingsUseEmojis)
+		sm.addAction(entry)
+
+		if config.ENABLE_ASCIIMOJI_SHORTCODES:
+			entry = QAction(QIcon(self.checked_icon),"Enable ASCIImoji shortcodes", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable ASCIImoji shortcodes", self)
+		entry.triggered.connect(self.settingsUseAsciimoji)
 		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Display")
@@ -4828,14 +4862,13 @@ class Merk(QMainWindow):
 			sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
 
 			if config.ENABLE_SPELLCHECK:
-				entry = QAction(QIcon(self.checked_icon),"Enabled", self)
+				entry = QAction(QIcon(self.checked_icon),"Enable spellcheck", self)
 			else:
-				entry = QAction(QIcon(self.unchecked_icon),"Enabled", self)
+				entry = QAction(QIcon(self.unchecked_icon),"Enable spellcheck", self)
 			entry.triggered.connect(self.settingsSpell)
 			sm.addAction(entry)
 
-			e = textSeparator(self,"Language")
-			sm.addAction(e)
+			sm.addSeparator()
 
 			if config.DEFAULT_SPELLCHECK_LANGUAGE=="en":
 				entry = QAction(QIcon(self.round_checked_icon),"English", self)

@@ -383,8 +383,13 @@ class Window():
 	def execute(self,command):
 		self._window.handleHotkeyCommand(command)
 
-	def input(self,input_string):
-		self._window.injectInput(input_string)
+	def input(self,input_string,execute=True):
+		if execute:
+			self._window.injectInput(input_string)
+		else:
+			if hasattr(self._window,"input"):
+				self._window.input.setPlainText(input_string)
+				self._window.input.moveCursor(QTextCursor.End)
 
 	def client(self):
 		return self._window.client

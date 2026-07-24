@@ -385,6 +385,29 @@ if __name__ == '__main__':
 			if not l in n: return False
 		return True
 
+	def ask_backup(logfiles):
+		msgBox = QMessageBox()
+		if len(logfiles)==1:
+			msgBox.setWindowTitle("Warning! Large log detected")
+			msgBox.setText("One of your log files is very large, and may impact performance. Backing up the log will not delete any data, but may take a few moments.\n\nWould you like to select a directory to save the log backup?")
+		else:
+			msgBox.setWindowTitle("Warning! Large logs detected")
+			msgBox.setText("Some of your log files are very large, and may impact performance. Backing up the logs will not delete any data, but may take some time.\n\nWould you like to select a directory to save log backups?")
+	
+		cl = []
+		for f in logfiles:
+			sz = convert_size(os.path.getsize(f))
+			cl.append(f"<b>{os.path.basename(f)}</b> - {sz}")
+
+		msgBox.setInformativeText("<br>".join(cl))
+		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		rval = msgBox.exec()
+		if rval == QMessageBox.Cancel:
+			return False
+		else:
+			return True
+
 	if args.help:
 		if is_running_from_pyinstaller():
 			help_text = parser.format_help()
@@ -667,6 +690,24 @@ if __name__ == '__main__':
 				border: 1px solid {styles.parseColor(style["separator"])};
 			}}
 			""")
+
+	# Now, we look for very large log files, and offer
+	# to back them up for the user
+	large_logs = logs.find_large_logs()
+	if len(large_logs)>0:
+		if ask_backup(large_logs):
+			if len(large_logs)==1:
+				title = "Save backup to..."
+			else:
+				title = "Save backups to..."
+			directory = QFileDialog.getExistingDirectory(
+				None,
+				title,
+				""
+			)
+			if directory:
+				for f in large_logs:
+					logs.backup_log(f,directory)
 
 	# Handle connecting to a server if one has been provided
 	if args.server:
