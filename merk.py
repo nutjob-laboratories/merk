@@ -386,24 +386,29 @@ if __name__ == '__main__':
 		return True
 
 	def ask_backup(logfiles):
-		msgBox = QMessageBox()
-		if len(logfiles)==1:
-			msgBox.setWindowTitle("Warning! Large log detected")
-			msgBox.setText("One of your log files is very large, and may impact performance. Backing up the log will not delete any data, but may take a few moments.\n\nWould you like to select a directory to save the log backup?")
-		else:
-			msgBox.setWindowTitle("Warning! Large logs detected")
-			msgBox.setText("Some of your log files are very large, and may impact performance. Backing up the logs will not delete any data, but may take some time.\n\nWould you like to select a directory to save log backups?")
-	
-		cl = []
+		cl = ["<small><ul>"]
 		for f in logfiles:
 			sz = convert_size(os.path.getsize(f))
-			cl.append(f"<b>{os.path.basename(f)}</b> - {sz}")
+			cl.append(f"<li><b>{os.path.basename(f)}</b></li>")
+		cl.append("</ul></small>")
+		msgBox = QMessageBox()
+		msgBox.setWindowTitle("Warning! Large logs detected")
+		msgBox.setText(f"""
+			<b>Some of your log files are larger than {config.LOG_WARNING_SIZE} MB, and may impact
+			performance.</b> Backing up the logs will not delete any data, but
+			may take a few minutes.  Logs will be saved to a human readable format in ASCII text. 
+			<b>{APPLICATION_NAME} will start up as soon as the log backup is complete.</b><br><br>
 
-		msgBox.setInformativeText("<br>".join(cl))
-		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+			Would you like to back up the following logs?""")
+		msgBox.addButton(" Backup logs ", QMessageBox.AcceptRole)
+		msgBox.addButton(" Do NOT backup logs ", QMessageBox.RejectRole)
+		msgBox.setInformativeText("".join(cl))
 
+		label = msgBox.findChild(QLabel)
+		if label:
+			label.setWordWrap(True)
 		rval = msgBox.exec()
-		if rval == QMessageBox.Cancel:
+		if rval == QMessageBox.RejectRole:
 			return False
 		else:
 			return True
@@ -697,9 +702,9 @@ if __name__ == '__main__':
 	if len(large_logs)>0:
 		if ask_backup(large_logs):
 			if len(large_logs)==1:
-				title = "Save backup to..."
+				title = "Save log backup to..."
 			else:
-				title = "Save backups to..."
+				title = "Save log backups to..."
 			directory = QFileDialog.getExistingDirectory(
 				None,
 				title,
