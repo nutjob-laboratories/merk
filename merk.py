@@ -386,22 +386,31 @@ if __name__ == '__main__':
 		return True
 
 	def ask_backup(logfiles):
-		cl = ["<small><ul>"]
+		cl = ["<ul>"]
 		for f in logfiles:
 			sz = convert_size(os.path.getsize(f))
-			cl.append(f"<li><b>{os.path.basename(f)}</b></li>")
-		cl.append("</ul></small>")
+			p = os.path.basename(f).split(LOG_AND_STYLE_FILENAME_DELIMITER,1)
+			netname = deescape_for_filename(p[0]).upper()
+			channel = deescape_for_filename(p[1]).replace('.json','')
+			cl.append(f"<li><b>{channel}</b> ({netname}) - <i>{convert_size(os.path.getsize(f))}</i></li>")
+		cl.append("</ul>")
 		msgBox = QMessageBox()
 		msgBox.setWindowTitle("Warning! Large logs detected")
 		msgBox.setText(f"""
-			<b>Some of your log files are larger than {config.LOG_WARNING_SIZE} MB, and may impact
-			performance.</b> Backing up the logs will not delete any data, but
-			may take a few minutes.  Logs will be saved to a human readable format in ASCII text. 
+			<b>Some of your log files are larger than {config.LOG_WARNING_SIZE} MB, and may slow down
+			{APPLICATION_NAME} or make it non-functional.</b><br><br>
+
+			<small>Backing up the logs will not delete any data, but may take a few minutes.
+			Logs will be saved to a human readable format in ASCII text to a directory
+			of your choice. The in-application log will be trimmed down to the last {config.MAXIMUM_LOADED_LOG_SIZE}
+			lines, while the complete log will be backed up.</small><br><br>
+
 			<b>{APPLICATION_NAME} will start up as soon as the log backup is complete.</b><br><br>
 
 			Would you like to back up the following logs?""")
-		msgBox.addButton(" Backup logs ", QMessageBox.AcceptRole)
+		default_button = msgBox.addButton(" Backup logs ", QMessageBox.AcceptRole)
 		msgBox.addButton(" Do NOT backup logs ", QMessageBox.RejectRole)
+		msgBox.setDefaultButton(default_button)
 		msgBox.setInformativeText("".join(cl))
 
 		label = msgBox.findChild(QLabel)
@@ -698,21 +707,23 @@ if __name__ == '__main__':
 
 	# Now, we look for very large log files, and offer
 	# to back them up for the user
-	large_logs = logs.find_large_logs()
-	if len(large_logs)>0:
-		if ask_backup(large_logs):
-			if len(large_logs)==1:
-				title = "Save log backup to..."
-			else:
-				title = "Save log backups to..."
-			directory = QFileDialog.getExistingDirectory(
-				None,
-				title,
-				""
-			)
-			if directory:
-				for f in large_logs:
-					logs.backup_log(f,directory)
+	if config.SCAN_FOR_LARGE_LOGS:
+		large_logs = logs.find_large_logs()
+		if len(large_logs)>0:
+			if ask_backup(large_logs):
+				if len(large_logs)==1:
+					title = "Save log backup to..."
+				else:
+					title = "Save log backups to..."
+				directory = QFileDialog.getExistingDirectory(
+					None,
+					title,
+					os.path.expanduser("~"), # Default directory is the user's "home" directory
+					QFileDialog.ShowDirsOnly
+				)
+				if directory:
+					for f in large_logs:
+						logs.backup_log(f,directory)
 
 	# Handle connecting to a server if one has been provided
 	if args.server:

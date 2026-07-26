@@ -1628,6 +1628,7 @@ class Dialog(QDialog):
 			self.codecDescription.setEnabled(True)
 			self.decodeSection.setEnabled(True)
 			self.advanceSection.setEnabled(True)
+			self.scanLogs.setEnabled(True)
 		else:
 			self.logEverything.setEnabled(False)
 			self.writeConsole.setEnabled(False)
@@ -1652,6 +1653,12 @@ class Dialog(QDialog):
 			self.codecDescription.setEnabled(False)
 			self.decodeSection.setEnabled(False)
 			self.advanceSection.setEnabled(False)
+			self.scanLogs.setEnabled(False)
+
+			if config.SCAN_FOR_LARGE_LOGS:
+				self.scanLogs.setChecked(True)
+			else:
+				self.scanLogs.setChecked(False)
 
 			index = self.decType.findText(config.DECODING_TYPE)
 			if index != -1:
@@ -6944,11 +6951,11 @@ class Dialog(QDialog):
 
 		self.advancedDescription = QLabel(f"""
 			<b><span style='color: red;'>WARNING!</b></span> <b>Changing these settings may break your installation,
-			prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br><br>
+			prevent connection to servers, or fill up your hard drive! Edit these settings with caution!</b><br>
 			<small>If changing these settings causes the application to no longer function, please run
 			<b>{APPLICATION_NAME}</b> with the <b><code>--reset</code></b> command-line flag, which will reset all
 			settings to the default. For more information,
-			please see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.
+			please see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
 			</small>
 			
 			""")
@@ -7091,10 +7098,16 @@ class Dialog(QDialog):
 		self.codecDescription.setAlignment(Qt.AlignJustify)
 		self.codecDescription.setEnabled(False)
 
+		self.scanLogs = QCheckBox("Scan for large logs on startup",self)
+		if config.SCAN_FOR_LARGE_LOGS: self.scanLogs.setChecked(True)
+		self.scanLogs.stateChanged.connect(self.changedSettingAdvanced)
+		self.scanLogs.setEnabled(False)
+
 		asetLayout = QFormLayout()
 		asetLayout.setSpacing(0)
 		asetLayout.addRow(self.floodProtection)
 		asetLayout.addRow(self.enablePing)
+		asetLayout.addRow(self.scanLogs)
 		asetLayout.addRow(self.prevIllegal)
 		asetLayout.addRow(self.prevChannel)
 		asetLayout.addRow(self.presSpaces)
@@ -7116,14 +7129,17 @@ class Dialog(QDialog):
 		decFinal.addLayout(dec2Layout)
 
 		advancedLayout = QVBoxLayout()
+		advancedLayout.setSpacing(0)
 		advancedLayout.addWidget(self.advancedDescription)
 		advancedLayout.addLayout(aoLayout)
 		advancedLayout.addWidget(self.advanceSection)
 		advancedLayout.addLayout(hbLayout)
 		advancedLayout.addLayout(maxLayout)
 		advancedLayout.addLayout(asetLayout)
+		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addWidget(self.decodeSection)
 		advancedLayout.addWidget(self.codecDescription)
+		advancedLayout.addWidget(QLabel(' '))
 		advancedLayout.addLayout(decFinal)
 		advancedLayout.addStretch()
 
@@ -7660,6 +7676,7 @@ class Dialog(QDialog):
 		config.SHOW_TIMESTAMPS_IN_UTC = self.timestampUTC.isChecked()
 		config.LIMIT_LOG_VIEW = self.logViewSize.isChecked()
 		config.MAX_LOG_DISPLAY_SIZE = self.MAX_LOG_DISPLAY_SIZE
+		config.SCAN_FOR_LARGE_LOGS = self.scanLogs.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

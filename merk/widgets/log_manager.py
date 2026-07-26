@@ -60,7 +60,7 @@ class Window(QMainWindow):
 		if self.export_format=='human':
 			options = QFileDialog.Options()
 			options |= QFileDialog.DontUseNativeDialog
-			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
+			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",os.path.expanduser("~"),"Text File (*.txt);;All Files (*)", options=options)
 			if fileName:
 				_, file_extension = os.path.splitext(fileName)
 				if file_extension=='':
@@ -75,7 +75,7 @@ class Window(QMainWindow):
 		if not do_json:
 			options = QFileDialog.Options()
 			options |= QFileDialog.DontUseNativeDialog
-			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"Text File (*.txt);;All Files (*)", options=options)
+			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",os.path.expanduser("~"),"Text File (*.txt);;All Files (*)", options=options)
 			if fileName:
 				_, file_extension = os.path.splitext(fileName)
 				if file_extension=='':
@@ -88,7 +88,7 @@ class Window(QMainWindow):
 		else:
 			options = QFileDialog.Options()
 			options |= QFileDialog.DontUseNativeDialog
-			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",INSTALL_DIRECTORY,"JSON File (*.json);;All Files (*)", options=options)
+			fileName, _ = QFileDialog.getSaveFileName(self,f"Export {channel} log as...",os.path.expanduser("~"),"JSON File (*.json);;All Files (*)", options=options)
 			if fileName:
 				_, file_extension = os.path.splitext(fileName)
 				if file_extension=='':
@@ -152,9 +152,15 @@ class Window(QMainWindow):
 			file_action.triggered.connect(lambda: self.copy_file_to_clipboard(item))
 			menu.addAction(file_action)
 
-			channel_action = QAction(QIcon(CLIPBOARD_ICON),"Copy channel name to clipboard", self)
+			channel_action = QAction(QIcon(CLIPBOARD_ICON),"Copy chat name to clipboard", self)
 			channel_action.triggered.connect(lambda: self.copy_channel_to_clipboard(item))
 			menu.addAction(channel_action)
+
+			backup_action = QAction(QIcon(SAVEFILE_ICON),"Back up log file", self)
+			backup_action.triggered.connect(lambda: self.backup_log(item))
+			menu.addAction(backup_action)
+
+			if item.large_log==False: backup_action.setEnabled(False)
 
 			menu.addSeparator()
 
@@ -177,6 +183,51 @@ class Window(QMainWindow):
 		cb = QApplication.clipboard()
 		cb.clear(mode=cb.Clipboard)
 		cb.setText(f"{item.file}", mode=cb.Clipboard)
+
+	def backup_log(self,item):
+		msgBox = QMessageBox()
+		if item.channel[:1]!='#' and item.channel[:1]!='&' and item.channel[:1]!='!' and item.channel[:1]!='+':
+			msgBox.setIconPixmap(QPixmap(PRIVATE_WINDOW_ICON))
+		else:
+			msgBox.setIconPixmap(QPixmap(CHANNEL_WINDOW_ICON))
+		msgBox.setWindowIcon(QIcon(LOG_ICON))
+		msgBox.setText("Are you sure you want to back up this log?")
+		msgBox.setWindowTitle("Back up log for "+item.channel+" ("+item.network+")")
+		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+		rval = msgBox.exec()
+		if rval != QMessageBox.Cancel:
+
+			options = QFileDialog.Options()
+			options |= QFileDialog.DontUseNativeDialog
+			fileName, _ = QFileDialog.getSaveFileName(self,f"Back up log as...",os.path.expanduser("~"),"Text File (*.txt);;All Files (*)", options=options)
+			if fileName:
+				_, file_extension = os.path.splitext(fileName)
+				if file_extension=='':
+					efl = len("txt")+1
+					if fileName[-efl:].lower()!=f".txt": fileName = fileName+f".txt"
+
+				QApplication.setOverrideCursor(Qt.WaitCursor)
+				logs.backup_log_direct(item.file,fileName)
+				QApplication.restoreOverrideCursor()
+
+				self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
+				self.filesize.setText(' ')
+				self.filetype.setText('<b>to export</b>')
+				self.filename.setText('<b>Select a log</b>')
+				self.packlist.clearSelection()
+				self.menubar.setEnabled(False)
+				self.format.setEnabled(False)
+				self.typeLabel.setEnabled(False)
+				self.type.setEnabled(False)
+				self.lineLabel.setEnabled(False)
+				self.line.setEnabled(False)
+				self.time.setEnabled(False)
+				self.button_export.setEnabled(False)
+				self.file_icon.setPixmap(self.blank_file)
+
+				self.dump.setText('')
+
 
 	def delete_log(self, item):
 		msgBox = QMessageBox()
@@ -299,6 +350,14 @@ class Window(QMainWindow):
 							item.file = log
 							item.network = netname
 							item.channel = channel
+
+							# Display large log files in red
+							if os.path.getsize(log) >= config.LOG_WARNING_SIZE * 1024 * 1024:
+								item.setForeground(QBrush(QColor('red')))
+								item.large_log = True
+							else:
+								item.large_log = False
+
 							if add_to_list: others.append(item)
 
 		# Sort channel/chat logs by network, THEN chat name

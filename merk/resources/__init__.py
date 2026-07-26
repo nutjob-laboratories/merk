@@ -1155,6 +1155,12 @@ class LogViewer(QTextEdit):
 		self.trailing_punct = set('.,:;!?\'")}]')
 		self.setMouseTracking(True)
 		self._hovered_url_range = None
+
+		# Force black text/white background on the log viewer
+		palette = QPalette()
+		palette.setColor(QPalette.Text, QColor('black'))
+		palette.setColor(QPalette.Base, QColor('white'))
+		self.setPalette(palette)
 	
 	def _clean_url(self, url):
 		while url and url[-1] in self.trailing_punct:

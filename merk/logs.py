@@ -83,6 +83,21 @@ def backup_filename(logfile):
 	backup_name = backup_name + ts + ".txt"
 	return backup_name
 
+def backup_log_direct(logfile,outfile):
+	if os.path.isfile(logfile):
+		with open(logfile, "r",encoding="utf-8",errors="ignore") as logentries:
+			data = json.load(logentries)
+		data = array_to_log(data)
+		store_log = trimLog(data,config.MAXIMUM_LOADED_LOG_SIZE)
+		store_log = log_to_array(store_log)
+
+		dump = dumpLogHuman(logfile,False,False)
+		code = open(outfile,mode="w",encoding="utf-8")
+		code.write(dump)
+
+		with open(logfile, "w",encoding="utf-8",errors="ignore") as writelog:
+			json.dump(store_log, writelog, indent=4, sort_keys=True)
+
 def backup_log(logfile,directory):
 	if os.path.isfile(logfile):
 		with open(logfile, "r",encoding="utf-8",errors="ignore") as logentries:
@@ -105,7 +120,9 @@ def find_large_logs():
 		for file in files:
 			file_path = os.path.join(root, file)
 			if os.path.getsize(file_path) >= config.LOG_WARNING_SIZE * 1024 * 1024:
-				log_list.append(file_path)
+				p = file_path.split(LOG_AND_STYLE_FILENAME_DELIMITER,1)
+				if len(p)==2:
+					log_list.append(file_path)
 	return log_list
 
 # Converts an array of Message() objects to an array of arrays
@@ -290,7 +307,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 					else:
 						out.append(f"*** {cdate}")
 
-			if l[1]==CHAT_MESSAGE or l[1]==PRIVATE_MESSAGE:
+			if l[1]==CHAT_MESSAGE:
 				# Regular chat
 				if render_for_viewer:
 					l[3] = l[3].replace("\x0300","\x0301")
@@ -301,7 +318,19 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 						pretty_timestamp = l[0]
 					else:
 						pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"{pretty_timestamp}\t{u}\t{strip_color(l[3])}"
+					entry = f"{pretty_timestamp}\t{u}: {strip_color(l[3])}"
+			elif l[1]==PRIVATE_MESSAGE:
+				# Regular chat
+				if render_for_viewer:
+					l[3] = l[3].replace("\x0300","\x0301")
+					pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"\x02[{pretty_timestamp}]\x0f \x02\x1d\x0302{u}\x0f: {l[3]}"
+				else:
+					if epoch:
+						pretty_timestamp = l[0]
+					else:
+						pretty_timestamp = pretty_timestamp_m2(l[0])
+					entry = f"{pretty_timestamp}\t{u}: {strip_color(l[3])}"
 			elif l[1]==SELF_MESSAGE:
 				# Regular chat
 				if render_for_viewer:
@@ -313,7 +342,7 @@ def dumpLogHuman(filename,render_for_viewer=False,epoch=False):
 						pretty_timestamp = l[0]
 					else:
 						pretty_timestamp = pretty_timestamp_m2(l[0])
-					entry = f"{pretty_timestamp}\t{u}\t{strip_color(l[3])}"
+					entry = f"{pretty_timestamp}\t{u}: {strip_color(l[3])}"
 			elif l[1]==ACTION_MESSAGE:
 				# CTCP Action message
 				if render_for_viewer:
