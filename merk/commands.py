@@ -529,10 +529,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD. Call without any arguments to see a list of all highlighted words. Pass <b>*</b> as the only argument to remove all word highlights" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"toggle FEATURE</b>", f"Toggles various input features. Valid features are {TOGGLE_COMMANDS}" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload</b>", f"Re-loads and attempts to apply settings from configuration" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"op NICKNAME [NICKNAME...]</b>", f"Sets channel operator status on NICKNAME(s)" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"deop NICKNAME [NICKNAME...]</b>", f"Removes channel operator status from NICKNAME(s)" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"voice NICKNAME [NICKNAME...]</b>", f"Sets voiced status on NICKNAME(s)" ],
-		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"devoice NICKNAME [NICKNAME...]</b>", f"Removes voiced status from NICKNAME(s)" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"op [CHANNEL] NICKNAME [NICKNAME...]</b>", f"Sets channel operator status on NICKNAME(s)" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"deop [CHANNEL] NICKNAME [NICKNAME...]</b>", f"Removes channel operator status from NICKNAME(s)" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"voice [CHANNEL] NICKNAME [NICKNAME...]</b>", f"Sets voiced status on NICKNAME(s)" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"devoice [CHANNEL] NICKNAME [NICKNAME...]</b>", f"Removes voiced status from NICKNAME(s)" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -1706,84 +1706,176 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |-----|
 	# | /op |
 	# |-----|
-	# Transforms command call into /mode call
-	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'op' and len(tokens)>=2:
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'op' and len(tokens)>=3:
+		tokens.pop(0)
+		if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+			target = tokens.pop(0)
+		else:
+			if window.window_type==CHANNEL_WINDOW:
+				target = window.name
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}op: Missing a channel target")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+		users = ' '.join(tokens)
+		window.client.sendLine(f"MODE {target} +{"o" * len(tokens)} {users}")
+		return True
+	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'op' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
 			tokens.pop(0)
+			if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+				target = tokens.pop(0)
+			else:
+				target = window.name
 			users = ' '.join(tokens)
-			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} +{"o" * len(users)} {users}"
-			tokens = user_input.split()
+			window.client.sendLine(f"MODE {target} +{"o" * len(tokens)} {users}")
+			return True
 		else:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}op: Only callable from channel subwindows")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}op: Missing necessary arguments")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}op is only callable from channel subwindows")
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}op CHANNEL NICKNAME [NICKNAME...]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |-------|
 	# | /deop |
 	# |-------|
-	# Transforms command call into /mode call
-	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'deop' and len(tokens)>=2:
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'deop' and len(tokens)>=3:
+		tokens.pop(0)
+		if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+			target = tokens.pop(0)
+		else:
+			if window.window_type==CHANNEL_WINDOW:
+				target = window.name
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}op: Missing a channel target")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+		users = ' '.join(tokens)
+		window.client.sendLine(f"MODE {target} -{"o" * len(tokens)} {users}")
+		return True
+	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'deop' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
 			tokens.pop(0)
+			if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+				target = tokens.pop(0)
+			else:
+				target = window.name
 			users = ' '.join(tokens)
-			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} -{"o" * len(users)} {users}"
-			tokens = user_input.split()
+			window.client.sendLine(f"MODE {target} -{"o" * len(tokens)} {users}")
+			return True
 		else:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}deop: Only callable from channel subwindows")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}deop: Missing necessary arguments")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}deop is only callable from channel subwindows")
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}deop CHANNEL NICKNAME [NICKNAME...]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |--------|
 	# | /voice |
 	# |--------|
-	# Transforms command call into /mode call
-	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'voice' and len(tokens)>=2:
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'voice' and len(tokens)>=3:
+		tokens.pop(0)
+		if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+			target = tokens.pop(0)
+		else:
+			if window.window_type==CHANNEL_WINDOW:
+				target = window.name
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}op: Missing a channel target")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+		users = ' '.join(tokens)
+		window.client.sendLine(f"MODE {target} +{"v" * len(tokens)} {users}")
+		return True
+	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'voice' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
 			tokens.pop(0)
+			if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+				target = tokens.pop(0)
+			else:
+				target = window.name
 			users = ' '.join(tokens)
-			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} +{"v" * len(users)} {users}"
-			tokens = user_input.split()
+			window.client.sendLine(f"MODE {target} +{"v" * len(tokens)} {users}")
+			return True
 		else:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}voice: Only callable from channel subwindows")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}voice: Missing necessary arguments")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}voice is only callable from channel subwindows")
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}voice CHANNEL NICKNAME [NICKNAME...]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 
 	# |----------|
 	# | /devoice |
 	# |----------|
-	# Transforms command call into /mode call
-	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'devoice' and len(tokens)>=2:
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'devoice' and len(tokens)>=3:
+		tokens.pop(0)
+		if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+			target = tokens.pop(0)
+		else:
+			if window.window_type==CHANNEL_WINDOW:
+				target = window.name
+			else:
+				if is_script:
+					add_halt(script_id)
+					if config.DISPLAY_SCRIPT_ERRORS:
+						t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}op: Missing a channel target")
+						window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+		users = ' '.join(tokens)
+		window.client.sendLine(f"MODE {target} -{"v" * len(tokens)} {users}")
+		return True
+	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'devoice' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
 			tokens.pop(0)
+			if (tokens[0][:1]=='#' or tokens[0][:1]=='&' or tokens[0][:1]=='!' or tokens[0][:1]=='+') and len(tokens)>=2:
+				target = tokens.pop(0)
+			else:
+				target = window.name
 			users = ' '.join(tokens)
-			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} -{"v" * len(users)} {users}"
-			tokens = user_input.split()
+			window.client.sendLine(f"MODE {target} -{"v" * len(tokens)} {users}")
+			return True
 		else:
 			if is_script:
 				add_halt(script_id)
 				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}devoice: Only callable from channel subwindows")
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}devoice: Missing necessary arguments")
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}devoice is only callable from channel subwindows")
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}devoice CHANNEL NICKNAME [NICKNAME...]")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
 

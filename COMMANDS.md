@@ -109,8 +109,8 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/ctcp REQUEST USER`                  | Sends a CTCP request to `USER`; valid `REQUEST`s are TIME, VERSION, USERINFO, SOURCE, or FINGER                                                  |
 | `decimal ALIAS LOW HIGH MESSAGE...`     | Requests a decimal number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog, `ALIAS` will be set to `*`. This command is blocking. *Can only be called by scripts*    |
 | `/delay SECONDS COMMAND...`                  | Executes `COMMAND` after `SECONDS` seconds                                                 |
-| `/deop NICKNAME [NICKNAME...]`               | Removes channel operator status from `NICKNAME`(s). Only callable from channel subwindows.           |
-| `/devoice NICKNAME [NICKNAME...]`               | Removes voiced status from `NICKNAME`(s). Only callable from channel subwindows.           |
+| `/deop [CHANNEL] NICKNAME [NICKNAME...]`               | Removes channel operator status from `NICKNAME`(s)           |
+| `/devoice [CHANNEL] NICKNAME [NICKNAME...]`               | Removes voiced status from `NICKNAME`(s)           |
 | `/_die`                  | Instructs the server to shut down. May only be issued by server operators                               |
 | `/edit [FILENAME]`                      | Opens a script in the editor                                                                                                     |
 | `end`                                  | Immediately ends a script; *can only be called from scripts*                                                                       |
@@ -155,7 +155,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/notice TARGET MESSAGE...`             | Sends a notice                                                                                                                   |
 | `number ALIAS LOW HIGH MESSAGE...`     | Requests number from the user, between `LOW` and `HIGH`, in a dialog (with `MESSAGE`), and stores the input in `ALIAS`. If the user cancels the dialog, `ALIAS` will be set to `0*`. This command is blocking. *Can only be called by scripts*    |
 | `only WINDOW...`                       | Restricts a script to only executing in `WINDOW`'s context. Multiple `WINDOW`s can be specified. *Can only be called from scripts*              |
-| `/op NICKNAME [NICKNAME...]`               | Sets channel operator status on `NICKNAME`(s). Only callable from channel subwindows.           |
+| `/op [CHANNEL] NICKNAME [NICKNAME...]`               | Sets channel operator status on `NICKNAME`(s)           |
 | `/oper USERNAME PASSWORD`               | Logs into an operator account                                                                                                    |
 | `/part CHANNEL [MESSAGE]`               | Leaves a channel                                                                                                                 |
 | `/ping USER [TEXT]`                     | Sends a CTCP ping to a user                                                                                                      |
@@ -198,7 +198,7 @@ All of these commands can be issued in the client or from scripts, unless otherw
 | `/user [SETTING] [VALUE...]`          | Changes a user setting, or searches and displays one or all settings in the user configuration file. Pass `*` as `VALUE` to set a setting as blank. ***Caution**: use at your own risk! |
 | `/userhost NICK(S)...`          | Requests information about users from the server |
 | `/version [SERVER]`                     | Requests server version                                                                                                          |
-| `/voice NICKNAME [NICKNAME...]`               | Sets voiced status on `NICKNAME`(s). Only callable from channel subwindows.           |
+| `/voice [CHANNEL] NICKNAME [NICKNAME...]`               | Sets voiced status on `NICKNAME`(s)           |
 | `wait SECONDS`                         | Pauses script execution for `SECONDS`; *can only be called from scripts*                                                           |
 | `/wallops MESSAGE`                         | Sends a message to all operators  |
 | `/warn [SERVER] [WINDOW] TEXT...`               | Prints an error message to a subwindow. `SERVER` is optional if `WINDOW` belongs to the same context. Pass `*` as `SERVER` to print to all open subwindows. Pass `*` as `WINDOW` to print to the server subwindow     |

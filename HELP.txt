@@ -174,12 +174,12 @@ Appearance:
 <td>Executes <code>COMMAND</code> after <code>SECONDS</code> seconds</td>
 </tr>
 <tr>
-<td><code>/deop NICKNAME [NICKNAME...]</code></td>
-<td>Removes chanel operator status from <code>NICKNAME</code>(s). Only callable from channel subwindows</td>
+<td><code>/deop [CHANNEL] NICKNAME [NICKNAME...]</code></td>
+<td>Removes chanel operator status from <code>NICKNAME</code>(s)</td>
 </tr>
 <tr>
-<td><code>/devoice NICKNAME [NICKNAME...]</code></td>
-<td>Removes voiced status from <code>NICKNAME</code>(s). Only callable from channel subwindows</td>
+<td><code>/devoice [CHANNEL] NICKNAME [NICKNAME...]</code></td>
+<td>Removes voiced status from <code>NICKNAME</code>(s)</td>
 </tr>
 <tr>
 <td><code>/_die</code></td>
@@ -358,8 +358,8 @@ Appearance:
 <td>Restricts a script to only executing in <code>WINDOW</code>'s context. Multiple <code>WINDOW</code>s can be specified. <strong>Can only be called from scripts</strong></td>
 </tr>
 <tr>
-<td><code>/op NICKNAME [NICKNAME...]</code></td>
-<td>Sets chanel operator status on <code>NICKNAME</code>(s). Only callable from channel subwindows</td>
+<td><code>/op [CHANNEL] NICKNAME [NICKNAME...]</code></td>
+<td>Sets chanel operator status on <code>NICKNAME</code>(s)</td>
 </tr>
 <tr>
 <td><code>/oper USERNAME PASSWORD</code></td>
@@ -530,8 +530,8 @@ Appearance:
 <td>Requests server version</td>
 </tr>
 <tr>
-<td><code>/voice NICKNAME [NICKNAME...]</code></td>
-<td>Sets voiced status on <code>NICKNAME</code>(s). Only callable from channel subwindows</td>
+<td><code>/voice [CHANNEL] NICKNAME [NICKNAME...]</code></td>
+<td>Sets voiced status on <code>NICKNAME</code>(s)</td>
 </tr>
 <tr>
 <td><code>wait SECONDS</code></td>

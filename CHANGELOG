@@ -27,6 +27,8 @@
   status on a nick, removes channel operator status from a nick, sets voiced
   status on a nick, and removes voiced status on a nick, respectively. Multiple
   nicks can be passed to each command to perform the mode change on each nick.
+  These commands can be called from any server or chat subwindow, but if called
+  from any non-channel subwindow, the channel argument must be used.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.100                                  |
