@@ -44,7 +44,7 @@ from .. import config
 from .. import styles
 from .. import render
 from .. import logs
-from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction
+from .plain_text import plainTextAction,noSpacePlainTextAction,BoxPlainTextAction,noSpacePlainTextActionBorder
 from .text_separator import textSeparatorLabel,textSeparator
 from .extendedmenuitem import ExtendedMenuItemNoAction
 from .. import commands
@@ -2757,7 +2757,7 @@ class Window(QMainWindow):
 						ucMenu.addAction(act)
 					else:
 
-						entry = noSpacePlainTextAction(self,f"<center><span style=\"background-color: {c};\">&nbsp;</span> <b>{c}</b></center>")
+						entry = noSpacePlainTextActionBorder(self,f"<center><span style=\"background-color: {c};\">&nbsp;</span> <b>{c}</b></center>",self.parent.dark_mode)
 						ucMenu.addAction(entry)
 
 						act = QAction(QIcon(COLOR_ICON),"Change color", self)

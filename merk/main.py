@@ -4599,9 +4599,9 @@ class Merk(QMainWindow):
 		msgBox.setIconPixmap(QPixmap(SETTINGS_ICON))
 		msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 		if config.DARK_MODE:
-			msgBox.setText("Deactivating dark mode requires a restart!\nDeactivate dark mode and restart now?")
+			msgBox.setText("Deactivating dark mode requires a restart!\nThis will disconnect from all servers.\nRestart now?")
 		else:
-			msgBox.setText("Activating dark mode requires a restart!\nActivate dark mode and restart now?")
+			msgBox.setText("Activating dark mode requires a restart!\nThis will disconnect from all servers.\nRestart now?")
 		msgBox.setWindowTitle("Restart")
 		msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
@@ -4614,11 +4614,13 @@ class Merk(QMainWindow):
 				config.DARK_MODE = True
 			self.save_config()
 			if is_running_from_pyinstaller():
-				subprocess.Popen([sys.executable] + ["-R"])
+				# subprocess.Popen([sys.executable] + ["-R"])
+				subprocess.Popen([sys.executable] + [])
 				self.close()
 				app.exit()
 			else:
-				os.execl(sys.executable, sys.executable,sys.argv[0], "-R")
+				# os.execl(sys.executable, sys.executable,sys.argv[0], "-R")
+				os.execl(sys.executable, sys.executable,sys.argv[0])
 
 	def settingsTimestamps(self):
 		QApplication.setOverrideCursor(Qt.WaitCursor)

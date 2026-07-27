@@ -1,4 +1,30 @@
 |------------------------------------------------------------------------------|
+|                                   0.052.150                                  |
+|------------------------------------------------------------------------------|
+
+|==============================================================================|
+|                              APPLICATION CHANGES                             |
+|==============================================================================|
+
+* Tweaked how "large" logs are displayed in the Log Manager. Now, some text in
+  the status bar of the dialog are displayed in red, just like how the log name
+  is displayed in the red in the log list.
+* Bugfix: the log list in the Log Manager is now properly reloaded when a log
+  is exported.
+* Tweaked the "logs are too large" dialog that can appear on startup.
+* Made the nickname color display in the right click userlist menu a bit
+  cleaner: it's a bit smaller, and has a border around it to hint to users that
+  you can't click on it.
+* Changed the "switch to dark/light mode" restart message box to make it
+  clearer to users that they will disconnect from all servers on restart.
+* Changed how restarting to switch into light/dark mode works. If triggered
+  from the checkbox in the "Settings" menu, this will restart and show the
+  initial connection dialog.
+* Changed how restarting from the "Settings" dialog works. If triggered, this
+  will restart the app and go straight to the interface, skipping the
+  connection dialog.
+
+|------------------------------------------------------------------------------|
 |                                   0.052.100                                  |
 |------------------------------------------------------------------------------|
 

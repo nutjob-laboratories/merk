@@ -54,9 +54,32 @@ NS_PLAIN_TEXT = f'''
 	</tbody>
 </table>'''
 
+NSB_PLAIN_TEXT = f'''
+<table width="100%" border="0" cellspacing="1" cellpadding="1">
+	<tbody>
+		<tr>
+			<td><small>!TEXT!</small></td>
+		</tr>
+	</tbody>
+</table>'''
+
 def noSpacePlainTextAction(self,text):
 		
 	tsLabel = QLabel( NS_PLAIN_TEXT.replace("!TEXT!",text) )
+	tsAction = QWidgetAction(self)
+	tsAction.setDefaultWidget(tsLabel)
+
+	return tsAction
+
+def noSpacePlainTextActionBorder(self,text,darkmode):
+
+	if darkmode:
+		border_color = "darkGray"
+	else:
+		border_color = "lightGray"
+		
+	tsLabel = QLabel( NSB_PLAIN_TEXT.replace("!TEXT!",text) )
+	tsLabel.setStyleSheet(f"border: 1px solid {border_color}; padding: -1px;")
 	tsAction = QWidgetAction(self)
 	tsAction.setDefaultWidget(tsLabel)
 

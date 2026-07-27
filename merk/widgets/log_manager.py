@@ -211,22 +211,24 @@ class Window(QMainWindow):
 				logs.backup_log_direct(item.file,fileName)
 				QApplication.restoreOverrideCursor()
 
-				self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
-				self.filesize.setText(' ')
-				self.filetype.setText('<b>to export</b>')
-				self.filename.setText('<b>Select a log</b>')
-				self.packlist.clearSelection()
-				self.menubar.setEnabled(False)
-				self.format.setEnabled(False)
-				self.typeLabel.setEnabled(False)
-				self.type.setEnabled(False)
-				self.lineLabel.setEnabled(False)
-				self.line.setEnabled(False)
-				self.time.setEnabled(False)
-				self.button_export.setEnabled(False)
-				self.file_icon.setPixmap(self.blank_file)
+				# self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
+				# self.filesize.setText(' ')
+				# self.filetype.setText('<b>to export</b>')
+				# self.filename.setText('<b>Select a log</b>')
+				# self.packlist.clearSelection()
+				# self.menubar.setEnabled(False)
+				# self.format.setEnabled(False)
+				# self.typeLabel.setEnabled(False)
+				# self.type.setEnabled(False)
+				# self.lineLabel.setEnabled(False)
+				# self.line.setEnabled(False)
+				# self.time.setEnabled(False)
+				# self.button_export.setEnabled(False)
+				# self.file_icon.setPixmap(self.blank_file)
 
-				self.dump.setText('')
+				# self.dump.setText('')
+
+				self.buildList()
 
 
 	def delete_log(self, item):
@@ -354,6 +356,9 @@ class Window(QMainWindow):
 							# Display large log files in red
 							if os.path.getsize(log) >= config.LOG_WARNING_SIZE * 1024 * 1024:
 								item.setForeground(QBrush(QColor('red')))
+								f = item.font()
+								f.setBold(True)
+								item.setFont(f)
 								item.large_log = True
 							else:
 								item.large_log = False
@@ -701,7 +706,10 @@ class Window(QMainWindow):
 		else:
 			det = f"Channel chat in <b>{item.channel}</b> on <b>{item.network}</b>"
 
-		self.status_details.setText(f'<small>{det} - <b>{item.file}</b> ({item.size})</small>')
+		if item.large_log:
+			self.status_details.setText(f'<small>{det} - <b>{item.file} (<span style="color: red;">{item.size}</span>)</b></small>')
+		else:
+			self.status_details.setText(f'<small>{det} - <b>{item.file} ({item.size})</b></small>')
 
 		self.filesize.setText(f'<small><b>{os.path.basename(item.file)}</b></i></small>')
 

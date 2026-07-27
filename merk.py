@@ -394,16 +394,20 @@ if __name__ == '__main__':
 			channel = deescape_for_filename(p[1]).replace('.json','')
 			cl.append(f"<li><b>{channel}</b> ({netname}) - <i>{convert_size(os.path.getsize(f))}</i></li>")
 		cl.append("</ul>")
+		if len(logfiles)==1:
+			unit = "moments"
+		else:
+			unit = "minutes"
 		msgBox = QMessageBox()
 		msgBox.setWindowTitle("Warning! Large logs detected")
 		msgBox.setText(f"""
-			<b>Some of your log files are larger than {config.LOG_WARNING_SIZE} MB, and may slow down
-			{APPLICATION_NAME} or make it non-functional.</b><br><br>
+			<b>Some of your log files are larger than {config.LOG_WARNING_SIZE} MB, and may
+			slow down {APPLICATION_NAME} or make some chat windows non-functional.</b><br><br>
 
-			<small>Backing up the logs will not delete any data, but may take a few minutes.
-			Logs will be saved to a human readable format in ASCII text to a directory
+			<small>Logs will be saved to a human readable format in ASCII text to a directory
 			of your choice. The in-application log will be trimmed down to the last {config.MAXIMUM_LOADED_LOG_SIZE}
-			lines, while the complete log will be backed up.</small><br><br>
+			lines, while the complete log will be backed up.
+			Backing up the logs will not delete any data, but may take a few {unit}.</small><br><br>
 
 			<b>{APPLICATION_NAME} will start up as soon as the log backup is complete.</b><br><br>
 
@@ -716,10 +720,10 @@ if __name__ == '__main__':
 				else:
 					title = "Save log backups to..."
 				directory = QFileDialog.getExistingDirectory(
-					None,
-					title,
-					os.path.expanduser("~"), # Default directory is the user's "home" directory
-					QFileDialog.ShowDirsOnly
+					None,						# No parent, obviously
+					title,						# Dialog title
+					os.path.expanduser("~"),	# Default directory is the user's "home" directory
+					QFileDialog.ShowDirsOnly	# Don't show any files
 				)
 				if directory:
 					for f in large_logs:
