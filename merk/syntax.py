@@ -307,6 +307,10 @@ class MerkScriptHighlighter (QSyntaxHighlighter):
 			cmdsymbol+"toggle asciimojis",
 			cmdsymbol+"toggle tray",
 			cmdsymbol+"reload",
+			cmdsymbol+"op",
+			cmdsymbol+"deop",
+			cmdsymbol+"voice",
+			cmdsymbol+"devoice",
 		]
 
 		script_only = [

@@ -23,6 +23,10 @@
 * Changed how restarting from the "Settings" dialog works. If triggered, this
   will restart the app and go straight to the interface, skipping the
   connection dialog.
+* New commands: /op, /deop, /voice, and /devoice, which sets channel operator
+  status on a nick, removes channel operator status from a nick, sets voiced
+  status on a nick, and removes voiced status on a nick, respectively. Multiple
+  nicks can be passed to each command to perform the mode change on each nick.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.100                                  |

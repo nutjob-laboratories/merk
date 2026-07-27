@@ -339,6 +339,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 			config.ISSUE_COMMAND_SYMBOL+"unhighlight": config.ISSUE_COMMAND_SYMBOL+"unhighlight ",
 			config.ISSUE_COMMAND_SYMBOL+"toggle": config.ISSUE_COMMAND_SYMBOL+"toggle ",
 			config.ISSUE_COMMAND_SYMBOL+"reload": config.ISSUE_COMMAND_SYMBOL+"reload",
+			config.ISSUE_COMMAND_SYMBOL+"op": config.ISSUE_COMMAND_SYMBOL+"op ",
+			config.ISSUE_COMMAND_SYMBOL+"deop": config.ISSUE_COMMAND_SYMBOL+"deop ",
+			config.ISSUE_COMMAND_SYMBOL+"voice": config.ISSUE_COMMAND_SYMBOL+"voice ",
+			config.ISSUE_COMMAND_SYMBOL+"devoice": config.ISSUE_COMMAND_SYMBOL+"devoice ",
 		}
 
 	# Remove the style command if the style editor is turned off 
@@ -525,6 +529,10 @@ def build_help_and_autocomplete(new_autocomplete=None,new_help=None):
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"unhighlight WORD</b>", "Removes highlighting from WORD. Call without any arguments to see a list of all highlighted words. Pass <b>*</b> as the only argument to remove all word highlights" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"toggle FEATURE</b>", f"Toggles various input features. Valid features are {TOGGLE_COMMANDS}" ],
 		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"reload</b>", f"Re-loads and attempts to apply settings from configuration" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"op NICKNAME [NICKNAME...]</b>", f"Sets channel operator status on NICKNAME(s)" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"deop NICKNAME [NICKNAME...]</b>", f"Removes channel operator status from NICKNAME(s)" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"voice NICKNAME [NICKNAME...]</b>", f"Sets voiced status on NICKNAME(s)" ],
+		[ "<b>"+config.ISSUE_COMMAND_SYMBOL+"devoice NICKNAME [NICKNAME...]</b>", f"Removes voiced status from NICKNAME(s)" ],
 	]
 
 	if config.SCRIPTING_ENGINE_ENABLED:
@@ -1695,108 +1703,192 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						user_input = f"{config.ISSUE_COMMAND_SYMBOL}script {a.script}"
 						tokens = user_input.split()
 
+	# |-----|
+	# | /op |
+	# |-----|
+	# Transforms command call into /mode call
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'op' and len(tokens)>=2:
+		if window.window_type==CHANNEL_WINDOW:
+			tokens.pop(0)
+			users = ' '.join(tokens)
+			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} +{"o" * len(users)} {users}"
+			tokens = user_input.split()
+		else:
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}op: Only callable from channel subwindows")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}op is only callable from channel subwindows")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |-------|
+	# | /deop |
+	# |-------|
+	# Transforms command call into /mode call
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'deop' and len(tokens)>=2:
+		if window.window_type==CHANNEL_WINDOW:
+			tokens.pop(0)
+			users = ' '.join(tokens)
+			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} -{"o" * len(users)} {users}"
+			tokens = user_input.split()
+		else:
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}deop: Only callable from channel subwindows")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}deop is only callable from channel subwindows")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |--------|
+	# | /voice |
+	# |--------|
+	# Transforms command call into /mode call
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'voice' and len(tokens)>=2:
+		if window.window_type==CHANNEL_WINDOW:
+			tokens.pop(0)
+			users = ' '.join(tokens)
+			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} +{"v" * len(users)} {users}"
+			tokens = user_input.split()
+		else:
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}voice: Only callable from channel subwindows")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}voice is only callable from channel subwindows")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+	# |----------|
+	# | /devoice |
+	# |----------|
+	# Transforms command call into /mode call
+	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'devoice' and len(tokens)>=2:
+		if window.window_type==CHANNEL_WINDOW:
+			tokens.pop(0)
+			users = ' '.join(tokens)
+			user_input = f"{config.ISSUE_COMMAND_SYMBOL}mode {window.name} -{"v" * len(users)} {users}"
+			tokens = user_input.split()
+		else:
+			if is_script:
+				add_halt(script_id)
+				if config.DISPLAY_SCRIPT_ERRORS:
+					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}devoice: Only callable from channel subwindows")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+			t = Message(ERROR_MESSAGE,'',f"{config.ISSUE_COMMAND_SYMBOL}devoice is only callable from channel subwindows")
+			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
 	# |---------|
 	# | /toggle |
 	# |---------|
 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'toggle' and len(tokens)==2:
-			tokens.pop(0)
-			setting = tokens.pop(0)
+		tokens.pop(0)
+		setting = tokens.pop(0)
 
-			if setting.lower()=="protect" or setting.lower()=="protection":
-				if config.COMMAND_ERROR_PROTECTION:
-					config.COMMAND_ERROR_PROTECTION = False
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned off")
-				else:
-					config.COMMAND_ERROR_PROTECTION = True
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned on")
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if setting.lower()=="markdown" or setting.lower()=="merkdown":
-				if config.ENABLE_MARKDOWN_MARKUP:
-					config.ENABLE_MARKDOWN_MARKUP = False
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned off")
-				else:
-					config.ENABLE_MARKDOWN_MARKUP = True
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned on")
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if setting.lower()=="color" or setting.lower()=="colors" :
-				if config.ENABLE_IRC_COLOR_MARKUP:
-					config.ENABLE_IRC_COLOR_MARKUP = False
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned off")
-				else:
-					config.ENABLE_IRC_COLOR_MARKUP = True
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned on")
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if setting.lower()=="emoji" or setting.lower()=="emojis" :
-				if config.ENABLE_EMOJI_SHORTCODES:
-					config.ENABLE_EMOJI_SHORTCODES = False
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned off")
-				else:
-					config.ENABLE_EMOJI_SHORTCODES = True
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned on")
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if setting.lower()=="asciimoji" or setting.lower()=="asciimojis" :
-				if config.ENABLE_ASCIIMOJI_SHORTCODES:
-					config.ENABLE_ASCIIMOJI_SHORTCODES = False
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned off")
-				else:
-					config.ENABLE_ASCIIMOJI_SHORTCODES = True
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned on")
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if setting.lower()=="audio":
-				if config.SOUND_NOTIFICATIONS:
-					config.SOUND_NOTIFICATIONS = False
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Audio notifications have been turned off")
-				else:
-					config.SOUND_NOTIFICATIONS = True
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"Audio notifications have been turned on")
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if setting.lower()=="systray" or setting.lower()=="tray":
-				if config.SHOW_SYSTRAY_ICON:
-					config.SHOW_SYSTRAY_ICON = False
-					gui.tray.setVisible(False)
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon has been hidden")
-				else:
-					config.SHOW_SYSTRAY_ICON = True
-					gui.tray.setVisible(True)
-					if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon is no longer hidden")
-				config.save_settings(config.CONFIG_FILE)
-				gui.buildSettingsMenu()
-				if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-
-			if is_script:
-				add_halt(script_id)
-				if config.DISPLAY_SCRIPT_ERRORS:
-					t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"toggle: feature \"{setting}\" not recognized")
-					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-				return True
-			t = Message(ERROR_MESSAGE,'',f"Feature \"{setting}\" not recognized")
-			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+		if setting.lower()=="protect" or setting.lower()=="protection":
+			if config.COMMAND_ERROR_PROTECTION:
+				config.COMMAND_ERROR_PROTECTION = False
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned off")
+			else:
+				config.COMMAND_ERROR_PROTECTION = True
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Command input protection has been turned on")
+			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
+			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			return True
+
+		if setting.lower()=="markdown" or setting.lower()=="merkdown":
+			if config.ENABLE_MARKDOWN_MARKUP:
+				config.ENABLE_MARKDOWN_MARKUP = False
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned off")
+			else:
+				config.ENABLE_MARKDOWN_MARKUP = True
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Markdown input has been turned on")
+			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
+			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if setting.lower()=="color" or setting.lower()=="colors" :
+			if config.ENABLE_IRC_COLOR_MARKUP:
+				config.ENABLE_IRC_COLOR_MARKUP = False
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned off")
+			else:
+				config.ENABLE_IRC_COLOR_MARKUP = True
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"IRC color input has been turned on")
+			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
+			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if setting.lower()=="emoji" or setting.lower()=="emojis" :
+			if config.ENABLE_EMOJI_SHORTCODES:
+				config.ENABLE_EMOJI_SHORTCODES = False
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned off")
+			else:
+				config.ENABLE_EMOJI_SHORTCODES = True
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Emoji shortcode input has been turned on")
+			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
+			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if setting.lower()=="asciimoji" or setting.lower()=="asciimojis" :
+			if config.ENABLE_ASCIIMOJI_SHORTCODES:
+				config.ENABLE_ASCIIMOJI_SHORTCODES = False
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned off")
+			else:
+				config.ENABLE_ASCIIMOJI_SHORTCODES = True
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"ASCIImoji shortcode input has been turned on")
+			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
+			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if setting.lower()=="audio":
+			if config.SOUND_NOTIFICATIONS:
+				config.SOUND_NOTIFICATIONS = False
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Audio notifications have been turned off")
+			else:
+				config.SOUND_NOTIFICATIONS = True
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"Audio notifications have been turned on")
+			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
+			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if setting.lower()=="systray" or setting.lower()=="tray":
+			if config.SHOW_SYSTRAY_ICON:
+				config.SHOW_SYSTRAY_ICON = False
+				gui.tray.setVisible(False)
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon has been hidden")
+			else:
+				config.SHOW_SYSTRAY_ICON = True
+				gui.tray.setVisible(True)
+				if not is_script: t = Message(SYSTEM_MESSAGE,'',"System tray icon is no longer hidden")
+			config.save_settings(config.CONFIG_FILE)
+			gui.buildSettingsMenu()
+			if not is_script: window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+
+		if is_script:
+			add_halt(script_id)
+			if config.DISPLAY_SCRIPT_ERRORS:
+				t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: "+config.ISSUE_COMMAND_SYMBOL+f"toggle: feature \"{setting}\" not recognized")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+			return True
+		t = Message(ERROR_MESSAGE,'',f"Feature \"{setting}\" not recognized")
+		window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+		return True
 
 	if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'toggle':
 		if is_script:
