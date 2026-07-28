@@ -775,7 +775,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_ORDINAL',ordinal)
 	addTemporaryAlias('_PORT',str(window.client.port))
 	if window.window_type==CHANNEL_WINDOW:
-		addTemporaryAlias('_PRESENT',",".join(window.nicks))
+		addTemporaryAlias('_PRESENT'," ".join(window.nicks))
 	else:
 		addTemporaryAlias('_PRESENT','*')
 	addTemporaryAlias('_REALNAME',window.client.realname)
@@ -1491,7 +1491,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 			if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
 				tokens.pop(0)
 				user = tokens.pop(0)
-				window.client.sendLine("INVITE "+user+" "+window.name)
+				window.client.sendLine(f"INVITE {user} {window.name}")
 				return True
 			else:
 				if is_script:
@@ -1549,7 +1549,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 				if window.name[:1]=='#' or window.name[:1]=='&' or window.name[:1]=='!' or window.name[:1]=='+':
 					target = window.name
 					mode = ' '.join(tokens)
-					window.client.sendLine("MODE "+target+" "+mode)
+					window.client.sendLine(f"MODE {target} {mode}")
 					return True
 				else:
 					pass
@@ -2899,7 +2899,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userhost' and len(tokens)>=2:
 			tokens.pop(0)
 			msg = " ".join(tokens)
-			window.client.sendLine('USERHOST '+msg)
+			window.client.sendLine(f'USERHOST {msg}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'userhost':
 			if is_script:
@@ -2923,7 +2923,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-			window.client.sendLine('WALLOPS '+msg)
+			window.client.sendLine(f'WALLOPS {msg}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'wallops':
 			if is_script:
@@ -2961,7 +2961,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'lusers' and len(tokens)>=2:
 			tokens.pop(0)
 			target = ' '.join(tokens)
-			window.client.sendLine('LUSERS '+target)
+			window.client.sendLine(f'LUSERS {target}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'lusers' and len(tokens)==1:
 			tokens.pop(0)
@@ -2985,7 +2985,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'links' and len(tokens)>=2:
 			tokens.pop(0)
 			target = ' '.join(tokens)
-			window.client.sendLine('LINKS '+target)
+			window.client.sendLine(f'LINKS {target}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'links' and len(tokens)==1:
 			tokens.pop(0)
@@ -3010,7 +3010,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0)
 			comment = ' '.join(tokens)
-			window.client.sendLine('KILL '+target+' '+comment)
+			window.client.sendLine(f'KILL {target} {comment}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_kill':
 			if is_script:
@@ -3030,7 +3030,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ison' and len(tokens)>=2:
 			tokens.pop(0)
 			target = ' '.join(tokens)
-			window.client.sendLine('ISON '+target)
+			window.client.sendLine(f'ISON {target}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'ison':
 			if is_script:
@@ -3050,7 +3050,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'info' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
-			window.client.sendLine('INFO '+target)
+			window.client.sendLine(f'INFO {target}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'info' and len(tokens)==1:
 			window.client.sendLine('INFO')
@@ -3074,14 +3074,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0)
 			port = tokens.pop(0)
-			window.client.sendLine('CONNECT '+target+' '+port)
+			window.client.sendLine(f'CONNECT {target} {port}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_connect' and len(tokens)==4:
 			tokens.pop(0)
 			target = tokens.pop(0)
 			port = tokens.pop(0)
 			remote = tokens.pop(0)
-			window.client.sendLine('CONNECT '+target+' '+port+' '+remote)
+			window.client.sendLine(f'CONNECT {target} {port} {remote}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'_connect':
 			if is_script:
@@ -3119,7 +3119,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'admin' and len(tokens)==2:
 			tokens.pop(0)
 			target = tokens.pop(0)
-			window.client.sendLine('ADMIN '+target)
+			window.client.sendLine(f'ADMIN {target}')
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'admin' and len(tokens)==1:
 			window.client.sendLine('ADMIN')
@@ -6872,7 +6872,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			tokens.pop(0)
 			target = tokens.pop(0)
-			window.client.sendLine('KNOCK '+target)
+			window.client.sendLine(f'KNOCK {target}')
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'knock' and len(tokens)>=2:
@@ -6894,7 +6894,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
 			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
-			window.client.sendLine('KNOCK '+target+' '+message)
+			window.client.sendLine(f'KNOCK {target} {message}')
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'knock':
@@ -7511,7 +7511,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'version' and len(tokens)==2:
 			tokens.pop(0)
 			server = tokens.pop(0)
-			window.client.sendLine("VERSION "+server)
+			window.client.sendLine(f"VERSION {server}")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'version':
 			if is_script:
@@ -8011,7 +8011,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			username = tokens.pop(0)
 			password = tokens.pop(0)
-			window.client.sendLine("OPER "+username+" "+password)
+			window.client.sendLine(f"OPER {username} {password}")
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'oper':
@@ -8428,7 +8428,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			user = tokens.pop(0)
 			channel = tokens.pop(0)
-			window.client.sendLine("INVITE "+user+" "+channel)
+			window.client.sendLine(f"INVITE {user} {channel}")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'invite':
 			if is_script:
@@ -8552,7 +8552,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==2:
 			tokens.pop(0)
 			nick = tokens.pop(0)
-			window.client.sendLine("WHOWAS "+nick)
+			window.client.sendLine(f"WHOWAS {nick}")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==3:
 			tokens.pop(0)
@@ -8570,7 +8570,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			window.client.sendLine("WHOWAS "+nick+" "+str(arg))
+			window.client.sendLine(f"WHOWAS {nick} {arg}")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas' and len(tokens)==4:
 			tokens.pop(0)
@@ -8589,7 +8589,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',"Second argument for "+config.ISSUE_COMMAND_SYMBOL+"whowas must be numeric")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			window.client.sendLine("WHOWAS "+nick+" "+str(arg)+" "+serv)
+			window.client.sendLine(f"WHOWAS {nick} {arg} {serv}")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'whowas':
 			if is_script:
@@ -8609,7 +8609,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who' and len(tokens)==2:
 			tokens.pop(0)
 			nick = tokens.pop(0)
-			window.client.sendLine("WHO "+nick)
+			window.client.sendLine(f"WHO {nick}")
 			print(nick)
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who' and len(tokens)==3:
@@ -8626,7 +8626,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',"Improper argument for "+config.ISSUE_COMMAND_SYMBOL+"who")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-			window.client.sendLine("WHO "+nick+" o")
+			window.client.sendLine(f"WHO {nick} o")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'who':
 			if is_script:
@@ -8700,7 +8700,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			target = tokens.pop(0)
 			mode = ' '.join(tokens)
-			window.client.sendLine("MODE "+target+" "+mode)
+			window.client.sendLine(f"MODE {target} {mode}")
 			return True
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'mode':
 			if is_script:

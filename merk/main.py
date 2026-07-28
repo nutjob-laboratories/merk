@@ -40,6 +40,7 @@ import time
 import random
 import zipfile
 from datetime import datetime, timezone
+import html
 
 import emoji
 
@@ -750,7 +751,7 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
 						if c.channel_topic!='':
-							button.setToolTip(strip_color(c.channel_topic))
+							button.setToolTip('<div style="white-space:normal;">'+html.escape(strip_color(c.channel_topic))+"</div>")
 						else:
 							button.setToolTip(serv_name)
 					else:
@@ -890,7 +891,7 @@ class Merk(QMainWindow):
 				if c.window_type==CHANNEL_WINDOW:
 					if config.WINDOWBAR_TOPIC_IN_TOOLTIP:
 						if c.channel_topic!='':
-							button.setToolTip(strip_color(c.channel_topic))
+							button.setToolTip('<div style="white-space:normal;">'+html.escape(strip_color(c.channel_topic))+"</div>")
 						else:
 							button.setToolTip(c.name + "\n" + serv_name)
 					else:
@@ -1967,6 +1968,7 @@ class Merk(QMainWindow):
 					if c.window_type==CHANNEL_WINDOW:
 						if c.name==channel:
 							c.setTopic(newTopic)
+							newTopic = html.escape(newTopic)
 							w = c
 							if user!='':
 								t = Message(SYSTEM_MESSAGE,"",user+" has changed the topic to \""+newTopic+"\"")

@@ -34,6 +34,7 @@ import fnmatch
 import pathlib
 import random
 from datetime import datetime, timezone
+import html
 
 import emoji
 
@@ -4529,7 +4530,7 @@ class TopicEdit(QPlainTextEdit):
 			text = strip_color(text)
 
 		if config.SHOW_TOPIC_IN_EDITOR_TOOLTIP:
-			self.setToolTip(strip_color(text))
+			self.setToolTip('<div style="white-space:normal;">'+html.escape(strip_color(text))+'</div>')
 		else:
 			self.setToolTip('')
 

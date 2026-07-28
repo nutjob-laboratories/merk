@@ -29,6 +29,14 @@
   nicks can be passed to each command to perform the mode change on each nick.
   These commands can be called from any server or chat subwindow, but if called
   from any non-channel subwindow, the channel argument must be used.
+* Bugfix: calling some commands with "non-standard" arguments could
+  potentially crash the application.
+* The $_PRESENT built-in alias now separates all nicks with spaces, rather than
+  with commas.
+* Topic tool-tips are now "word-wrapped".
+* Bugfix: if a channel topic contained HTML, this would be rendered as HTML
+  when the user was notified via system message. The HTML in channel topics is
+  now properly escaped.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.100                                  |
