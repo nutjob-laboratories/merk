@@ -3756,8 +3756,9 @@ class Window(QMainWindow):
 					self.doing_automated_save = False
 					self.parent.buildToolsMenu()
 					
-		if hasattr(self,"dosave"): self.dosave.stop()
-		self.dosave.start(config.LOG_SAVE_INTERVAL)
+		if hasattr(self,"dosave"):
+			self.dosave.stop()
+			self.dosave.start(config.LOG_SAVE_INTERVAL)
 
 	def menuSaveLogs(self):
 		if self.window_type==CHANNEL_WINDOW or self.window_type==PRIVATE_WINDOW:
@@ -4135,7 +4136,7 @@ class Window(QMainWindow):
 			# speeds it up quite a bit.
 			self.__resize_timer = QTimer()
 			self.__resize_timer.timeout.connect(self.resizeScroll)
-			self.__resize_timer.start(100)
+			self.__resize_timer.start(PAUSE_FOR_SCROLL_ON_RESIZE_EVENT)
 
 		if self.window_type==CHANNEL_WINDOW:
 

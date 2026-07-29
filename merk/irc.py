@@ -228,6 +228,7 @@ class IRC_Connection(irc.IRCClient):
 		self.info_data = []
 		self.links_info = []
 		self.banlists = defaultdict(list)
+		self.batch = []
 
 		if user.USERINFO=='':
 			self.userinfo = None
@@ -481,6 +482,10 @@ class IRC_Connection(irc.IRCClient):
 	def uptime_beat(self):
 
 		self.uptime = self.uptime + 1
+
+		if len(self.batch)>0:
+			e = self.batch.pop(0)
+			self.sendLine(e)
 
 		if len(self.long_messages)>0:
 			e = self.long_messages.pop(0)

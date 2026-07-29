@@ -1442,7 +1442,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'reload' and len(tokens)==1:
 			t = Message(SYSTEM_MESSAGE,'',"Reloading and applying configuration settings...")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.reload_settings())
+			QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: gui.reload_settings())
 			return True
 
 	# |--------|
@@ -1723,8 +1723,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-		users = ' '.join(tokens)
-		window.client.sendLine(f"MODE {target} +{"o" * len(tokens)} {users}")
+		uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+		if len(uchunk)>1:
+			e = uchunk.pop(0)
+			window.client.sendLine(f"MODE {target} +{"o" * len(e)} {' '.join(e)}")
+			for e in uchunk:
+				window.client.batch.append(f"MODE {target} +{"o" * len(e)} {' '.join(e)}")
+		else:
+			for e in uchunk:
+				window.client.sendLine(f"MODE {target} +{"o" * len(e)} {' '.join(e)}")
 		return True
 	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'op' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
@@ -1733,8 +1740,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				target = tokens.pop(0)
 			else:
 				target = window.name
-			users = ' '.join(tokens)
-			window.client.sendLine(f"MODE {target} +{"o" * len(tokens)} {users}")
+			uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+			if len(uchunk)>1:
+				e = uchunk.pop(0)
+				window.client.sendLine(f"MODE {target} +{"o" * len(e)} {' '.join(e)}")
+				for e in uchunk:
+					window.client.batch.append(f"MODE {target} +{"o" * len(e)} {' '.join(e)}")
+			else:
+				for e in uchunk:
+					window.client.sendLine(f"MODE {target} +{"o" * len(e)} {' '.join(e)}")
 			return True
 		else:
 			if is_script:
@@ -1767,8 +1781,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-		users = ' '.join(tokens)
-		window.client.sendLine(f"MODE {target} -{"o" * len(tokens)} {users}")
+		uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+		uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+		if len(uchunk)>1:
+			e = uchunk.pop(0)
+			window.client.sendLine(f"MODE {target} -{"o" * len(e)} {' '.join(e)}")
+			for e in uchunk:
+				window.client.batch.append(f"MODE {target} -{"o" * len(e)} {' '.join(e)}")
+		else:
+			for e in uchunk:
+				window.client.sendLine(f"MODE {target} -{"o" * len(e)} {' '.join(e)}")
 		return True
 	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'deop' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
@@ -1777,8 +1799,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				target = tokens.pop(0)
 			else:
 				target = window.name
-			users = ' '.join(tokens)
-			window.client.sendLine(f"MODE {target} -{"o" * len(tokens)} {users}")
+			uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+			if len(uchunk)>1:
+				e = uchunk.pop(0)
+				window.client.sendLine(f"MODE {target} -{"o" * len(e)} {' '.join(e)}")
+				for e in uchunk:
+					window.client.batch.append(f"MODE {target} -{"o" * len(e)} {' '.join(e)}")
+			else:
+				for e in uchunk:
+					window.client.sendLine(f"MODE {target} -{"o" * len(e)} {' '.join(e)}")
 			return True
 		else:
 			if is_script:
@@ -1811,8 +1840,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-		users = ' '.join(tokens)
-		window.client.sendLine(f"MODE {target} +{"v" * len(tokens)} {users}")
+		uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+		if len(uchunk)>1:
+			e = uchunk.pop(0)
+			window.client.sendLine(f"MODE {target} +{"v" * len(e)} {' '.join(e)}")
+			for e in uchunk:
+				window.client.batch.append(f"MODE {target} +{"v" * len(e)} {' '.join(e)}")
+		else:
+			for e in uchunk:
+				window.client.sendLine(f"MODE {target} +{"v" * len(e)} {' '.join(e)}")
 		return True
 	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'voice' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
@@ -1821,8 +1857,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				target = tokens.pop(0)
 			else:
 				target = window.name
-			users = ' '.join(tokens)
-			window.client.sendLine(f"MODE {target} +{"v" * len(tokens)} {users}")
+			uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+			if len(uchunk)>1:
+				e = uchunk.pop(0)
+				window.client.sendLine(f"MODE {target} +{"v" * len(e)} {' '.join(e)}")
+				for e in uchunk:
+					window.client.batch.append(f"MODE {target} +{"v" * len(e)} {' '.join(e)}")
+			else:
+				for e in uchunk:
+					window.client.sendLine(f"MODE {target} +{"v" * len(e)} {' '.join(e)}")
 			return True
 		else:
 			if is_script:
@@ -1855,8 +1898,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(ERROR_MESSAGE,'',f"Missing a channel target")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 				return True
-		users = ' '.join(tokens)
-		window.client.sendLine(f"MODE {target} -{"v" * len(tokens)} {users}")
+		uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+		if len(uchunk)>1:
+			e = uchunk.pop(0)
+			window.client.sendLine(f"MODE {target} -{"v" * len(e)} {' '.join(e)}")
+			for e in uchunk:
+				window.client.batch.append(f"MODE {target} -{"v" * len(e)} {' '.join(e)}")
+		else:
+			for e in uchunk:
+				window.client.sendLine(f"MODE {target} -{"v" * len(e)} {' '.join(e)}")
 		return True
 	elif tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'devoice' and len(tokens)>=2:
 		if window.window_type==CHANNEL_WINDOW:
@@ -1865,8 +1915,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				target = tokens.pop(0)
 			else:
 				target = window.name
-			users = ' '.join(tokens)
-			window.client.sendLine(f"MODE {target} -{"v" * len(tokens)} {users}")
+			uchunk = [tokens[i:i + 5] for i in range(0, len(tokens), 5)]
+			if len(uchunk)>1:
+				e = uchunk.pop(0)
+				window.client.sendLine(f"MODE {target} -{"v" * len(e)} {' '.join(e)}")
+				for e in uchunk:
+					window.client.batch.append(f"MODE {target} -{"v" * len(e)} {' '.join(e)}")
+			else:
+				for e in uchunk:
+					window.client.sendLine(f"MODE {target} -{"v" * len(e)} {' '.join(e)}")
 			return True
 		else:
 			if is_script:
@@ -2350,7 +2407,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 	# |-----------|
 	if len(tokens)>=1:
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'rerender' and len(tokens)==1:
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.rerenderChatLog())
+			QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: window.rerenderChatLog())
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'rerender' and len(tokens)==2:
@@ -2358,16 +2415,16 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			target = tokens.pop(0)
 
 			if target=="*":
-				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.reRenderAll(True))
+				QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: gui.reRenderAll(True))
 				window.input.setFocus()
 				return True
 
 			w = gui.getSubWindow(target,window.client)
 			if w:
 				if hasattr(w,"widget"):
-					QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.widget().rerenderChatLog())
+					QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: w.widget().rerenderChatLog())
 				else:
-					QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.rerenderChatLog())
+					QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: w.rerenderChatLog())
 				window.input.setFocus()
 			else:
 				if is_script:
@@ -2393,18 +2450,18 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					if w:
 						displayed = True
 						if hasattr(w,"widget"):
-							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.widget().rerenderChatLog())
+							QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: w.widget().rerenderChatLog())
 						else:
-							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.rerenderChatLog())
+							QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: w.rerenderChatLog())
 						window.input.setFocus()
 				elif server.lower()==f"{win.widget().client.server.lower()}" or server.lower()==f"{win.widget().client.server}:{win.widget().client.port}".lower():
 					w = gui.getSubWindowCommand(target,win.widget().client)
 					if w:
 						displayed = True
 						if hasattr(w,"widget"):
-							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.widget().rerenderChatLog())
+							QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: w.widget().rerenderChatLog())
 						else:
-							QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: w.rerenderChatLog())
+							QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: w.rerenderChatLog())
 						window.input.setFocus()
 			if displayed: return True
 
@@ -5777,14 +5834,14 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		# /window logs
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='logs':
-				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.menuExportLog())
+				QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: gui.menuExportLog())
 				return True
 
 		# /window logs target
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
 			if tokens[1].lower()=='logs':
 				target = tokens[2]
-				QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: gui.menuExportLogTarget(target))
+				QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: gui.menuExportLogTarget(target))
 				return True
 
 		# /window settings
@@ -6350,7 +6407,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'find' and len(tokens)>=2:
 			tokens.pop(0)
 			target = ' '.join(tokens)
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: display_find_files(window,target))
+			QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: display_find_files(window,target))
 			return True
 
 	# |---------|
@@ -6593,7 +6650,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					dtype = "unknown"
 				t = Message(SYSTEM_MESSAGE,'',f"{s} = \"{settings[s]}\" ({dtype})")
 				results.append(t)
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: dumpAllConfig(window,count,results))
+			QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: dumpAllConfig(window,count,results))
 			return True
 
 		# One argument displays the config value
@@ -6957,7 +7014,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					refresh_list = True
 
 			# No search terms, so open the channel list window
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelList(refresh_list))
+			QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: window.showChannelList(refresh_list))
 			return True
 
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'list' and len(tokens)>=2:
@@ -6975,7 +7032,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					refresh_list = True
 
 			# Show the channel list window and inject search
-			QTimer.singleShot(ANTIFREEZE_PAUSE, lambda: window.showChannelListSearch(target,refresh_list))
+			QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: window.showChannelListSearch(target,refresh_list))
 			return True
 
 	# |-------|

@@ -159,7 +159,7 @@ class Merk(QMainWindow):
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
-		self.resize_delay = 200
+		self.resize_delay = PAUSE_FOR_WINDOWBAR_REBUILD_ON_RESIZE
 
 		# Create the central object of the client,
 		# the MDI widget

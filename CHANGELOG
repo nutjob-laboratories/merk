@@ -37,6 +37,12 @@
 * Bugfix: if a channel topic contained HTML, this would be rendered as HTML
   when the user was notified via system message. The HTML in channel topics is
   now properly escaped.
+* The /op, /deop, /voice, and /devoice commands now send MODE commands in
+  batches, if the number of users being passed to it is very long (for example,
+  using any of these commands with $_PRESENT may result in a large number of
+  MODE commands; the MODE command can take 10 users maximum as arguments.
+  This splits the users passed into groups of 5, sends the first MODE command
+  immediately, and then sends the rest at a rate of 1 per second).
 
 |------------------------------------------------------------------------------|
 |                                   0.052.100                                  |
