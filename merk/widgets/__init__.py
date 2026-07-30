@@ -38,3 +38,4 @@ from .ignore_manager import Window as IgnoreManager
 from .plugin_manager import Window as PluginManager
 from .console import Window as ConsoleWindow
 from .tips import Window as TipsWindow
+from .log_dump import Window as LogDump

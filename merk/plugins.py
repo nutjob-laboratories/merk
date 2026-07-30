@@ -381,7 +381,7 @@ class Window():
 		return False
 
 	def execute(self,command):
-		self._window.handleHotkeyCommand(command)
+		self._window.injectInput(command)
 
 	def input(self,input_string,execute=True):
 		if execute:
@@ -393,6 +393,18 @@ class Window():
 
 	def client(self):
 		return self._window.client
+
+	def batch(self,cmd):
+		if type(cmd)==type([]):
+			for c in cmd:
+				if type(c)==type(''):
+					self._window.client.batch.append(c)
+				else:
+					raise ValueError("Values passed in lists to Window.batch() must be strings")
+		elif type(cmd)==type(''):
+			self._window.client.batch.append(cmd)
+		else:
+			raise ValueError("Invalid value passed to Window.batch()")
 
 	def print(self,message):
 		message = commands.fullInterpolate(self._gui,self._window,message)

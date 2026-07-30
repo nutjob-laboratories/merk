@@ -2,6 +2,11 @@
 |                                   0.052.150                                  |
 |------------------------------------------------------------------------------|
 
+What's new:
+
+- **`/op`, `/deop`, `/voice`, and `/devoice` commands**. These commands can take as many nicknames as input as the user wants to enter.
+- **New feature: view server log on disconnection**. If a connection is lost, and "notify on lost/failed connection" is turned on, the user can view the total server log at the time of disconnection.
+
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
 |==============================================================================|
@@ -43,6 +48,21 @@
   MODE commands; the MODE command can take 10 users maximum as arguments.
   This splits the users passed into groups of 5, sends the first MODE command
   immediately, and then sends the rest at a rate of 1 per second).
+* New feature: view server log on a lost connection. This feature was requested
+  by user "lostblur". The server log can only be viewed if the "notify on lost/
+  failed connection" option is enabled. This setting can be found in the
+  "Connectionn" section of the settings dialog.
+* Tweaked the "lost connection" message boxes.
+
+|==============================================================================|
+|                              PLUGIN API CHANGES                              |
+|==============================================================================|
+
+* New Window class method: batch(). This allows plugins to send a potentially
+  large number of raw IRC commands to the server at a rate of once per second so
+  that the server's flood protection is not triggered. Accepts either a string
+  or a list of strings as an argument.
+* Bugfix: the Window method execute() should now function as described.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.100                                  |

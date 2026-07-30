@@ -156,6 +156,8 @@ class Merk(QMainWindow):
 		self.executed_global = False
 		self.at_least_one_window_has_spawned = False
 		self.hostmasks = {}
+		self.log_dump = {}
+		self.log_dump_window = None
 
 		self.resize_timer = QTimer(self)
 		self.resize_timer.timeout.connect(self.on_resize_complete)
@@ -1304,6 +1306,17 @@ class Merk(QMainWindow):
 		plugins.call(self,"connecting",client=client)
 
 	def connectionLost(self,client):
+
+		# Attempt to save the HTML log dump, so that it
+		# can be viewed from some dialogs
+		try:
+			w = self.getServerWindow(client)
+			background,foreground = styles.parseBackgroundAndForegroundColor(w.style["all"])
+			log_dump = f'<body style="background-color: {background}; color: {foreground}">'+w.chat.toHtml()+'</body>'
+			self.log_dump[f"{w.client.client_id}"] = log_dump
+		except:
+			self.log_dump[f"{w.client.client_id}"] = "Server log not found"
+
 		plugins.call(self,"lost",client=client)
 		windows = self.getAllSubWindows(client)
 		for w in windows:
@@ -4027,6 +4040,29 @@ class Merk(QMainWindow):
 			w.setOption(QMdiSubWindow.RubberBandMove, True)
 
 		self.readme_window = w
+		self.buildWindowsMenu()
+
+		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()
+
+		return w
+
+	def newLogdumpWindow(self,contents,title):
+		w = MerkSubwindow(self)
+		w.setWidget(widgets.LogDump(self,contents,title))
+		w.resize(config.DEFAULT_SUBWINDOW_WIDTH,config.DEFAULT_SUBWINDOW_HEIGHT)
+		w.setWindowIcon(QIcon(README_ICON))
+		w.setAttribute(Qt.WA_DeleteOnClose)
+		w.setBackground(config.SUBWINDOW_BACKGROUND)
+		self.MDI.addSubWindow(w)
+		w.show()
+
+		if config.RUBBER_BAND_RESIZE:
+			w.setOption(QMdiSubWindow.RubberBandResize, True)
+
+		if config.RUBBER_BAND_MOVE:
+			w.setOption(QMdiSubWindow.RubberBandMove, True)
+
+		self.log_dump_window = w
 		self.buildWindowsMenu()
 
 		if config.MAXIMIZE_SUBWINDOWS_ON_CREATION: w.showMaximized()

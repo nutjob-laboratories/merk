@@ -1890,6 +1890,10 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 	def clientConnectionLost(self, connector, reason):
 
 		config.load_settings(config.CONFIG_FILE)
+
+		# Get HTML server log dump
+		html_log_dump = self.kwargs["gui"].log_dump[f"{self.kwargs["client_id"]}"]
+		self.kwargs["gui"].log_dump.pop(f"{self.kwargs["client_id"]}",None)
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
@@ -1908,20 +1912,31 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			return
 
 		if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
-			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost."
-
+			msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.</b>"
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(msg)
 			msgBox.setInformativeText(reason.getErrorMessage())
 			msgBox.setWindowTitle("Connection lost")
-			msgBox.setStandardButtons(QMessageBox.Ok)
-			msgBox.exec()
+			label = msgBox.findChild(QLabel)
+			if label:
+				label.setWordWrap(True)
+			default_button = msgBox.addButton("Ok", QMessageBox.AcceptRole)
+			msgBox.addButton(" View server log ", QMessageBox.RejectRole)
+			msgBox.setDefaultButton(default_button)
+			rval = msgBox.exec()
+			if rval == QMessageBox.RejectRole:
+				self.kwargs["gui"].newLogdumpWindow(html_log_dump,f"{self.kwargs["server"]}:{self.kwargs["port"]}")
+			else:
+				return
 
 	def clientConnectionFailed(self, connector, reason):
 
 		config.load_settings(config.CONFIG_FILE)
+
+		# Delete HTML server log dump
+		self.kwargs["gui"].log_dump.pop(f"{self.kwargs["client_id"]}",None)
 		
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
@@ -1935,7 +1950,7 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 			self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
 		else:
 			if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
-				msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
+				msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed.</b>"
 
 				msgBox = QMessageBox()
 				msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
@@ -1943,6 +1958,9 @@ class IRC_Connection_Factory(protocol.ClientFactory):
 				msgBox.setText(msg)
 				msgBox.setWindowTitle("Connection failed")
 				msgBox.setStandardButtons(QMessageBox.Ok)
+				label = msgBox.findChild(QLabel)
+				if label:
+					label.setWordWrap(True)
 				msgBox.exec()
 
 class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
@@ -1957,6 +1975,10 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 	def clientConnectionLost(self, connector, reason):
 
 		config.load_settings(config.CONFIG_FILE)
+
+		# Get HTML server log dump
+		html_log_dump = self.kwargs["gui"].log_dump[f"{self.kwargs["client_id"]}"]
+		self.kwargs["gui"].log_dump.pop(f"{self.kwargs["client_id"]}",None)
 
 		if not self.kwargs["client_id"] in CONNECTIONS: return
 
@@ -1983,10 +2005,14 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 				msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 				msgBox.setText(msg)
 				msgBox.setWindowTitle("Connection lost")
-				msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
+				default_button = msgBox.addButton("Ok", QMessageBox.AcceptRole)
+				msgBox.addButton("Cancel", QMessageBox.RejectRole)
+				msgBox.setDefaultButton(default_button)
+				label = msgBox.findChild(QLabel)
+				if label:
+					label.setWordWrap(True)
 				rval = msgBox.exec()
-				if rval == QMessageBox.Cancel:
+				if rval == QMessageBox.RejectRole:
 					return
 				else:
 					self.kwargs["reconnected"] = 0
@@ -2004,20 +2030,27 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 			return
 
 		if config.ASK_BEFORE_RECONNECT:
-			msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.\n\nTry to reconnect?"
-
+			msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" lost.</b><br><br>Try to reconnect?"
 			msgBox = QMessageBox()
 			msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 			msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 			msgBox.setText(msg)
 			msgBox.setInformativeText(reason.getErrorMessage())
 			msgBox.setWindowTitle("Connection lost")
-			msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-
+			default_button = msgBox.addButton("Ok", QMessageBox.AcceptRole)
+			msgBox.addButton("Cancel", QMessageBox.RejectRole)
+			dump_button = msgBox.addButton(" View server log ", QMessageBox.ActionRole)
+			dump_button.clicked.connect(lambda a,u=html_log_dump,t=f"{self.kwargs["server"]}:{self.kwargs["port"]}": self.kwargs["gui"].newLogdumpWindow(u,t))
+			msgBox.setDefaultButton(default_button)
+			label = msgBox.findChild(QLabel)
+			if label:
+				label.setWordWrap(True)
 			rval = msgBox.exec()
-			if rval == QMessageBox.Cancel:
+			if rval == QMessageBox.RejectRole:
 				pass
-			else:
+			elif rval == QMessageBox.ActionRole:
+				pass
+			elif rval == QMessageBox.AcceptRole:
 				self.kwargs["reconnected"] = self.kwargs["reconnected"] + 1
 				if config.DELAY_AUTO_RECONNECTION:
 					if self.kwargs["ssl"]:
@@ -2064,6 +2097,9 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 
 		config.load_settings(config.CONFIG_FILE)
 
+		# Delete HTML server log dump
+		self.kwargs["gui"].log_dump.pop(f"{self.kwargs["client_id"]}",None)
+
 		if self.kwargs["client_id"] in self.kwargs["gui"].quitting:
 			del self.kwargs["gui"].quitting[self.kwargs["client_id"]]
 			if self.kwargs["client_id"] in self.kwargs["gui"].reconnecting:
@@ -2081,14 +2117,16 @@ class IRC_ReConnection_Factory(protocol.ReconnectingClientFactory):
 				self.kwargs["gui"].connectToIrcFail(msg,reason.getErrorMessage())
 			else:
 				if config.NOTIFY_ON_LOST_OR_FAILED_CONNECTION:
-					msg = "Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed."
-
+					msg = "<b>Connection to "+self.kwargs["server"]+":"+str(self.kwargs["port"])+" failed.</b>"
 					msgBox = QMessageBox()
 					msgBox.setIconPixmap(QPixmap(DISCONNECT_DIALOG_IMAGE))
 					msgBox.setWindowIcon(QIcon(APPLICATION_ICON))
 					msgBox.setText(msg)
 					msgBox.setWindowTitle("Connection failed")
 					msgBox.setStandardButtons(QMessageBox.Ok)
+					label = msgBox.findChild(QLabel)
+					if label:
+						label.setWordWrap(True)
 					msgBox.exec()
 
 

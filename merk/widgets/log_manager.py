@@ -210,26 +210,7 @@ class Window(QMainWindow):
 				QApplication.setOverrideCursor(Qt.WaitCursor)
 				logs.backup_log_direct(item.file,fileName)
 				QApplication.restoreOverrideCursor()
-
-				# self.status_details.setText(f"<small><b>Click a log to view its contents</b></small>")
-				# self.filesize.setText(' ')
-				# self.filetype.setText('<b>to export</b>')
-				# self.filename.setText('<b>Select a log</b>')
-				# self.packlist.clearSelection()
-				# self.menubar.setEnabled(False)
-				# self.format.setEnabled(False)
-				# self.typeLabel.setEnabled(False)
-				# self.type.setEnabled(False)
-				# self.lineLabel.setEnabled(False)
-				# self.line.setEnabled(False)
-				# self.time.setEnabled(False)
-				# self.button_export.setEnabled(False)
-				# self.file_icon.setPixmap(self.blank_file)
-
-				# self.dump.setText('')
-
 				self.buildList()
-
 
 	def delete_log(self, item):
 		msgBox = QMessageBox()
