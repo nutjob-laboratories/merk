@@ -747,7 +747,7 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_DATE',mydate)
 	addTemporaryAlias('_DAY',day)
 	addTemporaryAlias('_DLOGS',logs.LOG_DIRECTORY)
-	addTemporaryAlias('_DONATE',"https://buymeacoffee.com/danhetrick")
+	addTemporaryAlias('_DONATE',f"{DONATION_LINK}")
 	addTemporaryAlias('_DPLUGINS',plugins.PLUGIN_DIRECTORY)
 	addTemporaryAlias('_DSCRIPTS',SCRIPTS_DIRECTORY)
 	addTemporaryAlias('_DSETTINGS',config.CONFIG_DIRECTORY)
