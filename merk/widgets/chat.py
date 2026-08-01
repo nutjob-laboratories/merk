@@ -341,7 +341,7 @@ class Window(QMainWindow):
 
 			self.info_button = QPushButton(name)
 			self.info_button.setMenu(self.server_info_menu)
-			self.info_button.setToolTip("IRC Server")
+			self.info_button.setToolTip("IRC server information")
 			self.info_button.setIconSize(QSize(config.INTERFACE_BUTTON_ICON_SIZE,config.INTERFACE_BUTTON_ICON_SIZE))
 			self.info_button.setFlat(True)
 			f = self.info_button.font()

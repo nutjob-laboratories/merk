@@ -1309,13 +1309,16 @@ class Merk(QMainWindow):
 
 		# Attempt to save the HTML log dump, so that it
 		# can be viewed from some dialogs
-		try:
-			w = self.getServerWindow(client)
-			background,foreground = styles.parseBackgroundAndForegroundColor(w.style["all"])
-			log_dump = f'<body style="background-color: {background}; color: {foreground}">'+w.chat.toHtml()+'</body>'
-			self.log_dump[f"{w.client.client_id}"] = log_dump
-		except:
-			self.log_dump[f"{w.client.client_id}"] = "Server log not found"
+		w = self.getServerWindow(client)
+		if w:
+			try:
+				background,foreground = styles.parseBackgroundAndForegroundColor(w.style["all"])
+				log_dump = f'<body style="background-color: {background}; color: {foreground}">'+w.chat.toHtml()+'</body>'
+				self.log_dump[f"{client.client_id}"] = log_dump
+			except:
+				self.log_dump[f"{client.client_id}"] = "Server log not found"
+		else:
+			self.log_dump[f"{client.client_id}"] = "Server log not found"
 
 		plugins.call(self,"lost",client=client)
 		windows = self.getAllSubWindows(client)
