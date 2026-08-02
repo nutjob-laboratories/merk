@@ -53,6 +53,17 @@ What's new:
   failed connection" option is enabled. This setting can be found in the
   "Connectionn" section of the settings dialog.
 * Tweaked the "lost connection" message boxes.
+* Added an optional argumet to the "/window layout" command to automatically
+  write the generated layout script to a file.
+* Added the connection time to the server information menu.
+* Tweaked the order of entries in the server information menu.
+* Bugfix: changing timestamp settings now refreshes the server information menu
+  properly.
+* Bugfix: timestamps in the Log Manager now follow the user's timestamp
+  preferences.
+* Timestamps in the Log Manager, WHOIS messages, and "Resumed on" messages now
+  show whether a given time is AM or PM for messages, etc, if 24-hour timestamps
+  are not turned on.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

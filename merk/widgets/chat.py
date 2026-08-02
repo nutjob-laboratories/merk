@@ -257,6 +257,7 @@ class Window(QMainWindow):
 		self.doing_automated_save = False
 		self.plugin_loaded_style = None
 		self.plugin_title = None
+		self.connection_time = datetime.timestamp(datetime.now())
 
 		# The window's opacity starts at 100%
 		self.opacity = 100
@@ -866,10 +867,16 @@ class Window(QMainWindow):
 			# Mark end of loaded log
 			if config.MARK_END_OF_LOADED_LOG:
 				t = datetime.timestamp(datetime.now())
-				if config.SHOW_TIMESTAMPS_IN_UTC:
-					pretty_timestamp = datetime.fromtimestamp(t,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				if config.TIMESTAMP_24_HOUR:
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						pretty_timestamp = datetime.fromtimestamp(t,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' UTC')
+					else:
+						pretty_timestamp = datetime.fromtimestamp(t).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
 				else:
-					pretty_timestamp = datetime.fromtimestamp(t).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						pretty_timestamp = datetime.fromtimestamp(t,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p UTC')
+					else:
+						pretty_timestamp = datetime.fromtimestamp(t).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p')
 				self.log.append(Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp))
 		# Now, rerender all text in the log, so that
 		# the loaded log data is displayed
@@ -2131,10 +2138,16 @@ class Window(QMainWindow):
 
 			# Adjust resume time for UTC if necessary
 			if line.type==TEXT_HORIZONTAL_RULE_MESSAGE and line.contents.startswith("Resumed on"):
-				if config.SHOW_TIMESTAMPS_IN_UTC:
-					pretty_timestamp = datetime.fromtimestamp(line.timestamp,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+				if config.TIMESTAMP_24_HOUR:
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						pretty_timestamp = datetime.fromtimestamp(line.timestamp,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' UTC')
+					else:
+						pretty_timestamp = datetime.fromtimestamp(line.timestamp).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
 				else:
-					pretty_timestamp = datetime.fromtimestamp(line.timestamp).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT)
+					if config.SHOW_TIMESTAMPS_IN_UTC:
+						pretty_timestamp = datetime.fromtimestamp(line.timestamp,tz=timezone.utc).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p UTC')
+					else:
+						pretty_timestamp = datetime.fromtimestamp(line.timestamp).strftime('%A %m/%d/%Y, '+config.TIMESTAMP_FORMAT+' %p')
 				line = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',"Resumed on "+pretty_timestamp,line.timestamp)
 
 			if self.window_type==CHANNEL_WINDOW:
@@ -4270,6 +4283,25 @@ def buildServerSettingsMenu(self,client):
 	else:
 		mynet = config.UNKNOWN_NETWORK_NAME
 
+	if client.kwargs["ssl"]:
+		e = plainTextAction(self,"<b>Connection:</b> SSL/TLS")
+	else:
+		e = plainTextAction(self,"<b>Connection:</b> TCP/IP")
+	optionsMenu.addAction(e)
+
+	if config.TIMESTAMP_24_HOUR:
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			pretty_timestamp = datetime.fromtimestamp(self.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' UTC %m/%d/%Y')
+		else:
+			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+' %m/%d/%Y')
+	else:
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			pretty_timestamp = datetime.fromtimestamp(self.connection_time,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+'%p UTC %m/%d/%Y')
+		else:
+			pretty_timestamp = datetime.fromtimestamp(self.connection_time).strftime(config.TIMESTAMP_FORMAT+'%p %m/%d/%Y')
+	e = plainTextAction(self,f"<b>Connected:</b> {pretty_timestamp}")
+	optionsMenu.addAction(e)
+
 	e = plainTextAction(self,"<b>Host"+f":</b> {name}")
 	optionsMenu.addAction(e)
 
@@ -4283,12 +4315,6 @@ def buildServerSettingsMenu(self,client):
 	optionsMenu.addAction(e)
 
 	e = plainTextAction(self,"<b>Network"+f":</b> {mynet}")
-	optionsMenu.addAction(e)
-
-	if client.kwargs["ssl"]:
-		e = plainTextAction(self,"<b>Connection:</b> SSL/TLS")
-	else:
-		e = plainTextAction(self,"<b>Connection:</b> TCP/IP")
 	optionsMenu.addAction(e)
 
 	if client.server_user_count==0:

@@ -7931,6 +7931,9 @@ class Dialog(QDialog):
 			if self.rerenderUsers: self.parent.rerenderUserlists()
 			if self.rerenderStyle: self.parent.reApplyStyle()
 			if save_userlists: self.parent.saveAllUserlistWidths()
+			if self.do_timestamp:
+				self.parent.refreshAllInfoMenus()
+				self.parent.buildWindowsMenu()
 
 			if self.do_topic:
 				if config.SHOW_CHANNEL_TOPIC:

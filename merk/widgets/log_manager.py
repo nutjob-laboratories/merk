@@ -688,9 +688,9 @@ class Window(QMainWindow):
 			det = f"Channel chat in <b>{item.channel}</b> on <b>{item.network}</b>"
 
 		if item.large_log:
-			self.status_details.setText(f'<small>{det} - <b>{item.file} (<span style="color: red;">{item.size}</span>)</b></small>')
+			self.status_details.setText(f'<small>{det} - <b>{item.file}</b> (<span style="color: red;">{item.size}</span>)</small>')
 		else:
-			self.status_details.setText(f'<small>{det} - <b>{item.file} ({item.size})</b></small>')
+			self.status_details.setText(f'<small>{det} - <b>{item.file}</b> ({item.size})</small>')
 
 		self.filesize.setText(f'<small><b>{os.path.basename(item.file)}</b></i></small>')
 

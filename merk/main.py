@@ -1076,6 +1076,13 @@ class Merk(QMainWindow):
 		url = QUrl.fromLocalFile(abs_path)
 		QDesktopServices.openUrl(url)
 
+	def refreshAllInfoMenus(self):
+		windows = self.getAllServerWindows()
+		for w in windows:
+			c = w.widget()
+			if c.client.client_id in self.quitting: continue
+			c.refreshInfoMenu()
+
 	def buildSystrayMenu(self):
 
 		if config.SYSTRAY_MENU==False:
@@ -2421,10 +2428,16 @@ class Merk(QMainWindow):
 
 		displaynick = "["+whoisdata.nickname+"]"
 
-		if config.SHOW_TIMESTAMPS_IN_UTC:
-			so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon),tz=timezone.utc).strftime('%m/%d/%Y, %H:%M:%S'))
+		if config.TIMESTAMP_24_HOUR:
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon),tz=timezone.utc).strftime('%m/%d/%Y, %H:%M:%S'))
+			else:
+				so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon)).strftime('%m/%d/%Y, %H:%M:%S'))
 		else:
-			so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon)).strftime('%m/%d/%Y, %H:%M:%S'))
+			if config.SHOW_TIMESTAMPS_IN_UTC:
+				so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon),tz=timezone.utc).strftime('%m/%d/%Y, %I:%M:%S %p'))
+			else:
+				so = Message(WHOIS_MESSAGE,displaynick, "\x02Signed on:\x0F "+datetime.fromtimestamp(int(whoisdata.signon)).strftime('%m/%d/%Y, %I:%M:%S %p'))
 
 		wd = [
 			Message(WHOIS_MESSAGE,displaynick, whoisdata.username+"@"+whoisdata.host+": \x02"+whoisdata.realname+"\x0F"),

@@ -199,16 +199,28 @@ def readLog(network,name,logdir=LOG_DIRECTORY):
 	return logs
 
 def pretty_timestamp_m1(ts):
-	if config.SHOW_TIMESTAMPS_IN_UTC:
-		return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%a, %d %b %Y %H:%M:%S UTC')
+	if config.TIMESTAMP_24_HOUR:
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%a, %d %b %Y '+config.TIMESTAMP_FORMAT+' UTC')
+		else:
+			return datetime.fromtimestamp(ts).strftime('%a, %d %b %Y '+config.TIMESTAMP_FORMAT)
 	else:
-		return datetime.fromtimestamp(ts).strftime('%a, %d %b %Y %H:%M:%S')
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%a, %d %b %Y '+config.TIMESTAMP_FORMAT+' %p UTC')
+		else:
+			return datetime.fromtimestamp(ts).strftime('%a, %d %b %Y '+config.TIMESTAMP_FORMAT+' %p ')
 
 def pretty_timestamp_m2(ts):
-	if config.SHOW_TIMESTAMPS_IN_UTC:
-		return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%H:%M:%S UTC')
+	if config.TIMESTAMP_24_HOUR:
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			return datetime.fromtimestamp(ts,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' UTC')
+		else:
+			return datetime.fromtimestamp(ts).strftime(config.TIMESTAMP_FORMAT)
 	else:
-		return datetime.fromtimestamp(ts).strftime('%H:%M:%S')
+		if config.SHOW_TIMESTAMPS_IN_UTC:
+			return datetime.fromtimestamp(ts,tz=timezone.utc).strftime(config.TIMESTAMP_FORMAT+' %p UTC')
+		else:
+			return datetime.fromtimestamp(ts).strftime(config.TIMESTAMP_FORMAT+' %p')
 
 def dumpRawLog(logs):
 	delimiter = "\t"

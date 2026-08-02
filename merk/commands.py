@@ -5287,6 +5287,75 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				gui.newEditorWindowContents("\n".join(results))
 				return True
 
+		# /window layout FILENAME
+		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==3:
+			if tokens[1].lower()=='layout':
+
+				if not config.SCRIPTING_ENGINE_ENABLED:
+					if is_script:
+						add_halt(script_id)
+						if config.DISPLAY_SCRIPT_ERRORS:
+							t = Message(ERROR_MESSAGE,'',f"{script_file}, line {line_number}: {config.ISSUE_COMMAND_SYMBOL}window layout: Scripting is disabled")
+							window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+						return True
+					t = Message(ERROR_MESSAGE,'',"Scripting is disabled")
+					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+					return True
+
+				results = []
+
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Subwindow layout script")
+
+				current_date = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime('%H:%M:%S %A %B %d, %Y')
+				results.append(f"{config.ISSUE_COMMAND_SYMBOL}rem Generated at {current_date}\n")
+
+				calling_window_is_visible = True
+				for w in gui.getAllAllConnectedSubWindows():
+					width = w.width()
+					height = w.height()
+					x_val = w.x()
+					y_val = w.y()
+					opacity = w.widget().opacity
+					if w.widget().window_type==SERVER_WINDOW:
+						win_name = '*'
+					else:
+						win_name = w.widget().name
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}size {w.widget().client.server} {win_name} {width} {height}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}move {w.widget().client.server} {win_name} {x_val} {y_val}")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}fade {w.widget().client.server} {win_name} {opacity}")
+					if not w.isVisible():
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}hide {w.widget().client.server} {win_name}")
+					else:
+						results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {w.widget().client.server} {win_name}")
+
+					if w.widget().subwindow_id==window.subwindow_id:
+						if not w.isVisible(): calling_window_is_visible = False
+
+				if calling_window_is_visible:
+					if window.window_type==SERVER_WINDOW:
+						win_name = '*'
+					else:
+						win_name = window.name
+					results.append(f"\n{config.ISSUE_COMMAND_SYMBOL}rem Set focus on the calling subwindow")
+					results.append(f"{config.ISSUE_COMMAND_SYMBOL}show {window.client.server} {win_name}")
+
+				tokens.pop(0)
+				tokens.pop(0)
+				output_file = tokens.pop(0)
+				_, file_extension = os.path.splitext(output_file)
+				if file_extension=='':
+					efl = len(f"{SCRIPT_FILE_EXTENSION}")+1
+					if output_file[-efl:].lower()!=f".{SCRIPT_FILE_EXTENSION}": output_file = output_file+f".{SCRIPT_FILE_EXTENSION}"
+
+				ffile = os.path.join(SCRIPTS_DIRECTORY,output_file)
+				f = open(ffile,mode="w",encoding="utf-8",errors="ignore")
+				f.write("\n".join(results))
+				f.close()
+
+				t = Message(SYSTEM_MESSAGE,'',f"Layout script written to {output_file}")
+				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+				return True
+
 		# /window ontop
 		if tokens[0].lower()==config.ISSUE_COMMAND_SYMBOL+'window' and len(tokens)==2:
 			if tokens[1].lower()=='ontop':
