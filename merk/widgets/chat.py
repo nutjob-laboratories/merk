@@ -459,9 +459,9 @@ class Window(QMainWindow):
 		if self.window_type==CHANNEL_WINDOW:
 
 			if self.parent.dark_mode:
-				border_color = "white"
+				border_color = "lightGray"
 			else:
-				border_color = "black"
+				border_color = "darkGray"
 
 			# Channel name display
 			self.channel_mode_display = QLabel("<small><b>"+self.name+"</b></small>")
@@ -702,7 +702,7 @@ class Window(QMainWindow):
 			if not config.SHOW_CHANNEL_TOPIC:
 				self.hideTopic()
 
-			if not config.SHOW_CHANNEL_NAME_AND_MODES:
+			if not config.SHOW_CHANEL_NAME:
 				self.channel_mode_display.hide()
 
 			finalLayout = QVBoxLayout()
@@ -1962,7 +1962,7 @@ class Window(QMainWindow):
 
 	def showTopic(self):
 		self.channel_mode_display.show()
-		if config.SHOW_CHANNEL_NAME_AND_MODES:
+		if config.SHOW_CHANEL_NAME:
 			self.channel_mode_display.show()
 		else:
 			self.channel_mode_display.hide()
@@ -1973,6 +1973,7 @@ class Window(QMainWindow):
 		else:
 			self.channel_users_display.hide()
 			self.topic_spacer.hide()
+		self.updateTitle()
 
 	def tickUptime(self,uptime):
 
@@ -2255,11 +2256,15 @@ class Window(QMainWindow):
 				modes = ''
 
 			if len(modes)>0:
-				self.channel_mode_display.setText("<small><b>"+self.name+"</b> "+modes+"</small>")
-				self.setTopic(self.channel_topic)
+				cmd = "<small><b>"+self.name+"</b> "+modes+"</small>"
 			else:
-				self.channel_mode_display.setText("<small><b>"+self.name+"</b></small>")
-				self.setTopic(self.channel_topic)
+				cmd = "<small><b>"+self.name+"</b></small>"
+
+			if not config.SHOW_CHANNEL_MODES:
+				cmd = "<small><b>"+self.name+"</b></small>"
+
+			self.channel_mode_display.setText(cmd)
+			self.setTopic(self.channel_topic)
 		else:
 			self.setWindowTitle(self.name)
 			self.parent.buildWindowsMenu()
@@ -3123,16 +3128,10 @@ class Window(QMainWindow):
 				normal.append(nickname)
 
 		# Update the user count display
-		# Hide the user count display if there is only
-		# one person in the channel (which should be the user)
 		self.channel_users_display.setText(f"<b><small>{self.user_count}</small></b>")
-		if self.user_count>1:
-			if config.SHOW_USER_COUNT_DISPLAY and config.SHOW_CHANNEL_TOPIC:
-				self.channel_users_display.show()
-				self.topic_spacer.show()
-			else:
-				self.channel_users_display.hide()
-				self.topic_spacer.hide()
+		if config.SHOW_USER_COUNT_DISPLAY and config.SHOW_CHANNEL_TOPIC:
+			self.channel_users_display.show()
+			self.topic_spacer.show()
 		else:
 			self.channel_users_display.hide()
 			self.topic_spacer.hide()

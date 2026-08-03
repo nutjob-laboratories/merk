@@ -118,7 +118,7 @@ USE_MENUBAR = True
 QT_WINDOW_STYLE = 'Windows'
 SHOW_CHANNEL_TOPIC = True
 SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = False
-SHOW_CHANNEL_NAME_AND_MODES = True
+SHOW_CHANEL_NAME = True
 SHOW_USERLIST = True
 SHOW_INPUT_MENU = True
 SHOW_WINDOWBAR = True
@@ -480,9 +480,11 @@ MAX_LOG_DISPLAY_SIZE = 5000
 LIMIT_LOG_VIEW = True
 LOG_WARNING_SIZE = 30
 SCAN_FOR_LARGE_LOGS = True
+SHOW_CHANNEL_MODES = True
 
 def build_settings():
 	settings = {
+		"show_channel_modes": SHOW_CHANNEL_MODES,
 		"scan_for_large_logs_on_startup": SCAN_FOR_LARGE_LOGS,
 		"log_warning_size": LOG_WARNING_SIZE,
 		"use_maximum_log_view_size": LIMIT_LOG_VIEW,
@@ -885,7 +887,7 @@ def build_settings():
 		"qt_window_style": QT_WINDOW_STYLE,
 		"show_channel_topic_bar": SHOW_CHANNEL_TOPIC,
 		"show_channel_topic_in_window_title": SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE,
-		"show_channel_name_and_modes": SHOW_CHANNEL_NAME_AND_MODES,
+		"show_channel_name": SHOW_CHANEL_NAME,
 		"show_userlists": SHOW_USERLIST,
 		"show_input_menu": SHOW_INPUT_MENU,
 		"show_windowbar": SHOW_WINDOWBAR,
@@ -922,6 +924,8 @@ def build_settings():
 	return settings
 
 def patch_settings(settings):
+	if not "show_channel_modes" in settings:
+		settings["show_channel_modes"] = SHOW_CHANNEL_MODES
 	if not "scan_for_large_logs_on_startup" in settings:
 		settings["scan_for_large_logs_on_startup"] = SCAN_FOR_LARGE_LOGS
 	if not "log_warning_size" in settings:
@@ -1636,8 +1640,8 @@ def patch_settings(settings):
 		settings["show_input_menu"] = SHOW_INPUT_MENU
 	if not "show_userlists" in settings:
 		settings["show_userlists"] = SHOW_USERLIST
-	if not "show_channel_name_and_modes" in settings:
-		settings["show_channel_name_and_modes"] = SHOW_CHANNEL_NAME_AND_MODES
+	if not "show_channel_name" in settings:
+		settings["show_channel_name"] = SHOW_CHANEL_NAME
 	if not "show_channel_topic_in_window_title" in settings:
 		settings["show_channel_topic_in_window_title"] = SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
 	if not "show_channel_topic_bar" in settings:
@@ -1868,7 +1872,7 @@ def load_settings(filename):
 	global QT_WINDOW_STYLE
 	global SHOW_CHANNEL_TOPIC
 	global SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE
-	global SHOW_CHANNEL_NAME_AND_MODES
+	global SHOW_CHANEL_NAME
 	global SHOW_USERLIST
 	global SHOW_INPUT_MENU
 	global SHOW_WINDOWBAR
@@ -2228,6 +2232,7 @@ def load_settings(filename):
 	global LIMIT_LOG_VIEW
 	global LOG_WARNING_SIZE
 	global SCAN_FOR_LARGE_LOGS
+	global SHOW_CHANNEL_MODES
 
 	if os.path.isfile(filename):
 		with open(filename, "r") as read_settings:
@@ -2237,6 +2242,7 @@ def load_settings(filename):
 		settings = patch_settings(settings)
 		postpatch_length = len(settings)
 
+		SHOW_CHANNEL_MODES = settings["show_channel_modes"]
 		SCAN_FOR_LARGE_LOGS = settings["scan_for_large_logs_on_startup"]
 		LOG_WARNING_SIZE = settings["log_warning_size"]
 		LIMIT_LOG_VIEW = settings["use_maximum_log_view_size"]
@@ -2596,7 +2602,7 @@ def load_settings(filename):
 		WINDOWBAR_CAN_FLOAT = settings["windowbar_can_float"]
 		SHOW_INPUT_MENU = settings["show_input_menu"]
 		SHOW_USERLIST = settings["show_userlists"]
-		SHOW_CHANNEL_NAME_AND_MODES = settings["show_channel_name_and_modes"]
+		SHOW_CHANEL_NAME = settings["show_channel_name"]
 		SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = settings["show_channel_topic_in_window_title"]
 		SHOW_CHANNEL_TOPIC = settings["show_channel_topic_bar"]
 		USE_MENUBAR = settings["use_menubar"]

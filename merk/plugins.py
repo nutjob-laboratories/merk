@@ -200,7 +200,6 @@ class Window():
 			if title.strip()=='':
 				self._window.plugin_title = None
 				if self._window.window_type==CHANNEL_WINDOW:
-					
 					if config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE:
 						text = strip_color(self._window.channel_topic)
 						if len(text)>0:
@@ -218,7 +217,6 @@ class Window():
 							self._window.setWindowTitle(self._window.name)
 						else:
 							self._window.setWindowTitle(' ')
-
 				else:
 					self._window.setWindowTitle(self._window.name)
 				return

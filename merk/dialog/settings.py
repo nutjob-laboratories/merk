@@ -1791,8 +1791,10 @@ class Dialog(QDialog):
 	def topicChangeNameModes(self,i):
 		if self.channelName.isChecked():
 			self.chanMode.setEnabled(True)
+			self.channelModes.setEnabled(True)
 		else:
 			self.chanMode.setEnabled(False)
+			self.channelModes.setEnabled(False)
 		self.do_topic = True
 
 	def mainTopicChange(self, i):
@@ -1805,8 +1807,10 @@ class Dialog(QDialog):
 			self.topicEditor.setEnabled(True)
 			if self.channelName.isChecked():
 				self.chanMode.setEnabled(True)
+				self.channelModes.setEnabled(True)
 			else:
 				self.chanMode.setEnabled(False)
+				self.channelModes.setEnabled(False)
 		else:
 			self.refreshTopics = False
 			self.channelName.setEnabled(False)
@@ -1815,6 +1819,7 @@ class Dialog(QDialog):
 			self.channelColors.setEnabled(False)
 			self.topicEditor.setEnabled(False)
 			self.chanMode.setEnabled(False)
+			self.channelModes.setEnabled(False)
 
 		self.do_topic = True
 		self.selector.setFocus()
@@ -4296,9 +4301,13 @@ class Dialog(QDialog):
 		if config.SHOW_CHANNEL_TOPIC: self.topicDisplay.setChecked(True)
 		self.topicDisplay.stateChanged.connect(self.mainTopicChange)
 
-		self.channelName = QCheckBox("Channel name/modes",self)
-		if config.SHOW_CHANNEL_NAME_AND_MODES: self.channelName.setChecked(True)
+		self.channelName = QCheckBox("Channel name",self)
+		if config.SHOW_CHANEL_NAME: self.channelName.setChecked(True)
 		self.channelName.stateChanged.connect(self.topicChangeNameModes)
+
+		self.channelModes = QCheckBox("Channel modes",self)
+		if config.SHOW_CHANNEL_MODES: self.channelModes.setChecked(True)
+		self.channelModes.stateChanged.connect(self.topicChangeNameModes)
 
 		self.channelCount = QCheckBox("User count",self)
 		if config.SHOW_USER_COUNT_DISPLAY: self.channelCount.setChecked(True)
@@ -4328,8 +4337,9 @@ class Dialog(QDialog):
 			self.topicEditor.setEnabled(False)
 			self.chanMode.setEnabled(False)
 
-		if not config.SHOW_CHANNEL_NAME_AND_MODES:
+		if not config.SHOW_CHANEL_NAME:
 			self.chanMode.setEnabled(False)
+			self.channelModes.setEnabled(False)
 
 		self.channelDescription = QLabel("""
 			<small>
@@ -4448,18 +4458,22 @@ class Dialog(QDialog):
 
 		cbL1 = QHBoxLayout()
 		cbL1.addWidget(self.channelName)
-		cbL1.addWidget(self.channelCount)
-
+		cbL1.addWidget(self.channelModes)
+		
 		cbL2 = QHBoxLayout()
-		cbL2.addWidget(self.channelTooltip)
-		cbL2.addWidget(self.topicEditor)
+		cbL2.addWidget(self.channelCount)
+		cbL2.addWidget(self.channelColors)
+
+		cbL3 = QHBoxLayout()
+		cbL3.addWidget(self.channelTooltip)
+		cbL3.addWidget(self.topicEditor)
 
 		chanButtonLayout = QVBoxLayout()
 		chanButtonLayout.setSpacing(0)
 		chanButtonLayout.addLayout(cbL1)
 		chanButtonLayout.addLayout(cbL2)
+		chanButtonLayout.addLayout(cbL3)
 		chanButtonLayout.addWidget(self.chanMode)
-		chanButtonLayout.addWidget(self.channelColors)
 
 		ulistDisplay1 = QFormLayout()
 		ulistDisplay1.setSpacing(0)
@@ -7363,7 +7377,7 @@ class Dialog(QDialog):
 		config.QT_WINDOW_STYLE = self.qt_style
 		config.SHOW_CHANNEL_TOPIC = self.topicDisplay.isChecked()
 		config.SHOW_CHANNEL_TOPIC_IN_WINDOW_TITLE = self.topicTitleDisplay.isChecked()
-		config.SHOW_CHANNEL_NAME_AND_MODES = self.channelName.isChecked()
+		config.SHOW_CHANEL_NAME = self.channelName.isChecked()
 		config.SHOW_USERLIST = self.showUserlists.isChecked()
 		config.SHOW_INPUT_MENU = self.showInputMenu.isChecked()
 		config.SHOW_WINDOWBAR = self.windowBar.isChecked()
@@ -7677,6 +7691,7 @@ class Dialog(QDialog):
 		config.LIMIT_LOG_VIEW = self.logViewSize.isChecked()
 		config.MAX_LOG_DISPLAY_SIZE = self.MAX_LOG_DISPLAY_SIZE
 		config.SCAN_FOR_LARGE_LOGS = self.scanLogs.isChecked()
+		config.SHOW_CHANNEL_MODES = self.channelModes.isChecked()
 		
 		if config.DECODING_TYPE!=self.DECODING_TYPE:
 			changed_main_codec = True

@@ -6719,6 +6719,10 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					dtype = "unknown"
 				t = Message(SYSTEM_MESSAGE,'',f"{s} = \"{settings[s]}\" ({dtype})")
 				results.append(t)
+
+			# Sort results alphabetically
+			results = sorted(results, key=lambda s: s.contents)
+
 			QTimer.singleShot(PAUSE_TO_PREVENT_APP_FREEZE, lambda: dumpAllConfig(window,count,results))
 			return True
 
@@ -6729,6 +6733,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			tokens.pop(0)
 			my_setting = tokens.pop(0)
 
+			# Settings that cannot be edited with /config
 			if my_setting in settings:
 				if type(settings[my_setting]) is list or \
 				type(settings[my_setting]) is dict or \
@@ -6742,6 +6747,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
+			# Display specific setting requested
 			if my_setting in settings:
 				if type(settings[my_setting]).__name__=='bool':
 					dtype = "boolean"
@@ -6754,6 +6760,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				t = Message(SYSTEM_MESSAGE,'',f"{my_setting} = \"{settings[my_setting]}\" ({dtype})")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 			else:
+				# Search settings for settings containing the requested string
 				results = []
 				for a in settings:
 					if not type(settings[a]) is list and not type(settings[a]) is dict:
@@ -6761,6 +6768,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if fnmatch.fnmatch(a,f"*{my_setting}*"):
 								results.append(a)
 
+				# If no settings are found, let the user know and return
 				if len(results)==0:
 					if is_script:
 						add_halt(script_id)
@@ -6772,11 +6780,15 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 					return True
 
+				# Display the search results
 				if len(results)>1:
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config settings containing \"{my_setting}\"")
 				else:
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} config setting containing \"{my_setting}\"")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
+
+				# Sort results so that they appear alphabetically
+				results.sort()
 
 				for r in results:
 					if type(settings[r]).__name__=='bool':

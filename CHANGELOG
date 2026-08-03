@@ -6,6 +6,7 @@ What's new:
 
 - **`/op`, `/deop`, `/voice`, and `/devoice` commands**. These commands can take as many nicknames as input as the user wants to enter.
 - **New feature: view server log on disconnection**. If a connection is lost, and "notify on lost/failed connection" is turned on, the user can view the total server log at the time of disconnection.
+- **New setting: show/hide channel modes in the channel information display**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -64,6 +65,19 @@ What's new:
 * Timestamps in the Log Manager, WHOIS messages, and "Resumed on" messages now
   show whether a given time is AM or PM for messages, etc, if 24-hour timestamps
   are not turned on.
+* The "box" around the channel name/mode and user count in the channel
+  information display is now slightly "lighter", depending on whether the client
+  is running in dark or light mode.
+* Changed the internal setting name for the "show channel name in channel
+  information display" setting in the config file. This will result in the
+  setting "resetting" to the default (turned on) for users.
+* The "channel user count display" will now display if there's only 1 user in
+  the channel.
+* Added a setting to toggle whether channel modes are displayed inside the
+  "channel information display". The new setting has been added to both the
+  Settings dialog and the configuration file.
+* Setting search results with "/config TERM" are now sorted alphabetically.
+* Setting dumps with "/config" are now sorted alphabetically.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
