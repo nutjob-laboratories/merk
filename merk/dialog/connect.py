@@ -693,10 +693,9 @@ class Dialog(QDialog):
 			<small>
 			Select a server below, or enter connection information by hand. To automatically
 			reconnect on disconnection, check the <b>Reconnect</b> checkbox. To login
-			with SASL, check the <b>Login with SASL</b> checkbox; edit your SASL
-			login with the <b>Edit</b> and <b>Clear</b> buttons. If <b>Execute connection
+			with SASL, check the <b>Login with SASL</b> checkbox. If <b>Execute connection
 			script</b> is enabled, commands entered in the <b>Script</b> tab will be executed
-			when connection to the server is complete. No settings are saved until the <b>Connect</b> button is pushed.
+			when connection to the server is complete.
 			</small>
 
 			""")
@@ -733,6 +732,7 @@ class Dialog(QDialog):
 			serverInfoLayout.addWidget(self.serverDescription)
 		else:
 			serverInfoLayout.addStretch()
+		serverInfoLayout.addWidget(QLabel(f"<center><small><b>{self.servers.count()} servers available</b></small></center>"))
 		serverInfoLayout.addWidget(self.servers)
 		serverInfoLayout.addLayout(serverLayout)
 		serverInfoLayout.addLayout(optionLayout)

@@ -78,6 +78,9 @@ What's new:
   Settings dialog and the configuration file.
 * Setting search results with "/config TERM" are now sorted alphabetically.
 * Setting dumps with "/config" are now sorted alphabetically.
+* Added an "available server" count to the connection dialog.
+* When calling "/window" with no arguments, the subwindow list is now sorted
+  alphabetically.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

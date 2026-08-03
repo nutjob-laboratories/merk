@@ -5199,6 +5199,9 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 					entry = f"{c.name} - Server ({c.client.server}:{c.client.port}, {v}, {width}x{height}, X:{x_val} Y:{y_val})"
 				results.append(entry)
 
+			# Sort the windows alphabetically
+			results = sorted(results, key=lambda x: x.lstrip("#&!+"))
+
 			if len(results)>1:
 					t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"Found {len(results)} subwindows")
 			else:
@@ -5221,10 +5224,8 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			t = Message(SYSTEM_MESSAGE,'',f"Subwindow display area: {viewport_size.width()}x{viewport_size.height()}")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
-			counter = 0
 			for r in results:
-				counter = counter + 1
-				t = Message(SYSTEM_MESSAGE,'',f"{counter}) {r}")
+				t = Message(SYSTEM_MESSAGE,'',f"{r}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
 
 			t = Message(TEXT_HORIZONTAL_RULE_MESSAGE,'',f"End subwindow list")

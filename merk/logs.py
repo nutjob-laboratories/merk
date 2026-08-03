@@ -208,7 +208,7 @@ def pretty_timestamp_m1(ts):
 		if config.SHOW_TIMESTAMPS_IN_UTC:
 			return datetime.fromtimestamp(ts,tz=timezone.utc).strftime('%a, %d %b %Y '+config.TIMESTAMP_FORMAT+' %p UTC')
 		else:
-			return datetime.fromtimestamp(ts).strftime('%a, %d %b %Y '+config.TIMESTAMP_FORMAT+' %p ')
+			return datetime.fromtimestamp(ts).strftime('%a, %d %b %Y '+config.TIMESTAMP_FORMAT+' %p')
 
 def pretty_timestamp_m2(ts):
 	if config.TIMESTAMP_24_HOUR:
