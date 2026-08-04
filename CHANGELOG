@@ -81,6 +81,13 @@ What's new:
 * Added an "available server" count to the connection dialog.
 * When calling "/window" with no arguments, the subwindow list is now sorted
   alphabetically.
+* Bugfix: outgoing private messages (when displayed in a channel log, or in
+  a private chat that is NOT with the target) are now displayed correctly in
+  the log viewer.
+* White colored text in the log viewer is now colored grey instead of black.
+  The user should be able to see the text, yet still know that it was colored.
+* Bugfix: outgoing private messages suffered the same "bug" previously
+  mentioned when being exported to JSON or ASCII text with the log manager.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
