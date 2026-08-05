@@ -210,6 +210,18 @@ def initialize(directory,directory_name):
 		style = read_style_file('',DARK_PALETTE)
 		write_palette_file(style,DARK_MODE_PALETTE_FILE)
 
+def refresh_default_styles():
+	style = read_style_file('',DEFAULT_STYLE)
+	write_style_file(style,STYLE_FILE)
+
+	style = read_style_file('',DARK_DEFAULT_STYLE)
+	write_style_file(style,DARK_STYLE_FILE)
+
+	DARK_MODE_PALETTE_FILE = os.path.join(STYLE_DIRECTORY, "dark.palette")
+
+	style = read_style_file('',DARK_PALETTE)
+	write_palette_file(style,DARK_MODE_PALETTE_FILE)
+
 def read_style_file(filename,raw=None):
 
 	if raw!=None:

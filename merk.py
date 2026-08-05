@@ -151,6 +151,7 @@ configuration_group.add_argument("--scripts-directory",dest="scriptdir",type=str
 configuration_group.add_argument("--user-file",dest="userfile",type=str,help="File to use for user data",metavar="FILE",default=None)
 configuration_group.add_argument("--config-file",dest="configfile",type=str,help="File to use for configuration data",metavar="FILE",default=None)
 configuration_group.add_argument("--reset",dest="configdefault",help=f"Reset configuration file to default values",action="store_true")
+configuration_group.add_argument("--reset-style",dest="styledefault",help=f"Reset style files to default values",action="store_true")
 configuration_group.add_argument("--reset-user",dest="userdefault",help=f"Reset user file to default values",action="store_true")
 configuration_group.add_argument("--reset-all",dest="alldefault",help=f"Reset all configuration files to default values",action="store_true")
 configuration_group.add_argument("--uninstall",nargs='?',type=str,const='',default=None,dest="uninstall",help=f"Deletes an installed plugin",metavar="FILE")
@@ -462,6 +463,7 @@ if __name__ == '__main__':
 	if args.alldefault:
 		args.configdefault = True
 		args.userdefault = True
+		args.styledefault = True
 
 	if args.configfile:
 		# Initialize the config system
@@ -495,13 +497,16 @@ if __name__ == '__main__':
 				sys.exit(0)
 		user.save_user(user.USER_FILE)
 
+	# Initialize the styles system
+	styles.initialize(args.configdir,args.configname)
+
+	if args.styledefault:
+		styles.refresh_default_styles()
+
 	if args.alldefault:
 		if is_running_from_pyinstaller():
 			show_message("Reset","Configuration and user files set to defaults")
 			sys.exit(0)
-
-	# Initialize the styles system
-	styles.initialize(args.configdir,args.configname)
 
 	# Initialize the logs system
 	logs.initialize(args.configdir,args.configname)

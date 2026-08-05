@@ -22,7 +22,7 @@ usage: python merk.py [--ssl] [-p PASSWORD] [-c CHANNEL[:KEY]] [-a NICKNAME]
                       [--scripts-directory DIRECTORY] [--user-file FILENAME] [-E]
                       [--config-file FILENAME] [--reset] [--reset-user] [-Q NAME]
                       [--reset-all] [--uninstall [FILE]] [--install FILE] [-N] [-A]
-                      [SERVER] [PORT]
+                      [--reset-style] [SERVER] [PORT]
 
 
 Connection:
@@ -73,6 +73,7 @@ Files and Directories:
   --config-file FILE    File to use for configuration data
   --reset               Reset configuration file to default values
   --reset-user          Reset user file to default values
+  --reset-style         Reset style files to default values
   --reset-all           Reset all configuration files to default values
   --uninstall [FILE]    Deletes an installed plugin
   --install FILE        Install plugin ZIP or Python module

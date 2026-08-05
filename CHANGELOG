@@ -88,6 +88,14 @@ What's new:
   The user should be able to see the text, yet still know that it was colored.
 * Bugfix: outgoing private messages suffered the same "bug" previously
   mentioned when being exported to JSON or ASCII text with the log manager.
+* Bugfix: the "hyperlink" color in the dark palette file has been lightened.
+  Users, if they wish to use the new color, should delete "dark.palette" in the
+  "styles" directory; the application will recreate the file with the default
+  colors.
+* Added a new command-line flag: "--reset-style", which resets the dark mode
+  palette, the default dark mode text style, and the default light mode text
+  style to all default values. Using the "--reset-all" command-line flag will
+  also trigger this reset.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

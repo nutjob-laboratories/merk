@@ -65,7 +65,7 @@ bright_text {
 }
 
 link {
-	color: #2B82DA;
+	color: #7ABCFF;
 }
 
 highlight {
