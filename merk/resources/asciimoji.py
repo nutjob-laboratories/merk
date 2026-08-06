@@ -24,8 +24,16 @@
 #
 
 def emojize(text):
+
+	ESCAPE_PLACEHOLDER = "\x00RAW\x00"
+	ESCAPE_SEQUENCE = "\\("
+	text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
+
 	for a in ASCIIMOIJI:
 		if a in text: text = text.replace(a,ASCIIMOIJI[a])
+
+	text = text.replace(ESCAPE_PLACEHOLDER, "(")
+
 	return text
 
 def demojize(text):

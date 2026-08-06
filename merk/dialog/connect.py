@@ -705,7 +705,7 @@ class Dialog(QDialog):
 		optionLayout = QFormLayout()
 
 		if not SSL_AVAILABLE:
-			optionLayout.addRow(self.reconnect)
+			optionLayout.addRow(self.reconnect,QLabel(''))
 		else:
 			optionLayout.addRow(self.ssl,self.reconnect)
 
@@ -747,8 +747,8 @@ class Dialog(QDialog):
 		# Add syntax highlighting
 		self.highlight = syntax.MerkScriptHighlighter(self.commands.document())
 
-		# Set whether to highlight the current line
-		self.commands.setHighlightLine(config.HIGHLIGHT_CURRENT_LINE_IN_EDITOR)
+		# Current line highlight is always turned on for this dialog
+		self.commands.setHighlightLine(True)
 
 		# Set background/foreground
 		self.commands.setStyleSheet(self.generateStylesheet('CodeEditor',config.SYNTAX_FOREGROUND,config.SYNTAX_BACKGROUND))

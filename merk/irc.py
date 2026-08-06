@@ -229,6 +229,7 @@ class IRC_Connection(irc.IRCClient):
 		self.links_info = []
 		self.banlists = defaultdict(list)
 		self.batch = []
+		self.logged_in_via_sasl = False
 
 		if user.USERINFO=='':
 			self.userinfo = None
@@ -659,6 +660,8 @@ class IRC_Connection(irc.IRCClient):
 		# SASL authentication was successful!
 		self.sendLine("CAP END")
 
+		self.logged_in_via_sasl = True
+
 		w = self.gui.getServerWindow(self)
 		if w:
 			t = Message(SYSTEM_MESSAGE,'','SASL authentication successful!')
@@ -705,6 +708,8 @@ class IRC_Connection(irc.IRCClient):
 		# username and/or password
 		self.sendLine("CAP END")
 
+		self.logged_in_via_sasl = False
+
 		server = f"{self.server}:{self.port}"
 
 		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed")
@@ -721,6 +726,8 @@ class IRC_Connection(irc.IRCClient):
 		# SASL authentication failed because the SASL authentication
 		# method was "too long"
 		self.sendLine("CAP END")
+
+		self.logged_in_via_sasl = False
 
 		plugins.call(self.gui,"error",client=self,message=f"SASL authentication failed (message too long)")
 
@@ -748,6 +755,7 @@ class IRC_Connection(irc.IRCClient):
 			self.connection_timer = 0
 
 		self.registered = False
+		self.logged_in_via_sasl = False
 
 		self.gui.connectionLost(self)
 

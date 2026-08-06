@@ -681,9 +681,26 @@ def detect_alias(text):
 	match = re.search(pattern, text)
 	return bool(match)
 
+def interpolateEmojis(text,language):
+
+	ESCAPE_PLACEHOLDER = "\x00RAW\x00"
+	ESCAPE_SEQUENCE = "\\:"
+	text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
+
+	text = emoji.emojize(text,language=language)
+
+	text = text.replace(ESCAPE_PLACEHOLDER, ":")
+
+	return text
+
 def interpolateAliases(text):
 	if not config.ENABLE_ALIASES: return text
 	if not detect_alias(text): return text
+
+	ESCAPE_PLACEHOLDER = "\x00RAW\x00"
+	ESCAPE_SEQUENCE = "\\" + config.ALIAS_INTERPOLATION_SYMBOL
+	text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
+
 	counter = 0
 	while detect_alias(text):
 		for a in ALIAS:
@@ -699,8 +716,10 @@ def interpolateAliases(text):
 		counter = counter + 1
 		if counter>=99: break
 
-	if config.ENABLE_EMOJI_SHORTCODES: text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
+	if config.ENABLE_EMOJI_SHORTCODES: text = interpolateEmojis(text,config.EMOJI_LANGUAGE)
 	if config.ENABLE_ASCIIMOJI_SHORTCODES: text = emojize(text)
+
+	text = text.replace(ESCAPE_PLACEHOLDER, config.ALIAS_INTERPOLATION_SYMBOL)
 
 	return text
 
@@ -781,6 +800,10 @@ def buildTemporaryAliases(gui,window):
 	addTemporaryAlias('_REALNAME',window.client.realname)
 	addTemporaryAlias('_RELEASE',APPLICATION_RELEASE)
 	addTemporaryAlias('_RVERSION',APPLICATION_RELEASE_VERSION)
+	if window.client.logged_in_via_sasl:
+		addTemporaryAlias('_SASL','1')
+	else:
+		addTemporaryAlias('_SASL','0')
 	if window.client.actual_server_channel_count==0:
 		if window.client.server_channel_count==0:
 			addTemporaryAlias('_SCHANNELS',"0")
@@ -1524,7 +1547,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 					msg = ' '.join(tokens)
 					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					if len(msg.strip())==0: msg = None
 					window.client.kick(channel,target,msg)
@@ -1563,7 +1586,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.describe(window.name,msg)
 			return True
@@ -1598,7 +1621,7 @@ def executeChatCommands(gui,window,user_input,is_script,line_number=0,script_id=
 					msg = ' '.join(tokens)
 					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					window.client.topic(channel,msg)
 					return True
@@ -2249,7 +2272,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = tokens.pop(0)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(ERROR_MESSAGE,'',f"{msg}")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2264,7 +2287,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
@@ -2286,7 +2309,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(ERROR_MESSAGE,'',f"{msg}")
 				if hasattr(w,"widget"):
@@ -2298,7 +2321,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(ERROR_MESSAGE,'',f"{msg}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2315,7 +2338,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
@@ -2342,7 +2365,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(ERROR_MESSAGE,'',f"{msg}")
 						if hasattr(w,"widget"):
@@ -2356,7 +2379,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(ERROR_MESSAGE,'',f"{msg}")
 						if hasattr(w,"widget"):
@@ -2372,7 +2395,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 				if hasattr(w,"widget"):
@@ -2384,7 +2407,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{server} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(ERROR_MESSAGE,'',f"{msg}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2484,7 +2507,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = tokens.pop(0)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(ERROR_MESSAGE,'',f"{msg}")
 			window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2498,7 +2521,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
@@ -2519,7 +2542,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(ERROR_MESSAGE,'',f"{msg}")
 				if hasattr(w,"widget"):
@@ -2530,7 +2553,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(ERROR_MESSAGE,'',f"{msg}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2546,7 +2569,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(ERROR_MESSAGE,'',f"{msg}")
@@ -2572,7 +2595,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(ERROR_MESSAGE,'',f"{msg}")
 						if hasattr(w,"widget"):
@@ -2586,7 +2609,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(ERROR_MESSAGE,'',f"{msg}")
 						if hasattr(w,"widget"):
@@ -2601,7 +2624,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 				if hasattr(w,"widget"):
@@ -2612,7 +2635,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{server} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(ERROR_MESSAGE,'',f"{msg}")
 				window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -2978,7 +3001,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = " ".join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine(f'WALLOPS {msg}')
 			return True
@@ -4902,7 +4925,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = config.DEFAULT_QUIT_MESSAGE
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 				buildTemporaryAliases(gui,window)
@@ -4916,7 +4939,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
@@ -4936,7 +4959,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = tokens.pop(0)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 			t.system = False
@@ -4951,7 +4974,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
@@ -4972,7 +4995,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -4984,7 +5007,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -5001,7 +5024,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(SYSTEM_MESSAGE,'',f"{msg}")
@@ -5027,7 +5050,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 						t.system = False
@@ -5042,7 +5065,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 						t.system = False
@@ -5058,7 +5081,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -5070,7 +5093,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{server} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -6328,7 +6351,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			w = window.parent.openPrivate(window.client,target)
 			window.client.msg(target,msg)
@@ -6359,7 +6382,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = ' '.join(tokens)
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 
 				if config.CREATE_WINDOW_FOR_OUTGOING_PRIVATE_MESSAGES:
@@ -7031,7 +7054,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			message = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine(f'KNOCK {target} {message}')
 			return True
@@ -7672,7 +7695,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = tokens.pop(0)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 			t.system = False
@@ -7687,7 +7710,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if target=='*' and config.ALLOW_PRINT_TO_ALL_WINDOWS:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
@@ -7708,7 +7731,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -7720,7 +7743,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -7737,7 +7760,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{target} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				for w in gui.getAllAllConnectedWindows():
 					t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
@@ -7763,7 +7786,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 						t.system = False
@@ -7778,7 +7801,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 						t.system = False
@@ -7794,7 +7817,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			if w:
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -7806,7 +7829,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = f"{server} {msg}"
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				t = Message(RAW_SYSTEM_MESSAGE,'',f"{msg}")
 				t.system = False
@@ -7851,7 +7874,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = tokens.pop(0)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine(msg)
 			return True
@@ -7872,7 +7895,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						if hasattr(w,"widget"):
 							w.widget().client.sendLine(msg)
@@ -7885,7 +7908,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						if hasattr(w,"widget"):
 							w.widget().client.sendLine(msg)
@@ -7897,7 +7920,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.sendLine(msg)
 
@@ -7981,7 +8004,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if msg:
 								if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 								if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-								if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+								if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 								if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 								if hasattr(w,"widget"):
 									w.widget().client.away(msg)
@@ -7994,7 +8017,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							msg = config.DEFAULT_AWAY_MESSAGE
 							if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 							if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-							if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+							if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 							if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 							if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 								buildTemporaryAliases(gui,window)
@@ -8016,7 +8039,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							if msg:
 								if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 								if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-								if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+								if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 								if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 								if hasattr(w,"widget"):
 									w.widget().client.away(msg)
@@ -8029,7 +8052,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 							msg = config.DEFAULT_AWAY_MESSAGE
 							if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 							if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-							if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+							if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 							if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 							if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 								buildTemporaryAliases(gui,window)
@@ -8046,7 +8069,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 				buildTemporaryAliases(gui,window)
@@ -8072,7 +8095,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 							buildTemporaryAliases(gui,window)
@@ -8090,7 +8113,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 						displayed = True
 						if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 						if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-						if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+						if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 						if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 						if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 							buildTemporaryAliases(gui,window)
@@ -8107,7 +8130,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 				buildTemporaryAliases(gui,window)
@@ -8124,7 +8147,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				if msg:
 					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					window.client.away(msg)
 					window.client.away_msg = msg
@@ -8133,7 +8156,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 				msg = config.DEFAULT_AWAY_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 					buildTemporaryAliases(gui,window)
@@ -8815,7 +8838,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if len(msg.strip())==0: msg = None
 			window.client.kick(channel,target,msg)
@@ -8863,7 +8886,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.notice(target,msg)
 			return True
@@ -8888,7 +8911,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.msg(target,msg)
 
@@ -8964,7 +8987,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.topic(channel,msg)
 			return True
@@ -8990,7 +9013,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = config.DEFAULT_QUIT_MESSAGE
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 				buildTemporaryAliases(gui,window)
@@ -9011,7 +9034,7 @@ def executeCommonCommands(gui,window,user_input,is_script,line_number=0,script_i
 			msg = ' '.join(tokens)
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = interpolateEmojis(msg,config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			window.client.quit(msg)
 			gui.quitting[window.client.client_id] = 0
@@ -9587,6 +9610,10 @@ class ScriptThread(QThread):
 		if not config.ENABLE_ALIASES: return text
 		if not detect_alias(text): return text
 
+		ESCAPE_PLACEHOLDER = "\x00RAW\x00"
+		ESCAPE_SEQUENCE = "\\" + config.ALIAS_INTERPOLATION_SYMBOL
+		text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
+
 		counter = 0
 		while detect_alias(text):
 			for a in ALIAS:
@@ -9617,8 +9644,10 @@ class ScriptThread(QThread):
 			counter = counter + 1
 			if counter>=99: break
 
-		if config.ENABLE_EMOJI_SHORTCODES: text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
+		if config.ENABLE_EMOJI_SHORTCODES: text = interpolateEmojis(text,config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: text = emojize(text)
+
+		text = text.replace(ESCAPE_PLACEHOLDER, config.ALIAS_INTERPOLATION_SYMBOL)
 
 		return text
 

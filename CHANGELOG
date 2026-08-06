@@ -7,6 +7,11 @@ What's new:
 - **`/op`, `/deop`, `/voice`, and `/devoice` commands**. These commands can take as many nicknames as input as the user wants to enter.
 - **New feature: view server log on disconnection**. If a connection is lost, and "notify on lost/failed connection" is turned on, the user can view the total server log at the time of disconnection.
 - **New setting: show/hide channel modes in the channel information display**.
+- **New `Window` class methods for plugins**. Send batches of raw IRC commands to the server (without triggering flood protection), re-render a subwindow's chat display, or scroll the subwindow's chat display to the top or the bottom.
+- **The `Window` class methods `print()` and `prints()` can now display "raw" Python variables**. Values passed to these methods are rendered as f-strings, allowing for these methods to be used for debugging purposes. An optional argument to these methods can be used to print data without interpolating emoji and ASCIImoji shortcodes and aliases into the output.
+- **New built-in alias: `$_SASL`**. This will be set to `1` if the client has successfully logged in via SASL, and set to `0` if not.
+- **Aliases can now be escaped with `\`**. To display an alias name *without* interpolating it's value into output, place `\` before the alias symbol. For example, to display the new `$_SASL` built-in alias's name, you would use `\$_SASL`.
+- **Emojis and ASCIImojis can now be escaped with `\`**. This will display the actual shortcode in output rather than interpolating it into an emoji or ASCIImoji.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -96,6 +101,16 @@ What's new:
   palette, the default dark mode text style, and the default light mode text
   style to all default values. Using the "--reset-all" command-line flag will
   also trigger this reset.
+* The current line is now always highlighted in the script editor in the 
+  connection dialog.
+* New built-in alias: $_SASL. This will be set to "1" if the client has
+  successfully logged in via SASL, and set to "0" if not.
+* Aliases can now be escaped to display the alias' name WITHOUT interpolating
+  its value into output. Place "\" before the alias interpolation symbol to
+  escape the alias.
+* Emojis and ASCIImojis can now be escaped to display the shortcode rather than
+  the emoji or ASCIImoji. Place "\" before the shortcode to escape the
+  shortcode.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
@@ -106,6 +121,19 @@ What's new:
   that the server's flood protection is not triggered. Accepts either a string
   or a list of strings as an argument.
 * Bugfix: the Window method execute() should now function as described.
+* New Window class method: rerender(). This forces a re-render of the window's
+  chat log.
+* New Window class method: scrollBottom(). This scroll's the window's chat
+  display to the bottom.
+* New Window class method: scrollTop(). This scroll's the window's chat
+  display to the top.
+* Values passed to the Window class methods print() and prints() will now be
+  rendered as f-strings, allowing "raw" Python variables of any type to be
+  printed to a subwindow's chat display.
+* Added an optional argument to the Window class methods print() and prints()
+  that can be used to print data without following client settings for
+  interpolating emoji and ASCIImoji shortcodes and aliases into the string to
+  display.
 
 |------------------------------------------------------------------------------|
 |                                   0.052.100                                  |
