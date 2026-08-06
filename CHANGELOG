@@ -11,7 +11,6 @@ What's new:
 - **The `Window` class methods `print()` and `prints()` can now display "raw" Python variables**. Values passed to these methods are rendered as f-strings, allowing for these methods to be used for debugging purposes. An optional argument to these methods can be used to print data without interpolating emoji and ASCIImoji shortcodes and aliases into the output.
 - **New built-in alias: `$_SASL`**. This will be set to `1` if the client has successfully logged in via SASL, and set to `0` if not.
 - **Aliases can now be escaped with `\`**. To display an alias name *without* interpolating it's value into output, place `\` before the alias symbol. For example, to display the new `$_SASL` built-in alias's name, you would use `\$_SASL`.
-- **Emojis and ASCIImojis can now be escaped with `\`**. This will display the actual shortcode in output rather than interpolating it into an emoji or ASCIImoji.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -106,11 +105,7 @@ What's new:
 * New built-in alias: $_SASL. This will be set to "1" if the client has
   successfully logged in via SASL, and set to "0" if not.
 * Aliases can now be escaped to display the alias' name WITHOUT interpolating
-  its value into output. Place "\" before the alias interpolation symbol to
-  escape the alias.
-* Emojis and ASCIImojis can now be escaped to display the shortcode rather than
-  the emoji or ASCIImoji. Place "\" before the shortcode to escape the
-  shortcode.
+  its value into output.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

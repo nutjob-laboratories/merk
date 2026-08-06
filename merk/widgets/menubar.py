@@ -275,17 +275,6 @@ class wMenuButton(QPushButton):
 	doubleClicked = pyqtSignal()
 	clicked = pyqtSignal()
 
-	def interpolateEmojis(self,text,language):
-		ESCAPE_PLACEHOLDER = "\x00RAW\x00"
-		ESCAPE_SEQUENCE = "\\:"
-		text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
-
-		text = emoji.emojize(text,language=language)
-
-		text = text.replace(ESCAPE_PLACEHOLDER, ":")
-
-		return text
-
 	def setWindow(self,window):
 		self.window = window.widget()
 		self.subwindow = window
@@ -410,7 +399,7 @@ class wMenuButton(QPushButton):
 			msg = config.DEFAULT_QUIT_MESSAGE
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.window.parent,self.window)
@@ -476,17 +465,6 @@ class wMenuButton(QPushButton):
 class wIconMenuButton(QPushButton):
 	doubleClicked = pyqtSignal()
 	clicked = pyqtSignal()
-
-	def interpolateEmojis(self,text,language):
-		ESCAPE_PLACEHOLDER = "\x00RAW\x00"
-		ESCAPE_SEQUENCE = "\\:"
-		text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
-
-		text = emoji.emojize(text,language=language)
-
-		text = text.replace(ESCAPE_PLACEHOLDER, ":")
-
-		return text
 
 	def focusOutEvent(self, event):
 		self.setStyleSheet(self.normal_style)
@@ -588,7 +566,7 @@ class wIconMenuButton(QPushButton):
 			msg = config.DEFAULT_QUIT_MESSAGE
 			if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 			if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-			if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 			if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.window.parent,self.window)

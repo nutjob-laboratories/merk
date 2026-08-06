@@ -335,7 +335,7 @@ class Window():
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-		if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		self._window.client.notice(target,message)
 
@@ -343,7 +343,7 @@ class Window():
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-		if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		self._window.client.describe(target,message)
 
@@ -351,7 +351,7 @@ class Window():
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-		if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		self._window.client.msg(target,message)
 
@@ -360,7 +360,7 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			self._window.client.msg(self._window.name,message)
 			return True
@@ -371,7 +371,7 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			self._window.client.notice(self._window.name,message)
 			return True
@@ -382,7 +382,7 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 			self._window.client.describe(self._window.name,message)
 			return True
@@ -420,7 +420,7 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
 		t.system = False
@@ -432,7 +432,7 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = interpolateEmojis(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
 		t = Message(SYSTEM_MESSAGE,'',f"{message}")
 		t.system = False
@@ -623,7 +623,7 @@ class Plugin():
 		return None
 
 	def markup(self,text):
-		text = interpolateEmojis(text,config.EMOJI_LANGUAGE)
+		text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
 		text = emojize(text)
 		text = markdown_to_irc(text)
 		text = inject_irc_colors(text)
@@ -697,7 +697,7 @@ class Plugin():
 		return [self._gui.x(),self._gui.y()]
 
 	def emojize(self,message):
-		return interpolateEmojis(message,config.EMOJI_LANGUAGE)
+		return emoji.emojize(message,language=config.EMOJI_LANGUAGE)
 
 	def asciimojize(self,message):
 		return emojize(message)
@@ -994,17 +994,6 @@ BUILT_IN = [
 	'markup','unmarkup','demojize','deasciimojize', 'location',
 	'fade', 'request', 'darkmode', 'scripts', 'styles',
 ]
-
-def interpolateEmojis(text,language):
-	ESCAPE_PLACEHOLDER = "\x00RAW\x00"
-	ESCAPE_SEQUENCE = "\\:"
-	text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
-
-	text = emoji.emojize(text,language=language)
-
-	text = text.replace(ESCAPE_PLACEHOLDER, ":")
-
-	return text
 
 def uninstall(obj):
 	if not config.ENABLE_PLUGINS: return

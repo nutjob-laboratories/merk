@@ -56,17 +56,6 @@ from .. import plugins
 
 class Window(QMainWindow):
 
-	def interpolateEmojis(self,text,language):
-		ESCAPE_PLACEHOLDER = "\x00RAW\x00"
-		ESCAPE_SEQUENCE = "\\:"
-		text = text.replace(ESCAPE_SEQUENCE, ESCAPE_PLACEHOLDER)
-
-		text = emoji.emojize(text,language=language)
-
-		text = text.replace(ESCAPE_PLACEHOLDER, ":")
-
-		return text
-
 	def reload_config(self):
 		config.load_settings(config.CONFIG_FILE)
 
@@ -1663,7 +1652,7 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
@@ -3497,7 +3486,7 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
@@ -3524,7 +3513,7 @@ class Window(QMainWindow):
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
 					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 					if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 						commands.buildTemporaryAliases(self.parent,self)
@@ -3538,7 +3527,7 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_AWAY_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
@@ -3699,7 +3688,7 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
@@ -3708,7 +3697,7 @@ class Window(QMainWindow):
 				msg = self.part_message
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = self.interpolateEmojis(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
 				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
@@ -3989,7 +3978,7 @@ class Window(QMainWindow):
 		entered_topic = emojize(entered_topic)
 		entered_topic = markdown_to_irc(entered_topic)
 		entered_topic = inject_irc_colors(entered_topic)
-		entered_topic = self.interpolateEmojis(entered_topic,config.EMOJI_LANGUAGE)
+		entered_topic = emoji.emojize(entered_topic,language=config.EMOJI_LANGUAGE)
 
 		self.client.topic(self.name,entered_topic)
 		self.input.setFocus()

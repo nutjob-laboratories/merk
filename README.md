@@ -38,7 +38,7 @@ All files are packed in [ZIP archives](https://en.wikipedia.org/wiki/ZIP_(file_f
 | Current Release |  All  | [MERK 0.052.100 Release](https://github.com/nutjob-laboratories/merk/releases/tag/0.052.100)  |
 | Zip Archive |  Cross-Platform Python  | [Download MERK 0.052.135 (11.05 MB)](https://www.dropbox.com/scl/fi/cux4yf7ge451jvwqdw1u9/merk-latest.zip?rlkey=7e53i142jtw01lwrfzn259z4h&dl=1)  |
 | Zip Archive |  Linux Executable | [Download MERK 0.052.135 (97.16 MB)](https://www.dropbox.com/scl/fi/xma3afmie19kyutf2eo9k/merk-linux-latest.zip?rlkey=1l13ta59fi7o9lyi3ycu9qkb0&st=a2xc713e&dl=1)  |
-| Flatpak |  Linux Flatpak | [Download MERK 0.052.135 (71.35 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
+| Flatpak |  Linux Flatpak | [Download MERK 0.052.135 (71.40 MB)](https://www.dropbox.com/scl/fi/hhcrqrgjacksm6pir8p3u/merk-latest.flatpak?rlkey=cypundhha86v0daloitkfoojn&st=mhxh1wpf&dl=1)  |
 | Zip Archive|  Windows Executable | [Download MERK 0.052.135 (48.05 MB)](https://www.dropbox.com/scl/fi/ek2pvk6avluxyupo2zvz1/merk-windows-latest.zip?rlkey=nzgneoqtvrcnepyhy4yq7mzlq&dl=1)|
 | Windows Installer |  Windows Setup | [Download MERK 0.052.135 (45.59 MB)](https://www.dropbox.com/scl/fi/30fd0eaeo5vszsy8haeui/merk-windows-setup.zip?rlkey=e44zsw9nle8jkny7ve6tgbh48&dl=1)|
 
