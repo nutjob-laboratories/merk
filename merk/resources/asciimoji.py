@@ -23,12 +23,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-def emojize(text):
+def asciimojize(text):
 	for a in ASCIIMOIJI:
 		if a in text: text = text.replace(a,ASCIIMOIJI[a])
 	return text
 
-def demojize(text):
+def deasciimojize(text):
 	for a in ASCIIMOIJI:
 		if ASCIIMOIJI[a] in text: text = text.replace(ASCIIMOIJI[a],a)
 	return text

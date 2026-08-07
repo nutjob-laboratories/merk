@@ -106,6 +106,17 @@ What's new:
   successfully logged in via SASL, and set to "0" if not.
 * Aliases can now be escaped to display the alias' name WITHOUT interpolating
   its value into output.
+* Bugfix: the /knock command's message didn't work as intended.
+* The code for "emojizing" and "asciimojizing" has been centralized.
+* The "quit" and "away" message entry boxes in the Settings dialog can now
+  autocomplete built-in aliases, if alias interpolation is turned on. The
+  "Autocomplete shortcodes" checkbox on each entry has been changed to simply
+  "Autocomplete" to reflect the new change; unchecking the box turns off
+  autocomplete for shortcodes AND built-in aliases.
+* Bugfix: checking or unchecking the emoji, ASCIImoji, or alias options in the
+  settings dialog would NOT en/disable autocomplete in the quit and away
+  message entry boxes, and would require the setting to be set, applied, and
+  the settings dialog restarted. The features now work as expected.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

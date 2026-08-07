@@ -103,8 +103,28 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 
 				if self.toPlainText().strip()=='': return
 
-				if config.ENABLE_EMOJI_SHORTCODES:
-					# Autocomplete emojis
+				# Auto-complete built-in aliases
+				if config.ENABLE_ALIASES or self.parent.enableAlias.isChecked():
+					if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE or self.parent.autoAliasQuit.isChecked():
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - len(config.ALIAS_INTERPOLATION_SYMBOL)
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+							for a in commands.BUILT_IN_ALIAS_LIST:
+								if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text.lower()}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
+
+				# Autocomplete emojis
+				if config.ENABLE_EMOJI_SHORTCODES or self.parent.enableEmojis.isChecked():
 					cursor.select(QTextCursor.WordUnderCursor)
 					oldpos = cursor.position()
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -114,9 +134,7 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						for c in EMOJI_AUTOCOMPLETE:
-
 							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
@@ -124,8 +142,8 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
-				if config.ENABLE_ASCIIMOJI_SHORTCODES:
-					# Autocomplete emojis
+				# Autocomplete ASCIImojis
+				if config.ENABLE_ASCIIMOJI_SHORTCODES or self.parent.enableAscii.isChecked():
 					cursor.select(QTextCursor.WordUnderCursor)
 					oldpos = cursor.position()
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -135,9 +153,7 @@ class EmojiQuitAutocomplete(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						for c in ASCIIMOIJI:
-
 							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
@@ -216,8 +232,28 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 
 				if self.toPlainText().strip()=='': return
 
-				if config.ENABLE_EMOJI_SHORTCODES:
-					# Autocomplete emojis
+				# Auto-complete built-in aliases
+				if config.ENABLE_ALIASES or self.parent.enableAlias.isChecked():
+					if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE or self.parent.autoAliasAway.isChecked():
+						cursor.select(QTextCursor.WordUnderCursor)
+						oldpos = cursor.position()
+						cursor.select(QTextCursor.WordUnderCursor)
+						newpos = cursor.selectionStart() - len(config.ALIAS_INTERPOLATION_SYMBOL)
+						cursor.setPosition(newpos,QTextCursor.MoveAnchor)
+						cursor.setPosition(oldpos,QTextCursor.KeepAnchor)
+						self.setTextCursor(cursor)
+						if self.textCursor().hasSelection():
+							text = self.textCursor().selectedText()
+							for a in commands.BUILT_IN_ALIAS_LIST:
+								if fnmatch.fnmatch(config.ALIAS_INTERPOLATION_SYMBOL+a.lower(),f"{text.lower()}*"):
+									cursor.beginEditBlock()
+									cursor.insertText(f"{config.ALIAS_INTERPOLATION_SYMBOL+a}")
+									cursor.endEditBlock()
+									self.ensureCursorVisible()
+									return
+
+				# Autocomplete emojis
+				if config.ENABLE_EMOJI_SHORTCODES or self.parent.enableEmojis.isChecked():
 					cursor.select(QTextCursor.WordUnderCursor)
 					oldpos = cursor.position()
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -227,9 +263,7 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						for c in EMOJI_AUTOCOMPLETE:
-
 							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
@@ -237,9 +271,8 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 								self.ensureCursorVisible()
 								return
 
-
-				if config.ENABLE_ASCIIMOJI_SHORTCODES:
-					# Autocomplete emojis
+				# Autocomplete ASCIImojis
+				if config.ENABLE_ASCIIMOJI_SHORTCODES or self.parent.enableAscii.isChecked():
 					cursor.select(QTextCursor.WordUnderCursor)
 					oldpos = cursor.position()
 					cursor.select(QTextCursor.WordUnderCursor)
@@ -249,9 +282,7 @@ class EmojiAwayAutocomplete(QPlainTextEdit):
 					self.setTextCursor(cursor)
 					if self.textCursor().hasSelection():
 						text = self.textCursor().selectedText()
-
 						for c in ASCIIMOIJI:
-
 							if fnmatch.fnmatchcase(c.lower(),f"{text.lower()}*"):
 								cursor.beginEditBlock()
 								cursor.insertText(c)
@@ -5027,7 +5058,7 @@ class Dialog(QDialog):
 
 		self.awayMsg.textChanged.connect(self.setAwayMsg)
 
-		self.autoEmojiAway = QCheckBox(f"Autocomplete shortcodes",self)
+		self.autoEmojiAway = QCheckBox(f"Autocomplete",self)
 		if config.AUTOCOMPLETE_SHORTCODES_IN_AWAY_MESSAGE_WIDGET: self.autoEmojiAway.setChecked(True)
 		self.autoEmojiAway.stateChanged.connect(self.changeEmojiAuto)
 
@@ -5867,7 +5898,7 @@ class Dialog(QDialog):
 
 		self.partMsg.textChanged.connect(self.setQuitMsg)
 
-		self.autoEmojiQuit = QCheckBox(f"Autocomplete shortcodes",self)
+		self.autoEmojiQuit = QCheckBox(f"Autocomplete",self)
 		if config.AUTOCOMPLETE_SHORTCODES_IN_QUIT_MESSAGE_WIDGET: self.autoEmojiQuit.setChecked(True)
 		self.autoEmojiQuit.stateChanged.connect(self.changeEmojiQuit)
 

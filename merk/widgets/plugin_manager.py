@@ -572,8 +572,8 @@ class Window(QMainWindow):
 
 		config.load_settings(config.CONFIG_FILE)
 
-		self.HAS_CONSOLE = emoji.emojize(config.PLUGIN_HAS_CONSOLE_MARKER,language="alias")
-		self.HAS_CONSOLE = emojize(self.HAS_CONSOLE)
+		self.HAS_CONSOLE = emojize(config.PLUGIN_HAS_CONSOLE_MARKER,"alias")
+		self.HAS_CONSOLE = asciimojize(self.HAS_CONSOLE)
 		
 		self.window_type = PLUGIN_WINDOW
 		self.subwindow_id = str(uuid.uuid4())

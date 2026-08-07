@@ -1652,8 +1652,8 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -3486,8 +3486,8 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -3513,8 +3513,8 @@ class Window(QMainWindow):
 					self.away_button.setIcon(QIcon(GO_BACK_ICON))
 					if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 					if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-					if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+					if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+					if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 					if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 						commands.buildTemporaryAliases(self.parent,self)
 						msg = commands.interpolateAliases(msg)
@@ -3527,8 +3527,8 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_AWAY_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_AWAY_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -3688,8 +3688,8 @@ class Window(QMainWindow):
 				msg = config.DEFAULT_QUIT_MESSAGE
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -3697,8 +3697,8 @@ class Window(QMainWindow):
 				msg = self.part_message
 				if config.ENABLE_MARKDOWN_MARKUP: msg = markdown_to_irc(msg)
 				if config.ENABLE_IRC_COLOR_MARKUP: msg = inject_irc_colors(msg)
-				if config.ENABLE_EMOJI_SHORTCODES: msg = emoji.emojize(msg,language=config.EMOJI_LANGUAGE)
-				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = emojize(msg)
+				if config.ENABLE_EMOJI_SHORTCODES: msg = emojize(msg,config.EMOJI_LANGUAGE)
+				if config.ENABLE_ASCIIMOJI_SHORTCODES: msg = asciimojize(msg)
 				if config.INTERPOLATE_ALIASES_INTO_QUIT_MESSAGE:
 					commands.buildTemporaryAliases(self.parent,self)
 					msg = commands.interpolateAliases(msg)
@@ -3975,10 +3975,10 @@ class Window(QMainWindow):
 		entered_topic = commands.interpolateAliases(entered_topic)
 		commands.TEMPORARY_ALIAS = {}
 
-		entered_topic = emojize(entered_topic)
+		entered_topic = asciimojize(entered_topic)
 		entered_topic = markdown_to_irc(entered_topic)
 		entered_topic = inject_irc_colors(entered_topic)
-		entered_topic = emoji.emojize(entered_topic,language=config.EMOJI_LANGUAGE)
+		entered_topic = emojize(entered_topic,config.EMOJI_LANGUAGE)
 
 		self.client.topic(self.name,entered_topic)
 		self.input.setFocus()
@@ -4507,7 +4507,7 @@ class TopicEdit(QPlainTextEdit):
 		super().mousePressEvent(e)
 		if not self.is_enabled: return
 		if self.readyToEdit and config.ALLOW_TOPIC_EDIT:
-			self.setText(demojize(emoji.demojize(decode_irc_formatting(self.parent.channel_topic))))
+			self.setText(deasciimojize(emoji.demojize(decode_irc_formatting(self.parent.channel_topic))))
 			self.setReadOnly(False)
 			self.moveCursor(QTextCursor.End)
 			self.ensureCursorVisible()

@@ -38,6 +38,8 @@ import string
 import re
 import random
 
+import emoji
+
 from .version import *
 from .servers import *
 from .emoji1 import *
@@ -512,6 +514,10 @@ class UserMacro:
 		self.script = script
 		
 # Functions
+
+def emojize(text,language):
+	text = emoji.emojize(text,language=language)
+	return text
 
 def detect_word(word, text):
 	pattern = r'\b' + re.escape(word) + r'\b'

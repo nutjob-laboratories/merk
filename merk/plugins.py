@@ -335,24 +335,24 @@ class Window():
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+		if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 		self._window.client.notice(target,message)
 
 	def action(self,target,message):
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+		if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 		self._window.client.describe(target,message)
 
 	def message(self,target,message):
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-		if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+		if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+		if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 		self._window.client.msg(target,message)
 
 	def say(self,message):
@@ -360,8 +360,8 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 			self._window.client.msg(self._window.name,message)
 			return True
 		return False
@@ -371,8 +371,8 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 			self._window.client.notice(self._window.name,message)
 			return True
 		return False
@@ -382,8 +382,8 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 			self._window.client.describe(self._window.name,message)
 			return True
 		return False
@@ -420,8 +420,8 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 		t = Message(RAW_SYSTEM_MESSAGE,'',f"{message}")
 		t.system = False
 		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -432,8 +432,8 @@ class Window():
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 			if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
-			if config.ENABLE_EMOJI_SHORTCODES: message = emoji.emojize(message,language=config.EMOJI_LANGUAGE)
-			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = emojize(message)
+			if config.ENABLE_EMOJI_SHORTCODES: message = emojize(message,config.EMOJI_LANGUAGE)
+			if config.ENABLE_ASCIIMOJI_SHORTCODES: message = asciimojize(message)
 		t = Message(SYSTEM_MESSAGE,'',f"{message}")
 		t.system = False
 		self._window.writeText(t,config.LOG_ABSOLUTELY_ALL_MESSAGES_OF_ANY_TYPE)
@@ -623,14 +623,14 @@ class Plugin():
 		return None
 
 	def markup(self,text):
-		text = emoji.emojize(text,language=config.EMOJI_LANGUAGE)
-		text = emojize(text)
+		text = emojize(text,config.EMOJI_LANGUAGE)
+		text = asciimojize(text)
 		text = markdown_to_irc(text)
 		text = inject_irc_colors(text)
 		return text
 
 	def unmarkup(self,text):
-		text = demojize(text)
+		text = deasciimojize(text)
 		text = emoji.demojize(text)
 		return decode_irc_formatting(text)
 
@@ -697,16 +697,16 @@ class Plugin():
 		return [self._gui.x(),self._gui.y()]
 
 	def emojize(self,message):
-		return emoji.emojize(message,language=config.EMOJI_LANGUAGE)
+		return emojize(message,config.EMOJI_LANGUAGE)
 
 	def asciimojize(self,message):
-		return emojize(message)
+		return asciimojize(message)
 
 	def demojize(self,message):
 		return emoji.demojize(message)
 
 	def deasciimojize(self,message):
-		return demojize(message)
+		return deasciimojize(message)
 
 	def unmacro(self,name):
 		if self._gui!=None:
