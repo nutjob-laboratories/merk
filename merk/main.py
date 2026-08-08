@@ -4519,6 +4519,17 @@ class Merk(QMainWindow):
 		QApplication.restoreOverrideCursor()
 		self.buildSettingsMenu()
 
+	def settingsWHighlight(self):
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+		if config.HIGHLIGHT_WORDS_IN_CHAT:
+			config.HIGHLIGHT_WORDS_IN_CHAT = False
+		else:
+			config.HIGHLIGHT_WORDS_IN_CHAT = True
+		self.save_config()
+		self.reRenderAll()
+		QApplication.restoreOverrideCursor()
+		self.buildSettingsMenu()
+
 	def settingsAudio(self):
 		if config.SOUND_NOTIFICATIONS:
 			config.SOUND_NOTIFICATIONS = False
@@ -4846,73 +4857,6 @@ class Merk(QMainWindow):
 		entry.triggered.connect(self.settingsUseAsciimoji)
 		sm.addAction(entry)
 
-		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Display")
-
-		if config.DISPLAY_IRC_COLORS:
-			entry = QAction(QIcon(self.checked_icon),"Show IRC colors", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Show IRC colors", self)
-		entry.triggered.connect(self.settingsColor)
-		sm.addAction(entry)
-
-		if config.DISPLAY_TIMESTAMP:
-			entry = QAction(QIcon(self.checked_icon),"Show timestamps", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Show timestamps", self)
-		entry.triggered.connect(self.settingsTimestamps)
-		sm.addAction(entry)
-
-		if config.CONVERT_URLS_TO_LINKS:
-			entry = QAction(QIcon(self.checked_icon),"Convert URLs to hyperlinks", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
-		entry.triggered.connect(self.settingsLinks)
-		sm.addAction(entry)
-
-		if config.HIGHLIGHT_NICKS_IN_CHAT:
-			entry = QAction(QIcon(self.checked_icon),"Highlight nicks in channels", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Highlight nicks in channels", self)
-		entry.triggered.connect(self.settingsNicks)
-		sm.addAction(entry)
-
-		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
-
-		if config.SCRIPTING_ENGINE_ENABLED:
-			entry = QAction(QIcon(self.checked_icon),"Enable scripting", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable scripting", self)
-		entry.triggered.connect(self.settingsScripting)
-		sm.addAction(entry)
-
-		if config.ENABLE_STYLE_EDITOR:
-			entry = QAction(QIcon(self.checked_icon),"Enable style editor", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable style editor", self)
-		entry.triggered.connect(self.settingsStyle)
-		sm.addAction(entry)
-
-		if config.ENABLE_HOTKEYS:
-			entry = QAction(QIcon(self.checked_icon),"Enable hotkeys", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable hotkeys", self)
-		entry.triggered.connect(self.settingsHotkeys)
-		sm.addAction(entry)
-
-		if config.ENABLE_IGNORE:
-			entry = QAction(QIcon(self.checked_icon),"Enable ignores", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable ignores", self)
-		entry.triggered.connect(self.settingsIgnores)
-		sm.addAction(entry)
-
-		if config.ENABLE_PLUGINS:
-			entry = QAction(QIcon(self.checked_icon),"Enable plugins", self)
-		else:
-			entry = QAction(QIcon(self.unchecked_icon),"Enable plugins", self)
-		entry.triggered.connect(self.settingsPlugins)
-		sm.addAction(entry)
-
 		if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS:
 
 			sm = self.settingsMenu.addMenu(QIcon(SPELLCHECK_ICON),"Spellcheck")
@@ -4981,6 +4925,80 @@ class Merk(QMainWindow):
 				entry = QAction(QIcon(self.round_unchecked_icon),"Русский", self)
 				entry.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
 			sm.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(STYLE_ICON),"Display")
+
+		if config.DISPLAY_IRC_COLORS:
+			entry = QAction(QIcon(self.checked_icon),"Show IRC colors", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Show IRC colors", self)
+		entry.triggered.connect(self.settingsColor)
+		sm.addAction(entry)
+
+		if config.DISPLAY_TIMESTAMP:
+			entry = QAction(QIcon(self.checked_icon),"Show timestamps", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Show timestamps", self)
+		entry.triggered.connect(self.settingsTimestamps)
+		sm.addAction(entry)
+
+		if config.CONVERT_URLS_TO_LINKS:
+			entry = QAction(QIcon(self.checked_icon),"Convert URLs to hyperlinks", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Convert URLs to hyperlinks", self)
+		entry.triggered.connect(self.settingsLinks)
+		sm.addAction(entry)
+
+		if config.HIGHLIGHT_NICKS_IN_CHAT:
+			entry = QAction(QIcon(self.checked_icon),"Highlight nicks in channels", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Highlight nicks in channels", self)
+		entry.triggered.connect(self.settingsNicks)
+		sm.addAction(entry)
+
+		if config.HIGHLIGHT_WORDS_IN_CHAT:
+			entry = QAction(QIcon(self.checked_icon),"Highlight words in chat displays", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Highlight words in chat displays", self)
+		entry.triggered.connect(self.settingsWHighlight)
+		sm.addAction(entry)
+
+		sm = self.settingsMenu.addMenu(QIcon(TOOLS_ICON),"Tools")
+
+		if config.SCRIPTING_ENGINE_ENABLED:
+			entry = QAction(QIcon(self.checked_icon),"Enable scripting", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable scripting", self)
+		entry.triggered.connect(self.settingsScripting)
+		sm.addAction(entry)
+
+		if config.ENABLE_STYLE_EDITOR:
+			entry = QAction(QIcon(self.checked_icon),"Enable style editor", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable style editor", self)
+		entry.triggered.connect(self.settingsStyle)
+		sm.addAction(entry)
+
+		if config.ENABLE_HOTKEYS:
+			entry = QAction(QIcon(self.checked_icon),"Enable hotkeys", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable hotkeys", self)
+		entry.triggered.connect(self.settingsHotkeys)
+		sm.addAction(entry)
+
+		if config.ENABLE_IGNORE:
+			entry = QAction(QIcon(self.checked_icon),"Enable ignores", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable ignores", self)
+		entry.triggered.connect(self.settingsIgnores)
+		sm.addAction(entry)
+
+		if config.ENABLE_PLUGINS:
+			entry = QAction(QIcon(self.checked_icon),"Enable plugins", self)
+		else:
+			entry = QAction(QIcon(self.unchecked_icon),"Enable plugins", self)
+		entry.triggered.connect(self.settingsPlugins)
+		sm.addAction(entry)
 
 		sm = self.settingsMenu.addMenu(QIcon(CONNECT_ICON),"Connections")
 

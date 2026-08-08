@@ -5454,6 +5454,7 @@ class Dialog(QDialog):
 		langLayout.addRow(self.dutchSC,self.russianSC)
 
 		lanSubLayout = QHBoxLayout()
+		lanSubLayout.setSpacing(10)
 		lanSubLayout.addStretch()
 		lanSubLayout.addLayout(langLayout)
 		lanSubLayout.addStretch()
@@ -5510,17 +5511,33 @@ class Dialog(QDialog):
 		spellApp.addLayout(spColorLayout)
 		spellApp.addLayout(spFormatLayout)
 
+		self.scLangDescription = QLabel(f"""
+			<small>
+			This sets the <b>default spellcheck language</b> for all subwindows. Individual server and chat subwindows can set their
+			"own" <b>spellcheck language</b> from the <b>input options menu</b>; the <b>language</b> selected from the menu
+			will be active for that subwindow only, until the subwindow closes. All server and chat subwindows, when created,
+			will use the <b>default language</b> selected here until changed. If this setting is changed while <b>{APPLICATION_NAME}</b>
+			is connected to one or more servers, all server and chat subwindows will have their <b>spellcheck language</b> set
+			to the new selected <b>language</b>.<br>
+			</small>
+			
+			""")
+		self.scLangDescription.setWordWrap(True)
+		self.scLangDescription.setAlignment(Qt.AlignJustify)
+		self.scLangDescription.setOpenExternalLinks(True)
+
 		spellcheckLayout = QVBoxLayout()
 		spellcheckLayout.setSpacing(0)
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>spellcheck settings</b>"))
 		spellcheckLayout.addWidget(self.spellcheckDescription)
 		spellcheckLayout.addLayout(spellSet)
 		spellcheckLayout.addWidget(QLabel(' '))
+		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
+		spellcheckLayout.addWidget(self.scLangDescription)
+		spellcheckLayout.addLayout(lanSubLayout)
+		spellcheckLayout.addWidget(QLabel(' '))
 		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>misspelled word appearance</b>"))
 		spellcheckLayout.addLayout(spellApp)
-		spellcheckLayout.addWidget(QLabel(' '))
-		spellcheckLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default spellcheck language</b>"))
-		spellcheckLayout.addLayout(lanSubLayout)
 		spellcheckLayout.addStretch()
 
 		self.spellcheckPage.setLayout(spellcheckLayout)

@@ -117,6 +117,16 @@ What's new:
   settings dialog would NOT en/disable autocomplete in the quit and away
   message entry boxes, and would require the setting to be set, applied, and
   the settings dialog restarted. The features now work as expected.
+* The input options menu now specifies that the spellcheck language option is
+  for that window only.
+* Spellchecking can no longer be toggled from the input options menu. Also,
+  if spellchecking is turned off, the "Spellcheck for this window" submenu will
+  no longer appear.
+* Added more information on how spellchecking language selection works to the
+  "Spellcheck" section of the settings dialog.
+* Re-arranged the "Spellcheck" section of the settings dialog.
+* Added an option to toggle word highlighting (with the /highlight command) to
+  the "Settings" menu's "Display" submenu.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |

@@ -527,7 +527,7 @@ class Window(QMainWindow):
 		self.chat.customContextMenuRequested.connect(self.chatMenu)
 
 		# Create text input widget
-		self.input = SpellTextEdit(self)
+		self.input = TextInputWidget(self)
 		self.input.returnPressed.connect(self.handleUserInput)
 		self.input.keyUp.connect(self.keyPressUp)
 		self.input.keyDown.connect(self.keyPressDown)
@@ -1806,16 +1806,6 @@ class Window(QMainWindow):
 		self.parent.rebuildAllInputMenus()
 		self.parent.buildSettingsMenu()
 
-	def settingsSpell(self):
-		if config.ENABLE_SPELLCHECK:
-			config.ENABLE_SPELLCHECK = False
-		else:
-			config.ENABLE_SPELLCHECK = True
-		self.save_config()
-		self.parent.toggleSpellcheck()
-		self.parent.buildSettingsMenu()
-		self.parent.rebuildAllInputMenus()
-
 	def buildInputOptionsMenu(self):
 
 		self.settingsMenu.clear()
@@ -1865,68 +1855,60 @@ class Window(QMainWindow):
 		self.settingsMenu.addAction(self.autoInput)
 
 		# Spellcheck Button
-		self.spellcheckMenu = QMenu("Spellcheck")
-		self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
-
 		if config.ENABLE_SPELLCHECK:
-			self.inputSpellCheck = QAction(QIcon(self.parent.checked_icon),"Use spellcheck", self)
-		else:
-			self.inputSpellCheck = QAction(QIcon(self.parent.unchecked_icon),"Use spellcheck", self)
-		self.inputSpellCheck.triggered.connect(self.settingsSpell)
-		self.spellcheckMenu.addAction(self.inputSpellCheck)
+			self.spellcheckMenu = QMenu("Spellcheck language")
+			self.spellcheckMenu.setIcon(QIcon(SPELLCHECK_ICON))
 
-		self.spellcheckMenu.addSeparator()
+			self.languageEnglish = QAction(QIcon(self.parent.round_unchecked_icon),"English",self)
+			self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageEnglish)
+			if not config.ENABLE_SPELLCHECK: self.languageEnglish.setEnabled(False)
 
-		self.languageEnglish = QAction(QIcon(self.parent.round_unchecked_icon),"English",self)
-		self.languageEnglish.triggered.connect(lambda state,u="en": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageEnglish)
-		if not config.ENABLE_SPELLCHECK: self.languageEnglish.setEnabled(False)
+			self.languageFrench = QAction(QIcon(self.parent.round_unchecked_icon),"Française",self)
+			self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageFrench)
+			if not config.ENABLE_SPELLCHECK: self.languageFrench.setEnabled(False)
 
-		self.languageFrench = QAction(QIcon(self.parent.round_unchecked_icon),"Française",self)
-		self.languageFrench.triggered.connect(lambda state,u="fr": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageFrench)
-		if not config.ENABLE_SPELLCHECK: self.languageFrench.setEnabled(False)
+			self.languageSpanish = QAction(QIcon(self.parent.round_unchecked_icon),"Español",self)
+			self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageSpanish)
+			if not config.ENABLE_SPELLCHECK: self.languageSpanish.setEnabled(False)
 
-		self.languageSpanish = QAction(QIcon(self.parent.round_unchecked_icon),"Español",self)
-		self.languageSpanish.triggered.connect(lambda state,u="es": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageSpanish)
-		if not config.ENABLE_SPELLCHECK: self.languageSpanish.setEnabled(False)
+			self.languageGerman = QAction(QIcon(self.parent.round_unchecked_icon),"Deutsche",self)
+			self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageGerman)
+			if not config.ENABLE_SPELLCHECK: self.languageGerman.setEnabled(False)
 
-		self.languageGerman = QAction(QIcon(self.parent.round_unchecked_icon),"Deutsche",self)
-		self.languageGerman.triggered.connect(lambda state,u="de": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageGerman)
-		if not config.ENABLE_SPELLCHECK: self.languageGerman.setEnabled(False)
+			self.languagePortuguese = QAction(QIcon(self.parent.round_unchecked_icon),"Português",self)
+			self.languagePortuguese.triggered.connect(lambda state,u="pt": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languagePortuguese)
+			if not config.ENABLE_SPELLCHECK: self.languagePortuguese.setEnabled(False)
 
-		self.languagePortuguese = QAction(QIcon(self.parent.round_unchecked_icon),"Português",self)
-		self.languagePortuguese.triggered.connect(lambda state,u="pt": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languagePortuguese)
-		if not config.ENABLE_SPELLCHECK: self.languagePortuguese.setEnabled(False)
+			self.languageItalian = QAction(QIcon(self.parent.round_unchecked_icon),"Italiano",self)
+			self.languageItalian.triggered.connect(lambda state,u="it": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageItalian)
+			if not config.ENABLE_SPELLCHECK: self.languageItalian.setEnabled(False)
 
-		self.languageItalian = QAction(QIcon(self.parent.round_unchecked_icon),"Italiano",self)
-		self.languageItalian.triggered.connect(lambda state,u="it": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageItalian)
-		if not config.ENABLE_SPELLCHECK: self.languageItalian.setEnabled(False)
+			self.languageDutch = QAction(QIcon(self.parent.round_unchecked_icon),"Nederlands",self)
+			self.languageDutch.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageDutch)
+			if not config.ENABLE_SPELLCHECK: self.languageDutch.setEnabled(False)
 
-		self.languageDutch = QAction(QIcon(self.parent.round_unchecked_icon),"Nederlands",self)
-		self.languageDutch.triggered.connect(lambda state,u="nl": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageDutch)
-		if not config.ENABLE_SPELLCHECK: self.languageDutch.setEnabled(False)
+			self.languageRussian = QAction(QIcon(self.parent.round_unchecked_icon),"Русский",self)
+			self.languageRussian.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
+			self.spellcheckMenu.addAction(self.languageRussian)
+			if not config.ENABLE_SPELLCHECK: self.languageRussian.setEnabled(False)
 
-		self.languageRussian = QAction(QIcon(self.parent.round_unchecked_icon),"Русский",self)
-		self.languageRussian.triggered.connect(lambda state,u="ru": self.menuSetLanguage(u))
-		self.spellcheckMenu.addAction(self.languageRussian)
-		if not config.ENABLE_SPELLCHECK: self.languageRussian.setEnabled(False)
+			if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="pt": self.languagePortuguese.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="it": self.languageItalian.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
+			if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
 
-		if self.language=="en": self.languageEnglish.setIcon(QIcon(self.parent.round_checked_icon))
-		if self.language=="fr": self.languageFrench.setIcon(QIcon(self.parent.round_checked_icon))
-		if self.language=="es": self.languageSpanish.setIcon(QIcon(self.parent.round_checked_icon))
-		if self.language=="de": self.languageGerman.setIcon(QIcon(self.parent.round_checked_icon))
-		if self.language=="pt": self.languagePortuguese.setIcon(QIcon(self.parent.round_checked_icon))
-		if self.language=="it": self.languageItalian.setIcon(QIcon(self.parent.round_checked_icon))
-		if self.language=="nl": self.languageDutch.setIcon(QIcon(self.parent.round_checked_icon))
-		if self.language=="ru": self.languageRussian.setIcon(QIcon(self.parent.round_checked_icon))
-
-		if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.settingsMenu.addMenu(self.spellcheckMenu)
+			if config.ALLOW_MENUS_TO_CHANGE_SPELLCHECK_SETTINGS: self.settingsMenu.addMenu(self.spellcheckMenu)
 
 		self.settingsMenu.addSeparator()
 
@@ -2947,10 +2929,10 @@ class Window(QMainWindow):
 		self.chat.setStyleSheet(self.generateStylesheet('QTextBrowser',foreground,background))
 
 		if not config.DO_NOT_APPLY_STYLE_TO_INPUT_WIDGET:
-			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',foreground,background))
+			self.input.setStyleSheet(self.generateStylesheet('TextInputWidget',foreground,background))
 		else:
 			b,f = styles.parseBackgroundAndForegroundColor(self.default_style["all"])
-			self.input.setStyleSheet(self.generateStylesheet('SpellTextEdit',f,b))
+			self.input.setStyleSheet(self.generateStylesheet('TextInputWidget',f,b))
 
 		if self.window_type==CHANNEL_WINDOW:
 			if not config.DO_NOT_APPLY_STYLE_TO_USERLIST:
@@ -3955,11 +3937,7 @@ class Window(QMainWindow):
 
 		# Rewrite whatever is in the input widget
 		# so that it's spellchecked
-		cursor = self.input.textCursor()
-		user_input = self.input.text()
-		self.input.setText('')
-		self.input.setText(user_input)
-		self.input.moveCursor(cursor.position())
+		self.resetInput()
 
 	def resetInput(self):
 		cursor = self.input.textCursor()
@@ -4562,7 +4540,7 @@ class TopicEdit(QPlainTextEdit):
 		else:
 			self.setToolTip('')
 
-class SpellTextEdit(QPlainTextEdit):
+class TextInputWidget(QPlainTextEdit):
 
 	returnPressed = pyqtSignal()
 	keyUp = pyqtSignal()
