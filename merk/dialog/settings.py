@@ -1086,8 +1086,13 @@ class Dialog(QDialog):
 		self.selector.setFocus()
 
 	def setDarkMode(self,state):
+		if self.darkMode.isChecked():
+			self.saveButton.setEnabled(False)
+			self.restart.show()
+		else:
+			self.saveButton.setEnabled(True)
+			self.restart.hide()
 		self.changed.show()
-		self.restart.show()
 		self.boldApply()
 		self.selector.setFocus()
 
@@ -2701,12 +2706,13 @@ class Dialog(QDialog):
 		self.styleDescription = QLabel("""
 			<small>
 			This setting controls how <b>subwindows</b> and <b>widgets</b> look. Different <b>styles</b>
-			use different sets of <b>widgets</b>. Qt comes with a number of them
+			use different sets of <b>widgets</b>. <a href='https://www.qt.io/'><b>Qt</b></a> comes with a number of them
 			pre-installed, and you can select which one to use here.
 			</small>
 			""")
 		self.styleDescription.setWordWrap(True)
 		self.styleDescription.setAlignment(Qt.AlignJustify)
+		self.styleDescription.setOpenExternalLinks(True)
 
 		self.qtStyle = QComboBox(self)
 		self.qtStyle.addItem(config.QT_WINDOW_STYLE)
@@ -2723,8 +2729,8 @@ class Dialog(QDialog):
 		self.darkDescription = QLabel("""
 			<small>
 			<b>Dark mode</b> changes the application palette to darker colors.
-			<b>If dark mode is enabled or disabled, the application must be restarted to use the
-			new palette.</b><br>
+			<b><i>If dark mode is enabled or disabled, the application must be restarted to use the
+			new palette.</i></b><br>
 			</small>
 			
 			""")
@@ -4664,6 +4670,8 @@ class Dialog(QDialog):
 			<b>server</b> or been in a <b>channel</b>) are generally displayed in the subwindow's
 			<b>status bar</b>. For <b>server</b> subwindows, if the <b>status bar</b>
 			is turned off, the connection <b>uptime</b> is displayed in the toolbar.
+			Uptimes are displayed in the format <b>HOURS:MINUTES:SECONDS</b>; if the uptime
+			is longer than a day, the format will be <b>DAYS:HOURS:MINUTES:SECONDS</b>.
 			</small>
 			<br>
 			""")
@@ -4691,8 +4699,19 @@ class Dialog(QDialog):
 		upLayout.addWidget(self.showUptime)
 		upLayout.addWidget(self.showChanUptime)
 
+		self.miscTimeDescription = QLabel("""
+			<small>
+			These settings will be used in all server, channel, and private chat window displays,
+			as well as in the <b>Log Manager</b> and in log exports (if UNIX epoch time is turned off).
+			</small>
+			<br>
+			""")
+		self.miscTimeDescription.setWordWrap(True)
+		self.miscTimeDescription.setAlignment(Qt.AlignJustify)
+
 		tmLayout = QVBoxLayout()
 		tmLayout.setSpacing(0)
+		tmLayout.addWidget(self.miscTimeDescription)
 		tmLayout.addWidget(self.timestamp24hour)
 		tmLayout.addWidget(self.timestampSeconds)
 		tmLayout.addWidget(self.showDates)
@@ -4902,7 +4921,7 @@ class Dialog(QDialog):
 
 		self.erroneousDescription = QLabel(f"""
 			<small>
-			If your nickname "breaks" the rules of a given server, this is the nickname that will
+			If your <b>nickname</b> "breaks" the rules of a given <b>server</b>, this is the <b>nickname</b> that will
 			be used during the connection process, limited to 8 characters. The
 			default is <b>Guest</b>.<br>
 			</small>
@@ -5113,7 +5132,7 @@ class Dialog(QDialog):
 		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>default away message</b>"))
 		awayLayout.addLayout(amLayout)
 		awayLayout.addWidget(QLabel(' '))
-		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>nickname display settiings</b>"))
+		awayLayout.addWidget(widgets.textSeparatorLabel(self,"<b>\"away\" nickname display settiings</b>"))
 		awayLayout.addWidget(self.nnDisplayDesc)
 		awayLayout.addLayout(anLayout)
 		awayLayout.addStretch()
@@ -5291,7 +5310,7 @@ class Dialog(QDialog):
 		self.badCommandDescription = QLabel(f"""
 			<small>
 			If this option is enabled,
-			messages that begins with \"<b>{config.ISSUE_COMMAND_SYMBOL}</b>\" that are not followed
+			<b>input</b> that begins with \"<b>{config.ISSUE_COMMAND_SYMBOL}</b>\" that is not followed
 			by a valid command will <i>not</i> be sent to server, and an error will be shown. To send a chat message that
 			starts with \"<b>{config.ISSUE_COMMAND_SYMBOL}</b>\", start the message with \"<b>{config.ISSUE_COMMAND_SYMBOL*2}</b>\" instead.<br>
 			</small>
@@ -5480,9 +5499,9 @@ class Dialog(QDialog):
 			<small>
 			Misspelled words in the input widget are marked with a <b><span style='text-decoration: underline; color: {self.SPELLCHECK_UNDERLINE_COLOR};'>
 			colored underline</span></b>. <b>Right click</b> on a <b>marked word</b> to get <b>suggestions to replace
-			the word with</b> or to <b>add that word to the built-in dictionary</b>. The <a href=\"https://en.wikipedia.org/wiki/Levenshtein_distance\">Levenshtein distance</a>
+			the word with</b> or to <b>add that word to the built-in dictionary</b>. The <b><a href=\"https://en.wikipedia.org/wiki/Levenshtein_distance\">Levenshtein distance</a></b>
 			setting sets how the spellchecker finds suggestions to replace misspelled words; lower numbers are better for
-			longer words.<br>
+			longer words. The default distance is <b>1</b>.<br>
 			</small>
 			
 			""")
@@ -5756,6 +5775,15 @@ class Dialog(QDialog):
 		cont2Layout.addWidget(self.ignoreLog)
 		cont2Layout.addStretch()
 
+		self.logChanDescription = QLabel(f"""
+			<small>
+			These message types will still be displayed in <b>channel chat displays</b>, but will not be saved to the <b>log</b>.
+			To prevent some of the message types from appearing at all, please see the <b>Channels</b> section of this dialog.
+			</small><br>
+			""")
+		self.logChanDescription.setWordWrap(True)
+		self.logChanDescription.setAlignment(Qt.AlignJustify)
+
 		logLayout = QVBoxLayout()
 		logLayout.setSpacing(0)
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>log settings</b>"))
@@ -5765,6 +5793,7 @@ class Dialog(QDialog):
 		logLayout.addLayout(privLayout)
 		logLayout.addWidget(QLabel(' '))
 		logLayout.addWidget(widgets.textSeparatorLabel(self,"<b>channel log includes...</b>"))
+		logLayout.addWidget(self.logChanDescription)
 		logLayout.addLayout(contLayout)
 		logLayout.addLayout(cont2Layout)
 		logLayout.addWidget(QLabel(' '))
@@ -6577,22 +6606,15 @@ class Dialog(QDialog):
 
 		url = bytearray(QUrl.fromLocalFile(resource_path("./merk/resources/MERK_User_Guide.pdf")).toEncoded()).decode()
 
-		self.pluginDescription = QLabel(f"""
-			<small><center>For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.</center>
-			</small>
-			""")
-		self.pluginDescription.setWordWrap(True)
-		self.pluginDescription.setAlignment(Qt.AlignJustify)
-		self.pluginDescription.setOpenExternalLinks(True)
-
 		self.eventDescription = QLabel(f"""
 			<small>
 			Uncheck an <b>event</b> to prevent that event from being triggered. Events that are <b>{APPLICATION_NAME}</b> specific
-			are shown in <b>bold</b>.
+			are shown in <b>bold</b>. For more information, see the <b><a href="{url}">{APPLICATION_NAME} User Guide</a></b>.<br>
 			</small>
 			""")
 		self.eventDescription.setWordWrap(True)
 		self.eventDescription.setAlignment(Qt.AlignJustify)
+		self.eventDescription.setOpenExternalLinks(True)
 
 		allEvents = QVBoxLayout()
 		allEvents.setSpacing(0)
@@ -6615,7 +6637,6 @@ class Dialog(QDialog):
 		pTop = QVBoxLayout()
 		pTop.setSpacing(0)
 		pTop.addWidget(widgets.textSeparatorLabel(self,"<b>plugin settings</b>"))
-		pTop.addWidget(self.pluginDescription)
 
 		pBottom = QVBoxLayout()
 		pBottom.setSpacing(0)
@@ -6688,16 +6709,17 @@ class Dialog(QDialog):
 
 		self.syntaxDescription = QLabel("""
 			<small>
-			<b>Syntax highlighting</b> is applied to the script section of the
-			connection dialog, the built-in script editor, and the plugin editor.
+			<b>Syntax highlighting</b> is applied to the <b>script</b> section of the
+			<b>connection dialog</b>, the built-in <b>script editor</b>, and the <b><a href='https://www.python.org/'>Python</a> editor</b>.
 			</small>
 			""")
 		self.syntaxDescription.setWordWrap(True)
 		self.syntaxDescription.setAlignment(Qt.AlignJustify)
+		self.syntaxDescription.setOpenExternalLinks(True)
 
 		self.syntaxInput = QLabel("""
 			<small>
-			<b>Syntax highlighting</b> can also be applied to the input widget in
+			<b>Syntax highlighting</b> can also be applied to the <b>text input</b> in
 			all server and chat subwindows. They will use the same color and
 			format settings as the script highlighting. <b>Nicknames</b> from the
 			current chat and <b>emoji</b> and <b>ASCIImoji shortcodes</b> will be highlighted using the

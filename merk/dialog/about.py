@@ -260,7 +260,7 @@ class Dialog(QDialog):
 			       Machine, Ray Hatfield, Nick Peters, Michael<br>
 			       Clemens, Tommy Olsen, Necrosand, Harry Oxnard,<br>
 			       dustmachine, photoplasia, robotmachine,<br>
-			       Terrence de Kat (raphidae@EFnet)
+			       Terrence de Kat (raphidae@EFnet), cipher
 			</small></center>
 			""")
 		patron_list.setAlignment(Qt.AlignJustify)

@@ -11,6 +11,7 @@ What's new:
 - **The `Window` class methods `print()` and `prints()` can now display "raw" Python variables**. Values passed to these methods are rendered as f-strings, allowing for these methods to be used for debugging purposes. An optional argument to these methods can be used to print data without interpolating emoji and ASCIImoji shortcodes and aliases into the output.
 - **New built-in alias: `$_SASL`**. This will be set to `1` if the client has successfully logged in via SASL, and set to `0` if not.
 - **Aliases can now be escaped with `\`**. To display an alias name *without* interpolating it's value into output, place `\` before the alias symbol. For example, to display the new `$_SASL` built-in alias's name, you would use `\$_SASL`.
+- **More explanations of settings (and how they work) have been added to the Settings dialog**.
 
 |==============================================================================|
 |                              APPLICATION CHANGES                             |
@@ -127,6 +128,8 @@ What's new:
 * Re-arranged the "Spellcheck" section of the settings dialog.
 * Added an option to toggle word highlighting (with the /highlight command) to
   the "Settings" menu's "Display" submenu.
+* Added more explanations and tweaks to the settings dialog.
+* Enabling dark mode in the settings dialog now forces the user to restart.
 
 |==============================================================================|
 |                              PLUGIN API CHANGES                              |
