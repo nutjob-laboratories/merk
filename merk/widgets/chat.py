@@ -4023,7 +4023,6 @@ class Window(QMainWindow):
 			sb = self.chat.verticalScrollBar()
 			sb.setValue(sb.maximum())
 			self.chat.ensureCursorVisible()
-
 			self.chat.moveCursor(QTextCursor.End)
 
 		fm = QFontMetrics(self.chat.font())
@@ -4035,7 +4034,6 @@ class Window(QMainWindow):
 		if is_at_bottom:
 			sb.setValue(sb.maximum())
 			self.chat.ensureCursorVisible()
-
 			self.chat.moveCursor(QTextCursor.End)
 
 	def changeEvent(self, event):

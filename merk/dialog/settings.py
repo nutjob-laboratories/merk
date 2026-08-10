@@ -5777,8 +5777,8 @@ class Dialog(QDialog):
 
 		self.logChanDescription = QLabel(f"""
 			<small>
-			These message types will still be displayed in <b>channel chat displays</b>, but will not be saved to the <b>log</b>.
-			To prevent some of the message types from appearing at all, please see the <b>Channels</b> section of this dialog.
+			These message types will still be displayed in <b>channel chat displays</b>, but will only be saved to the <b>log</b> if enabled below.
+			To prevent some of the <b>message types</b> from appearing at all, please see the <b>Channels</b> section of this dialog.
 			</small><br>
 			""")
 		self.logChanDescription.setWordWrap(True)

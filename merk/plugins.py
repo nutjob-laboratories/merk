@@ -332,6 +332,9 @@ class Window():
 			return "unknown"
 
 	def notice(self,target,message):
+		if type(target)!=type('') or type(message)!=type(''):
+			raise ValueError("Values passed to notice() must be strings")
+			return
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
@@ -340,6 +343,9 @@ class Window():
 		self._window.client.notice(target,message)
 
 	def action(self,target,message):
+		if type(target)!=type('') or type(message)!=type(''):
+			raise ValueError("Values passed to action() must be strings")
+			return
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
@@ -348,6 +354,9 @@ class Window():
 		self._window.client.describe(target,message)
 
 	def message(self,target,message):
+		if type(target)!=type('') or type(message)!=type(''):
+			raise ValueError("Values passed to message() must be strings")
+			return
 		message = commands.fullInterpolate(self._gui,self._window,message)
 		if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
 		if config.ENABLE_IRC_COLOR_MARKUP: message = inject_irc_colors(message)
@@ -356,6 +365,9 @@ class Window():
 		self._window.client.msg(target,message)
 
 	def say(self,message):
+		if type(message)!=type(''):
+			raise ValueError("Value passed to say() must be a string")
+			return
 		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
@@ -367,6 +379,9 @@ class Window():
 		return False
 
 	def note(self,message):
+		if type(message)!=type(''):
+			raise ValueError("Value passed to note() must be a string")
+			return
 		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
@@ -378,6 +393,9 @@ class Window():
 		return False
 
 	def describe(self,message):
+		if type(message)!=type(''):
+			raise ValueError("Value passed to describe() must be a string")
+			return
 		if self.wtype==CHANNEL_WINDOW or self.wtype==PRIVATE_WINDOW:
 			message = commands.fullInterpolate(self._gui,self._window,message)
 			if config.ENABLE_MARKDOWN_MARKUP: message = markdown_to_irc(message)
@@ -389,11 +407,13 @@ class Window():
 		return False
 
 	def execute(self,command):
-		self._window.injectInput(command)
+		if hasattr(self._window,"injectInput"):
+			self._window.injectInput(command)
 
 	def input(self,input_string,execute=True):
 		if execute:
-			self._window.injectInput(input_string)
+			if hasattr(self._window,"injectInput"):
+				self._window.injectInput(input_string)
 		else:
 			if hasattr(self._window,"input"):
 				self._window.input.setPlainText(input_string)
